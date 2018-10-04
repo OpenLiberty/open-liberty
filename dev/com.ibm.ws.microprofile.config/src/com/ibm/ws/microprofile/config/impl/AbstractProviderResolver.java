@@ -10,12 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.impl;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.microprofile.config.Config;
@@ -25,18 +28,30 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
+import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
+import com.ibm.ws.container.service.state.ApplicationStateListener;
+import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
+import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-public abstract class AbstractProviderResolver extends ConfigProviderResolver {
+public abstract class AbstractProviderResolver extends ConfigProviderResolver implements ApplicationStateListener {
 
     private static final TraceComponent tc = Tr.register(AbstractProviderResolver.class);
 
     private final AtomicServiceReference<ScheduledExecutorService> scheduledExecutorServiceRef = new AtomicServiceReference<ScheduledExecutorService>("scheduledExecutorService");
 
-    private final WeakHashMap<ClassLoader, Config> configCache = new WeakHashMap<>();
+    //map from classloader to config
+    private final Map<ClassLoader, ConfigWrapper> configCache = new HashMap<>();
+    //map from app Name to list of ClassLoader in use
+    private final Map<String, List<ClassLoader>> appClassLoaderMap = new HashMap<>();
 
     /**
      * Save the new ref into the AtomicServiceReference. See {@link AtomicServiceReference}
@@ -78,18 +93,110 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver {
         scheduledExecutorServiceRef.deactivate(cc);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
+        //no-op
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
+        //no-op
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void applicationStopped(ApplicationInfo appInfo) {
+        //no-op
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void applicationStopping(ApplicationInfo appInfo) {
+
+        ExtendedApplicationInfo extendedAppInfo = (ExtendedApplicationInfo) appInfo;
+        String applicationName = extendedAppInfo.getMetaData().getJ2EEName().getApplication();
+
+        shutdown(applicationName);
+
+    }
+
+    public String getApplicationName() {
+        ComponentMetaDataAccessorImpl cmdai = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor();
+        ComponentMetaData cmd = cmdai.getComponentMetaData();
+        String applicationName = null;
+        if (cmd != null) {
+            J2EEName applicationJEEName = cmd.getModuleMetaData().getApplicationMetaData().getJ2EEName();
+            applicationName = applicationJEEName.getApplication();
+        }
+        if (applicationName == null) {
+            throw new ConfigException(Tr.formatMessage(tc, "unable.to.determine.application.name.CWMCG0019E"));
+        }
+        return applicationName;
+    }
+
     /**
-     * Close down the configs
+     * Close down all the configs
      */
     public void shutdown() {
         synchronized (configCache) {
-            for (Map.Entry<ClassLoader, Config> entry : configCache.entrySet()) {
-                Config config = entry.getValue();
-                if (config != null) {
-                    closeConfig(config);
+            Set<ClassLoader> allClassLoaders = new HashSet<>();
+            allClassLoaders.addAll(configCache.keySet());
+            for (ClassLoader classLoader : allClassLoaders) {
+                close(classLoader);
+            }
+            //caches should be empty now but clear them anyway
+            configCache.clear();
+            appClassLoaderMap.clear();
+        }
+    }
+
+    /**
+     * Close down all the configs used by a specified application (that are not also still in use by other applications)
+     */
+    private void shutdown(String applicationName) {
+        synchronized (configCache) {
+            List<ClassLoader> appClassLoaders = appClassLoaderMap.remove(applicationName);
+            if (appClassLoaders != null) {
+                for (ClassLoader classLoader : appClassLoaders) {
+                    shutdown(applicationName, classLoader);
                 }
             }
-            configCache.clear();
+        }
+    }
+
+    /**
+     * Close down a specific config used by a specified application (that is not also still in use by other applications)
+     */
+    private void shutdown(String applicationName, ClassLoader classLoader) {
+        synchronized (configCache) {
+            ConfigWrapper configWrapper = configCache.get(classLoader);
+            boolean close = configWrapper.removeApplication(applicationName);
+            if (close) {
+                close(classLoader);
+            }
+        }
+    }
+
+    /**
+     * Completely close a config for a given classloader
+     */
+    private void close(ClassLoader classLoader) {
+        synchronized (configCache) {
+            ConfigWrapper config = configCache.remove(classLoader);
+            if (config != null) {
+                Set<String> applicationNames = config.getApplications();
+                for (String app : applicationNames) {
+                    appClassLoaderMap.remove(app);
+                }
+
+                try {
+                    config.close();
+                } catch (IOException e) {
+                    throw new ConfigException(Tr.formatMessage(tc, "could.not.close.CWMCG0004E", e));
+                }
+            }
         }
     }
 
@@ -120,17 +227,17 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver {
 
     /** {@inheritDoc} */
     @Override
-    public Config getConfig(ClassLoader loader) {
+    public Config getConfig(ClassLoader classLoader) {
 
-        if (loader == null) {
+        if (classLoader == null) {
             throw new IllegalArgumentException(Tr.formatMessage(tc, "null.classloader.CWMCG0002E"));
         }
 
         Config config = null;
         synchronized (configCache) {
-            config = configCache.get(loader);
-            if (config == null) {
-                AbstractConfigBuilder builder = newBuilder(loader);
+            ConfigWrapper configWrapper = configCache.get(classLoader);
+            if (configWrapper == null) {
+                AbstractConfigBuilder builder = newBuilder(classLoader);
                 //add all default and discovered sources and converters
                 builder.addDefaultSources();
                 builder.addDiscoveredSources();
@@ -138,8 +245,10 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver {
                 builder.addDiscoveredConverters();
                 config = builder.build();
 
-                //add this config to the classloader cache
-                registerConfig(config, loader);
+                //register this new config
+                registerConfig(config, classLoader);
+            } else {
+                config = configWrapper.getConfig();
             }
         }
         return config;
@@ -149,13 +258,37 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver {
     @Override
     public void registerConfig(Config config, ClassLoader classLoader) {
         synchronized (configCache) {
-            Config previous = configCache.get(classLoader);
+            ConfigWrapper configWrapper = null;
+            ConfigWrapper previous = configCache.get(classLoader);
             if (previous != null) {
                 throw new IllegalStateException(Tr.formatMessage(tc, "config.already.exists.CWMCG0003E"));
-            } else {
-                configCache.remove(classLoader);
             }
-            configCache.put(classLoader, config);
+            //create a new ConfigWrapper and put it in the cache
+            configWrapper = new ConfigWrapper((WebSphereConfig) config);
+            configCache.put(classLoader, configWrapper);
+            //register the application's use of that config
+            registerApplication(configWrapper, classLoader);
+        }
+    }
+
+    /**
+     *
+     * Register an application's use of a config
+     *
+     * @param configWrapper
+     * @param classLoader
+     */
+    private void registerApplication(ConfigWrapper configWrapper, ClassLoader classLoader) {
+        synchronized (configCache) {
+            String applicationName = getApplicationName();
+            configWrapper.addApplication(applicationName);
+
+            List<ClassLoader> appClassLoaders = appClassLoaderMap.get(applicationName);
+            if (appClassLoaders == null) {
+                appClassLoaders = new ArrayList<>();
+                appClassLoaderMap.put(applicationName, appClassLoaders);
+            }
+            appClassLoaders.add(classLoader);
         }
     }
 
@@ -163,28 +296,18 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver {
     @Override
     public void releaseConfig(Config config) {
         synchronized (configCache) {
-            for (Map.Entry<ClassLoader, Config> entry : configCache.entrySet()) {
+            //look through the cache and find the classloader which corresponds to the specified config
+            //use that classloader to close the config properly
+            for (Map.Entry<ClassLoader, ConfigWrapper> entry : configCache.entrySet()) {
                 ClassLoader classLoader = entry.getKey();
-                Config configRef = entry.getValue();
-                if (configRef != null) {
-                    Config cachedConfig = configRef;
+                ConfigWrapper configWrapper = entry.getValue();
+                if (configWrapper != null) {
+                    Config cachedConfig = configWrapper.getConfig();
                     if (cachedConfig != null && config == cachedConfig) {
-                        configCache.remove(classLoader);
+                        close(classLoader);
                         break;
                     }
                 }
-            }
-            closeConfig(config);
-        }
-    }
-
-    private void closeConfig(Config config) {
-        //our implementation is Closeable
-        if (config instanceof Closeable) {
-            try {
-                ((Closeable) config).close();
-            } catch (IOException e) {
-                throw new ConfigException(Tr.formatMessage(tc, "could.not.close.CWMCG0004E", e));
             }
         }
     }
@@ -198,6 +321,25 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver {
         //always add default converters
         builder.addDefaultConverters();
         return builder;
+    }
+
+    public int getConfigCacheSize() {
+        int size = 0;
+        synchronized (this) {
+            size = configCache.size();
+        }
+        return size;
+    }
+
+    @Override
+    @Trivial
+    public String toString() {
+        StringBuilder builder = new StringBuilder(this.getClass().getName());
+        builder.append(": cache=");
+        synchronized (this) {
+            builder.append(getConfigCacheSize());
+        }
+        return builder.toString();
     }
 
     protected abstract AbstractConfigBuilder newBuilder(ClassLoader classLoader);

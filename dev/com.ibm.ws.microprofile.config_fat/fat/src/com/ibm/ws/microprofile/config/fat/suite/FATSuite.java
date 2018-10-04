@@ -22,6 +22,7 @@ import com.ibm.ws.microprofile.config.fat.tests.CDIConfigPropertyTest;
 import com.ibm.ws.microprofile.config.fat.tests.CDIFieldInjectionTest;
 import com.ibm.ws.microprofile.config.fat.tests.CDIScopeTest;
 import com.ibm.ws.microprofile.config.fat.tests.CDIXtorInjectionTest;
+import com.ibm.ws.microprofile.config.fat.tests.ClassLoaderCacheTest;
 import com.ibm.ws.microprofile.config.fat.tests.ClassLoadersTest;
 import com.ibm.ws.microprofile.config.fat.tests.ConverterPriorityTest;
 import com.ibm.ws.microprofile.config.fat.tests.ConvertersTest;
@@ -29,8 +30,8 @@ import com.ibm.ws.microprofile.config.fat.tests.CustomSourcesTest;
 import com.ibm.ws.microprofile.config.fat.tests.DefaultSourcesTest;
 import com.ibm.ws.microprofile.config.fat.tests.DynamicSourcesTest;
 import com.ibm.ws.microprofile.config.fat.tests.OrdinalsForDefaultsTest;
-import com.ibm.ws.microprofile.config.fat.tests.SimultaneousRequestsTest;
 import com.ibm.ws.microprofile.config.fat.tests.SharedLibTest;
+import com.ibm.ws.microprofile.config.fat.tests.SimultaneousRequestsTest;
 import com.ibm.ws.microprofile.config.fat.tests.StressTest;
 import com.ibm.ws.microprofile.config.fat.tests.TypesTest;
 
@@ -46,6 +47,7 @@ import com.ibm.ws.microprofile.config.fat.tests.TypesTest;
                 CDIFieldInjectionTest.class,
                 CDIScopeTest.class,
                 CDIXtorInjectionTest.class,
+                ClassLoaderCacheTest.class,
                 ClassLoadersTest.class,
                 ConverterPriorityTest.class,
                 ConvertersTest.class,

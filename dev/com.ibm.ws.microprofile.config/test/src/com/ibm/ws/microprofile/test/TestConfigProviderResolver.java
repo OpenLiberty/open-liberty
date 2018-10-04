@@ -10,26 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.test;
 
-import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
-import org.junit.After;
-import org.junit.Before;
-
 import com.ibm.ws.microprofile.config.archaius.ConfigProviderResolverImpl;
 
 /**
  *
  */
-public abstract class AbstractConfigTest {
+public class TestConfigProviderResolver extends ConfigProviderResolverImpl {
 
-    @Before
-    public void before() {
-        ConfigProviderResolver.setInstance(new TestConfigProviderResolver());
-    }
-
-    @After
-    public void after() {
-        ((ConfigProviderResolverImpl) ConfigProviderResolver.instance()).shutdown();
-        ConfigProviderResolver.setInstance(null);
+    @Override
+    public String getApplicationName() {
+        return "UNIT_TEST_APPLICATION";
     }
 
 }
