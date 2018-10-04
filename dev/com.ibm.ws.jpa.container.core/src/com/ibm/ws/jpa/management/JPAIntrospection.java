@@ -63,7 +63,7 @@ public class JPAIntrospection {
             try {
                 jpaIntrospector.doBeginApplicationVisit(appname, appl);
             } catch (Throwable t) {
-                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".executeTraceAnalysis", "66");
+                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".beginApplicationVisit", "66");
             }
         }
     }
@@ -81,7 +81,7 @@ public class JPAIntrospection {
             try {
                 jpaIntrospector.doBeginPUScopeVisit(scopeInfo);
             } catch (Throwable t) {
-                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".executeTraceAnalysis", "84");
+                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".beginPUScopeVisit", "84");
             }
 
         }
@@ -100,7 +100,7 @@ public class JPAIntrospection {
             try {
                 jpaIntrospector.doBeginPXmlInfoVisit(pxmlInfo);
             } catch (Throwable t) {
-                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".executeTraceAnalysis", "103");
+                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".beginPXmlInfoVisit", "103");
             }
         }
     }
@@ -118,7 +118,7 @@ public class JPAIntrospection {
             try {
                 jpaIntrospector.doVisitJPAPUnitInfo(puName, jpaPuInfo);
             } catch (Throwable t) {
-                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".executeTraceAnalysis", "121");
+                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".visitJPAPUnitInfo", "121");
             }
         }
     }
@@ -129,7 +129,7 @@ public class JPAIntrospection {
             try {
                 jpaIntrospector.doExecuteIntrospectionAnalysis(dout);
             } catch (Throwable t) {
-                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".executeTraceAnalysis", "132");
+                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".executeIntrospectionAnalysis", "132");
             }
         }
     }
