@@ -18,7 +18,7 @@
   <property name="bundleName" value="WebSphere Binary Logging (HPEL) API"/> 
   <property name="api.ibm.symbolic.suffix" value="hpel"/>
   <!-- Accept the default 'api.ibm.version' of '1.0'. -->
-  <property name="api.ibm.version" value="2.0" />	
+  <property name="api.ibm.version" value="2.1" />	
   <property name="feature.file" value="${basedir}/externals.mf"/>
     
   <!-- The source is tucked in a JAR outside of the usual source path. -->
