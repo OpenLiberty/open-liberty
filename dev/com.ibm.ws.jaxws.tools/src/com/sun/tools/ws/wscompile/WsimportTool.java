@@ -549,18 +549,23 @@ public class WsimportTool {
         if (sourceFiles.size() > 0) {
             String classDir = options.destDir.getAbsolutePath();
             String classpathString = createClasspathString();
+            int majorJavaVersion = getMajorJavaVersion();
             boolean bootCP = useBootClasspath(EndpointContext.class) || useBootClasspath(JAXBPermission.class);
             List<String> args = new ArrayList<String>();
             args.add("-d");
             args.add(classDir);
             args.add("-classpath");
-            args.add(classpathString + File.pathSeparator + options.classpath);
-            //javac is not working in osgi as the url starts with a bundle
-            if (bootCP && getMajorJavaVersion() < 9) {
-                args.add("-Xbootclasspath/a:"
-                         + JavaCompilerHelper.getJarFile(EndpointContext.class)
-                         + File.pathSeparator
-                         + JavaCompilerHelper.getJarFile(JAXBPermission.class));
+            if (majorJavaVersion < 9) {
+                args.add(classpathString);
+                //javac is not working in osgi as the url starts with a bundle
+                if (bootCP) {
+                    args.add("-Xbootclasspath/p:"
+                             + JavaCompilerHelper.getJarFile(EndpointContext.class)
+                             + File.pathSeparator
+                             + JavaCompilerHelper.getJarFile(JAXBPermission.class));
+                }
+            } else {
+                args.add(classpathString + File.pathSeparator + options.classpath);
             }
 
             if (options.debug) {
