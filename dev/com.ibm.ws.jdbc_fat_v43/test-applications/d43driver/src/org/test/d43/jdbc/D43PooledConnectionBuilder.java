@@ -18,6 +18,8 @@ import javax.sql.PooledConnection;
 import javax.sql.PooledConnectionBuilder;
 
 public class D43PooledConnectionBuilder implements PooledConnectionBuilder {
+    private boolean built;
+
     private final D43ConnectionPoolDataSource d43PoolDataSource;
 
     private String password;
@@ -31,6 +33,11 @@ public class D43PooledConnectionBuilder implements PooledConnectionBuilder {
 
     @Override
     public PooledConnection build() throws SQLException {
+        if (built)
+            throw new IllegalStateException();
+        else
+            built = true;
+
         PooledConnection con;
         if (user == null && password == null)
             con = d43PoolDataSource.ds.getPooledConnection();
@@ -45,24 +52,32 @@ public class D43PooledConnectionBuilder implements PooledConnectionBuilder {
 
     @Override
     public D43PooledConnectionBuilder password(String value) {
+        if (built)
+            throw new IllegalStateException();
         password = value;
         return this;
     }
 
     @Override
     public D43PooledConnectionBuilder shardingKey(ShardingKey value) {
+        if (built)
+            throw new IllegalStateException();
         shardingKey = value;
         return this;
     }
 
     @Override
     public D43PooledConnectionBuilder superShardingKey(ShardingKey value) {
+        if (built)
+            throw new IllegalStateException();
         superShardingKey = value;
         return this;
     }
 
     @Override
     public D43PooledConnectionBuilder user(String value) {
+        if (built)
+            throw new IllegalStateException();
         user = value;
         return this;
     }
