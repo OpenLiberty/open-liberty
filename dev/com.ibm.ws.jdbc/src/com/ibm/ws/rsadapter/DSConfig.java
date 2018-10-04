@@ -116,17 +116,47 @@ public class DSConfig implements FFDCSelfIntrospectable {
     public final ConnectorService connectorSvc;
 
     /**
-     * Not a supported property. Only for internal testing/experimentation.
+     * <p>Not a supported property. Only for internal testing/experimentation.</p>
      *
-     * Controls whether the Connection.beginRequest and Connection.endRequest hints are sent to the
-     * JDBC driver. These methods were introduced in JDBC 4.3, but without any guarantee that they
-     * will not lead to the JDBC driver corrupting the connection state while connections are in the
-     * pool. Therefore, beginRequest/endRequests are not supplied by the application server.
-     * This property can be used in internal development code to force the application server
-     * to send beginRequest/endRequest hints to the JDBC driver.
+     * <p>Controls whether the Connection.beginRequest and Connection.endRequest hints are sent to the
+     * JDBC driver. These methods were introduced in JDBC 4.3, but unfortunately with insufficient
+     * guarantees that these methods will not lead to the JDBC driver corrupting the connection state.
+     * At the time of writing this, we have found only a single JDBC 4.3 driver in existence.
+     * Its documentation describes a vendor-specific implementation of endRequest that is severely
+     * destructive in nature (closing prepared statements, altering connection state without the
+     * prompting of the application). If the first and only JDBC 4.3 has interpreted the poorly written
+     * JDBC 4.3 requirements around begin/endRequest in a way that led them to implement this behavior
+     * that is contrary to the intent to the specification (invocation of these methods is supposed to
+     * be transparent!), we can expect that other JDBC drivers will do similar things. Therefore, given
+     * that beginRequest/endRequest are optional, we cannot see any good reason to subject our users
+     * to this sort of instability and risk, and so OpenLiberty will neither supply these "hints" to
+     * the JDBC driver by default nor in any other supported mode of operation.</p>
      *
-     * WARNING: usage of this property can lead to unstable and unpredictable behavior.
-     * Do not enable this in production. 
+     * <p>It should be noted that per the JDBC 4.3 JavaDoc for java.sql.Connection, the
+     * connection pooling manager does not need to call beginRequest and endRequest if
+     * <ul>
+     * <li>The connection pool caches PooledConnection objects
+     * <li>Returns a logical connection handle when getConnection is called by the application
+     * <li>The logical Connection is closed by calling Connection.close prior to returning the PooledConnection to the cache.
+     * </ul>
+     * The OpenLiberty implementation meets all of the above requirements.
+     * Our connection pool does cache PooledConnection (we also cache XAConnection, which is a type of PooledConnection, and Connection).
+     * We always return a logical handle (WSJdbc*Connection) to the application when it invokes getConnection.
+     * The application uses the Connection.close API to close its logical connection handle, and after
+     * that we decide whether to return the underlying PooledConnection (or XAConnection and so forth)
+     * to the cache. For example, we might decide to destroy it instead of caching it if a connection error
+     * has occurred.
+     * It should also be noted that requirements of JCA/Java EE in some cases supersede or alter how the
+     * JDBC spec is complied with.  For example, in the case of sharable connections, the application
+     * is able to have multiple logical handles to the same underlying PooledConnection.  In light of the
+     * intent of the JDBC spec, when JCA connection sharing is used, we ensure that each of these logical
+     * handles has either been closed with Connection.close or otherwise dissociated by crossing a
+     * sharing scope boundary before we allow the PooledConnection (or XAConnection and so forth) to be
+     * returned to the cache.
+     * </p>
+     *
+     * <p>WARNING: usage of this property can lead to unstable and unpredictable behavior.
+     * Do not enable this in production.</p> 
      */
     public final boolean enableBeginEndRequest;
 
