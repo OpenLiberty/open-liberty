@@ -221,73 +221,82 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         // -> a jar file in the EAR library directory
         // ------------------------------------------------------------------------
 
-        // Process any persistence.xml in EAR/lib/*.jar
-        // Note: if there is no application classloader (standalone module),
-        //       then there is no need to look for application scoped persistence.xml.
-        if (appLibContainer != null && appClassLoader != null) {
-            processLibraryJarPersistenceXml(applInfo, appLibContainer, applName, "lib/", JPAPuScope.EAR_Scope, appClassLoader);
-        }
-
-        // Process all modules in the application.  This must be done as early as possible
-        // to prevent other features from load application classes before a JPA transformer
-        // is registered for the application classloader.
-        // TODO: this code would be much simpler of EARApplicationInfo provided a getModules method
-        Container container = appInfo.getContainer();
-        NonPersistentCache cache;
         try {
-            cache = container.adapt(NonPersistentCache.class);
-        } catch (UnableToAdaptException e) {
-            if (isTraceOn && tc.isDebugEnabled()) {
-                Tr.debug(tc, "applicationStarting : " + e);
+            JPAIntrospection.beginJPAIntrospection();
+            JPAIntrospection.beginApplicationVisit(applName, applInfo);
+
+            // Process any persistence.xml in EAR/lib/*.jar
+            // Note: if there is no application classloader (standalone module),
+            //       then there is no need to look for application scoped persistence.xml.
+            if (appLibContainer != null && appClassLoader != null) {
+                processLibraryJarPersistenceXml(applInfo, appLibContainer, applName, "lib/", JPAPuScope.EAR_Scope, appClassLoader);
             }
-            throw new RuntimeException("Failed to get NonPersistentCache for application ", e);
-        }
-        ApplicationClassesContainerInfo applicationClassesContainerInfo = (ApplicationClassesContainerInfo) cache.getFromCache(ApplicationClassesContainerInfo.class);
-        // In an eba this is null
-        if (applicationClassesContainerInfo != null) {
-            List<ModuleClassesContainerInfo> mcci = applicationClassesContainerInfo.getModuleClassesContainerInfo();
-            for (ModuleClassesContainerInfo m : mcci) {
-                List<ContainerInfo> moduleContainerInfos = m.getClassesContainerInfo();
-                if (moduleContainerInfos != null && !moduleContainerInfos.isEmpty()) {
-                    ContainerInfo moduleContainerInfo = moduleContainerInfos.get(0);
-                    Type t = moduleContainerInfo.getType();
 
-                    ClassLoader moduleLoader = null;
-                    try {
-                        Container cc = moduleContainerInfo.getContainer();
-                        NonPersistentCache npc = cc.adapt(NonPersistentCache.class);
-                        ModuleInfo wmi = (ModuleInfo) npc.getFromCache(ModuleInfo.class);
-                        moduleLoader = wmi.getClassLoader();
-                    } catch (Exception e) {
-                        if (isTraceOn && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "applicationStarting : " + e);
-                        }
-                        throw new RuntimeException("Failed to get ModuleInfo for application ", e);
-                    }
+            // Process all modules in the application.  This must be done as early as possible
+            // to prevent other features from load application classes before a JPA transformer
+            // is registered for the application classloader.
+            // TODO: this code would be much simpler of EARApplicationInfo provided a getModules method
+            Container container = appInfo.getContainer();
+            NonPersistentCache cache;
+            try {
+                cache = container.adapt(NonPersistentCache.class);
+            } catch (UnableToAdaptException e) {
+                if (isTraceOn && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "applicationStarting : " + e);
+                }
+                throw new RuntimeException("Failed to get NonPersistentCache for application ", e);
+            }
+            ApplicationClassesContainerInfo applicationClassesContainerInfo = (ApplicationClassesContainerInfo) cache.getFromCache(ApplicationClassesContainerInfo.class);
+            // In an eba this is null
+            if (applicationClassesContainerInfo != null) {
+                List<ModuleClassesContainerInfo> mcci = applicationClassesContainerInfo.getModuleClassesContainerInfo();
+                for (ModuleClassesContainerInfo m : mcci) {
+                    List<ContainerInfo> moduleContainerInfos = m.getClassesContainerInfo();
+                    if (moduleContainerInfos != null && !moduleContainerInfos.isEmpty()) {
+                        ContainerInfo moduleContainerInfo = moduleContainerInfos.get(0);
+                        Type t = moduleContainerInfo.getType();
 
-                    try {
-                        boolean serverRT = isServerRuntime();
-                        if (t == Type.EJB_MODULE && serverRT) {
-                            processEJBModulePersistenceXml(applInfo, moduleContainerInfo, moduleLoader);
-                        } else if (t == Type.WEB_MODULE && serverRT) {
-                            processWebModulePersistenceXml(applInfo, moduleContainerInfo, moduleLoader);
-                        } else if (t == Type.CLIENT_MODULE && !serverRT) {
-                            processClientModulePersistenceXml(applInfo, moduleContainerInfo, moduleLoader);
+                        ClassLoader moduleLoader = null;
+                        try {
+                            Container cc = moduleContainerInfo.getContainer();
+                            NonPersistentCache npc = cc.adapt(NonPersistentCache.class);
+                            ModuleInfo wmi = (ModuleInfo) npc.getFromCache(ModuleInfo.class);
+                            moduleLoader = wmi.getClassLoader();
+                        } catch (Exception e) {
+                            if (isTraceOn && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "applicationStarting : " + e);
+                            }
+                            throw new RuntimeException("Failed to get ModuleInfo for application ", e);
                         }
-                    } catch (RuntimeException e) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            Tr.debug(tc, "App failed to start due to JPA", applInfo.getApplName());
-                        stuckApps.add(applInfo.getApplName());
-                        throw e;
+
+                        try {
+                            boolean serverRT = isServerRuntime();
+                            if (t == Type.EJB_MODULE && serverRT) {
+                                processEJBModulePersistenceXml(applInfo, moduleContainerInfo, moduleLoader);
+                            } else if (t == Type.WEB_MODULE && serverRT) {
+                                processWebModulePersistenceXml(applInfo, moduleContainerInfo, moduleLoader);
+                            } else if (t == Type.CLIENT_MODULE && !serverRT) {
+                                processClientModulePersistenceXml(applInfo, moduleContainerInfo, moduleLoader);
+                            }
+                        } catch (RuntimeException e) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                Tr.debug(tc, "App failed to start due to JPA", applInfo.getApplName());
+                            stuckApps.add(applInfo.getApplName());
+                            throw e;
+                        }
                     }
                 }
             }
-        }
 
-        try {
-            startingApplication(applInfo);
-        } catch (RuntimeWarning e) {
-            FFDCFilter.processException(e, this.getClass().getName(), "457");
+            try {
+                startingApplication(applInfo);
+            } catch (RuntimeWarning e) {
+                FFDCFilter.processException(e, this.getClass().getName(), "457");
+            }
+        } finally {
+            JPAIntrospection.endApplicationVisit();
+            JPAIntrospection.executeTraceAnalysis();
+            JPAIntrospection.endJPAIntrospection();
         }
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -906,21 +915,21 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         }
 
         // Find all JPA enabled applications, scopeinfo, pxmlinfo, and persistence unit info
-        final JPAIntrospection jpai = JPAIntrospection.getJPAIntrospection();
+        JPAIntrospection.beginJPAIntrospection();
         try {
             for (Map.Entry<String, JPAApplInfo> entry : appMap.entrySet()) {
                 final String appName = entry.getKey();
                 final OSGiJPAApplInfo appl = (OSGiJPAApplInfo) entry.getValue();
 
-                jpai.beginApplicationVisit(appName, appl);
+                JPAIntrospection.beginApplicationVisit(appName, appl);
                 try {
                     appl.introspect(out);
                 } finally {
-                    jpai.endApplicationVisit();
+                    JPAIntrospection.endApplicationVisit();
                 }
             }
 
-            jpai.executeIntrospectionAnalysis(out);
+            JPAIntrospection.executeIntrospectionAnalysis(out);
         } finally {
             JPAIntrospection.endJPAIntrospection();
         }
