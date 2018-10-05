@@ -9,7 +9,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion: 2.1
+bVersion: 2.0
 
 Bundle-Name: WebSphere Binary Logging (HPEL) API
 Bundle-Description: WebSphere Binary Logging (HPEL) API, version ${bVersion}
