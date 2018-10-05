@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.osgi.service.component.annotations.Deactivate;
 
@@ -63,6 +64,9 @@ public class RequestProbeService {
 
 	/** Active running requests **/
 	private static FastList<RequestContext> activeRequests = new FastList<RequestContext>();
+
+	/** Maximum active running requests at a time **/
+	private static FastList<RequestContext> maxActiveRequests = new FastList<RequestContext>();
 
 	public final static ThreadLocalStringExtension requestIDExtension;
 	private final static String REQUEST_ID_EXTENSION_NAME = "requestID";
@@ -124,7 +128,10 @@ public class RequestProbeService {
 	public static void processAllEntryProbeExtensions(Event event, RequestContext requestContext) {
 		if (event == requestContext.getRootEvent()) {
 			// Add the request to Active Request list
-			requestContext.setRequestContextIndex(activeRequests.add(requestContext)); 
+			requestContext.setRequestContextIndex(activeRequests.add(requestContext));
+			if (activeRequests.getAll().size() > maxActiveRequests.getAll().size()) {
+				maxActiveRequests.add(requestContext);
+			}
 		}
 
 		List<ProbeExtension> probeExtnList = RequestProbeService.getProbeExtensions();
@@ -248,6 +255,50 @@ public class RequestProbeService {
 	public static List<ProbeExtension> getProbeExtensions() {
 		//return new ArrayList<ProbeExtension>(probeExtensions);
 		return probeExtensions;
+	}
+
+	/**
+	 * @return the maxActiveRequests
+	 */
+	public static List<RequestContext> getMaxActiveRequests() {
+		return maxActiveRequests.getAll();
+	}
+	
+	/**
+	 * Iterates through the activeRequests map and counts the number of request
+	 * specified by the String type parameter.
+	 * 
+	 * @param type:
+	 *            the request to be filtered by
+	 * @return long activeRequestCounts: the current active requests for the type
+	 */
+	public long getActiveRequestsByType(String type) {
+		AtomicLong activeRequestCounts = new AtomicLong();
+		for (RequestContext requestcontext : getActiveRequests()) {
+			if (requestcontext.getRootEvent().getType().contains(type)) {
+				activeRequestCounts.getAndIncrement();
+			}
+		}
+		return activeRequestCounts.get();
+		
+	}
+	
+	/**
+	 * Iterates through the maxActiveRequests map and counts the number of request
+	 * specified by the String type parameter.
+	 * 
+	 * @param type:
+	 *            the request to be filtered by
+	 * @return long maxeRequestCounts: the maximum active requests for the type
+	 */
+	public long getMaxActiveRequestsByType(String type) {
+		AtomicLong maxeRequestCounts = new AtomicLong();
+		for (RequestContext requestcontext : getMaxActiveRequests()) {
+			if (requestcontext.getRootEvent().getType().contains(type)) {
+				maxeRequestCounts.getAndIncrement();
+			}
+		}
+		return maxeRequestCounts.get();
 	}
 
 }
