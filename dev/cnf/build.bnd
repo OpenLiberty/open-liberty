@@ -77,13 +77,18 @@ javac.target: 1.7
 javac.debug: true
 javac.encoding: UTF-8
 # Switch for opting out of the --release javac option introduced in JDK 9, which is useful for more tightly controlling the set of root modules
-javac.args.release: true
+# Options are:
+#  source:  (default) use a release corresponding to javac.source
+#  current: use a release corresponding to the current JVM
+#  off:     do not specify a release
+javac.args.release: source
 -sources: false
 
 -pedantic: ${if;${driver;gradle};true;false}
 -fixupmessages.javac17: "The .JRE container is set to JavaSE-1.8 but bnd is compiling against 1.7";is:=ignore
 -fixupmessages.nosrc: "bnd's src folder 'src' is not in the Eclipse build path";is:=ignore
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=error
+-fixupmessages.mrjar: Classes found in the wrong directory:*META-INF/versions
 
 -releaserepo: ${if;${is.remote.publishing};RemotePublish;Release}
 -baselinerepo: Release

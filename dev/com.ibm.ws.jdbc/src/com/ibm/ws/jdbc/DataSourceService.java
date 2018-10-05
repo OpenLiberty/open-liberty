@@ -435,9 +435,10 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 Class<?> ifc;
 
                 if (type == null){
-                    vendorImpl = id != null && id.contains("dataSource[DefaultDataSource]")
-                               ? jdbcDriverSvc.createDefaultDataSourceOrDriver(vProps, id)
-                               : jdbcDriverSvc.createAnyDataSourceOrDriver(vProps, id);
+                    boolean atLeastJDBC43 = jdbcRuntime.getVersion().compareTo(JDBCRuntimeVersion.VERSION_4_3) >= 0;
+                    vendorImpl = atLeastJDBC43 || id != null && id.contains("dataSource[DefaultDataSource]")
+                               ? jdbcDriverSvc.createAnyPreferXADataSource(vProps, id)
+                               : jdbcDriverSvc.createAnyPreferLegacyOrder(vProps, id);
                     ifc = vendorImpl instanceof XADataSource ? XADataSource.class
                         : vendorImpl instanceof ConnectionPoolDataSource ? ConnectionPoolDataSource.class
                         : vendorImpl instanceof DataSource ? DataSource.class
@@ -586,9 +587,10 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             Class<?> ifc;
 
             if(type == null){
-                vendorImpl = id != null && id.contains("dataSource[DefaultDataSource]")
-                                ? jdbcDriverSvc.createDefaultDataSourceOrDriver(vProps, id)
-                                : jdbcDriverSvc.createAnyDataSourceOrDriver(vProps, id);
+                boolean atLeastJDBC43 = jdbcRuntime.getVersion().compareTo(JDBCRuntimeVersion.VERSION_4_3) >= 0;
+                vendorImpl = atLeastJDBC43 || id != null && id.contains("dataSource[DefaultDataSource]")
+                                ? jdbcDriverSvc.createAnyPreferXADataSource(vProps, id)
+                                : jdbcDriverSvc.createAnyPreferLegacyOrder(vProps, id);
                 ifc = vendorImpl instanceof XADataSource ? XADataSource.class
                     : vendorImpl instanceof ConnectionPoolDataSource ? ConnectionPoolDataSource.class
                     : vendorImpl instanceof DataSource ? DataSource.class

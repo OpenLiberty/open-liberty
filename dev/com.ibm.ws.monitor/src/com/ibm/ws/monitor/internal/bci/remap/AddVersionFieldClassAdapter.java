@@ -48,7 +48,7 @@ public class AddVersionFieldClassAdapter extends ClassVisitor {
      * @param versionFieldValue the value to associate with the version field
      */
     public AddVersionFieldClassAdapter(ClassVisitor delegate, String versionFieldName, String versionFieldValue) {
-        super(Opcodes.ASM5, delegate);
+        super(Opcodes.ASM7, delegate);
         this.versionFieldName = versionFieldName;
         this.versionFieldValue = versionFieldValue;
     }

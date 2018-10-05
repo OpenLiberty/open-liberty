@@ -114,7 +114,7 @@ public class MonitoringProxyActivator {
 
     /**
      * Construct a new proxy activator.
-     * 
+     *
      * @param bundleContext the {@link BundleContext} of the owning bundle
      * @param probeManagerImpl the owning {@link ProbeManagerImpl}
      * @param instrumentation the java {@link Instrumentation} service reference
@@ -129,7 +129,7 @@ public class MonitoringProxyActivator {
      * Activate this declarative services component. Bundles that are
      * currently active will be examined for monitoring metadata and
      * registered as appropriate.
-     * 
+     *
      * @throws Exception if an error occurs during proxy setup
      */
     protected void activate() throws Exception {
@@ -156,7 +156,7 @@ public class MonitoringProxyActivator {
 
     /**
      * Deactivate this declarative services component.
-     * 
+     *
      * @throws ComponentException
      */
     protected void deactivate() throws ComponentException {
@@ -171,7 +171,7 @@ public class MonitoringProxyActivator {
     /**
      * Determine if the boot delegated proxy is already available and, if so,
      * what its version is.
-     * 
+     *
      * @return the runtime version of the emitter proxy or null if the class
      *         is not currently available
      */
@@ -190,7 +190,7 @@ public class MonitoringProxyActivator {
     /**
      * Get the boot proxy jar from the current data area if the code
      * matches the current bundle version.
-     * 
+     *
      * @return the proxy jar iff the proxy jar exits and matches this
      *         bundle's version
      */
@@ -219,10 +219,10 @@ public class MonitoringProxyActivator {
     /**
      * Create a jar file that contains the proxy code that will live in the
      * boot delegation package.
-     * 
+     *
      * @return the jar file containing the proxy code to append to the boot
      *         class path
-     * 
+     *
      * @throws IOException if a file I/O error occurs
      */
     JarFile createBootProxyJar() throws IOException {
@@ -263,10 +263,10 @@ public class MonitoringProxyActivator {
     /**
      * Create the jar directory entries corresponding to the specified package
      * name.
-     * 
+     *
      * @param jarStream the target jar's output stream
      * @param packageName the target package name
-     * 
+     *
      * @throws IOException if an IO exception raised while creating the entries
      */
     public void createDirectoryEntries(JarOutputStream jarStream, String packageName) throws IOException {
@@ -281,9 +281,9 @@ public class MonitoringProxyActivator {
     /**
      * Transform the proxy template class that's in this package into a class
      * that's in a package on the framework boot delegation package list.
-     * 
+     *
      * @return the byte array containing the updated class
-     * 
+     *
      * @throws IOException if an IO exception raised while processing the class
      */
     private void writeRemappedClass(URL classUrl, JarOutputStream jarStream, String targetPackage) throws IOException {
@@ -305,18 +305,18 @@ public class MonitoringProxyActivator {
 
     /**
      * Get the internal class name of the class referenced by {@code classUrl}.
-     * 
+     *
      * @param classUrl the URL of the class to inspect
-     * 
+     *
      * @return the internal class name of the class referenced by {@code classUrl}
-     * 
+     *
      * @throws IOException if an IO error occurs during processing
      */
     String getClassInternalName(URL classUrl) throws IOException {
         InputStream inputStream = classUrl.openStream();
 
         ClassReader reader = new ClassReader(inputStream);
-        reader.accept(new ClassVisitor(Opcodes.ASM5) {}, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+        reader.accept(new ClassVisitor(Opcodes.ASM7) {}, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
         inputStream.close();
 
         return reader.getClassName();
@@ -325,10 +325,10 @@ public class MonitoringProxyActivator {
     /**
      * Get the class internal name that should be used where moving the internal
      * class across packages.
-     * 
+     *
      * @param sourceInternalName the internal name of the template class
      * @param targetPackage the package to move the class to
-     * 
+     *
      * @return the target class name
      */
     String getTargetInternalName(String sourceInternalName, String targetPackage) {
@@ -343,7 +343,7 @@ public class MonitoringProxyActivator {
 
     /**
      * Create the {@code Manifest} for the boot proxy jar.
-     * 
+     *
      * @return the boot proxy jar {@code Manifest}
      */
     Manifest createBootJarManifest() {
@@ -360,7 +360,7 @@ public class MonitoringProxyActivator {
 
     /**
      * Get the host bundle's version string.
-     * 
+     *
      * @return the host bundle's version string
      */
     String getCurrentVersion() {
@@ -369,9 +369,9 @@ public class MonitoringProxyActivator {
 
     /**
      * Reflectively load the boot loader resident proxy and find {@code setTarget} method.
-     * 
+     *
      * @return the {@code setTarget} method
-     * 
+     *
      * @throws Exception if the {@code setTarget} method can't be resolved
      */
     Method findProbeProxySetFireProbeTargetMethod() throws Exception {
@@ -387,7 +387,7 @@ public class MonitoringProxyActivator {
 
     /**
      * Hook up the monitoring boot proxy delegate.
-     * 
+     *
      * @throws Exception the method invocation exception
      */
     void activateProbeProxyTarget() throws Exception {
@@ -404,7 +404,7 @@ public class MonitoringProxyActivator {
 
     /**
      * Clear the monitoring boot proxy delegate.
-     * 
+     *
      * @throws Exception the method invocation exception
      */
     void deactivateProbeProxyTarget() throws Exception {
@@ -414,9 +414,9 @@ public class MonitoringProxyActivator {
     /**
      * Reflectively locate the {@code setClassAvailableTarget} method on
      * the proxy at runtime.
-     * 
+     *
      * @return the {@code setProcessCandidateTarget} method instance
-     * 
+     *
      * @throws Exception if a reflection error occurred
      */
     Method findClassAvailableProxySetClassAvailableTargetMethod() throws Exception {
@@ -429,7 +429,7 @@ public class MonitoringProxyActivator {
     /**
      * Activate the {@link #ClassAvailableProxy} by setting ourselves as the
      * delegate.
-     * 
+     *
      * @throws Exception if a reflection error occurred
      */
     void activateClassAvailableProxyTarget() throws Exception {
@@ -439,7 +439,7 @@ public class MonitoringProxyActivator {
 
     /**
      * Deactivate the {@link ClassAvailableProxy} by clearing the delegate.
-     * 
+     *
      * @throws Exception if a reflection error occurred
      */
     void deactivateClassAvailableProxyTarget() throws Exception {
@@ -448,7 +448,7 @@ public class MonitoringProxyActivator {
 
     /**
      * The {@link ClassAvailableProxy#classAvailable} delegate method.
-     * 
+     *
      * @param clazz the recently initialized class
      */
     public void classAvailable(Class<?> clazz) {

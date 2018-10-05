@@ -117,6 +117,14 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
      */
     private static final String FACES_SERVLET_ADDED_ATTRIBUTE = "org.apache.myfaces.DYNAMICALLY_ADDED_FACES_SERVLET";
     
+
+    /**
+     * If the servlet mapping for the FacesServlet is found on the ServletContext, Boolean.TRUE 
+     * is stored under this key in the ServletContext.
+     * ATTENTION: this constant is duplicate in AbstractFacesInitializer.
+     */
+    private static final String FACES_SERVLET_FOUND = "org.apache.myfaces.FACES_SERVLET_FOUND"; 
+
     private static final String INITIALIZE_ALWAYS_STANDALONE = "org.apache.myfaces.INITIALIZE_ALWAYS_STANDALONE";
     private static final String FACES_CONFIG_RESOURCE = "/WEB-INF/faces-config.xml";
     private static final Logger log = Logger.getLogger(MyFacesContainerInitializer.class.getName());
@@ -155,7 +163,8 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
                 if (FACES_SERVLET_CLASS.getName().equals(className)
                         || isDelegatedFacesServlet(className))
                 {
-                    // we found a FacesServlet, so we have nothing to do!
+                    // we found a FacesServlet; set an attribute for use during initialization
+                    servletContext.setAttribute(FACES_SERVLET_FOUND, Boolean.TRUE);
                     return;
                 }
             }

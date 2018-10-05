@@ -123,7 +123,7 @@ public class LogSource implements Source {
 
         String messageVal = extractMessage(routedMessage, logRecord);
 
-        logData.setMessageId(null);
+        logData.setMessageId(null); // needs to be null to satisfy HandlerTest.java testMessageSource()
 
         int threadIdVal = (int) Thread.currentThread().getId();
         logData.setThreadId(threadIdVal);
@@ -153,16 +153,9 @@ public class LogSource implements Source {
                     CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
                 }
             }
-        } else {
-            logData.setCorrelationId(null);
-            logData.setOrg(null);
-            logData.setProduct(null);
-            logData.setComponent(null);
-            extensions = null;
         }
 
         logData.setRawSequenceNumber(sequenceNumber.getRawSequenceNumber());
-        logData.setSequence(null);
 
         Throwable thrown = logRecord.getThrown();
         if (thrown != null) {
@@ -174,9 +167,6 @@ public class LogSource implements Source {
                 s = thrown.toString();
             }
             logData.setThrowableLocalized(s);
-        } else {
-            logData.setThrowable(null);
-            logData.setThrowableLocalized(null);
         }
 
         logData.setMessage(messageVal);
@@ -187,11 +177,9 @@ public class LogSource implements Source {
             logData.setFormattedMsg(null);
         }
 
-        // cannot pass null to traceData.setObjectId(int i)
-
         logData.setExtensions(extensions);
 
-        logData.setSourceType(sourceName);
+        logData.setSourceName(sourceName);
 
         return logData;
     }

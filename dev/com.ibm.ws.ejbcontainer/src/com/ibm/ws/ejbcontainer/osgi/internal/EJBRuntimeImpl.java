@@ -1608,6 +1608,14 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     }
 
     @Override
+    public boolean isRemoteSupported() {
+        if (remoteFeatureLatch != null || ejbRemoteRuntimeServiceRef.getReference() != null) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void checkRemoteSupported(EJSHome home, String interfaceName) throws EJBNotFoundException {
         waitForEJBRemoteRuntime();
         if (ejbRemoteRuntimeServiceRef.getReference() == null) {

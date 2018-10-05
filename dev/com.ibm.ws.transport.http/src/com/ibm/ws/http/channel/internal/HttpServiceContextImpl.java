@@ -1923,7 +1923,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 ArrayList<Frame> bodyFrames = link.prepareBody(wsbb, length, addEndOfStream);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "formatBody: On an HTTP/2.0 connection, adding DATA frames to be written : " + bodyFrames);
+                    Tr.debug(tc, "formatBody: On an HTTP/2.0 connection, adding DATA frames to be written");
                 }
 
                 framesToWrite.addAll(bodyFrames);
@@ -2699,9 +2699,14 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (context.getLink() instanceof H2HttpInboundLinkWrap) {
                 H2HttpInboundLinkWrap link = (H2HttpInboundLinkWrap) context.getLink();
 
-                link.writeFramesSync(framesToWrite);
-
-                framesToWrite.clear();
+                try {
+                    link.writeFramesSync(framesToWrite);
+                } catch (IOException ioe) {
+                    //throw back IOException so http channel can deal correctly with the app/servlet facing output stream
+                    throw ioe;
+                } finally {
+                    framesToWrite.clear();
+                }
             }
 
         } else {

@@ -1,0 +1,11 @@
+<server description="default server">
+
+    <featureManager>
+	   <feature>webProfile-7.0</feature>
+    </featureManager>
+
+    <application id="snoop" type="war" location="snoop.war"/>
+    <application id="testWarApplication" name="" type="war" autoStart="false" location="testWarApplication.war"/>
+
+    <include location="../fatTestPorts.xml"/>
+</server>

@@ -248,7 +248,7 @@ MALFORMED_SEARCH_EXPRESSION=CWIML3006W: Nie mo\u017cna zako\u0144czy\u0107 opera
 MALFORMED_SEARCH_EXPRESSION.explanation=Nie mo\u017cna przeprowadzi\u0107 operacji wyszukiwania, poniewa\u017c wyra\u017cenie wyszukiwania jest niepoprawne.
 MALFORMED_SEARCH_EXPRESSION.useraction=Podaj poprawne wyra\u017cenie wyszukiwania.
 
-ENTITY_SEARCH_FAILED=CWIML4506E: Nie mo\u017cna zako\u0144czy\u0107 operacji rejestru u\u017cytkownik\u00f3w, poniewa\u017c rejestr u\u017cytkownik\u00f3w napotka\u0142 na b\u0142\u0105d bazowy: {1}
+ENTITY_SEARCH_FAILED=CWIML4506E: Nie mo\u017cna zako\u0144czy\u0107 operacji rejestru u\u017cytkownik\u00f3w, poniewa\u017c rejestr u\u017cytkownik\u00f3w napotka\u0142 na b\u0142\u0105d bazowy: {0}
 ENTITY_SEARCH_FAILED.explanation=Nie mo\u017cna przeszuka\u0107 jednostki z powodu przyczyny okre\u015blonej przez rejestr bazowy.
 ENTITY_SEARCH_FAILED.useraction=Przejrzyj komunikat o przyczynie i plik \u015bledzenia, aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia. Napraw b\u0142\u0105d i spr\u00f3buj ponownie.
 

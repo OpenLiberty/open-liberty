@@ -151,22 +151,24 @@ public class WSJdbc41Connection extends WSJdbcConnection implements Connection {
 
     @Override
     public void abort(Executor executor) throws SQLException {
-        /*
-         * Mark this connection as aborted and mark the managed connection.
-         */
-        setAborted(true);
-        managedConn.setAborted(true);
-        /*
-         * Call abort with the provided exceutor to abort the connection.
-         */
-        try {
-            connImpl.abort(executor);
-        } catch (IncompatibleClassChangeError e) {
-            // If the JDBC driver was compiled with java 6
-            throw new SQLFeatureNotSupportedException();
-        }
+        if (!isClosed()) {
+            /*
+             * Mark this connection as aborted and mark the managed connection.
+             */
+            setAborted(true);
+            managedConn.setAborted(true);
+            /*
+             * Call abort with the provided exceutor to abort the connection.
+             */
+            try {
+                connImpl.abort(executor);
+            } catch (IncompatibleClassChangeError e) {
+                // If the JDBC driver was compiled with java 6
+                throw new SQLFeatureNotSupportedException();
+            }
 
-        fireConnectionErrorEvent(null, false);
+            fireConnectionErrorEvent(null, false);
+        }
     }
 
     @Override

@@ -18,7 +18,7 @@ dependencies {
       'net.sourceforge.htmlunit:htmlunit:2.27',
       'net.sourceforge.htmlunit:htmlunit-core-js:2.27',
       'net.sourceforge.cssparser:cssparser:0.9.23',
-      'org.apache.commons:commons-lang3:3.7',
+      'org.apache.commons:commons-lang3:3.8',
       'org.eclipse.jetty:jetty-websocket:8.2.0.v20160908',
       'org.eclipse.jetty.websocket:websocket-api:9.4.5.v20170502',
       'org.eclipse.jetty.websocket:websocket-common:9.4.5.v20170502',

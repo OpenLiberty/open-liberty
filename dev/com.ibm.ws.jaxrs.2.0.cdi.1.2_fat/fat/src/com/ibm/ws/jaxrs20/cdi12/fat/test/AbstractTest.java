@@ -130,7 +130,7 @@ public class AbstractTest extends FATServletClient {
 
     protected void assertLibertyMessage(String message, int number, String equal) {
         try {
-            List<String> messages = serverRef.findStringsInLogs(message, serverRef.getConsoleLogFile());
+            List<String> messages = serverRef.findStringsInLogs(message, serverRef.getMostRecentTraceFile());
             if (equal.equals("more")) {
                 assertTrue("Expect to get CDI test message more than " + number + ": " + message, messages.size() > number);
 

@@ -10,20 +10,6 @@
  *******************************************************************************/
 package com.ibm.ejs.j2c;
 
-/*
- * Class name   : LocalTransactionWrapper
- *
- * Scope        : EJB server
- *
- * Object model : 1 instance per ManagedConnection (if required)
- *
- * LocalTransactionWrapper is a wrapper for the resource adapters SPI LocalTransaction object, it is
- * enlisted with the transaction manager and supports the begin, commit, rollback, start,
- * and end verbs as a one phase only XAResource.
- */
-
-import java.util.Properties;
-
 import javax.resource.ResourceException;
 import javax.resource.spi.LocalTransaction;
 import javax.transaction.Synchronization;
@@ -31,7 +17,7 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
-import com.ibm.tx.jta.OnePhaseXAResource; 
+import com.ibm.tx.jta.OnePhaseXAResource;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
@@ -45,17 +31,17 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
 
     private final MCWrapper mcWrapper;
     private LocalTransaction localTransaction;
-    private XAResource rrsXAResource = null; 
+    private XAResource rrsXAResource = null;
     private boolean enlisted = false;
-    //private Xid xid = null;  
+    //private Xid xid = null;
     private boolean registeredForSync = false;
-    private boolean hasRollbackOccured = false; 
+    private boolean hasRollbackOccured = false;
     private static final TraceComponent tc = Tr.register(LocalTransactionWrapper.class,
                                                          J2CConstants.traceSpec,
-                                                         J2CConstants.messageFile); 
+                                                         J2CConstants.messageFile);
 
-    private String _hexString = ""; 
-    private boolean _rrsTransactional = false; 
+    private String _hexString = "";
+    private boolean _rrsTransactional = false;
 
     /*
      * Constructor
@@ -64,7 +50,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
     protected LocalTransactionWrapper(MCWrapper mcWrapper) {
         this.mcWrapper = mcWrapper;
 
-        _hexString = Integer.toHexString(this.hashCode()); 
+        _hexString = Integer.toHexString(this.hashCode());
     }
 
     protected void initialize() throws ResourceException {
@@ -93,7 +79,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
                 }
                 Tr.error(tc, "FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077", e, pmiName);
                 ResourceException re = new ResourceException("initialize: caught Exception");
-                re.initCause(e); 
+                re.initCause(e);
                 throw re;
             }
 
@@ -131,7 +117,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
         }
 
         /*
-         * 
+         *
          * if (this.xid != null && !xid.equals(this.xid)) {
          * final XAException e = new XAException(XAException.XAER_NOTA);
          * // What does this error really mean. Need to resolve
@@ -148,7 +134,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
             }
             Tr.error(tc, "XA_OP_NOT_SUPPORTED_J2CA0016", "commit", xid, xPath);
             XAException x = new XAException(XAException.XAER_PROTO);
-            if (tc.isEntryEnabled()) { 
+            if (tc.isEntryEnabled()) {
                 Tr.exit(this, tc, "commit", x);
             }
             throw x;
@@ -163,18 +149,17 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
                                                         "com.ibm.ejs.j2c.LocalTransactionWrapper.commit",
                                                         "164",
                                                         this);
-            if (!mcWrapper.shouldBeDestroyed()) { 
-                mcWrapper.markTransactionError(); // Can't trust the connection since we don't know why it failed. 
+            if (!mcWrapper.shouldBeDestroyed()) {
+                mcWrapper.markTransactionError(); // Can't trust the connection since we don't know why it failed.
                 Tr.error(tc, "XA_END_EXCP_J2CA0024", "commit", xid, e, "XAException", mcWrapper.gConfigProps.getXpathId());
             }
             exceptionCaught = true;
-            XAException xae = new XAException(XAException.XA_HEURHAZ); 
-            xae.initCause(e); 
+            XAException xae = new XAException(XAException.XA_HEURHAZ);
+            xae.initCause(e);
             if (tc.isEntryEnabled())
                 Tr.exit(this, tc, "commit", xae);
-            throw xae; 
-        }
-        finally {
+            throw xae;
+        } finally {
             //this.xid = null;
             try {
                 if (registeredForSync == false) {
@@ -192,11 +177,11 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
                     Tr.debug(this, tc, "commit: caught exception in finally block: ", e);
                 }
                 if (exceptionCaught == false) {
-                    XAException xae = new XAException(XAException.XAER_RMFAIL); 
-                    xae.initCause(e); 
+                    XAException xae = new XAException(XAException.XAER_RMFAIL);
+                    xae.initCause(e);
                     if (tc.isEntryEnabled())
                         Tr.exit(this, tc, "commit", xae);
-                    throw xae; 
+                    throw xae;
                 }
             }
         }
@@ -219,7 +204,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
         }
 
         /*
-         * 
+         *
          * if (this.xid != null && !xid.equals(this.xid)) {
          * final XAException e = new XAException(XAException.XAER_NOTA);
          * // What does this error really mean. Need to resolve
@@ -228,28 +213,24 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
          * throw e;
          * }
          */
-        this.hasRollbackOccured = true; 
+        this.hasRollbackOccured = true;
         boolean exceptionCaught = false;
         try {
             localTransaction.rollback();
         } catch (Exception e) {
-            com.ibm.ws.ffdc.FFDCFilter.processException(
-                                                        e,
-                                                        "com.ibm.ejs.j2c.LocalTransactionWrapper.rollback",
-                                                        "198",
-                                                        this);
-            if (!mcWrapper.shouldBeDestroyed()) { 
-                mcWrapper.markTransactionError(); // Can't trust the connection since we don't know why it failed. 
+            if (!mcWrapper.isMCAborted())
+                com.ibm.ws.ffdc.FFDCFilter.processException(e, getClass().getName(), "198", this);
+            if (!mcWrapper.shouldBeDestroyed()) {
+                mcWrapper.markTransactionError(); // Can't trust the connection since we don't know why it failed.
                 Tr.error(tc, "XA_END_EXCP_J2CA0024", "rollback", xid, e, "XAException", mcWrapper.gConfigProps.getXpathId());
             }
             exceptionCaught = true;
-            XAException xae = new XAException(XAException.XAER_RMFAIL); 
-            xae.initCause(e); 
+            XAException xae = new XAException(XAException.XAER_RMFAIL);
+            xae.initCause(e);
             if (tc.isEntryEnabled())
                 Tr.exit(this, tc, "rollback", e);
-            throw xae; 
-        }
-        finally {
+            throw xae;
+        } finally {
             //this.xid = null;
             try {
                 if (registeredForSync == false) {
@@ -267,9 +248,9 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
                     Tr.debug(this, tc, "rollback: caught exception in finally block: ", e);
                 }
                 if (exceptionCaught == false) {
-                    XAException xae = new XAException(XAException.XAER_RMFAIL); 
-                    xae.initCause(e); 
-                    throw xae; 
+                    XAException xae = new XAException(XAException.XAER_RMFAIL);
+                    xae.initCause(e);
+                    throw xae;
                 }
             }
         } // end rollback
@@ -287,15 +268,15 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
         try {
             UOWCoordinator uowCoord = mcWrapper.getUOWCoordinator();
 
-            if (tc.isDebugEnabled()) { 
+            if (tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "delisting LocalTranWrapper :" + Integer.toHexString(this.hashCode()) + " with coordinator :" + uowCoord);
             }
 
-            if (uowCoord != null && !uowCoord.isGlobal()) { 
+            if (uowCoord != null && !uowCoord.isGlobal()) {
                 // LTC Scope
                 // Only delist if resolutionControl is Application.  Transaction Manager will handle it
                 //  if resolutionControl is  ContainerAtBoundary.
-                if (!((LocalTransactionCoordinator) uowCoord).isContainerResolved()) { 
+                if (!((LocalTransactionCoordinator) uowCoord).isContainerResolved()) {
 
                     if (tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "calling delistFromCleanup(OnePhaseXAResource)"
@@ -304,7 +285,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
 
                     ((LocalTransactionCoordinator) uowCoord).delistFromCleanup(this);
 
-                    if (_rrsTransactional && enlisted) { 
+                    if (_rrsTransactional && enlisted) {
                         mcWrapper.delistRRSXAResource(rrsXAResource);
                         rrsXAResource = null;
                     }
@@ -345,7 +326,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
             }
             Tr.error(tc, "DELIST_RESOURCE_EXCP_J2CA0031", "delist", e, "Exception", pmiName);
             ResourceException re = new ResourceException("delist: caught Exception");
-            re.initCause(e); 
+            re.initCause(e);
             if (tc.isEntryEnabled())
                 Tr.exit(this, tc, "delist", e);
             throw re;
@@ -363,7 +344,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
         }
 
         /*
-         * 
+         *
          * if (!xid.equals(this.xid)) {
          * final XAException e = new XAException(XAException.XAER_NOTA);
          * if (tc.isEventEnabled())
@@ -376,7 +357,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
             Tr.exit(this, tc, "end");
         }
 
-    } 
+    }
 
     // Note: post TD we need to look at whether or not we want to continue to
     // have the wrapper enlist itself.  It will need a lot more of the data the CM has,
@@ -384,7 +365,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
     @Override
     public void enlist() throws ResourceException {
 
-        if (tc.isEntryEnabled()) { 
+        if (tc.isEntryEnabled()) {
             Tr.entry(this, tc, "enlist", mcWrapper.getUOWCoordinator());
         }
 
@@ -402,17 +383,17 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
 
         } // end enlisted == true
 
-        UOWCoordinator uowCoord = mcWrapper.getUOWCoordinator(); 
-        if (uowCoord != null) { 
-            if (uowCoord.isGlobal()) { 
+        UOWCoordinator uowCoord = mcWrapper.getUOWCoordinator();
+        if (uowCoord != null) {
+            if (uowCoord.isGlobal()) {
                 // Global Transaction
                 EmbeddableWebSphereTransactionManager tranMgr = mcWrapper.pm.connectorSvc.transactionManager;
                 try {
-                    if (_rrsTransactional) { 
+                    if (_rrsTransactional) {
                         int branchCoupling = mcWrapper.getCm().getResourceRefInfo().getBranchCoupling();
                         int startFlag = XAResource.TMNOFLAGS;
                         if (branchCoupling != ResourceRefInfo.BRANCH_COUPLING_UNSET) {
-                            startFlag = mcWrapper.getCm().supportsBranchCoupling(branchCoupling, mcWrapper.get_managedConnectionFactory()); 
+                            startFlag = mcWrapper.getCm().supportsBranchCoupling(branchCoupling, mcWrapper.get_managedConnectionFactory());
                             if (startFlag == -1)
                                 throw new ResourceException("Branch coupling attribute not implemented for this resource");
                         }
@@ -422,15 +403,15 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
 
                     // Use the following enlist call since this is a One Phase resource.
                     boolean rc = false;
-                    rc = tranMgr.enlistOnePhase(uowCoord, this); 
-                    if (rc != true) { 
-                        Tr.error(tc, "BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087", this, mcWrapper.gConfigProps.cfName); 
+                    rc = tranMgr.enlistOnePhase(uowCoord, this);
+                    if (rc != true) {
+                        Tr.error(tc, "BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087", this, mcWrapper.gConfigProps.cfName);
                         ResourceException x = new ResourceException("Error on enlistOnePhase");
                         if (tc.isEntryEnabled())
                             Tr.exit(this, tc, "enlist", x);
-                        throw x; 
-                    } 
-                    mcWrapper.markLocalTransactionWrapperInUse(); 
+                        throw x;
+                    }
+                    mcWrapper.markLocalTransactionWrapperInUse();
                     enlisted = true;
                 } catch (ResourceException e) {
                     com.ibm.ws.ffdc.FFDCFilter.processException(
@@ -450,13 +431,13 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
                     //  calling setRollbackOnly() because our afterCompletion code will return it
                     //  to the freePool if we don't.  We want the connection destroyed since it
                     //  is potentially corrupt.
-                    mcWrapper.markTransactionError(); 
+                    mcWrapper.markTransactionError();
                     try {
                         tranMgr.getTransaction().setRollbackOnly();
                     } catch (Exception ex) {
                         com.ibm.ws.ffdc.FFDCFilter.processException(ex, "com.ibm.ejs.j2c.LocalTransactionWrapper.enlist",
                                                                     "445", this);
-                        if (tc.isEventEnabled()) { 
+                        if (tc.isEventEnabled()) {
                             Tr.event(this, tc,
                                      "Caught Exception while trying to mark transaction RollbackOnly - Exception:"
                                                + ex);
@@ -485,13 +466,13 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
                     //  calling setRollbackOnly() because our afterCompletion code will return it
                     //  to the freePool if we don't.  We want the connection destroyed since it
                     //  is potentially corrupt.
-                    mcWrapper.markTransactionError(); 
+                    mcWrapper.markTransactionError();
                     try {
                         tranMgr.getTransaction().setRollbackOnly();
                     } catch (Exception ex) {
                         com.ibm.ws.ffdc.FFDCFilter.processException(ex, "com.ibm.ejs.j2c.LocalTransactionWrapper.enlist",
                                                                     "477", this);
-                        if (tc.isEventEnabled()) { 
+                        if (tc.isEventEnabled()) {
                             Tr.event(this, tc,
                                      "Caught Exception while trying to mark transaction RollbackOnly - Exception:"
                                                + ex);
@@ -499,7 +480,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
                     }
 
                     ResourceException re = new ResourceException("enlist: caught Exception");
-                    re.initCause(e); 
+                    re.initCause(e);
                     if (tc.isEntryEnabled())
                         Tr.exit(this, tc, "enlist", re);
                     throw re;
@@ -507,19 +488,19 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
                 if (tc.isEntryEnabled()) {
                     Tr.exit(this, tc, "enlist");
                 }
-                return; 
-            } // end Global Transaction    
-            else { 
-                   // Local Transaction
+                return;
+            } // end Global Transaction
+            else {
+                // Local Transaction
                 try {
-                    if (_rrsTransactional) { 
+                    if (_rrsTransactional) {
                         int dummyInt = -1;
                         rrsXAResource = mcWrapper.enlistRRSXAResource(dummyInt, dummyInt);
                     }
 
                     // If the resolution is CONTAINER_AT_BOUNDARY then do a straight enlist.
                     // The transaction service will manage begin/end of this transaction.
-                    if (((LocalTransactionCoordinator) uowCoord).isContainerResolved()) { 
+                    if (((LocalTransactionCoordinator) uowCoord).isContainerResolved()) {
                         ((LocalTransactionCoordinator) uowCoord).enlist(this);
                     } else {
                         // If resolution is NOT CONTAINER_AT_BOUNDARY, we assume it is APPLICATION,
@@ -531,19 +512,19 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
                         //  commit/rollback the transaction service will clean things up.
                         ((LocalTransactionCoordinator) uowCoord).enlistForCleanup(this);
                     }
-                    mcWrapper.markLocalTransactionWrapperInUse(); 
-                    enlisted = true; 
+                    mcWrapper.markLocalTransactionWrapperInUse();
+                    enlisted = true;
                 } catch (Exception e) {
                     com.ibm.ws.ffdc.FFDCFilter.processException(
                                                                 e,
                                                                 "com.ibm.ejs.j2c.LocalTransactionWrapper.enlist",
                                                                 "405",
                                                                 this);
-                    mcWrapper.markTransactionError(); 
-                    mcWrapper.releaseToPoolManager(); 
+                    mcWrapper.markTransactionError();
+                    mcWrapper.releaseToPoolManager();
                     Tr.error(tc, "ENLIST_RESOURCE_EXCP_J2CA0030", "enlist", e, "Exception", mcWrapper.gConfigProps.cfName);
                     ResourceException re = new ResourceException("enlist: caught Exception");
-                    re.initCause(e); 
+                    re.initCause(e);
                     if (tc.isEntryEnabled())
                         Tr.exit(this, tc, "enlist", e);
                     throw re;
@@ -551,10 +532,9 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
                 if (tc.isEntryEnabled()) {
                     Tr.exit(this, tc, "enlist", "Local Tran");
                 }
-                return; 
-            } // end Local Transaction 
-        } 
-        else {
+                return;
+            } // end Local Transaction
+        } else {
             // No transaction context.  Should never happen.
             Tr.error(tc, "NO_VALID_TRANSACTION_CONTEXT_J2CA0040", "enlist", null, mcWrapper.gConfigProps.cfName);
             ResourceException x = new ResourceException("INTERNAL ERROR: No valid transaction context present");
@@ -581,7 +561,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
         //this.xid = null;
 
         /*
-         * 
+         *
          * if (!xid.equals(this.xid)) {
          * final XAException e = new XAException(XAException.XAER_NOTA);
          * if (tc.isEventEnabled())
@@ -637,7 +617,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
         throw new XAException(XAException.XAER_PROTO);
 
     }
-    
+
     @Override
     public Xid[] recover(int flags) throws XAException {
 
@@ -667,7 +647,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
         }
 
         /*
-         * 
+         *
          * if (this.xid != null) {
          * final XAException e = new XAException(XAException.XAER_PROTO);
          * if (tc.isEventEnabled())
@@ -686,19 +666,19 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
                                                         "com.ibm.ejs.j2c.LocalTransactionWrapper.start",
                                                         "464",
                                                         this);
-            if (!mcWrapper.shouldBeDestroyed()) { 
-                mcWrapper.markTransactionError(); // Can't trust the connection since we don't know why it failed. 
+            if (!mcWrapper.shouldBeDestroyed()) {
+                mcWrapper.markTransactionError(); // Can't trust the connection since we don't know why it failed.
                 Tr.error(tc, "XA_END_EXCP_J2CA0024", "start", "begin", e, "XAException", mcWrapper.gConfigProps.getXpathId());
             }
-            XAException xae = new XAException(XAException.XAER_RMFAIL); 
-            xae.initCause(e); 
+            XAException xae = new XAException(XAException.XAER_RMFAIL);
+            xae.initCause(e);
             if (tc.isEntryEnabled())
                 Tr.exit(this, tc, "start", e);
-            throw xae; 
+            throw xae;
         }
         if (tc.isEntryEnabled())
             Tr.exit(this, tc, "start");
-    } 
+    }
 
     @Override
     public int getTransactionTimeout() throws XAException {
@@ -747,7 +727,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
      * pool for reuse.
      */
     public void cleanup() {
-        enlisted = false; 
+        enlisted = false;
     }
 
     /**
@@ -771,17 +751,17 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
 
         try {
 
-            UOWCoordinator uowCoord = mcWrapper.getUOWCoordinator(); 
-            if (uowCoord != null) { 
-                if (uowCoord.isGlobal()) { 
-                    if (mcWrapper.isConnectionSynchronizationProvider()) { 
+            UOWCoordinator uowCoord = mcWrapper.getUOWCoordinator();
+            if (uowCoord != null) {
+                if (uowCoord.isGlobal()) {
+                    if (mcWrapper.isConnectionSynchronizationProvider()) {
                         throw new UnsupportedOperationException("com.ibm.ws.Transaction.SynchronizationProvider");
                         /*
                          * Use the Synchronization object from the managed connection to
                          * register.
                          */
                         //Synchronization s = ((SynchronizationProvider)mcWrapper.getManagedConnection()).getSynchronization();
-                        //LocationSpecificFunction.instance.getTransactionManager().registerSynchronization(uowCoord, s, EmbeddableWebSphereTransactionManager.SYNC_TIER_INNER); 
+                        //LocationSpecificFunction.instance.getTransactionManager().registerSynchronization(uowCoord, s, EmbeddableWebSphereTransactionManager.SYNC_TIER_INNER);
                     }
                     /*
                      * This code will remain here just in case we run into this
@@ -789,7 +769,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
                      *
                      * Log a message and return, if isEnlistmentDisabled is true.
                      */
-                    if (mcWrapper.isEnlistmentDisabled()) { 
+                    if (mcWrapper.isEnlistmentDisabled()) {
                         if (tc.isDebugEnabled()) {
                             Tr.debug(this, tc, "Managed connection isEnlistmentDisabled is true.");
                             Tr.debug(this, tc, "Returning without registering.");
@@ -804,18 +784,17 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
                      */
                     // Global Transaction
                     EmbeddableWebSphereTransactionManager tranMgr = mcWrapper.pm.connectorSvc.transactionManager;
-                    tranMgr.registerSynchronization(uowCoord, this); 
-                    mcWrapper.markLocalTransactionWrapperInUse(); 
+                    tranMgr.registerSynchronization(uowCoord, this);
+                    mcWrapper.markLocalTransactionWrapperInUse();
                     registeredForSync = true;
-                } else { 
-                         // Local Transaction
-                         // No need to register for synchronization for unshared/LTC/res-control=Application.
-                         //  Instead of cleanup being done via after completion it will either happen at close or
-                         //  commit/rollback which ever happens last.  This will allow the connection to be returned
-                         //  to the pool prior to the end of the LTC scope allowing better utilization of the connection.
+                } else {
+                    // Local Transaction
+                    // No need to register for synchronization for unshared/LTC/res-control=Application.
+                    //  Instead of cleanup being done via after completion it will either happen at close or
+                    //  commit/rollback which ever happens last.  This will allow the connection to be returned
+                    //  to the pool prior to the end of the LTC scope allowing better utilization of the connection.
                     boolean shareable = mcWrapper.getConnectionManager().shareable();
-                    if (!shareable && !J2CUtilityClass.isContainerAtBoundary(mcWrapper.pm.connectorSvc.transactionManager)) 
-                    {
+                    if (!shareable && !J2CUtilityClass.isContainerAtBoundary(mcWrapper.pm.connectorSvc.transactionManager)) {
                         // Register an instance of an RRS no-transaction wrapper
                         // so the TM will create an RRS NativeLocalTranasction.  The wrapper
                         // provides "empty" TransactioWrapper and Synchronization behaviors,
@@ -824,28 +803,28 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
                         //if (tc.isEntryEnabled()) {
                         //  Tr.exit(this, tc, "addSync: returning without registering.");
                         //}
-                        //return false;                                                                             
+                        //return false;
                         if (this.isRRSTransactional()) {
                             ((SynchronizationRegistryUOWScope) uowCoord).registerInterposedSynchronization(
-                                                                                                           new RRSNoTransactionWrapper()); 
+                                                                                                           new RRSNoTransactionWrapper());
                         } else {
                             if (tc.isEntryEnabled()) {
                                 Tr.exit(this, tc, "addSync", "returning without registering");
                             }
-                            return false; 
+                            return false;
                         }
                     } else {
 
-                        if (mcWrapper.isConnectionSynchronizationProvider()) { 
+                        if (mcWrapper.isConnectionSynchronizationProvider()) {
                             throw new UnsupportedOperationException("com.ibm.ws.Transaction.SynchronizationProvider");
                             /*
                              * Use the Synchronization object from the managed connection to
                              * register.
                              */
                             //Synchronization s = ((SynchronizationProvider)mcWrapper.getManagedConnection()).getSynchronization();
-                            //((SynchronizationRegistryUOWScope) uowCoord).registerInterposedSynchronization(s); 
-                            //registeredForSync = false; 
-                        } else { 
+                            //((SynchronizationRegistryUOWScope) uowCoord).registerInterposedSynchronization(s);
+                            //registeredForSync = false;
+                        } else {
 
                             /*
                              * In order
@@ -861,17 +840,16 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
                                 }
                                 return false;
                             }
-                            ((SynchronizationRegistryUOWScope) uowCoord).registerInterposedSynchronization(this); 
-                            mcWrapper.markLocalTransactionWrapperInUse(); 
+                            ((SynchronizationRegistryUOWScope) uowCoord).registerInterposedSynchronization(this);
+                            mcWrapper.markLocalTransactionWrapperInUse();
                             registeredForSync = true;
                         }
 
                     }
                 }
-            } 
-            else { 
-                   // No transaction context.  Should never happen.
-                Tr.error(tc, "NO_VALID_TRANSACTION_CONTEXT_J2CA0040", "addSync", null, mcWrapper.gConfigProps.cfName); 
+            } else {
+                // No transaction context.  Should never happen.
+                Tr.error(tc, "NO_VALID_TRANSACTION_CONTEXT_J2CA0040", "addSync", null, mcWrapper.gConfigProps.cfName);
                 throw new ResourceException("INTERNAL ERROR: No valid transaction context present");
             }
 
@@ -891,7 +869,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
                                                         this);
             Tr.error(tc, "REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026", "addSync", e, "Exception");
             ResourceException re = new ResourceException("addSync: caught Exception");
-            re.initCause(e); 
+            re.initCause(e);
             throw re;
         }
         if (tc.isEntryEnabled()) {
@@ -958,15 +936,15 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
         //
         //  if the MCWrapper is stale we will release the connection to the pool.
         //
-        if ((shareable) || (!shareable && mcWrapper.getHandleCount() == 0) || mcWrapper.isStale()) { 
+        if ((shareable) || (!shareable && mcWrapper.getHandleCount() == 0) || mcWrapper.isStale()) {
 
-            if (tc.isDebugEnabled()) { 
+            if (tc.isDebugEnabled()) {
                 Tr.debug(this, tc,
-                         "Releasing the connection to the pool. shareable = " + shareable + "  handleCount = " + mcWrapper.getHandleCount() + "  isStale = " + mcWrapper.isStale()); 
+                         "Releasing the connection to the pool. shareable = " + shareable + "  handleCount = " + mcWrapper.getHandleCount() + "  isStale = " + mcWrapper.isStale());
             }
 
             try {
-                mcWrapper.releaseToPoolManager(); 
+                mcWrapper.releaseToPoolManager();
             } catch (Exception e) {
                 // No need to rethrow this exception since nothing can be done about it,
                 //  and the application has successfully finished its use of the connection.
@@ -975,7 +953,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
                                                             "com.ibm.ejs.j2c.LocalTransactionWrapper.afterCompletion",
                                                             "711",
                                                             this);
-                if (tc.isDebugEnabled()) { 
+                if (tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "afterCompletionCode for datasource " + mcWrapper.gConfigProps.cfName + ":  caught Exception", e);
                 }
             }
@@ -988,7 +966,7 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
              * if the handleCount is greater than 0 (in which case the cleanup will be done by the poolManager). Same
              * thing for the tranFailed flag in the MCWrapper.
              */
-            mcWrapper.setUOWCoordinator(null); 
+            mcWrapper.setUOWCoordinator(null);
             // Reset the serialReuseCount since it is only valid for the duration of
             // the LTC. Note that the release path above will also reset it via mcWrapper.cleanup().
             enlisted = false;
@@ -1027,8 +1005,8 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
         buf.append("  enlisted:");
         buf.append(enlisted);
 
-        buf.append("Has Tran Rolled Back = "); 
-        buf.append(this.hasRollbackOccured); 
+        buf.append("Has Tran Rolled Back = ");
+        buf.append(this.hasRollbackOccured);
 
         buf.append("  registeredForSync");
         buf.append(registeredForSync);

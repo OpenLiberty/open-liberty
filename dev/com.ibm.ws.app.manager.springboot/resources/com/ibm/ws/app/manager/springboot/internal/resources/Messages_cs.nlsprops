@@ -67,9 +67,7 @@ error.missing.websocket=CWWKC0259E: Aplikaci se nezda\u0159ilo spustit, proto\u0
 error.missing.websocket.explanation=Aplikace je webov\u00e1 soketov\u00e1 aplikace a vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce websocket v souboru server.xml.
 error.missing.websocket.useraction=Nakonfigurujte funkci websocket v souboru server.xml.
 
-error.webflux.not.supported=CWWKC0260E: Nelze spustit aplikaci, proto\u017ee aplikace Spring WebFlux nen\u00ed podporov\u00e1na.
-error.webflux.not.supported.explanation=Aplikace je aplikac\u00ed WebFlux. Podpora reaktivn\u00edho programov\u00e1n\u00ed dodan\u00e1 aplikac\u00ed Spring WebFlux nen\u00ed podporov\u00e1na.
-error.webflux.not.supported.useraction=Zkonfigurujte aplikaci, kter\u00e1 nepou\u017e\u00edv\u00e1 Spring WebFlux se serverem.
+# CWWKC0260E: GOT REMOVED
 
 warning.spring_config.ignored.compression=CWWKC0261W: Komprese byla povolena aplikac\u00ed. Komprese nen\u00ed podporov\u00e1na, a testov\u00e1n\u00ed bude ignorov\u00e1no.
 warning.spring_config.ignored.compression.explanation=Komprese nen\u00ed podporov\u00e1na, a nastaven\u00ed bude ignorov\u00e1no, ale aplikace bude jinak i nad\u00e1le fungovat.
@@ -78,3 +76,7 @@ warning.spring_config.ignored.compression.useraction=Nen\u00ed pot\u0159eba \u01
 warning.spring_config.ignored.session=CWWKC0262W: \u010casov\u00fd limit relace nebo perzistence relace byly nakonfigurov\u00e1ny aplikac\u00ed. Tato nastaven\u00ed relace mus\u00ed b\u00fdt nakonfigurov\u00e1na v souboru server.xml.
 warning.spring_config.ignored.session.explanation=\u010casov\u00fd limit relace a perzistence relace mus\u00ed b\u00fdt nakonfigurov\u00e1ny v souboru server.xml. Tato nastaven\u00ed relace aplikace budou ignorov\u00e1na.
 warning.spring_config.ignored.session.useraction=Zkonfigurujte \u010dasov\u00fd limit relace a perzistenci relace v souboru server.xml.
+
+error.wrong.spring.boot.version=CWWKC0263E: Aplikace Spring Boot verze {0} nen\u00ed podporov\u00e1na. Verze Spring Boot v rozsahu {1} je povinn\u00e1.
+error.wrong.spring.boot.version.explanation=Byla zji\u0161t\u011bna verze Spring Boot, kter\u00e1 nen\u00ed podporov\u00e1na serverem.
+error.wrong.spring.boot.version.useraction=Aktualizujte aplikaci Spring Boot, aby pou\u017e\u00edvala verzi Spring Boot, kter\u00e1 je v r\u00e1mci po\u017eadovan\u00e9ho rozsahu verze.

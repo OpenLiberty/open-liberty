@@ -10,23 +10,24 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container.config;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
-
 /**
  * An authData element for holding usernames and passwords
  */
 public class AuthData extends ConfigElement {
 
+    public final static String XML_ATTRIBUTE_NAME_USER = "user";
     private String user;
+
+    public final static String XML_ATTRIBUTE_NAME_PASSWORD = "password";
     private String password;
+
+    public final static String XML_ATTRIBUTE_NAME_FAT_MODIFY = "fat.modify";
     private String fatModify;
 
     public String getUser() {
         return user;
     }
 
-    @XmlAttribute
     public void setUser(String user) {
         this.user = user;
     }
@@ -35,12 +36,10 @@ public class AuthData extends ConfigElement {
         return password;
     }
 
-    @XmlAttribute
     public void setPassword(String password) {
         this.password = password;
     }
 
-    @XmlAttribute(name = "fat.modify")
     public void setFatModify(String fatModify) {
         this.fatModify = fatModify;
     }
@@ -52,7 +51,7 @@ public class AuthData extends ConfigElement {
     /**
      * Returns a string containing a list of the properties and their values stored
      * for this AuthData object.
-     * 
+     *
      * @return String representing the data
      */
     @Override

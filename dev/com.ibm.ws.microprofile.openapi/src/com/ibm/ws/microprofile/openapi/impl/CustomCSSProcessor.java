@@ -53,6 +53,7 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
+import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
 /**
  * Processor for custom CSS documents specified at /mpopenapi/customization.css. This class
@@ -63,8 +64,9 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
  * in UTF-8, (2) the header contains sections with the exact text ".swagger-ui .headerbar ",
  * and (3) the CSS is a valid document.
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
-public final class CustomCSSProcessor implements FileMonitor {
+@Component(service = { CustomCSSProcessor.class,
+                       ServerQuiesceListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+public final class CustomCSSProcessor implements FileMonitor, ServerQuiesceListener {
 
     private static final TraceComponent tc = Tr.register(CustomCSSProcessor.class);
 
@@ -311,5 +313,12 @@ public final class CustomCSSProcessor implements FileMonitor {
     @Override
     public void onChange(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles) {
         process(locationAdminProvider, executorServiceRef.getService());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void serverStopping() {
+        updater.serverStopping();
+
     }
 }

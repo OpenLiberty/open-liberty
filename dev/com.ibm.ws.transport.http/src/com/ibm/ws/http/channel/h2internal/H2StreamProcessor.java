@@ -107,7 +107,8 @@ public class H2StreamProcessor {
     private long streamWindowUpdateWriteInitialSize;
     private long streamWindowUpdateWriteLimit;
 
-    private final int MAX_TIME_TO_WAIT_FOR_WINDOW_UPDATE_MS = 5000;
+    //change to 8192 to track better if this is occurring
+    private final int MAX_TIME_TO_WAIT_FOR_WINDOW_UPDATE_MS = 8192;
 
     // the local window, which we're keeping track of as a receiver
     private long streamReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
@@ -156,10 +157,9 @@ public class H2StreamProcessor {
      * Now we need to make sure that the client sent a settings frame along with the preface, update our settings,
      * and send an empty settings frame in response to the client preface.
      *
-     * @throws StreamClosedException
-     * @throws ProtocolException
+     * @throws Http2Exception
      */
-    protected void completeConnectionPreface() throws ProtocolException, StreamClosedException {
+    protected void completeConnectionPreface() throws Http2Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "completeConnectionPreface entry: about to send preface SETTINGS frame");
         }
@@ -190,10 +190,11 @@ public class H2StreamProcessor {
      * @throws ProtocolException
      * @throws StreamClosedException
      */
-    public synchronized void processNextFrame(Frame frame, Constants.Direction direction) throws ProtocolException, StreamClosedException {
+    public synchronized void processNextFrame(Frame frame, Constants.Direction direction) throws ProtocolException, StreamClosedException, FlowControlException {
 
         // Make it easy to follow frame processing in the trace by searching for "processNextFrame-" to see all frame processing
         boolean doDebugWhile = false;
+        FlowControlException FCEToThrow = null;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "processNextFrame-entry:  stream: " + myID + " frame type: " + frame.getFrameType().toString() + " direction: " + direction.toString()
                          + " H2InboundLink hc: " + muxLink.hashCode());
@@ -218,8 +219,12 @@ public class H2StreamProcessor {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "processNextFrame: stream is closed - cannot write out anything else on stream-id: " + myID);
                 }
-                // ignore
-                return;
+                if (frame.getFrameType().equals(FrameTypes.DATA)) {
+                    // pass an exception to whatever servlet is writing
+                    throw new StreamClosedException("stream was already closed!");
+                } else {
+                    return;
+                }
             } else if (direction.equals(Constants.Direction.READ_IN) &&
                        !frame.getFrameType().equals(FrameTypes.PUSH_PROMISE)) {
                 // handle a frame recieved after stream closure
@@ -424,6 +429,9 @@ public class H2StreamProcessor {
                 }
                 if (frameType == FrameTypes.RST_STREAM) {
                     processRstFrame();
+                    synchronized (this) {
+                        this.notifyAll();
+                    }
                     return;
                 }
 
@@ -509,6 +517,9 @@ public class H2StreamProcessor {
                     continue;
                 } catch (Http2Exception e) {
                     if (addFrame == ADDITIONAL_FRAME.FIRST_TIME) {
+                        if ((frameType == FrameTypes.DATA) && (e instanceof FlowControlException)) {
+                            FCEToThrow = (FlowControlException) e;
+                        }
                         if (e.isConnectionError()) {
                             addFrame = ADDITIONAL_FRAME.GOAWAY;
                             addFrameException = e;
@@ -523,6 +534,10 @@ public class H2StreamProcessor {
                 }
             }
             addFrame = ADDITIONAL_FRAME.NO;
+        }
+        // will only throw FCE if we were writing DATA frame and got an FCE
+        if (FCEToThrow != null) {
+            throw FCEToThrow;
         }
     }
 
@@ -1754,7 +1769,9 @@ public class H2StreamProcessor {
                             synchronized (this) {
                                 this.wait(MAX_TIME_TO_WAIT_FOR_WINDOW_UPDATE_MS);
                             }
-                            if (System.currentTimeMillis() - startTime > MAX_TIME_TO_WAIT_FOR_WINDOW_UPDATE_MS) {
+                            if (state.equals(StreamState.CLOSED) || muxLink.checkIfGoAwaySendingOrClosing()) {
+                                return false;
+                            } else if (System.currentTimeMillis() - startTime > MAX_TIME_TO_WAIT_FOR_WINDOW_UPDATE_MS) {
                                 timedOut = true;
                             }
                         }
@@ -1771,12 +1788,10 @@ public class H2StreamProcessor {
                         }
 
                     } else {
-                        // timed out waiting for a window update, so this stream will be reset.
-                        currentFrame = new FrameRstStream(myID, Constants.FLOW_CONTROL_ERROR, false);
-                        writeFrameBuffer = currentFrame.buildFrameForWrite();
-                        muxLink.writeSync(writeFrameBuffer, null, currentFrame.getWriteFrameLength(), TCPRequestContext.NO_TIMEOUT,
-                                          currentFrame.getFrameType(), currentFrame.getPayloadLength(), myID);
-
+                        // timed out waiting for a window update, throw FCE which will cause this stream to be RESET.
+                        FlowControlException up = new FlowControlException("Write failed. Window limit exceeded. Stream will be Reset.");
+                        up.setConnectionError(false);
+                        throw up;
                     }
 
                 } else {

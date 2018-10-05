@@ -26,7 +26,7 @@ src: \
     test-applications/JSF22StatelessView/src,\
     test-applications/noJsfApp/src,\
     test-applications/PostRenderViewEvent/src,\
-    #test-applications/ViewHandlerTest/src,\
+    test-applications/ViewHandlerTest/src,\
     test-applications/WebSocket/src
 
 fat.project: true
@@ -41,6 +41,6 @@ fat.project: true
 	com.ibm.websphere.javaee.jsf.2.3;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.websphere.javaee.validation.2.0;version=latest,\
-	net.sourceforge.htmlunit:htmlunit;version=2.15,\
+	net.sourceforge.htmlunit:htmlunit;version=2.20,\
 	xml-apis:xml-apis;version=1.4.01
 

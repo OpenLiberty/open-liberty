@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2016 IBM Corporation and others.
+ * Copyright (c) 2009, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,8 +67,7 @@ import com.ibm.wsspi.injectionengine.InjectionEngine;
  * The interface between the core EJB container and the services provided by
  * the runtime environment that contains the EJB container.
  */
-public interface EJBRuntime
-{
+public interface EJBRuntime {
     /**
      * Returns a class loader for the server runtime. Specifically, this class
      * loader should not be an application class loader.
@@ -148,8 +147,7 @@ public interface EJBRuntime
      * @throws RemoteException if the bean implements rmi remote business interface, wrap
      *             the exception in a RemoteException instead of EJBException
      */
-    Future<?> scheduleAsync(EJSWrapperBase wrapper, EJBMethodInfoImpl methodInfo, int methodId, Object[] args)
-                    throws RemoteException; // d617700
+    Future<?> scheduleAsync(EJSWrapperBase wrapper, EJBMethodInfoImpl methodInfo, int methodId, Object[] args) throws RemoteException;
 
     /**
      * Notifies the runtime that the metadata for a bean with timers has been
@@ -478,6 +476,13 @@ public interface EJBRuntime
      * @param bmd
      */
     void resolveMessageDestinationJndiName(BeanMetaData bmd);
+
+    /**
+     * Determines if the EJB runtime supports remote interfaces.
+     *
+     * @return true if the EJB runtime supports remote interfaces; otherwise false.
+     */
+    boolean isRemoteSupported();
 
     /**
      * Used to determine if looking up / injecting a remote interface is a

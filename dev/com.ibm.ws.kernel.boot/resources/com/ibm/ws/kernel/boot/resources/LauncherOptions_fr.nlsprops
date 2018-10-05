@@ -83,7 +83,8 @@ action-desc.package=\tPermet d'empaqueter un serveur dans une archive. L'option 
 \tL'option --include peut \u00eatre utilis\u00e9e avec les valeurs "all", "usr", "minify", \n\
 \t"wlp", "runnable", "all,runnable" et "minify,runnable". Les valeurs \n\
 \t"runnable" et "all,runnable" sont \u00e9quivalentes. La valeur "runnable" \n\
-\tfonctionne avec les archives de type "jar" uniquement.
+\tfonctionne avec les archives de type "jar" uniquement. L'option --server-root peut \u00eatre \n\
+\tutilis\u00e9e pour sp\u00e9cifier le dossier racine dans l'archive de package.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.dump=\ \ \ \ --dump
 action-desc.dump=\tCollecte des donn\u00e9es de diagnostic du serveur et les place dans une archive. L'option \n\
@@ -181,3 +182,6 @@ option-desc.os=\tSp\u00e9cifie les syst\u00e8mes d'exploitation \u00e0 prendre e
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tD\u00e9sactivez la g\u00e9n\u00e9ration d'un mot de passe de magasin de cl\u00e9s par d\u00e9faut
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.server-root=\ \ \ \ --server-root="dossier de serveur racine dans l'archive"
+option-desc.package.server-root=\tSp\u00e9cifie le nom du dossier de serveur racine dans le fichier archive.

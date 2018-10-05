@@ -96,7 +96,7 @@ public class CommonTestClass {
         assertTrue("Did not find message [" + fullPattern + "] in log.", outputMgr.checkForMessages(fullPattern));
     }
 
-    public void verifyException(Exception e, String errorMsgRegex) {
+    public void verifyException(Throwable e, String errorMsgRegex) {
         String errorMsg = e.toString();
         Pattern pattern = Pattern.compile(errorMsgRegex);
         Matcher m = pattern.matcher(errorMsg);

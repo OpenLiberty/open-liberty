@@ -51,6 +51,7 @@ public class SharedShrinkWrapApps {
     public static JavaArchive cdiConfigJar() {
         return ShrinkWrap.create(JavaArchive.class, "cdiConfig.jar")
                         .addAsManifestResource(new File("test-applications/cdiConfig.jar/resources/META-INF/permissions.xml"), "permissions.xml")
+                        .addAsManifestResource(new File("test-applications/cdiConfig.jar/resources/META-INF/microprofile-config.properties"), "microprofile-config.properties")
                         .addPackages(true, "com.ibm.ws.microprofile.appConfig.cdi.beans")
                         .addPackages(true, "com.ibm.ws.microprofile.appConfig.cdi.test")
                         .addPackages(true, "com.ibm.ws.microprofile.appConfig.cdi.web");

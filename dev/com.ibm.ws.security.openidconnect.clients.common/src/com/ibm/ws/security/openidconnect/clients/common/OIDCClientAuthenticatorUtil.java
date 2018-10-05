@@ -181,7 +181,7 @@ public class OIDCClientAuthenticatorUtil {
             } else {
                 // error handling
                 oidcResult = new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
-                Tr.error(tc, "OIDC_CLIENT_BAD_PARAM_COOKIE", new Object[] { encodedReqParams, clientConfig.getClientId() });
+                Tr.error(tc, "OIDC_CLIENT_BAD_PARAM_COOKIE", new Object[] { encodedReqParams, clientConfig.getClientId() }); // CWWKS1745E
                 return oidcResult;
             }
         }
@@ -547,7 +547,7 @@ public class OIDCClientAuthenticatorUtil {
         String encoded = null;
         String cookieName = "WASOidcCode";
         String requestParameters = null;
-        
+
         try {
             int lastindex = cookieValue.lastIndexOf("_");
             if (lastindex < 1) {

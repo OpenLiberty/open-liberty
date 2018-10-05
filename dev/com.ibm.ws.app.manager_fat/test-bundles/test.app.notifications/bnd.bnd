@@ -1,0 +1,11 @@
+-include= ~../../../ant_build/resources/bnd/bundle.props
+bVersion=1.0.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: Test provider an app handler for testing app notifications
+Bundle-SymbolicName: test.app.notifications
+
+Private-Package: test.app.notifications
+
+-dsannotations: test.app.notifications.TestAppHandler

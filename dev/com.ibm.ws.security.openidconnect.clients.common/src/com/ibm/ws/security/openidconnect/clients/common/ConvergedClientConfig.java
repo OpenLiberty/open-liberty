@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -41,6 +41,10 @@ public interface ConvergedClientConfig {
     public long getAuthenticationTimeLimitInSeconds();
 
     public boolean isHttpsRequired();
+
+    public String getUserInfoEndpointUrl();
+
+    public boolean isUserInfoEnabled();
 
     @Sensitive
     public String getClientSecret();

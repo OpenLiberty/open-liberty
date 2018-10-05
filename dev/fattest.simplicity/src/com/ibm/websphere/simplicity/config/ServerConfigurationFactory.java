@@ -165,8 +165,8 @@ public class ServerConfigurationFactory {
         HttpEndpoint httpEndpoint = new HttpEndpoint();
         httpEndpoint.setId("defaultHttpEndpoint");
         httpEndpoint.setHost("*");
-        httpEndpoint.setHttpPort(Integer.valueOf(9080));
-        httpEndpoint.setHttpsPort(Integer.valueOf(9443));
+        httpEndpoint.setHttpPort("9080");
+        httpEndpoint.setHttpsPort("9443");
         httpEndpoint.getTcpOptions().setSoReuseAddr(Boolean.TRUE);
         server.getHttpEndpoints().add(httpEndpoint);
         Fileset fileset = server.getFilesets().getOrCreateById("DerbyFileset", Fileset.class);

@@ -8,11 +8,14 @@
 	<!-- Define Johnzon as a 'bell' so it can be registered in the server's service registry and used by JAX-RS -->
 	<bell libraryRef="johnzon"/>
 	<library id="johnzon">
-	  <fileset dir="${shared.resource.dir}/johnzon" includes="*.jar"/>
+	  <fileset dir="${shared.resource.dir}/johnzon" includes="*-1.1.8.jar"/>
 	</library>
 
 	<include location="../fatTestPorts.xml"/>
 	
+	<javaPermission codebase="${shared.resource.dir}/johnzon/johnzon-core-1.1.8.jar" className="java.security.AllPermission"/>
+	<javaPermission codebase="${shared.resource.dir}/johnzon/johnzon-jsonb-1.1.8.jar" className="java.security.AllPermission"/>
+	<javaPermission codebase="${shared.resource.dir}/johnzon/johnzon-mapper-1.1.8.jar" className="java.security.AllPermission"/>
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
 	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>

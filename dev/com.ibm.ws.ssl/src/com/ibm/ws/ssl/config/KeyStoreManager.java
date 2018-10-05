@@ -50,7 +50,7 @@ import com.ibm.ws.ssl.core.WSPKCSInKeyStoreList;
  * This class handles the configuring, loading/reloading, verifying, etc. of
  * KeyStore objects in the runtime.
  * </p>
- * 
+ *
  * @author IBM Corporation
  * @version WAS 7.0
  * @since WAS 7.0
@@ -75,7 +75,7 @@ public class KeyStoreManager {
 
     /**
      * Access the singleton instance of the key store manager.
-     * 
+     *
      * @return KeyStoreManager
      */
     public static KeyStoreManager getInstance() {
@@ -84,7 +84,7 @@ public class KeyStoreManager {
 
     /**
      * Load the provided list of keystores from the configuration.
-     * 
+     *
      * @param config
      */
     public void loadKeyStores(Map<String, WSKeyStore> config) {
@@ -105,7 +105,7 @@ public class KeyStoreManager {
 
     /***
      * Adds the keyStore to the keyStoreMap.
-     * 
+     *
      * @param keyStoreName
      * @param ks
      * @throws Exception
@@ -114,6 +114,8 @@ public class KeyStoreManager {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "addKeyStoreToMap: " + keyStoreName + ", ks=" + ks);
 
+        if (keyStoreMap.containsKey(keyStoreName))
+            keyStoreMap.remove(keyStoreName);
         keyStoreMap.put(keyStoreName, ks);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -123,7 +125,7 @@ public class KeyStoreManager {
     /***
      * Iterates through trusted certificate entries to ensure the signer does not
      * already exist.
-     * 
+     *
      * @param signer
      * @param trustStore
      * @return boolean
@@ -170,7 +172,7 @@ public class KeyStoreManager {
 
     /***
      * Returns the WSKeyStore object given the keyStoreName.
-     * 
+     *
      * @param keyStoreName
      * @return WSKeyStore
      ***/
@@ -190,7 +192,7 @@ public class KeyStoreManager {
 
     /***
      * Returns a String[] of all WSKeyStore aliases for this process.
-     * 
+     *
      * @return String[]
      ***/
     public String[] getKeyStoreAliases() {
@@ -200,7 +202,7 @@ public class KeyStoreManager {
 
     /**
      * Fetch the keystore based on the input parameters.
-     * 
+     *
      * @param name
      * @param type
      *            the type of keystore
@@ -334,7 +336,7 @@ public class KeyStoreManager {
     /**
      * Open the provided filename as a keystore, creating if it doesn't exist and
      * the input create flag is true.
-     * 
+     *
      * @param fileName
      * @param create
      * @return InputStream
@@ -369,7 +371,7 @@ public class KeyStoreManager {
 
         /**
          * Constructor.
-         * 
+         *
          * @param fileName
          * @param create
          */
@@ -416,7 +418,7 @@ public class KeyStoreManager {
 
     /**
      * Open the provided filename as an outputstream.
-     * 
+     *
      * @param fileName
      * @return OutputStream
      * @throws MalformedURLException
@@ -449,7 +451,7 @@ public class KeyStoreManager {
 
         /**
          * Constructor.
-         * 
+         *
          * @param fileName
          */
         public GetKeyStoreOutputStreamAction(String fileName) {
@@ -510,7 +512,7 @@ public class KeyStoreManager {
 
         /**
          * Constructor.
-         * 
+         *
          * @param input_file
          */
         public FileExistsAction(File input_file) {
@@ -531,7 +533,7 @@ public class KeyStoreManager {
     /***
      * This method is used to create a "SHA-1" or "MD5" digest on an
      * X509Certificate as the "fingerprint".
-     * 
+     *
      * @param algorithmName
      * @param cert
      * @return String
@@ -582,7 +584,9 @@ public class KeyStoreManager {
     public void clearKSMap() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Clearing keystore maps");
-        keyStoreMap.clear();
+        synchronized (keyStoreMap) {
+            keyStoreMap.clear();
+        }
     }
 
     /***
@@ -592,7 +596,9 @@ public class KeyStoreManager {
     public void clearKeyStoreFromMap(String keyStoreName) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "clearKeyStoreFromMap: " + keyStoreName);
-        keyStoreMap.remove(keyStoreName);
+        synchronized (keyStoreMap) {
+            keyStoreMap.remove(keyStoreName);
+        }
     }
 
     /***
@@ -600,6 +606,8 @@ public class KeyStoreManager {
      * in the KeyStoreMap. It's called after a federation.
      ***/
     public void clearJavaKeyStoresFromKeyStoreMap() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "clearJavaKeyStoresFromKeyStoreMap");
         synchronized (keyStoreMap) {
             for (Entry<String, WSKeyStore> entry : keyStoreMap.entrySet()) {
                 WSKeyStore ws = entry.getValue();
@@ -612,7 +620,7 @@ public class KeyStoreManager {
 
     /***
      * Expands the ${hostname} with the node's hostname.
-     * 
+     *
      * @param subjectDN
      * @param nodeHostName
      * @return String
@@ -644,7 +652,7 @@ public class KeyStoreManager {
     /**
      * Remove the last slash, if present, from the input string and return the
      * result.
-     * 
+     *
      * @param inputString
      * @return String
      */
@@ -666,7 +674,7 @@ public class KeyStoreManager {
 
     /**
      * Returns the java keystore object based on the keystore name passed in.
-     * 
+     *
      * @param keyStoreName
      * @return KeyStore
      * @throws Exception
@@ -693,7 +701,7 @@ public class KeyStoreManager {
     /**
      * Returns the java keystore object based on the keystore name passed in. A
      * null value is returned if no existing store matchs the provided name.
-     * 
+     *
      * @param keyStoreName
      * @return WSKeyStore
      * @throws SSLException

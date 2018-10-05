@@ -248,7 +248,7 @@ MALFORMED_SEARCH_EXPRESSION=CWIML3006W: La operaci\u00f3n de registro de usuario
 MALFORMED_SEARCH_EXPRESSION.explanation=No se puede realizar la operaci\u00f3n de b\u00fasqueda porque la expresi\u00f3n de b\u00fasqueda no es v\u00e1lida.
 MALFORMED_SEARCH_EXPRESSION.useraction=Proporcione una expresi\u00f3n de b\u00fasqueda v\u00e1lida.
 
-ENTITY_SEARCH_FAILED=CWIML4506E: La operaci\u00f3n de registro de usuarios no se ha podido completar porque el registro de usuarios ha encontrado el error subyacente: {1}
+ENTITY_SEARCH_FAILED=CWIML4506E: La operaci\u00f3n de registro de usuarios no se ha podido completar porque el registro de usuarios ha encontrado el error subyacente: {0}
 ENTITY_SEARCH_FAILED.explanation=La entidad no puede buscarse debido a la raz\u00f3n especificada por el registro subyacente.
 ENTITY_SEARCH_FAILED.useraction=Revise el mensaje de la raz\u00f3n y el archivo de rastreo para determinar la causa de la anomal\u00eda. Arregle el error y vuelva a intentarlo.
 

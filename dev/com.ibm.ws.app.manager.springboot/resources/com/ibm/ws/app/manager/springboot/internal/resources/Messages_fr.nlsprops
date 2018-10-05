@@ -67,9 +67,7 @@ error.missing.websocket=CWWKC0259E: L'application n'a pas d\u00e9marr\u00e9 car 
 error.missing.websocket.explanation=L'application est une application de socket Web et requiert la configuration d'une fonction de socket Web dans le fichier server.xml.
 error.missing.websocket.useraction=Configurez une fonction de socket Web dans le fichier server.xml.
 
-error.webflux.not.supported=CWWKC0260E: Impossible de d\u00e9marrer l'application car Spring WebFlux n'est pas pris en charge.
-error.webflux.not.supported.explanation=L'application est une application WebFlux. Le support de programmation r\u00e9active fournie par Spring WebFlux n'est pas pris en charge.
-error.webflux.not.supported.useraction=Configurez une application qui n'utilise pas Spring WebFlux avec le serveur.
+# CWWKC0260E: GOT REMOVED
 
 warning.spring_config.ignored.compression=CWWKC0261W: La compression a \u00e9t\u00e9 activ\u00e9e par l'application. Elle n'est pas prise en charge et le param\u00e8tre sera ignor\u00e9.
 warning.spring_config.ignored.compression.explanation=La compression n'est pas prise en charge et le param\u00e8tre sera ignor\u00e9, mais l'application continuera de fonctionner.
@@ -78,3 +76,7 @@ warning.spring_config.ignored.compression.useraction=Aucune action de l'utilisat
 warning.spring_config.ignored.session=CWWKC0262W: Le d\u00e9lai d'attente de session ou la persistance de session a \u00e9t\u00e9 configur\u00e9(e) par l'application. Ces param\u00e8tres de session doivent \u00eatre configur\u00e9s dans le fichier server.xml.
 warning.spring_config.ignored.session.explanation=Le d\u00e9lai d'attente de session ou la persistance de session doit \u00eatre configur\u00e9(e) dans le fichier server.xml. Ces param\u00e8tres de session d'application seront ignor\u00e9s.
 warning.spring_config.ignored.session.useraction=Configurez le d\u00e9lai d'attente de session et la persistance de session dans le fichier server.xml.
+
+error.wrong.spring.boot.version=CWWKC0263E: La version {0} de Spring Boot n''est pas prise en charge. Une version de Spring Boot comprise dans la plage {1} est requise.
+error.wrong.spring.boot.version.explanation=Une version de Spring Boot qui n'est pas prise en charge par le serveur a \u00e9t\u00e9 d\u00e9tect\u00e9e.
+error.wrong.spring.boot.version.useraction=Mettez \u00e0 jour l'application Spring Boot pour utiliser une version de Spring Boot comprise dans la plage des versions admises.

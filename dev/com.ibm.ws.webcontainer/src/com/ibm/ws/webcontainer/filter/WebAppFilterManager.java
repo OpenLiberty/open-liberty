@@ -1188,6 +1188,19 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                         try {
                                             h2InUse = true;
                                             h2Handler.handleRequest(httpInboundConnection, httpRequest, httpResponse);
+                                            
+                                            if (httpResponse.getStatus() == HttpServletResponse.SC_INTERNAL_SERVER_ERROR) {
+                                                if (isTraceOn && logger.isLoggable(Level.FINE)) 
+                                                    logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "H2 determined SC_INTERNAL_SERVER_ERROR, throwing IOException");
+                                                
+                                                IOException ioe = new IOException("Http2 determined internal exception while handling request");
+                                                throw ioe;
+                                                
+                                            } else {
+                                                if (isTraceOn && logger.isLoggable(Level.FINE)) 
+                                                    logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "H2 status OK");
+                                            }
+                                            
                                         } catch (Exception x) {
                                             // need to change these to IOExceptions, since the cause could be the
                                             // H2 code closing down the connection while it is in app code.
@@ -1201,7 +1214,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                     }
                                 }
                             }
-                            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
+                            if (h2InUse && com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
                                 logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "in H2 processing calling requestProcessor.handleRequest");
 
                             try {

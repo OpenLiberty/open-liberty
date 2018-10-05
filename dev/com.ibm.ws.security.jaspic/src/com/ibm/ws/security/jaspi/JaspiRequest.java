@@ -115,12 +115,13 @@ public class JaspiRequest {
 
     /**
      * The request is protected if there are required roles
-     *
-     * @return true if there are required roles.
+     * or it's not mapped everyones role
+     * @return true if there is a proected url.
      */
     public boolean isProtected() {
         List<String> requiredRoles = null;
-        return webRequest.getMatchResponse() != null &&
+        return !webRequest.isUnprotectedURI() &&
+               webRequest.getMatchResponse() != null &&
                (requiredRoles = webRequest.getRequiredRoles()) != null &&
                !requiredRoles.isEmpty();
     }

@@ -61,11 +61,11 @@ MISSING_BASE_ENTRY.explanation=Apr\u00e8s l'ajout d'un r\u00e9f\u00e9rentiel, au
 MISSING_BASE_ENTRY.useraction=Ajoutez au moins une entr\u00e9e de base au r\u00e9f\u00e9rentiel dans le fichier server.xml.
 
 FEDERATED_MANAGER_SERVICE_READY=CWIMK0009I: Le service de f\u00e9d\u00e9ration de registre d'utilisateurs est pr\u00eat.
-FEDERATED_MANAGER_SERVICE_READY.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+FEDERATED_MANAGER_SERVICE_READY.explanation=Ce message est fourni \u00e0 titre  d'information uniquement.
 FEDERATED_MANAGER_SERVICE_READY.useraction=Aucune action n'est requise.
 
 FEDERATED_MANAGER_SERVICE_STOPPED=CWIMK0010I: Le service de f\u00e9d\u00e9ration de registre est arr\u00eat\u00e9.
-FEDERATED_MANAGER_SERVICE_STOPPED.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+FEDERATED_MANAGER_SERVICE_STOPPED.explanation=Ce message est fourni \u00e0 titre  d'information uniquement.
 FEDERATED_MANAGER_SERVICE_STOPPED.useraction=Aucune action n'est requise.
 
 MISSING_REGISTRY_DEFINITION=CWIMK0011E: L'op\u00e9ration de registre d'utilisateurs n'a pas pu \u00eatre ex\u00e9cut\u00e9e. Aucun registre d'utilisateurs n'a \u00e9t\u00e9 trouv\u00e9. Ajoutez ou corrigez la d\u00e9finition de registre dans le fichier server.xml.
@@ -165,8 +165,8 @@ PRINCIPAL_NOT_FOUND.explanation=Le nom principal est introuvable dans le r\u00e9
 PRINCIPAL_NOT_FOUND.useraction=Assurez-vous que le nom du principal est indiqu\u00e9.
 
 NON_EXISTING_SEARCH_BASE=CWIML1042E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. La base de recherche {0} indiqu\u00e9e n''existe pas dans le domaine configur\u00e9 en cours . Indiquez la base de recherche valide et v\u00e9rifiez que l''entr\u00e9e de base est configur\u00e9e dans le domaine en cours.
-NON_EXISTING_SEARCH_BASE.explanation=La base de recherche sp\u00e9cifi\u00e9e n'existe pas dans le domaine actif.
-NON_EXISTING_SEARCH_BASE.useraction=V\u00e9rifiez la base de recherche sp\u00e9cifi\u00e9e et assurez-vous que l'entr\u00e9e de base correspondante est configur\u00e9e dans le domaine actif.
+NON_EXISTING_SEARCH_BASE.explanation=La base de recherche sp\u00e9cifi\u00e9e n'existe pas dans le domaine en cours.
+NON_EXISTING_SEARCH_BASE.useraction=V\u00e9rifiez la base de recherche sp\u00e9cifi\u00e9e et assurez-vous que l'entr\u00e9e de base correspondante est configur\u00e9e dans le domaine en cours.
 
 ENTITY_NOT_FOUND=CWIML4001E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. L''entit\u00e9 {0} n''a pas \u00e9t\u00e9 trouv\u00e9e. Indiquez l''entit\u00e9 correcte ou cr\u00e9ez l''entit\u00e9 manquante.
 ENTITY_NOT_FOUND.explanation=Le nom d'entit\u00e9 indiqu\u00e9, qui doit \u00eatre un nom unique ou un ID unique, est introuvable dans le r\u00e9f\u00e9rentiel sous-jacent. L'op\u00e9ration de registre d'utilisateurs ne peut pas se poursuivre sans cette entit\u00e9.
@@ -225,7 +225,7 @@ ENTITY_TYPE_NOT_SUPPORTED.explanation=Une op\u00e9ration a \u00e9t\u00e9 demand\
 ENTITY_TYPE_NOT_SUPPORTED.useraction=Assurez-vous que les entit\u00e9s fournies dans l'entr\u00e9e sont des types d'entit\u00e9 pris en charge, puis supprimez les \u00e9ventuels types d'entit\u00e9 non pris en charge.
 
 CAN_NOT_CONSTRUCT_UNIQUE_NAME=CWIML1008E: La propri\u00e9t\u00e9 {0} du type d''entit\u00e9 {1} a \u00e9t\u00e9 fournie dans l''entr\u00e9e. Le nom unique ne peut pas \u00eatre cr\u00e9\u00e9 dans le r\u00e9f\u00e9rentiel sous-jacent car les informations RDN indiqu\u00e9es dans l''entr\u00e9e sont consid\u00e9r\u00e9es comme ambigu\u00ebs.
-CAN_NOT_CONSTRUCT_UNIQUE_NAME.explanation=Lors de la cr\u00e9ation d'une entit\u00e9, le nom distinctif relatif (RDN) doit pr\u00e9senter une syntaxe correcte et comporter des propri\u00e9t\u00e9s non ambigu\u00ebs. Par exemple, le type d'entit\u00e9 OrgContainer peut repr\u00e9senter une organisation (qui utilise la propri\u00e9t\u00e9 RDN 'o') ou une unit\u00e9 organisationnelle (qui utilise la propri\u00e9t\u00e9 RDN 'ou') dans un r\u00e9f\u00e9rentiel sous-jacent. Si 'o' et 'ou' sont sp\u00e9cifi\u00e9s dans le RDN de l'objet de donn\u00e9es en entr\u00e9e pour la nouvelle entit\u00e9, un nom unique ne peut pas \u00eatre cr\u00e9\u00e9 pour cette nouvelle entit\u00e9.
+CAN_NOT_CONSTRUCT_UNIQUE_NAME.explanation=Lors de la cr\u00e9ation d'une entit\u00e9, le nom distinctif relatif (RDN) doit pr\u00e9senter une syntaxe correcte et comporter des propri\u00e9t\u00e9s non ambigu\u00ebs.  Par exemple, le type d'entit\u00e9 OrgContainer peut repr\u00e9senter une organisation (qui utilise la propri\u00e9t\u00e9 RDN 'o') ou une unit\u00e9 organisationnelle (qui utilise la propri\u00e9t\u00e9 RDN 'ou') dans un r\u00e9f\u00e9rentiel sous-jacent. Si 'o' et 'ou' sont sp\u00e9cifi\u00e9s dans le RDN de l'objet de donn\u00e9es en entr\u00e9e pour la nouvelle entit\u00e9, un nom unique ne peut pas \u00eatre cr\u00e9\u00e9 pour cette nouvelle entit\u00e9.
 CAN_NOT_CONSTRUCT_UNIQUE_NAME.useraction=D\u00e9terminez le type d'entit\u00e9 que vous voulez cr\u00e9er dans le r\u00e9f\u00e9rentiel sous-jacent et fournissez la propri\u00e9t\u00e9 RDN appropri\u00e9e pour ce type. Par exemple, si vous voulez cr\u00e9er une organisation, fournissez uniquement la valeur 'o'.
 
 REPOSITORY_INITIALIZATION_FAILED=CWIML4510E: Impossible d''initialiser le r\u00e9f\u00e9rentiel configur\u00e9 {0} en raison de la d\u00e9faillance sous-jacente : {1}
@@ -248,7 +248,7 @@ MALFORMED_SEARCH_EXPRESSION=CWIML3006W: L''op\u00e9ration de registre d''utilisa
 MALFORMED_SEARCH_EXPRESSION.explanation=L'op\u00e9ration de recherche ne peut pas \u00eatre effectu\u00e9e car l'expression de recherche n'est pas valide.
 MALFORMED_SEARCH_EXPRESSION.useraction=Indiquez une expression de recherche valide.
 
-ENTITY_SEARCH_FAILED=CWIML4506E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e car le registre d''utilisateurs a d\u00e9tect\u00e9 l''erreur sous-jacente : {1}
+ENTITY_SEARCH_FAILED=CWIML4506E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e car le registre d''utilisateurs a d\u00e9tect\u00e9 l''erreur sous-jacente : {0}
 ENTITY_SEARCH_FAILED.explanation=L'entit\u00e9 ne peut pas \u00eatre recherch\u00e9e pour la raison indiqu\u00e9e par le registre sous-jacent.
 ENTITY_SEARCH_FAILED.useraction=Consultez le message d'erreur et le fichier trace afin de d\u00e9terminer l'origine de la d\u00e9faillance. Corrigez l'erreur et faites une nouvelle tentative.
 

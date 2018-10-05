@@ -10,21 +10,19 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container.config;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 /**
  * Defines TCP options for channel framework
- * 
+ *
  */
 public class TcpOptions extends ConfigElement {
 
+    public final static String XML_ATTRIBUTE_NAME_SO_REUSE_ADDR = "soReuseAddr";
     private Boolean soReuseAddr;
 
     public Boolean isSoReuseAddr() {
         return this.soReuseAddr;
     }
 
-    @XmlAttribute
     public void setSoReuseAddr(Boolean soReuseAddr) {
         this.soReuseAddr = soReuseAddr;
     }

@@ -88,6 +88,7 @@ public class QueuedFuture<R> implements Future<R>, Callable<Future<R>> {
 
     /** {@inheritDoc} */
     @Override
+    @FFDCIgnore({ ExecutionException.class })
     public boolean isCancelled() {
         Future<Future<R>> outerFuture = getOuterFuture();
         if (outerFuture.isDone()) {
@@ -139,6 +140,7 @@ public class QueuedFuture<R> implements Future<R>, Callable<Future<R>> {
 
     /** {@inheritDoc} */
     @Override
+    @FFDCIgnore({ CancellationException.class, ExecutionException.class, org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException.class })
     public R get() throws InterruptedException, ExecutionException {
         R result = null;
         Future<Future<R>> outerFuture = getOuterFuture();
@@ -172,7 +174,7 @@ public class QueuedFuture<R> implements Future<R>, Callable<Future<R>> {
 
     /** {@inheritDoc} */
     @Override
-    @FFDCIgnore({ CancellationException.class, org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException.class })
+    @FFDCIgnore({ CancellationException.class, ExecutionException.class, org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException.class })
     public R get(long methodTimeout, TimeUnit methodUnit) throws InterruptedException, ExecutionException, TimeoutException {
         R result = null;
         Future<Future<R>> outerFuture = getOuterFuture();

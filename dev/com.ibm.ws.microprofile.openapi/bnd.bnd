@@ -92,7 +92,7 @@ instrument.classesExcludes: \
         ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
         com.ibm.ws.junit.extensions;version=latest, \
         com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
-        org.apache.commons:commons-lang3;version=3.7, \
+        org.apache.commons:commons-lang3;version=3.8, \
         org.hamcrest:hamcrest-all;version=1.3, \
         org.jmock:jmock-junit4;version=2.5.1, \
         org.jmock:jmock;version=2.5.1, \

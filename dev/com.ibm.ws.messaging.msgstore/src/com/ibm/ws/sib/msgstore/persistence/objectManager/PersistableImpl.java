@@ -63,6 +63,7 @@ public class PersistableImpl implements Persistable, Tuple, XmlConstants
     private boolean _logicallyDeleted;
     private int _redeliveredCount;
     private long _deliveryDelayTime;
+    private boolean _deliveryDelayTimeIsSuspect = false;
 
     // Our link to the byte data
     private AbstractItemLink _link;
@@ -144,6 +145,7 @@ public class PersistableImpl implements Persistable, Tuple, XmlConstants
         _className = metaData.getClassName();
         _redeliveredCount = metaData.getRedeliveredCount();
         _deliveryDelayTime = metaData.getDeliveryDelayTime();
+        _deliveryDelayTimeIsSuspect = metaData.getDeliveryDelayTimeIsSuspect();
 
         byte[] tranId = metaData.getTransactionId();
         if (tranId != null)
@@ -1415,6 +1417,11 @@ public class PersistableImpl implements Persistable, Tuple, XmlConstants
     public long getDeliveryDelayTime() {
         return this._deliveryDelayTime;
     }
+
+	@Override
+	public boolean getDeliveryDelayTimeIsSuspect() {
+		return _deliveryDelayTimeIsSuspect;
+	}
 
     /*************************************************************************/
     /* Tuple Interface implementation */

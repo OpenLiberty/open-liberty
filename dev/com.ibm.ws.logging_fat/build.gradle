@@ -9,6 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+
 task copyBundles {
   enabled project.file('test-bundles').exists()
   doLast {
@@ -25,21 +26,4 @@ task copyBundles {
 
 addRequiredLibraries {
 	dependsOn copyBundles
-}
-
-buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
-  }
-  dependencies {
-    classpath "gradle.plugin.net.ossindex:ossindex-gradle-plugin:0.3.8-beta"
-  }
-}
-
-apply plugin: "net.ossindex.audit"
-
-audit {
-    failOnError = false
 }

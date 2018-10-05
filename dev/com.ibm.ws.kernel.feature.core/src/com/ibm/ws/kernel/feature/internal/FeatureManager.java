@@ -49,9 +49,7 @@ import org.osgi.framework.wiring.BundleCapability;
 import org.osgi.framework.wiring.BundleRequirement;
 import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.framework.wiring.FrameworkWiring;
-import org.osgi.resource.Namespace;
 import org.osgi.resource.Requirement;
-import org.osgi.resource.Resource;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.osgi.service.component.ComponentContext;
@@ -97,6 +95,7 @@ import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry.BundleRepositoryH
 import com.ibm.ws.kernel.provisioning.LibertyBootRuntime;
 import com.ibm.ws.kernel.provisioning.ProductExtension;
 import com.ibm.ws.kernel.provisioning.ProductExtensionInfo;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
@@ -292,7 +291,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * activated and when changes to our configuration have occurred.
      *
      * @param componentContext
-     *                             the OSGi DS context
+     *            the OSGi DS context
      */
     @Activate()
     protected void activate(ComponentContext componentContext, Map<String, Object> properties) {
@@ -403,7 +402,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * implementation is stopped.
      *
      * @param componentContext
-     *                             the OSGi DS context
+     *            the OSGi DS context
      */
     @Deactivate()
     @FFDCIgnore(InterruptedException.class)
@@ -442,7 +441,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * reference required by activator, inject directly.
      *
      * @param locationService
-     *                            a location service
+     *            a location service
      */
     @Reference(name = "locationService", service = WsLocationAdmin.class)
     protected void setLocationService(WsLocationAdmin locationService) {
@@ -455,7 +454,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * deactivate. Do nothing.
      *
      * @param locationService
-     *                            a location service
+     *            a location service
      */
     protected void unsetLocationService(WsLocationAdmin locationService) {}
 
@@ -532,7 +531,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Inject an <code>ExecutorService</code> service instance.
      *
      * @param executorService
-     *                            an executor service
+     *            an executor service
      */
     @Reference(name = "executorService", service = ExecutorService.class)
     protected void setExecutorService(ExecutorService executorService) {
@@ -543,7 +542,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Remove the <code>ExecutorService</code> service instance.
      *
      * @param executorService
-     *                            an executor service
+     *            an executor service
      */
     protected void unsetExecutorService(ExecutorService executorService) {}
 
@@ -831,9 +830,9 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      *
      * @param provisioningMode
      * @param preInstalledFeatures
-     * @param deletedAutoFeatures       - The list of deleted AutoFeatures.This is used to trace which auto features have been deleted.
+     * @param deletedAutoFeatures - The list of deleted AutoFeatures.This is used to trace which auto features have been deleted.
      * @param deletedPublicAutoFeatures - The list of deleted Public AutoFeatures.This is used to issue to the console which public
-     *                                      auto features have been deleted.
+     *            auto features have been deleted.
      */
     private void writeUpdateMessages(ProvisioningMode provisioningMode, Set<String> preInstalledFeatures, Set<String> deletedAutoFeatures,
                                      Set<String> deletedPublicAutoFeatures) {
@@ -1087,10 +1086,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     /**
      * Update installed features and bundles
      *
-     * @param locService           Location service used to resolve resources (feature definitions or bundles)
-     * @param provisioner          Provisioner for installing/starting bundles
+     * @param locService Location service used to resolve resources (feature definitions or bundles)
+     * @param provisioner Provisioner for installing/starting bundles
      * @param preInstalledFeatures
-     * @param newFeatureSet        New/revised list of active features
+     * @param newFeatureSet New/revised list of active features
      * @return true if no errors occurred during the update, false otherwise
      */
     @FFDCIgnore(Throwable.class)
@@ -1277,11 +1276,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         return status;
     }
 
-    /**
-     * @return
-     */
     private boolean sameJavaSpecVersion() {
-        return Objects.equals(System.getProperty(BundleList.PROP_JVM_SPEC_VERSION), bundleCache.getJavaSpecVersion());
+        return Objects.equals(JavaInfo.majorVersion(), bundleCache.getJavaSpecVersion());
     }
 
     /**
@@ -1312,7 +1308,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * and the unsatisfied java version dependency.
      *
      * @param installedBundles A list of the currently installed bundles
-     * @param features         A list of the currently installed features
+     * @param features A list of the currently installed features
      */
     private void analyzeUnresolvedBundles(List<Bundle> installedBundles, Set<String> features) {
 
@@ -1440,7 +1436,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Find which features include the given bundle
      *
      * @param features The feature list to scan for this bundle
-     * @param b1       The bundle to look for in features
+     * @param b1 The bundle to look for in features
      * @return List of features this bundle is included in
      */
     public Set<String> findIncludingFeatures(Set<String> features, Bundle b1) {
@@ -1657,10 +1653,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Issues appropriate diagnostics & messages for this environment.
      *
      * @param listName
-     *                          the name of the feature that was installed
+     *            the name of the feature that was installed
      * @param installStatus
-     *                          Status object holding any warnings or exceptions that occurred
-     *                          during bundle installation
+     *            Status object holding any warnings or exceptions that occurred
+     *            during bundle installation
      * @return true if no exceptions occurred during bundle installation, false otherwise.
      */
     protected boolean checkInstallStatus(BundleInstallStatus installStatus) throws IllegalStateException {
@@ -1774,8 +1770,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * and issue appropriate diagnostics & messages for this environment.
      *
      * @param bundleStatus
-     *                         Status object holding any exceptions that occurred
-     *                         during bundle start or stop/uninstall
+     *            Status object holding any exceptions that occurred
+     *            during bundle start or stop/uninstall
      * @return true if no exceptions occurred while stating bundles, false otherwise.
      */
     protected boolean checkBundleStatus(BundleLifecycleStatus bundleStatus) {
@@ -1829,7 +1825,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * necessarily know that it's ours..).
      *
      * @param level
-     *                  StartLevel to change to
+     *            StartLevel to change to
      * @return BundleStartStatus containing any exceptions encountered
      *         during the StartLevel change operation.
      */
@@ -1940,33 +1936,9 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         refreshFeatures();
     }
 
-    boolean missingRequiredOSGiEE(FeatureResource fr) {
-        final String requiredOSGiEE = fr.getRequiredOSGiEE();
-        if (requiredOSGiEE != null) {
-            Collection<BundleCapability> foundEEs = frameworkWiring.findProviders(new Requirement() {
-                @Override
-                public Resource getResource() {
-                    return null;
-                }
-
-                @Override
-                public String getNamespace() {
-                    return ExecutionEnvironmentNamespace.EXECUTION_ENVIRONMENT_NAMESPACE;
-                }
-
-                @Override
-                public Map<String, String> getDirectives() {
-                    return Collections.singletonMap(Namespace.REQUIREMENT_FILTER_DIRECTIVE, requiredOSGiEE);
-                }
-
-                @Override
-                public Map<String, Object> getAttributes() {
-                    return Collections.emptyMap();
-                }
-            });
-            return foundEEs.isEmpty();
-        }
-        return false;
+    boolean missingRequiredJava(FeatureResource fr) {
+        Integer requiredJava = fr.getRequireJava();
+        return requiredJava == null ? false : JavaInfo.majorVersion() < requiredJava;
     }
 
 }

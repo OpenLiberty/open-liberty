@@ -80,7 +80,8 @@ action-desc.package=\tUtw\u00f3rz pakiet serwera w formie archiwum. Mo\u017cna u
 \tOpcji --include mo\u017cna u\u017cy\u0107 z warto\u015bciami \u201eall\u201d, \u201eusr\u201d, \u201eminify\u201d, \n\
 \t\u201ewlp\u201d, \u201erunnable\u201d, \u201eall,runnable\u201d oraz \u201eminify,runnable\u201d. Warto\u015bci \n\
 \t\u201erunnable\u201d i \u201eall,runnable\u201d s\u0105 r\u00f3wnoznaczne. Warto\u015b\u0107 \u201erunnable\u201d \n\
-\tdzia\u0142a tylko z archiwami typu jar.
+\tdzia\u0142a tylko z archiwami typu jar. Opcji --server-root mo\u017cna \n\
+\tu\u017cy\u0107 do okre\u015blania folderu g\u0142\u00f3wnego w archiwum pakietu.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.dump=\ \ \ \ --dump
 action-desc.dump=\tZrzu\u0107 informacje diagnostyczne z serwera do archiwum. Mo\u017cna\n\
@@ -175,3 +176,6 @@ option-desc.os=\tOkre\u015bla systemy operacyjne, kt\u00f3re maj\u0105 by\u0107 
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tWy\u0142\u0105cz generowanie domy\u015blnego has\u0142a magazynu kluczy
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.server-root=\ \ \ \ --server-root="g\u0142\u00f3wny folder serwera w archiwum"
+option-desc.package.server-root=\tOkre\u015bla nazw\u0119 folderu g\u0142\u00f3wnego serwera w pliku archiwum.

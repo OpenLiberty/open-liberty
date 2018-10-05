@@ -1,0 +1,7 @@
+<server>
+    <featureManager>
+    	    <feature>jaxb-2.2</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+</server>

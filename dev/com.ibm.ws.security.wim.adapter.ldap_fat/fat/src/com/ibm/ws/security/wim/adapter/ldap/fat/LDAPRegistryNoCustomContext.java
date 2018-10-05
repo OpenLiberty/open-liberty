@@ -122,10 +122,6 @@ public class LDAPRegistryNoCustomContext {
         errMsgs = server.findStringsInLogsAndTrace(tr);
         assertFalse("Should have found, " + tr, errMsgs.isEmpty());
 
-        tr = "CacheTTLAttr: null";
-        errMsgs = server.findStringsInLogsAndTrace(tr);
-        assertFalse("Should have found, " + tr, errMsgs.isEmpty());
-
         tr = "CacheSize: 2000";
         errMsgs = server.findStringsInLogsAndTrace(tr);
         assertFalse("Should have found, " + tr, errMsgs.isEmpty());

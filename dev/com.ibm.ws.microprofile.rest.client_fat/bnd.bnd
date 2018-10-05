@@ -18,7 +18,8 @@ src: \
   test-applications/basicCdiClientApp/src,\
   test-applications/basicRemoteApp/src,\
   test-applications/headerPropagationApp/src,\
-  test-applications/multiClientCdiApp
+  test-applications/multiClientCdiApp/src,\
+  test-applications/produceConsumeApp/src
 
 fat.project: true
 

@@ -15,9 +15,6 @@ import static org.junit.Assert.assertNotNull;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-/**
- *
- */
 public class CheckCDIFeature {
     public static LibertyServer checkCDIFeature(LibertyServer server, String hellowar, String cdiVersion) throws Exception {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jaxrs20.cdi.fat." + hellowar + cdiVersion);

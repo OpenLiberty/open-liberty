@@ -9,6 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+
 dependencies {
   requiredLibs project(':com.ibm.ws.threading')
 }
@@ -21,21 +22,4 @@ task copyFeatureBundle(type: Copy) {
 
 autoFVT {
   dependsOn copyFeatureBundle
-}
-
-buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
-  }
-  dependencies {
-    classpath "gradle.plugin.net.ossindex:ossindex-gradle-plugin:0.3.8-beta"
-  }
-}
-
-apply plugin: "net.ossindex.audit"
-
-audit {
-    failOnError = false
 }

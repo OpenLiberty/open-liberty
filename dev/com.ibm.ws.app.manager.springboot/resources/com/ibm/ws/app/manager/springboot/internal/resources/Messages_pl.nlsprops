@@ -67,9 +67,7 @@ error.missing.websocket=CWWKC0259E: Uruchomienie aplikacji nie powiod\u0142o si\
 error.missing.websocket.explanation=Aplikacja jest aplikacj\u0105 WWW i wymaga skonfigurowania sk\u0142adnika websocket w pliku server.xml.
 error.missing.websocket.useraction=Skonfiguruj sk\u0142adnik websocket w pliku server.xml.
 
-error.webflux.not.supported=CWWKC0260E: Nie mo\u017cna uruchomi\u0107 aplikacji, poniewa\u017c sk\u0142adnik Spring WebFlux nie jest obs\u0142ugiwany.
-error.webflux.not.supported.explanation=Ta aplikacja jest aplikacj\u0105 WebFlux. Funkcja programowania reaktywnego udost\u0119pniana przez sk\u0142adnik Spring WebFlux nie jest obs\u0142ugiwana.
-error.webflux.not.supported.useraction=Skonfiguruj aplikacj\u0119, kt\u00f3ra nie u\u017cywa sk\u0142adnika Spring WebFlux z tym serwerem.
+# CWWKC0260E: GOT REMOVED
 
 warning.spring_config.ignored.compression=CWWKC0261W: Kompresja zosta\u0142a w\u0142\u0105czona przez aplikacj\u0119. Kompresja nie jest obs\u0142ugiwana, a to ustawienie zostanie zignorowane.
 warning.spring_config.ignored.compression.explanation=Kompresja nie jest obs\u0142ugiwana, a to ustawienie zostanie zignorowane, ale aplikacja b\u0119dzie nadal dzia\u0142a\u0107.
@@ -78,3 +76,7 @@ warning.spring_config.ignored.compression.useraction=Nie jest wymagana \u017cadn
 warning.spring_config.ignored.session=CWWKC0262W: Aplikacja skonfigurowa\u0142a limit czasu sesji lub utrwalanie sesji. Te ustawienia sesji musz\u0105 by\u0107 skonfigurowane w pliku server.xml.
 warning.spring_config.ignored.session.explanation=Ustawienia limitu czasu sesji i utrwalania sesji musz\u0105 by\u0107 skonfigurowane w pliku server.xml. Te ustawienia aplikacji zostan\u0105 zignorowane.
 warning.spring_config.ignored.session.useraction=Skonfiguruj ustawienia limitu czasu sesji i utrwalania sesji w pliku server.xml.
+
+error.wrong.spring.boot.version=CWWKC0263E: Wersja {0} aplikacji Spring Boot nie jest obs\u0142ugiwana. Wymagana jest wersja aplikacji Spring Boot z zakresu {1}.
+error.wrong.spring.boot.version.explanation=Wykryto wersj\u0119 aplikacji Spring Boot, kt\u00f3ra nie jest obs\u0142ugiwana przez serwer.
+error.wrong.spring.boot.version.useraction=Zaktualizuj aplikacj\u0119 Spring Boot tak, aby by\u0142a u\u017cywana jej wersja nale\u017c\u0105ca do wymaganego zakresu wersji.

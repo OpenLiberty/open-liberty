@@ -1,0 +1,39 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.com.sun.xml.messaging.saaj
+
+Include-Resource: \
+     @${repo;com.sun.xml.messaging.saaj:saaj-impl;1.4.0}!/META-INF/services/javax.xml.soap.SOAPFactory, \
+     @${repo;com.sun.xml.messaging.saaj:saaj-impl;1.4.0}!/META-INF/services/javax.xml.soap.SOAPConnectionFactory, \
+     @${repo;com.sun.xml.messaging.saaj:saaj-impl;1.4.0}!/META-INF/services/javax.xml.soap.MetaFactory, \
+     @${repo;com.sun.xml.messaging.saaj:saaj-impl;1.4.0}!/META-INF/services/javax.xml.soap.MessageFactory
+     
+Export-Package: \
+  com.sun.xml.messaging.saaj;version="1.4.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.util;version="1.4.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.util.transform;version="1.4.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.util.stax;version="1.4.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.soap;version="1.4.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.soap.ver1_2;version="1.4.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.soap.ver1_1;version="1.4.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.soap.name;version="1.4.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.soap.impl;version="1.4.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.soap.dynamic;version="1.4.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.packaging.mime;version="1.4.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.packaging.mime.util;version="1.4.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.packaging.mime.internet;version="1.4.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.client.p2p;version="1.4.0";thread-context=true
+  
+  app-resources= \
+  META-INF/services/javax.xml.soap.SOAPFactory | \
+  META-INF/services/javax.xml.soap.SOAPConnectionFactory | \
+  META-INF/services/javax.xml.soap.MetaFactory | \
+  META-INF/services/javax.xml.soap.MessageFactory
+  
+Service-Component: \
+  com.ibm.ws.com.sun.xml.messaging.saaj.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=ignore; \
+    properties:="resources=${app-resources}"

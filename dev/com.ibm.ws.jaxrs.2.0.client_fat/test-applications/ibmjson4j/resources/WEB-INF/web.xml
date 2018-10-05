@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="SongListServlet" version="3.0"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+     http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+	<display-name>IBM JSON4J Resource</display-name>
+	<description>Resource for IBM JSON4J Test</description>
+
+	<servlet>
+		<servlet-name>com.ibm.ws.jaxrs20.client.fat.ibmjson4j.service.UserListApplication</servlet-name>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>com.ibm.ws.jaxrs20.client.fat.ibmjson4j.service.UserListApplication</servlet-name>
+		<url-pattern>/user/*</url-pattern>
+	</servlet-mapping>
+</web-app>
+
+
+
+  

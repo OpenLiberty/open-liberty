@@ -25,6 +25,8 @@ Include-Resource: \
 
 instrument.disabled: true
 
+testsrc: test/src
+
 -buildpath: \
     com.ibm.ws.product.utility;version=latest,\
     com.ibm.websphere.filetransfer;version=latest,\

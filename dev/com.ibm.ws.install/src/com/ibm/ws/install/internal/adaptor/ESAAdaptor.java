@@ -208,8 +208,22 @@ public class ESAAdaptor extends ArchiveAdaptor {
                 if (!skipFeatureDependencyCheck) {
                     // Look to see if the feature already exists and try to find it in the same place as the current ESA if we don't have it
                     String symName = fr.getSymbolicName();
-                    if (!product.containsFeature(symName) && !product.containsFeatureCollection(symName) && !featuresToBeInstalled.contains(symName)) {
-                        throw new InstallException(Messages.PROVISIONER_MESSAGES.getLogMessage("tool.install.missing.feature", featureDefinition.getSymbolicName(), symName));
+                    if (!isFeatureAvailable(product, featuresToBeInstalled, symName)) {
+                        boolean foundToleratesFeature = false;
+                        List<String> toleratesVersions = fr.getTolerates();
+                        if (toleratesVersions != null && !toleratesVersions.isEmpty()) {
+                            String symNameWithoutVersion = extractSymbolicNameWithoutVersion(symName);
+                            for (String toleratesVersion : toleratesVersions) {
+                                String toleratesSymName = symNameWithoutVersion + "-" + toleratesVersion;
+                                if (isFeatureAvailable(product, featuresToBeInstalled, toleratesSymName)) {
+                                    foundToleratesFeature = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!foundToleratesFeature) {
+                            throw new InstallException(Messages.PROVISIONER_MESSAGES.getLogMessage("tool.install.missing.feature", featureDefinition.getSymbolicName(), symName));
+                        }
                     }
                 }
             } else if (ibmFeature) {
@@ -307,6 +321,20 @@ public class ESAAdaptor extends ArchiveAdaptor {
         else
             product.addFeature(featureAsset.getFeatureName(), featureDefinition);
 
+    }
+
+    private static boolean isFeatureAvailable(Product product, Collection<String> featuresToBeInstalled, String symName) {
+        return product.containsFeature(symName) || product.containsFeatureCollection(symName)
+               || featuresToBeInstalled.contains(symName);
+    }
+
+    private static String extractSymbolicNameWithoutVersion(String symName) {
+        int dashVersionIndex = symName.lastIndexOf("-");
+        if (dashVersionIndex != -1) {
+            return symName.substring(0, dashVersionIndex);
+        } else {
+            return symName;
+        }
     }
 
     private static String getFeaturePath(ProvisioningFeatureDefinition targetFd, File baseDir) {

@@ -219,8 +219,7 @@ task createGeneratedReplacementProjects {
                 String classpathEntries = ""
                 String suffix = ""
                 for (String bsn : bsns) {
-                    String version = getVersionFromReleaseRepo(org, bsn)
-                    String artifact = bsn + '-' + version + '.jar'
+                    String artifact = bsn + '.jar'
                     classpathEntries = '<classpathentry exported="true" kind="lib" path="/prereq.published/lib/' + artifact + '"/>' + suffix + classpathEntries
                     suffix = '\n	'
                 }
@@ -282,7 +281,7 @@ task zipGradleBootstrap(type: Zip) {
     dependsOn createESALists
     dependsOn createIndex
     baseName 'gradle-bootstrap'
-    into 'prereq.published', {
+    into 'prereq.published/build', {
         from new File(project.buildDir, 'dependencies.gradle'),
              new File(project.buildDir, 'gaFeatures.txt'),
              new File(project.buildDir, 'betaFeatures.txt'),

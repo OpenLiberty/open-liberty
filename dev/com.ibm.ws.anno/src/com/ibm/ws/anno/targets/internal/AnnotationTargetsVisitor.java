@@ -132,7 +132,7 @@ public class AnnotationTargetsVisitor extends ClassVisitor {
     // an entire scan sweep.
 
     public AnnotationTargetsVisitor(AnnotationTargetsImpl_Targets annotationTargets) {
-        super(Opcodes.ASM5);
+        super(Opcodes.ASM7);
 
         this.hashText = AnnotationServiceImpl_Logging.getBaseHash(this);
 
@@ -512,7 +512,7 @@ public class AnnotationTargetsVisitor extends ClassVisitor {
 
     protected class AnnoFieldVisitor extends FieldVisitor {
         public AnnoFieldVisitor() {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM7);
         }
 
         // A field annotation.  Needs to be recorded.
@@ -555,7 +555,7 @@ public class AnnotationTargetsVisitor extends ClassVisitor {
 
     protected class AnnoMethodVisitor extends MethodVisitor {
         public AnnoMethodVisitor() {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM7);
         }
 
         // A method annotation.  Needs to be recorded.

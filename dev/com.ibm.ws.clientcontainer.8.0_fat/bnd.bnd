@@ -16,10 +16,7 @@ src: \
 	test-applications/HelloAppClient.jar/src,\
 	test-applications/HelloAppClientNCDF.jar/src,\
 	test-applications/CallbackHandlerNoDefaultConstructor.jar/src,\
-	test-applications/SlowInjectionAppClient.jar/src,\
-	test-applications/ErrorInjectionAppClient.jar/src,\
 	test-applications/InAppClientContainer.jar/src,\
-	test-applications/HelloAppClientCmdArgs.jar/src,\
 	test-applications/SystemExitClient.jar/src,\
 	test-applications/SystemExitClientNoDD.jar/src,\
 

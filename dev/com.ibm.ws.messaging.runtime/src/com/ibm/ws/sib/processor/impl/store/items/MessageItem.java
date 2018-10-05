@@ -20,6 +20,7 @@ import java.util.List;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.Reliability;
+import com.ibm.websphere.sib.SIRCConstants;
 import com.ibm.websphere.sib.exception.SIErrorException;
 import com.ibm.websphere.sib.exception.SIException;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -36,6 +37,7 @@ import com.ibm.ws.sib.msgstore.MessageStoreRuntimeException;
 import com.ibm.ws.sib.msgstore.NotInMessageStore;
 import com.ibm.ws.sib.msgstore.PersistentDataEncodingException;
 import com.ibm.ws.sib.msgstore.SevereMessageStoreException;
+import com.ibm.ws.sib.msgstore.MessageStoreConstants.MaximumAllowedDeliveryDelayAction;
 import com.ibm.ws.sib.msgstore.transactions.Transaction;
 import com.ibm.ws.sib.processor.SIMPConstants;
 import com.ibm.ws.sib.processor.exceptions.SIMPErrorException;
@@ -1032,6 +1034,54 @@ public class MessageItem extends Item implements SIMPMessage, TransactionCallbac
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "eventExpiryNotification");
 
+    }
+
+    @Override
+    public void handleInvalidDeliveryDelayable(MaximumAllowedDeliveryDelayAction action) 
+    	throws MessageStoreException, SIException {
+    	final String methodName = "handleInvalidDeliveryDelayable";
+    	if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+    		SibTr.entry(this, tc, methodName, action);
+
+    	try {    
+    		JsMessage jsMessage = getJSMessage(true);  		
+    		String apiMsgId = null;
+    		if (jsMessage instanceof JsApiMessage) {
+    			apiMsgId = ((JsApiMessage) jsMessage).getApiMessageId();
+    		} else {
+    			if (jsMessage.getApiMessageIdAsBytes() != null)
+    				apiMsgId = getJSMessage(true).getApiMessageIdAsBytes().toString();
+    		}
+    		SIMPItemStream itemstream = (SIMPItemStream) getItemStream();
+			BaseDestinationHandler baseDestinationHandler = getDestinationHandler(false, itemstream);
+    		
+    		switch(action) {
+    		case exception:  			
+    			baseDestinationHandler.handleUndeliverableMessage(this
+    					                                         ,SIRCConstants.SIRC0906_SUSPECT_DELIVERY_DELAY_TIME
+    					                                         ,new String[]{apiMsgId,
+    					                                        		       jsMessage.getSystemMessageId(),
+    					                 	                                   baseDestinationHandler.getName(),
+    					                 	                                   baseDestinationHandler.getMessageProcessor().getMessagingEngineName()}
+    					                                         ,null);  
+    			// No break; always fall through and issue a warning message.
+    		default:   				
+    			SibTr.warning(tc,"DELIVERY_DELAY_TIME_WARNING_CWSIP0580",
+                              new Object[] {apiMsgId,
+    									    jsMessage.getSystemMessageId(),
+    										baseDestinationHandler.getName(),
+    								        action.toString()}
+    	                     );
+    			break;
+    		}
+    		
+    	} catch (MessageStoreException | SIException exception) {
+    		SibTr.exit(this, tc, methodName, exception);
+    		throw exception;
+    	}
+
+    	if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+    		SibTr.exit(this, tc, methodName);
     }
 
     /*

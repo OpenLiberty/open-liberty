@@ -51,7 +51,7 @@ public class ProbeInjectionClassAdapter extends ClassVisitor {
     Set<ProbeListener> interestedListeners;
 
     public ProbeInjectionClassAdapter(ClassVisitor delegate, ProbeManagerImpl probeManager, final Class<?> clazz) {
-        super(Opcodes.ASM5, delegate);
+        super(Opcodes.ASM7, delegate);
         this.probeManager = probeManager;
         this.probedClasses = clazz;
         this.interestedListeners = probeManager.getInterestedByClass(clazz);

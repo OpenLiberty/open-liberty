@@ -567,7 +567,9 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 performSecurityChecks(req, resp, receivedSubject, webSecurityContext);
             }
 
-            extraAuditData.put("HTTP_SERVLET_REQUEST", req);
+            if (req != null) {
+                extraAuditData.put("HTTP_SERVLET_REQUEST", req);
+            }
             //auditManager.setHttpServletRequest(req);
             performDelegation(servletName);
 
@@ -687,8 +689,11 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 // reset the value.
                 webRequest.setDisableClientCertFailOver(false);
             }
+            boolean isUnprotected = false;
             if (authResult == null || (authResult.getStatus() != AuthResult.SUCCESS && webAppSecConfig.allowFailOver())) {
                 // if client cert is not processed or failed and allowFailOver is configured.
+                // set unprotected flag if the target url is not protected or assigned to everyone role.
+                isUnprotected = (unprotectedResource(webRequest) == PERMIT_REPLY);
                 authResult = providerAuthenticatorProxy.handleJaspi(webRequest, null);
                 authResult.setAuditCredType(AuditEvent.CRED_TYPE_JASPIC);
                 if (receivedSubject != null && receivedSubject.getPrincipals() != null) {
@@ -704,7 +709,9 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 String reason = authResult.getReason();
                 int statusCode = webRequest.getHttpServletResponse().getStatus();
                 if (reason != null && reason.contains("SEND_FAILURE")) {
-                    if (unprotectedResource(webRequest) == PERMIT_REPLY) {
+                    // isUnprotected is only set when handleJaspi is invoked, but it's ok since AuthResult.RETURN is only set
+                    // by the JASPIC code.
+                    if (isUnprotected) {
                         AuthenticationResult permitResult = new AuthenticationResult(AuthResult.SUCCESS, (Subject) null, AuditEvent.CRED_TYPE_JASPIC, null, AuditEvent.OUTCOME_SUCCESS);
                         Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(statusCode));
                         Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, permitResult, uriName, Integer.valueOf(HttpServletResponse.SC_OK));

@@ -67,9 +67,7 @@ error.missing.websocket=CWWKC0259E: L'applicazione non si \u00e8 avviata poich\u
 error.missing.websocket.explanation=L'applicazione \u00e8 un'applicazione websocket e richiede che una funzione websocket sia configurata nel file server.xml.
 error.missing.websocket.useraction=Configurare una funzione websocket nel file server.xml.
 
-error.webflux.not.supported=CWWKC0260E: Impossibile avviare l'applicazione perch\u00e9 Spring WebFlux non \u00e8 supportato.
-error.webflux.not.supported.explanation=L'applicazione \u00e8 un'applicazione WebFlux. Il supporto di programmazione reattivo fornito da Spring WebFlux non \u00e8 supportato.
-error.webflux.not.supported.useraction=Configurare un'applicazione che non utilizzi Spring WebFlux con il server.
+# CWWKC0260E: GOT REMOVED
 
 warning.spring_config.ignored.compression=CWWKC0261W: La compressione \u00e8 stata abilitata dall'applicazione. La compressione non \u00e8 supportata e l'impostazione verr\u00e0 ignorata.
 warning.spring_config.ignored.compression.explanation=La compressione non \u00e8 supportata e l'impostazione verr\u00e0 ignorata, ma l'applicazione continuer\u00e0 a funzionare.
@@ -78,3 +76,7 @@ warning.spring_config.ignored.compression.useraction=Non \u00e8 necessaria alcun
 warning.spring_config.ignored.session=CWWKC0262W: Il timeout o la persistenza della sessione sono stati configurati dall'applicazione. Queste impostazioni di sessione devono essere configurate nel file server.xml.
 warning.spring_config.ignored.session.explanation=Il timeout e la persistenza della sessione devono essere configurate nel file server.xml. Queste impostazioni di sessione dell'applicazione verranno ignorate.
 warning.spring_config.ignored.session.useraction=Configurare il timeout e la persistenza della sessione nel file server.xml.
+
+error.wrong.spring.boot.version=CWWKC0263E: La versione Spring Boot {0} non \u00e8 supportata. \u00c8 richiesta una versione Spring Boot con l''intervallo {1}.
+error.wrong.spring.boot.version.explanation=\u00c8 stata individuata una versione di Spring Boot non supportata dal server.
+error.wrong.spring.boot.version.useraction=Aggiornare l'applicazione Spring Boot e utilizzare una versione nell'intervallo di versioni richiesto.

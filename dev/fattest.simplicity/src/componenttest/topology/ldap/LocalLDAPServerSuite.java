@@ -18,6 +18,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.topology.utils.LDAPUtils;
 
 public class LocalLDAPServerSuite {
@@ -42,9 +43,11 @@ public class LocalLDAPServerSuite {
     public static void setUp() throws Exception {
         String method = "setUp";
         Log.entering(c, method);
-
+        System.setProperty("com.sun.jndi.ldap.object.disableEndpointIdentification", "true");
+        Log.info(c, method, "Endpoint identification was set to true");
         // Check if physical LDAP servers are up, if not then use in-memory LDAP
         if (!LDAPUtils.USE_LOCAL_LDAP_SERVER || !isInMemoryAllowed) {
+            // Workaround property for OpenJDKs sun JNDI implementation
             boolean isLdapServersAvailable = false;
             if (testServers != null) {
                 Set<String> primaryServers = testServers.keySet();
@@ -122,7 +125,7 @@ public class LocalLDAPServerSuite {
 
     /**
      * Performs the usual setup, but only check the availability of the specified servers and failovers as needed.
-     * 
+     *
      * @param servers
      * @throws Exception
      */
@@ -133,7 +136,7 @@ public class LocalLDAPServerSuite {
     /**
      * Performs the usual setup, but only check the availability of the specified servers and failovers as needed.
      * If {@code isInMemoryLdapAllowed} is false, no in-memory LDAP server instances will be started.
-     * 
+     *
      * @param servers
      * @param isInMemoryLdapAllowed
      * @throws Exception
@@ -145,7 +148,7 @@ public class LocalLDAPServerSuite {
     /**
      * Performs the usual setup, but only check the availability of the specified servers and failovers as needed.
      * If {@code isInMemoryLdapAllowed} is false, no in-memory LDAP server instances will be started.
-     * 
+     *
      * @param servers
      * @param isInMemoryLdapAllowed
      * @throws Exception
@@ -165,7 +168,7 @@ public class LocalLDAPServerSuite {
      * Adds a primary test server and failover to the list of LDAP servers to be used during testing. If the primary server specified
      * is already included in {@code existingServerMap}, the failover server specified will be added to the list of failovers for that
      * primary server. This method assumes that neither the primary nor the failover server requires SSL.
-     * 
+     *
      * @param primaryHost
      * @param primaryPort
      * @param failoverHost
@@ -182,7 +185,7 @@ public class LocalLDAPServerSuite {
      * Adds a primary test server and failover to the list of LDAP servers to be used during testing. If the primary server specified
      * is already included in {@code existingServerMap}, the failover server specified will be added to the list of failovers for that
      * primary server.
-     * 
+     *
      * @param primaryHost
      * @param primaryPort
      * @param primaryUseSsl
@@ -247,7 +250,7 @@ public class LocalLDAPServerSuite {
     /**
      * Check each of the failover servers specified for the given host and port and return true if there is an available
      * failover server.
-     * 
+     *
      * @param host
      * @param port
      * @return

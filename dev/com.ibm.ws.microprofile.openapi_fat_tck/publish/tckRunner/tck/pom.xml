@@ -26,6 +26,8 @@
     </properties>
 
     <build>
+        <directory>${targetDirectory}</directory>
+        <defaultGoal>clean test</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -77,7 +79,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
             <scope>test</scope>
         </dependency>
 

@@ -48,6 +48,7 @@ testsrc: test/src
         com.ibm.ws.logging;version=latest, \
         com.ibm.ws.logging.core;version=latest, \
         org.eclipse.osgi;version=latest, \
+        com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
         com.ibm.websphere.org.osgi.core;version=latest, \
         com.ibm.websphere.org.osgi.service.component;version=latest, \
         com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
@@ -71,6 +72,6 @@ testsrc: test/src
         org.slf4j:slf4j-api;version=1.7.7, \
         org.slf4j:slf4j-jdk14;version=1.7.7, \
         com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
-        org.apache.commons:commons-lang3;version=3.7, \
+        org.apache.commons:commons-lang3;version=3.8, \
         ./resources/;version=file
 

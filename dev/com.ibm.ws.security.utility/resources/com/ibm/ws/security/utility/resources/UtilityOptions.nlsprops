@@ -106,8 +106,8 @@ sslCert.desc=\
 \tclient configuration. 
 #Note to translator the word "createSSLCertificate" should not be translated
 sslCert.usage.options=\
-\t{0} createSSLCertificate '{--server servername |--client clientname'}\n\
-\t--password password [options]
+\t{0} createSSLCertificate '{--server=servername |--client=clientname'}\n\
+\t--password[=password] [options]
 sslCert.required-key.server=\
 \ \ \ \ --server=name
 sslCert.required-desc.server=\

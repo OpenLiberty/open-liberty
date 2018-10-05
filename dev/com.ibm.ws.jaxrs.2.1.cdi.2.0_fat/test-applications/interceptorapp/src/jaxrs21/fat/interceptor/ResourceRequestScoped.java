@@ -54,7 +54,9 @@ public class ResourceRequestScoped {
         if (interceptors == null) {
             return "NONE";
         }
-        return String.join(" ", interceptors);
+        String result = String.join(" ", interceptors);
+        interceptors.clear();
+        return result;
     }
 
     private static String whichLifecycleInterceptorsWereInvoked() {
@@ -62,6 +64,8 @@ public class ResourceRequestScoped {
         if (interceptors == null) {
             return "NONE";
         }
-        return String.join(" ", interceptors);
+        String result = String.join(" ", interceptors);
+        interceptors.clear();
+        return result;
     }
 }

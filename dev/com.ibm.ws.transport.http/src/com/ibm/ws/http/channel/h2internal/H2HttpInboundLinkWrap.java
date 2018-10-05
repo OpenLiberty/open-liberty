@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.h2internal;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,7 +20,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.h2internal.Constants.Direction;
+import com.ibm.ws.http.channel.h2internal.exceptions.FlowControlException;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
+import com.ibm.ws.http.channel.h2internal.exceptions.StreamClosedException;
 import com.ibm.ws.http.channel.h2internal.frames.Frame;
 import com.ibm.ws.http.channel.h2internal.frames.FrameContinuation;
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
@@ -31,6 +34,7 @@ import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundChannel;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
+import com.ibm.ws.http2.upgrade.H2Exception;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -301,7 +305,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                 this.muxLink.close(inVC, e);
             } else {
                 H2StreamProcessor h2sp = muxLink.getStreamProcessor(streamID);
-                if (h2sp != null) {
+                if (h2sp != null && !h2sp.isStreamClosed()) {
                     try {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "close: attempting to reset stream: " + streamID);
@@ -347,7 +351,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
         }
     }
 
-    public void writeFramesSync(CopyOnWriteArrayList<Frame> frames) {
+    public void writeFramesSync(CopyOnWriteArrayList<Frame> frames) throws IOException {
 
         if (frames == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -378,6 +382,16 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                         Tr.debug(tc, "writeFramesSync stream " + streamID + " was already closed; cannot write");
                     }
                 }
+
+            }
+
+            catch (FlowControlException | StreamClosedException e) {
+                //  throw IOE so channel code knows the write failed and can deal with the app/servlet facing output stream.
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "write failed with a FlowControlException: " + e.getErrorString());
+                }
+                IOException ioe = new IOException(new H2Exception(e.getMessage()));
+                throw ioe;
 
             } catch (Http2Exception e) {
                 //  send out a connection error.

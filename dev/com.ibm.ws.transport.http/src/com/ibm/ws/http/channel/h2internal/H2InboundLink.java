@@ -244,7 +244,7 @@ public class H2InboundLink extends HttpInboundLink {
      *
      * @throws StreamClosedException
      */
-    public void processConnectionPrefaceMagic() throws ProtocolException, StreamClosedException {
+    public void processConnectionPrefaceMagic() throws Http2Exception {
         connection_preface_string_rcvd = true;
         H2StreamProcessor controlStream = createNewInboundLink(0);
         controlStream.completeConnectionPreface();
@@ -859,6 +859,10 @@ public class H2InboundLink extends HttpInboundLink {
         H2StreamProcessor stream;
         for (Integer i : streamTable.keySet()) {
             stream = streamTable.get(i);
+            // notify streams waiting for a window update
+            synchronized (stream) {
+                stream.notifyAll();
+            }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "destroying " + stream + ", " + stream.getId());
             }
@@ -1259,6 +1263,10 @@ public class H2InboundLink extends HttpInboundLink {
 
     public int getHighestClientStreamId() {
         return highestClientStreamId;
+    }
+
+    public int getHighestServerStreamId() {
+        return highestLocalStreamId;
     }
 
     /**

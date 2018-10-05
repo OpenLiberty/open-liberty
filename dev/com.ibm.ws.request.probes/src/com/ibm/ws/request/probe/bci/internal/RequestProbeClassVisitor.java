@@ -35,7 +35,7 @@ public class RequestProbeClassVisitor extends ClassVisitor {
 	 * @param arg0
 	 */
 	public RequestProbeClassVisitor(ClassVisitor cv, String clsName) {
-		super(Opcodes.ASM5, cv);
+		super(Opcodes.ASM7, cv);
 		this.classname = clsName;
 	}
 

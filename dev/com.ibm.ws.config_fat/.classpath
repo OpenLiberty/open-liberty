@@ -4,7 +4,7 @@
 	<classpathentry kind="src" path="test-bundles/test.config.variables/src"/>
 	<classpathentry kind="src" path="test-bundles/metatype/src"/>
 	<classpathentry kind="src" path="test-applications/configdropins/src"/>
-	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="test" output="bin_test"/>
 	<classpathentry kind="src" path="test-applications/mergedconfig/src"/>
 	<classpathentry kind="src" path="test-bundles/test.config.childalias.b/src"/>
 	<classpathentry kind="src" path="test-bundles/test.config.extensions.schema.generator/src"/>

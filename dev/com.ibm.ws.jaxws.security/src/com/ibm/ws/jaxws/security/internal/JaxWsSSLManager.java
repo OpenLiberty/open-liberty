@@ -56,7 +56,6 @@ public class JaxWsSSLManager {
      * @param fallbackOnDefault if true, will fall back on server default ssl configuration
      * @return
      */
-    @FFDCIgnore(PrivilegedActionException.class)
     public static SSLSocketFactory getSSLSocketFactoryBySSLRef(String sslRef, Map<String, Object> props, boolean fallbackOnDefault) {
         SSLSupport sslSupportService = tryGetSSLSupport();
 
@@ -67,22 +66,9 @@ public class JaxWsSSLManager {
         JSSEHelper jsseHelper = sslSupportService.getJSSEHelper();
         Properties sslConfig = null;
         try {
-            final JSSEHelper f_jsseHelper = jsseHelper;
-
+            // get the properties from the jsseHelper
             if (sslRef != null) {
-                final String f_sslRef = sslRef;
-                try {
-                    sslConfig = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
-                        @Override
-                        public Properties run() throws SSLException {
-                            return f_jsseHelper.getProperties(f_sslRef);
-                        }
-                    });
-
-                } catch (PrivilegedActionException pae) {
-                    Throwable cause = pae.getCause();
-                    throw (SSLException) cause;
-                }
+                sslConfig = getSSLConfig(sslRef, jsseHelper);
             }
 
             // override the existed property in SSLConfig
@@ -115,6 +101,29 @@ public class JaxWsSSLManager {
             Tr.error(tc, "err.when.get.ssl.socket.factory", sslRef, e.getMessage());
             throw new IllegalStateException(e);
         }
+    }
+
+    @FFDCIgnore(PrivilegedActionException.class)
+    private static Properties getSSLConfig(String sslRef, JSSEHelper jsseHelper) throws SSLException {
+        final String f_sslRef = sslRef;
+        final JSSEHelper f_jsseHelper = jsseHelper;
+        Properties sslConfig = null;
+        try {
+            sslConfig = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
+                @Override
+                public Properties run() throws SSLException {
+                    return f_jsseHelper.getProperties(f_sslRef);
+                }
+            });
+
+        } catch (PrivilegedActionException pae) {
+            Throwable cause = pae.getCause();
+            throw (SSLException) cause;
+        }
+        // If the sslConfig is not null clone as it the properties may be added or modified later
+        if (sslConfig != null)
+            return (Properties) sslConfig.clone();
+        return null;
     }
 
     private static SSLSupport tryGetSSLSupport() {

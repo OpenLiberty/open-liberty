@@ -266,18 +266,26 @@ public class FormLogoutExtensionProcessor extends WebExtensionProcessor {
                          * generally redirect network paths with 2 or more preceding slashes. Thus, we need to try to obtain the hostname
                          * utilizing only 2 preceding slashes.
                          */
-                        if (exitPage.startsWith("//")) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "URI " + exitPage + " is not absolute.");
+                        String exitPageTrimmed = exitPage.trim();
+                        if (exitPageTrimmed.startsWith("//")) {
                             if (tc.isDebugEnabled())
-                                Tr.debug(tc, "URI " + exitPage + " will be processed as a Network-Path." +
-                                             " sendRedirect() defines a Network-Path as starting with // ");
-                            char[] exitPageCharArr = exitPage.toCharArray();
+                                Tr.debug(tc, "URI " + exitPageTrimmed + " will be processed as a Network-Path." +
+                                             " SendRedirect() defines a Network-Path as starting with // ");
+                            char[] exitPageCharArr = exitPageTrimmed.toCharArray();
                             for (int i = 0; i < exitPageCharArr.length; i++) {
                                 if (exitPageCharArr[i] != '/') {
-                                    URI uri = new URI(exitPage.substring(i - 2));
+                                    URI uri = new URI(exitPageTrimmed.substring(i - 2));
                                     //Set hostname for further checks.
                                     logoutURLHost = uri.getHost();
-                                    if (tc.isDebugEnabled())
-                                        Tr.debug(tc, "SDK indicates " + exitPage + " Network-Path does not contain a valid hostname.");
+                                    if (logoutURLHost == null) {
+                                        if (tc.isDebugEnabled())
+                                            Tr.debug(tc, "SDK indicates " + exitPageTrimmed + " Network-Path does not contain a valid hostname.");
+                                    } else {
+                                        if (tc.isDebugEnabled())
+                                            Tr.debug(tc, "SDK indicates " + exitPageTrimmed + " Network-Path contains a valid hostname," + logoutURLHost);
+                                    }
                                     break;
                                 }
                             }

@@ -1,0 +1,19 @@
+<server description="Server for testing MP Reactive Streams">
+
+	<include location="../fatTestPorts.xml" />
+
+        <variable name="testVar" value="testValue"/>
+
+	<featureManager>
+		<feature>mpReactiveStreams-1.0</feature>
+    	<feature>osgiconsole-1.0</feature>
+		<feature>cdi-2.0</feature>
+	 	<feature>servlet-4.0</feature> 
+		<feature>componentTest-1.0</feature>
+	</featureManager>
+
+   <application id="mpReactiveStreamsFAT" name="ReactiveStreamsTest" type="war" location="ReactiveStreamsTest.war">
+   </application>
+
+
+</server>

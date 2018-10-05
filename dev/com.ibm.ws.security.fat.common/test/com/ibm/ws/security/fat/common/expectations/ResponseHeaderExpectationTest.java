@@ -120,6 +120,18 @@ public class ResponseHeaderExpectationTest extends CommonSpecificExpectationTest
     }
 
     @Test
+    public void test_validate_nullAction() {
+        try {
+            Expectation exp = new ResponseHeaderExpectation(null, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+            Object content = "Some " + SEARCH_FOR_VAL + " content";
+
+            exp.validate(content);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
     public void test_validate_nullResponseHeaders() {
         try {
             Expectation exp = createBasicExpectation();
@@ -448,6 +460,11 @@ public class ResponseHeaderExpectationTest extends CommonSpecificExpectationTest
     @Override
     protected Expectation createBasicExpectation() {
         return new ResponseHeaderExpectation(TEST_ACTION, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+    }
+
+    @Override
+    protected Expectation createBasicExpectationWithNoAction() {
+        return new ResponseHeaderExpectation(null, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
     }
 
     @SuppressWarnings("unchecked")

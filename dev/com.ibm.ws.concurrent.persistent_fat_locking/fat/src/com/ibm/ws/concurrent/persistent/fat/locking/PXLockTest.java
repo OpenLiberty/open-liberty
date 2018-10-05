@@ -26,25 +26,19 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.junit.rules.TestRule;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.custom.junit.runner.OnlyRunInJava7Rule;
 import componenttest.topology.impl.LibertyServer;
 
 /**
  * Lightweight stress test of persistent executor
  */
 public class PXLockTest {
-    @ClassRule
-    public static final TestRule java7Rule = new OnlyRunInJava7Rule();
-
     private static final LibertyServer server = FATSuite.server;
 
     private static final Set<String> appNames = Collections.singleton("pxlocktest");

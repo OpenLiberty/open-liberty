@@ -118,7 +118,10 @@ public abstract class TimerNpRunnable implements Runnable {
                 (ivRetries >= ivRetryLimit)) // and retry limit reached
             {
                 // Note: ivRetryLimit==0 means no retries at all
+
+                ivTimer.calculateNextExpiration();
                 ivTimer.scheduleNext();
+                ivRetries = 0;
                 Tr.warning(tc, "NP_TIMER_RETRY_LIMIT_REACHED_CNTR0179W", ivRetryLimit);
                 if (isTraceOn && tc.isEntryEnabled())
                     Tr.exit(tc, "Timer retry limit has been reached; aborting");

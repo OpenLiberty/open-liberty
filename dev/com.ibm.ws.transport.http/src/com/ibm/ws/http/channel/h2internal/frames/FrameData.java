@@ -257,13 +257,78 @@ public class FrameData extends Frame {
 
         FrameData frameDataToCompare = (FrameData) object;
 
-        if (!super.equals(frameDataToCompare))
+        if (!subSuperEquals(frameDataToCompare))
             return false;
 
         if (this.getPaddingLength() != frameDataToCompare.getPaddingLength()) {
             return false;
         }
         if (!Arrays.equals(this.getData(), frameDataToCompare.getData())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean subSuperEquals(Object object) {
+        if (!(object instanceof Frame))
+            return false;
+
+        Frame frameToCompare = (Frame) object;
+
+        if (this.flagAckSet() != frameToCompare.flagAckSet()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "this.flagAckSet() = " + this.flagAckSet() + " frameToCompare.flagAckSet() = " + frameToCompare.flagAckSet());
+            }
+            return false;
+        }
+        if (this.flagPrioritySet() != frameToCompare.flagPrioritySet()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "this.flagPrioritySet() = " + this.flagPrioritySet() + " frameToCompare.flagPrioritySet() = " + frameToCompare.flagPrioritySet());
+            }
+            return false;
+        }
+        // For DATA frames don't compare end of stream, since that is timing dependent for some tests.
+        //if (this.flagEndStreamSet() != frameToCompare.flagEndStreamSet()) {
+        //    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        //        Tr.debug(tc, "this.flagEndStreamSet() = " + this.flagEndStreamSet() + " frameToCompare.flagEndStreamSet() = " + frameToCompare.flagEndStreamSet());
+        //    }
+        //    return false;
+        //}
+        if (this.flagEndHeadersSet() != frameToCompare.flagEndHeadersSet()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "this.flagEndHeadersSet() = " + this.flagEndHeadersSet() + " frameToCompare.flagEndHeadersSet() = " + frameToCompare.flagEndHeadersSet());
+            }
+            return false;
+        }
+        if (this.flagPaddedSet() != frameToCompare.flagPaddedSet()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "this.flagPaddedSet() = " + this.flagPaddedSet() + " frameToCompare.flagPaddedSet() = " + frameToCompare.flagPaddedSet());
+            }
+            return false;
+        }
+        if (this.getFrameType() != frameToCompare.getFrameType()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getFrameType is false");
+            }
+            return false;
+        }
+        if (this.getFrameReserveBit() != frameToCompare.getFrameReserveBit()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getFrameReserveBit is false");
+            }
+            return false;
+        }
+        if ((this.getPayloadLength() != 0) && (this.getPayloadLength() != frameToCompare.getPayloadLength())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "this.getPayloadLength() = " + this.getPayloadLength() + " frameToCompare.getPayloadLength() = " + frameToCompare.getPayloadLength());
+            }
+            return false;
+        }
+        if (this.getStreamId() != frameToCompare.getStreamId()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getStreamId is false");
+            }
             return false;
         }
 
@@ -278,54 +343,59 @@ public class FrameData extends Frame {
 
         frameToString.append("PaddingLength: " + this.getPaddingLength() + "\n");
 
-        byte[] ba = this.getData();
-        if (ba == null) {
-            frameToString.append("Data: null");
-        } else {
-            int length = ba.length;
-            if (length > 512) {
-                length = 512;
-            }
-            StringBuffer sbuf = printCharArrayWithHex(ba, length);
-            frameToString.append(sbuf.toString());
-        }
+        // don't toString user data payload, unless we turn this on for some special debug
+        /*
+         * byte[] ba = this.getData();
+         * if (ba == null) {
+         * frameToString.append("Data: null");
+         * } else {
+         * int length = ba.length;
+         * if (length > 512) {
+         * length = 512;
+         * }
+         * StringBuffer sbuf = printCharArrayWithHex(ba, length);
+         * frameToString.append(sbuf.toString());
+         * }
+         */
 
         return frameToString.toString();
     }
 
-    public StringBuffer printCharArrayWithHex(byte[] x, int length) {
-        StringBuffer sb = new StringBuffer("Data: (up to first 512 btytes):\n");
-        byte b;
-        int count = 0;
-        for (int i = 0; i < length; i++) {
-            count++;
-            b = x[i];
-            char c = (char) b;
-            if (((count % 64) == 0) && (b != 0x0A)) {
-                if (b == 0x0D) {
-                    sb.append("<CR>");
-                    count = 0;
-                } else if ((b > 0) && (b < 127)) {
-                    sb.append(c);
-                    count = 0;
-                } else {
-                    sb.append(String.format("<0x%02X>", b) + " ");
-                    count = 0;
-                }
-            } else {
-                if (b == 0x0A) {
-                    sb.append("\n<LF>");
-                    count = 0;
-                } else if (b == 0x0D) {
-                    sb.append("<CR>");
-                } else if ((b > 0) && (b < 127)) {
-                    sb.append(c);
-                } else {
-                    sb.append(String.format("<0x%02X>", b) + " ");
-                }
-            }
-        }
-        return sb;
-    }
-
+    // don't toString user data payload, unless we turn this on for some special debug
+    /*
+     * public StringBuffer printCharArrayWithHex(byte[] x, int length) {
+     * StringBuffer sb = new StringBuffer("Data: (up to first 512 btytes):\n");
+     * byte b;
+     * int count = 0;
+     * for (int i = 0; i < length; i++) {
+     * count++;
+     * b = x[i];
+     * char c = (char) b;
+     * if (((count % 64) == 0) && (b != 0x0A)) {
+     * if (b == 0x0D) {
+     * sb.append("<CR>");
+     * count = 0;
+     * } else if ((b > 0) && (b < 127)) {
+     * sb.append(c);
+     * count = 0;
+     * } else {
+     * sb.append(String.format("<0x%02X>", b) + " ");
+     * count = 0;
+     * }
+     * } else {
+     * if (b == 0x0A) {
+     * sb.append("\n<LF>");
+     * count = 0;
+     * } else if (b == 0x0D) {
+     * sb.append("<CR>");
+     * } else if ((b > 0) && (b < 127)) {
+     * sb.append(c);
+     * } else {
+     * sb.append(String.format("<0x%02X>", b) + " ");
+     * }
+     * }
+     * }
+     * return sb;
+     * }
+     */
 }

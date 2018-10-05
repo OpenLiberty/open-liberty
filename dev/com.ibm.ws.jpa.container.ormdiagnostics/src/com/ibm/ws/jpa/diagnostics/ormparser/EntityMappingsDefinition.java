@@ -23,21 +23,27 @@ import com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IEntityMappings;
 
 public class EntityMappingsDefinition {
     private final URL source;
+    private final byte[] fileData;
     private final BigInteger hash;
     private final IEntityMappings entityMappings;
 
-    public EntityMappingsDefinition(URL source, BigInteger hash, IEntityMappings entityMappings) {
+    public EntityMappingsDefinition(URL source, byte[] fileData, BigInteger hash, IEntityMappings entityMappings) {
         if (source == null || hash == null || entityMappings == null) {
             throw new NullPointerException("Constructor cannot accept any null arguments.");
         }
 
         this.source = source;
+        this.fileData = fileData;
         this.hash = hash;
         this.entityMappings = entityMappings;
     }
 
     public BigInteger getHash() {
         return hash;
+    }
+
+    public byte[] getFileData() {
+        return fileData;
     }
 
     public URL getSource() {

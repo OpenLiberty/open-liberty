@@ -17,7 +17,6 @@ import java.util.concurrent.CountDownLatch;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.DatatypeConverter;
 
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
 import com.ibm.ws.http.channel.h2internal.frames.FrameGoAway;
@@ -188,7 +187,7 @@ public class GenericFrameTests extends H2FATDriverServlet {
         // malformed frame: set frame type byte to unknown
         //_________________________||____________________ - frame type byte
         String dataString = "0000060f0000000003414243313233";
-        byte[] b = DatatypeConverter.parseHexBinary(dataString);
+        byte[] b = parseHexBinary(dataString);
         h2Client.sendBytes(b);
 
         waitForTestCompletion(blockUntilConnectionIsDone);
@@ -221,5 +220,16 @@ public class GenericFrameTests extends H2FATDriverServlet {
 
         waitForTestCompletion(blockUntilConnectionIsDone);
         handleErrors(h2Client, testName);
+    }
+
+    // This does the same thing as DatatypeConverter.parseHexBinary(str), but it allows us to avoid a dependency on JAX-B for this FAT
+    public static byte[] parseHexBinary(String str) {
+        int len = str.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(str.charAt(i), 16) << 4)
+                                  + Character.digit(str.charAt(i + 1), 16));
+        }
+        return data;
     }
 }

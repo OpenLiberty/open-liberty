@@ -65,10 +65,10 @@ public abstract class AbstractSpringTests {
     public static final String SPRING_BOOT_15_APP_WEBANNO = "com.ibm.ws.springboot.support.version15.test.webanno.app.jar";
     public static final String SPRING_BOOT_15_APP_WEBSOCKET = "com.ibm.ws.springboot.support.version15.test.websocket.app.jar";
     public static final String SPRING_BOOT_15_APP_ACTUATOR = "com.ibm.ws.springboot.support.version15.test.actuator.app.jar";
+    public static final String SPRING_BOOT_15_APP_MULTI_CONTEXT = "com.ibm.ws.springboot.support.version15.test.multi.context.app.jar";
     public static final String SPRING_BOOT_20_APP_BASE = "com.ibm.ws.springboot.support.version20.test.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_WEBFLUX = "com.ibm.ws.springboot.support.version20.test.webflux.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_WEBFLUX_WRONG_VERSION = "com.ibm.ws.springboot.support.version20.test.webflux.wrong.version.app-0.0.1-SNAPSHOT.jar";
-
     public static final String LIBERTY_USE_DEFAULT_HOST = "server.liberty.use-default-host";
     public static final String SPRING_LIB_INDEX_CACHE = "lib.index.cache";
     public static final String SPRING_WORKAREA_DIR = "workarea/spring/";

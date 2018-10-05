@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+    xmlns="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+    version="1.0">
+    
+    <!--  Unidirectional Entities -->
+    <entity 
+        class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.xml.XMLMMUniEntA">
+        <attributes>
+            <id name="id"/>
+            <basic name="name"/>
+            <many-to-many name="defaultRelationship">
+                <join-table name="XMLManyXManyDRUniJoinTable">
+                    <join-column name="ENT_A"/>
+                    <inverse-join-column name="ENT_B"/>
+                </join-table>
+            </many-to-many>
+            <many-to-many name="cascadeAll"><cascade><cascade-all /></cascade></many-to-many>
+            <many-to-many name="cascadeMerge"><cascade><cascade-merge /></cascade></many-to-many>
+            <many-to-many name="cascadePersist"><cascade><cascade-persist /></cascade></many-to-many>
+            <many-to-many name="cascadeRefresh"><cascade><cascade-refresh /></cascade></many-to-many>
+            <many-to-many name="cascadeRemove"><cascade><cascade-remove /></cascade></many-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.xml.XMLMMUniEntB_CA">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.xml.XMLMMUniEntB_CM">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.xml.XMLMMUniEntB_CP">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.xml.XMLMMUniEntB_CRF">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.xml.XMLMMUniEntB_CRM">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.xml.XMLMMUniEntB_DR">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+        </attributes>
+    </entity>
+    
+    <!--  Bidirectional Entities -->
+    <entity 
+        class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.xml.XMLMMBiEntA">
+        <attributes>
+            <id name="id"/>
+            <basic name="name"/>
+            <many-to-many name="defaultRelationship">
+                <join-table name="XMLManyXManyDRBiJoinTable">
+                    <join-column name="ENT_A"/>
+                    <inverse-join-column name="ENT_B"/>
+                </join-table>
+            </many-to-many>
+            <many-to-many name="cascadeAll"><cascade><cascade-all /></cascade></many-to-many>
+            <many-to-many name="cascadeMerge"><cascade><cascade-merge /></cascade></many-to-many>
+            <many-to-many name="cascadePersist"><cascade><cascade-persist /></cascade></many-to-many>
+            <many-to-many name="cascadeRefresh"><cascade><cascade-refresh /></cascade></many-to-many>
+            <many-to-many name="cascadeRemove"><cascade><cascade-remove /></cascade></many-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.xml.XMLMMBiEntB_CA">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <many-to-many name="entityA" mapped-by="cascadeAll"></many-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.xml.XMLMMBiEntB_CM">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <many-to-many name="entityA" mapped-by="cascadeMerge"></many-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.xml.XMLMMBiEntB_CP">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <many-to-many name="entityA" mapped-by="cascadePersist"></many-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.xml.XMLMMBiEntB_CRF">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <many-to-many name="entityA" mapped-by="cascadeRefresh"></many-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.xml.XMLMMBiEntB_CRM">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <many-to-many name="entityA" mapped-by="cascadeRemove"></many-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.xml.XMLMMBiEntB_DR">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <many-to-many name="entityA" mapped-by="defaultRelationship"></many-to-many>
+        </attributes>
+    </entity>
+    
+    <!-- Compound Primary Key Entities -->
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.xml.XMLEmbedIDMMEntityA">
+        <table name="XMLEmbIDManyXManyEntA"></table>
+        <attributes>
+            <id name="id"></id>
+            <basic name="userName"></basic>
+            <basic name="password"></basic>
+            <many-to-many name="identity">
+                <join-table name="XMLEmbManyXManyJoinTable">
+                    <inverse-join-column name="identity_id" referenced-column-name="id" />
+                    <inverse-join-column name="identity_country" referenced-column-name="country" />
+                </join-table></many-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.xml.XMLEmbedIDMMEntityB">
+        <table name="XMLEmbIDManyXManyEntB"></table>
+        <attributes>
+            <embedded-id name="id"></embedded-id>
+            <basic name="name"></basic>
+            <basic name="salary"></basic>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.xml.XMLIDClassMMEntityA">
+        <attributes>
+            <id name="id"></id>
+            <basic name="userName"></basic>
+            <basic name="password"></basic>
+            <many-to-many name="identity">
+                <join-table name="XMLIDClassMMEntA_IDClassMMEntB">
+                    <inverse-join-column name="identity_id" referenced-column-name="id" />
+                    <inverse-join-column name="identity_country" referenced-column-name="country" />
+                </join-table>
+            </many-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.xml.XMLIDClassMMEntityB">
+        <id-class class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.CompoundPK" />
+        <attributes>
+            <id name="id"></id>
+            <id name="country"></id>
+            <basic name="name"></basic>
+            <basic name="salary"></basic>
+        </attributes>
+    </entity>
+    
+    <!-- Collection Type Entities -->
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.containertype.xml.XMLMMContainerTypeEntityA">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+
+            <many-to-many name="genericizedCollectionType">
+                <join-table name="XMLMMCTEA_GCT"></join-table>
+            </many-to-many>
+            <many-to-many name="ungenericizedCollectionType"
+                target-entity="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.containertype.xml.XMLMMContainerTypeEntityB">
+                <join-table name="XMLMMCTEA_UGCT"></join-table>
+            </many-to-many>
+
+            <many-to-many name="genericizedSetType">
+                <join-table name="XMLMMCTEA_GST"></join-table>
+            </many-to-many>
+            <many-to-many name="ungenericizedSetType" target-entity="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.containertype.xml.XMLMMContainerTypeEntityB">
+                <join-table name="XMLMMCTEA_UGST"></join-table>
+            </many-to-many>
+
+            <many-to-many name="genericizedListType">
+                <join-table name="XMLMMCTEA_GLT"></join-table>
+            </many-to-many>
+            <many-to-many name="ungenericizedListType"
+                target-entity="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.containertype.xml.XMLMMContainerTypeEntityB">
+                <join-table name="XMLMMCTEA_UGLT"></join-table>
+            </many-to-many>
+            <many-to-many name="orderedListType">
+                <order-by>name ASC</order-by>
+                <join-table name="XMLMMCTEA_OLT"></join-table>  
+            </many-to-many>
+            
+            <many-to-many name="genericizedMapType">
+                <join-table name="XMLMMCTEA_GMT"></join-table>
+            </many-to-many>
+
+            <many-to-many name="genericizedMapWithKeyType">
+                <map-key name="name"/>
+                <join-table name="XMLMMCTEA_GMKT"></join-table>
+            </many-to-many>
+            
+            <many-to-many name="ungenericizedMapWithKeyType"
+                target-entity="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.containertype.xml.XMLMMContainerTypeEntityB">
+                <map-key name="name"/>
+                <join-table name="XMLMMCTEA_UGMKT"></join-table>
+            </many-to-many>
+        </attributes>
+    </entity>
+    
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.containertype.xml.XMLMMContainerTypeEntityB">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+        </attributes>
+    </entity>
+    
+    <!--  Embeddable Declarations -->
+    <embeddable class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.xml.XMLEmbeddableID"></embeddable>    
+</entity-mappings>

@@ -143,7 +143,7 @@ public class OidcClientUtil {
     public Map<String, Object> getUserinfo(String userInfor, String accessToken, SSLSocketFactory sslSocketFactory,
             boolean isHostnameVerification) throws Exception {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("access_token", accessToken));
+        // params.add(new BasicNameValuePair("access_token", accessToken));
 
         Map<String, Object> getResponseMap = getFromUserinfoEndpoint(userInfor, params, accessToken, sslSocketFactory, isHostnameVerification);
         return getResponseMap;
@@ -208,6 +208,9 @@ public class OidcClientUtil {
         HttpGet request = new HttpGet(url);
         for (NameValuePair nameValuePair : commonHeaders) {
             request.addHeader(nameValuePair.getName(), nameValuePair.getValue());
+        }
+        if (accessToken != null) {
+            request.setHeader(ClientConstants.AUTHORIZATION, ClientConstants.BEARER + accessToken);
         }
 
         HttpClient httpClient = baUsername != null ? oidcHttpUtil.createHTTPClient(sslSocketFactory, url, isHostnameVerification, baUsername, baPassword) : oidcHttpUtil.createHTTPClient(sslSocketFactory, url, isHostnameVerification);
@@ -400,7 +403,7 @@ public class OidcClientUtil {
     public static String calculateOidcCodeCookieValue(String encoded, ConvergedClientConfig clientCfg) {
 
         String retVal = new String(encoded);
-        String clientidsecret = clientCfg.getClass().getName(); //TODO: we should use client id here
+        String clientidsecret = clientCfg.toString();
         if (clientCfg.getClientSecret() != null) {
             clientidsecret = clientidsecret.concat(clientCfg.getClientSecret());
         }

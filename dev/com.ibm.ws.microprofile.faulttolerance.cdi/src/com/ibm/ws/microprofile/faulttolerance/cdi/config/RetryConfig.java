@@ -131,7 +131,7 @@ public class RetryConfig extends AbstractAnnotationConfig<Retry> implements Retr
 
             }
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+        if (tc.isWarningEnabled()) {
             if ((delay() != 0) && (jitter() != 0)) {
                 Duration jitter = Duration.of(jitter(), jitterDelayUnit());
                 Duration delay = Duration.of(delay(), delayUnit());

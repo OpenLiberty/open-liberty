@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.web.server.version20.container;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import javax.servlet.ServletRegistration;
 
 import org.springframework.beans.BeansException;
@@ -31,7 +29,6 @@ import com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationF
 public class LibertyReactiveWebServerFactory extends AbstractReactiveWebServerFactory implements ApplicationContextAware, LibertyFactoryBase {
     private boolean useDefaultHost = true;
     private ApplicationContext context;
-    private final AtomicReference<LibertyWebServer> usingDefaultHost = new AtomicReference<>();
 
     @Override
     public WebServer getWebServer(HttpHandler httpHandler) {
@@ -65,13 +62,8 @@ public class LibertyReactiveWebServerFactory extends AbstractReactiveWebServerFa
     @Override
     public boolean shouldUseDefaultHost(LibertyWebServer container) {
         // only use default host if configured to and
-        // this is the root application context
-        return useDefaultHost && context.getParent() == null && usingDefaultHost.compareAndSet(null, container);
-    }
-
-    @Override
-    public void stopUsingDefaultHost(LibertyWebServer container) {
-        usingDefaultHost.compareAndSet(container, null);
+        // we can acquire the default host
+        return useDefaultHost && acquireDefaultHost(container);
     }
 
     /*

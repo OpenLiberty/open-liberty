@@ -18,69 +18,77 @@ package com.ibm.ws.fat.util;
  */
 
 import java.lang.reflect.Method;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.shrinkwrap.api.Archive;
+import org.junit.Test;
+
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import org.jboss.shrinkwrap.api.Archive;
-
-import org.junit.Test;
-
 public class ShrinkWrapSharedServer extends SharedServer {
 
-    private boolean shutdownAfterTest = true;
-    private final Map<Archive,List<String>> archivesAndPaths;
+    private final boolean shutdownAfterTest = true;
+    private final Map<Archive, List<String>> archivesAndPaths;
     private static Class<?> c = ShrinkWrapSharedServer.class;
 
-     /**
+    /**
      * Creates a {@link SharedServer} then runs any methods in testClass annotated with
-     * @BuildShrinkWrap and copies the returned Archives to the servers 
-     *
-     * Methods must be static, have no paramaters, return: Archive, Archive[], Map<Archive,String>. 
-     * If Archive or Archive[] is returned the returned values will be placed to the server's 
-     * dropins folders. If a map is returned each archive will be placed whereever the
+     * {@link BuildShrinkWrap} and copies the returned Archives to the servers
+     * <p>
+     * Methods must be static, have no parameters, return: {@code Archive}, {@codeArchive[]}, {@code List<Archive>} or {@code Map<Archive,String>}.
+     * If {@code Archive}, {@code}List<Archive> or Archive[] is returned the returned values will be placed to the server's
+     * dropins folders. If a map is returned each archive will be placed wherever the
      * string points too.
-     * 
+     * <p>
      * If the method returns the wrong type an exception will be logged and the test will proceed
-     * without that application. 
+     * without that application.
      */
-    public ShrinkWrapSharedServer(String serverName, Class testClass){
+    public ShrinkWrapSharedServer(String serverName, Class testClass) {
         super(serverName);
-        archivesAndPaths = new HashMap<Archive,List<String>>();
+        archivesAndPaths = new HashMap<Archive, List<String>>();
         getArchivesViaAnnotation(serverName, testClass);
     }
 
     private void getArchivesViaAnnotation(String serverName, Class testClass) {
-        String dropinsPath = "publish/servers/"+serverName+"/dropins";
+        String dropinsPath = "/dropins";
 
-        for (Method method : testClass.getDeclaredMethods()){
-            if (method.isAnnotationPresent(BuildShrinkWrap.class)){
-                try { 
+        for (Method method : testClass.getDeclaredMethods()) {
+            if (method.isAnnotationPresent(BuildShrinkWrap.class)) {
+                try {
                     Object archive = method.invoke(null);
                     if (archive == null) {
                         //do nothing
-                    } else if (archive instanceof Archive){
+                    } else if (archive instanceof Archive) {
                         archivesAndPaths.put((Archive) archive, Arrays.asList(dropinsPath));
-                    } else if (archive instanceof Archive[]){
+                    } else if (archive instanceof Archive[]) {
                         Archive[] archives = (Archive[]) archive;
                         for (Archive a : archives) {
-                            if (a != null) { 
-                              archivesAndPaths.put(a, Arrays.asList(dropinsPath));
+                            if (a != null) {
+                                archivesAndPaths.put(a, Arrays.asList(dropinsPath));
                             }
                         }
-                    } else if (archive instanceof Map<?,?>) { 
-                        Map<?,?> archiveMap = (Map<?,?>) archive;
-                        for (Object key : archiveMap.keySet()){
+                    } else if (archive instanceof List<?>) {
+                        List<?> archives = (List<?>) archive;
+                        for (Object a : archives) {
+                            if (!(a instanceof Archive)) {
+                                throw new IllegalArgumentException("A method annotated BuildShrinkWrap returned a List, but an entry was not an Archive");
+                            }
+                            if (a != null) {
+                                archivesAndPaths.put((Archive) a, Arrays.asList(dropinsPath));
+                            }
+                        }
+                    } else if (archive instanceof Map<?, ?>) {
+                        Map<?, ?> archiveMap = (Map<?, ?>) archive;
+                        for (Object key : archiveMap.keySet()) {
                             Object value = archiveMap.get(key);
-                            if (! (key instanceof Archive)){
+                            if (!(key instanceof Archive)) {
                                 throw new IllegalArgumentException("A method annotated BuildShrinkWrap returned a map, but the key was not an Archive");
                             }
-                            if (! (value instanceof String) && ! (value instanceof List) && ! (((List) value).get(0) instanceof String) ){
+                            if (!(value instanceof String) && !(value instanceof List) && !(((List) value).get(0) instanceof String)) {
                                 throw new IllegalArgumentException("A method annotated BuildShrinkWrap returned a map, but the key was not a String or a List of Strings with at least one element");
                             }
                             if (value instanceof String) {
@@ -93,7 +101,7 @@ public class ShrinkWrapSharedServer extends SharedServer {
                         throw new IllegalArgumentException("A method annotated BuildShrinkWrap did not return an Archive, an array of Archives, a map of <Archive,String>, or a map of <Archive,List<String>>");
                     }
                 } catch (Exception e) {
-                    //We log and eat the exceptions here, so the constructor can be invoked statically and exceptions will make the test fail with an easy to debug error message. 
+                    //We log and eat the exceptions here, so the constructor can be invoked statically and exceptions will make the test fail with an easy to debug error message.
                     Log.error(c, "<init>", e);
                 }
             }
@@ -101,18 +109,19 @@ public class ShrinkWrapSharedServer extends SharedServer {
     }
 
     /**
-     * A convinence wrapper around 
+     * A convinence wrapper around
      * ShrinkWrapSharedServer(String serverName, Class testClass)
-     * 
+     *
      * This method reflexively gets the first class with method annotated
-     * @Test on the stack then calls 
-     * ShrinkWrapSharedServer(String serverName, Class testClass) with that
-     * class. Inhereted methods are ignored. 
+     *
+     * @Test on the stack then calls
+     *       ShrinkWrapSharedServer(String serverName, Class testClass) with that
+     *       class. Inhereted methods are ignored.
      */
-    public ShrinkWrapSharedServer(String serverName){
+    public ShrinkWrapSharedServer(String serverName) {
         super(serverName);
-        Log.info(c, "<init>", "buildingServer: " + serverName); 
-        archivesAndPaths = new HashMap<Archive,List<String>>();
+        Log.info(c, "<init>", "buildingServer: " + serverName);
+        archivesAndPaths = new HashMap<Archive, List<String>>();
         try {
             StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
             int i = 0;
@@ -120,10 +129,10 @@ public class ShrinkWrapSharedServer extends SharedServer {
             while (testClass == null) {
                 StackTraceElement element = stackTrace[i];
                 Class clazz = Class.forName(element.getClassName());
-                for (Method method : clazz.getDeclaredMethods()){
-                    if (method.isAnnotationPresent(Test.class)){
+                for (Method method : clazz.getDeclaredMethods()) {
+                    if (method.isAnnotationPresent(Test.class)) {
                         testClass = clazz;
-                        Log.info(c, "<init>", "found test class: " + testClass.getCanonicalName()); 
+                        Log.info(c, "<init>", "found test class: " + testClass.getCanonicalName());
                         break;
                     }
                 }
@@ -131,81 +140,79 @@ public class ShrinkWrapSharedServer extends SharedServer {
             }
             getArchivesViaAnnotation(serverName, testClass);
         } catch (Exception e) {
-            //We log and eat the exceptions here, so the constructor can be invoked statically and exceptions will make the test fail with an easy to debug error message. 
+            //We log and eat the exceptions here, so the constructor can be invoked statically and exceptions will make the test fail with an easy to debug error message.
             Log.error(c, "<init>", e);
         }
     }
 
-
-
-     /**
+    /**
      * Creates a {@link SharedServer} and copies ShrinkWrap archives to the server
      *
      * Where buildApps() is a static method that returns Archive or Archive[]
      *
-     * As ShrinkWrap can throw exceptions when creating an archive you will need to 
+     * As ShrinkWrap can throw exceptions when creating an archive you will need to
      * make sure all exceptions are handled if you invoke this constructor from a
      * static context.
      *
      * @param shirnkWrapArchives ShrinkWrap archives with will be installed to the server's
-     * dropins folder.
+     *            dropins folder.
      */
-    public ShrinkWrapSharedServer(String serverName, Archive... shirnkWrapArchives){
+    public ShrinkWrapSharedServer(String serverName, Archive... shirnkWrapArchives) {
         super(serverName);
 
-        archivesAndPaths = new HashMap<Archive,List<String>>();
-        String dropinsPath = "publish/servers/"+serverName+"/dropins";
-        
+        archivesAndPaths = new HashMap<Archive, List<String>>();
+        String dropinsPath = "/dropins";
+
         for (Archive archive : shirnkWrapArchives) {
             archivesAndPaths.put(archive, Arrays.asList(dropinsPath));
         }
     }
 
-     /**
+    /**
      * Creates a {@link SharedServer} and copies ShrinkWrap archives to the server
      *
      * Where buildApps() is a static method that returns Map<Archive,String>
      *
-     * As ShrinkWrap can throw exceptions when creating an archive you will need to 
+     * As ShrinkWrap can throw exceptions when creating an archive you will need to
      * make sure all exceptions are handled if you invoke this constructor from a
      * static context.
      *
      * @param archivesAndPaths a map of ShrinkWrap archives and their install paths.
      */
-    public ShrinkWrapSharedServer(String serverName, Map<Archive,List<String>> archivesAndPaths){
+    public ShrinkWrapSharedServer(String serverName, Map<Archive, List<String>> archivesAndPaths) {
         super(serverName);
         this.archivesAndPaths = archivesAndPaths;
     }
 
-    //I'm putting this here rather than as part of the test itself for two reasons: 
-    //It keeps all the boilerplate needed for ShrinkWrap in a single class. 
-    //Secondly it has to occur before LibertyServerFactory is invoked, and that happens
-    //in SharedServer.before(). This way I keep the ordering dependencies isolated to a single 
-    //codepath.
-    @Override 
+    //I'm putting this here because it keeps all the boilerplate needed for ShrinkWrap in a single class.
+    @Override
     protected void before() {
-        for (Archive archive : archivesAndPaths.keySet()){
+        for (Archive archive : archivesAndPaths.keySet()) {
             //This takes place before the servers are copied, so we do not need to worry about
-            //moving archives ourselves beyond this. 
-            for (String path : archivesAndPaths.get(archive)) { 
-                ShrinkHelper.exportArtifact(archive, path);
+            //moving archives ourselves beyond this.
+            for (String path : archivesAndPaths.get(archive)) {
+                try {
+                    ShrinkHelper.exportToServer(getLibertyServer(), path, archive);
+                } catch (Exception e) {
+                    throw new RuntimeException(e); //TODO something better here.
+                }
             }
         }
         super.before();
-   }
+    }
 
     //I don't think it should be nessacary to shut down a SharedServer after every test but this is
     //Just a guess based on the name "SharedServer" and the fact this addition was nessacary when I
-    //Ported from WS-CD open. TODO, investigate this further. 
-    @Override 
+    //Ported from WS-CD open. TODO, investigate this further.
+    @Override
     protected void after() {
-       if (shutdownAfterTest &&getLibertyServer().isStarted()) {
-            try { 
+        if (shutdownAfterTest && getLibertyServer().isStarted()) {
+            try {
                 getLibertyServer().stopServer();
             } catch (Exception e) {
-                throw new RuntimeException(e); //TODO something better here. 
+                throw new RuntimeException(e); //TODO something better here.
             }
         }
-   }
+    }
 
 }

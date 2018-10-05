@@ -684,6 +684,10 @@ warning.server.status.invalid.targets=CWWKE0946W: Se ha recibido una solicitud d
 warning.server.status.invalid.targets.explanation=Un usuario ha emitido una solicitud de estado con una lista de destino vac\u00eda en la opci\u00f3n de destino. La solicitud se ha completado pero no se ha realizado ninguna acci\u00f3n.
 warning.server.status.invalid.targets.useraction=Especifique en la opci\u00f3n de destino una lista de componentes para comprobar su estado. Para comprobar el estado acumulativo de todos los componentes con posibilidad de pausa en el servidor, emita la solicitud de estado sin la opci\u00f3n de destino.
 
+warning.package.root.invalid=CWWKE0947W: No se permite una opci\u00f3n --server-root con un argumento vac\u00edo cuando hay instaladas ampliaciones del producto. Se utilizar\u00e1 el argumento predeterminado wlp.
+warning.package.root.invalid.explanation=El usuario ha realizado una solicitud de paquete con una opci\u00f3n --server-root que especifica un argumento vac\u00edo y se han detectado ampliaciones del producto. Se utilizar\u00e1 la ra\u00edz del servidor predeterminado wlp.
+warning.package.root.invalid.useraction=No se requiere ninguna acci\u00f3n.
+
 info.serverStarting=Se est\u00e1 iniciando el servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=Servidor {0} iniciado con ID de proceso {1}.

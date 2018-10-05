@@ -165,7 +165,7 @@ public class FATTestIDS_allIbmGroups {
         /*
          * Disable the cache.
          */
-        ldap.setLdapCache(new LdapCache(new AttributesCache(false, 0, 0, "0s", null), new SearchResultsCache(false, 0, 0, "0s")));
+        ldap.setLdapCache(new LdapCache(new AttributesCache(false, 0, 0, "0s"), new SearchResultsCache(false, 0, 0, "0s")));
 
         if (useFilters) {
             /*

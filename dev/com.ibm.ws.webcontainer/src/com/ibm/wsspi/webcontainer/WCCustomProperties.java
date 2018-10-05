@@ -77,7 +77,7 @@ public class WCCustomProperties {
     //If the default servlet is the target of a RequestDispatch.include() and the requested
     //resource does not exist, then the default servlet MUST throw
     //FileNotFoundException. If the exception isn't caught and handled, and the
-    //response hasn�t been committed, the status code MUST be set to 500.
+    //response hasn't been committed, the status code MUST be set to 500.
     public static boolean MODIFIED_FNF_BEHAVIOR;
                    
     public static int SERVLET_DESTROY_WAIT_TIME;
@@ -524,7 +524,7 @@ public class WCCustomProperties {
         //If the default servlet is the target of a RequestDispatch.include() and the requested
         //resource does not exist, then the default servlet MUST throw
         //FileNotFoundException. If the exception isn't caught and handled, and the
-        //response hasn�t been committed, the status code MUST be set to 500.
+        //response hasn't been committed, the status code MUST be set to 500.
         MODIFIED_FNF_BEHAVIOR = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty
                         ("com.ibm.ws.webcontainer.modifiedfilenotfoundexceptionbehavior", "true")).booleanValue(); //PK65408 
         SERVLET_DESTROY_WAIT_TIME = Integer.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.servletdestroywaittime", "60")).intValue();

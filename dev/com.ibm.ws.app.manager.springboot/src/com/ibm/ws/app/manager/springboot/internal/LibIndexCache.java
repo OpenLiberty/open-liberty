@@ -66,7 +66,7 @@ public final class LibIndexCache {
         this.adaptableFactory = adaptableFactory;
     }
 
-    public File getLibrary(Map.Entry<String, String> LibIndexEntry) {
+    private File getLibrary(Map.Entry<String, String> LibIndexEntry) {
         if (libraryIndexParent != null) {
             // look in the parent (shared area) first
             WsResource parentRes = getStoreLocation(LibIndexEntry, libraryIndexParent);
@@ -95,12 +95,15 @@ public final class LibIndexCache {
         return prefixDir.resolveRelative(postFix.toString() + '/' + jarName);
     }
 
-    public Container getLibraryContainer(Map.Entry<String, String> LibIndexEntry) throws UnableToAdaptException {
-        File libFile = getLibrary(LibIndexEntry);
+    public Container getLibraryContainer(Map.Entry<String, String> libIndexEntry) throws UnableToAdaptException {
+        File libFile = getLibrary(libIndexEntry);
         if (libFile == null) {
             return null;
         }
         ArtifactContainer libArtifactContainer = containerFactory.getContainer(getCache(libFile, CACHE_ARTIFACT_DIR), libFile);
+        if (libArtifactContainer == null) {
+            throw new UnableToAdaptException("Unable to get the container for the entry " + libIndexEntry.getKey());
+        }
         return adaptableFactory.getContainer(getCache(libFile, CACHE_ADAPT_DIR), getCache(libFile, CACHE_OVERLAY_DIR), libArtifactContainer);
     }
 

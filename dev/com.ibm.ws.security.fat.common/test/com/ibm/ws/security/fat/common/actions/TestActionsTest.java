@@ -68,11 +68,13 @@ public class TestActionsTest extends CommonTestClass {
     public void before() {
         System.out.println("Entering test: " + testName.getMethodName());
         actions = new TestActions() {
-            WebClient createWebClient() {
+            @Override
+            public WebClient createWebClient() {
                 return webClient;
             }
 
-            WebRequest createGetRequest(String url) throws MalformedURLException {
+            @Override
+            public WebRequest createGetRequest(String url) throws MalformedURLException {
                 return request;
             }
         };

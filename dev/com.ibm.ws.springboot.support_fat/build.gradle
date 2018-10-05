@@ -13,7 +13,7 @@
   requiredLibs 'net.sourceforge.cssparser:cssparser:0.9.23',
       'net.sourceforge.htmlunit:htmlunit:2.27',
       'net.sourceforge.htmlunit:htmlunit-core-js:2.27',
-      'org.apache.commons:commons-lang3:3.7',
+      'org.apache.commons:commons-lang3:3.8',
       'org.apache.httpcomponents:httpclient:4.5.4',
       'org.apache.httpcomponents:httpcore:4.4.9',
       'org.apache.httpcomponents:httpmime:4.3.1',
@@ -74,6 +74,10 @@ autoFVT.doLast {
     }
     copy {
       from new File('../com.ibm.ws.springboot.support.version20.test.webflux.wrong.version.app/build/libs/','com.ibm.ws.springboot.support.version20.test.webflux.wrong.version.app-0.0.1-SNAPSHOT.jar')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+    copy {
+      from new File('../com.ibm.ws.springboot.support.version15.test.multi.context.app/build/libs/','com.ibm.ws.springboot.support.version15.test.multi.context.app.jar')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
   }

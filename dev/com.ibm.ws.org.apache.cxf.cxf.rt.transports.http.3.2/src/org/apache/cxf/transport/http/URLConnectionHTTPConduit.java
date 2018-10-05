@@ -441,9 +441,21 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
             // [CXF-6227] do not call connection.setFixedLengthStreamingMode(i)
             // to prevent https://bugs.openjdk.java.net/browse/JDK-8044726
         }
+        @FFDCIgnore(PrivilegedActionException.class)
         protected void handleNoOutput() throws IOException {
             if ("POST".equals(getMethod())) {
-                connection.getOutputStream().close();
+                try {
+                    AccessController.doPrivileged((PrivilegedExceptionAction<Void>)() -> {
+                        connection.getOutputStream().close(); 
+                        return null;
+                    });
+                } catch (PrivilegedActionException pae) {
+                    Throwable t = pae.getCause();
+                    if (t instanceof IOException) {
+                        throw (IOException) t;
+                    }
+                    throw new RuntimeException(t);
+                }
             }
         }
         @FFDCIgnore(URISyntaxException.class)

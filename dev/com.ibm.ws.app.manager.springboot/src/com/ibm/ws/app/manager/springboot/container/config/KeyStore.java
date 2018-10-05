@@ -10,20 +10,25 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container.config;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-
 /**
  * KeyStore element is defined here:<br>
  * /com.ibm.ws.ssl/resources/OSGI-INF/metatype/metatype.xml
  */
 public class KeyStore extends ConfigElement {
 
+    public static final String XML_ATTRIBUTE_NAME_PASSWORD = "password";
     private String password;
+
+    public static final String XML_ATTRIBUTE_NAME_LOCATION = "location";
     private String location;
+
+    public static final String XML_ATTRIBUTE_NAME_TYPE = "type";
     private String type;
 
-    @XmlElement(name = "keyEntry")
+    public static final String XML_ATTRIBUTE_NAME_PROVIDER = "provider";
+    private String provider;
+
+    public static final String XML_ELEMENT_NAME_KEY_ENTRY = "keyEntry";
     private ConfigElementList<KeyEntry> keyEntries;
 
     /**
@@ -36,7 +41,6 @@ public class KeyStore extends ConfigElement {
     /**
      * @param password the password to set
      */
-    @XmlAttribute(name = "password")
     public void setPassword(String password) {
         this.password = password;
     }
@@ -51,7 +55,6 @@ public class KeyStore extends ConfigElement {
     /**
      * @param location the location to set
      */
-    @XmlAttribute(name = "location")
     public void setLocation(String location) {
         this.location = location;
     }
@@ -66,9 +69,22 @@ public class KeyStore extends ConfigElement {
     /**
      * @param type the type to set
      */
-    @XmlAttribute(name = "type")
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     * @return the provider
+     */
+    public String getProvider() {
+        return provider;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setProvider(String provider) {
+        this.provider = provider;
     }
 
     /**
@@ -91,6 +107,8 @@ public class KeyStore extends ConfigElement {
             buf.append("location=\"" + location + "\" ");
         if (type != null)
             buf.append("type=\"" + type + "\" ");
+        if (provider != null)
+            buf.append("provider=\"" + provider + "\" ");
         buf.append("}");
         return buf.toString();
     }
