@@ -114,6 +114,10 @@ public class InstallKernelMap implements Map {
     private static final Integer CANCELLED = Integer.valueOf(-1);
     private static final Integer ERROR = Integer.valueOf(1);
 
+    // License identifiers
+    private static final String LICENSE_EPL_PREFIX = "https://www.eclipse.org/legal/epl-";
+    private static final String LICENSE_FEATURE_TERMS_PREFIX = "http://www.ibm.com/licenses/wlp-featureterms-";
+
     private enum ActionType {
         install,
         uninstall,
@@ -594,12 +598,17 @@ public class InstallKernelMap implements Map {
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
             resolveResult = resolver.resolve((Collection<String>) data.get(FEATURES_TO_RESOLVE));
 
-            Boolean accepted = (Boolean) data.get(LICENSE_ACCEPT);
-            if (accepted == null || !accepted) {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_LICENSES_NOT_ACCEPTED"));
-            }
             for (List<RepositoryResource> item : resolveResult) {
                 for (RepositoryResource repoResrc : item) {
+                    String license = repoResrc.getLicenseId();
+                    if (license != null && !(license.startsWith(LICENSE_EPL_PREFIX) || license.startsWith(LICENSE_FEATURE_TERMS_PREFIX))) {
+                        Boolean accepted = (Boolean) data.get(LICENSE_ACCEPT);
+                        if (accepted == null || !accepted) {
+                            featuresResolved.clear(); // clear the result since the licenses were not accepted
+                            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_LICENSES_NOT_ACCEPTED"));
+                        }
+                    }
+
                     if (repoResrc.getRepositoryConnection() instanceof DirectoryRepositoryConnection) {
                         featuresResolved.add(repoResrc.getId());
                     } else {
