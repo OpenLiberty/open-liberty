@@ -71,13 +71,14 @@ public class LibertyProviderImpl extends ProviderImpl {
         AtomicServiceReference<JaxWsSecurityConfigurationService> secConfigSR = securityConfigSR.get();
         JaxWsSecurityConfigurationService securityConfigService = secConfigSR == null ? null : secConfigSR.getService();
 
-        final Bus fBus = bus;
-        final WebServiceRefInfo fWsrInfo = wsrInfo;
-        final List<WebServiceFeature> fServiceFeatures = serviceFeatures;
-        final JaxWsSecurityConfigurationService fSecurityConfigService = securityConfigService;
-        final URL fUrl = url;
-        final QName fQname = qname;
-        final Class fCls = cls;
+        // @TJJ create final vars in order to call a doPriv when creating the LibertyServiceImpl as required by java 2 security
+        final JaxWsSecurityConfigurationService scs = securityConfigService;
+        final WebServiceRefInfo wi = wsrInfo;
+        final Bus b = bus;
+        final URL u = url;
+        final QName qn = qname;
+        final Class c = cls;
+        final List<WebServiceFeature> sf = serviceFeatures;
 
         if (serviceFeatures != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -87,7 +88,7 @@ public class LibertyProviderImpl extends ProviderImpl {
             LibertyServiceImpl lsl = AccessController.doPrivileged(new PrivilegedAction<LibertyServiceImpl>() {
                 @Override
                 public LibertyServiceImpl run() {
-                    return new LibertyServiceImpl(fSecurityConfigService, fWsrInfo, fBus, fUrl, fQname, fCls, fServiceFeatures.toArray(new WebServiceFeature[fServiceFeatures.size()]));
+                    return new LibertyServiceImpl(scs, wi, b, u, qn, c, sf.toArray(new WebServiceFeature[sf.size()]));
                 }
             });
             return lsl;
@@ -100,7 +101,7 @@ public class LibertyProviderImpl extends ProviderImpl {
             LibertyServiceImpl lsl = AccessController.doPrivileged(new PrivilegedAction<LibertyServiceImpl>() {
                 @Override
                 public LibertyServiceImpl run() {
-                    return new LibertyServiceImpl(fSecurityConfigService, fWsrInfo, fBus, fUrl, fQname, fCls);
+                    return new LibertyServiceImpl(scs, wi, b, u, qn, c);
                 }
             });
             return lsl;
