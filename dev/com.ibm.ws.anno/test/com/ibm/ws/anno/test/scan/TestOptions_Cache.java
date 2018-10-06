@@ -11,7 +11,7 @@
 
 package com.ibm.ws.anno.test.scan;
 
-import com.ibm.ws.anno.targets.cache.TargetCache_Options;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_Options;
 
 public class TestOptions_Cache {
 	public static final boolean DO_CLEAN_STORAGE = true;

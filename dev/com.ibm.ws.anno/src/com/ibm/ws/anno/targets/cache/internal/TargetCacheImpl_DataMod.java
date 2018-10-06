@@ -21,8 +21,6 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.anno.targets.cache.TargetCache_ExternalConstants;
-import com.ibm.ws.anno.targets.cache.TargetCache_Options;
 import com.ibm.ws.anno.targets.cache.TargetCache_ParseError;
 import com.ibm.ws.anno.targets.cache.TargetCache_Readable;
 import com.ibm.ws.anno.targets.cache.TargetCache_Reader;
@@ -32,6 +30,8 @@ import com.ibm.ws.anno.targets.internal.TargetsTableImpl;
 import com.ibm.ws.anno.util.internal.UtilImpl_InternMap;
 import com.ibm.ws.anno.util.internal.UtilImpl_PoolExecutor;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_ExternalConstants;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_Options;
 
 /**
  * Annotation cache data for a single module.

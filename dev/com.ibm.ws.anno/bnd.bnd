@@ -42,6 +42,11 @@ Service-Component:\
     implementation:=com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Factory; \
     configuration-policy:=ignore; \
     properties:="service.vendor=IBM", \
+  com.ibm.wsspi.anno.targets.cache; \
+    provide:=com.ibm.wsspi.anno.targets.TargetCache_Factory; \
+    implementation:=com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_Factory; \
+    configuration-policy:=ignore; \
+    properties:="service.vendor=IBM", \
   com.ibm.wsspi.anno.classsource; \
     provide:=com.ibm.wsspi.anno.classsource.ClassSource_Factory; \
     implementation:=com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Factory; \

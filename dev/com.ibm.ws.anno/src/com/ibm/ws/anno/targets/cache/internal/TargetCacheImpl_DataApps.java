@@ -15,9 +15,8 @@ import java.io.File;
 import java.util.WeakHashMap;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.anno.targets.cache.TargetCache_ExternalConstants;
-import com.ibm.ws.anno.util.internal.UtilImpl_FileUtils;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_ExternalConstants;
 
 /**
  * Root of annotation caching data.

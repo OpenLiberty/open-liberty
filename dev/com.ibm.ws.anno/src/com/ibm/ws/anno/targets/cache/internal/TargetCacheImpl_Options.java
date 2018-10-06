@@ -12,7 +12,7 @@
 package com.ibm.ws.anno.targets.cache.internal;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.anno.targets.cache.TargetCache_Options;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_Options;
 
 public class TargetCacheImpl_Options implements TargetCache_Options {
 

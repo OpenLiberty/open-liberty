@@ -12,10 +12,10 @@
 
 package com.ibm.wsspi.anno.service;
 
-import com.ibm.ws.anno.targets.cache.TargetCache_Factory;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 import com.ibm.wsspi.anno.info.InfoStoreFactory;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Factory;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_Factory;
 import com.ibm.wsspi.anno.util.Util_Factory;
 
 /**

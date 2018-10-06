@@ -17,8 +17,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
-import com.ibm.ws.anno.targets.cache.TargetCache_ExternalConstants;
 import com.ibm.ws.anno.util.internal.UtilImpl_FileUtils;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_ExternalConstants;
 
 public class TargetCacheImpl_Utils {
     // Encode samples:

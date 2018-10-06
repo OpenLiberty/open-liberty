@@ -22,12 +22,12 @@ import org.osgi.service.component.ComponentContext;
 
 import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Factory;
 import com.ibm.ws.anno.info.internal.InfoStoreFactoryImpl;
-import com.ibm.ws.anno.targets.cache.TargetCache_Options;
 import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_Factory;
 import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_Options;
 import com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Factory;
 import com.ibm.ws.anno.util.internal.UtilImpl_Factory;
 import com.ibm.wsspi.anno.service.AnnotationService_Service;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_Options;
 
 public class AnnotationServiceImpl_Service implements AnnotationService_Service {
     public static final String CLASS_NAME = "AnnotationServiceImpl_Service";

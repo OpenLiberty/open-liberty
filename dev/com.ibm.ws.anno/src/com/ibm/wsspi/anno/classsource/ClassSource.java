@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
 //

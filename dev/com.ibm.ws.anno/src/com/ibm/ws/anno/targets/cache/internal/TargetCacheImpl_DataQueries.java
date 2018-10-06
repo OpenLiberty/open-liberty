@@ -16,9 +16,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 
-import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.anno.targets.cache.TargetCache_ExternalConstants;
 import com.ibm.ws.anno.util.internal.UtilImpl_FileUtils;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_ExternalConstants;
 
 /**
  * Query data
@@ -53,14 +52,48 @@ public class TargetCacheImpl_DataQueries implements TargetCache_ExternalConstant
 
     private final TargetCacheImpl_Factory factory;
 
+    public TargetCacheImpl_Factory getFactory() {
+    	return factory;
+    }
+
+    //
+
     private final String appName;
     private final String e_appName;
 
     private final String modName;
     private final String e_modName;
 
+    public String getAppName() {
+        return appName;
+    }
+
+    public String e_getAppName() {
+        return e_appName;
+    }
+
+    public String getModName() {
+        return modName;
+    }
+
+    public String e_getModName() {
+        return e_modName;
+    }
+
+    //
+
     private final File modFile;
     private final File queriesFile;
+
+    public File getModFile() {
+        return modFile;
+    }
+
+    public File getQueriesFile() {
+        return queriesFile;
+    }
+
+    //
 
     private boolean isSetWriter;
     private TargetCacheImpl_Writer writer;

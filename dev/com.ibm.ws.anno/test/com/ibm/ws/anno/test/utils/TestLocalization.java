@@ -38,12 +38,14 @@ public class TestLocalization {
     static {
         String useClassesPath;
         String useClassesRelativePath;
+        String pathCase;
 
         String libertyClasses = putIntoProject(CLASSES_RELATIVE_PATH_LIBERTY);
         File libertyClassesFile = new File(libertyClasses);
         if ( libertyClassesFile.exists() ) {
             useClassesPath = libertyClasses;
             useClassesRelativePath = CLASSES_RELATIVE_PATH_LIBERTY;
+            pathCase = "Standard liberty classes folder";
 
         } else {
             String eclipseClasses = putIntoProject(CLASSES_RELATIVE_PATH_ECLIPSE);
@@ -51,6 +53,7 @@ public class TestLocalization {
             if ( eclipseClassesFile.exists() ) {
                 useClassesPath = eclipseClasses;
                 useClassesRelativePath = CLASSES_RELATIVE_PATH_ECLIPSE;
+                pathCase = "Eclipse classes folder";
 
             } else {
                 String msg =
@@ -62,6 +65,10 @@ public class TestLocalization {
 
         CLASSES_RELATIVE_PATH = useClassesRelativePath;
         CLASSES_PATH = useClassesPath;
+
+        System.out.println("Classes path selection [ " + pathCase + " ]");
+        System.out.println("Classes full path [ " + CLASSES_PATH + " ]");
+        System.out.println("Classes relative path [ " + CLASSES_RELATIVE_PATH + " ]");
     }
 
     public static String getProjectPath() {

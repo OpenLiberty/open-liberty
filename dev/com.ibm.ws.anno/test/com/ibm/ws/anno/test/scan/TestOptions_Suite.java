@@ -11,9 +11,9 @@
 
 package com.ibm.ws.anno.test.scan;
 
-import com.ibm.ws.anno.targets.cache.TargetCache_Options;
 import com.ibm.ws.anno.targets.delta.TargetsDelta;
 import com.ibm.wsspi.anno.classsource.ClassSource_Options;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_Options;
 
 public class TestOptions_Suite {
 

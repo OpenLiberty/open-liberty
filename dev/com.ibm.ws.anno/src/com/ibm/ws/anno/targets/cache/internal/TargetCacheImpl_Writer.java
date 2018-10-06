@@ -26,8 +26,6 @@ import org.objectweb.asm.Opcodes;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.anno.util.internal.UtilImpl_Utils;
-import com.ibm.ws.anno.targets.cache.TargetCache_ExternalConstants;
-import com.ibm.ws.anno.targets.cache.TargetCache_InternalConstants;
 import com.ibm.ws.anno.targets.internal.TargetsTableClassesImpl;
 import com.ibm.ws.anno.targets.internal.TargetsTableClassesMultiImpl;
 import com.ibm.ws.anno.targets.internal.TargetsTableContainersImpl;
@@ -36,6 +34,8 @@ import com.ibm.ws.anno.targets.internal.TargetsTableTimeStampImpl;
 import com.ibm.ws.anno.targets.internal.TargetsTableAnnotationsImpl;
 import com.ibm.ws.anno.util.internal.UtilImpl_BidirectionalMap;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_ExternalConstants;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_InternalConstants;
 
 public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
     public static final String CLASS_NAME = TargetCacheImpl_Writer.class.getSimpleName();

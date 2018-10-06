@@ -23,10 +23,10 @@ import java.util.logging.Logger;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
-import com.ibm.ws.anno.targets.cache.TargetCache_Options;
 import com.ibm.ws.anno.targets.cache.TargetCache_ParseError;
 import com.ibm.ws.anno.targets.cache.TargetCache_Readable;
 import com.ibm.ws.anno.util.internal.UtilImpl_FileUtils;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_Options;
 
 public abstract class TargetCacheImpl_DataBase {
     protected static final Logger logger = AnnotationServiceImpl_Logging.ANNO_LOGGER;

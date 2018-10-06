@@ -16,10 +16,10 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.anno.targets.cache.TargetCache_ExternalConstants;
 import com.ibm.ws.anno.targets.internal.TargetsTableClassesImpl;
 import com.ibm.ws.anno.targets.internal.TargetsTableImpl;
 import com.ibm.ws.anno.targets.internal.TargetsTableTimeStampImpl;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_ExternalConstants;
 import com.ibm.ws.anno.targets.internal.TargetsTableAnnotationsImpl;
 
 /**
@@ -37,10 +37,10 @@ import com.ibm.ws.anno.targets.internal.TargetsTableAnnotationsImpl;
  * Result container data (which has no actual container) has its own
  * directory relative to the directory of the enclosing module, and
  * named using tags specific to the result type.  One of:
- * {@link com.ibm.ws.anno.targets.cache.TargetCache_ExternalConstants#SEED_RESULT_NAME},
- * {@link com.ibm.ws.anno.targets.cache.TargetCache_ExternalConstants#PARTIAL_RESULT_NAME},
- * {@link com.ibm.ws.anno.targets.cache.TargetCache_ExternalConstants#EXCLUDED_RESULT_NAME}, or
- * {@link com.ibm.ws.anno.targets.cache.TargetCache_ExternalConstants#EXTERNAL_RESULT_NAME}.
+ * {@link com.ibm.wsspi.anno.targets.cache.TargetCache_ExternalConstants#SEED_RESULT_NAME},
+ * {@link com.ibm.wsspi.anno.targets.cache.TargetCache_ExternalConstants#PARTIAL_RESULT_NAME},
+ * {@link com.ibm.wsspi.anno.targets.cache.TargetCache_ExternalConstants#EXCLUDED_RESULT_NAME}, or
+ * {@link com.ibm.wsspi.anno.targets.cache.TargetCache_ExternalConstants#EXTERNAL_RESULT_NAME}.
  *
  * Container data has four parts:
  * <ul><li>Time stamp information<li>

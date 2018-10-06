@@ -21,8 +21,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-
-import com.ibm.ws.anno.targets.cache.TargetCache_Options;
 import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_DataCon;
 import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_DataMod;
 import com.ibm.ws.anno.util.internal.UtilImpl_IdentityStringSet;
@@ -34,6 +32,7 @@ import com.ibm.wsspi.anno.util.Util_InternMap;
 import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_Options;
 
 /**
  * Data dependencies:
@@ -853,7 +852,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     }
 
     protected void validInternalContainers() {
-        String methodName = "validInternalContainers";
+        // String methodName = "validInternalContainers";
 
         boolean changedTable = !validContainerTable();
 

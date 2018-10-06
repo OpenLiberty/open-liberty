@@ -24,9 +24,6 @@ import java.util.logging.Logger;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Service;
-import com.ibm.ws.anno.targets.cache.TargetCache_Factory;
-import com.ibm.ws.anno.targets.cache.TargetCache_InternalConstants;
-import com.ibm.ws.anno.targets.cache.TargetCache_Options;
 import com.ibm.ws.anno.targets.cache.TargetCache_ParseError;
 import com.ibm.ws.anno.targets.internal.TargetsTableClassesImpl;
 import com.ibm.ws.anno.targets.internal.TargetsTableContainersImpl;
@@ -35,6 +32,9 @@ import com.ibm.ws.anno.targets.internal.TargetsTableTimeStampImpl;
 import com.ibm.ws.anno.targets.internal.TargetsTableAnnotationsImpl;
 import com.ibm.ws.anno.util.internal.UtilImpl_FileUtils;
 import com.ibm.ws.anno.util.internal.UtilImpl_Utils;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_Factory;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_InternalConstants;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_Options;
 
 public class TargetCacheImpl_Factory implements TargetCache_Factory {
     public static final String CLASS_NAME = TargetCacheImpl_Factory.class.getSimpleName();
@@ -156,7 +156,6 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
         }
     }
 
-    @Override
     public void clearCache() {
         synchronized( cacheLock ) {
             cache = null;
@@ -164,7 +163,6 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
     }
 
     @Trivial
-    @Override
     public TargetCacheImpl_DataApps getCache() {
         synchronized( cacheLock ) {
             if ( cache == null ) {

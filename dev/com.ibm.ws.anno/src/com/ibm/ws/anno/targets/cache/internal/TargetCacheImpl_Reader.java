@@ -27,13 +27,13 @@ import com.ibm.ws.anno.targets.TargetsTableDetails;
 import com.ibm.ws.anno.targets.TargetsTableTimeStamp;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.anno.targets.TargetsTableAnnotations;
-import com.ibm.ws.anno.targets.cache.TargetCache_ExternalConstants;
-import com.ibm.ws.anno.targets.cache.TargetCache_InternalConstants;
 import com.ibm.ws.anno.targets.cache.TargetCache_ParseError;
 import com.ibm.ws.anno.targets.cache.TargetCache_Reader;
 import com.ibm.ws.anno.util.internal.UtilImpl_InternMap;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Exception;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_ExternalConstants;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_InternalConstants;
 
 public class TargetCacheImpl_Reader implements TargetCache_Reader, TargetCache_InternalConstants {
     // public static final String CLASS_NAME = "TargetCacheImpl_Reader";

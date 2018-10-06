@@ -29,8 +29,6 @@ import org.objectweb.asm.Opcodes;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
-import com.ibm.ws.anno.targets.cache.TargetCache_Options;
-import com.ibm.ws.anno.targets.cache.TargetCache_InternalConstants.QueryType;
 import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_DataApp;
 import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_DataApps;
 import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_DataMod;
@@ -48,6 +46,8 @@ import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Exception;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_OpCodes;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_Options;
+import com.ibm.wsspi.anno.targets.cache.TargetCache_InternalConstants.QueryType;
 import com.ibm.wsspi.anno.util.Util_BidirectionalMap;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 import com.ibm.wsspi.anno.util.Util_InternMap.ValueType;
