@@ -692,6 +692,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
     // Timestamp: <Date-Time>
     // Policies: (SEED, PARTIAL, EXCLUDED, EXTERNAL)
     // Type: (PACKAGE, CLASS, CLASS INHERITED, FIELD, METHOD)
+    // [ Specific: <specific source class> ]
     // Annotation: <annotation class>
     // Result: <result class>
 
@@ -699,6 +700,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
     // Timestamp: <Date-Time>
     // Source: <source name>
     // Type: (PACKAGE, CLASS, CLASS INHERITED, FIELD, METHOD)
+    // [ Specific: <specific source class> ]
     // Annotation: <annotation class>
     // Result: <result class>
 
@@ -707,22 +709,25 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
     // Policies: (SEED, PARTIAL, EXCLUDED, EXTERNAL)
     // Source: <source name>
     // Type: (PACKAGE, CLASS, CLASS INHERITED, FIELD, METHOD)
+    // [ Specific: <specific source class> ]
     // Annotation: <annotation class>
     // Result: <result class>
 
     public void writeQuery(
         String title,
         int policies, String type,
-        String annotationClass, Collection<String> resultClasses) throws IOException {
+        Collection<String> specificClasses, String annotationClass,
+        Collection<String> resultClasses) throws IOException {
 
-        writeQuery(title, getTimeStamp(), policies, type, annotationClass, resultClasses);
+        writeQuery(title, getTimeStamp(), policies, type, specificClasses, annotationClass, resultClasses);
         // 'writeQuery' throws IOException
     }
 
     public void writeQuery(
         String title, String timeStamp,
         int policies, String type,
-        String annotationClass, Collection<String> resultClasses) throws IOException {
+        Collection<String> specificClasses, String annotationClass,
+        Collection<String> resultClasses) throws IOException {
 
         writeComment(DELIMITER_TAG);
 
@@ -732,6 +737,11 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         writeValue(QUERY_POLICIES_TAG, policiesText(policies));
         writeValue(QUERY_TYPE_TAG, type);
 
+        if ( specificClasses != null ) {
+            for ( String specificClass : specificClasses ) {
+                writeSubValue(QUERY_SPECIFIC_TAG, specificClass);
+            }
+        }
         writeValue(QUERY_ANNOTATION_TAG, annotationClass);
         for ( String resultClass : resultClasses ) {
             writeSubValue(QUERY_RESULT_TAG, resultClass);
@@ -743,16 +753,18 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
     public void writeQuery(
         String title,
         Collection<String> sources, String type,
-        String annotationClass, Collection<String> resultClasses) throws IOException {
+        Collection<String> specificClasses, String annotationClass,
+        Collection<String> resultClasses) throws IOException {
 
-        writeQuery(title, getTimeStamp(), sources, type, annotationClass, resultClasses);
+        writeQuery(title, getTimeStamp(), sources, type, specificClasses, annotationClass, resultClasses);
         // 'writeQuery' throws IOException
     }
 
     public void writeQuery(
         String title, String timeStamp,
         Collection<String> sources, String type,
-        String annotationClass, Collection<String> resultClasses) throws IOException {
+        Collection<String> specificClasses, String annotationClass,
+        Collection<String> resultClasses) throws IOException {
 
         writeComment(DELIMITER_TAG);
 
@@ -764,6 +776,11 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         }
         writeValue(QUERY_TYPE_TAG, type);
 
+        if ( specificClasses != null ) {
+            for ( String specificClass : specificClasses ) {
+                writeSubValue(QUERY_SPECIFIC_TAG, specificClass);
+            }
+        }
         writeValue(QUERY_ANNOTATION_TAG, annotationClass);
         for ( String resultClass : resultClasses ) {
             writeSubValue(QUERY_RESULT_TAG, resultClass);
@@ -775,18 +792,21 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
     public void writeQuery(
         String title,
         int policies, Collection<String> sources, String type,
-        String annotationClass, Collection<String> resultClasses) throws IOException {
+        Collection<String> specificClasses, String annotationClass,
+        Collection<String> resultClasses) throws IOException {
 
         writeQuery(title, getTimeStamp(),
                    policies, sources, type,
-                   annotationClass, resultClasses);
+                   specificClasses, annotationClass,
+                   resultClasses);
         // 'writeQuery' throws IOException
     }
 
     public void writeQuery(
         String title, String timeStamp,
         int policies, Collection<String> sources, String type,
-        String annotationClass, Collection<String> resultClasses) throws IOException {
+        Collection<String> specificClasses, String annotationClass,
+        Collection<String> resultClasses) throws IOException {
 
         writeComment(DELIMITER_TAG);
 
@@ -799,6 +819,11 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         }
         writeValue(QUERY_TYPE_TAG, type);
 
+        if ( specificClasses != null ) {
+            for ( String specificClass : specificClasses ) {
+                writeSubValue(QUERY_SPECIFIC_TAG, specificClass);
+            }
+        }
         writeValue(QUERY_ANNOTATION_TAG, annotationClass);
         for ( String resultClass : resultClasses ) {
             writeSubValue(QUERY_RESULT_TAG, resultClass);

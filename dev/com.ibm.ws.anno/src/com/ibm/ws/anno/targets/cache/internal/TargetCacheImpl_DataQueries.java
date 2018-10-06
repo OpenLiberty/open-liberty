@@ -146,6 +146,7 @@ public class TargetCacheImpl_DataQueries implements TargetCache_ExternalConstant
     public synchronized void writeQuery(
         String title,
         int policies, String type,
+        Collection<String> specificClasses,
         String annotationClass,
         Collection<String> resultClasses) {
 
@@ -155,7 +156,7 @@ public class TargetCacheImpl_DataQueries implements TargetCache_ExternalConstant
         }
 
         try {
-            useWriter.writeQuery(title, policies, type, annotationClass, resultClasses); // throws IOException
+            useWriter.writeQuery(title, policies, type, specificClasses, annotationClass, resultClasses); // throws IOException
         } catch ( IOException e ) {
             // FFDC
         }
@@ -165,7 +166,9 @@ public class TargetCacheImpl_DataQueries implements TargetCache_ExternalConstant
     public synchronized void writeQuery(
         String title,
         Collection<String> sources,
-        String type, String annotationClass,
+        String type,
+        Collection<String> specificClasses,
+        String annotationClass,
         Collection<String> resultClasses) {
 
         TargetCacheImpl_Writer useWriter = getWriter();
@@ -176,7 +179,8 @@ public class TargetCacheImpl_DataQueries implements TargetCache_ExternalConstant
         try {
             useWriter.writeQuery(title,
                                  sources,
-                                 type, annotationClass,
+                                 type,
+                                 specificClasses, annotationClass,
                                  resultClasses); // throws IOException
         } catch ( IOException e ) {
             // FFDC
@@ -187,7 +191,9 @@ public class TargetCacheImpl_DataQueries implements TargetCache_ExternalConstant
     public synchronized void writeQuery(
         String title,
         int policies, Collection<String> sources,
-        String type, String annotationClass,
+        String type,
+        Collection<String> specificClasses,
+        String annotationClass,
         Collection<String> resultClasses) {
 
         TargetCacheImpl_Writer useWriter = getWriter();
@@ -198,7 +204,8 @@ public class TargetCacheImpl_DataQueries implements TargetCache_ExternalConstant
         try {
             useWriter.writeQuery(title,
                                  policies, sources,
-                                 type, annotationClass,
+                                 type,
+                                 specificClasses, annotationClass,
                                  resultClasses); // throws IOException
         } catch ( IOException e ) {
             // FFDC

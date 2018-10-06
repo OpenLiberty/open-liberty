@@ -210,6 +210,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
         this.limitedScan = false;
         this.specificScan = false;
+        this.specificClassNames = null;
 
         this.rootClassSource = null;
         this.overallScanner = null;
@@ -387,15 +388,15 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
      * <p>Scan only for annotations: Do not complete class reference information.</p>
      *
      * @param useRootClassSource The root class source which is to be scanned.
-     * @param specificClassNames The names of the classes which are to be scanned.
-     * @param specificAnnotationClassNames The names of the annotations which of are of interest.
+     * @param useSpecificClassNames The names of the classes which are to be scanned.
+     * @param useSpecificAnnotationClassNames The names of the annotations which of are of interest.
      */
     @Override
     @Trivial
     public void scan(
         ClassSource_Aggregate useRootClassSource,
-        Set<String> specificClassNames,
-        Set<String> specificAnnotationClassNames) throws AnnotationTargets_Exception {
+        Set<String> useSpecificClassNames,
+        Set<String> useSpecificAnnotationClassNames) throws AnnotationTargets_Exception {
 
         String methodName = "scan";
 
@@ -411,13 +412,27 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         }
 
         specificScan = true;
+        specificClassNames = new HashSet<String>(useSpecificClassNames);
+
+        // Need to set the app and module names to use the query logger.
+        setNames(useRootClassSource);
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "App [ {0} ] Mod [ {1} ]", new Object[] { getAppName(), getModFullName() });
+        }
 
         TargetsScannerSpecificImpl specificScanner = new TargetsScannerSpecificImpl(this, useRootClassSource);
 
-        specificScanner.scan(specificClassNames, specificAnnotationClassNames);
+        specificScanner.scan(useSpecificClassNames, useSpecificAnnotationClassNames);
         // throws AnnotationTargets_Exception
 
         putSpecificResults(specificScanner);
+
+        // The query logger has its own reference to module data.
+
+        TargetCacheImpl_DataApp appData = getAnnoCache().getAppForcing( getAppName() );
+        putQueriesData(appData);
 
         if (logger.isLoggable(Level.FINER)) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "RETURN [ {0} ]", getHashName());
@@ -438,6 +453,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     // Phase 1: Internal data
 
     protected ClassSource_Aggregate rootClassSource;
+
     protected String appName;
     protected String modName;
     protected String modCatName;
@@ -446,17 +462,24 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     protected void setRootClassSource(ClassSource_Aggregate rootClassSource) {
         this.rootClassSource = rootClassSource;
 
-        this.appName = rootClassSource.getApplicationName();
-        this.modName = rootClassSource.getModuleName();
-        this.modCatName = rootClassSource.getModuleCategoryName();
+        this.setNames(rootClassSource);
+    }
 
+    protected void setNames(ClassSource_Aggregate useRootClassSource) {
+        this.appName = useRootClassSource.getApplicationName();
+        this.modName = useRootClassSource.getModuleName();
+        this.modCatName = useRootClassSource.getModuleCategoryName();
+
+        String useModFullName;
         if ( this.modName == null ) {
-            this.modFullName = null;
+            useModFullName = null;
         } else if ( this.modCatName == null ) {
-            this.modFullName = this.modName;
+            useModFullName = this.modName;
         } else {
-            this.modFullName = this.modName + "_" + this.modCatName;
+            useModFullName = this.modName + "_" + this.modCatName;
         }
+
+        this.modFullName = useModFullName;
 
         this.appendHashName( "(" + this.appName + ":" + this.modFullName + ")" );
     }
@@ -487,8 +510,26 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         return useRootClassSource;
     }
 
+    //
+
     protected boolean limitedScan;
     protected boolean specificScan;
+    protected Set<String> specificClassNames;
+
+    public boolean isLimited() {
+        return limitedScan;
+    }
+
+    @Override
+    public boolean isSpecific() {
+        return specificScan;
+    }
+
+    @Override
+    public Set<String> getSpecificClassNames() {
+    	return specificClassNames;
+    }    
+    //
 
     protected TargetsScannerOverallImpl overallScanner;
 
@@ -1046,12 +1087,12 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
      *
      * @param annotationClassName The name of the target class annotation.
      *
-     * @return Names of SEED classes which have ths specified class annotation.
+     * @return Names of SEED classes which have the specified class annotation.
      */
     @Override
     public Set<String> getAnnotatedClasses(String annotationClassName) {
         String methodName = "getAnnotatedClasses";
-        
+
         Set<String> annotatedClasses;
 
         TargetsTableImpl useSeedTable = getSeedTable();
@@ -2434,7 +2475,9 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         ScanPolicy scanPolicy, QueryType queryType,
         String annotationClass, Collection<String> resultClasses) {
 
-        getQueriesData().writeQuery(title, scanPolicy.getValue(), queryType.getTag(), annotationClass, resultClasses);
+        getQueriesData().writeQuery(title,
+                                    scanPolicy.getValue(), queryType.getTag(),
+                                    specificClassNames, annotationClass, resultClasses);
     }
 
     protected void writeQuery(
@@ -2442,7 +2485,9 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         int policies, QueryType queryType,
         String annotationClass, Collection<String> resultClasses) {
 
-        getQueriesData().writeQuery(title, policies, queryType.getTag(), annotationClass, resultClasses);
+        getQueriesData().writeQuery(title,
+                                    policies, queryType.getTag(),
+                                    specificClassNames, annotationClass, resultClasses);
     }
 
     protected void writeQuery(
@@ -2455,7 +2500,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
         getQueriesData().writeQuery(title,
                                     sources, queryType.getTag(),
-                                    annotationClass, resultClasses);
+                                    specificClassNames, annotationClass, resultClasses);
     }
 
     protected void writeQuery(
@@ -2468,7 +2513,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
         getQueriesData().writeQuery(title,
                                     policies, sources, queryType.getTag(),
-                                    annotationClass, resultClasses);
+                                    specificClassNames, annotationClass, resultClasses);
     }
 
     protected QueryType asQueryType(AnnotationCategory category) {

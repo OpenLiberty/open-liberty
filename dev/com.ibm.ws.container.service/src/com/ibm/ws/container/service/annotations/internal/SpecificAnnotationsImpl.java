@@ -16,20 +16,21 @@ import com.ibm.ws.container.service.annotations.SpecificAnnotations;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 
 /**
- * Annotations data for a limited scan of specified classes.
+ * Annotations data for a scan of specific classes.
  */
 public class SpecificAnnotationsImpl implements SpecificAnnotations {
-	protected SpecificAnnotationsImpl(AnnotationTargets_Targets specificTargets) {
+
+    protected SpecificAnnotationsImpl(AnnotationTargets_Targets specificTargets) {
         this.specificTargets = specificTargets;
     }
 
-	//
+    //
 
     private final AnnotationTargets_Targets specificTargets;
 
     @Override
     public AnnotationTargets_Targets getTargets() {
-    	return specificTargets;
+        return specificTargets;
     }
 
     //
@@ -38,7 +39,7 @@ public class SpecificAnnotationsImpl implements SpecificAnnotations {
     public Set<String> selectAnnotatedClasses(Class<?> annotationClass) {
         String annotationClassName = annotationClass.getName();
         Set<String> selectedClassNames =
-        	specificTargets.getAnnotatedClasses(annotationClassName);
+            specificTargets.getAnnotatedClasses(annotationClassName);
         return selectedClassNames;
     }
 }

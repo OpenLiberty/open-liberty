@@ -268,6 +268,7 @@ public interface TargetCache_InternalConstants {
     String QUERY_POLICIES_TAG       = "Policies";
     String QUERY_SOURCE_TAG         = "Source";
     String QUERY_TYPE_TAG           = "Type";
+    String QUERY_SPECIFIC_TAG       = "Specific";
     String QUERY_ANNOTATION_TAG     = "Annotation";
     String QUERY_RESULT_TAG         = "Result";
 

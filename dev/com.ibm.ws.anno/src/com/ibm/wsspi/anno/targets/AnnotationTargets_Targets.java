@@ -124,6 +124,21 @@ public interface AnnotationTargets_Targets {
     // Scanned classes ...
 
     /**
+     * Tell if the targets are for scan of specific classes.
+     *
+     * @return True or false telling if this scan is of specific classes.
+     */
+    boolean isSpecific();
+
+    /**
+     * Answer the specific classes which were scanned to generate the target
+     * information.  Answer null unless the scan was for specific classes.
+     *
+     * @return The specific classes of this scan.
+     */
+    Set<String> getSpecificClassNames();
+
+    /**
      * <p>Tell if a particular named class is a seed class name.</p>
      *
      * @param className The class name to test.
