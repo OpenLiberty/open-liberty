@@ -22,15 +22,20 @@ public class Constants extends SocialConstants {
     public static final String OP_KEY_REGISTRATION_ENDPOINT = "registration_endpoint";
     public static final String OP_KEY_AUTHORIZATION_ENDPOINT = "authorization_endpoint";
     public static final String OP_KEY_TOKEN_ENDPOINT = "token_endpoint";
+    public static final String OP_KEY_USER_INFO_ENDPOINT = "userinfo_endpoint";
     public static final String OP_KEY_JWKS_URI = "jwks_uri";
+    public static final String OP_KEY_SCOPES_SUPPORTED = "scopes_supported";
 
     public static final String CONFIG_VAR_CLIENT_ID = "oidc.certification.clientId";
     public static final String CONFIG_VAR_CLIENT_SECRET = "oidc.certification.clientSecret";
+    public static final String CONFIG_VAR_SCOPE = "oidc.certification.scope";
     public static final String CONFIG_VAR_AUTHORIZATION_ENDPOINT = "oidc.certification.authorizationEndpoint";
     public static final String CONFIG_VAR_TOKEN_ENDPOINT = "oidc.certification.tokenEndpoint";
+    public static final String CONFIG_VAR_USER_INFO_ENDPOINT = "oidc.certification.userInfoEndpoint";
     public static final String CONFIG_VAR_JWKS_URI = "oidc.certification.jwksUri";
     public static final String CONFIG_VAR_SIGNATURE_ALGORITHM = "oidc.certification.signatureAlgorithm";
     public static final String CONFIG_VAR_TOKEN_ENDPOINT_AUTH_METHOD = "oidc.certification.tokenEndpointAuthMethod";
+    public static final String CONFIG_VAR_USER_INFO_ENDPOINT_ENABLED = "oidc.certification.userInfoEndpointEnabled";
 
     public static final String CLIENT_REGISTRATION_KEY_REDIRECT_URIS = "redirect_uris";
     public static final String CLIENT_REGISTRATION_KEY_CONTACTS = "contacts";
