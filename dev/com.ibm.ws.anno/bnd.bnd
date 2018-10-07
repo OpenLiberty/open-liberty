@@ -22,6 +22,7 @@ Export-Package: \
     com.ibm.wsspi.anno.service;provide:=true, \
     com.ibm.wsspi.anno.info;provide:=true, \
     com.ibm.wsspi.anno.targets;provide:=true, \
+    com.ibm.wsspi.anno.targets.cache;provide:=true, \
     com.ibm.wsspi.anno.classsource;provide:=true, \
     com.ibm.ws.anno.classsource.specification;provide:=true, \
     com.ibm.wsspi.anno.util;provide:=true
