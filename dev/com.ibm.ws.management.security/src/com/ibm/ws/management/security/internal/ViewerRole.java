@@ -16,18 +16,18 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.management.security.ManagementSecurityConstants;
 
 /**
- * Administrator role binding: {@code
- * <administrator-role>
+ * Viewer role binding: {@code
+ * <viewer-role>
  *      <user>userName</user>
  *      <user-access-id>user:realm/utle</user-access-id>  or <user-access-id>realm/utle</user-access-id>                 //realm is required
  *      <group>groupName</group>
  *      <group-access-id>group:realm/group1</group-access-id> or <group-access-id>realm/group1</group-access-id>        //realm is required
- * </administrator-role> }
+ * </viewer-role> }
  */
-public class AdministratorRole extends AbstractManagementRole {
-    static final TraceComponent tc = Tr.register(AdministratorRole.class);
+public class ViewerRole extends AbstractManagementRole {
+    static final TraceComponent tc = Tr.register(ViewerRole.class);
 
-    public AdministratorRole() {
+    public ViewerRole() {
         super(tc);
     }
 
@@ -35,6 +35,6 @@ public class AdministratorRole extends AbstractManagementRole {
     @Trivial
     @Override
     public String getRoleName() {
-        return ManagementSecurityConstants.ADMINISTRATOR_ROLE_NAME;
+        return ManagementSecurityConstants.VIEWER_ROLE_NAME;
     }
 }
