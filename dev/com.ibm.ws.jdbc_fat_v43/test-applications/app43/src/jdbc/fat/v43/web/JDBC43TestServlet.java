@@ -85,6 +85,9 @@ public class JDBC43TestServlet extends FATServlet {
     @Resource(lookup = "jdbc/defaultShardingMatchCurrentState")
     DataSource dataSourceWithDefaultSharding; // shardingKey=CHAR:DefaultShardingKey; superShardingKey=VARCHAR:DefaultSuperKey;
 
+    @Resource(lookup = "jdbc/xaDerby42")
+    DataSource derbyJDBC42XADataSource;
+
     @Resource(lookup = "jdbc/matchCurrentState", authenticationType = AuthenticationType.APPLICATION)
     DataSource sharablePoolDataSourceMatchCurrentState;
 
@@ -554,6 +557,94 @@ public class JDBC43TestServlet extends FATServlet {
             assertFalse(cstmt.isSimpleIdentifier("$Invalid"));
         } finally {
             con.close();
+        }
+    }
+
+    /**
+     * Use a JDBC 4.2 driver with the Liberty JDBC 4.3 feature enabled.
+     * It should still be usable, but of course won't have any of the JDBC 4.3 function such as
+     * sharding that needs to be implemented by the JDBC driver.
+     * JDBC 4.3 methods for which Java SE provides default implementations must be invokable
+     * and must return results that are consistent with the default implementation.
+     */
+    @ExpectedFFDC({ "java.sql.SQLFeatureNotSupportedException", // when attempting JDBC 4.3 methods on the JDBC 4.2 driver
+                    "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", // when attempting to use connection builder with sharding
+                    "javax.resource.spi.ResourceAllocationException" // when attempting to use connection builder with sharding
+    })
+    @Test
+    public void testJDBC42DriverWithJDBC43FeatureEnabled() throws Exception {
+        // use another data source to get a sharding key that we will later attempt to set on the connection
+        ShardingKey key = sharableXADataSource.createShardingKeyBuilder().subkey("1", JDBCType.BIT).build();
+
+        // Connection builder is implemented by the Liberty JDBC 4.3 feature,
+        // and so is usable, as long as sharding isn't specified
+        ConnectionBuilder conbuilder = derbyJDBC42XADataSource.createConnectionBuilder();
+        try (Connection con = conbuilder.build()) {
+            DatabaseMetaData mdata = con.getMetaData();
+            assertEquals(4, mdata.getJDBCMajorVersion());
+            assertEquals(2, mdata.getJDBCMinorVersion());
+            assertFalse(mdata.supportsSharding());
+
+            // Use a JDBC 4.1 method
+            assertEquals("USER43", con.getSchema().toUpperCase());
+
+            // per JavaDoc, the default implementation of beginRequest a no-op, and therefore it should not raise an error
+            con.beginRequest();
+
+            // default implementations provided by Java SE for these methods apply even if driver does not support JDBC 4.3,
+            PreparedStatement ps = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+            assertEquals("\"lessThan4'x8'\"", ps.enquoteIdentifier("lessThan4'x8'", false));
+            assertTrue(ps.isSimpleIdentifier("OUT_OF_STOCK"));
+
+            try {
+                con.setShardingKey(key);
+                fail("Should not be able to set a sharding key on a JDBC 4.2 driver");
+            } catch (SQLFeatureNotSupportedException x) {
+            }
+
+            try {
+                con.setShardingKey(key, key);
+                fail("Should not be able to set a sharding key and super sharding key on a JDBC 4.2 driver");
+            } catch (SQLFeatureNotSupportedException x) {
+            }
+
+            try {
+                con.setShardingKeyIfValid(key, 150);
+                fail("Should not be able to validate and set a sharding key on a JDBC 4.2 driver");
+            } catch (SQLFeatureNotSupportedException x) {
+            }
+
+            try {
+                con.setShardingKeyIfValid(key, key, 151);
+                fail("Should not be able to validate and set a sharding key and super sharding key on a JDBC 4.2 driver");
+            } catch (SQLFeatureNotSupportedException x) {
+            }
+
+            ps.setString(1, "Prairie Vista Drive NW");
+            ps.setString(2, "Rochester");
+            ps.setString(3, "MN");
+
+            // use a JDBC 4.2 method
+            assertEquals(1, ps.executeLargeUpdate());
+
+            ps.close();
+
+            // per JavaDoc, the default implementation of endRequest a no-op, and therefore it should not raise an error
+            con.endRequest();
+        }
+
+        try {
+            ShardingKeyBuilder keybuilder = derbyJDBC42XADataSource.createShardingKeyBuilder();
+            fail("Created sharding key builder " + keybuilder + " for JDBC 4.2 driver");
+        } catch (SQLFeatureNotSupportedException x) {
+        }
+
+        conbuilder.shardingKey(key);
+        try {
+            Connection con = conbuilder.build();
+            con.close();
+            fail("Built a connection with sharding " + con + " for JDBC 4.2 driver");
+        } catch (SQLFeatureNotSupportedException x) {
         }
     }
 
