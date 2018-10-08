@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.springboot.support.version15.test.app;
+package com.ibm.ws.springboot.support.version20.test.app;
 
 import java.io.IOException;
 
