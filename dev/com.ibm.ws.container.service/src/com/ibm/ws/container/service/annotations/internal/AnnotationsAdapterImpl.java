@@ -78,18 +78,26 @@ public abstract class AnnotationsAdapterImpl {
         OverlayContainer overlayContainer,
         String targetPath, Class<T> targetClass) {
 
-        T result = (T) (overlayContainer.getFromNonPersistentCache(targetPath, targetClass));
+        T targetObject = (T) (overlayContainer.getFromNonPersistentCache(targetPath, targetClass));
 
-        System.out.println(CLASS_NAME + ": overlayGet [ " + overlayContainer + " ] [ " + targetPath + " ] [ " + targetClass + " ] [ " + result + " ]");
+        // TODO: Temporary for annotation caching testing.
+        String message = getClass().getSimpleName() +
+            ": overlayGet [ " + overlayContainer + " ]" +
+            " [ " + targetPath + " ] [ " + targetClass + " ]: [ " + targetObject + " ]";
+        Tr.info(tc, message);
 
-        return result;
+        return targetObject;
     }
 
     public <T> void overlayPut(
         OverlayContainer overlayContainer,
         String targetPath, Class<T> targetClass, T targetObject) {
 
-        System.out.println(CLASS_NAME + ": overlayPut [ " + overlayContainer + " ] [ " + targetPath + " ] [ " + targetClass + " ] [ " + targetObject + " ]");
+        // TODO: Temporary for annotation caching testing.
+        String message = getClass().getSimpleName() +
+            ": overlayPut [ " + overlayContainer + " ]" +
+            " [ " + targetPath + " ] [ " + targetClass + " ]: [ " + targetObject + " ]";
+        Tr.info(tc, message);
 
         overlayContainer.addToNonPersistentCache(targetPath, targetClass, targetObject);
     }

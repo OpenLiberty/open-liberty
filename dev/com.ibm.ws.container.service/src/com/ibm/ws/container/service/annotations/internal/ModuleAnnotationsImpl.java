@@ -99,7 +99,7 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 // com.ibm.ws.springboot.support.web.server/src/com/ibm/ws/springboot/support/web/server/internal/WebInstance.java
 
 public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnnotations {
-    private static final String CLASS_NAME = ModuleAnnotationsImpl.class.getSimpleName();
+    // private static final String CLASS_NAME = ModuleAnnotationsImpl.class.getSimpleName();
 
     public ModuleAnnotationsImpl(
         AnnotationsAdapterImpl annotationsAdapter,
@@ -130,13 +130,6 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
         this.classLoader = moduleInfo.getClassLoader();
 
         this.appInfo = moduleInfo.getApplicationInfo();
-
-        System.out.println(CLASS_NAME + ": Container [ " + rootContainer + " ]");
-        System.out.println(CLASS_NAME + ": Module Container [ " + moduleInfo.getContainer() + " ]");
-        System.out.println(CLASS_NAME + ": Application Name [ " + this.getAppName() + " ]");
-        System.out.println(CLASS_NAME + ": Module Name [ " + this.getModName() + " ]");
-        System.out.println(CLASS_NAME + ": Module Category Name [ " + this.getModCategoryName() + " ]");
-        System.out.println(CLASS_NAME + ": Module Classloader [ " + this.classLoader + " ]");
     }
 
     //
@@ -228,14 +221,14 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
 
         Container moduleContainer = getContainer();
 
-        Tr.info(tc, CLASS_NAME +
-                    ": Module [ " + getAppName() + ":" + getModName() + " ][ " + moduleContainer + " ]:" +
-                    " Building internal class sources");
+        // Tr.info(tc, CLASS_NAME +
+        // ": Module [ " + getAppName() + ":" + getModName() + " ][ " + moduleContainer + " ]:" +
+        // " Building internal class sources");
 
         ModuleClassesContainerInfo moduleClassesContainerInfo = getModuleClassesContainerInfo();
 
         if ( moduleClassesContainerInfo == null ) {
-            Tr.info(tc, CLASS_NAME + ": No classes container info: Using the module container.");
+            // Tr.info(tc, CLASS_NAME + ": No classes container info: Using the module container.");
 
             // When there is no module classes container information, use the module container
             // itself as the classes container.
@@ -305,7 +298,7 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
                     nextContainer  = nextContainer.getEnclosingContainer().getEnclosingContainer();
                     nextPrefix = "WEB-INF/classes/";
 
-                    Tr.info(tc, CLASS_NAME + ": Handling type [ " + nextType + " ] with prefix [ " + nextPrefix + " ]");
+                    // Tr.info(tc, CLASS_NAME + ": Handling type [ " + nextType + " ] with prefix [ " + nextPrefix + " ]");
 
                 } else if ( (nextType == ContainerInfo.Type.WEB_INF_LIB) ||
                             (nextType == ContainerInfo.Type.EJB_MODULE) ||
@@ -317,7 +310,7 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
 
                     nextPrefix = ClassSource_Factory.UNUSED_ENTRY_PREFIX;
 
-                    Tr.info(tc, CLASS_NAME + ": Handling type [ " + nextType + " ]");
+                    // Tr.info(tc, CLASS_NAME + ": Handling type [ " + nextType + " ]");
 
                 } else {
                     Tr.warning(tc, "Ignoring container [ " + nextContainer + " ] [ " + nextType + " ]: " + "unknown type");

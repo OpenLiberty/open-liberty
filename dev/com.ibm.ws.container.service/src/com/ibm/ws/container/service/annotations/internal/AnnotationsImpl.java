@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.container.service.annotations.internal;
 
+import java.net.URL;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -89,9 +91,11 @@ public abstract class AnnotationsImpl implements Annotations {
             pathCase = "non-root-of-roots (full path)";
         }
 
-        String message = getClass().getSimpleName() + ": Container [ " + container + " ] Path [ " + containerPath + " ]: " + pathCase;
+        // TODO: Temporary for annotation caching testing.
+        String message = getClass().getSimpleName() + ".getContainerPath:" +
+            " Container [ " + container + " ]" +
+            " Path [ " + containerPath + " ]: " + pathCase;
         Tr.info(tc, message);
-        (new Throwable(message)).printStackTrace(System.out);
 
         return containerPath;
     }
@@ -168,6 +172,18 @@ public abstract class AnnotationsImpl implements Annotations {
 
         this.isSetInfoStore = false;
         this.infoStore = null;
+
+        //
+
+        // TODO: Temporary for annotation caching testing.
+        String prefix = getClass().getSimpleName() + ".<init>: ";
+        Tr.info(tc, prefix + "Root container [ " + rootContainer + " ]");
+        for ( URL url : rootContainer.getURLs() ) {
+            Tr.info(tc, prefix + "  URL [ " + url + " ]");
+        }
+        Tr.info(tc, prefix + "Application [ " + appName + " ]");
+        Tr.info(tc, prefix + "Module [ " + modName + " ]");
+        Tr.info(tc, prefix + "Module Category [ " + modCatName + " ]");
     }
 
     //
@@ -312,10 +328,12 @@ public abstract class AnnotationsImpl implements Annotations {
             }
             modName = useModName;
 
-            System.out.println(getClass().getSimpleName() +
-                ": App [ " + getAppName() + " ]" +
+            // TODO: Temporary for annotation caching testing.
+            String message = getClass().getSimpleName() + ".forceModName:" +
+                " App [ " + getAppName() + " ]" +
                 " Container [ " + getContainer() + " ]" +
-                " Forced Mod [ " + modName + " ] (" + modNameCase + ")");
+                " Mod [ " + modName + " ] (" + modNameCase + ")";
+            Tr.info(tc, message);
         }
     }
 
@@ -452,13 +470,17 @@ public abstract class AnnotationsImpl implements Annotations {
 
         ClassSource_Options options = createOptions();
 
-        System.out.println("Create root class source:");
-        System.out.println("  App Name [ " + useAppName + " ]");
-        System.out.println("  Mod Name [ " + useModName + " ]");
-        System.out.println("  Mod Cat Name [ " + useModCatName + " ]");
-
-        System.out.println("  IsSet Scan Threads [ " + options.getIsSetScanThreads() + " ]");
-        System.out.println("  Scan Threads [ " + options.getScanThreads() + " ]");
+        // TODO: Temporary for annotation caching testing.
+        String prefix = getClass().getSimpleName() + ".createRootClassSource:";
+        String message1 = prefix +
+            " Class source " +
+            " app [ " + useAppName + " ]" +
+            " module [ " + useModName + " ]" +
+            " module category [ " + useModCatName + " ]";
+        String message2 = prefix +
+            " Scan threads [ " + options.getScanThreads() + " ]";
+        Tr.info(tc, message1);
+        Tr.info(tc, message2);
 
         try {
             return classSourceFactory.createAggregateClassSource(
@@ -800,13 +822,13 @@ public abstract class AnnotationsImpl implements Annotations {
 
     @Override
     public Set<String> getClassesWithSpecifiedInheritedAnnotations(Collection<String> annotationClassNames) {
-        String methodName = "getClassesWithSpecifiedInheritedAnnotations";
-        String prefix = CLASS_NAME + "." + methodName + ": ";
-        Tr.info(tc, prefix + " ENTER Annotations [ " + annotationClassNames + " ]");
+        // String methodName = "getClassesWithSpecifiedInheritedAnnotations";
+        // String prefix = CLASS_NAME + "." + methodName + ": ";
+        // Tr.info(tc, prefix + " ENTER Annotations [ " + annotationClassNames + " ]");
 
         AnnotationTargets_Targets useTargets = getTargets();
         if ( useTargets == null ) {
-            Tr.info(tc, prefix + "RETURN [ ]: Null targets");
+            // Tr.info(tc, prefix + "RETURN [ ]: Null targets");
             return Collections.emptySet();
         }
 
@@ -815,11 +837,11 @@ public abstract class AnnotationsImpl implements Annotations {
         for ( String annotationClassName : annotationClassNames ) {
             Set<String> annotatedClassNames =
                 useTargets.getAllInheritedAnnotatedClasses(annotationClassName);
-            Tr.info(tc, prefix + "Annotation [ " + annotationClassName + " ] [ " + annotatedClassNames + " ]");
+            // Tr.info(tc, prefix + "Annotation [ " + annotationClassName + " ] [ " + annotatedClassNames + " ]");
             allAnnotatedClassNames.addAll(annotatedClassNames);
         }
 
-        Tr.info(tc, prefix + "RETURN [ " + allAnnotatedClassNames + " ]");
+        // Tr.info(tc, prefix + "RETURN [ " + allAnnotatedClassNames + " ]");
         return allAnnotatedClassNames;
     }
 
