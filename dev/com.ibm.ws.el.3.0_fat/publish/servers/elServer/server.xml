@@ -1,0 +1,16 @@
+<server description="Server for testing EL 3.0 in a stand alone environment">
+
+    <include location="../fatTestPorts.xml"/>
+     <!-- This server is for stand alone EL 3.0 testing only.  -->
+    
+    <featureManager>
+		<feature>el-3.0</feature>
+		<feature>servlet-3.1</feature>
+		<feature>componenttest-1.0</feature>
+    </featureManager>
+    
+    <logging traceSpecification="*=info=enabled:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:TCPChannel=all:GenericBNF=all:com.ibm.ws.jsp*=all" maxFileSize="20" maxFiles="10" traceFormat="BASIC"/> 
+ 
+	<javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.ibm.oti.shared"/>
+    
+</server>
