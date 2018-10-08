@@ -48,7 +48,7 @@ public class RequestUtilsTest {
         for (int i = 0; i < expectedKeys.length; ++i) {
             String[] val = (String[]) params.get(expectedKeys[i]);
             Assert.assertNotNull(val);
-            Assert.assertEquals(expectedValues[i].length, val.length);
+            Assert.assertEquals("Wrong number of values for key " + expectedKeys[i], expectedValues[i].length, val.length);
             for (int j = 0; j < expectedValues[i].length; ++j) {
                 Assert.assertEquals(expectedValues[i][j], val[j]);
             }
@@ -84,24 +84,35 @@ public class RequestUtilsTest {
 
         Hashtable params = RequestUtils.parseQueryString(optimizedCase, encoding);
         validateParams(params, keys, values);
+
+        Assert.assertNull(optimizedCase[0]);
         
         params = RequestUtils.parseQueryString(worstCase, encoding);
         validateParams(params, keys, values);
 
-        char[][] simple2ArrayCase = new char[2][];
-        int size1 = queryString.length() / 2;
-        int size2 = queryString.length() - size1;
-        simple2ArrayCase[0] = new char[size1];
-        simple2ArrayCase[1] = new char[size2];
-        for (int i = 0; i < size1; ++i) {
-            simple2ArrayCase[0][i] = queryString.charAt(i);
-        }
-        for (int i = 0; i < size2; ++i) {
-            simple2ArrayCase[1][i] = queryString.charAt(size1 + i);
+        for (int i = 0; i < queryString.length(); ++i) {
+            Assert.assertNull("index " + i + " is not null", worstCase[i]);
         }
 
-        params = RequestUtils.parseQueryString(simple2ArrayCase, encoding);
-        validateParams(params, keys, values);
+        char[][] simple2ArrayCase = new char[2][];
+        for (int i = 0; i <= queryString.length(); ++i) {
+            int size2 = queryString.length() - i;
+            simple2ArrayCase[0] = new char[i];
+            simple2ArrayCase[1] = new char[size2];
+            for (int j = 0; j < i; ++j) {
+                simple2ArrayCase[0][j] = queryString.charAt(j);
+            }
+            for (int j = 0; j < size2; ++j) {
+                simple2ArrayCase[1][j] = queryString.charAt(i + j);
+            }
+
+            params = RequestUtils.parseQueryString(simple2ArrayCase, encoding);
+            validateParams(params, keys, values);
+
+            for (int j = 0; j < simple2ArrayCase.length; ++j) {
+                Assert.assertNull("index " + j + " is not null", simple2ArrayCase[j]);
+            }
+        }
     }
 
     @Test
