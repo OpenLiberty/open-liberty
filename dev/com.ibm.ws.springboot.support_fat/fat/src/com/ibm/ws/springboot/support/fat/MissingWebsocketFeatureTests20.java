@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,24 +21,30 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.utils.HttpUtils;
+import componenttest.custom.junit.runner.Mode;
 
 @RunWith(FATRunner.class)
-public class JSPTests15 extends AbstractSpringTests {
+@Mode(FULL)
+public class MissingWebsocketFeatureTests20 extends AbstractSpringTests {
+    @Override
+    public boolean expectApplicationSuccess() {
+        return false;
+    }
 
     @Test
-    public void testJSP() throws Exception {
-        HttpUtils.findStringInUrl(server, "", "resources/text.txt");
+    public void testMissingWebsocketFor20() throws Exception {
+        assertNotNull("No error message was found for missing websocket feature ", server.waitForStringInLog("CWWKC0259E"));
+        stopServer(true, "CWWKC0259E", "CWWKZ0002E");
     }
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5", "jsp-2.3"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
     }
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_15_APP_WAR;
+        return SPRING_BOOT_20_APP_WEBSOCKET;
     }
 
 }

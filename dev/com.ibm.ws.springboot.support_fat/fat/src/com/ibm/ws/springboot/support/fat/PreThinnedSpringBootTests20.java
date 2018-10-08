@@ -35,13 +35,13 @@ import componenttest.topology.utils.HttpUtils;
  * Do not make this part of the FULL mode since we want to make sure
  * this tests always runs.
  */
-public class PreThinnedSpringBootTests extends AbstractSpringTests {
+public class PreThinnedSpringBootTests20 extends AbstractSpringTests {
 
-    private String application = SPRING_BOOT_15_APP_BASE;
+    private String application = SPRING_BOOT_20_APP_BASE;
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
     }
 
     @Override
@@ -51,7 +51,7 @@ public class PreThinnedSpringBootTests extends AbstractSpringTests {
 
     @Override
     public void modifyAppConfiguration(SpringBootApplication appConfig) {
-        if (application != SPRING_BOOT_15_APP_BASE) {
+        if (application != SPRING_BOOT_20_APP_BASE) {
             appConfig.setName("testPreThinned");
         }
     }

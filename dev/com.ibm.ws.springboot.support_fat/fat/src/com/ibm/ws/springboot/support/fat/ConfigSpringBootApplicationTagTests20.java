@@ -27,15 +27,15 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-public class ConfigSpringBootApplicationTagTests extends AbstractSpringTests {
+public class ConfigSpringBootApplicationTagTests20 extends AbstractSpringTests {
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
     }
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_15_APP_BASE;
+        return SPRING_BOOT_20_APP_BASE;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ConfigSpringBootApplicationTagTests extends AbstractSpringTests {
 
     @Override
     public void modifyAppConfiguration(SpringBootApplication appConfig) {
-        appConfig.getApplicationArguments().add("--server.context-parameters.context_parameter_test_key=PASSED");
+        appConfig.getApplicationArguments().add("--server.servlet.context-parameters.context_parameter_test_key=PASSED");
         appConfig.getApplicationArguments().add("--server.server-header=SpringServerHeaderTest");
     }
 

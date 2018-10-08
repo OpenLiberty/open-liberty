@@ -36,7 +36,7 @@ import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class ConfigServerXMLOverrideTests extends AbstractSpringTests {
+public class ConfigServerXMLOverrideTests20 extends AbstractSpringTests {
     private static final String OVERRIDE_VIRTUAL_HOST = "OverrideVirtualHost";
     private static final String OVERRIDE_HTTP_ENDPOINT = "OverrideHttpEndpoint";
     private static final String OVERRIDE_SSL = "OverrideSSL";
@@ -47,12 +47,12 @@ public class ConfigServerXMLOverrideTests extends AbstractSpringTests {
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1", "transportSecurity-1.0"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1", "transportSecurity-1.0"));
     }
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_15_APP_BASE;
+        return SPRING_BOOT_20_APP_BASE;
     }
 
     @Override

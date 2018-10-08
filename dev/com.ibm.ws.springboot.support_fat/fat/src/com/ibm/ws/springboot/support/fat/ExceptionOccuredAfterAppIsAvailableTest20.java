@@ -29,7 +29,7 @@ import componenttest.custom.junit.runner.Mode;
 
 @RunWith(FATRunner.class)
 @Mode(FULL)
-public class ExceptionOccuredAfterAppIsAvailableTest15 extends AbstractSpringTests {
+public class ExceptionOccuredAfterAppIsAvailableTest20 extends AbstractSpringTests {
 
     @Override
     public boolean expectApplicationSuccess() {
@@ -38,12 +38,12 @@ public class ExceptionOccuredAfterAppIsAvailableTest15 extends AbstractSpringTes
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
     }
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_15_APP_BASE;
+        return SPRING_BOOT_20_APP_BASE;
     }
 
     @Override

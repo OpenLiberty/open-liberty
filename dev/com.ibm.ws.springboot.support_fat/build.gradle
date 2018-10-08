@@ -49,23 +49,23 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
     copy {
-      from new File('../com.ibm.ws.springboot.support.version15.test.war.app/build/libs/','com.ibm.ws.springboot.support.version15.test.war.app-0.0.1-SNAPSHOT.war')
+      from new File('../com.ibm.ws.springboot.support.version20.test.war.app/build/libs/','com.ibm.ws.springboot.support.version20.test.war.app-0.0.1-SNAPSHOT.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
     copy {
-      from new File('../com.ibm.ws.springboot.support.version15.test.java.app/build/libs/','com.ibm.ws.springboot.support.version15.test.java.app.jar')
+      from new File('../com.ibm.ws.springboot.support.version20.test.java.app/build/libs/','com.ibm.ws.springboot.support.version20.test.java.app-0.0.1-SNAPSHOT.jar')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
     copy {
-      from new File('../com.ibm.ws.springboot.support.version15.test.webanno.app/build/libs/','com.ibm.ws.springboot.support.version15.test.webanno.app.jar')
+      from new File('../com.ibm.ws.springboot.support.version20.test.webanno.app/build/libs/','com.ibm.ws.springboot.support.version20.test.webanno.app-0.0.1-SNAPSHOT.jar')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
     copy {
-      from new File('../com.ibm.ws.springboot.support.version15.test.websocket.app/build/libs/','com.ibm.ws.springboot.support.version15.test.websocket.app.jar')
+      from new File('../com.ibm.ws.springboot.support.version20.test.websocket.app/build/libs/','com.ibm.ws.springboot.support.version20.test.websocket.app-0.0.1-SNAPSHOT.jar')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
     copy {
-      from new File('../com.ibm.ws.springboot.support.version15.test.actuator.app/build/libs/','com.ibm.ws.springboot.support.version15.test.actuator.app.jar')
+      from new File('../com.ibm.ws.springboot.support.version20.test.actuator.app/build/libs/','com.ibm.ws.springboot.support.version20.test.actuator.app-0.0.1-SNAPSHOT.jar')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
     copy {
@@ -77,7 +77,7 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
     copy {
-      from new File('../com.ibm.ws.springboot.support.version15.test.multi.context.app/build/libs/','com.ibm.ws.springboot.support.version15.test.multi.context.app.jar')
+      from new File('../com.ibm.ws.springboot.support.version20.test.multi.context.app/build/libs/','com.ibm.ws.springboot.support.version20.test.multi.context.app-0.0.1-SNAPSHOT.jar')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
   }

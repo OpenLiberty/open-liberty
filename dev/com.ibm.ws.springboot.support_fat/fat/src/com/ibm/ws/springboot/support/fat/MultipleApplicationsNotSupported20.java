@@ -35,16 +35,16 @@ import componenttest.topology.utils.HttpUtils;
  * are not supported in the same server configuration
  */
 @Mode(FULL)
-public class MultipleApplicationsNotSupported extends AbstractSpringTests {
+public class MultipleApplicationsNotSupported20 extends AbstractSpringTests {
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
     }
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_15_APP_BASE;
+        return SPRING_BOOT_20_APP_BASE;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class MultipleApplicationsNotSupported extends AbstractSpringTests {
 
         //Get the name of the application installed so that we can remove it later
         Collection<String> appNames = new ArrayList<>();
-        String baseName = getApplicationName(SPRING_BOOT_15_APP_BASE);
+        String baseName = getApplicationName(SPRING_BOOT_20_APP_BASE);
         appNames.add(baseName);
         appNames.add("app.copy0");
         appNames.add("app.copy1");

@@ -28,14 +28,14 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
-public class SpringSecurityTests extends AbstractSpringTests {
+public class SpringSecurityTests20 extends AbstractSpringTests {
 
     private static final String TEST_WITH_APPSECURITY = "testSpringSecurityWithAppSecurityEnabled";
     private static final String FEATURE_APP_SECURITY_2_0 = "appSecurity-2.0";
 
     @Override
     public Set<String> getFeatures() {
-        HashSet<String> result = new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1"));
+        HashSet<String> result = new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
 
         String methodName = testName.getMethodName();
 
@@ -47,7 +47,7 @@ public class SpringSecurityTests extends AbstractSpringTests {
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_15_APP_BASE;
+        return SPRING_BOOT_20_APP_BASE;
     }
 
     @After

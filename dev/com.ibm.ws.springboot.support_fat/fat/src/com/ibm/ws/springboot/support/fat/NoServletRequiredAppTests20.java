@@ -25,25 +25,25 @@ import componenttest.custom.junit.runner.Mode;
 
 @RunWith(FATRunner.class)
 @Mode(FULL)
-public class NoServletRequiredAppTests15 extends AbstractSpringTests {
+public class NoServletRequiredAppTests20 extends AbstractSpringTests {
     @Override
     public boolean expectWebApplication() {
         return false;
     }
 
     @Test
-    public void testNoServletRequiredFor15() throws Exception {
+    public void testNoServletRequiredFor20() throws Exception {
         assertNotNull("Output not found", server.waitForStringInLog("Hello World!!"));
     }
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0"));
     }
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_15_APP_JAVA;
+        return SPRING_BOOT_20_APP_JAVA;
     }
 
 }

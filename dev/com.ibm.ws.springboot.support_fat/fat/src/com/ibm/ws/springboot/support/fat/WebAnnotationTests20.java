@@ -21,7 +21,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-public class WebAnnotationTests extends AbstractSpringTests {
+public class WebAnnotationTests20 extends AbstractSpringTests {
 
     @Test
     public void testWebAnnotations() throws Exception {
@@ -30,12 +30,12 @@ public class WebAnnotationTests extends AbstractSpringTests {
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
     }
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_15_APP_WEBANNO;
+        return SPRING_BOOT_20_APP_WEBANNO;
     }
 
 }

@@ -42,13 +42,13 @@ import componenttest.custom.junit.runner.Mode;
 
 @RunWith(FATRunner.class)
 @Mode(FULL)
-public class ExtractedAppTests extends CommonWebServerTests {
+public class ExtractedAppTests20 extends CommonWebServerTests {
     private final static String PROPERTY_KEY_INSTALL_DIR = "install.dir";
 
-    private final static String SPRING_BOOT_15_APP_BASE_THIN = SPRING_BOOT_15_APP_BASE.substring(0, SPRING_BOOT_15_APP_BASE.length() - 3) + SPRING_APP_TYPE;
-    private final static String SPRING_BOOT_15_APP_BASE_EXTRACTED = SPRING_BOOT_15_APP_BASE.substring(0, SPRING_BOOT_15_APP_BASE.length() - 3) + "dir";
-    private final static String SPRING_BOOT_15_APP_BASE_THIN_EXTRACTED = SPRING_BOOT_15_APP_BASE.substring(0, SPRING_BOOT_15_APP_BASE.length() - 3) + SPRING_APP_TYPE + ".dir";
-    private final static String SPRING_BOOT_15_APP_BASE_LOOSE = SPRING_BOOT_15_APP_BASE.substring(0, SPRING_BOOT_15_APP_BASE.length() - 3) + "xml";
+    private final static String SPRING_BOOT_20_APP_BASE_THIN = SPRING_BOOT_20_APP_BASE.substring(0, SPRING_BOOT_20_APP_BASE.length() - 3) + SPRING_APP_TYPE;
+    private final static String SPRING_BOOT_20_APP_BASE_EXTRACTED = SPRING_BOOT_20_APP_BASE.substring(0, SPRING_BOOT_20_APP_BASE.length() - 3) + "dir";
+    private final static String SPRING_BOOT_20_APP_BASE_THIN_EXTRACTED = SPRING_BOOT_20_APP_BASE.substring(0, SPRING_BOOT_20_APP_BASE.length() - 3) + SPRING_APP_TYPE + ".dir";
+    private final static String SPRING_BOOT_20_APP_BASE_LOOSE = SPRING_BOOT_20_APP_BASE.substring(0, SPRING_BOOT_20_APP_BASE.length() - 3) + "xml";
 
     private static String installDir = null;
     private static RemoteFile sharedResourcesDir;
@@ -58,7 +58,7 @@ public class ExtractedAppTests extends CommonWebServerTests {
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
     }
 
     @Override
@@ -90,8 +90,8 @@ public class ExtractedAppTests extends CommonWebServerTests {
         sharedResourcesDir.mkdirs();
         appsDir = server.getFileFromLibertyServerRoot("apps");
 
-        RemoteFile sourceApp = new RemoteFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_15_APP_BASE);
-        RemoteFile thinApp = new RemoteFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_15_APP_BASE_THIN);
+        RemoteFile sourceApp = new RemoteFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_20_APP_BASE);
+        RemoteFile thinApp = new RemoteFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_20_APP_BASE_THIN);
 
         List<String> cmd = new ArrayList<>();
         cmd.add("thin");
@@ -103,10 +103,10 @@ public class ExtractedAppTests extends CommonWebServerTests {
         Assert.assertTrue("Failed to thin the application",
                           SpringBootUtilityScriptUtils.findMatchingLine(output, "Thin application: .*\\." + SPRING_APP_TYPE));
 
-        RemoteFile baseExtracted = new RemoteFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_15_APP_BASE_EXTRACTED);
+        RemoteFile baseExtracted = new RemoteFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_20_APP_BASE_EXTRACTED);
         extract(sourceApp, baseExtracted);
-        extract(thinApp, new RemoteFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_15_APP_BASE_THIN_EXTRACTED));
-        createLoose(baseExtracted, new RemoteFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_15_APP_BASE_LOOSE));
+        extract(thinApp, new RemoteFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_20_APP_BASE_THIN_EXTRACTED));
+        createLoose(baseExtracted, new RemoteFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_20_APP_BASE_LOOSE));
     }
 
     private static void createLoose(RemoteFile extractedApp, RemoteFile looseApp) throws FileNotFoundException {
@@ -177,11 +177,11 @@ public class ExtractedAppTests extends CommonWebServerTests {
 
     @AfterClass
     public static void deleteThinAndExtractedAppsAndStopServer() throws Exception {
-        new RemoteFile(appsDir, SPRING_BOOT_15_APP_BASE_THIN).delete();
-        server.deleteDirectoryFromLibertyServerRoot("apps/" + SPRING_BOOT_15_APP_BASE_EXTRACTED);
-        server.deleteDirectoryFromLibertyServerRoot("apps/" + SPRING_BOOT_15_APP_BASE_THIN_EXTRACTED);
+        new RemoteFile(appsDir, SPRING_BOOT_20_APP_BASE_THIN).delete();
+        server.deleteDirectoryFromLibertyServerRoot("apps/" + SPRING_BOOT_20_APP_BASE_EXTRACTED);
+        server.deleteDirectoryFromLibertyServerRoot("apps/" + SPRING_BOOT_20_APP_BASE_THIN_EXTRACTED);
         server.deleteDirectoryFromLibertyServerRoot("apps/" + SPRING_LIB_INDEX_CACHE);
-        server.deleteFileFromLibertyServerRoot("apps/" + SPRING_BOOT_15_APP_BASE_LOOSE);
+        server.deleteFileFromLibertyServerRoot("apps/" + SPRING_BOOT_20_APP_BASE_LOOSE);
         // note that stop server also deletes the shared and workarea library caches
         stopServer();
     }
@@ -208,19 +208,19 @@ public class ExtractedAppTests extends CommonWebServerTests {
 
     @Test
     public void testExtractedThinApp() throws Exception {
-        configureServerApp(SPRING_BOOT_15_APP_BASE_THIN_EXTRACTED);
+        configureServerApp(SPRING_BOOT_20_APP_BASE_THIN_EXTRACTED);
         super.testBasicSpringBootApplication();
     }
 
     @Test
     public void testExtractedFatApp() throws Exception {
-        configureServerApp(SPRING_BOOT_15_APP_BASE_EXTRACTED);
+        configureServerApp(SPRING_BOOT_20_APP_BASE_EXTRACTED);
         super.testBasicSpringBootApplication();
     }
 
     @Test
     public void testLooseApp() throws Exception {
-        configureServerApp(SPRING_BOOT_15_APP_BASE_LOOSE);
+        configureServerApp(SPRING_BOOT_20_APP_BASE_LOOSE);
         super.testBasicSpringBootApplication();
     }
 }

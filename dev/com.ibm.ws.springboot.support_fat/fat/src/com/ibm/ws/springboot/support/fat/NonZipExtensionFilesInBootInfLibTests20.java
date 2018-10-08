@@ -43,15 +43,15 @@ import componenttest.topology.utils.HttpUtils;
  */
 @RunWith(FATRunner.class)
 @Mode(FULL)
-public class NonZipExtensionFilesInBootInfLibTests extends AbstractSpringTests {
+public class NonZipExtensionFilesInBootInfLibTests20 extends AbstractSpringTests {
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
     }
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_15_APP_BASE;
+        return SPRING_BOOT_20_APP_BASE;
     }
 
     @Override
@@ -135,10 +135,13 @@ public class NonZipExtensionFilesInBootInfLibTests extends AbstractSpringTests {
         byte[] buffer = new byte[4096];
         int len;
         String newEntry = "BOOT-INF/lib/test.txt";
+        HashSet<String> zipEntries = new HashSet<>();
         try (JarOutputStream jos = new JarOutputStream(new FileOutputStream(tempFile))) {
             for (Enumeration<JarEntry> entries = appJar.entries(); entries.hasMoreElements();) {
                 JarEntry entry = entries.nextElement();
-                if (!entry.getName().equals(newEntry)) {
+                String entryName = entry.getName();
+                if (!entryName.equals(newEntry) && !zipEntries.contains(entryName)) {
+                    zipEntries.add(entryName);
                     jos.putNextEntry(entry);
                     try (InputStream entryStream = appJar.getInputStream(entry)) {
                         while ((len = entryStream.read(buffer)) != -1) {
@@ -170,19 +173,26 @@ public class NonZipExtensionFilesInBootInfLibTests extends AbstractSpringTests {
         JarFile appJar = new JarFile(appFile);
         byte[] buffer = new byte[4096];
         int len;
+        HashSet<String> zipEntries = new HashSet<>();
         try (JarOutputStream jos = new JarOutputStream(new FileOutputStream(tempFile))) {
             for (Enumeration<JarEntry> entries = appJar.entries(); entries.hasMoreElements();) {
                 JarEntry entry = entries.nextElement();
-                if (entry.getName().equals("BOOT-INF/lib/spring-boot-starter-web-1.5.9.RELEASE.jar")) {
-                    //change the extension of the library jar
-                    JarEntry entryWithDiffExt = new JarEntry("BOOT-INF/lib/" + entry.getName() + ".xyz");
-                    jos.putNextEntry(entryWithDiffExt);
-                } else {
-                    jos.putNextEntry(entry);
-                }
-                try (InputStream entryStream = appJar.getInputStream(entry)) {
-                    while ((len = entryStream.read(buffer)) != -1) {
-                        jos.write(buffer, 0, len);
+                String entryName = entry.getName();
+
+                if (!zipEntries.contains(entryName)) {
+                    zipEntries.add(entryName);
+                    if (entryName.equals("BOOT-INF/lib/spring-boot-starter-web-2.0.0.RELEASE.jar")) {
+                        //change the extension of the library jar
+                        JarEntry entryWithDiffExt = new JarEntry("BOOT-INF/lib/" + entryName + ".xyz");
+                        jos.putNextEntry(entryWithDiffExt);
+                    } else {
+                        jos.putNextEntry(entry);
+                    }
+
+                    try (InputStream entryStream = appJar.getInputStream(entry)) {
+                        while ((len = entryStream.read(buffer)) != -1) {
+                            jos.write(buffer, 0, len);
+                        }
                     }
                 }
             }

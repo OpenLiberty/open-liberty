@@ -34,7 +34,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
-public class WebSocketTests15 extends AbstractSpringTests {
+public class WebSocketTests20 extends AbstractSpringTests {
 
     private WebSocketContainer wsContainer;
     private ClientEchoWebSocketEndpoint clientEndpoint;
@@ -46,8 +46,8 @@ public class WebSocketTests15 extends AbstractSpringTests {
     }
 
     @Test
-    public void testEchoWebSocket15() throws Exception {
-        Log.info(getClass(), "testWebSocket15", wsContainer.toString());
+    public void testEchoWebSocket20() throws Exception {
+        Log.info(getClass(), "testWebSocket20", wsContainer.toString());
         Session session = wsContainer.connectToServer(clientEndpoint, new URI("ws://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/echo"));
         assertNotNull("Session cannot be null", session);
         assertTrue("Session is not open", session.isOpen());
@@ -59,12 +59,12 @@ public class WebSocketTests15 extends AbstractSpringTests {
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1", "websocket-1.1"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1", "websocket-1.1"));
     }
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_15_APP_WEBSOCKET;
+        return SPRING_BOOT_20_APP_WEBSOCKET;
     }
 
 }

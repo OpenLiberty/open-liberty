@@ -35,16 +35,16 @@ import componenttest.topology.utils.HttpUtils;
  * this tests always runs.
  */
 @Mode(FULL)
-public class WarmStartTests extends AbstractSpringTests {
+public class WarmStartTests20 extends AbstractSpringTests {
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
     }
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_15_APP_BASE;
+        return SPRING_BOOT_20_APP_BASE;
     }
 
     @Test

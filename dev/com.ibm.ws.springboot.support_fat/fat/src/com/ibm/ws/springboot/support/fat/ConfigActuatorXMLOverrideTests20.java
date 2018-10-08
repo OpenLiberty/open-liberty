@@ -33,7 +33,7 @@ import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class ConfigActuatorXMLOverrideTests extends AbstractSpringTests {
+public class ConfigActuatorXMLOverrideTests20 extends AbstractSpringTests {
     private static final int APP_MAIN_PORT = 8095;
     private static final int APP_ACTUATOR_PORT = 8096;
 
@@ -46,12 +46,12 @@ public class ConfigActuatorXMLOverrideTests extends AbstractSpringTests {
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
     }
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_15_APP_ACTUATOR;
+        return SPRING_BOOT_20_APP_ACTUATOR;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class ConfigActuatorXMLOverrideTests extends AbstractSpringTests {
         if (methodName.equals(DEFAULT_MAIN_CONFIG_ACTUATOR) || //
             methodName.equals(CONFIG_MAIN_CONFIG_ACTUATOR) || //
             methodName.equals(OVERRIDE_MAIN_OVERRIDE_ACTUATOR)) {
-            appArgs.add("--management.port=" + APP_ACTUATOR_PORT);
+            appArgs.add("--management.server.port=" + APP_ACTUATOR_PORT);
         }
     }
 
@@ -145,7 +145,7 @@ public class ConfigActuatorXMLOverrideTests extends AbstractSpringTests {
         server.setHttpDefaultPort(DEFAULT_HTTP_PORT);
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
 
-        HttpUtils.findStringInUrl(server, "health", "UP");
+        HttpUtils.findStringInUrl(server, "actuator/health", "UP");
     }
 
     @Test
@@ -154,7 +154,7 @@ public class ConfigActuatorXMLOverrideTests extends AbstractSpringTests {
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
 
         server.setHttpDefaultPort(APP_ACTUATOR_PORT);
-        HttpUtils.findStringInUrl(server, "health", "UP");
+        HttpUtils.findStringInUrl(server, "actuator/health", "UP");
     }
 
     @Test
@@ -163,7 +163,7 @@ public class ConfigActuatorXMLOverrideTests extends AbstractSpringTests {
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
 
         server.setHttpDefaultPort(APP_ACTUATOR_PORT);
-        HttpUtils.findStringInUrl(server, "health", "UP");
+        HttpUtils.findStringInUrl(server, "actuator/health", "UP");
     }
 
     @Test
@@ -172,6 +172,6 @@ public class ConfigActuatorXMLOverrideTests extends AbstractSpringTests {
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
 
         server.setHttpDefaultPort(OVERRIDE_ACTUATOR_PORT);
-        HttpUtils.findStringInUrl(server, "health", "UP");
+        HttpUtils.findStringInUrl(server, "actuator/health", "UP");
     }
 }

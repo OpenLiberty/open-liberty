@@ -25,7 +25,7 @@ import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class MultContextTests extends AbstractSpringTests {
+public class MultContextTests20 extends AbstractSpringTests {
     private static final int CHILD1_MAIN_PORT = 8081;
     private static final int CHILD1_ACTUATOR_PORT = 9991;
     private static final int CHILD2_MAIN_PORT = 8082;
@@ -35,12 +35,12 @@ public class MultContextTests extends AbstractSpringTests {
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-4.0"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-4.0"));
     }
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_15_APP_MULTI_CONTEXT;
+        return SPRING_BOOT_20_APP_MULTI_CONTEXT;
     }
 
     @Override
@@ -73,13 +73,13 @@ public class MultContextTests extends AbstractSpringTests {
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
 
         server.setHttpDefaultPort(CHILD1_ACTUATOR_PORT);
-        HttpUtils.findStringInUrl(server, "health", "UP");
+        HttpUtils.findStringInUrl(server, "actuator/health", "UP");
 
         server.setHttpDefaultPort(CHILD2_MAIN_PORT);
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
 
         server.setHttpDefaultPort(CHILD2_ACTUATOR_PORT);
-        HttpUtils.findStringInUrl(server, "health", "UP");
+        HttpUtils.findStringInUrl(server, "actuator/health", "UP");
     }
 
     @Test
@@ -88,12 +88,12 @@ public class MultContextTests extends AbstractSpringTests {
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
 
         server.setHttpDefaultPort(CHILD1_ACTUATOR_PORT);
-        HttpUtils.findStringInUrl(server, "health", "UP");
+        HttpUtils.findStringInUrl(server, "actuator/health", "UP");
 
         server.setHttpDefaultPort(CHILD2_MAIN_PORT);
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
 
         server.setHttpDefaultPort(CHILD2_ACTUATOR_PORT);
-        HttpUtils.findStringInUrl(server, "health", "UP");
+        HttpUtils.findStringInUrl(server, "actuator/health", "UP");
     }
 }

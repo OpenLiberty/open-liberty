@@ -30,16 +30,16 @@ import componenttest.topology.utils.HttpUtils;
 
 @Mode(FULL)
 @RunWith(FATRunner.class)
-public class ConfigSpringBootApplicationClassloaderTests extends AbstractSpringTests {
+public class ConfigSpringBootApplicationClassloaderTests20 extends AbstractSpringTests {
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
     }
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_15_APP_BASE;
+        return SPRING_BOOT_20_APP_BASE;
     }
 
     @Override
