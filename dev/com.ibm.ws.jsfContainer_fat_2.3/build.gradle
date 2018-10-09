@@ -45,7 +45,8 @@ dependencies {
       'commons-collections:commons-collections:3.2.1',
       'commons-logging:commons-logging:1.1.1',
       'commons-beanutils:commons-beanutils:1.8.3',
-      'commons-codec:commons-codec:1.11'
+      'commons-codec:commons-codec:1.11',
+      'javax.xml.bind:jaxb-api:2.3.0'
     }
 
 task addMojarra(type: Copy) {
