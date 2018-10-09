@@ -27,12 +27,12 @@ public abstract class LibertyLoader extends LibertyClassLoader implements Declar
     protected abstract Class<?> findClass(String className) throws ClassNotFoundException;
 
     @Override
-    protected URL findResource(String resName) {
+    public URL findResource(String resName) {
         return super.findResource(resName);
     }
 
     @Override
-    protected Enumeration<URL> findResources(String resName) throws IOException {
+    public Enumeration<URL> findResources(String resName) throws IOException {
         return super.findResources(resName);
     }
 

@@ -137,7 +137,7 @@ public class ThreadContextClassLoader extends UnifiedClassLoader implements Keye
     }
 
     @Override
-    protected URL findResource(String name) {
+    public URL findResource(String name) {
         URL url = super.findResource(name);
         if (url == null) {
             ConcurrentLinkedQueue<String> providerNames = clSvc.metaInfServicesProviders.get(name);
@@ -156,7 +156,7 @@ public class ThreadContextClassLoader extends UnifiedClassLoader implements Keye
     }
 
     @Override
-    protected Enumeration<URL> findResources(String name) throws IOException {
+    public Enumeration<URL> findResources(String name) throws IOException {
         Enumeration<URL> urlEnum = super.findResources(name);
         ConcurrentLinkedQueue<String> providerNames = clSvc.metaInfServicesProviders.get(name);
         if (providerNames != null && !providerNames.isEmpty()) {
