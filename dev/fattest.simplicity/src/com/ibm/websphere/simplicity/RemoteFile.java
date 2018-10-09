@@ -461,7 +461,6 @@ public class RemoteFile {
      */
     private boolean deleteExecutionWrapper(File path) {
         try{
-            
             java.nio.file.Files.delete(path.toPath());
             return true;
         }catch(Exception e){
@@ -480,9 +479,10 @@ public class RemoteFile {
     public boolean delete() throws Exception {
         if (host.isLocal()) {
             if (localFile.isDirectory()) {
-                return this.deleteLocalDirectory(localFile);
-            } else
-                return this.deleteExecutionWrapper(localFile);
+                return deleteLocalDirectory(localFile);
+            } else {
+                return deleteExecutionWrapper(localFile);
+            }
                 
         } else
             return LocalProvider.delete(this);
@@ -502,14 +502,14 @@ public class RemoteFile {
                 if (files[i].isDirectory()) {
                     deleteLocalDirectory(files[i]);
                 } else {
-                    boolean b = this.deleteExecutionWrapper(files[i]);
+                    boolean b = deleteExecutionWrapper(files[i]);
                     if (!b) {
                         Log.info(c, "deleteLocalDirectory", "couldn't delete localfile = " + files[i]);
                     }
                 }
             }
         }
-        return (this.deleteExecutionWrapper(path));
+        return (deleteExecutionWrapper(path));
     }
 
     /**
