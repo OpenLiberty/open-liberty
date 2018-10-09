@@ -788,13 +788,11 @@ public class TargetsTableClassesImpl
         if ( targetIsInterface ) {
             while ( i_candidateClassName != null) {
                 String[] use_i_interfaceNames = i_getInterfaceNames(i_candidateClassName);
-                if ( use_i_interfaceNames == null) {
-                    continue;
-                }
-
-                for ( String i_interfaceName : use_i_interfaceNames ) {
-                    if ( i_interfaceName == i_targetName ) {
-                        return true;
+                if ( use_i_interfaceNames != null) {
+                    for ( String use_i_interfaceName : use_i_interfaceNames ) {
+                        if ( use_i_interfaceName == i_targetName ) {
+                            return true;
+                        }
                     }
                 }
 
