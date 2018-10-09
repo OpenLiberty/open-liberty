@@ -37,7 +37,6 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
     static String _serverInstallLeaseLogDir;
     boolean leaseLogWrittenInThisRun;
     static File _controlFile;
-    private int _leaseTimeout;
 
     // Some design points here
     //
@@ -103,26 +102,31 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
      *
      * @return ChannelFrameworkImpl
      */
-    public static FileSharedServerLeaseLog getFileSharedServerLeaseLog(String logDirStem, String localRecoveryIdentity, String recoveryGroup) {
+    public static FileSharedServerLeaseLog getFileSharedServerLeaseLog(String logDirStem, String leaseLogDir, String localRecoveryIdentity, String recoveryGroup) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "FileSharedServerLeaseLog", new Object[] { logDirStem, localRecoveryIdentity, recoveryGroup });
+            Tr.entry(tc, "FileSharedServerLeaseLog", new Object[] { logDirStem, leaseLogDir, localRecoveryIdentity, recoveryGroup });
 
         if (_serverInstallLeaseLogDir == null)
-            setLeaseLog(logDirStem, localRecoveryIdentity, recoveryGroup);
+            setLeaseLog(logDirStem, leaseLogDir, localRecoveryIdentity, recoveryGroup);
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "FileSharedServerLeaseLog", _fileLeaseLog);
         return _fileLeaseLog;
     }
 
-    private static void setLeaseLog(String tranRecoveryLogDirStem, String localRecoveryIdentity, String recoveryGroup) {
+    private static void setLeaseLog(String tranRecoveryLogDirStem, String leaseLogDir, String localRecoveryIdentity, String recoveryGroup) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "setLeaseLog", new Object[] { tranRecoveryLogDirStem, localRecoveryIdentity, recoveryGroup });
+            Tr.entry(tc, "setLeaseLog", new Object[] { tranRecoveryLogDirStem, leaseLogDir, localRecoveryIdentity, recoveryGroup });
 
         // append the recovery group to the directory
         if (recoveryGroup == null)
             recoveryGroup = "defaultGroup";
-        _serverInstallLeaseLogDir = System.getenv("WLP_USER_DIR") + String.valueOf(File.separatorChar) + recoveryGroup;
+
+        if (leaseLogDir == null || "".equals(leaseLogDir.trim())) {
+            _serverInstallLeaseLogDir = System.getenv("WLP_USER_DIR") + File.separator + recoveryGroup;
+        } else {
+            _serverInstallLeaseLogDir = leaseLogDir + (leaseLogDir.endsWith(File.separator) ? "" : File.separator) + recoveryGroup;
+        }
 
         // Cache the supplied information
         if (tranRecoveryLogDirStem != null) {
@@ -295,7 +299,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
                                     Tr.debug(tc, "recoveryId: " + recoveryIdentity + ", leaseTime: " + leaseTime);
                                 }
 
-                                PeerLeaseData pld = new PeerLeaseData(recoveryIdentity, leaseTime, _leaseTimeout);
+                                PeerLeaseData pld = new PeerLeaseData(recoveryIdentity, leaseTime);
                                 if (!pld.isExpired()) {
                                     if (tc.isDebugEnabled())
                                         Tr.debug(tc, "The lease file has not expired, do not attempt deletion");
@@ -379,7 +383,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
                 Tr.debug(tc, "recoveryId: " + recoveryIdentityToRecover + ", new leaseTime: " + newleaseTime);
             }
 
-            PeerLeaseData pld = new PeerLeaseData(recoveryIdentityToRecover, newleaseTime, _leaseTimeout);
+            PeerLeaseData pld = new PeerLeaseData(recoveryIdentityToRecover, newleaseTime);
             if (newleaseTime == 0 || !pld.isExpired()) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "The lease file has not expired, or does not exist do not attempt recovery");
@@ -483,7 +487,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
                                             Tr.event(tc, "Lease Table: read leaseTime: " + leaseTime);
                                         }
 
-                                        PeerLeaseData pld = new PeerLeaseData(recoveryId, leaseTime, _leaseTimeout);
+                                        PeerLeaseData pld = new PeerLeaseData(recoveryId, leaseTime);
 
                                         peerLeaseTable.addPeerEntry(pld);
                                     } else {
@@ -799,24 +803,6 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
         public String getRecoveryIdentity() {
             return _recoveryIdentity;
         }
-
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#setPeerRecoveryLeaseTimeout(int)
-     */
-    @Override
-    public void setPeerRecoveryLeaseTimeout(int leaseTimeout) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "setPeerRecoveryLeaseTimeout", leaseTimeout);
-
-        // Store the Lease Timeout
-        _leaseTimeout = leaseTimeout;
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "setPeerRecoveryLeaseTimeout", this);
 
     }
 }

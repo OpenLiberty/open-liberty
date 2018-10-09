@@ -11,6 +11,7 @@
 package com.ibm.ws.recoverylog.spi;
 
 import com.ibm.tx.TranConstants;
+import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.util.logging.Tr;
 import com.ibm.tx.util.logging.TraceComponent;
 
@@ -21,22 +22,18 @@ public class PeerLeaseData {
     private static final TraceComponent tc = Tr.register(PeerLeaseData.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
     private final String _recoveryIdentity;
     private final long _leaseTime;
-    private final int _leaseTimeout;
 
-    public PeerLeaseData(String recoveryIdentity, long leaseTime, int leaseTimeout)
-    {
+    public PeerLeaseData(String recoveryIdentity, long leaseTime) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "PeerLeaseData", new Object[] { recoveryIdentity, leaseTime, leaseTimeout });
+            Tr.entry(tc, "PeerLeaseData", new Object[] { recoveryIdentity, leaseTime });
         this._recoveryIdentity = recoveryIdentity;
         this._leaseTime = leaseTime;
-        this._leaseTimeout = leaseTimeout;
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "PeerLeaseData");
     }
 
-    public String getRecoveryIdentity()
-    {
+    public String getRecoveryIdentity() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getRecoveryIdentity");
 
@@ -49,32 +46,26 @@ public class PeerLeaseData {
      * @return the _leaseTime
      */
     public long getLeaseTime() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "getLeaseTime");
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "getLeaseTime", _leaseTime);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getLeaseTime", _leaseTime);
         return _leaseTime;
     }
 
     /**
      * Has the peer expired?
      */
-    public boolean isExpired()
-    {
+    public boolean isExpired() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "isExpired");
         boolean expired = false;
         long curTime = System.currentTimeMillis();
         //TODO:
-        if (curTime - _leaseTime > _leaseTimeout * 1000) //  30 seconds default for timeout
+        if (curTime - _leaseTime > ConfigurationProviderManager.getConfigurationProvider().getLeaseLength() * 1000) //  30 seconds default for timeout
         {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Lease has EXPIRED for " + _recoveryIdentity + ", currenttime: " + curTime + ", storedTime: " + _leaseTime);
             expired = true;
-        }
-        else
-        {
+        } else {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Lease has not expired for " + _recoveryIdentity + ", currenttime: " + curTime + ", storedTime: " + _leaseTime);
         }
@@ -83,5 +74,4 @@ public class PeerLeaseData {
             Tr.exit(tc, "isExpired", expired);
         return expired;
     }
-
 }

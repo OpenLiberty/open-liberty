@@ -19,10 +19,9 @@ package com.ibm.ws.recoverylog.spi;
  * The SharedServerLeaseLog interface provides methods for accessing shared
  * information on server leases.
  * </p>
- * 
+ *
  */
-public interface SharedServerLeaseLog
-{
+public interface SharedServerLeaseLog {
     public void updateServerLease(String recoveryIdentity, String recoveryGroup, boolean isServerStartup) throws Exception;
 
     public void deleteServerLease(String recoveryIdentity) throws Exception;
@@ -48,6 +47,4 @@ public interface SharedServerLeaseLog
     public boolean lockPeerLease(String recoveryIdentity);
 
     public boolean releasePeerLease(String recoveryIdentity) throws Exception;
-
-    public void setPeerRecoveryLeaseTimeout(int leaseTimeout);
 }
