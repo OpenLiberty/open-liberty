@@ -64,36 +64,6 @@ public class H2MuxTCPWriteCallback implements TCPWriteCompletedCallback {
             return;
         }
 
-        // If this was an async write, then invoke the original caller's callback
-        if (qEntry.getWriteType() == H2WriteQEntry.WRITE_TYPE.ASYNC) {
-            VirtualConnection eVC = qEntry.getConnectionContext().getVC();
-            TCPWriteRequestContext eTWC = qEntry.getConnectionContext().getWriteInterface();
-
-            try {
-                if (complete) {
-
-
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "invoke complete callback vc: " + eVC + " TWC: " + eTWC);
-                    }
-                    qEntry.getCallback().complete(eVC, eTWC);
-                } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "invoke error callback vc: " + eVC + " TWC: " + eTWC);
-                    }
-                    qEntry.getCallback().error(eVC, eTWC, ioe);
-                }
-            } catch (Throwable t) {
-                // debug, not much else to do with it
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "caught a Throwable. log and leave: " + t);
-                }
-            }
-        }
-
-        // Having this after the callback is not good for performance, but issue is if there can be more than one write outstanding per a stream
-        // on the write queue, then writes could finish out of order if this is before the callback.
-        // Since most writes should be sync, hopefully this will not become an issue
         // Release waiting threads, Sync writes are waiting, and/or the queue service thread is waiting so it can start another write
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "hit write complete latch for qentry: " + qEntry.hashCode());

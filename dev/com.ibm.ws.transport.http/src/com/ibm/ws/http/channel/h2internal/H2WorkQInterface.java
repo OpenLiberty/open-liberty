@@ -42,8 +42,6 @@ public interface H2WorkQInterface {
 
     public void setToQuit(boolean inDrainQ);
 
-    public void asyncCallbackComplete(H2WriteQEntry e);
-
     public WRITE_ACTION writeOrAddToQ(H2WriteQEntry n) throws FlowControlException;
 
     public void addNewNodeToQ(int streamID, int parentStreamID, int priority, boolean exclusive);
