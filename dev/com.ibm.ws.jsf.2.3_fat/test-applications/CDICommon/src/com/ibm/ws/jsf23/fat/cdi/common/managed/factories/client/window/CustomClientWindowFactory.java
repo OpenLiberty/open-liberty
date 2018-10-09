@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsf23.fat.cdi.managed.factories;
+package com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -17,8 +17,8 @@ import javax.faces.lifecycle.ClientWindow;
 import javax.faces.lifecycle.ClientWindowFactory;
 import javax.inject.Inject;
 
-import com.ibm.ws.jsf23.fat.cdi.beans.factory.FactoryAppBean;
-import com.ibm.ws.jsf23.fat.cdi.beans.factory.FactoryDepBean;
+import com.ibm.ws.jsf23.fat.cdi.common.beans.factory.FactoryAppBean;
+import com.ibm.ws.jsf23.fat.cdi.common.beans.factory.FactoryDepBean;
 
 /**
  * Custom ClientWindowFactory to verify that field and method injection works
