@@ -197,10 +197,9 @@ public class AuthenticateApi {
 
         try {
             ThreadIdentityManager.setAppThreadIdentity(unauthenticatedSubjectService.getUnauthenticatedSubject());
+
         } catch (ThreadIdentityException e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            e.printStackTrace();
+            //FFDC will be generated
         }
 
         //If authenticated with form login, we need to clear the RefrrerURLCookie
@@ -508,16 +507,13 @@ public class AuthenticateApi {
         }
         try {
             Object token = ThreadIdentityManager.setAppThreadIdentity(subject);
+            WebSecurityContext webSecurityContext = (WebSecurityContext) SRTServletRequestUtils.getPrivateAttribute(req, "SECURITY_CONTEXT");
 
-            Object savedToken = SRTServletRequestUtils.getPrivateAttribute(req, "SECURITY_CONTEXT");
-
-            if (savedToken == null) {
-                SRTServletRequestUtils.setPrivateAttribute(req, "SECURITY_CONTEXT", token);
+            if (webSecurityContext.getSyncToOSThreadToken() == null) {
+                webSecurityContext.setSyncToOSThreadToken(token);
             }
         } catch (ThreadIdentityException e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            e.printStackTrace();
+            //FFDC will be generated
         }
 
     }

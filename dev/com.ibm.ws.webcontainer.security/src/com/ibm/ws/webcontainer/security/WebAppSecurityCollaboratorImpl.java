@@ -151,6 +151,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     protected AuditManager auditManager;
     public HashMap<String, Object> extraAuditData = new HashMap<String, Object>();
+    private HttpServletRequest loginRequest;
 
     protected WebAuthenticatorProxy authenticatorProxy;
     protected WebProviderAuthenticatorProxy providerAuthenticatorProxy;
@@ -538,8 +539,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
             try {
                 resetSyncToOSThread(webSecurityContext);
-                HttpServletRequest req = (HttpServletRequest) extraAuditData.get("HTTP_SERVLET_REQUEST");
-                SRTServletRequestUtils.removePrivateAttribute(req, SECURITY_CONTEXT);
+
             } catch (ThreadIdentityException e) {
                 throw new ServletException(e);
             }
@@ -557,12 +557,16 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
      */
     @Override
     public Object preInvoke(HttpServletRequest req, HttpServletResponse resp, String servletName, boolean enforceSecurity) throws SecurityViolationException, IOException {
+
         Subject invokedSubject = subjectManager.getInvocationSubject();
         Subject receivedSubject = subjectManager.getCallerSubject();
 
         WebSecurityContext webSecurityContext = new WebSecurityContext(invokedSubject, receivedSubject);
-        SRTServletRequestUtils.setPrivateAttribute(req, SECURITY_CONTEXT, webSecurityContext);
         setUnauthenticatedSubjectIfNeeded(invokedSubject, receivedSubject);
+
+        if (req != null) {
+            SRTServletRequestUtils.setPrivateAttribute(req, SECURITY_CONTEXT, webSecurityContext);
+        }
 
         if (enforceSecurity) {
             // Authentication and authorization are not required
@@ -572,8 +576,10 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 performSecurityChecks(req, resp, receivedSubject, webSecurityContext);
             }
 
-            extraAuditData.put("HTTP_SERVLET_REQUEST", req);
             //auditManager.setHttpServletRequest(req);
+
+            // Store the login request here, so during the post invoke we can
+            // set the login token in the security context to the unauth user
             performDelegation(servletName);
 
             syncToOSThread(webSecurityContext);
@@ -1152,13 +1158,6 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         getAuthenticateApi().login(req, resp, username, password, webAppSecConfig, basicAuthAuthenticator);
         String authType = getSecurityMetadata().getLoginConfiguration().getAuthenticationMethod();
         SRTServletRequestUtils.setPrivateAttribute(req, AUTH_TYPE, authType);
-        try {
-            Object loginToken = ThreadIdentityManager.setAppThreadIdentity(subjectManager.getInvocationSubject());
-        } catch (ThreadIdentityException e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            e.printStackTrace();
-        }
 
     }
 
