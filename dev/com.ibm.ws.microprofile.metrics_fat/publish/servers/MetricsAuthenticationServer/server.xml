@@ -3,7 +3,18 @@
     
     <include location="../fatTestPorts.xml" />
 
-	<quickStartSecurity userName="admin" userPassword="adminpwd"/>
     <keyStore id="defaultKeyStore" password="Liberty"/>
+
+    <basicRegistry>
+        <user name="admin" password="adminpwd" />
+        <user name="viewer" password="viewerpwd" />
+        <user name="user" password="userpwd" />
+    </basicRegistry>
+    <administrator-role>
+        <user>admin</user>
+    </administrator-role>
+    <viewer-role>
+        <user>viewer</user>
+    </viewer-role>
 
 </server>

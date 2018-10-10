@@ -31,7 +31,7 @@
   </servlet-mapping>
   
   <security-constraint id="SecurityConstraint_1">
-    <display-name>ibm/api REST Security Constraint</display-name>
+    <display-name>ibm/api REST Security Constraint - DefaultAuthorizationHelper</display-name>
     <web-resource-collection id="WebResourceCollection_1">
       <web-resource-name>ibm/api REST URL</web-resource-name>
       <url-pattern>/*</url-pattern>
@@ -46,13 +46,28 @@
   </security-constraint>
 
   <security-constraint id="SecurityConstraint_2">
-    <display-name>ibm/api REST Security Constraint</display-name>
+    <display-name>ibm/api REST Security Constraint - OPTIONS</display-name>
     <web-resource-collection id="WebResourceCollection_2">
       <web-resource-name>ibm/api REST URL</web-resource-name>
       <url-pattern>/*</url-pattern>
       <http-method>OPTIONS</http-method>
     </web-resource-collection>
     <user-data-constraint id="UserDataConstraint_2">
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
+  <security-constraint id="SecurityConstraint_3">
+    <display-name>ibm/api REST Security Constraint - Viewer Role</display-name>
+    <web-resource-collection id="WebResourceCollection_3">
+      <web-resource-name>ibm/api REST URL</web-resource-name>
+      <url-pattern>/*</url-pattern>
+      <http-method>GET</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>Viewer</role-name>
+    </auth-constraint>
+    <user-data-constraint id="UserDataConstraint_3">
       <transport-guarantee>CONFIDENTIAL</transport-guarantee>
     </user-data-constraint>
   </security-constraint>
@@ -66,7 +81,12 @@
     <description>Administrator Role</description>
     <role-name>Administrator</role-name>
   </security-role>
-  
+
+  <security-role id="SecurityRole_3">
+    <description>Viewer Role</description>
+    <role-name>Viewer</role-name>
+  </security-role>
+
   <login-config id="LoginConfig_1">
   	<auth-method>CLIENT_CERT</auth-method>
     <realm-name>ibm/api</realm-name>
