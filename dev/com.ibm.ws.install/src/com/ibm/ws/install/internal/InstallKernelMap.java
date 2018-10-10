@@ -109,6 +109,7 @@ public class InstallKernelMap implements Map {
 
     //Headers in Manifest File
     private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
+    private static final String SYMBOLICNAME_HEADER_NAME = "Subsystem-SymbolicName";
 
     // Return code
     private static final Integer OK = Integer.valueOf(0);
@@ -777,7 +778,14 @@ public class InstallKernelMap implements Map {
         return OK;
     }
 
-    private static void populateShortNameFromManifest(File esa, Map<String, String> shortNameMap) throws IOException {
+    /**
+     * Populate the feature name (short name if available, otherwise symbolic name) from the ESA's manifest into the shortNameMap.
+     *
+     * @param esa ESA file
+     * @param shortNameMap Map to populate with keys being ESA canonical paths and values being feature names (short name or symbolic name)
+     * @throws IOException If the ESA's canonical path cannot be resolved or the ESA cannot be read
+     */
+    private static void populateFeatureNameFromManifest(File esa, Map<String, String> shortNameMap) throws IOException {
         String esaLocation = esa.getCanonicalPath();
         ZipFile zip = null;
         try {
@@ -794,8 +802,12 @@ public class InstallKernelMap implements Map {
             if (subsystemEntry != null) {
                 Manifest m = ManifestProcessor.parseManifest(zip.getInputStream(subsystemEntry));
                 Attributes manifestAttrs = m.getMainAttributes();
-                String shortNameAttr = manifestAttrs.getValue(SHORTNAME_HEADER_NAME); // TODO also try with Subsystem-SymbolicName
-                shortNameMap.put(esa.getCanonicalPath(), shortNameAttr);
+                String featureName = manifestAttrs.getValue(SHORTNAME_HEADER_NAME);
+                if (featureName == null) {
+                    // Symbolic name field has ";" as delimiter between the actual symbolic name and other tokens such as visibility
+                    featureName = manifestAttrs.getValue(SYMBOLICNAME_HEADER_NAME).split(";")[0];
+                }
+                shortNameMap.put(esa.getCanonicalPath(), featureName);
             }
         } finally {
             if (zip != null) {
@@ -822,7 +834,7 @@ public class InstallKernelMap implements Map {
 
         for (File esa : esas) {
             try {
-                populateShortNameFromManifest(esa, shortNameMap);
+                populateFeatureNameFromManifest(esa, shortNameMap);
             } catch (IOException e) {
                 throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_ESA_NOT_FOUND", esa.getAbsolutePath()));
             }
