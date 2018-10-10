@@ -23,6 +23,7 @@ fat.project: true
 -buildpath: \
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.concurrency.1.0;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.concurrent.rx;version=latest,\
