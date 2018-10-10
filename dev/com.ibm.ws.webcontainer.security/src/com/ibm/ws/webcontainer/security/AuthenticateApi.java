@@ -506,11 +506,11 @@ public class AuthenticateApi {
             ssoCookieHelper.addSSOCookiesToResponse(subject, req, resp);
         }
         try {
-            Object token = ThreadIdentityManager.setAppThreadIdentity(subject);
+            Object loginToken = ThreadIdentityManager.setAppThreadIdentity(subject);
             WebSecurityContext webSecurityContext = (WebSecurityContext) SRTServletRequestUtils.getPrivateAttribute(req, "SECURITY_CONTEXT");
 
             if (webSecurityContext.getSyncToOSThreadToken() == null) {
-                webSecurityContext.setSyncToOSThreadToken(token);
+                webSecurityContext.setSyncToOSThreadToken(loginToken);
             }
         } catch (ThreadIdentityException e) {
             //FFDC will be generated

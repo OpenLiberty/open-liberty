@@ -15,9 +15,6 @@ import java.util.Map;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
@@ -83,9 +80,7 @@ public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
         return null;
     }
 
-    @Reference(policy = ReferencePolicy.DYNAMIC,
-               cardinality = ReferenceCardinality.OPTIONAL,
-               policyOption = ReferencePolicyOption.GREEDY)
+    @Reference
     protected void setUnauthenticatedSubjectService(UnauthenticatedSubjectService unauthenticatedSubjectService) {
         this.unauthenticatedSubjectService = unauthenticatedSubjectService;
     }
