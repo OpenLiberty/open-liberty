@@ -28,14 +28,16 @@ public class TestHttpSessionListener implements HttpSessionListener {
 
     @Override
     public void sessionCreated(HttpSessionEvent se) {
-        results += "session created: " + checkSessionContextActive() + " ";
-
+        String msg = "session created: " + checkSessionContextActive() + " ";
+        System.out.println(msg);
+        results += msg;
     }
 
     @Override
     public void sessionDestroyed(HttpSessionEvent se) {
-        results += "session destroyed: " + checkSessionContextActive() + " ";
-
+        String msg = "session destroyed: " + checkSessionContextActive() + " ";
+        System.out.println(msg);
+        results += msg;
     }
 
     private String checkSessionContextActive() throws IllegalStateException {
