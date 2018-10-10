@@ -688,9 +688,9 @@ warning.package.root.invalid=CWWKE0947W: A --server-root option with an empty ar
 warning.package.root.invalid.explanation=The user performed a package request with a --server-root option specifying an empty argument and Product Extensions were detected. The default server root of wlp will be used.
 warning.package.root.invalid.useraction=No action is required.
 
-error.noSerializationagent=CWWKE0948E: The specified serialization agent jar file {0} does not exist.
-error.noSerializationagent.explanation=The specified serialization agent jar file does not exist, or fail to read.
-error.noSerializationagent.useraction= Ensure that the file exists and can be read by the current user.
+error.noSerialfilteragent=CWWKE0948E: The specified serialfilter agent jar file {0} does not exist.
+error.noSerialfilteragent.explanation=The specified serialfilter agent jar file does not exist, or fail to read.
+error.noSerialfilteragent.useraction= Ensure that the file exists and can be read by the current user.
 
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
