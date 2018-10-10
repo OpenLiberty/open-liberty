@@ -101,7 +101,7 @@ public class ProfileManagerDeleteTest {
 
         vmmService = new VMMService();
         vmmService.configMgr = configManager;
-        vmmService.setConfiguredRepository(fileConfigProps, fa);
+        vmmService.setConfiguredRepository(fa, fileConfigProps);
         vmmService.activate(cc);
     }
 
