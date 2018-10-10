@@ -6,18 +6,10 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * IBM Corporation - initial API and implementation
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.social.fat.oidc.certification;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-        SocialOidcCertificationRPBasicProfileTests.class,
-})
-
-public class FATSuite {
-}
+/**
+ * @version 1.0.0
+ */
+@org.osgi.annotation.versioning.Version("1.0.20")
+package com.ibm.ws.security.fat.common.social.oidc.certification;

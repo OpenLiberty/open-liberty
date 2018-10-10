@@ -47,13 +47,21 @@ public class UserInfoJsonExpectation extends JsonObjectExpectation {
     @Override
     protected JsonObject readJsonFromContent(Object contentToValidate) throws Exception {
         String method = "readJsonFromContent";
+        String responseText = "FAILED TO READ RESPONSE TEXT";
         try {
-            String userInfoJsonString = FatStringUtils.extractRegexGroup(WebResponseUtils.getResponseText(contentToValidate), USER_INFO_SERVLET_OUTPUT_REGEX);
+            responseText = WebResponseUtils.getResponseText(contentToValidate);
+            String userInfoJsonString = FatStringUtils.extractRegexGroup(responseText, getRegexForExtractingUserInfoString());
             Log.info(getClass(), method, "Extracted UserInfo string: [" + userInfoJsonString + "]");
-            return Json.createReader(new StringReader(userInfoJsonString)).readObject();
+            JsonObject userInfo = Json.createReader(new StringReader(userInfoJsonString)).readObject();
+            Log.info(getClass(), method, "Resulting JSON object: [" + userInfo + "]");
+            return userInfo;
         } catch (Exception e) {
-            throw new Exception("Failed to read JSON data from the provided content. Error was: [" + e + "]. Content was: [" + contentToValidate + "]");
+            throw new Exception("Failed to read JSON data from the provided content. Error was: [" + e + "]. Content was: [" + responseText + "]");
         }
+    }
+
+    protected String getRegexForExtractingUserInfoString() {
+        return USER_INFO_SERVLET_OUTPUT_REGEX;
     }
 
 }
