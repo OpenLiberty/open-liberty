@@ -48,15 +48,7 @@ Service-Component: \
     modified:=modify; \
     deactivate:=deactivate; \
     configuration-policy:=require; \
-    properties:="service.vendor=IBM,com.ibm.ws.management.security.role.name=Administrator", \
-  com.ibm.ws.management.security.role.viewer; \
-    implementation:=com.ibm.ws.management.security.internal.ViewerRole; \
-    provide:=com.ibm.ws.management.security.ManagementRole; \
-    activate:=activate; \
-    modified:=modify; \
-    deactivate:=deactivate; \
-    configuration-policy:=require; \
-    properties:="service.vendor=IBM,com.ibm.ws.management.security.role.name=Viewer"
+    properties:="service.vendor=IBM,com.ibm.ws.management.security.role.name=Administrator"
 #  The JMXSecurityMBeanServer is currently disabled
 #  com.ibm.ws.management.security.MBeanServer; \
 #    implementation:=com.ibm.ws.management.security.internal.JMXSecurityMBeanServer; \
