@@ -49,6 +49,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
+import com.ibm.ws.concurrent.mp.ManagedExecutorImpl;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.threading.PolicyExecutor;
@@ -66,7 +67,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
            reference = @Reference(name = ManagedExecutorServiceImpl.APP_RECYCLE_SERVICE, service = ApplicationRecycleCoordinator.class),
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService" })
-public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecutorService, ResourceFactory, ApplicationRecycleComponent, WSManagedExecutorService {
+public class ManagedExecutorServiceImpl extends ManagedExecutorImpl implements ExecutorService, ManagedExecutorService, ResourceFactory, ApplicationRecycleComponent, WSManagedExecutorService {
     private static final TraceComponent tc = Tr.register(ManagedExecutorServiceImpl.class);
 
     /**
