@@ -51,6 +51,7 @@ instrument.classesExcludes: com/ibm/ws/app/manager/war/internal/resources/*.clas
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
 	com.ibm.ws.javaee.ddmodel;version=latest,\
+	com.ibm.ws.javaee.ddmodel.web;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest
 
 -testpath: \

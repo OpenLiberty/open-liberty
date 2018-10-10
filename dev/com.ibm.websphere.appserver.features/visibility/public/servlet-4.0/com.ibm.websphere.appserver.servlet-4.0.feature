@@ -36,7 +36,7 @@ Subsystem-Category: JavaEE8Application
 -features=com.ibm.websphere.appserver.injection-1.0, \
  com.ibm.websphere.appserver.artifact-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
- com.ibm.websphere.appserver.javaeedd-1.0, \
+ com.ibm.websphere.appserver.javaeeddWeb-1.0, \
  com.ibm.websphere.appserver.classloading-1.0, \
  com.ibm.websphere.appserver.appmanager-1.0, \
  com.ibm.websphere.appserver.javaeePlatform-8.0, \
