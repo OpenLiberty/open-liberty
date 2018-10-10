@@ -938,16 +938,22 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             Tr.event(tc, "Finishing conn; " + finalSc + " error=" + e);
         }
 
-        synchronized (WebConnCanCloseSync) {
-            if (vc != null) { // This is added for Upgrade Servlet3.1 WebConnection
-                String webconn = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
-                if (webconn != null && webconn.equalsIgnoreCase("CLOSED_NON_UPGRADED_STREAMS")) {
-                    vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "null");
-                } else if (WebConnCanClose) {
+        if (vc != null) { // This is added for Upgrade Servlet3.1 WebConnection
+            String webconn = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
+            if (webconn != null && webconn.equalsIgnoreCase("CLOSED_NON_UPGRADED_STREAMS")) {
+                vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "null");
+            } else {
+                synchronized (WebConnCanCloseSync) {
+                    if (WebConnCanClose) {
+                        error = closeStreams();
+                    }
+                }
+            }
+        } else {
+            synchronized (WebConnCanCloseSync) { 
+                if (WebConnCanClose) {
                     error = closeStreams();
                 }
-            } else if (WebConnCanClose) {
-                error = closeStreams();
             }
         }
 
