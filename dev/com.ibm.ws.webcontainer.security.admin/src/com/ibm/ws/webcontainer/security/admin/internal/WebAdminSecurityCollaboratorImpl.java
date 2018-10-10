@@ -84,10 +84,9 @@ public class WebAdminSecurityCollaboratorImpl extends WebAppSecurityCollaborator
         if (secMetadata == null) {
             secMetadata = new SecurityServletConfiguratorHelper(null);
 
-            // It appears that the web.xml is honored now, but add Viewer role for consistency
+            String adminRole = ManagementSecurityConstants.ADMINISTRATOR_ROLE_NAME;
             List<String> roles = new ArrayList<String>();
-            roles.add(ManagementSecurityConstants.ADMINISTRATOR_ROLE_NAME);
-            roles.add(ManagementSecurityConstants.VIEWER_ROLE_NAME);
+            roles.add(adminRole);
             secMetadata.setRoles(roles);
 
             String urlPattern = "/*";
