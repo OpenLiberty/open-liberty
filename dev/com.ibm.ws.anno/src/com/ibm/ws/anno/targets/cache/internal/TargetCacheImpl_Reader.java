@@ -36,7 +36,7 @@ import com.ibm.wsspi.anno.targets.cache.TargetCache_ExternalConstants;
 import com.ibm.wsspi.anno.targets.cache.TargetCache_InternalConstants;
 
 public class TargetCacheImpl_Reader implements TargetCache_Reader, TargetCache_InternalConstants {
-    // public static final String CLASS_NAME = "TargetCacheImpl_Reader";
+    // private static final String CLASS_NAME = TargetCacheImpl_Reader.class.getSimpleName();
 
     //
 

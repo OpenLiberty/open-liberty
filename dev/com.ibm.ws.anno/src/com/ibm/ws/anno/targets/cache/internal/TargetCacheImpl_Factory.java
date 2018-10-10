@@ -37,7 +37,7 @@ import com.ibm.wsspi.anno.targets.cache.TargetCache_InternalConstants;
 import com.ibm.wsspi.anno.targets.cache.TargetCache_Options;
 
 public class TargetCacheImpl_Factory implements TargetCache_Factory {
-    public static final String CLASS_NAME = TargetCacheImpl_Factory.class.getSimpleName();
+    private static final String CLASS_NAME = TargetCacheImpl_Factory.class.getSimpleName();
 
     protected static final Logger logger = AnnotationServiceImpl_Logging.ANNO_LOGGER;
 

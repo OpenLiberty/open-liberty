@@ -43,8 +43,7 @@ import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
  * folder.
  */
 public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
-
-    public static final String CLASS_NAME = TargetCacheImpl_DataApp.class.getSimpleName();
+    private static final String CLASS_NAME = TargetCacheImpl_DataApp.class.getSimpleName();
 
     //
 

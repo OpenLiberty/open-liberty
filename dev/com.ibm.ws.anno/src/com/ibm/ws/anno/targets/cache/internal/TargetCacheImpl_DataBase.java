@@ -29,9 +29,8 @@ import com.ibm.ws.anno.util.internal.UtilImpl_FileUtils;
 import com.ibm.wsspi.anno.targets.cache.TargetCache_Options;
 
 public abstract class TargetCacheImpl_DataBase {
+    private static final String CLASS_NAME = TargetCacheImpl_DataBase.class.getSimpleName();
     protected static final Logger logger = AnnotationServiceImpl_Logging.ANNO_LOGGER;
-
-    public static final String CLASS_NAME = TargetCacheImpl_DataBase.class.getSimpleName();
 
     //
 

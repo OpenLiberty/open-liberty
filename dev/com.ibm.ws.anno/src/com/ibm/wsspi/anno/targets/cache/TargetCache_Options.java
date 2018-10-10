@@ -76,7 +76,7 @@ public interface TargetCache_Options {
     boolean getDisabled();
     void setDisabled(boolean disabled);
 
-    String CACHE_NAME_DEFAULT = "annoCache";
+    String CACHE_NAME_DEFAULT = TargetCache_ExternalConstants.CACHE_NAME_DEFAULT;
 
     String DIR_DEFAULT = "./" + CACHE_NAME_DEFAULT;
     String DIR_PROPERTY_NAME = "anno.cache.dir";

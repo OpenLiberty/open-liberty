@@ -51,7 +51,8 @@ import com.ibm.ws.anno.targets.internal.TargetsTableAnnotationsImpl;
  * Each part of the container has its own table.
  */
 public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
-    public static final String CLASS_NAME = TargetCacheImpl_DataCon.class.getSimpleName();
+    private static final String CLASS_NAME = TargetCacheImpl_DataCon.class.getSimpleName();
+    private static final String CALLBACK_CLASS_NAME = CLASS_NAME + "$ScheduleCallback";
 
     //
 
@@ -61,6 +62,8 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
         super( parentData.getFactory(), conName, e_conName, conDir);
 
+        String methodName = "<init>";
+
         this.parentData = parentData;
 
         this.timeStampFile =
@@ -69,6 +72,18 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
             getDataFile(TargetCache_ExternalConstants.ANNO_TARGETS_NAME);
         this.classRefsFile =
             getDataFile(TargetCache_ExternalConstants.CLASS_REFS_NAME);
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        "Container [ {0} ] of [ {1} ]",
+                        new Object[] { getName(), parentData.getName() });
+            logger.logp(Level.FINER, CLASS_NAME,
+                        "Time stamp file [ {0} ]", this.timeStampFile.getPath());
+            logger.logp(Level.FINER, CLASS_NAME,
+                        "Targets file [ {0} ]", this.annoTargetsFile.getPath());
+            logger.logp(Level.FINER, CLASS_NAME,
+                        "Class refs file [ {0} ]", this.classRefsFile.getPath());
+        }
     }
 
     //
@@ -127,10 +142,20 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
         TargetCacheImpl_DataMod modData,
         final TargetsTableTimeStampImpl stampTable) {
 
+        final String writeDescription;
+        if ( logger.isLoggable(Level.FINER) ) {
+            writeDescription = "Container [ " + getName() + " ] TimeStamp [ " + getTimeStampFile().getPath() + " ]";
+        } else {
+            writeDescription = null;
+        }
+
         TargetCacheImpl_DataMod.ScheduleCallback writer = new TargetCacheImpl_DataMod.ScheduleCallback() {
             @Override
             public void execute() {
                 String methodName = "write.execute";
+                if ( writeDescription != null ) {
+                    logger.logp(Level.FINER, CALLBACK_CLASS_NAME, methodName, "ENTER {0}", writeDescription);
+                }
 
                 long writeStart = System.nanoTime();
 
@@ -144,21 +169,35 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
                 }
 
                 @SuppressWarnings("unused")
-                long writeDuration = addWriteTime(writeStart, "Write Stamp");
+                long writeDuration = addWriteTime(writeStart, writeDescription);
+
+                if ( writeDescription != null ) {
+                    logger.logp(Level.FINER, CALLBACK_CLASS_NAME, methodName, "RETURN {0}", writeDescription);
+                }
             }
         };
 
-        modData.scheduleWrite(writer);
+        modData.scheduleWrite(writer, writeDescription);
     }
 
     private void write(
         TargetCacheImpl_DataMod modData,
         final TargetsTableClassesImpl classesTable) {
 
+        final String writeDescription;
+        if ( logger.isLoggable(Level.FINER) ) {
+            writeDescription = "Container [ " + getName() + " ] Class references [ " + getClassRefsFile().getPath() + " ]";
+        } else {
+            writeDescription = null;
+        }
+
         TargetCacheImpl_DataMod.ScheduleCallback writer = new TargetCacheImpl_DataMod.ScheduleCallback() {
             @Override
             public void execute() {
                 String methodName = "write.execute";
+                if ( writeDescription != null ) {
+                    logger.logp(Level.FINER, CALLBACK_CLASS_NAME, methodName, "ENTER {0}", writeDescription);
+                }
 
                 long writeStart = System.nanoTime();
 
@@ -172,21 +211,35 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
                 }
 
                 @SuppressWarnings("unused")
-                long writeDuration = addWriteTime(writeStart, "Write Classes");
+                long writeDuration = addWriteTime(writeStart, writeDescription);
+
+                if ( writeDescription != null ) {
+                    logger.logp(Level.FINER, CALLBACK_CLASS_NAME, methodName, "RETURN {0}", writeDescription);
+                }
             }
         };
 
-        modData.scheduleWrite(writer);
+        modData.scheduleWrite(writer, writeDescription);
     }
 
     private void write(
         TargetCacheImpl_DataMod modData,
         final TargetsTableAnnotationsImpl targetTable) {
 
+        final String writeDescription;
+        if ( logger.isLoggable(Level.FINER) ) {
+            writeDescription = "Container [ " + getName() + " ] Targets [ " + getAnnoTargetsFile().getPath() + " ]";
+        } else {
+            writeDescription = null;
+        }
+
         TargetCacheImpl_DataMod.ScheduleCallback writer = new TargetCacheImpl_DataMod.ScheduleCallback() {
             @Override
             public void execute() {
                 String methodName = "write.execute";
+                if ( writeDescription != null ) {
+                    logger.logp(Level.FINER, CALLBACK_CLASS_NAME, methodName, "ENTER {0}", writeDescription);
+                }
 
                 long writeStart = System.nanoTime();
 
@@ -200,11 +253,15 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
                 }
 
                 @SuppressWarnings("unused")
-                long writeDuration = addWriteTime(writeStart, "Write Targets");
+                long writeDuration = addWriteTime(writeStart, writeDescription);
+
+                if ( writeDescription != null ) {
+                    logger.logp(Level.FINER, CALLBACK_CLASS_NAME, methodName, "RETURN {0}", writeDescription);
+                }
             }
         };
 
-        modData.scheduleWrite(writer);
+        modData.scheduleWrite(writer, writeDescription);
     }
 
     //

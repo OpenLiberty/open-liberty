@@ -50,26 +50,30 @@ package com.ibm.wsspi.anno.targets.cache;
  */
 
 public interface TargetCache_ExternalConstants {
-    // Zero / applications level:
+    // Zero / root
+
+    String CACHE_NAME_DEFAULT = "anno";
+
+    // First / applications level:
 
     /** Prefix for application folders. */
-    String APP_PREFIX = "APP_";
+    String APP_PREFIX = "A_";
 
     // First / application detail / modules level
 
     /** Prefix for module folder. */
-    String MOD_PREFIX = "MOD_";
+    String MOD_PREFIX = "M_";
 
     // Second / module detail / containers level
 
     /** Prefix for container folder. */
-    String CON_PREFIX = "CON_";
+    String CON_PREFIX = "C_";
 
     /** Name of the resolved class references file. */
-    String RESOLVED_REFS_NAME = "resolved.refs";
+    String RESOLVED_REFS_NAME = "resolved";
 
     /** Name of the unresolved class references file. */
-    String UNRESOLVED_REFS_NAME = "unresolved.refs";
+    String UNRESOLVED_REFS_NAME = "unresolved";
 
     /** Name of the containers file. */
     String CONTAINERS_NAME = "containers";
@@ -95,11 +99,12 @@ public interface TargetCache_ExternalConstants {
     /** Name of the container time stamp file. */
     String TIMESTAMP_NAME = "stamp";
     /** Name of the container class references file. */
-    String CLASS_REFS_NAME = "class.refs";
+    String CLASS_REFS_NAME = "classes";
     /** Name of the container annotation targets file. */
-    String ANNO_TARGETS_NAME = "anno.targets";
-    /** Name of the container annotation details file. */
-    String ANNO_DETAILS_NAME = "anno.details";
+    String ANNO_TARGETS_NAME = "targets";
+
+    // Name of the container annotation details file.
+    // String ANNO_DETAILS_NAME = "anno.details";
 
     // Fourth / query log
 

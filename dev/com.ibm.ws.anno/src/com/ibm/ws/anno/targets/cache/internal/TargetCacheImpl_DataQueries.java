@@ -26,7 +26,7 @@ import com.ibm.wsspi.anno.targets.cache.TargetCache_ExternalConstants;
  * but managed independently.
  */
 public class TargetCacheImpl_DataQueries implements TargetCache_ExternalConstants {
-    public static final String CLASS_NAME = TargetCacheImpl_DataQueries.class.getSimpleName();
+    private static final String CLASS_NAME = TargetCacheImpl_DataQueries.class.getSimpleName();
 
     //
 

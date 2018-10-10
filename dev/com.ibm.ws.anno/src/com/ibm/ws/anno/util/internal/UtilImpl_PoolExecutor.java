@@ -18,9 +18,14 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.ibm.websphere.ras.annotation.Trivial;
 
 public class UtilImpl_PoolExecutor extends ThreadPoolExecutor {
+    private static final String CLASS_NAME = UtilImpl_PoolExecutor.class.getSimpleName();
+    private static final Logger logger = Logger.getLogger("com.ibm.ws.anno.util");
 
     @Trivial
     public static UtilImpl_PoolExecutor createBlockingExecutor(int completionCount) {
@@ -38,19 +43,22 @@ public class UtilImpl_PoolExecutor extends ThreadPoolExecutor {
 
     @Trivial
     public static UtilImpl_PoolExecutor createNonBlockingExecutor() {
-        return createExecutor( UtilImpl_PoolParameters.createDefaultParameters(), NON_BLOCKING_COUNT );
+        return createExecutor( UtilImpl_PoolParameters.createDefaultParameters(),
+                               NON_BLOCKING_COUNT );
     }
 
     @Trivial
     public static UtilImpl_PoolExecutor createNonBlockingExecutor(int coreSize, int maxSize) {
         return createExecutor( UtilImpl_PoolParameters.createDefaultParameters(),
-                               coreSize, maxSize, NON_BLOCKING_COUNT );
+                               coreSize, maxSize,
+                               NON_BLOCKING_COUNT );
     }    
 
     //
 
     public static final int NON_BLOCKING_COUNT = 0;
 
+    @Trivial
     public static UtilImpl_PoolExecutor createExecutor(UtilImpl_PoolParameters parameters,
                                                        int completionCount) {
         return new UtilImpl_PoolExecutor(
@@ -62,6 +70,7 @@ public class UtilImpl_PoolExecutor extends ThreadPoolExecutor {
             completionCount );
     }
     
+    @Trivial
     public static UtilImpl_PoolExecutor createExecutor(UtilImpl_PoolParameters parameters,
                                                        int coreSize, int maxSize,
                                                        int completionCount) {
@@ -74,15 +83,21 @@ public class UtilImpl_PoolExecutor extends ThreadPoolExecutor {
             completionCount );
     }
 
+    @Trivial
     public static BlockingQueue<Runnable> createRunnableQueue() {
         return new LinkedBlockingQueue<Runnable>();
     }
 
+    @Trivial
     public static RejectedExecutionHandler createRejectionHandler() {
         return new RejectedExecutionHandler() {
+            private final String INNER_CLASS_NAME = CLASS_NAME + "$" + "RejectedExecutionHandler";
             @Override
             public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-                // System.out.println("Executor [ " + executor + " ] failed to schedule [ " + r + " ]");
+                String methodName = "rejectedExecution";
+                logger.logp(Level.WARNING, INNER_CLASS_NAME, methodName, 
+                            "Executor [ {0} ] failed to schedule [ {1} ]",
+                            new Object[] { executor, r });
             }
         };
     }
@@ -98,7 +113,7 @@ public class UtilImpl_PoolExecutor extends ThreadPoolExecutor {
         super(corePoolSize, maxPoolSize, keepAliveTime, keepAliveUnit, runnableQueue);
 
         if ( completionCount > 0 ) {
-            this.completionSemaphore = new Semaphore(-(completionCount - 1));
+            this.completionSemaphore = new Semaphore( -(completionCount - 1) );
         } else {
             this.completionSemaphore = null;
         }
@@ -106,8 +121,19 @@ public class UtilImpl_PoolExecutor extends ThreadPoolExecutor {
 
     //
 
+    // Added to create a trace point: Trace injection is performed on
+    // UtilImpl_PoolExecutor.  Trace injection is *not* performed on
+    // the superclass, ThreadPoolExecutor.
+
+    public void execute(Runnable r) {
+        super.execute(r);
+    }
+
+    //
+
     protected final Semaphore completionSemaphore;
 
+    @Trivial
     public Semaphore getCompletionSemaphore() {
         return completionSemaphore;
     }

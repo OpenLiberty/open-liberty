@@ -40,7 +40,7 @@ import com.ibm.wsspi.anno.targets.cache.TargetCache_ExternalConstants;
  * reference to the application data outside of the annotation cache.
  */
 public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
-    public static final String CLASS_NAME = TargetCacheImpl_DataApps.class.getSimpleName();
+    private static final String CLASS_NAME = TargetCacheImpl_DataApps.class.getSimpleName();
 
     //
 

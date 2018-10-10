@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import java.util.logging.Level;
 
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -62,7 +63,15 @@ import com.ibm.wsspi.anno.targets.cache.TargetCache_Options;
  * Container data of a module is held strongly by the module.
  */
 public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
-    public static final String CLASS_NAME = TargetCacheImpl_DataMod.class.getSimpleName();
+    private static final String CLASS_NAME = TargetCacheImpl_DataMod.class.getSimpleName();
+
+    //
+
+    private static final String CALLBACK_CLASS_NAME = CLASS_NAME + "$ScheduleCallback";
+
+    protected interface ScheduleCallback {
+        void execute();
+    }
 
     //
 
@@ -151,18 +160,41 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
     public void writeContainersTable(TargetsTableContainersImpl containerTable) {
         String methodName = "writeContainersTable";
 
-        long writeStart = System.nanoTime();
-
-        try {
-            createWriter( getContainersFile() ).write(containerTable);
-        } catch ( IOException e ) {
-            // CWWKC00??W
-            logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_CACHE_EXCEPTION [ {0} ]", e);
-            logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
+        final String writeDescription;
+        if ( logger.isLoggable(Level.FINER) ) {
+            writeDescription = "Container [ " + getName() + " ] Containers table [ " + getContainersFile().getPath() + " ]";
+        } else {
+            writeDescription = null;
         }
 
-        @SuppressWarnings("unused")
-        long writeDuration = addWriteTime(writeStart, "Write containers");
+        ScheduleCallback writer = new ScheduleCallback() {
+            @Override
+            public void execute() {
+                String methodName = "writeContainersTable.execute";
+                if ( writeDescription != null ) {
+                    logger.logp(Level.FINER, CALLBACK_CLASS_NAME, methodName, "ENTER {0}", writeDescription);
+                }
+
+                long writeStart = System.nanoTime();
+
+                try {
+                    createWriter( getContainersFile() ).write(containerTable);
+                } catch ( IOException e ) {
+                    // CWWKC00??W
+                    logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_CACHE_EXCEPTION [ {0} ]", e);
+                    logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
+                }
+
+                @SuppressWarnings("unused")
+                long writeDuration = addWriteTime(writeStart, writeDescription);
+
+                if ( writeDescription != null ) {
+                    logger.logp(Level.FINER, CALLBACK_CLASS_NAME, methodName, "RETURN {0}", writeDescription);
+                }
+            }
+        };
+
+        scheduleWrite(writer, writeDescription);
     }
 
     //
@@ -345,10 +377,20 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
             return;
         }
 
+        final String writeDescription;
+        if ( logger.isLoggable(Level.FINER) ) {
+            writeDescription = "Container [ " + getName() + " ] Targets [ " + getUnresolvedRefsFile().getPath() + " ]";
+        } else {
+            writeDescription = null;
+        }
+
         ScheduleCallback writer = new ScheduleCallback() {
             @Override
             public void execute() {
                 String methodName = "writeUnresolvedRefs.execute";
+                if ( writeDescription != null ) {
+                    logger.logp(Level.FINER, CALLBACK_CLASS_NAME, methodName, "ENTER {0}", writeDescription);
+                }
 
                 long writeStart = System.nanoTime();
 
@@ -361,11 +403,15 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
                 }
 
                 @SuppressWarnings("unused")
-                long writeDuration = addWriteTime(writeStart, "Write Unresolved Refs");
+                long writeDuration = addWriteTime(writeStart, writeDescription);
+
+                if ( writeDescription != null ) {
+                    logger.logp(Level.FINER, CALLBACK_CLASS_NAME, methodName, "RETURN {0}", writeDescription);
+                }
             }
         };
 
-        scheduleWrite(writer);
+        scheduleWrite(writer, writeDescription);
     }
 
     //
@@ -415,10 +461,20 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
             return;
         }
 
+        final String writeDescription;
+        if ( logger.isLoggable(Level.FINER) ) {
+            writeDescription = "Container [ " + getName() + " ] Targets [ " + getResolvedRefsFile().getPath() + " ]";
+        } else {
+            writeDescription = null;
+        }
+
         ScheduleCallback writer = new ScheduleCallback() {
             @Override           
             public void execute() {
                 String methodName = "writeResolvedRefs.execute";
+                if ( writeDescription != null ) {
+                    logger.logp(Level.FINER, CALLBACK_CLASS_NAME, methodName, "ENTER {0}", writeDescription);
+                }
 
                 long writeStart = System.nanoTime();
 
@@ -431,11 +487,15 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
                 }
 
                 @SuppressWarnings("unused")
-                long writeDuration = addWriteTime(writeStart, "Write Resolved Refs");
+                long writeDuration = addWriteTime(writeStart, writeDescription);
+
+                if ( writeDescription != null ) {
+                    logger.logp(Level.FINER, CALLBACK_CLASS_NAME, methodName, "RETURN {0}", writeDescription);
+                }
             }
         };
 
-        scheduleWrite(writer);
+        scheduleWrite(writer, writeDescription);
     }
 
     //
@@ -466,10 +526,20 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
             return;
         }
 
+        final String writeDescription;
+        if ( logger.isLoggable(Level.FINER) ) {
+            writeDescription = "Container [ " + getName() + " ] Targets [ " + getClassRefsFile().getPath() + " ]";
+        } else {
+            writeDescription = null;
+        }
+
         ScheduleCallback writer = new ScheduleCallback() {
             @Override
             public void execute() {
                 String methodName = "writeClassRefs.execute";
+                if ( writeDescription != null ) {
+                    logger.logp(Level.FINER, CALLBACK_CLASS_NAME, methodName, "ENTER {0}", writeDescription);
+                }
 
                 long writeStart = System.nanoTime();
 
@@ -487,11 +557,15 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
                 }
 
                 @SuppressWarnings("unused")
-                long writeDuration = addWriteTime(writeStart, "Write Class Refs");
+                long writeDuration = addWriteTime(writeStart, writeDescription);
+
+                if ( writeDescription != null ) {
+                    logger.logp(Level.FINER, CALLBACK_CLASS_NAME, methodName, "RETURN {0}", writeDescription);
+                }
             }
         };
 
-        scheduleWrite(writer);
+        scheduleWrite(writer, writeDescription);
     }
 
     //
@@ -523,12 +597,29 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         return writePool;
     }
 
-    protected void scheduleWrite(final ScheduleCallback writer) {
-        final Throwable scheduler = new Throwable("ModData [ " + getName() + " ] [ " + e_getName() + " ]");
+    @Trivial
+    protected void scheduleWrite(final ScheduleCallback writer, String description) {
+        String methodName = "scheduleWrite";
+
+        final Throwable scheduler =
+            new Throwable("ModData [ " + getName() + " ] [ " + e_getName() + " ] [ " + description + " ]");
 
         UtilImpl_PoolExecutor useWritePool = getWritePool();
         if ( useWritePool == null ) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "ENTER (immediate) [ {0} ] [ {1} ] [ {2} ]",
+                    new Object[] { getName(), writer, description });
+            }
+
             writer.execute();
+
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "RETURN (immediate) [ {0} ] [ {1} ] [ {2} ]",
+                    new Object[] { getName(), writer, description });
+            }
+
         } else {
             Runnable writeRunner = new Runnable() {
                 @Override
@@ -552,13 +643,20 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
                     }
                 }
             };
+
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "ENTER (scheduled) [ {0} ] [ {1} ] [ {2} ]",
+                    new Object[] { getName(), writer, description });
+            }
+
             useWritePool.execute(writeRunner);
+
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "RETURN (scheduled) [ {0} ] [ {1} ] [ {2} ]",
+                    new Object[] { getName(), writer, description });
+            }
         }
-    }
-
-    //
-
-    protected interface ScheduleCallback {
-        void execute();
     }
 }
