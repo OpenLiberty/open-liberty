@@ -21,6 +21,10 @@ public class ExceptionMessageExpectation extends Expectation {
         super(testAction, Constants.RESPONSE_FULL, checkType, searchFor, failureMsg);
     }
 
+    public ExceptionMessageExpectation(String testAction, String searchFor, String failureMsg) {
+        super(testAction, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, searchFor, failureMsg);
+    }
+
     @Override
     protected void validate(Object exception) throws Exception {
         try {

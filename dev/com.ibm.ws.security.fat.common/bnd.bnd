@@ -27,6 +27,7 @@ Private-Package: \
 
 src: \
     src,\
+    fat/src,\
     test-applications/testmarker/src,\
     test-applications/formlogin/src
 

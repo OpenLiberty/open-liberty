@@ -712,7 +712,7 @@ public class LibertyServer implements LogMonitorClient {
      */
     public void reconfigureServerUsingExpandedConfiguration(String testName, String newConfig, String... waitForMessages) throws Exception {
 
-        reconfigureServerUsingExpandedConfiguration(testName, "configs", newConfig, waitForMessages);
+        reconfigureServerUsingExpandedConfiguration(testName, "configs", newConfig, false, waitForMessages);
     }
 
     /**
@@ -726,12 +726,14 @@ public class LibertyServer implements LogMonitorClient {
      * @param waitForMessages - Any messages to wait (used to determine if the update is complete)
      * @throws Exception
      */
-    public void reconfigureServerUsingExpandedConfiguration(String testName, String configDir, String newConfig, String... waitForMessages) throws Exception {
+    public void reconfigureServerUsingExpandedConfiguration(String testName, String configDir, String newConfig, boolean resetMark, String... waitForMessages) throws Exception {
 
         ServerFileUtils serverFileUtils = new ServerFileUtils();
         String newServerCfg = serverFileUtils.expandAndBackupCfgFile(this, configDir + "/" + newConfig, testName);
         Log.info(c, "reconfigureServerUsingExpandedConfiguration", "Reconfiguring server to use new config: " + newConfig);
-        setMarkToEndOfLog();
+        if (resetMark) {
+            setMarkToEndOfLog();
+        }
         replaceServerConfiguration(newServerCfg);
 
         Thread.sleep(200); // Sleep for 200ms to ensure we do not process the file "too quickly" by a subsequent call
