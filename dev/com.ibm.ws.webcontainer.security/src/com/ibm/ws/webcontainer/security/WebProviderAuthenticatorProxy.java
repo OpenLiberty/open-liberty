@@ -74,7 +74,8 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
     @Override
     public AuthenticationResult authenticate(WebRequest webRequest) {
         AuthenticationResult authResult = handleTAI(webRequest, true);
-        if (authResult.getStatus() == AuthResult.CONTINUE) {
+
+        if ((authResult.getStatus() == AuthResult.CONTINUE) && continueAuthenticateWithTai(webRequest)) {
             authResult = handleSSO(webRequest, null);
             if (authResult.getStatus() == AuthResult.CONTINUE) {
                 webRequest.setCallAfterSSO(true);
@@ -85,6 +86,32 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         return authResult;
 
     }
+
+    /*
+     * This method returns false when unprotectedURI is not for special TAI
+     *
+     * @param webRequest
+     *
+     * @return
+     *
+     */
+    public boolean continueAuthenticateWithTai(WebRequest webRequest) {
+
+        //Not continueing authentication with TAI, if the URL is not protected.  Unless it is special TAI for oauth or oidc
+        if (taiServiceRef.getService() != null) {
+           if (taiServiceRef.getService().isInvokeForUnprotectedURI() && webRequest.isUnprotectedURI() && !webRequest.isProviderSpecialUnprotectedURI()) {
+                  webRequest.setContinueAuthWithTai(false);
+           } 
+           else {
+                  webRequest.setContinueAuthWithTai(true);
+           }
+        }
+        if (tc.isDebugEnabled()) {
+           Tr.debug(tc, "continueAuthenticateWithTai= " + webRequest.getContinueAuthWithTai());
+        }
+        return webRequest.getContinueAuthWithTai();
+    }
+
 
     /**
      * @param webRequest

@@ -778,6 +778,8 @@ public class WebAppSecurityCollaboratorImplTest {
                 will(returnValue(formLoginConfiguration));
                 allowing(webRequest).isUnprotectedURI();
                 allowing(taiService).getTais(false);
+                allowing(webRequest).getContinueAuthWithTai();
+                will(returnValue(true));
             }
         });
         return webRequest;

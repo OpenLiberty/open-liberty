@@ -77,6 +77,10 @@ public interface WebRequest {
 
     public void setCallAfterSSO(boolean callAfterSSO);
 
+    public void setContinueAuthWithTai(boolean continueAuthWithTai) ;
+
+    public boolean getContinueAuthWithTai();
+
     public Map<String, Object> getProperties();
 
     public void setProperties(Map<String, Object> props);
