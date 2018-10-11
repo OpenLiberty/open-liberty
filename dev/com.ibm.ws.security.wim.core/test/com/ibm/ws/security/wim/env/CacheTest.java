@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -591,6 +591,39 @@ public class CacheTest {
         assertTrue("Old entry's value should have been returned.", "b".equals(((Cache) cache).insert("a", "c")));
         sleep(700);
         assertNull("Entry should not be present", cache.get("a"));
+    }
+
+    /**
+     * Check that when we do an update, the entry still evicts at the insert time.
+     * We don't want the timeout to reset (last access time vs creation time).
+     */
+    @Test
+    public void testInsertWithUpdate() {
+        ICacheUtil cache = FactoryManager.getCacheUtil();
+        cache = cache.initialize(1, 5, 600);
+
+        ((Cache) cache).insert("a", "a");
+
+        assertEquals("Entry missing or corrupted.", "a", cache.get("a"));
+        assertEquals("Invalid size.", 1, cache.size());
+
+        sleep(100);
+
+        ((Cache) cache).update("a", "b");
+        assertEquals("Entry missing or corrupted.", "b", cache.get("a"));
+        assertEquals("Invalid size.", 1, cache.size());
+
+        // even with an update, the entry should be evicted
+        sleep(600);
+
+        assertEquals("Invalid size.", 0, cache.size());
+        assertNull("Entry should not be present.", cache.get("a"));
+        assertEquals("Invalid size.", 1, cache.size());
+
+        assertNull("No return value should be provided", ((Cache) cache).insert("a", "a"));
+        assertNull("No return value should be provided", ((Cache) cache).insert("b", "b"));
+        assertEquals("Invalid size.", 2, cache.size());
+
     }
 
     @Test

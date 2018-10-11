@@ -41,7 +41,7 @@ public class CommonFatLoggingUtils {
         try {
             if (server != null) {
                 String parameters = TestMarker.PARAM_TEST_NAME + "=" + testName + "&" + TestMarker.PARAM_ACTION + "=" + actionToLog;
-                HttpURLConnection connection = SecurityFatHttpUtils.getHttpConnectionWithAnyResponseCode(server, "/testmarker?" + parameters);
+                HttpURLConnection connection = SecurityFatHttpUtils.getHttpConnectionWithAnyResponseCode(server, "/testmarker/testMarker?" + parameters);
                 Log.info(thisClass, "logTestCaseInServerLog", connection.toString());
                 SecurityFatHttpUtils.getResponseBody(connection);
             }

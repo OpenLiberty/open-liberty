@@ -42,7 +42,6 @@ subprojects {
           release = sourceCompatibility.substring(2);
         if('current'.equals(bnd('javac.args.release')))
           release = JavaVersion.current().getMajorVersion() 
-        println "Compiling with --release=" + release
         options.compilerArgs.addAll([ '--release', release])
       }
     }

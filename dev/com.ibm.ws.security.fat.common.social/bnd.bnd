@@ -30,7 +30,7 @@ src: \
     test-applications/formlogin.social/src
 
 test.project: true
-publish.wlp.jar.disabled: true
+generate.replacement: true
 
 -buildpath: \
     com.ibm.ws.kernel.service;version=latest, \

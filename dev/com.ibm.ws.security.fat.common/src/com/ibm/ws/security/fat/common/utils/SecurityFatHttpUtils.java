@@ -39,7 +39,7 @@ public class SecurityFatHttpUtils extends HttpUtils {
         int timeout = DEFAULT_TIMEOUT;
         URL url = createURL(server, path);
         HttpURLConnection con = getHttpConnection(url, timeout, HTTPRequestMethod.GET);
-        Log.finer(HttpUtils.class, "getHttpConnection", "Connecting to " + url.toExternalForm() + " expecting http response in " + timeout + " seconds.");
+        Log.info(SecurityFatHttpUtils.class, "getHttpConnection", "Connecting to " + url.toExternalForm() + " expecting http response in " + timeout + " seconds.");
         con.connect();
         return con;
     }

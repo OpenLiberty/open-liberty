@@ -78,8 +78,8 @@ public class JSF23CDIGeneralTests {
         ShrinkHelper.defaultDropinApp(jsf23CDIServer, "ConvertDateTime.war", "com.ibm.ws.jsf23.fat.convertdatetime.beans");
         ShrinkHelper.defaultDropinApp(jsf23CDIServer, "ConverterValidatorBehaviorInjectionTarget.war", "com.ibm.ws.jsf23.fat.converter.validator.behavior.injection.beans");
         ShrinkHelper.defaultDropinApp(jsf23CDIServer, "JSF23CDITests.war",
-                                      "com.ibm.ws.jsf23.fat.cdi.beans.factory",
-                                      "com.ibm.ws.jsf23.fat.cdi.managed.factories");
+                                      "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
+                                      "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
         ShrinkHelper.defaultDropinApp(jsf23CDIServer, "CDIIntegrationTest.war",
                                       "com.ibm.ws.jsf23.fat.cdi.integration.application",
                                       "com.ibm.ws.jsf23.fat.cdi.integration.beans",
