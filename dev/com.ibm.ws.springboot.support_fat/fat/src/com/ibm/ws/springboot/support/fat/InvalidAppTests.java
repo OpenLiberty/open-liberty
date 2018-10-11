@@ -109,7 +109,11 @@ public class InvalidAppTests extends CommonWebServerTests {
 
     @After
     public void stopTestServer() throws Exception {
-        super.stopServer(true, "CWWKZ0002E");
+        if (!javaVersion.startsWith("1.")) {
+            super.stopServer(true, "CWWKZ0002E", "CWWKC0265W");
+        } else {
+            super.stopServer(true, "CWWKZ0002E");
+        }
     }
 
     @Override

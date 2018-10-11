@@ -15,6 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.AfterClass;
+
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
 
 import componenttest.custom.junit.runner.Mode;
@@ -22,6 +24,11 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 
 @Mode(TestMode.FULL)
 public class UnsupportedConfigWarningTest20 extends UnsupportedConfigWarningTestBase {
+    @AfterClass
+    public static void stopTestServer() throws Exception {
+        server.stopServer("CWWKC0261W", "CWWKC0262W");
+    }
+
     @Override
     public Set<String> getFeatures() {
         return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-4.0"));

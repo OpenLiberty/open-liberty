@@ -11,15 +11,19 @@
 package com.ibm.ws.springboot.support.shutdown;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.ibm.ws.app.manager.springboot.container.ApplicationError;
-import com.ibm.ws.app.manager.springboot.container.ApplicationError.Type;
+import com.ibm.ws.app.manager.springboot.container.ApplicationTr;
+import com.ibm.ws.app.manager.springboot.container.ApplicationTr.Type;
 
 public class FeatureAuditor implements EnvironmentPostProcessor {
+
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment env, SpringApplication app) {
+        checkJavaVersion();
 
         /*
          * Throw an Application error if the wrong version of spring boot feature is
@@ -58,14 +62,25 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
         } catch (ClassNotFoundException e) {
 
         }
+    }
 
+    private void checkJavaVersion() {
+        String javaVersion = System.getProperty("java.version");
+        if (!javaVersion.startsWith("1.")) {
+            try {
+                Class.forName("org.springframework.boot.context.embedded.EmbeddedServletContainerFactory");
+                ApplicationTr.warning(Type.WARNING_UNSUPPORTED_JAVA_VERSION, javaVersion, SpringBootVersion.getVersion());
+            } catch (ClassNotFoundException e) {
+
+            }
+        }
     }
 
     private void checkWebSocketPresent() {
         try {
             Class.forName("javax.websocket.WebSocketContainer");
         } catch (ClassNotFoundException e) {
-            throw new ApplicationError(Type.MISSING_WEBSOCKET_FEATURE);
+            throw new ApplicationError(Type.ERROR_MISSING_WEBSOCKET_FEATURE);
         }
     }
 
@@ -73,7 +88,7 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
         try {
             Class.forName("javax.servlet.Servlet");
         } catch (ClassNotFoundException e) {
-            throw new ApplicationError(Type.MISSING_SERVLET_FEATURE);
+            throw new ApplicationError(Type.ERROR_MISSING_SERVLET_FEATURE);
         }
 
     }
@@ -83,7 +98,7 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
             Class.forName(
                           "com.ibm.ws.springboot.support.web.server.version15.container.LibertyConfiguration");
         } catch (ClassNotFoundException e) {
-            throw new ApplicationError(Type.NEED_SPRING_BOOT_VERSION_15);
+            throw new ApplicationError(Type.ERROR_NEED_SPRING_BOOT_VERSION_15);
         }
 
     }
@@ -93,7 +108,7 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
             Class.forName(
                           "com.ibm.ws.springboot.support.web.server.version20.container.LibertyConfiguration");
         } catch (ClassNotFoundException e) {
-            throw new ApplicationError(Type.NEED_SPRING_BOOT_VERSION_20);
+            throw new ApplicationError(Type.ERROR_NEED_SPRING_BOOT_VERSION_20);
         }
 
     }

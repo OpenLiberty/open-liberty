@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -30,6 +31,12 @@ import componenttest.topology.utils.HttpUtils;
 @Mode(FULL)
 @RunWith(FATRunner.class)
 public class JavaeeFeatureTests15 extends AbstractSpringTests {
+    @AfterClass
+    public static void stopTestServer() throws Exception {
+        if (!javaVersion.startsWith("1.")) {
+            server.stopServer("CWWKC0265W");
+        }
+    }
 
     /**
      * Export JavaEE feature API to basic Spring Boot application.
