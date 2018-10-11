@@ -84,9 +84,8 @@ public abstract class AnnotationVisitorImpl_Info extends AnnotationVisitor {
     // The name value is expected to match one of the methods of the
     // annotation class name.  (This is not validated.)
 
-    @SuppressWarnings("deprecation")
     protected AnnotationVisitorImpl_Info(InfoStoreImpl iStore) {
-        super(Opcodes.ASM7_EXPERIMENTAL); // Deprecated
+        super(Opcodes.ASM7);
         String methodName = "<init>";
 
         this.infoStore = iStore;

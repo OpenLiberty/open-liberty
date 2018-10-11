@@ -31,7 +31,7 @@ public abstract class TargetsVisitorAnnotationBaseImpl extends AnnotationVisitor
      */
     @SuppressWarnings("deprecation")
     public TargetsVisitorAnnotationBaseImpl(TargetsVisitorClassImpl parentVisitor) {
-        super(Opcodes.ASM7_EXPERIMENTAL); // Deprecated
+        super(Opcodes.ASM7);
 
         this.parentVisitor = parentVisitor;
 
@@ -44,7 +44,7 @@ public abstract class TargetsVisitorAnnotationBaseImpl extends AnnotationVisitor
      */
     @SuppressWarnings("deprecation")
     public TargetsVisitorAnnotationBaseImpl(StringBuilder parentDetailText, StringBuilder parentEncoder) {
-        super(Opcodes.ASM7_EXPERIMENTAL); // Deprecated
+        super(Opcodes.ASM7);
 
         this.parentVisitor = null;
 

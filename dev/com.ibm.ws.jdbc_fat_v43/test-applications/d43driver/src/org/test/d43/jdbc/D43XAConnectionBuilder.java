@@ -18,6 +18,8 @@ import javax.sql.XAConnection;
 import javax.sql.XAConnectionBuilder;
 
 public class D43XAConnectionBuilder implements XAConnectionBuilder {
+    private boolean built;
+
     private final D43XADataSource d43XADataSource;
 
     private String password;
@@ -31,6 +33,11 @@ public class D43XAConnectionBuilder implements XAConnectionBuilder {
 
     @Override
     public XAConnection build() throws SQLException {
+        if (built)
+            throw new IllegalStateException();
+        else
+            built = true;
+
         XAConnection con;
         if (user == null && password == null)
             con = d43XADataSource.ds.getXAConnection();
@@ -45,24 +52,32 @@ public class D43XAConnectionBuilder implements XAConnectionBuilder {
 
     @Override
     public D43XAConnectionBuilder password(String value) {
+        if (built)
+            throw new IllegalStateException();
         password = value;
         return this;
     }
 
     @Override
     public D43XAConnectionBuilder shardingKey(ShardingKey value) {
+        if (built)
+            throw new IllegalStateException();
         shardingKey = value;
         return this;
     }
 
     @Override
     public D43XAConnectionBuilder superShardingKey(ShardingKey value) {
+        if (built)
+            throw new IllegalStateException();
         superShardingKey = value;
         return this;
     }
 
     @Override
     public D43XAConnectionBuilder user(String value) {
+        if (built)
+            throw new IllegalStateException();
         user = value;
         return this;
     }

@@ -11,6 +11,7 @@
 <server description="JPA 10 Spec Tests Server">
 
 	<featureManager>
+	    <feature>ejblite-3.2</feature>
 		<feature>servlet-4.0</feature>
 		<feature>jpa-2.2</feature>
 	    <feature>componenttest-1.0</feature>
@@ -34,4 +35,10 @@
     
     
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    
+    <logging  traceSpecification="JPA=all=enabled:EJBContainer=all=enabled"
+traceFileName="trace.log"
+maxFileSize="2000"
+maxFiles="10"
+traceFormat="BASIC" />
 </server>

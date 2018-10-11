@@ -157,6 +157,11 @@ public class JDBC40Runtime implements JDBCRuntimeVersion {
     }
 
     @Override
+    public boolean doSetShardingKeysIfValid(Connection con, Object shardingKey, Object superShardingKey, int timeout) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
     public void beginRequest(Connection con) {}
 
     @Override

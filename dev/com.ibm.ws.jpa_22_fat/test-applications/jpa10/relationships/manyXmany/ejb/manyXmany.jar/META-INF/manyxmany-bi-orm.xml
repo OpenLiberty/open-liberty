@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+    xmlns="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+    version="1.0">
+    
+    <!--  Bidirectional Entities -->
+    <entity 
+        class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.xml.XMLMMBiEntA">
+        <attributes>
+            <id name="id"/>
+            <basic name="name"/>
+            <many-to-many name="defaultRelationship">
+                <join-table name="XMLManyXManyDRBiJoinTable">
+                    <join-column name="ENT_A"/>
+                    <inverse-join-column name="ENT_B"/>
+                </join-table>
+            </many-to-many>
+            <many-to-many name="cascadeAll"><cascade><cascade-all /></cascade></many-to-many>
+            <many-to-many name="cascadeMerge"><cascade><cascade-merge /></cascade></many-to-many>
+            <many-to-many name="cascadePersist"><cascade><cascade-persist /></cascade></many-to-many>
+            <many-to-many name="cascadeRefresh"><cascade><cascade-refresh /></cascade></many-to-many>
+            <many-to-many name="cascadeRemove"><cascade><cascade-remove /></cascade></many-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.xml.XMLMMBiEntB_CA">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <many-to-many name="entityA" mapped-by="cascadeAll"></many-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.xml.XMLMMBiEntB_CM">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <many-to-many name="entityA" mapped-by="cascadeMerge"></many-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.xml.XMLMMBiEntB_CP">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <many-to-many name="entityA" mapped-by="cascadePersist"></many-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.xml.XMLMMBiEntB_CRF">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <many-to-many name="entityA" mapped-by="cascadeRefresh"></many-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.xml.XMLMMBiEntB_CRM">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <many-to-many name="entityA" mapped-by="cascadeRemove"></many-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.xml.XMLMMBiEntB_DR">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <many-to-many name="entityA" mapped-by="defaultRelationship"></many-to-many>
+        </attributes>
+    </entity>
+    
+</entity-mappings>

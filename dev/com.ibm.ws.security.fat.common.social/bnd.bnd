@@ -26,10 +26,11 @@ Import-Package: \
 Private-Package: \
 
 src: \
-    src
+    src, \
+    test-applications/formlogin.social/src
 
 test.project: true
-publish.wlp.jar.disabled: true
+generate.replacement: true
 
 -buildpath: \
     com.ibm.ws.kernel.service;version=latest, \
@@ -44,9 +45,15 @@ publish.wlp.jar.disabled: true
     com.ibm.websphere.javaee.servlet.3.1;version=latest, \
     fattest.simplicity;version=latest, \
     net.sourceforge.htmlunit:htmlunit;version=2.27, \
+    httpunit:httpunit;version=1.7, \
     com.ibm.ws.org.apache.commons.lang3;version=latest, \
     com.ibm.ws.security.fat.common;version=latest, \
-    com.ibm.ws.security.social;version=latest
+    com.ibm.ws.security.social;version=latest, \
+    com.ibm.websphere.security;version=latest, \
+    com.ibm.ws.security.token;version=latest, \
+    com.ibm.ws.security.jwt;version=latest, \
+    com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
+    org.glassfish:javax.json;version=1.0
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
@@ -58,5 +65,6 @@ publish.wlp.jar.disabled: true
     org.jmock:jmock;strategy=exact;version=2.5.1, \
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
     com.ibm.ws.kernel.boot;version=latest, \
-    com.ibm.ws.security.test.common;version=latest
+    com.ibm.ws.security.test.common;version=latest, \
+    commons-logging:commons-logging;version=1.1.3
 

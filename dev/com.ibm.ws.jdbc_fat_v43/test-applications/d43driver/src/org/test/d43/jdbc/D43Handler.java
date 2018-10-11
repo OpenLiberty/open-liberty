@@ -176,15 +176,19 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
             return null;
         }
         if ("setShardingKeyIfValid".equals(methodName)) {
-            boolean valid = (args[0] instanceof D43ShardingKey || args[0] == null)
-                            && (args.length == 2 || args[1] instanceof D43ShardingKey || args[1] == null);
+            boolean valid = (args[0] == null || args[0] instanceof D43ShardingKey && !args[0].toString().contains("BOOLEAN:INVALID"))
+                            && (args.length == 2
+                                || args[1] == null
+                                || args[1] instanceof D43ShardingKey && !args[1].toString().contains("BOOLEAN:INVALID"));
             if (valid) {
                 shardingKey = (ShardingKey) args[0];
-                if (args.length == 2)
+                if (args.length == 3)
                     superShardingKey = (ShardingKey) args[1];
             }
             return valid;
         }
+        if ("supportsSharding".equals(methodName))
+            return true;
         try {
             Object result = method.invoke(instance, args);
             if (returnType.isInterface() && (returnType.getPackage().getName().startsWith("java.sql")

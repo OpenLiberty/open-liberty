@@ -78,6 +78,7 @@
    <Option value="commit"                         label="%commitRollbk.commit.desc"/>
    <Option value="rollback"                       label="%commitRollbk.rollback.desc"/>
   </AD>
+  <AD id="enableBeginEndRequest"                  name="internal"      description="internal use only"  ibmui:group="Advanced" required="false" type="Boolean"/>
   <AD id="enableConnectionCasting"                name="%enblConCast"  description="%enblConCast.desc"  ibmui:group="Advanced" type="Boolean" default="false"/>
   <AD id="onConnect"                              name="%onConnect"    description="%onConnect.desc"    ibmui:group="Advanced" required="false" type="String"  cardinality="1000"/>
   <AD id="queryTimeout"                           name="%qryTimeout"   description="%qryTimeout.desc"   ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)"/>

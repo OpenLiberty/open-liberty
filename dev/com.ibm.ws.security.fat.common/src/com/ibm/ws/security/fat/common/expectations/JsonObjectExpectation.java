@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.json.Json;
+import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
@@ -30,6 +31,7 @@ import com.ibm.ws.security.fat.common.Constants.CheckType;
 import com.ibm.ws.security.fat.common.Constants.JsonCheckType;
 import com.ibm.ws.security.fat.common.Constants.ObjectCheckType;
 import com.ibm.ws.security.fat.common.Constants.StringCheckType;
+import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 
 public class JsonObjectExpectation extends Expectation {
 
@@ -111,19 +113,19 @@ public class JsonObjectExpectation extends Expectation {
     }
 
     /**
-     * Attempts to read the provided object as a JSON string and convert it to its corresponding JsonObject representation.
-     * Extending classes should override this method if they do not expect the content to be a pure JSON string. For example, if
-     * the provided object is an instance of WebResponse, the extending expectation class should override this method to extract
-     * the appropriate JSON data.
+     * Attempts to read the response text in the provided object as a JSON string and convert it to its corresponding JsonObject
+     * representation. Extending classes should override this method if they do not expect the content to be a pure JSON string.
+     * For example, if the provided object is an instance of WebResponse whose response text includes other non-JSON information,
+     * the extending expectation class should override this method to extract the appropriate JSON data.
      */
     protected JsonObject readJsonFromContent(Object contentToValidate) throws Exception {
-        if (contentToValidate == null || !(contentToValidate instanceof String)) {
-            String className = (contentToValidate == null) ? null : contentToValidate.getClass().getName();
-            throw new Exception("Provided content is not a string as expected so cannot be validated. The content is of type " + className + ".");
+        if (contentToValidate == null) {
+            throw new Exception("Provided content is null so cannot be validated.");
         }
         JsonObject obj = null;
         try {
-            obj = Json.createReader(new StringReader((String) contentToValidate)).readObject();
+            String responseText = WebResponseUtils.getResponseText(contentToValidate);
+            obj = Json.createReader(new StringReader(responseText)).readObject();
         } catch (Exception e) {
             throw new Exception("Failed to read JSON data from the provided content. The exception was [" + e + "]. The content to validate was: [" + contentToValidate + "].");
         }
@@ -206,7 +208,7 @@ public class JsonObjectExpectation extends Expectation {
         if (isJsonPrimitiveType()) {
             validateJsonPrimitiveType(value);
         } else {
-            assertEquals("Value for [" + validationKey + "] did not match the expected value.", expectedValue, value);
+            validateJsonNonPrimitiveType(value, jsonDataToValidate);
         }
     }
 
@@ -226,6 +228,39 @@ public class JsonObjectExpectation extends Expectation {
                 assertEquals("Value was expected to be a " + primitiveType + " ValueType, but was not. Value was [" + value + "].", primitiveType, value.getValueType());
             }
         }
+    }
+
+    private void validateJsonNonPrimitiveType(JsonValue value, JsonObject jsonDataToValidate) {
+        Log.info(thisClass, "validateJsonNonPrimitiveType", "Validating the value for the expected key as a non-JSON primitive value");
+        Object pojoValue = null;
+        if (value.getValueType() == ValueType.ARRAY) {
+            pojoValue = jsonDataToValidate.getJsonArray(validationKey);
+        } else if (value.getValueType() == ValueType.NUMBER) {
+            pojoValue = getNumberPojoFromJson(jsonDataToValidate);
+        } else if (value.getValueType() == ValueType.OBJECT) {
+            pojoValue = jsonDataToValidate.getJsonObject(validationKey);
+        } else if (value.getValueType() == ValueType.STRING) {
+            pojoValue = jsonDataToValidate.getString(validationKey);
+        }
+        assertEquals("Value for [" + validationKey + "] did not match the expected value.", expectedValue, pojoValue);
+    }
+
+    private Object getNumberPojoFromJson(JsonObject jsonDataToValidate) {
+        Object pojoValue = null;
+        JsonNumber numberValue = jsonDataToValidate.getJsonNumber(validationKey);
+        if (numberValue.isIntegral()) {
+            long longValue = numberValue.longValueExact();
+            int intValue = numberValue.intValueExact();
+            if (intValue != longValue) {
+                // Rounding likely occurred, so use long value
+                pojoValue = longValue;
+            } else {
+                pojoValue = intValue;
+            }
+        } else {
+            pojoValue = numberValue.doubleValue();
+        }
+        return pojoValue;
     }
 
     @Override

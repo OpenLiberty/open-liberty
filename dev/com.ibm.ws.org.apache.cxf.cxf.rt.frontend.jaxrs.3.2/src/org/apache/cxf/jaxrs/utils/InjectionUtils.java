@@ -1152,7 +1152,7 @@ public final class InjectionUtils {
             proxy = new ThreadLocalMessageContext();
 // Liberty Change for CXF Begin
         } else if (type.getName().equals(MessageContext.class.getName())) {
-            MessageContextProxyClassLoader loader = new MessageContextProxyClassLoader(Proxy.class.getClassLoader(), type.getClassLoader(), ThreadLocalProxy.class.getClassLoader());
+            MessageContextProxyClassLoader loader = new MessageContextProxyClassLoader(getClassLoader(Proxy.class), getClassLoader(type), getClassLoader(ThreadLocalProxy.class));
             proxy = (ThreadLocalProxy<T>) Proxy.newProxyInstance(loader,
                                                                  new Class[] { type, ThreadLocalProxy.class },
                                                                  new ProxyInvocationHandler(new ThreadLocalMessageContext()));
@@ -1163,9 +1163,9 @@ public final class InjectionUtils {
             proxy = createThreadLocalServletApiContext(type.getName());
         }
         if (proxy == null) {
-            ProxyClassLoader loader = new ProxyClassLoader(Proxy.class.getClassLoader());
-            loader.addLoader(type.getClassLoader());
-            loader.addLoader(ThreadLocalProxy.class.getClassLoader());
+            ProxyClassLoader loader = new ProxyClassLoader(getClassLoader(Proxy.class));
+            loader.addLoader(getClassLoader(type));
+            loader.addLoader(getClassLoader(ThreadLocalProxy.class));
             return (ThreadLocalProxy<T>) Proxy.newProxyInstance(loader,
                                                                 new Class[] { type, ThreadLocalProxy.class },
                                                                 new ThreadLocalInvocationHandler<T>());
@@ -1192,7 +1192,7 @@ public final class InjectionUtils {
         if (proxyClassName != null) {
             try {
                 // Liberty Change for CXF Begin
-                return (ThreadLocalProxy<?>) InjectionUtils.class.getClassLoader().loadClass(proxyClassName).newInstance();
+                return (ThreadLocalProxy<?>) getClassLoader(InjectionUtils.class).loadClass(proxyClassName).newInstance();
                 // Liberty Change for CXF Begin
             } catch (Throwable t) {
                 throw new RuntimeException(t);
@@ -1341,14 +1341,14 @@ public final class InjectionUtils {
                 Object oldProvider = pi.getOldProvider();
                 clz = oldProvider.getClass();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "injectContexts pre: oldProvider=" + oldProvider + " clz=" + clz + " loader="+clz.getClassLoader());
+                    Tr.debug(tc, "injectContexts pre: oldProvider=" + oldProvider + " clz=" + clz + " loader="+getClassLoader(clz));
                 }
             } else {
                 clz = requestObject.getClass();
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "injectContexts post: clz=" + clz + " loader="+clz.getClassLoader());
+                Tr.debug(tc, "injectContexts post: clz=" + clz + " loader="+getClassLoader(clz));
             }
             JaxRsFactoryBeanCustomizer beanCustomizer = InjectionRuntimeContextHelper.findBeanCustomizer(clz, resource.getBus());
             if (beanCustomizer != null)
@@ -1975,5 +1975,14 @@ public final class InjectionUtils {
         } else {
             return false;
         }
+    }
+    
+    private static ClassLoader getClassLoader(final Class<?> clazz) {
+        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            @Override
+            public ClassLoader run() {
+                return clazz.getClassLoader();
+            }
+        });
     }
 }

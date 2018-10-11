@@ -25,6 +25,10 @@ public class ACPWarInitializer extends ApplicationConfigurationPopulator {
         addFactory(document, "faces-context-factory", "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.CustomFacesContextFactory");
         addFactory(document, "partial-view-context-factory", "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.CustomPartialViewContextFactory");
         addFactory(document, "view-declaration-language-factory", "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.CustomViewDeclarationLanguageFactory");
+        addFactory(document, "facelet-cache-factory", "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.CustomFaceletCacheFactory");
+
+        // Fixed in 2.3 - https://github.com/javaee/javaserverfaces-spec/issues/1241
+        addFactory(document, "client-window-factory", "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window.CustomClientWindowFactory");
 
         String ns = document.getDocumentElement().getNamespaceURI();
 

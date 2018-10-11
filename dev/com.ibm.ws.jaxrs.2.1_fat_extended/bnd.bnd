@@ -18,6 +18,7 @@ src: \
   test-applications/classSubResApp/src,\
   test-applications/cdiApp/src,\
   test-applications/jsonbapp/src,\
+  test-applications/formApp/src
 
 fat.project: true
 

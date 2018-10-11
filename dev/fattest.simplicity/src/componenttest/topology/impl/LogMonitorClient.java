@@ -35,6 +35,16 @@ public interface LogMonitorClient {
     public void lmcClearLogOffsets();
 
     /**
+     * Reset the mark and offset values for logs back to the start of this process.
+     */
+    public void lmcResetLogOffsets();
+
+    /**
+     * Set the offsets that we'll go back to when {@link #lmcResetLogOffsets()} is called.
+     */
+    public void lmcSetOriginLogOffsets();
+
+    /**
      * This method updates the log offset for the server instance. Log offset style
      * tracking has been deprecated. This method has been provided to enable backward
      * compatibility with logic that was moved into the LogMonitor class. For new implementations,

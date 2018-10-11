@@ -11,3 +11,4 @@
 
 # JSSE trace
 -Djavax.net.debug=true
+-Dcom.sun.jndi.ldap.object.disableEndpointIdentification=true

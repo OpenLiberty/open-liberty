@@ -360,7 +360,8 @@ public class BasicSseTestServlet extends FATServlet {
 
     public void testErrorSse(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
-        final List<JaxbObject> receivedEvents = new ArrayList<JaxbObject>();
+        final List<JaxbObject> receivedEvents = new ArrayList<>();
+        final List<Throwable> errors = new ArrayList<>();
         final CountDownLatch executionLatch = new CountDownLatch(1);
 
         Client client = ClientBuilder.newClient();
@@ -377,7 +378,7 @@ public class BasicSseTestServlet extends FATServlet {
                                 @Override
                                 public void accept(InboundSseEvent t) {
                                     JaxbObject o = t.readData(JaxbObject.class, MediaType.APPLICATION_XML_TYPE);
-                                    System.out.println("new error event: " + o);
+                                    System.out.println("new event: " + o);
                                     receivedEvents.add(o);
                                 }
                             },
@@ -385,8 +386,8 @@ public class BasicSseTestServlet extends FATServlet {
 
                                 @Override
                                 public void accept(Throwable t) {
-                                    t.printStackTrace();
-                                    fail("Caught unexpected exception: " + t);
+                                    System.out.println("new error: " + t);
+                                    errors.add(t);
                                 }
                             },
                             new Runnable() {
@@ -417,5 +418,6 @@ public class BasicSseTestServlet extends FATServlet {
         }
 
         assertEquals("Received an unexpected number of events", 0, receivedEvents.size());
+        assertEquals("Received an unexpected number of errors", 1, errors.size());
     }
 }

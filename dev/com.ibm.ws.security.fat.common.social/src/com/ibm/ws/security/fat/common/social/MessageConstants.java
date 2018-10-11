@@ -17,6 +17,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS1706E_OIDC_CLIENT_IDTOKEN_VERIFY_ERR = "CWWKS1706E";
     public static final String CWWKS1714E_OIDC_CLIENT_REQUEST_NONCE_FAILED = "CWWKS1714E";
     public static final String CWWKS1739E_OIDC_CLIENT_NO_VERIFYING_KEY = "CWWKS1739E";
+    public static final String CWWKS1749E_USERINFO_INVALID = "CWWKS1749E";
     public static final String CWWKS1751E_OIDC_IDTOKEN_VERIFY_ISSUER_ERR = "CWWKS1751E";
     public static final String CWWKS1754E_OIDC_IDTOKEN_VERIFY_AUD_ERR = "CWWKS1754E";
     public static final String CWWKS1756E_OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR = "CWWKS1756E";

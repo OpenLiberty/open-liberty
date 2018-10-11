@@ -149,7 +149,7 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
         Set<String> i_selectAnnotationClassNames,
         boolean recordDetail) {
 
-        super(Opcodes.ASM7_EXPERIMENTAL); // Deprecated
+        super(Opcodes.ASM7);
 
         String methodName = "<init>";
         this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
@@ -888,7 +888,7 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
     protected class AnnoFieldVisitor extends FieldVisitor {
         @SuppressWarnings("deprecation")
         public AnnoFieldVisitor() {
-            super(Opcodes.ASM7_EXPERIMENTAL); // Deprecated
+            super(Opcodes.ASM7);
         }
 
         // A field annotation.  Needs to be recorded.
@@ -950,7 +950,7 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
     protected class AnnoMethodVisitor extends MethodVisitor {
         @SuppressWarnings("deprecation")
         public AnnoMethodVisitor() {
-            super(Opcodes.ASM7_EXPERIMENTAL); // Deprecated
+            super(Opcodes.ASM7);
         }
 
         // A method annotation.  Needs to be recorded.

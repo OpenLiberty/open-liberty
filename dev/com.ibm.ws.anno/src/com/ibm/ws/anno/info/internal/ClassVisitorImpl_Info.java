@@ -136,6 +136,19 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
      * across the methods.
      */
     class MethodVisitorImpl_Info extends MethodVisitor {
+        /**
+         * Create a new method visitor.  As of yet, the visitor is not bound
+         * to a method, and has a null method and null method and parameter
+         * annotations.
+         */
+        public MethodVisitorImpl_Info() {
+            super(Opcodes.ASM7);
+
+            this.methodInfo = null;
+            this.methodAnnotations = null;
+            this.allParmAnnotations = null;
+        }
+
         /** The method which is being processed. */
         private MethodInfoImpl methodInfo;
 
@@ -147,19 +160,6 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
          * a list of annotations.  Slots are null for parameters which have no annotations.
          */
         private List<AnnotationInfoImpl>[] allParmAnnotations;
-
-        /**
-         * Create a new method visitor.  As of yet, the visitor is not bound
-         * to a method, and has null method and parameter annotations.
-         */
-        @SuppressWarnings("deprecation")
-        public MethodVisitorImpl_Info() {
-            super(Opcodes.ASM7_EXPERIMENTAL); // Deprecated
-
-            this.methodInfo = null;
-            this.methodAnnotations = null;
-            this.allParmAnnotations = null;
-        }
 
         /**
          * Bind this visitor to a method.  Set the method and parameters to new,
@@ -303,23 +303,30 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
         }
     }
 
-    class InfoFieldVisitor extends FieldVisitor {
+    class FieldVisitorImpl_Info extends FieldVisitor {
+        /**
+         * Create a new field visitor.  As of yet, the visitor is not bound
+         * to a field, and has a null method and null annotations.
+         */
+        public FieldVisitorImpl_Info() {
+            super(Opcodes.ASM7);
+
+            fieldInfo = null;
+            annotations = null;
+        }
+
         private FieldInfoImpl fieldInfo;
         private List<AnnotationInfoImpl> annotations;
 
-        @SuppressWarnings("deprecation")
-        public InfoFieldVisitor() {
-            super(Opcodes.ASM7_EXPERIMENTAL); // Deprecated
-        }
-
-        void setFieldInfo(FieldInfoImpl fii) {
-            fieldInfo = fii;
-            annotations = new LinkedList<AnnotationInfoImpl>();
+        void setFieldInfo(FieldInfoImpl fieldInfo) {
+            this.fieldInfo = fieldInfo;
+            this.annotations = new LinkedList<AnnotationInfoImpl>();
         }
 
         @Override
         public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-            AnnotationInfoVisitor annotationVisitor = ClassVisitorImpl_Info.visitAnnotation(fieldInfo, desc, visible);
+            AnnotationInfoVisitor annotationVisitor =
+                ClassVisitorImpl_Info.visitAnnotation(fieldInfo, desc, visible);
             annotations.add(annotationVisitor.getAnnotationInfo());
             return annotationVisitor;
 
@@ -349,7 +356,7 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
     }
 
     private final MethodVisitorImpl_Info methodVisitor = new MethodVisitorImpl_Info();
-    private final InfoFieldVisitor fieldVisitor = new InfoFieldVisitor();
+    private final FieldVisitorImpl_Info fieldVisitor = new FieldVisitorImpl_Info();
 
     protected final String hashText;
 
@@ -377,9 +384,8 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
 
     //
 
-    @SuppressWarnings("deprecation")
     public ClassVisitorImpl_Info(InfoStoreImpl infoStore, String externalName) {
-        super(Opcodes.ASM7_EXPERIMENTAL); // Deprecated
+        super(Opcodes.ASM7);
 
         String methodName = "<init>";
 

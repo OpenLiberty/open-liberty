@@ -118,7 +118,7 @@ public class WCApplicationHelper {
             ShrinkHelper.addDirectory(war, "test-applications/" + warName + "/resources");
 
         if (earName != null) {
-            LOG.info("addEarToServer : crteate ear " + earName + ", ear include application/.xml : " + addEarResources);
+            LOG.info("addEarToServer : create ear " + earName + ", ear include application/.xml : " + addEarResources);
             EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, earName);
             ear.addAsModule(war);
             if (addEarResources)

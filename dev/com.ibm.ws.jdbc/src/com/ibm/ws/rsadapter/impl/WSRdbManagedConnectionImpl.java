@@ -543,7 +543,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
      */
     private final void addHandle(WSJdbcConnection handle) throws ResourceException {
         (numHandlesInUse < handlesInUse.length - 1 ? handlesInUse : resizeHandleList())[numHandlesInUse++] = handle;
-        if (!inRequest)
+        if (!inRequest && dsConfig.get().enableBeginEndRequest)
             try {
                 inRequest = true;
                 mcf.jdbcRuntime.beginRequest(sqlConn);
@@ -4065,6 +4065,35 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         if (superShardingKey != JDBCRuntimeVersion.SUPER_SHARDING_KEY_UNCHANGED)
             currentSuperShardingKey = superShardingKey;
         connectionPropertyChanged = true;
+    }
+
+    /**
+     * Updates the value of the sharding keys after validating them.
+     *
+     * @param shardingKey the new sharding key.
+     * @param superShardingKey the new super sharding key. The 'unchanged' constant can be used to avoid changing it.
+     * @param timeout number of seconds within which validation must be done. 0 indicates no timeout.
+     * @return true if the sharding keys are valid and were successfully set on the connection. Otherwise, false.
+     */
+    public final boolean setShardingKeysIfValid(Object shardingKey, Object superShardingKey, int timeout) throws SQLException {
+        if (mcf.beforeJDBCVersion(JDBCRuntimeVersion.VERSION_4_3))
+            throw new SQLFeatureNotSupportedException();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "Set sharding key/super sharding key to " + shardingKey + "/" + superShardingKey + " within " + timeout + " seconds");
+
+        boolean updated = mcf.jdbcRuntime.doSetShardingKeysIfValid(sqlConn, shardingKey, superShardingKey, timeout);
+
+        if (updated) {
+            currentShardingKey = shardingKey;
+            if (superShardingKey != JDBCRuntimeVersion.SUPER_SHARDING_KEY_UNCHANGED)
+                currentSuperShardingKey = superShardingKey;
+            connectionPropertyChanged = true;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "successful? " + updated);
+        return updated;
     }
 
     /**

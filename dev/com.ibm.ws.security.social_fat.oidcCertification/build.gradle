@@ -64,7 +64,7 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
     copy { 
-      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/formlogin.war')
+      from new File(project(':com.ibm.ws.security.fat.common.social').buildDir, 'test-application/formlogin.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
   }

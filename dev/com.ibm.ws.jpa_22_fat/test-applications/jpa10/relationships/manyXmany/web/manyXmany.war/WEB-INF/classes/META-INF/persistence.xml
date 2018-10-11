@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+    version="1.0">
+
+    <persistence-unit name="Cleanup" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <mapping-file>META-INF/manyxmany-orm.xml</mapping-file>
+        <properties>
+        	<property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        	
+            <!-- Hibernate Support Properties -->
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/>
+            <!-- <property name="hibernate.transaction.factory_class" value="org.hibernate.transaction.JDBCTransactionFactory"/> -->
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="ManyXMany_JTA">
+        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <mapping-file>META-INF/manyxmany-orm.xml</mapping-file>
+        <properties>
+        	<property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        	
+            <!-- Hibernate Support Properties -->
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/>
+            <!-- <property name="jta.UserTransaction" value="java:comp/UserTransaction"/> -->
+            <!-- <property name="hibernate.transaction.factory_class" value="org.hibernate.transaction.CMTTransactionFactory"/> -->      
+            <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.WebSphereExtendedJTATransactionLookup"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="ManyXMany_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <mapping-file>META-INF/manyxmany-orm.xml</mapping-file>
+        <properties>
+        	<property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        	
+            <!-- Hibernate Support Properties -->
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/>
+            <!-- <property name="hibernate.transaction.factory_class" value="org.hibernate.transaction.JDBCTransactionFactory"/> -->
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="ManyXMany_Uni_JTA">
+        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <mapping-file>META-INF/manyxmany-uni-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.annotation.MMUniEntA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.annotation.MMUniEntB_CA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.annotation.MMUniEntB_CM</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.annotation.MMUniEntB_CP</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.annotation.MMUniEntB_CRF</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.annotation.MMUniEntB_CRM</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.annotation.MMUniEntB_DR</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+        	<property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        	
+            <!-- Hibernate Support Properties -->
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect"/>
+            <!-- <property name="jta.UserTransaction" value="java:comp/UserTransaction"/> -->
+            <!-- <property name="hibernate.transaction.factory_class" value="org.hibernate.transaction.CMTTransactionFactory"/> -->      
+            <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.WebSphereExtendedJTATransactionLookup"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="ManyXMany_Uni_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <mapping-file>META-INF/manyxmany-uni-orm.xml</mapping-file>       
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.annotation.MMUniEntA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.annotation.MMUniEntB_CA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.annotation.MMUniEntB_CM</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.annotation.MMUniEntB_CP</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.annotation.MMUniEntB_CRF</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.annotation.MMUniEntB_CRM</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.annotation.MMUniEntB_DR</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+        	<property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        	
+            <!-- Hibernate Support Properties -->
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect"/>
+            <!-- <property name="hibernate.transaction.factory_class" value="org.hibernate.transaction.JDBCTransactionFactory"/> -->
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="ManyXMany_Bi_JTA">
+        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <mapping-file>META-INF/manyxmany-bi-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.annotation.MMBiEntA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.annotation.MMBiEntB_CA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.annotation.MMBiEntB_CM</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.annotation.MMBiEntB_CP</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.annotation.MMBiEntB_CRF</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.annotation.MMBiEntB_CRM</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.annotation.MMBiEntB_DR</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+        	<property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        	
+            <!-- Hibernate Support Properties -->
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect"/>
+            <!-- <property name="jta.UserTransaction" value="java:comp/UserTransaction"/> -->
+            <!-- <property name="hibernate.transaction.factory_class" value="org.hibernate.transaction.CMTTransactionFactory"/> -->      
+            <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.WebSphereExtendedJTATransactionLookup"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="ManyXMany_Bi_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <mapping-file>META-INF/manyxmany-bi-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.annotation.MMBiEntA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.annotation.MMBiEntB_CA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.annotation.MMBiEntB_CM</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.annotation.MMBiEntB_CP</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.annotation.MMBiEntB_CRF</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.annotation.MMBiEntB_CRM</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.annotation.MMBiEntB_DR</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+        	<property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        	
+            <!-- Hibernate Support Properties -->
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect"/>
+            <!-- <property name="hibernate.transaction.factory_class" value="org.hibernate.transaction.JDBCTransactionFactory"/> -->
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="ManyXMany_Container_JTA">
+        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <mapping-file>META-INF/manyxmany-container-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.containertype.annotated.MMContainerTypeEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.containertype.annotated.MMContainerTypeEntityB</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+        	<property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+            
+            <!-- Hibernate Support Properties -->
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect"/>
+            <!-- <property name="jta.UserTransaction" value="java:comp/UserTransaction"/> -->
+            <!-- <property name="hibernate.transaction.factory_class" value="org.hibernate.transaction.CMTTransactionFactory"/> -->      
+            <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.WebSphereExtendedJTATransactionLookup"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="ManyXMany_Container_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <mapping-file>META-INF/manyxmany-container-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.containertype.annotated.MMContainerTypeEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.containertype.annotated.MMContainerTypeEntityB</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+            <property name="eclipselink.cache.shared.default" value="false"/>
+            
+            <!-- Hibernate Support Properties -->
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect"/>
+            <!-- <property name="hibernate.transaction.factory_class" value="org.hibernate.transaction.JDBCTransactionFactory"/> -->
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="ManyXMany_CompoundPK_JTA">
+        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <mapping-file>META-INF/manyxmany-compoundpk-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.annotated.EmbedIDMMEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.annotated.EmbedIDMMEntityB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.annotated.IDClassMMEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.annotated.IDClassMMEntityB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.annotated.EmbeddableID</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+        	<property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        	
+            <!-- Hibernate Support Properties -->
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect"/>
+            <!-- <property name="jta.UserTransaction" value="java:comp/UserTransaction"/> -->
+            <!-- <property name="hibernate.transaction.factory_class" value="org.hibernate.transaction.CMTTransactionFactory"/> -->      
+            <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.WebSphereExtendedJTATransactionLookup"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="ManyXMany_CompoundPK_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <mapping-file>META-INF/manyxmany-compoundpk-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.annotated.EmbedIDMMEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.annotated.EmbedIDMMEntityB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.annotated.IDClassMMEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.annotated.IDClassMMEntityB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.annotated.EmbeddableID</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+        	<property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        	
+            <!-- Hibernate Support Properties -->
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect"/>
+            <!-- <property name="hibernate.transaction.factory_class" value="org.hibernate.transaction.JDBCTransactionFactory"/> -->
+        </properties>
+    </persistence-unit>
+</persistence>

@@ -1065,6 +1065,14 @@ public class InstallUtils {
         return null;
     }
 
+    public static String getEditionName(File installRoot, String editionCode) {
+        String editionCodeUpperCase = editionCode.toUpperCase();
+        if (editionCodeUpperCase.equals("OPEN") || editionCodeUpperCase.equals("OPEN_WEB")) {
+            editionCodeUpperCase = new Product(installRoot).getProductEdition().toUpperCase();
+        }
+        return getEditionName(editionCodeUpperCase);
+    }
+
     public static String getEditionName(String editionCode) {
 
         String editionCodeUpperCase = editionCode.toUpperCase();
