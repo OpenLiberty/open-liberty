@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.websphere.concurrent.rx;
+package com.ibm.ws.concurrent.rx;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -45,7 +45,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
@@ -355,12 +354,12 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
 
         if (JAVA8) {
-            action = new AsyncRunnable(contextDescriptor, action, null);
+            action = new ContextualRunnable(contextDescriptor, action);
             CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(action, futureExecutor == null ? executor : futureExecutor);
             return new ManagedCompletableFuture<Void>(completableFuture, executor, futureExecutor);
         } else {
             ManagedCompletableFuture<Void> completableFuture = new ManagedCompletableFuture<Void>(executor, futureExecutor);
-            action = new AsyncRunnable(contextDescriptor, action, completableFuture);
+            action = new ContextualRunnable(contextDescriptor, action, completableFuture);
             (futureExecutor == null ? executor : futureExecutor).execute(action);
             return completableFuture;
         }
@@ -402,7 +401,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             return new ManagedCompletableFuture<U>(completableFuture, executor, futureExecutor);
         } else {
             ManagedCompletableFuture<U> completableFuture = new ManagedCompletableFuture<U>(executor, futureExecutor);
-            Runnable task = new AsyncSupplier<U>(contextDescriptor, action, completableFuture, true);
+            Runnable task = new ContextualSupplierAction<U>(contextDescriptor, action, completableFuture, true);
             (futureExecutor == null ? executor : futureExecutor).execute(task);
             return completableFuture;
         }
@@ -623,7 +622,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
 
             if (!super.isDone()) {
                 @SuppressWarnings({ "rawtypes", "unchecked" })
-                Runnable task = new AsyncSupplier(contextDescriptor, action, this, false);
+                Runnable task = new ContextualSupplierAction(contextDescriptor, action, this, false);
                 executor.execute(task);
                 // The existence of completeAsync means that any number of tasks could be submitted to complete a
                 // single ManagedCompletableFuture instance.  We are deciding that it is not worth it to track the
@@ -1533,255 +1532,6 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
-     * Proxy for Runnable that applies thread context before running and removes it afterward.
-     * Triggers completion of the provided CompletableFuture upon Runnable completion.
-     */
-    private static class AsyncRunnable implements Runnable {
-        private final Runnable action;
-        private final ManagedCompletableFuture<Void> completableFuture; // Null if Java SE 8
-        private final ThreadContextDescriptor threadContextDescriptor;
-
-        private AsyncRunnable(ThreadContextDescriptor threadContextDescriptor, Runnable action, ManagedCompletableFuture<Void> completableFuture) {
-            this.action = action;
-            this.completableFuture = completableFuture;
-            this.threadContextDescriptor = threadContextDescriptor;
-        }
-
-        @FFDCIgnore({ Error.class, RuntimeException.class })
-        @Override
-        public void run() {
-            Throwable failure = null;
-            ArrayList<ThreadContext> contextApplied = threadContextDescriptor == null ? null : threadContextDescriptor.taskStarting();
-            try {
-                action.run();
-            } catch (Error x) {
-                failure = x;
-                throw x;
-            } catch (RuntimeException x) {
-                failure = x;
-                throw x;
-            } finally {
-                try {
-                    if (threadContextDescriptor != null)
-                        threadContextDescriptor.taskStopping(contextApplied);
-                } finally {
-                    if (!JAVA8)
-                        if (failure == null)
-                            completableFuture.super_complete(null);
-                        else
-                            completableFuture.super_completeExceptionally(failure);
-                }
-            }
-        }
-    }
-
-    /**
-     * Proxy for Supplier that applies thread context before running and removes it afterward.
-     * Triggers completion of the provided CompletableFuture upon Supplier completion.
-     *
-     * @param <T> type of the result that is supplied by the supplier
-     */
-    private static class AsyncSupplier<T> implements Runnable {
-        private final Supplier<T> action;
-        private final ManagedCompletableFuture<T> completableFuture;
-        private final boolean superComplete;
-        private final ThreadContextDescriptor threadContextDescriptor;
-
-        private AsyncSupplier(ThreadContextDescriptor threadContextDescriptor, Supplier<T> action, ManagedCompletableFuture<T> completableFuture, boolean superComplete) {
-            this.action = action;
-            this.completableFuture = completableFuture;
-            this.superComplete = superComplete;
-            this.threadContextDescriptor = threadContextDescriptor;
-        }
-
-        @FFDCIgnore({ Error.class, RuntimeException.class })
-        @Override
-        public void run() {
-            T result = null;
-            Throwable failure = null;
-            ArrayList<ThreadContext> contextApplied = threadContextDescriptor == null ? null : threadContextDescriptor.taskStarting();
-            try {
-                result = action.get();
-            } catch (Error x) {
-                failure = x;
-                throw x;
-            } catch (RuntimeException x) {
-                failure = x;
-                throw x;
-            } finally {
-                try {
-                    if (threadContextDescriptor != null)
-                        threadContextDescriptor.taskStopping(contextApplied);
-                } finally {
-                    if (failure == null)
-                        if (superComplete)
-                            completableFuture.super_complete(result);
-                        else
-                            completableFuture.complete(result);
-                    else if (superComplete)
-                        completableFuture.super_completeExceptionally(failure);
-                    else
-                        completableFuture.completeExceptionally(failure);
-                }
-            }
-        }
-    }
-
-    // TODO move the following classes to the general context service in com.ibm.ws.context project once Java 8 can be used there
-
-    /**
-     * Proxy for BiConsumer that applies thread context before running and removes it afterward
-     *
-     * @param <T> type of the function's parameter
-     * @param <R> type of the function's result
-     */
-    private static class ContextualBiConsumer<T, U> implements BiConsumer<T, U> {
-        private final BiConsumer<T, U> action;
-        private final ThreadContextDescriptor threadContextDescriptor;
-
-        private ContextualBiConsumer(ThreadContextDescriptor threadContextDescriptor, BiConsumer<T, U> action) {
-            this.action = action;
-            this.threadContextDescriptor = threadContextDescriptor;
-        }
-
-        @Override
-        public void accept(T t, U u) {
-            ArrayList<ThreadContext> contextApplied = threadContextDescriptor.taskStarting();
-            try {
-                action.accept(t, u);
-            } finally {
-                threadContextDescriptor.taskStopping(contextApplied);
-            }
-        }
-    }
-
-    /**
-     * Proxy for Consumer that applies thread context before running and removes it afterward
-     *
-     * @param <T> type of the consumer's parameter
-     */
-    private static class ContextualConsumer<T> implements Consumer<T> {
-        private final Consumer<T> action;
-        private final ThreadContextDescriptor threadContextDescriptor;
-
-        private ContextualConsumer(ThreadContextDescriptor threadContextDescriptor, Consumer<T> action) {
-            this.action = action;
-            this.threadContextDescriptor = threadContextDescriptor;
-        }
-
-        @Override
-        public void accept(T t) {
-            ArrayList<ThreadContext> contextApplied = threadContextDescriptor.taskStarting();
-            try {
-                action.accept(t);
-            } finally {
-                threadContextDescriptor.taskStopping(contextApplied);
-            }
-        }
-    }
-
-    /**
-     * Proxy for BiFunction that applies thread context before running and removes it afterward
-     *
-     * @param <T> type of the function's first parameter
-     * @param <U> type of the function's second parameter
-     * @param <R> type of the function's result
-     */
-    private static class ContextualBiFunction<T, U, R> implements BiFunction<T, U, R> {
-        private final BiFunction<T, U, R> action;
-        private final ThreadContextDescriptor threadContextDescriptor;
-
-        private ContextualBiFunction(ThreadContextDescriptor threadContextDescriptor, BiFunction<T, U, R> action) {
-            this.action = action;
-            this.threadContextDescriptor = threadContextDescriptor;
-        }
-
-        @Override
-        public R apply(T t, U u) {
-            ArrayList<ThreadContext> contextApplied = threadContextDescriptor.taskStarting();
-            try {
-                return action.apply(t, u);
-            } finally {
-                threadContextDescriptor.taskStopping(contextApplied);
-            }
-        }
-    }
-
-    /**
-     * Proxy for Function that applies thread context before running and removes it afterward
-     *
-     * @param <T> type of the function's parameter
-     * @param <R> type of the function's result
-     */
-    private static class ContextualFunction<T, R> implements Function<T, R> {
-        private final Function<T, R> action;
-        private final ThreadContextDescriptor threadContextDescriptor;
-
-        private ContextualFunction(ThreadContextDescriptor threadContextDescriptor, Function<T, R> action) {
-            this.action = action;
-            this.threadContextDescriptor = threadContextDescriptor;
-        }
-
-        @Override
-        public R apply(T t) {
-            ArrayList<ThreadContext> contextApplied = threadContextDescriptor.taskStarting();
-            try {
-                return action.apply(t);
-            } finally {
-                threadContextDescriptor.taskStopping(contextApplied);
-            }
-        }
-    }
-
-    /**
-     * Proxy for Runnable that applies thread context before running and removes it afterward
-     */
-    private static class ContextualRunnable implements Runnable {
-        private final Runnable action;
-        private final ThreadContextDescriptor threadContextDescriptor;
-
-        private ContextualRunnable(ThreadContextDescriptor threadContextDescriptor, Runnable action) {
-            this.action = action;
-            this.threadContextDescriptor = threadContextDescriptor;
-        }
-
-        @Override
-        public void run() {
-            ArrayList<ThreadContext> contextApplied = threadContextDescriptor.taskStarting();
-            try {
-                action.run();
-            } finally {
-                threadContextDescriptor.taskStopping(contextApplied);
-            }
-        }
-    }
-
-    /**
-     * Proxy for Supplier that applies thread context before running and removes it afterward
-     *
-     * @param <T> type of the result that is supplied by the supplier
-     */
-    private static class ContextualSupplier<T> implements Supplier<T> {
-        private final Supplier<T> action;
-        private final ThreadContextDescriptor threadContextDescriptor;
-
-        private ContextualSupplier(ThreadContextDescriptor threadContextDescriptor, Supplier<T> action) {
-            this.action = action;
-            this.threadContextDescriptor = threadContextDescriptor;
-        }
-
-        @Override
-        public T get() {
-            ArrayList<ThreadContext> contextApplied = threadContextDescriptor.taskStarting();
-            try {
-                return action.get();
-            } finally {
-                threadContextDescriptor.taskStopping(contextApplied);
-            }
-        }
-    }
-
-    /**
      * Executor returned by the static delayedExecutor methods.
      */
     private static class DelayedExecutor implements Executor {
@@ -1812,7 +1562,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             // separately by the ManagedCompletableFuture overrides (as it should).
             ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
             if (contextDescriptor != null)
-                action = new AsyncRunnable(contextDescriptor, action, null);
+                action = new ContextualRunnable(contextDescriptor, action);
 
             Executor delayedTaskExecutor = executor instanceof WSManagedExecutorService //
                             ? ((WSManagedExecutorService) executor).getNormalPolicyExecutor() //

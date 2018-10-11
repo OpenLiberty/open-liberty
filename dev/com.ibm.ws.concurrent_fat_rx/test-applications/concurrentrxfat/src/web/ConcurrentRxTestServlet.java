@@ -58,7 +58,7 @@ import javax.servlet.annotation.WebServlet;
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.junit.Test;
 
-import com.ibm.websphere.concurrent.rx.ManagedCompletableFuture;
+import com.ibm.ws.concurrent.rx.ManagedCompletableFuture; // Remove once fully switched over to MicroProfile Concurrency API
 
 import componenttest.app.FATServlet;
 

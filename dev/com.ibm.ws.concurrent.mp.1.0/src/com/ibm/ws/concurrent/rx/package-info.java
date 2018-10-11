@@ -13,6 +13,6 @@
  */
 @org.osgi.annotation.versioning.Version("1.0")
 @TraceOptions(traceGroup = "concurrent")
-package com.ibm.websphere.concurrent.rx;
+package com.ibm.ws.concurrent.rx;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

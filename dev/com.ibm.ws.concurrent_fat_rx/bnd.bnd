@@ -26,7 +26,7 @@ fat.project: true
 	com.ibm.websphere.org.eclipse.microprofile.concurrency.1.0;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.ws.concurrent.rx;version=latest,\
+	com.ibm.ws.concurrent.mp.1.0;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -sub: *.bnd

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.websphere.concurrent.rx;
+package com.ibm.ws.concurrent.rx;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
