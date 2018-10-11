@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 IBM Corporation and others.
+ * Copyright (c) 2013, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,8 @@ import com.ibm.wsspi.threadcontext.WSContextService;
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
                         "creates.objectClass=java.util.concurrent.ScheduledExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
-                        "creates.objectClass=javax.enterprise.concurrent.ManagedScheduledExecutorService" })
+                        "creates.objectClass=javax.enterprise.concurrent.ManagedScheduledExecutorService",
+                        "creates.objectClass=org.eclipse.microprofile.concurrent.ManagedExecutor" })
 public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceImpl implements ManagedScheduledExecutorService {
     private static final TraceComponent tc = Tr.register(ManagedScheduledExecutorServiceImpl.class);
 
