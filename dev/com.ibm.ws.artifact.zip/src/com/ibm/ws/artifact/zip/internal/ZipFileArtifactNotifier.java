@@ -788,6 +788,11 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, com.ibm.ws.ker
         //       from being locked during a possibly extensive steps of the listeners handling
         //       their notifications.
 
+        // TODO: See the comment, below.  The notification step has been separated from the
+        //       listener collection step.
+
+        List<QueuedNotification> notifications = null;
+
         synchronized( listenersLock ) {
             for ( Map.Entry<String, Collection<ArtifactListener>> listenersEntry : listeners.entrySet() ) {
                 List<String> a_registeredPaths = new ArrayList<String>();
@@ -800,13 +805,92 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, com.ibm.ws.ker
                     new DefaultArtifactNotification(rootContainer, a_registeredPaths);
 
                 for ( ArtifactListener listener : listenersEntry.getValue() ) {
-                    // Additions, removals, updates
-                    if ( isUpdate ) {
-                        listener.notifyEntryChange(emptyNotification, emptyNotification, registeredPaths);
-                    } else {
-                        listener.notifyEntryChange(emptyNotification, registeredPaths, emptyNotification);
+                    if ( notifications == null ) {
+                        notifications = new ArrayList<QueuedNotification>( listenersEntry.getValue().size() );
                     }
+
+                    QueuedNotification notification = new QueuedNotification(isUpdate, registeredPaths, listener);
+                    notifications.add(notification);
+
+                    // parm1: additions, parm2: removals, parm3: updates
+                    // if ( isUpdate ) {
+                    //     listener.notifyEntryChange(emptyNotification, emptyNotification, registeredPaths);
+                    // } else {
+                    //     listener.notifyEntryChange(emptyNotification, registeredPaths, emptyNotification);
+                    // }
                 }
+            }
+        }
+
+        if ( notifications != null ) {
+            for ( QueuedNotification notification : notifications ) {
+                notification.fire();
+            }
+        }
+    }
+
+    // Shift notification outside of the listeners lock.
+    //
+    // That is intended to prevent deadlocks, such as the following:
+
+//    Thread 69:
+//
+//      at com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier.notifyAllListeners(ZipFileArtifactNotifier.java:791)
+//      at com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier.notifyEntryChange(ZipFileArtifactNotifier.java:719)
+//      at com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier.notifyAllListeners(ZipFileArtifactNotifier.java:807)
+//        (entered lock: com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier$ListenersLock@0x00000000E0C2DBB0, entry count: 1)
+//      at com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier.onChange(ZipFileArtifactNotifier.java:664)
+//      at com/ibm/ws/kernel/filemonitor/internal/MonitorHolder.scheduledScan(MonitorHolder.java:705(Compiled Code))
+//
+//      private void notifyAllListeners(boolean isUpdate) { ..
+//      synchronized( listenersLock ) { ..
+//      for ( ArtifactListener listener : listenersEntry.getValue() ) { ..
+//      listener.notifyEntryChange(emptyNotification, emptyNotification, registeredPaths);
+//
+//    'notifyAllListeners' walks downwards to forward change notification to nested entries
+//
+//    Thread 70:
+//
+//      at com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier.removeListener(ZipFileArtifactNotifier.java:561)
+//      at com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier.updateEnclosingMonitor(ZipFileArtifactNotifier.java:355)
+//      at com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier.updateMonitor(ZipFileArtifactNotifier.java:248)
+//      at com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier.removeListener(ZipFileArtifactNotifier.java:610)
+//         (entered lock: com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier$ListenersLock@0x00000000E0C2DBA0, entry count: 1)
+//      at com/ibm/ws/artifact/overlay/internal/DirectoryBasedOverlayNotifier.removeListener(DirectoryBasedOverlayNotifier.java:176)
+//         (entered lock: com/ibm/ws/artifact/overlay/internal/DirectoryBasedOverlayNotifier@0x00000000E0C478C8, entry count: 1)
+//      at com/ibm/ws/adaptable/module/internal/NotifierImpl.removeListener(NotifierImpl.java:87)
+//      at com/ibm/ws/adaptable/module/internal/InterpretedNotifier.removeListener(InterpretedNotifier.java:150)
+//      at com/ibm/ws/app/manager/internal/monitor/ApplicationMonitor$BaseApplicationListener.stop(ApplicationMonitor.java:364)
+//
+//    'removeListener' walks upwards to remove listeners from enclosing notifiers.
+//
+//      public boolean removeListener(ArtifactListener listenerToRemove) { ..
+//      synchronized(listenersLock) { ..
+//      updateMonitor(); ..
+//      private void updateMonitor() { ..
+//      updateEnclosingMonitor(); ..
+//      private void updateEnclosingMonitor() { ..
+//      ArtifactContainer enclosingRootContainer = entryInEnclosingContainer.getRoot();
+//      ArtifactNotifier enclosingNotifier = enclosingRootContainer.getArtifactNotifier();
+//      enclosingNotifier.removeListener(this);
+
+    private class QueuedNotification {
+        private final boolean isUpdate;
+        private final ArtifactNotification registeredPaths;
+        private final ArtifactListener listener;
+
+        public QueuedNotification(boolean isUpdate, ArtifactNotification registeredPaths, ArtifactListener listener) {
+            this.isUpdate = isUpdate;
+            this.registeredPaths = registeredPaths;
+            this.listener = listener;
+        }
+
+        public void fire() {
+            // parm1: additions, parm2: removals, parm3: updates
+            if ( isUpdate ) {
+                listener.notifyEntryChange(emptyNotification, emptyNotification, registeredPaths);
+            } else {
+                listener.notifyEntryChange(emptyNotification, registeredPaths, emptyNotification);
             }
         }
     }
