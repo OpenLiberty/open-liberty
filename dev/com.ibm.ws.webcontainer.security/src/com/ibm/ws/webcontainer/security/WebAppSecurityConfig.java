@@ -64,7 +64,7 @@ public interface WebAppSecurityConfig {
 
     boolean getSSOUseDomainFromURL();
 
-    boolean isUseSSOForJaspic();
+    boolean isUseLtpaSSOForJaspic();
 
     boolean isUseAuthenticationDataForUnprotectedResourceEnabled();
 

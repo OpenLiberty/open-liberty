@@ -122,7 +122,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
 
     private AuthenticationResult authenticateForOtherMechanisms(WebRequest webRequest, AuthenticationResult authResult, JaspiService jaspiService) {
         authResult = handleSSO(webRequest, null);
-        if (AuthResult.SUCCESS.equals(authResult.getStatus()) && webAppSecurityConfig.isUseSSOForJaspic()) {
+        if (AuthResult.SUCCESS.equals(authResult.getStatus()) && webAppSecurityConfig.isUseLtpaSSOForJaspic()) {
             return authResult;
         }
 
@@ -220,13 +220,13 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                     // if that's the case, generate SSO cookie.
                     registerSession(webRequest, subject, ssoCh);
                 } else if (!isJaspicSession(tokenUsage)) {
-                    if (webAppSecurityConfig.isUseSSOForJaspic() == false) {
+                    if (webAppSecurityConfig.isUseLtpaSSOForJaspic() == false) {
                         // there is a sso cookie for form login, it can be deleted now.
                         ssoCh.createLogoutCookies(webRequest.getHttpServletRequest(), webRequest.getHttpServletResponse());
                     }
                 }
             } else {
-                if (webAppSecurityConfig.isUseSSOForJaspic() == false) {
+                if (webAppSecurityConfig.isUseLtpaSSOForJaspic() == false) {
                     attemptToRemoveLtpaToken(webRequest, props);
                 }
             }

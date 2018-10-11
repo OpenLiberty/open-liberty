@@ -363,11 +363,11 @@ public class WebProviderAuthenticatorProxyTest {
         });
     }
 
-    private void withSSOForJaspic(final boolean useSSOForJaspic) {
+    private void withSSOForJaspic(final boolean useLtpaSSOForJaspic) {
         mockery.checking(new Expectations() {
             {
-                allowing(webAppSecurityConfig).isUseSSOForJaspic();
-                will(returnValue(useSSOForJaspic));
+                allowing(webAppSecurityConfig).isUseLtpaSSOForJaspic();
+                will(returnValue(useLtpaSSOForJaspic));
             }
         });
     }

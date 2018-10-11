@@ -84,7 +84,7 @@
             required="false" type="Boolean"
             default="false" />
 
-        <AD id="useSSOForJaspic" name="%useSSOForJaspic" description="%useSSOForJaspic.desc"
+        <AD id="useLtpaSSOForJaspic" name="%useLtpaSSOForJaspic" description="%useLtpaSSOForJaspic.desc"
              required="false" type="Boolean"
              default="false" />
 

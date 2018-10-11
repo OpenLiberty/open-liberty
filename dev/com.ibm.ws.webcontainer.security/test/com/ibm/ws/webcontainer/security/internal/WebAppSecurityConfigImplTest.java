@@ -336,8 +336,8 @@ public class WebAppSecurityConfigImplTest {
     }
 
     @Test
-    public void getChangedProperties_useSSOForJaspic() {
-        driveSingleAttributeTest("useSSOForJaspic",
+    public void getChangedProperties_useLtpaSSOForJaspic() {
+        driveSingleAttributeTest("useLtpaSSOForJaspic",
                                  Boolean.TRUE, Boolean.FALSE);
     }
 

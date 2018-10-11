@@ -5,7 +5,7 @@
 		<feature>jsp-2.3</feature>
 	</featureManager>
 
-	<webAppSecurity useSSOForJaspic="true" />
+	<webAppSecurity useLtpaSSOForJaspic="true" />
 
 	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
 
