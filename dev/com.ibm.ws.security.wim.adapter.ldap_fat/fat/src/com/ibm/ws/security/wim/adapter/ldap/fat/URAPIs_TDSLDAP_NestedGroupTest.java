@@ -89,9 +89,10 @@ public class URAPIs_TDSLDAP_NestedGroupTest extends URAPIs_LDAP_NestedGroupBase 
         Log.info(logClass, "setUp", "Creating servlet connection the server");
         myServlet = new UserRegistryServletConnection(myServer.getHostname(), myServer.getHttpDefaultPort());
 
-        myServlet.getRealm();
-        Thread.sleep(5000);
-        myServlet.getRealm();
+        if (myServlet.getRealm() == null) {
+            Thread.sleep(5000);
+            myServlet.getRealm();
+        }
     }
 
     @AfterClass
