@@ -80,3 +80,8 @@ warning.spring_config.ignored.session.useraction=Configure session timeout and s
 error.wrong.spring.boot.version=CWWKC0263E: The Spring Boot version {0} is not supported. A Spring Boot version within the range {1} is required.
 error.wrong.spring.boot.version.explanation=A Spring Boot version has been detected that is not supported by the server.
 error.wrong.spring.boot.version.useraction=Update the Spring Boot application to use a version of Spring Boot that is within the required version range.
+
+audit.application.started.event.timeout=CWWKC0264I: Application {0} has not issued the {1} event in {2} minutes. 
+audit.application.started.event.timeout.explanation=The application did not not issue the expected starting event in the expected time. This could be because the server is overloaded or the application is large. If the application is starting as part of server startup, the server startup will finish without waiting for the application to start.  
+audit.application.started.event.timeout.useraction=If the application takes a long time to start then no action is required; otherwise check the server logs to see if other messages indicate a cause.
+
