@@ -118,7 +118,8 @@ public class InstallKernelMap implements Map {
 
     // License identifiers
     private static final String LICENSE_EPL_PREFIX = "https://www.eclipse.org/legal/epl-";
-    private static final String LICENSE_FEATURE_TERMS_PREFIX = "http://www.ibm.com/licenses/wlp-featureterms-";
+    private static final String LICENSE_FEATURE_TERMS = "http://www.ibm.com/licenses/wlp-featureterms-v1";
+    private static final String LICENSE_FEATURE_TERMS_RESTRICTED = "http://www.ibm.com/licenses/wlp-featureterms-restricted-v1";
 
     private enum ActionType {
         install,
@@ -605,11 +606,19 @@ public class InstallKernelMap implements Map {
             for (List<RepositoryResource> item : resolveResult) {
                 for (RepositoryResource repoResrc : item) {
                     String license = repoResrc.getLicenseId();
-                    if (license != null && !(license.startsWith(LICENSE_EPL_PREFIX) || license.startsWith(LICENSE_FEATURE_TERMS_PREFIX))) {
-                        Boolean accepted = (Boolean) data.get(LICENSE_ACCEPT);
-                        if (accepted == null || !accepted) {
-                            featuresResolved.clear(); // clear the result since the licenses were not accepted
-                            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_LICENSES_NOT_ACCEPTED"));
+                    if (license != null) {
+                        boolean isNDRuntime = false; // TODO check whether the current runtime is ND
+
+                        boolean autoAcceptLicense = license.startsWith(LICENSE_EPL_PREFIX) || license.equals(LICENSE_FEATURE_TERMS)
+                                                    || (isNDRuntime && license.equals(LICENSE_FEATURE_TERMS_RESTRICTED));
+
+                        if (!autoAcceptLicense) {
+                            // check whether the license has been accepted
+                            Boolean accepted = (Boolean) data.get(LICENSE_ACCEPT);
+                            if (accepted == null || !accepted) {
+                                featuresResolved.clear(); // clear the result since the licenses were not accepted
+                                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_LICENSES_NOT_ACCEPTED"));
+                            }
                         }
                     }
 
