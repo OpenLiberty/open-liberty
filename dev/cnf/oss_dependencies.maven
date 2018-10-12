@@ -187,6 +187,7 @@ org.eclipse.jetty.websocket:websocket-client:9.4.5.v20170502
 org.eclipse.jetty.websocket:websocket-client:9.4.7.RC0
 org.eclipse.jetty.websocket:websocket-common:9.4.5.v20170502
 org.eclipse.jetty.websocket:websocket-common:9.4.7.RC0
+org.eclipse.microprofile.concurrency:microprofile-concurrency-api:1.0-SNAPSHOT
 org.eclipse.microprofile.config:microprofile-config-api:1.1
 org.eclipse.microprofile.config:microprofile-config-api:1.2.1
 org.eclipse.microprofile.config:microprofile-config-api:1.3

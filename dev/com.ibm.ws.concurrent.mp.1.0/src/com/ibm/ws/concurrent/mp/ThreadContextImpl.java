@@ -20,6 +20,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.eclipse.microprofile.concurrent.ThreadContext;
+
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
@@ -30,43 +32,53 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * no longer a need for OpenLiberty to support Java 7.
  */
 @Trivial
-public abstract class ThreadContextImpl implements WSContextService { // add org.eclipse.microprofile.concurrent.ThreadContext
+public abstract class ThreadContextImpl implements ThreadContext, WSContextService {
+    @Override
     public Executor currentContextExecutor() {
         return null; // TODO
     }
 
+    @Override
     public <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage) {
         return null; // TODO
     }
 
+    @Override
     public <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage) {
         return null; // TODO
     }
 
+    @Override
     public <T, U> BiConsumer<T, U> withCurrentContext(BiConsumer<T, U> consumer) {
         return null; // TODO
     }
 
+    @Override
     public <T, U, R> BiFunction<T, U, R> withCurrentContext(BiFunction<T, U, R> function) {
         return null; // TODO
     }
 
+    @Override
     public <R> Callable<R> withCurrentContext(Callable<R> callable) {
         return null; // TODO
     }
 
+    @Override
     public <T> Consumer<T> withCurrentContext(Consumer<T> consumer) {
         return null; // TODO
     }
 
+    @Override
     public <T, R> Function<T, R> withCurrentContext(Function<T, R> function) {
         return null; // TODO
     }
 
+    @Override
     public Runnable withCurrentContext(Runnable runnable) {
         return null; // TODO
     }
 
+    @Override
     public <R> Supplier<R> withCurrentContext(Supplier<R> supplier) {
         return null; // TODO
     }
