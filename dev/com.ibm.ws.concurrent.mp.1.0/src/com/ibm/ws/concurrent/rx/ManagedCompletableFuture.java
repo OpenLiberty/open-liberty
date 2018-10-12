@@ -76,7 +76,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * The Java SE 8 CompletableFuture lacks certain important methods, namely defaultExecutor and newIncompleteFuture,
      * without which it is difficult to extend Java's built-in implementation.
      */
-    private static final boolean JAVA8 = JavaInfo.majorVersion() == 8;
+    static final boolean JAVA8 = JavaInfo.majorVersion() == 8;
 
     /**
      * Execution property that indicates a task should run with any previous transaction suspended.
@@ -122,7 +122,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * For the Java SE 8 implementation, the real completable future to which meaningful operations are delegated.
      * For greater than Java SE 8, this value must be NULL.
      */
-    private final CompletableFuture<T> completableFuture;
+    final CompletableFuture<T> completableFuture;
 
     /**
      * The default asynchronous execution facility for this completable future.
@@ -184,7 +184,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @param managedExecutor managed executor service
      * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
      */
-    private ManagedCompletableFuture(CompletableFuture<T> completableFuture, Executor managedExecutor, AtomicReference<Future<?>> futureRef) {
+    ManagedCompletableFuture(CompletableFuture<T> completableFuture, Executor managedExecutor, AtomicReference<Future<?>> futureRef) {
         super();
 
         this.completableFuture = completableFuture;
@@ -216,7 +216,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         this.futureRef = futureRef;
     }
 
-    // static method equivalents for CompletableFuture
+    // static method equivalents for CompletableFuture, plus other static methods for ManagedExecutorImpl to use
 
     /**
      * Replaces CompletableFuture.completedFuture(value) with an implementation that switches the
@@ -225,16 +225,27 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @param value result of the completed future
      * @return completed completable future where the default managed executor is the default asynchronous execution facility.
      */
+    @Trivial
     public static <U> CompletableFuture<U> completedFuture(U value) {
         ManagedExecutorService defaultExecutor = AccessController.doPrivileged(getDefaultManagedExecutorAction);
+        return completedFuture(value, defaultExecutor);
+    }
+
+    /**
+     * Provides the implementation of managedExecutor.completedFuture(value) where the target
+     * executor is the default asynchronous execution facility.
+     *
+     * @param value result of the completed future
+     * @param executor executor to become the default asynchronous execution facility for the completed future
+     * @return completed completable future
+     */
+    public static <U> CompletableFuture<U> completedFuture(U value, Executor executor) {
         if (JAVA8) {
-            return new ManagedCompletableFuture<U>(CompletableFuture.completedFuture(value), //
-                            defaultExecutor, //
-                            null);
+            return new ManagedCompletableFuture<U>(CompletableFuture.completedFuture(value), executor, null);
         } else {
-            ManagedCompletableFuture<U> completableFuture = new ManagedCompletableFuture<U>(defaultExecutor, null);
-            completableFuture.super_complete(value);
-            return completableFuture;
+            ManagedCompletableFuture<U> future = new ManagedCompletableFuture<U>(executor, null);
+            future.super_complete(value);
+            return future;
         }
     }
 
@@ -246,13 +257,26 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @return completed completion stage where the default managed executor is the default asynchronous execution facility.
      */
     public static <U> CompletionStage<U> completedStage(U value) {
-        if (JAVA8)
-            throw new UnsupportedOperationException();
-
         ManagedExecutorService defaultExecutor = AccessController.doPrivileged(getDefaultManagedExecutorAction);
-        ManagedCompletionStage<U> stage = new ManagedCompletionStage<U>(defaultExecutor);
-        stage.super_complete(value);
-        return stage;
+        return completedStage(value, defaultExecutor);
+    }
+
+    /**
+     * Provides the implementation of managedExecutor.completedStage(value) where the target
+     * executor is the default asynchronous execution facility.
+     *
+     * @param value result of the completion stage
+     * @param executor executor to become the default asynchronous execution facility for the completion stage
+     * @return completed completion stage
+     */
+    public static <U> CompletionStage<U> completedStage(U value, Executor executor) {
+        if (JAVA8) {
+            return new ManagedCompletionStage<U>(CompletableFuture.completedFuture(value), executor, null);
+        } else {
+            ManagedCompletableFuture<U> stage = new ManagedCompletionStage<U>(executor);
+            stage.super_complete(value);
+            return stage;
+        }
     }
 
     /**
@@ -297,13 +321,28 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @return completed completable future where the default managed executor is the default asynchronous execution facility.
      */
     public static <U> CompletableFuture<U> failedFuture(Throwable x) {
-        if (JAVA8)
-            throw new UnsupportedOperationException();
-
         ManagedExecutorService defaultExecutor = AccessController.doPrivileged(getDefaultManagedExecutorAction);
-        ManagedCompletableFuture<U> completableFuture = new ManagedCompletableFuture<U>(defaultExecutor, null);
-        completableFuture.super_completeExceptionally(x);
-        return completableFuture;
+        return failedFuture(x, defaultExecutor);
+    }
+
+    /**
+     * Provides the implementation of managedExecutor.failedFuture(value) where the target
+     * executor is the default asynchronous execution facility.
+     *
+     * @param x the exception.
+     * @param executor executor to become the default asynchronous execution facility for the completed future
+     * @return completed completable future
+     */
+    public static <U> CompletableFuture<U> failedFuture(Throwable x, Executor executor) {
+        if (JAVA8) {
+            CompletableFuture<U> failedFuture = new CompletableFuture<U>();
+            failedFuture.completeExceptionally(x);
+            return new ManagedCompletableFuture<U>(failedFuture, executor, null);
+        } else {
+            ManagedCompletableFuture<U> future = new ManagedCompletableFuture<U>(executor, null);
+            future.super_completeExceptionally(x);
+            return future;
+        }
     }
 
     /**
@@ -314,13 +353,28 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @return completed completion stage where the default managed executor is the default asynchronous execution facility.
      */
     public static <U> CompletionStage<U> failedStage(Throwable x) {
-        if (JAVA8)
-            throw new UnsupportedOperationException();
-
         ManagedExecutorService defaultExecutor = AccessController.doPrivileged(getDefaultManagedExecutorAction);
-        ManagedCompletionStage<U> stage = new ManagedCompletionStage<U>(defaultExecutor);
-        stage.super_completeExceptionally(x);
-        return stage;
+        return failedStage(x, defaultExecutor);
+    }
+
+    /**
+     * Provides the implementation of managedExecutor.failedStage(value) where the target
+     * executor is the default asynchronous execution facility.
+     *
+     * @param x the exception.
+     * @param executor executor to become the default asynchronous execution facility for the completion stage
+     * @return completed completion stage
+     */
+    public static <U> CompletionStage<U> failedStage(Throwable x, Executor executor) {
+        if (JAVA8) {
+            CompletableFuture<U> failedFuture = new CompletableFuture<U>();
+            failedFuture.completeExceptionally(x);
+            return new ManagedCompletionStage<U>(failedFuture, executor, null);
+        } else {
+            ManagedCompletableFuture<U> stage = new ManagedCompletionStage<U>(executor);
+            stage.super_completeExceptionally(x);
+            return stage;
+        }
     }
 
     /**
@@ -426,7 +480,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             if (other instanceof ManagedCompletableFuture)
                 other = ((ManagedCompletableFuture<? extends T>) other).completableFuture;
             CompletableFuture<Void> dependentStage = completableFuture.acceptEither(other, action);
-            return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, null);
+            return newInstance(dependentStage, defaultExecutor, null);
         } else {
             return super.acceptEither(other, action);
         }
@@ -460,7 +514,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             if (other instanceof ManagedCompletableFuture)
                 other = ((ManagedCompletableFuture<? extends T>) other).completableFuture;
             CompletableFuture<Void> dependentStage = completableFuture.acceptEitherAsync(other, action, futureExecutor == null ? executor : futureExecutor);
-            return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, futureExecutor);
+            return newInstance(dependentStage, defaultExecutor, futureExecutor);
         } else {
             futureRefLocal.set(futureExecutor);
             try {
@@ -488,7 +542,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             if (other instanceof ManagedCompletableFuture)
                 other = ((ManagedCompletableFuture<? extends T>) other).completableFuture;
             CompletableFuture<U> dependentStage = completableFuture.applyToEither(other, action);
-            return new ManagedCompletableFuture<U>(dependentStage, defaultExecutor, null);
+            return newInstance(dependentStage, defaultExecutor, null);
         } else {
             return super.applyToEither(other, action);
         }
@@ -522,7 +576,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             if (other instanceof ManagedCompletableFuture)
                 other = ((ManagedCompletableFuture<? extends T>) other).completableFuture;
             CompletableFuture<U> dependentStage = completableFuture.applyToEitherAsync(other, action, futureExecutor == null ? executor : futureExecutor);
-            return new ManagedCompletableFuture<U>(dependentStage, defaultExecutor, futureExecutor);
+            return newInstance(dependentStage, defaultExecutor, futureExecutor);
         } else {
             futureRefLocal.set(futureExecutor);
             try {
@@ -701,7 +755,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
 
         if (JAVA8) {
             CompletableFuture<T> dependentStage = completableFuture.exceptionally(action);
-            return new ManagedCompletableFuture<T>(dependentStage, defaultExecutor, null);
+            return newInstance(dependentStage, defaultExecutor, null);
         } else {
             return super.exceptionally(action);
         }
@@ -763,7 +817,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
 
         if (JAVA8) {
             CompletableFuture<R> dependentStage = completableFuture.handle(action);
-            return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor, null);
+            return newInstance(dependentStage, defaultExecutor, null);
         } else {
             return super.handle(action);
         }
@@ -795,7 +849,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
 
         if (JAVA8) {
             CompletableFuture<R> dependentStage = completableFuture.handleAsync(action, futureExecutor == null ? executor : futureExecutor);
-            return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor, futureExecutor);
+            return newInstance(dependentStage, defaultExecutor, futureExecutor);
         } else {
             futureRefLocal.set(futureExecutor);
             try {
@@ -873,6 +927,21 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
+     * This method is only for Java SE 8.
+     * It is used to create new instances of this class (or subclasses).
+     * ManagedCompletionStage overrides to ensure that an instance of that class is created instead.
+     *
+     * @param completableFuture underlying completable future upon which this instance is backed.
+     * @param managedExecutor managed executor service
+     * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
+     * @return a new instance of this class.
+     */
+    @Trivial
+    <T> CompletableFuture<T> newInstance(CompletableFuture<T> completableFuture, Executor managedExecutor, AtomicReference<Future<?>> futureRef) {
+        return new ManagedCompletableFuture<T>(completableFuture, managedExecutor, futureRef);
+    }
+
+    /**
      * @see java.util.concurrent.CompletableFuture#obtrudeException(java.lang.Throwable)
      */
     @Override
@@ -947,7 +1016,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             if (other instanceof ManagedCompletableFuture)
                 other = ((ManagedCompletableFuture<?>) other).completableFuture;
             CompletableFuture<Void> dependentStage = completableFuture.runAfterBoth(other, action);
-            return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, null);
+            return newInstance(dependentStage, defaultExecutor, null);
         } else {
             return super.runAfterBoth(other, action);
         }
@@ -981,7 +1050,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             if (other instanceof ManagedCompletableFuture)
                 other = ((ManagedCompletableFuture<?>) other).completableFuture;
             CompletableFuture<Void> dependentStage = completableFuture.runAfterBothAsync(other, action, futureExecutor == null ? executor : futureExecutor);
-            return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, futureExecutor);
+            return newInstance(dependentStage, defaultExecutor, futureExecutor);
         } else {
             futureRefLocal.set(futureExecutor);
             try {
@@ -1009,7 +1078,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             if (other instanceof ManagedCompletableFuture)
                 other = ((ManagedCompletableFuture<?>) other).completableFuture;
             CompletableFuture<Void> dependentStage = completableFuture.runAfterEither(other, action);
-            return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, null);
+            return newInstance(dependentStage, defaultExecutor, null);
         } else {
             return super.runAfterEither(other, action);
         }
@@ -1043,7 +1112,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             if (other instanceof ManagedCompletableFuture)
                 other = ((ManagedCompletableFuture<?>) other).completableFuture;
             CompletableFuture<Void> dependentStage = completableFuture.runAfterEitherAsync(other, action, futureExecutor == null ? executor : futureExecutor);
-            return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, futureExecutor);
+            return newInstance(dependentStage, defaultExecutor, futureExecutor);
         } else {
             futureRefLocal.set(futureExecutor);
             try {
@@ -1087,7 +1156,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
 
         if (JAVA8) {
             CompletableFuture<Void> dependentStage = completableFuture.thenAccept(action);
-            return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, null);
+            return newInstance(dependentStage, defaultExecutor, null);
         } else {
             return super.thenAccept(action);
         }
@@ -1119,7 +1188,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
 
         if (JAVA8) {
             CompletableFuture<Void> dependentStage = completableFuture.thenAcceptAsync(action, futureExecutor == null ? executor : futureExecutor);
-            return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, futureExecutor);
+            return newInstance(dependentStage, defaultExecutor, futureExecutor);
         } else {
             futureRefLocal.set(futureExecutor);
             try {
@@ -1147,7 +1216,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             if (other instanceof ManagedCompletableFuture)
                 other = ((ManagedCompletableFuture<? extends U>) other).completableFuture;
             CompletableFuture<Void> dependentStage = completableFuture.thenAcceptBoth(other, action);
-            return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, null);
+            return newInstance(dependentStage, defaultExecutor, null);
         } else {
             return super.thenAcceptBoth(other, action);
         }
@@ -1181,7 +1250,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             if (other instanceof ManagedCompletableFuture)
                 other = ((ManagedCompletableFuture<? extends U>) other).completableFuture;
             CompletableFuture<Void> dependentStage = completableFuture.thenAcceptBothAsync(other, action, futureExecutor == null ? executor : futureExecutor);
-            return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, futureExecutor);
+            return newInstance(dependentStage, defaultExecutor, futureExecutor);
         } else {
             futureRefLocal.set(futureExecutor);
             try {
@@ -1207,7 +1276,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
 
         if (JAVA8) {
             CompletableFuture<R> dependentStage = completableFuture.thenApply(action);
-            return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor, null);
+            return newInstance(dependentStage, defaultExecutor, null);
         } else {
             return super.thenApply(action);
         }
@@ -1239,7 +1308,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
 
         if (JAVA8) {
             CompletableFuture<R> dependentStage = completableFuture.thenApplyAsync(action, futureExecutor == null ? executor : futureExecutor);
-            return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor, futureExecutor);
+            return newInstance(dependentStage, defaultExecutor, futureExecutor);
         } else {
             futureRefLocal.set(futureExecutor);
             try {
@@ -1267,7 +1336,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             if (other instanceof ManagedCompletableFuture)
                 other = ((ManagedCompletableFuture<? extends U>) other).completableFuture;
             CompletableFuture<R> dependentStage = completableFuture.thenCombine(other, action);
-            return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor, null);
+            return newInstance(dependentStage, defaultExecutor, null);
         } else {
             return super.thenCombine(other, action);
         }
@@ -1301,7 +1370,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             if (other instanceof ManagedCompletableFuture)
                 other = ((ManagedCompletableFuture<? extends U>) other).completableFuture;
             CompletableFuture<R> dependentStage = completableFuture.thenCombineAsync(other, action, futureExecutor == null ? executor : futureExecutor);
-            return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor, futureExecutor);
+            return newInstance(dependentStage, defaultExecutor, futureExecutor);
         } else {
             futureRefLocal.set(futureExecutor);
             try {
@@ -1327,7 +1396,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
 
         if (JAVA8) {
             CompletableFuture<U> dependentStage = completableFuture.thenCompose(action);
-            return new ManagedCompletableFuture<U>(dependentStage, defaultExecutor, null);
+            return newInstance(dependentStage, defaultExecutor, null);
         } else {
             return super.thenCompose(action);
         }
@@ -1359,7 +1428,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
 
         if (JAVA8) {
             CompletableFuture<U> dependentStage = completableFuture.thenComposeAsync(action, futureExecutor == null ? executor : futureExecutor);
-            return new ManagedCompletableFuture<U>(dependentStage, defaultExecutor, futureExecutor);
+            return newInstance(dependentStage, defaultExecutor, futureExecutor);
         } else {
             futureRefLocal.set(futureExecutor);
             try {
@@ -1385,7 +1454,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
 
         if (JAVA8) {
             CompletableFuture<Void> dependentStage = completableFuture.thenRun(action);
-            return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, null);
+            return newInstance(dependentStage, defaultExecutor, null);
         } else {
             return super.thenRun(action);
         }
@@ -1417,7 +1486,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
 
         if (JAVA8) {
             CompletableFuture<Void> dependentStage = completableFuture.thenRunAsync(action, futureExecutor == null ? executor : futureExecutor);
-            return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, futureExecutor);
+            return newInstance(dependentStage, defaultExecutor, futureExecutor);
         } else {
             futureRefLocal.set(futureExecutor);
             try {
@@ -1488,7 +1557,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
 
         if (JAVA8) {
             CompletableFuture<T> dependentStage = completableFuture.whenComplete(action);
-            return new ManagedCompletableFuture<T>(dependentStage, defaultExecutor, null);
+            return newInstance(dependentStage, defaultExecutor, null);
         } else {
             return super.whenComplete(action);
         }
@@ -1520,7 +1589,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
 
         if (JAVA8) {
             CompletableFuture<T> dependentStage = completableFuture.whenCompleteAsync(action, futureExecutor == null ? executor : futureExecutor);
-            return new ManagedCompletableFuture<T>(dependentStage, defaultExecutor, futureExecutor);
+            return newInstance(dependentStage, defaultExecutor, futureExecutor);
         } else {
             futureRefLocal.set(futureExecutor);
             try {

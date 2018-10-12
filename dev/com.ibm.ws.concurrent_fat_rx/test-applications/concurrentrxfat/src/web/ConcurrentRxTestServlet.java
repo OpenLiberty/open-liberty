@@ -1008,12 +1008,11 @@ public class ConcurrentRxTestServlet extends FATServlet {
      */
     @Test
     public void testCompleteAsyncOfCompletedStage() throws Exception {
-        // TODO switch to defaultManagedExecutor.completedFuture once implemented
-        ManagedCompletableFuture<Integer> cf0 = (ManagedCompletableFuture<Integer>) ManagedCompletableFuture.completedFuture(90);
+        CompletableFuture<Integer> cf0 = defaultManagedExecutor.completedFuture(90);
 
         CompletableFuture<Integer> cf1;
         try {
-            cf1 = cf0.completeAsync(() -> 900);
+            cf1 = ((ManagedCompletableFuture<Integer>) cf0).completeAsync(() -> 900); // TODO find better way to invoke Java 11 methods
         } catch (UnsupportedOperationException x) {
             if (AT_LEAST_JAVA_9)
                 throw x;
@@ -1110,16 +1109,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
      */
     @Test
     public void testCompletedStage() throws Exception {
-        // TODO switch to defaultManagedExecutor.completedStage once implemented
-        CompletionStage<Integer> cs0;
-        try {
-            cs0 = ManagedCompletableFuture.completedStage(86);
-        } catch (UnsupportedOperationException x) {
-            if (AT_LEAST_JAVA_9)
-                throw x;
-            else
-                return; // expected for Java SE 8
-        }
+        CompletionStage<Integer> cs0 = defaultManagedExecutor.completedStage(86);
 
         // Disallow CompletableFuture methods:
         CompletableFuture<Integer> cf0 = (CompletableFuture<Integer>) cs0;
@@ -1137,7 +1127,14 @@ public class ConcurrentRxTestServlet extends FATServlet {
         // Verify the value, and the thread of dependent stage:
         final CompletableFuture<String> cf = new CompletableFuture<String>();
         CompletionStage<Void> cs1 = cs0.thenAcceptAsync(value -> cf.complete(Thread.currentThread().getName() + ":" + value));
-        String result = cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        // It's odd that the lambda supplied to cf.complete could run on the thread that invokes cf.get,
+        // but that appears to happen infrequently, and it is Java's code, not OpenLiberty.  The test can
+        // cope with it by polling for the cf to be done.
+        for (long start = System.nanoTime(); !cf.isDone() && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+        assertTrue(cf.isDone());
+
+        String result = cf.getNow("value-if-absent");
         assertTrue(result, result.endsWith(":86"));
         assertTrue(result, result.startsWith("Default Executor-thread-"));
         assertTrue(result, !result.startsWith(Thread.currentThread().getName()));
@@ -1207,11 +1204,10 @@ public class ConcurrentRxTestServlet extends FATServlet {
     @Test
     public void testCompleteOnTimeout() throws Exception {
         // completeOnTimeout not allowed on Java SE 8, but is otherwise a no-op on an already-completed future
-        ManagedCompletableFuture<Integer> cf0 = (ManagedCompletableFuture<Integer>) ManagedCompletableFuture.completedFuture(95);
-        // TODO switch to defaultManagedExecutor.completedFuture above once implemented
+        CompletableFuture<Integer> cf0 = defaultManagedExecutor.completedFuture(95);
         CompletableFuture<Integer> cf1;
         try {
-            cf1 = cf0.completeOnTimeout(195, 295, TimeUnit.SECONDS);
+            cf1 = ((ManagedCompletableFuture<Integer>) cf0).completeOnTimeout(195, 295, TimeUnit.SECONDS); // TODO need better way to invoke Java 11 methods
         } catch (UnsupportedOperationException x) {
             if (AT_LEAST_JAVA_9)
                 throw x;
@@ -1530,16 +1526,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
      */
     @Test
     public void testFailedFuture() throws Exception {
-        CompletableFuture<String> cf0;
-        try {
-            // TODO replace with defaultManagedExecutor.failedFuture once implemented
-            cf0 = ManagedCompletableFuture.failedFuture(new AssertionError("intentionally failed"));
-        } catch (UnsupportedOperationException x) {
-            if (AT_LEAST_JAVA_9)
-                throw x;
-            else
-                return; // expected for Java SE 8
-        }
+        CompletableFuture<String> cf0 = defaultManagedExecutor.failedFuture(new AssertionError("intentionally failed"));
 
         try {
             fail("join must not succeed on failed future: " + cf0.join());
@@ -1575,16 +1562,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
      */
     @Test
     public void testFailedStage() throws Exception {
-        CompletionStage<String> cs0;
-        try {
-            // TODO replace with defaultManagedExecutor.failedStage once implemented
-            cs0 = ManagedCompletableFuture.failedStage(new NumberFormatException("5f"));
-        } catch (UnsupportedOperationException x) {
-            if (AT_LEAST_JAVA_9)
-                throw x;
-            else
-                return; // expected for Java SE 8
-        }
+        CompletionStage<String> cs0 = defaultManagedExecutor.failedStage(new NumberFormatException("5f"));
 
         // Disallow CompletableFuture methods:
         CompletableFuture<String> cf0 = (CompletableFuture<String>) cs0;
@@ -2363,11 +2341,11 @@ public class ConcurrentRxTestServlet extends FATServlet {
     @Test
     public void testOrTimeout() throws Exception {
         // orTimeout not allowed on Java SE 8, but is otherwise a no-op on an already-completed future
-        ManagedCompletableFuture<Integer> cf0 = (ManagedCompletableFuture<Integer>) ManagedCompletableFuture.completedFuture(92);
+        CompletableFuture<Integer> cf0 = defaultManagedExecutor.completedFuture(92);
         // TODO switch to defaultManagedExecutor.completedFuture once implemented
         CompletableFuture<Integer> cf1;
         try {
-            cf1 = cf0.orTimeout(192, TimeUnit.MINUTES);
+            cf1 = ((ManagedCompletableFuture<Integer>) cf0).orTimeout(192, TimeUnit.MINUTES); // TODO need better way to invoke Java 11 methods
         } catch (UnsupportedOperationException x) {
             if (AT_LEAST_JAVA_9)
                 throw x;
@@ -2637,8 +2615,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
         };
 
         try {
-            // TODO switch to defaultManagedExecutor.completedFuture once implemented
-            CompletableFuture<?> cf0 = ManagedCompletableFuture.completedFuture("Completed Result");
+            CompletableFuture<?> cf0 = defaultManagedExecutor.completedFuture("Completed Result");
             CompletableFuture<?> cf1 = cf0.thenRunAsync(blockedRunnable, noContextExecutor);
             CompletableFuture<?> cf2 = cf0.thenRunAsync(runnable, noContextExecutor);
             CompletableFuture<?> cf3 = cf1.runAfterEitherAsync(cf2, runnable);

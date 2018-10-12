@@ -13,12 +13,15 @@ package com.ibm.ws.concurrent.rx;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * This class provides the implementation of ManagedCompletableFuture.minimalCompletionStage.
@@ -39,6 +42,19 @@ class ManagedCompletionStage<T> extends ManagedCompletableFuture<T> {
      */
     ManagedCompletionStage(Executor executor) {
         super(executor, null);
+    }
+
+    /**
+     * This constructor is for Java SE 8 only.
+     * Construct a minimal completion stage that disallows completion by all other means
+     * than the natural completion of the stage.
+     *
+     * @param completedFuture completable future upon which this instance is backed.
+     * @param executor default asynchronous execution facility for this stage
+     * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
+     */
+    ManagedCompletionStage(CompletableFuture<T> completableFuture, Executor executor, AtomicReference<Future<?>> futureRef) {
+        super(completableFuture, executor, futureRef);
     }
 
     @Override
@@ -117,7 +133,27 @@ class ManagedCompletionStage<T> extends ManagedCompletableFuture<T> {
 
     @Override
     public CompletableFuture<T> newIncompleteFuture() {
-        return new ManagedCompletionStage<T>(defaultExecutor);
+        if (JAVA8)
+            return new ManagedCompletionStage<T>(new CompletableFuture<T>(), defaultExecutor, null);
+        else
+            return new ManagedCompletionStage<T>(defaultExecutor);
+    }
+
+    /**
+     * This method is only for Java SE 8.
+     * It is used to override the newInstance method of ManagedCompletableFuture to ensure that
+     * newly created instances are ManagedCompletionStage.
+     *
+     * @param completableFuture underlying completable future upon which this instance is backed.
+     * @param managedExecutor managed executor service
+     * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
+     * @return a new instance of this class.
+     */
+    @Override
+    @SuppressWarnings("hiding")
+    @Trivial
+    <T> CompletableFuture<T> newInstance(CompletableFuture<T> completableFuture, Executor managedExecutor, AtomicReference<Future<?>> futureRef) {
+        return new ManagedCompletionStage<T>(completableFuture, managedExecutor, futureRef);
     }
 
     @Override
@@ -137,16 +173,30 @@ class ManagedCompletionStage<T> extends ManagedCompletableFuture<T> {
 
     @Override
     public CompletableFuture<T> toCompletableFuture() {
-        ManagedCompletableFuture<T> dependentStage = new ManagedCompletableFuture<T>(defaultExecutor, null);
-
-        super.whenComplete((result, failure) -> {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(ManagedCompletionStage.this, tc, "whenComplete", result, failure);
-            if (failure == null)
-                dependentStage.super_complete(result);
-            else
-                dependentStage.super_completeExceptionally(failure);
-        });
+        ManagedCompletableFuture<T> dependentStage;
+        if (JAVA8) {
+            dependentStage = new ManagedCompletableFuture<T>(new CompletableFuture<T>(), defaultExecutor, null);
+            // The completable future that we are creating must complete upon completion of this stage
+            super.whenComplete((result, failure) -> {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(ManagedCompletionStage.this, tc, "whenComplete", result, failure);
+                if (failure == null)
+                    dependentStage.completableFuture.complete(result);
+                else
+                    dependentStage.completableFuture.completeExceptionally(failure);
+            });
+        } else {
+            dependentStage = new ManagedCompletableFuture<T>(defaultExecutor, null);
+            // The completable future that we are creating must complete upon completion of this stage
+            super.whenComplete((result, failure) -> {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(ManagedCompletionStage.this, tc, "whenComplete", result, failure);
+                if (failure == null)
+                    dependentStage.super_complete(result);
+                else
+                    dependentStage.super_completeExceptionally(failure);
+            });
+        }
 
         return dependentStage;
     }

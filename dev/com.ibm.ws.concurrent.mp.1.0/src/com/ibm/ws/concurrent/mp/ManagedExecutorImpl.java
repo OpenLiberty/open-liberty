@@ -27,22 +27,22 @@ import com.ibm.ws.concurrent.rx.ManagedCompletableFuture;
 public abstract class ManagedExecutorImpl implements ManagedExecutor {
     @Override
     public <U> CompletableFuture<U> completedFuture(U value) {
-        return null; // TODO
+        return ManagedCompletableFuture.completedFuture(value, this);
     }
 
     @Override
     public <U> CompletionStage<U> completedStage(U value) {
-        return null; // TODO
+        return ManagedCompletableFuture.completedStage(value, this);
     }
 
     @Override
     public <U> CompletableFuture<U> failedFuture(Throwable ex) {
-        return null; // TODO
+        return ManagedCompletableFuture.failedFuture(ex, this);
     }
 
     @Override
     public <U> CompletionStage<U> failedStage(Throwable ex) {
-        return null; // TODO
+        return ManagedCompletableFuture.failedStage(ex, this);
     }
 
     @Override
