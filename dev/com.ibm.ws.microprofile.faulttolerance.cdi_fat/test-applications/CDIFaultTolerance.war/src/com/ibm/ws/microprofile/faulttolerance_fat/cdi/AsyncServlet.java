@@ -16,6 +16,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
@@ -31,6 +32,8 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.junit.After;
 
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBean2;
@@ -63,6 +66,11 @@ public class AsyncServlet extends FATServlet {
 
     @Inject
     AsyncThreadContextTestBean threadContextBean;
+    
+    @After
+    public void checkNotInterrupted() {
+        assertFalse("Thread left with interrupted flag set", Thread.interrupted());
+    }
 
     public void testAsync(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException, IOException, InterruptedException, ExecutionException, TimeoutException {
@@ -174,6 +182,37 @@ public class AsyncServlet extends FATServlet {
         try {
             //FaultTolerance should have already timedout the future so we're expecting the FT TimeoutException
             Connection conn = future.get(TestConstants.TEST_TIME_UNIT, TimeUnit.MILLISECONDS);
+            throw new AssertionError("Future did not timeout properly");
+        } catch (ExecutionException t) {
+            //expected
+            assertThat(t.getCause(), instanceOf(org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException.class));
+        }
+    }
+
+    public void testAsyncTimeoutNoInterrupt(HttpServletRequest req, HttpServletResponse resp) throws InterruptedException, TimeoutException {
+        //should return straight away even though the method has a 5s sleep in it
+        long start = System.currentTimeMillis();
+        System.out.println(start + " - calling AsyncBean.connectB");
+        Future<Void> future = bean.waitNoInterrupt();
+        long end = System.currentTimeMillis();
+        System.out.println(end + " - got future");
+
+        long duration = end - start;
+        if (duration > TestConstants.FUTURE_THRESHOLD) { //should have returned almost instantly, if it takes FUTURE_THRESHOLD then there is something wrong
+            throw new AssertionError("Method did not return quickly enough: " + duration);
+        }
+        if (future.isDone()) {
+            throw new AssertionError("Future completed too fast");
+        }
+
+        Thread.sleep(TestConstants.TIMEOUT + TestConstants.TEST_TIME_UNIT); //long enough for the call to timeout but not to complete normally
+        if (!future.isDone()) {
+            throw new AssertionError("Future did not timeout fast enough");
+        }
+
+        try {
+            //FaultTolerance should have already timedout the future so we're expecting the FT TimeoutException
+            future.get(TestConstants.TEST_TIME_UNIT, TimeUnit.MILLISECONDS);
             throw new AssertionError("Future did not timeout properly");
         } catch (ExecutionException t) {
             //expected
