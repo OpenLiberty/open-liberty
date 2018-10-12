@@ -71,7 +71,7 @@ public class TimeoutImpl {
      */
     public void start(QueuedFuture<?> queuedFuture) {
         Runnable timeoutTask = () -> {
-            queuedFuture.internalCancel();
+            queuedFuture.abort(new TimeoutException());
         };
 
         start(timeoutTask);
@@ -209,9 +209,13 @@ public class TimeoutImpl {
     }
 
     /**
-     * Restart the timer on a new thread. Needed when we start running an Async task on a new thread.
+     * Restart the timer on a new thread in synchronous mode.
+     * <p>
+     * In this mode, a timeout only causes the thread to be interrupted, it does not directly set the result of the QueuedFuture.
+     * <p>
+     * This is needed when doing Retries or Fallback on an async thread. If the result is set directly, then we have no opportunity to handle the exception.
      */
-    public void restartOnNewThread(Thread newThread) {
+    public void runSyncOnNewThread(Thread newThread) {
         lock.writeLock().lock();
         try {
             if (this.timeoutTask == null) {
