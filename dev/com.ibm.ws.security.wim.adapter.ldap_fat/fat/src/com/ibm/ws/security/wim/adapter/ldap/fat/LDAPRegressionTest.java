@@ -11,8 +11,6 @@
 
 package com.ibm.ws.security.wim.adapter.ldap.fat;
 
-import static componenttest.topology.utils.LDAPFatUtils.createFederatedRepository;
-import static componenttest.topology.utils.LDAPFatUtils.createTDSLdapRegistry;
 import static componenttest.topology.utils.LDAPFatUtils.updateConfigDynamically;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -28,8 +26,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.wim.Attribute;
+import com.ibm.websphere.simplicity.config.wim.AttributeConfiguration;
 import com.ibm.websphere.simplicity.config.wim.AttributesCache;
 import com.ibm.websphere.simplicity.config.wim.LdapCache;
+import com.ibm.websphere.simplicity.config.wim.LdapFilters;
 import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.config.wim.SearchResultsCache;
 import com.ibm.websphere.simplicity.log.Log;
@@ -45,36 +46,20 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.LDAPUtils;
 
 /**
- * Check that the AttributesCache is timing out at the right now and not getting reset
- * when the SearchResultsCache is updated.
- *
- * Added for OL Issue 5064 where the attributesCache is reset when new entries are put into the
- * SearchCache, basically making the attributesCache act as a last access time instead of a
- * creation time cache.
- *
+ * Contains a collection of tests designed to prevent regression of fixed defects.
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class AttributeCacheTimeoutTest {
+public class LDAPRegressionTest {
+    private static final Class<?> c = LDAPRegressionTest.class;
 
-    private static LibertyServer libertyServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.registry.ldap.fat.attr.timeout");
-    private static final Class<?> c = AttributeCacheTimeoutTest.class;
+    private static LibertyServer libertyServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.registry.ldap.fat.regression");
     private static UserRegistryServletConnection servlet;
-
-    /**
-     * Nearly empty server configuration. This should just contain the feature manager configuration with no
-     * registries or federated repository configured.
-     */
-    private static ServerConfiguration emptyConfiguration = null;
-
+    private static ServerConfiguration basicConfiguration = null;
     private static EmbeddedApacheDS ldapServer = null;
-    private static final String SUB_DN = "o=ibm,c=us";
-    private static final String USER_BASE_DN = "ou=TestUsers,ou=Test,o=ibm,c=us";
-    private static final String GROUP_BASE_DN = "ou=DevGroups,ou=Dev,o=ibm,c=us";
+    private static final String BASE_DN = "o=ibm,c=us";
     private static final String USER = "user1";
-    private static final String USER_DN = "uid=" + USER + "," + USER_BASE_DN;
-    private static final String GROUP = "group1";
-    private static final String GROUP_DN = "cn=" + GROUP + "," + GROUP_BASE_DN;
+    private static final String USER_DN = "uid=" + USER + "," + BASE_DN;
 
     /**
      * Setup the test case.
@@ -84,7 +69,7 @@ public class AttributeCacheTimeoutTest {
     @BeforeClass
     public static void setupClass() throws Exception {
         setupLibertyServer();
-        setupldapServer();
+        setupLdapServer();
     }
 
     /**
@@ -147,7 +132,7 @@ public class AttributeCacheTimeoutTest {
         /*
          * The original server configuration has no registry or Federated Repository configuration.
          */
-        emptyConfiguration = libertyServer.getServerConfiguration();
+        basicConfiguration = libertyServer.getServerConfiguration();
     }
 
     /**
@@ -155,46 +140,69 @@ public class AttributeCacheTimeoutTest {
      *
      * @throws Exception If the server failed to start for some reason.
      */
-    private static void setupldapServer() throws Exception {
+    private static void setupLdapServer() throws Exception {
         ldapServer = new EmbeddedApacheDS("myLDAP");
-        ldapServer.addPartition("users", USER_BASE_DN);
-        ldapServer.addPartition("groups", GROUP_BASE_DN);
+        ldapServer.addPartition("partition1", BASE_DN);
         ldapServer.startServer();
 
         /*
          * Add the partition entries.
          */
-        Entry entry = ldapServer.newEntry(USER_BASE_DN);
-        entry.add("objectclass", "organizationalunit");
-        entry.add("ou", "Test");
-        entry.add("ou", "TestUsers");
-        ldapServer.add(entry);
-
-        entry = ldapServer.newEntry(GROUP_BASE_DN);
-        entry.add("objectclass", "organizationalunit");
-        entry.add("ou", "Dev");
-        entry.add("ou", "DevGroups");
+        Entry entry = ldapServer.newEntry(BASE_DN);
+        entry.add("objectclass", "organization");
+        entry.add("o", "ibm");
         ldapServer.add(entry);
 
         /*
-         * Create the user and group.
+         * Create the user.
          */
         entry = ldapServer.newEntry(USER_DN);
-        entry.add("objectclass", "inetorgperson");
+        entry.add("objectclass", "wiminetorgperson");
         entry.add("uid", USER);
         entry.add("sn", USER);
         entry.add("cn", USER);
+        entry.add("nickName", USER + " nick name");
         entry.add("userPassword", "password");
-        ldapServer.add(entry);
-
-        entry = ldapServer.newEntry(GROUP_DN);
-        entry.add("objectclass", "groupofnames");
-        entry.add("cn", GROUP);
-        entry.add("member", USER_DN);
         ldapServer.add(entry);
     }
 
     /**
+     * Create a basic LDAP registry configuration element for the specified server configuration.
+     * The registry will be added to the configuration.
+     *
+     * @param serverConfig The server configuration to add the LDAP registry to.
+     * @return The new LDAP registry configuration element.
+     */
+    private static LdapRegistry createLdapRegistry(ServerConfiguration serverConfig) {
+        /*
+         * Create and add the new LDAP registry to the server configuration.
+         */
+        LdapRegistry ldapRegistry = new LdapRegistry();
+        serverConfig.getLdapRegistries().add(ldapRegistry);
+
+        /*
+         * Configure the LDAP registry.
+         */
+        ldapRegistry.setBaseDN(BASE_DN);
+        ldapRegistry.setLdapType("Custom");
+        ldapRegistry.setRealm("LdapRealm");
+        ldapRegistry.setHost("localhost");
+        ldapRegistry.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldapRegistry.setBindDN(EmbeddedApacheDS.getBindDN());
+        ldapRegistry.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldapRegistry.setCustomFilters(new LdapFilters("(&(uid=%v)(objectclass=wiminetorgperson))", "(&(cn=%v)(objectclass=groupofnames))", null, null, null));
+
+        return ldapRegistry;
+    }
+
+    /**
+     * Check that the AttributesCache is timing out at the right now and not getting reset
+     * when the SearchResultsCache is updated.
+     *
+     * Added for Open Liberty issue 5064 where the attributesCache is reset when new entries are put into the
+     * SearchCache, basically making the attributesCache act as a last access time instead of a
+     * creation time cache.
+     *
      * The sleeps in this test are required -- we're timing out the Search and Attributes caches.
      *
      * This test also requires security trace to be enabled in the LdapConnection and Cache classes.
@@ -205,13 +213,12 @@ public class AttributeCacheTimeoutTest {
     public void testAttributeCacheTimeout() throws Exception {
         Log.info(c, "testAttributeCacheTimeout", "Entering test testAttributeCacheTimeout");
 
-        ServerConfiguration clone = emptyConfiguration.clone();
-        LdapRegistry ldap = createTDSLdapRegistry(clone, "LDAP", "SampleLdapIDSRealm");
+        ServerConfiguration clone = basicConfiguration.clone();
+        LdapRegistry ldap = createLdapRegistry(clone);
         ldap.setLdapCache(new LdapCache(new AttributesCache(true, 4444, 2222, "5s"), new SearchResultsCache(true, 5555, 3333, "2s")));
-        createFederatedRepository(clone, "OneLDAPRealm", new String[] { ldap.getBaseDN() });
         updateConfigDynamically(libertyServer, clone);
 
-        assertEquals("OneLDAPRealm", servlet.getRealm());
+        assertEquals("LdapRealm", servlet.getRealm());
 
         SearchResult result = servlet.getUsers(USER, 5);
         assertEquals("There should only be 1 entry", 1, result.getList().size());
@@ -250,7 +257,45 @@ public class AttributeCacheTimeoutTest {
 
         trMsgs = libertyServer.findStringsInLogsAndTraceUsingMark(trTrue);
         assertFalse("Should have found, " + trTrue, trMsgs.isEmpty());
-
     }
 
+    /**
+     * Test the fix for Open Liberty issue 5376.
+     *
+     * The error manifests itself when the LDAP registry contains a user filter with an attribute value
+     * assertion (uid=%v) whose attribute name (uid) matches a PersonAccount property name (uid) that
+     * has been mapped to an LDAP attribute (nickName) whose value does NOT match the original LDAP attribute (uid).
+     *
+     * @throws Exception If the test fails for some reason.
+     */
+    @Test
+    public void testGetAttributesByUniqueName() throws Exception {
+        Log.info(c, "testGetAttributesByUniqueName", "Entering test testGetAttributesByUniqueName");
+
+        ServerConfiguration clone = basicConfiguration.clone();
+
+        /*
+         * Create an LDAP registry.
+         */
+        LdapRegistry ldapRegistry = createLdapRegistry(clone);
+
+        /*
+         * Configure the PersonAccount property 'uid' to the LDAP attribute 'nickName'. The
+         * 'nickName' value does NOT match the 'uid' value.
+         */
+        AttributeConfiguration attributeConfiguration = new AttributeConfiguration();
+        attributeConfiguration.getAttributes().add(new Attribute("nickName", "uid", "PersonAccount", null, null));
+        ldapRegistry.setAttributeConfiguration(attributeConfiguration);
+
+        /*
+         * Apply the changes.
+         */
+        updateConfigDynamically(libertyServer, clone);
+
+        /*
+         * Get the user security name. This call will fail with an EntityNotFoundException from
+         * LdapConnection.getAttributesByUniqueName() if the error is encountered.
+         */
+        assertEquals(USER_DN, servlet.getUserSecurityName(USER));
+    }
 }

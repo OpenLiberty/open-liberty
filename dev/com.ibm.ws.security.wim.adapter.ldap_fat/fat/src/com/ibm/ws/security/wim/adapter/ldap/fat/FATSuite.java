@@ -74,7 +74,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 CustomCertificateMapperInBellTest.class,
                 CustomCertificateMapperInFeatureTest.class,
                 URAPIs_ADWildCardTest.class,
-                AttributeCacheTimeoutTest.class,
+                LDAPRegressionTest.class,
                 ReadTimeoutTest.class
 })
 public class FATSuite extends CommonLocalLDAPServerSuite {
