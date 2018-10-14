@@ -82,16 +82,17 @@ public class ConcurrentRxTestServlet extends FATServlet {
         AT_LEAST_JAVA_9 = atLeastJava9;
     }
 
-    @Resource
+    // TODO remove type once it is possible to inject as ThreadContext/ManagedExecutor
+    @Resource(type = ContextService.class)
     private ThreadContext defaultThreadContext;
 
-    @Resource(name = "java:comp/env/executorRef")
+    @Resource(name = "java:comp/env/executorRef", type = ManagedExecutorService.class)
     private ManagedExecutor defaultManagedExecutor;
 
-    @Resource(name = "java:module/noContextExecutorRef", lookup = "concurrent/noContextExecutor")
+    @Resource(name = "java:module/noContextExecutorRef", lookup = "concurrent/noContextExecutor", type = ManagedExecutorService.class)
     private ManagedExecutor noContextExecutor;
 
-    @Resource(name = "java:app/oneContextExecutorRef", lookup = "concurrent/oneContextExecutor")
+    @Resource(name = "java:app/oneContextExecutorRef", lookup = "concurrent/oneContextExecutor", type = ManagedExecutorService.class)
     private ManagedExecutor oneContextExecutor; // the single enabled context is jeeMetadataContext
 
     // Executor that runs everything on the invoker's thread instead of submitting tasks to run asynchronously.

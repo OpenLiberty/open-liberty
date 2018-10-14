@@ -75,8 +75,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 @Component(name = "com.ibm.ws.context.service",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = { ResourceFactory.class, ContextService.class, WSContextService.class, ApplicationRecycleComponent.class },
-           property = { "creates.objectClass=javax.enterprise.concurrent.ContextService",
-                        "creates.objectClass=org.eclipse.microprofile.concurrent.ThreadContext" })
+           property = { "creates.objectClass=javax.enterprise.concurrent.ContextService" })
 public class ContextServiceImpl extends ThreadContextImpl implements ContextService, ResourceFactory, WSContextService, ApplicationRecycleComponent {
     private static final TraceComponent tc = Tr.register(ContextServiceImpl.class);
 

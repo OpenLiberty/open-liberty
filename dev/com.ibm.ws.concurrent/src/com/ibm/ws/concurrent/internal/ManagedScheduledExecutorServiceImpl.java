@@ -52,8 +52,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
                         "creates.objectClass=java.util.concurrent.ScheduledExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
-                        "creates.objectClass=javax.enterprise.concurrent.ManagedScheduledExecutorService",
-                        "creates.objectClass=org.eclipse.microprofile.concurrent.ManagedExecutor" })
+                        "creates.objectClass=javax.enterprise.concurrent.ManagedScheduledExecutorService" })
 public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceImpl implements ManagedScheduledExecutorService {
     private static final TraceComponent tc = Tr.register(ManagedScheduledExecutorServiceImpl.class);
 

@@ -66,8 +66,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
            service = { ExecutorService.class, ManagedExecutorService.class, ResourceFactory.class, ApplicationRecycleComponent.class },
            reference = @Reference(name = ManagedExecutorServiceImpl.APP_RECYCLE_SERVICE, service = ApplicationRecycleCoordinator.class),
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
-                        "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
-                        "creates.objectClass=org.eclipse.microprofile.concurrent.ManagedExecutor" })
+                        "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService" })
 public class ManagedExecutorServiceImpl extends ManagedExecutorImpl implements ExecutorService, ManagedExecutorService, ResourceFactory, ApplicationRecycleComponent, WSManagedExecutorService {
     private static final TraceComponent tc = Tr.register(ManagedExecutorServiceImpl.class);
 
