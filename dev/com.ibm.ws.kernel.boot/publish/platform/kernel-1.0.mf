@@ -78,7 +78,6 @@ Subsystem-Content: README.TXT; location:="README.TXT"; type="file",
  com.ibm.websphere.javaee.jsonp.1.0; version="[1, 1.0.100)"; location:="dev/api/spec/"; type="jar",
  com.ibm.ws.org.glassfish.json.1.0; version="[1,1.0.100)"; type="jar",
  com.ibm.ws.crypto.certificateutil; version="[1,1.0.100)"; type="jar",
- com.ibm.ws.crypto.ltpakeyutil; version="[1,1.0.100)"; type="jar",
- com.ibm.ws.kernel.instrument.serialfilter; version="[1,1.0.100)"
+ com.ibm.ws.crypto.ltpakeyutil; version="[1,1.0.100)"; type="jar"
 Subsystem-Type: osgi.subsystem.feature
 IBM-Feature-Version: 2
