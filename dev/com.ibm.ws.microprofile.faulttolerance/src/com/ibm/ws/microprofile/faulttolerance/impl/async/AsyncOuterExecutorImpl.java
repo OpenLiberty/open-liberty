@@ -167,7 +167,7 @@ public class AsyncOuterExecutorImpl<R> extends SynchronousExecutorImpl<Future<R>
             }
         }
 
-        QueuedFuture<R> queuedFuture = new QueuedFuture<>(context);
+        QueuedFuture<R> queuedFuture = new QueuedFuture<>();
         context.setQueuedFuture(queuedFuture);
 
         return super.execute(callable, executionContext);

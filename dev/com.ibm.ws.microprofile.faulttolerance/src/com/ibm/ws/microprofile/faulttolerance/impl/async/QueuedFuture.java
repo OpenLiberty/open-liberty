@@ -24,14 +24,13 @@ import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceExceptio
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.faulttolerance.impl.ExecutionContextImpl;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
 /**
  *
  */
-public class QueuedFuture<R> implements Future<R>, Callable<Void> {
+public class QueuedFuture<R> implements Future<R>, Runnable {
 
     private static final TraceComponent tc = Tr.register(QueuedFuture.class);
 
@@ -52,27 +51,22 @@ public class QueuedFuture<R> implements Future<R>, Callable<Void> {
      * <p>
      * Don't use it to get the result, use {@link #resultFuture} instead.
      */
-    private Future<Void> taskFuture;
+    private Future<?> taskFuture;
 
     //threadContext is the context retrieved from the originating thread
     private ThreadContextDescriptor threadContext;
-    //executionContext is the overall FT execution context, covering both synchronous halves of the asynchronous execution
-    private final ExecutionContextImpl executionContext;
-
-    public QueuedFuture(ExecutionContextImpl executionContext) {
-        this.executionContext = executionContext;
-    }
 
     /** {@inheritDoc} */
     @Override
     @FFDCIgnore({ ExecutionException.class })
     public boolean cancel(boolean mayInterruptIfRunning) {
         Future<Future<R>> resultFuture = getResultFuture();
-        boolean cancellationResult = resultFuture.cancel(false); // Result will always be a cancellation exception
+        boolean cancellationResult = resultFuture.cancel(false); // Sets the result to be a CancellationException
 
+        // If cancellationResult is true, then either we've just cancelled the task, or it was already cancelled
         if (cancellationResult) {
             getTaskFuture().cancel(mayInterruptIfRunning); // Attempt to cancel the queued/running task
-        } else if (resultFuture.isDone()) {
+        } else if (resultFuture.isDone() && !resultFuture.isCancelled()) {
             try {
                 Future<R> innerFuture = resultFuture.get();
                 cancellationResult = innerFuture.cancel(mayInterruptIfRunning);
@@ -202,12 +196,11 @@ public class QueuedFuture<R> implements Future<R>, Callable<Void> {
     }
 
     /**
-     * @return
-     * @throws Exception
+     * Run the task and store the result in the {@link #resultFuture}
      */
     @Override
     @FFDCIgnore(Throwable.class)
-    public Void call() throws Exception {
+    public void run() {
         Future<R> result = null;
         Throwable thrownException = null;
 
@@ -240,7 +233,6 @@ public class QueuedFuture<R> implements Future<R>, Callable<Void> {
                 resultFuture.completeExceptionally(thrownException);
             }
         }
-        return null;
     }
 
     private CompletableFuture<Future<R>> getResultFuture() {
@@ -253,7 +245,7 @@ public class QueuedFuture<R> implements Future<R>, Callable<Void> {
         return this.resultFuture;
     }
 
-    private Future<Void> getTaskFuture() {
+    private Future<?> getTaskFuture() {
         synchronized (this) {
             if (this.taskFuture == null) {
                 //shouldn't be possible unless the QueuedFuture was created but not started
