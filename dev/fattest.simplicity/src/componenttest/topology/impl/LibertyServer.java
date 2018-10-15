@@ -4351,6 +4351,38 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * This method will search for the provided expression in the log file
+     * on an incremental basis. It starts with reading the
+     * file at the offset where the last mark was set (or the beginning of the file
+     * if no mark has been set) and reads until the end of the file.
+     *
+     * @param regexp pattern to search for
+     * @param logFile RemoteFile for log file to search
+     * @return A list of the lines in the trace files which contain the matching
+     *         pattern. No matches result in an empty list.
+     * @throws Exception
+     */
+    public List<String> findStringsInLogsUsingMark(String regexp, RemoteFile logFile) throws Exception {
+
+        List<String> matches = new ArrayList<String>();
+        LogSearchResult newOffsetAndMatches;
+
+        Long offset = getMarkOffset(logFile.getAbsolutePath());
+        newOffsetAndMatches = LibertyFileManager.findStringsInFile(regexp, logFile, offset);
+        matches.addAll(newOffsetAndMatches.getMatches()); // get the list of matches found
+
+//        List<String> traceLogBaseNames = listDirectoryContents(logsRoot, traceFileNamePrefix);
+//        for (String name : traceLogBaseNames) {
+//
+//            offset = getMarkOffset(logsRoot + name);
+//            newOffsetAndMatches = LibertyFileManager.findStringsInFile(regexp, getTraceFile(name), offset);
+//
+//            matches.addAll(newOffsetAndMatches.getMatches()); // get the list of matches found
+//        }
+        return matches;
+    }
+
+    /**
      * This method will search for the provided expressions in the log and trace files
      * on an incremental basis using the default trace prefix. It starts with reading the file
      * at the offset where the last mark was set (or the beginning of the file
