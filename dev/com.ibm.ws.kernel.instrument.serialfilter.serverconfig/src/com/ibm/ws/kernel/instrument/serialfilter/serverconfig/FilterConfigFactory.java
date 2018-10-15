@@ -127,7 +127,7 @@ public class FilterConfigFactory implements ManagedServiceFactory {
                     if (method != null && !method.isEmpty()) {
                         clazz = clazz + "#" + method;
                     }
-                    if (permission != null & !permission.isEmpty()) {
+                    if (permission != null && !permission.isEmpty()) {
                         value =  value + "," + permission.toUpperCase();
                     }
                     filterConfig.setProperty(clazz, value);
