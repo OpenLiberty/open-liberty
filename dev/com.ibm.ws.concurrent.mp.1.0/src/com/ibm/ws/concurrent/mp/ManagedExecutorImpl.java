@@ -16,6 +16,8 @@ import java.util.function.Supplier;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
 
+import com.ibm.ws.concurrent.rx.ManagedCompletableFuture;
+
 /**
  * Super class of ManagedExecutorServiceImpl to be used with Java 8 and above.
  * This class provides implementation of the MicroProfile Concurrency methods.
@@ -25,22 +27,22 @@ import org.eclipse.microprofile.concurrent.ManagedExecutor;
 public abstract class ManagedExecutorImpl implements ManagedExecutor {
     @Override
     public <U> CompletableFuture<U> completedFuture(U value) {
-        return null; // TODO
+        return ManagedCompletableFuture.completedFuture(value, this);
     }
 
     @Override
     public <U> CompletionStage<U> completedStage(U value) {
-        return null; // TODO
+        return ManagedCompletableFuture.completedStage(value, this);
     }
 
     @Override
     public <U> CompletableFuture<U> failedFuture(Throwable ex) {
-        return null; // TODO
+        return ManagedCompletableFuture.failedFuture(ex, this);
     }
 
     @Override
     public <U> CompletionStage<U> failedStage(Throwable ex) {
-        return null; // TODO
+        return ManagedCompletableFuture.failedStage(ex, this);
     }
 
     @Override
@@ -50,11 +52,11 @@ public abstract class ManagedExecutorImpl implements ManagedExecutor {
 
     @Override
     public CompletableFuture<Void> runAsync(Runnable runnable) {
-        return null; // TODO ManagedCompletableFuture.runAsync(runnable, this);
+        return ManagedCompletableFuture.runAsync(runnable, this);
     }
 
     @Override
     public <U> CompletableFuture<U> supplyAsync(Supplier<U> supplier) {
-        return null; // TODO ManagedCompletableFuture.supplyAsync(supplier, this);
+        return ManagedCompletableFuture.supplyAsync(supplier, this);
     }
 }
