@@ -10,12 +10,17 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.test;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -25,6 +30,7 @@ import java.util.concurrent.TimeoutException;
 import org.eclipse.microprofile.faulttolerance.ExecutionContext;
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.faulttolerance.impl.policy.TimeoutPolicyImpl;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.microprofile.faulttolerance.spi.ExecutorBuilder;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProvider;
@@ -87,6 +93,43 @@ public class AsyncTest extends AbstractFTTest {
         assertTrue("Future not cancelled", cancelled);
         assertTrue("Future.isDone() returned false", future.isDone());
         assertTrue("Future.isCancelled() returned false", future.isCancelled());
+    }
+
+    @Test
+    public void testAsyncTimeout() throws InterruptedException {
+        TimeoutPolicyImpl timeout = new TimeoutPolicyImpl();
+        timeout.setTimeout(Duration.ofMillis(500));
+
+        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        builder.setTimeoutPolicy(timeout);
+        Executor<Future<String>> executor = builder.buildAsync();
+
+        String id = "testAsyncTimeout";
+        ExecutionContext context = executor.newExecutionContext(id, null);
+
+        Callable<Future<String>> nonInterruptableTask = () -> {
+            long startTime = System.nanoTime();
+            while (TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime) < 2000) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                } //Ignore interruption
+            }
+            return CompletableFuture.completedFuture("OK");
+        };
+
+        Future<String> future = executor.execute(nonInterruptableTask, context);
+        assertFalse(future.isDone());
+
+        Thread.sleep(700); // Sleep until Timeout should have fired
+
+        assertTrue("Future did not complete quickly enough", future.isDone());
+        try {
+            future.get();
+            fail("Future did not throw exception");
+        } catch (ExecutionException e) {
+            assertThat("Exception thrown by future", e.getCause(), instanceOf(org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException.class));
+        }
     }
 
 }
