@@ -19,6 +19,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import com.ibm.websphere.simplicity.log.Log;
 import componenttest.common.apiservices.cmdline.LocalProvider;
@@ -447,6 +449,26 @@ public class RemoteFile {
         return RemoteFile.copy(srcFile, this, false, true, binary);
     }
 
+
+    /**
+     * Uses the {@link Files} class for the deletion operation because
+     * it throws informational exception on operation failure. Outputs 
+     * exception message to liberty output for debugging.
+     * 
+     * @param path
+     *              The {@link File} object that represents a file to be deleted
+     * @return true if deletetion was successful, false if failure
+     */
+    private boolean deleteExecutionWrapper(File path) {
+        try{
+            java.nio.file.Files.delete(path.toPath());
+            return true;
+        }catch(Exception e){
+            Log.info(c, "deleteExecutionWrapper", "Delete Operation for [" + path + "] could not be completed.\n" + e.getMessage());
+            return false;
+        }
+    }
+
     /**
      * Deletes the file or directory denoted by this abstract pathname.
      * 
@@ -458,7 +480,7 @@ public class RemoteFile {
             if (localFile.isDirectory()) {
                 return this.deleteLocalDirectory(localFile);
             } else
-                return this.localFile.delete();
+                return this.deleteExecutionWrapper(localFile);
         } else
             return LocalProvider.delete(this);
     }
@@ -477,14 +499,14 @@ public class RemoteFile {
                 if (files[i].isDirectory()) {
                     deleteLocalDirectory(files[i]);
                 } else {
-                    boolean b = files[i].delete();
+                    boolean b = this.deleteExecutionWrapper(files[i]);
                     if (!b) {
                         Log.info(c, "deleteLocalDirectory", "couldn't delete localfile = " + files[i]);
                     }
                 }
             }
         }
-        return (path.delete());
+        return (this.deleteExecutionWrapper(path));
     }
 
     /**
