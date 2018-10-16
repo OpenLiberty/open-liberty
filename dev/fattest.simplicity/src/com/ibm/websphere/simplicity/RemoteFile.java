@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -620,6 +620,8 @@ public class RemoteFile {
             return LocalProvider.mkdir(this);
     }
 
+    //
+
     /**
      * Creates the directory named by this RemoteFile, including any necessary
      * but nonexistent parent directories. Note that if this operation fails it
@@ -635,12 +637,98 @@ public class RemoteFile {
             return LocalProvider.mkdirs(this);
     }
 
-    public boolean rename(RemoteFile newFile) throws Exception {
-        if (host.isLocal())
-            return this.localFile.renameTo(new File(newFile.getAbsolutePath()));
-        else
-            return LocalProvider.rename(this, newFile);
+    //
+
+    /**
+     * Sleep a specified interval, measured in nano-seconds.
+     *
+     * @param ns The interval, in nano-seconds.
+     *
+     * @throws Exception Thrown if an error occurs.  This should only
+     *     ever be {@link InterruptedException}.
+     */
+    public static void sleep(long ns) throws Exception {
+        Thread.currentThread().sleep( (long) (ns / 1000), (int) (ns % 1000) );
+        // throws InterruptedException;
     }
+
+    //
+
+    /**
+     * Attempt to rename this file.  The file may be non-local.
+     *
+     * @param newFile The target file.
+     *
+     * @throws Exception Thrown if the rename failed.
+     */
+    public boolean rename(RemoteFile newFile) throws Exception {
+        if ( host.isLocal() ) {
+            return this.localFile.renameTo(new File(newFile.getAbsolutePath()));
+        } else {
+            return LocalProvider.rename(this, newFile);
+        }
+    }
+
+    /**
+     * The standard retry interval for rename operations.
+     * This is based on the artifact file system minimum
+     * retry interval of 200 nano-seconds, per
+     * <code>
+     *   open-liberty/dev/com.ibm.ws.artifact.zip/src/
+     *   com/ibm/ws/artifact/zip/cache/
+     *   ZipCachingProperties.java
+     * </code>
+     *
+     * The default largest pending close time is specified
+     * by property <code>zip.reaper.slow.pend.max</code>.
+     */
+    public static final long STANDARD_RENAME_INTERVAL = 2 * 200 * 1000 * 1000; // 2 * 200 nano-seconds.
+
+    /**
+     * Attempt to rename a file including a retry interval.  Use the standard
+     * retry interval, {@link #STANDARD_RENAME_INTERVAL}.
+     *
+     * If the initial rename fails, sleep for the specified interval, then try again.
+     *
+     * This is provided as a guard against latent holds on archive files, which
+     * occur because of zip file caching.
+     *
+     * See also {@link #renameWithRetry(RemoteFile, long)}, {@link #rename(RemoteFile)},
+     * and {@link #sleep(long)}.
+     *
+     * @param newFile The new file.
+     *
+     * @return True or false telling if the retry was successful.
+     */
+    public boolean renameWithRetry(RemoteFile newFile) throws Exception {
+        return renameWithRetry(newFile, STANDARD_RENAME_INTERVAL);
+    }
+
+    /**
+     * Attempt to rename a file including a retry interval.  A retry will be
+     * attempted even when the source file is non-local, since the lock can
+     * be on either the source or the target file, and the target file is
+     * always local.
+     *
+     * This is provided as a guard against latent holds on archive files, which
+     * occur because of zip file caching.
+     *
+     * @param newFile The new file.
+     * @param retryNs The retry interval, in nano-seconds.
+     *
+     * @return True or false telling if the retry was successful.
+     */
+    public boolean renameWithRetry(RemoteFile newFile, long retryNs) throws Exception {
+        boolean firstResult = rename(newFile); // throws Exception
+        if ( firstResult ) {
+            return firstResult;
+        }
+        sleep(retryNs); // throws Exception
+        boolean secondResult = rename(newFile); // throws Exception
+        return secondResult;
+    }
+
+    //
 
     /**
      * Returns the name of the file or directory denoted by this RemoteFile
