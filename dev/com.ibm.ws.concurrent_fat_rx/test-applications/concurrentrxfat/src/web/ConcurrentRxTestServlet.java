@@ -3249,7 +3249,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
         String result;
         assertNotNull(result = cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertTrue(result, result.startsWith("100,"));
-        assertTrue(result, result.indexOf("ManagedExecutor") > 0);
+        assertTrue(result, result.indexOf("ManagedExecutorImpl@") > 0);
     }
 
     /**

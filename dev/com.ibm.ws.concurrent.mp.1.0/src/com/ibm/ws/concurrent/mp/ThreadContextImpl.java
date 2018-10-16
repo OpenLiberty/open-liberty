@@ -42,7 +42,7 @@ import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
- * Super class of ContextServiceImpl to be used with Java 8 and above.
+ * Subclass of ContextServiceImpl to be used with Java 8 and above.
  * This class provides implementation of the MicroProfile Concurrency methods.
  * These methods can be collapsed into ContextServiceImpl once there is
  * no longer a need for OpenLiberty to support Java 7.

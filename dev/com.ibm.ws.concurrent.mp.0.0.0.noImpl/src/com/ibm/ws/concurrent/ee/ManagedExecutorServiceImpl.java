@@ -43,63 +43,63 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 @Trivial
 public class ManagedExecutorServiceImpl extends AbstractManagedExecutorService {
     @Activate
-    @Trivial
+    @Override
     protected void activate(ComponentContext context, Map<String, Object> properties) {
         super.activate(context, properties);
     }
 
     @Deactivate
-    @Trivial
+    @Override
     protected void deactivate(ComponentContext context) {
         super.deactivate(context);
     }
 
     @Modified
-    @Trivial
+    @Override
     protected void modified(final ComponentContext context, Map<String, Object> properties) {
         super.modified(context, properties);
     }
 
     @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
-    @Trivial
+    @Override
     protected void setConcurrencyPolicy(ConcurrencyPolicy svc) {
         super.setConcurrencyPolicy(svc);
     }
 
     @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
-    @Trivial
+    @Override
     protected void setContextService(ServiceReference<WSContextService> ref) {
         super.setContextService(ref);
     }
 
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(id=unbound)")
-    @Trivial
+    @Override
     protected void setLongRunningPolicy(ConcurrencyPolicy svc) {
         super.setLongRunningPolicy(svc);
     }
 
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(component.name=com.ibm.ws.transaction.context.provider)")
-    @Trivial
+    @Override
     protected void setTransactionContextProvider(ServiceReference<ThreadContextProvider> ref) {
         super.setTransactionContextProvider(ref);
     }
 
-    @Trivial
+    @Override
     protected void unsetConcurrencyPolicy(ConcurrencyPolicy svc) {
         super.unsetConcurrencyPolicy(svc);
     }
 
-    @Trivial
+    @Override
     protected void unsetContextService(ServiceReference<WSContextService> ref) {
         super.unsetContextService(ref);
     }
 
-    @Trivial
+    @Override
     protected void unsetLongRunningPolicy(ConcurrencyPolicy svc) {
         super.unsetLongRunningPolicy(svc);
     }
 
-    @Trivial
+    @Override
     protected void unsetTransactionContextProvider(ServiceReference<ThreadContextProvider> ref) {
         super.unsetTransactionContextProvider(ref);
     }

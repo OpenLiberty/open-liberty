@@ -52,38 +52,34 @@ import com.ibm.wsspi.threadcontext.WSContextService;
                         "creates.objectClass=java.util.concurrent.ScheduledExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedScheduledExecutorService" })
+@Trivial
 public class ManagedScheduledExecutorServiceImpl extends AbstractManagedScheduledExecutorService {
     @Activate
     @Override
-    @Trivial
     protected void activate(ComponentContext context, Map<String, Object> properties) {
         super.activate(context, properties);
     }
 
     @Deactivate
     @Override
-    @Trivial
     protected void deactivate(ComponentContext context) {
         super.deactivate(context);
     }
 
     @Modified
     @Override
-    @Trivial
     protected void modified(ComponentContext context, Map<String, Object> properties) {
         super.modified(context, properties);
     }
 
     @Override
     @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
-    @Trivial
     protected void setConcurrencyPolicy(ConcurrencyPolicy svc) {
         super.setConcurrencyPolicy(svc);
     }
 
     @Override
     @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
-    @Trivial
     protected void setContextService(ServiceReference<WSContextService> ref) {
         super.setContextService(ref);
     }
@@ -97,44 +93,37 @@ public class ManagedScheduledExecutorServiceImpl extends AbstractManagedSchedule
 
     @Override
     @Reference(target = "(deferrable=false)")
-    @Trivial
     protected void setScheduledExecutor(ScheduledExecutorService svc) {
         super.setScheduledExecutor(svc);
     }
 
     @Override
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(component.name=com.ibm.ws.transaction.context.provider)")
-    @Trivial
     protected void setTransactionContextProvider(ServiceReference<ThreadContextProvider> ref) {
         super.setTransactionContextProvider(ref);
     }
 
     @Override
-    @Trivial
     protected void unsetConcurrencyPolicy(ConcurrencyPolicy svc) {
         super.unsetConcurrencyPolicy(svc);
     }
 
     @Override
-    @Trivial
     protected void unsetContextService(ServiceReference<WSContextService> ref) {
         super.unsetContextService(ref);
     }
 
     @Override
-    @Trivial
     protected void unsetLongRunningPolicy(ConcurrencyPolicy svc) {
         super.unsetLongRunningPolicy(svc);
     }
 
     @Override
-    @Trivial
     protected void unsetScheduledExecutor(ScheduledExecutorService svc) {
         super.unsetScheduledExecutor(svc);
     }
 
     @Override
-    @Trivial
     protected void unsetTransactionContextProvider(ServiceReference<ThreadContextProvider> ref) {
         super.unsetTransactionContextProvider(ref);
     }

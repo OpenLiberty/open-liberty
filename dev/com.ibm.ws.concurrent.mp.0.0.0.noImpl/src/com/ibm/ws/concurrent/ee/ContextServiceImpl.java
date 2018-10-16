@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.ee;
 
-import java.util.Dictionary;
-
 import javax.enterprise.concurrent.ContextService;
 
 import org.osgi.framework.ServiceReference;
@@ -28,7 +26,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.service.AbstractContextService;
-import com.ibm.ws.context.service.serializable.ThreadContextManager;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.threadcontext.WSContextService;
@@ -48,21 +45,18 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 public class ContextServiceImpl extends AbstractContextService {
     @Activate
     @Override
-    @Trivial
     protected void activate(ComponentContext context) {
         super.activate(context);
     }
 
     @Deactivate
     @Override
-    @Trivial
     protected void deactivate(ComponentContext context) {
         super.deactivate(context);
     }
 
     @Modified
     @Override
-    @Trivial
     protected void modified(ComponentContext context) {
         super.modified(context);
     }
@@ -74,7 +68,6 @@ public class ContextServiceImpl extends AbstractContextService {
                policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY,
                target = "(id=unbound)")
-    @Trivial
     protected void setBaseInstance(ServiceReference<ContextService> ref) {
         super.setBaseInstance(ref);
     }
@@ -85,19 +78,16 @@ public class ContextServiceImpl extends AbstractContextService {
                cardinality = ReferenceCardinality.MANDATORY,
                policy = ReferencePolicy.STATIC,
                target = "(component.name=com.ibm.ws.context.manager)")
-    @Trivial
     protected void setThreadContextManager(WSContextService svc) {
         super.setThreadContextManager(svc);
     }
 
     @Override
-    @Trivial
     protected void unsetBaseInstance(ServiceReference<ContextService> ref) {
         super.unsetBaseInstance(ref);
     }
 
     @Override
-    @Trivial
     protected void unsetThreadContextManager(WSContextService svc) {
         super.unsetThreadContextManager(svc);
     }
