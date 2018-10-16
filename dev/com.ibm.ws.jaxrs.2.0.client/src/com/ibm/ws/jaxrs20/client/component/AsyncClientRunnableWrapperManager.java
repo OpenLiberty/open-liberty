@@ -22,9 +22,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ws.jaxrs20.client.AsyncClientRunnableWrapper;
 
-/**
- *
- */
 @Component(name = "com.ibm.ws.jaxrs20.client.component.AsyncClientRunnableWrapperManager",
            immediate = true,
            property = { "service.vendor=IBM" })

@@ -324,6 +324,7 @@ public class AsyncHTTPConduitFactory implements HTTPConduitFactory {
 
         Registry<SchemeIOSessionStrategy> ioSessionFactoryRegistry = RegistryBuilder.<SchemeIOSessionStrategy>create()
                     .register("http", NoopIOSessionStrategy.INSTANCE)
+                    // Liberty change - doPriv
                     .register("https", AccessController.doPrivileged(new PrivilegedAction<SSLIOSessionStrategy>(){
 
                         @Override
@@ -383,6 +384,7 @@ public class AsyncHTTPConduitFactory implements HTTPConduitFactory {
 
         adaptClientBuilder(httpAsyncClientBuilder);
 
+        // Liberty change - doPriv
         client = AccessController.doPrivileged(new PrivilegedAction<CloseableHttpAsyncClient>(){
 
             @Override
