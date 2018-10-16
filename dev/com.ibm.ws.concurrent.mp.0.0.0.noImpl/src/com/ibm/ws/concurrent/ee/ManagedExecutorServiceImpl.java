@@ -8,17 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.concurrent.mp;
+package com.ibm.ws.concurrent.ee;
 
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
-import java.util.function.Supplier;
 
 import javax.enterprise.concurrent.ManagedExecutorService;
 
-import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -32,7 +28,6 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
-import com.ibm.ws.concurrent.rx.ManagedCompletableFuture;
 import com.ibm.ws.concurrent.service.AbstractManagedExecutorService;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
@@ -40,33 +35,17 @@ import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
-/**
- * Super class of ManagedExecutorServiceImpl to be used with Java 8 and above.
- * This class provides implementation of the MicroProfile Concurrency methods.
- * These methods can be collapsed into ManagedExecutorServiceImpl once there is
- * no longer a need for OpenLiberty to support Java 7.
- */
 @Component(configurationPid = "com.ibm.ws.concurrent.managedExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { ExecutorService.class, ManagedExecutor.class, ManagedExecutorService.class, ResourceFactory.class, ApplicationRecycleComponent.class },
+           service = { ExecutorService.class, ManagedExecutorService.class, ResourceFactory.class, ApplicationRecycleComponent.class },
            reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class),
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
-                        "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
-                        "creates.objectClass=org.eclipse.microprofile.concurrent.ManagedExecutor" })
-public class ManagedExecutorImpl extends AbstractManagedExecutorService implements ManagedExecutor {
+                        "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService" })
+@Trivial
+public class ManagedExecutorServiceImpl extends AbstractManagedExecutorService {
     @Activate
     @Trivial
     protected void activate(ComponentContext context, Map<String, Object> properties) {
         super.activate(context, properties);
-    }
-
-    @Override
-    public <U> CompletableFuture<U> completedFuture(U value) {
-        return ManagedCompletableFuture.completedFuture(value, this);
-    }
-
-    @Override
-    public <U> CompletionStage<U> completedStage(U value) {
-        return ManagedCompletableFuture.completedStage(value, this);
     }
 
     @Deactivate
@@ -75,30 +54,10 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
         super.deactivate(context);
     }
 
-    @Override
-    public <U> CompletableFuture<U> failedFuture(Throwable ex) {
-        return ManagedCompletableFuture.failedFuture(ex, this);
-    }
-
-    @Override
-    public <U> CompletionStage<U> failedStage(Throwable ex) {
-        return ManagedCompletableFuture.failedStage(ex, this);
-    }
-
     @Modified
     @Trivial
     protected void modified(final ComponentContext context, Map<String, Object> properties) {
         super.modified(context, properties);
-    }
-
-    @Override
-    public <U> CompletableFuture<U> newIncompleteFuture() {
-        return null; // TODO
-    }
-
-    @Override
-    public CompletableFuture<Void> runAsync(Runnable runnable) {
-        return ManagedCompletableFuture.runAsync(runnable, this);
     }
 
     @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
@@ -123,11 +82,6 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
     @Trivial
     protected void setTransactionContextProvider(ServiceReference<ThreadContextProvider> ref) {
         super.setTransactionContextProvider(ref);
-    }
-
-    @Override
-    public <U> CompletableFuture<U> supplyAsync(Supplier<U> supplier) {
-        return ManagedCompletableFuture.supplyAsync(supplier, this);
     }
 
     @Trivial

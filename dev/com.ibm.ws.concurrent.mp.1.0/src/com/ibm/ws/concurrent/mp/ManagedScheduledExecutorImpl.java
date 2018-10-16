@@ -14,9 +14,11 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Supplier;
 
 import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.osgi.framework.ServiceReference;
@@ -33,7 +35,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
 import com.ibm.ws.concurrent.rx.ManagedCompletableFuture;
-import com.ibm.ws.concurrent.service.AbstractManagedExecutorService;
+import com.ibm.ws.concurrent.service.AbstractManagedScheduledExecutorService;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
 import com.ibm.wsspi.resource.ResourceFactory;
@@ -41,19 +43,23 @@ import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
- * Super class of ManagedExecutorServiceImpl to be used with Java 8 and above.
+ * Super class of ManagedScheduledExecutorServiceImpl to be used with Java 8 and above.
  * This class provides implementation of the MicroProfile Concurrency methods.
  * These methods can be collapsed into ManagedExecutorServiceImpl once there is
  * no longer a need for OpenLiberty to support Java 7.
  */
-@Component(configurationPid = "com.ibm.ws.concurrent.managedExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { ExecutorService.class, ManagedExecutor.class, ManagedExecutorService.class, ResourceFactory.class, ApplicationRecycleComponent.class },
+@Component(configurationPid = "com.ibm.ws.concurrent.managedScheduledExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
+           service = { ExecutorService.class, ManagedExecutor.class, ManagedExecutorService.class, ResourceFactory.class,
+                       ApplicationRecycleComponent.class, ScheduledExecutorService.class, ManagedScheduledExecutorService.class },
            reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class),
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
+                        "creates.objectClass=java.util.concurrent.ScheduledExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
+                        "creates.objectClass=javax.enterprise.concurrent.ManagedScheduledExecutorService",
                         "creates.objectClass=org.eclipse.microprofile.concurrent.ManagedExecutor" })
-public class ManagedExecutorImpl extends AbstractManagedExecutorService implements ManagedExecutor {
+public class ManagedScheduledExecutorImpl extends AbstractManagedScheduledExecutorService implements ManagedExecutor {
     @Activate
+    @Override
     @Trivial
     protected void activate(ComponentContext context, Map<String, Object> properties) {
         super.activate(context, properties);
@@ -70,6 +76,7 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
     }
 
     @Deactivate
+    @Override
     @Trivial
     protected void deactivate(ComponentContext context) {
         super.deactivate(context);
@@ -86,8 +93,9 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
     }
 
     @Modified
+    @Override
     @Trivial
-    protected void modified(final ComponentContext context, Map<String, Object> properties) {
+    protected void modified(ComponentContext context, Map<String, Object> properties) {
         super.modified(context, properties);
     }
 
@@ -101,24 +109,35 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
         return ManagedCompletableFuture.runAsync(runnable, this);
     }
 
+    @Override
     @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
     @Trivial
     protected void setConcurrencyPolicy(ConcurrencyPolicy svc) {
         super.setConcurrencyPolicy(svc);
     }
 
+    @Override
     @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
     @Trivial
     protected void setContextService(ServiceReference<WSContextService> ref) {
         super.setContextService(ref);
     }
 
+    @Override
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(id=unbound)")
     @Trivial
     protected void setLongRunningPolicy(ConcurrencyPolicy svc) {
         super.setLongRunningPolicy(svc);
     }
 
+    @Override
+    @Reference(target = "(deferrable=false)")
+    @Trivial
+    protected void setScheduledExecutor(ScheduledExecutorService svc) {
+        super.setScheduledExecutor(svc);
+    }
+
+    @Override
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(component.name=com.ibm.ws.transaction.context.provider)")
     @Trivial
     protected void setTransactionContextProvider(ServiceReference<ThreadContextProvider> ref) {
@@ -130,21 +149,31 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
         return ManagedCompletableFuture.supplyAsync(supplier, this);
     }
 
+    @Override
     @Trivial
     protected void unsetConcurrencyPolicy(ConcurrencyPolicy svc) {
         super.unsetConcurrencyPolicy(svc);
     }
 
+    @Override
     @Trivial
     protected void unsetContextService(ServiceReference<WSContextService> ref) {
         super.unsetContextService(ref);
     }
 
+    @Override
     @Trivial
     protected void unsetLongRunningPolicy(ConcurrencyPolicy svc) {
         super.unsetLongRunningPolicy(svc);
     }
 
+    @Override
+    @Trivial
+    protected void unsetScheduledExecutor(ScheduledExecutorService svc) {
+        super.unsetScheduledExecutor(svc);
+    }
+
+    @Override
     @Trivial
     protected void unsetTransactionContextProvider(ServiceReference<ThreadContextProvider> ref) {
         super.unsetTransactionContextProvider(ref);

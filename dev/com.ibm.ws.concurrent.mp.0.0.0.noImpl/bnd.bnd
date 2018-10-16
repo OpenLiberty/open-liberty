@@ -17,11 +17,27 @@ Bundle-Description: Placeholder that indicates the lack of a MicroProfile Concur
 
 WS-TraceGroup: concurrent
 
-Export-Package:\
-  com.ibm.ws.concurrent.mp
-    
-instrument.classesExcludes: com/ibm/ws/concurrent/mp/resources/*.class
+Private-Package:\
+  com.ibm.ws.concurrent.ee.*
+
+instrument.classesExcludes: com/ibm/ws/concurrent/ee/resources/*.class
+
+-dsannotations: \
+  com.ibm.ws.concurrent.ee.ContextServiceImpl,\
+  com.ibm.ws.concurrent.ee.ManagedExecutorServiceImpl,\
+  com.ibm.ws.concurrent.ee.ManagedScheduledExecutorServiceImpl
 
 -buildpath: \
   com.ibm.websphere.appserver.spi.logging,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest
+  com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+  com.ibm.websphere.org.osgi.core,\
+  com.ibm.websphere.org.osgi.service.component,\
+  com.ibm.ws.app.manager.lifecycle;version=latest,\
+  com.ibm.ws.bnd.annotations;version=latest, \
+  com.ibm.ws.concurrency.policy;version=latest,\
+  com.ibm.ws.concurrent;version=latest,\
+  com.ibm.ws.context;version=latest,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.resource;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations,\
+  com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest
