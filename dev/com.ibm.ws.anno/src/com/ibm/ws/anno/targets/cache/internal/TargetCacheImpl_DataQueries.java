@@ -15,7 +15,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.logging.Logger;
 
+import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.ws.anno.util.internal.UtilImpl_FileUtils;
 import com.ibm.wsspi.anno.targets.cache.TargetCache_ExternalConstants;
 
@@ -27,6 +29,7 @@ import com.ibm.wsspi.anno.targets.cache.TargetCache_ExternalConstants;
  */
 public class TargetCacheImpl_DataQueries implements TargetCache_ExternalConstants {
     private static final String CLASS_NAME = TargetCacheImpl_DataQueries.class.getSimpleName();
+    protected static final Logger logger = AnnotationServiceImpl_Logging.ANNO_LOGGER;
 
     //
 
@@ -98,11 +101,19 @@ public class TargetCacheImpl_DataQueries implements TargetCache_ExternalConstant
     private boolean isSetWriter;
     private TargetCacheImpl_Writer writer;
 
-    private TargetCacheImpl_Writer getWriter() {
+    // Synchronized: Only create the query file (and write the query file header)
+    // at most once.
+    private synchronized TargetCacheImpl_Writer getWriter() {
         if ( !isSetWriter ) {
             isSetWriter = true;
 
             boolean isNew = !UtilImpl_FileUtils.exists(queriesFile);
+
+            if ( isNew ) {
+                if ( !UtilImpl_FileUtils.ensureDir(logger, modFile) ) {
+                    return null; // Logging in 'ensureDir'.
+                }
+            }
 
             FileOutputStream outputStream;
             try {
