@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="com.ibm.ws.ssl_fat_pkcs12" default="buildandrun" basedir=".">
+	<import file="../ant_build/public_imports/fat_imports.xml" />
+
+	<property name="test.servlets.dir" value="${basedir}/../com.ibm.ws.webcontainer.security_test.servlets/publish/files/" />
+	<property name="test.servlets.client.dir" value="${basedir}/../com.ibm.ws.webcontainer.security_test.servlets/build/lib/" />
+	<property name="test.servlets.client.classes.dir" value="${basedir}/../com.ibm.ws.webcontainer.security_test.servlets/build/fat-applications/" />
+
+	<!-- Proper test of new zip requires more care in cleanup so we know what's actually being generated. -->
+	<target name="clean" depends="clean.clean" description="clean the current project properly (not just build)" >
+	    <delete dir="${build.dir}/../autoFVT" includeemptydirs="true"/>
+	    <delete dir="${build.dir}/../instances" includeemptydirs="true"/>
+	</target>
+
+	<target name="addRequiredFiles">
+		<!--Copy apacheDS installables for this test bucket -->
+		<!--
+			<copy todir="${required.files.dir}/../apacheds-2.0.0-M15">
+	    		<fileset dir="../apache_directory_server/apacheds-2.0.0-M15"/>
+			</copy>
+		-->
+
+		<!-- Explicit target-directory mapping is required. And it has to explicitly be relative to where we want it in autoFVT,
+			*not* relative to required.lib.dir or base.dir ... which suggests we probably want new properties for the purpose.
+			Look at build-fat-bucket.xml/buildAutoFVT for the mappings from old properties to new locations.
+
+			(In this case, apacheds-2.0.0-M15 is supposed to be expanded as a sib of autoFVT, so its wrapper directory needs to be
+			appended.)
+
+			It ought to be possible to use Ant macros to make this much more legible and less fiddly.
+			Unfortunately, Ant's definition of "macro" is that it expands only into a Task. Tempting to submit a <resourcemacro>.
+			If someone can make that work, please let me know!
+		-->
+		<union id="required.files.resources">
+			<mappedresources>
+				<globmapper from="*" to="autoFVT/apacheds-2.0.0-M15/*"/>
+				<fileset dir="../apache_directory_server/apacheds-2.0.0-M15"/>
+			</mappedresources>
+		</union>
+	    <copy todir="${required.lib.dir}" flatten="true">
+	      <fileset dir="${basedir}/../build.image/wlp">
+	        <include name="clients/restConnector.jar"/>
+	      </fileset>
+	    </copy>
+	</target>
+
+
+	<target name="addRequiredFiles">
+		<copy todir="${required.lib.dir}">
+			<fileset dir="../build.sharedResources/lib/httpclient/4.1.2" includes="commons-codec-1.4.jar"/>
+			<fileset dir="../build.sharedResources/lib/httpclient/4.1.2" includes="commons-logging-1.1.1.jar"/>
+			<fileset dir="../build.sharedResources/lib/httpclient/4.1.2" includes="httpclient-4.1.2.jar"/>
+			<fileset dir="../build.sharedResources/lib/httpclient/4.1.2" includes="httpcore-4.1.2.jar"/>
+			<fileset dir="../build.image/wlp/dev/api/spec" includes="com.ibm.websphere.javaee.servlet.3.0_*.jar"/>
+			<fileset dir="${test.servlets.client.dir}" includes="com.ibm.ws.webcontainer.security.test.servlets.client.jar"/>
+		</copy>
+	</target>
+
+	
+</project>
