@@ -10,10 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.instrument.serialfilter.serverconfig;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Dictionary;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -59,6 +61,8 @@ public class FilterConfigFactory implements ManagedServiceFactory {
 
     public static final String VALUE_PERMISSION_ALLOW = "Allow";
     public static final String VALUE_PERMISSION_DENY = "Deny";
+
+    private static final String MESSAGE_BUNDLE = "com.ibm.ws.kernel.instrument.serialfilter.serverconfig.FilterConfigMessages";
 
     private BundleContext bContext = null;
     private volatile ComponentContext cc = null;
@@ -145,8 +149,7 @@ public class FilterConfigFactory implements ManagedServiceFactory {
                     } else {
                         propName = CONFIG_MODE;
                     }
-                    // todo: nls
-                    String reason = "There is no properties.";
+                    String reason  = MessageFormat.format(ResourceBundle.getBundle(MESSAGE_BUNDLE).getString("ERROR_NO_PROPERTY"), propName);
                     throw new ConfigurationException(propName, reason);
                 }
             }
