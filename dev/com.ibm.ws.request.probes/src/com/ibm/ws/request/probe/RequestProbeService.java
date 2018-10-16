@@ -114,6 +114,7 @@ public class RequestProbeService {
 		requestIDExtension.remove(); // Removing the extension from threadlocal
 		probeExtensions = Collections.unmodifiableList(new ArrayList<ProbeExtension>());
 		activeRequests.clear();
+		maxActiveRequests.clear();
 	}
 
 	/**
