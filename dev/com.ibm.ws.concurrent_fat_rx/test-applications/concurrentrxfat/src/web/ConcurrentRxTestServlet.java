@@ -21,6 +21,7 @@ import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -54,6 +55,7 @@ import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
@@ -82,6 +84,25 @@ public class ConcurrentRxTestServlet extends FATServlet {
         AT_LEAST_JAVA_9 = atLeastJava9;
     }
 
+    // Java 9+ methods
+    private BiFunction<CompletableFuture<?>, Supplier<?>, CompletableFuture<?>> completeAsync;
+    private TriFunction<CompletableFuture<?>, Supplier<?>, Executor, CompletableFuture<?>> completeAsync_;
+    private QuadFunction<CompletableFuture<?>, Object, Long, TimeUnit, CompletableFuture<?>> completeOnTimeout;
+    private BiFunction<Long, TimeUnit, Executor> CompletableFuture_delayedExecutor; // invokes static method
+    private TriFunction<Long, TimeUnit, Executor, Executor> CompletableFuture_delayedExecutor_; // invokes static method
+    private Function<CompletableFuture<?>, CompletionStage<?>> minimalCompletionStage;
+    private TriFunction<CompletableFuture<?>, Long, TimeUnit, CompletableFuture<?>> orTimeout;
+
+    @FunctionalInterface
+    interface TriFunction<T, U, V, R> {
+        R apply(T t, U u, V v);
+    }
+
+    @FunctionalInterface
+    interface QuadFunction<T, U, V, W, R> {
+        R apply(T t, U u, V v, W w);
+    }
+
     @Resource
     private ThreadContext defaultThreadContext;
 
@@ -102,14 +123,88 @@ public class ConcurrentRxTestServlet extends FATServlet {
     // Executor that can be used when tests don't want to tie up threads from the Liberty global thread pool to perform concurrent test logic
     private ExecutorService testThreads;
 
+    private RuntimeException convertToRuntimeException(Exception x) {
+        return x instanceof RuntimeException ? (RuntimeException) x //
+                        : x instanceof InvocationTargetException && x.getCause() instanceof RuntimeException ? (RuntimeException) x.getCause() //
+                                        : new RuntimeException(x);
+
+    }
+
     @Override
     public void destroy() {
         testThreads.shutdownNow();
     }
 
     @Override
-    public void init(ServletConfig config) {
+    public void init(ServletConfig config) throws ServletException {
         testThreads = Executors.newFixedThreadPool(20);
+
+        Class cl = defaultManagedExecutor.completedFuture(0).getClass();
+        try {
+            completeAsync = (cf, supplier) -> {
+                try {
+                    return (CompletableFuture<?>) cl.getMethod("completeAsync", Supplier.class).invoke(cf, supplier);
+                } catch (Exception x) {
+                    throw convertToRuntimeException(x);
+                }
+            };
+
+            completeAsync_ = (cf, supplier, executor) -> {
+                try {
+                    return (CompletableFuture<?>) cl.getMethod("completeAsync", Supplier.class, Executor.class)
+                                    .invoke(cf, supplier, executor);
+                } catch (Exception x) {
+                    throw convertToRuntimeException(x);
+                }
+            };
+
+            completeOnTimeout = (cf, value, time, unit) -> {
+                try {
+                    return (CompletableFuture<?>) cl.getMethod("completeOnTimeout", Object.class, long.class, TimeUnit.class)
+                                    .invoke(cf, value, time, unit);
+                } catch (Exception x) {
+                    throw convertToRuntimeException(x);
+                }
+            };
+
+            CompletableFuture_delayedExecutor = (time, unit) -> {
+                try {
+                    return (Executor) cl.getMethod("delayedExecutor", long.class, TimeUnit.class).invoke(null, time, unit);
+                } catch (Exception x) {
+                    throw convertToRuntimeException(x);
+                }
+            };
+
+            CompletableFuture_delayedExecutor_ = (time, unit, executor) -> {
+                try {
+                    return (Executor) cl.getMethod("delayedExecutor", long.class, TimeUnit.class, Executor.class)
+                                    .invoke(null, time, unit, executor);
+                } catch (Exception x) {
+                    throw convertToRuntimeException(x);
+                }
+            };
+
+            minimalCompletionStage = cf -> {
+                try {
+                    return (CompletableFuture<?>) cl.getMethod("minimalCompletionStage").invoke(cf);
+                } catch (Exception x) {
+                    throw convertToRuntimeException(x);
+                }
+            };
+
+            orTimeout = (cf, time, unit) -> {
+                try {
+                    return (CompletableFuture<?>) cl.getMethod("orTimeout", long.class, TimeUnit.class)
+                                    .invoke(cf, time, unit);
+                } catch (Exception x) {
+                    throw convertToRuntimeException(x);
+                }
+            };
+        } catch (RuntimeException x) {
+            throw x;
+        } catch (Exception x) {
+            throw new ServletException(x);
+        }
     }
 
     /**
@@ -1012,7 +1107,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
         CompletableFuture<Integer> cf1;
         try {
-            cf1 = ((ManagedCompletableFuture<Integer>) cf0).completeAsync(() -> 900); // TODO find better way to invoke Java 11 methods
+            cf1 = (CompletableFuture<Integer>) completeAsync.apply(cf0, () -> 900);
         } catch (UnsupportedOperationException x) {
             if (AT_LEAST_JAVA_9)
                 throw x;
@@ -1037,7 +1132,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
         CompletableFuture<String> cf2;
         try {
-            cf2 = cf1.completeAsync(() -> {
+            cf2 = (CompletableFuture<String>) completeAsync_.apply(cf1, () -> {
                 StringBuilder s = new StringBuilder(Thread.currentThread().getName()).append(':');
                 try {
                     s.append(InitialContext.doLookup("java:comp/env/executorRef").toString());
@@ -1081,7 +1176,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
         CompletableFuture<String> cf1;
         try {
-            cf1 = ((ManagedCompletableFuture<String>) cf0).completeAsync(() -> Thread.currentThread().getName());
+            cf1 = (CompletableFuture<String>) completeAsync.apply(cf0, () -> Thread.currentThread().getName());
         } catch (UnsupportedOperationException x) {
             continueLatch.countDown();
             if (AT_LEAST_JAVA_9)
@@ -1207,7 +1302,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
         CompletableFuture<Integer> cf0 = defaultManagedExecutor.completedFuture(95);
         CompletableFuture<Integer> cf1;
         try {
-            cf1 = ((ManagedCompletableFuture<Integer>) cf0).completeOnTimeout(195, 295, TimeUnit.SECONDS); // TODO need better way to invoke Java 11 methods
+            cf1 = (CompletableFuture<Integer>) completeOnTimeout.apply(cf0, 195, 295l, TimeUnit.SECONDS);
         } catch (UnsupportedOperationException x) {
             if (AT_LEAST_JAVA_9)
                 throw x;
@@ -1222,10 +1317,10 @@ public class ConcurrentRxTestServlet extends FATServlet {
         CountDownLatch continueLatch = new CountDownLatch(1);
         try {
             BlockableSupplier<Integer> supplier = new BlockableSupplier<Integer>(96, beginLatch, continueLatch);
-            ManagedCompletableFuture<Integer> cf2 = (ManagedCompletableFuture<Integer>) defaultManagedExecutor.supplyAsync(supplier);
+            CompletableFuture<Integer> cf2 = defaultManagedExecutor.supplyAsync(supplier);
 
-            CompletableFuture<Integer> cf3 = cf2.completeOnTimeout(396, 96, TimeUnit.MINUTES);
-            CompletableFuture<Integer> cf4 = cf2.completeOnTimeout(496, 96, TimeUnit.MICROSECONDS);
+            CompletableFuture<Integer> cf3 = (CompletableFuture<Integer>) completeOnTimeout.apply(cf2, 396, 96l, TimeUnit.MINUTES);
+            CompletableFuture<Integer> cf4 = (CompletableFuture<Integer>) completeOnTimeout.apply(cf2, 496, 96l, TimeUnit.MICROSECONDS);
 
             assertSame(cf2, cf3);
             assertSame(cf2, cf4);
@@ -1332,7 +1427,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
     public void testDelayedExecutor() throws Exception {
         Executor delay1hour;
         try {
-            delay1hour = ManagedCompletableFuture.delayedExecutor(1, TimeUnit.HOURS);
+            delay1hour = CompletableFuture_delayedExecutor.apply(1l, TimeUnit.HOURS);
         } catch (UnsupportedOperationException x) {
             if (AT_LEAST_JAVA_9)
                 throw x;
@@ -1342,7 +1437,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
         CountDownLatch latch1 = new CountDownLatch(1);
         delay1hour.execute(() -> latch1.countDown());
 
-        Executor delay100ms = ManagedCompletableFuture.delayedExecutor(100, TimeUnit.MILLISECONDS);
+        Executor delay100ms = CompletableFuture_delayedExecutor.apply(100l, TimeUnit.MILLISECONDS);
         CountDownLatch latch3 = new CountDownLatch(3);
         delay100ms.execute(() -> latch3.countDown());
         delay100ms.execute(() -> {
@@ -1381,7 +1476,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
     public void testDelayedExecutorViaSuppliedExecutor() throws Exception {
         Executor delay97ms;
         try {
-            delay97ms = ManagedCompletableFuture.delayedExecutor(97, TimeUnit.MILLISECONDS, oneContextExecutor);
+            delay97ms = CompletableFuture_delayedExecutor_.apply(97l, TimeUnit.MILLISECONDS, oneContextExecutor);
         } catch (UnsupportedOperationException x) {
             if (AT_LEAST_JAVA_9)
                 throw x;
@@ -1389,7 +1484,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
                 return;
         }
 
-        Executor delay397msNoContext = ManagedCompletableFuture.delayedExecutor(397, TimeUnit.MILLISECONDS, noContextExecutor);
+        Executor delay397msNoContext = CompletableFuture_delayedExecutor_.apply(397l, TimeUnit.MILLISECONDS, noContextExecutor);
 
         CompletableFuture<Integer> cf0 = ManagedCompletableFuture
                         .supplyAsync(() -> 97, delay397msNoContext)
@@ -1471,8 +1566,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
         // Verify that exceptionally is skipped when no exception is raised by prior stage
 
-        // TODO replace with defaultManagedExecutor.completedFuture once implemented
-        CompletableFuture<?> cf1 = ManagedCompletableFuture
+        CompletableFuture<?> cf1 = defaultManagedExecutor
                         .completedFuture((Throwable) null)
                         .thenApplyAsync(lookup) // expect lookup to succeed because managed executor transfers thread context from the servlet
                         .exceptionally(lookup); // should not be invoked due to lack of any failure in prior stage
@@ -2053,7 +2147,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
                         .supplyAsync(new BlockableSupplier<Short>((short) 85, new CountDownLatch(1), blocker));
         try {
             try {
-                cs1 = ((ManagedCompletableFuture<Short>) cf0).minimalCompletionStage();
+                cs1 = (CompletionStage<Short>) minimalCompletionStage.apply(cf0);
             } catch (UnsupportedOperationException x) {
                 if (AT_LEAST_JAVA_9)
                     throw x;
@@ -2109,13 +2203,13 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
             try {
                 fail("completeAsync must not be permitted on minimal stage: " +
-                     ((ManagedCompletableFuture<Short>) cf5).completeAsync(() -> (short) 15));
+                     completeAsync.apply(cf5, () -> (short) 15));
             } catch (UnsupportedOperationException x) {
             } // pass
 
             try {
                 fail("completeAsync(executor) must not be permitted on minimal stage: " +
-                     ((ManagedCompletableFuture<Short>) cf5).completeAsync(() -> (short) 25, testThreads));
+                     completeAsync_.apply(cf5, () -> (short) 25, testThreads));
             } catch (UnsupportedOperationException x) {
             } // pass
 
@@ -2126,7 +2220,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
             try {
                 fail("completeOnTimeout​ must not be permitted on minimal stage: " +
-                     ((ManagedCompletableFuture<Short>) cf5).completeOnTimeout((short) 35, 350, TimeUnit.MILLISECONDS));
+                     completeOnTimeout.apply(cf5, (short) 35, 350l, TimeUnit.MILLISECONDS));
             } catch (UnsupportedOperationException x) {
             } // pass
 
@@ -2159,7 +2253,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
             try {
                 fail("orTimeout must not be permitted on minimal stage: " +
-                     ((ManagedCompletableFuture<Short>) cf5).orTimeout(5, TimeUnit.MINUTES));
+                     orTimeout.apply(cf5, 5l, TimeUnit.MINUTES));
             } catch (UnsupportedOperationException x) {
             } // pass
 
@@ -2350,7 +2444,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
         // TODO switch to defaultManagedExecutor.completedFuture once implemented
         CompletableFuture<Integer> cf1;
         try {
-            cf1 = ((ManagedCompletableFuture<Integer>) cf0).orTimeout(192, TimeUnit.MINUTES); // TODO need better way to invoke Java 11 methods
+            cf1 = (CompletableFuture<Integer>) orTimeout.apply(cf0, 192l, TimeUnit.MINUTES);
         } catch (UnsupportedOperationException x) {
             if (AT_LEAST_JAVA_9)
                 throw x;
@@ -2367,8 +2461,8 @@ public class ConcurrentRxTestServlet extends FATServlet {
             BlockableSupplier<Integer> supplier = new BlockableSupplier<Integer>(93, beginLatch, continueLatch);
             ManagedCompletableFuture<Integer> cf2 = (ManagedCompletableFuture<Integer>) defaultManagedExecutor.supplyAsync(supplier);
 
-            CompletableFuture<Integer> cf3 = cf2.orTimeout(93, TimeUnit.MINUTES);
-            CompletableFuture<Integer> cf4 = cf2.orTimeout(94, TimeUnit.MICROSECONDS);
+            CompletableFuture<Integer> cf3 = (CompletableFuture<Integer>) orTimeout.apply(cf2, 93l, TimeUnit.MINUTES);
+            CompletableFuture<Integer> cf4 = (CompletableFuture<Integer>) orTimeout.apply(cf2, 94l, TimeUnit.MICROSECONDS);
 
             assertSame(cf2, cf3);
             assertSame(cf2, cf4);
@@ -3503,8 +3597,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
             System.out.println("< lookup");
         };
 
-        // TODO replace with defaultManagedExecutor.completedFuture once implemented
-        CompletableFuture<Integer> cf0 = ManagedCompletableFuture
+        CompletableFuture<Integer> cf0 = defaultManagedExecutor
                         .completedFuture(0)
                         .thenApplyAsync(t -> 10 / t, testThreads); // intentionally fail with division by 0
 
@@ -3618,8 +3711,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
             System.out.println("< lookup");
         };
 
-        // TODO replace with defaultManagedExecutor.completedFuture once implemented
-        CompletableFuture<String> cf0 = ManagedCompletableFuture
+        CompletableFuture<String> cf0 = defaultManagedExecutor
                         .completedFuture("initial result")
                         .thenApplyAsync(t -> Thread.currentThread().getName(), testThreads);
 
