@@ -142,7 +142,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
     public void shutdown() {
         synchronized (configCache) {
             Set<ClassLoader> allClassLoaders = new HashSet<>();
-            allClassLoaders.addAll(configCache.keySet());
+            allClassLoaders.addAll(configCache.keySet()); //create a copy of the keys so that we avoid a ConcurrentModificationException
             for (ClassLoader classLoader : allClassLoaders) {
                 close(classLoader);
             }
@@ -325,7 +325,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
 
     public int getConfigCacheSize() {
         int size = 0;
-        synchronized (this) {
+        synchronized (configCache) {
             size = configCache.size();
         }
         return size;
@@ -336,9 +336,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
     public String toString() {
         StringBuilder builder = new StringBuilder(this.getClass().getName());
         builder.append(": cache=");
-        synchronized (this) {
-            builder.append(getConfigCacheSize());
-        }
+        builder.append(getConfigCacheSize());
         return builder.toString();
     }
 
