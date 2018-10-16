@@ -41,7 +41,7 @@ public class KeytoolCommandTest {
 
     @Test
     public void getCommand_justArguments() {
-        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "PKCS12b");
+        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "PKCS12");
         List<String> cmdArgs = cmd.getCommandArgs();
         assertEquals("-genkey", cmdArgs.get(1));
         assertEquals("-keystore", cmdArgs.get(2));
