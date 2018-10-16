@@ -36,7 +36,6 @@ import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.security.social.internal.OidcLoginConfigImpl;
 
 public class HttpUtils {
     public static final TraceComponent tc = Tr.register(HttpUtils.class);

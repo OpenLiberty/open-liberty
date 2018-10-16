@@ -1,6 +1,7 @@
 package com.ibm.ws.security.common.config;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
@@ -17,6 +18,8 @@ public class DiscoveryConfigUtils {
     private String scope;
     private String signatureAlgorithm;
     private String id;
+
+    private CommonConfigUtils configUtils = new CommonConfigUtils();
     
     public static final String OPDISCOVERY_AUTHZ_EP_URL = "authorization_endpoint";
     public static final String OPDISCOVERY_TOKEN_EP_URL = "token_endpoint";
@@ -31,6 +34,12 @@ public class DiscoveryConfigUtils {
     public static final String CFG_KEY_SCOPE = "scope";
     public static final String CFG_KEY_TOKEN_ENDPOINT_AUTH_METHOD = "tokenEndpointAuthMethod";
     public static final String CFG_KEY_SIGNATURE_ALGORITHM = "signatureAlgorithm";
+    public static final String KEY_authorizationEndpoint = "authorizationEndpoint";
+    public static final String KEY_tokenEndpoint = "tokenEndpoint";
+    public static final String KEY_USERINFO_ENDPOINT = "userInfoEndpoint";
+    public static final String KEY_jwksUri = "jwksUri";
+    public static final String KEY_ISSUER = "issuer";
+    public static final String KEY_DISCOVERY_ENDPOINT = "discoveryEndpoint";
     
     
 
@@ -42,8 +51,8 @@ public class DiscoveryConfigUtils {
         id = configId;
     }
     
-    public DiscoveryConfigUtils() {
-        
+    public DiscoveryConfigUtils(String configId) {
+        id = configId;
     }
 
     public void adjustTokenEndpointAuthMethod() {
@@ -241,6 +250,52 @@ public class DiscoveryConfigUtils {
     public String discoverOPConfigSingleValue(Object object) {
        
         return jsonValue(object).get(0);
+    }
+
+    /**
+     * @param props
+     */
+    public void logDiscoveryWarning(Map<String, Object> props) {
+        String endpoints = "";
+        String ep = null;
+        if ((ep = configUtils .trim((String) props.get(KEY_authorizationEndpoint))) != null) {
+            endpoints = buildDiscoveryWarning(endpoints, KEY_authorizationEndpoint);
+        }
+        if((ep = configUtils.trim((String) props.get(KEY_tokenEndpoint))) != null) {
+            endpoints = buildDiscoveryWarning(endpoints, KEY_tokenEndpoint);
+        }
+        if ((ep = configUtils.trim((String) props.get(KEY_USERINFO_ENDPOINT))) != null) {
+            endpoints = buildDiscoveryWarning(endpoints, KEY_USERINFO_ENDPOINT);
+        }
+        if ((ep = configUtils.trim((String) props.get(KEY_jwksUri))) != null) {
+            endpoints = buildDiscoveryWarning(endpoints, KEY_jwksUri);
+        } 
+        if (!endpoints.isEmpty()) {
+            logWarning("OIDC_CLIENT_DISCOVERY_OVERRIDE_EP", endpoints);
+        }
+        
+        if ((ep = configUtils.trim((String) props.get(KEY_ISSUER))) != null) {
+            logWarning("OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER", KEY_ISSUER);
+        }
+        
+    }
+
+    /**
+     * @param endpoints
+     */
+    private void logWarning(String key, String endpoints) {
+           
+        Tr.warning(tc, key, KEY_DISCOVERY_ENDPOINT, endpoints, getId());
+        
+    }
+
+    /**
+     * @param endpoints
+     * @param ep
+     * @return
+     */
+    private String buildDiscoveryWarning(String endpoints, String ep) { 
+        return endpoints.concat(ep).concat(", ");
     }
 
     
