@@ -12,10 +12,13 @@ package com.ibm.ws.security.common.config;
 
 import java.util.Map;
 
+import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.security.common.TraceConstants;
+import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 public class CommonConfigUtils {
     public static final TraceComponent tc = Tr.register(CommonConfigUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
@@ -92,6 +95,24 @@ public class CommonConfigUtils {
 
     String getAndTrimConfigAttribute(Map<String, Object> props, String key) {
         return trim((String) props.get(key));
+    }
+    
+    @Sensitive
+    public String processProtectedString(Map<String, Object> props, String cfgKey) {
+        String secret;
+        Object o = props.get(cfgKey);
+        if (o != null) {
+            if (o instanceof SerializableProtectedString) {
+                secret = new String(((SerializableProtectedString) o).getChars());
+            } else {
+                secret = (String) o;
+            }
+        } else {
+            secret = null;
+        }
+        // decode
+        secret = PasswordUtil.passwordDecode(secret);
+        return secret;
     }
 
     /**
