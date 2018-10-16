@@ -607,8 +607,16 @@ public class InstallKernelMap implements Map {
                 for (RepositoryResource repoResrc : item) {
                     String license = repoResrc.getLicenseId();
                     if (license != null) {
-                        boolean isNDRuntime = false; // TODO check whether the current runtime is ND
+                        // determine whether the runtime is ND
+                        boolean isNDRuntime = false;
+                        for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
+                            if (productInfo.getReplacedBy() == null && "com.ibm.websphere.appserver".equals(productInfo.getId()) && "ND".equals(productInfo.getEdition())) {
+                                isNDRuntime = true;
+                                break;
+                            }
+                        }
 
+                        // determine whether the license should be auto accepted
                         boolean autoAcceptLicense = license.startsWith(LICENSE_EPL_PREFIX) || license.equals(LICENSE_FEATURE_TERMS)
                                                     || (isNDRuntime && license.equals(LICENSE_FEATURE_TERMS_RESTRICTED));
 
