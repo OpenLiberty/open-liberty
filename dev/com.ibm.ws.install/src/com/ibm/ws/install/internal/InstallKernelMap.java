@@ -610,7 +610,7 @@ public class InstallKernelMap implements Map {
                         // determine whether the runtime is ND
                         boolean isNDRuntime = false;
                         for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
-                            if (productInfo.getReplacedBy() == null && "com.ibm.websphere.appserver".equals(productInfo.getId()) && "ND".equals(productInfo.getEdition())) {
+                            if ("com.ibm.websphere.appserver".equals(productInfo.getId()) && "ND".equals(productInfo.getEdition())) {
                                 isNDRuntime = true;
                                 break;
                             }
