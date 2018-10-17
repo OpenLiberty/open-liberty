@@ -19,6 +19,7 @@ javac.target: 1.8
 
 -buildpath: org.apache.cxf:cxf-rt-transports-http;version=3.2.6,\
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+  com.ibm.ws.jaxrs.2.0.client,\
   com.ibm.ws.logging.core,\
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
