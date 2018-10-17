@@ -69,10 +69,11 @@ public abstract class ConfigurableFunctor<T, R, D> extends Functor<R, D> {
 
     @SuppressWarnings("SameReturnValue")
     private D handleUnknownConfig(String msg, Object key, Object value) {
-        if (!!!log.isLoggable(Level.WARNING)) return null;
+        // no translation since the errors which report here are all internal error which should not happen, and there is nothing the customer can do.
+        if (!!!log.isLoggable(Level.SEVERE)) return null;
         final String keyMsg = key == null ? "key = null" : ("key = '" + key + "' of type " + key.getClass().getName());
         final String valMsg = value == null ? "value = null" : ("value = '" + value + "' of type " + value.getClass().getName());
-        log.warning(msg + ": " + keyMsg + ", " + valMsg);
+        log.severe(msg + ": " + keyMsg + ", " + valMsg);
         return null;
     }
 

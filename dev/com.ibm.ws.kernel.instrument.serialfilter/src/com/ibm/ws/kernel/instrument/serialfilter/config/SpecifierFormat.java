@@ -134,7 +134,7 @@ enum SpecifierFormat {
             @Override
             void lookAhead(String s, int offset) throws ParseException {
                 if (offset != s.length()) {
-                    Logger.getLogger(SpecifierFormat.class.getName()).warning("String contains unexpected content at offset " + offset + ": " + s);
+                    Logger.getLogger(SpecifierFormat.class.getName()).severe("String contains unexpected content at offset " + offset + ": " + s);
                     throw new ParseException();
                 }
             }
@@ -181,7 +181,7 @@ enum SpecifierFormat {
             @Override
             void lookAhead(String s, int offset) throws ParseException {
                 if (offset != s.length()) {
-                    Logger.getLogger(SpecifierFormat.class.getName()).warning("String contains unexpected content at offset " + offset + ": " + s);
+                    Logger.getLogger(SpecifierFormat.class.getName()).severe("String contains unexpected content at offset " + offset + ": " + s);
                     throw new ParseException();
                 }
             }
@@ -191,7 +191,7 @@ enum SpecifierFormat {
             void lookAhead(String s, int offset) throws ParseException {
                 final String checksum = s.substring(offset);
                 if (!!!Checksums.isValidChecksum(checksum)) {
-                    Logger.getLogger(SpecifierFormat.class.getName()).warning("String contains invalid checksum: " + s);
+                    Logger.getLogger(SpecifierFormat.class.getName()).severe("String contains invalid checksum: " + s);
                     throw new ParseException();
                 }
             }
