@@ -82,17 +82,16 @@ public class ConcurrentRxTestServlet extends FATServlet {
         AT_LEAST_JAVA_9 = atLeastJava9;
     }
 
-    // TODO remove type once it is possible to inject as ThreadContext/ManagedExecutor
-    @Resource(type = ContextService.class)
+    @Resource
     private ThreadContext defaultThreadContext;
 
-    @Resource(name = "java:comp/env/executorRef", type = ManagedExecutorService.class)
+    @Resource(name = "java:comp/env/executorRef")
     private ManagedExecutor defaultManagedExecutor;
 
-    @Resource(name = "java:module/noContextExecutorRef", lookup = "concurrent/noContextExecutor", type = ManagedExecutorService.class)
+    @Resource(name = "java:module/noContextExecutorRef", lookup = "concurrent/noContextExecutor")
     private ManagedExecutor noContextExecutor;
 
-    @Resource(name = "java:app/oneContextExecutorRef", lookup = "concurrent/oneContextExecutor", type = ManagedExecutorService.class)
+    @Resource(name = "java:app/oneContextExecutorRef", lookup = "concurrent/oneContextExecutor")
     private ManagedExecutor oneContextExecutor; // the single enabled context is jeeMetadataContext
 
     // Executor that runs everything on the invoker's thread instead of submitting tasks to run asynchronously.
@@ -1595,7 +1594,12 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
         // Verify the value, and the thread:
         CompletableFuture<String> cf2 = cs1.toCompletableFuture();
-        String result = cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        // await completion before invoking get so that get doesn't trigger the task to run on the current thread if not started yet
+        for (long start = System.nanoTime(); !cf2.isDone() && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+        assertTrue(cf2.isDone());
+
+        String result = cf2.get();
         assertTrue(result, result.endsWith(":5f"));
         assertTrue(result, result.startsWith("Default Executor-thread-"));
         assertTrue(result, !result.startsWith(Thread.currentThread().getName()));
@@ -3245,7 +3249,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
         String result;
         assertNotNull(result = cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertTrue(result, result.startsWith("100,"));
-        assertTrue(result, result.indexOf("ManagedExecutorService") > 0);
+        assertTrue(result, result.indexOf("ManagedExecutorImpl@") > 0);
     }
 
     /**
