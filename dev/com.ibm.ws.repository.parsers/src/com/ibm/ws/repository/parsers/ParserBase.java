@@ -315,6 +315,7 @@ public abstract class ParserBase {
                     Thread.sleep(500);
                 } catch (InterruptedException ie) {
                     //swallow it
+                    f.delete();
                 }
             }
         }
