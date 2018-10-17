@@ -68,6 +68,7 @@ instrument.classesExcludes: com/ibm/ws/concurrent/resources/*.class
 	com.ibm.ws.app.manager.lifecycle;version=latest,\
 	com.ibm.ws.bnd.annotations;version=latest, \
 	com.ibm.ws.concurrency.policy;version=latest,\
+	com.ibm.ws.concurrent.mp.0.0.0.noImpl;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.context;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\

@@ -609,7 +609,7 @@ public class LdapConnection {
 
         if (iSearchResultsCacheEnabled) {
             if (FactoryManager.getCacheUtil().isCacheAvailable()) {
-                iSearchResultsCache = FactoryManager.getCacheUtil().initialize(iSearchResultsCacheSize, iSearchResultsCacheSize, iSearchResultsCacheTimeOut);
+                iSearchResultsCache = FactoryManager.getCacheUtil().initialize("SearchResultsCache", iSearchResultsCacheSize, iSearchResultsCacheSize, iSearchResultsCacheTimeOut);
                 if (iSearchResultsCache != null) {
                     if (tc.isDebugEnabled()) {
                         StringBuilder strBuf = new StringBuilder(METHODNAME);
@@ -632,7 +632,7 @@ public class LdapConnection {
 
         if (iAttrsCacheEnabled) {
             if (FactoryManager.getCacheUtil().isCacheAvailable()) {
-                iAttrsCache = FactoryManager.getCacheUtil().initialize(iAttrsCacheSize, iAttrsCacheSize, iAttrsCacheTimeOut);
+                iAttrsCache = FactoryManager.getCacheUtil().initialize("AttributesCache", iAttrsCacheSize, iAttrsCacheSize, iAttrsCacheTimeOut);
                 if (iAttrsCache != null) {
                     if (tc.isDebugEnabled()) {
                         StringBuilder strBuf = new StringBuilder(METHODNAME);
@@ -1106,11 +1106,13 @@ public class LdapConnection {
     private void updateAttributesCache(String key, Attributes missAttrs, Attributes cachedAttrs, String[] missAttrIds) {
         final String METHODNAME = "updateAttributesCache(key,missAttrs,cachedAttrs,missAttrIds)";
         if (missAttrIds != null) {
+            boolean newattr = false; // differentiate between a new entry and an entry we'll update so we change the cache correctly and maintain the creation TTL.
             if (missAttrIds.length > 0) {
                 if (cachedAttrs != null) {
                     cachedAttrs = (Attributes) cachedAttrs.clone();
                 } else {
                     cachedAttrs = new BasicAttributes(true);
+                    newattr = true;
                 }
 
                 for (int i = 0; i < missAttrIds.length; i++) {
@@ -1144,9 +1146,13 @@ public class LdapConnection {
                         cachedAttrs.put(nullAttr);
                     }
                 }
-                getAttributesCache().put(key, cachedAttrs, 1, iAttrsCacheTimeOut, 0, null);
+                if (newattr) { // only set the the TTL if we're putting in a new entry
+                    getAttributesCache().put(key, cachedAttrs, 1, iAttrsCacheTimeOut, 0, null);
+                } else {
+                    getAttributesCache().put(key, cachedAttrs);
+                }
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, METHODNAME + " Update " + iAttrsCacheName + "(size: " + getAttributesCache().size() + ")\n" + key
+                    Tr.debug(tc, METHODNAME + " Update " + iAttrsCacheName + "(size: " + getAttributesCache().size() + " newEntry: " + newattr + ")\n" + key
                                  + ": " + cachedAttrs);
                 }
             }
@@ -1165,10 +1171,12 @@ public class LdapConnection {
     private void updateAttributesCache(String key, Attributes missAttrs, Attributes cachedAttrs) {
         final String METHODNAME = "updateAttributeCache(key,missAttrs,cachedAttrs)";
         if (missAttrs.size() > 0) {
+            boolean newAttr = false; // differentiate between a new entry and an entry we'll update so we change the cache correctly and maintain the creation TTL.
             if (cachedAttrs != null) {
                 cachedAttrs = (Attributes) cachedAttrs.clone();
             } else {
                 cachedAttrs = new BasicAttributes(true);
+                newAttr = true;
             }
 
             //Set extIdAttrs = iLdapConfigMgr.getExtIds();
@@ -1179,9 +1187,13 @@ public class LdapConnection {
                     cachedAttrs.put(attr);
                 }
             }
-            getAttributesCache().put(key, cachedAttrs, 1, iAttrsCacheTimeOut, 0, null);
+            if (newAttr) {
+                getAttributesCache().put(key, cachedAttrs, 1, iAttrsCacheTimeOut, 0, null);
+            } else {
+                getAttributesCache().put(key, cachedAttrs);
+            }
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, METHODNAME + " Update " + iAttrsCacheName + "(size: " + getAttributesCache().size() + ")\n" + key + ": " + cachedAttrs);
+                Tr.debug(tc, METHODNAME + " Update " + iAttrsCacheName + "(size: " + getAttributesCache().size() + " newEntry: " + newAttr + ")\n" + key + ": " + cachedAttrs);
             }
         }
     }

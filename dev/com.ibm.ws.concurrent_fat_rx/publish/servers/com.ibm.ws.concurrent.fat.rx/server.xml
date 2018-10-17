@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017 IBM Corporation and others.
+    Copyright (c) 2017,2018 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -8,13 +8,13 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="new server">
+<server>
 
 	<featureManager>
 	    <feature>componenttest-1.0</feature>
-	    <feature>concurrent-1.0</feature>
+	    <feature>mpConcurrency-1.0</feature>
 	    <feature>jndi-1.0</feature>
-	    <feature>managedCompletableFuture-1.0</feature>
+	    <feature>managedCompletableFuture-1.0</feature> <!-- TODO remove this feature once the CompletableFuture implementation is moved to mpConcurrency -->
 		<feature>servlet-4.0</feature>
     </featureManager>
     

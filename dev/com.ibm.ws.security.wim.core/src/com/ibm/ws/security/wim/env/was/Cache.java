@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -75,6 +75,11 @@ public class Cache implements ICacheUtil {
     private boolean isInitialized = false;
 
     /**
+     * The name of the cache, used for trace
+     */
+    private String cacheName = "DefaultCacheName";
+
+    /**
      * Default constructor for the cache
      */
     public Cache() {
@@ -88,13 +93,14 @@ public class Cache implements ICacheUtil {
      * @param cacheMaxSize max size of the HashTables in the cache
      * @param timeoutInMilliSeconds default timeout for the cache
      */
-    private Cache(int initialSize, int cacheMaxSize, long timeoutInMilliSeconds) {
+    private Cache(int initialSize, int cacheMaxSize, long timeoutInMilliSeconds, String name) {
         primaryTable = new ConcurrentHashMap<String, Object>(initialSize);
         secondaryTable = new ConcurrentHashMap<String, Object>(initialSize);
         tertiaryTable = new ConcurrentHashMap<String, Object>(initialSize);
 
         this.minSize = initialSize;
         this.entryLimit = cacheMaxSize;
+        this.cacheName = name;
         this.isInitialized = true;
         setDefaultTimeout((int) timeoutInMilliSeconds);
 
@@ -240,6 +246,36 @@ public class Cache implements ICacheUtil {
     }
 
     /**
+     * Update the value into the Cache using the specified key, but do not change
+     * the table level of the cache. If the key is not in any table, add it to
+     * the primaryTable
+     *
+     * @param key the key of the entry to be inserted
+     * @param value the value of the entry to be inserted
+     * @return the previous value associated with key, or null if there was none
+     */
+    public synchronized Object update(String key, Object value) {
+        // evict until size < maxSize
+        while (isEvictionRequired() && entryLimit > 0 && entryLimit < Integer.MAX_VALUE) {
+            evictStaleEntries();
+        }
+
+        CacheEntry oldEntry = null;
+        CacheEntry curEntry = new CacheEntry(value);
+        if (primaryTable.containsKey(key)) {
+            oldEntry = (CacheEntry) primaryTable.put(key, curEntry);
+        } else if (secondaryTable.containsKey(key)) {
+            oldEntry = (CacheEntry) secondaryTable.put(key, curEntry);
+        } else if (tertiaryTable.containsKey(key)) {
+            oldEntry = (CacheEntry) tertiaryTable.put(key, curEntry);
+        } else {
+            oldEntry = (CacheEntry) primaryTable.put(key, curEntry);
+        }
+
+        return oldEntry != null ? oldEntry.value : null;
+    }
+
+    /**
      * Determine if the cache is &quot;full&quot; and entries need
      * to be evicted.
      *
@@ -252,7 +288,7 @@ public class Cache implements ICacheUtil {
         int size = primaryTable.size() + secondaryTable.size() + tertiaryTable.size();
         if (tc.isDebugEnabled()) {
             Tr.debug(tc,
-                     METHODNAME + " The current cache (" + hashCode() + ") size is " + size + "( " + primaryTable.size() + ", " + secondaryTable.size() + ", "
+                     METHODNAME + " The current " + cacheName + " cache (" + hashCode() + ") size is " + size + "( " + primaryTable.size() + ", " + secondaryTable.size() + ", "
                          + tertiaryTable.size() + ")");
         }
 
@@ -260,7 +296,8 @@ public class Cache implements ICacheUtil {
             // If the cache size would be greater than its limit, time to purge...
             if (size >= entryLimit) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, METHODNAME + " The cache size is " + size + "( " + primaryTable.size() + ", " + secondaryTable.size() + ", " + tertiaryTable.size()
+                    Tr.debug(tc, METHODNAME + " The cache size on " + cacheName + " is " + size + "( " + primaryTable.size() + ", " + secondaryTable.size() + ", "
+                                 + tertiaryTable.size()
                                  + ") which is greater than the cache limit of " + entryLimit + ".");
 
                 evictionRequired = true;
@@ -281,6 +318,13 @@ public class Cache implements ICacheUtil {
  * Tr.debug(tc, METHODNAME + " The current cache size is " + size + "( " + primaryTable.size() + ", " + secondaryTable.size() + ", " + tertiaryTable.size() + ")");
  * }
  */
+
+        // log only when we evict the last table
+        if (!tertiaryTable.isEmpty()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "evictStaleEntries Evicting tertiaryTable cache " + cacheName + ", size is " + tertiaryTable.size());
+            }
+        }
         tertiaryTable = secondaryTable;
         secondaryTable = primaryTable;
         primaryTable = new ConcurrentHashMap<String, Object>((minSize > secondaryTable.size()) ? minSize : secondaryTable.size());
@@ -423,9 +467,13 @@ public class Cache implements ICacheUtil {
         return 0;
     }
 
+    /**
+     * A put with the TTL defined is a new entry and should be inserted in the cache in the primaryTable.
+     * To do an update action to the cache, see put(key,value).
+     */
     @Override
     public Object put(Object key, Object value, int priority, long timeToLive, int sharingPolicy, Object dependencyIds[]) {
-        return put(String.valueOf(key), value);
+        return insert(String.valueOf(key), value);
     }
 
     @Override
@@ -461,9 +509,14 @@ public class Cache implements ICacheUtil {
         return keySet();
     }
 
+    /**
+     * A put with only the key, value provided acts as an update to the cache and
+     * the entry retains the same creation time to live in the cache.
+     * To do an insert action to the cache, see put(key,value,int,int,int,Object).
+     */
     @Override
     public Object put(String key, Object value) {
-        return insert(String.valueOf(key), value);
+        return update(String.valueOf(key), value);
     }
 
     @Override
@@ -506,12 +559,17 @@ public class Cache implements ICacheUtil {
 
     @Override
     public ICacheUtil initialize(int initialSize, int cacheSize, long cachetimeOut) {
+        return initialize(cacheName, initialSize, cacheSize, cachetimeOut);
+    }
+
+    @Override
+    public ICacheUtil initialize(String name, int initialSize, int cacheSize, long cachetimeOut) {
 
         final String METHODNAME = "initialize";
-        Cache cache = new Cache(initialSize, cacheSize, cachetimeOut);
+        Cache cache = new Cache(initialSize, cacheSize, cachetimeOut, name);
 
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " cache initialized successfully");
+            Tr.debug(tc, METHODNAME + " cache initialized successfully: " + name);
         }
 
         return cache;

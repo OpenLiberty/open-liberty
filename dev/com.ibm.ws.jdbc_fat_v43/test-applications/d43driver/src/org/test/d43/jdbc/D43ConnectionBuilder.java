@@ -17,6 +17,8 @@ import java.sql.SQLException;
 import java.sql.ShardingKey;
 
 public class D43ConnectionBuilder implements ConnectionBuilder {
+    private boolean built;
+
     private final D43DataSource d43DataSource;
 
     private String password;
@@ -30,6 +32,11 @@ public class D43ConnectionBuilder implements ConnectionBuilder {
 
     @Override
     public Connection build() throws SQLException {
+        if (built)
+            throw new IllegalStateException();
+        else
+            built = true;
+
         Connection con;
         if (user == null && password == null)
             con = d43DataSource.ds.getConnection();
@@ -44,24 +51,32 @@ public class D43ConnectionBuilder implements ConnectionBuilder {
 
     @Override
     public D43ConnectionBuilder password(String value) {
+        if (built)
+            throw new IllegalStateException();
         password = value;
         return this;
     }
 
     @Override
     public D43ConnectionBuilder shardingKey(ShardingKey value) {
+        if (built)
+            throw new IllegalStateException();
         shardingKey = value;
         return this;
     }
 
     @Override
     public D43ConnectionBuilder superShardingKey(ShardingKey value) {
+        if (built)
+            throw new IllegalStateException();
         superShardingKey = value;
         return this;
     }
 
     @Override
     public D43ConnectionBuilder user(String value) {
+        if (built)
+            throw new IllegalStateException();
         user = value;
         return this;
     }

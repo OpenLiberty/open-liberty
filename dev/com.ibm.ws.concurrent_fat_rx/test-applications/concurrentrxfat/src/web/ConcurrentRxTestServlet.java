@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,6 +55,7 @@ import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
 import javax.servlet.annotation.WebServlet;
 
+import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.junit.Test;
 
 import com.ibm.websphere.concurrent.rx.ManagedCompletableFuture;
@@ -1391,6 +1392,18 @@ public class ConcurrentRxTestServlet extends FATServlet {
         assertTrue(cf0.isDone());
         assertFalse(cf0.isCompletedExceptionally());
         assertFalse(cf0.isCancelled());
+    }
+
+    /**
+     * When the mpConcurrency-1.0 feature is enabled, The OpenLiberty implementation of
+     * javax.enterprise.concurrent.ManagedExecutorService is also an implementation of
+     * org.eclipse.microprofile.concurrent.ManagedExecutor
+     */
+    @Test
+    public void testEEManagedExecutorServiceIsAlsoMPManagedExecutor() {
+        assertTrue(defaultManagedExecutor instanceof ManagedExecutor);
+        assertTrue(noContextExecutor instanceof ManagedExecutor);
+        assertTrue(oneContextExecutor instanceof ManagedExecutor);
     }
 
     /**

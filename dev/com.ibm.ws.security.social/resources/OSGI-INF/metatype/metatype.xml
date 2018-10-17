@@ -360,7 +360,7 @@
          
         <AD id="issuer" name="%issuer" description="%issuer.desc" required="false" type="String" />            
         <AD id="realmNameAttribute" name="%realmNameAttribute" description="%realmNameAttribute.desc"
-            required="false" type="String"  />
+            required="false" type="String" default="iss" />
         <AD id="groupNameAttribute" name="%groupNameAttribute" description="%groupNameAttribute.desc"
             required="false"  type="String" />
         <AD id="userUniqueIdAttribute" name="%userUniqueIdAttribute" description="%userUniqueIdAttribute.desc"

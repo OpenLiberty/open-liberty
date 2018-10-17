@@ -22,7 +22,8 @@
 
   <authData id="user43Auth" user="user43" password="{xor}Lyg7a2w="/>
 
-  <dataSource id="DefaultDataSource">
+  <dataSource id="DefaultDataSource"
+              enableBeginEndRequest="true"> <!-- Not a supported property. Only for internal testing/experimentation. -->
     <jdbcDriver libraryRef="D43Lib"/>
     <properties url="jdbc:d43:memory:testdb;create=true" user="user43" password="{xor}Lyg7a2w="/>
   </dataSource>
@@ -43,17 +44,26 @@
     <properties databaseName="memory:testdb;create=true"/>
   </dataSource>
 
-  <dataSource jndiName="jdbc/poolOf1" type="javax.sql.ConnectionPoolDataSource">
+  <dataSource jndiName="jdbc/poolOf1" type="javax.sql.ConnectionPoolDataSource"
+              enableBeginEndRequest="true"> <!-- Not a supported property. Only for internal testing/experimentation. -->
     <connectionManager maxPoolSize="1"/>
     <jdbcDriver libraryRef="D43Lib"/>
     <properties databaseName="memory:testdb;create=true"/>
     <containerAuthData user="user43" password="{xor}Lyg7a2w="/>
   </dataSource>
 
-  <dataSource jndiName="jdbc/xa">
+  <dataSource jndiName="jdbc/xa"
+              enableBeginEndRequest="true"> <!-- Not a supported property. Only for internal testing/experimentation. -->
     <jdbcDriver libraryRef="D43Lib"/>
     <properties databaseName="memory:testdb;create=true"/>
     <containerAuthData user="user43" password="{xor}Lyg7a2w="/>
+  </dataSource>
+
+  <!-- JDBC driver that only supports the 4.2 spec level -->
+  <dataSource jndiName="jdbc/xaDerby42" containerAuthDataRef="user43Auth"
+              enableBeginEndRequest="true"> <!-- Not a supported property. Only for internal testing/experimentation. -->
+    <jdbcDriver libraryRef="D43Lib"/>
+    <properties.derby.embedded databaseName="memory:testdb;create=true"/>
   </dataSource>
 
   <!-- This is a Derby driver with custom implementations added for certain JDBC 4.3 methods -->

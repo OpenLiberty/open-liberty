@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -215,6 +215,8 @@ public interface ICacheUtil extends Map<String, Object> {
     public ICacheUtil initialize(String cacheName, int cacheSize, boolean diskOffLoad, int sharingPolicy);
 
     public ICacheUtil initialize(int initialSize, int cacheSize, long cachetimeOut);
+
+    public ICacheUtil initialize(String cacheName, int initialSize, int cacheSize, long cachetimeOut);
 
     public void stopEvictionTask();
 }

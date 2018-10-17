@@ -25,6 +25,8 @@ import com.ibm.websphere.security.social.UserProfile;
 public abstract class BaseServlet extends com.ibm.ws.security.fat.common.apps.formlogin.BaseServlet {
     private static final long serialVersionUID = 1L;
 
+    public static final String OUTPUT_PREFIX = "UserInfo: ";
+
     protected BaseServlet(String servletName) {
         super(servletName);
     }
@@ -48,28 +50,28 @@ public abstract class BaseServlet extends com.ibm.ws.security.fat.common.apps.fo
             return;
         }
         String userInfo = userProfileCredential.getUserInfo();
-        writeLine(sb, "UserInfo: string: " + userInfo);
+        writeLine(sb, OUTPUT_PREFIX + "string: " + userInfo);
         String accessToken = userProfileCredential.getAccessToken();
-        writeLine(sb, "UserInfo: accessToken: " + accessToken);
+        writeLine(sb, OUTPUT_PREFIX + "accessToken: " + accessToken);
         Claims claims = userProfileCredential.getClaims();
         printUserProfileClaims(sb, claims);
         JwtToken idToken = userProfileCredential.getIdToken();
-        writeLine(sb, "UserInfo: ID token: " + (idToken == null ? null : idToken.compact()));
+        writeLine(sb, OUTPUT_PREFIX + "ID token: " + (idToken == null ? null : idToken.compact()));
         String refreshToken = userProfileCredential.getRefreshToken();
-        writeLine(sb, "UserInfo: refresh token: " + refreshToken);
+        writeLine(sb, OUTPUT_PREFIX + "refresh token: " + refreshToken);
         String scopes = userProfileCredential.getScopes();
-        writeLine(sb, "UserInfo: scopes: " + scopes);
+        writeLine(sb, OUTPUT_PREFIX + "scopes: " + scopes);
         String socialMediaName = userProfileCredential.getSocialMediaName();
-        writeLine(sb, "UserInfo: socialMediaName: " + socialMediaName);
+        writeLine(sb, OUTPUT_PREFIX + "socialMediaName: " + socialMediaName);
     }
 
     private void printUserProfileClaims(StringBuffer sb, Claims claims) {
-        writeLine(sb, "UserInfo: claims: " + claims);
+        writeLine(sb, OUTPUT_PREFIX + "claims: " + claims);
         if (claims == null) {
             return;
         }
         for (Entry<String, Object> claim : claims.entrySet()) {
-            writeLine(sb, "UserInfo: claims: name: " + claim.getKey() + " value: " + claim.getValue());
+            writeLine(sb, OUTPUT_PREFIX + "claims: name: " + claim.getKey() + " value: " + claim.getValue());
         }
     }
 

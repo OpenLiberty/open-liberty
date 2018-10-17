@@ -14,5 +14,6 @@ public class MessageConstants {
 
     public static final String CWWKT0016I_WEB_APP_AVAILABLE = "CWWKT0016I";
     public static final String CWWKG0032W_CONFIG_INVALID_VALUE = "CWWKG0032W";
+    public static final String CWWKG0083W_CONFIG_INVALID_VALUE_USING_DEFAULT = "CWWKG0083W";
 
 }

@@ -126,7 +126,7 @@ public class JaxRsWebContainerManagerImpl implements JaxRsWebContainerManager {
         webModuleHandlerRef.setReference(ref);
     }
 
-    protected void unsetWebModuleHandler(ServiceReference<ModuleRuntimeContainer> ref) {
+    protected void unsetWebModuleHandler(ServiceReference<ModuleHandler> ref) {
         webModuleHandlerRef.setReference(null);
     }
 

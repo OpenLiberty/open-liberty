@@ -22,7 +22,7 @@ import javax.websocket.Session;
 import com.ibm.websphere.simplicity.log.Log;
 
 /**
- * Client Endpoint for WebSocketTests15
+ * Client Endpoint for WebSocketTests20
  */
 @ClientEndpoint
 public class ClientEchoWebSocketEndpoint {

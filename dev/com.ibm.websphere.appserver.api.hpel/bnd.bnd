@@ -15,13 +15,14 @@ Bundle-Name: WebSphere Binary Logging (HPEL) API
 Bundle-Description: WebSphere Binary Logging (HPEL) API, version ${bVersion}
 Bundle-SymbolicName: com.ibm.websphere.appserver.api.hpel
 
-Import-Package: com.ibm.websphere.logging.hpel.reader,com.ibm.websphere.logging.hpel.reader.filters,com.ibm.websphere.logging.hpel.writer
+Import-Package: com.ibm.websphere.logging.hpel,com.ibm.websphere.logging.hpel.reader,com.ibm.websphere.logging.hpel.reader.filters,com.ibm.websphere.logging.hpel.writer
 
-Export-Package: com.ibm.websphere.logging.hpel.reader,com.ibm.websphere.logging.hpel.reader.filters,com.ibm.websphere.logging.hpel.writer
+Export-Package: com.ibm.websphere.logging.hpel,com.ibm.websphere.logging.hpel.reader,com.ibm.websphere.logging.hpel.reader.filters,com.ibm.websphere.logging.hpel.writer
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.hpel/pom.xml=com.ibm.websphere.appserver.api.hpel.pom}
 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \
-	com.ibm.ws.logging.hpel;version=latest
+	com.ibm.ws.logging.hpel;version=latest, \
+	com.ibm.ws.logging.core;version=latest
