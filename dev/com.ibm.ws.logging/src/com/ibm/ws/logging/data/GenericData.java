@@ -22,12 +22,10 @@ public class GenericData {
 
     private Integer lastIndex = -1;
 
-    //to be removed
     public GenericData() {
         pairs = new KeyValuePair[DEFAULT_SIZE];
     }
 
-    //to be removed
     public GenericData(int size) {
         pairs = new KeyValuePair[size];
     }
@@ -123,16 +121,6 @@ public class GenericData {
 
     public KeyValuePair[] getPairs() {
         return pairs;
-    }
-
-    // to be removed
-    public String getSourceType() {
-        return getSourceName();
-    }
-
-    // to be removed
-    public void setSourceType(String sourceType) {
-        setSourceName(sourceType);
     }
 
     public String getSourceName() {
