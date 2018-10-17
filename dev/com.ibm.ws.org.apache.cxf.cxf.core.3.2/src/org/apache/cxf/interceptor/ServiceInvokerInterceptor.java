@@ -68,13 +68,11 @@ public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message>
             @Override
             public void run() {
                 Exchange runableEx = message.getExchange();
-                Message outMessage = null;
-                // Liberty change (OLGH2084):  Move invoke after OutMessage is set on Exchange to allow 
-                // events to flow, such as those containing JAXBElements. 
+                Object result = invoker.invoke(runableEx, getInvokee(message));
+                Message outMessage = runableEx.getOutMessage();
                 if (!exchange.isOneWay()) {
                     Endpoint ep = exchange.getEndpoint();
 
-                    outMessage = runableEx.getOutMessage();
                     if (outMessage == null) {
                         // Liberty perf change - avoid resize operation to set init size 16 and factor 1
                         outMessage = new MessageImpl(16, 1);
@@ -84,8 +82,6 @@ public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message>
                     }
                     copyJaxwsProperties(message, outMessage);
                 }
-
-                Object result = invoker.invoke(runableEx, getInvokee(message));
 
                 if (!exchange.isOneWay()) {
                     if (result != null) {
