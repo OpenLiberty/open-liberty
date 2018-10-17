@@ -21,7 +21,7 @@ class ClassDigester extends ClassVisitor implements Digester {
     private final DigesterSortedMap<MethodDigester> methods = new DigesterSortedMap<MethodDigester>();
 
     public ClassDigester() {
-        super(Opcodes.ASM5);
+        super(Opcodes.ASM7);
     }
 
     @Override

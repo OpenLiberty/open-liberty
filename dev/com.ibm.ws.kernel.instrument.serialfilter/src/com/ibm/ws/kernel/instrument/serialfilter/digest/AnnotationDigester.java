@@ -23,7 +23,7 @@ class AnnotationDigester extends AnnotationVisitor implements Digester {
     private DigesterSortedMap<AnnotationDigester> annotations = new DigesterSortedMap<AnnotationDigester>();
 
     public AnnotationDigester() {
-        super(Opcodes.ASM5);
+        super(Opcodes.ASM7);
     }
 
     @Override
