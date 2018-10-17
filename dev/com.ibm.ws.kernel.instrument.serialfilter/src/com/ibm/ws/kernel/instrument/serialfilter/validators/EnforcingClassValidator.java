@@ -11,6 +11,7 @@
 package com.ibm.ws.kernel.instrument.serialfilter.validators;
 
 import com.ibm.ws.kernel.instrument.serialfilter.config.Config;
+import com.ibm.ws.kernel.instrument.serialfilter.util.MessageUtil;
 
 import java.io.InvalidClassException;
 import java.security.AccessController;
@@ -34,8 +35,7 @@ class EnforcingClassValidator extends ClassValidator {
         if (cls.isArray()) return cls;
         if (log.isLoggable(Level.FINEST)) log.finest(String.format("log Validating class - loaded by [%s] with name [%s]%n", getLoader(cls), cls.getName()));
         if (config.allows(cls, skipOnce)) return cls;
-        // TODO NLS-ify this message
-        throw new InvalidClassException(cls.getName(), "Class is not whitelisted for deserialization.");
+        throw new InvalidClassException(MessageUtil.format("SF_ERROR_NOT_ON_WHITELIST", cls.getName()));
     }
 
     private static ClassLoader getLoader(final Class<?> cls) {

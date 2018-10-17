@@ -11,6 +11,7 @@
 package com.ibm.ws.kernel.instrument.serialfilter.validators;
 
 import com.ibm.ws.kernel.instrument.serialfilter.config.Config;
+import com.ibm.ws.kernel.instrument.serialfilter.util.MessageUtil;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -37,13 +38,11 @@ class DiscoveringClassValidator extends ClassValidator {
         if (cls == null) return null;
         if (cls.isArray()) return cls;
         if (log.isLoggable(FINEST)) log.finest(String.format("Discovering. Class name : %s ClassLoader name : %s", cls.getName(), getLoader(cls)));
-        boolean whitelisted = config.allows(cls, skipOnce);
+        boolean whitelisted = config.allows(cls, skipOnce, false);
         if (whitelisted)
             return cls;
         if (log.isLoggable(FINEST)) log.finest(String.format("The class is not on the whitelist. Class name : %s ClassLoader name : %s", cls.getName(), getLoader(cls)));
-        // TODO NLSify the following message
-        log.warning("");
-        if (log.isLoggable(INFO)) log.info(String.format("The following class is not on the whitelist. Class name : %s", cls.getName()));
+        if (log.isLoggable(INFO)) log.info(MessageUtil.format("SF_INFO_NOT_ON_WHITELIST", cls.getName()));
         return cls;
     }
 

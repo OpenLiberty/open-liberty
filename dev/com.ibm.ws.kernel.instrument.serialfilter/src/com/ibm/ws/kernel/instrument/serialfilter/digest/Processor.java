@@ -11,6 +11,8 @@
 package com.ibm.ws.kernel.instrument.serialfilter.digest;
 
 import com.ibm.ws.kernel.instrument.serialfilter.util.Base64UrlEncoder;
+import com.ibm.ws.kernel.instrument.serialfilter.util.MessageUtil;
+
 import org.objectweb.asm.Type;
 
 import java.nio.charset.Charset;
@@ -18,6 +20,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+
 
 
 class Processor {
@@ -131,8 +134,7 @@ class Processor {
         try {
             return MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            // TODO: NLS
-            throw new UnsupportedOperationException("This platform does not support SHA-256. Hashing cannot be performed.", e);
+            throw new UnsupportedOperationException(MessageUtil.format("SF_ERROR_NO_SHA_SUPPORT", e));
         }
     }
 
