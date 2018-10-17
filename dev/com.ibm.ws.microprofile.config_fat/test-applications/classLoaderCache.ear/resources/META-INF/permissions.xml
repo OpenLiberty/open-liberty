@@ -12,4 +12,9 @@
                 <class-name>java.lang.RuntimePermission</class-name>
                 <name>getenv.*</name>
         </permission>
+        
+        <permission>
+                <class-name>java.lang.RuntimePermission</class-name>
+                <name>getClassLoader</name>
+        </permission>
 </permissions>

@@ -32,10 +32,22 @@ public class ClassLoaderCache2TestServlet extends FATServlet {
         Method getConfigCacheSize = resolver.getClass().getMethod("getConfigCacheSize");
         int size = (int) getConfigCacheSize.invoke(resolver, null);
         System.out.println("Before: " + size);
-        assertEquals("Wrong number of Configs in the cache", 1, size); //ClassLoaderCache1TestServlet should always be run first so there should already be a config in the cache
-        Config config = resolver.getConfig();
+        assertEquals("Wrong number of Configs in the cache", 2, size); //ClassLoaderCache1TestServlet should always be run first so there should already be two configs in the cache ... but this test should only add one more
+        Config configA = resolver.getConfig(); //using the classloader unique to the war
+        Config configB = resolver.getConfig(getRootClassLoader()); //using the common root classloader
         size = (int) getConfigCacheSize.invoke(resolver, null);
         System.out.println("After: " + size);
-        assertEquals("Wrong number of Configs in the cache", 2, size);
+        assertEquals("Wrong number of Configs in the cache", 3, size);
+    }
+
+    private ClassLoader getRootClassLoader() {
+        ClassLoader rootCL = this.getClass().getClassLoader();
+        ClassLoader parentCL = rootCL;
+        while (parentCL != null) {
+            rootCL = parentCL;
+            parentCL = rootCL.getParent();
+        }
+        System.out.println("Root ClassLoader: " + rootCL);
+        return rootCL;
     }
 }

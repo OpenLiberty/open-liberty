@@ -13,10 +13,8 @@ package com.ibm.ws.microprofile.config.impl;
 import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
@@ -51,7 +49,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
     //map from classloader to config
     private final Map<ClassLoader, ConfigWrapper> configCache = new HashMap<>();
     //map from app Name to list of ClassLoader in use
-    private final Map<String, List<ClassLoader>> appClassLoaderMap = new HashMap<>();
+    private final Map<String, Set<ClassLoader>> appClassLoaderMap = new HashMap<>();
 
     /**
      * Save the new ref into the AtomicServiceReference. See {@link AtomicServiceReference}
@@ -157,7 +155,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
      */
     private void shutdown(String applicationName) {
         synchronized (configCache) {
-            List<ClassLoader> appClassLoaders = appClassLoaderMap.remove(applicationName);
+            Set<ClassLoader> appClassLoaders = appClassLoaderMap.remove(applicationName);
             if (appClassLoaders != null) {
                 for (ClassLoader classLoader : appClassLoaders) {
                     shutdown(applicationName, classLoader);
@@ -245,11 +243,15 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
                 builder.addDiscoveredConverters();
                 config = builder.build();
 
-                //register this new config
-                registerConfig(config, classLoader);
+                //add this new config
+                configWrapper = newConfigWrapper(config, classLoader);
             } else {
                 config = configWrapper.getConfig();
             }
+
+            //register the application
+            registerApplication(configWrapper, classLoader);
+
         }
         return config;
     }
@@ -258,7 +260,15 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
     @Override
     public void registerConfig(Config config, ClassLoader classLoader) {
         synchronized (configCache) {
-            ConfigWrapper configWrapper = null;
+            ConfigWrapper configWrapper = newConfigWrapper(config, classLoader);
+            registerApplication(configWrapper, classLoader);
+        }
+    }
+
+    private ConfigWrapper newConfigWrapper(Config config, ClassLoader classLoader) {
+        ConfigWrapper configWrapper = null;
+        synchronized (configCache) {
+            configWrapper = null;
             ConfigWrapper previous = configCache.get(classLoader);
             if (previous != null) {
                 throw new IllegalStateException(Tr.formatMessage(tc, "config.already.exists.CWMCG0003E"));
@@ -266,9 +276,8 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
             //create a new ConfigWrapper and put it in the cache
             configWrapper = new ConfigWrapper((WebSphereConfig) config);
             configCache.put(classLoader, configWrapper);
-            //register the application's use of that config
-            registerApplication(configWrapper, classLoader);
         }
+        return configWrapper;
     }
 
     /**
@@ -279,16 +288,19 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
      * @param classLoader
      */
     private void registerApplication(ConfigWrapper configWrapper, ClassLoader classLoader) {
+        String applicationName = getApplicationName();
         synchronized (configCache) {
-            String applicationName = getApplicationName();
-            configWrapper.addApplication(applicationName);
-
-            List<ClassLoader> appClassLoaders = appClassLoaderMap.get(applicationName);
+            Set<ClassLoader> appClassLoaders = appClassLoaderMap.get(applicationName);
             if (appClassLoaders == null) {
-                appClassLoaders = new ArrayList<>();
+                appClassLoaders = new HashSet<>();
                 appClassLoaderMap.put(applicationName, appClassLoaders);
+
+                appClassLoaders.add(classLoader);
+                configWrapper.addApplication(applicationName);
+            } else if (!appClassLoaders.contains(classLoader)) {
+                appClassLoaders.add(classLoader);
+                configWrapper.addApplication(applicationName);
             }
-            appClassLoaders.add(classLoader);
         }
     }
 
