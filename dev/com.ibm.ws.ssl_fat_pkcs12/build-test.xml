@@ -42,10 +42,8 @@
 	        <include name="clients/restConnector.jar"/>
 	      </fileset>
 	    </copy>
-	</target>
 
 
-	<target name="addRequiredFiles">
 		<copy todir="${required.lib.dir}">
 			<fileset dir="../build.sharedResources/lib/httpclient/4.1.2" includes="commons-codec-1.4.jar"/>
 			<fileset dir="../build.sharedResources/lib/httpclient/4.1.2" includes="commons-logging-1.1.1.jar"/>
