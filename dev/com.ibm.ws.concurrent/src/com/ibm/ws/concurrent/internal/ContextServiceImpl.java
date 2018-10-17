@@ -125,7 +125,7 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
      * Name of this thread context service.
      * The name is the jndiName if specified, otherwise the config id.
      */
-    private String name;
+    protected String name; // TODO this is temporarily switched from private to protected in order to accommodate test case
 
     /**
      * Service properties.

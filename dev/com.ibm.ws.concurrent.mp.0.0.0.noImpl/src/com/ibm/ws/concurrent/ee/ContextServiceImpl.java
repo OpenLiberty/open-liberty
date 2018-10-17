@@ -43,10 +43,13 @@ import com.ibm.wsspi.threadcontext.WSContextService;
            property = { "creates.objectClass=javax.enterprise.concurrent.ContextService" })
 @Trivial
 public class ContextServiceImpl extends AbstractContextService {
+    private String name; // TODO temporarily exists to accommodate test case
+
     @Activate
     @Override
     protected void activate(ComponentContext context) {
         super.activate(context);
+        name = super.name;
     }
 
     @Deactivate
@@ -59,6 +62,7 @@ public class ContextServiceImpl extends AbstractContextService {
     @Override
     protected void modified(ComponentContext context) {
         super.modified(context);
+        name = super.name;
     }
 
     @Override

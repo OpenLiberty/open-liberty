@@ -17,6 +17,10 @@ Bundle-Description: Placeholder that indicates the lack of a MicroProfile Concur
 
 WS-TraceGroup: concurrent
 
+Import-Package:\
+  com.ibm.ws.context.service.serializable,*
+# TODO the above is a temporary workaround for a test case that accesses internals. Remove once the test is updated
+
 Private-Package:\
   com.ibm.ws.concurrent.ee.*
 
