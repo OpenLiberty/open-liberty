@@ -192,12 +192,10 @@ public class JAASConfigurationImpl implements JAASConfiguration {
     private List<AppConfigurationEntry> createJdk11Krb5loginModuleAppConfigurationEntry(boolean proxy) {
         List<AppConfigurationEntry> loginModuleEntries = new ArrayList<AppConfigurationEntry>();
         Map<String, Object> options = new HashMap<String, Object>();
-        String loginModuleClassName;
+        String loginModuleClassName = JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE_WRAPPER;
         if (proxy) {
             loginModuleClassName = JAASLoginModuleConfig.LOGIN_MODULE_PROXY;
-            options.put(LoginModuleProxy.KERNEL_DELEGATE, getClassForName(JaasLoginConfigConstants.COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE));
-        } else {
-            loginModuleClassName = JaasLoginConfigConstants.COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
+            options.put(LoginModuleProxy.KERNEL_DELEGATE, getClassForName(JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE_WRAPPER));
         }
 
         LoginModuleControlFlag controlFlag = LoginModuleControlFlag.REQUIRED;
