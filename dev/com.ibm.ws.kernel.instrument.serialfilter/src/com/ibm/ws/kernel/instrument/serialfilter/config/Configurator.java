@@ -43,6 +43,7 @@ final class Configurator<T> {
     }
 
     public static<E extends Enum<E>> E destringify(String s) {
+        // no nls enablement is required since the errors which are reported here are all internal error.
         String[] parts = s.split("#", 2);
         if (parts.length == 2) {
             String classname = parts[0];
@@ -52,12 +53,12 @@ final class Configurator<T> {
                 Class<E> enumClass = (Class<E>)Class.forName(classname);
                 return Enum.valueOf(enumClass, memberName);
             } catch (ClassNotFoundException e) {
-                Logger.getLogger(Configurator.class.getName()).warning("Could not find configuration option class: " + classname);
+                Logger.getLogger(Configurator.class.getName()).severe("Could not find configuration option class: " + classname);
             } catch (IllegalArgumentException e) {
-                Logger.getLogger(Configurator.class.getName()).warning("Could not locate enum member: " + classname + "." + memberName);
+                Logger.getLogger(Configurator.class.getName()).severe("Could not locate enum member: " + classname + "." + memberName);
             }
         } else {
-            Logger.getLogger(Configurator.class.getName()).warning("Could not parse config key:" + s);
+            Logger.getLogger(Configurator.class.getName()).severe("Could not parse config key:" + s);
         }
         return null;
     }

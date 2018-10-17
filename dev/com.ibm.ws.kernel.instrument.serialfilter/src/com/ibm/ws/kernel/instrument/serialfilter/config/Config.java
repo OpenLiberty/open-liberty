@@ -30,6 +30,11 @@ public interface Config extends SimpleConfig {
     boolean allows(Class<?> cls, Class<?> [] toSkip);
 
     /**
+     * The functionality is same as above, but support suppressing logging messages if enableMessage is set to false. true is the default.
+     */
+    boolean allows(Class<?> cls, Class<?> [] toSkip, boolean enableMessage);
+
+    /**
      * Discover the appropriate validation mode for a stream at construction,
      * taking into account the call stack and the class of the stream being
      * constructed.

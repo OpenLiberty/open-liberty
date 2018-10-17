@@ -12,6 +12,7 @@ package com.ibm.ws.kernel.instrument.serialfilter.config;
 
 import com.ibm.ws.kernel.instrument.serialfilter.digest.Checksums;
 import com.ibm.ws.kernel.instrument.serialfilter.util.CallStackWalker;
+import com.ibm.ws.kernel.instrument.serialfilter.util.MessageUtil;
 import com.ibm.ws.kernel.instrument.serialfilter.util.trie.ConcurrentTrie;
 import com.ibm.ws.kernel.instrument.serialfilter.util.trie.Trie;
 
@@ -64,7 +65,7 @@ final class ConfigImpl implements Config {
             } catch (IOException e) {
                 // If the user has overridden the default config elsewhere in the class path,
                 // the user-provided file might be badly formatted
-                log.warning("Could not read default config from " + ConfigImpl.class.getResource(defaultConfigPropsFile));
+                log.severe(MessageUtil.format("SF_ERROR_DEFAULT_CONFIGURATION", ConfigImpl.class.getResource(defaultConfigPropsFile), e.getMessage()));
             } finally {
                 try {in.close();} catch (IOException suppressed) {}
             }
@@ -85,7 +86,7 @@ final class ConfigImpl implements Config {
             }
             final File f = new File(filename);
             if (!!!f.isFile()) {
-                log.warning("Could not find configuration file at configured location: " + filename);
+                log.severe(MessageUtil.format("SF_ERROR_SYSTEM_CONFIGURATION_NOT_FIND", filename));
                 return;
             }
             try {
@@ -100,9 +101,9 @@ final class ConfigImpl implements Config {
                 cfg.load(props);
                 if (log.isLoggable(FINE)) log.fine("Finished reading system config.");
             } catch (PrivilegedActionException e) {
-                log.log(WARNING, "Could not read configuration file at configured location: " + filename, e);
+                log.severe(MessageUtil.format("SF_ERROR_SYSTEM_CONFIGURATION", filename, e));
             } catch (IOException e) {
-                log.log(WARNING, "Could not read configuration file at configured location: " + filename, e);
+                log.severe(MessageUtil.format("SF_ERROR_SYSTEM_CONFIGURATION", filename, e));
             }
         }
     };
@@ -120,11 +121,12 @@ final class ConfigImpl implements Config {
         // resort to the default if no stack frame matches any entry,
         // so a catch-all entry would short-circuit this logic
 
-        // instead store the default setting — read this from the parsed config
+        // instead store the default setting read this from the parsed config
         defaultValidationMode = validationModes.get(DEFAULT_KEY);
         if (defaultValidationMode == null) {
-            Logger.getLogger(ConfigImpl.class.getName()).warning("Could not find a default validation mode");
-            throw new Error("No default validation mode specified");
+            String message = MessageUtil.format("SF_ERROR_NO_DEFAULT_MODE");
+            Logger.getLogger(ConfigImpl.class.getName()).severe(message);
+            throw new Error(message);
         }
         validationModes.remove(DEFAULT_KEY);
 
@@ -142,11 +144,18 @@ final class ConfigImpl implements Config {
 
     @Override
     public boolean allows(final Class<?> cls, final Class<?> [] toSkip) {
-        Logger log = Logger.getLogger(ConfigImpl.class.getName());
+        return allows(cls, toSkip, true);
+    }
+    @Override
+    public boolean allows(final Class<?> cls, final Class<?> [] toSkip, boolean enableMessage) {
+        Logger log = null;
+        if (enableMessage) {
+            log = Logger.getLogger(ConfigImpl.class.getName());
+        }
         // short-circuit if this parent hierarchy has already been checked
         if (cls != toSkip[0]) {
             if (isForbidden(cls)) {
-                log.warning("Deserialization of class " + cls.getName() + " is prevented because it is not permitted by the current configuration.");
+                if (log != null) log.severe(MessageUtil.format("SF_ERROR_NOT_PERMIT", cls.getName()));
                 return false;
             }
             // if child class is externalizable, only check externalizable ancestors
@@ -154,7 +163,7 @@ final class ConfigImpl implements Config {
             final Class<?> iface = externalizableOrSerializable(cls);
             for (Class c = cls.getSuperclass(); c != null && iface.isAssignableFrom(c); c = c.getSuperclass()) {
                 if (isForbidden(c)) {
-                    log.warning("Deserialization of class " + cls.getName() + " is prevented because its ancestor " + c.getName() + " is not permitted by the current configuration.");
+                    if (log != null) log.severe(MessageUtil.format("SF_ERROR_NOT_PERMIT_SUPERCLASS", cls.getName(), c.getName()));
                     return false;
                 }
             }
@@ -187,7 +196,7 @@ final class ConfigImpl implements Config {
         // Because this method is called from a constructor, there may be a chain of <init> calls
         // near the top of the stack, with one or more entries per class in the hierarchy.
 
-        // Create a set of the classes we want to skip — preserve order of insertion
+        // Create a set of the classes we want to skip * reserve order of insertion
         Set<Class<?>> streamClasses = new LinkedHashSet<Class<?>>();
 
         // Loop 1: Visit the superclasses up to and including ObjectInputStream
@@ -235,20 +244,21 @@ final class ConfigImpl implements Config {
     public ValidationMode getValidationMode(String s) {
         Logger log = Logger.getLogger(ConfigImpl.class.getName());
         SpecifierFormat f = SpecifierFormat.fromString(s);
+
         switch (f) {
             case CLASS:
             case METHOD:
                 return validationModes.getLongestPrefixValue(SpecifierFormat.internalize(s));
             case METHOD_PREFIX:
             case PREFIX:
-                log.warning("Cannot specify prefix when querying validation mode setting: " + s);
+                log.severe(MessageUtil.format("SF_ERROR_GET_MODE_VALUE_PREFIX", s));
                 return null;
             case DIGEST:
-                log.warning("Cannot specify digest when querying validation mode setting: " + s);
+                log.severe(MessageUtil.format("SF_ERROR_GET_MDOE_VALUE_DIGEST", s));
                 return null;
             case UNKNOWN:
             default:
-                log.warning("Unrecognised format for validation mode setting: " + s);
+                log.severe(MessageUtil.format("SF_ERROR_GET_MODE_VALUE_UNKNOWN", s));
                 return null;
         }
     }
@@ -265,11 +275,11 @@ final class ConfigImpl implements Config {
             case METHOD_PREFIX:
                 return mode != validationModes.put(SpecifierFormat.internalize(s), mode);
             case DIGEST:
-                log.warning("Cannot specify digest format for validation mode setting: " + s);
+                log.severe(MessageUtil.format("SF_ERROR_SET_MDOE_VALUE_DIGEST", s));
                 return false;
             case UNKNOWN:
             default:
-                log.warning("Unrecognised format for validation mode setting: " + s);
+                log.severe(MessageUtil.format("SF_ERROR_SET_MDOE_VALUE_UNKNOWN", s));
                 return false;
         }
     }
@@ -286,11 +296,11 @@ final class ConfigImpl implements Config {
                 return mode == permissions.put(SpecifierFormat.internalize(s), mode);
             case METHOD:
             case METHOD_PREFIX:
-                log.warning("Cannot specify method when setting permission: " + s);
+                log.severe(MessageUtil.format("SF_ERROR_SET_PERMISSION_VALUE_METHOD", s));
                 return false;
             case UNKNOWN:
             default:
-                log.warning("Unrecognised format for permission setting: " + s);
+                log.severe(MessageUtil.format("SF_ERROR_SET_PERMISSION_VALUE_UNKNOWN", s));
                 return false;
         }
     }
@@ -299,18 +309,19 @@ final class ConfigImpl implements Config {
     public void load(Properties props) {
         Logger log = Logger.getLogger(ConfigImpl.class.getName());
         for (Entry<Object, Object> entry : props.entrySet()) {
+
             if (!!! (entry.getKey() instanceof String)) {
-                log.warning("Property key must be a string:" + entry.getKey() + "=" + entry.getValue());
+                log.severe(MessageUtil.format("SF_ERROR_LOAD_PROPERTY_KEY", entry.getKey()));
                 continue;
             }
             if (!!! (entry.getValue() instanceof String)) {
-                log.warning("Property value must be a string:" + entry.getKey() + "=" + entry.getValue());
+                log.severe(MessageUtil.format("SF_ERROR_LOAD_PROPERTY_VALUE", entry.getValue()));
             }
             String key = (String)entry.getKey();
             for (String val : ((String)entry.getValue()).trim().split(" *[ ,] *")) {
                 ConfigSetting<String, Boolean> mode = MODES_BY_NAME.get(val);
                 if (mode == null) {
-                    log.warning("Cannot find mode matching string '" + val + "' from config entry " + entry);
+                    log.severe(MessageUtil.format("SF_ERROR_LOAD_PROPERTY_NOT_MATCH", val, entry));
                     continue;
                 }
                 mode.apply(this, key);
