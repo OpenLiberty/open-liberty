@@ -38,7 +38,7 @@ public class ConsoleFormatTest {
 
     protected static final Class<?> c = ConsoleFormatTest.class;
 
-    @Server("com.ibm.ws.logging.json.StdoutServer")
+    @Server("com.ibm.ws.logging.json.ConsoleFormatServer")
     public static LibertyServer server;
 
     public static final String APP_NAME = "LogstashApp";
