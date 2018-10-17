@@ -229,7 +229,7 @@ public class WSKeyStore extends Properties {
             // check if we have an existing key.jks.  If so, use that instead of creating a PKCS12 keystore
             File f = new File(res);
 
-            if (f.exists() && this.location.toLowerCase().endsWith("/key.p12")) {
+            if (f.exists() && this.location != null && this.location.toLowerCase().endsWith("/key.p12")) {
                 // use the JKS file instead, as it exists
                 this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
                 specifiedType = Constants.KEYSTORE_TYPE_JKS;
@@ -237,17 +237,17 @@ public class WSKeyStore extends Properties {
             }
 
             // check if they've specified a type, and create the corresponding key.jks or key.p12
-            if (type.equals(Constants.KEYSTORE_TYPE_JKS) && this.location.toLowerCase().endsWith("/key.p12")) {
+            if (type.equals(Constants.KEYSTORE_TYPE_JKS) && this.location != null && this.location.toLowerCase().endsWith("/key.p12")) {
                 this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
                 specifiedType = Constants.KEYSTORE_TYPE_JKS;
                 this.type = Constants.KEYSTORE_TYPE_JKS;
 
-            } else if (type.equals(Constants.KEYSTORE_TYPE_PKCS12) && this.location.toLowerCase().endsWith("/key.p12")) {
+            } else if (type.equals(Constants.KEYSTORE_TYPE_PKCS12) && this.location != null && this.location.toLowerCase().endsWith("/key.p12")) {
                 this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
                 specifiedType = Constants.KEYSTORE_TYPE_PKCS12;
                 this.type = Constants.KEYSTORE_TYPE_PKCS12;
             } else if (!type.equals(Constants.KEYSTORE_TYPE_JKS)) {
-                if (this.location.toLowerCase().endsWith(".jks") || this.location.toLowerCase().contains(".jceks")) {
+                if (this.location != null && (this.location.toLowerCase().endsWith(".jks") || this.location.toLowerCase().contains(".jceks"))) {
                     type = LibertyConstants.DEFAULT_FALLBACK_TYPE;
                     specifiedType = type;
                 }
