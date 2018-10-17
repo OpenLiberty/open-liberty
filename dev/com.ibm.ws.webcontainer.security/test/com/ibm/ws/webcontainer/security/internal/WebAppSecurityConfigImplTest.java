@@ -336,6 +336,12 @@ public class WebAppSecurityConfigImplTest {
     }
 
     @Test
+    public void getChangedProperties_useLtpaSSOForJaspic() {
+        driveSingleAttributeTest("useLtpaSSOForJaspic",
+                                 Boolean.TRUE, Boolean.FALSE);
+    }
+
+    @Test
     public void getChangedProperties_useAuthenticationDataForUnprotectedResource() {
         driveSingleAttributeTest("useAuthenticationDataForUnprotectedResource",
                                  Boolean.TRUE, Boolean.FALSE);
