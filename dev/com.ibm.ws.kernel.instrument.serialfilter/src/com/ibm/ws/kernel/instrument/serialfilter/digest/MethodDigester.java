@@ -19,7 +19,7 @@ class MethodDigester extends MethodVisitor implements Digester {
     private DigesterSortedMap<AnnotationDigester> annotations = new DigesterSortedMap<AnnotationDigester>();
 
     MethodDigester(int access) {
-        super(Opcodes.ASM5);
+        super(Opcodes.ASM7);
         processor.consider(access);
     }
 

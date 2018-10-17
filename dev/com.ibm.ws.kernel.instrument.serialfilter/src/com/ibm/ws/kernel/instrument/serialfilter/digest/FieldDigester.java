@@ -19,7 +19,7 @@ class FieldDigester extends FieldVisitor implements Digester {
     private final DigesterSortedMap<AnnotationDigester> annotations = new DigesterSortedMap<AnnotationDigester>();
 
     FieldDigester(int access, String desc, Object value) {
-        super(Opcodes.ASM5);
+        super(Opcodes.ASM7);
         processor
                 .consider(access)
                 .consider(desc)

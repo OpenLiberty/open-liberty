@@ -105,7 +105,7 @@ public class ObjectInputStreamClassInjector extends ClassVisitor {
                 if (debugEnabled) {
                     System.out.println("Searching ObjectInputStream.class bytes for fields: " + fieldsToLookFor);
                 }
-                cr.accept(new ClassVisitor(Opcodes.ASM5) {
+                cr.accept(new ClassVisitor(Opcodes.ASM7) {
                     @Override
                     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
                         if (PreMainUtil.isDebugEnabled()) {
@@ -131,7 +131,7 @@ public class ObjectInputStreamClassInjector extends ClassVisitor {
     }
 
     ObjectInputStreamClassInjector(ClassVisitor cv) {
-        super(Opcodes.ASM5, cv);
+        super(Opcodes.ASM7, cv);
     }
 
     private void addFieldsOnlyOnce() {
@@ -183,7 +183,7 @@ public class ObjectInputStreamClassInjector extends ClassVisitor {
 
     private final class MakeStaticInitializerAssignField extends MethodVisitor {
         MakeStaticInitializerAssignField(MethodVisitor mv) {
-            super(ASM5, mv);
+            super(ASM7, mv);
         }
 
         @Override
@@ -214,7 +214,7 @@ public class ObjectInputStreamClassInjector extends ClassVisitor {
 
     private final class MakeConstructorAssignFieldBeforeReturning extends MethodVisitor {
         MakeConstructorAssignFieldBeforeReturning(MethodVisitor mv) {
-            super(ASM5, mv);
+            super(ASM7, mv);
         }
 
         @Override
@@ -247,7 +247,7 @@ public class ObjectInputStreamClassInjector extends ClassVisitor {
 
     private class MakeMethodValidateResultOfResolveClass extends MethodVisitor {
         MakeMethodValidateResultOfResolveClass(MethodVisitor mv) {
-            super(ASM5, mv);
+            super(ASM7, mv);
         }
 
         @Override
