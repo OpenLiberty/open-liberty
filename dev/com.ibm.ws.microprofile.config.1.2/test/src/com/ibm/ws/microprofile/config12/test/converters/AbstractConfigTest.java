@@ -23,7 +23,7 @@ public abstract class AbstractConfigTest {
 
     @Before
     public void before() {
-        ConfigProviderResolver.setInstance(new TestConfig12ProviderResolver());
+        ConfigProviderResolver.setInstance(new Config12ProviderResolverImpl());
     }
 
     @After

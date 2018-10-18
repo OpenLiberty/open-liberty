@@ -34,7 +34,7 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
+import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -46,6 +46,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
 
     private final AtomicServiceReference<ScheduledExecutorService> scheduledExecutorServiceRef = new AtomicServiceReference<ScheduledExecutorService>("scheduledExecutorService");
 
+    //NOTE: a lock must be held on the configCache whenever reading or writing to the configCache, the appClassLoaderMap or any of the contained ConfigWrappers.
     //map from classloader to config
     private final Map<ClassLoader, ConfigWrapper> configCache = new HashMap<>();
     //map from app Name to list of ClassLoader in use
@@ -129,7 +130,9 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
             applicationName = applicationJEEName.getApplication();
         }
         if (applicationName == null) {
-            throw new ConfigException(Tr.formatMessage(tc, "unable.to.determine.application.name.CWMCG0019E"));
+            //There are cases where the Config is used by a global component or we just can't work out which app it is. Then we fall back to this global name.
+            //Configs used "globally" will be shutdown when the server is shutdown
+            applicationName = ConfigConstants.GLOBAL_CONFIG_APPLICATION_NAME;
         }
         return applicationName;
     }
@@ -189,11 +192,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
                     appClassLoaderMap.remove(app);
                 }
 
-                try {
-                    config.close();
-                } catch (IOException e) {
-                    throw new ConfigException(Tr.formatMessage(tc, "could.not.close.CWMCG0004E", e));
-                }
+                config.close();
             }
         }
     }

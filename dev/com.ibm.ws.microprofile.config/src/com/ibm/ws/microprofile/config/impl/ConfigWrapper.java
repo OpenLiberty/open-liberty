@@ -10,64 +10,66 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.impl;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.microprofile.config.Config;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 /**
- * Wrapper to record which applications are using a Config
+ * Wrapper to record which applications are using a Config.
+ *
+ * This class is not thread-safe and is package scoped only
  */
-public class ConfigWrapper implements Closeable {
+class ConfigWrapper {
+
+    private static final TraceComponent tc = Tr.register(ConfigWrapper.class);
 
     private final WebSphereConfig config;
     private final Set<String> applications = new HashSet<>();
 
-    public ConfigWrapper(WebSphereConfig config) {
+    ConfigWrapper(WebSphereConfig config) {
         this.config = config;
     }
 
-    public void addApplication(String appName) {
-        synchronized (this) {
-            this.applications.add(appName);
-        }
+    void addApplication(String appName) {
+        this.applications.add(appName);
     }
 
-    public boolean removeApplication(String appName) {
+    boolean removeApplication(String appName) {
         boolean close = false;
-        synchronized (this) {
-            boolean removed = this.applications.remove(appName);
-            if (removed && this.applications.size() == 0) {
-                close = true;
-            }
+        boolean removed = this.applications.remove(appName);
+        if (removed && this.applications.size() == 0) {
+            close = true;
         }
         return close;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void close() throws IOException {
-        synchronized (this) {
-            this.applications.clear();
+    void close() {
+        this.applications.clear();
+        try {
             this.config.close();
+        } catch (IOException e) {
+            throw new ConfigException(Tr.formatMessage(tc, "could.not.close.CWMCG0004E", e));
         }
     }
 
     /**
      * @return
      */
-    public Set<String> getApplications() {
+    Set<String> getApplications() {
         return applications;
     }
 
     /**
      * @return
      */
-    public Config getConfig() {
+    Config getConfig() {
         return config;
     }
 }
