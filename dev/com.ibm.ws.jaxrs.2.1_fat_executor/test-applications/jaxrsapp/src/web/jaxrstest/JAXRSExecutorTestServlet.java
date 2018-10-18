@@ -28,6 +28,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
+import java.util.logging.Logger;
 
 import javax.annotation.Resource;
 import javax.naming.InitialContext;
@@ -52,6 +53,7 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/JAXRSExecutorTestServlet")
 public class JAXRSExecutorTestServlet extends FATServlet {
+    private static final Logger _log = Logger.getLogger(JAXRSExecutorTestServlet.class.getName());
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(1);
 
     @Resource(name = "java:comp/env/concurrent/scheduledExecutorRef", lookup = "concurrent/scheduledExecutor")
@@ -62,20 +64,27 @@ public class JAXRSExecutorTestServlet extends FATServlet {
     // of the servlet because it is running on a ManagedExecutorService thread.
     @Test
     public void testClientBuilderSubmitInvocationCallbackViaManagedExecutor(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        final String m = "testClientBuilderSubmitInvocationCallbackViaManagedExecutor";
         String uri = "http://" + request.getServerName() + ":" + request.getServerPort() + "/jaxrsapp/testapp/test/info";
 
         // Prove that the resource is available to the servlet thread,
-        assertNotNull(new InitialContext().lookup("java:comp/env/concurrent/scheduledExecutorRef"));
+        Object scheduledExecutorRef = new InitialContext().lookup("java:comp/env/concurrent/scheduledExecutorRef");
+        assertNotNull(scheduledExecutorRef);
+        _log.info(m + " scheduledExecutorRef=" + scheduledExecutorRef);
+        _log.info(m + " scheduledExecutor=" + scheduledExecutor);
 
-        ClientBuilder clientBuilder = ClientBuilder.newBuilder();
+        ClientBuilder clientBuilder = ClientBuilder.newBuilder().connectTimeout(1, TimeUnit.HOURS).readTimeout(1, TimeUnit.HOURS);
         Client client = clientBuilder.executorService(scheduledExecutor).build();
 
         final ConcurrentLinkedQueue<Object> result = new ConcurrentLinkedQueue<Object>();
         Future<String> f = client.target(uri).request("text/plain").buildGet().submit(new InvocationCallback<String>() {
             @Override
             public void completed(String response) {
+                _log.info(m + " Response from inside InvocationCallback: " + response);
                 result.add(response);
-                result.add(Thread.currentThread().getName());
+                String threadName = Thread.currentThread().getName();
+                _log.info(m + " Thread name inside InvocationCallback: " + threadName);
+                result.add(threadName);
                 try {
                     result.add(new InitialContext().lookup("java:comp/env/concurrent/scheduledExecutorRef"));
                 } catch (NamingException x) {

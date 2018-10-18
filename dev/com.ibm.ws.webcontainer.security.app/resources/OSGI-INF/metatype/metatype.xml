@@ -84,6 +84,10 @@
             required="false" type="Boolean"
             default="false" />
 
+        <AD id="useLtpaSSOForJaspic" name="%useLtpaSSOForJaspic" description="%useLtpaSSOForJaspic.desc"
+             required="false" type="Boolean"
+             default="false" />
+
         <AD id="useAuthenticationDataForUnprotectedResource" name="%useAuthenticationDataForUnprotectedResource" description="%useAuthenticationDataForUnprotectedResource.desc"
             required="false" type="Boolean"
             default="true" />

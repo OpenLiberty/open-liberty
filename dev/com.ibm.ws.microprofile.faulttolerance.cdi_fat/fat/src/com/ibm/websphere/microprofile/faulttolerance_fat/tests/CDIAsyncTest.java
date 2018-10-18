@@ -13,7 +13,6 @@ package com.ibm.websphere.microprofile.faulttolerance_fat.tests;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ibm.ws.fat.util.LoggingTest;
@@ -65,7 +64,13 @@ public class CDIAsyncTest extends LoggingTest {
     }
 
     @Test
-    @Ignore // Known issues, reenable under #937
+    public void testAsyncTimoutNoInterrupt() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/async?testMethod=testAsyncTimeoutNoInterrupt",
+                                         "SUCCESS");
+    }
+
+    @Test
     public void testAsyncDoubleJump() throws Exception {
         WebBrowser browser = createWebBrowserForTestCase();
         getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/async?testMethod=testAsyncDoubleJump",

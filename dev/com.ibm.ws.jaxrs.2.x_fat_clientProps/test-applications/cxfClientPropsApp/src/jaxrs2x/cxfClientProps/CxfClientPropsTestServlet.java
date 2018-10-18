@@ -71,7 +71,7 @@ public class CxfClientPropsTestServlet extends FATServlet {
     public void testCXFConnectTimeout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         final String m = "testCXFConnectTimeout";
         long CXF_TIMEOUT = 5000;
-        long MARGIN = 2000;
+        long MARGIN = 5000;
         
         Client client = ClientBuilder.newBuilder()
                                      .property("client.ConnectionTimeout", CXF_TIMEOUT)
@@ -96,7 +96,7 @@ public class CxfClientPropsTestServlet extends FATServlet {
     public void testCXFReadTimeout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         final String m = "testCXFReadTimeout";
         long CXF_TIMEOUT = 5000;
-        long MARGIN = 2000;
+        long MARGIN = 5000;
         
         Client client = ClientBuilder.newBuilder()
                                      .property("client.ReceiveTimeout", CXF_TIMEOUT)
@@ -123,7 +123,7 @@ public class CxfClientPropsTestServlet extends FATServlet {
     public void testIBMConnectTimeoutOverridesCXFConnectTimeout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         final String m = "testIBMConnectTimeoutOverridesCXFConnectTimeout";
         long IBM_TIMEOUT = 5000;
-        long MARGIN = 3000;
+        long MARGIN = 5000;
         long CXF_TIMEOUT = 10000;
         Client client = ClientBuilder.newBuilder()
                                      .property("com.ibm.ws.jaxrs.client.connection.timeout", IBM_TIMEOUT)

@@ -52,7 +52,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.concurrent.mp.ThreadContextImpl;
 import com.ibm.ws.context.service.serializable.ContextualCallable;
 import com.ibm.ws.context.service.serializable.ContextualInvocationHandler;
 import com.ibm.ws.context.service.serializable.ContextualObject;
@@ -71,12 +70,18 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
  * Captures and propagates thread context.
+ *
+ * All declarative services annotations on this class are ignored.
+ * The annotations on
+ * com.ibm.ws.concurrent.ee.ContextServiceImpl and
+ * com.ibm.ws.concurrent.mp.ThreadContextImpl
+ * apply instead.
  */
 @Component(name = "com.ibm.ws.context.service",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = { ResourceFactory.class, ContextService.class, WSContextService.class, ApplicationRecycleComponent.class },
            property = { "creates.objectClass=javax.enterprise.concurrent.ContextService" })
-public class ContextServiceImpl extends ThreadContextImpl implements ContextService, ResourceFactory, WSContextService, ApplicationRecycleComponent {
+public class ContextServiceImpl implements ContextService, ResourceFactory, WSContextService, ApplicationRecycleComponent {
     private static final TraceComponent tc = Tr.register(ContextServiceImpl.class);
 
     // Names of references
@@ -120,7 +125,7 @@ public class ContextServiceImpl extends ThreadContextImpl implements ContextServ
      * Name of this thread context service.
      * The name is the jndiName if specified, otherwise the config id.
      */
-    private String name;
+    protected String name; // TODO this is temporarily switched from private to protected in order to accommodate test case
 
     /**
      * Service properties.

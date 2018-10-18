@@ -34,6 +34,7 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 ConfigServerXMLOverrideTests20.class,
                 ConfigActuatorXMLOverrideTests20.class,
                 CDITests.class,
+                GenerateWebServerPluginTest.class,
                 UseDefaultHostTest15.class,
                 UseDefaultHostTest20.class,
                 PreThinnedSpringBootTests20.class,
