@@ -965,7 +965,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             Integer waitTime = new Integer(5);
             applicationReadyLatch.await(waitTime.intValue(), TimeUnit.MINUTES);
             if (applicationReadyLatch.getCount() > 0) {
-                Tr.audit(tc, "audit.application.started.event.timeout", applicationInformation.getName(),
+                Tr.audit(tc, "warning.application.started.event.timeout", applicationInformation.getName(),
                          "ApplicationReadyEvent", waitTime);
             }
         } catch (InterruptedException e) {
