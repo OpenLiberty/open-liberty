@@ -27,7 +27,6 @@
 			<server host="${ldap.server.1.port}" port="379"/>
 		</failoverServers>
 		<failoverServers name="failoverLdapServersGroup2">
-			<server host="${ldap.server.4.name}" port="${ldap.server.4.port}"/>
 			<server host="${ldap.server.1.name}" port="${ldap.server.1.port}"/>
 		</failoverServers>
 		<failoverServers name="emptyFailover" />
