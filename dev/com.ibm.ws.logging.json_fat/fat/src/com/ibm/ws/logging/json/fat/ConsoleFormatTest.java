@@ -121,9 +121,19 @@ public class ConsoleFormatTest {
          * <logging traceFileName="stdout" consoleLogLevel="INFO" consoleFormat="json" messageFormat="json" traceSpecification="com.ibm.logs.LogstashServlet=finest" />
          */
         line = setConfig(SERVER_XML_JSON_STDOUT, consoleLogFile);
-        Thread.sleep(500);
-        /* Check that the console log now contains JSON */
-        hasNoJSON = checkStringsNotInLog(JSON_MESSAGES, consoleLogFile);
+        boolean found = false;
+        int count = 0;
+        while (!found) {
+            /* Check if the console log now contains JSON. Check 10 times before exiting loop */
+            hasNoJSON = checkStringsNotInLog(JSON_MESSAGES, consoleLogFile);
+            /* if JSON is found, exit loop */
+            if (!hasNoJSON || count >= 10) {
+                found = true;
+            }
+            /* Wait 1 second between each check */
+            Thread.sleep(1000);
+            count++;
+        }
         assertFalse(hasNoJSON);
     }
 
