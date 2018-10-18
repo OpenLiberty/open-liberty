@@ -128,6 +128,7 @@ public class SpringBootHandler implements ApplicationHandler<DeployedAppInfo> {
 
             @Override
             public void failedCompletion(Future<Boolean> future, Throwable t) {
+                springBootApplication.getApplicationReadyLatch().countDown();
                 springBootApplication.uninstallApp();
             }
         });
