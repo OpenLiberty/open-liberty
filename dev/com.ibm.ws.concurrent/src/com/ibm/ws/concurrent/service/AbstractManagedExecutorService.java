@@ -8,13 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.concurrent.mp;
+package com.ibm.ws.concurrent.service;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl;
 
 /**
- * Super class of ContextServiceImpl to be used with Java 7, where
- * the MicroProfile Concurrency interfaces (which require Java 8) are unavailable.
+ * Extension point that enables MicroProfile and EE-only implementations to
+ * define the OSGi service component differently.
+ * This model is only needed to preserve support for Java 7.
+ * Once Java 7 is no longer supported, this should all be collapsed
+ * back into ManagedExecutorServiceImpl.
  */
 @Trivial
-public class ThreadContextImpl {}
+public class AbstractManagedExecutorService extends ManagedExecutorServiceImpl {}
