@@ -8,40 +8,50 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.appConfig.classLoaderCache2.test;
+package com.ibm.ws.microprofile.appConfig.classLoaderCache.test;
 
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.Method;
 
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
-import org.junit.Test;
 
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/")
-public class ClassLoaderCache2TestServlet extends FATServlet {
-    @Test
-    public void testClassLoaderCache() throws Exception {
+public class ClassLoaderCacheTestServlet extends FATServlet {
+
+    public static final String BEFORE = "BEFORE";
+    public static final String AFTER = "AFTER";
+
+    @Override
+    protected void invokeTest(String method, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String beforeStr = request.getParameter(BEFORE);
+        String afterStr = request.getParameter(AFTER);
+        int before = Integer.parseInt(beforeStr);
+        int after = Integer.parseInt(afterStr);
+
         ConfigProviderResolver resolver = ConfigProviderResolver.instance();
         System.out.println("Resolver: " + resolver.getClass().getName());
         Method getConfigCacheSize = resolver.getClass().getMethod("getConfigCacheSize");
         int size = (int) getConfigCacheSize.invoke(resolver, null);
         System.out.println("Before: " + size);
-        assertEquals("Wrong number of Configs in the cache", 2, size); //ClassLoaderCache1TestServlet should always be run first so there should already be two configs in the cache ... but this test should only add one more
+        assertEquals("Wrong number of Configs in the cache", before, size);
         Config configA = resolver.getConfig(); //using the classloader unique to the war
         Config configB = resolver.getConfig(getRootClassLoader()); //using the common root classloader
         size = (int) getConfigCacheSize.invoke(resolver, null);
         System.out.println("After: " + size);
-        assertEquals("Wrong number of Configs in the cache", 3, size);
+        assertEquals("Wrong number of Configs in the cache", after, size);
     }
 
-    private ClassLoader getRootClassLoader() {
-        ClassLoader rootCL = this.getClass().getClassLoader();
+    private static ClassLoader getRootClassLoader() {
+        ClassLoader rootCL = ClassLoaderCacheTestServlet.class.getClassLoader();
         ClassLoader parentCL = rootCL;
         while (parentCL != null) {
             rootCL = parentCL;
