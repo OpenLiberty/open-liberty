@@ -9,7 +9,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion=1.1
+bVersion=2.0
 
 Bundle-Name: Container service interfaces
 Bundle-SymbolicName: com.ibm.ws.container.service
@@ -29,6 +29,7 @@ Export-Package: \
    com.ibm.jtc.adapter;provide:=true, \
    com.ibm.websphere.csi;-split-package:=merge-last, \
    com.ibm.ws.container.service.annotations; provide:=true, \
+   com.ibm.ws.container.service.annotations.internal; provide:=true, \
    com.ibm.ws.container.service.app.deploy; provide:=true, \
    com.ibm.ws.container.service.app.deploy.extended; provide:=true, \
    com.ibm.ws.container.service.config; provide:=true, \

@@ -44,7 +44,7 @@ Service-Component:\
     configuration-policy:=ignore; \
     properties:="service.vendor=IBM", \
   com.ibm.wsspi.anno.targets.cache; \
-    provide:=com.ibm.wsspi.anno.targets.TargetCache_Factory; \
+    provide:=com.ibm.wsspi.anno.targets.cache.TargetCache_Factory; \
     implementation:=com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_Factory; \
     configuration-policy:=ignore; \
     properties:="service.vendor=IBM", \

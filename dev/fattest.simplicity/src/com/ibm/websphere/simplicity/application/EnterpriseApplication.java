@@ -51,6 +51,7 @@ public class EnterpriseApplication extends Application {
         return getInstallLocation(node) + "/" + this.name + ".ear";
     }
 
+    @Deprecated
     @Override
     public UpdateWrapper getUpdateWrapper(RemoteFile originalAppFile) throws Exception {
         return getUpdateWrapper();
