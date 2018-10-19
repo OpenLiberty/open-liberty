@@ -30,8 +30,7 @@ public class ClassLoaderCacheTestServlet extends FATServlet {
     public static final String BEFORE = "BEFORE";
     public static final String AFTER = "AFTER";
 
-    @Override
-    protected void invokeTest(String method, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testClassLoaderCache(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String beforeStr = request.getParameter(BEFORE);
         String afterStr = request.getParameter(AFTER);
         int before = Integer.parseInt(beforeStr);

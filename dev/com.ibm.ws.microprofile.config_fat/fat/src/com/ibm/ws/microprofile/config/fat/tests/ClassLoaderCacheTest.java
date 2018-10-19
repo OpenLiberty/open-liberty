@@ -20,9 +20,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -59,9 +57,6 @@ public class ClassLoaderCacheTest extends FATServletClient {
 
     @Server("ClassLoaderCacheServer")
     public static LibertyServer server;
-
-    @Rule
-    public TestName testname = new TestName();
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -133,7 +128,7 @@ public class ClassLoaderCacheTest extends FATServletClient {
 
     private void runtConfigTest(String path, int before, int after) throws Exception {
         String pathAndQuery = path + "?" + ClassLoaderCacheTestServlet.BEFORE + "=" + before + "&" + ClassLoaderCacheTestServlet.AFTER + "=" + after;
-        runTest(server, pathAndQuery, testname); //note this test servlet only has one method and we call it directly ... this testname is passed in to help a little with debugging
+        runTest(server, pathAndQuery, "testClassLoaderCache");
     }
 
 }
