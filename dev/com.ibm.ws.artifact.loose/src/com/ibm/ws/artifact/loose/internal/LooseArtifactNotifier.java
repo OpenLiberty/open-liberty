@@ -39,7 +39,7 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
 /**
  *
  */
-public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
+public class LooseArtifactNotifier implements ArtifactNotifier, com.ibm.ws.kernel.filemonitor.FileMonitor {
 
     private final LooseArchive root;
     private final List<EntryInfo> entries;
@@ -295,6 +295,9 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
         if (service == null) {
             serviceProperties.put(Constants.SERVICE_VENDOR, "IBM");
 
+            //Adding INTERNAL parameter MONITOR_IDENTIFICATION_NAME to identify this monitor
+            serviceProperties.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, "com.ibm.ws.kernel.monitor.artifact");
+
             Long newInterval = 5000L; //default of 5seconds.
             if (interval != null) {
                 newInterval = interval;
@@ -343,6 +346,9 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
     private synchronized void updateNonRecurseFileMonitorService(Set<String> dirs, Set<String> files) {
         if (nonRecurseService == null) {
             nonRecurseServiceProperties.put(Constants.SERVICE_VENDOR, "IBM");
+
+            //Adding INTERNAL parameter MONITOR_IDENTIFICATION_NAME to identify this monitor
+            nonRecurseServiceProperties.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, "com.ibm.ws.kernel.monitor.artifact");
 
             Long newInterval = 5000L; // 5 seconds default
             if (interval != null) {
