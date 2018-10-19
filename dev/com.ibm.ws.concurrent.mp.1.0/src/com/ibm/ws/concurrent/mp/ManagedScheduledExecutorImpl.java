@@ -101,7 +101,7 @@ public class ManagedScheduledExecutorImpl extends AbstractManagedScheduledExecut
 
     @Override
     public <U> CompletableFuture<U> newIncompleteFuture() {
-        return null; // TODO
+        return ManagedCompletableFuture.newIncompleteFuture(this);
     }
 
     @Override

@@ -12,7 +12,6 @@ package com.ibm.ws.concurrent.rx;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -46,7 +45,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.kernel.service.util.JavaInfo;
-import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
@@ -375,6 +373,21 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             stage.super_completeExceptionally(x);
             return stage;
         }
+    }
+
+    // TODO this method (and the other static methods that don't directly equate to static methods on CompletableFuture)
+    // should eventually be moved to a different interface. For now, this is a convenient place to allow progress to be made
+    /**
+     * Construct a new incomplete CompletableFuture that is backed by the specified executor.
+     *
+     * @param executor the default asynchronous execution facility for the new CompletableFuture.
+     * @return incomplete completable future where the specified executor is the default asynchronous execution facility.
+     */
+    public static <T> CompletableFuture<T> newIncompleteFuture(Executor executor) {
+        if (JAVA8)
+            return new ManagedCompletableFuture<T>(new CompletableFuture<T>(), executor, null);
+        else
+            return new ManagedCompletableFuture<T>(executor, null);
     }
 
     /**
