@@ -22,12 +22,9 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: concurrent
 
-Export-Package:\
-  com.ibm.ws.concurrent.rx
-  # TODO remove the above export once ManagedCompletableFuture is fully transitioned to MicroProfile Concurrency interfaces
-
 Private-Package:\
-  com.ibm.ws.concurrent.mp
+  com.ibm.ws.concurrent.mp,\
+  com.ibm.ws.concurrent.rx
     
 instrument.classesExcludes: com/ibm/ws/concurrent/mp/resources/*.class
 

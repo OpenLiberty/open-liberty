@@ -62,8 +62,6 @@ import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.junit.Test;
 
-import com.ibm.ws.concurrent.rx.ManagedCompletableFuture; // Remove once fully switched over to MicroProfile Concurrency API
-
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -88,10 +86,15 @@ public class ConcurrentRxTestServlet extends FATServlet {
     private BiFunction<CompletableFuture<?>, Supplier<?>, CompletableFuture<?>> completeAsync;
     private TriFunction<CompletableFuture<?>, Supplier<?>, Executor, CompletableFuture<?>> completeAsync_;
     private QuadFunction<CompletableFuture<?>, Object, Long, TimeUnit, CompletableFuture<?>> completeOnTimeout;
+    private Function<CompletableFuture<?>, CompletableFuture<?>> copy;
     private BiFunction<Long, TimeUnit, Executor> CompletableFuture_delayedExecutor; // invokes static method
     private TriFunction<Long, TimeUnit, Executor, Executor> CompletableFuture_delayedExecutor_; // invokes static method
     private Function<CompletableFuture<?>, CompletionStage<?>> minimalCompletionStage;
+    private Function<CompletableFuture<?>, CompletableFuture<?>> newIncompleteFuture;
     private TriFunction<CompletableFuture<?>, Long, TimeUnit, CompletableFuture<?>> orTimeout;
+
+    // Internal methods for creating a ManagedCompletableFuture for any executor
+    private Function<Executor, CompletableFuture<?>> ManagedCompletableFuture_newIncompleteFuture;
 
     @FunctionalInterface
     interface TriFunction<T, U, V, R> {
@@ -167,6 +170,14 @@ public class ConcurrentRxTestServlet extends FATServlet {
                 }
             };
 
+            copy = cf -> {
+                try {
+                    return (CompletableFuture<?>) cl.getMethod("copy").invoke(cf);
+                } catch (Exception x) {
+                    throw convertToRuntimeException(x);
+                }
+            };
+
             CompletableFuture_delayedExecutor = (time, unit) -> {
                 try {
                     return (Executor) cl.getMethod("delayedExecutor", long.class, TimeUnit.class).invoke(null, time, unit);
@@ -192,10 +203,27 @@ public class ConcurrentRxTestServlet extends FATServlet {
                 }
             };
 
+            newIncompleteFuture = cf -> {
+                try {
+                    return (CompletableFuture<?>) cl.getMethod("newIncompleteFuture").invoke(cf);
+                } catch (Exception x) {
+                    throw convertToRuntimeException(x);
+                }
+            };
+
             orTimeout = (cf, time, unit) -> {
                 try {
                     return (CompletableFuture<?>) cl.getMethod("orTimeout", long.class, TimeUnit.class)
                                     .invoke(cf, time, unit);
+                } catch (Exception x) {
+                    throw convertToRuntimeException(x);
+                }
+            };
+
+            ManagedCompletableFuture_newIncompleteFuture = executor -> {
+                try {
+                    return (CompletableFuture<?>) cl.getMethod("newIncompleteFuture", Executor.class)
+                                    .invoke(null, executor);
                 } catch (Exception x) {
                     throw convertToRuntimeException(x);
                 }
@@ -482,10 +510,8 @@ public class ConcurrentRxTestServlet extends FATServlet {
      */
     @Test
     public void testActionlessFutureWithDefaultManagedExecutor() throws Exception {
-        // TODO directly use defaultManagedExecutor.newIncompleteFuture() once implemented ?
-        ManagedCompletableFuture<Integer> cf = (ManagedCompletableFuture<Integer>) ManagedCompletableFuture.completedFuture(0);
         BlockableIncrementFunction increment = new BlockableIncrementFunction("testActionlessFutureWithDefaultManagedExecutor", null, null, false);
-        CompletableFuture<Integer> cf1 = cf.newIncompleteFuture();
+        CompletableFuture<Integer> cf1 = defaultManagedExecutor.newIncompleteFuture();
         CompletableFuture<Integer> cf2 = cf1.thenApplyAsync(increment);
 
         assertEquals(Integer.valueOf(177), cf1.getNow(177));
@@ -515,12 +541,11 @@ public class ConcurrentRxTestServlet extends FATServlet {
      */
     @Test
     public void testActionlessFutureWithSpecifiedExecutor() throws Exception {
-        CompletableFuture<Integer> cf = ManagedCompletableFuture.supplyAsync(() -> 0, sameThreadExecutor);
         BlockableIncrementFunction increment1 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor1", null, null, false);
         BlockableIncrementFunction increment2 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor2", null, null, false);
         BlockableIncrementFunction increment3 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor3", null, null, false);
         BlockableIncrementFunction increment4 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor4", null, null, false);
-        CompletableFuture<Integer> cf0 = ((ManagedCompletableFuture<Integer>) cf).newIncompleteFuture();
+        CompletableFuture<Integer> cf0 = (CompletableFuture<Integer>) ManagedCompletableFuture_newIncompleteFuture.apply(sameThreadExecutor);
         CompletableFuture<Integer> cf1 = cf0.thenApplyAsync(increment1);
         CompletableFuture<Integer> cf2 = cf1.thenApplyAsync(increment2);
         CompletableFuture<Integer> cf3 = cf2.thenApplyAsync(increment3, noContextExecutor);
@@ -1125,10 +1150,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
      */
     @Test
     public void testCompleteAsyncOfIncompleteStage() throws Exception {
-        // TODO switch to defaultManagedExecutor.newIncompleteFuture once implemented
-        ManagedCompletableFuture<String> cf0 = (ManagedCompletableFuture<String>) ManagedCompletableFuture.completedFuture("89");
-
-        ManagedCompletableFuture<String> cf1 = (ManagedCompletableFuture<String>) cf0.newIncompleteFuture();
+        CompletableFuture<String> cf1 = defaultManagedExecutor.newIncompleteFuture();
 
         CompletableFuture<String> cf2;
         try {
@@ -1374,20 +1396,20 @@ public class ConcurrentRxTestServlet extends FATServlet {
         CountDownLatch continueLatch = new CountDownLatch(1);
         BlockableSupplier<Long> blocker = new BlockableSupplier<Long>(100l, null, continueLatch);
 
-        ManagedCompletableFuture<Long> cf0 = (ManagedCompletableFuture<Long>) defaultManagedExecutor.supplyAsync(blocker);
+        CompletableFuture<Long> cf0 = defaultManagedExecutor.supplyAsync(blocker);
 
         if (!AT_LEAST_JAVA_9)
             try {
-                fail("Should not be able to copy in Java SE 8. " + cf0.copy());
+                fail("Should not be able to copy in Java SE 8. " + copy.apply(cf0));
             } catch (UnsupportedOperationException x) {
                 return; // method unavailable for Java SE 8
             } finally {
                 continueLatch.countDown();
             }
 
-        CompletableFuture<Long> cf1 = cf0.copy();
-        CompletableFuture<Long> cf2 = cf0.copy();
-        CompletableFuture<Long> cf3 = cf0.copy();
+        CompletableFuture<Long> cf1 = (CompletableFuture<Long>) copy.apply(cf0);
+        CompletableFuture<Long> cf2 = (CompletableFuture<Long>) copy.apply(cf0);
+        CompletableFuture<Long> cf3 = (CompletableFuture<Long>) copy.apply(cf0);
 
         String s;
         assertTrue(s = cf1.toString(), s.startsWith("ManagedCompletableFuture@"));
@@ -1485,22 +1507,22 @@ public class ConcurrentRxTestServlet extends FATServlet {
         }
 
         Executor delay397msNoContext = CompletableFuture_delayedExecutor_.apply(397l, TimeUnit.MILLISECONDS, noContextExecutor);
+        CompletableFuture<Integer> cf0 = (CompletableFuture<Integer>) ManagedCompletableFuture_newIncompleteFuture.apply(delay397msNoContext);
+        cf0.complete(97);
 
-        CompletableFuture<Integer> cf0 = ManagedCompletableFuture
-                        .supplyAsync(() -> 97, delay397msNoContext)
-                        .thenApplyAsync(i -> {
-                            try {
-                                InitialContext.doLookup("java:comp/env/executorRef"); // require web component's namespace
-                            } catch (NamingException x) {
-                                throw new RuntimeException(x);
-                            }
-                            return i + 1;
-                        }, delay97ms);
+        CompletableFuture<Integer> cf1 = cf0.thenApplyAsync(i -> {
+            try {
+                InitialContext.doLookup("java:comp/env/executorRef"); // require web component's namespace
+            } catch (NamingException x) {
+                throw new RuntimeException(x);
+            }
+            return i + 1;
+        }, delay97ms);
 
-        assertEquals(Integer.valueOf(98), cf0.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertTrue(cf0.isDone());
-        assertFalse(cf0.isCompletedExceptionally());
-        assertFalse(cf0.isCancelled());
+        assertEquals(Integer.valueOf(98), cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(cf1.isDone());
+        assertFalse(cf1.isCompletedExceptionally());
+        assertFalse(cf1.isCancelled());
     }
 
     /**
@@ -1585,8 +1607,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
         // Verify that exceptionally is invoked when exception is raised by prior stage
 
-        // TODO replace with defaultManagedExecutor.completedFuture once implemented
-        CompletableFuture<?> cf2 = ManagedCompletableFuture
+        CompletableFuture<?> cf2 = defaultManagedExecutor
                         .completedFuture((Throwable) null)
                         .thenApplyAsync(lookup, testThreads) // expect lookup to fail without the context of the servlet thread
                         .exceptionally(lookup);
@@ -1900,17 +1921,11 @@ public class ConcurrentRxTestServlet extends FATServlet {
         // max concurrency: 1, max queue size: 1, runIfQueueFull: true, policy: strict
         ManagedExecutor max1strictExecutor = InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
 
-        // TODO switch to cf0 = max1strictExecutor.newIncompleteFuture() once available ?
-        ManagedCompletableFuture<Integer> cf = (ManagedCompletableFuture<Integer>) max1strictExecutor.supplyAsync(() -> 0);
-
-        // Ensure that the above task has been removed from the executor's queue so that it does not interfere with subsequent test logic
-        assertEquals(new Integer(0), cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-
         CountDownLatch beginLatch = new CountDownLatch(1);
         CountDownLatch continueLatch = new CountDownLatch(1);
         CompletableFuture<Integer> cf0, cf1, cf2, cf3, cf4;
         try {
-            cf0 = cf.newIncompleteFuture();
+            cf0 = max1strictExecutor.newIncompleteFuture();
 
             // Use up the single max concurrency permit with an async action that blocks
             cf1 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxPolicyStrict1", beginLatch, continueLatch, false));
@@ -2441,7 +2456,6 @@ public class ConcurrentRxTestServlet extends FATServlet {
     public void testOrTimeout() throws Exception {
         // orTimeout not allowed on Java SE 8, but is otherwise a no-op on an already-completed future
         CompletableFuture<Integer> cf0 = defaultManagedExecutor.completedFuture(92);
-        // TODO switch to defaultManagedExecutor.completedFuture once implemented
         CompletableFuture<Integer> cf1;
         try {
             cf1 = (CompletableFuture<Integer>) orTimeout.apply(cf0, 192l, TimeUnit.MINUTES);
@@ -2459,7 +2473,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
         CountDownLatch continueLatch = new CountDownLatch(1);
         try {
             BlockableSupplier<Integer> supplier = new BlockableSupplier<Integer>(93, beginLatch, continueLatch);
-            ManagedCompletableFuture<Integer> cf2 = (ManagedCompletableFuture<Integer>) defaultManagedExecutor.supplyAsync(supplier);
+            CompletableFuture<Integer> cf2 = defaultManagedExecutor.supplyAsync(supplier);
 
             CompletableFuture<Integer> cf3 = (CompletableFuture<Integer>) orTimeout.apply(cf2, 93l, TimeUnit.MINUTES);
             CompletableFuture<Integer> cf4 = (CompletableFuture<Integer>) orTimeout.apply(cf2, 94l, TimeUnit.MICROSECONDS);

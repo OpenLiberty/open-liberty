@@ -93,7 +93,7 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
 
     @Override
     public <U> CompletableFuture<U> newIncompleteFuture() {
-        return null; // TODO
+        return ManagedCompletableFuture.newIncompleteFuture(this);
     }
 
     @Override
