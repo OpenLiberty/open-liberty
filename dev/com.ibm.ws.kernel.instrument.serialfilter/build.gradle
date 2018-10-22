@@ -4,3 +4,7 @@ plugins {
 audit {
     failOnError = false
 }
+
+test {
+    jvmArgs '-javaagent:' + buildImage.file('wlp/lib/ws-serialfilteragent.jar')
+}
