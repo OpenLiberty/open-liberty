@@ -261,6 +261,16 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     protected void initializeUserApiConfigs() throws SocialLoginException {
         this.userApiConfigs = initUserApiConfigs(this.userApi);
     }
+    
+    protected Configuration getCustomConfiguration(String customParam) {
+    	if (this.socialLoginServiceRef.getService() != null) {
+    		try {
+				return this.socialLoginServiceRef.getService().getConfigAdmin().getConfiguration(customParam, "");
+			} catch (IOException e) {		
+			}
+    	}
+    	return null;
+    }
 
     protected void initializeJwt(Map<String, Object> props) {
         Configuration jwtConfig = null;

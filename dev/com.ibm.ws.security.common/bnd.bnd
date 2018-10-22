@@ -53,6 +53,7 @@ instrument.classesExcludes: com/ibm/ws/security/common/internal/resources/*.clas
     com.ibm.websphere.security;version=latest, \
     com.ibm.ws.security;version=latest, \
     com.ibm.ws.common.encoder;version=latest, \
+    com.ibm.ws.crypto.passwordutil;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.ws.webcontainer;version=latest, \
     com.ibm.ws.security.authentication;version=latest, \
