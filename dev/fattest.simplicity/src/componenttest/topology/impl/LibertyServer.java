@@ -4371,14 +4371,6 @@ public class LibertyServer implements LogMonitorClient {
         newOffsetAndMatches = LibertyFileManager.findStringsInFile(regexp, logFile, offset);
         matches.addAll(newOffsetAndMatches.getMatches()); // get the list of matches found
 
-//        List<String> traceLogBaseNames = listDirectoryContents(logsRoot, traceFileNamePrefix);
-//        for (String name : traceLogBaseNames) {
-//
-//            offset = getMarkOffset(logsRoot + name);
-//            newOffsetAndMatches = LibertyFileManager.findStringsInFile(regexp, getTraceFile(name), offset);
-//
-//            matches.addAll(newOffsetAndMatches.getMatches()); // get the list of matches found
-//        }
         return matches;
     }
 
