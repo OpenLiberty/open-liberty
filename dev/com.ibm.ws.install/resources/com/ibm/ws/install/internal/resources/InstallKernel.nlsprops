@@ -796,4 +796,3 @@ MAPBASED_ERROR_UNSUPPORTED_FILE.explanation=The file was not installed because a
 MAPBASED_ERROR_UNSUPPORTED_FILE.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support.
 
 MSG_STABILIZING_FEATUREMANAGER=This featureManager action is stabilized. Use installUtility {0} instead. The installUtility command is recommended for installation and repository-related actions.
-
