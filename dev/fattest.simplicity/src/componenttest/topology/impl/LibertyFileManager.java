@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -427,20 +427,36 @@ public class LibertyFileManager {
         return LibertyFileManager.copyFileIntoLiberty(machine, path, localFileToCopy.getName(), relPathTolocalFile);
     }
 
-    /**
-     * @param machine
-     * @param string
-     * @param string2
-     * @throws Exception
-     */
+    //
+
     public static boolean renameLibertyFile(Machine machine, String oldFilePath, String newFilePath) throws Exception {
         RemoteFile source = createRemoteFile(machine, oldFilePath);
         RemoteFile target = createRemoteFile(machine, newFilePath);
-        if (source.exists()) {
+        if ( source.exists() ) {
             return source.rename(target);
         }
         return false;
     }
+
+    public static boolean renameLibertyFileWithRetry(Machine machine, String oldFilePath, String newFilePath) throws Exception {
+        RemoteFile source = createRemoteFile(machine, oldFilePath);
+        RemoteFile target = createRemoteFile(machine, newFilePath);
+        if ( source.exists() ) {
+            return source.renameWithRetry(target);
+        }
+        return false;
+    }
+
+    public static boolean renameLibertyFileWithRetry(Machine machine, String oldFilePath, String newFilePath, long retryNs) throws Exception {
+        RemoteFile source = createRemoteFile(machine, oldFilePath);
+        RemoteFile target = createRemoteFile(machine, newFilePath);
+        if ( source.exists() ) {
+            return source.renameWithRetry(target, retryNs);
+        }
+        return false;
+    }
+
+    //
 
     /**
      * This method will copy a file into the Liberty server using the file name provided, it will not copy the contents of the file if it is a directory.
