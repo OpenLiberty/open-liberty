@@ -12,6 +12,7 @@ package com.ibm.ws.kernel.instrument.serialfilter.config;
 
 import static com.ibm.ws.kernel.instrument.serialfilter.config.ConfigImpl.READ_INTERNAL_CONFIG;
 import static com.ibm.ws.kernel.instrument.serialfilter.config.ConfigImpl.READ_SYSTEM_CONFIG;
+import static com.ibm.ws.kernel.instrument.serialfilter.config.ConfigImpl.SET_DEFAULT_CONFIG;
 
 public abstract class ConfigFacade {
     private ConfigFacade(){}
@@ -22,5 +23,9 @@ public abstract class ConfigFacade {
 
     public static SimpleConfig getSystemConfigProxy() {
         return ConfigProxy.getConfigProxy();
+    }
+
+    public static Config createConfigForUnitTest() {
+        return new ConfigImpl(SET_DEFAULT_CONFIG);
     }
 }

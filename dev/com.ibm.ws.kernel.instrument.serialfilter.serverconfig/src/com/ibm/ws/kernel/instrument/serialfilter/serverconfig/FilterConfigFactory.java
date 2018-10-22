@@ -64,7 +64,6 @@ public class FilterConfigFactory implements ManagedServiceFactory {
 
     private static final String MESSAGE_BUNDLE = "com.ibm.ws.kernel.instrument.serialfilter.serverconfig.FilterConfigMessages";
 
-    private BundleContext bContext = null;
     private volatile ComponentContext cc = null;
 
     private Map<String, Dictionary> serialFilterConfigMap = new HashMap<String, Dictionary>();
@@ -72,7 +71,7 @@ public class FilterConfigFactory implements ManagedServiceFactory {
     @Override
     public void updated(String pid, Dictionary properties) throws ConfigurationException {
         // If we are stopping ignore the update
-        if (FrameworkState.isStopping()) {
+        if (isStopping()) {
             return;
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -80,7 +79,12 @@ public class FilterConfigFactory implements ManagedServiceFactory {
         }
 
         serialFilterConfigMap.put(pid, properties);
-        propagateConfigMap(serialFilterConfigMap);
+        try {
+            propagateConfigMap(serialFilterConfigMap);
+        } catch (ConfigurationException e) {
+            serialFilterConfigMap.remove(pid);
+            throw e;
+        }
     }
 
     @Override
@@ -88,7 +92,14 @@ public class FilterConfigFactory implements ManagedServiceFactory {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "deleted filterConfig pid : " + pid);
         }
-        serialFilterConfigMap.remove(pid);
+        if (serialFilterConfigMap.containsKey(pid)) {
+            serialFilterConfigMap.remove(pid);
+            try {
+                propagateConfigMap(serialFilterConfigMap);
+            } catch (ConfigurationException e) {
+                // ignore.
+            }
+        }
     }
 
     @Override
@@ -101,7 +112,6 @@ public class FilterConfigFactory implements ManagedServiceFactory {
             Tr.debug(this, tc, "activate", ctx.getProperties());
         }
         cc = ctx;
-        bContext = ctx.getBundleContext();
     }
 
     protected void deactivate(ComponentContext ctx, int reason) {
@@ -111,8 +121,32 @@ public class FilterConfigFactory implements ManagedServiceFactory {
     }
 
     protected void propagateConfigMap(Map<String, Dictionary> map) throws ConfigurationException {
-        SimpleConfig configObject = ConfigFacade.getSystemConfigProxy();
+        SimpleConfig configObject = getSystemConfigProxy();
         Properties filterConfig = new Properties();
+        try {
+            convertData(map, filterConfig);
+        } catch (ConfigurationException e) {
+            // in case of error, disable everything and throws an exception.
+            filterConfig.clear();
+            filterConfig.setProperty("*", "REJECT");
+            configObject.reset();
+            configObject.load(filterConfig);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Due to an error, set serialFilter for rejecting everything.");
+            }
+            throw e;
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "serialFilter configuration is being updated.", filterConfig);
+        }
+        // if there is any entry in the properties, propagate it to configObject.
+        configObject.reset();
+        if (!filterConfig.isEmpty()) {
+            configObject.load(filterConfig);
+        }
+    }
+
+    protected void convertData(Map<String, Dictionary> map, Properties filterConfig) throws ConfigurationException {
         for ( Map.Entry<String, Dictionary> entry : map.entrySet() ) {
             String pid = entry.getKey();
             Dictionary props = entry.getValue();
@@ -136,13 +170,6 @@ public class FilterConfigFactory implements ManagedServiceFactory {
                     }
                     filterConfig.setProperty(clazz, value);
                 } else {
-                    // in case of error, disable everything and throws an exception.
-                    filterConfig.setProperty("*", "REJECT");
-                    configObject.load(filterConfig);
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                       Tr.debug(this, tc, "Due to an error, set serialFilter for rejecting everything.");
-                    }
-
                     String propName;
                     if (clazz == null || clazz.isEmpty()) {
                         propName = CONFIG_CLASS;
@@ -154,10 +181,21 @@ public class FilterConfigFactory implements ManagedServiceFactory {
                 }
             }
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "serialFilter configuration is being updated.", filterConfig);
-        }
-        configObject.load(filterConfig);
+        return;
     }
+
+
+    protected boolean isStopping() {
+        return FrameworkState.isStopping();
+    }
+
+    protected SimpleConfig getSystemConfigProxy() {
+        return ConfigFacade.getSystemConfigProxy();
+    }
+
+    protected Map<String, Dictionary> getConfigMap() {
+        return serialFilterConfigMap;
+    }
+
 
 }
