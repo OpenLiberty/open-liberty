@@ -747,7 +747,7 @@ public class ClientProxyImpl extends AbstractClient implements
             if (loader != null) {
                 origLoader = ClassLoaderUtils.setThreadContextClassloader(loader);
             }
-            Message outMessage = createMessage(body, ori.getHttpMethod(), headers, uri,
+            Message outMessage = createMessage(body, ori, headers, uri,
                                                exchange, invocationContext, true);
             if (bodyIndex != -1) {
                 outMessage.put(Type.class, ori.getMethodToInvoke().getGenericParameterTypes()[bodyIndex]);
@@ -801,6 +801,17 @@ public class ClientProxyImpl extends AbstractClient implements
             }
         }
 
+    }
+
+    protected Message createMessage(Object body,
+                                    OperationResourceInfo ori,
+                                    MultivaluedMap<String, String> headers,
+                                    URI currentURI,
+                                    Exchange exchange,
+                                    Map<String, Object> invocationContext,
+                                    boolean isProxy) {
+        return createMessage(body, ori.getHttpMethod(), headers, currentURI,
+                             exchange, invocationContext, isProxy);
     }
 
     protected InvocationCallback<Object> checkAsyncCallback(OperationResourceInfo ori,

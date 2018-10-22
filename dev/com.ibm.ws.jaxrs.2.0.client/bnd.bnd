@@ -23,6 +23,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 Export-Package: \
   com.ibm.ws.jaxrs20.client;thread-context=true, \
+  com.ibm.ws.jaxrs20.client.configuration, \
   com.ibm.ws.jaxrs20.client.component, \
   com.ibm.ws.jaxrs20.client.security
 
