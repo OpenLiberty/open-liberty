@@ -779,6 +779,10 @@ ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: Unable to create a JSON file at 
 ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=The feature in the ESA file will not be installed.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Ensure that write access is available for the directory where the JSON file will be created.
 
+MSG_ACCEPT_LICENSE_REQUIRED=CWWKF1390E:The following feature(s) require the above license(s) to be accepted: {0}.
+MSG_ACCEPT_LICENSE_REQUIRED.explanation=The feature(s) will not be installed until the license(s) are accepted.
+MSG_ACCEPT_LICENSE_REQUIRED.useraction=Please accept or reject the corresponding license(s).
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: The feature has been successfully downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=The feature was downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=No action is required.
@@ -792,3 +796,4 @@ MAPBASED_ERROR_UNSUPPORTED_FILE.explanation=The file was not installed because a
 MAPBASED_ERROR_UNSUPPORTED_FILE.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support.
 
 MSG_STABILIZING_FEATUREMANAGER=This featureManager action is stabilized. Use installUtility {0} instead. The installUtility command is recommended for installation and repository-related actions.
+
