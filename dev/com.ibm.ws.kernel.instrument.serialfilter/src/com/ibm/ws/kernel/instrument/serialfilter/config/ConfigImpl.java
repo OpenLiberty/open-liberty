@@ -47,6 +47,16 @@ final class ConfigImpl implements Config {
 
     static abstract class Initializer { abstract void init(ConfigImpl cfg);}
 
+    static final Initializer SET_DEFAULT_CONFIG = new Initializer() {
+        void init(ConfigImpl cfg) {
+            Logger log = Logger.getLogger(ConfigImpl.class.getName());
+            Properties props = new Properties();
+            props.setProperty("*", "REJECT");
+            if (log.isLoggable(FINE)) log.fine("Setting default configuration *=REJECT");
+            cfg.load(props);
+        }
+    };
+
     static final Initializer READ_INTERNAL_CONFIG = new Initializer() {
         void init(ConfigImpl cfg) {
             Logger log = Logger.getLogger(ConfigImpl.class.getName());
@@ -254,7 +264,7 @@ final class ConfigImpl implements Config {
                 log.severe(MessageUtil.format("SF_ERROR_GET_MODE_VALUE_PREFIX", s));
                 return null;
             case DIGEST:
-                log.severe(MessageUtil.format("SF_ERROR_GET_MDOE_VALUE_DIGEST", s));
+                log.severe(MessageUtil.format("SF_ERROR_GET_MODE_VALUE_DIGEST", s));
                 return null;
             case UNKNOWN:
             default:
@@ -275,11 +285,11 @@ final class ConfigImpl implements Config {
             case METHOD_PREFIX:
                 return mode != validationModes.put(SpecifierFormat.internalize(s), mode);
             case DIGEST:
-                log.severe(MessageUtil.format("SF_ERROR_SET_MDOE_VALUE_DIGEST", s));
+                log.severe(MessageUtil.format("SF_ERROR_SET_MODE_VALUE_DIGEST", s));
                 return false;
             case UNKNOWN:
             default:
-                log.severe(MessageUtil.format("SF_ERROR_SET_MDOE_VALUE_UNKNOWN", s));
+                log.severe(MessageUtil.format("SF_ERROR_SET_MODE_VALUE_UNKNOWN", s));
                 return false;
         }
     }
