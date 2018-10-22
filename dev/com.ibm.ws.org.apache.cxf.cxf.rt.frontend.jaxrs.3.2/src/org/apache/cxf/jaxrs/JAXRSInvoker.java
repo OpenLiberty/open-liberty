@@ -235,6 +235,7 @@ public class JAXRSInvoker extends AbstractInvoker {
                 String subResourcePath = values.getFirst(URITemplate.FINAL_MATCH_GROUP);
                 String httpMethod = (String)inMessage.get(Message.HTTP_REQUEST_METHOD);
                 String contentType = (String)inMessage.get(Message.CONTENT_TYPE);
+                System.out.println("JAXRSInvoker - contentType=" + contentType);
                 if (contentType == null) {
                     contentType = "*/*";
                 }
@@ -270,6 +271,8 @@ public class JAXRSInvoker extends AbstractInvoker {
                                                          values,
                                                          contentType,
                                                          acceptContentType);
+                System.out.println("JAXRSInvoker - subOri=" + subOri);
+                System.out.println("JAXRSInvoker - subOri.isSubResourceLocator()=" + subOri.isSubResourceLocator());
                 exchange.put(OperationResourceInfo.class, subOri);
                 inMessage.put(URITemplate.TEMPLATE_PARAMETERS, values);
 
@@ -278,6 +281,7 @@ public class JAXRSInvoker extends AbstractInvoker {
                                                              inMessage,
                                                              false,
                                                              subOri.getNameBindings())) {
+                    System.out.println("JAXRSInvoker - return MessageContentsList");
                     return new MessageContentsList(exchange.get(Response.class));
                 }
 
@@ -285,6 +289,9 @@ public class JAXRSInvoker extends AbstractInvoker {
                 // presume InputStream has not been consumed yet by the root resource class.
                 List<Object> newParams = JAXRSUtils.processParameters(subOri, values, inMessage);
                 inMessage.setContent(List.class, newParams);
+                for(Object param : newParams) {
+                    System.out.println("param=" + param);
+                }
 
                 return this.invoke(exchange, newParams, result);
             } catch (IOException ex) {

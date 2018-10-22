@@ -67,8 +67,11 @@ public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message>
 
             @Override
             public void run() {
+                System.out.println("Adam - Invoke");
+                Thread.dumpStack();
                 Exchange runableEx = message.getExchange();
                 Message outMessage = null;
+//                Object result = invoker.invoke(runableEx, getInvokee(message));
                 // Liberty change (OLGH2084):  Move invoke after OutMessage is set on Exchange to allow 
                 // events to flow, such as those containing JAXBElements. 
                 if (!exchange.isOneWay()) {
@@ -80,8 +83,10 @@ public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message>
                         outMessage = new MessageImpl(16, 1);
                         outMessage.setExchange(exchange);
 
-                        // Liberty change OLGH5049 - createMessage() is expecting Content-Type to be set by invoke()
-                        outMessage.put(Message.CONTENT_TYPE, exchange.get(Message.CONTENT_TYPE));
+//                        System.out.println("Adam - content-type=" + message.get(Message.ACCEPT_CONTENT_TYPE));
+//                        // Liberty change OLGH5049 - createMessage() is expecting Content-Type to be set by invoke()
+//                        outMessage.put(Message.CONTENT_TYPE, exchange.get(Message.CONTENT_TYPE));
+//                        System.out.println("Adam - content-type=" + outMessage.get(Message.ACCEPT_CONTENT_TYPE));
 
                         outMessage = ep.getBinding().createMessage(outMessage);
                         exchange.setOutMessage(outMessage);
@@ -90,6 +95,12 @@ public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message>
                 }
 
                 Object result = invoker.invoke(runableEx, getInvokee(message));
+                
+                outMessage = runableEx.getOutMessage();
+                if (outMessage == null) {
+                    // Liberty change OLGH5049 - createMessage() is expecting Content-Type to be set by invoke()
+                    outMessage.put(Message.CONTENT_TYPE, exchange.get(Message.CONTENT_TYPE));
+                }
 
                 if (!exchange.isOneWay()) {
                     if (result != null) {

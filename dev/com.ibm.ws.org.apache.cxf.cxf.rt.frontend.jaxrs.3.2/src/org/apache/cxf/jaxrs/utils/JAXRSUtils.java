@@ -570,6 +570,16 @@ public final class JAXRSUtils {
     private static List<MediaType> intersectSortMediaTypes(List<MediaType> acceptTypes,
                                                           List<MediaType> producesTypes,
                                                           final boolean checkDistance) {
+        System.out.println("intersectSortMediaTypes");
+        System.out.println("acceptTypes");
+        for (MediaType t : acceptTypes) {
+            System.out.println(t);
+        }
+        System.out.println("producesTypes");
+        for (MediaType t : producesTypes) {
+            System.out.println(t);
+        }
+        Thread.dumpStack();
         List<MediaType> all = intersectMimeTypes(acceptTypes, producesTypes, true, checkDistance);
         if (all.size() > 1) {
             all.sort(new Comparator<MediaType>() {
@@ -584,6 +594,10 @@ public final class JAXRSUtils {
                 }
 
             });
+        }
+        System.out.println("all");
+        for (MediaType t : all) {
+            System.out.println(t);
         }
         return all;
     }
@@ -850,6 +864,7 @@ public final class JAXRSUtils {
             // Liberty change end
 
             String contentType = (String) message.get(Message.CONTENT_TYPE);
+            System.out.println("JAXRSUtils contentType=" + contentType);
 
             if (contentType == null) {
                 String defaultCt = (String) message.getContextualProperty(DEFAULT_CONTENT_TYPE);
@@ -1329,6 +1344,7 @@ public final class JAXRSUtils {
                                                                                     ori.getNameBindings());
             if (readers != null) {
                 try {
+                    System.out.println("Adam - try readFromMessageBodyReader");
                     return readFromMessageBodyReader(readers,
                                                      targetTypeClass,
                                                      parameterType,
@@ -1337,13 +1353,16 @@ public final class JAXRSUtils {
                                                      type,
                                                      m);
                 } catch (IOException e) {
+                    System.out.println("Adam - IOException");
                     if (e.getClass().getName().equals(NO_CONTENT_EXCEPTION)) {
                         throw ExceptionUtils.toBadRequestException(e, null);
                     }
                     throw e;
                 } catch (WebApplicationException ex) {
+                    System.out.println("Adam - WebApplicationException");
                     throw ex;
                 } catch (Exception ex) {
+                    System.out.println("Adam - Exception");
                     throw new Fault(ex);
                 }
             }
@@ -1662,6 +1681,7 @@ public final class JAXRSUtils {
     }
 
     public static void setMessageContentType(Message message, Response response) {
+        Thread.dumpStack();
         if (response != null) {
             Object ct = response.getMetadata().getFirst(HttpHeaders.CONTENT_TYPE);
             if (ct != null) {

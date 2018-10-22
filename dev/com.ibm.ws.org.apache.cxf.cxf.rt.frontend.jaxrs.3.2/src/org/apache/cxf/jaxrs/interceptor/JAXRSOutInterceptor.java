@@ -203,6 +203,7 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
             return;
         }
 
+        Thread.dumpStack();
         MediaType responseMediaType =
             getResponseMediaType(responseHeaders.getFirst(HttpHeaders.CONTENT_TYPE));
 
@@ -290,10 +291,12 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
             Object customContentType = responseHeaders.getFirst(HttpHeaders.CONTENT_TYPE);
             if (customContentType == null) {
                 String initialResponseContentType = (String)message.get(Message.CONTENT_TYPE);
+                System.out.println("initialResponseContentType=" + initialResponseContentType);
                 if (initialResponseContentType != null) {
                     responseHeaders.putSingle(HttpHeaders.CONTENT_TYPE, initialResponseContentType);
                 }
             } else {
+                System.out.println("customContentType=" + customContentType.toString());
                 message.put(Message.CONTENT_TYPE, customContentType.toString());
             }
         }

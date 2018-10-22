@@ -685,9 +685,13 @@ public abstract class ProviderFactory {
             checkAll ? new LinkedList<ProviderInfo<MessageBodyWriter<?>>>() : null;
 
         MessageBodyWriter<T> selectedWriter = null;
+        Thread.dumpStack();
+        System.out.println("mediaType:" + mediaType);
         for (ProviderInfo<MessageBodyWriter<?>> ep : messageWriters) {
+            System.out.println("messageWriter:" + ep);
             if (matchesWriterMediaTypes(ep, mediaType)
                 && handleMapper(ep, type, m, MessageBodyWriter.class, false)) {
+                System.out.println("match");
                 // This writer matches Media Type and Class
                 if (checkAll) {
                     allCandidates.add(ep);
@@ -697,6 +701,7 @@ public abstract class ProviderFactory {
                 if (selectedWriter == null
                     && isWriteable(ep, type, genericType, annotations, mediaType, m)) {
                     // This writer is a selected candidate
+                    System.out.println("null");
                     selectedWriter = (MessageBodyWriter<T>) ep.getProvider();
                     if (!checkAll) {
                         return selectedWriter;
