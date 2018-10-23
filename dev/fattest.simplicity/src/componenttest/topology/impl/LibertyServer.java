@@ -861,14 +861,15 @@ public class LibertyServer implements LogMonitorClient {
 
     protected void checkPortsOpen(boolean retry) {
         ServerSocket socket = null;
+        int port = getHttpDefaultPort();
         try {
             // Create unbounded socket
             socket = new ServerSocket();
             // This allows the socket to close and others to bind to it even if its in TIME_WAIT state
             socket.setReuseAddress(true);
-            socket.bind(new InetSocketAddress(getHttpDefaultPort()));
+            socket.bind(new InetSocketAddress(port));
         } catch (Exception ex) {
-            Log.error(c, "checkPortsOpen", ex, "http default port is currently bound");
+            Log.error(c, "checkPortsOpen", ex, "http default port " + port + " is currently bound");
             printProcessHoldingPort(getHttpDefaultPort());
             if (retry) {
                 Log.info(c, "checkPortsOpen", "Waiting 5 seconds and trying again");
