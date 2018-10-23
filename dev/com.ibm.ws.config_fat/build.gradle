@@ -9,7 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-
 task addRestConnector(type: Copy) {
   shouldRunAfter jar
   from buildImage.file('wlp/clients/restConnector.jar')
