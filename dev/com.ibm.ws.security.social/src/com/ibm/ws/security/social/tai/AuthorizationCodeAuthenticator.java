@@ -119,7 +119,8 @@ public class AuthorizationCodeAuthenticator {
                 sslSocketFactory,
                 false,
                 socialConfig.getTokenEndpointAuthMethod(),
-                socialConfig.getResource());
+                socialConfig.getResource(),
+                socialConfig.getUseSystemPropertiesForHttpClientConnections());
     }
 
     public void createJwtUserApiResponseAndIssuedJwtWithAppropriateToken() throws SocialLoginException {

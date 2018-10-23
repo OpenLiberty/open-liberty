@@ -91,6 +91,8 @@ public interface ConvergedClientConfig {
 
     public boolean getUseAccessTokenAsIdToken();
 
+    public boolean getUseSystemPropertiesForHttpClientConnections();
+
     public boolean isMapIdentityToRegistryUser();
 
     public boolean isIncludeCustomCacheKeyInSubject();

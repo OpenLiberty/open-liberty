@@ -357,7 +357,7 @@ public class Jose4jUtil {
         } else if (SIGNATURE_ALG_RS256.equals(signatureAlgorithm)) {
             if (clientConfig.getJwkEndpointUrl() != null || clientConfig.getJsonWebKey() != null) {
                 JwKRetriever retriever = createJwkRetriever(clientConfig);
-                keyValue = retriever.getPublicKeyFromJwk(kid, x5t, "sig");
+                keyValue = retriever.getPublicKeyFromJwk(kid, x5t, "sig", clientConfig.getUseSystemPropertiesForHttpClientConnections());
             } else {
                 keyValue = clientConfig.getPublicKey();
             }

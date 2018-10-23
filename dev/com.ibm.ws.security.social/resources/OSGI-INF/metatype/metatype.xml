@@ -77,6 +77,7 @@
         <AD id="realmName" name="internal" description="internal use only" required="false" type="String" ibm:type="token" />
         <AD id="includeCustomCacheKeyInSubject" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
         <AD id="resource" name="internal" description="internal use only" required="false" type="String" cardinality="2147483647" />
+        <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
     </OCD>
 
     <Designate pid="com.ibm.ws.security.social.google">
@@ -117,6 +118,7 @@
             required="false" type="String" default="Twitter" />
         <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" default="https://twitter.com" />
         <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
+        <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
     </OCD>
 
     <Designate pid="com.ibm.ws.security.social.twitter">
@@ -159,7 +161,8 @@
                 <Option label="client_secret_basic" value="client_secret_basic" />
                 <Option label="client_secret_post"  value="client_secret_post" /> 
         </AD>        
-        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />                     
+        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
+        <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>                     
     </OCD>
 
     <Designate pid="com.ibm.ws.security.social.facebook">
@@ -202,7 +205,8 @@
                <Option label="client_secret_basic" value="client_secret_basic" />
                <Option label="client_secret_post"  value="client_secret_post" />
         </AD>        
-        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />                                                                  
+        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
+        <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>                                                                  
     </OCD>
 
     <Designate pid="com.ibm.ws.security.social.github">
@@ -247,7 +251,8 @@
         </AD> 
         <AD id="userApiNeedsSpecialHeader" name="internal" description="internal use only" required="false" 
              type="Boolean" default="true" />
-        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />                                     
+        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
+        <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>                                     
     </OCD>
 
     <Designate pid="com.ibm.ws.security.social.linkedin">
@@ -303,7 +308,8 @@
             required="false" type="Boolean" default="true" /> 
   		<AD id="nonce" name="internal" description="internal use only" required="false" type="Boolean" default="false"/>     
   		<AD id="userApiNeedsSpecialHeader" name="internal" description="internal use only" required="false" 
-             type="Boolean" default="false" />        
+             type="Boolean" default="false" />
+        <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>        
     </OCD>
     
     <Designate factoryPid="com.ibm.ws.security.social.oauth2login">
@@ -389,6 +395,7 @@
         <AD id="realmName" name="internal" description="internal use only" required="false" type="String" ibm:type="token" />
         <AD id="includeCustomCacheKeyInSubject" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
         <AD id="resource" name="internal" description="internal use only" required="false" type="String" cardinality="2147483647" />
+        <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
     </OCD>
 
      <!-- 238750, configurable context root.

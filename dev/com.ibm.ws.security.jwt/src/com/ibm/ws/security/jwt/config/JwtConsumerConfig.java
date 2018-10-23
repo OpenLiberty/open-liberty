@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.jwt.config;
 
@@ -49,4 +49,6 @@ public interface JwtConsumerConfig {
     JWKSet getJwkSet(); // one JWKSet per one config
 
     boolean getTokenReuse();
+
+    boolean getUseSystemPropertiesForHttpClientConnections();
 }
