@@ -236,7 +236,7 @@ public class PackageCommandTest {
                 }
             }
         } catch (FileNotFoundException ex) {
-            assertTrue("Skipping test", false); // the directory does not exist, so we skip this test.
+            assumeTrue(false); // the directory does not exist, so we skip this test.
         }
     }
 
@@ -271,7 +271,7 @@ public class PackageCommandTest {
                 }
             }
         } catch (FileNotFoundException ex) {
-            assertTrue("Skipping test", false); // the directory does not exist, so we skip this test.
+            assumeTrue(false); // the directory does not exist, so we skip this test.
         }
     }
 
@@ -306,7 +306,7 @@ public class PackageCommandTest {
                 }
             }
         } catch (FileNotFoundException ex) {
-            assertTrue("Skipping test", false); // the directory does not exist, so we skip this test.
+            assumeTrue(false); // the directory does not exist, so we skip this test.
         }
 
     }
