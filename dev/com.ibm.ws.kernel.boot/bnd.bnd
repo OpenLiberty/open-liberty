@@ -50,6 +50,7 @@ Class-Path: com.ibm.ws.kernel.boot.nls_${bFullVersion}.jar
 #
 Export-Package: com.ibm.ws.kernel.launch.service;provide:=true, \
   com.ibm.ws.kernel;provide:=true, \
+  com.ibm.ws.kernel.boot.classloader.*;provide:=true, \
   com.ibm.ws.kernel.boot.delegated.*;provide:=true, \
   com.ibm.ws.kernel.boot.jmx.service;provide:=true, \
   com.ibm.ws.kernel.boot.security.*;thread-context=true, \
