@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -43,7 +44,7 @@ public class JandexAppDefaultAppMgrDefaultTest extends LoggingTest {
     protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("annoFat_server");
+    public static SharedServer SHARED_SERVER = new SharedServer("annoFat_server", false, false);
 
     /*
      * (non-Javadoc)
@@ -121,7 +122,7 @@ public class JandexAppDefaultAppMgrDefaultTest extends LoggingTest {
     public void testDefaultSettingsDoesntUseJandex() throws Exception {
         // Search for message indicating Jandex is being used.
         // CWWKC0092I: Read Jandex indexes for {0} out of {1} archives ({2} out of {3} classes) in {4}.
-        List l = SHARED_SERVER.getLibertyServer().findStringsInLogs("CWWKC0092I");
+        List<String> l = SHARED_SERVER.getLibertyServer().findStringsInLogs("CWWKC0092I");
         assertTrue("Should not find CWWKC0092I, since Jandex is not in use.", l.isEmpty());
     }
 

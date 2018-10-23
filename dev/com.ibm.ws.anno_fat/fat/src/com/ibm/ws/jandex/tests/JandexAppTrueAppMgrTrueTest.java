@@ -120,7 +120,7 @@ public class JandexAppTrueAppMgrTrueTest extends LoggingTest {
     public void testAppTrueAppMgrTrueUsesJandex() throws Exception {
         // Search for message indicating Jandex is being used.
         // CWWKC0092I: Read Jandex indexes for {0} out of {1} archives ({2} out of {3} classes) in {4}.
-        List l = SHARED_SERVER.getLibertyServer().findStringsInLogs("CWWKC0092I");
+        List<String> l = SHARED_SERVER.getLibertyServer().findStringsInLogs("CWWKC0092I");
         assertFalse("Should find CWWKC0092I, since Jandex is in use.", l.isEmpty());
     }
 

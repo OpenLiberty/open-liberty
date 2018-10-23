@@ -17,6 +17,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.caching.tests.BasicAnnoCacheUsageTest;
+import com.ibm.ws.caching.tests.MetadataCompleteTest;
+import com.ibm.ws.caching.tests.MetadataCompleteTestMissingServlets;
 import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.jandex.tests.JandexAppDefaultAppMgrDefaultTest;
 import com.ibm.ws.jandex.tests.JandexAppDefaultAppMgrTrueTest;
@@ -47,13 +49,16 @@ import com.ibm.ws.jandex.tests.JandexAppTrueAppMgrTrueTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-              	BasicAnnoCacheUsageTest.class,
-                JandexAppDefaultAppMgrDefaultTest.class,
-                JandexAppDefaultAppMgrTrueTest.class,
-                JandexAppFalseAppMgrFalseTest.class,
-                JandexAppFalseAppMgrTrueTest.class,
-                JandexAppTrueAppMgrFalseTest.class,
-                JandexAppTrueAppMgrTrueTest.class
+              	//BasicAnnoCacheUsageTest.class,
+              	//MetadataCompleteTest.class,
+              	MetadataCompleteTestMissingServlets.class
+
+                //JandexAppDefaultAppMgrDefaultTest.class
+                //JandexAppDefaultAppMgrTrueTest.class,
+                //JandexAppFalseAppMgrFalseTest.class,
+                //JandexAppFalseAppMgrTrueTest.class,
+                //JandexAppTrueAppMgrFalseTest.class,
+                //JandexAppTrueAppMgrTrueTest.class
 })
 
 public class FATSuite {

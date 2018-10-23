@@ -43,6 +43,10 @@ import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebResponse;
 import com.ibm.ws.jandex.JandexApplicationHelper;
 
+import com.ibm.ws.packaging.Ear;
+import com.ibm.ws.packaging.Jar;
+import com.ibm.ws.packaging.War;
+
 import componenttest.topology.utils.FileUtils;
 
 /**
@@ -54,87 +58,133 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
     // Test API extensions ...
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("annoFat_server");
-    private static boolean needToStopServer = true;
+    public static SharedServer SHARED_SERVER = new SharedServer("annoFat_server", false, false);
+    // false, false:
+    //   don't wait for security;
+    //   don't start the server during the before step.
 
     @Override
     protected SharedServer getSharedServer() {
         return SHARED_SERVER;
     }
 
+    // 'addInstalledAppForValidation' adds the app, and, if the server
+    // is started, verifies that the app was started.
+    //
+    // This is not the required behavior: These usage tests need to add the
+    // application once, and do a verification on each startup.
+    //
+    // A (small) refactoring of LibertyServer is needed to enable the required
+    // behavior.
+    //
+    // LOG.info("Wait for message to indicate app has started");
+    // SHARED_SERVER.getLibertyServer().addInstalledAppForValidation("TestServlet40");
+    // LOG.info("App has started, or so we believe");
+
+    protected static void startServer() throws Exception {
+        LOG.info("startServer : starting server");
+        SHARED_SERVER.startIfNotStarted(false, true, false); 
+        // (false, false, false):
+        //   Do not pre-clean, do clean, do not validate apps.
+        LOG.info("startServer : started server");
+    }    
+
+    protected static void stopServer() throws Exception {    
+        stopServer("CWWKZ0014W");
+    }
+
+    protected static void stopServer(String... expectedMessages) throws Exception {
+        LOG.info("stopServer : stopping server");
+        for ( String message : expectedMessages ) {
+            LOG.info("stopServer : expecting [ " + message + " ]");
+        }
+
+        SHARED_SERVER.getLibertyServer().stopServer(expectedMessages);
+
+        LOG.info("stopServer : stopped server");
+    }
+
+    protected static String serverRoot;
+
+    protected static String getServerRoot() throws Exception {
+        if ( serverRoot == null ) {
+            serverRoot = SHARED_SERVER.getLibertyServer().getServerRoot();
+            LOG.info("getServerRoot : " + serverRoot);
+        }
+        return serverRoot;
+    }
+
+    /**
+     * Copy a server.xml from the server configuration folder to
+     * the shared server.
+     */
+    protected static void installServerXml(String sourceServerXml) throws Exception {
+        LOG.info("installServerXml : " + sourceServerXml);
+
+        String serverRootDir = getServerRoot();
+        File serverXmlFile = new File(serverRootDir + "/server.xml");
+
+        if (serverXmlFile.exists()) {
+            serverXmlFile.delete();
+        }
+
+        File serverConfigurationFile = new File(serverRootDir + "/serverConfigurations/" + sourceServerXml);
+        FileUtils.copyFile(serverConfigurationFile, serverXmlFile); 
+    }    
+
+    // Test API ...
+
     @BeforeClass
     public static void setUp() throws Exception {
-        LOG.info("Setup : add TestServlet40 to the server if not already present.");
-
-        JandexApplicationHelper.addEarToServerApps(SHARED_SERVER.getLibertyServer(),
-                                                   "TestServlet40.ear", // earName
-                                                   true, // addEarResources
-                                                   "TestServlet40.war", // warName
-                                                   true, // addWarResources
-                                                   "TestServlet40.jar", // jarName
-                                                   true, // addJarResources
-                                                   "testservlet40.war.servlets", // packageNames
-                                                   "testservlet40.jar.servlets");
-        installServerXml("jandexAppDefaultAppMgrDefault_server.xml");  // Default Jandex settings.  NOT using Jandex.
-        SHARED_SERVER.startIfNotStarted();
-        LOG.info("Setup : wait for message to indicate app has started");
-
-        SHARED_SERVER.getLibertyServer().addInstalledAppForValidation("TestServlet40");
-        LOG.info("Setup : app has started, or so we believe");
+        addAppToServerAppsDir();
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
-        if (needToStopServer) {
-            LOG.info("testCleanUp : stop server");
-            SHARED_SERVER.getLibertyServer().stopServer("CWWKZ0014W");
-        } else {
-            LOG.info("testCleanUp.  Not stopping server, since needToStopServer==false");
+        stopServer();
+    }
+
+    protected static void addAppToServerAppsDir() throws Exception {
+        LOG.info("Add TestServlet40 to the server");
+
+        Ear ear = new Ear("TestServlet40.ear");
+
+        War war = new War("TestServlet40.war");
+        ear.addWar(war);
+        
+        Jar jar1 = new Jar("TestServlet40.jar");
+        jar1.addPackageName("testservlet40.jar.servlets");
+
+        Jar jar2 = new Jar("TestServletA.jar");
+        jar2.addPackageName("testservleta.jar.servlets");
+
+        Jar jar3 = new Jar("TestServletB.jar");
+        jar3.addPackageName("testservletb.jar.servlets");
+
+        Jar jar4 = new Jar("TestServletC.jar");
+        jar4.addPackageName("testservletc.jar.servlets");
+
+        Jar jar5 = new Jar("TestServletD.jar");
+        jar5.addPackageName("testservletd.jar.servlets");
+        
+        war.addJar(jar1);
+        war.addJar(jar2);
+        war.addJar(jar3);
+        war.addJar(jar4);
+        war.addJar(jar5);
+
+        war.addPackageName("testservlet40.war.servlets");
+
+        try {
+           JandexApplicationHelper.addEarToServerApps(SHARED_SERVER.getLibertyServer(), ear);
+
+        } catch (Exception e) {
+            LOG.info("Caught exception from addEarToServerApps [" + e.getMessage() + "]");
+            throw e;
         }
     }
 
-    /**
-     * Copy the appropriate server.xml (server configuration)  for the test to be executed to
-     * the root of the server directory.
-     * 
-     * @param sourceServerXml
-     * @throws Exception
-     */
-    protected static void installServerXml(String sourceServerXml) throws Exception {
-        String serverRootDir = SHARED_SERVER.getLibertyServer().getServerRoot();
-        File serverXmlFile = new File(serverRootDir + "/server.xml");
-        
-        if (serverXmlFile.exists()) {
-            serverXmlFile.delete();
-        }
-        
-        File serverConfigurationFile = new File(serverRootDir + "/serverConfigurations/" + sourceServerXml);
-        FileUtils.copyFile(serverConfigurationFile, serverXmlFile); 
-    }    
-    
-    // Constants from:
-    //   open-liberty/dev/com.ibm.ws.anno/src/
-    //     com/ibm/wsspi/anno/targets/cache/TargetCache_ExternalConstants.java
-
-    public static final String CACHE_NAME = "anno";
-
-    public static final String APP_PREFIX = "A_";
-    public static final String CON_PREFIX = "C_";
-
-    public static final String RESOLVED_REFS_NAME = "resolved";
-    public static final String UNRESOLVED_REFS_NAME = "unresolved";
-    public static final String CONTAINERS_NAME = "containers";
-
-    public static final String SEED_RESULT_NAME = "seed";
-    public static final String PARTIAL_RESULT_NAME = "partial";
-    public static final String EXCLUDED_RESULT_NAME = "excluded";
-    public static final String EXTERNAL_RESULT_NAME = "external";
-
-    public static final String TIMESTAMP_NAME = "stamp";
-    public static final String CLASS_REFS_NAME = "classes";
-    public static final String ANNO_TARGETS_NAME = "targets";
-
-    public static final String QUERIES_NAME = "queries";
+    //
 
     public boolean isSetCacheDir;
     public File cacheDir;
@@ -144,7 +194,7 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
             String osgiWorkAreaRoot = SHARED_SERVER.getLibertyServer().getOsgiWorkAreaRoot();
             LOG.info("getAnnoCacheDirectory: OSGI workarea[" + osgiWorkAreaRoot + "]");
 
-            File annoCacheDir = findDirectory(new File(osgiWorkAreaRoot), CACHE_NAME);
+            File annoCacheDir = findDirectory(new File(osgiWorkAreaRoot), AnnoCacheLocations.CACHE_NAME);
             LOG.info("getAnnoCacheDirectory: annoCache Dir[" + annoCacheDir + "]");
 
             isSetCacheDir = true;
@@ -160,7 +210,7 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
             return null;
         }
 
-        File appDir = findDirectory(annoCacheDir, APP_PREFIX + "TestServlet40");
+        File appDir = findDirectory(annoCacheDir, AnnoCacheLocations.APP_PREFIX + "TestServlet40");
         LOG.info("getAppDirectory:       App Directory[" + appDir + "]");
         return appDir;
     }    
@@ -203,45 +253,65 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
 
     @Test
     public void testAnnotationCacheCreatedAndIsActuallyUsed() throws Exception {
-        // Constants from: open-liberty/dev/com.ibm.ws.anno/src/com/ibm/wsspi/anno/targets/cache/TargetCache_ExternalConstants.java
+        installServerXml("jandexDefaultsAutoExpandTrue_server.xml");  // Default Jandex settings.  NOT using Jandex.
+
+        startServer();
 
         // Looking for a dir something like this: .../<SERVER_NAME>/workarea/org.eclipse.osgi/42/data/anno
         File annoCacheDir = getAnnoCacheRoot();
         assertNotNull("Can't find root 'anno' directory", annoCacheDir);
-        assertTrue("Root 'anno' directory does not exist.", annoCacheDir.exists());
 
-        // Now with the application appended .../<SERVER_NAME>/workarea/org.eclipse.osgi/42/data/annoCache/A_TestServlet40
+        // Now find the application directory below the anno cache root
+        // something like:  .../<SERVER_NAME>/workarea/org.eclipse.osgi/42/data/anno/A_TestServlet40
         File applicationWorkArea = getAnnoCacheAppRoot();
         assertNotNull("Can't find application directory 'A_TestServlet40'", applicationWorkArea);
 
-        // Test if class.refs exists.  Assume cache created successfully if exists.
+        // Test if 'classes' exists.  Assume cache created successfully if exists.
         File classRefsFile = findFile(applicationWorkArea, "classes");
         assertNotNull("Can't find classes file 'classes'", classRefsFile);
-        
+
         // The app contains a servlet.  Verify we can access it.
         verifyResponse("/TestServlet40/SimpleTestServlet", "Hello World");
-        
-        // Stop the server.
-        SHARED_SERVER.getLibertyServer().stopServer("CWWKZ0014W");
-        
+
+        stopServer();
+
         // Remove the servlet from the cache, and restart the server.
-        modifyCache();
-        SHARED_SERVER.startIfNotStarted(false, false, false); 
+        //
+        // Note that the servlet is still present in the server:
+        // This test directly changes the cache data to give the appearance
+        // that the servlet is no longer present.
+
+        String annoTargetsFileName = applicationWorkArea.getCanonicalPath() + "/M_%2FTestServlet40.war/seed/targets";
+        File annoTargetsFile = new File(annoTargetsFileName);
+        String backupFileName =  annoTargetsFileName + ".backup";
+        File backupFile = new File(backupFileName);
+        modifyCache_AnnoTargets(annoTargetsFile, backupFile);
+
+        startServer();
+
         logAnnoTargetsFileModifiedTime();
-        
-        // If the server is using the annotation cache (as it is supposed to), then it should not be able to access the url,
-        // because we removed it from the cache.  The server shouldn't be aware of the servlet.
+
+        // If the server is using the annotation cache (as it is supposed to), then it should
+        // not be able to access the url, because we removed it from the cache.  The server
+        // shouldn't be aware of the servlet.
         verifyBadUrl("/TestServlet40/SimpleTestServlet");
-        
-        // Stop the server here instead of in the cleanup method, because we need to allow the SRVE0190E
-        // error message  to be in the logs. Meaning we were expecting the servlet access to fail.
-        SHARED_SERVER.getLibertyServer().stopServer("CWWKZ0014W", "SRVE0190E");
-        needToStopServer = false;  // signal that server is already stopped
+
+        // Stop the server, including an extra check for a bad URL error message.
+        stopServer("CWWKZ0014W", "SRVE0190E");
+
+        LOG.info("Restoring file [ " + annoTargetsFileName + " ] from \n  [ " + backupFileName + " ]");
+        FileUtils.copyFile(backupFile, annoTargetsFile);
+
+        LOG.info("Start server after restoring targets cache" );
+        startServer();
+
+        // The servlet should again be available.
+        verifyResponse("/TestServlet40/SimpleTestServlet", "Hello World");
+        stopServer();
     }
-    
+
     /**
-     * Log the time that the anno.targets file was created under the WAR Module directory. (for debugging)
-     * @throws Exception
+     * Log the time that the targets file was created under the WAR Module directory. (for debugging)
      */
     public void logAnnoTargetsFileModifiedTime() throws Exception {
         File applicationWorkArea = getAnnoCacheAppRoot();
@@ -249,17 +319,21 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
         File annoTargetsFile = new File(annoTargetsFileName);
         LOG.info("File [ " + annoTargetsFile.getName() + " ] last modified [ " + convertTime(annoTargetsFile.lastModified()) + " ]");
     }
-    
-    public void modifyCache() throws Exception {
-        LOG.info("In modifyCache");
 
-        File applicationWorkArea = getAnnoCacheAppRoot();
-        
-        String annoTargetsFileName = applicationWorkArea.getCanonicalPath() + "/M_%2FTestServlet40.war/seed/targets";
-        String tempFileName = annoTargetsFileName + ".temp";
-        
+    public void modifyCache_AnnoTargets(File annoTargetsFile, File backupFile) throws Exception {
+        LOG.info("In modifyCache_AnnoTargets");
+
+        // The targets file will be modified by removing a servlet.
+        String annoTargetsFileName = annoTargetsFile.getName();
+        String tempFileName = annoTargetsFileName + ".temp";  // Temp file for the new targets without the servlet.
+
+        // Make a backup copy (for restoring cache after test)
         LOG.info("annoTargetsFileName=[ " + annoTargetsFileName + " ]");
-        File annoTargetsFile = new File(annoTargetsFileName);
+        LOG.info("backing up file [ " + annoTargetsFileName + " ] to \n  [ " + backupFile.getName() + " ]");
+        FileUtils.copyFile(annoTargetsFile, backupFile);
+
+        // Read the targets file
+        // Write to a temp file.  Write everything except the servlet.
         BufferedReader targetsReader = new BufferedReader(new FileReader(annoTargetsFile)); 
         BufferedWriter tempFileWriter = null;
         FileWriter fw = null;
@@ -270,7 +344,6 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
 
             String line; 
             while ((line = targetsReader.readLine()) != null) {
-               
                 // Skip line containing SimpleTestServlet and skip the line after that.
                 // This removes the class and webservlet annotation from cache.
                 if (line.trim().equals("Class: testservlet40.jar.servlets.SimpleTestServlet")) {
@@ -278,8 +351,8 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
                     line = targetsReader.readLine();
                     LOG.info("skipping: " + line);
                 } else {
-                   LOG.info(line);
-                   tempFileWriter.write(line + '\n');
+                    LOG.info(line);
+                    tempFileWriter.write(line + '\n');
                 }
             } 
 
@@ -296,21 +369,11 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
             }  
         }
 
+        // Replace the targets file with the temp file
         LOG.info("Calling rename");
         renameFile(new File(tempFileName), annoTargetsFile);
-        
+
         LOG.info("RETURN File [ " + annoTargetsFile.getName() + " ] last modified [ " + convertTime(annoTargetsFile.lastModified()) + " ]");
-       
-        // File is renamed.  Cause a delay.  If file is rewritten, its time stamp should be later.
-
-        //SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
-
-        //Date resultdate = new Date(System.currentTimeMillis());
-        //System.out.println();
-        //LOG.info("Sleeping [" + sdf.format(resultdate)  + "]" );
-        //Thread.sleep(60000);
-        //resultdate = new Date(System.currentTimeMillis());
-        //LOG.info("Woke [ " +  sdf.format(resultdate)  + "]" );
     }
     
     public String convertTime(long time){
@@ -344,91 +407,4 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
             throw new IOException(message);
         }
     }
-    
-    /*   Method to modify application  (renames file in JAR to  .class without expanding JAR)
-    public void modifyApp() throws Exception{
-        LOG.info("In modifyApp()");
-        String serverRoot = SHARED_SERVER.getLibertyServer().getServerRoot(); 
-        
-        // !!! Modifying the app in the "expanded" dir doesn't help because the app is expanded from the EAR with 
-        // every server restart.  So whatever changes we make, they are overwritten when the server restarts !!!
-        // So to modify the app, you need to modify the EAR itself.  Which means expanding, modifying, and re-zipping.
-        String jarPath = serverRoot + "/apps/expanded/TestServlet40.ear/TestServlet40.war/WEB-INF/lib/TestServlet40.jar";
-        LOG.info("In modifyApp(): jarPath[ " + jarPath + " ]");
-        Map<String, String> zip_properties = new HashMap<>();
-        zip_properties.put("create", "false");
-        URI zip_disk = URI.create("jar:file:" + jarPath);
-        
-        try (FileSystem zipfs = FileSystems.newFileSystem(zip_disk, zip_properties)) {
-            LOG.info("About to access an entry from ZIP File");
-           
-            Path pathInZipFile  = zipfs.getPath("testservlet40/jar/servlets/SimpleTestServlet.hidden");
-            LOG.info("got Path to: " + pathInZipFile);
-          
-            Path renamedZipEntry = zipfs.getPath("testservlet40/jar/servlets/SimpleTestServlet.class");
-            LOG.info("got Path to: " + renamedZipEntry );
-            
-            LOG.info("About to rename an entry from [ " + pathInZipFile + "]" ); //.toUri() ); 
-            
-            Files.move( pathInZipFile, renamedZipEntry, StandardCopyOption.ATOMIC_MOVE);
-            LOG.info("File successfully renamed");   
-        } 
-    }
-    */
-             
-    /**
-     * Request a simple servlet.
-     *
-     * @throws Exception
-     */
-    /*Test
-    public void testSimpleServlet() throws Exception {
-        this.verifyResponse("/TestServlet40/SimpleTestServlet", "Hello World");
-    }*/
-
-    /**
-     * Simple test to a servlet then read the header to ensure we are using
-     * Servlet 4.0
-     *
-     * @throws Exception
-     *             if something goes horribly wrong
-     */
-    /*Test
-    public void testServletHeader() throws Exception {
-        WebResponse response = this.verifyResponse("/TestServlet40/MyServlet", "Hello World");
-
-        // verify the X-Powered-By Response header
-        response.verifyResponseHeaderEquals("X-Powered-By", false, "Servlet/4.0", true, false);
-    } */
-
-    /**
-     * Verifies that the ServletContext.getMajorVersion() returns 4 and
-     * ServletContext.getMinorVersion() returns 0 for Servlet 4.0.
-     *
-     * @throws Exception
-     */
-    /*Test
-    public void testServletContextMajorMinorVersion() throws Exception {
-        this.verifyResponse("/TestServlet40/MyServlet?TestMajorMinorVersion=true", "majorVersion: 4");
-
-        this.verifyResponse("/TestServlet40/MyServlet?TestMajorMinorVersion=true", "minorVersion: 0");
-    } */
-    
-    // Returns a substring of the response body 
-    // starting with beginText and 
-    // ending with endText (if both beginText and endText are present)
-    //
-    // NOT USED IN ANY TEST 
-    protected String parseResponse(WebResponse wr, String beginText, String endText) {
-        String s;
-        String body = wr.getResponseBody();
-        int beginTextIndex = body.indexOf(beginText);
-        if (beginTextIndex < 0)
-            return "begin text, " + beginText + ", not found";
-        int endTextIndex = body.indexOf(endText, beginTextIndex);
-        if (endTextIndex < 0)
-            return "end text, " + endText + ", not found";
-        s = body.substring(beginTextIndex + beginText.length(), endTextIndex);
-        return s;
-    } 
 }
