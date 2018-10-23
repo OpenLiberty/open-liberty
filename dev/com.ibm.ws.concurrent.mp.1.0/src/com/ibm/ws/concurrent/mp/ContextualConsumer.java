@@ -8,33 +8,33 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.concurrent.rx;
+package com.ibm.ws.concurrent.mp;
 
 import java.util.ArrayList;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
 /**
- * Proxy for Supplier that applies thread context before running and removes it afterward
+ * Proxy for Consumer that applies thread context before running and removes it afterward
  *
- * @param <T> type of the result that is supplied by the supplier
+ * @param <T> type of the consumer's parameter
  */
-class ContextualSupplier<T> implements Supplier<T> {
-    private final Supplier<T> action;
+class ContextualConsumer<T> implements Consumer<T> {
+    private final Consumer<T> action;
     private final ThreadContextDescriptor threadContextDescriptor;
 
-    ContextualSupplier(ThreadContextDescriptor threadContextDescriptor, Supplier<T> action) {
+    ContextualConsumer(ThreadContextDescriptor threadContextDescriptor, Consumer<T> action) {
         this.action = action;
         this.threadContextDescriptor = threadContextDescriptor;
     }
 
     @Override
-    public T get() {
+    public void accept(T t) {
         ArrayList<ThreadContext> contextApplied = threadContextDescriptor.taskStarting();
         try {
-            return action.get();
+            action.accept(t);
         } finally {
             threadContextDescriptor.taskStopping(contextApplied);
         }

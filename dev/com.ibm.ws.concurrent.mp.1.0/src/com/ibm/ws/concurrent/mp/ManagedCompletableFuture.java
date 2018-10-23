@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.concurrent.rx;
+package com.ibm.ws.concurrent.mp;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -237,7 +237,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @param executor executor to become the default asynchronous execution facility for the completed future
      * @return completed completable future
      */
-    public static <U> CompletableFuture<U> completedFuture(U value, Executor executor) {
+    static <U> CompletableFuture<U> completedFuture(U value, Executor executor) {
         if (JAVA8) {
             return new ManagedCompletableFuture<U>(CompletableFuture.completedFuture(value), executor, null);
         } else {
@@ -267,7 +267,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @param executor executor to become the default asynchronous execution facility for the completion stage
      * @return completed completion stage
      */
-    public static <U> CompletionStage<U> completedStage(U value, Executor executor) {
+    static <U> CompletionStage<U> completedStage(U value, Executor executor) {
         if (JAVA8) {
             return new ManagedCompletionStage<U>(CompletableFuture.completedFuture(value), executor, null);
         } else {
@@ -331,7 +331,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @param executor executor to become the default asynchronous execution facility for the completed future
      * @return completed completable future
      */
-    public static <U> CompletableFuture<U> failedFuture(Throwable x, Executor executor) {
+    static <U> CompletableFuture<U> failedFuture(Throwable x, Executor executor) {
         if (JAVA8) {
             CompletableFuture<U> failedFuture = new CompletableFuture<U>();
             failedFuture.completeExceptionally(x);
@@ -363,7 +363,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @param executor executor to become the default asynchronous execution facility for the completion stage
      * @return completed completion stage
      */
-    public static <U> CompletionStage<U> failedStage(Throwable x, Executor executor) {
+    static <U> CompletionStage<U> failedStage(Throwable x, Executor executor) {
         if (JAVA8) {
             CompletableFuture<U> failedFuture = new CompletableFuture<U>();
             failedFuture.completeExceptionally(x);

@@ -8,35 +8,33 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.concurrent.rx;
+package com.ibm.ws.concurrent.mp;
 
 import java.util.ArrayList;
-import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
 /**
- * Proxy for BiFunction that applies thread context before running and removes it afterward
+ * Proxy for Supplier that applies thread context before running and removes it afterward
  *
- * @param <T> type of the function's first parameter
- * @param <U> type of the function's second parameter
- * @param <R> type of the function's result
+ * @param <T> type of the result that is supplied by the supplier
  */
-class ContextualBiFunction<T, U, R> implements BiFunction<T, U, R> {
-    private final BiFunction<T, U, R> action;
+class ContextualSupplier<T> implements Supplier<T> {
+    private final Supplier<T> action;
     private final ThreadContextDescriptor threadContextDescriptor;
 
-    ContextualBiFunction(ThreadContextDescriptor threadContextDescriptor, BiFunction<T, U, R> action) {
+    ContextualSupplier(ThreadContextDescriptor threadContextDescriptor, Supplier<T> action) {
         this.action = action;
         this.threadContextDescriptor = threadContextDescriptor;
     }
 
     @Override
-    public R apply(T t, U u) {
+    public T get() {
         ArrayList<ThreadContext> contextApplied = threadContextDescriptor.taskStarting();
         try {
-            return action.apply(t, u);
+            return action.get();
         } finally {
             threadContextDescriptor.taskStopping(contextApplied);
         }

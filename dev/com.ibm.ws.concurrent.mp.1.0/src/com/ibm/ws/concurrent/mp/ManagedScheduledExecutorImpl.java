@@ -34,7 +34,6 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
-import com.ibm.ws.concurrent.rx.ManagedCompletableFuture;
 import com.ibm.ws.concurrent.service.AbstractManagedScheduledExecutorService;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
