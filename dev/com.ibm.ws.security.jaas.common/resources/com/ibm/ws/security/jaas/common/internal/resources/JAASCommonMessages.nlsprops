@@ -67,3 +67,15 @@ JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=Verify that all custom JAAS 
 JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: Duplicate login configuration name {0} was specified in the JAAS configuration and the server.xml/client.xml files. The login configuration name in the server.xml/client.xml file will be used.
 JAAS_DUPLICATE_ENTRY_NAME.explanation=A Duplicate login configuration name was specified in the JAAS configuration file and server.xml/client.xml file
 JAAS_DUPLICATE_ENTRY_NAME.useraction=Check the JAAS configuration file and server.xml/client.xml file.
+
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR=CWWKS1143E: A Krb5LoginModule [{0}] specified is not supported with the Java vendor [{1}] and version [{2}]. 
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.explanation=The Krb5LoginModule specified in the server.xml and/or jaas.conf files is not supported in the Java vendor and version used.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.useraction=Use the correct Java vendor and version that supported the Krb5LoginModule or use the Krb5LoginModule that supported by the Java vendor and version.
+
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS=CWWKS1144E: A Krb5LoginModule options [{0}] specified are not supported with the Java vendor [{1}] and version [{2}]. 
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.explanation=The Krb5LoginModule options that specified in the server.xml and/or jaas.conf files are not supported in the Java vendor and version used.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=Verify that all the Krb5LoginModule options that specified in server.xml and/or jaas.conf files are supported by the Java vendor and version.
+
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: A Kerberos jaasLoginContext entry [{0}] can not be specified as a JAAS configuration entry in the server.xml and/or jaas.conf file. 
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation= The run time will use a default Krb5LoginModule configuration and the SPNEGO configuration in the server.xml file.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=This is only for information purpose, you can remove the entry.
