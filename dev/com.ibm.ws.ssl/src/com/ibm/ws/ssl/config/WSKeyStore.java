@@ -720,6 +720,9 @@ public class WSKeyStore extends Properties {
             throw ex;
         }
 
+        if (isDefault)
+            Tr.info(tc, "Successfully loaded default keystore: " + this.location + " of type: " + this.type);
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "do_getKeyStore", myKeyStore);
         return myKeyStore;
