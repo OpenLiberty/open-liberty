@@ -180,5 +180,12 @@ JWK_RETRIEVE_FAILED=CWWKS1747E: No se ha devuelto un JSON Web Key (JWK) desde el
 JWK_RETRIEVE_FAILED.explanation=No se puede devolver una clave JSON Web Key desde el URL especificado. Puede que el URL no sea v\u00e1lido, que el URL no se haya configurado para devolver una JWK, que la respuesta del URL est\u00e9 vac\u00eda o que se haya producido un error desconocido.
 JWK_RETRIEVE_FAILED.useraction=Compruebe que el URL tenga el formato correcto y especifique una ubicaci\u00f3n capaz de devolver JSON Web Keys. Compruebe el c\u00f3digo de estado y el contenido de la respuesta para obtener m\u00e1s informaci\u00f3n.
 
+USERINFO_RETREIVE_FAILED=CWWKS1748E: El URL de UserInfo [{0}] no se ha podido contactar. El estado de la respuesta es [{1}] y el contenido devuelto es [{2}].
+USERINFO_RETREIVE_FAILED.explanation=Los datos de informaci\u00f3n de usuario no se han podido obtener del URL especificado. Puede que el URL no sea v\u00e1lido, que la respuesta del URL est\u00e9 vac\u00eda o que se haya producido un error desconocido.
+USERINFO_RETREIVE_FAILED.useraction=Verifique que el formato del URL sea correcto y que especifica una ubicaci\u00f3n capaz de devolver datos de informaci\u00f3n de usuario. Compruebe el c\u00f3digo de estado y el contenido de la respuesta para obtener m\u00e1s informaci\u00f3n.
+
+USERINFO_INVALID=CWWKS1749E: Los datos de informaci\u00f3n del usuario [{0}] no son v\u00e1lidos porque la subreclamaci\u00f3n no coincide con la subreclamaci\u00f3n de la se\u00f1al de ID [{1}].
+USERINFO_INVALID.explanation=La subreclamaci\u00f3n de los datos de informaci\u00f3n de usuario debe coincidir con la subreclamaci\u00f3n de la se\u00f1al de ID, pero no sucede. 
+USERINFO_INVALID.useraction=Aseg\u00farese de que el proveedor de OpenID Connect genera datos de informaci\u00f3n de usuario v\u00e1lidos.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 

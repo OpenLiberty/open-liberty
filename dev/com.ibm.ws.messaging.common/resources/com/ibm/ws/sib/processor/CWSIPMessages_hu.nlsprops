@@ -102,7 +102,7 @@
 #   - Msgs in the range CWSIP0551-CWSIP0560 belong to class com.ibm.ws.sib.processor.impl.store.itemstreams.PtoPLocalMsgsItemStream
 #   - Msgs in the range CWSIP0561-CWSIP0570 belong to class com.ibm.ws.sib.processor.impl.AsynchConsumer
 #   - Msgs in the range CWSIP0571-CWSIP0579 belong to class com.ibm.ws.sib.processor.impl.mediation.MessagePump
-#
+#   - Msgs in the range CWSIP0580-CWSIP0589 belong to class com.ibm.ws.sib.processor.impl.store.items.MessageItem
 #
 #
 #
@@ -1292,6 +1292,15 @@ CONNECTION_CONTROLLABLE_ERROR_CWSIP0571.useraction=Nincs
 MESSAGE_EXISTS_ERROR_CWSIP0572=CWSIP0572E: A(z) {0} azonos\u00edt\u00f3j\u00fa \u00fczenet m\u00e1r nem l\u00e9tezik a(z) {1} c\u00e9lon.
 MESSAGE_EXISTS_ERROR_CWSIP0572.explanation=A megadott azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet el\u00e9r\u00e9se meghi\u00fasult.  Ez val\u00f3sz\u00edn\u0171leg az\u00e9rt t\u00f6rt\u00e9nt, mert az \u00fczenet lej\u00e1rt vagy egy alkalmaz\u00e1s elt\u00e1vol\u00edtotta.
 MESSAGE_EXISTS_ERROR_CWSIP0572.useraction=Nincs
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The destination name
+# {3} The action taken
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580=CWSIP0580W: Egy {0} azonos\u00edt\u00f3val, {1} rendszer\u00fczenet-azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet tal\u00e1lhat\u00f3 a(z) {2} c\u00e9lon sib.msgstore.maximumAllowedDeliveryDelayInterval tulajdons\u00e1gban be\u00e1ll\u00edtott korl\u00e1tot meghalad\u00f3 k\u00e9zbes\u00edt\u00e9si k\u00e9sedelemmel. Az k\u00f6vetkez\u0151 int\u00e9zked\u00e9s t\u00f6rt\u00e9nt: ''{3}''
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580.explanation=A figyelmeztet\u00e9s jelzi az elv\u00e9gzett m\u0171veletet.
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580.useraction=Semmit sem kell tennie.
 
 # -------------------------------------------------------------------------------------------------
 NO_ELEMENTS_ERROR_CWSIP0601=CWSIP0601E: Nincs t\u00f6bb elem az iter\u00e1torban.

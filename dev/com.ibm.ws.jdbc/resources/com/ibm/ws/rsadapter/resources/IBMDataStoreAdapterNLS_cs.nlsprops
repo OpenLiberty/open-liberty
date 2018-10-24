@@ -486,6 +486,10 @@ DEFAULT_MATCH_ORIGINAL.useraction=Ov\u011b\u0159te, \u017ee je p\u0159izp\u016fs
 
 # 8780 deleted
 
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST=DSRA8790W: Metody beginRequest a endRequest mus\u00ed b\u00fdt pou\u017e\u00edv\u00e1ny pouze spr\u00e1vci p\u0159ipojen\u00ed. Specifikace JDBC nezahrnuje v\u00edce spr\u00e1vc\u016f p\u0159ipojen\u00ed, kte\u0159\u00ed mohou spravovat p\u0159ipojen\u00ed. Pou\u017eit\u00ed metod beginRequest a endRequest ostatn\u00edmi spr\u00e1vci p\u0159ipojen\u00ed je potla\u010deno, kdy\u017e je spr\u00e1va p\u0159ipojena poskytnuta aplika\u010dn\u00edm serverem. N\u00e1sleduj\u00edc\u00ed z\u00e1sobn\u00edk ozna\u010duje cestu ke k\u00f3du, na kter\u00e9 byla vyvol\u00e1na operace beginRequest nebo endRequest: {0}.
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST.explanation=Pokyny beginRequest a endRequest jsou potla\u010deny, aby se zabr\u00e1nilo ne\u017e\u00e1douc\u00edm \u00fa\u010dink\u016fm, kter\u00e9 naru\u0161uj\u00ed spr\u00e1vu p\u0159ipojen\u00ed.
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST.useraction=Chcete-li tomuto varov\u00e1n\u00ed zabr\u00e1nit, odeberte k\u00f3d, kter\u00fd vyvol\u00e1v\u00e1 metody beginRequest a endRequest, jak je identifikovan\u00e9 poskytnut\u00fdm z\u00e1sobn\u00edkem.
+
 # ----------------------------------------------------------------------------
 # 
 # Using the 9000's for JDBC wrapper messages.

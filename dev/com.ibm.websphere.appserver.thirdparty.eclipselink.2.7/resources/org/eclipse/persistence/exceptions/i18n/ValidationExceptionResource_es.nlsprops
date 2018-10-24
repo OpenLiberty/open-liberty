@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -149,13 +153,13 @@
 
 7093=En la consulta denominada [{0}], no se encuentra la clase [{2}] para el argumento de consulta denominado [{1}]. Incluya la clase que falta en la classpath.
 
-7095=El recurso sessions.xml [{0}] no se ha encontrado en la v\u00eda de acceso de recurso.  Compruebe que el nombre/v\u00eda de acceso del recurso y el cargador de clases que se han pasado a SessionManager.getSession sean correctos.  sessions.xml debe estar incluido en la ra\u00edz del archivo jar desplegado de la aplicaci\u00f3n; si sessions.xml se despliega en un subdirectorio en el archivo jar de la aplicaci\u00f3n, aseg\u00farese de que se utilice la v\u00eda de acceso del recurso correcta con "/", no "\".
+7095=El recurso sessions.xml [{0}] no se ha encontrado en la v\u00eda de acceso de recurso.  Compruebe que el nombre/v\u00eda de acceso del recurso y el cargador de clases que se han pasado a SessionManager.getSession sean correctos.  sessions.xml debe estar incluido en la ra\u00edz del archivo jar desplegado de la aplicaci\u00f3n; si sessions.xml se despliega en un subdirectorio en el archivo jar de la aplicaci\u00f3n, aseg\u00farese de que se utilice la v\u00eda de acceso del recurso correcta con "/", no "".
 
 7096=No se puede utilizar el m\u00e9todo commit() para confirmar UnitOfWork de nuevo.
 
 7097=La operaci\u00f3n no est\u00e1 soportada: [{0}].
 
-7099=El recurso XML del proyecto de despliegue [{0}] no se ha encontrado en la v\u00eda de acceso de recurso.  Compruebe que el nombre/v\u00eda de acceso del recurso y el cargador de clases que se han pasado a XMLProjectReader sean correctos.  El XML del proyecto debe estar incluido en la ra\u00edz del archivo jar desplegado de la aplicaci\u00f3n; si el XML del proyecto se despliega en un subdirectorio en el archivo jar de la aplicaci\u00f3n, aseg\u00farese de que se utilice la v\u00eda de acceso del recurso correcta con "/", no "\".
+7099=El recurso XML del proyecto de despliegue [{0}] no se ha encontrado en la v\u00eda de acceso de recurso.  Compruebe que el nombre/v\u00eda de acceso del recurso y el cargador de clases que se han pasado a XMLProjectReader sean correctos.  El XML del proyecto debe estar incluido en la ra\u00edz del archivo jar desplegado de la aplicaci\u00f3n; si el XML del proyecto se despliega en un subdirectorio en el archivo jar de la aplicaci\u00f3n, aseg\u00farese de que se utilice la v\u00eda de acceso del recurso correcta con "/", no "".
 
 7100=No se ha podido encontrar la sesi\u00f3n con el nombre [{0}] en el archivo session.xml [{1}]
 

@@ -486,6 +486,10 @@ DEFAULT_MATCH_ORIGINAL.useraction=Verifique que la propiedad personalizada del o
 
 # 8780 deleted
 
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST=DSRA8790W: Los m\u00e9todos beginRequest y endRequest s\u00f3lo los deben utilizar los gestores de conexiones. La especificaci\u00f3n JDBC no explica los diversos gestores de conexiones que pueden gestionar una conexi\u00f3n. El uso de beginRequest y endRequest por otros gestores de conexiones se suprime cuando el servidor de aplicaciones proporciona la gesti\u00f3n de conexiones. La pila siguiente indica la v\u00eda de acceso de c\u00f3digo en la que se han invocado las operaciones beginRequest o endRequest: {0}.
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST.explanation=Los consejos beginRequest y endRequest se suprimen para evitar efectos colaterales que interfieran en la gesti\u00f3n de las conexiones.
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST.useraction=Para evitar este aviso, elimine el c\u00f3digo que invoca beginRequest y endRequest seg\u00fan lo identifique la pila suministrada.
+
 # ----------------------------------------------------------------------------
 # 
 # Using the 9000's for JDBC wrapper messages.

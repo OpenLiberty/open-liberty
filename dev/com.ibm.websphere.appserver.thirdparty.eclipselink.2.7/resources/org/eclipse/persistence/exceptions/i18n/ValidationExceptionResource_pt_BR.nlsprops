@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -149,13 +153,13 @@
 
 7093=Na consulta denominada [{0}], a classe [{2}] para o argumento de consulta denominado [{1}] n\u00e3o pode ser localizada. Inclua a classe ausente em seu caminho de classe.
 
-7095=O recurso sessions.xml [{0}] n\u00e3o foi localizado no caminho de recurso.  Verifique se o nome/caminho do recurso e o carregador de classes transmitidos para o SessionManager.getSession est\u00e3o corretos.  O sessions.xml deve ser inclu\u00eddo na raiz do jar implementado do aplicativo, se o sessions.xml for implementado em um subdiret\u00f3rio no jar do aplicativo para assegurar que o caminho de recurso correto "/" e n\u00e3o "\" seja usado.
+7095=O recurso sessions.xml [{0}] n\u00e3o foi localizado no caminho de recurso.  Verifique se o nome/caminho do recurso e o carregador de classes transmitidos para o SessionManager.getSession est\u00e3o corretos.  O sessions.xml deve ser inclu\u00eddo na raiz do jar implementado do aplicativo; se o sessions.xml for implementado em um subdiret\u00f3rio no jar do aplicativo, certifique-se de que o caminho de recurso correto que usa "/" e n\u00e3o "" seja usado.
 
 7096=N\u00e3o \u00e9 poss\u00edvel usar o m\u00e9todo commit() para confirmar UnitOfWork novamente.
 
 7097=Opera\u00e7\u00e3o n\u00e3o suportada: [{0}].
 
-7099=O recurso XML do projeto de implementa\u00e7\u00e3o [{0}] n\u00e3o foi localizado no caminho de recurso.  Verifique se o nome/caminho do recurso e o carregador de classes transmitidos para o XMLProjectReader est\u00e3o corretos.  O XML do projeto deve ser inclu\u00eddo na raiz do jar implementado do aplicativo, se o XML do projeto for implementado em um subdiret\u00f3rio no jar do aplicativo para assegurar que o caminho de recurso correto "/" e n\u00e3o "\" seja usado.
+7099=O recurso XML do projeto de implementa\u00e7\u00e3o [{0}] n\u00e3o foi localizado no caminho de recurso.  Verifique se o nome/caminho do recurso e o carregador de classes transmitidos para o XMLProjectReader est\u00e3o corretos.  O XML do projeto deve ser inclu\u00eddo na raiz do jar implementado do aplicativo; se o XML do projeto for implementado em um subdiret\u00f3rio no jar do aplicativo, certifique-se de que o caminho de recurso correto que usa "/" e n\u00e3o "" seja usado.
 
 7100=N\u00e3o foi poss\u00edvel localizar a sess\u00e3o com o nome [{0}] no arquivo session.xml [{1}]
 

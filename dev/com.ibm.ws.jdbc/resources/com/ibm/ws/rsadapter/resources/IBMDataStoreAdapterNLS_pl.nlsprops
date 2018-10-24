@@ -249,10 +249,12 @@ DSRA4004.onconnect.sql.useraction=Przejrzyj komunikat wyj\u0105tku, aby znale\u0
 DSRA4005.invalid.logintimeout=DSRA4005E: Serwer nie obs\u0142uguje w\u0142a\u015bciwo\u015bci loginTimeout, kt\u00f3ra zosta\u0142a podana w adresie URL lub we w\u0142a\u015bciwo\u015bciach \u017ar\u00f3d\u0142a danych {0}.
 DSRA4005.invalid.logintimeout.explanation=W\u0142a\u015bciwo\u015b\u0107 loginTimeout nie jest obs\u0142ugiwana, je\u015bli zosta\u0142a podana dla \u017ar\u00f3d\u0142a danych bazuj\u0105cego na implementacji java.sql.Driver, poniewa\u017c serwer nie mo\u017ce wywo\u0142a\u0107 metody getLoginTimeout w klasie java.sql.Driver.
 DSRA4005.invalid.logintimeout.useraction=Zmodyfikuj konfiguracj\u0119 \u017ar\u00f3d\u0142a danych, aby u\u017cy\u0107 implementacji \u017ar\u00f3d\u0142a danych zamiast implementacji java.sql.Driver, lub usu\u0144 w\u0142a\u015bciwo\u015b\u0107 loginTimeout. 
+
 # {0} name of the DataSource, {1} the vendor class name, {2} the start of the JDBC URL
 DSRA4006.null.connection=DSRA4006E: \u0179r\u00f3d\u0142o danych {0} nie mo\u017ce nawi\u0105za\u0107 po\u0142\u0105czenia z baz\u0105 danych, poniewa\u017c klasa {1} zwr\u00f3ci\u0142a po\u0142\u0105czenie o warto\u015bci NULL dla adresu URL rozpoczynaj\u0105cego si\u0119 od {2}. Oznacza to, \u017ce sterownik JDBC jest niezgodny ze specyfikacj\u0105 JDBC.
 DSRA4006.null.connection.explanation=Chocia\u017c interfejs java.sql.Driver wskaza\u0142, \u017ce zaakceptowa\u0142 podany adres URL, zwr\u00f3ci\u0142 po\u0142\u0105czenie o warto\u015bci NULL. Ten b\u0142\u0105d wskazuje na defekt w sterowniku JDBC.
 DSRA4006.null.connection.useraction=Zg\u0142o\u015b b\u0142\u0105d do dostawcy sterownika JDBC i upewnij si\u0119, \u017ce sterownik JDBC i konfiguracja \u017ar\u00f3d\u0142a danych s\u0105 poprawne. 
+
 DSRA4008.tran.none.unsupported=DSRA4008E: Sterownik JDBC nie obs\u0142uguje poziomu odseparowania TRANSACTION_NONE, kt\u00f3ry zosta\u0142 skonfigurowany w \u017ar\u00f3dle danych {0}.
 DSRA4008.tran.none.unsupported.explanation=Poziom odseparowania TRANSACTION_NONE, kt\u00f3ry zosta\u0142 skonfigurowany w \u017ar\u00f3dle danych, nie jest obs\u0142ugiwany przez sterownik JDBC.
 DSRA4008.tran.none.unsupported.useraction=Zaktualizuj konfiguracj\u0119 \u017ar\u00f3d\u0142a danych, tak aby korzysta\u0142a z poziomu odseparowania obs\u0142ugiwanego przez ten sterownik, lub u\u017cyj sterownika obs\u0142uguj\u0105cego poziom odseparowania TRANSACTION_NONE. 
@@ -260,12 +262,15 @@ DSRA4008.tran.none.unsupported.useraction=Zaktualizuj konfiguracj\u0119 \u017ar\
 DSRA4009.tran.none.transactional.unsupported=DSRA4009E: Nie mo\u017cna skonfigurowa\u0107 \u017ar\u00f3d\u0142a danych {0} z poziomem odseparowania TRANSACTION_NONE i parametrem transactional=true.
 DSRA4009.tran.none.transactional.unsupported.explanation=Sterownik JDBC skonfigurowany z poziomem odseparowania TRANSACTION_NONE nie b\u0119dzie obs\u0142ugiwa\u0107 transakcji.
 DSRA4009.tran.none.transactional.unsupported.useraction=Ustaw parametr transactional=false w \u017ar\u00f3dle danych. 
+
 DSRA4010.tran.none.autocommit.required=DSRA4010E: W przypadku u\u017cycia poziomu odseparowania TRANSACTION_NONE skonfigurowanego w \u017ar\u00f3dle danych {0} wymagane jest automatyczne zatwierdzanie.
 DSRA4010.tran.none.autocommit.required.explanation=Sterownik JDBC zosta\u0142 skonfigurowany z poziomem odseparowania TRANSACTION_NONE i wymaga u\u017cycia automatycznego zatwierdzania.
 DSRA4010.tran.none.autocommit.required.useraction=Ustaw automatyczne zatwierdzanie na warto\u015b\u0107 true. 
+
 DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: Sterownik JDBC nie obs\u0142uguje prze\u0142\u0105czania na poziom odseparowania TRANSACTION_NONE w \u017ar\u00f3dle danych {0}.
 DSRA4011.tran.none.iso.switch.unsupported.explanation=Specyfikacja JDBC nie obs\u0142uguje prze\u0142\u0105czania na poziom odseparowania TRANSACTION_NONE.
 DSRA4011.tran.none.iso.switch.unsupported.useraction=Unikaj prze\u0142\u0105czania na poziom odseparowania TRANSACTION_NONE. 
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
@@ -480,6 +485,10 @@ DEFAULT_MATCH_ORIGINAL.explanation=W\u0142a\u015bciwo\u015b\u0107 niestandardowa
 DEFAULT_MATCH_ORIGINAL.useraction=Sprawd\u017a, czy w\u0142a\u015bciwo\u015b\u0107 niestandardowa \u017ar\u00f3d\u0142a danych jest skonfigurowana dla po\u017c\u0105danego zachowania.
 
 # 8780 deleted
+
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST=DSRA8790W: Metody beginRequest i endRequest musz\u0105 by\u0107 u\u017cywane wy\u0142\u0105cznie przez mened\u017cery po\u0142\u0105cze\u0144. Specyfikacja JDBC nie uwzgl\u0119dnia wielu mened\u017cer\u00f3w po\u0142\u0105cze\u0144, kt\u00f3re mog\u0105 zarz\u0105dza\u0107 po\u0142\u0105czeniem. U\u017cycie metod beginRequest i endRequest przez inne mened\u017cery po\u0142\u0105cze\u0144 zostaje zast\u0105pione, gdy zarz\u0105dzanie po\u0142\u0105czeniem zostaje udost\u0119pnione przez serwer aplikacji. Nast\u0119puj\u0105cy stos wskazuje \u015bcie\u017ck\u0119 kodu, na kt\u00f3rej wywo\u0142ano operacj\u0119 beginRequest lub endRequest: {0}.
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST.explanation=Wskaz\u00f3wki metod beginRequest i endRequest s\u0105 pomijane, aby unikn\u0105\u0107 skutk\u00f3w ubocznych, kt\u00f3re wp\u0142ywaj\u0105 na zarz\u0105dzanie po\u0142\u0105czeniami.
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST.useraction=Aby unikn\u0105\u0107 tego ostrze\u017cenia, usu\u0144 kod wywo\u0142uj\u0105cy metody beginRequest i endRequest wskazany w podanym stosie.
 
 # ----------------------------------------------------------------------------
 # 
