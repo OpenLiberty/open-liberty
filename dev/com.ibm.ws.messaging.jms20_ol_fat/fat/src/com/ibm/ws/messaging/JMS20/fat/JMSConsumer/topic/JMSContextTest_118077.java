@@ -47,14 +47,11 @@ import org.junit.rules.TestRule;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.OnlyRunInJava7Rule;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @Mode(TestMode.FULL)
 public class JMSContextTest_118077 {
-    @ClassRule
-    public static final TestRule java7Rule = new OnlyRunInJava7Rule();
 
     private static LibertyServer server = LibertyServerFactory
                     .getLibertyServer("JMSContextTest_118077_TestServer");
@@ -111,6 +108,7 @@ public class JMSContextTest_118077 {
         server.copyFileToLibertyInstallRoot("lib/features",
                                             "features/testjmsinternals-1.0.mf");
 
+        server1.setHttpDefaultPort(8030);
         server.startServer("JMSContextTest_118077_Client.log");
         server1.startServer("JMSContextTest_118077_Server.log");
 

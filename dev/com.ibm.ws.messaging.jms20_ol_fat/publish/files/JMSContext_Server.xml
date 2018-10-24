@@ -2,7 +2,7 @@
 
   <!-- TESTING THE UPLOAD! -->
     <featureManager>
-      <feature>servlet-3.0</feature>
+      <feature>servlet-3.1</feature>
       <feature>wasJmsServer-1.0</feature>      
     	  <feature>testjmsinternals-1.0</feature>
     	  <feature>timedexit-1.0</feature>
