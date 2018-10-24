@@ -85,9 +85,11 @@ public class MessageContextImpl implements MessageContext {
             }
         }
         if (keyValue.equals("WRITE-" + Message.ATTACHMENTS)) {
+            // Liberty Change Start - #5049
             if (m.getExchange().getOutMessage() == null) {
                 return null;
             }
+            // Liberty Change End
             return m.getExchange().getOutMessage().get(Message.ATTACHMENTS);
         }
 

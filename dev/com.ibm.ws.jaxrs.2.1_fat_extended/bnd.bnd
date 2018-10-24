@@ -19,7 +19,8 @@ src: \
   test-applications/cdiApp/src,\
   test-applications/jsonbapp/src,\
   test-applications/formApp/src,\
-  test-applications/mutableHeadersApp/src
+  test-applications/mutableHeadersApp/src,\
+  test-applications/subResourceApp
 
 fat.project: true
 
