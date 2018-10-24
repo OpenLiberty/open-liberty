@@ -109,6 +109,7 @@ public class DurableUnsharedTest {
 
 
         server.setServerConfigurationFile("JMSContext.xml");
+        server1.setHttpDefaultPort(8030);
         server1.setServerConfigurationFile("TestServer1.xml");
         server.copyFileToLibertyInstallRoot("lib/features",
                                             "features/testjmsinternals-1.0.mf");
@@ -274,6 +275,7 @@ public class DurableUnsharedTest {
     // ////  @Test
     public void testMultiUnSharedDurConsumer_TCP_SecOff() throws Exception {
         server1.stopServer();
+        server1.setHttpDefaultPort(8030);
         server1.setServerConfigurationFile("topicMDBServer.xml");
         server1.startServer();
 
@@ -332,6 +334,7 @@ public class DurableUnsharedTest {
         server1.stopServer();
         server.stopServer();
         server.setServerConfigurationFile("JMSContext.xml");
+        server1.setHttpDefaultPort(8030);
         server1.setServerConfigurationFile("TestServer1.xml");
 
         server.startServer();

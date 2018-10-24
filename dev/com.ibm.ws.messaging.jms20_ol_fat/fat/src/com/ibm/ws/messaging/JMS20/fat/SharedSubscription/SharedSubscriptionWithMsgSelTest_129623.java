@@ -113,6 +113,7 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
         server.copyFileToLibertyInstallRoot("lib/features",
                                             "features/testjmsinternals-1.0.mf");
 
+        server1.setHttpDefaultPort(8030);
         server1.setServerConfigurationFile("JMSContext_Server.xml");
         server1.startServer("SharedSubscriptionWithMsgSel_129623_Server.log");
         String changedMessageFromLog = server1.waitForStringInLog(
@@ -367,6 +368,7 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
                    output);
 
         server1.stopServer();
+        server1.setHttpDefaultPort(8030);
         server1.setServerConfigurationFile("JMSContext_Server.xml");
         server1.startServer();
 
@@ -394,6 +396,7 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
         server.stopServer();
         server1.stopServer();
         server.setServerConfigurationFile("JMSContext_Client.xml");
+        server1.setHttpDefaultPort(8030);
         server1.setServerConfigurationFile("JMSContext_Server.xml");
         server1.startServer();
         server.startServer();

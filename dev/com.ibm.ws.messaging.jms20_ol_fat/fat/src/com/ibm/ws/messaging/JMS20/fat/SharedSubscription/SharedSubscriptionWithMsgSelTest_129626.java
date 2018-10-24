@@ -116,6 +116,7 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
         server1.copyFileToLibertyInstallRoot("lib/features",
                                              "features/testjmsinternals-1.0.mf");
 
+        server1.setHttpDefaultPort(8030);
         server1.setServerConfigurationFile("JMSContext_Server.xml");
         server1.startServer("SharedSubscriptionWithMsgSel_129626_Server.log");
         String changedMessageFromLog = server1.waitForStringInLog(
@@ -298,6 +299,7 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
         assertTrue("testBasicMDBTopicNonDurable: output value is false", output);
 
         server1.stopServer();
+        server1.setHttpDefaultPort(8030);
         server1.setServerConfigurationFile("JMSContext_Server.xml");
         server1.startServer();
 
@@ -323,6 +325,7 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
         server.stopServer();
         server1.stopServer();
         server.setServerConfigurationFile("JMSContext_Client.xml");
+        server1.setHttpDefaultPort(8030);
         server1.setServerConfigurationFile("JMSContext_Server.xml");
         server1.startServer();
         server.startServer();

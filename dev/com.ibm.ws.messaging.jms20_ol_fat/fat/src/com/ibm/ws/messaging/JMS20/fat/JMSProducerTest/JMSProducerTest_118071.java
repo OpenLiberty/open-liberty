@@ -119,6 +119,7 @@ public class JMSProducerTest_118071 {
                                              "features/testjmsinternals-1.0.mf");
 
         server.setServerConfigurationFile("JMSContext.xml");
+        server1.setHttpDefaultPort(8030);
         server1.setServerConfigurationFile("TestServer1.xml");
         server.startServer();
         server1.startServer();

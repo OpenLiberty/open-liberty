@@ -107,6 +107,7 @@ public class LiteBucketSet3Test {
         server.copyFileToLibertyInstallRoot("lib/features",
                                             "features/testjmsinternals-1.0.mf");
 
+        server1.setHttpDefaultPort(8030);
         server.startServer("JMSContextTest_118065_Client.log");
         server1.startServer("JMSContextTest_118065_Server.log");
 

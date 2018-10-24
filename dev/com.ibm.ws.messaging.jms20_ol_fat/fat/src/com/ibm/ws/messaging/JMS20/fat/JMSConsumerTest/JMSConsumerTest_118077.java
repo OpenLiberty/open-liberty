@@ -115,6 +115,7 @@ public class JMSConsumerTest_118077 {
         server.copyFileToLibertyInstallRoot("lib/features",
                                             "features/testjmsinternals-1.0.mf");
 
+        server1.setHttpDefaultPort(8030);
         server1.setServerConfigurationFile("JMSContext_Server.xml");
         server1.startServer("JMSConsumer_118077_Server.log");
         String changedMessageFromLog = server1.waitForStringInLog(
@@ -417,6 +418,7 @@ public class JMSConsumerTest_118077 {
     public void testReceiveBodyRetrieveHeader_TcpIp_SecOff() throws Exception {
 
         System.out.println("Running testTopicNameTOPIC_TcpIp_SecOn");
+        server1.setHttpDefaultPort(8030);
         server1.setServerConfigurationFile("JMSContext_Server.xml");
         server1.startServer();
         String changedMessageFromLog = server1.waitForStringInLog(
