@@ -47,8 +47,8 @@ public class MetadataCompleteTest extends LoggingTest {
 
     protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
 
-    @ClassRule
-    public static final SharedServer SHARED_SERVER = new SharedServer("annoFat_server", false, false);
+    // Not using ClassRule annotation.  So server does NOT start automatically.
+    public static final SharedServer SHARED_SERVER = new SharedServer("annoFat_server", false);
 
     /*
      * (non-Javadoc)

@@ -47,7 +47,6 @@ public class SharedServer extends ExternalResource {
     private final boolean waitForSecurity;
     private LibertyServer server;
     private String[] featuresToInstall = new String[] {};
-    private boolean startServerInBeforeMethod = true;
 
     /**
      * Convenience constructor; assumes security is disabled
@@ -80,25 +79,10 @@ public class SharedServer extends ExternalResource {
         this.waitForSecurity = waitForSecurity;
     }
 
-    /**
-     * Constructor that allows you to turn off starting of server which happens in the before() method.
-     *
-     *
-     * @param serverName the name of the {@link LibertyServer} to encapsulate
-     */
-    public SharedServer(String serverName, boolean waitForSecurity, boolean startServerAutomagically) {
-        this(serverName, waitForSecurity);
-        this.startServerInBeforeMethod = startServerAutomagically;
-    }
-
     @Override
     protected void before() {
         try {
-            if (startServerInBeforeMethod) {
-                this.startIfNotStarted();
-            } else {
-                LOG.log(Level.INFO, "Not starting server because I was politely told not to.");
-            }
+            this.startIfNotStarted();
         } catch (Exception e) {
             LOG.log(Level.INFO, "Failed to start shared server", e);
         }
