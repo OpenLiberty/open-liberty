@@ -72,7 +72,7 @@ JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR=CWWKS1143E: The {0} login module is not sup
 JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.explanation=The Krb5LoginModule module specified in the server.xml file, the jaas.conf file, or both files is not supported in the Java vendor and version that was used.
 JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.useraction=Use the correct Java vendor and version that is supported for the Krb5LoginModule module or use a Krb5LoginModule module that is supported by the Java vendor and version.
 
-JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS=CWWKS1144E: The {0} login module options are not supported with the {1} Java vendor and the version {2}.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS=CWWKS1144E: The {0} login module options are not supported with the {1} Java vendor and version {2}.
 JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.explanation=The Krb5LoginModule options specified in the server.xml file, the jaas.conf file, or both files is not supported in the Java vendor and version that was used.
 JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=Verify that all the Krb5LoginModule options that are specified in the server.xml file, the jaas.conf file, or both files are supported by the Java vendor and version.
 

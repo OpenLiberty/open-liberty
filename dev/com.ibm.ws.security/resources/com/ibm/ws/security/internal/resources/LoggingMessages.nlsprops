@@ -54,6 +54,6 @@ SEC_TOO_MANY_PRINCIPALS=CWWKS0010E: While getting the caller principal, the call
 SEC_TOO_MANY_PRINCIPALS.explanation=The caller's subject has too many principals of type WSPrincipal. Only one principal of this type is supported.
 SEC_TOO_MANY_PRINCIPALS.useraction=Review the application to understand why the subject has more than one WSPrincipal.
 
-SPNEGO_API_IS_NOT_SUPPORT=CWWKS0011E: The {0} SPNEGO API is not supported for the version {0} of the {1} Java runtime.
+SPNEGO_API_IS_NOT_SUPPORT=CWWKS0011E: The {0} SPNEGO API is not supported for version {0} of the {1} Java runtime.
 SPNEGO_API_IS_NOT_SUPPORT.explanation=The SPNEGO API cannot be used with the Java runtime vendor and version.
 SPNEGO_API_IS_NOT_SUPPORT.useraction=Use the Java vendor and version that is supported by the SPNEGO APIs.
