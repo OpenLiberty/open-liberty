@@ -56,4 +56,4 @@ SEC_TOO_MANY_PRINCIPALS.useraction=Review the application to understand why the 
 
 SPNEGO_API_IS_NOT_SUPPORT=CWWKS0011E: The SPNEGO API [{0}} is not supported with the Java runtime vendor [{1}] and version [{2}].
 SPNEGO_API_IS_NOT_SUPPORT.explanation=The SPNEGO API can not be used with the Java runtime vendor and version.
-SPNEGO_API_IS_NOT_SUPPORT.useraction=Use the Java vendor and version that supported by the SPNEGO APIs.
+SPNEGO_API_IS_NOT_SUPPORT.useraction=Use the Java vendor and version that is supported by the SPNEGO APIs.
