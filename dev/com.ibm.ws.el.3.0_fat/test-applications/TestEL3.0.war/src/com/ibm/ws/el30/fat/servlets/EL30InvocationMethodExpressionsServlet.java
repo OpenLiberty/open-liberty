@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,37 +10,34 @@
  *******************************************************************************/
 package com.ibm.ws.el30.fat.servlets;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import javax.el.ELProcessor;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import org.junit.Test;
 
 import com.ibm.ws.el30.fat.beans.EL30InvocationMethodExpressionTestBean;
+
+import componenttest.app.FATServlet;
 
 /**
  * This servlet test the invocation of Method Expressions
  */
 @WebServlet("/EL30InvocationMethodExpressionsServlet")
-public class EL30InvocationMethodExpressionsServlet extends HttpServlet {
+public class EL30InvocationMethodExpressionsServlet extends FATServlet {
 
     private static final long serialVersionUID = 1L;
+    ELProcessor elp;
 
     /**
      * Constructor
      */
     public EL30InvocationMethodExpressionsServlet() {
         super();
-    }
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ELProcessor elp = new ELProcessor();
-        PrintWriter pw = response.getWriter();
+        elp = new ELProcessor();
 
         // Create an instance of the InvocationMethodExpressionTest bean
         EL30InvocationMethodExpressionTestBean parent = new EL30InvocationMethodExpressionTestBean();
@@ -48,116 +45,76 @@ public class EL30InvocationMethodExpressionsServlet extends HttpServlet {
         // Add the parent object to the ELProcessor
         elp.defineBean("parent", parent);
 
+    }
+
+    @Test
+    public void testEL30InvocationMethodExpressions() throws Exception {
         // Lets first use Value Expressions to perform invocations
 
         // Set the parent object property using Value Expression
-        setValueExpression(elp, pw, "parent.parentName", "John Smith Sr.");
+        elp.setValue("parent.parentName", "John Smith Sr.");
 
         // Get the parent object property value using Value Expression
-        Object obj = getValueExpression(elp, pw, "parent.parentName", java.lang.String.class);
-        pw.println("Get Parent Name Using Value Expression (Expected: \"John Smith Sr.\"): " + obj);
+        getValueExpression("parent.parentName", java.lang.String.class, "John Smith Sr.");
 
         // Set the child object property using Value Expression
-        setValueExpression(elp, pw, "parent.child.childName", "John Smith Jr.");
+        elp.setValue("parent.child.childName", "John Smith Jr.");
 
         // Get the child object property value using Value Expression
-        obj = getValueExpression(elp, pw, "parent.child.childName", java.lang.String.class);
-        pw.println("Get Child Name Using Value Expression (Expected: \"John Smith Jr.\"): " + obj);
+        getValueExpression("parent.child.childName", java.lang.String.class, "John Smith Jr.");
 
-        obj = getValueExpression(elp, pw, "parent", java.lang.String.class);
-        pw.println("Get Object Representation Using Value Expression: " + obj);
+        getValueExpression("parent", java.lang.String.class, "toString method of object with current parent name John Smith Sr.");
 
         // Now we use Method Expressions to perform invocations
 
         // Set the parent object method using Method Expression
-        setMethodExpression(elp, pw, "parent.setParentName('Steven Johnson Sr.')");
+        elp.eval("parent.setParentName('Steven Johnson Sr.')");
 
         // Get the parent object method value using Method Expression
-        obj = getMethodExpression(elp, pw, "parent.getParentName()");
-        pw.println("Get Parent Name Using Method Expression (Expected: \"Steven Johnson Sr.\"): " + obj);
+        getMethodExpression("parent.getParentName()", "Steven Johnson Sr.");
 
         // Set the child object method using Method Expression
-        setMethodExpression(elp, pw, "parent.child.setChildName('Steven Johnson Jr.')");
+        elp.eval("parent.child.setChildName('Steven Johnson Jr.')");
 
         // Get the child object method value using Method Expression
-        obj = getMethodExpression(elp, pw, "parent.child.getChildName()");
-        pw.println("Get Child Name Using Method Expression (Expected: \"Steven Johnson Jr.\"): " + obj);
+        getMethodExpression("parent.child.getChildName()", "Steven Johnson Jr.");
 
-        obj = getMethodExpression(elp, pw, "parent.toString()");
-        pw.println("Get Object Representation Using Method Expression: " + obj);
+        getMethodExpression("parent.toString()", "toString method of object with current parent name Steven Johnson Sr.");
 
-    }
-
-    /**
-     * Helper method to set Value Expressions
-     *
-     * @param elp The ELProcessor
-     * @param pw PrintWriter
-     * @param expression Expression to be evaluated
-     * @param value The value to be set
-     */
-    private void setValueExpression(ELProcessor elp, PrintWriter pw, String expression, String value) {
-        try {
-            elp.setValue(expression, value);
-        } catch (Exception e) {
-            pw.println("Exception caught: " + e.getMessage());
-            pw.println("An exception was thrown: " + e.toString());
-        }
     }
 
     /**
      * Helper method to get value using Value Expressions
      *
-     * @param elp The ELProcessor
-     * @param pw PrintWriter
      * @param expression Expression to be evaluated
      * @param expectedType Class type
      * @return the result of the evaluated expression
      */
-    private Object getValueExpression(ELProcessor elp, PrintWriter pw, String expression, Class<?> expectedType) {
-        Object obj = null;
-        try {
-            obj = elp.getValue(expression, expectedType);
-        } catch (Exception e) {
-            pw.println("Exception caught: " + e.getMessage());
-            pw.println("An exception was thrown: " + e.toString());
-        }
-        return obj;
-    }
+    private void getValueExpression(String expression, Class<?> expectedType, String expectedResult) throws Exception {
+        String result;
 
-    /**
-     * Helper method to set Method Expressions
-     *
-     * @param elp The ELProcessor
-     * @param pw PrintWriter
-     * @param expression Expression to be evaluated
-     */
-    private void setMethodExpression(ELProcessor elp, PrintWriter pw, String expression) {
-        try {
-            elp.eval(expression);
-        } catch (Exception e) {
-            pw.println("Exception caught: " + e.getMessage());
-            pw.println("An exception was thrown: " + e.toString());
-        }
+        Object obj = elp.getValue(expression, expectedType);
+
+        assertNotNull(obj);
+
+        result = obj.toString();
+
+        assertEquals("The expression did not evaluate to: " + expectedResult + " but was: " + result, expectedResult, result);
     }
 
     /**
      * Helper method to get value using Method Expressions
      *
-     * @param elp The ELProcessor
-     * @param pw PrintWriter
      * @param expression Expression to be evaluated
      * @return the result of the evaluated expression
      */
-    private Object getMethodExpression(ELProcessor elp, PrintWriter pw, String expression) {
-        Object obj = null;
-        try {
-            obj = elp.eval(expression);
-        } catch (Exception e) {
-            pw.println("Exception caught: " + e.getMessage());
-            pw.println("An exception was thrown: " + e.toString());
-        }
-        return obj;
+    private void getMethodExpression(String expression, String expectedResult) throws Exception {
+        String result;
+        Object obj = elp.eval(expression);
+        assertNotNull(obj);
+        result = obj.toString();
+
+        assertEquals("The expression did not evaluate to: " + expectedResult + " but was: " + result, expectedResult, result);
     }
 
 }

@@ -80,7 +80,7 @@ public class Employee {
         System.out.println("expression: " + expression);
         ELProcessor elp = new ELProcessor();
         Boolean result = (Boolean) expression.invoke(this);
-        System.out.println(" RESULT: " + result.toString());
+        System.out.println("RESULT: " + result.toString());
 
         if (result) {
             return "NAME MATCHES: " + this.firstname;

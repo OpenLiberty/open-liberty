@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,10 +15,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.el.fat.tests.ELDummyTest;
-import com.ibm.ws.el.fat.tests.ELLambdaExpHttpUnit;
-import com.ibm.ws.el.fat.tests.ELServerHttpUnit;
-import com.ibm.ws.el.fat.tests.ELServerTest;
+import com.ibm.ws.el.fat.tests.EL22OperatorsTest;
+import com.ibm.ws.el.fat.tests.EL30CoercionRulesTest;
+import com.ibm.ws.el.fat.tests.EL30LambdaExpressionsTest;
+import com.ibm.ws.el.fat.tests.EL30ListCollectionObjectOperationsTest;
+import com.ibm.ws.el.fat.tests.EL30MethodExpressionInvocationsTest;
+import com.ibm.ws.el.fat.tests.EL30OperatorPrecedenceTest;
+import com.ibm.ws.el.fat.tests.EL30OperatorsTest;
+import com.ibm.ws.el.fat.tests.EL30ReservedWordsTest;
+import com.ibm.ws.el.fat.tests.EL30StaticFieldsAndMethodsTest;
 import com.ibm.ws.fat.util.FatLogHandler;
 
 /**
@@ -33,26 +38,20 @@ import com.ibm.ws.fat.util.FatLogHandler;
  * <code>@Mode(TestMode.FULL)</code>. Tests default to
  * use lite mode (<code>@Mode(TestMode.LITE)</code>).
  *
- * By default only lite mode tests are run. To also run
- * full mode tests a property must be specified to ant:
+ * By default only lite mode tests are run.
  *
- * Select the target build file (usually "build-test.xml").
- * Right click and chose "Run As>Ant Build…". Add
- * "fat.test.mode=full" to the properties tab, then launch the
- * build.
- *
- * Alternatively, for a command line launch, add "-Dfat.test.mode=full".
- *
- * For additional information see:
- *
- * http://was.pok.ibm.com/xwiki/bin/view/Liberty/Test-FAT
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                ELDummyTest.class,
-                ELServerHttpUnit.class,
-                ELServerTest.class,
-                ELLambdaExpHttpUnit.class
+                EL30LambdaExpressionsTest.class,
+                EL30CoercionRulesTest.class,
+                EL30ReservedWordsTest.class,
+                EL30ListCollectionObjectOperationsTest.class,
+                EL30StaticFieldsAndMethodsTest.class,
+                EL30OperatorPrecedenceTest.class,
+                EL22OperatorsTest.class,
+                EL30OperatorsTest.class,
+                EL30MethodExpressionInvocationsTest.class
 })
 public class FATSuite {
 

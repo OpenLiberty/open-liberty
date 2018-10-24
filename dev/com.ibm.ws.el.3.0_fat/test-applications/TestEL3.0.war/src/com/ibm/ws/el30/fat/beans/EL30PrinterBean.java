@@ -8,7 +8,24 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
- 
-// Define G:A:V coordinates of each dependency
-dependencies {
+package com.ibm.ws.el30.fat.beans;
+
+/**
+ * This a simple class that appends Strings
+ */
+public class EL30PrinterBean {
+
+    private String value = "";
+
+    public void appendToValue(String str) {
+        value += str;
+    }
+
+    public String getValue() {
+        return this.value;
+    }
+
+    public void clearValue() {
+        this.value = "";
+    }
 }

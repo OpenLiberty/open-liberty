@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,159 +10,263 @@
  *******************************************************************************/
 package com.ibm.ws.el30.fat.servlets;
 
-import java.io.IOException;
+import static org.junit.Assert.assertTrue;
 
+import javax.el.ELException;
 import javax.el.ELProcessor;
 import javax.el.LambdaExpression;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import org.junit.Test;
 
 import com.ibm.ws.el30.fat.beans.Employee;
+
+import componenttest.app.FATServlet;
 
 /**
  * Servlet implementation class TestVariousLambdaExpression
  */
 @WebServlet("/TestVariousLambdaExpression")
-public class TestVariousLambdaExpression extends HttpServlet {
+public class TestVariousLambdaExpression extends FATServlet {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+    private ELProcessor elp = new ELProcessor();
+
     public TestVariousLambdaExpression() {
         super();
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doWork(request, response);
+    @Test
+    public void testLambdaParam() throws Exception {
+        LambdaExpression expression = (LambdaExpression) elp.eval("(x->x+1)");
+
+        int result = Integer.valueOf(expression.invoke("2").toString());
+        assertTrue("The expression did not evaluate to 3 : " + result, result == 3);
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // not implemented
+    @Test
+    public void testRejectExtraLambdaParam() throws Exception {
+        LambdaExpression expression = (LambdaExpression) elp.eval("x->x+1");
+
+        int result = Integer.valueOf(expression.invoke(2, 4).toString()); // extra param should be rejected
+        assertTrue("The expression did not evaluate to 3: " + result, result == 3);
     }
 
-    private void doWork(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @Test
+    public void testMultipleLambdaParams() throws Exception {
+        LambdaExpression expression = (LambdaExpression) elp.eval("((x,y)->x+y)");
 
-        String testNumber = request.getParameter("Test");
+        int result = Integer.valueOf(expression.invoke(3, 4).toString());
+        assertTrue("The expression did not evaluate to 7: " + result, result == 7);
+    }
 
-        ServletOutputStream sos = response.getOutputStream();
-        sos.println("Test EL 3.0 VariousLambdaExpression Functionality using a Servlet");
+    @Test
+    public void testCatchExeptionOnLessParam() throws Exception {
+        String expectedText = "Only [1] arguments were provided for a lambda expression that requires at least [2]";
 
-        ELProcessor elp = new ELProcessor();
+        LambdaExpression expression = (LambdaExpression) elp.eval("((x,y)->x+y)");
 
-        if ("1".equalsIgnoreCase(testNumber)) {
-            System.out.println("Test1_LambdaParam");
-            LambdaExpression expression = (LambdaExpression) elp.eval("(x->x+1)");
-            sos.println("Test1: " + expression.invoke("2").toString()); // add one
-        } else if ("2".equalsIgnoreCase(testNumber)) {
-            System.out.println("Test2_RejectExtraLambdaParam");
-            sos.println("Test2: " + ((LambdaExpression) elp.eval("x->x+1")).invoke(2, 4).toString()); // extra param should be rejected
-        } else if ("3".equalsIgnoreCase(testNumber)) {
-            System.out.println("Test3_MultipleLambdaParams");
-            sos.println("Test3: " + ((LambdaExpression) elp.eval("((x,y)->x+y)")).invoke(3, 4).toString()); // pass in two
-        } else if ("4".equalsIgnoreCase(testNumber)) {
-            try {
-                System.out.println("Test4_CatchExeptionOnLessParam");
-                sos.println("Test4: " + ((LambdaExpression) elp.eval("((x,y)->x+y)")).invoke(3).toString()); // must fail
-                // expect Message,  Only [1] arguments were provided for a lambda expression that requires at least [2]
-            } catch (Exception e) {
-                sos.println("Test4: " + e.getMessage().toString());
-            }
-        } else if ("5".equalsIgnoreCase(testNumber)) {
-            System.out.println("Test5_AssignedLambdaExp");
-            sos.println("Test5: " + ((LambdaExpression) elp.eval("incr = x->x+1")).invoke(10).toString()); // assigned lambda expression
-        } else if ("6".equalsIgnoreCase(testNumber)) {
-            System.out.println("Test6_NoParam");
-            sos.println("Test6: " + (elp.eval("()->64"))); // will return the evaluated value not an expression
-        } else if ("7".equalsIgnoreCase(testNumber)) {
-            try {
-                System.out.println("Test7_OptionalParenthesis");
-                sos.println("Test7: " + ((LambdaExpression) (elp.eval("x->64"))).invoke(3).toString()); //The parenthesis is optional if and only if there is one parameter.
-            } catch (Exception e) {
-                sos.println("Test7: e-->" + e.getMessage().toString());
-
-            }
-
-        } else if ("8".equalsIgnoreCase(testNumber)) {
-            try {
-                System.out.println("Test8_PrintFromBody");
-                sos.println("Test8: " + (elp.eval("()->System.out.println(\"Hello World\")")));
-                // eval will return null as println returns void, but console should have Hello World.
-            } catch (Exception e) {
-                sos.println("Test8: e-->" + e.getMessage().toString());
-
-            }
-
-        } else if ("9".equalsIgnoreCase(testNumber)) {
-            System.out.println("Test9_InvokeFunctionImmediate");
-            sos.println("Test9: " + (elp.eval("((x,y)->x+y)(3,4)"))); // invoked
-
-        } else if ("10".equalsIgnoreCase(testNumber)) {
-            System.out.println("Test10_InvokeFunctionIndirect");
-            sos.println("Test10: " + (elp.eval("v = (x,y)->x+y; v(3,4)"))); // invoked indirectly
-
-        } else if ("11".equalsIgnoreCase(testNumber)) {
-
-            try {
-                System.out.println("Test11_InvokeFunctionIndirectSeperate");
-                sos.println("Test11: " + elp.eval("v = (x,y)->x+y"));
-                sos.println("Test11: " + elp.eval("v(3,4)")); // seperate
-            } catch (Exception e) {
-                sos.println("Test10: e-->" + e.getMessage().toString());
-
-            }
-
-        } else if ("12".equalsIgnoreCase(testNumber)) {
-            System.out.println("Test12_InvokeFunctionIndirect2");
-            sos.println("Test12: " + elp.eval(" fact = n -> n==0? 1: n*fact(n-1); fact(5) ")); // should be 5*4*3*2*1
-
-        } else if ("13".equalsIgnoreCase(testNumber)) {
-
-            //employees.where(e->e.firstName == Bob)
-            try {
-                System.out.println("Test13_PassedAsArgumentToMethod");
-                elp.defineBean("employee", new Employee("Charlie Brown", "Charlie", "Brown"));
-                String name = (String) elp.eval("employee.name");
-                sos.println("Test13: " + name);
-
-                sos.println("Test13: " + (elp.eval("employee.sanitizeNames(e->e.firstname == 'Charlie')"))); // pass the Lambda as argument to method
-
-            } catch (Exception e) {
-                sos.println("Test13: e-->" + e.getMessage().toString());
-
-            }
-        } else if ("14".equalsIgnoreCase(testNumber)) {
-
-            sos.println("Test14: -------------------------------------");
-            System.out.println("Test14_CompareParameters");
-            sos.println("Test14: " + ((LambdaExpression) (elp.eval("(a1, a2) -> a1 > a2"))).invoke(2, 3, 4).toString());
-        } else if ("15".equalsIgnoreCase(testNumber)) {
-            sos.println("Test15: -------------------------------------");
-            System.out.println("Test15_ParameterCocerceToString");
-            sos.println("Test15: " +
-                        ((LambdaExpression) (elp.eval("(firstStr, secondStr)-> Integer.compare(firstStr.length(),secondStr.length())"))).invoke("First", "Second").toString());
-        } else if ("16".equalsIgnoreCase(testNumber)) {
-            sos.println("Test16: -------------------------------------");
-            System.out.println("Test16_ParameterCocerceToInt");
-            sos.println("Test16: " +
-                        ((LambdaExpression) (elp.eval("( firstInt, secondInt)-> Integer.compare(firstInt,secondInt)"))).invoke(5, 6).toString());
-        } else if ("18".equalsIgnoreCase(testNumber)) {
-            sos.println("Test18: -------------------------------------");
-            System.out.println("Test18_LambdaNestedFunction1");
-            sos.println("Test18: " + elp.eval("parseMe = x -> (y -> (Integer.parseInt(y)))(x) + x ; parseMe(\"1234\")"));
+        boolean result = false;
+        String exceptionText = "";
+        try {
+            expression.invoke(3).toString();
+        } catch (ELException elEx) {
+            exceptionText = elEx.getMessage();
+            result = exceptionText.contains(expectedText);
         }
+
+        assertTrue("The exception message did not contain: " + expectedText + " but was: " + exceptionText, result);
+    }
+
+    /**
+     * Assigned Lambda expression
+     * incr = x->x+1")).invoke(10)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testAssignedLambdaExp() throws Exception {
+        LambdaExpression expression = (LambdaExpression) elp.eval("incr = x->x+1");
+
+        int result = Integer.valueOf(expression.invoke(10).toString());
+
+        assertTrue("The expression did not evaluate to 11: " + result, result == 11);
+
+        // ensure we can use the incr identifier that the lambda was assigned to
+        result = Integer.valueOf(elp.eval("incr(11)").toString());
+
+        assertTrue("The expression did not evaluate to 12: " + result, result == 12);
+    }
+
+    /**
+     * return the evaluated value not an expression
+     * ()->64
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testNoParam() throws Exception {
+        Integer result = Integer.valueOf(elp.eval("()->64").toString()); // will return the evaluated value not an expression
+
+        assertTrue("The expression did not evaluate to 64: " + result, result == 64);
+    }
+
+    /**
+     * The parenthesis is optional if and only if there is one parameter
+     * "x->64"))).invoke(3)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testOptionalParenthesis() throws Exception {
+        //The parenthesis is optional if and only if there is one parameter.
+        LambdaExpression expression = (LambdaExpression) elp.eval("x->64");
+
+        Integer result = Integer.valueOf(expression.invoke(3).toString());
+
+        assertTrue("The expression did not evaluate to 64: " + result, result == 64);
+    }
+
+    /**
+     * eval will return null as println returns void, but console should have Hello World.
+     * ()->System.out.println(\"Hello World\")
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testPrintFromBody() throws Exception {
+        // eval will return null as println returns void, but console should have Hello World.
+        Object result = elp.eval("()->System.out.println(\"Hello World\")");
+
+        assertTrue("The expression did not evaluate to null: " + result, result == null);
+    }
+
+    /**
+     * parameters passed in ,invoked directly
+     * ((x,y)->x+y)(3,4))
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testInvokeFunctionImmediate() throws Exception {
+        Integer result = Integer.valueOf(elp.eval("((x,y)->x+y)(3,4)").toString()); // invoked
+
+        assertTrue("The expression did not evaluate to 7: " + result, result == 7);
+    }
+
+    /**
+     * parameters passed in ,invoked indirectly
+     * v = (x,y)->x+y; v(3,4)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testInvokeFunctionIndirect() throws Exception {
+        Integer result = Integer.valueOf(elp.eval("v = (x,y) ->x+y; v(3,4)").toString()); // invoked indirectly
+
+        assertTrue("The expression did not evaluate to 7: " + result, result == 7);
+    }
+
+    /**
+     * parameters passed in ,invoked indirectly and separate
+     * t = (x,y)->x+y;
+     * t(3,4)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testInvokeFunctionIndirectSeperate() throws Exception {
+        elp.eval("t = (x,y)->x+y"); // Separate
+        Integer result = Integer.valueOf(elp.eval("t(3,4)").toString());
+
+        assertTrue("The expression did not evaluate to 7: " + result, result == 7);
+    }
+
+    /**
+     *
+     * fact = n -> n==0? 1: n*fact(n-1); fact(5)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testInvokeFunctionIndirect2() throws Exception {
+        Integer result = Integer.valueOf(elp.eval(" fact = n -> n==0? 1: n*fact(n-1); fact(5)").toString()); // should be 5*4*3*2*1
+
+        assertTrue("The expression did not evaluate to 120: " + result, result == 120);
+    }
+
+    /**
+     *
+     * employees.where(e->e.firstName == ‘Charlie’)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testPassedAsArgumentToMethod() throws Exception {
+        elp.defineBean("employee", new Employee("Charlie Brown", "Charlie", "Brown"));
+        String name = (String) elp.eval("employee.name");
+
+        assertTrue("The name expected is Charlie Brown but was: " + name, name.equals("Charlie Brown"));
+
+        String result = (String) elp.eval("employee.sanitizeNames(e->e.firstname == 'Charlie')"); // // pass the Lambda as argument to method
+
+        assertTrue("The result did not evaluate to NAME MATCHES: CHARLIE: " + result, result.equals("NAME MATCHES: Charlie"));
+    }
+
+    /**
+     *
+     * (elp.eval("(a1, a2) -> a1 > a2"))).invoke(2,3,4)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testCompareParameters() throws Exception {
+        LambdaExpression expression = (LambdaExpression) elp.eval("(a1, a2) -> a1 > a2");
+        Boolean result = (Boolean) expression.invoke(2, 3, 1); // also tests that the extra parameter is ignored
+
+        assertTrue("The result did not evaluate to false: " + result.toString(), result.equals(false));
+    }
+
+    /**
+     *
+     * (firstStr, secondStr)-> Integer.compare(firstStr.length(),secondStr.length())"))).invoke("First","Second")
+     * should coerce to String
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testParameterCoerceToString() throws Exception {
+        LambdaExpression expression = (LambdaExpression) elp.eval("(firstStr, secondStr)-> Integer.compare(firstStr.length(),secondStr.length())");
+        String result = expression.invoke("First", "Second").toString();
+
+        assertTrue("The result did not evaluate to -1: " + result, result.equals("-1"));
+    }
+
+    /**
+     *
+     * ( firstInt, secondInt)-> Integer.compare(firstInt,secondInt)"))).invoke(5,6)
+     * should coerce to int
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testParameterCoerceToInt() throws Exception {
+        LambdaExpression expression = (LambdaExpression) elp.eval("( firstInt, secondInt)-> Integer.compare(firstInt,secondInt)");
+        String result = expression.invoke(5, 6).toString();
+
+        assertTrue("The result did not evaluate to -1: " + result, result.equals("-1"));
+    }
+
+    /**
+     * ${parseMe = x -> (y -> (Integer.parseInt(y)))(x) + x ; parseMe("1234")
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testNestedFunction1() throws Exception {
+        String result = elp.eval("parseMe = x -> (y -> (Integer.parseInt(y)))(x) + x ; parseMe(\"1234\")").toString();
+
+        assertTrue("The result did not evaluate to 2468: " + result, result.equals("2468"));
     }
 
 }
