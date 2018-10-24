@@ -1190,8 +1190,14 @@ public abstract class HTTPConduit
 
         @Override
         public void thresholdNotReached() {
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.log(Level.FINE, "HTTPConduit.thresholdNotReached: entry");
+            }
             if (chunking) {
                 setFixedLengthStreamingMode(buffer.size());
+            }
+                        if (LOG.isLoggable(Level.FINE)) {
+                LOG.log(Level.FINE, "HTTPConduit.thresholdNotReached: exit");
             }
         }
 
@@ -1446,6 +1452,10 @@ public abstract class HTTPConduit
         @FFDCIgnore(Throwable.class)
         private <T extends Exception> T mapException(String msg,
                                                      T ex, Class<T> cls) {
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.log(Level.FINE, "HTTPConduit.mapException: entry");
+            }
+
             T ex2 = ex;
             try {
                 ex2 = cls.cast(ex.getClass().getConstructor(String.class).newInstance(msg));
@@ -1454,6 +1464,9 @@ public abstract class HTTPConduit
                 ex2 = ex;
             }
 
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.log(Level.FINE, "HTTPConduit.mapException: exit");
+            }
 
             return ex2;
         }
@@ -1464,6 +1477,10 @@ public abstract class HTTPConduit
          * @throws IOException
          */
         protected void handleRetransmits() throws IOException {
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.log(Level.FINE, "HTTPConduit.handleRetransmits: entry");
+            }
+
             // If we have a cachedStream, we are caching the request.
             if (cachedStream != null
                 || getClient().isAutoRedirect() && KNOWN_HTTP_VERBS_WITH_NO_CONTENT.contains(getMethod())
@@ -1486,6 +1503,11 @@ public abstract class HTTPConduit
                 while ((maxRetransmits < 0 || nretransmits < maxRetransmits) && processRetransmit()) {
                     nretransmits++;
                 }
+            }
+
+
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.log(Level.FINE, "HTTPConduit.handleRetransmits: exit");
             }
         }
         /**
@@ -1615,6 +1637,10 @@ public abstract class HTTPConduit
          * @throws IOException
          */
         protected void handleResponse() throws IOException {
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.log(Level.FINE, "HTTPConduit.handleResponse: entry");
+            }
+
             // Process retransmits until we fall out.
             handleRetransmits();
 
@@ -1624,6 +1650,11 @@ public abstract class HTTPConduit
                 handleResponseInternal();
             } else {
                 handleResponseAsync();
+            }
+
+
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.log(Level.FINE, "HTTPConduit.handleResponse: exit");
             }
         }
 
@@ -1675,6 +1706,10 @@ public abstract class HTTPConduit
         }
 
         protected void handleResponseInternal() throws IOException {
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.log(Level.FINE, "HTTPConduit.handleResponseInternal: entry");
+            }
+
             Exchange exchange = outMessage.getExchange();
             int responseCode = doProcessResponseCode();
 
@@ -1745,6 +1780,11 @@ public abstract class HTTPConduit
 
 
             incomingObserver.onMessage(inMessage);
+
+
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.log(Level.FINE, "HTTPConduit.handleResponseInternal: exit");
+            }
 
         }
 
@@ -1821,6 +1861,10 @@ public abstract class HTTPConduit
         @FFDCIgnore(UntrustedURLConnectionIOException.class)
         protected void makeTrustDecision() throws IOException {
 
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.log(Level.FINE, "HTTPConduit.makeTrustDecision: entry");
+            }
+
             MessageTrustDecider decider2 = outMessage.get(MessageTrustDecider.class);
             if (trustDecider != null || decider2 != null) {
                 try {
@@ -1871,6 +1915,10 @@ public abstract class HTTPConduit
                         + "'. An affirmative Trust Decision is assumed.");
                 }
             }
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.log(Level.FINE, "HTTPConduit.makeTrustDecision: exit");
+            }
+
         }
     }
 
