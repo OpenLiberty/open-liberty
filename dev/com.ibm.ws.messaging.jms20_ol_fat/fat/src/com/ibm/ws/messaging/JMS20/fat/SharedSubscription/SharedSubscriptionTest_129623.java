@@ -118,6 +118,7 @@ public class SharedSubscriptionTest_129623 {
                                              "features/testjmsinternals-1.0.mf");
 
         server.setServerConfigurationFile("JMSContext.xml");
+        server1.setHttpDefaultPort(8030);
         server1.setServerConfigurationFile("TestServer1.xml");
 
         server.startServer("SharedSubscriptionTestClient_129623.log");
@@ -301,6 +302,7 @@ public class SharedSubscriptionTest_129623 {
     ////@Test
     public void testMultiSharedDurConsumer_TCP_SecOff() throws Exception {
         server1.stopServer();
+        server1.setHttpDefaultPort(8030);
         server1.setServerConfigurationFile("topicMDBServer.xml");
         server1.startServer();
 
@@ -359,6 +361,7 @@ public class SharedSubscriptionTest_129623 {
         server1.stopServer();
         server.stopServer();
         server.setServerConfigurationFile("JMSContext.xml");
+        server1.setHttpDefaultPort(8030);
         server1.setServerConfigurationFile("TestServer1.xml");
 
         server.startServer();

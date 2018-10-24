@@ -118,6 +118,7 @@ public class JMSContextTest_118058 {
                                              "features/testjmsinternals-1.0.mf");
 
         server.setServerConfigurationFile("JMSContext.xml");
+        server1.setHttpDefaultPort(8030);
         server1.setServerConfigurationFile("TestServer1.xml");
         server.startServer("JMSContextTestClient_118058.log");
         server1.startServer("JMSContextTestServer_118058.log");

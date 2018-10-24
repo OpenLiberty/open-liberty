@@ -114,6 +114,7 @@ public class JMSContextTest_118075 {
         server.copyFileToLibertyInstallRoot("lib/features",
                                             "features/testjmsinternals-1.0.mf");
 
+        server1.setHttpDefaultPort(8030);
         server1.setServerConfigurationFile("JMSContext_Server.xml");
         server1.startServer("JMSContext_118075_Server.log");
         String changedMessageFromLog = server1.waitForStringInLog(
