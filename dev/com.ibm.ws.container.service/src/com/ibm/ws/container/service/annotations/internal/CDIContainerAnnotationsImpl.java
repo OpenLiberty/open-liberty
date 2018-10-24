@@ -10,15 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.container.service.annotations.internal;
 
-import java.net.URL;
-
 import com.ibm.ws.container.service.annotations.CDIContainerAnnotations;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public class CDIContainerAnnotationsImpl extends ContainerAnnotationsImpl implements CDIContainerAnnotations {
-    private final String CLASS_NAME = "CDIContainerAnnotationsImpl";
+	// private final String CLASS_NAME = "CDIContainerAnnotationsImpl";
 
     /** Predefined module category for CDI annotations results. */
     public static final String CDI_CATEGORY_NAME = "cdi";

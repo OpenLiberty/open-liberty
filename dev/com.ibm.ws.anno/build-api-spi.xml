@@ -4,7 +4,7 @@
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-v10.html
-   
+
     Contributors:
         IBM Corporation - initial API and implementation
  -->
@@ -23,9 +23,9 @@
   <property name="spi.ibm.bundleName" value="WebSphere Annotations SPI"/>
   <property name="spi.ibm.version" value="2.0"/>
   <property name="feature.name" value="com.ibm.websphere.appserver.anno-2.0"/>
-      
+
   <property name="spi.ibm.packages.exceptions" value="com.ibm.ws.anno"/>
-        
+
   <import file="../ant_build/public_imports/apibnd_imports.xml"/>
 
 </project>

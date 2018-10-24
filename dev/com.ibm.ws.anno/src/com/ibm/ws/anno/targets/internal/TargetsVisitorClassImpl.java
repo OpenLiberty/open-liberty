@@ -140,7 +140,6 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
     // These values are not already set since a single visitor instance is used for
     // an entire scan sweep.
 
-    @SuppressWarnings("deprecation")
     public TargetsVisitorClassImpl(
         TargetsTableImpl parentData,
         String classSourceName,
@@ -886,7 +885,6 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
     // enable field annotation storage through the enclosing class.
 
     protected class AnnoFieldVisitor extends FieldVisitor {
-        @SuppressWarnings("deprecation")
         public AnnoFieldVisitor() {
             super(Opcodes.ASM7);
         }
@@ -948,7 +946,6 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
     // enable method annotation storage through the enclosing class.
 
     protected class AnnoMethodVisitor extends MethodVisitor {
-        @SuppressWarnings("deprecation")
         public AnnoMethodVisitor() {
             super(Opcodes.ASM7);
         }

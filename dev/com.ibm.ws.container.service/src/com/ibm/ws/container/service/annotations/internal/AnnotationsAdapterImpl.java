@@ -26,8 +26,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  */
 public abstract class AnnotationsAdapterImpl {
     public static final TraceComponent tc = Tr.register(AnnotationsAdapterImpl.class);
-
-    private static final String CLASS_NAME = AnnotationsAdapterImpl.class.getSimpleName();
+    // private static final String CLASS_NAME = AnnotationsAdapterImpl.class.getSimpleName();
 
     //
 

@@ -48,7 +48,7 @@ import com.ibm.ws.container.service.annotations.SpecificAnnotations;
  */
 public abstract class AnnotationsImpl implements Annotations {
     public static final TraceComponent tc = Tr.register(AnnotationsImpl.class);
-    private static final String CLASS_NAME = AnnotationsImpl.class.getSimpleName();
+    // private static final String CLASS_NAME = AnnotationsImpl.class.getSimpleName();
 
     //
 

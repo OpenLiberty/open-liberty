@@ -28,7 +28,7 @@ import com.ibm.wsspi.anno.targets.cache.TargetCache_ExternalConstants;
  * but managed independently.
  */
 public class TargetCacheImpl_DataQueries implements TargetCache_ExternalConstants {
-    private static final String CLASS_NAME = TargetCacheImpl_DataQueries.class.getSimpleName();
+    // private static final String CLASS_NAME = TargetCacheImpl_DataQueries.class.getSimpleName();
     protected static final Logger logger = AnnotationServiceImpl_Logging.ANNO_LOGGER;
 
     //
