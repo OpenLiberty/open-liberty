@@ -33,7 +33,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.apache.aries.util.manifest.ManifestProcessor;
-import org.apache.tools.ant.BuildException;
 
 import com.ibm.ws.install.CancelException;
 import com.ibm.ws.install.InstallConstants;
@@ -840,11 +839,10 @@ public class InstallKernelMap implements Map {
      * @param shortNameMap contains features parsed from individual esa files
      * @return singleJson file
      * @throws IOException
-     * @throws BuildException
      * @throws RepositoryException
      * @throws InstallException
      */
-    private File generateJsonFromIndividualESAs(Path jsonDirectory, Map<String, String> shortNameMap) throws IOException, BuildException, RepositoryException, InstallException {
+    private File generateJsonFromIndividualESAs(Path jsonDirectory, Map<String, String> shortNameMap) throws IOException, RepositoryException, InstallException {
         String dir = jsonDirectory.toString();
         List<File> esas = (List<File>) data.get(INDIVIDUAL_ESAS);
         File singleJson = new File(dir + "/SingleJson.json");
