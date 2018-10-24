@@ -52,15 +52,11 @@ import org.junit.rules.TestRule;
 import com.ibm.websphere.simplicity.log.Log;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.OnlyRunInJava7Rule;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @Mode(TestMode.FULL)
 public class DeliveryDelayFullModeTest {
-
-	@ClassRule
-	public static final TestRule java7Rule = new OnlyRunInJava7Rule();
 
 	private static LibertyServer server = LibertyServerFactory
 			.getLibertyServer("DeliveryDelayFullModeTest_ClientServer");
