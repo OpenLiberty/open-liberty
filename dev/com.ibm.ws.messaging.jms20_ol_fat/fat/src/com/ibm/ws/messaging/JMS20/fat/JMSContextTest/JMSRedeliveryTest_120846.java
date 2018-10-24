@@ -47,13 +47,10 @@ import org.junit.rules.TestRule;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.OnlyRunInJava7Rule;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 public class JMSRedeliveryTest_120846 {
-    @ClassRule
-    public static final TestRule java7Rule = new OnlyRunInJava7Rule();
 
     private static LibertyServer server = LibertyServerFactory
                     .getLibertyServer("JMSRedeliveryTest_120846_TestServer");
