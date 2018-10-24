@@ -60,6 +60,7 @@ import javax.servlet.annotation.WebServlet;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.eclipse.microprofile.concurrent.ThreadContext;
+import org.eclipse.microprofile.concurrent.ThreadContextBuilder;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -3455,6 +3456,20 @@ public class ConcurrentRxTestServlet extends FATServlet {
             throw new Exception((Throwable) lookupResult);
         else
             fail("Unexpected result of lookup: " + lookupResult);
+    }
+
+    /**
+     * Basic test of ThreadContextBuilder used to create a ThreadContext with customized context propagation.
+     * TODO finish writing this test after ThreadContext is more fully implemented.
+     */
+    @Test
+    public void testThreadContextBuilder() throws Exception {
+        ThreadContext contextSvc = ThreadContextBuilder.instance().propagated(ThreadContext.APPLICATION).build();
+        Supplier<Object> supplier = contextSvc.withCurrentContext((Supplier<Object>) () -> { // TODO remove cast
+            return true; // TODO InitialContext.doLookup("java:comp/env/executorRef"); // requires application context
+        });
+        //Object result = supplier.get(); // TODO
+        //assertNotNull(result);
     }
 
     /**
