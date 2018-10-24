@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.caching.tests;
+package com.ibm.ws.anno.tests.caching;
 
 import java.io.File;
 import java.io.FileInputStream;

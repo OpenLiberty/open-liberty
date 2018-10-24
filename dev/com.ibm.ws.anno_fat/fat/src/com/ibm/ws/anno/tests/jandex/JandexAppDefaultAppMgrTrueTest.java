@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jandex.tests;
+package com.ibm.ws.anno.tests.jandex;
 
 import static org.junit.Assert.assertFalse;
 
@@ -23,10 +23,10 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import com.ibm.ws.anno.tests.util.FatHelper;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebResponse;
-import com.ibm.ws.jandex.JandexApplicationHelper;
 
 import componenttest.topology.utils.FileUtils;
 
@@ -60,7 +60,7 @@ public class JandexAppDefaultAppMgrTrueTest extends LoggingTest {
 
         LOG.info("Setup : add TestServlet40 to the server if not already present.");
 
-        JandexApplicationHelper.addEarToServerApps(SHARED_SERVER.getLibertyServer(),
+        FatHelper.addEarToServerApps(SHARED_SERVER.getLibertyServer(),
                                                "TestServlet40.ear", // earName
                                                true, // addEarResources
                                                "TestServlet40.war", // warName

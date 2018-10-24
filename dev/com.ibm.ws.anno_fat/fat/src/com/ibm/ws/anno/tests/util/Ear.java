@@ -1,4 +1,4 @@
-package com.ibm.ws.packaging;
+package com.ibm.ws.anno.tests.util;
 
 import java.util.ArrayList;
 

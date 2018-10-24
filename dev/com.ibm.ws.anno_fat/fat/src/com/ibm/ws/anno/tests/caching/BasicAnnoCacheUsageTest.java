@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.caching.tests;
+package com.ibm.ws.anno.tests.caching;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -38,14 +38,13 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import com.ibm.ws.anno.tests.util.Ear;
+import com.ibm.ws.anno.tests.util.FatHelper;
+import com.ibm.ws.anno.tests.util.Jar;
+import com.ibm.ws.anno.tests.util.War;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebResponse;
-import com.ibm.ws.jandex.JandexApplicationHelper;
-
-import com.ibm.ws.packaging.Ear;
-import com.ibm.ws.packaging.Jar;
-import com.ibm.ws.packaging.War;
 
 import componenttest.topology.utils.FileUtils;
 
@@ -176,7 +175,7 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
         war.addPackageName("testservlet40.war.servlets");
 
         try {
-           JandexApplicationHelper.addEarToServerApps(SHARED_SERVER.getLibertyServer(), ear);
+           FatHelper.addEarToServerApps(SHARED_SERVER.getLibertyServer(), ear);
 
         } catch (Exception e) {
             LOG.info("Caught exception from addEarToServerApps [" + e.getMessage() + "]");
@@ -287,7 +286,7 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
         File backupFile = new File(backupFileName);
         modifyCache_AnnoTargets(annoTargetsFile, backupFile);
 
-        startServer();
+        SHARED_SERVER.startIfNotStarted(false, false, false);
 
         logAnnoTargetsFileModifiedTime();
 
@@ -325,7 +324,7 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
 
         // The targets file will be modified by removing a servlet.
         String annoTargetsFileName = annoTargetsFile.getName();
-        String tempFileName = annoTargetsFileName + ".temp";  // Temp file for the new targets without the servlet.
+        String tempFileName = annoTargetsFileName + ".MissingSimpleServlet";  // Temp file for the new targets without the servlet.
 
         // Make a backup copy (for restoring cache after test)
         LOG.info("annoTargetsFileName=[ " + annoTargetsFileName + " ]");

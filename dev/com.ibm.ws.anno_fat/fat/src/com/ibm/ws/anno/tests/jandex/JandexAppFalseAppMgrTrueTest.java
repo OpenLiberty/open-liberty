@@ -8,9 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jandex.tests;
+package com.ibm.ws.anno.tests.jandex;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.HashMap;
@@ -23,26 +23,26 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import com.ibm.ws.anno.tests.util.FatHelper;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebResponse;
-import com.ibm.ws.jandex.JandexApplicationHelper;
 
 import componenttest.topology.utils.FileUtils;
 
 /**
  * Test server.xml configuration where
- * <application useJandex="true">
+ * <application useJandex="false"> < --- This setting should override the applicationManager setting for the application
  * <applicationManager useJandex="true">
  */
-public class JandexAppTrueAppMgrTrueTest extends LoggingTest {
+public class JandexAppFalseAppMgrTrueTest extends LoggingTest {
 
-    private static final Logger LOG = Logger.getLogger(JandexAppTrueAppMgrTrueTest.class.getName());
+    private static final Logger LOG = Logger.getLogger(JandexAppFalseAppMgrTrueTest.class.getName());
 
     protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
 
     @ClassRule
-    public static final SharedServer SHARED_SERVER = new SharedServer("annoFat_server");
+    public static SharedServer SHARED_SERVER = new SharedServer("annoFat_server");
 
     /*
      * (non-Javadoc)
@@ -60,7 +60,7 @@ public class JandexAppTrueAppMgrTrueTest extends LoggingTest {
 
         LOG.info("Setup : add TestServlet40 to the server if not already present.");
 
-        JandexApplicationHelper.addEarToServerApps(SHARED_SERVER.getLibertyServer(),
+        FatHelper.addEarToServerApps(SHARED_SERVER.getLibertyServer(),
                                                "TestServlet40.ear", // earName
                                                true, // addEarResources
                                                "TestServlet40.war", // warName
@@ -70,8 +70,8 @@ public class JandexAppTrueAppMgrTrueTest extends LoggingTest {
                                                "testservlet40.war.servlets", // packageNames
                                                "testservlet40.jar.servlets");
 
-        installServerXml("jandexAppTrueAppMgrTrue_server.xml");
-       
+        installServerXml("jandexAppFalseAppMgrTrue_server.xml");
+        
         SHARED_SERVER.startIfNotStarted();
 
         LOG.info("Setup : wait for message to indicate app has started");
@@ -109,19 +109,19 @@ public class JandexAppTrueAppMgrTrueTest extends LoggingTest {
         
         File serverConfigurationFile = new File(serverRootDir + "/serverConfigurations/" + sourceServerXml);
         FileUtils.copyFile(serverConfigurationFile, serverXmlFile); 
-    }
+    }    
 
     /**
-     * Verify we are using jandex
+     * Verify we are NOT using jandex
      *
      * @throws Exception
      */
     @Test
-    public void testAppTrueAppMgrTrueUsesJandex() throws Exception {
+    public void testAppFalseAppMgrTrueDoesntUseJandex() throws Exception {
         // Search for message indicating Jandex is being used.
         // CWWKC0092I: Read Jandex indexes for {0} out of {1} archives ({2} out of {3} classes) in {4}.
         List<String> l = SHARED_SERVER.getLibertyServer().findStringsInLogs("CWWKC0092I");
-        assertFalse("Should find CWWKC0092I, since Jandex is in use.", l.isEmpty());
+        assertTrue("Should not find CWWKC0092I, since Jandex is not in use.", l.isEmpty()); 
     }
 
     /**
@@ -164,7 +164,7 @@ public class JandexAppTrueAppMgrTrueTest extends LoggingTest {
 
         this.verifyResponse("/TestServlet40/MyServlet?TestMajorMinorVersion=true", "minorVersion: 0");
     }*/
-
+    
     /*
     protected String parseResponse(WebResponse wr, String beginText, String endText) {
         String s;
@@ -177,5 +177,6 @@ public class JandexAppTrueAppMgrTrueTest extends LoggingTest {
             return "end text, " + endText + ", not found";
         s = body.substring(beginTextIndex + beginText.length(), endTextIndex);
         return s;
-    } */ 
+    }*/    
+
 }

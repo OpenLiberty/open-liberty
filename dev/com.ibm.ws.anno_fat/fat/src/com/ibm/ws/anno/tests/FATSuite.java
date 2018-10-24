@@ -9,23 +9,23 @@
  * of its trade secrets, irrespective of what has been deposited with the
  * U.S. Copyright Office.
  */
-package com.ibm.ws.jandex;
+package com.ibm.ws.anno.tests;
 
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.caching.tests.BasicAnnoCacheUsageTest;
-import com.ibm.ws.caching.tests.MetadataCompleteTest;
-import com.ibm.ws.caching.tests.MetadataCompleteTestMissingServlets;
+import com.ibm.ws.anno.tests.caching.BasicAnnoCacheUsageTest;
+import com.ibm.ws.anno.tests.caching.MetadataCompleteTest;
+import com.ibm.ws.anno.tests.caching.MetadataCompleteTestMissingServlets;
+import com.ibm.ws.anno.tests.jandex.JandexAppDefaultAppMgrDefaultTest;
+import com.ibm.ws.anno.tests.jandex.JandexAppDefaultAppMgrTrueTest;
+import com.ibm.ws.anno.tests.jandex.JandexAppFalseAppMgrFalseTest;
+import com.ibm.ws.anno.tests.jandex.JandexAppFalseAppMgrTrueTest;
+import com.ibm.ws.anno.tests.jandex.JandexAppTrueAppMgrFalseTest;
+import com.ibm.ws.anno.tests.jandex.JandexAppTrueAppMgrTrueTest;
 import com.ibm.ws.fat.util.FatLogHandler;
-import com.ibm.ws.jandex.tests.JandexAppDefaultAppMgrDefaultTest;
-import com.ibm.ws.jandex.tests.JandexAppDefaultAppMgrTrueTest;
-import com.ibm.ws.jandex.tests.JandexAppFalseAppMgrFalseTest;
-import com.ibm.ws.jandex.tests.JandexAppFalseAppMgrTrueTest;
-import com.ibm.ws.jandex.tests.JandexAppTrueAppMgrFalseTest;
-import com.ibm.ws.jandex.tests.JandexAppTrueAppMgrTrueTest;
 
 /**
  * Servlet 4.0 Tests
@@ -49,16 +49,16 @@ import com.ibm.ws.jandex.tests.JandexAppTrueAppMgrTrueTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-              	//BasicAnnoCacheUsageTest.class,
-              	//MetadataCompleteTest.class,
-              	MetadataCompleteTestMissingServlets.class
-
-                //JandexAppDefaultAppMgrDefaultTest.class
-                //JandexAppDefaultAppMgrTrueTest.class,
-                //JandexAppFalseAppMgrFalseTest.class,
-                //JandexAppFalseAppMgrTrueTest.class,
-                //JandexAppTrueAppMgrFalseTest.class,
-                //JandexAppTrueAppMgrTrueTest.class
+              	BasicAnnoCacheUsageTest.class,
+//              	MetadataCompleteTest.class,
+//              	MetadataCompleteTestMissingServlets.class,
+//
+//                JandexAppDefaultAppMgrDefaultTest.class,
+//                JandexAppDefaultAppMgrTrueTest.class,
+//                JandexAppFalseAppMgrFalseTest.class,
+//                JandexAppFalseAppMgrTrueTest.class,
+//                JandexAppTrueAppMgrFalseTest.class,
+//                JandexAppTrueAppMgrTrueTest.class
 })
 
 public class FATSuite {

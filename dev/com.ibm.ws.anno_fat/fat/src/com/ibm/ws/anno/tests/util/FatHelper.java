@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jandex;
+package com.ibm.ws.anno.tests.util;
 
 import java.io.File;
 import java.util.Set;
@@ -18,9 +18,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import com.ibm.ws.packaging.Ear;
-import com.ibm.ws.packaging.War;
-import com.ibm.ws.packaging.Jar;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -29,9 +26,9 @@ import componenttest.topology.impl.LibertyServer;
 /**
  *
  */
-public class JandexApplicationHelper {
+public class FatHelper {
 
-    private static final Logger LOG = Logger.getLogger(JandexApplicationHelper.class.getName());
+    private static final Logger LOG = Logger.getLogger(FatHelper.class.getName());
 
     /*
      * Helper method to create a war and add it to the dropins directory
