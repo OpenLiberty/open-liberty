@@ -2316,6 +2316,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
 
         if (resp == null) {
             _rawOut.init(null);
+            _bufferedWriter.clean();
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  //306998.15
                 logger.exiting(CLASS_NAME,"initForNextResponse");
             return;
