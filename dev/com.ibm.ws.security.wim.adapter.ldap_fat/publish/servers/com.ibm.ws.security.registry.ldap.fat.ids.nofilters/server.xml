@@ -23,7 +23,6 @@
 		searchTimeout="8m">
 		<failoverServers name="failoverLdapServers">
 		   <server host="${ldap.server.5.name}" port="${ldap.server.5.port}"/>
-           <server host="${ldap.server.4.name}" port="${ldap.server.4.port}"/>
         </failoverServers>	
 	</ldapRegistry>		
 

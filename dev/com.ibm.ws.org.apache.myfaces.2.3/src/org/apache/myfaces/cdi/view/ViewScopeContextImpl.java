@@ -125,7 +125,15 @@ public class ViewScopeContextImpl implements Context
     public boolean isActive()
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        return facesContext.getViewRoot() != null;
+        if (facesContext != null)
+        {
+            return facesContext.getViewRoot() != null;
+        }
+        else
+        {
+            // No FacesContext means no view scope active.
+            return false;
+        }
     }
 
     public <T> T get(Contextual<T> bean)
@@ -231,9 +239,9 @@ public class ViewScopeContextImpl implements Context
         
         for (Map.Entry<Object, ContextualInstanceInfo<?>> entry : contextMap.entrySet())
         {
-            if (!(entry.getKey() instanceof _ContextualKey))
+            if (!(entry.getKey() instanceof ViewScopeContextualKey))
             {            
-                Contextual bean = storage.getBean(entry.getKey());
+                Contextual bean = storage.getBean(facesContext, entry.getKey());
 
                 ContextualInstanceInfo<?> contextualInstanceInfo = entry.getValue();
                 bean.destroy(contextualInstanceInfo.getContextualInstance(), 
@@ -242,7 +250,7 @@ public class ViewScopeContextImpl implements Context
             else
             {
                 // Destroy the JSF managed view scoped bean.
-                _ContextualKey key = (_ContextualKey) entry.getKey();
+                ViewScopeContextualKey key = (ViewScopeContextualKey) entry.getKey();
                 mbDestroyer.destroy(key.getName(), entry.getValue().getContextualInstance());
             }
         }

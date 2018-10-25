@@ -28,9 +28,10 @@ Private-Package:\
 instrument.classesExcludes: com/ibm/ws/concurrent/mp/resources/*.class
 
 -dsannotations: \
+  com.ibm.ws.concurrent.mp.ConcurrencyProviderImpl,\
+  com.ibm.ws.concurrent.mp.ContextServiceImpl,\
   com.ibm.ws.concurrent.mp.ManagedExecutorImpl,\
-  com.ibm.ws.concurrent.mp.ManagedScheduledExecutorImpl,\
-  com.ibm.ws.concurrent.mp.ThreadContextImpl
+  com.ibm.ws.concurrent.mp.ManagedScheduledExecutorImpl
 
 -buildpath: \
   com.ibm.websphere.appserver.spi.logging,\
