@@ -55,8 +55,8 @@ public class MetadataCompleteTestMissingServlets extends LoggingTest {
 
     private static final String EAR_FILE_NAME = "TestServlet40.ear";
 
-    @ClassRule
-    public static final SharedServer SHARED_SERVER = new SharedServer("annoFat_server", false, false);
+    // Not using ClassRule annotation.  So server does NOT start automatically.
+    public static final SharedServer SHARED_SERVER = new SharedServer("annoFat_server", false);
 
     @Override
     protected SharedServer getSharedServer() {

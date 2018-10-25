@@ -56,8 +56,8 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
 
     // Test API extensions ...
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("annoFat_server", false, false);
+    // Not using ClassRule annotation.  So server does NOT start automatically.
+    public static SharedServer SHARED_SERVER = new SharedServer("annoFat_server", false);
     // false, false:
     //   don't wait for security;
     //   don't start the server during the before step.
