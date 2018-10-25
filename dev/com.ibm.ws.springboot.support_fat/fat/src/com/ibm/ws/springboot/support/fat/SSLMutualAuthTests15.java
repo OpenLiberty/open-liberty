@@ -42,9 +42,17 @@ public class SSLMutualAuthTests15 extends SSLCommonTests {
         String methodName = testName.getMethodName();
 
         if ("testClientAuthNeedWithoutClientSideKeyStoreFor15".equals(methodName)) {
-            super.stopServer(true, "CWWKO0801E");
+            if (!javaVersion.startsWith("1.")) {
+                super.stopServer(true, "CWWKO0801E", "CWWKC0265W");
+            } else {
+                super.stopServer(true, "CWWKO0801E");
+            }
         } else {
-            super.stopServer(true);
+            if (!javaVersion.startsWith("1.")) {
+                super.stopServer(true, "CWWKC0265W");
+            } else {
+                super.stopServer(true);
+            }
         }
     }
 

@@ -85,3 +85,6 @@ warning.application.started.event.timeout=CWWKC0264W: The {0} application did no
 warning.application.started.event.timeout.explanation=The application did not issue the starting event in the expected time. The server might be overloaded or the application might be large. If the application is starting as part of server startup, the sever startup can finish without waiting for the application to start.
 warning.application.started.event.timeout.useraction=If the application eventually starts, then no action is required. If the application does not start, check the server logs to see whether other messages indicate a cause.
 
+warning.java.version.not.supported=CWWKC0265W: The current Java version {0} is not supported by the Spring Boot version {1}. Upgrade the Spring Boot version of the application to 2.0.x or later.
+warning.java.version.not.supported.explanation=Java versions higher than 1.8 are not supported by the Spring Boot versions 1.5.x and below.
+warning.java.version.not.supported.useraction=Upgrade the Spring Boot version of the application to 2.0.x or later.
