@@ -475,10 +475,22 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
             }
 
+<<<<<<< HEAD
             boolean connLeakOrmaxNumThreads = ((isTraceOn && ConnLeakLogic.isDebugEnabled()) || (_pm != null && _pm.maxNumberOfMCsAllowableInThread > 0));
             boolean usingTLS = ((isTraceOn && tc.isDebugEnabled()) && (_pm != null && _pm.maxCapacity > 0));
             if (connLeakOrmaxNumThreads || usingTLS) {
                 // add thread information to mcWrapper
+=======
+            if (tc.isDebugEnabled() && (_pm != null && _pm.maxCapacity > 0)) {
+                // Add thread information to mcWrapper for tls trace
+                Thread myThread = Thread.currentThread();
+                String ivThreadId = RasHelper.getThreadId();
+                mcWrapper.setThreadID(ivThreadId);
+                mcWrapper.setThreadName(myThread.getName());
+            }
+
+            if (ConnLeakLogic.isDebugEnabled() || (_pm != null && _pm.maxNumberOfMCsAllowableInThread > 0)) {
+>>>>>>> fix for exhausted pool when connection fail during cleanup
                 Thread myThread = Thread.currentThread();
                 mcWrapper.setThreadID(RasHelper.getThreadId());
                 mcWrapper.setThreadName(myThread.getName());
@@ -509,7 +521,11 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
             }
         }
 
+<<<<<<< HEAD
         if (isTraceOn && tc.isEntryEnabled()) {
+=======
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+>>>>>>> fix for exhausted pool when connection fail during cleanup
             Tr.exit(this, tc, "allocateConnection", rVal == null ? " connection handle is null" : Integer.toHexString(rVal.hashCode()));
         }
 
