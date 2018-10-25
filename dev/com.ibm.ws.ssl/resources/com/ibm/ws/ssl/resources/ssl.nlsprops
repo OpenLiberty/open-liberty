@@ -617,7 +617,7 @@ ssl.defaultKeyStore.env.password.CWPKI0820A=CWPKI0820A: The default keystore has
 ssl.defaultKeyStore.env.password.CWPKI0820A.explanation=The default keystore has been created using the 'keystore_password' environment variable. This is generated into the server.env file during server creation, or overridden in the environment the server was launched from.
 ssl.defaultKeyStore.env.password.CWPKI0820A.useraction=No action is required.
 #--------------------------------------------------------------------------------------------------
-ssl.defaultKeyStore.loaded.CWPKI0821I=CWPKI0821I: The default keystore {1} with keystore type {2} has been loaded.
+ssl.defaultKeyStore.loaded.CWPKI0821I=CWPKI0821I: The {1} default keystore with the {2} keystore type was loaded.
 ssl.defaultKeyStore.loaded.CWPKI0821I.explanation=The default keystore at the specified location and keystore type has been loaded.
 ssl.defaultKeyStore.loaded.CWPKI0821I.useraction=No action is required.
 #--------------------------------------------------------------------------------------------------
