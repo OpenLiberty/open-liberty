@@ -900,7 +900,7 @@ public class OIDCClientAuthenticatorUtilTest {
             {
                 one(oidcClientUtil).getTokensFromAuthzCode(TEST_TOKEN_ENDPOINT, CLIENT01, SHARED_KEY,
                         TEST_REDIRECT_URL, TEST_AUTHORIZATION_CODE,
-                        TEST_GRANT_TYPE, sslSocketFactory, false, authMethod, null);
+                        TEST_GRANT_TYPE, sslSocketFactory, false, authMethod, null, null);
                 will(returnValue(tokens));
             }
         });
@@ -1076,7 +1076,7 @@ public class OIDCClientAuthenticatorUtilTest {
             {
                 one(oidcClientUtil).getTokensFromAuthzCode(TEST_TOKEN_ENDPOINT, CLIENT01, SHARED_KEY,
                         TEST_REDIRECT_URL, TEST_AUTHORIZATION_CODE,
-                        TEST_GRANT_TYPE, sslSocketFactory, false, authMethod, null);
+                        TEST_GRANT_TYPE, sslSocketFactory, false, authMethod, null, null);
                 will(throwException(throwable));
             }
         });

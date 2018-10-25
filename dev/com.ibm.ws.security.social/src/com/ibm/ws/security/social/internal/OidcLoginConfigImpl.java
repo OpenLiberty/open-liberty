@@ -82,7 +82,12 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     private String discoveryEndpointUrl = null;
     private JSONObject discoveryjson = null;
     private boolean discovery = false;
-           
+    
+    public static final String KEY_DISCOVERY_POLLING_RATE = "discoveryPollingRate";
+    private long discoveryPollingRate = 5 * 60 * 1000; // 5 minutes in milliseconds
+    private String discoveryDocumentHash = null;
+    private long nextDiscoveryTime;
+    
     public static final String OPDISCOVERY_AUTHZ_EP_URL = "authorization_endpoint";
     public static final String OPDISCOVERY_TOKEN_EP_URL = "token_endpoint";
     public static final String OPDISCOVERY_INTROSPECTION_EP_URL = "introspection_endpoint";
@@ -131,9 +136,12 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     protected void setOptionalConfigAttributes(Map<String, Object> props) throws SocialLoginException {
     	this.sslRef = configUtils.getConfigAttribute(props, KEY_sslRef);
     	this.discoveryEndpointUrl = configUtils.getConfigAttribute(props, KEY_DISCOVERY_ENDPOINT);
+    	discoveryPollingRate = configUtils.getLongConfigAttribute(props, KEY_DISCOVERY_POLLING_RATE, discoveryPollingRate);
     	jwkClientId = configUtils.getConfigAttribute(props, KEY_JWK_CLIENT_ID);
         jwkClientSecret = configUtils.processProtectedString(props, KEY_JWK_CLIENT_SECRET);
         this.userInfoEndpointEnabled = configUtils.getBooleanConfigAttribute(props, KEY_USERINFO_ENDPOINT_ENABLED, this.userInfoEndpointEnabled);
+        discovery = false;
+        discoveryjson = null;
     	if (discoveryEndpointUrl != null) {
     		discoveryUtil = new DiscoveryConfigUtils(getId());
             discovery = handleDiscoveryEndpoint(discoveryEndpointUrl);
