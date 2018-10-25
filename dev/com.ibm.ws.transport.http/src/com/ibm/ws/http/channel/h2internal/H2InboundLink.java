@@ -738,7 +738,7 @@ public class H2InboundLink extends HttpInboundLink {
         }
 
         try {
-            H2WriteQEntry e = new H2WriteQEntry(buf, bufs, numBytes, timeout, H2WriteQEntry.WRITE_TYPE.SYNC, fType, payloadLength, streamID);
+            H2WriteQEntry e = new H2WriteQEntry(buf, bufs, numBytes, timeout, fType, payloadLength, streamID);
             e.armWriteCompleteLatch();
 
             action = writeQ.writeOrAddToQ(e);

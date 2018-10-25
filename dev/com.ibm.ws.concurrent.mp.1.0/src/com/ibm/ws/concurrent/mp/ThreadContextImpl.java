@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -20,98 +22,31 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.enterprise.concurrent.ContextService;
-
 import org.eclipse.microprofile.concurrent.ThreadContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
-import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.concurrent.service.AbstractContextService;
-import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
-import com.ibm.wsspi.resource.ResourceFactory;
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
- * Subclass of ContextServiceImpl to be used with Java 8 and above.
- * This class provides implementation of the MicroProfile Concurrency methods.
- * These methods can be collapsed into ContextServiceImpl once there is
- * no longer a need for OpenLiberty to support Java 7.
+ * Programmatically built ThreadContext instance - either via ThreadContextBuilder
+ * or injected by CDI and possibly annotated by <code>@ThreadContextConfig</code>
  */
-@Component(name = "com.ibm.ws.context.service",
-           configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { ResourceFactory.class, ContextService.class, ThreadContext.class, WSContextService.class, ApplicationRecycleComponent.class },
-           property = { "creates.objectClass=javax.enterprise.concurrent.ContextService",
-                        "creates.objectClass=org.eclipse.microprofile.concurrent.ThreadContext" })
-public class ThreadContextImpl extends AbstractContextService implements ThreadContext {
-    @Activate
-    @Override
-    @Trivial
-    protected void activate(ComponentContext context) {
-        super.activate(context);
+class ThreadContextImpl implements ThreadContext, WSContextService { // TODO add ContextService?
+    ThreadContextImpl(String[] cleared, String[] propagated, String[] unchanged) {
+        // TODO
+    }
+
+    public ThreadContextDescriptor captureThreadContext(Map<String, String> executionProperties, Map<String, ?>... additionalThreadContextConfig) {
+        return null; // TODO
+    }
+
+    public <T> T createContextualProxy(ThreadContextDescriptor threadContextDescriptor, T instance, Class<T> intf) {
+        return null; // TODO
     }
 
     @Override
     public Executor currentContextExecutor() {
         return null; // TODO
-    }
-
-    @Deactivate
-    @Override
-    @Trivial
-    protected void deactivate(ComponentContext context) {
-        super.deactivate(context);
-    }
-
-    @Modified
-    @Override
-    @Trivial
-    protected void modified(ComponentContext context) {
-        super.modified(context);
-    }
-
-    @Override
-    @Reference(name = "baseInstance",
-               service = ContextService.class,
-               cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.DYNAMIC,
-               policyOption = ReferencePolicyOption.GREEDY,
-               target = "(id=unbound)")
-    @Trivial
-    protected void setBaseInstance(ServiceReference<ContextService> ref) {
-        super.setBaseInstance(ref);
-    }
-
-    @Override
-    @Reference(name = "threadContextManager",
-               service = WSContextService.class,
-               cardinality = ReferenceCardinality.MANDATORY,
-               policy = ReferencePolicy.STATIC,
-               target = "(component.name=com.ibm.ws.context.manager)")
-    @Trivial
-    protected void setThreadContextManager(WSContextService svc) {
-        super.setThreadContextManager(svc);
-    }
-
-    @Override
-    @Trivial
-    protected void unsetBaseInstance(ServiceReference<ContextService> ref) {
-        super.unsetBaseInstance(ref);
-    }
-
-    @Override
-    @Trivial
-    protected void unsetThreadContextManager(WSContextService svc) {
-        super.unsetThreadContextManager(svc);
     }
 
     @Override
@@ -126,12 +61,14 @@ public class ThreadContextImpl extends AbstractContextService implements ThreadC
 
     @Override
     public <T, U> BiConsumer<T, U> withCurrentContext(BiConsumer<T, U> consumer) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualBiConsumer<T, U>(contextDescriptor, consumer);
     }
 
     @Override
     public <T, U, R> BiFunction<T, U, R> withCurrentContext(BiFunction<T, U, R> function) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualBiFunction<T, U, R>(contextDescriptor, function);
     }
 
     @Override
@@ -141,21 +78,25 @@ public class ThreadContextImpl extends AbstractContextService implements ThreadC
 
     @Override
     public <T> Consumer<T> withCurrentContext(Consumer<T> consumer) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualConsumer<T>(contextDescriptor, consumer);
     }
 
     @Override
     public <T, R> Function<T, R> withCurrentContext(Function<T, R> function) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualFunction<T, R>(contextDescriptor, function);
     }
 
     @Override
     public Runnable withCurrentContext(Runnable runnable) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualRunnable(contextDescriptor, runnable);
     }
 
     @Override
     public <R> Supplier<R> withCurrentContext(Supplier<R> supplier) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualSupplier<R>(contextDescriptor, supplier);
     }
 }
