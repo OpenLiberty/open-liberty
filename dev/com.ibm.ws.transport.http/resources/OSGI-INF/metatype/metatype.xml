@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011 IBM Corporation and others.
+    Copyright (c) 2011, 2018 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -87,6 +87,11 @@
         <AD id="httpOptionsRef" name="%endpoint.httpOptions" description="%endpoint.httpOptions.desc"
             ibm:reference="com.ibm.ws.http.options" ibm:type="pid"
             type="String" required="false" default="defaultHttpOptions" />
+         
+        <AD id="remoteIpRef" name="%endpoint.remoteIp" description="%endpoint.remoteIp.desc"
+            ibm:reference="com.ibm.ws.http.remoteip" ibm:type="pid"
+            type="String" required="false" default="defaultRemoteIp" />   
+        
 
          <!--  n.b.  In these filters, the final e.g. (id=defaultHttpOptions) clause is needed to assure that when the explicitly matched service is removed,
          httpEndpoint falls back to the default immediately _before_ the target filter is changed to the updated one pointing to the default.  Without this clause,
@@ -95,6 +100,11 @@
             ibm:final="true" required="false" type="String"
             default="(|(service.pid=${httpOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.http.options)(|(id=com.ibm.ws.http-${id}/*)(id=defaultHttpOptions))))" /> 
 
+		<AD id="remoteIp.target" name="internal" description="internal use only" 
+            ibm:final="true" required="false" type="String"
+            default="(|(service.pid=${remoteIpRef})(&amp;(service.factoryPid=com.ibm.ws.http.remoteip)(|(id=com.ibm.ws.http-${id}/*)(id=defaultRemoteIp))))" /> 
+
+        
         <AD id="sslOptionsRef" name="%endpoint.sslOptions" description="%endpoint.sslOptions.desc"
             ibm:reference="com.ibm.ws.sslchannel.options" ibm:type="pid"
             type="String" required="false" />            
@@ -188,7 +198,27 @@
     <Designate factoryPid="com.ibm.ws.http.options">
         <Object ocdref="com.ibm.ws.http.options"/>
     </Designate>
+    
+    <OCD name="%http.remoteip" description="%http.remoteip.desc" 
+         id="com.ibm.ws.http.remoteip"
+         ibm:alias="remoteIp"> 
+         
+         <AD name="%http.remoteip.proxies" description="%http.remoteip.proxies.desc"
+         id="proxies" required="false" type="String"/>
+         
+         <AD name="%http.remoteip.useRemoteIpInAccessLog" description="%http.remoteip.useRemoteIpInAccessLog.desc"
+         id="useRemoteIpInAccessLog" required="false" type="Boolean" default="false" />
+         
+          
+		<AD name="internal" description="internal use only"
+            id="service.ranking" required="false" type="Integer" default="0"/>
 
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.http.remoteip">
+        <Object ocdref="com.ibm.ws.http.remoteip"/>
+    </Designate>
+    
     <OCD name="%http.dispatcher" description="%http.dispatcher.desc" 
          id="com.ibm.ws.http.dispatcher" ibm:alias="httpDispatcher">   
 
