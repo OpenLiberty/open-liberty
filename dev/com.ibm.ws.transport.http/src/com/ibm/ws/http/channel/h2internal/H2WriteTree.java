@@ -46,7 +46,6 @@ public class H2WriteTree implements H2WorkQInterface {
     boolean drainQ = false;
 
     // since there is one Tree per Connection, the tree will keep track of the connection window update parameters.
-    private final int connectionWindowUpdateWriteInitialSize = 65535;
     private int connectionWindowUpdateWriteLimit = 65535;
     Object connectionWindowLock = new Object() {};
 
@@ -252,14 +251,14 @@ public class H2WriteTree implements H2WorkQInterface {
             Tr.debug(tc, "tell device channel to write the data on stream-id: " + e.getStreamID());
         }
 
-        vc = writeReqContext.write(e.getMinToWrite(), muxCallback, e.getForceQueue(), e.getTimeout());
+        vc = writeReqContext.write(e.getMinToWrite(), muxCallback, false, e.getTimeout());
 
         if (vc != null) {
             // write worked right away
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "write worked right away");
             }
-            if (!e.getServicedOnQ() && (e.getForceQueue() == false)) {
+            if (!e.getServicedOnQ()) {
 
                 // this is the caller's thread and force queue is not true
                 // so return with the successful write after processing the queue state
@@ -270,81 +269,36 @@ public class H2WriteTree implements H2WorkQInterface {
                 return WRITE_ACTION.COMPLETED;
             }
 
-            // on the queue servicing thread  and/or forcequeue (which is only allowed on for Async) is true
+            // on the queue servicing thread
             // if sync write completed right away, then release the thread that is waiting for this write to complete
-            if (e.getWriteType() == H2WriteQEntry.WRITE_TYPE.SYNC) {
+            tree.updateNode(e.getStreamID(), NODE_STATUS.NOT_REQUESTING, WRITE_COUNT_ACTION.NO_ACTION, null);
+            e.hitWriteCompleteLatch();
 
-                tree.updateNode(e.getStreamID(), NODE_STATUS.NOT_REQUESTING, WRITE_COUNT_ACTION.NO_ACTION, null);
-                e.hitWriteCompleteLatch();
-
-                return WRITE_ACTION.COMPLETED;
-
-            } else {
-                // an Async write completed right away
-                // we are either on the queue service thread, or forceQueue is true
-
-                // call the callback for this write using a new thread, the complete/error methods on the callback will check if the
-                // queue service thread is in standby/wait (only relevant here for the force queue case)
-
-                // TODO: need to give this thread the right metaData/context?
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "start a new thread to service the async callback");
-                }
-
-                // callback will update the entry status
-                ExecutorService executorService = CHFWBundle.getExecutorService();
-                AsyncCallback ac = new AsyncCallback(e);
-                executorService.execute(ac);
-
-                // if not on the service queue, notify in case service queue thread is now waiting
-                if (!e.getServicedOnQ()) {
-                    notifyStandBy();
-                }
-
-                // channel write is complete and callback is now asynchronous to that Q service thread, so Q service thread can do another write.
-                return WRITE_ACTION.COMPLETED;
-            }
+            return WRITE_ACTION.COMPLETED;
 
         } else {
             // not all the data written right away
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "write did not work right away");
             }
-            if (e.getWriteType() == H2WriteQEntry.WRITE_TYPE.SYNC) {
-                // caller or queue service thread needs to wait until this write finishes since it is a sync write
 
-                // wait for the mux write callback to be processed, which will also update that Q status
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "writeEntry - WRITE_TYPE.SYNC - call entry.waitWriteCompleteLatch");
-                }
+            // caller or queue service thread needs to wait until this write finishes since it is a sync write
 
-                e.waitWriteCompleteLatch();
-                tree.updateNode(e.getStreamID(), NODE_STATUS.NOT_REQUESTING, WRITE_COUNT_ACTION.NO_ACTION, null);
-
-                // caller or queue service thread moves on to next piece of work
-                return WRITE_ACTION.COMPLETED;
-
-            } else {
-                // Async Write, and it did not write all the data right away
-
-                if (!e.getServicedOnQ()) {
-
-                    // this is the caller's thread, so return with the write pending.
-                    // mux callback will update the Q status and call caller's callback  when it completes
-                    return WRITE_ACTION.PENDING_CALLBACK;
-
-                } else {
-
-                    // queue service thread needs to wait for async write to complete before performing next write (can not have two writes
-                    // outstanding on the TCP Channel)
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "writeEntry - WRITE_TYPE.ASYNC - call entry.waitWriteCompleteLatch");
-                    }
-                    e.waitWriteCompleteLatch();
-                    return WRITE_ACTION.COMPLETED;
-                }
+            // wait for the mux write callback to be processed, which will also update that Q status
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "writeEntry - sync - call entry.waitWriteCompleteLatch");
             }
+
+            // The reason for the write latch state and testing that it is still latched before resetting
+            // is that a thread which put the write on the queue, is also waiting on the same latch
+            // and that thread may get control first and requeue another write request.
+            tree.updateNode(e.getStreamID(), NODE_STATUS.WRITE_LATCHED, WRITE_COUNT_ACTION.NO_ACTION, null);
+            e.waitWriteCompleteLatch();
+            tree.updateNode(e.getStreamID(), NODE_STATUS.ACTION_RESET_IF_LATCHED, WRITE_COUNT_ACTION.NO_ACTION, null);
+
+            // caller or queue service thread moves on to next piece of work
+            return WRITE_ACTION.COMPLETED;
+
         }
 
     }
@@ -352,13 +306,6 @@ public class H2WriteTree implements H2WorkQInterface {
     @Override
     public boolean updateNodeFrameParameters(int streamID, int newPriority, int newParentStreamID, boolean exclusive) {
         return tree.updateNodeFrameParameters(streamID, newPriority, newParentStreamID, exclusive);
-    }
-
-    @Override
-    public void asyncCallbackComplete(H2WriteQEntry e) {
-
-        tree.updateNode(e.getStreamID(), NODE_STATUS.NOT_REQUESTING, WRITE_COUNT_ACTION.NO_ACTION, null);
-
     }
 
     @Override
@@ -476,46 +423,6 @@ public class H2WriteTree implements H2WorkQInterface {
         // look in the tree for the next one give the priorities and write counts per stream
         H2WriteQEntry e = tree.findNextWriteEntry();
         return e;
-    }
-
-    protected class AsyncCallback implements Runnable {
-
-        // A seperate thread is needed to call the user's complete callback for this async request the finished either on the queue servicing thread or
-        // had forceQueue set to true.
-
-        H2WriteQEntry e;
-
-        protected AsyncCallback(H2WriteQEntry x) {
-            e = x;
-        }
-
-        @Override
-        public void run() {
-
-            // this is used instead of the H2MuxTCPWriteCallback for when the async was force queue and completed right away and/or we
-            // are on the Q service thread, and the async write complete right away.
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "New thread to service callback for entry: " + e.hashCode());
-            }
-
-            try {
-                // use the VC and context that the calling thread/H2 Stream is using, not the mux ones.
-                VirtualConnection eVC = e.getConnectionContext().getVC();
-                TCPWriteRequestContext eTWC = e.getConnectionContext().getWriteInterface();
-
-                e.getCallback().complete(eVC, eTWC);
-            } catch (Throwable t) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "caught a Throwable. log and leave: " + t);
-                }
-                // debug, not much else to do but stop the exception here
-            }
-
-            // update the entry status, write was already incremented
-            asyncCallbackComplete(e);
-
-        }
     }
 
     /*
