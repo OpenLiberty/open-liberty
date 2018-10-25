@@ -290,7 +290,7 @@ public class AuthorizationCodeHandlerTest {
                 SSLSocketFactory sslSocketFactory,
                 boolean b,
                 String authMethod,
-                String resources) throws HttpException, IOException {
+                String resources, HashMap<String, String> customParams) throws HttpException, IOException {
             if (ioe != null) {
                 throw ioe;
             }
