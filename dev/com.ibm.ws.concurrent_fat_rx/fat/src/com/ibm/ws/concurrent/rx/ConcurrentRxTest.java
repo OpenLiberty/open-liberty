@@ -12,11 +12,14 @@ package com.ibm.ws.concurrent.rx;
 
 import java.io.File;
 
+import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.test.context.location.StateContextProvider;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -42,6 +45,11 @@ public class ConcurrentRxTest extends FATServletClient {
                         .addPackages(true, "web")//
                         .addAsWebInfResource(new File("test-applications/concurrentrxfat/resources/index.jsp"));
         ShrinkHelper.exportAppToServer(server1, app);
+
+        JavaArchive customContextProviders = ShrinkWrap.create(JavaArchive.class, "customContextProviders.jar")
+                        .addPackage("org.test.context.location")
+                        .addAsServiceProvider(ThreadContextProvider.class, StateContextProvider.class);
+        ShrinkHelper.exportToServer(server1, "lib", customContextProviders);
 
         server1.startServer();
     }
