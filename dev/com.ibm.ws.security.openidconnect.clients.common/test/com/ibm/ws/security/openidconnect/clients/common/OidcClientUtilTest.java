@@ -290,7 +290,7 @@ public class OidcClientUtilTest extends CommonTestClass {
                     sslSocketFactory,
                     false,
                     authMethod,
-                    null);
+                    null, null);
             Set<String> keys = results.keySet();
             boolean bAccessToken = false;
             boolean bTokenType = false;
