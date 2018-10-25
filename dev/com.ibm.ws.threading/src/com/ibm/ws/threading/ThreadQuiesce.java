@@ -18,4 +18,6 @@ public interface ThreadQuiesce {
     boolean quiesceThreads();
 
     int getActiveThreads();
+
+    boolean quiesceStarted();
 }
