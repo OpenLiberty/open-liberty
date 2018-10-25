@@ -769,6 +769,14 @@ ERROR_UNKNOWN_OSLIST_VALUE=CWWKF1387E: Der Wert {0} ist kein g\u00fcltiger Eintr
 ERROR_UNKNOWN_OSLIST_VALUE.explanation=Dieser Wert wird ignoriert, da es kein erkannter Betriebssystemname ist.
 ERROR_UNKNOWN_OSLIST_VALUE.useraction=\u00c4ndern Sie diesen Wert in der Feature-Manifestdatei oder entfernen Sie diesen Wert aus dieser Datei.
 
+ERROR_ESA_NOT_FOUND=CWWKF1388E: Die angegebene ESA-Datei {0} enth\u00e4lt keine Features.
+ERROR_ESA_NOT_FOUND.explanation=Es wird kein Feature aus der ESA-Datei installiert.
+ERROR_ESA_NOT_FOUND.useraction=Stellen Sie sicher, dass die angegebene ESA-Datei g\u00fcltig ist und ein Feature enth\u00e4lt.
+
+ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: Es kann keine JSON-Datei unter {0} f\u00fcr die ESA-Datei {1} erstellt werden.
+ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=Das Feature in der ESA-Datei wird nicht installiert.
+ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Stellen Sie sicher, dass Schreibzugriff f\u00fcr das Verzeichnis, in dem die JSON-Datei erstellt wird, verf\u00fcgbar ist.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Das Feature wurde erfolgreich heruntergeladen.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=Das Feature wurde heruntergeladen.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Es ist keine Aktion erforderlich.

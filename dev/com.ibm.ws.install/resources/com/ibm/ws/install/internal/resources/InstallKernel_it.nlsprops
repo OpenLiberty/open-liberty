@@ -771,6 +771,14 @@ ERROR_UNKNOWN_OSLIST_VALUE=CWWKF1387E: Il valore {0} non \u00e8 un''immissione v
 ERROR_UNKNOWN_OSLIST_VALUE.explanation=Questo valore verr\u00e0 ignorato perch\u00e9 non \u00e8 un nome sistema operativo riconosciuto.
 ERROR_UNKNOWN_OSLIST_VALUE.useraction=Modificare o rimuovere il valore dal file manifest della funzione.
 
+ERROR_ESA_NOT_FOUND=CWWKF1388E: Il file ESA specificato {0} non conteneva funzioni.
+ERROR_ESA_NOT_FOUND.explanation=Non verranno installate funzioni dal file ESA.
+ERROR_ESA_NOT_FOUND.useraction=Verificare che il file ESA fornito sia valido e contenga funzioni.
+
+ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: Impossibile creare un file JSON in {0} per il file ESA {1}.
+ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=La funzione nel file ESA non verr\u00e0 installata.
+ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Assicurarsi che l'accesso in scrittura sia disponibile per la directory in cui verr\u00e0 creato il file JSON.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: La funzione \u00e8 stata scaricata correttamente.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=La funzione \u00e8 stata scaricata.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Non \u00e8 richiesta alcuna azione.

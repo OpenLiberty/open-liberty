@@ -102,7 +102,7 @@
 #   - Msgs in the range CWSIP0551-CWSIP0560 belong to class com.ibm.ws.sib.processor.impl.store.itemstreams.PtoPLocalMsgsItemStream
 #   - Msgs in the range CWSIP0561-CWSIP0570 belong to class com.ibm.ws.sib.processor.impl.AsynchConsumer
 #   - Msgs in the range CWSIP0571-CWSIP0579 belong to class com.ibm.ws.sib.processor.impl.mediation.MessagePump
-#
+#   - Msgs in the range CWSIP0580-CWSIP0589 belong to class com.ibm.ws.sib.processor.impl.store.items.MessageItem
 #
 #
 #
@@ -1292,6 +1292,15 @@ CONNECTION_CONTROLLABLE_ERROR_CWSIP0571.useraction=Nen\u00ed
 MESSAGE_EXISTS_ERROR_CWSIP0572=CWSIP0572E: Zpr\u00e1va s ID {0} ji\u017e v m\u00edst\u011b ur\u010den\u00ed {1} neexistuje.
 MESSAGE_EXISTS_ERROR_CWSIP0572.explanation=Pokus o p\u0159\u00edstup ke zpr\u00e1v\u011b s uveden\u00fdm ID se nezda\u0159il. Pravd\u011bpodobnou p\u0159\u00ed\u010dinou je to, \u017ee u zpr\u00e1vy vypr\u0161ela platnost nebo ji aplikace odebrala.
 MESSAGE_EXISTS_ERROR_CWSIP0572.useraction=Nen\u00ed
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The destination name
+# {3} The action taken
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580=CWSIP0580W: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} byla nalezena v um\u00edst\u011bn\u00ed {2} s prodlevou doru\u010den\u00ed p\u0159ekra\u010duj\u00edc\u00ed limit nastaven\u00fd vlastnost\u00ed sib.msgstore.maximumAllowedDeliveryDelayInterval. Byla provedena akce ''{3}''
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580.explanation=Toto varov\u00e1n\u00ed ozna\u010duje, \u017ee akce byla provedena.
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
 
 # -------------------------------------------------------------------------------------------------
 NO_ELEMENTS_ERROR_CWSIP0601=CWSIP0601E: V iter\u00e1toru neexistuj\u00ed \u017e\u00e1dn\u00e9 dal\u0161\u00ed prvky.

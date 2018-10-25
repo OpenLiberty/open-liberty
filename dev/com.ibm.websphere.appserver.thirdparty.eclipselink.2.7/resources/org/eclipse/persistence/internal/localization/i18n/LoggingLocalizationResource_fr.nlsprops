@@ -609,13 +609,13 @@ osgi_initializer_failed=La construction de l''initialiseur OSGi sp\u00e9cifique 
 
 overriding_cache_isolation=L''entit\u00e9 parent {0} a le niveau d''isolement : {1} qui est plus protecteur que la sous-classe {2} avec l''isolement : {3} ; la sous-classe a donc \u00e9t\u00e9 d\u00e9finie sur le niveau d''isolement {1}.
 
-ox_lowering_global_logging_from_default_info_to_warning= {0} Journalisation globale abaiss\u00e9e du niveau INFO (par d\u00e9faut) au niveau AVERTISSEMENT.
+ox_lowering_global_logging_from_default_info_to_warning={0} Journalisation globale abaiss\u00e9e du niveau INFO (par d\u00e9faut) au niveau AVERTISSEMENT.
 
-ox_lowering_session_logging_from_default_info_to_warning= {0} Journalisation de session abaiss\u00e9e du niveau INFO (par d\u00e9faut) au niveau AVERTISSEMENT.
+ox_lowering_session_logging_from_default_info_to_warning={0} Journalisation de session abaiss\u00e9e du niveau INFO (par d\u00e9faut) au niveau AVERTISSEMENT.
 
-ox_turn_global_logging_off= {0} D\u00e9sactivation de la journalisation de session globale.
+ox_turn_global_logging_off={0} D\u00e9sactivation de la journalisation de session globale.
 
-ox_turn_session_logging_off= {0} D\u00e9sactivation de la journalisation de session.
+ox_turn_session_logging_off={0} D\u00e9sactivation de la journalisation de session.
 
 parse_ejb_jar_with_validation_fails=L''analyse syntaxique de ejb-jar.xml avec validation \u00e9choue avec l''erreur ({0}). L''outil de migration va analyser le fichier xml sans validation.
 

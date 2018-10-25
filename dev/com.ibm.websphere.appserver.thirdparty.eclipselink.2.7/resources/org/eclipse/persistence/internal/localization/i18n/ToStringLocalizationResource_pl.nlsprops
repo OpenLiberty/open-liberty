@@ -105,17 +105,17 @@ sdo_classgenerator_usage_help_1of8={0} Sk\u0142adnia: org.eclipse.persistence.sd
 
 sdo_classgenerator_usage_help_2of8=Opcje:
 
-sdo_classgenerator_usage_help_3of8=    -help                        Wy\u015bwietla tekst komunikatu pomocy
+sdo_classgenerator_usage_help_3of8=-help                        Wy\u015bwietla tekst komunikatu pomocy
 
-sdo_classgenerator_usage_help_4of8=    -sourceFile <nazwa_pliku> Wej\u015bciowy plik schematu (wymagany)
+sdo_classgenerator_usage_help_4of8=-sourceFile <nazwa_pliku> Wej\u015bciowy plik schematu (wymagany)
 
-sdo_classgenerator_usage_help_5of8=    -targetDirectory <DirName>   Katalog, w kt\u00f3rym zostanie wygenerowane \u017ar\u00f3d\u0142o Java (opcjonalny)
+sdo_classgenerator_usage_help_5of8=-targetDirectory <DirName>   Katalog, w kt\u00f3rym zostanie wygenerowane \u017ar\u00f3d\u0142o Java (opcjonalny)
 
-sdo_classgenerator_usage_help_6of8=    -logLevel <poziom>  Podaj liczb\u0119 ca\u0142kowit\u0105 okre\u015blaj\u0105c\u0105 poziom rejestrowania (8=WY\u0141., 7=POWA\u017bNY, 6=OSTRZE\u017bENIE, 5=INFORMACJA, 4=KONFIGURACJA, 3=DOK\u0141ADNY, 2=DOK\u0141ADNIEJ (domy\u015blny), 1=NAJDOK\u0141ADNIEJ, 0=WSZYSTKO).
+sdo_classgenerator_usage_help_6of8=-logLevel <poziom>  Podaj liczb\u0119 ca\u0142kowit\u0105 okre\u015blaj\u0105c\u0105 poziom rejestrowania (8=WY\u0141., 7=POWA\u017bNY, 6=OSTRZE\u017bENIE, 5=INFORMACJA, 4=KONFIGURACJA, 3=DOK\u0141ADNY, 2=DOK\u0141ADNIEJ (domy\u015blny), 1=NAJDOK\u0141ADNIEJ, 0=WSZYSTKO).
 
-sdo_classgenerator_usage_help_7of8=    -noInterfaces                Nie generuj klas interfejsu
+sdo_classgenerator_usage_help_7of8=-noInterfaces                Nie generuj klas interfejsu
 
-sdo_classgenerator_usage_help_8of8=    -noImpls                     Nie generuj klas implementacji
+sdo_classgenerator_usage_help_8of8=-noImpls                     Nie generuj klas implementacji
 
 sdo_classgenerator_usage_missing_sourcefile={0} Parametr -sourceFile nie zosta\u0142 podany, a jest wymagany.
 
@@ -127,43 +127,43 @@ server_name=nazwa serwera
 
 shortestTime=najkr\u00f3tszy czas
 
-staticweave_commandline_help_message_10of19=    -log
+staticweave_commandline_help_message_10of19=-log
 
-staticweave_commandline_help_message_11of19=           Okre\u015bl plik rejestrowania.
+staticweave_commandline_help_message_11of19=Okre\u015bl plik rejestrowania.
 
-staticweave_commandline_help_message_12of19=    -loglevel
+staticweave_commandline_help_message_12of19=-loglevel
 
-staticweave_commandline_help_message_13of19=           Podaj liczb\u0119 ca\u0142kowit\u0105 okre\u015blaj\u0105c\u0105 poziom rejestrowania (8=WY\u0141., 7=POWA\u017bNY, 6=OSTRZE\u017bENIE, 5=INFORMACJA, 4=KONFIGURACJA, 3=DOK\u0141ADNY, 2=DOK\u0141ADNIEJ (domy\u015blny), 1=NAJDOK\u0141ADNIEJ, 0=WSZYSTKO).
+staticweave_commandline_help_message_13of19=Podaj liczb\u0119 ca\u0142kowit\u0105 okre\u015blaj\u0105c\u0105 poziom rejestrowania (8=WY\u0141., 7=POWA\u017bNY, 6=OSTRZE\u017bENIE, 5=INFORMACJA, 4=KONFIGURACJA, 3=DOK\u0141ADNY, 2=DOK\u0141ADNIEJ (domy\u015blny), 1=NAJDOK\u0141ADNIEJ, 0=WSZYSTKO).
 
-staticweave_commandline_help_message_14of19=    \u015acie\u017cka klas musi zawiera\u0107 wszystkie klasy wymagane do \u0142adowania klas w \u017ar\u00f3dle.
+staticweave_commandline_help_message_14of19=\u015acie\u017cka klas musi zawiera\u0107 wszystkie klasy wymagane do \u0142adowania klas w \u017ar\u00f3dle.
 
-staticweave_commandline_help_message_15of19=    Je\u015bli \u017ar\u00f3d\u0142o i cel wskazuj\u0105 na to samo po\u0142o\u017cenie, manipulowanie kodem bajtowym zostanie przeprowadzone na miejscu.  Manipulowanie kodem bajtowym na miejscu ma zastosowanie TYLKO dla \u017ar\u00f3de\u0142 opartych na katalogach.
+staticweave_commandline_help_message_15of19=Je\u015bli \u017ar\u00f3d\u0142o i cel wskazuj\u0105 na to samo po\u0142o\u017cenie, manipulowanie kodem bajtowym zostanie przeprowadzone na miejscu.  Manipulowanie kodem bajtowym na miejscu ma zastosowanie TYLKO dla \u017ar\u00f3de\u0142 opartych na katalogach.
 
-staticweave_commandline_help_message_16of19=  Przyk\u0142ad:
+staticweave_commandline_help_message_16of19=Przyk\u0142ad:
 
-staticweave_commandline_help_message_17of19=    Aby manipulowa\u0107 kodem bajtowym wszystkich jednostek zawartych w pliku C:\\foo-source.jar z u\u017cyciem pliku persistence.xml zawartego w pliku C:\\foo-containing-persistence-xml.jar,
+staticweave_commandline_help_message_17of19=Aby manipulowa\u0107 kodem bajtowym wszystkich jednostek zawartych w pliku C:\foo-source.jar z u\u017cyciem pliku persistence.xml zawartego w pliku C:\foo-containing-persistence-xml.jar,
 
-staticweave_commandline_help_message_18of19=    a dane wyj\u015bciowe zapisa\u0107 w pliku C:\\foo-target.jar:
+staticweave_commandline_help_message_18of19=a dane wyj\u015bciowe zapisa\u0107 w pliku C:\foo-target.jar:
 
-staticweave_commandline_help_message_19of19=    StaticWeave -persistenceinfo C:\\foo-containing-persistence-xml.jar -classpath C:\\classpath1;C:\\classpath2 C:\\foo-source.jar C:\\foo-target.jar
+staticweave_commandline_help_message_19of19=StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:\classpath1;C:\classpath2 C:\foo-source.jar C:\foo-target.jar
 
-staticweave_commandline_help_message_1of19=  Sk\u0142adnia: StaticWeave [opcje] \u017ar\u00f3d\u0142o cel
+staticweave_commandline_help_message_1of19=Sk\u0142adnia: StaticWeave [opcje] \u017ar\u00f3d\u0142o cel
 
-staticweave_commandline_help_message_2of19=  Opcje:
+staticweave_commandline_help_message_2of19=Opcje:
 
-staticweave_commandline_help_message_3of19=    -classpath \u015bcie\u017cka klas
+staticweave_commandline_help_message_3of19=-classpath \u015bcie\u017cka klas
 
-staticweave_commandline_help_message_4of19=           Ustaw \u015bcie\u017ck\u0119 klas u\u017cytkownika.  U\u017cyj \u015brednika (;) jako separatora w systemie Windows, a dwukropka (:) w systemie Unix.
+staticweave_commandline_help_message_4of19=Ustaw \u015bcie\u017ck\u0119 klas u\u017cytkownika.  U\u017cyj \u015brednika (;) jako separatora w systemie Windows, a dwukropka (:) w systemie Unix.
 
-staticweave_commandline_help_message_5of19=    -persistenceinfo
+staticweave_commandline_help_message_5of19=-persistenceinfo
 
-staticweave_commandline_help_message_6of19=           Okre\u015bl jawnie miejsce przechowywania pliku META-INF/persistence.xml.  Musi to by\u0107 katalog g\u0142\u00f3wny dla pliku META-INF/persistence.xml.
+staticweave_commandline_help_message_6of19=Okre\u015bl jawnie miejsce przechowywania pliku META-INF/persistence.xml.  Musi to by\u0107 katalog g\u0142\u00f3wny dla pliku META-INF/persistence.xml.
 
-staticweave_commandline_help_message_7of19=           Ta opcja jest zazwyczaj u\u017cywana do okre\u015blania g\u0142\u00f3wnego archiwum jar podczas manipulowania kodem bajtowym plik\u00f3w przywo\u0142ywanych przez warto\u015b\u0107 parametru <jar-file> w pliku persistence.xml.
+staticweave_commandline_help_message_7of19=Ta opcja jest zazwyczaj u\u017cywana do okre\u015blania g\u0142\u00f3wnego archiwum jar podczas manipulowania kodem bajtowym plik\u00f3w przywo\u0142ywanych przez warto\u015b\u0107 parametru <jar-file> w pliku persistence.xml.
 
-staticweave_commandline_help_message_8of19=    -persistencexml
+staticweave_commandline_help_message_8of19=-persistencexml
 
-staticweave_commandline_help_message_9of19=           Okre\u015bl po\u0142o\u017cenie pliku persistence.xml wzgl\u0119dem katalogu g\u0142\u00f3wnego jednostki trwa\u0142o\u015bci, je\u015bli ten plik nie znajduje si\u0119 w \u015bcie\u017cce META-INF/persistence.xml
+staticweave_commandline_help_message_9of19=Okre\u015bl po\u0142o\u017cenie pliku persistence.xml wzgl\u0119dem katalogu g\u0142\u00f3wnego jednostki trwa\u0142o\u015bci, je\u015bli ten plik nie znajduje si\u0119 w \u015bcie\u017cce META-INF/persistence.xml
 
 staticweave_processor_dir_not_created=Nie mo\u017cna utworzy\u0107 katalogu {0}.
 

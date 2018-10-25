@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -149,13 +153,13 @@
 
 7093=W zapytaniu o nazwie [{0}], nie mo\u017cna znale\u017a\u0107 klasy [{2}] dla argumentu zapytania o nazwie [{1}]. Uwzgl\u0119dnij brakuj\u0105c\u0105 klas\u0119 w \u015bcie\u017cce klas.
 
-7095=Zas\u00f3b sessions.xml [{0}] nie zosta\u0142 znaleziony w \u015bcie\u017cce zasob\u00f3w.  Sprawd\u017a, czy nazwa/\u015bcie\u017cka zasobu i program \u0142aduj\u0105cy klasy przekazane do SessionManager.getSession s\u0105 poprawne.  Plik sessions.xml powinien znajdowa\u0107 si\u0119 w katalogu g\u0142\u00f3wnym wdro\u017conego pliku jar aplikacji. Je\u015bli plik sessions.xml jest wdro\u017cony w podkatalogu w pliku jar aplikacji, upewnij si\u0119, \u017ce u\u017cywana jest poprawna \u015bcie\u017cka zasob\u00f3w ze znakami \u201e/\u201d, a nie \u201e\\u201d.
+7095=Zas\u00f3b sessions.xml [{0}] nie zosta\u0142 znaleziony w \u015bcie\u017cce zasob\u00f3w.  Sprawd\u017a, czy nazwa/\u015bcie\u017cka zasobu i program \u0142aduj\u0105cy klasy przekazane do SessionManager.getSession s\u0105 poprawne.  Plik sessions.xml powinien znajdowa\u0107 si\u0119 w katalogu g\u0142\u00f3wnym wdro\u017conego pliku jar aplikacji. Je\u015bli plik sessions.xml jest wdro\u017cony w podkatalogu w pliku jar aplikacji, upewnij si\u0119, \u017ce u\u017cywana jest poprawna \u015bcie\u017cka do zasob\u00f3w ze znakami \u201e/\u201d, a nie \u201e\u201d.
 
 7096=Nie mo\u017cna u\u017cy\u0107 metody commit(), aby ponownie zatwierdzi\u0107 jednostk\u0119 pracy.
 
 7097=Operacja nie jest obs\u0142ugiwana: [{0}].
 
-7099=Zas\u00f3b XML wdro\u017cenia projektu [{0}] nie zosta\u0142 znaleziony w \u015bcie\u017cce zasob\u00f3w.  Sprawd\u017a, czy nazwa/\u015bcie\u017cka zasobu i program \u0142aduj\u0105cy klasy przekazane do XMLProjectReader s\u0105 poprawne.  Plik XML projektu powinien znajdowa\u0107 si\u0119 w katalogu g\u0142\u00f3wnym wdro\u017conego pliku jar aplikacji. Je\u015bli plik XML projektu jest wdro\u017cony w podkatalogu w pliku jar aplikacji, upewnij si\u0119, \u017ce u\u017cywana jest poprawna \u015bcie\u017cka zasob\u00f3w ze znakami \u201e/\u201d, a nie \u201e\\u201d.
+7099=Zas\u00f3b XML wdro\u017cenia projektu [{0}] nie zosta\u0142 znaleziony w \u015bcie\u017cce zasob\u00f3w.  Sprawd\u017a, czy nazwa/\u015bcie\u017cka zasobu i program \u0142aduj\u0105cy klasy przekazane do XMLProjectReader s\u0105 poprawne.  Plik XML projektu powinien znajdowa\u0107 si\u0119 w katalogu g\u0142\u00f3wnym wdro\u017conego pliku jar aplikacji. Je\u015bli plik XML projektu jest wdro\u017cony w podkatalogu w pliku jar aplikacji, upewnij si\u0119, \u017ce u\u017cywana jest poprawna \u015bcie\u017cka do zasob\u00f3w ze znakami \u201e/\u201d, a nie \u201e\u201d.
 
 7100=Nie mo\u017cna znale\u017a\u0107 sesji o nazwie [{0}] w pliku session.xml [{1}]
 

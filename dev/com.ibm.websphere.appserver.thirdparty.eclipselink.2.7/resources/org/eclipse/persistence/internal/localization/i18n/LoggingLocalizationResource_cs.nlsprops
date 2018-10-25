@@ -609,13 +609,13 @@ osgi_initializer_failed=Konstrukce inicializ\u00e1toru OSGi [{0}] specifick\u00e
 
 overriding_cache_isolation=Nad\u0159\u00edzen\u00e1 entita {0} m\u00e1 \u00farove\u0148 izolace: {1}, co\u017e je v\u00edce chr\u00e1n\u00edc\u00ed ne\u017e u podt\u0159\u00eddy {2} s izolac\u00ed: {3}. Podt\u0159\u00edda se tedy nastav\u00ed na \u00farove\u0148 izolace {1}.
 
-ox_lowering_global_logging_from_default_info_to_warning= {0} Sni\u017euje se glob\u00e1ln\u00ed protokolov\u00e1n\u00ed z v\u00fdchoz\u00edho nastaven\u00ed INFO na \u00farove\u0148 WARNING.
+ox_lowering_global_logging_from_default_info_to_warning={0} Sni\u017euje se glob\u00e1ln\u00ed protokolov\u00e1n\u00ed z v\u00fdchoz\u00edho nastaven\u00ed INFO na \u00farove\u0148 WARNING.
 
-ox_lowering_session_logging_from_default_info_to_warning= {0} Sni\u017euje se protokolov\u00e1n\u00ed relace z v\u00fdchoz\u00edho nastaven\u00ed INFO na \u00farove\u0148 WARNING.
+ox_lowering_session_logging_from_default_info_to_warning={0} Sni\u017euje se protokolov\u00e1n\u00ed relace z v\u00fdchoz\u00edho nastaven\u00ed INFO na \u00farove\u0148 WARNING.
 
-ox_turn_global_logging_off= {0} Vyp\u00edn\u00e1n\u00ed protokolov\u00e1n\u00ed glob\u00e1ln\u00ed relace.
+ox_turn_global_logging_off={0} Vyp\u00edn\u00e1n\u00ed protokolov\u00e1n\u00ed glob\u00e1ln\u00ed relace.
 
-ox_turn_session_logging_off= {0} Vyp\u00edn\u00e1 se protokolov\u00e1n\u00ed relace.
+ox_turn_session_logging_off={0} Vyp\u00edn\u00e1 se protokolov\u00e1n\u00ed relace.
 
 parse_ejb_jar_with_validation_fails=Anal\u00fdza ejb-jar.xml s ov\u011b\u0159en\u00edm se nezda\u0159ila, chyba ({0}). N\u00e1stroj migrace provede anal\u00fdzu souboru xml bez ov\u011b\u0159en\u00ed.
 

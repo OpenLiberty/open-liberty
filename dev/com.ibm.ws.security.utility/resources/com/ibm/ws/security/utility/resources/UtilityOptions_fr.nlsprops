@@ -91,8 +91,8 @@ encode.option-desc.listCustom=\tAffiche les informations de chiffrement personna
 sslCert.desc=\tCr\u00e9er un certificat SSL par d\u00e9faut \u00e0 utiliser par la configuration serveur ou          \n\
 \tclient. 
 #Note to translator the word "createSSLCertificate" should not be translated
-sslCert.usage.options=\t{0} createSSLCertificate '{--server servername|--client clientname'}  \n\
-\t--password password [options]
+sslCert.usage.options=\t{0} createSSLCertificate '{--server=servername |--client=clientname'}\n\
+\t--password[=password] [options]
 sslCert.required-key.server=\ \ \ \ --server=name
 sslCert.required-desc.server=\tServeur pour lequel cr\u00e9er le certificat.  Cet argument ne peut pas    \n\
 \t\u00eatre utilis\u00e9 si l''argument --client est utilis\u00e9.

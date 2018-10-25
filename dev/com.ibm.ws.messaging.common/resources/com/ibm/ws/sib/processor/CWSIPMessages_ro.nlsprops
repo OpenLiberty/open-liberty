@@ -102,7 +102,7 @@
 #   - Msgs in the range CWSIP0551-CWSIP0560 belong to class com.ibm.ws.sib.processor.impl.store.itemstreams.PtoPLocalMsgsItemStream
 #   - Msgs in the range CWSIP0561-CWSIP0570 belong to class com.ibm.ws.sib.processor.impl.AsynchConsumer
 #   - Msgs in the range CWSIP0571-CWSIP0579 belong to class com.ibm.ws.sib.processor.impl.mediation.MessagePump
-#
+#   - Msgs in the range CWSIP0580-CWSIP0589 belong to class com.ibm.ws.sib.processor.impl.store.items.MessageItem
 #
 #
 #
@@ -1292,6 +1292,15 @@ CONNECTION_CONTROLLABLE_ERROR_CWSIP0571.useraction=Nimic
 MESSAGE_EXISTS_ERROR_CWSIP0572=CWSIP0572E: Mesajul cu ID-ul {0} nu mai exist\u0103 pe destina\u0163ia {1}.
 MESSAGE_EXISTS_ERROR_CWSIP0572.explanation=\u00cencercarea de accesare a mesajului cu ID-ul specificat a e\u015fuat.  Aceasta este posibil din cauza expir\u0103rii mesajului, fie o Aplica\u0163ie l-a \u00eenl\u0103turat.
 MESSAGE_EXISTS_ERROR_CWSIP0572.useraction=Nimic
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The destination name
+# {3} The action taken
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580=CWSIP0580W: Un mesaj cu ID-ul {0} ID mesaj sistem {1} a fost g\u0103sit \u00een destina\u0163ia {2} cu o \u00eent\u00e2rziere de livrare care dep\u0103\u015fe\u015fte limita setat\u0103 de proprietatea sib.msgstore.maximumAllowedDeliveryDelayInterval, acea ac\u0163iune luat\u0103 a fost ''{3}''
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580.explanation=Acest avertisment indic\u0103 ac\u0163iunea care a fost luat\u0103.
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
 
 # -------------------------------------------------------------------------------------------------
 NO_ELEMENTS_ERROR_CWSIP0601=CWSIP0601E: Nu mai exist\u0103 elemente in Iterator.

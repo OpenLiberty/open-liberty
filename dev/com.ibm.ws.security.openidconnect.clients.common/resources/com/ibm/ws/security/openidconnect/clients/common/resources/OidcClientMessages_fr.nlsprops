@@ -180,5 +180,12 @@ JWK_RETRIEVE_FAILED=CWWKS1747E: Aucune cl\u00e9 JWK (JSON Web Key) n''a \u00e9t\
 JWK_RETRIEVE_FAILED.explanation=Aucune cl\u00e9 Web JSON n'a pu \u00eatre retourn\u00e9e depuis l'URL sp\u00e9cifi\u00e9e. Il se peut que l'URL ne soit pas valide, qu'elle ne soit pas configur\u00e9e pour renvoyer une cl\u00e9 JWK, que la r\u00e9ponse de l'URL soit vide, ou encore qu'une erreur inconnue se soit produite.
 JWK_RETRIEVE_FAILED.useraction=V\u00e9rifiez que le format de l'URL soit incorrect et sp\u00e9cifie un emplacement ne pouvant pas renvoyer des cl\u00e9s Web JSON. Pour plus d'informations, v\u00e9rifiez le statut de la r\u00e9ponse et son contenu.
 
+USERINFO_RETREIVE_FAILED=CWWKS1748E: L''URL UserInfo [{0}] n''a pas pu \u00eatre contact\u00e9e. Le statut de la r\u00e9ponse \u00e9tait [{1}] et le contenu retourn\u00e9 \u00e9tait [{2}].
+USERINFO_RETREIVE_FAILED.explanation=Les donn\u00e9es utilisateur (User Info) n'a pas pu \u00eatre obtenues de l'URL sp\u00e9cifi\u00e9e. Il se peut que l'URL ne soit pas valide, que le jeton d'acc\u00e8s fourni ne soit pas valide, que la r\u00e9ponse de l'URL soit vide, ou encore qu'une erreur inconnue se soit produite.
+USERINFO_RETREIVE_FAILED.useraction=V\u00e9rifiez que l'URL a un format correct et sp\u00e9cifie un emplacement capable de retourner des donn\u00e9es User Info. Pour plus d'informations, v\u00e9rifiez le statut de la r\u00e9ponse et son contenu.
+
+USERINFO_INVALID=CWWKS1749E: Les donn\u00e9es User Info [{0}] ne sont pas valides car la revendication ''sub'' (sujet) ne correspond pas \u00e0 celle du jeton d''ID [{1}].
+USERINFO_INVALID.explanation=La revendication 'sub' (sujet) des informations utilisateur doit \u00eatre identique \u00e0 celle du jeton d'ID. Or, ce n'est pas le cas.
+USERINFO_INVALID.useraction=Assurez-vous que le fournisseur OpenID Connect g\u00e9n\u00e8re des donn\u00e9es User Info valides.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 
