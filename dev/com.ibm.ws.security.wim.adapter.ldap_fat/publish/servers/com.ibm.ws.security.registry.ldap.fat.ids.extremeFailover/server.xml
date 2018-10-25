@@ -23,11 +23,10 @@
 		searchTimeout="8m"
 		idsFilters="ibm_dir_server">
 		<failoverServers name="failoverLdapServersGroup1">
-			<server host="${ldap.server.1.name}" port="${ldap.server.1.port}"/>
+			<server host="${ldap.server.5.name}" port="${ldap.server.5.port}"/>
 			<server host="${ldap.server.1.port}" port="379"/>
 		</failoverServers>
 		<failoverServers name="failoverLdapServersGroup2">
-			<server host="${ldap.server.4.name}" port="${ldap.server.4.port}"/>
 			<server host="${ldap.server.1.name}" port="${ldap.server.1.port}"/>
 		</failoverServers>
 		<failoverServers name="emptyFailover" />

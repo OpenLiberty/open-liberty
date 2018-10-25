@@ -29,6 +29,7 @@
 		idsFilters="ibm_dir_server">
 		<failoverServers name="failoverLdapServers">
 		   <server host="${ldap.server.7.name}" port="${ldap.server.7.ssl.port}"/>
+		   <server host="${ldap.server.8.name}" port="${ldap.server.8.ssl.port}"/>
         </failoverServers>
 	</ldapRegistry>
 	
