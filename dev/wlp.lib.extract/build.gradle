@@ -33,5 +33,5 @@ assemble {
 }
 
 audit {
-    failOnError = false
+    failOnError = true
 }

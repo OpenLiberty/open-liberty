@@ -33,7 +33,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.apache.aries.util.manifest.ManifestProcessor;
-import org.apache.tools.ant.BuildException;
 
 import com.ibm.ws.install.CancelException;
 import com.ibm.ws.install.InstallConstants;
@@ -118,7 +117,8 @@ public class InstallKernelMap implements Map {
 
     // License identifiers
     private static final String LICENSE_EPL_PREFIX = "https://www.eclipse.org/legal/epl-";
-    private static final String LICENSE_FEATURE_TERMS_PREFIX = "http://www.ibm.com/licenses/wlp-featureterms-";
+    private static final String LICENSE_FEATURE_TERMS = "http://www.ibm.com/licenses/wlp-featureterms-v1";
+    private static final String LICENSE_FEATURE_TERMS_RESTRICTED = "http://www.ibm.com/licenses/wlp-featureterms-restricted-v1";
 
     private enum ActionType {
         install,
@@ -605,11 +605,27 @@ public class InstallKernelMap implements Map {
             for (List<RepositoryResource> item : resolveResult) {
                 for (RepositoryResource repoResrc : item) {
                     String license = repoResrc.getLicenseId();
-                    if (license != null && !(license.startsWith(LICENSE_EPL_PREFIX) || license.startsWith(LICENSE_FEATURE_TERMS_PREFIX))) {
-                        Boolean accepted = (Boolean) data.get(LICENSE_ACCEPT);
-                        if (accepted == null || !accepted) {
-                            featuresResolved.clear(); // clear the result since the licenses were not accepted
-                            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_LICENSES_NOT_ACCEPTED"));
+                    if (license != null) {
+                        // determine whether the runtime is ND
+                        boolean isNDRuntime = false;
+                        for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
+                            if ("com.ibm.websphere.appserver".equals(productInfo.getId()) && "ND".equals(productInfo.getEdition())) {
+                                isNDRuntime = true;
+                                break;
+                            }
+                        }
+
+                        // determine whether the license should be auto accepted
+                        boolean autoAcceptLicense = license.startsWith(LICENSE_EPL_PREFIX) || license.equals(LICENSE_FEATURE_TERMS)
+                                                    || (isNDRuntime && license.equals(LICENSE_FEATURE_TERMS_RESTRICTED));
+
+                        if (!autoAcceptLicense) {
+                            // check whether the license has been accepted
+                            Boolean accepted = (Boolean) data.get(LICENSE_ACCEPT);
+                            if (accepted == null || !accepted) {
+                                featuresResolved.clear(); // clear the result since the licenses were not accepted
+                                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_LICENSES_NOT_ACCEPTED"));
+                            }
                         }
                     }
 
@@ -823,11 +839,10 @@ public class InstallKernelMap implements Map {
      * @param shortNameMap contains features parsed from individual esa files
      * @return singleJson file
      * @throws IOException
-     * @throws BuildException
      * @throws RepositoryException
      * @throws InstallException
      */
-    private File generateJsonFromIndividualESAs(Path jsonDirectory, Map<String, String> shortNameMap) throws IOException, BuildException, RepositoryException, InstallException {
+    private File generateJsonFromIndividualESAs(Path jsonDirectory, Map<String, String> shortNameMap) throws IOException, RepositoryException, InstallException {
         String dir = jsonDirectory.toString();
         List<File> esas = (List<File>) data.get(INDIVIDUAL_ESAS);
         File singleJson = new File(dir + "/SingleJson.json");

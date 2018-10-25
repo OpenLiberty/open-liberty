@@ -22,7 +22,7 @@ Export-Package: com.ibm.ws.cdi.web.factories
 WS-TraceGroup: JCDI
 
 -buildpath: \
-	com.ibm.ws.org.jboss.weld.2.4.7;version=latest,\
+	com.ibm.ws.org.jboss.weld.2.4.8;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.el.3.0;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\

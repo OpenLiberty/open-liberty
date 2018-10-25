@@ -8,6 +8,4 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
-
 addRequiredLibraries.dependsOn addDerby

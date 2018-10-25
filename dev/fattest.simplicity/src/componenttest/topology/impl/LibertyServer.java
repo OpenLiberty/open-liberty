@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -4351,6 +4351,30 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * This method will search for the provided expression in the log file
+     * on an incremental basis. It starts with reading the
+     * file at the offset where the last mark was set (or the beginning of the file
+     * if no mark has been set) and reads until the end of the file.
+     *
+     * @param regexp pattern to search for
+     * @param logFile RemoteFile for log file to search
+     * @return A list of the lines in the trace files which contain the matching
+     *         pattern. No matches result in an empty list.
+     * @throws Exception
+     */
+    public List<String> findStringsInLogsUsingMark(String regexp, RemoteFile logFile) throws Exception {
+
+        List<String> matches = new ArrayList<String>();
+        LogSearchResult newOffsetAndMatches;
+
+        Long offset = getMarkOffset(logFile.getAbsolutePath());
+        newOffsetAndMatches = LibertyFileManager.findStringsInFile(regexp, logFile, offset);
+        matches.addAll(newOffsetAndMatches.getMatches()); // get the list of matches found
+
+        return matches;
+    }
+
+    /**
      * This method will search for the provided expressions in the log and trace files
      * on an incremental basis using the default trace prefix. It starts with reading the file
      * at the offset where the last mark was set (or the beginning of the file
@@ -5290,47 +5314,59 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
-     * "Restart" an applications in dropins by renaming it and putting it back.
-     * Very clever, eh?
-     * <p>
-     * This will use {@link #waitForStringInLogUsingMark(String)} so ensure
-     * the offset is set to the correct point before invoking.
+     * Restart a drop-ins application.
      *
-     * @param fileName the file name of the application, e.g. snoop.war
-     * @return {@code true} if the application was restarted successfully, {@code false} otherwise.
-     * @throws Exception
+     * Rename the application to move it out of the drop-ins folder, then wait for a
+     * log message that shows that the the application was shut down, then rename
+     * the application to move it back into the drop-ins folder, then wait
+     * for a log message that shows that the application was started.
+     * 
+     * Because a single log may show multiple application start and multiple application
+     * stop messages, the log message detection for this operation uses
+     * {@link #waitForStringInLogUsingMark(String)}.
+     *
+     * @param appFileName The name of the file of the application, for example, "snoop.war".
+     *
+     * @return True or false telling if the application was successfully restarted.
+     *
+     * @throws Exception Thrown in case of a failure of the restart.
      */
-    public boolean restartDropinsApplication(String fileName) throws Exception {
+    public boolean restartDropinsApplication(String appFileName) throws Exception {
         final String method = "restartDropinsApplication";
 
-        String appName = fileName.substring(0, fileName.lastIndexOf("."));
-        String oldFilePath = serverRoot + "/dropins/" + fileName;
-        String newFilePath = serverRoot + "/" + fileName;
+        String appName = appFileName.substring(0, appFileName.lastIndexOf("."));
+        String appInDropinsPath = serverRoot + "/dropins/" + appFileName;
+        String appExcisedPath = serverRoot + "/" + appFileName;
 
-        String stopMsg, startMsg = null;
+        // Allow two attempts to rename the liberty file: Zip file caching may keep
+        // application archives active after the application has quiesced, up to
+        // the long zip caching pending interval.  See
+        //   open-liberty/dev/com.ibm.ws.artifact.zip/src/
+        //   com/ibm/ws/artifact/zip/cache/
+        //    ZipCachingProperties.java
+        // The default largest pending close time is specified
+        // by property <code>zip.reaper.slow.pend.max</code>.  The default value
+        // is 200 NS.  The retry interval is set at twice that.
 
-        // Move the file out of dropins...
-        if (LibertyFileManager.renameLibertyFile(machine, oldFilePath, newFilePath)) {
-            Log.info(c, method, fileName + " successfully moved out of dropins, waiting for message...");
-            stopMsg = waitForStringInLogUsingMark("CWWKZ0009I:.*" + appName);
-        } else {
-            Log.info(c, method, "Unable to move " + fileName + " out of dropins, failing.");
+        if ( !LibertyFileManager.renameLibertyFileWithRetry(machine, appInDropinsPath, appExcisedPath) ) { // throws Exception
+            Log.info(c, method, "Unable to move " + appFileName + " out of dropins, failing.");
             return false;
+        } else {
+            Log.info(c, method, appFileName + " successfully moved out of dropins, waiting for message...");
         }
 
-        // Pause for 4 seconds
-        Thread.sleep(4000);
+        String stopMsg = waitForStringInLogUsingMark("CWWKZ0009I:.*" + appName); // throws Exception
 
-        // Move it back into dropins...
-        if (LibertyFileManager.renameLibertyFile(machine, newFilePath, oldFilePath)) {
-            Log.info(c, method, fileName + " successfully moved back into dropins, waiting for message...");
-            startMsg = waitForStringInLogUsingMark("CWWKZ0001I:.*" + appName);
-        } else {
-            Log.info(c, method, "Unable to move " + fileName + " back into dropins, failing.");
+        if ( !LibertyFileManager.renameLibertyFile(machine, appExcisedPath, appInDropinsPath) ) { // throws Exception
+            Log.info(c, method, "Unable to move " + appFileName + " back into dropins, failing.");
             return false;
+        } else {
+            Log.info(c, method, appFileName + " successfully moved back into dropins, waiting for message...");
         }
 
-        return stopMsg != null && startMsg != null;
+        String startMsg = waitForStringInLogUsingMark("CWWKZ0001I:.*" + appName); // throws Exception
+
+        return true;
     }
 
     /**

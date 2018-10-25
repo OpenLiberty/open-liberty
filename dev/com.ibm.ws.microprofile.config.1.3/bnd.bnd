@@ -65,7 +65,8 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.app.manager;version=latest,\
-	com.ibm.ws.config;version=latest
+	com.ibm.ws.config;version=latest, \
+        com.ibm.ws.adaptable.module;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

@@ -3,7 +3,7 @@ plugins {
 }
 
 audit {
-    failOnError = false
+    failOnError = true
 }
 
 task copyGeneratedToBuildImageBinTools (type:Copy) {
