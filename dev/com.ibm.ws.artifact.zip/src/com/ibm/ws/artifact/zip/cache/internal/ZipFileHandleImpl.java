@@ -208,21 +208,6 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
     //
 
-    private static class ZipEntriesLock {
-        // EMPTY
-    }
-    private static final ZipEntriesLock zipEntriesLock = new ZipEntriesLock();
-    private static final Map<String, byte[]> zipEntries;
-
-    static {
-        if ( (ZipCachingProperties.ZIP_CACHE_ENTRY_LIMIT == 0) ||
-             (ZipCachingProperties.ZIP_CACHE_ENTRY_MAX == 0) ) {
-            zipEntries = null;
-        } else {
-            zipEntries = new CacheHashMap<String, byte[]>(ZipCachingProperties.ZIP_CACHE_ENTRY_MAX);
-        }
-    }
-
     private static class CacheHashMap<K, V>
         extends LinkedHashMap<K, V> {
 
@@ -245,6 +230,61 @@ public class ZipFileHandleImpl implements ZipFileHandle {
             return size() > ivMaxSize;
         }
     }
+
+    //
+
+    private static class ZipEntriesLock {
+        // EMPTY
+    }
+    private final ZipEntriesLock zipEntriesLock = new ZipEntriesLock();
+    private final Map<String, byte[]> zipEntries;
+
+    {
+        if ( (ZipCachingProperties.ZIP_CACHE_CLASS_ENTRY_LIMIT == 0) ||
+             (ZipCachingProperties.ZIP_CACHE_CLASS_ENTRY_MAX == 0) ) {
+            zipEntries = null;
+        } else {
+            zipEntries = new CacheHashMap<String, byte[]>(ZipCachingProperties.ZIP_CACHE_CLASS_ENTRY_MAX);
+        }
+    }
+
+    private String manifestKey;
+    private byte[] manifestBytes;
+
+    private byte[] getCacheEntry(boolean isManifest, String entryKey) {
+        byte[] entryBytes;
+        synchronized( zipEntriesLock ) {
+            if ( isManifest ) {
+                if ( manifestKey != null ) {
+                    if ( manifestKey.equals(entryKey) ) {
+                    	entryBytes = manifestBytes;
+                    } else {
+                        manifestKey = null;
+                        manifestBytes = null;
+                        entryBytes = null;
+                    }
+                } else {
+                    entryBytes = null;
+                }
+            } else {
+                entryBytes = zipEntries.get(entryKey);
+            }
+        }
+        return entryBytes;
+    }
+
+    private void putCacheEntry(boolean isManifest, String entryKey, byte[] entryBytes) {
+        synchronized( zipEntriesLock ) {
+            if ( isManifest ) {
+                manifestKey = entryKey;
+                manifestBytes = entryBytes;
+            } else {
+                zipEntries.put(entryKey, entryBytes);
+            }
+        }
+    }
+
+    //
 
     private static final ByteArrayInputStream EMPTY_STREAM =
         new ByteArrayInputStream( new byte[0] );
@@ -297,22 +337,44 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
         boolean doNotCache;
         String doNotCacheReason;
+
+        boolean cacheAsManifest = false;
+
         if ( zipEntries == null ) { // No entry cache.
             doNotCache = true;
             doNotCacheReason = "Do not cache: Entry cache disabled";
-        } else if ( entrySize > ZipCachingProperties.ZIP_CACHE_ENTRY_LIMIT) { // Too big for the cache
-            doNotCache = true;
-            doNotCacheReason = "Do not cache: Too big";
-        } else if ( entryName.equals("META-INF/MANIFEST.MF") ) {
+
+            // Use a case insensitive test for the manifest:
+            // That may make for churn on the single cache entry
+            // for the manifest.  However, there should not be more
+            // than one manifest file across all cases.
+
+        } else if ( entryName.equalsIgnoreCase("META-INF/MANIFEST.MF") ) {
+            if ( entrySize > ZipCachingProperties.ZIP_CACHE_MANIFEST_ENTRY_LIMIT) { // Too big for the cache
+                doNotCache = true;
+                doNotCacheReason = "Do not cache: META-INF/MANIFEST.MF: Too big";
+            } else {
+                doNotCache = false;
+                doNotCacheReason = "Do cache: META-INF/MANIFEST.MF";
+            }
+
             doNotCache = false;
-            doNotCacheReason = "Cache META-INF/MANIFEST.MF";
+            doNotCacheReason = "Do cache: META-INF/MANIFEST.MF";
+            cacheAsManifest = true;
+
         } else if ( entryName.endsWith(".class") ) {
-            doNotCache = false;
-            doNotCacheReason = "Cache .class resources";
+            if ( entrySize > ZipCachingProperties.ZIP_CACHE_CLASS_ENTRY_LIMIT) { // Too big for the cache
+                doNotCache = true;
+                doNotCacheReason = "Do not cache: .class: Too big";
+            } else {
+                doNotCache = false;
+                doNotCacheReason = "Do cache: .class";
+            }
         } else {
             doNotCache = true;
-            doNotCacheReason = "Do not cache: Not manifest or class resource";
+            doNotCacheReason = "Do not cache: Not META-INF/MANIFEST.MF; not .class";
         }
+
         if ( tc.isDebugEnabled() ) {
             debug(methodName, "Entry [ " + entryName + " ] [ non-null ] [ " + doNotCacheReason + " ]");
         }
@@ -344,10 +406,7 @@ public class ZipFileHandleImpl implements ZipFileHandle {
         // They are allowed because blocking entry gets while waiting for
         // reads could create large delays.
 
-        byte[] entryBytes;
-        synchronized( zipEntriesLock ) {
-            entryBytes = zipEntries.get(entryCacheKey);
-        }
+        byte[] entryBytes = getCacheEntry(cacheAsManifest, entryCacheKey);
 
         if ( entryBytes == null ) {
             InputStream inputStream = useZipFile.getInputStream(zipEntry); // throws IOException
@@ -357,9 +416,7 @@ public class ZipFileHandleImpl implements ZipFileHandle {
                 inputStream.close(); // throws IOException
             }
 
-            synchronized( zipEntriesLock ) {
-                zipEntries.put(entryCacheKey, entryBytes);
-            }
+            putCacheEntry(cacheAsManifest, entryCacheKey, entryBytes);
         }
 
         return new ByteArrayInputStream(entryBytes);
