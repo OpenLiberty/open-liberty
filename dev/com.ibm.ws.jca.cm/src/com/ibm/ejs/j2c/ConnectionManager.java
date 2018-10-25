@@ -133,10 +133,10 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
     private final boolean rrsTransactional;
 
     /**
-     * @param cfSvc connection factory service
+     * @param cfSvc     connection factory service
      * @param mcfXProps MCFExtendedProperties
-     * @param pm pool manager supplied by the lightweight server. Otherwise null.
-     * @param jxri J2CXAResourceInfo
+     * @param pm        pool manager supplied by the lightweight server. Otherwise null.
+     * @param jxri      J2CXAResourceInfo
      *
      * @pre jxri != null
      */
@@ -264,7 +264,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      * This method is called by a resource adapter ConnectionFactory to obtain a Connection each
      * time the application calls getConnection() on the resource adapter ConnectionFactory.
      *
-     * @param factory The managed connection factory for this connection.
+     * @param factory     The managed connection factory for this connection.
      * @param requestInfo The connection specific request info, i.e. userID, Password.
      *
      * @return The newly allocated connection (returned as type object per JCA spec).
@@ -473,6 +473,14 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
             }
 
+            if (tc.isDebugEnabled() && (_pm != null && _pm.maxCapacity > 0)) {
+                // Add thread information to mcWrapper for tls trace
+                Thread myThread = Thread.currentThread();
+                String ivThreadId = RasHelper.getThreadId();
+                mcWrapper.setThreadID(ivThreadId);
+                mcWrapper.setThreadName(myThread.getName());
+            }
+
             if (ConnLeakLogic.isDebugEnabled() || (_pm != null && _pm.maxNumberOfMCsAllowableInThread > 0)) {
                 Thread myThread = Thread.currentThread();
 
@@ -509,7 +517,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(this, tc, "allocateConnection", rVal==null?" connection handle is null":Integer.toHexString(rVal.hashCode()));
+            Tr.exit(this, tc, "allocateConnection", rVal == null ? " connection handle is null" : Integer.toHexString(rVal.hashCode()));
         }
 
         return rVal;
@@ -521,8 +529,8 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      * Used by: allocateConnection, reAssociate, and associateConnection.
      *
      * @param requestInfo The connection specific request info, i.e. userID, Password.
-     * @param subj The subject for this request. Can be null.
-     * @param uowCoord The current UOWCoordinator (transaction) for this request.
+     * @param subj        The subject for this request. Can be null.
+     * @param uowCoord    The current UOWCoordinator (transaction) for this request.
      *
      * @return A MCWrapper appropriate for the Current UOW, and enlisted
      *         as appropriate with the UOW.
@@ -701,7 +709,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      * This method will setup required objects needed for participating in the current UOW
      * and enlist or register them with the appropriate UOW services.
      *
-     * @param mcWrapper The Managed Connection wrapper associated with this request.
+     * @param mcWrapper        The Managed Connection wrapper associated with this request.
      * @param originIsDeferred Deferred enlistment flag.
      */
 
@@ -1433,7 +1441,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      *      integrity of a managed connection and its pool when an inactive connection
      *      is closed.
      *
-     * @param connection The connection handle that is now closed.
+     * @param connection               The connection handle that is now closed.
      * @param managedConnectionFactory The factory that created the handle.
      */
     @Override
@@ -1599,9 +1607,9 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
     /**
      * Returns the subject for container managed authentication.
      *
-     * @param requestInfo - connection request information
+     * @param requestInfo             - connection request information
      * @param mangedConnectionFactory - managed connection factory
-     * @param CM - connection manager
+     * @param CM                      - connection manager
      * @return subject for container managed authentication.
      * @throws ResourceException
      */
@@ -1662,7 +1670,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
     /**
      * Register XA resource information with the transaction manager.
      *
-     * @param tm the transaction manager.
+     * @param tm             the transaction manager.
      * @param xaResourceInfo information necessary for producing an XAResource object using the XAResourceFactory.
      * @param commitPriority priority to use when committing multiple XA resources.
      * @return the recovery ID (or -1 if an error occurs)
