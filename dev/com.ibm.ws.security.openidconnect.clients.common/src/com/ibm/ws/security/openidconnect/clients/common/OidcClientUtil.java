@@ -126,7 +126,7 @@ public class OidcClientUtil {
      * @param params
      * @param customParams
      */
-    public void handleCustomParams(List<NameValuePair> params, HashMap<String, String> customParams) {
+    public void handleCustomParams(@Sensitive List<NameValuePair> params, HashMap<String, String> customParams) {
         //HashMap<String, String> customParams = clientConfig.getAuthzRequestParams();
         if (customParams!= null && customParams.isEmpty()) {
             Set<Entry<String, String>> entries =  customParams.entrySet();
