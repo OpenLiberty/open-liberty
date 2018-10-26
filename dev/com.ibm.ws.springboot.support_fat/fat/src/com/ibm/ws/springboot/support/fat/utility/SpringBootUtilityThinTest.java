@@ -11,6 +11,7 @@
 package com.ibm.ws.springboot.support.fat.utility;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -109,6 +110,15 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         super.configureServer();
     }
 
+    @Override
+    public boolean expectApplicationSuccess() {
+        String methodName = testName.getMethodName();
+        if ("testInvalidLibertyUberJar".equals(methodName) || "testErrorOccursWhenAppNotConfiguredInLibertyUberJar".equals(methodName)) {
+            return false;
+        }
+        return true;
+    }
+
     @Test
     public void testDefaultTargets() throws Exception {
         List<String> cmd = new ArrayList<>();
@@ -186,6 +196,80 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
         configureServerThin();
         super.testBasicSpringBootApplication();
+    }
+
+    @Test
+    public void testInvalidLibertyUberJar() throws Exception {
+        String dropinsSpring = "dropins/" + SPRING_APP_TYPE + "/";
+        new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();
+        RemoteFile thinApp = new RemoteFile(server.getFileFromLibertyServerRoot(dropinsSpring), "springBootApp.jar");
+
+        List<String> cmd = new ArrayList<>();
+        cmd.add("thin");
+        cmd.add("--sourceAppPath=" + getApplicationFile().getAbsolutePath());
+        cmd.add("--targetLibCachePath=" + new RemoteFile(sharedResourcesDir, "libraries/" + SPRING_LIB_INDEX_CACHE).getAbsolutePath());
+        cmd.add("--targetThinAppPath=" + thinApp.getAbsolutePath());
+        List<String> output = SpringBootUtilityScriptUtils.execute(null, cmd);
+        dropinFiles.add(thinApp);
+
+        Assert.assertTrue("Failed to thin the application: " + output,
+                          SpringBootUtilityScriptUtils.findMatchingLine(output, "Thin application: .*springBootApp\\.jar"));
+
+        Assert.assertTrue("Expected thin app does not exist: " + thinApp.getAbsolutePath(), thinApp.isFile());
+
+        // now create the Liberty uber JAR
+        SpringBootUtilityScriptUtils.execute("server", null,
+                                             Arrays.asList("package", server.getServerName(), "--include=runnable,minify", "--archive=libertyUber.jar"), false);
+
+        RemoteFile libertyUberJar = server.getFileFromLibertyServerRoot("libertyUber.jar");
+        // Move over the Liberty uber JAR to apps/ folder using the thin app name
+        Assert.assertTrue("Expected Liberty uber JAR does not exist: " + libertyUberJar.getAbsolutePath(), libertyUberJar.isFile());
+        Assert.assertTrue("Failed to move the Liberty uber JAR to the apps folder", libertyUberJar.rename(new RemoteFile(appsDir, SPRING_BOOT_20_BASE_THIN)));
+        thinApp.delete();
+
+        configureServerThin();
+        List<String> logMessages = server.findStringsInLogs("CWWKC0265E");
+        assertTrue("Expected log not found containing CWWKC0265E", !logMessages.isEmpty());
+        assertTrue("Expected error message CWWKC0265E not found", logMessages.get(0).contains("CWWKC0265E"));
+        server.stopServer("CWWKZ0002E", "CWWKC0265E");
+        server.deleteDirectoryFromLibertyInstallRoot("usr/shared/resources/libraries/");
+    }
+
+    @Test
+    public void testErrorOccursWhenAppNotConfiguredInLibertyUberJar() throws Exception {
+        String dropinsSpring = "thin/";
+        new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();
+        RemoteFile thinApp = new RemoteFile(server.getFileFromLibertyServerRoot(dropinsSpring), "springBootApp.jar");
+
+        List<String> cmd = new ArrayList<>();
+        cmd.add("thin");
+        cmd.add("--sourceAppPath=" + getApplicationFile().getAbsolutePath());
+        cmd.add("--targetLibCachePath=" + new RemoteFile(sharedResourcesDir, SPRING_LIB_INDEX_CACHE).getAbsolutePath());
+        cmd.add("--targetThinAppPath=" + thinApp.getAbsolutePath());
+        List<String> output = SpringBootUtilityScriptUtils.execute(null, cmd);
+        dropinFiles.add(thinApp);
+
+        Assert.assertTrue("Failed to thin the application: " + output,
+                          SpringBootUtilityScriptUtils.findMatchingLine(output, "Thin application: .*springBootApp\\.jar"));
+
+        Assert.assertTrue("Expected thin app does not exist: " + thinApp.getAbsolutePath(), thinApp.isFile());
+
+        // now create the Liberty uber JAR
+        SpringBootUtilityScriptUtils.execute("server", null,
+                                             Arrays.asList("package", server.getServerName(), "--include=runnable,minify", "--archive=libertyUber.jar"), false);
+
+        RemoteFile libertyUberJar = server.getFileFromLibertyServerRoot("libertyUber.jar");
+        // Move over the Liberty uber JAR to apps/ folder using the thin app name
+        Assert.assertTrue("Expected Liberty uber JAR does not exist: " + libertyUberJar.getAbsolutePath(), libertyUberJar.isFile());
+        Assert.assertTrue("Failed to move the Liberty uber JAR to the apps folder", libertyUberJar.rename(new RemoteFile(appsDir, SPRING_BOOT_20_BASE_THIN)));
+        thinApp.delete();
+
+        configureServerThin();
+        List<String> logMessages = server.findStringsInLogs("CWWKC0266E");
+        assertTrue("Expected log not found containing CWWKC0266E", !logMessages.isEmpty());
+        assertTrue("Expected error message CWWKC0266E not found", logMessages.get(0).contains("CWWKC0266E"));
+        server.stopServer("CWWKZ0002E", "CWWKC0266E");
+        server.deleteDirectoryFromLibertyServerRoot("thin/");
     }
 
     @Test
