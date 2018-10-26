@@ -161,12 +161,13 @@ public class JAASConfigurationImpl implements JAASConfiguration {
             jaasConfigurationEntries.put(JaasLoginConfigConstants.JAASClient, loginModuleEntries);
             jaasConfigurationEntries.put(JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE, loginModuleEntries);
         } else if (Krb5Common.isJdk11Up) {
-            loginModuleEntries = createJdk11Krb5loginModuleAppConfigurationEntry(false);
+            loginModuleEntries = createJdk11Krb5loginModuleAppConfigurationEntry(false, "true");
             jaasConfigurationEntries.put(JaasLoginConfigConstants.JAASClient, loginModuleEntries);
             jaasConfigurationEntries.put(JaasLoginConfigConstants.COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE, loginModuleEntries);
             jaasConfigurationEntries.put(JaasLoginConfigConstants.COM_SUN_SECURITY_JGSS_KRB5_INITIATE, loginModuleEntries);
 
-            loginModuleEntries = createJdk11Krb5loginModuleAppConfigurationEntry(true);
+            //TODO:
+            loginModuleEntries = createJdk11Krb5loginModuleAppConfigurationEntry(true, "true");
             jaasConfigurationEntries.put(JaasLoginConfigConstants.COM_SUN_SECURITY_JGSS_KRB5_ACCEPT, loginModuleEntries);
         }
     }
@@ -189,7 +190,7 @@ public class JAASConfigurationImpl implements JAASConfiguration {
         return loginModuleEntries;
     }
 
-    private List<AppConfigurationEntry> createJdk11Krb5loginModuleAppConfigurationEntry(boolean proxy) {
+    private List<AppConfigurationEntry> createJdk11Krb5loginModuleAppConfigurationEntry(boolean proxy, String initiatorValue) {
         List<AppConfigurationEntry> loginModuleEntries = new ArrayList<AppConfigurationEntry>();
         Map<String, Object> options = new HashMap<String, Object>();
         String loginModuleClassName = JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE_WRAPPER;
@@ -204,7 +205,7 @@ public class JAASConfigurationImpl implements JAASConfiguration {
         options.put("refreshKrb5Config", "true");
         options.put("doNotPrompt", "true");
         options.put("storeKey", "true");
-        options.put("isInitiator", "false");
+        options.put("isInitiator", initiatorValue);
         options.put("keyTab", Krb5Common.getSystemProperty("KRB5_KTNAME"));
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             options.put("debug", "true");
