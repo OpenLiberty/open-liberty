@@ -88,10 +88,10 @@ public class ContextManager {
     private static final int DEFAULT_PREF_POOL_SIZE = 3;
 
     /** The default connect time limit - 1 minute. */
-    private static final long DEFAULT_CONNECT_TIMEOUT = 600000;
+    private static final long DEFAULT_CONNECT_TIMEOUT = 60000;
 
-    /** The default read time limit - infinite. */
-    private static final long DEFAULT_READ_TIMEOUT = 0;
+    /** The default read time limit - 1 minute. */
+    private static final long DEFAULT_READ_TIMEOUT = 60000;
 
     /** Key to use for accessing the active URL from the JNDI environment table. */
     private static final String ENVKEY_ACTIVE_URL = "_ACTIVE_URL_";
@@ -231,7 +231,7 @@ public class ContextManager {
      * Add a fail-over LDAP server hostname and port.
      *
      * @param hostname The hostname for the primary LDAP server.
-     * @param port The port for the primary LDAP server.
+     * @param port     The port for the primary LDAP server.
      */
     public void addFailoverServer(String hostname, int port) {
         iFailoverServers.add(new HostPort(hostname, port));
@@ -243,7 +243,7 @@ public class ContextManager {
      *
      * @param ctx The context with a connection to the current LDAP server.
      * @throws OperationNotSupportedException If write to secondary is disabled and the context
-     *             is not connected to the primary LDAP server.
+     *                                            is not connected to the primary LDAP server.
      */
     public void checkWritePermission(TimedDirContext ctx) throws OperationNotSupportedException {
         if (!iWriteToSecondary) {
@@ -283,7 +283,7 @@ public class ContextManager {
     /**
      * Create a directory context pool of the specified size.
      *
-     * @param poolSize The initial size of the pool.
+     * @param poolSize    The initial size of the pool.
      * @param providerURL The URL of the LDAP provider.
      * @throws NamingException If there was an error connecting while creating the context pool.
      */
@@ -383,7 +383,7 @@ public class ContextManager {
     /**
      * Create a directory context.
      *
-     * @param env The JNDI environment to create the context with.
+     * @param env             The JNDI environment to create the context with.
      * @param createTimestamp The timestamp to use as the creation timestamp for the {@link TimedDirContext}.
      * @return The {@link TimedDirContext}.
      * @throws NamingException If there was an issue binding to the LDAP server.
@@ -439,7 +439,7 @@ public class ContextManager {
     /**
      * Create a directory context.
      *
-     * @param principal The principal name to bind with.
+     * @param principal  The principal name to bind with.
      * @param credential The password / credential.
      * @return The {@link TimedDirContext} of the new connection.
      * @throws NamingException If the bind failed.
@@ -511,13 +511,13 @@ public class ContextManager {
     /**
      * Creates and binds a new context, along with associated attributes.
      *
-     * @param name The name to bind the new context.
+     * @param name  The name to bind the new context.
      * @param attrs The attributes to bind on the new context.
      * @return The new context.
      * @throws OperationNotSupportedException If connected to a fail-over server and write to secondary is disabled.
-     * @throws EntityAlreadyExistsException If the entity already exists.
-     * @throws EntityNotFoundException If part of the name cannot be found to create the entity.
-     * @throws WIMSystemException If any other {@link NamingException} occurs or the context cannot be released.
+     * @throws EntityAlreadyExistsException   If the entity already exists.
+     * @throws EntityNotFoundException        If part of the name cannot be found to create the entity.
+     * @throws WIMSystemException             If any other {@link NamingException} occurs or the context cannot be released.
      */
     public DirContext createSubcontext(String name,
                                        Attributes attrs) throws OperationNotSupportedException, WIMSystemException, EntityAlreadyExistsException, EntityNotFoundException {
@@ -573,8 +573,8 @@ public class ContextManager {
      *
      * @param name The distinguished name to delete.
      * @throws EntityHasDescendantsException The context being destroyed is not empty.
-     * @throws EntityNotFoundException If part of the name cannot be found to destroy the entity.
-     * @throws WIMSystemException If any other {@link NamingException} occurs or the context cannot be released.
+     * @throws EntityNotFoundException       If part of the name cannot be found to destroy the entity.
+     * @throws WIMSystemException            If any other {@link NamingException} occurs or the context cannot be released.
      */
     public void destroySubcontext(String name) throws EntityHasDescendantsException, EntityNotFoundException, WIMSystemException {
         TimedDirContext ctx = getDirContext();
@@ -838,7 +838,7 @@ public class ContextManager {
     /**
      * Returns LDAP environment containing specified URL sequence.
      *
-     * @param type Single or sequence
+     * @param type        Single or sequence
      * @param startingURL Starting URL
      * @return Environment containing specified URL sequence
      */
@@ -925,7 +925,7 @@ public class ContextManager {
     /**
      * Returns URL index in the URL list.
      *
-     * @param url URL
+     * @param url     URL
      * @param urlList List of URLs
      * @return URL index
      */
@@ -1178,7 +1178,7 @@ public class ContextManager {
     /**
      * Recreate a Directory context, where the oldContext failed with the given error message.
      *
-     * @param oldCtx The context that failed.
+     * @param oldCtx       The context that failed.
      * @param errorMessage The error message from the failure.
      * @return The new {@link TimedDirContext}. It is possible this context is connected to another LDAP server than the
      *         old context was.
@@ -1349,7 +1349,7 @@ public class ContextManager {
      * using {@link AccessController#doPrivileged(PrivilegedAction)}.
      *
      * @param clazz The class to get the {@link ClassLoader} to set when calling.
-     *            {@link Thread#currentThread()#setContextClassLoader(ClassLoader)}.
+     *                  {@link Thread#currentThread()#setContextClassLoader(ClassLoader)}.
      */
     private static void setContextClassLoader(final Class<?> clazz) {
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
@@ -1366,7 +1366,7 @@ public class ContextManager {
      * using {@link AccessController#doPrivileged(PrivilegedAction)}.
      *
      * @param classLoader The {@link ClassLoader} to set when calling.
-     *            {@link Thread#currentThread()#setContextClassLoader(ClassLoader)}.
+     *                        {@link Thread#currentThread()#setContextClassLoader(ClassLoader)}.
      */
     private static void setContextClassLoader(final ClassLoader classLoader) {
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
@@ -1385,13 +1385,13 @@ public class ContextManager {
      * are null, that parameter will be set to the default value.
      *
      * @param enableContextPool Whether the context pool is enabled.
-     * @param initPoolSize The initial context pool size.
-     * @param prefPoolSize The preferred context pool size. Not required when <code>enableContextPool == false</code>.
-     * @param maxPoolSize The maximum context pool size. A size of '0' means the maximum size is unlimited. Not required when <code>enableContextPool == false</code>.
-     * @param poolTimeOut The context pool timeout in milliseconds. This is the amount of time a context is valid for in
-     *            the context pool is valid for until it is discarded. Not required when <code>enableContextPool == false</code>.
-     * @param poolWaitTime The context pool wait time in milliseconds. This is the amount of time to wait when getDirContext() is called
-     *            and no context is available from the pool before checking again. Not required when <code>enableContextPool == false</code>.
+     * @param initPoolSize      The initial context pool size.
+     * @param prefPoolSize      The preferred context pool size. Not required when <code>enableContextPool == false</code>.
+     * @param maxPoolSize       The maximum context pool size. A size of '0' means the maximum size is unlimited. Not required when <code>enableContextPool == false</code>.
+     * @param poolTimeOut       The context pool timeout in milliseconds. This is the amount of time a context is valid for in
+     *                              the context pool is valid for until it is discarded. Not required when <code>enableContextPool == false</code>.
+     * @param poolWaitTime      The context pool wait time in milliseconds. This is the amount of time to wait when getDirContext() is called
+     *                              and no context is available from the pool before checking again. Not required when <code>enableContextPool == false</code>.
      * @throws InvalidInitPropertyException If <code>initPoolSize > maxPoolSize</code> or <code>prefPoolSize > maxPoolSize</code> when <code>maxPoolSize != 0</code>.
      */
     public void setContextPool(boolean enableContextPool, Integer initPoolSize, Integer prefPoolSize, Integer maxPoolSize, Long poolTimeOut,
@@ -1429,7 +1429,7 @@ public class ContextManager {
      * Set the primary LDAP server hostname and port.
      *
      * @param hostname The hostname for the primary LDAP server.
-     * @param port The port for the primary LDAP server.
+     * @param port     The port for the primary LDAP server.
      */
     public void setPrimaryServer(String hostname, int port) {
         this.iPrimaryServer = new HostPort(hostname, port);
@@ -1478,7 +1478,7 @@ public class ContextManager {
     /**
      * Set the administrative credentials used for simple authentication.
      *
-     * @param bindDn The administrative bind DN.
+     * @param bindDn       The administrative bind DN.
      * @param bindPassword The administrative bind password.
      */
     public void setSimpleCredentials(String bindDn, SerializableProtectedString bindPassword) {

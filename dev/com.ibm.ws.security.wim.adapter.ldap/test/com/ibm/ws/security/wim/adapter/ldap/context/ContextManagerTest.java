@@ -795,6 +795,7 @@ public class ContextManagerTest {
         long time = System.currentTimeMillis();
         try {
             ctx.search(BASE_ENTRY, "objectclass=*", null);
+            time = System.currentTimeMillis() - time;
         } catch (NamingException e) {
             time = System.currentTimeMillis() - time;
             assertTrue("Expected connect timeout to be " + expectedTimeout + " millisecond.", time >= expectedTimeout && time <= (expectedTimeout + 100));
@@ -806,6 +807,22 @@ public class ContextManagerTest {
          */
         expectedTimeout = 500L;
         cm.setReadTimeout(expectedTimeout);
+        cm.initialize();
+
+        ctx = cm.createDirContext(USER_DN, "password".getBytes());
+        time = System.currentTimeMillis();
+        try {
+            ctx.search(BASE_ENTRY, "objectclass=*", null);
+        } catch (NamingException e) {
+            time = System.currentTimeMillis() - time;
+            assertTrue("Expected connect timeout to be " + expectedTimeout + " millisecond.", time >= expectedTimeout && time <= (expectedTimeout + 100));
+        }
+
+        /*
+         * Configure the context manager with a default 1min read timeout.
+         */
+        expectedTimeout = 60000L;
+        cm.setReadTimeout(null);
         cm.initialize();
 
         ctx = cm.createDirContext(USER_DN, "password".getBytes());
