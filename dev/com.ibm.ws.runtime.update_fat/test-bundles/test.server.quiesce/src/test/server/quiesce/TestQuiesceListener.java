@@ -18,6 +18,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 
+import com.ibm.ws.threading.ThreadQuiesce;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
 /**
@@ -77,6 +78,17 @@ public class TestQuiesceListener implements ServerQuiesceListener {
         }
 
         if (startThreadsAfterStop) {
+            // Normally the executor service will already be quiescing at this point, but wait just in case
+            for (int i = 0; i < 20; i++) {
+                if (((ThreadQuiesce) executorService).quiesceStarted()) {
+                    break;
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             // Start a couple of threads. These should not block shutdown
             Runnable r = new Runnable() {
 

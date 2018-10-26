@@ -526,4 +526,8 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
         return count - 1;
     }
 
+    @Override
+    public boolean quiesceStarted() {
+        return this.serverStopping;
+    }
 }
