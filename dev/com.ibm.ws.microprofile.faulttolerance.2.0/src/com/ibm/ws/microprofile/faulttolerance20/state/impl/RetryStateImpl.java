@@ -113,12 +113,14 @@ public class RetryStateImpl implements RetryState {
      * Convert a duration to nanoseconds, clamping between MIN_VALUE and MAX_LONG
      * <p>
      * Needed in case a user specifies something silly like delay = 5 MILLENNIA
+     * <p>
+     * protected only to allow unit testing
      *
      * @param duration the duration to convert
      * @return duration as nanoseconds, clamped if required
      */
     @FFDCIgnore(ArithmeticException.class)
-    private long asClampedNanos(Duration duration) {
+    protected static long asClampedNanos(Duration duration) {
         try {
             return duration.toNanos();
         } catch (ArithmeticException e) {
@@ -133,12 +135,14 @@ public class RetryStateImpl implements RetryState {
 
     /**
      * Returns a stream of times in nanoseconds, randomly distributed between delay-jitter and delay+jitter
+     * <p>
+     * protected only to allow unit testing
      *
      * @param delay the delay duration
      * @param jitter the jitter duration
      * @return stream of times in nanoseconds within delay +/- jitter
      */
-    private PrimitiveIterator.OfLong createDelayStream(Duration delay, Duration jitter) {
+    protected static PrimitiveIterator.OfLong createDelayStream(Duration delay, Duration jitter) {
         if (jitter.isZero()) {
             // No jitter, return an infinite stream of the delay duration
             long delayNanos = asClampedNanos(delay);
