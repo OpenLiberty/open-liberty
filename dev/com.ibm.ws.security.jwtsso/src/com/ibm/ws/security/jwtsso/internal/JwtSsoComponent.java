@@ -243,7 +243,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
         cookieSecureFlag = (Boolean) props.get(JwtSsoConstants.CFG_KEY_COOKIESECUREFLAG);
         // jwtBuilderRef = JwtUtils.trimIt((String)
         // props.get(JwtSsoConstants.CFG_KEY_JWTBUILDERREF));
-        mpjwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF));
+        mpjwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF)); //hmm, this does not exist in metatype.
         cookieName = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_COOKIENAME));
         cookieName = (new ConfigUtils()).validateCookieName(cookieName, true);
         if (mpjwtConsumerRef == null) {
@@ -417,10 +417,15 @@ public class JwtSsoComponent implements JwtSsoConfig {
         return cookieName;
     }
 
-	@Override
-	public String getAuthFilterRef() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public String getAuthFilterRef() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean getUseSystemPropertiesForHttpClientConnections() {
+        return false; // jwk retrieval is not in play here
+    }
 
 }
