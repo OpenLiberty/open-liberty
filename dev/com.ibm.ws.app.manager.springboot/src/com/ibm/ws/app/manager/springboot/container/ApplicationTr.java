@@ -23,7 +23,9 @@ public class ApplicationTr {
         ERROR_MISSING_SERVLET_FEATURE("error.missing.servlet"),
         ERROR_MISSING_WEBSOCKET_FEATURE("error.missing.websocket"),
         ERROR_UNSUPPORTED_SPRING_BOOT_VERSION("error.wrong.spring.boot.version"),
-        WARNING_UNSUPPORTED_JAVA_VERSION("warning.java.version.not.supported");
+        WARNING_UNSUPPORTED_JAVA_VERSION("warning.java.version.not.supported"),
+        ERROR_INVALID_PACKAGED_LIBERTY_JAR("error.invalid.packaged.liberty.jar"),
+        ERROR_APP_NOT_FOUND_INSIDE_PACKAGED_LIBERTY_JAR("error.application.not.found.inside.packaged.liberty.jar");
 
         private final String msgKey;
 

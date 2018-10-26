@@ -10,11 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.util;
 
+import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -43,6 +45,11 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.osgi.framework.Constants;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.app.manager.springboot.container.ApplicationError;
+import com.ibm.ws.app.manager.springboot.container.ApplicationTr.Type;
 
 /**
  * A utility class for thinning an uber jar by separating application code in a separate jar
@@ -82,6 +89,8 @@ public class SpringBootThinUtil implements Closeable {
     };
 
     private static final String ZIP_EXTENSION_SPRING = "spring";
+
+    private static final TraceComponent tc = Tr.register(SpringBootThinUtil.class);
 
     public SpringBootThinUtil(File sourceFatJar, File targetThinJar, File libIndexCache) throws IOException {
         this(sourceFatJar, targetThinJar, libIndexCache, null);
@@ -144,8 +153,7 @@ public class SpringBootThinUtil implements Closeable {
 
     private void executeExtractFromExecutableJar() throws IOException {
         if (this.libertyServer == null) {
-            // TODO need an error message about invalid Liberty uber JAR
-            throw new IOException(LIBERTY_SERVER_NAME_HEADER);
+            throw new ApplicationError(Type.ERROR_INVALID_PACKAGED_LIBERTY_JAR);
         }
 
         String root = this.libertyRoot;
@@ -404,6 +412,7 @@ public class SpringBootThinUtil implements Closeable {
 
         private final Map<String, Map<String, List<JarEntry>>> applicationEntries = new HashMap<String, Map<String, List<JarEntry>>>();
         private final List<JarEntry> libCacheEntries = new ArrayList<>();
+        private boolean appLocationConfigured;
 
         PreThinnedApp(String libCachePath, String serverPath, JarFile jarFile) {
             this.libCachePath = libCachePath;
@@ -413,12 +422,10 @@ public class SpringBootThinUtil implements Closeable {
 
         void discover() throws IOException {
             if (jarFile.getJarEntry(libCachePath) == null) {
-                // TODO need an error message about invalid Liberty uber JAR
-                throw new IOException(libCachePath);
+                throw new ApplicationError(Type.ERROR_INVALID_PACKAGED_LIBERTY_JAR);
             }
             if (jarFile.getJarEntry(serverPath) == null) {
-                // TODO need an error message about invalid Liberty uber JAR
-                throw new IOException(serverPath);
+                throw new ApplicationError(Type.ERROR_INVALID_PACKAGED_LIBERTY_JAR);
             }
 
             for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
@@ -426,6 +433,9 @@ public class SpringBootThinUtil implements Closeable {
                 String fullEntryPath = entry.getName();
                 if (!fullEntryPath.equals(libCachePath) && fullEntryPath.startsWith(libCachePath)) {
                     libCacheEntries.add(entry);
+                }
+                if (fullEntryPath.equals(serverPath + "/server.xml")) {
+                    parseServerXML(jarFile, entry);
                 }
                 for (String appsRoot : appSearchRoots) {
                     if (addAppEntry(fullEntryPath, appsRoot, entry)) {
@@ -435,15 +445,28 @@ public class SpringBootThinUtil implements Closeable {
             }
 
             if (libCacheEntries.isEmpty()) {
-                // TODO need an error message about invalid Liberty uber JAR
-                throw new IOException(libCachePath);
+                throw new ApplicationError(Type.ERROR_INVALID_PACKAGED_LIBERTY_JAR);
             }
+
             if (applicationEntries.isEmpty()) {
-                // TODO need an error message about invalid Liberty uber JAR
-                throw new IOException(String.valueOf(appSearchRoots));
+                throw new ApplicationError(Type.ERROR_APP_NOT_FOUND_INSIDE_PACKAGED_LIBERTY_JAR);
             }
 
             applicationEntries.forEach((k1, m) -> m.forEach((k2, l) -> l.sort((e1, e2) -> e1.getName().compareTo(e2.getName()))));
+        }
+
+        private void parseServerXML(JarFile jarFile, JarEntry entry) throws IOException {
+            try (InputStream is = jarFile.getInputStream(entry)) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        if (line.contains("<springBootApplication")) {
+                            this.appLocationConfigured = true;
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         private boolean addAppEntry(String fullEntryPath, String appsRoot, JarEntry entry) {
@@ -487,19 +510,13 @@ public class SpringBootThinUtil implements Closeable {
             found = applicationEntries.get(LIBERTY_SERVER_APPS);
             if (found != null) {
                 for (Entry<String, List<JarEntry>> app : found.entrySet()) {
-                    if (appLocationConfigured(app.getKey())) {
+                    if (appLocationConfigured) {
                         storeApp(thinApp, app.getValue());
                         return;
                     }
                 }
             }
-            // TODO add proper error message
-            throw new IOException("No application found.");
-        }
-
-        private boolean appLocationConfigured(String key) {
-            // TODO Auto-generated method stub
-            return true;
+            throw new ApplicationError(Type.ERROR_APP_NOT_FOUND_INSIDE_PACKAGED_LIBERTY_JAR);
         }
 
         private void storeApp(File thinApp, List<JarEntry> entries) throws IOException {
@@ -514,8 +531,7 @@ public class SpringBootThinUtil implements Closeable {
                 String dirAppRootManifest = dirAppRoot + JarFile.MANIFEST_NAME;
                 JarEntry manifestEntry = jarFile.getJarEntry(dirAppRootManifest);
                 if (manifestEntry == null) {
-                    // TODO need an error message about invalid Liberty uber JAR
-                    throw new IOException(dirAppRootManifest);
+                    throw new ApplicationError(Type.ERROR_INVALID_PACKAGED_LIBERTY_JAR);
                 }
                 Manifest mf = new Manifest(jarFile.getInputStream(manifestEntry));
                 try (JarOutputStream thinJar = new JarOutputStream(new FileOutputStream(thinApp), mf)) {
