@@ -136,6 +136,12 @@ public class JwKRetriever {
     //      hostNameVerificationEnabled = config.isHostNameVerificationEnabled();
     //      
     //  }
+    
+    // temporary to get CL built. remove me. 
+    public PublicKey getPublicKeyFromJwk(String kid, String x5t)
+            throws PrivilegedActionException, IOException, KeyStoreException, InterruptedException{
+        return getPublicKeyFromJwk(kid, x5t, false);
+    }
 
     /**
      * Either kid or x5t will work. But not both

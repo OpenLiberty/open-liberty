@@ -121,6 +121,12 @@ public class OidcClientUtil {
         return tokens;
     }
 
+    // this is temporary to get CL built. remove me.
+    public Map<String, Object> checkToken(String tokenInfor, String clientId, @Sensitive String clientSecret,
+            String accessToken, boolean isHostnameVerification, String authMethod, SSLSocketFactory sslSocketFactory) throws Exception {
+        return checkToken(tokenInfor, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, sslSocketFactory, false);
+    }
+
     public Map<String, Object> checkToken(String tokenInfor, String clientId, @Sensitive String clientSecret,
             String accessToken, boolean isHostnameVerification, String authMethod, SSLSocketFactory sslSocketFactory, boolean useSystemPropertiesForHttpClientConnections) throws Exception {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -139,6 +145,12 @@ public class OidcClientUtil {
 
         // return tokenResponse;
         return postResponseMap;
+    }
+
+    // temporary to get CL built.  Remove me.
+    public Map<String, Object> getUserinfo(String userInfor, String accessToken, SSLSocketFactory sslSocketFactory,
+            boolean isHostnameVerification) throws Exception {
+        return getUserinfo(userInfor, accessToken, sslSocketFactory, isHostnameVerification, false);
     }
 
     public Map<String, Object> getUserinfo(String userInfor, String accessToken, SSLSocketFactory sslSocketFactory,
