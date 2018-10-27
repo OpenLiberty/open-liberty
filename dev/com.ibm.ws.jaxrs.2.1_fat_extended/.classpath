@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/subResourceApp/src"/>
 	<classpathentry kind="src" path="test-applications/patchapp/src"/>
 	<classpathentry kind="src" path="test-applications/providerPriorityApp/src"/>
 	<classpathentry kind="src" path="test-applications/classSubResApp/src"/>
