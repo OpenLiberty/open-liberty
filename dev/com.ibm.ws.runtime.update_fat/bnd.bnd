@@ -29,4 +29,5 @@ fat.project: true
 	fattest.simplicity;version=latest,\
 	com.ibm.ws.runtime.update;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.threading;version=latest
 	

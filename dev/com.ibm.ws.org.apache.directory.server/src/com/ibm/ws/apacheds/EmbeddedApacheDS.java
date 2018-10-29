@@ -20,6 +20,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.directory.api.ldap.codec.controls.search.pagedSearch.PagedResultsFactory;
 import org.apache.directory.api.ldap.codec.standalone.StandaloneLdapApiService;
 import org.apache.directory.api.ldap.model.entry.Entry;
+import org.apache.directory.api.ldap.model.entry.Modification;
 import org.apache.directory.api.ldap.model.exception.LdapException;
 import org.apache.directory.api.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.api.ldap.model.name.Dn;
@@ -139,6 +140,12 @@ public class EmbeddedApacheDS {
     public void add(Entry entry) throws LdapException {
         CoreSession session = this.service.getAdminSession();
         session.add(entry);
+
+    }
+
+    public void modify(Dn dn, Modification mod) throws LdapException {
+        CoreSession session = this.service.getAdminSession();
+        session.modify(dn, mod);
     }
 
     /**

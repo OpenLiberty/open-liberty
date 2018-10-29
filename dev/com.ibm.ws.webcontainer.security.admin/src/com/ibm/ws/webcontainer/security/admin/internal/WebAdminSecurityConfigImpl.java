@@ -42,6 +42,7 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean ssoRequiresSSL = false;
     private final String ssoDomainNames = null;
     private final Boolean ssoUseDomainFromURL = false;
+    private final Boolean useLtpaSSOForJaspic = false;
     private final Boolean useAuthenticationDataForUnprotectedResource = true;
     private final Boolean allowFailOverToFormLogin = true;
     // in order to maintain the original behavior, APP_DEFINED is not supported.
@@ -156,6 +157,12 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     @Override
     public boolean getSSOUseDomainFromURL() {
         return ssoUseDomainFromURL;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isUseLtpaSSOForJaspic() {
+        return useLtpaSSOForJaspic;
     }
 
     /** {@inheritDoc} */

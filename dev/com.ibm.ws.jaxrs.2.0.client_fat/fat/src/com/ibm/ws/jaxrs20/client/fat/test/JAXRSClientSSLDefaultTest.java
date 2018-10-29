@@ -100,6 +100,7 @@ public class JAXRSClientSSLDefaultTest extends AbstractTest {
     public void testClientBasicSSL_CustomizedSSLContext() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "alex");
+        p.put("SERVER_CONFIG_DIR", server.getServerRoot());
         this.runTestOnServer(target, "testClientBasicSSL_CustomizedSSLContext", p, "unable to find valid certification path to requested target");
     }
 

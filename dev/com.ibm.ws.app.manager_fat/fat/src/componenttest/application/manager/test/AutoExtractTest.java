@@ -97,6 +97,8 @@ public class AutoExtractTest extends AbstractAppManagerTest {
                        line.contains("test servlet is running."));
             con.disconnect();
 
+            server.setMarkToEndOfLog();
+
             //replace original application with new version to test that it updates
             server.copyFileToLibertyServerRoot(PUBLISH_UPDATED, DROPINS_DIR, TEST_WAR_APPLICATION);
 
@@ -105,6 +107,7 @@ public class AutoExtractTest extends AbstractAppManagerTest {
                           server.waitForStringInLog("CWWKZ0003I.* testWarApplication"));
 
             //get the message from the application to make sure it is the new appication contents
+            Log.info(c, method, "Calling test Application with URL=" + url.toString());
             con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
             br = HttpUtils.getConnectionStream(con);
             line = br.readLine();

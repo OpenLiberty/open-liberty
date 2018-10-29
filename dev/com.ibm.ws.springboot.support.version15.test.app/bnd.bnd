@@ -32,8 +32,4 @@ javac.target: 1.8
 	org.springframework.boot:spring-boot-autoconfigure;strategy=exact;version=1.5.9.RELEASE, \
 	org.springframework.boot:spring-boot;strategy=exact;version=1.5.9.RELEASE, \
 	org.springframework:spring-beans;strategy=exact;version=4.3.13.RELEASE, \
-	org.springframework:spring-webmvc;strategy=exact;version=4.3.13.RELEASE, \
-	org.springframework.security:spring-security-web;strategy=exact;version=4.2.3.RELEASE, \
-	org.springframework.security:spring-security-config;strategy=exact;version=4.2.3.RELEASE, \
-	org.springframework.security:spring-security-core;strategy=exact;version=4.2.3.RELEASE, \
 	com.ibm.websphere.javaee.servlet.3.1

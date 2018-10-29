@@ -132,7 +132,8 @@ autoFVT.doLast {
    * Copy the WIM API WAR into test servers.
    */
   servers = [
-    'vmm.apis.tds.ldap'
+    'vmm.apis.tds.ldap',
+    'vmm.apis.empty'
   ]
   servers.each { server ->
     copy { 

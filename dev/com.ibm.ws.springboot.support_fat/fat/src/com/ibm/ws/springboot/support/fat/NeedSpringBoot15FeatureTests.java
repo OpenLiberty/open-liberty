@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -26,6 +27,16 @@ import componenttest.custom.junit.runner.Mode;
 @RunWith(FATRunner.class)
 @Mode(FULL)
 public class NeedSpringBoot15FeatureTests extends AbstractSpringTests {
+
+    @AfterClass
+    public static void stopTestServer() throws Exception {
+        if (!javaVersion.startsWith("1.")) {
+            server.stopServer(true, "CWWKC0252E", "CWWKZ0002E", "CWWKC0265W");
+        } else {
+            server.stopServer(true, "CWWKC0252E", "CWWKZ0002E");
+        }
+    }
+
     @Override
     public boolean expectApplicationSuccess() {
         return false;
@@ -34,7 +45,6 @@ public class NeedSpringBoot15FeatureTests extends AbstractSpringTests {
     @Test
     public void testNeedSpringBootFeature15() throws Exception {
         assertNotNull("No error message was found to enable springBoot-1.5 feature", server.waitForStringInLog("CWWKC0252E"));
-        stopServer(true, "CWWKC0252E", "CWWKZ0002E");
     }
 
     @Override

@@ -36,6 +36,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
@@ -233,18 +234,30 @@ public class JavaEESecTestBase {
         String location = executeFormLogin(httpClient, formUrl, userid, password, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
-        return accessPage(httpClient, location);
+        return accessPageUsingGet(httpClient, location);
     }
 
-    protected HttpResponse accessPage(HttpClient client, String location) {
+    protected HttpResponse accessPageUsingGet(HttpClient client, String location) {
+        String methodName = "accessPageUsingGet";
+        Log.info(logClass, methodName, "accessPageUsingGet: location =  " + location);
+        return accessPage(client, new HttpGet(location));
+    }
+
+    protected HttpResponse accessPageUsingPost(HttpClient client, String location, List<NameValuePair> params) throws Exception {
+        String methodName = "accessPageUsingPost";
+        Log.info(logClass, methodName, "accessPageUsingPost: location =  " + location);
+        HttpPost postMethod = new HttpPost(location);
+        postMethod.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+        return accessPage(client, postMethod);
+    }
+
+    protected HttpResponse accessPage(HttpClient client, HttpUriRequest request) {
         String methodName = "accessPage";
-        Log.info(logClass, methodName, "accessPageNoChallenge: location =  " + location);
+        Log.info(logClass, methodName, "accessPage: HttpUriRequest =  " + request);
         HttpResponse response = null;
 
         try {
-            // Get method on form login page
-            HttpGet getMethod = new HttpGet(location);
-            response = client.execute(getMethod);
+            response = client.execute(request);
         } catch (IOException e) {
             fail("Caught unexpected exception: " + e);
         }
@@ -488,7 +501,7 @@ public class JavaEESecTestBase {
             assertTrue("Form login did not result in redirect: " + status, status == HttpServletResponse.SC_OK);
         }
         if (cookies != null) {
-            for(String cookie : cookies) {
+            for (String cookie : cookies) {
                 Header cookieHeader = getCookieHeader(response, cookie);
                 assertCookie(cookieHeader.toString(), false, true);
             }
@@ -499,6 +512,7 @@ public class JavaEESecTestBase {
     public String executeCustomFormLogin(HttpClient httpclient, String url, String username, String password, String viewState) throws Exception {
         return executeCustomFormLogin(httpclient, url, username, password, viewState, null);
     }
+
     public String executeCustomFormLogin(HttpClient httpclient, String url, String username, String password, String viewState, String[] cookies) throws Exception {
         String methodName = "executeCustomFormLogin";
         Log.info(logClass, methodName, "Submitting custom login form (POST) =  " + url + ", username = " + username + ", password = " + password + ", viewState = " + viewState);
@@ -531,7 +545,7 @@ public class JavaEESecTestBase {
         Log.info(logClass, methodName, "Redirect location:  " + location);
 
         if (cookies != null) {
-            for(String cookie : cookies) {
+            for (String cookie : cookies) {
                 Header cookieHeader = getCookieHeader(response, cookie);
                 assertCookie(cookieHeader.toString(), false, true);
             }
@@ -549,6 +563,7 @@ public class JavaEESecTestBase {
     protected String accessPageNoChallenge(HttpClient client, String location, int expectedStatusCode, String message) {
         return accessPageNoChallenge(client, location, expectedStatusCode, message, null);
     }
+
     protected String accessPageNoChallenge(HttpClient client, String location, int expectedStatusCode, String message, String[] cookies) {
         String methodName = "accessPageNoChallenge";
         Log.info(logClass, methodName, "accessPageNoChallenge: location =  " + location + " expectedStatusCode =" + expectedStatusCode);
@@ -569,7 +584,7 @@ public class JavaEESecTestBase {
             EntityUtils.consume(response.getEntity());
 
             if (cookies != null) {
-                for(String cookie : cookies) {
+                for (String cookie : cookies) {
                     Header cookieHeader = getCookieHeader(response, cookie);
                     assertCookie(cookieHeader.toString(), false, true);
                 }
@@ -806,8 +821,7 @@ public class JavaEESecTestBase {
     /**
      * verify the group names. Note that this is a simple string comparison.
      **/
-    public void 
-    verifyGroups(String response, String groups) {
+    public void verifyGroups(String response, String groups) {
         Log.info(logClass, "verifyGroups", "Verify group contains: " + groups);
         mustContain(response, "groupIds=[" + groups + "]");
     }
@@ -848,7 +862,7 @@ public class JavaEESecTestBase {
             // Update server.xml
             Log.info(logClass, "setServerConfiguration", "setServerConfigurationFile to : " + serverXML);
             server.setMarkToEndOfLog();
-            server.setServerConfigurationFile("/" + serverXML); 
+            server.setServerConfigurationFile("/" + serverXML);
             if (appNames != null) {
                 for (String appName : appNames) {
                     server.addInstalledAppForValidation(appName);

@@ -1994,7 +1994,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
         }
         else {
             if (!_ignoreStateErrors && isCommitted()) {
-                logger.logp(Level.WARNING, CLASS_NAME,"setStatus", "WARNING: Cannot set status. Response already committed.");
+                logger.logp(Level.WARNING, CLASS_NAME,"setStatus", "Cannot.set.status.Response.already.committed");
             }
             else {
                 if (WCCustomProperties.RESET_BUFFER_ON_SET_STATUS)
@@ -2026,7 +2026,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
         }
         else {
             if (!_ignoreStateErrors && isCommitted()) {
-                logger.logp(Level.WARNING, CLASS_NAME,"setStatus", "WARNING: Cannot set status. Response already committed.");
+                logger.logp(Level.WARNING, CLASS_NAME,"setStatus", "Cannot.set.status.Response.already.committed");
             }
             else {
                 if (WCCustomProperties.RESET_BUFFER_ON_SET_STATUS)
@@ -2297,7 +2297,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
                 throw new IllegalStateException();
             }
             else {
-                logger.logp(Level.WARNING, CLASS_NAME,"addSessionCookie", "WARNING: Cannot set session cookie. Response already committed.");
+                logger.logp(Level.WARNING, CLASS_NAME,"addSessionCookie", "Cannot.set.session.cookie.Response.already.committed");
             }
         }
         else {
@@ -2316,6 +2316,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
 
         if (resp == null) {
             _rawOut.init(null);
+            _bufferedWriter.clean();
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  //306998.15
                 logger.exiting(CLASS_NAME,"initForNextResponse");
             return;

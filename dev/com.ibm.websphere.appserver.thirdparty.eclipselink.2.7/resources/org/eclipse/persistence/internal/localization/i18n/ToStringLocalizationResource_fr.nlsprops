@@ -105,17 +105,17 @@ sdo_classgenerator_usage_help_1of8={0} Syntaxe : org.eclipse.persistence.sdo.hel
 
 sdo_classgenerator_usage_help_2of8=Options :
 
-sdo_classgenerator_usage_help_3of8=    -help                        Imprime le texte du message
+sdo_classgenerator_usage_help_3of8=-help                        Imprime le texte du message
 
-sdo_classgenerator_usage_help_4of8=    -sourceFile <FileName>       Fichier de sch\u00e9ma d''entr\u00e9e (obligatoire)
+sdo_classgenerator_usage_help_4of8=-sourceFile <nom_fichier>       Fichier de sch\u00e9ma d''entr\u00e9e (obligatoire)
 
-sdo_classgenerator_usage_help_5of8=    -targetDirectory <DirName>   R\u00e9pertoire pour la g\u00e9n\u00e9ration du source Java (facultatif)
+sdo_classgenerator_usage_help_5of8=-targetDirectory <nom_r\u00e9p>   R\u00e9pertoire pour la g\u00e9n\u00e9ration du source Java (facultatif)
 
-sdo_classgenerator_usage_help_6of8=    -logLevel <level int>        Indiquez la valeur enti\u00e8re du niveau de journalisation (8=DESACTIVE,7=GRAVE,6=AVERTISSEMENT,5=INFO,4=CONFIG,3=FIN,2=PLUS FIN(par d\u00e9faut),1=LE PLUS FIN,0=TOUT).
+sdo_classgenerator_usage_help_6of8=-logLevel <entier niveau>  Indiquez la valeur enti\u00e8re du niveau de journalisation (8=DESACTIVE,7=GRAVE,6=AVERTISSEMENT,5=INFO,4=CONFIG,3=FIN,2=PLUS FIN(par d\u00e9faut),1=LE PLUS FIN,0=TOUT).
 
-sdo_classgenerator_usage_help_7of8=    -noInterfaces                Ne pas g\u00e9n\u00e9rer de classes d''interface
+sdo_classgenerator_usage_help_7of8=-noInterfaces                Ne pas g\u00e9n\u00e9rer de classes d''interface
 
-sdo_classgenerator_usage_help_8of8=    -noImpls                     Ne pas g\u00e9n\u00e9rer de classes impl
+sdo_classgenerator_usage_help_8of8=-noImpls                     Ne pas g\u00e9n\u00e9rer de classes impl
 
 sdo_classgenerator_usage_missing_sourcefile={0} Le param\u00e8tre -sourceFile n''a pas \u00e9t\u00e9 sp\u00e9cifi\u00e9 et est obligatoire.
 
@@ -127,43 +127,43 @@ server_name=nom de serveur
 
 shortestTime=temps le plus court
 
-staticweave_commandline_help_message_10of19=    -log
+staticweave_commandline_help_message_10of19=-log
 
-staticweave_commandline_help_message_11of19=           Indiquez le fichier de journalisation.
+staticweave_commandline_help_message_11of19=Indiquez le fichier de journalisation.
 
-staticweave_commandline_help_message_12of19=    -loglevel
+staticweave_commandline_help_message_12of19=-loglevel
 
-staticweave_commandline_help_message_13of19=           Indiquez la valeur enti\u00e8re du niveau de journalisation (8=DESACTIVE,7=GRAVE,6=AVERTISSEMENT,5=INFO,4=CONFIG,3=FIN,2=PLUS FIN(par d\u00e9faut),1=LE PLUS FIN,0=TOUT).
+staticweave_commandline_help_message_13of19=Indiquez la valeur enti\u00e8re du niveau de journalisation (8=DESACTIVE,7=GRAVE,6=AVERTISSEMENT,5=INFO,4=CONFIG,3=FIN,2=PLUS FIN(par d\u00e9faut),1=LE PLUS FIN,0=TOUT).
 
-staticweave_commandline_help_message_14of19=    Le chemin d''acc\u00e8s aux classes doit contenir toutes les classes n\u00e9cessaires au chargement des classes dans la source.
+staticweave_commandline_help_message_14of19=Le chemin d''acc\u00e8s aux classes doit contenir toutes les classes n\u00e9cessaires au chargement des classes dans la source.
 
-staticweave_commandline_help_message_15of19=    La g\u00e9n\u00e9ration sera effectu\u00e9e sur place si la source et la cible pointent sur le m\u00eame emplacement.  La g\u00e9n\u00e9ration sur place est UNIQUEMENT applicable pour les sources bas\u00e9es sur r\u00e9pertoire.
+staticweave_commandline_help_message_15of19=La g\u00e9n\u00e9ration sera effectu\u00e9e sur place si la source et la cible pointent sur le m\u00eame emplacement.  La g\u00e9n\u00e9ration sur place est UNIQUEMENT applicable pour les sources bas\u00e9es sur r\u00e9pertoire.
 
-staticweave_commandline_help_message_16of19=  Exemple :
+staticweave_commandline_help_message_16of19=Exemple :
 
-staticweave_commandline_help_message_17of19=    Pour g\u00e9n\u00e9rer tous les entit\u00e9s contenues dans C:\\foo-source.jar avec le fichier persistence.xml contenu dans C:\\foo-containing-persistence-xml.jar,
+staticweave_commandline_help_message_17of19=Pour g\u00e9n\u00e9rer tous les entit\u00e9s contenues dans C:\foo-source.jar avec le fichier persistence.xml contenu dans C:\foo-containing-persistence-xml.jar,
 
-staticweave_commandline_help_message_18of19=    et la sortie dans C:\\foo-target.jar:
+staticweave_commandline_help_message_18of19=et la sortie dans C:\foo-target.jar :
 
-staticweave_commandline_help_message_19of19=    StaticWeave -persistenceinfo C:\\foo-containing-persistence-xml.jar -classpath C:\\classpath1;C:\\classpath2 C:\\foo-source.jar C:\\foo-target.jar
+staticweave_commandline_help_message_19of19=StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:\classpath1;C:\classpath2 C:\foo-source.jar C:\foo-target.jar
 
-staticweave_commandline_help_message_1of19=  Syntaxe : StaticWeave [options] source target
+staticweave_commandline_help_message_1of19=Syntaxe : StaticWeave [options] source target
 
-staticweave_commandline_help_message_2of19=  Options :
+staticweave_commandline_help_message_2of19=Options :
 
-staticweave_commandline_help_message_3of19=    -classpath classpath
+staticweave_commandline_help_message_3of19=-classpath classpath
 
-staticweave_commandline_help_message_4of19=           D\u00e9finir le chemin d''acc\u00e8s aux classes utilisateur.  Utiliser ";" comme d\u00e9limiteur dans Windows et ":" sous Unix.
+staticweave_commandline_help_message_4of19=D\u00e9finir le chemin d''acc\u00e8s aux classes utilisateur.  Utiliser ";" comme d\u00e9limiteur dans Windows et ":" sous Unix.
 
-staticweave_commandline_help_message_5of19=    -persistenceinfo
+staticweave_commandline_help_message_5of19=-persistenceinfo
 
-staticweave_commandline_help_message_6of19=           Identifier de mani\u00e8re explicite o\u00f9 est stock\u00e9 META-INF/persistence.xml.  Il doit s''agir de la racine de META-INF/persistence.xml.
+staticweave_commandline_help_message_6of19=Identifier de mani\u00e8re explicite o\u00f9 est stock\u00e9 META-INF/persistence.xml.  Il doit s''agir de la racine de META-INF/persistence.xml.
 
-staticweave_commandline_help_message_7of19=           Cette option est g\u00e9n\u00e9ralement utilis\u00e9e pour indiquer le fichier JAR principal lors de la g\u00e9n\u00e9ration des fichiers r\u00e9f\u00e9renc\u00e9s par <jar-file> dans persistence.xml.
+staticweave_commandline_help_message_7of19=Cette option est g\u00e9n\u00e9ralement utilis\u00e9e pour indiquer le fichier JAR principal lors de la g\u00e9n\u00e9ration des fichiers r\u00e9f\u00e9renc\u00e9s par <jar-file> dans persistence.xml.
 
-staticweave_commandline_help_message_8of19=    -persistencexml
+staticweave_commandline_help_message_8of19=-persistencexml
 
-staticweave_commandline_help_message_9of19=           Identifier l''emplacement de persistence.xml par rapport \u00e0 la racine de l''unit\u00e9 de persistance si elle est \u00e0 un emplacement diff\u00e9rent de META-INF/persistence.xml
+staticweave_commandline_help_message_9of19=Identifier l''emplacement de persistence.xml par rapport \u00e0 la racine de l''unit\u00e9 de persistance si elle est \u00e0 un emplacement diff\u00e9rent de META-INF/persistence.xml
 
 staticweave_processor_dir_not_created=Impossible de cr\u00e9er le r\u00e9pertoire {0}.
 

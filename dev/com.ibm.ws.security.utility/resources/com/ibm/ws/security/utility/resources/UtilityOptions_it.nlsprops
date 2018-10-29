@@ -89,8 +89,8 @@ encode.option-desc.listCustom=\tVisualizza le informazioni della codifica passwo
 sslCert.desc=\tCreare un certificato SSL predefinito per l''uso da parte della configurazione server o\n\
 \tclient. 
 #Note to translator the word "createSSLCertificate" should not be translated
-sslCert.usage.options=\t{0} createSSLCertificate '{--server nomeserver|--client nomeclient'}  \n\
-\t--password password [opzioni]
+sslCert.usage.options=\t{0} createSSLCertificate '{--server=nomeserver |--client=nomeclient'}\n\
+\t--password[=password] [opzioni]
 sslCert.required-key.server=\ \ \ \ --server=nome
 sslCert.required-desc.server=\tIl server per cui creare il certificato.  Questo argomento non pu\u00f2 essere\n\
 \tutilizzato se \u00e8 utilizzato l''argomento --client.

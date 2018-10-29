@@ -61,7 +61,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 CustomIdentityStoreHandlerTest.class,
                 MultipleModuleGlobalClientCertTest.class,
                 MultipleModuleGlobalClientCertFailOverTest.class,
-                NoIdentityStoreTest.class
+                NoIdentityStoreTest.class,
+                SSOTest.class
 })
 
 /**

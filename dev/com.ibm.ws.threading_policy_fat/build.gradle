@@ -9,7 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-
 dependencies {
   requiredLibs project(':com.ibm.ws.threading')
 }

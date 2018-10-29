@@ -48,3 +48,15 @@ client.quiesce.begin.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce
 client.quiesce.end=CWWKE1104I: Uveden\u00ed klienta do klidov\u00e9ho stavu dokon\u010deno.
 client.quiesce.end.explanation=Operace uveden\u00ed do klidov\u00e9ho stavu byla \u00fasp\u011b\u0161n\u011b dokon\u010dena.
 client.quiesce.end.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+notifications.not.complete=CWWKE1105W: Aktualizace b\u011bhov\u00e9ho prost\u0159ed\u00ed {0} nebyly dokon\u010deny b\u011bhem doby uveden\u00ed do klidov\u00e9ho stavu. 
+notifications.not.complete.explanation=Jedna nebo v\u00edce aktualizac\u00ed funkc\u00ed, konfigurac\u00ed nebo aplikac\u00ed se nedokon\u010dilo p\u0159ed ukon\u010den\u00edm pr\u00e1ce serveru.
+notifications.not.complete.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. 
+
+quiesce.listeners.not.complete=CWWKE1106W: Operace ukon\u010den\u00ed {0} nebyly dokon\u010deny b\u011bhem doby uveden\u00ed do klidov\u00e9ho stavu. 
+quiesce.listeners.not.complete.explanation=Jedna nebo v\u00edce operac\u00ed, kter\u00e9 byly zah\u00e1jeny b\u011bhem operace vypnut\u00ed, se nedokon\u010dilo. 
+quiesce.listeners.not.complete.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+quiesce.waiting.on.threads=CWWKE1107W: Podprocesy {0} nebyly dokon\u010deny b\u011bhem doby uveden\u00ed do klidov\u00e9ho stavu. 
+quiesce.waiting.on.threads.explanation=Jeden nebo v\u00edce podproces\u016f, kter\u00e9 byly aktivn\u00ed p\u0159ed ukon\u010den\u00edm serveru, byly aktivn\u00ed i na konci obdob\u00ed uveden\u00ed do klidov\u00e9ho stavu.
+quiesce.waiting.on.threads.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. 

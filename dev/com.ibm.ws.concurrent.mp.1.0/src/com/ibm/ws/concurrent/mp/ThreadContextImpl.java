@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -20,54 +23,86 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.ibm.websphere.ras.annotation.Trivial;
+import org.eclipse.microprofile.concurrent.ThreadContext;
+import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
+
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
- * Super class of ContextServiceImpl to be used with Java 8 and above.
- * This class provides implementation of the MicroProfile Concurrency methods.
- * These methods can be collapsed into ContextServiceImpl once there is
- * no longer a need for OpenLiberty to support Java 7.
+ * Programmatically built ThreadContext instance - either via ThreadContextBuilder
+ * or injected by CDI and possibly annotated by <code>@ThreadContextConfig</code>
  */
-@Trivial
-public abstract class ThreadContextImpl implements WSContextService { // add org.eclipse.microprofile.concurrent.ThreadContext
+class ThreadContextImpl implements ThreadContext, WSContextService { // TODO add ContextService?
+    private final LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider;
+
+    ThreadContextImpl(LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
+        this.configPerProvider = configPerProvider;
+    }
+
+    @Override
+    public ThreadContextDescriptor captureThreadContext(Map<String, String> executionProperties, Map<String, ?>... additionalThreadContextConfig) {
+        return new ThreadContextDescriptorImpl(configPerProvider);
+    }
+
+    @Override
+    public <T> T createContextualProxy(ThreadContextDescriptor threadContextDescriptor, T instance, Class<T> intf) {
+        throw new UnsupportedOperationException(); // not needed by ManagedCompletableFuture or ManagedExecutorServiceImpl
+    }
+
+    @Override
     public Executor currentContextExecutor() {
         return null; // TODO
     }
 
+    @Override
     public <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage) {
         return null; // TODO
     }
 
+    @Override
     public <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage) {
         return null; // TODO
     }
 
+    @Override
     public <T, U> BiConsumer<T, U> withCurrentContext(BiConsumer<T, U> consumer) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualBiConsumer<T, U>(contextDescriptor, consumer);
     }
 
+    @Override
     public <T, U, R> BiFunction<T, U, R> withCurrentContext(BiFunction<T, U, R> function) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualBiFunction<T, U, R>(contextDescriptor, function);
     }
 
+    @Override
     public <R> Callable<R> withCurrentContext(Callable<R> callable) {
         return null; // TODO
     }
 
+    @Override
     public <T> Consumer<T> withCurrentContext(Consumer<T> consumer) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualConsumer<T>(contextDescriptor, consumer);
     }
 
+    @Override
     public <T, R> Function<T, R> withCurrentContext(Function<T, R> function) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualFunction<T, R>(contextDescriptor, function);
     }
 
+    @Override
     public Runnable withCurrentContext(Runnable runnable) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualRunnable(contextDescriptor, runnable);
     }
 
+    @Override
     public <R> Supplier<R> withCurrentContext(Supplier<R> supplier) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualSupplier<R>(contextDescriptor, supplier);
     }
 }

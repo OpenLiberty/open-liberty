@@ -39,16 +39,16 @@ import componenttest.custom.junit.runner.Mode;
 @Mode(FULL)
 public class SpringBootUtilityThinTest extends CommonWebServerTests {
     private final static String PROPERTY_KEY_INSTALL_DIR = "install.dir";
-    private static String SPRING_BOOT_15_BASE_THIN = SPRING_BOOT_15_APP_BASE.substring(0, SPRING_BOOT_15_APP_BASE.length() - 3) + SPRING_APP_TYPE;
-    private static String SPRING_BOOT_15_WAR_THIN = SPRING_BOOT_15_APP_WAR.substring(0, SPRING_BOOT_15_APP_WAR.length() - 3) + SPRING_APP_TYPE;
+    private static String SPRING_BOOT_20_BASE_THIN = SPRING_BOOT_20_APP_BASE.substring(0, SPRING_BOOT_20_APP_BASE.length() - 3) + SPRING_APP_TYPE;
+    private static String SPRING_BOOT_20_WAR_THIN = SPRING_BOOT_20_APP_WAR.substring(0, SPRING_BOOT_20_APP_WAR.length() - 3) + SPRING_APP_TYPE;
     private static String installDir = null;
-    private String application = SPRING_BOOT_15_APP_BASE;
+    private String application = SPRING_BOOT_20_APP_BASE;
     private RemoteFile sharedResourcesDir;
     private RemoteFile appsDir;
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
     }
 
     /*
@@ -81,7 +81,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
     public void configureServer() throws Exception {
         // don't do anything other than reset the application and
         // get the shared resources and apps dirs
-        application = SPRING_BOOT_15_APP_BASE;
+        application = SPRING_BOOT_20_APP_BASE;
         // make sure the usr/shared/resources folder exists
         sharedResourcesDir = new RemoteFile(server.getFileFromLibertyInstallRoot(""), "usr/shared/resources");
         sharedResourcesDir.mkdirs();
@@ -95,8 +95,8 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
     @After
     public void deleteThinAppsAndStopServer() throws Exception {
-        new RemoteFile(appsDir, SPRING_BOOT_15_BASE_THIN).delete();
-        new RemoteFile(appsDir, SPRING_BOOT_15_WAR_THIN).delete();
+        new RemoteFile(appsDir, SPRING_BOOT_20_BASE_THIN).delete();
+        new RemoteFile(appsDir, SPRING_BOOT_20_WAR_THIN).delete();
         server.deleteDirectoryFromLibertyServerRoot("apps/" + SPRING_LIB_INDEX_CACHE);
         // note that stop server also deletes the shared and workarea library caches
         stopServer();
@@ -104,7 +104,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
     public void configureServerThin() throws Exception {
         // now really configure
-        application = SPRING_BOOT_15_BASE_THIN;
+        application = SPRING_BOOT_20_BASE_THIN;
         super.configureServer();
     }
 
@@ -143,7 +143,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
         // Move over the thin app to the apps/ folder from the destination.
         Assert.assertTrue("Expected thin app does not exist: " + thinApp.getAbsolutePath(), thinApp.isFile());
-        Assert.assertTrue("Failed to move the thinApp to the apps folder", thinApp.rename(new RemoteFile(appsDir, SPRING_BOOT_15_BASE_THIN)));
+        Assert.assertTrue("Failed to move the thinApp to the apps folder", thinApp.rename(new RemoteFile(appsDir, SPRING_BOOT_20_BASE_THIN)));
 
         configureServerThin();
         super.testBasicSpringBootApplication();
@@ -180,7 +180,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
     @Test
     public void testThinWarRemovesLibProvided() throws Exception {
-        RemoteFile warApp = server.getFileFromLibertyServerRoot("apps/" + SPRING_BOOT_15_APP_WAR);
+        RemoteFile warApp = server.getFileFromLibertyServerRoot("apps/" + SPRING_BOOT_20_APP_WAR);
         List<String> cmd = new ArrayList<>();
         cmd.add("thin");
         cmd.add("--sourceAppPath=" + warApp.getAbsolutePath());
@@ -189,7 +189,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         Assert.assertTrue("Thin application message not found",
                           SpringBootUtilityScriptUtils.findMatchingLine(output, "Thin application: .*\\." + SPRING_APP_TYPE));
 
-        RemoteFile warThin = server.getFileFromLibertyServerRoot("apps/" + SPRING_BOOT_15_WAR_THIN);
+        RemoteFile warThin = server.getFileFromLibertyServerRoot("apps/" + SPRING_BOOT_20_WAR_THIN);
         Assert.assertTrue("Thin WAR app does not exist: " + warThin.getAbsolutePath(), warThin.isFile());
         try (JarFile jar = new JarFile(warThin.getAbsolutePath())) {
             for (Enumeration<JarEntry> entries = jar.entries(); entries.hasMoreElements();) {

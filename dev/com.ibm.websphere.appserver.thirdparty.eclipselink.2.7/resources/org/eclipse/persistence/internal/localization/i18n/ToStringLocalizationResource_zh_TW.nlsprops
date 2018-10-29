@@ -105,17 +105,17 @@ sdo_classgenerator_usage_help_1of8={0} \u7528\u6cd5\uff1aorg.eclipse.persistence
 
 sdo_classgenerator_usage_help_2of8=\u9078\u9805\uff1a
 
-sdo_classgenerator_usage_help_3of8=    -help                        \u5217\u5370\u8aaa\u660e\u8a0a\u606f\u6587\u5b57
+sdo_classgenerator_usage_help_3of8=-help                        \u5217\u5370\u8aaa\u660e\u8a0a\u606f\u6587\u5b57
 
-sdo_classgenerator_usage_help_4of8=    -sourceFile <\u6a94\u540d>           \u8f38\u5165\u7db1\u76ee\u6a94\uff08\u5fc5\u8981\uff09
+sdo_classgenerator_usage_help_4of8=-sourceFile <\u6a94\u540d>           \u8f38\u5165\u7db1\u76ee\u6a94\uff08\u5fc5\u8981\uff09
 
-sdo_classgenerator_usage_help_5of8=    -targetDirectory <\u76ee\u9304\u540d\u7a31>  \u8981\u7522\u751f Java \u4f86\u6e90\u7684\u76ee\u9304\uff08\u9078\u7528\uff09
+sdo_classgenerator_usage_help_5of8=-targetDirectory <\u76ee\u9304\u540d\u7a31>  \u8981\u7522\u751f Java \u4f86\u6e90\u7684\u76ee\u9304\uff08\u9078\u7528\uff09
 
-sdo_classgenerator_usage_help_6of8=    -logLevel <level int>        \u6307\u5b9a\u8a18\u8f09\u5c64\u6b21\u7684\u6574\u6578\u503c\uff088=\u95dc\u9589\uff0c7=\u56b4\u91cd\uff0c6=\u8b66\u544a\uff0c5=\u53c3\u8003\u8cc7\u8a0a\uff0c4=\u914d\u7f6e\uff0c3=\u7d30\u5fae\uff0c2=\u8f03\u7d30\u5fae\uff08\u9810\u8a2d\u503c\uff09\uff0c1=\u6700\u7d30\u5fae\uff0c0=\u5168\u90e8\uff09\u3002
+sdo_classgenerator_usage_help_6of8=-logLevel <level int>        \u6307\u5b9a\u8a18\u8f09\u5c64\u6b21\u7684\u6574\u6578\u503c\uff088=\u95dc\u9589\uff0c7=\u56b4\u91cd\uff0c6=\u8b66\u544a\uff0c5=\u53c3\u8003\u8cc7\u8a0a\uff0c4=\u914d\u7f6e\uff0c3=\u7d30\u5fae\uff0c2=\u8f03\u7d30\u5fae\uff08\u9810\u8a2d\u503c\uff09\uff0c1=\u6700\u7d30\u5fae\uff0c0=\u5168\u90e8\uff09\u3002
 
-sdo_classgenerator_usage_help_7of8=    -noInterfaces                \u4e0d\u7522\u751f\u4ecb\u9762\u985e\u5225
+sdo_classgenerator_usage_help_7of8=-noInterfaces                \u4e0d\u7522\u751f\u4ecb\u9762\u985e\u5225
 
-sdo_classgenerator_usage_help_8of8=    -noImpls                     \u4e0d\u7522\u751f\u5be6\u4f5c\u985e\u5225
+sdo_classgenerator_usage_help_8of8=-noImpls                     \u4e0d\u7522\u751f\u5be6\u4f5c\u985e\u5225
 
 sdo_classgenerator_usage_missing_sourcefile={0} \u672a\u6307\u5b9a -sourceFile \u5fc5\u8981\u53c3\u6578\u3002
 
@@ -127,43 +127,43 @@ server_name=\u4f3a\u670d\u5668\u540d\u7a31
 
 shortestTime=\u6700\u77ed\u6642\u9593
 
-staticweave_commandline_help_message_10of19=    -log
+staticweave_commandline_help_message_10of19=-log
 
-staticweave_commandline_help_message_11of19=           \u6307\u5b9a\u8a18\u8f09\u6a94\u6848\u3002
+staticweave_commandline_help_message_11of19=\u6307\u5b9a\u8a18\u8f09\u6a94\u6848\u3002
 
-staticweave_commandline_help_message_12of19=    -loglevel
+staticweave_commandline_help_message_12of19=-loglevel
 
-staticweave_commandline_help_message_13of19=           \u6307\u5b9a\u8a18\u8f09\u5c64\u6b21\u7684\u6574\u6578\u503c\uff088=\u95dc\u9589\uff0c7=\u56b4\u91cd\uff0c6=\u8b66\u544a\uff0c5=\u53c3\u8003\u8cc7\u8a0a\uff0c4=\u914d\u7f6e\uff0c3=\u7d30\u5fae\uff0c2=\u8f03\u7d30\u5fae\uff08\u9810\u8a2d\u503c\uff09\uff0c1=\u6700\u7d30\u5fae\uff0c0=\u5168\u90e8\uff09\u3002
+staticweave_commandline_help_message_13of19=\u6307\u5b9a\u8a18\u8f09\u5c64\u6b21\u7684\u6574\u6578\u503c\uff088=\u95dc\u9589\uff0c7=\u56b4\u91cd\uff0c6=\u8b66\u544a\uff0c5=\u53c3\u8003\u8cc7\u8a0a\uff0c4=\u914d\u7f6e\uff0c3=\u7d30\u5fae\uff0c2=\u8f03\u7d30\u5fae\uff08\u9810\u8a2d\u503c\uff09\uff0c1=\u6700\u7d30\u5fae\uff0c0=\u5168\u90e8\uff09\u3002
 
-staticweave_commandline_help_message_14of19=    \u985e\u5225\u8def\u5f91\u5fc5\u9808\u5305\u542b\u8f09\u5165\u7a0b\u5f0f\u78bc\u4e2d\u4e4b\u985e\u5225\u6240\u9700\u8981\u7684\u6240\u6709\u985e\u5225\u3002
+staticweave_commandline_help_message_14of19=\u985e\u5225\u8def\u5f91\u5fc5\u9808\u5305\u542b\u8f09\u5165\u7a0b\u5f0f\u78bc\u4e2d\u4e4b\u985e\u5225\u6240\u9700\u8981\u7684\u6240\u6709\u985e\u5225\u3002
 
-staticweave_commandline_help_message_15of19=    \u5982\u679c\u4f86\u6e90\u548c\u76ee\u6a19\u6307\u5411\u76f8\u540c\u4f4d\u7f6e\uff0c\u5c07\u5c31\u5730\u57f7\u884c\u7de8\u6392\u3002\u5c31\u5730\u7de8\u6392\u53ea\u9069\u7528\u65bc\u76ee\u9304\u578b\u4f86\u6e90\u3002
+staticweave_commandline_help_message_15of19=\u5982\u679c\u4f86\u6e90\u548c\u76ee\u6a19\u6307\u5411\u76f8\u540c\u4f4d\u7f6e\uff0c\u5c07\u5c31\u5730\u57f7\u884c\u7de8\u6392\u3002\u5c31\u5730\u7de8\u6392\u53ea\u9069\u7528\u65bc\u76ee\u9304\u578b\u4f86\u6e90\u3002
 
-staticweave_commandline_help_message_16of19=  \u7bc4\u4f8b\uff1a
+staticweave_commandline_help_message_16of19=\u7bc4\u4f8b\uff1a
 
-staticweave_commandline_help_message_17of19=    \u5982\u679c\u8981\u7de8\u6392 C:\\foo-source.jar \u4e2d\u5305\u542b\u7684\u6240\u6709\u5be6\u9ad4\uff0c\u4ee5\u53ca\u5176\u5305\u542b\u5728 C:\\foo-containing-persistence-xml.jar \u4e2d\u7684 persistence.xml\uff0c
+staticweave_commandline_help_message_17of19=\u5982\u679c\u8981\u7de8\u6392 C:\foo-source.jar \u4e2d\u5305\u542b\u7684\u6240\u6709\u5be6\u9ad4\uff0c\u4ee5\u53ca\u5176\u5305\u542b\u5728 C:\foo-containing-persistence-xml.jar \u4e2d\u7684 persistence.xml\uff0c
 
-staticweave_commandline_help_message_18of19=    \u4e26\u4e14\u8f38\u51fa\u81f3 C:\\foo-target.jar\uff1a
+staticweave_commandline_help_message_18of19=\u4e26\u4e14\u8f38\u51fa\u81f3 C:\foo-target.jar\uff1a
 
-staticweave_commandline_help_message_19of19=    StaticWeave -persistenceinfo C:\\foo-containing-persistence-xml.jar -classpath C:\\classpath1;C:\\classpath2 C:\\foo-source.jar C:\\foo-target.jar
+staticweave_commandline_help_message_19of19=StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:\classpath1;C:\classpath2 C:\foo-source.jar C:\foo-target.jar
 
-staticweave_commandline_help_message_1of19=  \u7528\u6cd5\uff1aStaticWeave [\u9078\u9805] source target
+staticweave_commandline_help_message_1of19=\u7528\u6cd5\uff1aStaticWeave [\u9078\u9805] source target
 
-staticweave_commandline_help_message_2of19=  \u9078\u9805\uff1a
+staticweave_commandline_help_message_2of19=\u9078\u9805\uff1a
 
-staticweave_commandline_help_message_3of19=    -classpath classpath
+staticweave_commandline_help_message_3of19=-classpath classpath
 
-staticweave_commandline_help_message_4of19=           \u8a2d\u5b9a\u4f7f\u7528\u8005\u985e\u5225\u8def\u5f91\u3002\u5728 Windows \u4e2d\uff0c\u8acb\u4ee5 ";" \u4f5c\u70ba\u5b9a\u754c\u5b57\u5143\uff0c\u5728 Unixs \u4e2d\u5247\u4f7f\u7528 ":"\u3002
+staticweave_commandline_help_message_4of19=\u8a2d\u5b9a\u4f7f\u7528\u8005\u985e\u5225\u8def\u5f91\u3002\u5728 Windows \u4e2d\uff0c\u8acb\u4ee5 ";" \u4f5c\u70ba\u5b9a\u754c\u5b57\u5143\uff0c\u5728 Unixs \u4e2d\u5247\u4f7f\u7528 ":"\u3002
 
-staticweave_commandline_help_message_5of19=    -persistenceinfo
+staticweave_commandline_help_message_5of19=-persistenceinfo
 
-staticweave_commandline_help_message_6of19=           \u660e\u78ba\u8b58\u5225 META-INF/persistence.xml \u7684\u5132\u5b58\u4f4d\u7f6e\u3002\u5fc5\u9808\u662f META-INF/persistence.xml \u7684\u6839\u76ee\u9304\u3002
+staticweave_commandline_help_message_6of19=\u660e\u78ba\u8b58\u5225 META-INF/persistence.xml \u7684\u5132\u5b58\u4f4d\u7f6e\u3002\u5fc5\u9808\u662f META-INF/persistence.xml \u7684\u6839\u76ee\u9304\u3002
 
-staticweave_commandline_help_message_7of19=           \u7576\u7de8\u6392 persistence.xml \u4e2d <jar-file> \u6240\u53c3\u7167\u7684\u6a94\u6848\u6642\uff0c\u9019\u500b\u9078\u9805\u901a\u5e38\u7528\u4f86\u6307\u5b9a\u4e3b\u8981 jar\u3002
+staticweave_commandline_help_message_7of19=\u7576\u7de8\u6392 persistence.xml \u4e2d <jar-file> \u6240\u53c3\u7167\u7684\u6a94\u6848\u6642\uff0c\u9019\u500b\u9078\u9805\u901a\u5e38\u7528\u4f86\u6307\u5b9a\u4e3b\u8981 jar\u3002
 
-staticweave_commandline_help_message_8of19=    -persistencexml
+staticweave_commandline_help_message_8of19=-persistencexml
 
-staticweave_commandline_help_message_9of19=           \u8b58\u5225 persistence.xml \u76f8\u5c0d\u65bc\u6301\u7e8c\u6027\u55ae\u5143\u6839\u76ee\u9304\u7684\u4f4d\u7f6e\uff08\u5982\u679c\u4e0d\u662f\u4f4d\u65bc META-INF/persistence.xml \u7684\u8a71\uff09
+staticweave_commandline_help_message_9of19=\u8b58\u5225 persistence.xml \u76f8\u5c0d\u65bc\u6301\u7e8c\u6027\u55ae\u5143\u6839\u76ee\u9304\u7684\u4f4d\u7f6e\uff08\u5982\u679c\u4e0d\u662f\u4f4d\u65bc META-INF/persistence.xml \u7684\u8a71\uff09
 
 staticweave_processor_dir_not_created=\u7121\u6cd5\u5efa\u7acb {0} \u76ee\u9304\u3002
 

@@ -1298,7 +1298,7 @@ MESSAGE_EXISTS_ERROR_CWSIP0572.useraction=None
 # {1} The system message id
 # {2} The destination name
 # {3} The action taken
-DELIVERY_DELAY_TIME_WARNING_CWSIP0580=CWSIP05800W: A message with ID {0} system message ID {1} was found in destination {2} with a delivery delay exceeding the limit set by the property sib.msgstore.maximumAllowedDeliveryDelayInterval, that action taken was ''{3}''
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580=CWSIP0580W: A message with ID {0} system message ID {1} was found in destination {2} with a delivery delay exceeding the limit set by the property sib.msgstore.maximumAllowedDeliveryDelayInterval, that action taken was ''{3}''
 DELIVERY_DELAY_TIME_WARNING_CWSIP0580.explanation=This warning indicates the action that was taken.
 DELIVERY_DELAY_TIME_WARNING_CWSIP0580.useraction=No user action is required.
 

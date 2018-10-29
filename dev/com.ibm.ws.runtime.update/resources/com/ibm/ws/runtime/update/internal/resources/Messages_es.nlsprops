@@ -48,3 +48,15 @@ client.quiesce.begin.useraction=No se requiere ninguna acci\u00f3n.
 client.quiesce.end=CWWKE1104I: La desactivaci\u00f3n temporal del cliente ha finalizado.
 client.quiesce.end.explanation=La operaci\u00f3n de desactivaci\u00f3n temporal ha finalizado satisfactoriamente.
 client.quiesce.end.useraction=No se requiere ninguna acci\u00f3n.
+
+notifications.not.complete=CWWKE1105W: {0} actualizaciones de tiempo de ejecuci\u00f3n no se han completado durante el periodo de desactivaci\u00f3n temporal. 
+notifications.not.complete.explanation=Una o varias actualizaciones de caracter\u00edsticas, configuraci\u00f3n o aplicaciones no se han completado antes de que se cerrara el servidor.
+notifications.not.complete.useraction=No se requiere ninguna acci\u00f3n. 
+
+quiesce.listeners.not.complete=CWWKE1106W: {0} operaciones de cierre no se han completado durante el periodo de desactivaci\u00f3n temporal. 
+quiesce.listeners.not.complete.explanation=Una o varias operaciones iniciadas durante la operaci\u00f3n de cierre no se han completado.
+quiesce.listeners.not.complete.useraction=No se requiere ninguna acci\u00f3n.
+
+quiesce.waiting.on.threads=CWWKE1107W: {0} hebras no se han completado durante el periodo de desactivaci\u00f3n temporal. 
+quiesce.waiting.on.threads.explanation=Una o varias hebras activas antes del cierre del servidor segu\u00edan activas al final del periodo de desactivaci\u00f3n temporal.
+quiesce.waiting.on.threads.useraction=No se requiere ninguna acci\u00f3n. 

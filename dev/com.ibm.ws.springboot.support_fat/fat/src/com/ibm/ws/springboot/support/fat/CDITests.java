@@ -59,7 +59,12 @@ public class CDITests extends CommonWebServerTests {
 
     @After
     public void stopTestServer() throws Exception {
-        super.stopServer(true);
+        String methodName = testName.getMethodName();
+        if (TEST_APP_15_WITH_CDI.equals(methodName) && !javaVersion.startsWith("1.")) {
+            super.stopServer(true, "CWWKC0265W");
+        } else {
+            super.stopServer(true);
+        }
     }
 
     @Test

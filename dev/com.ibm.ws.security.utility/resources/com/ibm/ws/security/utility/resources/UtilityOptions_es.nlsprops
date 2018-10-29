@@ -89,8 +89,8 @@ encode.option-desc.listCustom=\tMostrar la informaci\u00f3n del cifrado de contr
 sslCert.desc=\tCrear un certificado SSL predeterminado para su uso en la configuraci\u00f3n del servidor o \n\
 \tdel cliente. 
 #Note to translator the word "createSSLCertificate" should not be translated
-sslCert.usage.options=\t{0} createSSLCertificate '{--server nombre_servidor|--client nombre_cliente'}  \n\
-\t--password contrase\u00f1a [opciones]
+sslCert.usage.options=\t{0} createSSLCertificate '{--server=nombreServidor |--client=nombreCliente'}\n\
+\t--password[=contrase\u00f1a] [opciones]
 sslCert.required-key.server=\ \ \ \ --server=nombre
 sslCert.required-desc.server=\tServidor para el que se crea el certificado.  Este argumento no puede    \n\
 \tutilizase si se utiliza el argumento --client.

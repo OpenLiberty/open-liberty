@@ -21,7 +21,8 @@ src: \
 	test-applications/stress.war/src,\
 	test-applications/sharedLibUser.jar/src,\
 	test-applications/customSources.war/src,\
-	test-applications/classLoaders.war/src,\
+	test-applications/classLoaderCache.war/src,\
+        test-applications/classLoaders.war/src,\
 	test-applications/converterApp/src,\
 	test-applications/converterApp/resources,\
 	test-applications/converters.war/src,\

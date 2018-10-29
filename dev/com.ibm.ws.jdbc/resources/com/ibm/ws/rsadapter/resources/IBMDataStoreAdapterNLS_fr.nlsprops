@@ -486,6 +486,10 @@ DEFAULT_MATCH_ORIGINAL.useraction=V\u00e9rifiez que la propri\u00e9t\u00e9 perso
 
 # 8780 deleted
 
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST=DSRA8790W: Les m\u00e9thodes beginRequest et endRequest ne doivent \u00eatre utilis\u00e9es que par les gestionnaires de connexions. La sp\u00e9cification JDBC ne pr\u00e9voit pas que plusieurs gestionnaires de connexions puissent g\u00e9rer une connexion. L''utilisation des m\u00e9thodes beginRequest et endRequest par d''autres gestionnaires de connexions est bloqu\u00e9e lorsque la gestion des connexions est assur\u00e9e par le serveur d''application lui-m\u00eame. La pile suivante indique le chemin de code sur lequel l''op\u00e9ration beginRequest ou endRequest a \u00e9t\u00e9 appel\u00e9e : {0}.
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST.explanation=Les suggestions (hints) beginRequest et endRequest sont bloqu\u00e9es pour \u00e9viter certains effets de bord qui interf\u00e8rent avec la gestion des connexions.
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST.useraction=Pour \u00e9viter cet avertissement, supprimez le code qui appelle les op\u00e9rations beginRequest et endRequest (il est identifi\u00e9 dans la pile fournie).
+
 # ----------------------------------------------------------------------------
 # 
 # Using the 9000's for JDBC wrapper messages.

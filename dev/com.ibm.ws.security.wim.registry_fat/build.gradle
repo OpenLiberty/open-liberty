@@ -9,7 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-
 dependencies { 
   requiredLibs project(':fattest.simplicity'),
     project(':com.ibm.ws.security.registry'),

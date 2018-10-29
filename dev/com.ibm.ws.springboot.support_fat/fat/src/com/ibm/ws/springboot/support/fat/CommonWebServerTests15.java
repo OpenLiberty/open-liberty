@@ -10,29 +10,27 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlButton;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 public class CommonWebServerTests15 extends CommonWebServerTests {
+    @AfterClass
+    public static void stopTestServer() throws Exception {
+        if (!javaVersion.startsWith("1.")) {
+            server.stopServer("CWWKC0265W");
+        }
+    }
 
     @Test
     public void testBasicSpringBootApplication15() throws Exception {
@@ -50,23 +48,12 @@ public class CommonWebServerTests15 extends CommonWebServerTests {
     }
 
     @Test
-    public void test_useJarUrls_enabled() throws FailingHttpStatusCodeException, MalformedURLException, IOException {
-
-        @SuppressWarnings("resource")
-        WebClient webClient = new WebClient();
-        HtmlButton button = ((HtmlPage) webClient.getPage("http://localhost:" + EXPECTED_HTTP_PORT + "/useJarUrlsTest.html")).getHtmlElementById("button1");
-        HtmlPage newPageText = ((HtmlPage) button.click());
-        assertTrue("Button click unexpected:" + newPageText.toString(), newPageText.toString().contains("http://localhost:" + EXPECTED_HTTP_PORT + "/buttonClicked"));
-        String body = newPageText.getBody().asText();
-        assertTrue("Expected content not returned from button push: \n" + body, body.contains("Hello. You clicked a button."));
-    }
-
-    @Test
-    public void testWebAnnotationsIgnored() throws IOException {
-        HttpUtils.findStringInUrl(server, "/testWebListenerAttr", "PASSED");
-
-        // expect a 404 here for a servlet with @WebServlet
-        HttpURLConnection conn = HttpUtils.getHttpConnection(server, "/WebServlet");
-        assertEquals("Wrong response code.", 404, conn.getResponseCode());
+    public void expectWarningWhenHigherThanJava8IsUsedWithSpringBoot15() throws Exception {
+        List<String> logMessages = server.findStringsInLogs("CWWKC0265W");
+        if (!javaVersion.startsWith("1.")) {
+            assertTrue("Expected warning message CWWKC0265W not found", !logMessages.isEmpty() && logMessages.size() == 1);
+        } else {
+            assertTrue("CWWKC0265W warning message should not appear when java versions below 9 is used with Spring Boot 1.5.x and below", logMessages.isEmpty());
+        }
     }
 }

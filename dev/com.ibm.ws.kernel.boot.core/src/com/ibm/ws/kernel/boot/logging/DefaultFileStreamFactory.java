@@ -13,9 +13,6 @@ package com.ibm.ws.kernel.boot.logging;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 
 /**
  * A basic implementation of a factory for FileOutputStream that defers creation
@@ -27,80 +24,24 @@ class DefaultFileStreamFactory implements TextFileOutputStreamFactory.Delegate {
     /** {@inheritDoc} */
     @Override
     public FileOutputStream createOutputStream(File file) throws FileNotFoundException {
-
-        final File tFile = file;
-        FileOutputStream fos = null;
-        try {
-            fos = AccessController.doPrivileged(new PrivilegedExceptionAction<FileOutputStream>() {
-                @Override
-                public FileOutputStream run() throws FileNotFoundException {
-                    return new FileOutputStream(tFile);
-                }
-            });
-        } catch (PrivilegedActionException e) {
-            throw (FileNotFoundException) e.getException();
-        }
-
-        return fos;
+        return new FileOutputStream(file);
     }
 
     /** {@inheritDoc} */
     @Override
     public FileOutputStream createOutputStream(File file, boolean append) throws FileNotFoundException {
-
-        final File tFile = file;
-        final boolean tAppend = append;
-        FileOutputStream fos = null;
-        try {
-            fos = AccessController.doPrivileged(new PrivilegedExceptionAction<FileOutputStream>() {
-                @Override
-                public FileOutputStream run() throws FileNotFoundException {
-                    return new FileOutputStream(tFile, tAppend);
-                }
-            });
-        } catch (PrivilegedActionException e) {
-            throw (FileNotFoundException) e.getException();
-        }
-
-        return fos;
+        return new FileOutputStream(file, append);
     }
 
     /** {@inheritDoc} */
     @Override
     public FileOutputStream createOutputStream(String name) throws FileNotFoundException {
-        final String tName = name;
-        FileOutputStream fos = null;
-        try {
-            fos = AccessController.doPrivileged(new PrivilegedExceptionAction<FileOutputStream>() {
-                @Override
-                public FileOutputStream run() throws FileNotFoundException {
-                    return new FileOutputStream(tName);
-                }
-            });
-        } catch (PrivilegedActionException e) {
-            throw (FileNotFoundException) e.getException();
-        }
-
-        return fos;
+        return new FileOutputStream(name);
     }
 
     /** {@inheritDoc} */
     @Override
     public FileOutputStream createOutputStream(String name, boolean append) throws FileNotFoundException {
-        final String tName = name;
-        final boolean tAppend = append;
-        FileOutputStream fos = null;
-        try {
-            fos = AccessController.doPrivileged(new PrivilegedExceptionAction<FileOutputStream>() {
-                @Override
-                public FileOutputStream run() throws FileNotFoundException {
-                    return new FileOutputStream(tName, tAppend);
-                }
-            });
-        } catch (PrivilegedActionException e) {
-            throw (FileNotFoundException) e.getException();
-        }
-
-        return fos;
+        return new FileOutputStream(name, append);
     }
 }

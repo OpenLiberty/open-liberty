@@ -471,6 +471,7 @@ LOG_INSTALLED_FIX.useraction=Nincs teend\u0151.
 LOG_UNINSTALLED_FEATURE=CWWKF1306I: A(z) {0} szolg\u00e1ltat\u00e1s elt\u00e1vol\u00edt\u00e1sa siker\u00fclt.
 LOG_UNINSTALLED_FEATURE.explanation=A megadott szolg\u00e1ltat\u00e1s elt\u00e1vol\u00edt\u00e1sra ker\u00fclt.
 LOG_UNINSTALLED_FEATURE.useraction=Nincs teend\u0151.
+
 LOG_UNINSTALLED_FIX=CWWKF1307I: A(z) {0} jav\u00edt\u00e1s elt\u00e1vol\u00edt\u00e1sa siker\u00fclt.
 LOG_UNINSTALLED_FIX.explanation=A megadott jav\u00edt\u00e1s sikeresen elt\u00e1vol\u00edt\u00e1sra ker\u00fclt.
 LOG_UNINSTALLED_FIX.useraction=Semmit sem kell tennie.
@@ -769,6 +770,14 @@ ERROR_UNKNOWN_OPERATING_SYSTEM.useraction=V\u00e1ltson a k\u00f6vetkez\u0151 ope
 ERROR_UNKNOWN_OSLIST_VALUE=CWWKF1387E: A(z) {0} \u00e9rt\u00e9k nem \u00e9rv\u00e9nyes bejegyz\u00e9s a(z) {1} OS direkt\u00edv\u00e1jak\u00e9nt.
 ERROR_UNKNOWN_OSLIST_VALUE.explanation=Az \u00e9rt\u00e9k figyelmen k\u00edv\u00fcl marad, mert nem ismerhet\u0151 fel oper\u00e1ci\u00f3s rendszer n\u00e9vk\u00e9nt.
 ERROR_UNKNOWN_OSLIST_VALUE.useraction=M\u00f3dos\u00edtsa vagy t\u00e1vol\u00edtsa el az \u00e9rt\u00e9ket a szolg\u00e1ltat\u00e1s manifest f\u00e1jlj\u00e1b\u00f3l.
+
+ERROR_ESA_NOT_FOUND=CWWKF1388E: A megadott {0} ESA f\u00e1jl nem tartalmazott \u00f6sszetev\u0151ket.
+ERROR_ESA_NOT_FOUND.explanation=Nem lesz \u00f6sszetev\u0151 telep\u00edtve az ESA f\u00e1jlb\u00f3l.
+ERROR_ESA_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott egyedi ESA f\u00e1jl \u00e9rv\u00e9nyes, \u00e9s tartalmaz \u00f6sszetev\u0151t.
+
+ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: A(z) {0} ponton nem hozhat\u00f3 l\u00e9tre JSON f\u00e1jl a(z) {1} ESA f\u00e1jlra vonatkoz\u00f3an.
+ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=Az \u00f6sszetev\u0151 az ESA f\u00e1jlb\u00f3l nem lesz telep\u00edtve.
+ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy \u00edr\u00e1si hozz\u00e1f\u00e9r\u00e9ssel rendelkezik ahhoz a k\u00f6nyvt\u00e1rhoz, ahov\u00e1 a JSON f\u00e1jl l\u00e9trehoz\u00e1sra ker\u00fcl.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: A szolg\u00e1ltat\u00e1s let\u00f6lt\u00e9se siker\u00fclt.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=A szolg\u00e1ltat\u00e1s le lett t\u00f6ltve.

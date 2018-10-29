@@ -60,12 +60,12 @@ public abstract class AbstractSpringTests {
     public static final String ID_TRUST_STORE = "springBootTrustStore-";
 
     public static final String SPRING_BOOT_15_APP_BASE = "com.ibm.ws.springboot.support.version15.test.app.jar";
-    public static final String SPRING_BOOT_15_APP_WAR = "com.ibm.ws.springboot.support.version15.test.war.app-0.0.1-SNAPSHOT.war";
-    public static final String SPRING_BOOT_15_APP_JAVA = "com.ibm.ws.springboot.support.version15.test.java.app.jar";
-    public static final String SPRING_BOOT_15_APP_WEBANNO = "com.ibm.ws.springboot.support.version15.test.webanno.app.jar";
-    public static final String SPRING_BOOT_15_APP_WEBSOCKET = "com.ibm.ws.springboot.support.version15.test.websocket.app.jar";
-    public static final String SPRING_BOOT_15_APP_ACTUATOR = "com.ibm.ws.springboot.support.version15.test.actuator.app.jar";
-    public static final String SPRING_BOOT_15_APP_MULTI_CONTEXT = "com.ibm.ws.springboot.support.version15.test.multi.context.app.jar";
+    public static final String SPRING_BOOT_20_APP_WAR = "com.ibm.ws.springboot.support.version20.test.war.app-0.0.1-SNAPSHOT.war";
+    public static final String SPRING_BOOT_20_APP_JAVA = "com.ibm.ws.springboot.support.version20.test.java.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_20_APP_WEBANNO = "com.ibm.ws.springboot.support.version20.test.webanno.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_20_APP_WEBSOCKET = "com.ibm.ws.springboot.support.version20.test.websocket.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_20_APP_ACTUATOR = "com.ibm.ws.springboot.support.version20.test.actuator.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_20_APP_MULTI_CONTEXT = "com.ibm.ws.springboot.support.version20.test.multi.context.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_BASE = "com.ibm.ws.springboot.support.version20.test.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_WEBFLUX = "com.ibm.ws.springboot.support.version20.test.webflux.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_WEBFLUX_WRONG_VERSION = "com.ibm.ws.springboot.support.version20.test.webflux.wrong.version.app-0.0.1-SNAPSHOT.jar";
@@ -78,6 +78,7 @@ public abstract class AbstractSpringTests {
     public static final int EXPECTED_HTTP_PORT = 8081;
     public static final int DEFAULT_HTTP_PORT;
     public static final int DEFAULT_HTTPS_PORT;
+    public static final String javaVersion;
 
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.springboot.support.fat.SpringBootTests");
     static {
@@ -87,6 +88,7 @@ public abstract class AbstractSpringTests {
         // Tests can change this, but it will be reset by the @After method resetDefaultPorts
         server.setHttpDefaultPort(EXPECTED_HTTP_PORT);
         server.setHttpDefaultSecurePort(EXPECTED_HTTP_PORT);
+        javaVersion = System.getProperty("java.version");
 
     }
     public static final AtomicBoolean serverStarted = new AtomicBoolean();

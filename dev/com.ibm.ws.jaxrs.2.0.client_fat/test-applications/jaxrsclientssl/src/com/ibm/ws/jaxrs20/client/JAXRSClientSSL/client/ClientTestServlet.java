@@ -184,7 +184,7 @@ public class ClientTestServlet extends HttpServlet {
             ret.append("new KeyStore fails");
             return;
         }
-        String keyStorePath = System.getenv("SERVER_CONFIG_DIR") + "/resources/security/clientInvalidTrust.jks";
+        String keyStorePath = param.get("SERVER_CONFIG_DIR") + "/resources/security/clientInvalidTrust.jks";
 
         try {
             ts.load(new FileInputStream(keyStorePath), "passw0rd".toCharArray());

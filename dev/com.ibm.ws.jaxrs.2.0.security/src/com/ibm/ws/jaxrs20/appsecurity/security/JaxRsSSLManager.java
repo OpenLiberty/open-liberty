@@ -37,7 +37,7 @@ public class JaxRsSSLManager {
      * ssl configuration when fallbackOnDefault = true
      *
      * @param sslRef
-     * @param props the additional props to override the properties in SSLConfig
+     * @param props             the additional props to override the properties in SSLConfig
      * @param fallbackOnDefault if true, will fall back on server default ssl configuration
      * @return
      */
@@ -76,7 +76,7 @@ public class JaxRsSSLManager {
                     return null;
             }
 
-            return sslSupportService.getSSLSocketFactory(sslRef);
+            return SSLSupportService.getSSLSocketFactory(sslRef);
         } catch (SSLException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "SSL Exception with ssl ref id " + sslRef + ": " + e.toString());

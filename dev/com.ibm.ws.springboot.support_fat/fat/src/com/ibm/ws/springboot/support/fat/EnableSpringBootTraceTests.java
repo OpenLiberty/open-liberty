@@ -68,7 +68,12 @@ public class EnableSpringBootTraceTests extends CommonWebServerTests {
 
     @After
     public void stopTestServer() throws Exception {
-        super.stopServer(true);
+        String methodName = testName.getMethodName();
+        if (TEST_ENABLE_TRACE_FOR_15.equals(methodName) && !javaVersion.startsWith("1.")) {
+            super.stopServer(true, "CWWKC0265W");
+        } else {
+            super.stopServer(true);
+        }
     }
 
     @Test

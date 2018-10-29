@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -28,7 +32,8 @@
 7501=O modo de valida\u00e7\u00e3o de Bean no marshaller {0} est\u00e1 configurado para o valor ilegal "{1}".
 
 7510=Restri\u00e7\u00f5es violadas no bean serializado {0}:
-{1}{2}
 
 7525=N\u00e3o \u00e9 poss\u00edvel analisar a propriedade {0} porque ela est\u00e1 anotada com @NotNull e possui o atributo "xs:nillable=true".
+
+{1}{2}=
 
