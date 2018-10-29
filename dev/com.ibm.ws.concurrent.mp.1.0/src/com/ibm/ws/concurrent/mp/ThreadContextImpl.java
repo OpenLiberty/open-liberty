@@ -11,6 +11,7 @@
 package com.ibm.ws.concurrent.mp;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -23,6 +24,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.eclipse.microprofile.concurrent.ThreadContext;
+import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
@@ -32,16 +34,20 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * or injected by CDI and possibly annotated by <code>@ThreadContextConfig</code>
  */
 class ThreadContextImpl implements ThreadContext, WSContextService { // TODO add ContextService?
-    ThreadContextImpl(String[] cleared, String[] propagated, String[] unchanged) {
-        // TODO
+    private final LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider;
+
+    ThreadContextImpl(LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
+        this.configPerProvider = configPerProvider;
     }
 
+    @Override
     public ThreadContextDescriptor captureThreadContext(Map<String, String> executionProperties, Map<String, ?>... additionalThreadContextConfig) {
-        return null; // TODO
+        return new ThreadContextDescriptorImpl(configPerProvider);
     }
 
+    @Override
     public <T> T createContextualProxy(ThreadContextDescriptor threadContextDescriptor, T instance, Class<T> intf) {
-        return null; // TODO
+        throw new UnsupportedOperationException(); // not needed by ManagedCompletableFuture or ManagedExecutorServiceImpl
     }
 
     @Override

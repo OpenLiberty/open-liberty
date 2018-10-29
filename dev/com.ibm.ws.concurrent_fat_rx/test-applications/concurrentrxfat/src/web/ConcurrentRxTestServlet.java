@@ -3483,10 +3483,17 @@ public class ConcurrentRxTestServlet extends FATServlet {
     public void testThreadContextBuilder() throws Exception {
         ThreadContext contextSvc = ThreadContextBuilder.instance().propagated(ThreadContext.APPLICATION).build();
         Supplier<Object> supplier = contextSvc.withCurrentContext((Supplier<Object>) () -> { // TODO remove cast
-            return true; // TODO InitialContext.doLookup("java:comp/env/executorRef"); // requires application context
+            try {
+                return InitialContext.doLookup("java:comp/env/executorRef"); // requires application context
+            } catch (NamingException x) {
+                throw new RuntimeException(x);
+            }
         });
-        //Object result = supplier.get(); // TODO
-        //assertNotNull(result);
+
+        // Run on a thread that lacks access to the application's name space
+        Future<?> resultRef = testThreads.submit(() -> supplier.get());
+        Object result = resultRef.get();
+        assertNotNull(result);
     }
 
     /**
