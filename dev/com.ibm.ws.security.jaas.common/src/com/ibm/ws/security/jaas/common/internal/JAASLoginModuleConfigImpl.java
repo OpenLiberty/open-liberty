@@ -107,8 +107,8 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
             ClassLoader loader = classLoadingService == null ? null : classLoadingService.getSharedLibraryClassLoader(sharedLibrary);
             Class<?> cl = null;
             try {
-                if (isIBMJDK() || !"com.ibm.security.auth.module.Krb5LoginModule".equalsIgnoreCase(target)) {
-                    //Do not initialize the IBM Krb5LoginModule if we are running with NONE IBM JDK
+                if (isIBMJdk18Lower() || !"com.ibm.security.auth.module.Krb5LoginModule".equalsIgnoreCase(target)) {
+                    //Do not initialize the IBM Krb5LoginModule if we are running with IBM JDK 18 or lower
                     cl = Class.forName(target, false, loader);
                 }
             } catch (ClassNotFoundException e) {
@@ -240,8 +240,8 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
         this.classLoadingService = classLoadingService;
     }
 
-    private static boolean isIBMJDK() {
-        return JavaInfo.vendor() == Vendor.IBM;
+    private static boolean isIBMJdk18Lower() {
+        return (JavaInfo.vendor() == Vendor.IBM && JavaInfo.majorVersion() <= 8);
     }
 
 }

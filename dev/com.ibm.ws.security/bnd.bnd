@@ -23,7 +23,8 @@ Export-Package: \
   com.ibm.ws.security;provide:=true, \
   com.ibm.ws.security.audit, \
   com.ibm.ws.security.collaborator;provide:=true, \
-  com.ibm.ws.security.context;provide:=true
+  com.ibm.ws.security.context;provide:=true, \
+  com.ibm.ws.security.krb5;thread-context=true
 
 Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
 
@@ -69,4 +70,5 @@ instrument.classesExcludes: com/ibm/ws/security/internal/resources/*.class
 	com.ibm.ws.common.encoder;version=latest,\
 	com.ibm.ws.logging.core;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.kernel.service;version=latest, \
 	com.ibm.ws.security.mp.jwt.proxy;version=latest
