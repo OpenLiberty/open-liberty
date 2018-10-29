@@ -12,7 +12,6 @@ package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -121,21 +120,21 @@ public class OidcClientUtil {
 
         return tokens;
     }
-    
+
     /**
      * @param params
      * @param customParams
      */
     public void handleCustomParams(@Sensitive List<NameValuePair> params, HashMap<String, String> customParams) {
         //HashMap<String, String> customParams = clientConfig.getAuthzRequestParams();
-        if (customParams!= null && customParams.isEmpty()) {
-            Set<Entry<String, String>> entries =  customParams.entrySet();
-            for (Entry<String, String>entry : entries) {
+        if (customParams != null && !customParams.isEmpty()) {
+            Set<Entry<String, String>> entries = customParams.entrySet();
+            for (Entry<String, String> entry : entries) {
                 if (entry.getKey() != null && entry.getValue() != null) {
                     params.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
                 }
             }
-        }             
+        }
     }
 
     public Map<String, Object> checkToken(String tokenInfor, String clientId, @Sensitive String clientSecret,
