@@ -627,22 +627,31 @@ public class SelfExtractUtils {
      */
     public static String[] runEnv(String extractDirectory) {
 
-        Map envmap = System.getenv();
-        Iterator iKeys = envmap.keySet().iterator();
-        String[] envArray = new String[envmap.size()];
+        Map<String, String> envmap = System.getenv();
+        Iterator<String> iKeys = envmap.keySet().iterator();
+        List<String> envList = new ArrayList<String>(envmap.size() + 1);
 
-        int i = 0;
+        boolean javaHomeSet = false;
         while (iKeys.hasNext()) {
-            String key = (String) iKeys.next();
-            String val = (String) envmap.get(key);
+            String key = iKeys.next();
+            String val = envmap.get(key);
             if (key.equals("WLP_USER_DIR")) {
-                envArray[i++] = "WLP_USER_DIR=" + extractDirectory + File.separator + "wlp" + File.separator + "usr";
+                envList.add("WLP_USER_DIR=" + extractDirectory + File.separator + "wlp" + File.separator + "usr");
             } else {
-                envArray[i++] = key + "=" + val;
+                envList.add(key + "=" + val);
+            }
+            // check if JAVA_HOME is set
+            if (key.equals("JAVA_HOME")) {
+                javaHomeSet = true;
             }
         }
-
-        return envArray;
+        if (!javaHomeSet) {
+            // JAVA_HOME is not set.  Need to set it to the value of java.home
+            String javaHome = System.getProperty("java.home");
+            SelfExtract.out("RUN_IN_CHILD_JVM_SET_JAVA_HOME", javaHome);
+            envList.add("JAVA_HOME=" + javaHome);
+        }
+        return envList.toArray(new String[0]);
 
     }
 
