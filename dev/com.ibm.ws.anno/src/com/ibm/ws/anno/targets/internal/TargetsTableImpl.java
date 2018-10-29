@@ -23,12 +23,13 @@ import java.util.logging.Logger;
 import org.objectweb.asm.ClassReader;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-
+import com.ibm.ws.anno.info.internal.AnnotationVisitorImpl_Info.AnnotationInfoVisitor;
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.ws.anno.targets.TargetsTable;
 import com.ibm.ws.anno.util.internal.UtilImpl_BidirectionalMap;
 import com.ibm.ws.anno.util.internal.UtilImpl_InternMap;
 import com.ibm.ws.anno.util.internal.UtilImpl_NonInternSet;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_Streamer;
@@ -1094,6 +1095,23 @@ public class TargetsTableImpl implements TargetsTable {
 
     //
 
+    // Do not emit FFDC for VisitEnded or ArrayIndexOutOfBounds:
+    // 
+    // VisitEnded occurs most often when the fully qualified name of a class does not match the location of
+    // the class.  The first occurs frequently with generated JSP classes, which are by default written to a
+    // location which does not match the fully qualified name of the generated JSP class.
+    //
+    // The second occurs when processing non-valid class data.
+    //
+    // For ArrayIndexOutOfBounds, while FFDC is not emitted, a warning *is* emitted.  This is a compromise
+    // between either fully ignoring the non-valid class or emitting a full FFDC with stack.
+    //
+    // Possibly, the failure to process the class is not a problem, and the application deployer wants to
+    // ignore the error.  Equally possible, the failure is a serious problem which will impact
+    // application function.  Data for the non-valid class, including annotations data, will not be
+    // recorded, and the class is not likely loadable by the server runtime.
+
+    @FFDCIgnore({ TargetsVisitorClassImpl.VisitEnded.class, ArrayIndexOutOfBoundsException.class })
     @Trivial
     protected boolean apply(TargetsVisitorClassImpl visitor, String i_className, InputStream inputStream) {
         String methodName = "apply";
@@ -1128,28 +1146,15 @@ public class TargetsTableImpl implements TargetsTable {
 
         } catch ( IOException e ) {
             failedScan = true;
-            
+
             // CWWKC0049W
             logger.logp(Level.WARNING, CLASS_NAME, methodName,
                     "[ {0} ] ANNO_TARGETS_FAILED_TO_CREATE_READER [ {1} ] ({2} : {3})",
                     new Object[] { getHashText(), i_className, e, e.getMessage() });
             logger.logp(Level.WARNING, CLASS_NAME, methodName, "Failed to create reader", e);
-            
+
         } catch ( TargetsVisitorClassImpl.VisitEnded e ) {
             failedScan = true;
-
-            // TODO: This message was turned off in the pre-caching code.
-            //       For now, the message is left disabled.
-            //
-            //       Whether we should display it or not is an open question.
-            //       There are arguments on both sides of the question:
-            //
-            //       PRO: A mismatch can indicate a real problem
-            //       CON: Lots of existing apps seem to have this problem.
-            //       CON: For cases where the classes are expected to be ignored,
-            //            the warnings are a hindrance.
-
-            // Tr.warning(logger, "ANNO_TARGETS_SCAN_EXCEPTION"); // CWWKC0044W
 
             if ( logParms != null ) {
                 logParms[2] = "Halted: " + e.getEndCase();
