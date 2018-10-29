@@ -88,10 +88,10 @@ public class ContextManager {
     private static final int DEFAULT_PREF_POOL_SIZE = 3;
 
     /** The default connect time limit - 1 minute. */
-    private static final long DEFAULT_CONNECT_TIMEOUT = 600000;
+    private static final long DEFAULT_CONNECT_TIMEOUT = 60000;
 
-    /** The default read time limit - infinite. */
-    private static final long DEFAULT_READ_TIMEOUT = 0;
+    /** The default read time limit - 1 minute. */
+    private static final long DEFAULT_READ_TIMEOUT = 60000L;
 
     /** Key to use for accessing the active URL from the JNDI environment table. */
     private static final String ENVKEY_ACTIVE_URL = "_ACTIVE_URL_";
@@ -1389,7 +1389,7 @@ public class ContextManager {
      * @param prefPoolSize The preferred context pool size. Not required when <code>enableContextPool == false</code>.
      * @param maxPoolSize The maximum context pool size. A size of '0' means the maximum size is unlimited. Not required when <code>enableContextPool == false</code>.
      * @param poolTimeOut The context pool timeout in milliseconds. This is the amount of time a context is valid for in
-     *            the context pool is valid for until it is discarded. Not required when <code>enableContextPool == false</code>.
+     *           the context pool is valid for until it is discarded. Not required when <code>enableContextPool == false</code>.
      * @param poolWaitTime The context pool wait time in milliseconds. This is the amount of time to wait when getDirContext() is called
      *            and no context is available from the pool before checking again. Not required when <code>enableContextPool == false</code>.
      * @throws InvalidInitPropertyException If <code>initPoolSize > maxPoolSize</code> or <code>prefPoolSize > maxPoolSize</code> when <code>maxPoolSize != 0</code>.
