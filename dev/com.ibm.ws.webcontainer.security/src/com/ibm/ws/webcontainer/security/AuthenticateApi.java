@@ -74,6 +74,7 @@ public class AuthenticateApi {
     private UnauthenticatedSubjectService unauthenticatedSubjectService;
     protected static final WebReply DENY_AUTHN_FAILED = new DenyReply("AuthenticationFailed");
     private Subject logoutSubject = null;
+    private final String SECURITY_CONTEXT = "SECURITY_CONTEXT";
 
     public AuthenticateApi(SSOCookieHelper ssoCookieHelper,
                            AtomicServiceReference<SecurityService> securityServiceRef,
@@ -507,7 +508,7 @@ public class AuthenticateApi {
         }
         try {
             Object loginToken = ThreadIdentityManager.setAppThreadIdentity(subject);
-            WebSecurityContext webSecurityContext = (WebSecurityContext) SRTServletRequestUtils.getPrivateAttribute(req, "SECURITY_CONTEXT");
+            WebSecurityContext webSecurityContext = (WebSecurityContext) SRTServletRequestUtils.getPrivateAttribute(req, SECURITY_CONTEXT);
 
             if (webSecurityContext.getSyncToOSThreadToken() == null) {
                 webSecurityContext.setSyncToOSThreadToken(loginToken);

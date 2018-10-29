@@ -576,6 +576,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 performSecurityChecks(req, resp, receivedSubject, webSecurityContext);
             }
 
+            extraAuditData.put("HTTP_SERVLET_REQUEST", req);
             //auditManager.setHttpServletRequest(req);
 
             // Store the login request here, so during the post invoke we can
