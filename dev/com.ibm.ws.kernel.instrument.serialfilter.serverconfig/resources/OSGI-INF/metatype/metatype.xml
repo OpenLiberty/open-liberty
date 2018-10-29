@@ -15,7 +15,7 @@
                    localization="OSGI-INF/l10n/metatype">
 
 <OCD id="com.ibm.ws.kernel.instrument.serialfilter.serverconfig" name="%filter.config" description="%filter.config.desc" ibm:alias="serialFilter">
-    <AD id="mode" name="%mode" description="%mode.desc" required="false" type="String">
+    <AD id="mode" name="%mode" description="%mode.desc" required="true" type="String">
             <Option label="%inactive" value="Inactive"/>
             <Option label="%discover" value="Discover"/>
             <Option label="%enforce" value="Enforce"/>
@@ -25,7 +25,7 @@
             <Option label="%allow" value="Allow"/>
             <Option label="%deny" value="Deny"/>
     </AD>
-    <AD id="class" name="%class" description="%class.desc" required="false" type="String"/>
+    <AD id="class" name="%class" description="%class.desc" required="true" type="String"/>
     <AD id="method" name="%method" description="%method.desc" required="false" type="String"/>
 </OCD>
 

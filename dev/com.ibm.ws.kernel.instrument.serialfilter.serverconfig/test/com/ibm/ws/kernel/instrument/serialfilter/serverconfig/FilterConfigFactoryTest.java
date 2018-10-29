@@ -118,28 +118,6 @@ public class FilterConfigFactoryTest {
         assertEquals("configMap should be one", configMap.size(), 1);
         assertEquals("configMap should contain a property", configMap.get(pid), props);
     }
-    @Test
-    public void testUpdatedAddingInvalidEntry() throws Exception {
-        Map<String, Dictionary> configMap = fcf.getConfigMap();
-        configMap.clear();
-        isStopping = false;
-        DummySimpleConfig dummySimpleConfig = new DummySimpleConfig();
-        simpleConfig = dummySimpleConfig;
-        String pid = "pid1";
-        Properties props = new Properties();
-        props.setProperty("class", "*");
-        try {
-            fcf.updated(pid, props);
-            fail("ConfigurationException should be thrown.");
-        } catch (ConfigurationException e) {
-            assertTrue("Exception message should contain CWWKS8000E", e.getMessage().contains("CWWKS8000E"));
-            assertTrue("Exception message should contain \"mode\"", e.getMessage().contains("mode"));
-            assertTrue("configMap should be zero", configMap.isEmpty());
-            Properties output = dummySimpleConfig.getProperties();
-            assertEquals("number of properties should be one", output.size(), 1);
-            assertEquals("properties should contain a valid data ", output.getProperty("*"), "REJECT");
-        }
-    }
 
     @Test
     public void testDeleted() {
