@@ -75,6 +75,8 @@ public class PackageProcessor implements ArchiveProcessor {
     private static final String PACKAGE_ARCHIVE_PREFIX = "wlp/";
     public String packageArchiveEntryPrefix = PACKAGE_ARCHIVE_PREFIX;
 
+    public boolean isServerRootOptionSet = false;
+
     public PackageProcessor(String processName, File packageFile, BootstrapConfig bootProps, List<Pair<PackageOption, String>> options, Set<String> processContent) {
         this.processName = processName;
         this.packageFile = packageFile;
@@ -455,14 +457,15 @@ public class PackageProcessor implements ArchiveProcessor {
             locAreaName = BootstrapConstants.LOC_AREA_NAME_CLIENTS;
         }
         DirEntryConfig processConfigDirConfig = null;
-        if (packageArchiveEntryPrefix.equalsIgnoreCase(PACKAGE_ARCHIVE_PREFIX)) {
-            processConfigDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
-                                                        + BootstrapConstants.LOC_AREA_NAME_USR + "/"
-                                                        + locAreaName + "/"
-                                                        + processName + "/", processConfigDir, true, PatternStrategy.IncludePreference);
-        } else {
+        if (isServerRootOptionSet) {
             // if --server-root set, then don't add /usr/ in path
             processConfigDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
+                                                        + locAreaName + "/"
+                                                        + processName + "/", processConfigDir, true, PatternStrategy.IncludePreference);
+
+        } else {
+            processConfigDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
+                                                        + BootstrapConstants.LOC_AREA_NAME_USR + "/"
                                                         + locAreaName + "/"
                                                         + processName + "/", processConfigDir, true, PatternStrategy.IncludePreference);
         }
@@ -502,9 +505,15 @@ public class PackageProcessor implements ArchiveProcessor {
          */
         File sharedDir = ProcessorUtils.getFileFromDirectory(wlpUserDir, "shared");
         if (sharedDir.exists()) {
-            DirEntryConfig serverSharedDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
-                                                                      + BootstrapConstants.LOC_AREA_NAME_USR + "/"
-                                                                      + BootstrapConstants.LOC_AREA_NAME_SHARED + "/", sharedDir, true, PatternStrategy.IncludePreference);
+            DirEntryConfig serverSharedDirConfig = null;
+            if (isServerRootOptionSet) {
+                serverSharedDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
+                                                           + BootstrapConstants.LOC_AREA_NAME_SHARED + "/", sharedDir, true, PatternStrategy.IncludePreference);
+            } else {
+                serverSharedDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
+                                                           + BootstrapConstants.LOC_AREA_NAME_USR + "/"
+                                                           + BootstrapConstants.LOC_AREA_NAME_SHARED + "/", sharedDir, true, PatternStrategy.IncludePreference);
+            }
             entryConfigs.add(serverSharedDirConfig);
             // exclude security sensitive files
             serverSharedDirConfig.exclude(Pattern.compile(REGEX_SEPARATOR + "resources" + REGEX_SEPARATOR + "security" + REGEX_SEPARATOR + "key.jks"));
@@ -521,15 +530,22 @@ public class PackageProcessor implements ArchiveProcessor {
         }
 
         /*
-         * Add extension directory
+         * Add /usr/extension directory...aka user features
          */
         if (addUsrExtension) {
             File extensionDir = ProcessorUtils.getFileFromDirectory(wlpUserDir, BootstrapConstants.LOC_AREA_NAME_EXTENSION);
+            DirEntryConfig serverExtensionDirConfig = null;
             if (extensionDir.exists()) {
-                DirEntryConfig serverExtensionDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
-                                                                             + BootstrapConstants.LOC_AREA_NAME_USR + "/"
-                                                                             + BootstrapConstants.LOC_AREA_NAME_EXTENSION
-                                                                             + "/", extensionDir, true, PatternStrategy.IncludePreference);
+                if (isServerRootOptionSet) {
+                    serverExtensionDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
+                                                                  + BootstrapConstants.LOC_AREA_NAME_EXTENSION
+                                                                  + "/", extensionDir, true, PatternStrategy.IncludePreference);
+                } else {
+                    serverExtensionDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
+                                                                  + BootstrapConstants.LOC_AREA_NAME_USR + "/"
+                                                                  + BootstrapConstants.LOC_AREA_NAME_EXTENSION
+                                                                  + "/", extensionDir, true, PatternStrategy.IncludePreference);
+                }
                 entryConfigs.add(serverExtensionDirConfig);
             }
 
@@ -724,5 +740,6 @@ public class PackageProcessor implements ArchiveProcessor {
 
     public void setArchivePrefix(String prefix) {
         packageArchiveEntryPrefix = prefix + "/";
+        isServerRootOptionSet = true;
     }
 }
