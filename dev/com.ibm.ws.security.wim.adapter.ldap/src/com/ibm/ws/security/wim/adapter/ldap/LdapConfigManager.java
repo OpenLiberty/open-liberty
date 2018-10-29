@@ -560,6 +560,7 @@ public class LdapConfigManager {
      * Set the filters depending on the ldap type selected.
      *
      * @param configProps
+     * @throws WIMSystemException
      */
     private void setFilters(Map<String, Object> configProps) throws WIMSystemException {
         // If no ldap type configured, return
@@ -639,7 +640,7 @@ public class LdapConfigManager {
                 if (iLoginProps != null)
                     iLoginProps.remove(0);
 
-                String pattern = "=%v";
+                String pattern = "=%s";
                 int startIndex = 0;
                 boolean hasLoginProperties = true;
                 LdapEntity acct = getLdapEntity(iPersonAccountTypes.get(iPersonAccountTypes.size() - 1));

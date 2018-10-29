@@ -149,6 +149,10 @@ public class LDAPRegistryContextPoolNoConfigTest {
         tr = "CacheResultSizeLimit: 2000";
         errMsgs = server.findStringsInLogsAndTrace(tr);
         assertFalse("Should have found, " + tr, errMsgs.isEmpty());
+
+        tr = "iReadTimeout=60000";
+        errMsgs = server.findStringsInLogsAndTrace(tr);
+        assertFalse("Should have found, " + tr, errMsgs.isEmpty());
     }
 
 }
