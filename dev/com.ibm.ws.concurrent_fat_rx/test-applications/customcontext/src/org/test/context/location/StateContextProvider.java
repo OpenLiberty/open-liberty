@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.test.context.location;
 
-import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextSnapshot;
@@ -26,19 +24,17 @@ import org.eclipse.microprofile.concurrent.spi.ThreadContextSnapshot;
 public class StateContextProvider implements ThreadContextProvider {
     static ThreadLocal<String> stateName = ThreadLocal.withInitial(() -> "");
 
-    public ThreadContextSnapshot defaultContext(Map<String, String> props) {
+    @Override
+    public ThreadContextSnapshot clearedContext(Map<String, String> props) {
         return new StateContextSnapshot("");
     }
 
+    @Override
     public ThreadContextSnapshot currentContext(Map<String, String> props) {
         return new StateContextSnapshot(stateName.get());
     }
 
-    // TODO remove the following method once default implementation is added
-    public Set<String> getPrerequisites() {
-        return Collections.emptySet();
-    }
-
+    @Override
     public String getThreadContextType() {
         return "State";
     }

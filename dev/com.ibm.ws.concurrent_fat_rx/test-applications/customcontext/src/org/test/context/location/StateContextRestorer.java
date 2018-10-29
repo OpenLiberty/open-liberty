@@ -26,6 +26,7 @@ public class StateContextRestorer implements ThreadContextController {
         this.stateNameToRestore = stateNameToRestore;
     }
 
+    @Override
     public void endContext() {
         if (restored)
             throw new IllegalStateException("thread context was already restored");
