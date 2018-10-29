@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.fat;
 
 import java.util.ArrayList;
@@ -11,11 +21,10 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt.fat.utils.MpJwtMessageConstants;
 
 import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
@@ -38,6 +47,8 @@ import componenttest.topology.impl.LibertyServer;
  * </OL>
  *
  **/
+
+// TODO - need to finish on Windows - don't have a Java 7 for Mac right now.
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -62,15 +73,15 @@ public class MPJwtJDKTests extends CommonMpJwtFat {
     }
 
     protected static void setUpAndStartRSServerForTests(LibertyServer server, String configFile) throws Exception {
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, getServerHostName());
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, getServerHostIp());
+        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
+        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "rsacert");
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
         deployRSServerApiTestApps(server);
         serverTracker.addServer(server);
         // make sure we get error messages during startup
         server.startServerUsingExpandedConfiguration(configFile, getExpectedMsgsBasedOnJavaVersion());
-        saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
+        SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
         server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH));
     }
 
@@ -114,23 +125,15 @@ public class MPJwtJDKTests extends CommonMpJwtFat {
 
         String builtToken = "eyJhbGciOiJSUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiQmVhcmVyIiwic3ViIjoidGVzdHVzZXIiLCJ1cG4iOiJ0ZXN0dXNlciIsImlzcyI6Imh0dHBzOi8vOS40MS4yNDQuMTgyOjg5NDcvand0L2RlZmF1bHRKV1QiLCJleHAiOjkyMjMzNzIwMzY4NTQ3NzYsImlhdCI6MTUwNTIzMTI5MH0.M1MZ8PCVvE5xrHCWGuk9h-9C3QUhOLKXaQjV3jknFXhV2DP7jT_hTqehVMG8bqYAw2aoRwLiDnXTyWAuenei-hDYKhDB4pEHBAKvSJUzL5CrCWkwlFV4uMAq2bZI5S9AkS_8JClrJJcOemvoLV-OXQU60BuCSevhdlv7rDdm75M_kHtDNiQQXi9LywgQM54nG4vCx7lVghWniLtLP8609VUpTAnMIwKrtu54eXJY4R906p9Po79_0NPVWPnS64C4bsi-H8ubYzB4QltiuWavgmt59C4ggHXQ8YsAntc_cFjZRTI3HDo4nxTCZC72aXoFThRkrsiw_VERgh0M7Bmyeg";
 
-        //        JwtTokenTools jwtTokenTools = new JwtTokenTools(builtToken);
-
-        //        jwtTokenTools.printJwtContent();
-
         String testUrl = buildAppUrl(resourceServer, MpJwtFatConstants.MICROPROFILE_SERVLET, app);
 
         WebClient webClient = actions.createWebClient();
 
-        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
         Page response = actions.invokeUrlWithBearerToken(_testName, webClient, testUrl, builtToken);
         Expectations expectations = new Expectations();
-        expectations.addSuccessStatusCodesForActions(new String[] { TestActions.ACTION_INVOKE_PROTECTED_RESOURCE });
+        expectations.addSuccessCodeForCurrentAction();
 
-        //        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, theUrl));
-
-        //        Expectations expectations = goodTestExpectations(jwtTokenTools, currentAction, testUrl, className);
-        validationUtils.validateResult(response, currentAction, expectations);
+        validationUtils.validateResult(response, expectations);
 
         //        WebConversation wc = new WebConversation();
         //

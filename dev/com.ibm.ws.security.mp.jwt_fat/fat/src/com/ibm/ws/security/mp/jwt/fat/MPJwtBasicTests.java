@@ -18,13 +18,12 @@ import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
-import com.ibm.ws.security.fat.common.jwt.JwtTokenTools;
+import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
 import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
+import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt.fat.utils.MpJwtMessageConstants;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -45,10 +44,8 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
     @Server("com.ibm.ws.security.mp.jwt.fat.builder")
     public static LibertyServer jwtBuilderServer;
 
-    //    private JwtFatActions actions = new JwtFatActions();
     private final TestValidationUtils validationUtils = new TestValidationUtils();
 
-    //    String protectedUrl = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + MpJwtFatConstants.SIMPLE_SERVLET_PATH;
     String defaultUser = MpJwtFatConstants.TESTUSER;
     String defaultPassword = MpJwtFatConstants.TESTUSERPWD;
 
@@ -62,14 +59,14 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
     }
 
     protected static void setUpAndStartRSServerForTests(LibertyServer server, String configFile) throws Exception {
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, getServerHostName());
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, getServerHostIp());
+        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
+        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "rsacert");
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
         deployRSServerApiTestApps(server);
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration(configFile);
-        saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
+        SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
         server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH));
     }
 
@@ -198,8 +195,7 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
      * This method obtains a (mp)jwt in 2 ways (to validate that we're able to generate and consume the tokens created via various
      * means -
      * this is also causing us to hit our app multiple times to ensure that injected values are not not cached (they are correct
-     * for the
-     * current token)
+     * for the current token)
      * 1) invoke the jwt endpoint (which will issue an mp-jwt token)
      * 2) use an app that will invoke the jwt builder, This will generate a jwt token that we've added the extra upn claim to.
      * This method will then invoke the "test" app that will pass the token as we invoke the specified test app. All tests in this
@@ -213,9 +209,10 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
      * @throws Exception
      */
     public void testMainPath(String app, String className) throws Exception {
-        testMainPath(actions.getJwtFromTokenEndpoint(_testName, "defaultJWT1", getServerSecureUrlBase(jwtBuilderServer), defaultUser, defaultPassword), app, className);
+        testMainPath(actions.getJwtFromTokenEndpoint(_testName, "defaultJWT1", SecurityFatHttpUtils.getServerSecureUrlBase(jwtBuilderServer), defaultUser, defaultPassword), app,
+                     className);
 
-        testMainPath(getJwtTokenUsingBuilder(jwtBuilderServer), app, className);
+        testMainPath(actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer), app, className);
     }
 
     /**
@@ -235,18 +232,15 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
      */
     public void testMainPath(String builtToken, String app, String className) throws Exception {
 
-        JwtTokenTools jwtTokenTools = new JwtTokenTools(builtToken);
-
-        jwtTokenTools.printJwtContent();
+        JwtTokenForTest jwtTokenTools = new JwtTokenForTest(builtToken);
 
         String testUrl = buildAppUrl(resourceServer, MpJwtFatConstants.MICROPROFILE_SERVLET, app);
 
         WebClient webClient = actions.createWebClient();
 
-        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
         Page response = actions.invokeUrlWithBearerToken(_testName, webClient, testUrl, builtToken);
-        Expectations expectations = goodTestExpectations(jwtTokenTools, currentAction, testUrl, className);
-        validationUtils.validateResult(response, currentAction, expectations);
+        Expectations expectations = goodTestExpectations(jwtTokenTools, testUrl, className);
+        validationUtils.validateResult(response, expectations);
     }
 
 }

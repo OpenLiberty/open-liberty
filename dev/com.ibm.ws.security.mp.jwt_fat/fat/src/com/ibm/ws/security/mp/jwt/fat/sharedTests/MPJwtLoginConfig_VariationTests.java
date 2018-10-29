@@ -15,9 +15,9 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.actions.TestActions;
-import com.ibm.ws.security.fat.common.expectations.Expectation;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
+import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 import com.ibm.ws.security.mp.jwt.fat.CommonMpJwtFat;
@@ -56,10 +56,12 @@ public class MPJwtLoginConfig_VariationTests extends CommonMpJwtFat {
 
     private final TestValidationUtils validationUtils = new TestValidationUtils();
 
-    protected static final boolean ExpectGoodResult = true;
-    protected static final boolean ExpectBadResult = false;
-    protected static final boolean WillUseJWTToken = true;
-    protected static final boolean WillNotUseJwtToken = false;
+    protected static enum UseJWTToken {
+        YES, NO
+    };
+
+//    protected static final boolean WillUseJWTToken = true;
+//    protected static final boolean WillNotUseJwtToken = false;
 
     /********************** Helper Methods **************************/
     public static void loginConfigSetUp(String rsServerConfig) throws Exception {
@@ -70,41 +72,33 @@ public class MPJwtLoginConfig_VariationTests extends CommonMpJwtFat {
     }
 
     protected static void setUpAndStartRSServerForLoginConfigTests(LibertyServer server, String configFile) throws Exception {
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, getServerHostName());
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, getServerHostIp());
+        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
+        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "rsacert");
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
         deployRSServerLoginConfigApps(server);
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration(configFile);
-        saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
+        SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
     }
 
     /**
-     *
-     * @param currentAction
-     * @param theClass
-     * @return
+     * Deploy the Apps that we'll use to test LoginConfig settings
+     * 
+     * @param server - the server to install the apps on
      * @throws Exception
      */
-    public Expectations getGoodExpectations(String currentAction, String theClass) throws Exception {
-
-        Expectations expectations = new Expectations();
-        expectations.addSuccessStatusCodesForActions(new String[] { currentAction });
-        expectations.addExpectation(Expectation.createResponseExpectation(currentAction, MpJwtFatConstants.EXECUTED_MSG_STRING + theClass, "Did not execute " + theClass));
-        return expectations;
-
-    }
-
-    // TODO - this isn't correct
-    public Expectations getBadExpectations(String currentAction, String theClass) throws Exception {
-
-        //        List<validationData> expectations = vData.addExpectation(inExpectations, MpJwtConstants.INVOKE_RS_PROTECTED_RESOURCE, MpJwtConstants.EXCEPTION_MESSAGE, MpJwtConstants.STRING_CONTAINS, "Did NOT get expected exception message.", null, "HTTP response code: " + HttpServletResponse.SC_UNAUTHORIZED);
-
-        Expectations expectations = new Expectations();
-        expectations.addSuccessStatusCodesForActions(new String[] { currentAction });
-        expectations.addExpectation(Expectation.createResponseExpectation(currentAction, MpJwtFatConstants.EXECUTED_MSG_STRING + theClass, "Did not execute " + theClass));
-        return expectations;
+    protected static void deployRSServerLoginConfigApps(LibertyServer server) throws Exception {
+        setupUtils.deployMicroProfileLoginConfigFormLoginInWebXmlBasicInApp(server);
+        setupUtils.deployMicroProfileLoginConfigFormLoginInWebXmlMPJWTInApp(server);
+        setupUtils.deployMicroProfileLoginConfigFormLoginInWebXmlNotInApp(server);
+        setupUtils.deployMicroProfileLoginConfigMpJwtInWebXmlBasicInApp(server);
+        setupUtils.deployMicroProfileLoginConfigMpJwtInWebXmlMPJWTInApp(server);
+        setupUtils.deployMicroProfileLoginConfigMpJwtInWebXmlNotInApp(server);
+        setupUtils.deployMicroProfileLoginConfigNotInWebXmlBasicInApp(server);
+        setupUtils.deployMicroProfileLoginConfigNotInWebXmlMPJWTInApp(server);
+        setupUtils.deployMicroProfileLoginConfigNotInWebXmlNotInApp(server);
+        setupUtils.deployMicroProfileLoginConfigMultiLayerNotInWebXmlMPJWTInApp(server);
 
     }
 
@@ -124,7 +118,7 @@ public class MPJwtLoginConfig_VariationTests extends CommonMpJwtFat {
      *
      * @throws Exception
      */
-    public void genericLoginConfigFormLoginVariationTest(String rootContext, String app, String className, boolean shouldUseJWTToken) throws Exception {
+    public void genericLoginConfigFormLoginVariationTest(String rootContext, String app, String className, UseJWTToken useJwtToken) throws Exception {
 
         String builtToken = null;
 
@@ -132,21 +126,22 @@ public class MPJwtLoginConfig_VariationTests extends CommonMpJwtFat {
 
         WebClient webClient = actions.createWebClient();
 
-        if (shouldUseJWTToken) {
-            builtToken = getDefaultJwtToken(jwtBuilderServer);
+        if (UseJWTToken.YES.equals(useJwtToken)) {
+
+            builtToken = actions.getDefaultJwtToken(_testName, jwtBuilderServer);
         }
 
         Page response = actions.invokeUrlWithBearerToken(_testName, webClient, testUrl, builtToken);
 
-        if (shouldUseJWTToken) {
-            validationUtils.validateResult(response, TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, goodAppExpectations(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, testUrl, className));
+        if (UseJWTToken.YES.equals(useJwtToken)) {
+            validationUtils.validateResult(response, goodAppExpectations(testUrl, className));
             return;
         } else {
             // make sure we got to the login page
-            validationUtils.validateResult(response, TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, CommonExpectations.successfullyReachedFormLoginPage(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE));
+            validationUtils.validateResult(response, CommonExpectations.successfullyReachedFormLoginPage());
         }
         response = actions.doFormLogin(response, defaultUser, defaultPassword);
-        validationUtils.validateResult(response, TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, goodAppExpectations(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, testUrl, className));
+        validationUtils.validateResult(response, TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, goodAppExpectations(testUrl, className));
     }
 
     /**
@@ -167,22 +162,21 @@ public class MPJwtLoginConfig_VariationTests extends CommonMpJwtFat {
      *
      * @throws Exception
      */
-    public void genericLoginConfigVariationTest(String rootContext, String app, String className, boolean expectGoodResult) throws Exception {
-        String builtToken = getDefaultJwtToken(jwtBuilderServer);
+    public void genericLoginConfigVariationTest(String rootContext, String app, String className, ExpectedResult expectedResult) throws Exception {
+        String builtToken = actions.getDefaultJwtToken(_testName, jwtBuilderServer);
 
         String testUrl = buildAppUrl(resourceServer, rootContext, app);
 
         WebClient webClient = actions.createWebClient();
 
-        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
         Expectations expectations = null;
-        if (expectGoodResult) {
-            expectations = goodAppExpectations(currentAction, testUrl, className);
+        if (ExpectedResult.GOOD.equals(expectedResult)) {
+            expectations = goodAppExpectations(testUrl, className);
         } else {
-            expectations = badAppExpectations(currentAction, MpJwtFatConstants.UNAUTHORIZED_EXCEPTION + ".*" + rootContext + ".*" + app);
+            expectations = badAppExpectations(MpJwtFatConstants.UNAUTHORIZED_MESSAGE);
         }
         Page response = actions.invokeUrlWithBearerToken(_testName, webClient, testUrl, builtToken);
-        validationUtils.validateResult(response, currentAction, expectations);
+        validationUtils.validateResult(response, expectations);
 
     }
 }

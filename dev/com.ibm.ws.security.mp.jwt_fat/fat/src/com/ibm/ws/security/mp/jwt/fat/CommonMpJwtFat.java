@@ -10,39 +10,25 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.fat;
 
-import java.io.File;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.util.Cookie;
-import com.gargoylesoftware.htmlunit.util.NameValuePair;
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
-import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
+import com.ibm.ws.security.fat.common.expectations.ResponseMessageExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
-import com.ibm.ws.security.fat.common.jwt.JwtConstants;
-import com.ibm.ws.security.fat.common.jwt.JwtTokenTools;
+import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
+import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
-import com.ibm.ws.security.fat.common.web.WebResponseUtils;
+import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt.fat.utils.MpJwtFatActions;
-import com.ibm.ws.security.mp.jwt.fat.utils.MpJwtMessageConstants;
-import com.ibm.ws.security.openidconnect.token.PayloadConstants;
+import com.ibm.ws.security.mp.jwt.fat.actions.MpJwtFatActions;
+import com.ibm.ws.security.mp.jwt.fat.utils.MpJwtAppSetupUtils;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -50,393 +36,141 @@ public class CommonMpJwtFat extends CommonSecurityFat {
 
     protected static ServerBootstrapUtils bootstrapUtils = new ServerBootstrapUtils();
     protected final MpJwtFatActions actions = new MpJwtFatActions();
+    protected final static MpJwtAppSetupUtils setupUtils = new MpJwtAppSetupUtils();
+
+    protected static enum ExpectedResult {
+        GOOD, BAD
+    };
 
     protected final String defaultUser = MpJwtFatConstants.TESTUSER;
     protected final String defaultPassword = MpJwtFatConstants.TESTUSERPWD;
 
+    /**
+     * Startup a Liberty Server with the JWT Builder enabled
+     * 
+     * @param server - the server to startup
+     * @param configFile - the config file to use when starting the serever
+     * @throws Exception
+     */
     protected static void setUpAndStartBuilderServer(LibertyServer server, String configFile) throws Exception {
         setUpAndStartBuilderServer(server, configFile, false);
     }
 
+    /**
+     * Startup a Liberty Server with the JWT Builder enabled
+     * 
+     * @param server - the server to startup
+     * @param configFile - the config file to use when starting the serever
+     * @param jwtEnabled - flag indicating if jwt should be enabled (used to set a bootstrap property that the config will use)
+     * @throws Exception
+     */
     protected static void setUpAndStartBuilderServer(LibertyServer server, String configFile, boolean jwtEnabled) throws Exception {
         bootstrapUtils.writeBootstrapProperty(server, "oidcJWKEnabled", String.valueOf(jwtEnabled));
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration(configFile);
-        saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_2_PORT_NAME_ROOT);
+        SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_2_PORT_NAME_ROOT);
     }
 
-    protected static void deployRSClientApps(LibertyServer server) throws Exception {
-        deployMicroProfileClientApp(server);
-    }
-
-    protected static void deployRSServerPropagationApps(LibertyServer server) throws Exception {
-        deployMicroProfileLoginConfigNotInWebXmlMPJWTInApp(server);
-    }
-
-    protected static void deployRSServerLoginConfigApps(LibertyServer server) throws Exception {
-        deployMicroProfileLoginConfigFormLoginInWebXmlBasicInApp(server);
-        deployMicroProfileLoginConfigFormLoginInWebXmlMPJWTInApp(server);
-        deployMicroProfileLoginConfigFormLoginInWebXmlNotInApp(server);
-        deployMicroProfileLoginConfigMpJwtInWebXmlBasicInApp(server);
-        deployMicroProfileLoginConfigMpJwtInWebXmlMPJWTInApp(server);
-        deployMicroProfileLoginConfigMpJwtInWebXmlNotInApp(server);
-        deployMicroProfileLoginConfigNotInWebXmlBasicInApp(server);
-        deployMicroProfileLoginConfigNotInWebXmlMPJWTInApp(server);
-        deployMicroProfileLoginConfigNotInWebXmlNotInApp(server);
-        deployMicroProfileLoginConfigMultiLayerNotInWebXmlMPJWTInApp(server);
-
-    }
-
+    /**
+     * Deploy the basic MicroProfile Application
+     * 
+     * @param server - the server to install the app on
+     * @throws Exception
+     */
     protected static void deployRSServerApiTestApps(LibertyServer server) throws Exception {
-        deployMicroProfileApp(server);
+        setupUtils.deployMicroProfileApp(server);
 
     }
 
-    /*******************************************************/
-    protected static void deployMicroProfileClientApp(LibertyServer server) throws Exception {
-        ShrinkHelper.exportAppToServer(server, getMicroProfileClientApp());
-        server.addInstalledAppForValidation(MpJwtFatConstants.LOGINCONFIG_PROPAGATION_ROOT_CONTEXT);
-    }
+    /*************************************/
 
-    private static void deployMicroProfileApp(LibertyServer server) throws Exception {
-        List<String> classList = new ArrayList<String>();
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.ClaimInjection.ApplicationScoped.Instance.MicroProfileApp");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.ClaimInjection.NotScoped.MicroProfileApp");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.ClaimInjection.RequestScoped.MicroProfileApp");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.ClaimInjection.SessionScoped.Instance.MicroProfileApp");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.ClaimInjectionAllTypesMicroProfileApp");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.ClaimInjectionInstanceMicroProfileApp");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.CommonMicroProfileMarker");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.Injection.ApplicationScoped.MicroProfileApp");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.Injection.NotScoped.MicroProfileApp");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.Injection.RequestScoped.MicroProfileApp");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.Injection.SessionScoped.MicroProfileApp");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.JsonWebTokenInjectionMicroProfileApp");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.SecurityContext.ApplicationScoped.MicroProfileApp");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.SecurityContext.NotScoped.MicroProfileApp");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.SecurityContext.RequestScoped.MicroProfileApp");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.SecurityContext.SessionScoped.MicroProfileApp");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.SecurityContextMicroProfileApp");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.Utils");
-        ShrinkHelper.exportAppToServer(server, genericCreateArchiveWithJsps(MpJwtFatConstants.MICROPROFILE_SERVLET, classList));
-        server.addInstalledAppForValidation(MpJwtFatConstants.MICROPROFILE_SERVLET);
-
-    }
-
-    private static WebArchive getMicroProfileClientApp() throws Exception {
-        return ShrinkWrap.create(WebArchive.class, MpJwtFatConstants.LOGINCONFIG_PROPAGATION_ROOT_CONTEXT + ".war")
-                        .addClass("com.ibm.ws.jaxrs.fat.microProfileApp.CommonPropMicroProfileMarker")
-                        .addClass("com.ibm.ws.jaxrs.fat.microProfileApp.PropagationClient.MicroProfileApp")
-                        .add(new FileAsset(new File("test-applications/microProfilePropagationClient.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
-    }
-
-    protected static void deployMicroProfileLoginConfigFormLoginInWebXmlBasicInApp(LibertyServer server) throws Exception {
-        ShrinkHelper.exportAppToServer(server, genericCreateArchiveWithJsps(MpJwtFatConstants.LOGINCONFIG_FORM_LOGIN_IN_WEB_XML_SERVLET_BASIC_IN_APP_ROOT_CONTEXT,
-                                                                            "CommonMicroProfileMarker_FormLoginInWeb_BasicInApp",
-                                                                            "MicroProfileLoginConfigFormLoginInWebXmlBasicInApp"));
-        server.addInstalledAppForValidation(MpJwtFatConstants.LOGINCONFIG_FORM_LOGIN_IN_WEB_XML_SERVLET_BASIC_IN_APP_ROOT_CONTEXT);
-
-    }
-
-    protected static void deployMicroProfileLoginConfigFormLoginInWebXmlMPJWTInApp(LibertyServer server) throws Exception {
-        ShrinkHelper.exportAppToServer(server, genericCreateArchiveWithJsps(MpJwtFatConstants.LOGINCONFIG_FORM_LOGIN_IN_WEB_XML_SERVLET_MP_JWT_IN_APP_ROOT_CONTEXT,
-                                                                            "CommonMicroProfileMarker_FormLoginInWebXml_MpJwtInApp",
-                                                                            "MicroProfileLoginConfigFormLoginInWebXmlMPJWTInApp"));
-        server.addInstalledAppForValidation(MpJwtFatConstants.LOGINCONFIG_FORM_LOGIN_IN_WEB_XML_SERVLET_MP_JWT_IN_APP_ROOT_CONTEXT);
-
-    }
-
-    protected static void deployMicroProfileLoginConfigFormLoginInWebXmlNotInApp(LibertyServer server) throws Exception {
-        ShrinkHelper.exportAppToServer(server, genericCreateArchiveWithJsps(MpJwtFatConstants.LOGINCONFIG_FORM_LOGIN_IN_WEB_XML_SERVLET_NOT_IN_APP_ROOT_CONTEXT,
-                                                                            "CommonMicroProfileMarker_FormLoginInWebXml_NotInApp",
-                                                                            "MicroProfileLoginConfigFormLoginInWebXmlNotInApp"));
-        server.addInstalledAppForValidation(MpJwtFatConstants.LOGINCONFIG_FORM_LOGIN_IN_WEB_XML_SERVLET_NOT_IN_APP_ROOT_CONTEXT);
-    }
-
-    protected static void deployMicroProfileLoginConfigMpJwtInWebXmlBasicInApp(LibertyServer server) throws Exception {
-        ShrinkHelper.exportAppToServer(server, genericCreateArchive(MpJwtFatConstants.LOGINCONFIG_MP_JWT_IN_WEB_XML_SERVLET_BASIC_IN_APP_ROOT_CONTEXT,
-                                                                    "CommonMicroProfileMarker_MpJwtInWebXml_BasicInApp", "MicroProfileLoginConfigMpJwtInWebXmlBasicInApp"));
-        server.addInstalledAppForValidation(MpJwtFatConstants.LOGINCONFIG_MP_JWT_IN_WEB_XML_SERVLET_BASIC_IN_APP_ROOT_CONTEXT);
-    }
-
-    protected static void deployMicroProfileLoginConfigMpJwtInWebXmlMPJWTInApp(LibertyServer server) throws Exception {
-        ShrinkHelper.exportAppToServer(server, genericCreateArchive(MpJwtFatConstants.LOGINCONFIG_MP_JWT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP_ROOT_CONTEXT,
-                                                                    "CommonMicroProfileMarker_MpJwtInWebXml_MpJwtInApp", "MicroProfileLoginConfigMpJwtInWebXmlMPJWTInApp"));
-        server.addInstalledAppForValidation(MpJwtFatConstants.LOGINCONFIG_MP_JWT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP_ROOT_CONTEXT);
-
-    }
-
-    protected static void deployMicroProfileLoginConfigMpJwtInWebXmlNotInApp(LibertyServer server) throws Exception {
-        ShrinkHelper.exportAppToServer(server, genericCreateArchive(MpJwtFatConstants.LOGINCONFIG_MP_JWT_IN_WEB_XML_SERVLET_NOT_IN_APP_ROOT_CONTEXT,
-                                                                    "CommonMicroProfileMarker_MpJwtInWebXml_NotInApp", "MicroProfileLoginConfigMpJwtInWebXmlNotInApp"));
-        server.addInstalledAppForValidation(MpJwtFatConstants.LOGINCONFIG_MP_JWT_IN_WEB_XML_SERVLET_NOT_IN_APP_ROOT_CONTEXT);
-
-    }
-
-    protected static void deployMicroProfileLoginConfigNotInWebXmlBasicInApp(LibertyServer server) throws Exception {
-        ShrinkHelper.exportAppToServer(server, genericCreateArchive(MpJwtFatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_BASIC_IN_APP_ROOT_CONTEXT,
-                                                                    "CommonMicroProfileMarker_NotInWebXml_BasicInApp", "MicroProfileLoginConfigNotInWebXmlBasicInApp"));
-        server.addInstalledAppForValidation(MpJwtFatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_BASIC_IN_APP_ROOT_CONTEXT);
-
-    }
-
-    protected static void deployMicroProfileLoginConfigNotInWebXmlMPJWTInApp(LibertyServer server) throws Exception {
-        ShrinkHelper.exportAppToServer(server, genericCreateArchive(MpJwtFatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP_ROOT_CONTEXT,
-                                                                    "CommonMicroProfileMarker_NotInWebXml_MpJwtInApp", "MicroProfileLoginConfigNotInWebXmlMPJWTInApp"));
-        server.addInstalledAppForValidation(MpJwtFatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP_ROOT_CONTEXT);
-    }
-
-    protected static void deployMicroProfileLoginConfigNotInWebXmlNotInApp(LibertyServer server) throws Exception {
-        ShrinkHelper.exportAppToServer(server, genericCreateArchive(MpJwtFatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_NOT_IN_APP_ROOT_CONTEXT,
-                                                                    "CommonMicroProfileMarker_NotInWebXml_NotInApp", "MicroProfileLoginConfigNotInWebXmlNotInApp"));
-        server.addInstalledAppForValidation(MpJwtFatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_NOT_IN_APP_ROOT_CONTEXT);
-
-    }
-
-    protected static void deployMicroProfileLoginConfigMultiLayerNotInWebXmlMPJWTInApp(LibertyServer server) throws Exception {
-        ShrinkHelper.exportAppToServer(server, genericCreateArchive(MpJwtFatConstants.LOGINCONFIG_MULTI_LAYER_NOT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP_ROOT_CONTEXT,
-                                                                    "CommonMicroProfileMarker_MultiLayer", "MicroProfileLoginConfigMultiLayerNotInWebXmlMPJWTInApp",
-                                                                    "Intermediate"));
-
-        server.addInstalledAppForValidation(MpJwtFatConstants.LOGINCONFIG_MULTI_LAYER_NOT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP_ROOT_CONTEXT);
-
-    }
-
-    private static WebArchive genericCreateArchive(String baseWarName, String app1, String app2) throws Exception {
-        try {
-            String warName = baseWarName + ".war";
-            return ShrinkWrap.create(WebArchive.class, warName)
-                            .addClass("com.ibm.ws.jaxrs.fat.microProfileApp." + app1)
-                            .addClass("com.ibm.ws.jaxrs.fat.microProfileApp." + app2 + ".MicroProfileApp")
-                            .add(new FileAsset(new File("build/classes/com/ibm/ws/security/jwt/fat/mpjwt/CommonMicroProfileApp.class")),
-                                 "com/ibm/ws/security/jwt/fat/mpjwt/CommonMicroProfileApp.class")
-                            .add(new FileAsset(new File("build/classes/com/ibm/ws/security/jwt/fat/mpjwt/MpJwtFatConstants.class")),
-                                 "com/ibm/ws/security/jwt/fat/mpjwt/MpJwtFatConstants.class")
-                            .add(new FileAsset(new File("test-applications/" + warName + "/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
-        } catch (Exception e) {
-            Log.error(thisClass, "genericCreateArchive", e);
-            throw e;
-        }
-    }
-
-    private static WebArchive genericCreateArchive(String baseWarName, String app1, String app2, String app3) throws Exception {
-        try {
-            String warName = baseWarName + ".war";
-            return ShrinkWrap.create(WebArchive.class, warName)
-                            .addClass("com.ibm.ws.jaxrs.fat.microProfileApp." + app1)
-                            .addClass("com.ibm.ws.jaxrs.fat.microProfileApp." + app2 + ".MicroProfileApp")
-                            .addClass("com.ibm.ws.jaxrs.fat.microProfileApp." + app2 + ".MicroProfileApp" + app3)
-                            .add(new FileAsset(new File("build/classes/com/ibm/ws/security/jwt/fat/mpjwt/CommonMicroProfileApp.class")),
-                                 "com/ibm/ws/security/jwt/fat/mpjwt/CommonMicroProfileApp.class")
-                            .add(new FileAsset(new File("build/classes/com/ibm/ws/security/jwt/fat/mpjwt/MpJwtFatConstants.class")),
-                                 "com/ibm/ws/security/jwt/fat/mpjwt/MpJwtFatConstants.class")
-                            .add(new FileAsset(new File("test-applications/" + warName + "/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
-        } catch (Exception e) {
-            Log.error(thisClass, "genericCreateArchive", e);
-            throw e;
-        }
-    }
-
-    protected static WebArchive genericCreateArchive(String baseWarName, List<String> classList) throws Exception {
-        try {
-            String warName = baseWarName + ".war";
-            WebArchive newWar = ShrinkWrap.create(WebArchive.class, warName)
-                            .add(new FileAsset(new File("build/classes/com/ibm/ws/security/jwt/fat/mpjwt/CommonMicroProfileApp.class")),
-                                 "com/ibm/ws/security/jwt/fat/mpjwt/CommonMicroProfileApp.class")
-                            .add(new FileAsset(new File("build/classes/com/ibm/ws/security/jwt/fat/mpjwt/MpJwtFatConstants.class")),
-                                 "com/ibm/ws/security/jwt/fat/mpjwt/MpJwtFatConstants.class")
-                            .add(new FileAsset(new File("test-applications/" + warName + "/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
-                            .add(new FileAsset(new File("test-applications/" + warName + "/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml");
-            for (String theClass : classList) {
-                newWar.addClass(theClass);
-            }
-            return newWar;
-        } catch (Exception e) {
-            Log.error(thisClass, "genericCreateArchive", e);
-            throw e;
-        }
-    }
-
-    private static WebArchive genericCreateArchiveWithJsps(String baseWarName, String app1, String app2) throws Exception {
-        try {
-            String warName = baseWarName + ".war";
-            return ShrinkWrap.create(WebArchive.class, warName)
-                            .addClass("com.ibm.ws.jaxrs.fat.microProfileApp." + app1)
-                            .addClass("com.ibm.ws.jaxrs.fat.microProfileApp." + app2 + ".MicroProfileApp")
-                            .add(new FileAsset(new File("build/classes/com/ibm/ws/security/jwt/fat/mpjwt/CommonMicroProfileApp.class")),
-                                 "com/ibm/ws/security/jwt/fat/mpjwt/CommonMicroProfileApp.class")
-                            .add(new FileAsset(new File("build/classes/com/ibm/ws/security/jwt/fat/mpjwt/MpJwtFatConstants.class")),
-                                 "com/ibm/ws/security/jwt/fat/mpjwt/MpJwtFatConstants.class")
-                            .add(new FileAsset(new File("test-applications/" + warName + "/resources/login.jsp")), "/login.jsp")
-                            .add(new FileAsset(new File("test-applications/" + warName + "/resources/loginError.jsp")), "/loginError.jsp")
-                            .add(new FileAsset(new File("test-applications/" + warName + "/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
-        } catch (Exception e) {
-            Log.error(thisClass, "genericCreateArchive", e);
-            throw e;
-        }
-    }
-
-    protected static WebArchive genericCreateArchiveWithJsps(String baseWarName, List<String> classList) throws Exception {
-        try {
-            String warName = baseWarName + ".war";
-            WebArchive newWar = ShrinkWrap.create(WebArchive.class, warName)
-                            .add(new FileAsset(new File("build/classes/com/ibm/ws/security/jwt/fat/mpjwt/CommonMicroProfileApp.class")),
-                                 "com/ibm/ws/security/jwt/fat/mpjwt/CommonMicroProfileApp.class")
-                            .add(new FileAsset(new File("build/classes/com/ibm/ws/security/jwt/fat/mpjwt/MpJwtFatConstants.class")),
-                                 "com/ibm/ws/security/jwt/fat/mpjwt/MpJwtFatConstants.class")
-                            .add(new FileAsset(new File("test-applications/" + warName + "/resources/login.jsp")), "/login.jsp")
-                            .add(new FileAsset(new File("test-applications/" + warName + "/resources/loginError.jsp")), "/loginError.jsp")
-                            .add(new FileAsset(new File("test-applications/" + warName + "/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
-                            .add(new FileAsset(new File("test-applications/" + warName + "/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml");
-            for (String theClass : classList) {
-                newWar.addClass(theClass);
-            }
-            return newWar;
-        } catch (Exception e) {
-            Log.error(thisClass, "genericCreateArchive", e);
-            throw e;
-        }
-    }
-
-    protected static void saveServerPorts(LibertyServer server, String propertyNameRoot) throws Exception {
-        server.setBvtPortPropertyName(propertyNameRoot);
-        server.setBvtSecurePortPropertyName(propertyNameRoot + ".secure");
-        Log.info(thisClass, "setUp", server.getServerName() + " ports are: " + server.getBvtPort() + " " + server.getBvtSecurePort());
-
-    }
-
-    public static InetAddress getServerIdentity() throws UnknownHostException {
-        InetAddress addr = InetAddress.getLocalHost();
-        return addr;
-    }
-
-    public static String getServerHostName() throws Exception {
-        return getServerIdentity().getHostName();
-    }
-
-    public static String getServerCanonicalHostName() throws Exception {
-        return getServerIdentity().getCanonicalHostName();
-    }
-
-    public static String getServerHostIp() throws Exception {
-        return getServerIdentity().toString().split("/")[1];
-    }
-
-    public static String getServerUrlBase(LibertyServer server) {
-        return "http://" + server.getHostname() + ":" + server.getBvtPort() + "/";
-    }
-
-    public static String getServerSecureUrlBase(LibertyServer server) {
-        return "https://" + server.getHostname() + ":" + server.getBvtSecurePort() + "/";
-    }
-
-    public static String getServerIpUrlBase(LibertyServer server) throws Exception {
-        return "http://" + getServerHostIp() + ":" + server.getBvtPort() + "/";
-    }
-
-    public static String getServerIpSecureUrlBase(LibertyServer server) throws Exception {
-        return "https://" + getServerHostIp() + ":" + server.getBvtSecurePort() + "/";
-    }
-
-    public Expectations goodAppExpectations(String testAction, String theUrl, String theClass) throws Exception {
+    /**
+     * Set good app check expectations - sets checks for good status code and for a message indicating what if any app class was invoked successfully
+     * 
+     * @param theUrl - the url that the test invoked
+     * @param appClass - the app class that should have been invoked
+     * @return - newly created Expectations
+     * @throws Exception
+     */
+    public Expectations goodAppExpectations(String theUrl, String appClass) throws Exception {
 
         Expectations expectations = new Expectations();
-        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(testAction, theUrl));
-        expectations.addExpectation(new ResponseFullExpectation(testAction, MpJwtFatConstants.STRING_CONTAINS, theClass, "Did not invoke the app " + theClass + "."));
+        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(theUrl));
+        expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_CONTAINS, appClass, "Did not invoke the app " + appClass + "."));
 
         return expectations;
     }
 
-    public Expectations badAppExpectations(String testAction, String errorMessage) throws Exception {
+    /**
+     * Set bad app check expectations - sets checks for a 401 status code and the expected error message in the server's messages.log
+     * 
+     * @param errorMessage - the error message to search for in the server's messages.log file
+     * @return - newly created Expectations
+     * @throws Exception
+     */
+    public Expectations badAppExpectations(String errorMessage) throws Exception {
 
-        // TODO - need to add specific message checks
         Expectations expectations = new Expectations();
-        //        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(testAction, theUrl));
-        expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_UNAUTHORIZED));
-        //        expectations.addExpectation(new ExceptionMessageExpectation(testAction, MpJwtFatConstants.STRING_MATCHES, errorMessage, "Did not find the error message: " + errorMessage));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ResponseMessageExpectation(MpJwtFatConstants.STRING_CONTAINS, errorMessage, "Did not find the error message: " + errorMessage));
 
         return expectations;
     }
 
-    public String getDefaultJwtToken(LibertyServer server) throws Exception {
-        String builtToken = actions.getJwtFromTokenEndpoint(_testName, "defaultJWT", getServerSecureUrlBase(server), defaultUser, defaultPassword);
-        Log.info(thisClass, _testName, "JWT Token: " + builtToken);
-        return builtToken;
-    }
+    /**
+     * Build the http app url
+     * 
+     * @param theServer - The server where the app is running (used to get the port)
+     * @param root - the root context of the app
+     * @param app - the specific app to run
+     * @return - returns the full url to invoke
+     * @throws Exception
+     */
+    public String buildAppUrl(LibertyServer theServer, String root, String app) throws Exception {
 
-    public String getJwtTokenUsingBuilder(LibertyServer server) throws Exception {
-
-        List<NameValuePair> extraClaims = new ArrayList<NameValuePair>();
-        extraClaims.add(new NameValuePair(JwtConstants.PARAM_UPN, defaultUser));
-        return getJwtTokenUsingBuilder(server, "defaultJWT_withAudience", extraClaims);
-    }
-
-    public String getJwtTokenUsingBuilder(LibertyServer server, String builderId) throws Exception {
-        List<NameValuePair> extraClaims = new ArrayList<NameValuePair>();
-        extraClaims.add(new NameValuePair(JwtConstants.PARAM_UPN, defaultUser));
-        return getJwtTokenUsingBuilder(server, builderId, extraClaims);
-    }
-
-    // anyone calling this method needs to add upn to the extraClaims that it passes in (if they need it)
-    public String getJwtTokenUsingBuilder(LibertyServer server, List<NameValuePair> extraClaims) throws Exception {
-        return getJwtTokenUsingBuilder(server, "defaultJWT_withAudience", extraClaims);
-    }
-
-    // anyone calling this method needs to add upn to the extraClaims that it passes in (if they need it)
-    public String getJwtTokenUsingBuilder(LibertyServer server, String builderId, List<NameValuePair> extraClaims) throws Exception {
-
-        String jwtBuilderUrl = getServerUrlBase(server) + "/jwtbuilder/build";
-
-        List<NameValuePair> requestParams = setRequestParms(builderId, extraClaims);
-
-        WebClient webClient = new WebClient();
-        Page response = actions.invokeUrlWithParameters(_testName, webClient, jwtBuilderUrl, requestParams);
-        Log.info(thisClass, _testName, "JWT builder app response: " + WebResponseUtils.getResponseText(response));
-
-        Cookie jwtCookie = webClient.getCookieManager().getCookie("JWT");
-        Log.info(thisClass, _testName, "Built JWT cookie: " + jwtCookie);
-        Log.info(thisClass, _testName, "Cookie value: " + jwtCookie.getValue());
-        return jwtCookie.getValue();
+        return SecurityFatHttpUtils.getServerUrlBase(theServer) + root + "/rest/" + app + "/" + MpJwtFatConstants.MPJWT_GENERIC_APP_NAME;
 
     }
 
-    public List<NameValuePair> setRequestParms(String builderId, List<NameValuePair> extraClaims) throws Exception {
+    /**
+     * Build the https app url
+     * 
+     * @param theServer - The server where the app is running (used to get the port)
+     * @param root - the root context of the app
+     * @param app - the specific app to run
+     * @return - returns the full url to invoke
+     * @throws Exception
+     */
+    public String buildAppSecureUrl(LibertyServer theServer, String root, String app) throws Exception {
 
-        List<NameValuePair> requestParms = new ArrayList<NameValuePair>();
-        requestParms.add(new NameValuePair(JwtConstants.PARAM_BUILDER_ID, builderId));
-        if (extraClaims != null) {
-            for (NameValuePair claim : extraClaims) {
-                Log.info(thisClass, "setRequestParm", "Setting: " + claim.getName() + " value: " + claim.getValue());
-                requestParms.add(new NameValuePair(claim.getName(), claim.getValue()));
-            }
-        }
-        return requestParms;
-    }
-
-    public static String buildAppUrl(LibertyServer theServer, String root, String app) throws Exception {
-
-        return getServerUrlBase(theServer) + root + "/rest/" + app + "/" + MpJwtFatConstants.MPJWT_GENERIC_APP_NAME;
+        return SecurityFatHttpUtils.getServerSecureUrlBase(theServer) + root + "/rest/" + app + "/" + MpJwtFatConstants.MPJWT_GENERIC_APP_NAME;
 
     }
 
-    public static String buildAppSecureUrl(LibertyServer theServer, String root, String app) throws Exception {
-
-        return getServerSecureUrlBase(theServer) + root + "/rest/" + app + "/" + MpJwtFatConstants.MPJWT_GENERIC_APP_NAME;
-
-    }
-
-    public Expectations goodTestExpectations(JwtTokenTools jwtTokenTools, String testAction, String theUrl, String theClass) throws Exception {
+    /**
+     * Create the expectations for a good/successful test run. The App will log values for multiple data types obtained via different means. The app
+     * will compare the values returned by each method to make sure that all of them return the same value for the same object.
+     * This method will check to make sure that all of those checks worked.
+     * 
+     * //TODO replace jwtTokenTools
+     * 
+     * @param jwtTokenTools
+     * @param theUrl - The test url that was invoked
+     * @param testAppClass - the class of the test app invoked
+     * @return - the expectations for a successful run
+     * @throws Exception
+     */
+    public Expectations goodTestExpectations(JwtTokenForTest jwtTokenTools, String theUrl, String testAppClass) throws Exception {
         String AppFailedCheckMsg = "Values DO NOT Match --------";
 
         try {
             Expectations expectations = new Expectations();
-            expectations.addExpectations(CommonExpectations.successfullyReachedUrl(testAction, theUrl));
-            expectations.addExpectation(new ResponseFullExpectation(testAction, MpJwtFatConstants.STRING_CONTAINS, theClass, "Did not invoke the app " + theClass + "."));
-            expectations.addExpectation(new ResponseFullExpectation(testAction, MpJwtFatConstants.STRING_DOES_NOT_CONTAIN, AppFailedCheckMsg, "Response contained string \""
-                                                                                                                                              + AppFailedCheckMsg
-                                                                                                                                              + "\" which indicates that injected claim valued obtained via different means did NOT match"));
-            Log.info(thisClass, "goodTestExpectations", "right before questionable expectations");
-            expectations.addExpectations(addClaimExpectations(jwtTokenTools, testAction, theClass));
+            expectations.addExpectations(CommonExpectations.successfullyReachedUrl(null, theUrl));
+            expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_CONTAINS, testAppClass, "Did not invoke the app " + testAppClass + "."));
+            expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_CONTAINS, testAppClass, "Did not invoke the app " + testAppClass + "."));
+            expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_DOES_NOT_CONTAIN, AppFailedCheckMsg, "Response contained string \"" + AppFailedCheckMsg
+                                                                                                                                  + "\" which indicates that injected claim values obtained via different means did NOT match"));
+            expectations.addExpectations(addClaimExpectations(jwtTokenTools, testAppClass));
 
             return expectations;
         } catch (Exception e) {
@@ -445,66 +179,106 @@ public class CommonMpJwtFat extends CommonSecurityFat {
         }
     }
 
-    public Expectations addClaimExpectations(JwtTokenTools jwtTokenTools, String testAction, String theClass) throws Exception {
+    /**
+     * Adds expectations for specific claims that we'll find in the JWTs that we test with.
+     * We check to see that the various forms of injection retrieve the claims properly
+     * TODO - replace jwtTokenTools
+     * 
+     * @param jwtTokenTools
+     * @param testAppClass - the test class invoked
+     * @return - returns the expectations for specific claims
+     * @throws Exception
+     */
+    public Expectations addClaimExpectations(JwtTokenForTest jwtTokenTools, String testAppClass) throws Exception {
         try {
             Expectations expectations = new Expectations();
-            if (!theClass.contains("ClaimInjection") || (theClass.contains("ClaimInjection") && theClass.contains("RequestScoped"))) {
-                expectations.addExpectation(addApiOutputExpectation(testAction, "getRawToken", MpJwtFatConstants.MP_JWT_TOKEN, null, jwtTokenTools.getJwtTokenString()));
-                expectations.addExpectations(addApiOutputExpectation(testAction, jwtTokenTools, "getIssuer", MpJwtFatConstants.JWT_BUILDER_ISSUER, PayloadConstants.ISSUER));
-                expectations.addExpectations(addApiOutputExpectation(testAction, jwtTokenTools, "getSubject", MpJwtFatConstants.JWT_BUILDER_SUBJECT, PayloadConstants.SUBJECT));
-                expectations.addExpectations(addApiOutputExpectation(testAction, jwtTokenTools, "getTokenID", MpJwtFatConstants.JWT_BUILDER_JWTID, PayloadConstants.JWTID));
-                expectations.addExpectations(addApiOutputExpectation(testAction, jwtTokenTools, "getExpirationTime", MpJwtFatConstants.JWT_BUILDER_EXPIRATION,
+            if (!testAppClass.contains("ClaimInjection") || (testAppClass.contains("ClaimInjection") && testAppClass.contains("RequestScoped"))) {
+                expectations.addExpectation(addApiOutputExpectation("getRawToken", MpJwtFatConstants.MP_JWT_TOKEN, null, jwtTokenTools.getJwtTokenString()));
+                expectations.addExpectations(addApiOutputExpectation(jwtTokenTools, "getIssuer", MpJwtFatConstants.JWT_BUILDER_ISSUER, PayloadConstants.ISSUER));
+                expectations.addExpectations(addApiOutputExpectation(jwtTokenTools, "getSubject", MpJwtFatConstants.JWT_BUILDER_SUBJECT, PayloadConstants.SUBJECT));
+                expectations.addExpectations(addApiOutputExpectation(jwtTokenTools, "getTokenID", MpJwtFatConstants.JWT_BUILDER_JWTID, PayloadConstants.JWTID));
+                expectations.addExpectations(addApiOutputExpectation(jwtTokenTools, "getExpirationTime", MpJwtFatConstants.JWT_BUILDER_EXPIRATION,
                                                                      PayloadConstants.EXPIRATION_TIME_IN_SECS));
-                expectations.addExpectations(addApiOutputExpectation(testAction, jwtTokenTools, "getIssuedAtTime", MpJwtFatConstants.JWT_BUILDER_ISSUED_AT,
+                expectations.addExpectations(addApiOutputExpectation(jwtTokenTools, "getIssuedAtTime", MpJwtFatConstants.JWT_BUILDER_ISSUED_AT,
                                                                      PayloadConstants.ISSUED_AT_TIME_IN_SECS));
-                expectations.addExpectations(addApiOutputExpectation(testAction, jwtTokenTools, "getAudience", MpJwtFatConstants.JWT_BUILDER_AUDIENCE, PayloadConstants.AUDIENCE));
-                expectations.addExpectations(addApiOutputExpectation(testAction, jwtTokenTools, "getGroups", MpJwtFatConstants.PAYLOAD_GROUPS, "groups"));
+                expectations.addExpectations(addApiOutputExpectation(jwtTokenTools, "getAudience", MpJwtFatConstants.JWT_BUILDER_AUDIENCE, PayloadConstants.AUDIENCE));
+                expectations.addExpectations(addApiOutputExpectation(jwtTokenTools, "getGroups", MpJwtFatConstants.PAYLOAD_GROUPS, "groups"));
                 // we won't have a list of claims to check for ClaimInjection, we don't use the api to retrieve the claims and there is no injected claim that lists all claims...
-                if (!theClass.contains("ClaimInjection")) {
-                    for (String key : jwtTokenTools.getClaims()) {
-                        expectations.addExpectations(addApiOutputExpectation(testAction, jwtTokenTools, "getClaim", MpJwtFatConstants.JWT_BUILDER_CLAIM, key));
+                if (!testAppClass.contains("ClaimInjection")) {
+                    for (String key : jwtTokenTools.getPayloadClaims()) {
+                        expectations.addExpectations(addApiOutputExpectation(jwtTokenTools, "getClaim", MpJwtFatConstants.JWT_BUILDER_CLAIM, key));
                     }
                 }
             }
 
             return expectations;
         } catch (Exception e) {
-            Log.info(thisClass, "goodTestExpectations", "Failed building expectations: " + e.getMessage());
+            Log.info(thisClass, "addClaimExpectations", "Failed building expectations: " + e.getMessage());
             throw e;
         }
     }
 
-    public Expectations addApiOutputExpectation(String testAction, JwtTokenTools jwtTokenTools, String api, String keyword, String key) throws Exception {
+    /**
+     * Adds the appropriate claim expectation for the requested claim.
+     * Some claims will have a key:value and others will have key:<multivalue> and we'll need to build the
+     * expectation properly. In some cases, we just want to check for the existance of the claim.
+     * TODO - replace jwtTokenTools
+     * 
+     * @param jwtTokenTools
+     * @param jsonWebTokenApi -the jsonWebToken api (the runtime api method that returned the claim value)
+     * @param claimIdentifier - the descriptive identifier for the claim
+     * @param key - the claims key
+     * @return - returns an expectation for the claim
+     * @throws Exception
+     */
+    public Expectations addApiOutputExpectation(JwtTokenForTest jwtTokenTools, String jsonWebTokenApi, String claimIdentifier, String key) throws Exception {
         Expectations expectations = new Expectations();
-        Log.info(thisClass, "addApiOutputExpectation", "Key requested: " + key);
         // syntax is a bit different for the "getClaim" results
         String passKeyName = null;
-        if (api.contains("getClaim")) {
+        if (jsonWebTokenApi.contains("getClaim")) {
             passKeyName = key;
         }
-        List<String> values = jwtTokenTools.getElementValueAsList(key);
+        List<String> values = jwtTokenTools.getElementValueAsListOfStrings(key);
+//        Log.info(thisClass, "addApiOutputExpectations", "list of values is: " + values);
         if (!values.isEmpty()) {
             for (String value : values) {
-                expectations.addExpectation(addApiOutputExpectation(testAction, api, keyword, passKeyName, value));
+                expectations.addExpectation(addApiOutputExpectation(jsonWebTokenApi, claimIdentifier, passKeyName, value));
             }
         } else {
-            expectations.addExpectation(addApiOutputExpectation(testAction, api, keyword, passKeyName, "null"));
+            expectations.addExpectation(addApiOutputExpectation(jsonWebTokenApi, claimIdentifier, passKeyName, "null"));
         }
 
         return expectations;
     }
 
-    public ResponseFullExpectation addApiOutputExpectation(String testAction, String api, String keyword, String key, String value) throws Exception {
-        Log.info(thisClass, "", "Parms: " + testAction + ", " + api + ", " + value + ", " + keyword + ", " + key);
-        return new ResponseFullExpectation(testAction, MpJwtFatConstants.STRING_MATCHES, buildStringToCheck(keyword, key, value), "API " + api
-                                                                                                                                  + " did NOT return the correct value (" + value
-                                                                                                                                  + ").");
+    /**
+     * Create a response expectation for the key/value being checked
+     * 
+     * @param api - The api that was used to retrieve the claim
+     * @param claimIdentifier - A more descriptive identifier for the claim
+     * @param key - the claim's key
+     * @param value - the claims value
+     * @return - returns a new Full Response expectation with a properly formatted string to look for the specified claim
+     * @throws Exception
+     */
+    public ResponseFullExpectation addApiOutputExpectation(String api, String claimIdentifier, String key, String value) throws Exception {
+        return new ResponseFullExpectation(MpJwtFatConstants.STRING_MATCHES, buildStringToCheck(claimIdentifier, key, value), "API " + api + " did NOT return the correct value ("
+                                                                                                                              + value + ").");
 
     }
 
-    public String buildStringToCheck(String keyword, String key, String value) throws Exception {
-        String builtString = keyword.trim();
-        if (!keyword.contains(":")) {
+    /**
+     * Build the string to search for (the test app should have logged this string if everything is working as it should)
+     * 
+     * @param claimIdentifier - an identifier logged by the test app - could be the method used to obtain the key
+     * @param key - the key to validate
+     * @param value - the value to validate
+     * @return - returns the string to look for in the output
+     * @throws Exception
+     */
+    public String buildStringToCheck(String claimIdentifier, String key, String value) throws Exception {
+        String builtString = claimIdentifier.trim();
+        if (!claimIdentifier.contains(":")) {
             builtString = builtString + ":";
         }
         if (key != null) {
@@ -525,12 +299,11 @@ public class CommonMpJwtFat extends CommonSecurityFat {
      */
     public Expectations setBadIssuerExpectations(LibertyServer server) throws Exception {
 
-        String action = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(action, HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
 
-        expectations.addExpectation(new ServerMessageExpectation(action, server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request the provided token."));
-        expectations.addExpectation(new ServerMessageExpectation(action, server, MpJwtMessageConstants.CWWKS6022E_ISSUER_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the issuer is NOT valid."));
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6022E_ISSUER_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the issuer is NOT valid."));
 
         return expectations;
 

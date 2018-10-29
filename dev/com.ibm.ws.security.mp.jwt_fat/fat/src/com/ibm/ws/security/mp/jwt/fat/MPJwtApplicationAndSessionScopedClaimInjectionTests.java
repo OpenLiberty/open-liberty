@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.fat;
 
 import java.util.ArrayList;
@@ -13,9 +23,9 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
+import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt.fat.utils.MpJwtMessageConstants;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
@@ -70,7 +80,7 @@ public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends CommonM
     private final TestValidationUtils validationUtils = new TestValidationUtils();
     String testAction = TestActions.ACTION_INSTALL_APP;
 
-    private final String[] reconfigMsgs = { "CWWKS5603E", "CWWKZ0002E" };
+    private final String[] reconfigMsgs = { MpJwtMessageConstants.CWWKS5603E_CLAIM_CANNOT_BE_INJECTED, MpJwtMessageConstants.CWWKZ0002E_EXCEPTION_WHILE_STARTING_APP };
 
     /**
      * Startup the resource server
@@ -114,15 +124,15 @@ public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends CommonM
      * @throws Exception
      */
     protected static void setUpAndStartRSServerForTests(LibertyServer server, String configFile) throws Exception {
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, getServerHostName());
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, getServerHostIp());
+        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
+        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "rsacert");
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
 
         generateRSServerTestApps(server);
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration(configFile);
-        saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
+        SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
         server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH));
     }
 
@@ -159,7 +169,7 @@ public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends CommonM
     private static void genericDeployApp(LibertyServer server, String warName, String className) throws Exception {
         List<String> classList = new ArrayList<String>();
         classList.add(className);
-        ShrinkHelper.exportAppToServer(server, genericCreateArchive(warName, classList));
+        ShrinkHelper.exportAppToServer(server, setupUtils.genericCreateArchiveWithoutJsps(warName, classList));
 
     }
 
@@ -175,12 +185,13 @@ public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends CommonM
      */
     protected void genericReconfigTest(String configFile, String appName) throws Exception {
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, "CWWKZ0002E.*" + appName, "Did not find failure CWWKZ0002E message starting app "
-                                                                                                                       + appName + "."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, "CWWKZ0002E.*" + appName, "Did not find failure CWWKZ0002E message starting app " + appName
+                                                                                                           + "."));
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, configFile, reconfigMsgs);
 
-        validationUtils.validateResult(null, testAction, expectations);
+        // just checking for server log messages, so, no need to pass is a response or step/action (there is only one step)
+        validationUtils.validateResult(expectations);
 
     }
 

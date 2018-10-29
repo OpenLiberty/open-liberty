@@ -1,21 +1,15 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2018
- *
- * The source code for this program is not published or other-
- * wise divested of its trade secrets, irrespective of what has
- * been deposited with the U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.fat.sharedTests;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,26 +17,22 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
+import com.ibm.ws.security.fat.common.utils.CommonIOUtils;
+import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 import com.ibm.ws.security.mp.jwt.fat.CommonMpJwtFat;
-import com.ibm.ws.security.mp.jwt.fat.utils.MpJwtMessageConstants;
+import com.ibm.ws.security.mp.jwt.fat.MpJwtMessageConstants;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
@@ -89,16 +79,6 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
         }
     }
 
-    protected static final String defaultAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
-
-    protected static final boolean ignoreApplicationAuthMethod_true = true;
-    protected static final boolean ignoreApplicationAuthMethod_false = false;
-    protected static boolean configIsSpecified_true = true;
-    protected static boolean configIsSpecified_false = false;
-
-    protected static boolean ignoreApplicationAuthMethod = ignoreApplicationAuthMethod_true;
-    protected static boolean configIsSpecified = configIsSpecified_true;
-
     protected static String cert_type = MpJwtFatConstants.X509_CERT;
 
     public static enum MPConfigLocation {
@@ -112,12 +92,9 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
     protected final static String ComplexPemFile = "rsa_key_withCert.pem";
     protected final static String BadPemFile = "bad_key.pem";
     protected final static String jwksUri = "\"http://localhost:${bvt.prop.security_2_HTTP_default}/jwt/ibm/api/defaultJWT/jwk\"";
-
-    protected static String publicKey = null;
-    protected static String keyLoc = null;
-    protected static String defKeyLoc = null;
-    protected static String absolutePemLoc = null;
-    public static String builtToken = null;
+    protected final static String PublicKeyNotSet = "";
+    protected final static String PublicKeyLocationNotSet = "";
+    protected final static String IssuerNotSet = null;
 
     @SuppressWarnings("serial")
     List<String> reconfigMsgs = new ArrayList<String>() {
@@ -146,8 +123,8 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
     // Need to pass in the resource server reference as we can be using one of several
     protected static void setUpAndStartRSServerForTests(LibertyServer server, String configFile, MPConfigSettings mpConfigSettings,
                                                         MPConfigLocation mpConfigLocation) throws Exception {
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, getServerHostName());
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, getServerHostIp());
+        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
+        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
         if (mpConfigSettings.certType.equals(MpJwtFatConstants.JWK_CERT)) {
             bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "");
             bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", jwksUri);
@@ -159,7 +136,7 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
         setupMPConfig(server, mpConfigSettings, mpConfigLocation);
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration(configFile);
-        saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
+        SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
         server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH));
     }
 
@@ -188,12 +165,12 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
             case SYSTEM_VAR:
                 // if we're testing system properties, we'll need to update the values in the jvm.options file (if the file exists, update it)
                 setAlternateMP_ConfigProperties_InJvmOptions(theServer, mpConfigSettings);
-                deployRSServerNoMPConfigInAppApp(theServer);
+                setupUtils.deployRSServerNoMPConfigInAppApp(theServer);
                 break;
             case ENV_VAR:
                 // if we're testing env variables, we'll need to set environment variables
                 setAlternateMP_ConfigProperties_envVars(theServer, mpConfigSettings);
-                deployRSServerNoMPConfigInAppApp(theServer);
+                setupUtils.deployRSServerNoMPConfigInAppApp(theServer);
                 break;
             case IN_APP:
                 deployRSServerMPConfigInAppApps(theServer, mpConfigSettings);
@@ -213,55 +190,32 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
      */
     public static void setAlternateMP_ConfigProperties_InJvmOptions(LibertyServer theServer, MPConfigSettings mpConfigSettings) throws Exception {
 
-        String thisMethod = "setAlternateMP_ConfigProperties_InJvmOptions";
-
         String jvmFile = theServer.getServerRoot() + "/jvm.options";
+        updateJvmOptionsFile(jvmFile, mpConfigSettings);
 
-        File f = new File(jvmFile);
-        if (f.exists() && !f.isDirectory()) {
-            updateJvmOptionsFile(f, mpConfigSettings);
-        } else {
-            Log.info(thisClass, thisMethod, "jvm.options does not exist - nothing to update");
-        }
     }
 
     /**
      * Update the values in the jvm.options file of the server
      *
-     * @param f - the file to update
+     * @param jvmOptionsFile - the file to update
      * @param publicKey - the publicKey value to update
      * @param keyLoc - the keyLocation value to update
      * @param issuer - the issuer value to update
      */
-    static void updateJvmOptionsFile(File f, MPConfigSettings mpConfigSettings) {
-        String oldContent = "";
-        BufferedReader reader = null;
-        FileWriter writer = null;
+    static void updateJvmOptionsFile(String jvmOptionsFile, MPConfigSettings mpConfigSettings) throws Exception {
 
-        try {
-            reader = new BufferedReader(new FileReader(f));
-            String line = reader.readLine();
+        HashMap<String, String> optionMap = new HashMap<String, String>();
+        optionMap.put("xxx_publicKeyName_xxx", mpConfigSettings.publicKey);
+        optionMap.put("xxx_publicKeyLoc_xxx", mpConfigSettings.publicKeyLocation);
+        optionMap.put("xxx_issuer_xxx", mpConfigSettings.issuer);
 
-            while (line != null) {
-                oldContent = oldContent + line + System.lineSeparator();
-                line = reader.readLine();
-            }
-            String newContent = oldContent.replaceAll("xxx_publicKeyName_xxx", mpConfigSettings.publicKey)
-                            .replaceAll("xxx_publicKeyLoc_xxx", mpConfigSettings.publicKeyLocation)
-                            .replaceAll("xxx_issuer_xxx", mpConfigSettings.issuer);
-            Log.info(thisClass, "updateJvmOptionsFile", "New jvm.options file content: " + newContent);
-            writer = new FileWriter(f);
-            writer.write(newContent);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                reader.close();
-                writer.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        CommonIOUtils cioTools = new CommonIOUtils();
+        if (cioTools.replaceStringsInFile(jvmOptionsFile, optionMap)) {
+            return;
         }
+        throw new Exception("Failure updating the jvm.options file - tests will NOT behave as expected - exiting");
+
     }
 
     /**
@@ -289,7 +243,15 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
         server.setAdditionalSystemProperties(envVars);
     }
 
-    private static String buildFileContent(String publicKey, String publicKeyLocation, String issuer) {
+    /**
+     * Sets the MPConfig content for the microprofile-config.properties file
+     * 
+     * @param publicKey - public Key value to add to properties file
+     * @param publicKeyLocation - public key location value to add to the properties file
+     * @param issuer - issuer value to add to the properties file
+     * @return - return the microprofile-config.properties file content
+     */
+    private static String buildMPConfigFileContent(String publicKey, String publicKeyLocation, String issuer) {
         return "mp.jwt.verify.publickey=" + publicKey + System.lineSeparator() + "mp.jwt.verify.publickey.location=" + publicKeyLocation + System.lineSeparator()
                + "mp.jwt.verify.issuer=" + issuer;
 
@@ -307,163 +269,83 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
      */
     public static void deployRSServerMPConfigInAppApps(LibertyServer server, MPConfigSettings mpConfigSettings) throws Exception {
 
-        String notSet = "";
-
         try {
             String fixedJwksUri = resolvedJwksUri(jwksUri);
             String fileLoc = server.getServerRoot() + "/";
 
             // the microprofile-config.properties files will have xxx_<attr>_xxx values that need to be replaced
-            deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                    buildFileContent(mpConfigSettings.publicKey, mpConfigSettings.publicKeyLocation, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                      buildFileContent(mpConfigSettings.publicKey, mpConfigSettings.publicKeyLocation, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings.publicKey, mpConfigSettings.publicKeyLocation, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(mpConfigSettings.publicKey, mpConfigSettings.publicKeyLocation, mpConfigSettings.issuer));
             // apps with some "bad" and some "good" values do need to be updated
 
-            deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_ISSUER_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                    buildFileContent(mpConfigSettings.publicKey, mpConfigSettings.publicKeyLocation, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_ISSUER_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                      buildFileContent(mpConfigSettings.publicKey, mpConfigSettings.publicKeyLocation, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_ISSUER_ONLY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                    buildFileContent(notSet, notSet, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_ISSUER_ONLY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                      buildFileContent(notSet, notSet, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.BAD_ISSUER_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                    buildFileContent(mpConfigSettings.publicKey, mpConfigSettings.publicKeyLocation, "badIssuer"));
-            deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.BAD_ISSUER_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                      buildFileContent(mpConfigSettings.publicKey, mpConfigSettings.publicKeyLocation, "badIssuer"));
-            deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.BAD_ISSUER_ONLY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT, buildFileContent(notSet, notSet, "badIssuer"));
-            deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.BAD_ISSUER_ONLY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                      buildFileContent(notSet, notSet, "badIssuer"));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_ISSUER_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings.publicKey, mpConfigSettings.publicKeyLocation, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_ISSUER_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(mpConfigSettings.publicKey, mpConfigSettings.publicKeyLocation, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_ISSUER_ONLY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(PublicKeyNotSet, PublicKeyLocationNotSet, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_ISSUER_ONLY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(PublicKeyNotSet, PublicKeyLocationNotSet, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.BAD_ISSUER_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings.publicKey, mpConfigSettings.publicKeyLocation, "badIssuer"));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.BAD_ISSUER_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(mpConfigSettings.publicKey, mpConfigSettings.publicKeyLocation, "badIssuer"));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.BAD_ISSUER_ONLY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(PublicKeyNotSet, PublicKeyLocationNotSet, "badIssuer"));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.BAD_ISSUER_ONLY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(PublicKeyNotSet, PublicKeyLocationNotSet, "badIssuer"));
 
             // publicKey (NOT keyLocation)
-            deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_COMPLEX_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                    buildFileContent(ComplexPublicKey, notSet, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_SIMPLE_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                    buildFileContent(SimplePublicKey, notSet, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_COMPLEX_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                      buildFileContent(ComplexPublicKey, notSet, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_SIMPLE_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                      buildFileContent(SimplePublicKey, notSet, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.BAD_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                    buildFileContent("badPublicKey", notSet, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.BAD_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                      buildFileContent("badPublicKey", notSet, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_COMPLEX_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(ComplexPublicKey, PublicKeyLocationNotSet, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_SIMPLE_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(SimplePublicKey, PublicKeyLocationNotSet, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_COMPLEX_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(ComplexPublicKey, PublicKeyLocationNotSet, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_SIMPLE_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(SimplePublicKey, PublicKeyLocationNotSet, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.BAD_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent("badPublicKey", PublicKeyLocationNotSet, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.BAD_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent("badPublicKey", PublicKeyLocationNotSet, mpConfigSettings.issuer));
 
             // publicKeyLocation (NOT publicKey)
             // not testing all locations (relative, file, url, jwksuri) with all pem loc types (good pem, complex pem, bad pem)
-            deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_RELATIVE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                    buildFileContent(notSet, PemFile, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_RELATIVE_COMPLEX_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                    buildFileContent(notSet, ComplexPemFile, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_FILE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                    buildFileContent(notSet, fileLoc + PemFile, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_URL_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                    buildFileContent(notSet, "file:///" + fileLoc + PemFile, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_JWKSURI_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                    buildFileContent(notSet, fixedJwksUri, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_RELATIVE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                      buildFileContent(notSet, PemFile, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_FILE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                      buildFileContent(notSet, fileLoc + PemFile, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_FILE_COMPLEX_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                      buildFileContent(notSet, fileLoc + ComplexPemFile, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_URL_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                      buildFileContent(notSet, "file:///" + fileLoc + PemFile, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_JWKSURI_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                      buildFileContent(notSet, fixedJwksUri, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_RELATIVE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(PublicKeyNotSet, PemFile, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_RELATIVE_COMPLEX_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(PublicKeyNotSet, ComplexPemFile, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_FILE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(PublicKeyNotSet, fileLoc + PemFile, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_URL_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(PublicKeyNotSet, "file:///" + fileLoc + PemFile, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_JWKSURI_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(PublicKeyNotSet, fixedJwksUri, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_RELATIVE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(PublicKeyNotSet, PemFile, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_FILE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(PublicKeyNotSet, fileLoc + PemFile, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_FILE_COMPLEX_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(PublicKeyNotSet, fileLoc + ComplexPemFile, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_URL_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(PublicKeyNotSet, "file:///" + fileLoc + PemFile, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.GOOD_JWKSURI_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(PublicKeyNotSet, fixedJwksUri, mpConfigSettings.issuer));
 
-            deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.BAD_FILE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                    buildFileContent(notSet, fileLoc + BadPemFile, mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.BAD_URL_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                                                    buildFileContent(notSet, "file:///" + fileLoc + "someKey.pem", mpConfigSettings.issuer));
-            deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.BAD_RELATIVE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                                                      buildFileContent(notSet, "badPublicKeyLocation", mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.BAD_FILE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(PublicKeyNotSet, fileLoc + BadPemFile, mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.BAD_URL_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(PublicKeyNotSet, "file:///" + fileLoc + "someKey.pem", mpConfigSettings.issuer));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwtFatConstants.BAD_RELATIVE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(PublicKeyNotSet, "badPublicKeyLocation", mpConfigSettings.issuer));
 
         } catch (Exception e) {
             Log.info(thisClass, "MPJwtAltConfig", "Hit an exception updating the war file" + e.getMessage());
             throw e;
         }
 
-    }
-
-    private static void deployRSServerNoMPConfigInAppApp(LibertyServer server) throws Exception {
-        List<String> classList = new ArrayList<String>();
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.CommonMicroProfileMarker_MPConfigNotInApp");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.microProfileMPConfigNotInApp.MicroProfileApp");
-        ShrinkHelper.exportAppToServer(server, genericCreateArchiveWithPems(MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT, classList));
-        server.addInstalledAppForValidation(MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT);
-
-    }
-
-    private static void deployRSServerMPConfigInAppInMetaInfApp(LibertyServer server, String warName, String configSettings) throws Exception {
-        String sourceName = "microProfileMP-ConfigInMETA-INF.war";
-        String metaInfFile = "/META-INF/microprofile-config.properties";
-        List<String> classList = new ArrayList<String>();
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.CommonMicroProfileMarker_MPConfigInMetaInf");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.microProfileMPConfigInMetaInf.MicroProfileApp");
-        ShrinkHelper.exportAppToServer(server, genericCreateArchiveWithPemsAndMPConfig(sourceName, warName, classList, metaInfFile, configSettings));
-        server.addInstalledAppForValidation(warName);
-
-    }
-
-    private static void deployRSServerMPConfigInAppUnderWebInfApp(LibertyServer server, String warName, String configSettings) throws Exception {
-        String sourceName = "microProfileMP-ConfigUnderWeb-INF.war";
-        String webInfFile = "/WEB-INF/classes/META-INF/microprofile-config.properties";
-        List<String> classList = new ArrayList<String>();
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.CommonMicroProfileMarker_MPConfigUnderWebInf");
-        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.microProfileMPConfigUnderWebInf.MicroProfileApp");
-        ShrinkHelper.exportAppToServer(server, genericCreateArchiveWithPemsAndMPConfig(sourceName, warName, classList, webInfFile, configSettings));
-        server.addInstalledAppForValidation(warName);
-
-    }
-
-    protected static WebArchive genericCreateArchiveWithPems(String baseWarName, List<String> classList) throws Exception {
-        try {
-            String warName = baseWarName + ".war";
-            WebArchive newWar = ShrinkWrap.create(WebArchive.class, warName)
-                            .add(new FileAsset(new File("build/classes/com/ibm/ws/security/jwt/fat/mpjwt/CommonMicroProfileApp.class")),
-                                 "com/ibm/ws/security/jwt/fat/mpjwt/CommonMicroProfileApp.class")
-                            .add(new FileAsset(new File("build/classes/com/ibm/ws/security/jwt/fat/mpjwt/MpJwtFatConstants.class")),
-                                 "com/ibm/ws/security/jwt/fat/mpjwt/MpJwtFatConstants.class")
-                            .add(new FileAsset(new File("test-applications/" + warName + "/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
-                            .add(new FileAsset(new File("test-applications/" + warName + "/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
-                            .add(new FileAsset(new File("publish/shared/securityKeys/bad_key.pem")), "/WEB-INF/classes/bad_key.pem")
-                            .add(new FileAsset(new File("publish/shared/securityKeys/rsa_key_withCert.pem")), "/WEB-INF/classes/rsa_key_withCert.pem")
-                            .add(new FileAsset(new File("publish/shared/securityKeys/rsa_key.pem")), "/WEB-INF/classes/rsa_key.pem");
-            for (String theClass : classList) {
-                newWar.addClass(theClass);
-            }
-            return newWar;
-        } catch (Exception e) {
-            Log.error(thisClass, "genericCreateArchive", e);
-            throw e;
-        }
-    }
-
-    protected static WebArchive genericCreateArchiveWithPemsAndMPConfig(String sourceName, String baseWarName, List<String> classList, String mpConfig,
-                                                                        String fileContent) throws Exception {
-        try {
-            String warName = baseWarName + ".war";
-            WebArchive newWar = ShrinkWrap.create(WebArchive.class, warName)
-                            .add(new FileAsset(new File("build/classes/com/ibm/ws/security/jwt/fat/mpjwt/CommonMicroProfileApp.class")),
-                                 "com/ibm/ws/security/jwt/fat/mpjwt/CommonMicroProfileApp.class")
-                            .add(new FileAsset(new File("build/classes/com/ibm/ws/security/jwt/fat/mpjwt/MpJwtFatConstants.class")),
-                                 "com/ibm/ws/security/jwt/fat/mpjwt/MpJwtFatConstants.class")
-                            .add(new FileAsset(new File("test-applications/" + sourceName + "/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
-                            .add(new FileAsset(new File("test-applications/" + sourceName + "/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
-                            .add(new FileAsset(new File("publish/shared/securityKeys/bad_key.pem")), "/WEB-INF/classes/bad_key.pem")
-                            .add(new FileAsset(new File("publish/shared/securityKeys/rsa_key_withCert.pem")), "/WEB-INF/classes/rsa_key_withCert.pem")
-                            .add(new FileAsset(new File("publish/shared/securityKeys/rsa_key.pem")), "/WEB-INF/classes/rsa_key.pem")
-                            .add(new StringAsset(fileContent), mpConfig);
-            for (String theClass : classList) {
-                newWar.addClass(theClass);
-            }
-            return newWar;
-        } catch (Exception e) {
-            Log.error(thisClass, "genericCreateArchive", e);
-            throw e;
-        }
     }
 
     /**
@@ -477,10 +359,10 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
      */
     public static String buildIssuer(String issuer) throws Exception {
         if (issuer == null) {
-            return getServerUrlBase(jwtBuilderServer) + "jwt/defaultJWT, "
-                   + getServerIpUrlBase(jwtBuilderServer) + "jwt/defaultJWT, "
-                   + getServerSecureUrlBase(jwtBuilderServer) + "jwt/defaultJWT, "
-                   + getServerIpSecureUrlBase(jwtBuilderServer) + "jwt/defaultJWT, "
+            return SecurityFatHttpUtils.getServerUrlBase(jwtBuilderServer) + "jwt/defaultJWT, "
+                   + SecurityFatHttpUtils.getServerIpUrlBase(jwtBuilderServer) + "jwt/defaultJWT, "
+                   + SecurityFatHttpUtils.getServerSecureUrlBase(jwtBuilderServer) + "jwt/defaultJWT, "
+                   + SecurityFatHttpUtils.getServerIpSecureUrlBase(jwtBuilderServer) + "jwt/defaultJWT, "
                    + "https://localhost:" + jwtBuilderServer.getBvtPort() + "/oidc/endpoint/OidcConfigSample, "
                    + "https://localhost:" + jwtBuilderServer.getBvtSecurePort() + "/oidc/endpoint/OidcConfigSample";
 
@@ -504,7 +386,7 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
     public static String resolvedJwksUri(String rawJwksUri) throws Exception {
 
         if (rawJwksUri != "" && rawJwksUri.contains("bvt.prop")) {
-            return getServerUrlBase(jwtBuilderServer) + "jwt/ibm/api/defaultJWT/jwk";
+            return SecurityFatHttpUtils.getServerUrlBase(jwtBuilderServer) + "jwt/ibm/api/defaultJWT/jwk";
 
         } else {
             return rawJwksUri;
@@ -530,7 +412,7 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
 
     public void standardTestFlow(LibertyServer server, String rootContext, String theApp, String className, Expectations expectations) throws Exception {
 
-        builtToken = actions.getJwtFromTokenEndpoint(_testName, "defaultJWT", getServerSecureUrlBase(jwtBuilderServer), defaultUser, defaultPassword);
+        String builtToken = actions.getJwtFromTokenEndpoint(_testName, "defaultJWT", SecurityFatHttpUtils.getServerSecureUrlBase(jwtBuilderServer), defaultUser, defaultPassword);
 
         String testUrl = buildAppUrl(server, rootContext, theApp);
 
@@ -540,7 +422,7 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
             expectations = setGoodAppExpectations(testUrl, className);
         }
         Page response = actions.invokeUrlWithBearerToken(_testName, webClient, testUrl, builtToken);
-        validationUtils.validateResult(response, defaultAction, expectations);
+        validationUtils.validateResult(response, expectations);
 
     }
 
@@ -555,34 +437,23 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
     public Expectations setBadCertExpectations(LibertyServer server, String failureCause) throws Exception {
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(defaultAction, HttpServletResponse.SC_UNAUTHORIZED));
-        // TODO finish this
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messages.log did not contain an error indicating a problem authenticating the request the provided token."));
         switch (failureCause) {
             case MpJwtFatConstants.X509_CERT:
                 String invalidKeyName = "badKeyName";
-//TODO fix checking
-                expectations.addExpectation(new ServerMessageExpectation(defaultAction, server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request the provided token."));
-
-                //            expectations = validationTools.addMessageExpectation(resourceTestServer, expectations,
-                //                    MpJwtFatConstants.INVOKE_RS_PROTECTED_RESOURCE, MpJwtFatConstants.MESSAGES_LOG, MpJwtFatConstants.STRING_MATCHES, "Messagelog did not contain an error indicating a problem authenticating the request the provided token.",
-                //                    MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ);
-                //            expectations = validationTools.addMessageExpectation(resourceTestServer, expectations,
-                //                    MpJwtFatConstants.INVOKE_RS_PROTECTED_RESOURCE, MpJwtFatConstants.MESSAGES_LOG, MpJwtFatConstants.STRING_MATCHES, "Messagelog did not a nessage stating that the alias was NOT found in the keystore.", invalidKeyName + ".*is not present in theKeyStore as a certificate");
-                //            expectations = validationTools.addMessageExpectation(resourceTestServer, expectations,
-                //                    MpJwtFatConstants.INVOKE_RS_PROTECTED_RESOURCE, MpJwtFatConstants.MESSAGES_LOG, MpJwtFatConstants.STRING_MATCHES, "Messagelog did not indicate that the signing key is NOT available.", MpJwtMessageConstants.CWWKS6007E_BAD_KEY_ALIAS + ".*" +
-                //                            invalidKeyName);
-                //            expectations = validationTools.addMessageExpectation(resourceTestServer, expectations,
-                //                    MpJwtFatConstants.INVOKE_RS_PROTECTED_RESOURCE, MpJwtFatConstants.MESSAGES_LOG, MpJwtFatConstants.STRING_MATCHES, "Messagelog did not indicate that the signing key is NOT available.",
-                //                    MpJwtMessageConstants.CWWKS6033E_JWT_CONSUMER_PUBLIC_KEY_NOT_RETRIEVED + ".*" + invalidKeyName + ".*rsa_trust");
+                expectations.addExpectation(new ServerMessageExpectation(server, invalidKeyName
+                                                                                 + ".*is not present in the KeyStore as a certificate entry", "Messages.log did not contain a message stating that the alias was NOT found in the keystore."));
+                expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6007E_BAD_KEY_ALIAS + ".*"
+                                                                                 + invalidKeyName, "Messages.log did not indicate that the signing key is NOT available."));
+                expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6033E_JWT_CONSUMER_PUBLIC_KEY_NOT_RETRIEVED + ".*"
+                                                                                 + invalidKeyName, "Message log did not indicate that the signing key is NOT available."));
                 break;
             case MpJwtFatConstants.JWK_CERT:
-                expectations.addExpectation(new ServerMessageExpectation(defaultAction, server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request the provided token."));
-                //            expectations = validationTools.addMessageExpectation(resourceTestServer, expectations, MpJwtFatConstants.INVOKE_RS_PROTECTED_RESOURCE, MpJwtFatConstants.MESSAGES_LOG, MpJwtFatConstants.STRING_CONTAINS, "Messagelog did not contain an error indicating a problem authenticating the request the provided token.",
-                //                    MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ);
-                //            expectations = validationTools.addMessageExpectation(resourceTestServer, expectations,
-                //                    MpJwtFatConstants.INVOKE_RS_PROTECTED_RESOURCE, MpJwtFatConstants.MESSAGES_LOG, MpJwtFatConstants.STRING_CONTAINS, "Messagelog did not contain an exception indicating that the signature was NOT valid.",
-                //                    MpJwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY);
-                //            break;
+                expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6029E_SIGNING_KEY_CANNOT_BE_FOUND, "Messages.log did not contain an error indicating that a signing key could not be found."));
+                break;
+            default:
+                break;
         }
 
         return expectations;
@@ -602,8 +473,8 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
     public Expectations setGoodAppExpectations(String testUrl, String theClass) throws Exception {
 
         Expectations expectations = new Expectations();
-        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(defaultAction, testUrl));
-        expectations.addExpectation(new ResponseFullExpectation(defaultAction, MpJwtFatConstants.STRING_CONTAINS, theClass, "Did not invoke the app " + theClass + "."));
+        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(testUrl));
+        expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_CONTAINS, theClass, "Did not invoke the app " + theClass + "."));
 
         return expectations;
     }
@@ -617,7 +488,7 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
      */
     public void badTokenVerificationReconfig(LibertyServer server, String certType) throws Exception {
 
-        if (cert_type == MpJwtFatConstants.X509_CERT) {
+        if (MpJwtFatConstants.X509_CERT.equals(cert_type)) {
             server.reconfigureServer("rs_server_AltConfigInApp_badServerXmlKeyName.xml", _testName);
         } else {
             server.reconfigureServer("rs_server_AltConfigInApp_badServerXmlJwksUri.xml", _testName);

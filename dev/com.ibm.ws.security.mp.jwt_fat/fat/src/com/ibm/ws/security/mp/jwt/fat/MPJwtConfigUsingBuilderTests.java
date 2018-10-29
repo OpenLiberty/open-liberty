@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.fat;
 
 import java.util.ArrayList;
@@ -15,18 +25,17 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.Constants.StringCheckType;
-import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
-import com.ibm.ws.security.fat.common.jwt.JwtTokenTools;
+import com.ibm.ws.security.fat.common.jwt.HeaderConstants;
+import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
+import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.jwt.expectations.JwtTokenHeaderExpectation;
+import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt.fat.utils.MpJwtMessageConstants;
-import com.ibm.ws.security.openidconnect.token.HeaderConstants;
-import com.ibm.ws.security.openidconnect.token.PayloadConstants;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
@@ -82,11 +91,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     @Server("com.ibm.ws.security.mp.jwt.fat.builder")
     public static LibertyServer jwtBuilderServer;
 
-    //    private JwtFatActions actions = new JwtFatActions();
     private final TestValidationUtils validationUtils = new TestValidationUtils();
-    String testAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
-
-    static List<List<String>> testApps = null;
 
     /**
      * Startup the builder and resource servers
@@ -102,8 +107,6 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
         setUpAndStartBuilderServer(jwtBuilderServer, "server_using_buildApp.xml", false);
 
         setUpAndStartRSServerForTests(resourceServer, "rs_server_orig_withAudience.xml", false);
-
-        initTestAppArray();
 
     }
 
@@ -138,11 +141,11 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * @throws Exception
      */
     protected static void setUpAndStartRSServerForTests(LibertyServer server, String configFile, boolean jwkEnabled) throws Exception {
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, getServerHostName());
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, getServerHostIp());
+        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
+        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
         if (jwkEnabled) {
             bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "");
-            bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", getServerSecureUrlBase(jwtBuilderServer) + "jwt/ibm/api/defaultJWT/jwk\"");
+            bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "\"" + SecurityFatHttpUtils.getServerSecureUrlBase(jwtBuilderServer) + "jwt/ibm/api/defaultJWT/jwk\"");
         } else {
             bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "rsacert");
             bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
@@ -150,30 +153,26 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
         deployRSServerApiTestApps(server);
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration(configFile);
-        saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
+        SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
         server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH));
     }
-
-    //    protected static void setUpAndStartBuilderServer(LibertyServer server, String configFile, boolean jwtEnabled, String builderApp) throws Exception {
-    //        deployBuilderServerComplexBuilderApp(server);
-    //        setUpAndStartBuilderServer(server, configFile, jwtEnabled);
-    //    }
 
     /**
      * Initialize the list of test application urls and their associated classNames
      * 
      * @throws Exception
      */
-    protected static void initTestAppArray() throws Exception {
+    protected List<List<String>> getTestAppArray() throws Exception {
 
-        //List<List<String>>
-        testApps = new ArrayList<List<String>>();
+        List<List<String>> testApps = new ArrayList<List<String>>();
         testApps.add(Arrays.asList(buildAppUrl(resourceServer, MpJwtFatConstants.MICROPROFILE_SERVLET, MpJwtFatConstants.MPJWT_APP_SEC_CONTEXT_REQUEST_SCOPE),
                                    MpJwtFatConstants.MPJWT_APP_CLASS_SEC_CONTEXT_REQUEST_SCOPE));
         testApps.add(Arrays.asList(buildAppUrl(resourceServer, MpJwtFatConstants.MICROPROFILE_SERVLET, MpJwtFatConstants.MPJWT_APP_TOKEN_INJECT_REQUEST_SCOPE),
                                    MpJwtFatConstants.MPJWT_APP_CLASS_TOKEN_INJECT_REQUEST_SCOPE));
         testApps.add(Arrays.asList(buildAppUrl(resourceServer, MpJwtFatConstants.MICROPROFILE_SERVLET, MpJwtFatConstants.MPJWT_APP_CLAIM_INJECT_REQUEST_SCOPE),
                                    MpJwtFatConstants.MPJWT_APP_CLASS_CLAIM_INJECT_REQUEST_SCOPE));
+
+        return testApps;
 
     }
 
@@ -195,22 +194,21 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
     public void genericConfigTest(String builtToken, Expectations expectations) throws Exception {
 
-        JwtTokenTools jwtTokenTools = new JwtTokenTools(builtToken);
-
-        jwtTokenTools.printJwtContent();
+        JwtTokenForTest jwtTokenTools = new JwtTokenForTest(builtToken);
 
         WebClient webClient = actions.createWebClient();
+        // If we're setting good expectations, they have to be unique for each app that we're testing with 
         boolean setGoodExpectations = false;
         if (expectations == null) {
             setGoodExpectations = true;
         }
-        for (List<String> app : testApps) {
+        for (List<String> app : getTestAppArray()) {
             if (setGoodExpectations) {
-                expectations = goodTestExpectations(jwtTokenTools, testAction, app.get(0), app.get(1));
+                expectations = goodTestExpectations(jwtTokenTools, app.get(0), app.get(1));
             }
 
             Page response = actions.invokeUrlWithBearerToken(_testName, webClient, app.get(0), builtToken);
-            validationUtils.validateResult(response, testAction, expectations);
+            validationUtils.validateResult(response, expectations);
         }
 
     }
@@ -231,7 +229,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
         // restore the server just in case a previous test changed the config (forcing a restore in tests that do NOT reconfig is quicker than having all tests restore when then finish)
         super.restoreTestServers();
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer);
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer);
         genericConfigTest(builtToken);
 
     }
@@ -250,7 +248,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
         // restore the server just in case a previous test changed the config (forcing a restore in tests that do NOT reconfig is quicker than having all tests restore when then finish)
         super.restoreTestServers();
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "noUniqueIssuer");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "noUniqueIssuer");
         genericConfigTest(builtToken, setBadIssuerExpectations(resourceServer));
 
     }
@@ -287,7 +285,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_authFilter_true.xml");
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer);
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer);
         genericConfigTest(builtToken);
 
     }
@@ -302,11 +300,11 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_authFilter_false.xml");
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer);
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer);
 
         Expectations expectations = new Expectations();
-        expectations.addSuccessStatusCodesForActions(new String[] { testAction });
-        expectations.addExpectation(new ResponseFullExpectation(testAction, MpJwtFatConstants.STRING_CONTAINS, MpJwtFatConstants.FORM_LOGIN_HEADING, "Did NOT land on the base security form login page"));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
+        expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_CONTAINS, MpJwtFatConstants.FORM_LOGIN_HEADING, "Did NOT land on the base security form login page"));
 
         genericConfigTest(builtToken, expectations);
 
@@ -325,7 +323,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         super.restoreTestServers();
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer);
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer);
         genericConfigTest(builtToken);
 
     }
@@ -341,12 +339,12 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     public void MPJwtConfigUsingBuilderTests_Audience_NotSpecifiedInRS() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_orig.xml");
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer);
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6023E_AUDIENCE_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the audience is NOT valid."));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6023E_AUDIENCE_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the audience is NOT valid."));
 
         genericConfigTest(builtToken, expectations);
 
@@ -363,12 +361,12 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     public void MPJwtConfigUsingBuilderTests_Audience_NotSpecifiedInJwt() throws Exception {
         super.restoreTestServers();
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "defaultJWT");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT");
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6023E_AUDIENCE_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the audience is NOT valid."));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6023E_AUDIENCE_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the audience is NOT valid."));
 
         genericConfigTest(builtToken, expectations);
 
@@ -387,12 +385,12 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         super.restoreTestServers();
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "audience_mismatch");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "audience_mismatch");
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6023E_AUDIENCE_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the audience is NOT valid."));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6023E_AUDIENCE_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the audience is NOT valid."));
 
         genericConfigTest(builtToken, expectations);
 
@@ -409,7 +407,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         super.restoreTestServers();
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "audience_superset");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "audience_superset");
         genericConfigTest(builtToken);
 
     }
@@ -425,7 +423,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         super.restoreTestServers();
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "audience_subset");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "audience_subset");
         genericConfigTest(builtToken);
 
     }
@@ -435,64 +433,84 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     // Testing jwksUri and keyName in tandem
     // The overall SSL config of the builder and mpJwt servers use key/trust that is paired
     // So, we can use a mix of the following using what would be valid values
-    //  1) (passes) builder issues token with JWK, mpJwt specifies a valid jwksUri
-    //  2) (fails) builder issues token with JWK, mpJwt omits the jwksUri, but, specifies a valid keyName
-    //  3) (passes) builder issues token with x509, mpJwt specifies a valid jwksUri
-    //  4) (passes) builder issues token with x509, mpJwt omits the jwksUri, but, specifies a valid keyName
+
+    /**
+     * builder issues token with JWK, mpJwt specifies a valid jwksUri
+     * Expect success
+     * 
+     * @throws Exception
+     */
     @Test
     public void MPJwtConfigUsingBuilderTests_buildUsingJWK_mpJWTusingJWK() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_jwk.xml");
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "JWKEnabled");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "JWKEnabled");
 
         genericConfigTest(builtToken);
 
     }
 
+    /**
+     * builder issues token with JWK, mpJwt omits the jwksUri, but, specifies a valid keyName
+     * Expect failure
+     * 
+     * @throws Exception
+     */
     @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
     @Test
     public void MPJwtConfigUsingBuilderTests_buildUsingJWK_mpJWTusingX509() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_noJwk.xml");
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "JWKEnabled");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "JWKEnabled");
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request using the provided token."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, "JWS signature is invalid", "Message log did not contain an exception indicating that the signature (kid) was NOT valid."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, "Message log did not contain an exception indicating that the signature was NOT valid."));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request using the provided token."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, "JWS signature is invalid", "Message log did not contain an exception indicating that the signature (kid) was NOT valid."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, "Message log did not contain an exception indicating that the signature was NOT valid."));
 
         genericConfigTest(builtToken, expectations);
 
     }
 
-//    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
+    /**
+     * builder issues token with x509, mpJwt specifies a valid jwksUri
+     * Expect expect failure
+     * 
+     * @throws Exception
+     */
     @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "com.ibm.websphere.security.jwt.InvalidClaimException" })
     @Test
     public void MPJwtConfigUsingBuilderTests_buildUsingX509_mpJWTusingJWK() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_jwk.xml");
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "JWKNotEnabled");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "JWKNotEnabled");
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request using the provided token."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem creating a JWT."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6029E_SIGNING_KEY_CANNOT_BE_FOUND, "Message log did not contain an error indicating that the signing key could not be found."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Message log did not contain an error indicating that the token could not be processed."));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request using the provided token."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem creating a JWT."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6029E_SIGNING_KEY_CANNOT_BE_FOUND, "Message log did not contain an error indicating that the signing key could not be found."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Message log did not contain an error indicating that the token could not be processed."));
         genericConfigTest(builtToken, expectations);
 
     }
 
+    /**
+     * builder issues token with x509, mpJwt omits the jwksUri, but, specifies a valid keyName
+     * Expect success
+     * 
+     * @throws Exception
+     */
     @Test
     public void MPJwtConfigUsingBuilderTests_buildUsingX509_mpJWTusingX509() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_noJwk.xml");
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "JWKNotEnabled");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "JWKNotEnabled");
 
         genericConfigTest(builtToken);
 
@@ -513,14 +531,14 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_jwk.xml");
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "JWKEnabled2");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "JWKEnabled2");
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request using the provided token."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem creating a JWT."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6029E_SIGNING_KEY_CANNOT_BE_FOUND, "Message log did not contain an error indicating that the signing key could not be found."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Message log did not contain an error indicating that the token could not be processed."));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request using the provided token."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem creating a JWT."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6029E_SIGNING_KEY_CANNOT_BE_FOUND, "Message log did not contain an error indicating that the signing key could not be found."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Message log did not contain an error indicating that the token could not be processed."));
         genericConfigTest(builtToken, expectations);
 
     }
@@ -539,18 +557,18 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_invalidKeyName.xml");
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "JWKNotEnabled");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "JWKNotEnabled");
 
         String invalidKeyName = "someKeyName";
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request using the provided token."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Message log did not contain an error indicating that the consumer can not process the string."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6007E_BAD_KEY_ALIAS + ".*"
-                                                                                             + invalidKeyName, "Message log did not indicate that the signing key is NOT available."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6033E_JWT_CONSUMER_PUBLIC_KEY_NOT_RETRIEVED + ".*"
-                                                                                             + invalidKeyName
-                                                                                             + ".*rsa_trust", "Message log did not indicate that the signing key is NOT available."));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request using the provided token."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Message log did not contain an error indicating that the consumer can not process the string."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6007E_BAD_KEY_ALIAS + ".*"
+                                                                                 + invalidKeyName, "Message log did not indicate that the signing key is NOT available."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6033E_JWT_CONSUMER_PUBLIC_KEY_NOT_RETRIEVED + ".*"
+                                                                                 + invalidKeyName
+                                                                                 + ".*rsa_trust", "Message log did not indicate that the signing key is NOT available."));
 
         genericConfigTest(builtToken, expectations);
 
@@ -563,15 +581,15 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      */
     @Mode(TestMode.LITE)
     @Test
-    public void MPJwtAPIConfigTests_hs256() throws Exception {
+    public void MPJwtConfigUsingBuilderTests_hs256() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_audience_hs256.xml");
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "hs256");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "hs256");
         // make sur we issued the correct token
         Expectations builderExpectations = new Expectations();
         builderExpectations.addExpectation(new JwtTokenHeaderExpectation(HeaderConstants.ALGORITHM, StringCheckType.CONTAINS, MpJwtFatConstants.SIGALG_HS256));
-        validationUtils.validateResult(builtToken, testAction, builderExpectations);
+        validationUtils.validateResult(builtToken, builderExpectations);
 
         genericConfigTest(builtToken);
 
@@ -586,60 +604,25 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     @Mode(TestMode.LITE)
     @Test
     @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
-    public void MPJwtAPIConfigTests_hs256_mismatchSharedKey() throws Exception {
+    public void MPJwtConfigUsingBuilderTests_hs256_mismatchSharedKey() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_audience_hs256.xml");
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "hs256_keyMisMatch");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "hs256_keyMisMatch");
         // make sur we issued the correct token
         Expectations builderExpectations = new Expectations();
         builderExpectations.addExpectation(new JwtTokenHeaderExpectation(HeaderConstants.ALGORITHM, StringCheckType.CONTAINS, MpJwtFatConstants.SIGALG_HS256));
-        validationUtils.validateResult(builtToken, testAction, builderExpectations);
+        validationUtils.validateResult(builtToken, builderExpectations);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request using the provided token."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem creating a JWT."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Message log did not contain an error indicating that the consumer can not process the string."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, "Message log did not contain an exception indicating that the signature was NOT valid."));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request using the provided token."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem creating a JWT."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Message log did not contain an error indicating that the consumer can not process the string."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, "Message log did not contain an exception indicating that the signature was NOT valid."));
 
         genericConfigTest(builtToken, expectations);
 
-//
-//        resourceTestServer.reconfigServer("rs_server_audience_hs256.xml", _testName, MpJwtConstants.JUNIT_REPORTING, MpJwtConstants.NO_EXTRA_MSGS);
-//
-//        WebConversation wc = new WebConversation();
-//
-//        JwtBuilderSettings updatedJwtBuilderSettings = jwtBuilderSettings.copyTestSettings();
-//
-//        // in order to consume the token, we need a subject, so add
-//        updatedJwtBuilderSettings.setUser("testuser");
-//        updatedJwtBuilderSettings.setClaims("upn#:#testuser");
-//        updatedJwtBuilderSettings.setAudiences("someoneWantsThis");
-//
-//        updatedJwtBuilderSettings.setSignatureAlg(MpJwtConstants.SIGALG_HS256);
-//        updatedJwtBuilderSettings.setSignatureAlgorithm(MpJwtConstants.SIGALG_HS256);
-//        updatedJwtBuilderSettings.setSigningKey("someKeyValuex"); // mismatch
-//
-//        // get the token so that we can pass it in the header to the RS Protected App request
-//        String token = getToken(wc, updatedJwtBuilderSettings);
-//
-//        List<validationData> expectations = add401StatusExpectations();
-//        expectations = validationTools.addMessageExpectation(resourceTestServer, expectations,
-//                MpJwtConstants.INVOKE_RS_PROTECTED_RESOURCE,
-//                MpJwtConstants.MESSAGES_LOG,
-//                MpJwtConstants.STRING_MATCHES,
-//                "Message log did not contain an error indicating a problem authenticating the request the provided token.",
-//                MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ);
-//
-//        expectations = validationTools.addMessageExpectation(resourceTestServer, expectations,
-//                MpJwtConstants.INVOKE_RS_PROTECTED_RESOURCE,
-//                MpJwtConstants.MESSAGES_LOG,
-//                MpJwtConstants.STRING_MATCHES,
-//                "Message log did not contain CWWKS5524E",
-//                "CWWKS5524E");
-//
-//        invokeMPJWTApp(_testName, token, updatedJwtBuilderSettings, expectations);
     }
 
     /******************************** sslRef ***************************************/
@@ -655,7 +638,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_validSSLRef.xml");
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "JWKNotEnabled");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "JWKNotEnabled");
 
         genericConfigTest(builtToken);
 
@@ -674,23 +657,23 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_inValidSSLRef.xml");
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "JWKNotEnabled");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "JWKNotEnabled");
 
         String invalidKeyName = "rsacert";
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request the provided token."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN
-                                                                                             + ".*mpJwt_1", "Message log did not indicate that the consumer can not process the token"));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6033E_JWT_CONSUMER_PUBLIC_KEY_NOT_RETRIEVED + ".*"
-                                                                                             + invalidKeyName
-                                                                                             + ".*configServerDefault", "Message log did not indicate that the signing key is NOT available."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6007E_BAD_KEY_ALIAS + ".*"
-                                                                                             + invalidKeyName, "Message log did not indicate that the signing key is NOT available."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, invalidKeyName
-                                                                                             + ".*is not present in the KeyStore as a certificate", "Message log did not a nessage statubg that the alias was NOT found in the keystore."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6033E_JWT_CONSUMER_PUBLIC_KEY_NOT_RETRIEVED + ".*"
-                                                                                             + invalidKeyName, "Message log did not indicate that the signing key is NOT available."));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request the provided token."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN
+                                                                                 + ".*mpJwt_1", "Message log did not indicate that the consumer can not process the token"));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6033E_JWT_CONSUMER_PUBLIC_KEY_NOT_RETRIEVED + ".*"
+                                                                                 + invalidKeyName
+                                                                                 + ".*configServerDefault", "Message log did not indicate that the signing key is NOT available."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6007E_BAD_KEY_ALIAS + ".*"
+                                                                                 + invalidKeyName, "Message log did not indicate that the signing key is NOT available."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, invalidKeyName
+                                                                                 + ".*is not present in the KeyStore as a certificate", "Message log did not a nessage statubg that the alias was NOT found in the keystore."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6033E_JWT_CONSUMER_PUBLIC_KEY_NOT_RETRIEVED + ".*"
+                                                                                 + invalidKeyName, "Message log did not indicate that the signing key is NOT available."));
 
         genericConfigTest(builtToken, expectations);
 
@@ -710,7 +693,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_tokenReuse_true.xml");
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "JTIEnabled");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "JTIEnabled");
 
         genericConfigTest(builtToken);
         // try to use the token again (should succeed)
@@ -733,32 +716,30 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_tokenReuse_false.xml");
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "JTIEnabled");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "JTIEnabled");
 
-        JwtTokenTools jwtTokenTools = new JwtTokenTools(builtToken);
-
-        jwtTokenTools.printJwtContent();
+        JwtTokenForTest jwtTokenTools = new JwtTokenForTest(builtToken);
 
         String testUrl = buildAppUrl(resourceServer, MpJwtFatConstants.MICROPROFILE_SERVLET, MpJwtFatConstants.MPJWT_APP_SEC_CONTEXT_REQUEST_SCOPE);
         String className = MpJwtFatConstants.MPJWT_APP_CLASS_SEC_CONTEXT_REQUEST_SCOPE;
 
         WebClient webClient = actions.createWebClient();
 
-        Expectations expectations = goodTestExpectations(jwtTokenTools, testAction, testUrl, className);
+        Expectations expectations = goodTestExpectations(jwtTokenTools, testUrl, className);
 
         Page response = actions.invokeUrlWithBearerToken(_testName, webClient, testUrl, builtToken);
-        validationUtils.validateResult(response, testAction, expectations);
+        validationUtils.validateResult(response, expectations);
 
         expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request the provided token."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN
-                                                                                             + ".*mpJwt_1", "Message log did not indicate that the consumer can not process the token."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6045E_JTI_REUSED, "Message log did not indicate that the token has been illegally reused."));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request the provided token."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN
+                                                                                 + ".*mpJwt_1", "Message log did not indicate that the consumer can not process the token."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6045E_JTI_REUSED, "Message log did not indicate that the token has been illegally reused."));
 
         // Try to use the token again - in the same conversation
         response = actions.invokeUrlWithBearerToken(_testName, webClient, testUrl, builtToken);
-        validationUtils.validateResult(response, testAction, expectations);
+        validationUtils.validateResult(response, expectations);
 
         // Try to use the token again - this time, in a different conversation
         genericConfigTest(builtToken, expectations);
@@ -779,7 +760,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         List<NameValuePair> extraClaims = new ArrayList<NameValuePair>();
         extraClaims.add(new NameValuePair(PayloadConstants.SUBJECT, defaultUser));
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "subject_claim_included", extraClaims);
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "subject_claim_included", extraClaims);
 
         genericConfigTest(builtToken);
 
@@ -798,15 +779,15 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_userNameAttribute_different.xml");
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "defaultJWT");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT");
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5519E_PRINCIPAL_MAPPING_MISSING_ATTR + ".*"
-                                                                                             + "other", "Message log did not contain an error indicating that the token does not contain the claim specified by userNameAttribute."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5508E_ERROR_CREATING_RESULT
-                                                                                             + ".*mpJwt_1", "Message log did not indicate that a subject for the user could not be created."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5506E_USERNAME_NOT_FOUND, "Message log did not indicate that the user name couldn't be found."));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5519E_PRINCIPAL_MAPPING_MISSING_ATTR + ".*"
+                                                                                 + "other", "Message log did not contain an error indicating that the token does not contain the claim specified by userNameAttribute."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5508E_ERROR_CREATING_RESULT
+                                                                                 + ".*mpJwt_1", "Message log did not indicate that a subject for the user could not be created."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5506E_USERNAME_NOT_FOUND, "Message log did not indicate that the user name couldn't be found."));
 
         genericConfigTest(builtToken, expectations);
 
@@ -828,13 +809,13 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         List<NameValuePair> extraClaims = new ArrayList<NameValuePair>();
         extraClaims.add(new NameValuePair("other", "someuser"));
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "defaultJWT", extraClaims);
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT", extraClaims);
 
         // set-up successful expectations here because we want to check for something extra in this case
         // we want to make sure that we get the name someuser from the subject
         Expectations expectations = new Expectations();
-        expectations.addSuccessStatusCodesForActions(new String[] { testAction });
-        expectations.addExpectation(new ResponseFullExpectation(testAction, MpJwtFatConstants.STRING_CONTAINS, "com.ibm.wsspi.security.cred.securityName=someuser", "Response did NOT contain \"com.ibm.wsspi.security.cred.securityName=someuser\" to indicate that the user in the credential was \"someuser\" "));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
+        expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_CONTAINS, "com.ibm.wsspi.security.cred.securityName=someuser", "Response did NOT contain \"com.ibm.wsspi.security.cred.securityName=someuser\" to indicate that the user in the credential was \"someuser\" "));
 
         genericConfigTest(builtToken, expectations);
 
@@ -858,11 +839,11 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
         List<NameValuePair> extraClaims = new ArrayList<NameValuePair>();
         extraClaims.add(new NameValuePair("other", "someuser"));
         extraClaims.add(new NameValuePair("upn", defaultUser));
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "defaultJWT", extraClaims);
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT", extraClaims);
 
         Expectations expectations = new Expectations();
-        expectations.addSuccessStatusCodesForActions(new String[] { testAction });
-        expectations.addExpectation(new ResponseFullExpectation(testAction, MpJwtFatConstants.STRING_CONTAINS, "com.ibm.wsspi.security.cred.securityName=someuser", "Response did NOT contain \"com.ibm.wsspi.security.cred.securityName=someuser\" to indicate that the user in the credential was \"someuser\" "));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
+        expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_CONTAINS, "com.ibm.wsspi.security.cred.securityName=someuser", "Response did NOT contain \"com.ibm.wsspi.security.cred.securityName=someuser\" to indicate that the user in the credential was \"someuser\" "));
 
         genericConfigTest(builtToken, expectations);
 
@@ -883,15 +864,15 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         List<NameValuePair> extraClaims = new ArrayList<NameValuePair>();
         extraClaims.add(new NameValuePair("upn", defaultUser));
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "defaultJWT", extraClaims);
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT", extraClaims);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5519E_PRINCIPAL_MAPPING_MISSING_ATTR + ".*"
-                                                                                             + "other", "Message log did not contain an error indicating that the token does not contain the claim specified by userNameAttribute."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5508E_ERROR_CREATING_RESULT
-                                                                                             + ".*mpJwt_1", "Message log did not indicate that a subject for the user could not be created."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5506E_USERNAME_NOT_FOUND, "Message log did not indicate that the user name couldn't be found."));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5519E_PRINCIPAL_MAPPING_MISSING_ATTR + ".*"
+                                                                                 + "other", "Message log did not contain an error indicating that the token does not contain the claim specified by userNameAttribute."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5508E_ERROR_CREATING_RESULT
+                                                                                 + ".*mpJwt_1", "Message log did not indicate that a subject for the user could not be created."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5506E_USERNAME_NOT_FOUND, "Message log did not indicate that the user name couldn't be found."));
 
         genericConfigTest(builtToken, expectations);
 
@@ -913,28 +894,28 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         List<NameValuePair> extraClaims = new ArrayList<NameValuePair>();
         extraClaims.add(new NameValuePair("other", "someuser"));
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "defaultJWT", extraClaims);
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT", extraClaims);
 
         //TODO update once 5280 is fixed
         // log contains the error message about not finding the user in the registry
         // response is the basic login page
         Expectations expectations = new Expectations();
         // TODO - fix in the works to not proceed to the login page and return a 401 (issue 5280)
-        expectations.addSuccessStatusCodesForActions(new String[] { testAction });
-        //        expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS1106A_AUTHENTICATION_FAILED, "Message log did not contain an error indicating a problem authenticating the request the provided token."));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
+        //        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS1106A_AUTHENTICATION_FAILED, "Message log did not contain an error indicating a problem authenticating the request the provided token."));
         // TODO - remove check for login page when issue 5280 is fixed
-        expectations.addExpectation(new ResponseFullExpectation(testAction, MpJwtFatConstants.STRING_CONTAINS, MpJwtFatConstants.FORM_LOGIN_HEADING, "Did NOT land on the base security form login page"));
+        expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_CONTAINS, MpJwtFatConstants.FORM_LOGIN_HEADING, "Did NOT land on the base security form login page"));
 
         genericConfigTest(builtToken, expectations);
 
 //        Expectations expectations = new Expectations();
-//        expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_UNAUTHORIZED));
-//        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5519E_PRINCIPAL_MAPPING_MISSING_ATTR + ".*"
+//        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+//        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5519E_PRINCIPAL_MAPPING_MISSING_ATTR + ".*"
 //                                                                                             + "other", "Message log did not contain an error indicating that the token does not contain the claim specified by userNameAttribute."));
-//        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5508E_ERROR_CREATING_RESULT
+//        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5508E_ERROR_CREATING_RESULT
 //                                                                                             + ".*mpJwt_1", "Message log did not indicate that a subject for the user could not be created."));
-//        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5506E_USERNAME_NOT_FOUND, "Message log did not indicate that the user name couldn't be found."));
+//        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5506E_USERNAME_NOT_FOUND, "Message log did not indicate that the user name couldn't be found."));
 //
 //        genericConfigTest(builtToken, expectations);
 
@@ -962,7 +943,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
         extraClaims.add(new NameValuePair(PayloadConstants.ISSUED_AT_TIME_IN_SECS, String.valueOf(currentTime)));
         extraClaims.add(new NameValuePair(PayloadConstants.EXPIRATION_TIME_IN_SECS, String.valueOf(expTime)));
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "subject_claim_included", extraClaims);
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "subject_claim_included", extraClaims);
 
         // Sleep beyond the lifetime of the token but within the configured clockSkew
         Thread.sleep(15 * 1000);
@@ -992,17 +973,17 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
         extraClaims.add(new NameValuePair(PayloadConstants.ISSUED_AT_TIME_IN_SECS, String.valueOf(currentTime)));
         extraClaims.add(new NameValuePair(PayloadConstants.EXPIRATION_TIME_IN_SECS, String.valueOf(expTime)));
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "subject_claim_included", extraClaims);
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "subject_claim_included", extraClaims);
 
         // Sleep beyond the lifetime of the token plus the configured clockSkew
         Thread.sleep(20 * 1000);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request the provided token."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN + ".*"
-                                                                                             + "consumer.*mpJwt_1", "Message log did not contain an exception indicating that the JWT could not be processed."));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS6025E_TOKEN_EXPIRED, "Message log did not contain message saying the token has expired."));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request the provided token."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN + ".*"
+                                                                                 + "consumer.*mpJwt_1", "Message log did not contain an exception indicating that the JWT could not be processed."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6025E_TOKEN_EXPIRED, "Message log did not contain message saying the token has expired."));
 
         genericConfigTest(builtToken, expectations);
 
@@ -1027,7 +1008,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_mapToUserRegistry_false.xml");
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "defaultJWT");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT");
 
         genericConfigTest(builtToken);
 
@@ -1045,7 +1026,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_mapToUserRegistry_true.xml");
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "defaultJWT");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT");
 
         genericConfigTest(builtToken);
 
@@ -1068,17 +1049,17 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
         List<NameValuePair> extraClaims = new ArrayList<NameValuePair>();
         extraClaims.add(new NameValuePair("upn", "userNotThere"));
 
-        String builtToken = getJwtTokenUsingBuilder(jwtBuilderServer, "defaultJWT", extraClaims);
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT", extraClaims);
 
         // log contains the error message about not finding the user in the registry
         // response is the basic login page
         Expectations expectations = new Expectations();
         // TODO - fix in the works to not proceed to the login page and return a 401 (issue 5280)
-        expectations.addSuccessStatusCodesForActions(new String[] { testAction });
-        //        expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addExpectation(new ServerMessageExpectation(testAction, resourceServer, MpJwtMessageConstants.CWWKS1106A_AUTHENTICATION_FAILED, "Message log did not contain an error indicating a problem authenticating the request the provided token."));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
+        //        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS1106A_AUTHENTICATION_FAILED, "Message log did not contain an error indicating a problem authenticating the request the provided token."));
         // TODO - remove check for login page when issue 5280 is fixed
-        expectations.addExpectation(new ResponseFullExpectation(testAction, MpJwtFatConstants.STRING_CONTAINS, MpJwtFatConstants.FORM_LOGIN_HEADING, "Did NOT land on the base security form login page"));
+        expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_CONTAINS, MpJwtFatConstants.FORM_LOGIN_HEADING, "Did NOT land on the base security form login page"));
 
         genericConfigTest(builtToken, expectations);
 

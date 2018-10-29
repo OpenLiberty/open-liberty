@@ -7,7 +7,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.Constants.CheckType;
 import com.ibm.ws.security.fat.common.Constants.JsonCheckType;
 import com.ibm.ws.security.fat.common.expectations.JsonObjectExpectation;
-import com.ibm.ws.security.fat.common.jwt.JwtTokenUtils;
+import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
 
 public class JwtTokenPayloadExpectation extends JsonObjectExpectation {
 
@@ -39,13 +39,13 @@ public class JwtTokenPayloadExpectation extends JsonObjectExpectation {
     @Override
     protected JsonObject readJsonFromContent(Object contentToValidate) throws Exception {
         String method = "readJsonFromContent (JwtTokenPayloadExpectation)";
-        JsonObject header = null;
+        JsonObject payload = null;
         try {
             if (contentToValidate != null && (contentToValidate instanceof String)) {
-                header = JwtTokenUtils.getPayloadJsonObject((String) contentToValidate);
+                payload = (new JwtTokenForTest((String) contentToValidate)).getJsonPayload();
             }
-            Log.info(thisClass, method, "Payload: " + header);
-            return header;
+            Log.info(thisClass, method, "Payload: " + payload);
+            return payload;
         } catch (Exception e) {
             throw new Exception("Failed to read JSON data from the provided content. Error was: [" + e + "]. Content was: [" + contentToValidate + "]");
         }

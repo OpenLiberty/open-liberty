@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2018
- *
- * The source code for this program is not published or other-
- * wise divested of its trade secrets, irrespective of what has
- * been deposited with the U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.fat;
 
 import org.junit.BeforeClass;
@@ -36,7 +35,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 @Mode(TestMode.LITE)
 @MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
-//@AllowedFFDC({ "org.apache.http.NoHttpResponseException" })
 public class MPJwtGoodMPConfigAsSystemProperties_UsePublicKey_NoKeyLoc extends MPJwtGoodMPConfigAsSystemProperties {
 
     public static Class<?> thisClass = MPJwtGoodMPConfigAsSystemProperties_UsePublicKey_NoKeyLoc.class;
@@ -47,8 +45,7 @@ public class MPJwtGoodMPConfigAsSystemProperties_UsePublicKey_NoKeyLoc extends M
         setUpAndStartBuilderServer(jwtBuilderServer, "server_using_buildApp.xml");
 
         // server has an empty mpJwt config
-        // TODO - setup some constants for the null and "" values (namely to indicate that they're not set
-        MPConfigSettings mpConfigSettings = new MPConfigSettings("", ComplexPublicKey, null, MpJwtFatConstants.X509_CERT);
+        MPConfigSettings mpConfigSettings = new MPConfigSettings(PublicKeyLocationNotSet, ComplexPublicKey, IssuerNotSet, MpJwtFatConstants.X509_CERT);
 
         setUpAndStartRSServerForTests(resourceServer, "rs_server_AltConfigNotInApp_noServerXmlConfig.xml", mpConfigSettings, MPConfigLocation.SYSTEM_VAR);
 

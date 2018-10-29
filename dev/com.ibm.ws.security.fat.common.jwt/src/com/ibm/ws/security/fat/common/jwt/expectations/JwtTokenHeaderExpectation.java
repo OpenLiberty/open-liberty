@@ -7,7 +7,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.Constants.CheckType;
 import com.ibm.ws.security.fat.common.Constants.JsonCheckType;
 import com.ibm.ws.security.fat.common.expectations.JsonObjectExpectation;
-import com.ibm.ws.security.fat.common.jwt.JwtTokenUtils;
+import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
 
 public class JwtTokenHeaderExpectation extends JsonObjectExpectation {
 
@@ -42,7 +42,7 @@ public class JwtTokenHeaderExpectation extends JsonObjectExpectation {
         JsonObject header = null;
         try {
             if (contentToValidate != null && (contentToValidate instanceof String)) {
-                header = JwtTokenUtils.getHeaderJsonObject((String) contentToValidate);
+                header = (new JwtTokenForTest((String) contentToValidate)).getJsonHeader();
             }
             Log.info(thisClass, method, "Header: " + header);
             return header;
