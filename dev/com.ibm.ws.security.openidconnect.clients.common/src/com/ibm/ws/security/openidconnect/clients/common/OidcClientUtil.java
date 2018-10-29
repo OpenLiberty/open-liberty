@@ -72,6 +72,22 @@ public class OidcClientUtil {
         return commonHeaders;
     }
 
+    // temporary so CL will compile.  Remove me.
+    public HashMap<String, String> getTokensFromAuthzCode(String tokenEnpoint,
+            String clientId,
+            @Sensitive String clientSecret,
+            String redirectUri,
+            String code,
+            String grantType,
+            SSLSocketFactory sslSocketFactory,
+            boolean isHostnameVerification,
+            String authMethod,
+            String resources) throws Exception {
+        return getTokensFromAuthzCode(tokenEnpoint, clientId, clientSecret, redirectUri,
+                code, grantType, sslSocketFactory, isHostnameVerification,
+                authMethod, resources, false);
+    }
+
     public HashMap<String, String> getTokensFromAuthzCode(String tokenEnpoint,
             String clientId,
             @Sensitive String clientSecret,
