@@ -62,8 +62,6 @@ public class FilterConfigFactory implements ManagedServiceFactory {
     public static final String VALUE_PERMISSION_ALLOW = "Allow";
     public static final String VALUE_PERMISSION_DENY = "Deny";
 
-    private static final String MESSAGE_BUNDLE = "com.ibm.ws.kernel.instrument.serialfilter.serverconfig.FilterConfigMessages";
-
     private volatile ComponentContext cc = null;
 
     private Map<String, Dictionary> serialFilterConfigMap = new HashMap<String, Dictionary>();
@@ -153,32 +151,23 @@ public class FilterConfigFactory implements ManagedServiceFactory {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "propagateConfigMap", pid, props);
             }
+            // class and mode are always set. if not, configService will not allow to process, since metadata is
+            // set as required for these attributes.
             if (props != null && !props.isEmpty()) {
                 String clazz = (String)props.get(CONFIG_CLASS);
                 String mode = (String)props.get(CONFIG_MODE);
                 String permission = (String)props.get(CONFIG_PERMISSION);
                 String method = (String)props.get(CONFIG_METHOD);
-                if (clazz != null && !clazz.isEmpty() && mode != null && !mode.isEmpty()) {
-                    String key = clazz;
-                    String value = mode.toUpperCase();
-                    // valid value.
-                    if (method != null && !method.isEmpty()) {
-                        clazz = clazz + "#" + method;
-                    }
-                    if (permission != null && !permission.isEmpty()) {
-                        value =  value + "," + permission.toUpperCase();
-                    }
-                    filterConfig.setProperty(clazz, value);
-                } else {
-                    String propName;
-                    if (clazz == null || clazz.isEmpty()) {
-                        propName = CONFIG_CLASS;
-                    } else {
-                        propName = CONFIG_MODE;
-                    }
-                    String reason  = MessageFormat.format(ResourceBundle.getBundle(MESSAGE_BUNDLE).getString("ERROR_NO_PROPERTY"), propName);
-                    throw new ConfigurationException(propName, reason);
+                String key = clazz;
+                String value = mode.toUpperCase();
+                // valid value.
+                if (method != null && !method.isEmpty()) {
+                    clazz = clazz + "#" + method;
                 }
+                if (permission != null && !permission.isEmpty()) {
+                    value =  value + "," + permission.toUpperCase();
+                }
+                filterConfig.setProperty(clazz, value);
             }
         }
         return;
@@ -196,6 +185,4 @@ public class FilterConfigFactory implements ManagedServiceFactory {
     protected Map<String, Dictionary> getConfigMap() {
         return serialFilterConfigMap;
     }
-
-
 }
