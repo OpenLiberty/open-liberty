@@ -34,6 +34,7 @@ import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ValueType;
 
 public class AsmObjectValueAnalyzer {
     private static final AtomicLong objIDCounter = new AtomicLong(0);
+    private static final String PROPNAME_ACTUAL_TYPE = "actual.type";
 
     public static ValueInstanceType processValue(Object value) {
         return processValueInternal(value, new HashMap<Object, Long>());
@@ -131,7 +132,7 @@ public class AsmObjectValueAnalyzer {
                 vit.setSimple(String.format("%d", value));
             } else if (cls.equals(java.lang.Double.class)) {
                 vit.setType(ValueType.JAVA_LANG_DOUBLE);
-                vit.setSimple(String.format("%f", value)); // TODO: Make sure this supports double precision
+                vit.setSimple(String.format("%f", value));
             } else if (cls.equals(java.lang.Float.class)) {
                 vit.setType(ValueType.JAVA_LANG_FLOAT);
                 vit.setSimple(String.format("%f", value));
@@ -144,9 +145,61 @@ public class AsmObjectValueAnalyzer {
             } else if (cls.equals(java.lang.Short.class)) {
                 vit.setType(ValueType.JAVA_LANG_SHORT);
                 vit.setSimple(String.format("%d", value));
+            } else if (cls.equals(java.util.concurrent.atomic.AtomicInteger.class)) {
+                vit.setType(ValueType.JAVA_LANG_INTEGER);
+                vit.setSimple(String.format("%d", ((java.util.concurrent.atomic.AtomicInteger) value).get()));
+
+                com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertiesType props = new com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertiesType();
+                com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertyType prop = new com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertyType();
+                prop.setName(PROPNAME_ACTUAL_TYPE);
+                prop.setValue("java.util.concurrent.atomic.AtomicInteger");
+                props.getProperty().add(prop);
+
+                vit.setProperties(props);
+            } else if (cls.equals(java.util.concurrent.atomic.AtomicLong.class)) {
+                vit.setType(ValueType.JAVA_LANG_INTEGER);
+                vit.setSimple(String.format("%d", ((java.util.concurrent.atomic.AtomicLong) value).get()));
+
+                com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertiesType props = new com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertiesType();
+                com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertyType prop = new com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertyType();
+                prop.setName(PROPNAME_ACTUAL_TYPE);
+                prop.setValue("java.util.concurrent.atomic.AtomicLong");
+                props.getProperty().add(prop);
+
+                vit.setProperties(props);
+            } else if (cls.equals(java.math.BigDecimal.class)) {
+                vit.setType(ValueType.JAVA_LANG_STRING);
+                vit.setSimple(String.format("%s", ((java.math.BigDecimal) value).toString()));
+
+                com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertiesType props = new com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertiesType();
+                com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertyType prop = new com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertyType();
+                prop.setName(PROPNAME_ACTUAL_TYPE);
+                prop.setValue("java.math.BigDecimal");
+                props.getProperty().add(prop);
+
+                vit.setProperties(props);
+            } else if (cls.equals(java.math.BigInteger.class)) {
+                vit.setType(ValueType.JAVA_LANG_STRING);
+                vit.setSimple(String.format("%s", ((java.math.BigInteger) value).toString()));
+
+                com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertiesType props = new com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertiesType();
+                com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertyType prop = new com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertyType();
+                prop.setName(PROPNAME_ACTUAL_TYPE);
+                prop.setValue("java.math.BigInteger");
+                props.getProperty().add(prop);
+
+                vit.setProperties(props);
             } else {
-                // TODO: Represent the others as an Object instance
                 vit.setType(ValueType.UNKNOWN);
+                vit.setSimple(value.toString());
+
+                com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertiesType props = new com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertiesType();
+                com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertyType prop = new com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.PropertyType();
+                prop.setName(PROPNAME_ACTUAL_TYPE);
+                prop.setValue(value.getClass().getName());
+                props.getProperty().add(prop);
+
+                vit.setProperties(props);
             }
 
             return vit;
