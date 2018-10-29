@@ -119,7 +119,8 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.failover',
     'com.ibm.ws.security.wim.adapter.ldap.fat.tworealms',
     'com.ibm.ws.security.wim.adapter.ldap.fat.ids.allIbmGroups',
-    'com.ibm.ws.security.registry.ldap.fat.attr.timeout'
+    'com.ibm.ws.security.registry.ldap.fat.attr.timeout',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.readtimeout'
   ]
   servers.each { server ->
     copy { 
@@ -211,4 +212,6 @@ task certificateMapper_JAR(type: Jar, dependsOn: classes) {
 assemble { 
   dependsOn \
   certificateMapper_JAR
+  
+  dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
 }
