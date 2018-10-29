@@ -990,11 +990,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         activeRequest.decrementAndGet();
         ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setAlreadyBeingReleased(false);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-<<<<<<< HEAD
             Tr.exit(this, tc, "release", new Object[] { mcWrapper.getManagedConnectionWithoutStateCheck(), "Pool contents ==>", this });
-=======
-            Tr.exit(this, tc, "JMS20181025 - release", new Object[] { mcWrapper.getManagedConnectionWithoutStateCheck(), "Pool contents ==>", this });
->>>>>>> fix for exhausted pool when connection fail during cleanup
         }
     }
 
