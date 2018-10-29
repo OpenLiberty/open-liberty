@@ -18,6 +18,7 @@
  */
 package org.apache.cxf.common.jaxb;
 
+
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
@@ -97,7 +98,7 @@ public final class JAXBUtils {
     public static final String JAXB_URI = "http://java.sun.com/xml/ns/jaxb";
 
     private static final Logger LOG = LogUtils.getL7dLogger(JAXBUtils.class);
-
+    
     public enum IdentifierType {
         CLASS,
         INTERFACE,
@@ -1354,8 +1355,9 @@ public final class JAXBUtils {
     private static Class<?> createNamespaceWrapperInternal(ASMHelper helper, ClassWriter cw,
                                                            String postFix, Class<?> ref) {
         String className = "org.apache.cxf.jaxb.NamespaceMapper" + postFix;
+        boolean useJdkJaxb = isJdkJaxbAvailable() && !"RI".equals(postFix);
         String superName = "com/sun/xml/"
-            + ("RI".equals(postFix) ? "" : "internal/")
+            + (useJdkJaxb ? "internal/" : "")
             + "bind/marshaller/NamespacePrefixMapper";
         String postFixedName = "org/apache/cxf/jaxb/NamespaceMapper" + postFix;
 
@@ -1534,8 +1536,8 @@ public final class JAXBUtils {
     }
 
     private static String getPostfix(Class<?> cls) {
-        if (cls.getName().contains("com.sun.xml.internal")
-            || cls.getName().contains("eclipse")) {
+        if (!isJdkJaxbAvailable() && 
+            (cls.getName().contains("com.sun.xml.internal") || cls.getName().contains("eclipse"))) {
             //eclipse moxy accepts sun package CharacterEscapeHandler 
             return ".internal";
         } else if (cls.getName().contains("com.sun.xml.bind")) {
@@ -1606,5 +1608,16 @@ public final class JAXBUtils {
         return null;
     }
     
+    private static boolean isJdkJaxbAvailable() {
+        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            @Override
+            public Boolean run() {
+                // JAX-B is only available in the JDK in JDK 1.7 and 1.8, but not in JDK 9+
+                return System.getProperty("java.specification.version").startsWith("1.");
+            }
+        });
+    }
+    
 
 }
+
