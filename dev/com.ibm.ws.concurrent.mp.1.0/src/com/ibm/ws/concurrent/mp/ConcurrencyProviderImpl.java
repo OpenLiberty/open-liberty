@@ -12,6 +12,8 @@ package com.ibm.ws.concurrent.mp;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutorBuilder;
 import org.eclipse.microprofile.concurrent.ThreadContextBuilder;
+import org.eclipse.microprofile.concurrent.spi.ConcurrencyManager;
+import org.eclipse.microprofile.concurrent.spi.ConcurrencyManagerBuilder;
 import org.eclipse.microprofile.concurrent.spi.ConcurrencyProvider;
 import org.eclipse.microprofile.concurrent.spi.ConcurrencyProviderRegistration;
 import org.osgi.framework.ServiceReference;
@@ -48,15 +50,38 @@ public class ConcurrencyProviderImpl implements ConcurrencyProvider {
     }
 
     @Override
-    public ManagedExecutorBuilder newManagedExecutorBuilder() {
-        // TODO ThreadContextProvider implementations are discovered here? Or upon builder.build()? Or upon using the executor (awkward).
+    public ConcurrencyManager getConcurrencyManager() {
         return null; // TODO
     }
 
     @Override
+    public ConcurrencyManager getConcurrencyManager(ClassLoader classLoader) {
+        return null; // TODO
+    }
+
+    @Override
+    public ConcurrencyManagerBuilder getConcurrencyManagerBuilder() {
+        return null; // TODO
+    }
+
+    @Override
+    public ManagedExecutorBuilder newManagedExecutorBuilder() {
+        return null; // TODO rely on default implementation to get from concurrency manager?
+    }
+
+    @Override
     public ThreadContextBuilder newThreadContextBuilder() {
-        // TODO ThreadContextProvider implementations are discovered here?
-        return new ThreadContextBuilderImpl(this);
+        return new ThreadContextBuilderImpl(this); // TODO rely on default implementation to get from concurrency manager?
+    }
+
+    @Override
+    public void registerConcurrencyManager(ConcurrencyManager manager, ClassLoader classLoader) {
+        // TODO
+    }
+
+    @Override
+    public void releaseConcurrencyManager(ConcurrencyManager manager) {
+        // TODO
     }
 
     @Reference(service = com.ibm.wsspi.threadcontext.ThreadContextProvider.class,

@@ -24,7 +24,7 @@ Export-Package: \
   org.eclipse.microprofile.concurrent.spi;version=1.0
 
 Include-Resource: \
-  @${repo;com.ibm.ws.org.eclipse.microprofile.concurrency:microprofile-concurrency-api;0.20181004.214427.5-2;EXACT}
+  @${repo;com.ibm.ws.org.eclipse.microprofile.concurrency:microprofile-concurrency-api;0.20181025.204434.10;EXACT}
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
