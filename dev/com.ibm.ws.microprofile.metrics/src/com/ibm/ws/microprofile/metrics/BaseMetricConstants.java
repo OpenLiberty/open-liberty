@@ -11,7 +11,7 @@
 package com.ibm.ws.microprofile.metrics;
 
 public class BaseMetricConstants {
-    public static final String GC_OBJECT_TYPE = "java.lang:type=GarbageCollector";
+    public static final String GC_OBJECT_TYPE = "type=GarbageCollector";
 
     public static final String GC_OBJECT_TYPE_NAME = "java.lang:type=GarbageCollector,name=";
 
