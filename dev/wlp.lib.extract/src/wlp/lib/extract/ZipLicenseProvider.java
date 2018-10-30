@@ -29,8 +29,8 @@ public class ZipLicenseProvider implements LicenseProvider {
         } catch (IOException e) {
             return new ReturnCode(ReturnCode.BAD_INPUT);
         }
-        ReturnCode status = ContainerLicenseProvider.buildInstance(new Container.JarContainer(jar), laPrefix, liPrefix);
-        instance = ContainerLicenseProvider.getInstance();
+        ReturnCode status = ContentLicenseProvider.buildInstance(new Content.JarContent(jar), laPrefix, liPrefix);
+        instance = ContentLicenseProvider.getInstance();
         return status;
     }
 
@@ -64,7 +64,7 @@ public class ZipLicenseProvider implements LicenseProvider {
         if (jar == null) {
             return null;
         }
-        return ContainerLicenseProvider.createInstance(new Container.JarContainer(jar), laPrefix);
+        return ContentLicenseProvider.createInstance(new Content.JarContent(jar), laPrefix);
     }
 
     /*

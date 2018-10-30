@@ -14,11 +14,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -30,7 +25,7 @@ import java.util.jar.Manifest;
 /**
  *
  */
-public abstract class Container implements Iterable<Container.Entry> {
+public abstract class Content implements Iterable<Content.Entry> {
 
     public abstract Manifest getManifest() throws IOException;
 
@@ -44,6 +39,8 @@ public abstract class Container implements Iterable<Container.Entry> {
         // do nothing by default
     }
 
+    public abstract boolean isExtracted();
+
     public interface Entry {
         public String getName();
 
@@ -52,22 +49,22 @@ public abstract class Container implements Iterable<Container.Entry> {
         public InputStream getInputStream() throws IOException;
     }
 
-    public static Container build(File f) throws IOException {
+    public static Content build(File f) throws IOException {
         if (f.isDirectory()) {
-            return new DirectoryContainer(f.toPath());
+            return new DirectoryContent(f);
         }
-        return new JarContainer(new JarFile(f));
+        return new JarContent(new JarFile(f));
     }
 
-    public static class JarContainer extends Container {
+    public static class JarContent extends Content {
         private final JarFile jar;
-        private final List<Entry> entries = new ArrayList<Container.Entry>();
+        private final List<Entry> entries = new ArrayList<Content.Entry>();
 
-        public JarContainer(JarFile jar) {
+        public JarContent(JarFile jar) {
             this.jar = jar;
             for (Enumeration<JarEntry> eJarEntries = this.jar.entries(); eJarEntries.hasMoreElements();) {
                 JarEntry jarEntry = eJarEntries.nextElement();
-                entries.add(new JarContainerEntry(jarEntry));
+                entries.add(new JarContentEntry(jarEntry));
             }
         }
 
@@ -85,7 +82,7 @@ public abstract class Container implements Iterable<Container.Entry> {
         public Entry getEntry(String path) {
             JarEntry jarEntry = jar.getJarEntry(path);
             if (jarEntry != null) {
-                return new JarContainerEntry(jarEntry);
+                return new JarContentEntry(jarEntry);
             }
             return null;
         }
@@ -105,10 +102,15 @@ public abstract class Container implements Iterable<Container.Entry> {
             jar.close();
         }
 
-        public class JarContainerEntry implements Entry {
+        @Override
+        public boolean isExtracted() {
+            return false;
+        }
+
+        public class JarContentEntry implements Entry {
             private final JarEntry jarEntry;
 
-            public JarContainerEntry(JarEntry jarEntry) {
+            public JarContentEntry(JarEntry jarEntry) {
                 this.jarEntry = jarEntry;
             }
 
@@ -130,24 +132,24 @@ public abstract class Container implements Iterable<Container.Entry> {
         }
     }
 
-    public static class DirectoryContainer extends Container {
-        private final Path root;
-        private final List<Entry> entries = new ArrayList<Container.Entry>();
+    public static class DirectoryContent extends Content {
+        private final File root;
+        private final List<Entry> entries = new ArrayList<Content.Entry>();
 
-        public DirectoryContainer(Path root) {
+        public DirectoryContent(File root) {
             this.root = root;
-            try {
-                Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
-                    @Override
-                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                        if (!attrs.isDirectory()) {
-                            entries.add(new FileEntry(file));
-                        }
-                        return FileVisitResult.CONTINUE;
-                    }
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
+            addEntries(root, "", this.entries);
+
+        }
+
+        private void addEntries(File file, String pathPrefix, List<Entry> results) {
+            for (String path : file.list()) {
+                File child = new File(file, path);
+                String childPath = pathPrefix.isEmpty() ? path : pathPrefix + '/' + path;
+                results.add(new FileEntry(child, childPath));
+                if (child.isDirectory()) {
+                    addEntries(child, childPath, results);
+                }
             }
         }
 
@@ -158,7 +160,7 @@ public abstract class Container implements Iterable<Container.Entry> {
 
         @Override
         public Manifest getManifest() throws IOException {
-            InputStream in = new FileInputStream(new File(root.toFile(), JarFile.MANIFEST_NAME));
+            InputStream in = new FileInputStream(new File(root, JarFile.MANIFEST_NAME));
             try {
                 return new Manifest(in);
             } finally {
@@ -168,9 +170,9 @@ public abstract class Container implements Iterable<Container.Entry> {
 
         @Override
         public Entry getEntry(String path) {
-            File file = new File(root.toFile(), path);
+            File file = new File(root, path);
             if (file.exists()) {
-                return new FileEntry(file.toPath());
+                return new FileEntry(file, path);
             }
             return null;
         }
@@ -185,40 +187,37 @@ public abstract class Container implements Iterable<Container.Entry> {
             return 0;
         }
 
+        @Override
+        public boolean isExtracted() {
+            return true;
+        }
+
         public class FileEntry implements Entry {
-            private final Path path;
-            private final String sPath;
+            private final File file;
+            private final String path;
 
             /**
              * @param file
              */
-            public FileEntry(Path p) {
-                this.path = root.relativize(p);
-                StringBuffer pBuf = new StringBuffer();
-                for (Path component : path) {
-                    if (pBuf.length() != 0) {
-                        pBuf.append('/');
-                    }
-                    pBuf.append(component.getFileName().toString());
-                }
-                sPath = pBuf.toString();
+            public FileEntry(File file, String path) {
+                this.path = path;
+                this.file = file;
             }
 
             @Override
             public String getName() {
-                return sPath;
+                return path;
             }
 
             @Override
             public boolean isDirectory() {
-                return path.toFile().isDirectory();
+                return file.isDirectory();
             }
 
             @Override
             public InputStream getInputStream() throws IOException {
-                return new FileInputStream(path.toFile());
+                return new FileInputStream(file);
             }
-
         }
     }
 }

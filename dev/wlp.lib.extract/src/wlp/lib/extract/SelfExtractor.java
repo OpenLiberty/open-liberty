@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import wlp.lib.extract.Container.Entry;
+import wlp.lib.extract.Content.Entry;
 
 /**
  *
@@ -63,7 +63,7 @@ public class SelfExtractor implements LicenseProvider {
 
     // TODO remove this
     protected final ZipFile jarFile;
-    protected final Container container;
+    protected final Content container;
     protected final String root;
     protected final List productMatches;
     private final String archiveContentType;
@@ -191,14 +191,14 @@ public class SelfExtractor implements LicenseProvider {
 
     // TODO remove this
     protected SelfExtractor(JarFile jar, LicenseProvider licenseProvider, Attributes attributes) {
-        this(jar, new Container.JarContainer(jar), licenseProvider, attributes);
+        this(jar, new Content.JarContent(jar), licenseProvider, attributes);
     }
 
-    protected SelfExtractor(Container container, LicenseProvider licenseProvider, Attributes attributes) {
+    protected SelfExtractor(Content container, LicenseProvider licenseProvider, Attributes attributes) {
         this(null, container, licenseProvider, attributes);
     }
 
-    private SelfExtractor(JarFile jar, Container container, LicenseProvider licenseProvider, Attributes attributes) {
+    private SelfExtractor(JarFile jar, Content container, LicenseProvider licenseProvider, Attributes attributes) {
         this.jarFile = jar;
         this.container = container;
         this.licensePresent = licenseProvider == null ? false : true;
@@ -279,13 +279,13 @@ public class SelfExtractor implements LicenseProvider {
         if (self == null) {
             return new ReturnCode(ReturnCode.NOT_FOUND, "licenseNotFound", new Object[] {});
         }
-        Container container = null;
+        Content container = null;
         String laPrefix = null;
         String liPrefix = null;
         Attributes mainAttributes = null;
         boolean hasLicense = true;
         try {
-            container = Container.build(self);
+            container = Content.build(self);
             Manifest man = container.getManifest();
             mainAttributes = man.getMainAttributes();
             laPrefix = mainAttributes.getValue("License-Agreement");
@@ -297,13 +297,13 @@ public class SelfExtractor implements LicenseProvider {
         }
 
         if (hasLicense) {
-            ReturnCode buildLicenseProviderReturnCode = ContainerLicenseProvider.buildInstance(container, laPrefix, liPrefix);
+            ReturnCode buildLicenseProviderReturnCode = ContentLicenseProvider.buildInstance(container, laPrefix, liPrefix);
             if (buildLicenseProviderReturnCode != ReturnCode.OK) {
                 return buildLicenseProviderReturnCode;
             }
         }
 
-        instance = new SelfExtractor(container, hasLicense ? ContainerLicenseProvider.getInstance() : null, mainAttributes);
+        instance = new SelfExtractor(container, hasLicense ? ContentLicenseProvider.getInstance() : null, mainAttributes);
 
         return ReturnCode.OK;
     }
@@ -666,8 +666,7 @@ public class SelfExtractor implements LicenseProvider {
         }
 
         SelfExtract.out("extractDirectory", new Object[] { outputDir.getAbsolutePath() });
-        File containerFile = new File(container.getName(), root);
-        if (!containerFile.equals(outputDir)) {
+        if (!container.isExtracted()) {
             for (Entry entry : container) {
                 String name = entry.getName();
                 String commonRootDir = getCommonRootDir(name, filePathsToExtract);

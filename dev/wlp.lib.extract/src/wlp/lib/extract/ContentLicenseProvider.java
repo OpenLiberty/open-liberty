@@ -15,12 +15,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import wlp.lib.extract.Container.Entry;
+import wlp.lib.extract.Content.Entry;
 
 /**
- * This implementation of {@link LicenseProvider} will load the license agreement and information from a Container.
+ * This implementation of {@link LicenseProvider} will load the license agreement and information from a Content.
  */
-public class ContainerLicenseProvider implements LicenseProvider {
+public class ContentLicenseProvider implements LicenseProvider {
 
     private final Entry laEntry;
     private final Entry liEntry;
@@ -37,7 +37,7 @@ public class ContainerLicenseProvider implements LicenseProvider {
      * @param pName      The name of the program
      * @param lName      The name of the license
      */
-    private ContainerLicenseProvider(Entry laEntry, Entry liEntry, String pName, String lName) {
+    private ContentLicenseProvider(Entry laEntry, Entry liEntry, String pName, String lName) {
         super();
         this.laEntry = laEntry;
         this.liEntry = liEntry;
@@ -45,7 +45,7 @@ public class ContainerLicenseProvider implements LicenseProvider {
         this.lName = lName;
     }
 
-    public static ReturnCode buildInstance(Container container, String laPrefix, String liPrefix) {
+    public static ReturnCode buildInstance(Content container, String laPrefix, String liPrefix) {
         // Get the zip, LI and LA files -- we need to lift values from them
         Entry laEntry = null;
         Entry liEntry = null;
@@ -68,13 +68,13 @@ public class ContainerLicenseProvider implements LicenseProvider {
         if (pName == null || lName == null) {
             return new ReturnCode(ReturnCode.UNREADABLE, "licenseNotFound", new Object[] {});
         }
-        instance = new ContainerLicenseProvider(laEntry, liEntry, pName, lName);
+        instance = new ContentLicenseProvider(laEntry, liEntry, pName, lName);
         return ReturnCode.OK;
     }
 
     // If use this method to create LicenseProvider instance, please be aware that
     // getLicenseInformation() and getLicenseName() will return null
-    public static LicenseProvider createInstance(Container container, String laPrefix) {
+    public static LicenseProvider createInstance(Content container, String laPrefix) {
         if (container == null) {
             return null;
         }
@@ -88,10 +88,10 @@ public class ContainerLicenseProvider implements LicenseProvider {
         if (lName == null) {
             return null;
         }
-        return new ContainerLicenseProvider(laEntry, null, null, lName);
+        return new ContentLicenseProvider(laEntry, null, null, lName);
     }
 
-    private static String getLicenseName(Container container, Entry laEntry) {
+    private static String getLicenseName(Content container, Entry laEntry) {
         BufferedReader r = null;
         try {
             // The license name is the sixth line in the LA file

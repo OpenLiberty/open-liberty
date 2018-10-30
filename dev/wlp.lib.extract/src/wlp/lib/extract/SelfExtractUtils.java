@@ -42,7 +42,7 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.zip.ZipFile;
 
-import wlp.lib.extract.Container.Entry;
+import wlp.lib.extract.Content.Entry;
 import wlp.lib.extract.SelfExtractor.ExternalDependency;
 import wlp.lib.extract.platform.PlatformUtils;
 
@@ -90,7 +90,7 @@ public class SelfExtractUtils {
         return s;
     }
 
-    static final Entry getLicenseFile(Container container, String prefix) {
+    static final Entry getLicenseFile(Content container, String prefix) {
         if (!!!prefix.endsWith("_")) {
             prefix = prefix + "_";
         }
