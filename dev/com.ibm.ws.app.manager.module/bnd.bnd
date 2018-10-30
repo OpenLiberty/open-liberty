@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ Private-Package: \
     com.ibm.ws.app.manager.module.internal.resources
 
 Import-Package: \
-    com.ibm.ws.security.java2sec, \
+    com.ibm.ws.classloading.java2sec, \
     com.ibm.ws.container.service.app.deploy, \
     *
 
@@ -36,7 +36,6 @@ instrument.classesExcludes: com/ibm/ws/app/manager/module/internal/resources/*.c
 	com.ibm.ws.artifact;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
 	com.ibm.ws.kernel.metatype.helper,\
-	com.ibm.ws.security.java2sec;version=latest,\
 	com.ibm.ws.javaee.dd.ejb;version=latest,\
 	com.ibm.ws.kernel.boot;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.metatype;version=latest,\
