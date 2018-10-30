@@ -2,6 +2,7 @@
 symbolicName=com.ibm.websphere.appserver.containerServices-1.0
 visibility=protected
 IBM-SPI-Package: com.ibm.ws.container.service.annotations, \
+ com.ibm.ws.container.service.annotations.internal, \
  com.ibm.ws.container.service.app.deploy, \
  com.ibm.ws.container.service.config, \
  com.ibm.ws.container.service.naming, \
@@ -19,6 +20,6 @@ IBM-Process-Types: server, \
  com.ibm.ws.javaee.version, \
  com.ibm.ws.serialization
 -jars=com.ibm.websphere.appserver.spi.containerServices; location:=dev/spi/ibm/
--files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.containerServices_3.0-javadoc.zip
+-files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.containerServices_4.0-javadoc.zip
 kind=ga
 edition=core
