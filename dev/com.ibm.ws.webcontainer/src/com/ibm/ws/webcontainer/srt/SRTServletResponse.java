@@ -103,13 +103,13 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
     // LIBERTY protected WSServletOutputStream _bufferedOut;
     protected ServletOutputStream _bufferedOut;
 
-    protected BufferedWriter _bufferedWriter = new BufferedWriter(DEFAULT_BUFFER_SIZE);
+    protected BufferedWriter _bufferedWriter = new BufferedWriter(0);
     protected PrintWriter _pwriter;
 
     protected boolean _firstWrite = false;
     protected boolean _firstWriteToCurrentBuffer = false;
 
-    protected int _bufferSize = DEFAULT_BUFFER_SIZE;
+    protected int _bufferSize = 0;
 
     protected boolean _gotWriter = false;
     protected boolean _firstWriterRetrieval = true;
@@ -284,7 +284,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
     //shared cleanup from finish & finishKeepConnection
     protected void cleanupFromFinish() {
         _response = null;
-        _bufferSize = DEFAULT_BUFFER_SIZE;
+        _bufferSize = 0;
         _encoding = null;
         // LIBERTY _responseBuffer = null;
         // _outWriterEncoding = null;
