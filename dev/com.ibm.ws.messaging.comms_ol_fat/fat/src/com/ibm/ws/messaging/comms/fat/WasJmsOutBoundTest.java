@@ -10,43 +10,29 @@
  *******************************************************************************/
 package com.ibm.ws.messaging.comms.fat;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.OVERWRITE;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.ibm.ws.fat.util.BuildShrinkWrap;
-import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
-
-import org.junit.BeforeClass;
-
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.OVERWRITE;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 public class WasJmsOutBoundTest {
 
@@ -85,7 +71,7 @@ public class WasJmsOutBoundTest {
 	 
 	 @BeforeClass
 	    public static void setUpBeforeClass() throws Exception {
-            setUpShirnkWrap();
+            setUpShrinkWrap();
 
 	        
 		 	server2.copyFileToLibertyInstallRoot("lib/features", "features/testjmsinternals-1.0.mf");
@@ -129,12 +115,15 @@ public class WasJmsOutBoundTest {
 	     assertNotNull("Could not find the queue message in the trace file", msg);
 	 }
 	
-    public static void setUpShirnkWrap() throws Exception {
+    public static void setUpShrinkWrap() throws Exception {
+		JavaArchive utils = ShrinkWrap.create(JavaArchive.class, "utilLib.jar")
+				.addPackages(true, "test.util");
 
-        Archive CommsLPwar = ShrinkWrap.create(WebArchive.class, "CommsLP.war")
-            .addClass("web.CommsLPServlet")
-            .add(new FileAsset(new File("test-applications//CommsLP.war/resources/WEB-INF/web.xml")), "WEB-INF/web.xml")
-            .add(new FileAsset(new File("test-applications//CommsLP.war/resources/META-INF/permissions.xml")), "META-INF/permissions.xml");
+		Archive CommsLPwar = ShrinkWrap.create(WebArchive.class, "CommsLP.war")
+				.addClass("web.CommsLPServlet")
+				.add(new FileAsset(new File("test-applications/CommsLP.war/resources/WEB-INF/web.xml")), "WEB-INF/web.xml")
+				.add(new FileAsset(new File("test-applications/CommsLP.war/resources/META-INF/permissions.xml")), "META-INF/permissions.xml")
+				.addAsLibrary(utils);
 
         ShrinkHelper.exportDropinAppToServer(server2, CommsLPwar, OVERWRITE);
 
