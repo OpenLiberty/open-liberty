@@ -25,3 +25,7 @@ MANAGEMENT_SECURITY_AUTHZ_FAILED.useraction=Aucune action de l'utilisateur n'est
 ROLE_ENTRY_DUPLICATE=CWWKX0002E: Une entr\u00e9e en double a \u00e9t\u00e9 d\u00e9tect\u00e9e dans la liaison de r\u00f4le {0}. L''entr\u00e9e en double {1} est {2}.
 ROLE_ENTRY_DUPLICATE.explanation=L'entr\u00e9e sp\u00e9cifi\u00e9e est d\u00e9j\u00e0 d\u00e9finie pour la liaison de r\u00f4le sp\u00e9cifi\u00e9e. Les entr\u00e9es en double ne sont pas prises en charge.
 ROLE_ENTRY_DUPLICATE.useraction=Supprimez l'entr\u00e9e en double.
+
+INVALID_ACCESS_ID=CWWKX0003E: Un ID d''acc\u00e8s non valide a \u00e9t\u00e9 d\u00e9tect\u00e9 dans la liaison de r\u00f4le {0}. L''entr\u00e9e non valide {1} est {2}.
+INVALID_ACCESS_ID.explanation=L'entr\u00e9e sp\u00e9cifi\u00e9e n'est pas un ID d'acc\u00e8s valide pour la liaison de r\u00f4le sp\u00e9cifi\u00e9e.
+INVALID_ACCESS_ID.useraction=Supprimez ou corrigez l'entr\u00e9e non valide.

@@ -25,3 +25,7 @@ MANAGEMENT_SECURITY_AUTHZ_FAILED.useraction=Nu este necesar\u0103 nici o ac\u016
 ROLE_ENTRY_DUPLICATE=CWWKX0002E: A fost detectat\u0103 o intrare duplicat \u00een legarea de roluri {0}. Intrarea duplicat\u0103 {1} este {2}.
 ROLE_ENTRY_DUPLICATE.explanation=Intrarea specificat\u0103 este definit\u0103 deja pentru legarea de roluri specificat\u0103. Nu sunt suportate intr\u0103ri duplicate.
 ROLE_ENTRY_DUPLICATE.useraction=\u00cenl\u0103tura\u0163i intrarea duplicat\u0103.
+
+INVALID_ACCESS_ID=CWWKX0003E: A fost detectat un ID de acces invalid \u00een legarea rolului {0}. Intrarea invalid\u0103 {1} este {2}.
+INVALID_ACCESS_ID.explanation=Intrarea specificat\u0103 nu este un ID de acces valid pentru legarea de rol specificat\u0103.
+INVALID_ACCESS_ID.useraction=\u00cenl\u0103tura\u0163i sau corecta\u0163i intrarea invalid\u0103.
