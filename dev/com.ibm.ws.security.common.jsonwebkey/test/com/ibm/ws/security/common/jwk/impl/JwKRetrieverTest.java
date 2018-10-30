@@ -167,6 +167,7 @@ public class JwKRetrieverTest extends CommonTestClass {
             PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, true);
         } catch (Exception re){
             // ioe expected
+            fail("did not catch expected exception");
         }
         assertTrue("getBuilder method of JwkRetriever was not invoked with useSystemProperties", jwkRetriever.jvmPropWasSet);
     }

@@ -132,8 +132,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     @Override
     protected void setOptionalConfigAttributes(Map<String, Object> props) throws SocialLoginException {
 
-        this.useSystemPropertiesForHttpClientConnections = configUtils.getBooleanConfigAttribute(props, KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS, false);
-        this.userInfoEndpoint = configUtils.getConfigAttribute(props, KEY_USERINFO_ENDPOINT);
+        this.useSystemPropertiesForHttpClientConnections = configUtils.getBooleanConfigAttribute(props, KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS, false);        
     	this.sslRef = configUtils.getConfigAttribute(props, KEY_sslRef);
     	this.discoveryEndpointUrl = configUtils.getConfigAttribute(props, KEY_DISCOVERY_ENDPOINT);
     	jwkClientId = configUtils.getConfigAttribute(props, KEY_JWK_CLIENT_ID);
