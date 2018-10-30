@@ -1175,24 +1175,15 @@ public class InstallUtils {
         return target;
     }
 
-    public static Set<InstallLicense> getLicenseToAccept(Set<InstallLicense> featureLicenses) {
+    public static Set<InstallLicense> getLicenseToAccept(Set<InstallLicense> featureLicenses) throws ProductInfoParseException, DuplicateProductInfoException, ProductInfoReplaceException {
         Set<InstallLicense> licensesToAccept = featureLicenses;
         boolean isNDRuntime = false;
-        try {
-            for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
-                if ("com.ibm.websphere.appserver".equals(productInfo.getId()) && "ND".equals(productInfo.getEdition())) {
-                    isNDRuntime = true;
-                    break;
-                }
+        for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
+            if ("com.ibm.websphere.appserver".equals(productInfo.getId()) && "ND".equals(productInfo.getEdition())) {
+                isNDRuntime = true;
+                break;
             }
-        } catch (ProductInfoParseException e) {
-            e.printStackTrace();
-        } catch (DuplicateProductInfoException e) {
-            e.printStackTrace();
-        } catch (ProductInfoReplaceException e) {
-            e.printStackTrace();
         }
-
         Iterator<InstallLicense> iterator = licensesToAccept.iterator();
         while (iterator.hasNext()) {
             InstallLicense license = iterator.next();
