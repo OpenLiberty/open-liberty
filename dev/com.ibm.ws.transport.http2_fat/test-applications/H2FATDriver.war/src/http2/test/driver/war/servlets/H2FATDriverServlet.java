@@ -1890,16 +1890,21 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
 
+        // sendbytes does not wait for the http2 start up sequence to finish, which
+        // was causing an intermittent failure when the bad ping frame sometimes got intermixed with
+        // the settings frames.  Sendframe does wait, so issue it first, followed by the bad ping.
+        // RTC 255368
+
+        //send a ping and expect a ping back
+        FramePing ping = new FramePing(0, libertyBytes, false);
+        h2Client.sendFrame(ping);
+
         //Type 6, length 0
         byte[] pingFrameBytes = { 0, 0, (byte) 8, (byte) 6, (byte) 255, 0, 0, 0, 0 };
         byte[] payload = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
         h2Client.sendBytes(pingFrameBytes);
         h2Client.sendBytes(payload);
-
-        //send a ping and expect a ping back
-        FramePing ping = new FramePing(0, libertyBytes, false);
-        h2Client.sendFrame(ping);
 
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
         handleErrors(h2Client, testName);
