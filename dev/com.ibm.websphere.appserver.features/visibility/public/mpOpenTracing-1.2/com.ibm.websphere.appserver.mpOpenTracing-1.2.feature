@@ -11,7 +11,7 @@ IBM-API-Package: \
 -features=\
   com.ibm.websphere.appserver.cdi-1.2; ibm.tolerates:=2.0, \
   com.ibm.websphere.appserver.jaxrs-2.0; ibm.tolerates:=2.1, \
-  com.ibm.websphere.appserver.opentracing-1.1, \
+  com.ibm.websphere.appserver.opentracing-1.2, \
   com.ibm.websphere.appserver.org.eclipse.microprofile.opentracing-1.2
 -bundles=\
   com.ibm.ws.require.java8, \
