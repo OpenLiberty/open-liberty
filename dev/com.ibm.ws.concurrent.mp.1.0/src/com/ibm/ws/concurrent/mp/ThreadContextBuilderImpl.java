@@ -10,11 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.function.Consumer;
 
 import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.eclipse.microprofile.concurrent.ThreadContextBuilder;
@@ -24,14 +24,14 @@ import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
  * Builder that programmatically configures and creates ThreadContext instances.
  */
 class ThreadContextBuilderImpl implements ThreadContextBuilder {
-    private final ConcurrencyProviderImpl concurrencyProvider;
+    private final ArrayList<ThreadContextProvider> contextProviders;
 
     private final HashSet<String> cleared = new HashSet<String>();
     private final HashSet<String> propagated = new HashSet<String>();
     private final HashSet<String> unchanged = new HashSet<String>();
 
-    ThreadContextBuilderImpl(ConcurrencyProviderImpl concurrencyProvider) {
-        this.concurrencyProvider = concurrencyProvider;
+    ThreadContextBuilderImpl(ArrayList<ThreadContextProvider> contextProviders) {
+        this.contextProviders = contextProviders;
 
         // built-in defaults from spec:
         // cleared.add(ThreadContext.TRANSACTION); // TODO haven't added support for transaction context yet
@@ -62,7 +62,7 @@ class ThreadContextBuilderImpl implements ThreadContextBuilder {
 
         LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider = new LinkedHashMap<ThreadContextProvider, ContextOp>();
 
-        Consumer<ThreadContextProvider> addProvider = provider -> {
+        for (ThreadContextProvider provider : contextProviders) {
             String contextType = provider.getThreadContextType();
             unknown.remove(contextType);
 
@@ -72,15 +72,7 @@ class ThreadContextBuilderImpl implements ThreadContextBuilder {
                                                             : remaining;
             if (op != ContextOp.UNCHANGED)
                 configPerProvider.put(provider, op);
-        };
-
-        // thread context providers from the container
-        addProvider.accept(concurrencyProvider.applicationContextProvider);
-        // TODO other container providers
-
-        // TODO obtain providers from ServiceLoader, preferably from cache based on class loader (can also do duplicate provider check there)
-
-        // TODO process in an order that keeps prereqs satisfied
+        }
 
         // unknown thread context types
         if (unknown.size() > 0)
