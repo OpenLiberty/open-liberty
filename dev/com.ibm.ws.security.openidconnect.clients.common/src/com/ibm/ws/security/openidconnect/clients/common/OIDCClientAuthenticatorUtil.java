@@ -377,7 +377,7 @@ public class OIDCClientAuthenticatorUtil {
             }
         }
         // look for custom params to send to the authorization ep
-        handleCustomParams(clientConfig, query);
+        query = handleCustomParams(clientConfig, query);
 
         // in case the AuthorizationEndpoint already has set up its own parameters
         String s = clientConfig.getAuthorizationEndpointUrl();
@@ -391,8 +391,9 @@ public class OIDCClientAuthenticatorUtil {
     /**
      * @param clientConfig
      * @param query
+     * @return
      */
-    private void handleCustomParams(ConvergedClientConfig clientConfig, String query) {
+    private String handleCustomParams(ConvergedClientConfig clientConfig, String query) {
         HashMap<String, String> customParams = clientConfig.getAuthzRequestParams();
         if (customParams != null && !customParams.isEmpty()) {
             Set<Entry<String, String>> entries = customParams.entrySet();
@@ -407,6 +408,7 @@ public class OIDCClientAuthenticatorUtil {
                 }
             }
         }
+        return query;
     }
 
     /**
