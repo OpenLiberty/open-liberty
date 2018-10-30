@@ -66,6 +66,7 @@ public class ServerEndpointControlMBeanTest {
     private static final String CONNECTOR_ADDRESS_FILE_NAME = "com.ibm.ws.jmx.local.address";
     private static final String PAUSEABLE_EXCEPTION_CLASS = "com.ibm.ws.kernel.launch.service.PauseableComponentControllerRequestFailedException";
     private static final Class<?> c = ServerEndpointControlMBeanTest.class;
+    private static final String PORT_IN_USE = "CWWKO0221E";
 
     private static JMXConnector connector = null;
 
@@ -109,7 +110,8 @@ public class ServerEndpointControlMBeanTest {
             connector.close();
         }
         if (server != null && server.isStarted()) {
-            server.stopServer("CWWKE093*");
+            // Ignore port conflict errors -- we don't really care for our purposes here.
+            server.stopServer("CWWKE093*", PORT_IN_USE);
             server.updateServerConfiguration(savedConfig);
         }
         Log.exiting(c, METHOD_NAME);
