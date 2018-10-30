@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.recoverylog.spi;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -22,8 +23,7 @@ import com.ibm.tx.util.logging.TraceComponent;
 /**
  *
  */
-public class LibertyRecoveryDirectorImpl extends RecoveryDirectorImpl
-{
+public class LibertyRecoveryDirectorImpl extends RecoveryDirectorImpl {
     /**
      * WebSphere RAS TraceComponent registration.
      */
@@ -42,18 +42,15 @@ public class LibertyRecoveryDirectorImpl extends RecoveryDirectorImpl
      * method. Client services may access this instance via the RecoveryDirectorFactory.
      * recoveryDirector() method.
      */
-    public LibertyRecoveryDirectorImpl()
-    {
+    public LibertyRecoveryDirectorImpl() {
         super();
 
-        if (theRecoveryLogFactory != null)
-        {
+        if (theRecoveryLogFactory != null) {
             String className = theRecoveryLogFactory.getClass().getName();
             _customLogFactories.put(className, theRecoveryLogFactory);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "LibertyRecoveryDirectorImpl: setting RecoveryLogFactory, " + theRecoveryLogFactory + "for classname, " + className);
-        }
-        else if (tc.isDebugEnabled())
+        } else if (tc.isDebugEnabled())
             Tr.debug(tc, "LibertyRecoveryDirectorImpl: the RecoveryLogFactory is null");
 
         if (tc.isDebugEnabled())
@@ -67,16 +64,14 @@ public class LibertyRecoveryDirectorImpl extends RecoveryDirectorImpl
      * Create or lookup the singleton instance of the LibertyRecoveryDirectorImpl class. This
      * method is intended for internal use only. Client services should access this
      * instance via the RecoveryDirectorFactory.recoveryDirector() method.
-     * 
+     *
      * @return The singleton instance of the WSRecoveryDirectorImpl class.
      */
-    public static synchronized RecoveryDirector instance()
-    {
+    public static synchronized RecoveryDirector instance() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "instance");
 
-        if (_instance == null)
-        {
+        if (_instance == null) {
             _instance = new LibertyRecoveryDirectorImpl();
         }
 
@@ -106,15 +101,13 @@ public class LibertyRecoveryDirectorImpl extends RecoveryDirectorImpl
             Tr.debug(tc, "unsetRecoveryLogFactory, factory: " + fac, this);
     }
 
-    public static void reset()
-    {
+    public static void reset() {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "reset");
         _instance = null;
     }
 
-    public void drivePeerRecovery() throws RecoveryFailedException
-    {
+    public void drivePeerRecovery() throws RecoveryFailedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "drivePeerRecovery", this);
         RecoveryAgent libertyRecoveryAgent = null;
@@ -134,8 +127,7 @@ public class LibertyRecoveryDirectorImpl extends RecoveryDirectorImpl
         if (tc.isDebugEnabled())
             Tr.debug(tc, "work with RA values: " + registeredRecoveryAgentsValues + ", collection size: " + registeredRecoveryAgentsValues.size(), this);
         Iterator registeredRecoveryAgentsValuesIterator = registeredRecoveryAgentsValues.iterator();
-        while (registeredRecoveryAgentsValuesIterator.hasNext())
-        {
+        while (registeredRecoveryAgentsValuesIterator.hasNext()) {
             // Extract the next ArrayList and create an iterator from it. This iterator will return RecoveryAgent
             // objects that are registered at the same sequence priority value.
             final ArrayList registeredRecoveryAgentsArray = (java.util.ArrayList) registeredRecoveryAgentsValuesIterator.next();
@@ -143,8 +135,7 @@ public class LibertyRecoveryDirectorImpl extends RecoveryDirectorImpl
                 Tr.debug(tc, "work with Agents array: " + registeredRecoveryAgentsArray + ", of size: " + registeredRecoveryAgentsArray.size(), this);
             final Iterator registeredRecoveryAgentsArrayIterator = registeredRecoveryAgentsArray.iterator();
 
-            while (registeredRecoveryAgentsArrayIterator.hasNext())
-            {
+            while (registeredRecoveryAgentsArrayIterator.hasNext()) {
                 // Extract the next RecoveryAgent object
                 final RecoveryAgent recoveryAgent = (RecoveryAgent) registeredRecoveryAgentsArrayIterator.next();
 
@@ -165,45 +156,117 @@ public class LibertyRecoveryDirectorImpl extends RecoveryDirectorImpl
             Tr.exit(tc, "drivePeerRecovery");
     }
 
-    public void peerRecoverServers(RecoveryAgent recoveryAgent, String myRecoveryIdentity, ArrayList<String> peersToRecover) throws RecoveryFailedException
-    {
+    public void peerRecoverServers(RecoveryAgent recoveryAgent, String myRecoveryIdentity, ArrayList<String> peersToRecover) throws RecoveryFailedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "peerRecoverServers", new Object[] { recoveryAgent, myRecoveryIdentity, peersToRecover });
 
-        for (String peerRecoveryIdentity : peersToRecover)
-        {
+        for (String peerRecoveryIdentity : peersToRecover) {
 
-            try
-            {
+            LeaseInfo leaseInfo = new LeaseInfo(peerRecoveryIdentity);
+            try {
                 //Read lease check if it is still expired. If so, then update lease and proceed to peer recover
                 // if not still expired (someone else has grabbed it) then bypass peer recover.
-                LeaseInfo leaseInfo = new LeaseInfo();
-                if (recoveryAgent.claimPeerLeaseForRecovery(peerRecoveryIdentity, myRecoveryIdentity, leaseInfo))
-                {
+                if (recoveryAgent.claimPeerLeaseForRecovery(peerRecoveryIdentity, myRecoveryIdentity, leaseInfo)) {
+                    addCallBack(new LibertyRecoveryLogCallBack(peerRecoveryIdentity, myRecoveryIdentity, leaseInfo));
 
                     // drive directInitialization(**retrieved scope**);
                     Tr.audit(tc, "WTRN0108I: " +
                                  "PEER RECOVER server with recovery identity " + peerRecoveryIdentity);
-                    //String peerServerName = "Cell\\Node\\cloud002";
+
                     FileFailureScope peerFFS = new FileFailureScope(peerRecoveryIdentity, leaseInfo);
 
                     directInitialization(peerFFS);
-                }
-                else
-                {
+
+                    // Peer recovery succeeded. We can delete the dead server's lease
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Peer recovery finished. We can" + (leaseInfo.isCanDeleteLeaseFile() ? "" : "'t") + " delete: " + leaseInfo.getLeaseFile());
+                } else {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Failed to claim lease for peer", this);
                 }
-            } catch (Exception exc)
-            {
+            } catch (Exception exc) {
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "peerRecoverServers", exc);
                 throw new RecoveryFailedException(exc);
+            } finally {
+                if (leaseInfo.isCanDeleteLeaseFile()) {
+                    boolean deleted = (new File(leaseInfo.getLeaseFile())).delete();
+
+                    if (deleted) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Couldn't delete: ", leaseInfo.getLeaseFile());
+                    }
+                }
             }
 
         }
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "peerRecoverServers");
+    }
+
+    private class LibertyRecoveryLogCallBack implements RecoveryLogCallBack {
+
+        private final String _peerRecoveryIdentity;
+        private final String _myRecoveryIdentity;
+        private final LeaseInfo _leaseInfo;
+
+        /**
+         * @param peerRecoveryIdentity
+         * @param myRecoveryIdentity
+         * @param leaseInfo
+         */
+        public LibertyRecoveryLogCallBack(String peerRecoveryIdentity, String myRecoveryIdentity, LeaseInfo leaseInfo) {
+
+            _peerRecoveryIdentity = peerRecoveryIdentity;
+            _myRecoveryIdentity = myRecoveryIdentity;
+            _leaseInfo = leaseInfo;
+
+        }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see com.ibm.ws.recoverylog.spi.RecoveryLogCallBack#recoveryStarted(com.ibm.ws.recoverylog.spi.FailureScope)
+         */
+        @Override
+        public void recoveryStarted(FailureScope fs) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "recoveryStarted", new Object[] { _peerRecoveryIdentity, _myRecoveryIdentity, _leaseInfo });
+        }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see com.ibm.ws.recoverylog.spi.RecoveryLogCallBack#recoveryCompleted(com.ibm.ws.recoverylog.spi.FailureScope)
+         */
+        @Override
+        public void recoveryCompleted(FailureScope fs) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "recoveryCompleted", new Object[] { _peerRecoveryIdentity, _myRecoveryIdentity, _leaseInfo });
+            _leaseInfo.setCanDeleteLease();
+        }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see com.ibm.ws.recoverylog.spi.RecoveryLogCallBack#terminateStarted(com.ibm.ws.recoverylog.spi.FailureScope)
+         */
+        @Override
+        public void terminateStarted(FailureScope fs) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "terminateStarted", new Object[] { _peerRecoveryIdentity, _myRecoveryIdentity, _leaseInfo });
+        }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see com.ibm.ws.recoverylog.spi.RecoveryLogCallBack#terminateCompleted(com.ibm.ws.recoverylog.spi.FailureScope)
+         */
+        @Override
+        public void terminateCompleted(FailureScope fs) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "terminateCompleted", new Object[] { _peerRecoveryIdentity, _myRecoveryIdentity, _leaseInfo });
+        }
     }
 }

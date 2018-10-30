@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.recoverylog.spi;
 
+import java.util.Date;
+
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.util.logging.Tr;
@@ -24,21 +26,13 @@ public class PeerLeaseData {
     private final long _leaseTime;
 
     public PeerLeaseData(String recoveryIdentity, long leaseTime) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "PeerLeaseData", new Object[] { recoveryIdentity, leaseTime });
         this._recoveryIdentity = recoveryIdentity;
         this._leaseTime = leaseTime;
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "PeerLeaseData");
     }
 
     public String getRecoveryIdentity() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "getRecoveryIdentity");
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "getRecoveryIdentity", _recoveryIdentity);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getRecoveryIdentity", _recoveryIdentity);
         return _recoveryIdentity;
     }
 
@@ -55,8 +49,6 @@ public class PeerLeaseData {
      * Has the peer expired?
      */
     public boolean isExpired() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "isExpired");
         boolean expired = false;
         long curTime = System.currentTimeMillis();
         //TODO:
@@ -70,8 +62,11 @@ public class PeerLeaseData {
                 Tr.debug(tc, "Lease has not expired for " + _recoveryIdentity + ", currenttime: " + curTime + ", storedTime: " + _leaseTime);
         }
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "isExpired", expired);
         return expired;
+    }
+
+    @Override
+    public String toString() {
+        return _recoveryIdentity + ", lease time: " + new Date(_leaseTime);
     }
 }

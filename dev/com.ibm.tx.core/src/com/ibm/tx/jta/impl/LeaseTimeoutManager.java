@@ -71,14 +71,7 @@ public class LeaseTimeoutManager {
                          new Object[] { _recoveryIdentity, _recoveryGroup });
 
             try {
-                if (_leaseLog.lockLocalLease(_recoveryIdentity)) {
-                    _leaseLog.updateServerLease(_recoveryIdentity, _recoveryGroup, false);
-
-                    _leaseLog.releaseLocalLease(_recoveryIdentity);
-                } else {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Could not lock lease for " + _recoveryIdentity);
-                }
+                _leaseLog.updateServerLease(_recoveryIdentity, _recoveryGroup, false);
             } catch (Exception e) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Swallow exception " + e);

@@ -91,9 +91,9 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
     }
 
     @Override
-    public synchronized void getLeasesForPeers(final PeerLeaseTable peerLeaseTable, String recoveryGroup) throws Exception {
+    public synchronized void getLeasesForPeers(final PeerLeaseTable peerLeaseTable, String recoveryGroup, String recoveryIdentity) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "getLeasesForPeers", new java.lang.Object[] { recoveryGroup, this });
+            Tr.entry(tc, "getLeasesForPeers", new java.lang.Object[] { recoveryGroup, recoveryIdentity });
 
         // The Database Connection
         Connection conn = null;
@@ -148,7 +148,8 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                 try {
                     // TODO: Use RDBMS SELECT FOR UPDATE to lock table for recovery
                     String queryString = "SELECT SERVER_IDENTITY, LEASE_TIME" +
-                                         " FROM " + _leaseTableName + " WHERE RECOVERY_GROUP = '" + recoveryGroup + "'";
+                                         " FROM " + _leaseTableName + " WHERE RECOVERY_GROUP = '" + recoveryGroup + "'" +
+                                         " AND SERVER_IDENTITY <> '" + recoveryIdentity + "'";
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Attempt to select from the lease table - " + queryString);
                     lockingRS = lockingStmt.executeQuery(queryString);
@@ -811,28 +812,6 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
      */
     @Override
     public boolean releasePeerLease(String recoveryIdentity) throws Exception {
-        // Noop in RDBMS implementation
-        return true;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#lockLocalLease(java.lang.String)
-     */
-    @Override
-    public boolean lockLocalLease(String recoveryIdentity) {
-        // Noop in RDBMS implementation
-        return true;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#releaseLocalLease(java.lang.String)
-     */
-    @Override
-    public boolean releaseLocalLease(String recoveryIdentity) throws Exception {
         // Noop in RDBMS implementation
         return true;
     }

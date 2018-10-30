@@ -632,7 +632,7 @@ public class RecoveryManager implements Runnable {
                 }
 
                 try {
-                    if (_leaseLog != null) {
+                    if (_leaseLog != null && !partnersLeft) {
                         _leaseLog.releasePeerLease(_failureScopeController.serverName());
                         _leaseLog.deleteServerLease(_failureScopeController.serverName());
                     }
@@ -1613,7 +1613,7 @@ public class RecoveryManager implements Runnable {
     }
 
     /**
-     * Close the loggs without any keypoint - to be called on a failure to leave
+     * Close the logs without any keypoint - to be called on a failure to leave
      * the logs alone and ensure distributed shutdown code does not update them.
      *
      * The closeLeaseLog parameter will be false in the case that we have determined that a peer is
@@ -1645,7 +1645,7 @@ public class RecoveryManager implements Runnable {
 
         try {
             if (_leaseLog != null && closeLeaseLog) {
-                _leaseLog.deleteServerLease(_failureScopeController.serverName());
+//                _leaseLog.deleteServerLease(_failureScopeController.serverName());
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block

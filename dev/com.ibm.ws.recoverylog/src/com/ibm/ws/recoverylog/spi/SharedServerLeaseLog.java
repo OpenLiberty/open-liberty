@@ -38,11 +38,7 @@ public interface SharedServerLeaseLog {
      * @param recoveryGroup
      * @throws Exception
      */
-    void getLeasesForPeers(final PeerLeaseTable peerLeaseTable, String recoveryGroup) throws Exception;
-
-    public boolean lockLocalLease(String recoveryIdentity);
-
-    public boolean releaseLocalLease(String recoveryIdentity) throws Exception;
+    void getLeasesForPeers(final PeerLeaseTable peerLeaseTable, String recoveryGroup, String recoveryIdentity) throws Exception;
 
     public boolean lockPeerLease(String recoveryIdentity);
 
