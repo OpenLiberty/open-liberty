@@ -32,6 +32,8 @@ import javax.enterprise.inject.spi.Producer;
 import javax.faces.flow.Flow;
 import javax.faces.flow.builder.FlowDefinition;
 
+import com.ibm.ws.cdi.CDIServiceUtils;
+
 /**
  * This extension is responsible of scan flow definitions through CDI. For example:
  * 
@@ -60,7 +62,7 @@ public class FlowBuilderCDIExtension implements Extension
         // can take it into account, and use it later when necessary.
         AnnotatedType<FlowBuilderFactoryBean> flowDiscoveryHelper = 
                         beanManager.createAnnotatedType(FlowBuilderFactoryBean.class);
-        event.addAnnotatedType(flowDiscoveryHelper);
+        event.addAnnotatedType(flowDiscoveryHelper, CDIServiceUtils.getAnnotatedTypeIdentifier(flowDiscoveryHelper, this.getClass()));
     }
     
     // PI46218 start

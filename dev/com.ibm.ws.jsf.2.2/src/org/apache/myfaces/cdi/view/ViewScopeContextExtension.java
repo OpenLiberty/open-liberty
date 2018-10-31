@@ -26,6 +26,8 @@ import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.faces.view.ViewScoped;
 
+import com.ibm.ws.cdi.CDIServiceUtils;
+
 /**
  * Handle ViewScope related features.
  * 
@@ -42,9 +44,9 @@ public class ViewScopeContextExtension implements Extension
         // Register ViewScopeBeanHolder as a bean with CDI annotations, so the system
         // can take it into account, and use it later when necessary.
         AnnotatedType appContext = beanManager.createAnnotatedType(ApplicationContextBean.class);
-        event.addAnnotatedType(appContext);
+        event.addAnnotatedType(appContext, CDIServiceUtils.getAnnotatedTypeIdentifier(appContext, this.getClass()));
         AnnotatedType bean = beanManager.createAnnotatedType(ViewScopeBeanHolder.class);
-        event.addAnnotatedType(bean);
+        event.addAnnotatedType(bean, CDIServiceUtils.getAnnotatedTypeIdentifier(bean, this.getClass()));
     }
     
     void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)

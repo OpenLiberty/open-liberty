@@ -40,6 +40,7 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.tx.jta.cdi.interceptors.TransactionalInterceptor;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.AsynchronousConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.BulkheadConfig;
@@ -60,9 +61,9 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
         AnnotatedType<FaultTolerance> bindingType = beanManager.createAnnotatedType(FaultTolerance.class);
         beforeBeanDiscovery.addInterceptorBinding(bindingType);
         AnnotatedType<FaultToleranceInterceptor> interceptorType = beanManager.createAnnotatedType(FaultToleranceInterceptor.class);
-        beforeBeanDiscovery.addAnnotatedType(interceptorType, (interceptorType != null) ? interceptorType.getClass().getName() + ": " + interceptorType.getClass().hashCode() : "");
+        beforeBeanDiscovery.addAnnotatedType(interceptorType, CDIServiceUtils.getAnnotatedTypeIdentifier(interceptorType, this.getClass()));
         AnnotatedType<FaultToleranceInterceptor.ExecutorCleanup> executorCleanup = beanManager.createAnnotatedType(FaultToleranceInterceptor.ExecutorCleanup.class);
-        beforeBeanDiscovery.addAnnotatedType(executorCleanup, (executorCleanup != null) ? executorCleanup.getClass().getName() + ": " + executorCleanup.getClass().hashCode() : "");
+        beforeBeanDiscovery.addAnnotatedType(executorCleanup, CDIServiceUtils.getAnnotatedTypeIdentifier(executorCleanup, this.getClass()));
     }
 
     public <T> void processAnnotatedType(@Observes @WithAnnotations({ Asynchronous.class, Fallback.class, Timeout.class, CircuitBreaker.class, Retry.class,

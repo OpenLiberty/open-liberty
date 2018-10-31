@@ -19,15 +19,19 @@
 package org.apache.myfaces.cdi.dependent;
 
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
+
+import com.ibm.ws.cdi.CDIServiceUtils;
 
 public class DependentBeanExtension implements Extension
 {
     @SuppressWarnings("UnusedDeclaration")
     public void registerAnnotatedTypes(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager)
     {
-        beforeBeanDiscovery.addAnnotatedType(beanManager.createAnnotatedType(RequestDependentBeanStorage.class));
+        AnnotatedType at = beanManager.createAnnotatedType(RequestDependentBeanStorage.class);
+        beforeBeanDiscovery.addAnnotatedType(at, CDIServiceUtils.getAnnotatedTypeIdentifier(at, this.getClass()));
     }
 }
