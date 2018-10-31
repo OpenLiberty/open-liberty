@@ -34,7 +34,7 @@ class ThreadContextBuilderImpl implements ThreadContextBuilder {
         this.contextProviders = contextProviders;
 
         // built-in defaults from spec:
-        // cleared.add(ThreadContext.TRANSACTION); // TODO haven't added support for transaction context yet
+        cleared.add(ThreadContext.TRANSACTION);
         propagated.add(ThreadContext.ALL_REMAINING);
     }
 

@@ -24,6 +24,7 @@ import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
 
 /**
  * Concurrency manager, which includes the collection of ThreadContextProviders
@@ -48,14 +49,16 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
         // Thread context providers whose prerequisites are unmet
         LinkedList<ThreadContextProvider> unsatisfied = new LinkedList<ThreadContextProvider>();
 
-        // Built-in thread context providers
+        // Built-in thread context providers (always available)
 
-        contextProviders.add(concurrencyProvider.applicationContextProvider); // always available
+        contextProviders.add(concurrencyProvider.applicationContextProvider);
         available.add(ThreadContext.APPLICATION);
-
-        // TODO add other container-provided ThreadContextProviders
-        // TODO some of these will vary in availability which can change based on server config.
-        // Look into using ContainerContextProvider.toContainerProviders returning a NULL to indicate this.
+        contextProviders.add(concurrencyProvider.securityContextProvider);
+        available.add(ThreadContext.SECURITY);
+        contextProviders.add(concurrencyProvider.transactionContextProvider);
+        available.add(ThreadContext.TRANSACTION);
+        contextProviders.add(concurrencyProvider.wlmContextProvider);
+        available.add(WLMContextProvider.WORKLOAD);
 
         // Thread context providers for the supplied class loader
 

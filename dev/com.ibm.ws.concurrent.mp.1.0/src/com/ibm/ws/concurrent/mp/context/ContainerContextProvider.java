@@ -10,28 +10,41 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp.context;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextSnapshot;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.concurrent.mp.ContextOp;
 
 /**
- * This interface allows for the conversion from MicroProfile ThreadContextProvider
- * back to one or more instances of com.ibm.wsspi.threadcontext.ThreadContextProvider.
+ * This interface allows container-provided thread context types to be used
+ * alongside MicroProfile ThreadContextProviders.
  */
 @Trivial
 public abstract class ContainerContextProvider implements ThreadContextProvider {
-    public abstract com.ibm.wsspi.threadcontext.ThreadContextProvider[] toContainerProviders();
+    static final Map<String, String> EMPTY_MAP = Collections.emptyMap();
+
+    /**
+     * Appends thread context snapshot(s) of the type provided by this provider to the specified list.
+     *
+     * @param op the CLEARED or PROPAGATED operation.
+     * @param contextSnapshots list to which to add context snapshot(s).
+     */
+    public abstract void addContextSnapshot(ContextOp op, ArrayList<com.ibm.wsspi.threadcontext.ThreadContext> contextSnapshots);
 
     @Override
     public ThreadContextSnapshot clearedContext(Map<String, String> props) {
+        // never used, because this class is converted to the internal container provider type
         throw new UnsupportedOperationException();
     }
 
     @Override
     public ThreadContextSnapshot currentContext(Map<String, String> props) {
+        // never used, because this class is converted to the internal container provider type
         throw new UnsupportedOperationException();
     }
 }
