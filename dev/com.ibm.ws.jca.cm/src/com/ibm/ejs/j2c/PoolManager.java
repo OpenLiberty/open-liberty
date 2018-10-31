@@ -823,28 +823,11 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                 if (mcWrapper.isDestroyState() || mcWrapper.isStale() || mcWrapper.hasFatalErrorNotificationOccurred(freePool[0].getFatalErrorNotificationTime())
                     || ((this.agedTimeout != -1)
                         && (mcWrapper.hasAgedTimedOut(this.agedTimeoutMillis)))) {
-                    // Need to remove it from TLS and decrease total connection count.
-                    ArrayList<MCWrapper> mh = localConnection_.get();
-                    if (mh != null) {
-                        requestingAccessToTLSPool();
-                        // remove the bad connection primary connection being returned.
-                        mh.remove(mcWrapper);
-                        tlsArrayLists.remove(mcWrapper);
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setThreadID(((com.ibm.ejs.j2c.MCWrapper) mcWrapper).getThreadID() + "-release-destroy-removed");
-                            Tr.debug(this, tc, "removed mcWrapper from thread local " + mcWrapper);
-                        }
-                        endingAccessToTLSPool();
-                        removeConnectionFromPool(mcWrapper);
-                    }
-                    activeRequest.decrementAndGet();
-                    ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setAlreadyBeingReleased(false);
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                        Tr.exit(this, tc, "release", new Object[] { mcWrapper.getManagedConnectionWithoutStateCheck(), "Pool contents ==>", this });
-                    }
+                    removeMCWFromTLS(mcWrapper);
                     return;
 
                 } else {
+                    try {
                     if (waiterCount > 0) {
                         /*
                          * If we have waiters, its likely the max connections and tls settings are not correct.
@@ -897,6 +880,10 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                         Tr.exit(this, tc, "release", new Object[] { mcWrapper.getManagedConnectionWithoutStateCheck(), "Pool contents ==>", this });
                     }
                     return;
+                    } catch (ResourceException re) {
+                        removeMCWFromTLS(mcWrapper);
+                        return;
+                    }
                 }
             }
             if (mcWrapper.getPoolState() == MCWrapper.ConnectionState_freeTLSPool) {
@@ -979,6 +966,31 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(this, tc, "release");
+        }
+    }
+
+    /**
+     * @param mcWrapper
+     */
+    private void removeMCWFromTLS(MCWrapper mcWrapper) {
+        // Need to remove it from TLS and decrease total connection count.
+        ArrayList<MCWrapper> mh = localConnection_.get();
+        if (mh != null) {
+            requestingAccessToTLSPool();
+            // remove the bad connection primary connection being returned.
+            mh.remove(mcWrapper);
+            tlsArrayLists.remove(mcWrapper);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setThreadID(((com.ibm.ejs.j2c.MCWrapper) mcWrapper).getThreadID() + "-release-destroy-removed");
+                Tr.debug(this, tc, "removed mcWrapper from thread local " + mcWrapper);
+            }
+            endingAccessToTLSPool();
+            removeConnectionFromPool(mcWrapper);
+        }
+        activeRequest.decrementAndGet();
+        ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setAlreadyBeingReleased(false);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(this, tc, "release", new Object[] { mcWrapper.getManagedConnectionWithoutStateCheck(), "Pool contents ==>", this });
         }
     }
 
