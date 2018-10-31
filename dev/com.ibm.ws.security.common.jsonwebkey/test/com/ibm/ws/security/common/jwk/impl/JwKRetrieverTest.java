@@ -162,14 +162,11 @@ public class JwKRetrieverTest extends CommonTestClass {
         keyLocation = "badKeyLocation";
         String jwkEndpointUrl2 = "http://somewheretotallybogusurl";
         MockJwKRetriever jwkRetriever = new MockJwKRetriever(configId, sslConfigurationName, jwkEndpointUrl2,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);        
-        try{
-            PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, true);
-            fail("did not catch expected exception");
-        } catch (Exception re){
-            // ioe expected
-            
-        }
+                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);       
+        
+        PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, true);
+        // a "real" retriever would through an io exception due to bogus url, but the mock one doesn't.   
+        
         assertTrue("getBuilder method of JwkRetriever was not invoked with useSystemProperties", jwkRetriever.jvmPropWasSet);
     }
 
