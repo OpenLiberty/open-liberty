@@ -58,6 +58,13 @@ public class PreMain {
         }
     }
 
+    public static void agentmain(String args, Instrumentation instrumentation) throws Exception {
+        if (PreMainUtil.isDebugEnabled()) {
+            System.out.println("agentmain was called");
+        }
+        premain(args, instrumentation);
+    }
+
     private static void initialiseObjectInputStream() {
         // Ensure the factory instance needed by the modified ObjectInputStream is in place.
         final Config config = ConfigFacade.createConfig();
