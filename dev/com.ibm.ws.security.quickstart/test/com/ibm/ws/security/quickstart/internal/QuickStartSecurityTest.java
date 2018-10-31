@@ -155,7 +155,6 @@ public class QuickStartSecurityTest {
         configProps.put(UserRegistryService.REGISTRY_TYPE, QuickStartSecurity.QUICK_START_SECURITY_REGISTRY_TYPE);
         configProps.put("service.vendor", "IBM");
         configProps.put(QuickStartSecurity.CFG_KEY_USER, user);
-        configProps.put(QuickStartSecurity.CFG_KEY_PASSWORD, new ProtectedString(password.toCharArray()));
 
         mock.checking(new Expectations() {
             {
@@ -652,7 +651,6 @@ public class QuickStartSecurityTest {
         newProps.put(UserRegistryService.REGISTRY_TYPE, QuickStartSecurity.QUICK_START_SECURITY_REGISTRY_TYPE);
         newProps.put("service.vendor", "IBM");
         newProps.put(QuickStartSecurity.CFG_KEY_USER, "adminUser2");
-        newProps.put(QuickStartSecurity.CFG_KEY_PASSWORD, new ProtectedString("adminPassword2".toCharArray()));
         mock.checking(new Expectations() {
             {
                 one(mgmtURConfigReg).setProperties(with(equal(newProps)));
