@@ -1248,16 +1248,10 @@ public class ConcurrentRxTestServlet extends FATServlet {
         final CompletableFuture<String> cf = new CompletableFuture<String>();
         CompletionStage<Void> cs1 = cs0.thenAcceptAsync(value -> cf.complete(Thread.currentThread().getName() + ":" + value));
 
-        // It's odd that the lambda supplied to cf.complete could run on the thread that invokes cf.get,
-        // but that appears to happen infrequently, and it is Java's code, not OpenLiberty.  The test can
-        // cope with it by polling for the cf to be done.
-        for (long start = System.nanoTime(); !cf.isDone() && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
-        assertTrue(cf.isDone());
-
-        String result = cf.getNow("value-if-absent");
+        String result = cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertTrue(result, result.endsWith(":86"));
         assertTrue(result, result.startsWith("Default Executor-thread-"));
-        assertTrue(result, !result.startsWith(Thread.currentThread().getName()));
+        assertTrue(result, !result.startsWith(Thread.currentThread().getName() + ':'));
 
         // Disallow CompletableFuture methods on dependent stage:
         CompletableFuture<Void> cf1 = (CompletableFuture<Void>) cs1;
@@ -1735,7 +1729,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
         String result = cf2.get();
         assertTrue(result, result.endsWith(":5f"));
         assertTrue(result, result.startsWith("Default Executor-thread-"));
-        assertTrue(result, !result.startsWith(Thread.currentThread().getName()));
+        assertTrue(result, !result.startsWith(Thread.currentThread().getName() + ':'));
 
         // obtrude and the get operation above are possible having obtained a CompletableFuture
         cf2.obtrudeValue("95");
