@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.RejectedExecutionException;
 
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
+import org.eclipse.microprofile.concurrent.spi.ThreadContextSnapshot;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -53,8 +54,11 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
                     contextSnapshots.add(tc);
                 }
             } else {
-                // TODO support MP context types
-                throw new UnsupportedOperationException();
+                ThreadContextSnapshot contextSnapshot = entry.getValue() == ContextOp.CLEARED //
+                                ? provider.clearedContext(EMPTY_MAP) // CLEARED
+                                : provider.currentContext(EMPTY_MAP); // PROPAGATED
+                // Convert to the com.ibm.wsspi.threadcontext.ThreadContext type which the container understands
+                contextSnapshots.add(new ContextSnapshotProxy(contextSnapshot));
             }
         }
     }

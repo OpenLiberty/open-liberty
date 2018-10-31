@@ -10,8 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp;
 
-import org.eclipse.microprofile.concurrent.ManagedExecutorBuilder;
-import org.eclipse.microprofile.concurrent.ThreadContextBuilder;
+import java.security.AccessController;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.eclipse.microprofile.concurrent.spi.ConcurrencyManager;
 import org.eclipse.microprofile.concurrent.spi.ConcurrencyManagerBuilder;
 import org.eclipse.microprofile.concurrent.spi.ConcurrencyProvider;
@@ -24,7 +27,9 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.mp.context.ApplicationContextProvider;
+import com.ibm.ws.kernel.service.util.SecureAction;
 
 /**
  * Registers this implementation as the provider of MicroProfile Concurrency.
@@ -32,6 +37,10 @@ import com.ibm.ws.concurrent.mp.context.ApplicationContextProvider;
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class ConcurrencyProviderImpl implements ConcurrencyProvider {
     final ApplicationContextProvider applicationContextProvider = new ApplicationContextProvider();
+
+    private static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
+
+    private final ConcurrentHashMap<ClassLoader, ConcurrencyManager> providersPerClassLoader = new ConcurrentHashMap<ClassLoader, ConcurrencyManager>();
 
     private ConcurrencyProviderRegistration registration;
 
@@ -50,38 +59,43 @@ public class ConcurrencyProviderImpl implements ConcurrencyProvider {
     }
 
     @Override
+    @Trivial
     public ConcurrencyManager getConcurrencyManager() {
-        return null; // TODO
+        return getConcurrencyManager(priv.getContextClassLoader());
     }
 
     @Override
     public ConcurrencyManager getConcurrencyManager(ClassLoader classLoader) {
-        return null; // TODO
+        ConcurrencyManager ccmgr = providersPerClassLoader.get(classLoader);
+        if (ccmgr == null) {
+            ConcurrencyManager ccmgrNew = new ConcurrencyManagerImpl(this, classLoader);
+            ccmgr = providersPerClassLoader.putIfAbsent(classLoader, ccmgrNew);
+            if (ccmgr == null)
+                ccmgr = ccmgrNew;
+        }
+        return ccmgr;
     }
 
     @Override
     public ConcurrencyManagerBuilder getConcurrencyManagerBuilder() {
-        return null; // TODO
-    }
-
-    @Override
-    public ManagedExecutorBuilder newManagedExecutorBuilder() {
-        return null; // TODO rely on default implementation to get from concurrency manager?
-    }
-
-    @Override
-    public ThreadContextBuilder newThreadContextBuilder() {
-        return new ThreadContextBuilderImpl(this); // TODO rely on default implementation to get from concurrency manager?
+        throw new UnsupportedOperationException(); // TODO
     }
 
     @Override
     public void registerConcurrencyManager(ConcurrencyManager manager, ClassLoader classLoader) {
-        // TODO
+        throw new UnsupportedOperationException(); // TODO
     }
 
     @Override
     public void releaseConcurrencyManager(ConcurrencyManager manager) {
-        // TODO
+        // This is inefficient. Does the spec need to require it?
+        // The container, which already knows the class loader,
+        // can instead directly remove the entry based on the key.
+        for (Iterator<Map.Entry<ClassLoader, ConcurrencyManager>> entries = providersPerClassLoader.entrySet().iterator(); entries.hasNext();) {
+            Map.Entry<ClassLoader, ConcurrencyManager> entry = entries.next();
+            if (manager.equals(entry.getValue()))
+                entries.remove();
+        }
     }
 
     @Reference(service = com.ibm.wsspi.threadcontext.ThreadContextProvider.class,
