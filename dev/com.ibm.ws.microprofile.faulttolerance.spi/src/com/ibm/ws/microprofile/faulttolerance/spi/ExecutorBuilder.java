@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.spi;
 
-import java.util.concurrent.Future;
-
 public interface ExecutorBuilder<T, R> {
 
     public ExecutorBuilder<T, R> setRetryPolicy(RetryPolicy retry);
@@ -28,5 +26,5 @@ public interface ExecutorBuilder<T, R> {
 
     public Executor<R> build();
 
-    public Executor<Future<R>> buildAsync();
+    public <W> Executor<W> buildAsync(Class<?> asyncResultWrapperType);
 }

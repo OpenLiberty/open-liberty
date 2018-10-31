@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,11 +46,11 @@ public class ProviderResolverImpl extends FaultToleranceProviderResolver {
      * Reference to the context service for this managed executor service.
      */
     @Reference
-    private WSContextService contextService;
+    protected WSContextService contextService;
     @Reference
-    private PolicyExecutorProvider policyExecutorProvider;
+    protected PolicyExecutorProvider policyExecutorProvider;
     @Reference(target = "(deferrable=false)")
-    private ScheduledExecutorService scheduledExecutorService;
+    protected ScheduledExecutorService scheduledExecutorService;
 
     private ScheduledExecutorService jseScheduledExecutorService;
 

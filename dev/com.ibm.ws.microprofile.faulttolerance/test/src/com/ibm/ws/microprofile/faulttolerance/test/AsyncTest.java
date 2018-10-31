@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ public class AsyncTest extends AbstractFTTest {
     @Test
     public void testAsync() throws InterruptedException, ExecutionException, TimeoutException {
         ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
-        Executor<Future<String>> executor = builder.buildAsync();
+        Executor<Future<String>> executor = builder.buildAsync(Future.class);
 
         Future<String>[] futures = new Future[TASKS];
         try {
@@ -79,7 +79,7 @@ public class AsyncTest extends AbstractFTTest {
     @Test
     public void testAsyncCancel() throws InterruptedException, ExecutionException, TimeoutException {
         ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
-        Executor<Future<String>> executor = builder.buildAsync();
+        Executor<Future<String>> executor = builder.buildAsync(Future.class);
 
         String id = "testAsyncCancel";
         CountDownLatch runningLatch = new CountDownLatch(1);
@@ -102,7 +102,7 @@ public class AsyncTest extends AbstractFTTest {
 
         ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
         builder.setTimeoutPolicy(timeout);
-        Executor<Future<String>> executor = builder.buildAsync();
+        Executor<Future<String>> executor = builder.buildAsync(Future.class);
 
         String id = "testAsyncTimeout";
         ExecutionContext context = executor.newExecutionContext(id, null);

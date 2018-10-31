@@ -10,10 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.function.Consumer;
 
 import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.eclipse.microprofile.concurrent.ThreadContextBuilder;
@@ -23,18 +24,18 @@ import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
  * Builder that programmatically configures and creates ThreadContext instances.
  */
 class ThreadContextBuilderImpl implements ThreadContextBuilder {
-    private final ConcurrencyProviderImpl concurrencyProvider;
+    private final ArrayList<ThreadContextProvider> contextProviders;
 
     private final HashSet<String> cleared = new HashSet<String>();
     private final HashSet<String> propagated = new HashSet<String>();
     private final HashSet<String> unchanged = new HashSet<String>();
 
-    ThreadContextBuilderImpl(ConcurrencyProviderImpl concurrencyProvider) {
-        this.concurrencyProvider = concurrencyProvider;
+    ThreadContextBuilderImpl(ArrayList<ThreadContextProvider> contextProviders) {
+        this.contextProviders = contextProviders;
 
         // built-in defaults from spec:
-        // cleared.add(ThreadContext.TRANSACTION); // TODO add this once we pull in newer spec jar
-        propagated.add(ThreadContext.ALL); // TODO ALL is renamed to ALL_REMAINING once we update spec binaries
+        // cleared.add(ThreadContext.TRANSACTION); // TODO haven't added support for transaction context yet
+        propagated.add(ThreadContext.ALL_REMAINING);
     }
 
     @Override
@@ -42,17 +43,17 @@ class ThreadContextBuilderImpl implements ThreadContextBuilder {
         // For detection of unknown and overlapping types,
         HashSet<String> unknown = new HashSet<String>(cleared);
         unknown.addAll(propagated);
-        unknown.addAll(unchanged);
+        unknown.addAll(unchanged); // TODO should not cause an error if an unchanged type is not known
 
         if (unknown.size() < cleared.size() + propagated.size() + unchanged.size())
             throw new IllegalArgumentException(/* TODO findOverlapping(configured) */);
 
         // Determine what to with remaining context types that are not explicitly configured
         ContextOp remaining;
-        if (unknown.remove(ThreadContext.ALL)) {
-            remaining = propagated.contains(ThreadContext.ALL) ? ContextOp.PROPAGATED //
-                            : cleared.contains(ThreadContext.ALL) ? ContextOp.CLEARED //
-                                            : unchanged.contains(ThreadContext.ALL) ? ContextOp.UNCHANGED //
+        if (unknown.remove(ThreadContext.ALL_REMAINING)) {
+            remaining = propagated.contains(ThreadContext.ALL_REMAINING) ? ContextOp.PROPAGATED //
+                            : cleared.contains(ThreadContext.ALL_REMAINING) ? ContextOp.CLEARED //
+                                            : unchanged.contains(ThreadContext.ALL_REMAINING) ? ContextOp.UNCHANGED //
                                                             : null;
             if (remaining == null) // only possible if builder is concurrently modified during build
                 throw new ConcurrentModificationException();
@@ -61,7 +62,7 @@ class ThreadContextBuilderImpl implements ThreadContextBuilder {
 
         LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider = new LinkedHashMap<ThreadContextProvider, ContextOp>();
 
-        Consumer<ThreadContextProvider> addProvider = provider -> {
+        for (ThreadContextProvider provider : contextProviders) {
             String contextType = provider.getThreadContextType();
             unknown.remove(contextType);
 
@@ -71,15 +72,7 @@ class ThreadContextBuilderImpl implements ThreadContextBuilder {
                                                             : remaining;
             if (op != ContextOp.UNCHANGED)
                 configPerProvider.put(provider, op);
-        };
-
-        // thread context providers from the container
-        addProvider.accept(concurrencyProvider.applicationContextProvider);
-        // TODO other container providers
-
-        // TODO obtain providers from ServiceLoader, preferably from cache based on class loader (can also do duplicate provider check there)
-
-        // TODO process in an order that keeps prereqs satisfied
+        }
 
         // unknown thread context types
         if (unknown.size() > 0)
@@ -88,27 +81,24 @@ class ThreadContextBuilderImpl implements ThreadContextBuilder {
         return new ThreadContextImpl(configPerProvider);
     }
 
-    // TODO @Override
+    @Override
     public ThreadContextBuilder cleared(String... types) {
         cleared.clear();
-        for (String type : types)
-            cleared.add(type);
+        Collections.addAll(cleared, types);
         return this;
     }
 
     @Override
     public ThreadContextBuilder propagated(String... types) {
         propagated.clear();
-        for (String type : types)
-            propagated.add(type);
+        Collections.addAll(propagated, types);
         return this;
     }
 
     @Override
     public ThreadContextBuilder unchanged(String... types) {
         unchanged.clear();
-        for (String type : types)
-            unchanged.add(type);
+        Collections.addAll(unchanged, types);
         return this;
     }
 }

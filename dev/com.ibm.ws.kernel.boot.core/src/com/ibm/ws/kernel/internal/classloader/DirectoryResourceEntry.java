@@ -57,8 +57,12 @@ public class DirectoryResourceEntry implements ResourceEntry {
     }
 
     @Override
-    public URL toURL() {
+    public URL toExternalURL() {
         return JarFileClassLoader.toURL(file);
     }
 
+    @Override
+    public URL toURL() {
+        return JarFileClassLoader.toURL(file);
+    }
 }

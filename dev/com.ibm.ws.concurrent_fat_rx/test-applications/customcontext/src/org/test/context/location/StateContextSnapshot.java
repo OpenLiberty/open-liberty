@@ -26,6 +26,7 @@ public class StateContextSnapshot implements ThreadContextSnapshot {
         this.stateName = stateName;
     }
 
+    @Override
     public ThreadContextController begin() {
         ThreadContextController stateContextRestorer = new StateContextRestorer(StateContextProvider.stateName.get());
         StateContextProvider.stateName.set(stateName);

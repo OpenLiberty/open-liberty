@@ -38,7 +38,7 @@ Include-Resource: \
   META-INF=resources/META-INF
 
 -buildpath: \
-	com.ibm.ws.opentracing.1.1;version=latest, \
+	com.ibm.ws.opentracing.1.2;version=latest, \
 	com.ibm.websphere.javaee.jaxrs.2.0;version=latest, \
 	com.ibm.ws.logging;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \

@@ -1,0 +1,30 @@
+/*******************************************************************************
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+test {
+    systemProperty "com.ibm.ws.microprofile.faulttolerance.jse", "true"
+}
+
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "gradle.plugin.net.ossindex:ossindex-gradle-plugin:0.3.8-beta"
+  }
+}
+
+apply plugin: "net.ossindex.audit"
+
+audit {
+    failOnError = true
+}

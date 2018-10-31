@@ -33,6 +33,7 @@ public class BufferedWriter extends Writer implements ResponseBuffer
 {
 
     private static final TraceComponent tc = Tr.register(BufferedWriter.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS);
+    private static final char[] EMPTY_CHAR_ARRAY = new char[0];
 
     /**
      * The actual writer
@@ -42,7 +43,7 @@ public class BufferedWriter extends Writer implements ResponseBuffer
     /**
      * The output buffer.
      */
-    protected char[] buf = new char[0];
+    protected char[] buf = EMPTY_CHAR_ARRAY;
 
     /**
      * The current number of chars in the buffer.
@@ -121,7 +122,8 @@ public class BufferedWriter extends Writer implements ResponseBuffer
         { // 306998.15
             Tr.debug(tc, "BufferedWriter(), size --> " + size + " this --> " + this);
         }
-        buf = new char[size];
+
+        buf = (size == 0 ? EMPTY_CHAR_ARRAY : new char[size]);
         bufferSize = size;
         _hasWritten = false;
         _hasFlushed = false;
@@ -779,6 +781,7 @@ public class BufferedWriter extends Writer implements ResponseBuffer
             Tr.debug(tc, "clean, this --> " + this);
         }
 
-        buf = new char[0];
+        buf = EMPTY_CHAR_ARRAY; 
+        bufferSize = 0;
     }
 }

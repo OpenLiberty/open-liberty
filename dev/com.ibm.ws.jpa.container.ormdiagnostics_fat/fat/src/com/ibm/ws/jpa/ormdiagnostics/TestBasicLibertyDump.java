@@ -15,6 +15,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -69,16 +70,17 @@ public class TestBasicLibertyDump extends FATServletClient {
                   Filters.includeAll());
         ShrinkHelper.exportDropinAppToServer(server1, app);
 
-        server1.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer("CWWJP9991W");
+
     }
 
     @Test
     public void testBasicDump() throws Exception {
+        server1.startServer();
+
         callTestServlet();
 
         final LocalFile lf = server1.dumpServer("jpa_testBasicDump");
@@ -87,7 +89,82 @@ public class TestBasicLibertyDump extends FATServletClient {
         final String introspectorData = extractJPAIntrospection(lf);
         Assert.assertNotNull(introspectorData);
 
-        // Test for some easy and consistent strings that are expected to appear in the introspector text 
+        // Test for some easy and consistent strings that are expected to appear in the introspector text
+
+        Assert.assertTrue(introspectorData.contains("JPA Runtime Internal State Information")); // Description
+        Assert.assertTrue(introspectorData.contains("jpaRuntime = com.ibm.ws.jpa.container.v22.internal.JPA22Runtime"));
+        Assert.assertTrue(introspectorData.contains("Provider Runtime Integration Service = com.ibm.ws.jpa.container.eclipselink.EclipseLinkJPAProvider"));
+
+        final String targetString1 = "################################################################################\n" +
+                                     "Application \"jpasimple\":\n" +
+                                     "   Total ORM Files: 0\n" +
+                                     "   Total JPA Involved Classes: 2";
+        Assert.assertTrue(introspectorData.contains(targetString1));
+
+        final String targetString2 = "<persistence-unit name=\"JPAPU\">";
+        Assert.assertTrue(introspectorData.contains(targetString2));
+
+        final String targetString3 = "package jpasimple.entity;\n" +
+                                     "\n" +
+                                     "@javax.persistence.Entity\n" +
+                                     "public class SimpleTestEntity {\n" +
+                                     "  // Fields\n" +
+                                     "  @javax.persistence.Id\n" +
+                                     "  @javax.persistence.GeneratedValue\n" +
+                                     "  private long id;\n" +
+                                     "\n" +
+                                     "  @javax.persistence.Basic\n" +
+                                     "  private java.lang.String strData;\n" +
+                                     "\n" +
+                                     "  @javax.persistence.Version\n" +
+                                     "  private long version;\n" +
+                                     "\n" +
+                                     "  // Methods\n" +
+                                     "  public SimpleTestEntity();\n" +
+                                     "\n" +
+                                     "  public long getId();\n" +
+                                     "\n" +
+                                     "  public void setId(long);\n" +
+                                     "\n" +
+                                     "  public java.lang.String getStrData();\n" +
+                                     "\n" +
+                                     "  public void setStrData(java.lang.String);\n" +
+                                     "\n" +
+                                     "  public long getVersion();\n" +
+                                     "\n" +
+                                     "  public void setVersion(long);\n" +
+                                     "\n" +
+                                     "  public java.lang.String toString();\n" +
+                                     "\n" +
+                                     "}";
+        Assert.assertTrue(introspectorData.contains(targetString3));
+
+        server1.stopServer("CWWJP9991W");
+    }
+
+    @Test
+    public void testBasicDumpWithWsJarDisabled() throws Exception {
+        Map<String, String> jvmOptionsMap = server1.getJvmOptionsAsMap();
+        jvmOptionsMap.put("-Dcom.ibm.websphere.persistence.DisableJpaFormatUrlProtocol", "true");
+        server1.setJvmOptions(jvmOptionsMap);
+        server1.saveServerConfiguration();
+
+        server1.startServer();
+        callTestServlet();
+        LocalFile lf = server1.dumpServer("jpa_testBasicDumpWithJarDisabled");
+
+        server1.stopServer("CWWJP9991W");
+        jvmOptionsMap = server1.getJvmOptionsAsMap();
+        jvmOptionsMap.remove("-Dcom.ibm.websphere.persistence.DisableJpaFormatUrlProtocol");
+        server1.setJvmOptions(jvmOptionsMap);
+        server1.saveServerConfiguration();
+
+        Assert.assertNotNull(lf);
+
+        final String introspectorData = extractJPAIntrospection(lf);
+        Assert.assertNotNull(introspectorData);
+
+        // Test for some easy and consistent strings that are expected to appear in the introspector text
 
         Assert.assertTrue(introspectorData.contains("JPA Runtime Internal State Information")); // Description
         Assert.assertTrue(introspectorData.contains("jpaRuntime = com.ibm.ws.jpa.container.v22.internal.JPA22Runtime"));
