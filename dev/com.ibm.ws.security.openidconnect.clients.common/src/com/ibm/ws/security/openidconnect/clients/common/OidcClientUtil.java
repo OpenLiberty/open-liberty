@@ -81,7 +81,7 @@ public class OidcClientUtil {
             SSLSocketFactory sslSocketFactory,
             boolean isHostnameVerification,
             String authMethod,
-            String resources) throws Exception {
+            String resources, HashMap<String, String> customParams) throws Exception {
         // List<String> result = new ArrayList<String>();
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair(ClientConstants.GRANT_TYPE, grantType));
@@ -95,6 +95,7 @@ public class OidcClientUtil {
             params.add(new BasicNameValuePair(Constants.CLIENT_ID, clientId));
             params.add(new BasicNameValuePair(Constants.CLIENT_SECRET, clientSecret));
         }
+        handleCustomParams(params, customParams); // custom token ep params
         Map<String, Object> postResponseMap = postToTokenEndpoint(tokenEnpoint, params, clientId, clientSecret, sslSocketFactory, isHostnameVerification, authMethod);
 
         String tokenResponse = oidcHttpUtil.extractTokensFromResponse(postResponseMap);
@@ -118,6 +119,22 @@ public class OidcClientUtil {
         }
 
         return tokens;
+    }
+
+    /**
+     * @param params
+     * @param customParams
+     */
+    public void handleCustomParams(@Sensitive List<NameValuePair> params, HashMap<String, String> customParams) {
+        //HashMap<String, String> customParams = clientConfig.getAuthzRequestParams();
+        if (customParams != null && !customParams.isEmpty()) {
+            Set<Entry<String, String>> entries = customParams.entrySet();
+            for (Entry<String, String> entry : entries) {
+                if (entry.getKey() != null && entry.getValue() != null) {
+                    params.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+                }
+            }
+        }
     }
 
     public Map<String, Object> checkToken(String tokenInfor, String clientId, @Sensitive String clientSecret,

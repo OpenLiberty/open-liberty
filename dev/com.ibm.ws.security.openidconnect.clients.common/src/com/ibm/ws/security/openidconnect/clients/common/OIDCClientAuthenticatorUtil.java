@@ -16,8 +16,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
@@ -374,6 +376,8 @@ public class OIDCClientAuthenticatorUtil {
                 query += resources;
             }
         }
+        // look for custom params to send to the authorization ep
+        query = handleCustomParams(clientConfig, query);
 
         // in case the AuthorizationEndpoint already has set up its own parameters
         String s = clientConfig.getAuthorizationEndpointUrl();
@@ -382,6 +386,29 @@ public class OIDCClientAuthenticatorUtil {
             queryMark = "&";
         }
         return s + queryMark + query;
+    }
+
+    /**
+     * @param clientConfig
+     * @param query
+     * @return
+     */
+    private String handleCustomParams(ConvergedClientConfig clientConfig, String query) {
+        HashMap<String, String> customParams = clientConfig.getAuthzRequestParams();
+        if (customParams != null && !customParams.isEmpty()) {
+            Set<Entry<String, String>> entries = customParams.entrySet();
+            for (Entry<String, String> entry : entries) {
+                if (entry.getKey() != null && entry.getValue() != null) {
+                    try {
+                        query = String.format("%s&%s=%s", query, URLEncoder.encode(entry.getKey(), ClientConstants.CHARSET),
+                                URLEncoder.encode(entry.getValue(), ClientConstants.CHARSET));
+                    } catch (UnsupportedEncodingException e) {
+
+                    }
+                }
+            }
+        }
+        return query;
     }
 
     /**
