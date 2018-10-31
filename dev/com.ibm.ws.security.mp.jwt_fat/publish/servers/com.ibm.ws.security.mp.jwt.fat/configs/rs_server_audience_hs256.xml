@@ -1,7 +1,7 @@
 
 <server>
 
-	<include location="${shared.config.dir}/oidcClientFeatures.xml" />
+	<include location="${shared.config.dir}/rsFeatures.xml" />
 
 	<include location="${shared.config.dir}/goodBasicRegistry.xml" />
 
