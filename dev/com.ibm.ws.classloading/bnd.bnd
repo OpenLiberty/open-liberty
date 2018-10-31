@@ -27,7 +27,7 @@ Export-Package: \
   com.ibm.wsspi.classloading;provide:=true, \
   com.ibm.wsspi.library;provide:=true
 
- Include-Resource: \
+Include-Resource: \
     OSGI-INF=resources/OSGI-INF
 
 # catch any packages not explicitly exported and make sure they are private
@@ -51,6 +51,7 @@ instrument.classesExcludes: com/ibm/ws/classloading/internal/resources/*.class
 	com.ibm.ws.artifact.url;version=latest,\
 	com.ibm.ws.kernel.security.thread,\
 	com.ibm.ws.kernel.metatype.helper,\
+	com.ibm.ws.kernel.service,\
 	com.ibm.ws.artifact;version=latest,\
 	com.ibm.ws.artifact.overlay;version=latest,\
 	com.ibm.ws.org.eclipse.equinox.region,\

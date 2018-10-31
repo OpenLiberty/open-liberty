@@ -8,15 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.java11_fat;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+@TraceOptions(traceGroup = "ClassLoadingService", messageBundle = "com.ibm.ws.classloading.internal.resources.ClassLoadingServiceMessages")
+package com.ibm.ws.classloading.internal.util;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                Java11Test.class,
-                Java11CNFETest.class
-})
-public class FATSuite {}
+import com.ibm.websphere.ras.annotation.TraceOptions;
