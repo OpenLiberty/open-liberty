@@ -180,5 +180,12 @@ JWK_RETRIEVE_FAILED=CWWKS1747E: Un JWK (JSON Web Key) non \u00e8 stato restituit
 JWK_RETRIEVE_FAILED.explanation=Una chiave web JSON non pu\u00f2 essere restituita dall'URL specificato. L'URL potrebbe non essere valido, l'URL potrebbe non essere configurato per restituire un JWK, la risposta dall'URL potrebbe essere vuota o si \u00e8 verificato un errore sconosciuto.
 JWK_RETRIEVE_FAILED.useraction=Verificare che l'URL sia formato correttamente e specifichi un'ubicazione in grado di restituire chiavi web JSON. Controllare il codice di stato e il contenuto della risposta per ulteriori informazioni.
 
+USERINFO_RETREIVE_FAILED=CWWKS1748E: Non \u00e8 stato possibile contattare l''URL info utente [{0}].  Lo stato della risposta \u00e8 [{1}] e il contenuto restituito \u00e8 [{2}].
+USERINFO_RETREIVE_FAILED.explanation=Impossibile ottenere i dati infor utente dall'URL specificato. L'URL potrebbe non essere valido, il token di accesso fornito potrebbe non essere valido, la risposta dall'URL potrebbe essere vuota o si \u00e8 verificato un errore sconosciuto.
+USERINFO_RETREIVE_FAILED.useraction=Verificare che l'URL sia formato correttamente e specifichi un'ubicazione in grado di restituire i dati info utente. Controllare il codice di stato e il contenuto della risposta per ulteriori informazioni.
+
+USERINFO_INVALID=CWWKS1749E: I dati info utente [{0}] non sono validi perch\u00e9 la richiesta secondaria non corrisponde a quella del token ID[{1}].
+USERINFO_INVALID.explanation=La richiesta secondaria dei dati info utente deve corrispondere a quella del token ID, ma non \u00e8 cos\u00ec. 
+USERINFO_INVALID.useraction=Verificare che il provider OpenID Connect generi dati info utente validi.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 

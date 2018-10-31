@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -26,6 +27,15 @@ import componenttest.custom.junit.runner.Mode;
 @RunWith(FATRunner.class)
 @Mode(FULL)
 public class MissingServletTests15 extends AbstractSpringTests {
+    @AfterClass
+    public static void stopTestServer() throws Exception {
+        if (!javaVersion.startsWith("1.")) {
+            server.stopServer("CWWKC0254E", "CWWKZ0002E", "CWWKC0265W");
+        } else {
+            server.stopServer("CWWKC0254E", "CWWKZ0002E");
+        }
+    }
+
     @Override
     public boolean expectApplicationSuccess() {
         return false;
@@ -34,7 +44,6 @@ public class MissingServletTests15 extends AbstractSpringTests {
     @Test
     public void testMissingServletFor15() throws Exception {
         assertNotNull("No error message was found for missing servlet feature ", server.waitForStringInLog("CWWKC0254E"));
-        stopServer(true, "CWWKC0254E", "CWWKZ0002E");
     }
 
     @Override

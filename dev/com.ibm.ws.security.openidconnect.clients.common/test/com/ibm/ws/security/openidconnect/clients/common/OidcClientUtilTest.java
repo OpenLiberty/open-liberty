@@ -291,8 +291,8 @@ public class OidcClientUtilTest extends CommonTestClass {
                     sslSocketFactory,
                     false,
                     authMethod,
-                    null,
-                    false);
+                    null, null, false);
+
             Set<String> keys = results.keySet();
             boolean bAccessToken = false;
             boolean bTokenType = false;

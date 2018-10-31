@@ -3,6 +3,7 @@
     <featureManager>
         <feature>servlet-3.1</feature>
         <feature>usr:quiescelistener-1.0</feature>
+        <feature>quiesceInternal-1.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>

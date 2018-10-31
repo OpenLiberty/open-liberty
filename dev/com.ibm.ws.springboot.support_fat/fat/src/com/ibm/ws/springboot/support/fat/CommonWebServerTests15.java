@@ -10,10 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -21,6 +25,12 @@ import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
 public class CommonWebServerTests15 extends CommonWebServerTests {
+    @AfterClass
+    public static void stopTestServer() throws Exception {
+        if (!javaVersion.startsWith("1.")) {
+            server.stopServer("CWWKC0265W");
+        }
+    }
 
     @Test
     public void testBasicSpringBootApplication15() throws Exception {
@@ -35,5 +45,15 @@ public class CommonWebServerTests15 extends CommonWebServerTests {
     @Override
     public String getApplication() {
         return SPRING_BOOT_15_APP_BASE;
+    }
+
+    @Test
+    public void expectWarningWhenHigherThanJava8IsUsedWithSpringBoot15() throws Exception {
+        List<String> logMessages = server.findStringsInLogs("CWWKC0265W");
+        if (!javaVersion.startsWith("1.")) {
+            assertTrue("Expected warning message CWWKC0265W not found", !logMessages.isEmpty() && logMessages.size() == 1);
+        } else {
+            assertTrue("CWWKC0265W warning message should not appear when java versions below 9 is used with Spring Boot 1.5.x and below", logMessages.isEmpty());
+        }
     }
 }

@@ -9,9 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 1.0
+ * @version 2.0
  */
-@org.osgi.annotation.versioning.Version("1.0")
+@org.osgi.annotation.versioning.Version("2.0") // Last updated for 18.0.0.4
 @TraceOptions(traceGroup = "FAULTTOLERANCE", messageBundle = "com.ibm.ws.microprofile.faulttolerance.resources.FaultTolerance")
 package com.ibm.ws.microprofile.faulttolerance.impl;
 

@@ -87,8 +87,8 @@ sslCert.desc=\tCrie um certificado SSL padr\u00e3o para uso pelo servidor ou \
 \n\
 \tconfigura\u00e7\u00e3o do cliente. 
 #Note to translator the word "createSSLCertificate" should not be translated
-sslCert.usage.options=\t{0} createSSLCertificate '{--server servername|--client clientname'}  \n\
-\t--password password [options]
+sslCert.usage.options=\t{0} createSSLCertificate '{--server=servername |--client=clientname'}\n\
+\t--password[=password] [options]
 sslCert.required-key.server=\ \ \ \ --server=name
 sslCert.required-desc.server=\tServidor para o qual criar o certificado.  Este argumento \
 n\u00e3o pode    \n \tusado se o argumento --client for usado.

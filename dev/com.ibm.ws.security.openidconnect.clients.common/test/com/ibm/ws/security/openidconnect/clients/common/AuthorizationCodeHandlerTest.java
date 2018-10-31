@@ -293,6 +293,7 @@ public class AuthorizationCodeHandlerTest {
                 boolean b,
                 String authMethod,
                 String resources,
+                HashMap<String, String> customParams,
                 boolean useJvmProps) throws HttpException, IOException {
             if (ioe != null) {
                 throw ioe;

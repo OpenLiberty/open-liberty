@@ -29,15 +29,15 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 
 public class ExecutorBuilderImpl<T, R> implements ExecutorBuilder<T, R> {
 
-    private CircuitBreakerPolicy circuitBreakerPolicy = null;
-    private RetryPolicy retryPolicy = null;
-    private BulkheadPolicy bulkheadPolicy = null;
-    private FallbackPolicy fallbackPolicy = null;
-    private TimeoutPolicy timeoutPolicy = null;
-    private MetricRecorder metricRecorder = DummyMetricRecorder.get();
+    protected CircuitBreakerPolicy circuitBreakerPolicy = null;
+    protected RetryPolicy retryPolicy = null;
+    protected BulkheadPolicy bulkheadPolicy = null;
+    protected FallbackPolicy fallbackPolicy = null;
+    protected TimeoutPolicy timeoutPolicy = null;
+    protected MetricRecorder metricRecorder = DummyMetricRecorder.get();
     private final WSContextService contextService;
     private final PolicyExecutorProvider policyExecutorProvider;
-    private final ScheduledExecutorService scheduledExecutorService;
+    protected final ScheduledExecutorService scheduledExecutorService;
 
     public ExecutorBuilderImpl(WSContextService contextService, PolicyExecutorProvider policyExecutorProvider, ScheduledExecutorService scheduledExecutorService) {
         this.contextService = contextService;
@@ -95,12 +95,15 @@ public class ExecutorBuilderImpl<T, R> implements ExecutorBuilder<T, R> {
         return executor;
     }
 
-    /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
     @Override
-    public Executor<Future<R>> buildAsync() {
-        Executor<Future<R>> executor = new AsyncOuterExecutorImpl<R>(this.retryPolicy, this.circuitBreakerPolicy, this.timeoutPolicy, this.bulkheadPolicy, this.fallbackPolicy, this.contextService, this.policyExecutorProvider, this.scheduledExecutorService, this.metricRecorder);
-
-        return executor;
+    public <W> Executor<W> buildAsync(Class<?> asyncResultWrapperType) {
+        if (asyncResultWrapperType == Future.class) {
+            Executor<Future<R>> executor = new AsyncOuterExecutorImpl<R>(this.retryPolicy, this.circuitBreakerPolicy, this.timeoutPolicy, this.bulkheadPolicy, this.fallbackPolicy, this.contextService, this.policyExecutorProvider, this.scheduledExecutorService, this.metricRecorder);
+            return (Executor<W>) executor;
+        } else {
+            throw new IllegalArgumentException("Invalid return type for async execution: " + asyncResultWrapperType);
+        }
     }
 
 }

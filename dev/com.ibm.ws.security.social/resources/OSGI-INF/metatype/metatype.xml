@@ -397,6 +397,7 @@
         <AD id="resource" name="internal" description="internal use only" required="false" type="String" cardinality="2147483647" />
         <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
         <AD id="discoveryEndpoint" name="%discoveryEndpoint" description="%discoveryEndpoint.desc" required="false" type="String" />
+        <AD id="discoveryPollingRate" name="%discoveryPollingRate" description="%discoveryPollingRate.desc" required="false" type="String" default="300s" ibm:type="duration" />
         <AD id="jwkClientId" name="%jwkClientIdentifier" description="%jwkClientIdentifier.desc" required="false"  type="String" />
         <AD id="jwkClientSecret" name="%jwkClientSecret" description="%jwkClientSecret.desc" required="false"  type="String" ibm:type="password"/>
         <AD id="authzParameter" name="%authzParameter" description="%authzParameter.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.client.param" cardinality="20" />

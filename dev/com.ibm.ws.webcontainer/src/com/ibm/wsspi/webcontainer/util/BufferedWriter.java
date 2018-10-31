@@ -33,6 +33,7 @@ public class BufferedWriter extends Writer implements ResponseBuffer
 {
 
     private static final TraceComponent tc = Tr.register(BufferedWriter.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS);
+    private static final char[] EMPTY_CHAR_ARRAY = new char[0];
 
     /**
      * The actual writer
@@ -42,7 +43,7 @@ public class BufferedWriter extends Writer implements ResponseBuffer
     /**
      * The output buffer.
      */
-    protected char[] buf = new char[0];
+    protected char[] buf = EMPTY_CHAR_ARRAY;
 
     /**
      * The current number of chars in the buffer.
@@ -119,9 +120,10 @@ public class BufferedWriter extends Writer implements ResponseBuffer
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
         { // 306998.15
-            Tr.debug(tc, "BufferedWriter(), size --> " + size);
+            Tr.debug(tc, "BufferedWriter(), size --> " + size + " this --> " + this);
         }
-        buf = new char[size];
+
+        buf = (size == 0 ? EMPTY_CHAR_ARRAY : new char[size]);
         bufferSize = size;
         _hasWritten = false;
         _hasFlushed = false;
@@ -160,15 +162,12 @@ public class BufferedWriter extends Writer implements ResponseBuffer
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
         { // 306998.15
-            Tr.debug(tc, "initNewBuffer, size --> " + bufSize);
+            Tr.debug(tc, "initNewBuffer, size --> " + bufSize + " this --> " + this);
         }
         this.out = out;
         this.except = null;
-        if (buf.length != bufSize)
-        {
-            bufferSize = bufSize;
-            buf = new char[bufferSize];
-        }
+        bufferSize = bufSize;
+        buf = new char[bufferSize];
     }
 
     /**
@@ -774,6 +773,15 @@ public class BufferedWriter extends Writer implements ResponseBuffer
     private void setContentLengthHeader(long length) {
         this.response.setHeader("Content-Length", (Long.toString(length)));
     }
-      
+    
+    public void clean()
+    {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+        { 
+            Tr.debug(tc, "clean, this --> " + this);
+        }
 
+        buf = EMPTY_CHAR_ARRAY; 
+        bufferSize = 0;
+    }
 }

@@ -78,6 +78,7 @@ public abstract class AbstractSpringTests {
     public static final int EXPECTED_HTTP_PORT = 8081;
     public static final int DEFAULT_HTTP_PORT;
     public static final int DEFAULT_HTTPS_PORT;
+    public static final String javaVersion;
 
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.springboot.support.fat.SpringBootTests");
     static {
@@ -87,6 +88,7 @@ public abstract class AbstractSpringTests {
         // Tests can change this, but it will be reset by the @After method resetDefaultPorts
         server.setHttpDefaultPort(EXPECTED_HTTP_PORT);
         server.setHttpDefaultSecurePort(EXPECTED_HTTP_PORT);
+        javaVersion = System.getProperty("java.version");
 
     }
     public static final AtomicBoolean serverStarted = new AtomicBoolean();

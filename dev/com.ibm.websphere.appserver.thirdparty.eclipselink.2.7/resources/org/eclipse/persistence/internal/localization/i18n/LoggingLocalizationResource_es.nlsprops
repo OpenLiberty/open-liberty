@@ -609,13 +609,13 @@ osgi_initializer_failed=La construcci\u00f3n del inicializador OSGi espec\u00edf
 
 overriding_cache_isolation=La entidad padre {0} tiene un nivel de aislamiento de: {1} que es m\u00e1s protector que la subclase {2} con aislamiento: {3} de forma que la subclase se ha establecido en el nivel de aislamiento {1}.
 
-ox_lowering_global_logging_from_default_info_to_warning= {0} Reduciendo el registro del nivel predeterminado INFO a WARNING.
+ox_lowering_global_logging_from_default_info_to_warning={0} Reduciendo el registro del nivel predeterminado INFO a WARNING.
 
-ox_lowering_session_logging_from_default_info_to_warning= {0} Reduciendo el registro de servicio del nivel predeterminado INFO a WARNING.
+ox_lowering_session_logging_from_default_info_to_warning={0} Reduciendo el registro de servicio del nivel predeterminado INFO a WARNING.
 
-ox_turn_global_logging_off= {0} Desactivando el registro de sesi\u00f3n global.
+ox_turn_global_logging_off={0} Desactivando el registro de sesi\u00f3n global.
 
-ox_turn_session_logging_off= {0} Desactivando el registro de sesi\u00f3n.
+ox_turn_session_logging_off={0} Desactivando el registro de sesi\u00f3n.
 
 parse_ejb_jar_with_validation_fails=El an\u00e1lisis de ejb-jar.xml con validaci\u00f3n falla con el error ({0}). La herramienta de migraci\u00f3n analizar\u00e1 el archivo xml sin validaci\u00f3n.
 

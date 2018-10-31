@@ -102,7 +102,7 @@
 #   - Msgs in the range CWSIP0551-CWSIP0560 belong to class com.ibm.ws.sib.processor.impl.store.itemstreams.PtoPLocalMsgsItemStream
 #   - Msgs in the range CWSIP0561-CWSIP0570 belong to class com.ibm.ws.sib.processor.impl.AsynchConsumer
 #   - Msgs in the range CWSIP0571-CWSIP0579 belong to class com.ibm.ws.sib.processor.impl.mediation.MessagePump
-#
+#   - Msgs in the range CWSIP0580-CWSIP0589 belong to class com.ibm.ws.sib.processor.impl.store.items.MessageItem
 #
 #
 #
@@ -1292,6 +1292,15 @@ CONNECTION_CONTROLLABLE_ERROR_CWSIP0571.useraction=Brak.
 MESSAGE_EXISTS_ERROR_CWSIP0572=CWSIP0572E: Komunikat o identyfikatorze {0} nie istnieje ju\u017c w miejscu docelowym {1}.
 MESSAGE_EXISTS_ERROR_CWSIP0572.explanation=Pr\u00f3ba uzyskania dost\u0119pu do komunikatu o podanym identyfikatorze nie powiod\u0142a si\u0119.  Powodem by\u0142a prawdopodobnie utrata wa\u017cno\u015bci przez komunikat lub jego usuni\u0119cie przez aplikacj\u0119.
 MESSAGE_EXISTS_ERROR_CWSIP0572.useraction=Brak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The destination name
+# {3} The action taken
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580=CWSIP0580W: W miejscu docelowym {2} znaleziono komunikat o identyfikatorze {0} (identyfikator komunikatu systemowego {1}) z op\u00f3\u017anieniem dostarczania przekraczaj\u0105cym limit ustawiony we w\u0142a\u015bciwo\u015bci sib.msgstore.maximumAllowedDeliveryDelayInterval, podj\u0119te dzia\u0142anie: {3}
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580.explanation=To ostrze\u017cenie wskazuje podj\u0119te dzia\u0142anie.
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
 
 # -------------------------------------------------------------------------------------------------
 NO_ELEMENTS_ERROR_CWSIP0601=CWSIP0601E: Brak element\u00f3w w iteratorze.

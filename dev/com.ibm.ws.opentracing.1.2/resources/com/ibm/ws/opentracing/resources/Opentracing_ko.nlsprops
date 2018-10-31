@@ -1,0 +1,84 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Opentracing API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+# -----------------------------------------------------------------------
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Opentracing Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI=CWMOT0000E: JNDI\uc5d0\uc11c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc774\ub984\uc744 \uac80\uc0c9\ud560 \uacbd\uc6b0 \uac12\uc774 \ub9ac\ud134\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. Opentracing \uc11c\ube44\uc2a4 \uc774\ub984\uc5d0 \uae30\ubcf8 \uc774\ub984\uc774 \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.explanation=\uae30\ub2a5\uc5d0\uc11c \uc0ac\uc6a9\uc790\uac00 \uc81c\uacf5\ud55c OpentracingTracerFactory \uad6c\ud604\uc5d0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc774\ub984\uc744 \uc81c\uacf5\ud569\ub2c8\ub2e4. "java:app/AppName"\uc758 JNDI \uac80\uc0c9\uc5d0\uc11c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc774\ub984\uc744 \uac80\uc0c9\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4. \uae30\ubcf8 \uc11c\ube44\uc2a4 \uc774\ub984\uc774 \uc81c\uacf5\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.useraction="java:app/AppName"\uc758 JNDI \uac80\uc0c9\uc744 \ud1b5\ud574 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc774\ub984\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\ub294 \uc774\uc720\ub97c \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: \uc0ac\uc6a9\uc790\uac00 \uc81c\uacf5\ud55c OpentracingTracerFactory.newInstance(...) \uba54\uc18c\ub4dc \ud638\ucd9c\uc774 \uc608\uc678\ub85c \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \uba54\uc2dc\uc9c0 = {0}
+OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=\uc774 \uae30\ub2a5\uc740 \uc0ac\uc6a9\uc790\uac00 \uc81c\uacf5\ud55c OpentracingTracerFactory\ub97c \uc0ac\uc6a9\ud558\uc5ec Tracer \uad6c\ud604\uc744 \uad6c\uc131\ud569\ub2c8\ub2e4. OpentracingTracerFactory.newInstance \uba54\uc18c\ub4dc\uc5d0\uc11c \uc608\uc678\ub97c \ub9ac\ud134\ud588\uc2b5\ub2c8\ub2e4.
+OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=\uc0ac\uc6a9\uc790\uac00 \uc81c\uacf5\ud55c OpentracingTracerFactory newInstance \uba54\uc18c\ub4dc\uc5d0\uc11c \uc608\uc678\ub97c \ub9ac\ud134\ud55c \uc774\uc720\ub97c \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: \uc0ac\uc6a9\uc790\uac00 \uc81c\uacf5\ud55c OpentracingTracerFactory.newInstance(...) \uba54\uc18c\ub4dc \ud638\ucd9c\uc774 \ub110\uc744 \ub9ac\ud134\ud588\uc2b5\ub2c8\ub2e4.
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=\uc774 \uae30\ub2a5\uc740 \uc0ac\uc6a9\uc790\uac00 \uc81c\uacf5\ud55c OpentracingTracerFactory\ub97c \uc0ac\uc6a9\ud558\uc5ec Tracer \uad6c\ud604\uc744 \uad6c\uc131\ud569\ub2c8\ub2e4. OpentracingTracerFactory.newInstance \uba54\uc18c\ub4dc\uc5d0\uc11c \ub110\uc744 \ub9ac\ud134\ud588\uc2b5\ub2c8\ub2e4.
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=\uc0ac\uc6a9\uc790\uac00 \uc81c\uacf5\ud55c OpentracingTracerFactory newInstance \uba54\uc18c\ub4dc\uc5d0\uc11c \ub110\uc744 \ub9ac\ud134\ud55c \uc774\uc720\ub97c \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: OpentracingTracerFactory \ud074\ub798\uc2a4\uac00 \uc81c\uacf5\ub418\uc9c0 \uc54a\uc544\uc11c OpenTracing\uc774 JAX-RS \uc694\uccad\uc744 \ucd94\uc801\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+OPENTRACING_NO_TRACERFACTORY.explanation=OpentracingTracerFactory \ud074\ub798\uc2a4\uac00 \uc81c\uacf5\ub418\uc9c0 \uc54a\uc544\uc11c OpenTracing\uc774 \uc62c\ubc14\ub974\uac8c \uc791\ub3d9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. JAX-RS \uc694\uccad\uc774 \uc815\uc0c1\uc801\uc73c\ub85c \uc2e4\ud589\ub418\uc9c0\ub9cc \ucd94\uc801\ub418\uc9c0\ub294 \uc54a\uc2b5\ub2c8\ub2e4.
+OPENTRACING_NO_TRACERFACTORY.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 OpenTracing \ubd84\uc0b0 \ucd94\uc801\uc744 \uc0ac\uc6a9\uc73c\ub85c \uc124\uc815\ud558\ub294 \ubc29\ubc95\uc5d0 \ub300\ud55c \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Opentracing error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An Opentracing API error has occurred: {0}
+temporary.CWMOT9999E=CWMOT9999E: Opentracing API \uc624\ub958 \ubc1c\uc0dd: {0}
+temporary.CWMOT9999E.explanation=\uc77c\ubc18 \uc870\uc791\uc744 \ubc29\ud574\ud558\ub294 Opentracing API \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+temporary.CWMOT9999E.useraction=FFDC \ub85c\uadf8 \ubc0f \uc608\uc678 \ud14d\uc2a4\ud2b8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.

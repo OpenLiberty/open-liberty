@@ -116,6 +116,7 @@ public class AuthorizationCodeHandler {
                     clientConfig.isHostNameVerificationEnabled(),
                     clientConfig.getTokenEndpointAuthMethod(),
                     OIDCClientAuthenticatorUtil.getResources(clientConfig),
+                    clientConfig.getTokenRequestParams(),
                     clientConfig.getUseSystemPropertiesForHttpClientConnections());
 
             oidcClientRequest.setTokenType(ClientConstants.TYPE_ID_TOKEN);

@@ -14,18 +14,22 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.AfterClass;
+
 public class MimeMapping15 extends MimeMappingBaseTest {
+
+    @AfterClass
+    public static void stopTestServer() throws Exception {
+        if (!javaVersion.startsWith("1.")) {
+            server.stopServer("CWWKC0265W");
+        }
+    }
 
     @Override
     public Set<String> getFeatures() {
         return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1"));
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.springboot.support.fat.AbstractSpringTests#getApplication()
-     */
     @Override
     public String getApplication() {
         return SPRING_BOOT_15_APP_BASE;

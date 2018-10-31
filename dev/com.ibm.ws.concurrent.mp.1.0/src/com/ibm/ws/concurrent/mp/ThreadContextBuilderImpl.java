@@ -10,37 +10,95 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+
 import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.eclipse.microprofile.concurrent.ThreadContextBuilder;
+import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 
 /**
  * Builder that programmatically configures and creates ThreadContext instances.
  */
 class ThreadContextBuilderImpl implements ThreadContextBuilder {
-    private String[] cleared;
-    private String[] propagated;
-    private String[] unchanged;
+    private final ArrayList<ThreadContextProvider> contextProviders;
+
+    private final HashSet<String> cleared = new HashSet<String>();
+    private final HashSet<String> propagated = new HashSet<String>();
+    private final HashSet<String> unchanged = new HashSet<String>();
+
+    ThreadContextBuilderImpl(ArrayList<ThreadContextProvider> contextProviders) {
+        this.contextProviders = contextProviders;
+
+        // built-in defaults from spec:
+        // cleared.add(ThreadContext.TRANSACTION); // TODO haven't added support for transaction context yet
+        propagated.add(ThreadContext.ALL_REMAINING);
+    }
 
     @Override
     public ThreadContext build() {
-        return new ThreadContextImpl(cleared, propagated, unchanged); // TODO
+        // For detection of unknown and overlapping types,
+        HashSet<String> unknown = new HashSet<String>(cleared);
+        unknown.addAll(propagated);
+        unknown.addAll(unchanged); // TODO should not cause an error if an unchanged type is not known
+
+        if (unknown.size() < cleared.size() + propagated.size() + unchanged.size())
+            throw new IllegalArgumentException(/* TODO findOverlapping(configured) */);
+
+        // Determine what to with remaining context types that are not explicitly configured
+        ContextOp remaining;
+        if (unknown.remove(ThreadContext.ALL_REMAINING)) {
+            remaining = propagated.contains(ThreadContext.ALL_REMAINING) ? ContextOp.PROPAGATED //
+                            : cleared.contains(ThreadContext.ALL_REMAINING) ? ContextOp.CLEARED //
+                                            : unchanged.contains(ThreadContext.ALL_REMAINING) ? ContextOp.UNCHANGED //
+                                                            : null;
+            if (remaining == null) // only possible if builder is concurrently modified during build
+                throw new ConcurrentModificationException();
+        } else
+            remaining = ContextOp.CLEARED;
+
+        LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider = new LinkedHashMap<ThreadContextProvider, ContextOp>();
+
+        for (ThreadContextProvider provider : contextProviders) {
+            String contextType = provider.getThreadContextType();
+            unknown.remove(contextType);
+
+            ContextOp op = propagated.contains(contextType) ? ContextOp.PROPAGATED //
+                            : cleared.contains(contextType) ? ContextOp.CLEARED //
+                                            : unchanged.contains(contextType) ? ContextOp.UNCHANGED //
+                                                            : remaining;
+            if (op != ContextOp.UNCHANGED)
+                configPerProvider.put(provider, op);
+        }
+
+        // unknown thread context types
+        if (unknown.size() > 0)
+            throw new IllegalArgumentException(unknown.toString());
+
+        return new ThreadContextImpl(configPerProvider);
     }
 
-    // TODO @Override
+    @Override
     public ThreadContextBuilder cleared(String... types) {
-        // TODO
+        cleared.clear();
+        Collections.addAll(cleared, types);
         return this;
     }
 
     @Override
     public ThreadContextBuilder propagated(String... types) {
-        // TODO
+        propagated.clear();
+        Collections.addAll(propagated, types);
         return this;
     }
 
     @Override
     public ThreadContextBuilder unchanged(String... types) {
-        // TODO
+        unchanged.clear();
+        Collections.addAll(unchanged, types);
         return this;
     }
 }

@@ -24,6 +24,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import com.ibm.ws.kernel.boot.classloader.URLEncodingUtils;
+
 /**
  */
 public class JarResourceEntry implements ResourceEntry {
@@ -59,6 +61,21 @@ public class JarResourceEntry implements ResourceEntry {
             return JarFileClassLoader.getBytes(in, jarEntry.getSize());
         } finally {
             JarFileClassLoader.close(in);
+        }
+    }
+
+    @Override
+    public URL toExternalURL() {
+        URL fileURL = handler.toURL();
+        if (!"file".equals(fileURL.getProtocol())) {
+            return toURL();
+        }
+
+        try {
+            return new URL("jar:" + fileURL + "!/" + URLEncodingUtils.encode(jarEntry.getName()));
+        } catch (MalformedURLException e) {
+            // this is very unexpected
+            throw new Error(e);
         }
     }
 

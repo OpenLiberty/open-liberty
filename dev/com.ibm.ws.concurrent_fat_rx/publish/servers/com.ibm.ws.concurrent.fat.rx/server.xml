@@ -20,7 +20,13 @@
     
     <include location="../fatTestPorts.xml"/>
     
-    <application location="concurrentrxfat.war" />
+    <application location="concurrentrxfat.war">
+        <classloader commonLibraryRef="customContextProviderLib"/>
+    </application>
+
+    <library id="customContextProviderLib">
+        <file name="${server.config.dir}/lib/customContextProviders.jar"/>
+    </library>
 
     <!-- Do not change the concurrency policies associated with the following executors. Tests make assumptions based on this configuration -->
 

@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
@@ -62,6 +63,7 @@ import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.eclipse.microprofile.concurrent.ThreadContextBuilder;
 import org.junit.Test;
+import org.test.context.location.CurrentLocation;
 
 import componenttest.app.FATServlet;
 
@@ -1440,6 +1442,21 @@ public class ConcurrentRxTestServlet extends FATServlet {
         assertEquals(Long.valueOf(100), cf0.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertTrue(cf0.isDone());
         assertFalse(cf0.isCompletedExceptionally());
+    }
+
+    // TODO replace this test with one that expects the custom thread context to be propagated to completion stage actions
+    @Test
+    public void testCustomContextProvider() throws Exception {
+        CurrentLocation.setLocation("Minnesota");
+        try {
+            assertEquals(6.875, CurrentLocation.getStateSalesTax(100.0), 0.000001);
+        } finally {
+            CurrentLocation.setLocation("");
+        }
+
+        ServiceLoader<org.eclipse.microprofile.concurrent.spi.ThreadContextProvider> providers = ServiceLoader
+                        .load(org.eclipse.microprofile.concurrent.spi.ThreadContextProvider.class);
+        providers.iterator().next();
     }
 
     /**
@@ -3466,10 +3483,17 @@ public class ConcurrentRxTestServlet extends FATServlet {
     public void testThreadContextBuilder() throws Exception {
         ThreadContext contextSvc = ThreadContextBuilder.instance().propagated(ThreadContext.APPLICATION).build();
         Supplier<Object> supplier = contextSvc.withCurrentContext((Supplier<Object>) () -> { // TODO remove cast
-            return true; // TODO InitialContext.doLookup("java:comp/env/executorRef"); // requires application context
+            try {
+                return InitialContext.doLookup("java:comp/env/executorRef"); // requires application context
+            } catch (NamingException x) {
+                throw new RuntimeException(x);
+            }
         });
-        //Object result = supplier.get(); // TODO
-        //assertNotNull(result);
+
+        // Run on a thread that lacks access to the application's name space
+        Future<?> resultRef = testThreads.submit(() -> supplier.get());
+        Object result = resultRef.get();
+        assertNotNull(result);
     }
 
     /**

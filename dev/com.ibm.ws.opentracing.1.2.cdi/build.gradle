@@ -1,0 +1,6 @@
+plugins {
+  id "net.ossindex.audit" version "0.3.8-beta"
+  }
+audit {
+    failOnError = false
+}

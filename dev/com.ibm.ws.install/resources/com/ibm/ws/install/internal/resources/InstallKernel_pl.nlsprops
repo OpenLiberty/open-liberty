@@ -771,6 +771,14 @@ ERROR_UNKNOWN_OSLIST_VALUE=CWWKF1387E: Warto\u015b\u0107 {0} nie jest poprawn\u0
 ERROR_UNKNOWN_OSLIST_VALUE.explanation=Ta warto\u015b\u0107 zostanie zignorowana, poniewa\u017c nie jest to rozpoznana nazwa systemu operacyjnego.
 ERROR_UNKNOWN_OSLIST_VALUE.useraction=Zmodyfikuj lub usu\u0144 t\u0119 warto\u015b\u0107 z pliku manifestu sk\u0142adnika.
 
+ERROR_ESA_NOT_FOUND=CWWKF1388E: Podany plik ESA {0} nie zawiera \u017cadnych sk\u0142adnik\u00f3w.
+ERROR_ESA_NOT_FOUND.explanation=Sk\u0142adnik nie zostanie zainstalowany z pliku ESA.
+ERROR_ESA_NOT_FOUND.useraction=Upewnij si\u0119, \u017ce podany pojedynczy plik ESA jest poprawny i zawiera sk\u0142adnik.
+
+ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: Nie mo\u017cna utworzy\u0107 pliku JSON w {0} dla pliku ESA {1}.
+ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=Sk\u0142adnik w pliku ESA nie zostanie zainstalowany.
+ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Upewnij si\u0119, \u017ce jest dost\u0119pne prawo do zapisu dla katalogu, w kt\u00f3rym zostanie utworzony plik JSON.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Sk\u0142adnik zosta\u0142 pomy\u015blnie pobrany.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=Sk\u0142adnik zosta\u0142 pobrany.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

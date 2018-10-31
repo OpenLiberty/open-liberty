@@ -102,7 +102,7 @@
 #   - Msgs in the range CWSIP0551-CWSIP0560 belong to class com.ibm.ws.sib.processor.impl.store.itemstreams.PtoPLocalMsgsItemStream
 #   - Msgs in the range CWSIP0561-CWSIP0570 belong to class com.ibm.ws.sib.processor.impl.AsynchConsumer
 #   - Msgs in the range CWSIP0571-CWSIP0579 belong to class com.ibm.ws.sib.processor.impl.mediation.MessagePump
-#
+#   - Msgs in the range CWSIP0580-CWSIP0589 belong to class com.ibm.ws.sib.processor.impl.store.items.MessageItem
 #
 #
 #
@@ -1274,6 +1274,14 @@ MESSAGE_EXISTS_ERROR_CWSIP0572=CWSIP0572E: Die Nachricht mit der ID {0} ist nich
 MESSAGE_EXISTS_ERROR_CWSIP0572.explanation=Der Zugriff auf die Nachricht mit der angegebenen ID ist fehlgeschlagen. Wahrscheinlich ist die Nachricht verfallen oder sie wurde von einer Anwendung entfernt.
 MESSAGE_EXISTS_ERROR_CWSIP0572.useraction=Keine.
 
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The destination name
+# {3} The action taken
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580=CWSIP0580W: Es wurde eine Nachricht mit der ID {0} und der Systemnachrichten-ID {1} im Ziel {2} gefunden, deren Zustellungsverz\u00f6gerung das mit der Eigenschaft property sib.msgstore.maximumAllowedDeliveryDelayInterval festgelegte Zeitlimit \u00fcberschreitet. Die folgende Aktion wurde eingeleitet: ''{3}''
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580.explanation=Diese Warnung zeigt an, dass eine Aktion eingeleitet wurde.
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580.useraction=Es ist keine Benutzeraktion erforderlich. 
 # -------------------------------------------------------------------------------------------------
 NO_ELEMENTS_ERROR_CWSIP0601=CWSIP0601E: Es sind keine weiteren Elemente im Iterator vorhanden.
 NO_ELEMENTS_ERROR_CWSIP0601.explanation=Keine.

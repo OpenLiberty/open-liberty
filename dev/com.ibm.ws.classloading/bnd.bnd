@@ -55,6 +55,7 @@ instrument.classesExcludes: com/ibm/ws/classloading/internal/resources/*.class
 	com.ibm.ws.artifact.overlay;version=latest,\
 	com.ibm.ws.org.eclipse.equinox.region,\
 	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.kernel.boot.common,\
 	com.ibm.ws.kernel.feature,\
 	com.ibm.ws.logging,\
 	com.ibm.ws.dynamic.bundle;version=latest,\

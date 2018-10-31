@@ -12,7 +12,6 @@ package com.ibm.ws.springboot.support.fat;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,10 +35,5 @@ public abstract class UnsupportedConfigWarningTestBase extends CommonWebServerTe
     public void testUnsupportedCompressionWarning() throws Exception {
         testBasicSpringBootApplication();
         assertNotNull("No warning message was found for unsupported compression enabled", server.waitForStringInLog("CWWKC0261W"));
-    }
-
-    @AfterClass
-    public static void stopit() throws Exception {
-        CommonWebServerTests.stopServer(true, "CWWKC0261W", "CWWKC0262W");
     }
 }

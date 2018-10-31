@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -149,13 +153,13 @@
 
 7093=A(z) [{0}] nev\u0171 lek\u00e9rdez\u00e9sben a(z) [{1}] nev\u0171 lek\u00e9rdez\u00e9si argumentum [{2}] oszt\u00e1lya nem tal\u00e1lhat\u00f3. Foglalja bele a hi\u00e1nyz\u00f3 oszt\u00e1lyt az oszt\u00e1ly\u00fatvonalba.
 
-7095=A(z) [{0}] sessions.xml er\u0151forr\u00e1s nem tal\u00e1lhat\u00f3 az er\u0151forr\u00e1s-\u00fatvonalon.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a SessionManager.getSession met\u00f3dusnak \u00e1tadott er\u0151forr\u00e1sn\u00e9v/\u00fatvonal \u00e9s oszt\u00e1ly\u00fatvonal helyes.  A sessions.xml f\u00e1jlt az alkalmaz\u00e1s telep\u00edtett jar arch\u00edvum\u00e1nak gy\u00f6ker\u00e9be kell belefoglalni. Ha a sessions.xml az alkalmaz\u00e1s jar arch\u00edvumban egy alk\u00f6nyvt\u00e1rban van telep\u00edtve, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az er\u0151forr\u00e1s-\u00fatvonal helyes, \u00e9s "/" elv\u00e1laszt\u00f3t haszn\u00e1l, nem pedig "\" elv\u00e1laszt\u00f3t.
+7095=A(z) [{0}] sessions.xml er\u0151forr\u00e1s nem tal\u00e1lhat\u00f3 az er\u0151forr\u00e1s-\u00fatvonalon.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a SessionManager.getSession met\u00f3dusnak \u00e1tadott er\u0151forr\u00e1sn\u00e9v/\u00fatvonal \u00e9s oszt\u00e1ly\u00fatvonal helyes.  A sessions.xml f\u00e1jlt az alkalmaz\u00e1s telep\u00edtett jar arch\u00edvum\u00e1nak gy\u00f6ker\u00e9be kell belefoglalni. Ha a sessions.xml az alkalmaz\u00e1s jar arch\u00edvumban egy alk\u00f6nyvt\u00e1rban van telep\u00edtve, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az er\u0151forr\u00e1s-\u00fatvonal helyes, \u00e9s "/" elv\u00e1laszt\u00f3t haszn\u00e1l, nem pedig "" elv\u00e1laszt\u00f3t.
 
 7096=Nem haszn\u00e1lhat\u00f3 commit() met\u00f3dus a UnitOfWork ism\u00e9telt v\u00e9gleges\u00edt\u00e9s\u00e9re.
 
 7097=A m\u0171velet nem t\u00e1mogatott: [{0}].
 
-7099=A(z) [{0}] telep\u00edt\u00e9si projekt XML er\u0151forr\u00e1s nem tal\u00e1lhat\u00f3 az er\u0151forr\u00e1s-\u00fatvonalon.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a XMLProjectReader elemnek \u00e1tadott er\u0151forr\u00e1sn\u00e9v/\u00fatvonal \u00e9s oszt\u00e1ly\u00fatvonal helyes.  A projekt XML f\u00e1jlt az alkalmaz\u00e1s telep\u00edtett jar arch\u00edvum\u00e1nak gy\u00f6ker\u00e9be kell belefoglalni. Ha a projekt XML az alkalmaz\u00e1s jar arch\u00edvumban egy alk\u00f6nyvt\u00e1rban van telep\u00edtve, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az er\u0151forr\u00e1s-\u00fatvonal helyes, \u00e9s "/" elv\u00e1laszt\u00f3t haszn\u00e1l, nem pedig "\" elv\u00e1laszt\u00f3t.
+7099=A(z) [{0}] telep\u00edt\u00e9si projekt XML er\u0151forr\u00e1s nem tal\u00e1lhat\u00f3 az er\u0151forr\u00e1s-\u00fatvonalon.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a XMLProjectReader elemnek \u00e1tadott er\u0151forr\u00e1sn\u00e9v/\u00fatvonal \u00e9s oszt\u00e1ly\u00fatvonal helyes.  A projekt XML f\u00e1jlt az alkalmaz\u00e1s telep\u00edtett jar arch\u00edvum\u00e1nak gy\u00f6ker\u00e9be kell belefoglalni. Ha a projekt XML az alkalmaz\u00e1s jar arch\u00edvumban egy alk\u00f6nyvt\u00e1rban van telep\u00edtve, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az er\u0151forr\u00e1s-\u00fatvonal helyes, \u00e9s "/" elv\u00e1laszt\u00f3t haszn\u00e1l, nem pedig "" elv\u00e1laszt\u00f3t.
 
 7100=A(z) [{0}] nev\u0171 munkamenet nem tal\u00e1lhat\u00f3 a session.xml f\u00e1jlban [{1}]
 

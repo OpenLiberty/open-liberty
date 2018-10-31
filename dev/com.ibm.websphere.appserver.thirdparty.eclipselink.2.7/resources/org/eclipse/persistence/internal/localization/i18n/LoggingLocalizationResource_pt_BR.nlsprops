@@ -609,13 +609,13 @@ osgi_initializer_failed=A constru\u00e7\u00e3o do inicializador OSGi espec\u00ed
 
 overriding_cache_isolation=A Entidade-Pai {0} possui um n\u00edvel de isolamento de: {1} que \u00e9 mais protetora do que a subclasse {2} com isolamento: {3} ent\u00e3o a subclasse foi definida para o n\u00edvel de isolamento {1}.
 
-ox_lowering_global_logging_from_default_info_to_warning= {0} Abaixando a cria\u00e7\u00e3o de log global a partir da INFO padr\u00e3o para o n\u00edvel WARNING.
+ox_lowering_global_logging_from_default_info_to_warning={0} Abaixando a cria\u00e7\u00e3o de log global a partir da INFO padr\u00e3o para o n\u00edvel WARNING.
 
-ox_lowering_session_logging_from_default_info_to_warning= {0} Abaixando a cria\u00e7\u00e3o de log de sess\u00e3o a partir da INFO padr\u00e3o para o n\u00edvel WARNING.
+ox_lowering_session_logging_from_default_info_to_warning={0} Abaixando a cria\u00e7\u00e3o de log de sess\u00e3o a partir da INFO padr\u00e3o para o n\u00edvel WARNING.
 
-ox_turn_global_logging_off= {0} Desligando a cria\u00e7\u00e3o de log de sess\u00e3o global.
+ox_turn_global_logging_off={0} Desligando a cria\u00e7\u00e3o de log de sess\u00e3o global.
 
-ox_turn_session_logging_off= {0} Desligando a cria\u00e7\u00e3o de log de sess\u00e3o.
+ox_turn_session_logging_off={0} Desligando a cria\u00e7\u00e3o de log de sess\u00e3o.
 
 parse_ejb_jar_with_validation_fails=A an\u00e1lise sint\u00e1tica do ejb-jar.xml com valida\u00e7\u00e3o falha com o erro ({0}). A ferramenta de migra\u00e7\u00e3o analisar\u00e1 o arquivo xml sem valida\u00e7\u00e3o.
 

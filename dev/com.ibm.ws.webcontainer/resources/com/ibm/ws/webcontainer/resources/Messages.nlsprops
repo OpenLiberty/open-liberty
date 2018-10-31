@@ -1545,7 +1545,15 @@ programmatic.session.cookie.retrieve.cell.xml.failure.useraction=Verify that the
 
 AsyncContext.lock.already.held=SRVE8113W: Unable to obtain a lock.  Error processing has already been invoked by another thread.
 AsyncContext.lock.already.held.explanation=Error processing has already been invoked by another thread.
-AsyncContext.lock.already.held.useraction=Make sure the application can handle an exception here.  If it is necessary that this method return even if the call doesn't succeed, contact IBM support.
+AsyncContext.lock.already.held.useraction=Make sure the application can handle an exception here.  If it is necessary that this method return even if the call doesn't succeed, consider setting custom property throwexceptionwhenunabletocompleteordispatch to false.
+
+Cannot.set.session.cookie.Response.already.committed=SRVE8114W: WARNING: Cannot set session cookie. Response already committed.
+Cannot.set.session.cookie.Response.already.committed.explanation=After a response is committed, you cannot set the session cookie.
+Cannot.set.session.cookie.Response.already.committed.useraction=Verify whether this call is necessary. If you need to set the session cookie, set it before you commit the response.
+
+Cannot.set.status.Response.already.committed=SRVE8115W: WARNING: Cannot set status. Response already committed.
+Cannot.set.status.Response.already.committed.explanation=After a response is committed, you cannot set the response status code.
+Cannot.set.status.Response.already.committed.useraction=Verify whether this call is necessary. If you need to set the response status code, set it before you commit the response.
 
 servlet.with.same.name.already.exists=SRVE8500W: A servlet named {0} can not be dynamically added because a servlet configuration with the same name already exists.  
 servlet.with.same.name.already.exists.explanation=A servlet with the same name already exists for this application.

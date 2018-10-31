@@ -904,7 +904,7 @@ public class OIDCClientAuthenticatorUtilTest {
             {
                 one(oidcClientUtil).getTokensFromAuthzCode(TEST_TOKEN_ENDPOINT, CLIENT01, SHARED_KEY,
                         TEST_REDIRECT_URL, TEST_AUTHORIZATION_CODE,
-                        TEST_GRANT_TYPE, sslSocketFactory, false, authMethod, null, false);
+                        TEST_GRANT_TYPE, sslSocketFactory, false, authMethod, null, null, false);
                 will(returnValue(tokens));
             }
         });
@@ -1080,7 +1080,8 @@ public class OIDCClientAuthenticatorUtilTest {
             {
                 one(oidcClientUtil).getTokensFromAuthzCode(TEST_TOKEN_ENDPOINT, CLIENT01, SHARED_KEY,
                         TEST_REDIRECT_URL, TEST_AUTHORIZATION_CODE,
-                        TEST_GRANT_TYPE, sslSocketFactory, false, authMethod, null, false);
+                        TEST_GRANT_TYPE, sslSocketFactory, false, authMethod, null, null, false);
+
                 will(throwException(throwable));
             }
         });
@@ -1532,7 +1533,10 @@ public class OIDCClientAuthenticatorUtilTest {
                 SSLSocketFactory sslSocketFactory,
                 boolean b,
                 String authMethod,
-                String resources, boolean useJvmProps) throws HttpException, IOException {
+                String resources, 
+                HashMap<String, String> customParams, 
+                boolean useJvmProps) throws HttpException, IOException {
+
             if (ioe != null) {
                 throw ioe;
             }
