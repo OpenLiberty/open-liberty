@@ -176,7 +176,8 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         TargetCacheImpl_DataApps annoCache,
         UtilImpl_InternMap classNameInternMap,
         UtilImpl_InternMap fieldNameInternMap,
-        UtilImpl_InternMap methodSignatureInternMap) {
+        UtilImpl_InternMap methodSignatureInternMap,
+        boolean isLightweight) {
 
         String methodName = "<init>";
 
@@ -186,6 +187,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         this.factory = factory;
 
         this.annoCache = annoCache;
+        this.isLightweight = isLightweight;
 
         this.classNameInternMap = classNameInternMap;
         this.fieldNameInternMap = fieldNameInternMap;
@@ -260,6 +262,14 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
     public TargetCacheImpl_DataApps getAnnoCache() {
         return annoCache;
+    }
+
+
+    private final boolean isLightweight;
+
+    @Override
+    public boolean getIsLightweight() {
+        return isLightweight;
     }
 
     // Class, field, and method interning ...
@@ -527,8 +537,9 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
     @Override
     public Set<String> getSpecificClassNames() {
-    	return specificClassNames;
-    }    
+        return specificClassNames;
+    }
+
     //
 
     protected TargetsScannerOverallImpl overallScanner;
@@ -711,7 +722,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         }
 
         TargetCacheImpl_DataApp appData = getAnnoCache().getAppForcing(useAppName);
-        TargetCacheImpl_DataMod modData = appData.getModForcing(useModFullName);
+        TargetCacheImpl_DataMod modData = appData.getModForcing(useModFullName, getIsLightweight() );
 
         TargetsScannerOverallImpl useOverallScanner =
             new TargetsScannerOverallImpl(this, useRootClassSource, modData);

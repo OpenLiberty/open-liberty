@@ -16,7 +16,7 @@ import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public class CDIContainerAnnotationsImpl extends ContainerAnnotationsImpl implements CDIContainerAnnotations {
-	// private final String CLASS_NAME = "CDIContainerAnnotationsImpl";
+    // private final String CLASS_NAME = "CDIContainerAnnotationsImpl";
 
     /** Predefined module category for CDI annotations results. */
     public static final String CDI_CATEGORY_NAME = "cdi";
@@ -33,3 +33,4 @@ public class CDIContainerAnnotationsImpl extends ContainerAnnotationsImpl implem
               appName, modName, CDI_CATEGORY_NAME);
     }
 }
+

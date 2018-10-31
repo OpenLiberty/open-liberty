@@ -41,7 +41,32 @@ public interface AnnotationTargets_Factory {
 
     // Target constructors ...
 
+    /** Control parameter: Module level data of annotation targets should not be cached. */
+    boolean IS_LIGHTWEIGHT = true;
+    /** Control parameter: Module level data of annotation targets should be cached. */
+    boolean IS_NOT_LIGHTWEIGHT = false;
+
+    /**
+     * Create targets data.  Set the data as not being lightweight.
+     * 
+     * See {@link #IS_NOT_LIGHTWEIGHT}.
+     * 
+     * @return The newly created targets.
+     * 
+     * @throws AnnotationTargets_Exception Thrown if a failure occurred creating the targets.
+     */
     AnnotationTargets_Targets createTargets() throws AnnotationTargets_Exception;
+
+    /**
+     * Create targets data.  Set module caching according to the parameter value. 
+     * 
+     * @param isLightweight Control value: Sets whether module level targets data is cached.
+     * 
+     * @return The newly created targets.
+     * 
+     * @throws AnnotationTargets_Exception Thrown if a failure occurred creating the targets.
+     */
+    AnnotationTargets_Targets createTargets(boolean isLightweight) throws AnnotationTargets_Exception;
 
     // Utilities for annotation target validation: Annotation targets tables may be
     // compared.  Fault objects are used to record differences.
@@ -64,6 +89,7 @@ public interface AnnotationTargets_Factory {
      */
     AnnotationTargets_Targets createTargets(ClassSource_Aggregate classSource)
         throws AnnotationTargets_Exception;
+
     //
 
     /**

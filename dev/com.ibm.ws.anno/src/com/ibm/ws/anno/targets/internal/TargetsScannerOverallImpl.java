@@ -702,7 +702,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                 isChangedJustStamp = false;
                 isChangedReason = "Cache hit (forced valid)";
 
-            } else if ( validStamp(classSource, conData) ) {
+            } else if ( validInternalStamp(classSource, conData) ) {
                 useTargetsTable = internTargetsTable(useTargetsTable);
 
                 isChangedAll = false;
@@ -734,11 +734,11 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         }
 
         if ( isChangedAll ) {
-            if ( modData.shouldWrite("Container data") ) {
+            if ( conData.shouldWrite("Container data") ) {
                 conData.write(modData, useTargetsTable);
             }
         } else if ( isChangedJustStamp ) {
-            if ( modData.shouldWrite("Time stamp") ) {
+            if ( conData.shouldWrite("Time stamp") ) {
                 conData.writeStamp(modData, useTargetsTable);
             }
         }
@@ -754,8 +754,8 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         return !isChangedAll;
     }
 
-    protected boolean validStamp(ClassSource classSource, TargetCacheImpl_DataCon conData) {
-        String methodName = "validStamp";
+    protected boolean validInternalStamp(ClassSource classSource, TargetCacheImpl_DataCon conData) {
+        String methodName = "validInternalStamp";
 
         String classSourceName = classSource.getName();
 

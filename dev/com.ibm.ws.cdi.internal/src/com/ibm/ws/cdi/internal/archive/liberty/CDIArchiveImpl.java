@@ -28,6 +28,7 @@ import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.Resource;
 import com.ibm.ws.cdi.internal.interfaces.ResourceInjectionBag;
+import com.ibm.ws.container.service.annotations.Annotations;
 import com.ibm.ws.container.service.annotations.CDIContainerAnnotations;
 import com.ibm.ws.container.service.app.deploy.ClientModuleInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
@@ -86,7 +87,7 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
 
         this.factory = factory;
 
-        this.application = application; // Null for an externsion archive.
+        this.application = application; // Null for an extension archive.
 
         this.containerInfo = containerInfo;
         this.type = archiveType;
@@ -522,6 +523,19 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
         // The category name is necessary to distinguish processing driven by CDI from
         // processing driven by JavaEE.  In particular, CDI web module results contain
         // data from only WEB-INF/classes, not from the entire web module.
+
+        // CDI annotations are always a single tier above their container data.
+        // There is no point to caching the module level data.
+        //
+        // Also, CDI data occurs with the same names in different class loading contexts.
+        // That is the result of turning manifest jars into CDI archives.  Each manifest
+        // JAR can occur on the class path of more than one module.  For each module, the
+        // manifest JAR has a different class loader, which means each manifest JAR as
+        // as CDI archive must have its own scan results.
+        //
+        // The caching framework does not have a way to distinguish these results.
+
+        cdiContainerAnnotations.setIsLightweight(Annotations.IS_LIGHTWEIGHT);
 
         if ( application != null ) {
             cdiContainerAnnotations.setUseJandex( application.getUseJandex() );

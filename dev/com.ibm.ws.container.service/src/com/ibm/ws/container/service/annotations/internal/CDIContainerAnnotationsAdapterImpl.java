@@ -31,26 +31,29 @@ public class CDIContainerAnnotationsAdapterImpl
         ArtifactContainer rootArtifactContainer,
         Container rootAdaptableContainer) {
 
-        String adaptPath = rootArtifactContainer.getPath();
+        // String adaptPath = rootArtifactContainer.getPath();
+        // CDIContainerAnnotations cdiContainerAnnotations =
+        //     overlayGet(rootOverlayContainer, adaptPath, CDIContainerAnnotations.class);
+        // overlayPut(rootOverlayContainer, adaptPath, CDIContainerAnnotations.class, cdiContainerAnnotations);
+
+        // Do *not* put the annotations in the non-persistent cache:
+        //
+        // Multiple CDI annotations will be created for the same container, with different
+        // class loading contexts for each.  Because the class loading contexts are different,
+        // the annotations data cannot be collapsed into a single shared object.
 
         CDIContainerAnnotations cdiContainerAnnotations =
-            overlayGet(rootOverlayContainer, adaptPath, CDIContainerAnnotations.class);
-
-        if ( cdiContainerAnnotations == null ) {
-            cdiContainerAnnotations = new CDIContainerAnnotationsImpl(
+            new CDIContainerAnnotationsImpl(
                 this,
                 rootContainer, rootOverlayContainer, rootArtifactContainer, rootAdaptableContainer,
                 ClassSource_Factory.UNNAMED_APP,
                 ClassSource_Factory.UNNAMED_MOD);
 
-            // The container annotations are ready to be used, but is incomplete:
-            //
-            // If the annotations are to be cached, the app and mod names must be set.
-            // If inheritance APIs are to be used, the class loader must be set.
-            // If jandex reads are to be supported, the jandex flag must be set.
-
-            overlayPut(rootOverlayContainer, adaptPath, CDIContainerAnnotations.class, cdiContainerAnnotations);
-        }
+        // The container annotations are ready to be used, but is incomplete:
+        //
+        // If the annotations are to be cached, the app and mod names must be set.
+        // If inheritance APIs are to be used, the class loader must be set.
+        // If jandex reads are to be supported, the jandex flag must be set.
 
         return cdiContainerAnnotations;
     }

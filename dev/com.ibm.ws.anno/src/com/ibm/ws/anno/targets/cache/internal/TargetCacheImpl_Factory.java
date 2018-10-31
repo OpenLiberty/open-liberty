@@ -202,16 +202,16 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
 
     protected TargetCacheImpl_DataMod createModData(
         TargetCacheImpl_DataApp appData,
-        String modName, String e_modName, File modDir) {
+        String modName, String e_modName, File modDir, boolean isLightweight) {
 
-        return new TargetCacheImpl_DataMod(appData, modName, e_modName, modDir);
+        return new TargetCacheImpl_DataMod(appData, modName, e_modName, modDir, isLightweight);
     }
 
     protected TargetCacheImpl_DataCon createConData(
-        TargetCacheImpl_DataBase parentData, // App or Mod
+        TargetCacheImpl_DataBase parentCache, // App or Mod
         String conName, String e_conName, File conDir) {
 
-        return new TargetCacheImpl_DataCon(parentData, conName, e_conName, conDir);
+        return new TargetCacheImpl_DataCon(parentCache, conName, e_conName, conDir);
     }
 
     //

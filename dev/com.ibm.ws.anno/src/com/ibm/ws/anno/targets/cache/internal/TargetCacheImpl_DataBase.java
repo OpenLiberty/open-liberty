@@ -28,6 +28,9 @@ import com.ibm.ws.anno.targets.cache.TargetCache_Readable;
 import com.ibm.ws.anno.util.internal.UtilImpl_FileUtils;
 import com.ibm.wsspi.anno.targets.cache.TargetCache_Options;
 
+/**
+ * Core type for cache data.
+ */
 public abstract class TargetCacheImpl_DataBase {
     private static final String CLASS_NAME = TargetCacheImpl_DataBase.class.getSimpleName();
     protected static final Logger logger = AnnotationServiceImpl_Logging.ANNO_LOGGER;
@@ -36,6 +39,17 @@ public abstract class TargetCacheImpl_DataBase {
 
     public static final String NO_CHILD_PREFIX = null;
 
+    /**
+     * Create new cache data.
+     *
+     * @param factory The factory which is creating the data.
+     * @param name A name for the data.  Unless caching is disabled,
+     *     the name must be unique within the enclosing context
+     *     (application or module).
+     * @param e_name The encoded name of the data.
+     * @param dataDir The directory in which to store the data.  Null
+     *     if caching is disabled.
+     */
     public TargetCacheImpl_DataBase(
         TargetCacheImpl_Factory factory,
         String name, String e_name, File dataDir) {
@@ -62,8 +76,10 @@ public abstract class TargetCacheImpl_DataBase {
     }
 
     @Trivial
-    protected TargetCacheImpl_DataCon createConData(String conPath, String e_conPath, File conDir) {
-        return getFactory().createConData(this, conPath, e_conPath, conDir);
+    protected TargetCacheImpl_DataCon createConData(
+        TargetCacheImpl_DataBase parentCache,
+        String conPath, String e_conPath, File conDir) {
+        return getFactory().createConData(parentCache, conPath, e_conPath, conDir);
     }
 
     //
@@ -315,10 +331,34 @@ public abstract class TargetCacheImpl_DataBase {
 
     //
 
+    /**
+     * Container data names may include special characters, including
+     * path separator characters.  These must be encoded to be used
+     * in cache file names.
+     *
+     * See {@link TargetCacheImpl_Utils#encodePath}.
+     *
+     * @param name A value to be encoded.
+     *
+     * @return The encoded value.
+     */
     @Trivial
     public String encode(String name) {
         return TargetCacheImpl_Utils.encodePath(name);
     }
+
+    /**
+     * Container data names may include special characters, including
+     * path separator characters.  These are encoded when used to generate
+     * cache file names.  Recover of a data name from a cache file
+     * requires that the cache file name be decoded.
+     *
+     * See {@link TargetCacheImpl_Utils#decodePath}.
+     *
+     * @param name A value to be decoded.
+     *
+     * @return The decoded value.
+     */
 
     @Trivial
     public String decode(String name) {
@@ -383,22 +423,7 @@ public abstract class TargetCacheImpl_DataBase {
     //
 
     @Trivial
-    protected TargetCacheImpl_DataCon createConData(String conPath) {
-        String e_conPath = encode(conPath);
-        return createConData( conPath, e_conPath, e_getConDir(e_conPath) );
-    }
-
-    @Trivial
     protected File e_getConDir(String e_conPath) {
         return getDataFile( e_addConPrefix(e_conPath) );
-    }
-
-    @Trivial
-    protected TargetCacheImpl_DataCon createConData(File conDir) {
-        String e_conDirName = conDir.getName();
-        String e_conName = e_removeConPrefix(e_conDirName);
-        String conName = decode(e_conName);
-
-        return createConData(conName, e_conName, conDir);
     }
 }

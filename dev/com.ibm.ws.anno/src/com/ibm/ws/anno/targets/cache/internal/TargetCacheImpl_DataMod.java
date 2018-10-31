@@ -77,11 +77,12 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
     public TargetCacheImpl_DataMod(
         TargetCacheImpl_DataApp app,
-        String modName, String e_modName, File modDir) {
+        String modName, String e_modName, File modDir, boolean isLightweight) {
 
         super( app.getFactory(), modName, e_modName, modDir );
 
         this.app = app;
+        this.isLightweight = isLightweight;
 
         //
 
@@ -99,27 +100,37 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
         //
 
-        int writeThreads = this.cacheOptions.getWriteThreads();
+        // Writes are done by modules, including for per-application container data and
+        // including module data.
+        //
+        // No writes are possible if the application is unnamed.
+        //
+        // Module writes are not possible while container writes are possible when the application
+        // is named but the module is unnamed or is lightweight.
 
         if ( !app.isNamed() ) {
             this.writePool = null;
 
-        } else if ( writeThreads == 1 ) {
-            this.writePool = null;
-
         } else {
-            int corePoolSize = 0;
+            int writeThreads = this.cacheOptions.getWriteThreads();
 
-            int maxPoolSize;
-            if ( writeThreads == TargetCache_Options.WRITE_THREADS_UNBOUNDED) {
-                maxPoolSize = TargetCache_Options.WRITE_THREADS_MAX;
-            } else if ( writeThreads > TargetCache_Options.WRITE_THREADS_MAX ) {
-                maxPoolSize = TargetCache_Options.WRITE_THREADS_MAX;
+            if ( writeThreads == 1 ) {
+                this.writePool = null;
+
             } else {
-                maxPoolSize = writeThreads;
-            }
+                int corePoolSize = 0;
 
-            this.writePool = UtilImpl_PoolExecutor.createNonBlockingExecutor(corePoolSize, maxPoolSize);
+                int maxPoolSize;
+                if ( writeThreads == TargetCache_Options.WRITE_THREADS_UNBOUNDED) {
+                    maxPoolSize = TargetCache_Options.WRITE_THREADS_MAX;
+                } else if ( writeThreads > TargetCache_Options.WRITE_THREADS_MAX ) {
+                    maxPoolSize = TargetCache_Options.WRITE_THREADS_MAX;
+                } else {
+                    maxPoolSize = writeThreads;
+                }
+
+                this.writePool = UtilImpl_PoolExecutor.createNonBlockingExecutor(corePoolSize, maxPoolSize);
+            }
         }
     }
 
@@ -129,7 +140,24 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
     @Trivial
     public TargetCacheImpl_DataApp getApp() {
-    	return app;
+        return app;
+    }
+
+    //
+
+    private final boolean isLightweight;
+
+    public boolean getIsLightweight() {
+    	return isLightweight;
+    }
+
+    @Override
+    public File getDataFile(String relativePath) {
+    	if ( getIsLightweight() ) {
+    		return null;
+    	} else {
+    		return super.getDataFile(relativePath);
+    	}
     }
 
     //
@@ -221,50 +249,52 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
     //
 
     public long getContainerReadTime() {
-    	long containerReadTime = 0L;
+        long containerReadTime = 0L;
 
-    	for ( TargetCacheImpl_DataCon con : getCons().values() ) {
-    		containerReadTime += con.getReadTime();
-    	}
+        for ( TargetCacheImpl_DataCon con : getCons().values() ) {
+            containerReadTime += con.getReadTime();
+        }
 
-    	return containerReadTime;
+        return containerReadTime;
     }
 
     public long getContainerWriteTime() {
-    	long containerWriteTime = 0L;
+        long containerWriteTime = 0L;
 
-    	for ( TargetCacheImpl_DataCon con : getCons().values() ) {
-    		containerWriteTime += con.getWriteTime();
-    	}
+        for ( TargetCacheImpl_DataCon con : getCons().values() ) {
+            containerWriteTime += con.getWriteTime();
+        }
 
-    	return containerWriteTime;
+        return containerWriteTime;
     }
 
     //
 
+    /**
+     * Create result container data.
+     *
+     * Result container data differs from simple container data in several ways:
+     *
+     * Result container data is named according to the category of data (SEED,
+     * PARTIAL, EXCLUDED, or EXTERNAL) which is held.  Simple container data is
+     * named based on the container from which the data was obtained.
+     *
+     * Result container data is stored relative to the enclosing module.  Simple
+     * container data is stored relative to the enclosing application.
+     *
+     * Result container data is written if and only if the enclosing module
+     * is written.  Simple container data is written if and only if the enclosing
+     * application is written.
+     *
+     * @param resultConName
+     *
+     * @return New result container data.
+     */
     @Trivial
-    public TargetCacheImpl_DataCon createConData(File conDir) {
-        String conDirName = conDir.getName();
-        String e_conPath = e_removeConPrefix(conDirName);
-        String conPath = decode(e_conPath);
-
-        return createConData(conPath, e_conPath, conDir);
-    }
-
-    @Trivial
-    public TargetCacheImpl_DataCon createConData(String conPath) {
-    	String e_conPath = encode(conPath);
-        return createConData( conPath, e_conPath, e_getConDir(e_conPath) );
-    }
-
-    @Trivial
-    public File e_getConDir(String e_conPath) {
-        return getDataFile( e_addConPrefix(e_conPath) );
-    }
-
-    @Trivial
-    public TargetCacheImpl_DataCon createConData(String conPath, String e_conPath, File conDir) {
-        return getFactory().createConData(this, conPath, e_conPath, conDir);
+    public TargetCacheImpl_DataCon createResultConData(String resultConName) {
+        String e_resultConName = encode(resultConName);
+        File e_resultConDir = e_getConDir(e_resultConName);
+        return createConData(this, resultConName, e_resultConName, e_resultConDir);
     }
 
     //
@@ -289,29 +319,29 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
     }
 
     public TargetCacheImpl_DataCon getResultCon(ScanPolicy scanPolicy) {
-        String fileName = getResultName(scanPolicy);
+        String resultConName = getResultName(scanPolicy);
 
         if ( scanPolicy == ScanPolicy.SEED ) {
             if ( seedCon == null ) {
-                seedCon = createConData( getDataFile(fileName) );
+                seedCon = createResultConData(resultConName);
             }
             return seedCon;
 
         } else if ( scanPolicy == ScanPolicy.PARTIAL ) {
             if ( partialCon == null ) {
-                partialCon = createConData( getDataFile(fileName) );
+                partialCon = createResultConData(resultConName);
             }
             return partialCon;
 
         } else if ( scanPolicy == ScanPolicy.EXCLUDED ) {
             if ( excludedCon == null ) {
-                excludedCon = createConData( getDataFile(fileName) );
+                excludedCon = createResultConData(resultConName);
             }
             return excludedCon;
 
         } else if ( scanPolicy == ScanPolicy.EXTERNAL ) {
             if ( externalCon == null ) {
-                externalCon = createConData( getDataFile(fileName) );
+                externalCon = createResultConData(resultConName);
             }
             return externalCon;
 
@@ -511,7 +541,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
     }
 
     public boolean readClassRefs(TargetsTableClassesMultiImpl classesTable) {
-    	long readStart = System.nanoTime();
+        long readStart = System.nanoTime();
 
         boolean didRead = read( classesTable, getClassRefsFile() );
 
@@ -571,15 +601,26 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
     //
 
     @Trivial
-    @Override
-    public boolean shouldRead(String inputDescription) {
-        return getApp().shouldRead(inputDescription);
+    public boolean shouldAppWrite(String outputDescription) {
+        return getApp().shouldWrite(outputDescription);
     }
 
-    @Trivial
+    @Override
+    public boolean shouldRead(String inputDescription) {
+        if ( !isNamed() || getIsLightweight() ) {
+            return false;
+        } else {
+            return super.shouldRead(inputDescription);
+        }
+    }
+
     @Override
     public boolean shouldWrite(String outputDescription) {
-        return getApp().shouldWrite(outputDescription);
+        if ( !isNamed() || getIsLightweight() ) {
+            return false;
+        } else {
+            return super.shouldWrite(outputDescription);
+        }
     }
 
     // Handle writes at the module level and below at the module level.
@@ -635,7 +676,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
                         // Without this added step information about the spawning thread is
                         // lost, making debugging writer problems very difficult.
 
-                        logger.logp(Level.WARNING, CLASS_NAME, methodName, "Caught Asynchronous exception [ {0} ]", e);
+                        logger.logp(Level.WARNING, CLASS_NAME, methodName, "Caught Asynchronous exception", e);
                         logger.logp(Level.WARNING, CLASS_NAME, methodName, "Scheduler", scheduler);
                         logger.logp(Level.WARNING, CLASS_NAME, methodName, "Synchronization error", e);
 

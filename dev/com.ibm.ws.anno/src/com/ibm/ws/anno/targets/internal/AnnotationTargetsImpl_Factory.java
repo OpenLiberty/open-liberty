@@ -152,11 +152,22 @@ public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory 
     public AnnotationTargetsImpl_Targets createTargets()
         throws AnnotationTargets_Exception {
 
+        return createTargets(AnnotationTargets_Factory.IS_NOT_LIGHTWEIGHT);
+        // throws AnnotationTargets_Exception
+    }
+    
+    @Override
+    @Trivial
+    public AnnotationTargetsImpl_Targets createTargets(boolean isLightweight)
+        throws AnnotationTargets_Exception {
+
         return new AnnotationTargetsImpl_Targets( this,
                                                   getCache(),
                                                   createClassNameInternMap(),
                                                   createFieldNameInternMap(),
-                                                  createMethodSignatureInternMap() );
+                                                  createMethodSignatureInternMap(),
+                                                  isLightweight );
+        // throws AnnotationTargets_Exception
     }
 
     // These are needed for concurrent scanning.

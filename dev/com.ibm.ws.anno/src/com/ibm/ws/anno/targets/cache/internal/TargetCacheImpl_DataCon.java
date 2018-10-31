@@ -56,15 +56,26 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
     //
 
+    // The container data is relative to the enclosing application,
+    // not to the enclosing module.
+    //
+    // Whether a container directory is available depends on whether the
+    // application directory is available, not on whether the module
+    // directory is available.
+
     public TargetCacheImpl_DataCon(
-        TargetCacheImpl_DataBase parentData,
+        TargetCacheImpl_DataBase parentCache,
         String conName, String e_conName, File conDir) {
 
-        super( parentData.getFactory(), conName, e_conName, conDir);
+        super( parentCache.getFactory(), conName, e_conName, conDir);
 
         String methodName = "<init>";
 
-        this.parentData = parentData;
+        this.parentCache = parentCache;
+
+        // When the parent application is unnamed, the container
+        // directory is null, which means the three container cache files
+        // are null: No writes and no reads will be performed.
 
         this.timeStampFile =
             getDataFile(TargetCache_ExternalConstants.TIMESTAMP_NAME);
@@ -76,26 +87,29 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                         "Container [ {0} ] of [ {1} ]",
-                        new Object[] { getName(), parentData.getName() });
+                        new Object[] { getName(), parentCache.getName() });
             logger.logp(Level.FINER, CLASS_NAME,
-                        "Time stamp file [ {0} ]", this.timeStampFile.getPath());
+                        "Time stamp file [ {0} ]",
+                        ((this.timeStampFile == null) ? null : this.timeStampFile.getPath()));
             logger.logp(Level.FINER, CLASS_NAME,
-                        "Targets file [ {0} ]", this.annoTargetsFile.getPath());
+                        "Targets file [ {0} ]",
+                        ((this.annoTargetsFile == null) ? null : this.annoTargetsFile.getPath()));
             logger.logp(Level.FINER, CLASS_NAME,
-                        "Class refs file [ {0} ]", this.classRefsFile.getPath());
+                        "Class refs file [ {0} ]",
+                        ((this.classRefsFile == null) ? null : this.classRefsFile.getPath()));
         }
     }
 
     //
 
-    // DataApp for shared non-results container data.
-    // DataMod for non-shared results container data.
+    // DataApp for simple container data.
+    // DataMod for policy container data.
 
-    private final TargetCacheImpl_DataBase parentData;
+    private final TargetCacheImpl_DataBase parentCache;
 
     @Trivial
-    public TargetCacheImpl_DataBase getParentData() {
-        return parentData;
+    public TargetCacheImpl_DataBase getParentCache() {
+        return parentCache;
     }
 
     //
@@ -106,6 +120,8 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
     public File getTimeStampFile() {
         return timeStampFile;
     }
+
+    // Answers false if the stamp file is null.
 
     public boolean hasTimeStampFile() {
         return ( exists( getTimeStampFile() ) );
@@ -119,6 +135,8 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
         return annoTargetsFile;
     }
 
+    // Answers false if the targets file is null.
+
     public boolean hasAnnoTargetsFile() {
         return ( exists( getAnnoTargetsFile() ) );
     }
@@ -129,14 +147,18 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
     @Trivial
     public File getClassRefsFile() {
-    	return classRefsFile;
+        return classRefsFile;
     }
+
+    // Answers false if the class refs file is null.
 
     public boolean hasClassRefsFile() {
         return ( exists( getClassRefsFile() ) );
     }
 
     //
+
+    // 'write' cannot be entered if the stamp file is null.
 
     private void write(
         TargetCacheImpl_DataMod modData,
@@ -180,6 +202,8 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
         modData.scheduleWrite(writer, writeDescription);
     }
 
+    // 'write' cannot be entered if the class refs file is null.
+
     private void write(
         TargetCacheImpl_DataMod modData,
         final TargetsTableClassesImpl classesTable) {
@@ -221,6 +245,8 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
         modData.scheduleWrite(writer, writeDescription);
     }
+
+    // 'write' cannot be entered if the targets file is null.
 
     private void write(
         TargetCacheImpl_DataMod modData,
@@ -286,6 +312,8 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
         return didRead;
     }
 
+    // 'read(TargetsTableClassesImpl)' cannot be entered if the class refs file is null.
+
     private boolean read(TargetsTableClassesImpl classesTable) {
         long readStart = System.nanoTime();
 
@@ -296,6 +324,8 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
         return didRead;
     }
+
+    // 'read(TargetsTableAnnotationsImpl)' cannot be entered if the targets file is null.
 
     private boolean read(TargetsTableAnnotationsImpl targetTable) {
         long readStart = System.nanoTime();
@@ -310,8 +340,10 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
     //
 
+    // 'readStampTable' cannot be entered if the stamp file is null.
+
     public TargetsTableTimeStampImpl readStampTable() {
-    	long readStart = System.nanoTime();
+        long readStart = System.nanoTime();
 
         TargetsTableTimeStampImpl stampTable = new TargetsTableTimeStampImpl();
 
@@ -325,20 +357,52 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
     //
 
-    @Trivial
-    public boolean shouldWrite(TargetCacheImpl_DataMod modData, String outputDescription) {
-        return ( modData.shouldWrite(outputDescription) );
+    /**
+     * Tell if data of the container should be read.
+     *
+     * Container data is read only if the parent is enabled
+     * for reads, and only if reading is enabled in general.
+     *
+     * @param inputDescription The input which is querying
+     *     if reads are enabled.
+     *
+     * @return True or false telling if reads are enabled for
+     *     the container.
+     */
+    @Override
+    public boolean shouldRead(String inputDescription) {
+        if ( !getParentCache().shouldRead(inputDescription) ) {
+            return false;
+        } else {
+            return super.shouldRead(inputDescription);
+        }
     }
 
-    @Trivial
-    public boolean shouldRead(TargetCacheImpl_DataMod modData, String inputDescription) {
-        return modData.shouldRead(inputDescription);
+    /**
+     * Tell if data of the container should be written.
+     *
+     * Container data is written only if the parent is enabled
+     * for writes, and only if writing is enabled in general.
+     *
+     * @param outputDescription The output which is querying
+     *     if writes are enabled.
+     *
+     * @return True or false telling if writes are enabled for
+     *     the container.
+     */
+    @Override
+    public boolean shouldWrite(String outputDescription) {
+        if ( !getParentCache().shouldWrite(outputDescription) ) {
+            return false;
+        } else {
+            return super.shouldWrite(outputDescription);
+        }
     }
 
     //
 
     public boolean hasFiles() {
-    	return ( hasTimeStampFile() &&  hasAnnoTargetsFile() && hasClassRefsFile() );
+        return ( hasTimeStampFile() &&  hasAnnoTargetsFile() && hasClassRefsFile() );
     }
 
     public boolean read(TargetsTableImpl targetData) {
@@ -349,10 +413,30 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
     //
 
+    /**
+     * Write stamp information.
+     * 
+     * Module data is needed, since writes are performed at the module level.  The
+     * module data cannot be stored in the container data because the container data
+     * is shared between modules.
+     * 
+     * @param modData The module which will perform the write.
+     * @param targetData The data containing the stamp table which is to be written.
+     */
     public void writeStamp(TargetCacheImpl_DataMod modData, TargetsTableImpl targetData) {
         write ( modData, targetData.getStampTable() );
     }
 
+    /**
+     * Write all data: The class table, the annotations table, and the tsamp table..
+     *
+     * Module data is needed, since writes are performed at the module level.  The
+     * module data cannot be stored in the container data because the container data
+     * is shared between modules.
+     *
+     * @param modData The module which will perform the write.
+     * @param targetData The data which is to be written.
+     */
     public void write(TargetCacheImpl_DataMod modData, TargetsTableImpl targetData) {
         write( modData, targetData.getClassTable() );
         write( modData, targetData.getAnnotationTable() );

@@ -73,9 +73,9 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
     //
 
     @Trivial
-    protected TargetCacheImpl_DataMod createModData(String modName) {
+    protected TargetCacheImpl_DataMod createModData(String modName, boolean isLightweight) {
         String e_modName = encode(modName);
-        return createModData( modName, e_modName, e_getModDir(e_modName) );
+        return createModData( modName, e_modName, e_getModDir(e_modName), isLightweight );
     }
 
     @Trivial
@@ -83,22 +83,14 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
         return getDataFile( e_addModPrefix(e_modName) );
     }
 
-// Currently unused
-//
-//    @Trivial
-//    protected TargetCacheImpl_DataMod createModData(File modDir) {
-//        String e_modDirName = modDir.getName();
-//        String e_modName = e_removeModPrefix(e_modDirName);
-//        String modName = decode(e_modName);
-//
-//        return createModData(modName, e_modName, modDir);
-//    }
-
     //
 
     @Trivial
-    protected TargetCacheImpl_DataMod createModData(String modName, String e_modName, File modDir) {
-        return getFactory().createModData(this, modName, e_modName, modDir);
+    protected TargetCacheImpl_DataMod createModData(
+        String modName, String e_modName, File modDir,
+        boolean isLightweight) {
+
+        return getFactory().createModData(this, modName, e_modName, modDir, isLightweight);
     }
 
     //
@@ -114,16 +106,17 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
         return mods;
     }
 
-    public TargetCacheImpl_DataMod getModForcing(String modName) {
+    public TargetCacheImpl_DataMod getModForcing(String modName, boolean isLightweight) {
         // Unnamed modules always create new data.
-        if ( modName == ClassSource_Factory.UNNAMED_MOD ) {
-            return createModData(modName);
+        // Lightweight modules always create new data.
+        if ( (modName == ClassSource_Factory.UNNAMED_MOD) || isLightweight ) {
+            return createModData(modName, isLightweight);
         }
 
         synchronized( modsLock ) {
             TargetCacheImpl_DataMod mod = mods.get(modName);
             if ( mod == null ) {
-                mod = createModData(modName);
+                mod = createModData(modName, isLightweight);
                 mods.put(modName, mod);
             }
 
@@ -143,11 +136,18 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
         synchronized( consLock ) {
             TargetCacheImpl_DataCon con = cons.get(conPath);
             if ( con == null ) {
-                con = createConData(conPath);
+                con = createSimpleConData(conPath);
                 cons.put(conPath, con);
             }
             return con;
         }
+    }
+
+    @Trivial
+    public TargetCacheImpl_DataCon createSimpleConData(String conName) {
+        String e_conName = encode(conName);
+        File e_resultConDir = e_getConDir(e_conName);
+        return createConData(this, conName, e_conName, e_resultConDir);
     }
 
     //

@@ -99,7 +99,7 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 // com.ibm.ws.springboot.support.web.server/src/com/ibm/ws/springboot/support/web/server/internal/WebInstance.java
 
 public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnnotations {
-    // private static final String CLASS_NAME = ModuleAnnotationsImpl.class.getSimpleName();
+    private static final String CLASS_NAME = ModuleAnnotationsImpl.class.getSimpleName();
 
     public ModuleAnnotationsImpl(
         AnnotationsAdapterImpl annotationsAdapter,
@@ -221,9 +221,9 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
 
         Container moduleContainer = getContainer();
 
-        // Tr.info(tc, CLASS_NAME +
-        // ": Module [ " + getAppName() + ":" + getModName() + " ][ " + moduleContainer + " ]:" +
-        // " Building internal class sources");
+        Tr.debug(tc, CLASS_NAME +
+             ": Module [ " + getAppName() + ":" + getModName() + " ][ " + moduleContainer + " ]:" +
+             " Building internal class sources");
 
         ModuleClassesContainerInfo moduleClassesContainerInfo = getModuleClassesContainerInfo();
 
@@ -275,12 +275,11 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
                     //
                     // These will be handled as a part of the module class loader.
 
-                    Tr.warning(tc, "Ignoring container [ " + nextContainer + " ] [ " + nextType + " ]");
+                    Tr.debug(tc, "Ignoring container [ " + nextContainer + " ] [ " + nextType + " ]");
                     continue;
 
                 } else if ( nextType == ContainerInfo.Type.WEB_MODULE ) {
-                    // A web module should never be specified itself as a classes
-                    // container.
+                    // A web module should never be specified itself as a classes container.
 
                     Tr.warning(tc, "Ignoring container [ " + nextContainer + " ] [ " + nextType + " ]: " +
                                    "Web modules should use WEB_INF_CLASSES");
@@ -290,15 +289,15 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
                 String nextPrefix;
 
                 if ( nextType == ContainerInfo.Type.WEB_INF_CLASSES ) {
-                    // Handle WEB-INF/classes by providing the module container
-                    // and a prefix for locating the WEB-INF/classes folder.  The
-                    // module container is provided to give the annotations visibility
-                    // to META-INF, which is where jandex indexes are stored.
+                    // Handle WEB-INF/classes by providing the module container and a prefix for
+                    // locating the WEB-INF/classes folder.  The module container is provided to
+                    // give the annotations visibility to META-INF, which is where jandex indexes
+                    // are stored.
 
                     nextContainer  = nextContainer.getEnclosingContainer().getEnclosingContainer();
                     nextPrefix = "WEB-INF/classes/";
 
-                    // Tr.info(tc, CLASS_NAME + ": Handling type [ " + nextType + " ] with prefix [ " + nextPrefix + " ]");
+                    Tr.debug(tc, CLASS_NAME + ": Handling type [ " + nextType + " ] with prefix [ " + nextPrefix + " ]");
 
                 } else if ( (nextType == ContainerInfo.Type.WEB_INF_LIB) ||
                             (nextType == ContainerInfo.Type.EJB_MODULE) ||
@@ -310,7 +309,7 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
 
                     nextPrefix = ClassSource_Factory.UNUSED_ENTRY_PREFIX;
 
-                    // Tr.info(tc, CLASS_NAME + ": Handling type [ " + nextType + " ]");
+                    Tr.debug(tc, CLASS_NAME + ": Handling type [ " + nextType + " ]");
 
                 } else {
                     Tr.warning(tc, "Ignoring container [ " + nextContainer + " ] [ " + nextType + " ]: " + "unknown type");

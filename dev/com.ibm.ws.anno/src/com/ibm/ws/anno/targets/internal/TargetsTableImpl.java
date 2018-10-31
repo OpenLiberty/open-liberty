@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 import org.objectweb.asm.ClassReader;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.anno.info.internal.AnnotationVisitorImpl_Info.AnnotationInfoVisitor;
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.ws.anno.targets.TargetsTable;
 import com.ibm.ws.anno.util.internal.UtilImpl_BidirectionalMap;

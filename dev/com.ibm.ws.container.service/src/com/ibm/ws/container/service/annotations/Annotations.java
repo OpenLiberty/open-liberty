@@ -9,6 +9,7 @@ import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 import com.ibm.wsspi.anno.info.ClassInfo;
 import com.ibm.wsspi.anno.info.InfoStore;
+import com.ibm.wsspi.anno.targets.AnnotationTargets_Factory;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 
 /**
@@ -107,10 +108,36 @@ public interface Annotations {
 
     //
 
+    /** Control parameter: Module level data of annotation targets should not be cached. */
+    boolean IS_LIGHTWEIGHT = AnnotationTargets_Factory.IS_LIGHTWEIGHT;
+
+    /** Control parameter: Module level data of annotation targets should be cached. */
+    boolean IS_NOT_LIGHTWEIGHT = AnnotationTargets_Factory.IS_NOT_LIGHTWEIGHT;
+
+    /**
+     * Control value: When true, module level data of the annotations not cached.
+     *
+     * Defaults to false.
+     *
+     * @return True or false telling if module level data is not to be cached.
+     */
+    boolean getIsLightweight();
+
+    /**
+     * Set whether module level data of the annotations is not to be cached.
+     *
+     * This must be set before accessing any annotations result data.
+     *
+     * @param isLightweight True to disable saves of module level data.  False
+     *     to enable saves of module level data.
+     */
+    void setIsLightweight(boolean isLightweight);
+
+    //
+
     /**
      * Answer the root container of the annotations.
      *
-     * This is  
      * @return The container of the annotations.
      */
     Container getContainer();

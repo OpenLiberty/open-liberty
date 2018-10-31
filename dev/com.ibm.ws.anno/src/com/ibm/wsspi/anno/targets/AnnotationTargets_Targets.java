@@ -76,6 +76,20 @@ public interface AnnotationTargets_Targets {
      */
     AnnotationTargets_Factory getFactory();
 
+    // Cache ...
+    
+    /**
+     * Control value: When true, module level data is not cached.
+     * This value does not affect caching of container level data.
+     *
+     * This setting has no effect when the application or module of the
+     * targets is unnamed.
+     *
+     * @return True or false telling if module level data is not to be
+     *     cached.
+     */
+	boolean getIsLightweight();
+
     // Scanning ...
 
     /**

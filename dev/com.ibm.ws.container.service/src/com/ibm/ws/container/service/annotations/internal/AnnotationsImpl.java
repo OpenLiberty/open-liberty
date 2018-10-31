@@ -165,6 +165,8 @@ public abstract class AnnotationsImpl implements Annotations {
         this.modName = modName;
         this.modCatName = modCatName;
 
+        this.isLightweight = AnnotationTargets_Factory.IS_NOT_LIGHTWEIGHT;
+
         this.rootClassSource = null;
 
         this.isSetTargets = false;
@@ -347,6 +349,20 @@ public abstract class AnnotationsImpl implements Annotations {
     @Override
     public String getModCategoryName() {
         return modCatName;
+    }
+
+    //
+
+    private boolean isLightweight;
+
+    @Override
+    public boolean getIsLightweight() {
+        return isLightweight;
+    }
+
+    @Override
+    public void setIsLightweight(boolean isLightweight) {
+        this.isLightweight = isLightweight;
     }
 
     //
@@ -588,12 +604,12 @@ public abstract class AnnotationsImpl implements Annotations {
                 " app [ " + appName + " ]" +
                 " module [ " + modName + " ]" +
                 " module category [ " + modCatName + " ]";
-            Tr.warning(tc, getClass().getName() + ": " + message);
+            Tr.debug(tc, getClass().getName() + ": " + message);
         }
 
         AnnotationTargets_Targets useTargets;
         try {
-            useTargets = targetsFactory.createTargets(); // throws AnnotationTargets_Exception
+            useTargets = targetsFactory.createTargets( getIsLightweight() ); // throws AnnotationTargets_Exception
         } catch ( AnnotationTargets_Exception e ) {
             return null; // FFDC
         }
