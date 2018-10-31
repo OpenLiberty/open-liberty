@@ -24,12 +24,14 @@ Import-Package: \
 	*
 
 Export-Package: \
-	com.ibm.ws.microprofile.faulttolerance.cdi
+    com.ibm.ws.microprofile.faulttolerance.cdi,\
+    com.ibm.ws.microprofile.faulttolerance.cdi.config,\
+    com.ibm.ws.microprofile.faulttolerance.cdi.config.impl
+
 
 Private-Package: \
-	com.ibm.ws.microprofile.faulttolerance.cdi.resources,\
-	com.ibm.ws.microprofile.faulttolerance.cdi.config
-
+    com.ibm.ws.microprofile.faulttolerance.cdi.resources
+    
 Include-Resource: \
     META-INF=resources/META-INF
 
@@ -53,4 +55,4 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.ws.microprofile.faulttolerance.spi;version=latest,\
-	com.ibm.ws.transaction.cdi
+	com.ibm.ws.transaction.cdi;version=latest
