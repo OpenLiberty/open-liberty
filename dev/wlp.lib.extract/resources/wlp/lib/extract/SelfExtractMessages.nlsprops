@@ -283,6 +283,7 @@ RUN_IN_CHILD_JVM_DEBUG=WLP_JAR_DEBUG was set. The server will run in a separate 
 RUN_IN_CHILD_JVM_JVM_OPTIONS=The jar contains jvm.options files. The server will run in a separate Java virtual machine.
 RUN_IN_CHILD_JVM_IBM_AGENT_ISSUE=An IBM SDK is being used without the -XX:+EnableHCR option. The server will run in a separate Java virtual machine.
 RUN_IN_CHILD_JVM_JRE=A Java runtime environment installation is being used. The server will run in a separate Java virtual machine.
+RUN_IN_CHILD_JVM_SET_JAVA_HOME=Setting the JAVA_HOME environment variable: {0}
 
 # messages for LicenseSelfEctractor
 LICENSE_invalidInstall=The {0} directory is not a valid Liberty installation. Specify the root directory of the Liberty installation that you want to upgrade.
