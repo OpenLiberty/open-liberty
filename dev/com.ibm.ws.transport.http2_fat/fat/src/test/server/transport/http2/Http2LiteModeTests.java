@@ -383,10 +383,11 @@ public class Http2LiteModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
-    public void testInvalidPaddingValue() throws Exception {
-        runTest(dataServletPath, testName.getMethodName());
-    }
+    // Move to trace bucket for build break diagnosis 257732
+    //@Test
+    //public void testInvalidPaddingValue() throws Exception {
+    //    runTest(dataServletPath, testName.getMethodName());
+    //}
 
     // Move to trace bucket to debug build break @Test
     //public void testDataFrameExceedingMaxFrameSize() throws Exception {
