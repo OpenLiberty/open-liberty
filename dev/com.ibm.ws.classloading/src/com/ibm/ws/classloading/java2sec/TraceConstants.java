@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,14 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.classloading.java2sec;
+
 /**
  * @author Rohan Zunzarrao
  */
-/**
- * @version 1.0.16
- */
-@org.osgi.annotation.versioning.Version("1.0.16")
-@TraceOptions(traceGroup = TraceConstants.TRACE_GROUP, messageBundle = TraceConstants.MESSAGE_BUNDLE)
-package com.ibm.ws.security.java2sec;
-
-import com.ibm.websphere.ras.annotation.TraceOptions;
+public interface TraceConstants {
+    final static String TRACE_GROUP = "Java2SecurityUtil";
+    final static String MESSAGE_BUNDLE = "com.ibm.ws.classloading.internal.resources.Java2SecurityUtilMessages";
+}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,12 +26,12 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
+import com.ibm.ws.classloading.java2sec.PermissionManager;
 import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoFactory;
 import com.ibm.ws.container.service.metadata.MetaDataService;
 import com.ibm.ws.container.service.metadata.extended.ModuleMetaDataExtender;
 import com.ibm.ws.container.service.metadata.extended.NestedModuleMetaDataFactory;
 import com.ibm.ws.container.service.state.StateChangeService;
-import com.ibm.ws.security.java2sec.PermissionManager;
 import com.ibm.ws.threading.FutureMonitor;
 import com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;
 import com.ibm.wsspi.adaptable.module.Container;
