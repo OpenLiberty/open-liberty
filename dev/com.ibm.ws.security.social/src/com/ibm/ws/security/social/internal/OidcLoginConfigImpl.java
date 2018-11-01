@@ -124,7 +124,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     private HashMap<String, String> jwkRequestParamMap;
     
     HttpUtils httputils = new HttpUtils();
-    DiscoveryConfigUtils discoveryUtil;
+    DiscoveryConfigUtils discoveryUtil = new DiscoveryConfigUtils();
 
     @Override
     protected void setRequiredConfigAttributes(Map<String, Object> props) {
@@ -139,11 +139,15 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     	discoveryPollingRate = configUtils.getLongConfigAttribute(props, KEY_DISCOVERY_POLLING_RATE, discoveryPollingRate);
     	jwkClientId = configUtils.getConfigAttribute(props, KEY_JWK_CLIENT_ID);
         jwkClientSecret = configUtils.processProtectedString(props, KEY_JWK_CLIENT_SECRET);
+        this.hostNameVerificationEnabled = configUtils.getBooleanConfigAttribute(props, CFG_KEY_HOST_NAME_VERIFICATION_ENABLED, this.hostNameVerificationEnabled);
         this.userInfoEndpointEnabled = configUtils.getBooleanConfigAttribute(props, KEY_USERINFO_ENDPOINT_ENABLED, this.userInfoEndpointEnabled);
+        this.signatureAlgorithm = configUtils.getConfigAttribute(props, KEY_SIGNATURE_ALGORITHM);
+        this.tokenEndpointAuthMethod = configUtils.getConfigAttribute(props, KEY_tokenEndpointAuthMethod);
+        this.scope = configUtils.getConfigAttribute(props, KEY_scope);
+        
         discovery = false;
         discoveryjson = null;
     	if (discoveryEndpointUrl != null) {
-    		discoveryUtil = new DiscoveryConfigUtils(getId());
             discovery = handleDiscoveryEndpoint(discoveryEndpointUrl);
         }
 		if (!discovery) {
@@ -156,7 +160,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
 			discoveryUtil.logDiscoveryWarning(props);
 		}
        
-        this.scope = configUtils.getConfigAttribute(props, KEY_scope);
+        
         this.userNameAttribute = configUtils.getConfigAttribute(props, KEY_userNameAttribute);
         this.mapToUserRegistry = configUtils.getBooleanConfigAttribute(props, KEY_mapToUserRegistry, this.mapToUserRegistry); 
         this.authFilterRef = configUtils.getConfigAttribute(props, KEY_authFilterRef);
@@ -169,10 +173,9 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         this.groupNameAttribute = configUtils.getConfigAttribute(props, KEY_groupNameAttribute);
         this.userUniqueIdAttribute = configUtils.getConfigAttribute(props, KEY_userUniqueIdAttribute);
         this.clockSkewMsec = configUtils.getIntegerConfigAttribute(props, KEY_CLOCKSKEW, this.clockSkewMsec);
-        this.signatureAlgorithm = configUtils.getConfigAttribute(props, KEY_SIGNATURE_ALGORITHM);
-        this.tokenEndpointAuthMethod = configUtils.getConfigAttribute(props, KEY_tokenEndpointAuthMethod);
+        
         this.redirectToRPHostAndPort = configUtils.getConfigAttribute(props, KEY_redirectToRPHostAndPort);
-        this.hostNameVerificationEnabled = configUtils.getBooleanConfigAttribute(props, CFG_KEY_HOST_NAME_VERIFICATION_ENABLED, this.hostNameVerificationEnabled);
+        
         this.responseType = configUtils.getConfigAttribute(props, KEY_responseType);
         this.responseMode = configUtils.getConfigAttribute(props, KEY_RESPONSE_MODE);
         this.nonce = configUtils.getBooleanConfigAttribute(props, KEY_NONCE_ENABLED, this.nonce);
@@ -205,21 +208,20 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         }
         
         if (discovery) {
-        	DiscoveryConfigUtils discoveryConfigUtil = new DiscoveryConfigUtils(getId(), this.discoveryjson, this.signatureAlgorithm, this.tokenEndpointAuthMethod, this.scope);
-            //adjustSignatureAlgorithm();
-        	discoveryConfigUtil.adjustTokenEndpointAuthMethod();
-        	discoveryConfigUtil.adjustScopes();
+        	String OIDC_CLIENT_DISCOVERY_COMPLETE="CWWKS6111I: The client [{" + getId() + "}] configuration has been established with the information from the discovery endpoint URL [{" + this.discoveryEndpointUrl + "}]. This information enables the client to interact with the OpenID Connect provider to process the requests such as authorization and token.";
+        	discoveryUtil.logDiscoveryMessage(null, OIDC_CLIENT_DISCOVERY_COMPLETE); //TODO
         }
         
     }
     
-    boolean handleDiscoveryEndpoint(String discoveryUrl) {
+    public boolean handleDiscoveryEndpoint(String discoveryUrl) {
 
         String jsonString = null;
 
         boolean valid = false;
-
+        
         try {
+        	setNextDiscoveryTime();
         	if (!isValidDiscoveryUrl(discoveryUrl)) {
                 Tr.error(tc,  "OIDC_CLIENT_DISCOVERY_SSL_ERROR", discoveryUrl);
                 return false;
@@ -250,17 +252,34 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
      * @param json
      */
     boolean discoverEndpointUrls(JSONObject json) {
-  
-        this.authorizationEndpoint = discoveryUtil.discoverOPConfigSingleValue(json.get(OPDISCOVERY_AUTHZ_EP_URL));
-        this.tokenEndpoint = discoveryUtil.discoverOPConfigSingleValue(json.get(OPDISCOVERY_TOKEN_EP_URL));
-        this.jwksUri = discoveryUtil.discoverOPConfigSingleValue(json.get(OPDISCOVERY_JWKS_EP_URL));
-        this.userInfoEndpoint = discoveryUtil.discoverOPConfigSingleValue(json.get(OPDISCOVERY_USERINFO_EP_URL));
-        this.issuer = discoveryUtil.discoverOPConfigSingleValue(json.get(OPDISCOVERY_ISSUER));
-        //handleValidationEndpoint(json);
-        if (invalidEndpoints() || invalidIssuer()) {
-            return false;
-        }
+ 
+        discoveryUtil = discoveryUtil.initialConfig(getId(), this.discoveryEndpointUrl, this.discoveryPollingRate).discoveryDocumentResult(json).discoveryDocumentHash(this.discoveryDocumentHash).discoveredConfig(this.signatureAlgorithm, this.tokenEndpointAuthMethod, this.scope);  
+    	if (discoveryUtil.calculateDiscoveryDocumentHash(json)) {
+    		this.authorizationEndpoint = discoveryUtil.discoverOPConfigSingleValue(json.get(OPDISCOVERY_AUTHZ_EP_URL));
+            this.tokenEndpoint = discoveryUtil.discoverOPConfigSingleValue(json.get(OPDISCOVERY_TOKEN_EP_URL));
+            this.jwksUri = discoveryUtil.discoverOPConfigSingleValue(json.get(OPDISCOVERY_JWKS_EP_URL));
+            this.userInfoEndpoint = discoveryUtil.discoverOPConfigSingleValue(json.get(OPDISCOVERY_USERINFO_EP_URL));
+            this.issuer = discoveryUtil.discoverOPConfigSingleValue(json.get(OPDISCOVERY_ISSUER));
+            //handleValidationEndpoint(json);
+            if (invalidEndpoints() || invalidIssuer()) {
+                return false;
+            }
+            //adjustSignatureAlgorithm();
+        	this.tokenEndpointAuthMethod = discoveryUtil.adjustTokenEndpointAuthMethod();
+        	this.scope = discoveryUtil.adjustScopes();
+    	}
+        
         return true;
+    }
+    
+    //@Override //TODO:
+    public void setNextDiscoveryTime() {
+        this.nextDiscoveryTime = System.currentTimeMillis() + discoveryPollingRate;
+    }
+    
+    //@Override //TODO:
+    public long getNextDiscoveryTime() {
+        return this.nextDiscoveryTime;
     }
     
     /**
@@ -290,6 +309,11 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
                 Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e.getMessage());
             }
         }
+    }
+    
+   //@Override
+    public boolean isDiscoveryInUse() {
+        return isValidDiscoveryUrl(this.discoveryEndpointUrl);
     }
 
 	/**
