@@ -19,6 +19,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.test.context.location.CityContextProvider;
 import org.test.context.location.StateContextProvider;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -48,7 +49,7 @@ public class ConcurrentRxTest extends FATServletClient {
 
         JavaArchive customContextProviders = ShrinkWrap.create(JavaArchive.class, "customContextProviders.jar")
                         .addPackage("org.test.context.location")
-                        .addAsServiceProvider(ThreadContextProvider.class, StateContextProvider.class);
+                        .addAsServiceProvider(ThreadContextProvider.class, CityContextProvider.class, StateContextProvider.class);
         ShrinkHelper.exportToServer(server1, "lib", customContextProviders);
 
         server1.startServer();

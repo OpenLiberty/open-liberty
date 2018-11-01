@@ -14,5 +14,6 @@ package org.test.context.location;
  * Fake third-party context types created by the tests
  */
 public class TestContextTypes {
+    public static final String CITY = "City";
     public static final String STATE = "State";
 }

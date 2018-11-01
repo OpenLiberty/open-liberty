@@ -12,6 +12,7 @@ package com.ibm.ws.concurrent.mp;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -67,7 +68,7 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
             Set<String> prereqs = provider.getPrerequisites();
 
             if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, "context type " + type + " with prereqs " + prereqs + " provided by ");
+                Tr.debug(this, tc, "context type " + type + " with prereqs " + prereqs + " provided by " + provider);
 
             if (available.containsAll(prereqs)) {
                 if (available.add(type))
@@ -84,18 +85,19 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
 
         for (boolean changed = true; changed && !unsatisfied.isEmpty();) {
             changed = false;
-            for (ThreadContextProvider provider : unsatisfied) {
+            for (Iterator<ThreadContextProvider> providers = unsatisfied.iterator(); providers.hasNext();) {
+                ThreadContextProvider provider = providers.next();
+
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "previously unsatisfied provider " + provider);
 
                 if (available.containsAll(provider.getPrerequisites())) {
+                    providers.remove();
                     if (available.add(provider.getThreadContextType()))
                         contextProviders.add(provider);
                     else
                         throw new IllegalStateException(); // TODO same message from earlier
                     changed = true;
-                } else {
-                    unsatisfied.add(provider);
                 }
             }
         }

@@ -18,18 +18,27 @@ package org.test.context.location;
  * running thread.
  */
 public class CurrentLocation {
+    public static void clear() {
+        setLocation("", "");
+    }
+
     public static double getStateSalesTax(double purchaseAmount) {
         String stateName = StateContextProvider.stateName.get();
         return getStateTaxRate(stateName) * purchaseAmount;
     }
 
     public static double getTotalSalesTax(double purchaseAmount) {
-        String cityName = null; // TODO CityContextProvider.cityName.get();
+        String cityName = CityContextProvider.cityName.get();
         String stateName = StateContextProvider.stateName.get();
         return getTotalTaxRate(cityName, stateName) * purchaseAmount;
     }
 
     public static void setLocation(String state) {
+        StateContextProvider.stateName.set(state);
+    }
+
+    public static void setLocation(String city, String state) {
+        CityContextProvider.cityName.set(city);
         StateContextProvider.stateName.set(state);
     }
 
@@ -61,7 +70,7 @@ public class CurrentLocation {
         throw new IllegalArgumentException(state + " is an unkown location");
     }
 
-    private static double getTotalTaxRate(String city, String state) {
+    static double getTotalTaxRate(String city, String state) {
         switch (state) {
             case "Iowa":
                 switch (city) {
@@ -89,6 +98,12 @@ public class CurrentLocation {
                     case "Stewartville":
                     case "Winona":
                         return getStateTaxRate(state);
+                }
+                break;
+            case "Wisconsin":
+                switch (city) {
+                    case "Madison":
+                        return 0.055;
                 }
                 break;
         }

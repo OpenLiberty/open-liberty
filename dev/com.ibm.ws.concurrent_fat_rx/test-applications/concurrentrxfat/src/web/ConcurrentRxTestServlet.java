@@ -2507,6 +2507,44 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
+     * Test that prerequisite context is applied to the thread before the type(s) of
+     * context that declared it prerequisite. This test relies upon two custom thread context
+     * types where the "City" context type validates that the current "State" context type
+     * indicates a valid combination of (city, state) upon its application to the thread.
+     */
+    @Test
+    public void testPrerequisiteContext() throws Exception {
+        Function<Double, Double> totalCost = purchaseAmount -> {
+            return purchaseAmount + CurrentLocation.getTotalSalesTax(purchaseAmount);
+        };
+        Function<Double, Double> totalCostInRochesterMN;
+        Function<Double, Double> totalCostInAmesIA;
+
+        ThreadContext contextSvc = ThreadContextBuilder.instance()
+                        .propagated(TestContextTypes.CITY, TestContextTypes.STATE)
+                        .build();
+
+        try {
+            CurrentLocation.setLocation("Rochester", "Minnesota");
+            totalCostInRochesterMN = contextSvc.withCurrentContext(totalCost);
+
+            CurrentLocation.setLocation("Ames", "Iowa");
+            totalCostInAmesIA = contextSvc.withCurrentContext(totalCost);
+
+            CurrentLocation.setLocation("Madison", "Wisconsin");
+
+            assertEquals(212.60, totalCostInRochesterMN.apply(198.00), 0.01);
+
+            assertEquals(211.86, totalCostInAmesIA.apply(198.00), 0.01);
+
+            // Verify that context is restored
+            assertEquals(208.89, totalCost.apply(198.00), 0.01);
+        } finally {
+            CurrentLocation.clear();
+        }
+    }
+
+    /**
      * From threads lacking application context, create 2 managed completable futures.
      * From the application thread, invoke runAfterBoth for these completable futures.
      * Verify that the runnable action runs on the same thread as at least one of the others (or on the servlet thread in case the stage completes quickly).
@@ -3501,7 +3539,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
             // verify that context is restored once complete
             assertEquals(5.000, CurrentLocation.getStateSalesTax(100.0), 0.000001); // WI tax rate
         } finally {
-            CurrentLocation.setLocation("");
+            CurrentLocation.clear();
         }
 
         // Run on a thread that lacks access to the application's name space
