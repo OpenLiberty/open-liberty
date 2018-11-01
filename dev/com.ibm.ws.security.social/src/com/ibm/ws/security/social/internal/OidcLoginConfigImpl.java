@@ -110,6 +110,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     public static final String KEY_NONCE_ENABLED = "nonceEnabled";
 
     public static final String KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT = "includeCustomCacheKeyInSubject";
+
     private boolean includeCustomCacheKeyInSubject = true;
     
     public static final String KEY_AUTHZ_PARAM = "authzParameter";
@@ -126,6 +127,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     HttpUtils httputils = new HttpUtils();
     DiscoveryConfigUtils discoveryUtil;
 
+
     @Override
     protected void setRequiredConfigAttributes(Map<String, Object> props) {
         this.clientId = getRequiredConfigAttribute(props, KEY_clientId);
@@ -134,6 +136,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
 
     @Override
     protected void setOptionalConfigAttributes(Map<String, Object> props) throws SocialLoginException {
+
+        this.useSystemPropertiesForHttpClientConnections = configUtils.getBooleanConfigAttribute(props, KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS, false);        
     	this.sslRef = configUtils.getConfigAttribute(props, KEY_sslRef);
     	this.discoveryEndpointUrl = configUtils.getConfigAttribute(props, KEY_DISCOVERY_ENDPOINT);
     	discoveryPollingRate = configUtils.getLongConfigAttribute(props, KEY_DISCOVERY_POLLING_RATE, discoveryPollingRate);

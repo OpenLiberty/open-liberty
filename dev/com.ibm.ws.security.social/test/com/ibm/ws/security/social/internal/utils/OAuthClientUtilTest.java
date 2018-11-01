@@ -131,18 +131,18 @@ public class OAuthClientUtilTest extends CommonTestClass {
     final OAuthClientUtil mockUtil = new OAuthClientUtil() {
         @Override
         Map<String, Object> postToCheckTokenEndpoint(String tokenEnpoint, @Sensitive List<NameValuePair> params, String baUsername, @Sensitive String baPassword,
-                boolean isHostnameVerification, String authMethod, SSLSocketFactory sslSocketFactory) throws SocialLoginException {
+                boolean isHostnameVerification, String authMethod, SSLSocketFactory sslSocketFactory, boolean useJvmProps) throws SocialLoginException {
             return mockInterface.postToCheckTokenEndpoint();
         }
 
         @Override
         Map<String, Object> getFromUserApiEndpoint(String userApiEndpoint, @Sensitive List<NameValuePair> params, @Sensitive String accessToken,
-                SSLSocketFactory sslSocketFactory, boolean isHostnameVerification, boolean needsSpecialHeader) throws ClientProtocolException, IOException {
+                SSLSocketFactory sslSocketFactory, boolean isHostnameVerification, boolean needsSpecialHeader, boolean useJvmProps) throws ClientProtocolException, IOException {
             return mockInterface.getFromUserApiEndpoint();
         }
 
         @Override
-        public Map<String, Object> getUserApi(String userApi, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory, boolean isHostnameVerification, boolean needsSpecialHeader) throws Exception {
+        public Map<String, Object> getUserApi(String userApi, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory, boolean isHostnameVerification, boolean needsSpecialHeader, boolean useJvmProps) throws Exception {
             return mockInterface.getUserApi();
         }
 
@@ -165,7 +165,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
     final OAuthClientUtil mockUtil_getUserApi = new OAuthClientUtil() {
         @Override
         Map<String, Object> getFromUserApiEndpoint(String userApiEndpoint, @Sensitive List<NameValuePair> params, @Sensitive String accessToken,
-                SSLSocketFactory sslSocketFactory, boolean isHostnameVerification, boolean needsSpecialHeader) throws ClientProtocolException, IOException {
+                SSLSocketFactory sslSocketFactory, boolean isHostnameVerification, boolean needsSpecialHeader, boolean useJvmProps) throws ClientProtocolException, IOException {
             return mockInterface.getFromUserApiEndpoint();
         }
     };
@@ -219,7 +219,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
     public void getTokensFromAuthzCode_nullArgs() {
         try {
             try {
-                Map<String, Object> result = util.getTokensFromAuthzCode(null, null, null, null, null, null, null, isHostnameVerification, null, null);
+                Map<String, Object> result = util.getTokensFromAuthzCode(null, null, null, null, null, null, null, isHostnameVerification, null, null, false);
                 fail("Should have thrown SocialLoginException but did not. Result was: " + result);
             } catch (SocialLoginException e) {
                 verifyException(e, CWWKS5462E_TOKEN_ENDPOINT_NULL_OR_EMPTY);
@@ -237,7 +237,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             final String tokenEndpoint = RandomUtils.getRandomSelection(null, "");
             try {
-                Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources);
+                Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources, false);
                 fail("Should have thrown SocialLoginException but did not. Result was: " + result);
             } catch (SocialLoginException e) {
                 verifyException(e, CWWKS5462E_TOKEN_ENDPOINT_NULL_OR_EMPTY);
@@ -255,7 +255,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             final String tokenEndpoint = "Some invalid URI";
             try {
-                Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources);
+                Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources, false);
                 fail("Should have thrown SocialLoginException but did not. Result was: " + result);
             } catch (SocialLoginException e) {
                 verifyExceptionWithInserts(e, CWWKS5417E_EXCEPTION_INITIALIZING_URL, tokenEndpoint);
@@ -274,7 +274,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String clientId = RandomUtils.getRandomSelection(null, "");
             postAndExtractExpectations(mapResponse, jsonResponse);
 
-            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpointWithQuery, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources);
+            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpointWithQuery, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources, false);
             assertEquals("Result did not match expected value.", mapResponse, result);
 
             verifyLogMessageWithInserts(outputMgr, CWWKS5416W_OUTGOING_REQUEST_MISSING_PARAMETER, ClientConstants.CLIENT_ID);
@@ -290,7 +290,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String clientSecret = RandomUtils.getRandomSelection(null, "");
             postAndExtractExpectations(mapResponse, jsonResponse);
 
-            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources);
+            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources, false);
             assertEquals("Result did not match expected value.", mapResponse, result);
 
             verifyLogMessageWithInserts(outputMgr, CWWKS5416W_OUTGOING_REQUEST_MISSING_PARAMETER, ClientConstants.CLIENT_SECRET);
@@ -306,7 +306,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String redirectUri = RandomUtils.getRandomSelection(null, "");
             postAndExtractExpectations(mapResponse, jsonResponse);
 
-            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources);
+            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources, false);
             assertEquals("Result did not match expected value.", mapResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -322,7 +322,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String redirectUri = "Some invalid URI";
             postAndExtractExpectations(mapResponse, jsonResponse);
 
-            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources);
+            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources, false);
             assertEquals("Result did not match expected value.", mapResponse, result);
 
             // The redirect URI format is not validated before being used, so no error/warnings messages will appear
@@ -339,7 +339,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String code = RandomUtils.getRandomSelection(null, "");
             postAndExtractExpectations(mapResponse, jsonResponse);
 
-            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources);
+            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources, false);
             assertEquals("Result did not match expected value.", mapResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -355,7 +355,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String grantType = RandomUtils.getRandomSelection(null, "");
             postAndExtractExpectations(mapResponse, jsonResponse);
 
-            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources);
+            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources, false);
             assertEquals("Result did not match expected value.", mapResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -370,7 +370,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             postAndExtractExpectations(mapResponse, jsonResponse);
 
-            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, null, isHostnameVerification, authMethod, resources);
+            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, null, isHostnameVerification, authMethod, resources, false);
             assertEquals("Result did not match expected value.", mapResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -386,7 +386,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String authMethod = RandomUtils.getRandomSelection(null, "");
             postAndExtractExpectations(mapResponse, jsonResponse);
 
-            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources);
+            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources, false);
             assertEquals("Result did not match expected value.", mapResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -402,7 +402,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String resources = RandomUtils.getRandomSelection(null, "");
             postAndExtractExpectations(mapResponse, jsonResponse);
 
-            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources);
+            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources, false);
             assertEquals("Result did not match expected value.", mapResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -418,13 +418,15 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             mockery.checking(new Expectations() {
                 {
-                    one(httpUtil).postToEndpoint(with(any(String.class)), with(any(List.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(List.class)), with(any(boolean.class)), with(any(String.class)));
+                    one(httpUtil).postToEndpoint(with(any(String.class)), with(any(List.class)), with(any(String.class)), 
+                            with(any(String.class)), with(any(String.class)), with(any(SSLSocketFactory.class)), 
+                            with(any(List.class)), with(any(boolean.class)), with(any(String.class)), with(any(Boolean.class)));
                     will(throwException(new SocialLoginException(defaultExceptionMsg, null, null)));
                 }
             });
 
             try {
-                Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpointWithQuery, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources);
+                Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpointWithQuery, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources, false);
                 fail("Should have thrown SocialLoginException but got result " + result);
             } catch (SocialLoginException e) {
                 // TODO - Ideally should include NLS message
@@ -444,14 +446,14 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             mockery.checking(new Expectations() {
                 {
-                    one(httpUtil).postToEndpoint(with(any(String.class)), with(any(List.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(List.class)), with(any(boolean.class)), with(any(String.class)));
+                    one(httpUtil).postToEndpoint(with(any(String.class)), with(any(List.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(List.class)), with(any(boolean.class)), with(any(String.class)), with(any(Boolean.class)));
                     will(returnValue(null));
                     one(httpUtil).extractTokensFromResponse(null);
                     will(returnValue(null));
                 }
             });
 
-            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources);
+            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources, false);
             assertTrue("Result should have been empty but was " + result, result.isEmpty());
 
             verifyLogMessageWithInserts(outputMgr, CWWKS5486W_POST_RESPONSE_NULL, Pattern.quote(tokenEndpoint));
@@ -467,7 +469,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             mockery.checking(new Expectations() {
                 {
-                    one(httpUtil).postToEndpoint(with(any(String.class)), with(any(List.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(List.class)), with(any(boolean.class)), with(any(String.class)));
+                    one(httpUtil).postToEndpoint(with(any(String.class)), with(any(List.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(List.class)), with(any(boolean.class)), with(any(String.class)), with(any(Boolean.class)));
                     will(returnValue(mapResponse));
                     one(httpUtil).extractTokensFromResponse(mapResponse);
                     will(throwException(new SocialLoginException(defaultExceptionMsg, null, null)));
@@ -475,7 +477,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             });
 
             try {
-                Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources);
+                Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources, false);
                 fail("Should have thrown SocialLoginException but got result " + result);
             } catch (SocialLoginException e) {
                 // TODO - Ideally should include NLS message
@@ -494,7 +496,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             postAndExtractExpectations(mapResponse, null);
 
-            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources);
+            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources, false);
             assertTrue("Result should have been empty but was " + result, result.isEmpty());
 
             verifyLogMessageWithInserts(outputMgr, CWWKS5486W_POST_RESPONSE_NULL, Pattern.quote(tokenEndpoint));
@@ -510,7 +512,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final Map<String, Object> emptyMap = new HashMap<String, Object>();
             postAndExtractExpectations(emptyMap, "");
 
-            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpointWithQuery, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources);
+            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpointWithQuery, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources, false);
             assertTrue("Result should have been empty but was " + result, result.isEmpty());
 
             verifyLogMessageWithInserts(outputMgr, CWWKS5487W_ENDPOINT_RESPONSE_NOT_JSON, Pattern.quote(tokenEndpointWithQuery), "");
@@ -526,7 +528,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final Map<String, Object> emptyMap = new HashMap<String, Object>();
             postAndExtractExpectations(emptyMap, "{}");
 
-            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources);
+            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources, false);
             assertTrue("Result should have been empty but was " + result, result.isEmpty());
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -543,7 +545,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final Map<String, Object> emptyMap = new HashMap<String, Object>();
             postAndExtractExpectations(emptyMap, response);
 
-            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources);
+            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources, false);
             assertTrue("Result should have been empty but was " + result, result.isEmpty());
 
             verifyLogMessageWithInserts(outputMgr, CWWKS5487W_ENDPOINT_RESPONSE_NOT_JSON, Pattern.quote(tokenEndpoint), Pattern.quote(response));
@@ -559,7 +561,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final Map<String, Object> emptyMap = new HashMap<String, Object>();
             postAndExtractExpectations(emptyMap, "{\"1\":[2,\"array1\"],\"key1\":\"value1\",\"subObj\":{}}");
 
-            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources);
+            Map<String, Object> result = util.getTokensFromAuthzCode(tokenEndpoint, clientId, clientSecret, redirectUri, code, grantType, sslSocketFactory, isHostnameVerification, authMethod, resources, false);
             assertFalse("Result should not have been empty.", result.isEmpty());
             assertEquals("Number of entries in result did not match expected value. Result was " + result, 3, result.size());
 
@@ -582,7 +584,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
                 }
             });
 
-            Map<String, Object> result = mockUtil.checkToken(null, null, null, null, isHostnameVerification, null, null);
+            Map<String, Object> result = mockUtil.checkToken(null, null, null, null, isHostnameVerification, null, null, false);
             assertNull("Result should have been null but was " + result, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -603,7 +605,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             });
 
             try {
-                Map<String, Object> result = mockUtil.checkToken(tokenEndpoint, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, sslSocketFactory);
+                Map<String, Object> result = mockUtil.checkToken(tokenEndpoint, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, sslSocketFactory, false);
                 fail("Should have thrown SocialLoginException but got result " + result);
             } catch (SocialLoginException e) {
                 // TODO - Ideally should include NLS message
@@ -623,7 +625,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String tokenEndpoint = RandomUtils.getRandomSelection(null, "");
             validPostToCheckTokenExpectations(mapResponse);
 
-            Map<String, Object> result = mockUtil.checkToken(tokenEndpoint, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, sslSocketFactory);
+            Map<String, Object> result = mockUtil.checkToken(tokenEndpoint, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, sslSocketFactory, false);
             assertEquals("Response from endpoint did not match expected result.", mapResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -639,7 +641,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String clientId = RandomUtils.getRandomSelection(null, "");
             validPostToCheckTokenExpectations(mapResponse);
 
-            Map<String, Object> result = mockUtil.checkToken(tokenEndpoint, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, sslSocketFactory);
+            Map<String, Object> result = mockUtil.checkToken(tokenEndpoint, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, sslSocketFactory, false);
             assertEquals("Response from endpoint did not match expected result.", mapResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -655,7 +657,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String clientSecret = RandomUtils.getRandomSelection(null, "");
             validPostToCheckTokenExpectations(mapResponse);
 
-            Map<String, Object> result = mockUtil.checkToken(tokenEndpoint, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, sslSocketFactory);
+            Map<String, Object> result = mockUtil.checkToken(tokenEndpoint, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, sslSocketFactory, false);
             assertEquals("Response from endpoint did not match expected result.", mapResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -671,7 +673,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String accessToken = RandomUtils.getRandomSelection(null, "");
             validPostToCheckTokenExpectations(mapResponse);
 
-            Map<String, Object> result = mockUtil.checkToken(tokenEndpoint, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, sslSocketFactory);
+            Map<String, Object> result = mockUtil.checkToken(tokenEndpoint, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, sslSocketFactory, false);
             assertEquals("Response from endpoint did not match expected result.", mapResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -687,7 +689,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String authMethod = RandomUtils.getRandomSelection(null, "");
             validPostToCheckTokenExpectations(mapResponse);
 
-            Map<String, Object> result = mockUtil.checkToken(tokenEndpoint, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, sslSocketFactory);
+            Map<String, Object> result = mockUtil.checkToken(tokenEndpoint, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, sslSocketFactory, false);
             assertEquals("Response from endpoint did not match expected result.", mapResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -702,7 +704,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             validPostToCheckTokenExpectations(mapResponse);
 
-            Map<String, Object> result = mockUtil.checkToken(tokenEndpoint, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, null);
+            Map<String, Object> result = mockUtil.checkToken(tokenEndpoint, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, null, false);
             assertEquals("Response from endpoint did not match expected result.", mapResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -717,7 +719,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             validPostToCheckTokenExpectations(null);
 
-            Map<String, Object> result = mockUtil.checkToken(tokenEndpoint, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, sslSocketFactory);
+            Map<String, Object> result = mockUtil.checkToken(tokenEndpoint, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, sslSocketFactory, false);
             assertNull("Result should have been null but was " + result, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -732,7 +734,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             validPostToCheckTokenExpectations(mapResponse);
 
-            Map<String, Object> result = mockUtil.checkToken(tokenEndpointWithQuery, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, sslSocketFactory);
+            Map<String, Object> result = mockUtil.checkToken(tokenEndpointWithQuery, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, sslSocketFactory, false);
             assertEquals("Response from endpoint did not match expected result.", mapResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -749,7 +751,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             validGetFromUserApiEndpointExpectations(mapResponse);
 
-            Map<String, Object> result = mockUtil_getUserApi.getUserApi(null, null, null, isHostnameVerification, needsSpecialHeader);
+            Map<String, Object> result = mockUtil_getUserApi.getUserApi(null, null, null, isHostnameVerification, needsSpecialHeader, false );
             assertEquals("Response did not match expected result.", mapResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -765,7 +767,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String userApi = RandomUtils.getRandomSelection(null, "");
             validGetFromUserApiEndpointExpectations(mapResponse);
 
-            Map<String, Object> result = mockUtil_getUserApi.getUserApi(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            Map<String, Object> result = mockUtil_getUserApi.getUserApi(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
             assertEquals("Response did not match expected result.", mapResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -781,7 +783,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String accessToken = RandomUtils.getRandomSelection(null, "");
             validGetFromUserApiEndpointExpectations(mapResponse);
 
-            Map<String, Object> result = mockUtil_getUserApi.getUserApi(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            Map<String, Object> result = mockUtil_getUserApi.getUserApi(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
             assertEquals("Response did not match expected result.", mapResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -796,7 +798,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             validGetFromUserApiEndpointExpectations(mapResponse);
 
-            Map<String, Object> result = mockUtil_getUserApi.getUserApi(userApi, accessToken, null, isHostnameVerification, needsSpecialHeader);
+            Map<String, Object> result = mockUtil_getUserApi.getUserApi(userApi, accessToken, null, isHostnameVerification, needsSpecialHeader, false);
             assertEquals("Response did not match expected result.", mapResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -817,7 +819,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             });
 
             try {
-                Map<String, Object> result = mockUtil_getUserApi.getUserApi(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+                Map<String, Object> result = mockUtil_getUserApi.getUserApi(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
                 fail("Should have thrown ClientProtocolException but got result " + result);
             } catch (ClientProtocolException e) {
                 // TODO - Ideally should include NLS message
@@ -836,7 +838,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             validGetFromUserApiEndpointExpectations(null);
 
-            Map<String, Object> result = mockUtil_getUserApi.getUserApi(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            Map<String, Object> result = mockUtil_getUserApi.getUserApi(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
             assertNull("Result should have been null but was " + result, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -851,7 +853,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             validGetFromUserApiEndpointExpectations(mapResponse);
 
-            Map<String, Object> result = mockUtil_getUserApi.getUserApi(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            Map<String, Object> result = mockUtil_getUserApi.getUserApi(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
             assertEquals("Result did not match the result returned from the user API endpoint.", mapResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -868,7 +870,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             validUserApiResponseExpectations(mapResponse, jsonResponse);
 
-            String result = mockUtil.getUserApiResponse(null, null, null, isHostnameVerification, needsSpecialHeader);
+            String result = mockUtil.getUserApiResponse(null, null, null, isHostnameVerification, needsSpecialHeader, false);
             assertEquals("Result did not match the expected value.", jsonResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -884,7 +886,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String userApi = RandomUtils.getRandomSelection(null, "");
             validUserApiResponseExpectations(mapResponse, jsonResponse);
 
-            String result = mockUtil.getUserApiResponse(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            String result = mockUtil.getUserApiResponse(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
             assertEquals("Result did not match the expected value.", jsonResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -900,7 +902,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String accessToken = RandomUtils.getRandomSelection(null, "");
             validUserApiResponseExpectations(mapResponse, jsonResponse);
 
-            String result = mockUtil.getUserApiResponse(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            String result = mockUtil.getUserApiResponse(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
             assertEquals("Result did not match the expected value.", jsonResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -915,7 +917,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             validUserApiResponseExpectations(mapResponse, jsonResponse);
 
-            String result = mockUtil.getUserApiResponse(userApi, accessToken, null, isHostnameVerification, needsSpecialHeader);
+            String result = mockUtil.getUserApiResponse(userApi, accessToken, null, isHostnameVerification, needsSpecialHeader, false);
             assertEquals("Result did not match the expected value.", jsonResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -935,7 +937,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
                 }
             });
             try {
-                String result = mockUtil.getUserApiResponse(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+                String result = mockUtil.getUserApiResponse(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
                 fail("Should have thrown Exception but got result " + result);
             } catch (Exception e) {
                 // TODO - Ideally should include NLS message
@@ -954,7 +956,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             validUserApiResponseExpectations(null, jsonResponse);
 
-            String result = mockUtil.getUserApiResponse(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            String result = mockUtil.getUserApiResponse(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
             assertEquals("Result did not match the expected value.", jsonResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -975,7 +977,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
                 }
             });
             try {
-                String result = mockUtil.getUserApiResponse(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+                String result = mockUtil.getUserApiResponse(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
                 fail("Should have thrown SocialLoginException but got result " + result);
             } catch (SocialLoginException e) {
                 // TODO - Ideally should include NLS message
@@ -994,7 +996,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             validUserApiResponseExpectations(mapResponse, null);
 
-            String result = mockUtil.getUserApiResponse(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            String result = mockUtil.getUserApiResponse(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
             assertNull("Result should have been null but was [" + result + "].", result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -1009,7 +1011,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             validUserApiResponseExpectations(mapResponse, jsonResponse);
 
-            String result = mockUtil.getUserApiResponse(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            String result = mockUtil.getUserApiResponse(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
             assertEquals("Result did not match the expected JSON string.", jsonResponse, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -1089,7 +1091,8 @@ public class OAuthClientUtilTest extends CommonTestClass {
             mockery.checking(new Expectations() {
                 {
                     one(config).getUserApiNeedsSpecialHeader();
-                    one(mockInterface).getUserApi();
+                    one(config).getUseSystemPropertiesForHttpClientConnections();
+                    one(mockInterface).getUserApi();                    
                     will(throwException(new Exception(defaultExceptionMsg)));
                 }
             });
@@ -1130,6 +1133,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             mockery.checking(new Expectations() {
                 {
                     one(config).getUserApiNeedsSpecialHeader();
+                    one(config).getUseSystemPropertiesForHttpClientConnections();
                     one(mockInterface).getUserApi();
                     one(mockInterface).getJsonStringResponse();
                     will(throwException(new SocialLoginException(defaultExceptionMsg, null, null)));
@@ -1158,6 +1162,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
                 {
                     one(config).getUserApiNeedsSpecialHeader();
                     one(mockInterface).getUserApi();
+                    one(config).getUseSystemPropertiesForHttpClientConnections();
                     one(mockInterface).getJsonStringResponse();
                     will(returnValue(null));
                 }
@@ -1187,6 +1192,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
                     one(mockInterface).getJsonStringResponse();
                     will(returnValue("some value"));
                     one(config).getJwtRef();
+                    one(config).getUseSystemPropertiesForHttpClientConnections();
                     one(mockInterface).createJwtTokenFromJson();
                     will(throwException(new Exception(defaultExceptionMsg)));
                 }
@@ -1744,7 +1750,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
     public void getFromEndpoint_nullArgs() {
         try {
             try {
-                Map<String, Object> result = mockUtil.getFromEndpoint(null, null, null, null, null, null, isHostnameVerification, needsSpecialHeader);
+                Map<String, Object> result = mockUtil.getFromEndpoint(null, null, null, null, null, null, isHostnameVerification, needsSpecialHeader, false);
                 fail("Should have thrown SocialLoginException but got " + result);
             } catch (SocialLoginException e) {
                 verifyException(e, CWWKS5475E_NULL_OR_EMPTY_REQUEST_URL);
@@ -1762,7 +1768,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             String url = RandomUtils.getRandomSelection(null, "");
             try {
-                Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+                Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
                 fail("Should have thrown SocialLoginException but got " + result);
             } catch (SocialLoginException e) {
                 verifyException(e, CWWKS5475E_NULL_OR_EMPTY_REQUEST_URL);
@@ -1780,7 +1786,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
         try {
             String url = "Some invalid URL";
             try {
-                Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+                Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
                 fail("Should have thrown SocialLoginException but got " + result);
             } catch (SocialLoginException e) {
                 verifyExceptionWithInserts(e, CWWKS5417E_EXCEPTION_INITIALIZING_URL, url);
@@ -1801,7 +1807,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String calculatedUrl = url;
             httpClientCreationAndExecutionExpectations(sslSocketFactory, calculatedUrl, isHostnameVerification, clientId, clientSecret);
 
-            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
             verifyEndpointResponse(result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -1818,7 +1824,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String calculatedUrl = url + paramsString;
             httpClientCreationAndExecutionExpectations(sslSocketFactory, calculatedUrl, isHostnameVerification, clientId, clientSecret);
 
-            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
             verifyEndpointResponse(result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -1835,7 +1841,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String calculatedUrl = url + "&" + paramsString;
             httpClientCreationAndExecutionExpectations(sslSocketFactory, calculatedUrl, isHostnameVerification, clientId, clientSecret);
 
-            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
             verifyEndpointResponse(result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -1852,13 +1858,13 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String calculatedUrl = url + "?" + paramsString;
             mockery.checking(new Expectations() {
                 {
-                    one(httpUtil).createHTTPClient(sslSocketFactory, calculatedUrl, isHostnameVerification);
+                    one(httpUtil).createHTTPClient(sslSocketFactory, calculatedUrl, isHostnameVerification, false);
                     will(returnValue(httpClient));
                     one(httpClient).execute(with(any(HttpGet.class)));
                 }
             });
 
-            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
             verifyEndpointResponse(result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -1875,7 +1881,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String calculatedUrl = url + "?" + paramsString;
             httpClientCreationAndExecutionExpectations(sslSocketFactory, calculatedUrl, isHostnameVerification, clientId, clientSecret);
 
-            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
             verifyEndpointResponse(result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -1892,7 +1898,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String calculatedUrl = url + "?" + paramsString;
             httpClientCreationAndExecutionExpectations(sslSocketFactory, calculatedUrl, isHostnameVerification, clientId, clientSecret);
 
-            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
             verifyEndpointResponse(result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -1909,7 +1915,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String calculatedUrl = url + "?" + paramsString;
             httpClientCreationAndExecutionExpectations(sslSocketFactory, calculatedUrl, isHostnameVerification, clientId, clientSecret);
 
-            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
             verifyEndpointResponse(result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -1925,7 +1931,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String calculatedUrl = url + "?" + paramsString;
             httpClientCreationAndExecutionExpectations(null, calculatedUrl, isHostnameVerification, clientId, clientSecret);
 
-            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, null, isHostnameVerification, needsSpecialHeader);
+            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, null, isHostnameVerification, needsSpecialHeader, false);
             verifyEndpointResponse(result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -1942,7 +1948,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String calculatedUrl = url + "?" + paramsString;
             httpClientCreationAndExecutionExpectations(sslSocketFactory, calculatedUrl, isHostnameVerification, clientId, clientSecret);
 
-            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
             verifyEndpointResponse(result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -1959,7 +1965,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
             final String calculatedUrl = url + "?" + paramsString;
             httpClientCreationAndExecutionExpectations(sslSocketFactory, calculatedUrl, isHostnameVerification, clientId, clientSecret);
 
-            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            Map<String, Object> result = mockUtil.getFromEndpoint(url, params, clientId, clientSecret, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, false);
             verifyEndpointResponse(result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -1975,7 +1981,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
     void postAndExtractExpectations(final Map<String, Object> postResponse, final String tokenResponse) throws SocialLoginException {
         mockery.checking(new Expectations() {
             {
-                one(httpUtil).postToEndpoint(with(any(String.class)), with(any(List.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(List.class)), with(any(boolean.class)), with(any(String.class)));
+                one(httpUtil).postToEndpoint(with(any(String.class)), with(any(List.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(List.class)), with(any(boolean.class)), with(any(String.class)), with(any(Boolean.class)));
                 will(returnValue(postResponse));
                 one(httpUtil).extractTokensFromResponse(postResponse);
                 will(returnValue(tokenResponse));
@@ -1987,11 +1993,12 @@ public class OAuthClientUtilTest extends CommonTestClass {
         mockery.checking(new Expectations() {
             {
                 one(config).getUserApiNeedsSpecialHeader();
+                one(config).getUseSystemPropertiesForHttpClientConnections();
                 one(mockInterface).getUserApi();
                 will(returnValue(userApiResponse));
                 one(mockInterface).getJsonStringResponse();
                 will(returnValue(jsonResponse));
-                one(config).getJwtRef();
+                one(config).getJwtRef();                
                 will(returnValue(jwtRef));
                 one(mockInterface).createJwtTokenFromJson();
                 will(returnValue(jwt));
@@ -2054,7 +2061,7 @@ public class OAuthClientUtilTest extends CommonTestClass {
     void httpClientCreationAndExecutionExpectations(final SSLSocketFactory sslSocketFactory, final String url, final boolean isHostnameVerification, final String clientId, final String clientSecret) throws IOException {
         mockery.checking(new Expectations() {
             {
-                one(httpUtil).createHTTPClient(sslSocketFactory, url, isHostnameVerification, clientId, clientSecret);
+                one(httpUtil).createHTTPClient(sslSocketFactory, url, isHostnameVerification, clientId, clientSecret, false);
                 will(returnValue(httpClient));
                 one(httpClient).execute(with(any(HttpGet.class)));
             }

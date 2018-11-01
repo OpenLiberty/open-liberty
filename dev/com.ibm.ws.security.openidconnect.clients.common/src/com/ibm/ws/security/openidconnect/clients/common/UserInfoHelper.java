@@ -108,7 +108,8 @@ public class UserInfoHelper {
         int statusCode = 0;
         String responseStr = null;
         try {
-            Map<String, Object> resultMap = oidccu.getUserinfo(url, accessToken, sslsf, hostnameVerification);
+            boolean useSysProps = config.getUseSystemPropertiesForHttpClientConnections();
+            Map<String, Object> resultMap = oidccu.getUserinfo(url, accessToken, sslsf, hostnameVerification, useSysProps);
             if (resultMap == null) {
                 throw new Exception("result map from getUserinfo is null");
             }
