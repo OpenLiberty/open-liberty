@@ -10,8 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp;
 
-import org.eclipse.microprofile.concurrent.ManagedExecutorBuilder;
-import org.eclipse.microprofile.concurrent.ThreadContextBuilder;
+import java.security.AccessController;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.eclipse.microprofile.concurrent.spi.ConcurrencyManager;
 import org.eclipse.microprofile.concurrent.spi.ConcurrencyManagerBuilder;
 import org.eclipse.microprofile.concurrent.spi.ConcurrencyProvider;
@@ -23,8 +26,16 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.mp.context.ApplicationContextProvider;
+import com.ibm.ws.concurrent.mp.context.SecurityContextProvider;
+import com.ibm.ws.concurrent.mp.context.TransactionContextProvider;
+import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
+import com.ibm.ws.kernel.service.util.SecureAction;
 
 /**
  * Registers this implementation as the provider of MicroProfile Concurrency.
@@ -32,6 +43,13 @@ import com.ibm.ws.concurrent.mp.context.ApplicationContextProvider;
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class ConcurrencyProviderImpl implements ConcurrencyProvider {
     final ApplicationContextProvider applicationContextProvider = new ApplicationContextProvider();
+    final SecurityContextProvider securityContextProvider = new SecurityContextProvider();
+    final TransactionContextProvider transactionContextProvider = new TransactionContextProvider();
+    final WLMContextProvider wlmContextProvider = new WLMContextProvider();
+
+    private static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
+
+    private final ConcurrentHashMap<ClassLoader, ConcurrencyManager> providersPerClassLoader = new ConcurrentHashMap<ClassLoader, ConcurrencyManager>();
 
     private ConcurrencyProviderRegistration registration;
 
@@ -39,49 +57,62 @@ public class ConcurrencyProviderImpl implements ConcurrencyProvider {
     protected void activate(ComponentContext osgiComponentContext) {
         applicationContextProvider.classloaderContextProviderRef.activate(osgiComponentContext);
         applicationContextProvider.jeeMetadataContextProviderRef.activate(osgiComponentContext);
+        securityContextProvider.securityContextProviderRef.activate(osgiComponentContext);
+        securityContextProvider.threadIdentityContextProviderRef.activate(osgiComponentContext);
+        transactionContextProvider.transactionContextProviderRef.activate(osgiComponentContext);
+        wlmContextProvider.wlmContextProviderRef.activate(osgiComponentContext);
         registration = ConcurrencyProvider.register(this);
     }
 
     @Deactivate
     protected void deactivate(ComponentContext osgiComponentContext) {
         registration.unregister();
+        wlmContextProvider.wlmContextProviderRef.deactivate(osgiComponentContext);
+        transactionContextProvider.transactionContextProviderRef.deactivate(osgiComponentContext);
+        securityContextProvider.threadIdentityContextProviderRef.deactivate(osgiComponentContext);
+        securityContextProvider.securityContextProviderRef.deactivate(osgiComponentContext);
         applicationContextProvider.jeeMetadataContextProviderRef.deactivate(osgiComponentContext);
         applicationContextProvider.classloaderContextProviderRef.deactivate(osgiComponentContext);
     }
 
     @Override
+    @Trivial
     public ConcurrencyManager getConcurrencyManager() {
-        return null; // TODO
+        return getConcurrencyManager(priv.getContextClassLoader());
     }
 
     @Override
     public ConcurrencyManager getConcurrencyManager(ClassLoader classLoader) {
-        return null; // TODO
+        ConcurrencyManager ccmgr = providersPerClassLoader.get(classLoader);
+        if (ccmgr == null) {
+            ConcurrencyManager ccmgrNew = new ConcurrencyManagerImpl(this, classLoader);
+            ccmgr = providersPerClassLoader.putIfAbsent(classLoader, ccmgrNew);
+            if (ccmgr == null)
+                ccmgr = ccmgrNew;
+        }
+        return ccmgr;
     }
 
     @Override
     public ConcurrencyManagerBuilder getConcurrencyManagerBuilder() {
-        return null; // TODO
-    }
-
-    @Override
-    public ManagedExecutorBuilder newManagedExecutorBuilder() {
-        return null; // TODO rely on default implementation to get from concurrency manager?
-    }
-
-    @Override
-    public ThreadContextBuilder newThreadContextBuilder() {
-        return new ThreadContextBuilderImpl(this); // TODO rely on default implementation to get from concurrency manager?
+        throw new UnsupportedOperationException(); // TODO
     }
 
     @Override
     public void registerConcurrencyManager(ConcurrencyManager manager, ClassLoader classLoader) {
-        // TODO
+        throw new UnsupportedOperationException(); // TODO
     }
 
     @Override
     public void releaseConcurrencyManager(ConcurrencyManager manager) {
-        // TODO
+        // This is inefficient. Does the spec need to require it?
+        // The container, which already knows the class loader,
+        // can instead directly remove the entry based on the key.
+        for (Iterator<Map.Entry<ClassLoader, ConcurrencyManager>> entries = providersPerClassLoader.entrySet().iterator(); entries.hasNext();) {
+            Map.Entry<ClassLoader, ConcurrencyManager> entry = entries.next();
+            if (manager.equals(entry.getValue()))
+                entries.remove();
+        }
     }
 
     @Reference(service = com.ibm.wsspi.threadcontext.ThreadContextProvider.class,
@@ -96,11 +127,63 @@ public class ConcurrencyProviderImpl implements ConcurrencyProvider {
         applicationContextProvider.jeeMetadataContextProviderRef.setReference(ref);
     }
 
+    @Reference(service = com.ibm.wsspi.threadcontext.ThreadContextProvider.class,
+               target = "(component.name=com.ibm.ws.security.context.provider)",
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setSecurityContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
+        securityContextProvider.securityContextProviderRef.setReference(ref);
+    }
+
+    @Reference(service = com.ibm.wsspi.threadcontext.ThreadContextProvider.class,
+               target = "(component.name=com.ibm.ws.security.thread.zos.context.provider)",
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setThreadIdentityContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
+        securityContextProvider.threadIdentityContextProviderRef.setReference(ref);
+    }
+
+    @Reference(service = com.ibm.wsspi.threadcontext.ThreadContextProvider.class,
+               target = "(component.name=com.ibm.ws.transaction.context.provider)",
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setTransactionContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
+        transactionContextProvider.transactionContextProviderRef.setReference(ref);
+    }
+
+    @Reference(service = com.ibm.wsspi.threadcontext.ThreadContextProvider.class,
+               target = "(component.name=com.ibm.ws.zos.wlm.context.provider)",
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setWLMContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
+        wlmContextProvider.wlmContextProviderRef.setReference(ref);
+    }
+
     protected void unsetClassloaderContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
         applicationContextProvider.classloaderContextProviderRef.unsetReference(ref);
     }
 
     protected void unsetJeeMetadataContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
         applicationContextProvider.jeeMetadataContextProviderRef.unsetReference(ref);
+    }
+
+    protected void unsetSecurityContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
+        securityContextProvider.securityContextProviderRef.unsetReference(ref);
+    }
+
+    protected void unsetThreadIdentityContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
+        securityContextProvider.threadIdentityContextProviderRef.unsetReference(ref);
+    }
+
+    protected void unsetTransactionContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
+        transactionContextProvider.transactionContextProviderRef.unsetReference(ref);
+    }
+
+    protected void unsetWLMContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
+        wlmContextProvider.wlmContextProviderRef.unsetReference(ref);
     }
 }

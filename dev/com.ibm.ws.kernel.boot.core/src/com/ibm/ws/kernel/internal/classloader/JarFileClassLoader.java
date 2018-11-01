@@ -15,11 +15,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.security.CodeSource;
+import java.security.SecureClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,6 +32,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+import com.ibm.ws.kernel.boot.classloader.ClassLoaderHook;
+import com.ibm.ws.kernel.boot.classloader.ClassLoaderHookFactory;
+
 /**
  * ClassLoader implementation that can load jar files without signature verification. This
  * ClassLoader implementation is designed to work without SecurityManager installed.
@@ -39,16 +43,18 @@ import java.util.jar.Manifest;
  * <li> Class-Path headers are not processed.</li>
  * <li> Remote URLs that point to directories are not supported.</li>
  */
-public class JarFileClassLoader extends URLClassLoader {
+public class JarFileClassLoader extends SecureClassLoader implements Closeable {
     static {
         ClassLoader.registerAsParallelCapable();
     }
     private final CopyOnWriteArrayList<URL> urls;
     private final CopyOnWriteArrayList<ResourceHandler> resourceHandlers;
     private final boolean verify;
+    private final ClassLoaderHook hook;
+    private static final PrintStream sysOut = System.out;
 
     public JarFileClassLoader(URL[] urls, boolean verify, ClassLoader parent) {
-        super(new URL[0], parent);
+        super(parent);
 
         if (System.getSecurityManager() != null) {
             throw new IllegalStateException("This ClassLoader does not work with SecurityManager");
@@ -56,6 +62,7 @@ public class JarFileClassLoader extends URLClassLoader {
 
         this.verify = verify;
         this.urls = new CopyOnWriteArrayList<URL>(urls == null ? Collections.<URL> emptyList() : Arrays.asList(urls));
+        hook = ClassLoaderHookFactory.getClassLoaderHook(this);
 
         // avoid adding resource handlers one at a time to a copy on write list
         List<ResourceHandler> tempResourceHandlers = new ArrayList<ResourceHandler>();
@@ -84,6 +91,7 @@ public class JarFileClassLoader extends URLClassLoader {
         }
     }
 
+    @Override
     public void close() {
         for (ResourceHandler handler : resourceHandlers) {
             close(handler);
@@ -91,13 +99,11 @@ public class JarFileClassLoader extends URLClassLoader {
         resourceHandlers.clear();
     }
 
-    @Override
     protected void addURL(URL url) {
         urls.add(url);
         resourceHandlers.add(createResoureHandler(url, verify));
     }
 
-    @Override
     public URL[] getURLs() {
         return urls.toArray(new URL[0]);
     }
@@ -111,10 +117,20 @@ public class JarFileClassLoader extends URLClassLoader {
             throw new ClassNotFoundException(className);
         }
 
+        URL entryURL = null;
         byte[] classBytes = null;
+        boolean foundInClassCache = false;
+        if (hook != null) {
+            entryURL = entry.toExternalURL();
+            classBytes = hook.loadClass(entryURL, className);
+            foundInClassCache = (classBytes != null);
+        }
+
         Manifest manifest = null;
         try {
-            classBytes = entry.getBytes();
+            if (!foundInClassCache) {
+                classBytes = entry.getBytes();
+            }
 
             manifest = entry.getManifest();
         } catch (IOException e) {
@@ -131,6 +147,10 @@ public class JarFileClassLoader extends URLClassLoader {
 
         // define class
         Class<?> clazz = defineClass(className, classBytes, 0, classBytes.length, source);
+
+        if (hook != null && !foundInClassCache) {
+            hook.storeClass(entryURL, clazz);
+        }
 
         return clazz;
     }

@@ -30,6 +30,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Enumeration;
@@ -322,7 +323,8 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             cltc = getClassLoadingTraceComponent(DEFAULT_PACKAGE);
         }
 
-        ProtectionDomain pd = getClassSpecificProtectionDomain(name, byteResourceInformation.getResourceUrl());
+        URL resourcePath = byteResourceInformation.getResourceUrl();
+        ProtectionDomain pd = getClassSpecificProtectionDomain(name, resourcePath);
 
         Class<?> clazz = null;
         try {
@@ -338,6 +340,9 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                 String message = clazz == null ? "CLASS FAIL" : "CLASS LOAD";
                 Tr.debug(cltc, String.format("%s: [%s] [%s] [%s]", message, getKey(), loc, name));
             }
+        }
+        if (hook != null && resourcePath != null && Arrays.equals(bytes, byteResourceInformation.getBytes())) {
+            hook.storeClass(resourcePath, clazz);
         }
         return clazz;
     }
