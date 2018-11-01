@@ -79,7 +79,8 @@ class ThreadContextImpl implements ThreadContext, WSContextService { // TODO add
 
     @Override
     public <R> Callable<R> withCurrentContext(Callable<R> callable) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualCallable<R>(contextDescriptor, callable);
     }
 
     @Override
