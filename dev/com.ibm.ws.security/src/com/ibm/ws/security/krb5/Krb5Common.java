@@ -41,10 +41,14 @@ public class Krb5Common {
     static public boolean isIBMJdk18Lower = (JavaInfo.vendor() == Vendor.IBM && JavaInfo.majorVersion() <= 8);
     // Is Oracle JDK 1.8
     static public boolean isOracleJdk18Up = (JavaInfo.vendor() == Vendor.ORACLE && JavaInfo.majorVersion() >= 8);
+
+    static public boolean isJava11Internal = false; //TODO - remove later
+
     // Is IBM, Oracle and Open JDK 11 or higher
-    static public boolean isJdk11Up = JavaInfo.majorVersion() >= 11;
+    static public boolean isJdk11Up = JavaInfo.majorVersion() >= 11 || isJava11Internal;
     // SPNEGO support IBM JDK 8 and lower, Oracle JDK 8 and JDK 11 and higher
     static public boolean isSupportJDK = isIBMJdk18Lower || isOracleJdk18Up || isJdk11Up;
+
     // SPNEGO support IBM JDK 8 and lower, Oracle JDK 8 and JDK 11 and higher
     static public boolean isOtherSupportJDKs = isOracleJdk18Up || isJdk11Up;
 
@@ -169,6 +173,11 @@ public class Krb5Common {
         if (isOtherSupportJDKs) {
             KRB5_PRINCIPAL = SUN_KRB5_PRINCIPAL;
         }
+
+        //TODO - remove later
+        String version = getSystemProperty("java.version");
+        if (version.contains("11-internal"))
+            isJava11Internal = true;
 
         try {
             KRB5_MECH_OID = new Oid("1.2.840.113554.1.2.2");
