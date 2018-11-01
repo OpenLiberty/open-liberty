@@ -16,5 +16,5 @@ IBM-API-Package: \
 -bundles=\
   com.ibm.ws.require.java8, \
   com.ibm.ws.microprofile.opentracing.1.2
-kind=noship
+kind=ga
 edition=core
