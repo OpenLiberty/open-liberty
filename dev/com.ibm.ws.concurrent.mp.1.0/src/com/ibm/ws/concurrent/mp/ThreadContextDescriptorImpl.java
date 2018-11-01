@@ -47,12 +47,7 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
         for (Map.Entry<ThreadContextProvider, ContextOp> entry : configPerProvider.entrySet()) {
             ThreadContextProvider provider = entry.getKey();
             if (provider instanceof ContainerContextProvider) {
-                for (com.ibm.wsspi.threadcontext.ThreadContextProvider cp : ((ContainerContextProvider) provider).toContainerProviders()) {
-                    com.ibm.wsspi.threadcontext.ThreadContext tc = entry.getValue() == ContextOp.CLEARED //
-                                    ? cp.createDefaultThreadContext(EMPTY_MAP) //
-                                    : cp.captureThreadContext(EMPTY_MAP, EMPTY_MAP); // PROPAGATED
-                    contextSnapshots.add(tc);
-                }
+                ((ContainerContextProvider) provider).addContextSnapshot(entry.getValue(), contextSnapshots);
             } else {
                 ThreadContextSnapshot contextSnapshot = entry.getValue() == ContextOp.CLEARED //
                                 ? provider.clearedContext(EMPTY_MAP) // CLEARED
@@ -78,7 +73,7 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
     @Override
     @Trivial
     public Map<String, String> getExecutionProperties() {
-        return Collections.emptyMap();
+        return EMPTY_MAP;
     }
 
     @Override
