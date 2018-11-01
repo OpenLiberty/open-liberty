@@ -11,5 +11,5 @@
 -include= jar:${fileuri;${repo;com.ibm.ws.org.apache.bval:org.apache.bval.bundle;1.1.2}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -buildpath: \
-	com.ibm.ws.org.apache.bval:org.apache.bval.bundle;version=1.1.2,\
-	com.ibm.websphere.javaee.validation.1.1;version=latest
+  com.ibm.ws.org.apache.bval:org.apache.bval.bundle;version=1.1.2,\
+  com.ibm.websphere.javaee.validation.1.1;version=latest
