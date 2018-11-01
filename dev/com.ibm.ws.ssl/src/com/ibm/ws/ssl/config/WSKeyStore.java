@@ -749,9 +749,10 @@ public class WSKeyStore extends Properties {
 
                     if (fileBased && storeFile != null) {
                         keyStoreLocation = cfgSvc.resolveString(storeFile);
+                        //Tr.info(tc, "File path for store: " + keyStoreLocation + " of type: " + type);
 
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            Tr.debug(tc, "File path for store: " + keyStoreLocation);
+                            Tr.debug(tc, "File path for store: " + keyStoreLocation + " of type: " + type);
 
                         // Check if the filename exists as a File.
                         File kFile = new File(keyStoreLocation).getAbsoluteFile();
