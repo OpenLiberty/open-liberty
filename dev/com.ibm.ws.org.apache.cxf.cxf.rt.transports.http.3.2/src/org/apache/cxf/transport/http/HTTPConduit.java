@@ -1190,14 +1190,20 @@ public abstract class HTTPConduit
 
         @Override
         public void thresholdNotReached() {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HTTPConduit.thresholdNotReached: entry");
+            }
             if (LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, "HTTPConduit.thresholdNotReached: entry");
             }
             if (chunking) {
                 setFixedLengthStreamingMode(buffer.size());
             }
-                        if (LOG.isLoggable(Level.FINE)) {
+            if (LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, "HTTPConduit.thresholdNotReached: exit");
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                 Tr.debug(tc, "HTTPConduit.thresholdNotReached: exit");
             }
         }
 
@@ -1452,6 +1458,9 @@ public abstract class HTTPConduit
         @FFDCIgnore(Throwable.class)
         private <T extends Exception> T mapException(String msg,
                                                      T ex, Class<T> cls) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HTTPConduit.mapException: entry");
+            }
             if (LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, "HTTPConduit.mapException: entry");
             }
@@ -1467,6 +1476,9 @@ public abstract class HTTPConduit
             if (LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, "HTTPConduit.mapException: exit");
             }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HTTPConduit.mapException: exit");
+            }
 
             return ex2;
         }
@@ -1477,6 +1489,9 @@ public abstract class HTTPConduit
          * @throws IOException
          */
         protected void handleRetransmits() throws IOException {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HTTPConduit.handleRetransmits: entry");
+            }
             if (LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, "HTTPConduit.handleRetransmits: entry");
             }
@@ -1508,6 +1523,9 @@ public abstract class HTTPConduit
 
             if (LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, "HTTPConduit.handleRetransmits: exit");
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HTTPConduit.handleRetransmits: exit");
             }
         }
         /**
@@ -1637,6 +1655,9 @@ public abstract class HTTPConduit
          * @throws IOException
          */
         protected void handleResponse() throws IOException {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HTTPConduit.handleResponse: entry");
+            }
             if (LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, "HTTPConduit.handleResponse: entry");
             }
@@ -1655,6 +1676,9 @@ public abstract class HTTPConduit
 
             if (LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, "HTTPConduit.handleResponse: exit");
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HTTPConduit.handleResponse: exit");
             }
         }
 
@@ -1706,6 +1730,9 @@ public abstract class HTTPConduit
         }
 
         protected void handleResponseInternal() throws IOException {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HTTPConduit.handleResponseInternal: entry");
+            }
             if (LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, "HTTPConduit.handleResponseInternal: entry");
             }
@@ -1785,6 +1812,9 @@ public abstract class HTTPConduit
             if (LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, "HTTPConduit.handleResponseInternal: exit");
             }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HTTPConduit.handleResponseInternal: exit");
+            }
 
         }
 
@@ -1860,7 +1890,9 @@ public abstract class HTTPConduit
          */
         @FFDCIgnore(UntrustedURLConnectionIOException.class)
         protected void makeTrustDecision() throws IOException {
-
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HTTPConduit.makeTrustDecision: entry");
+            }
             if (LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, "HTTPConduit.makeTrustDecision: entry");
             }
@@ -1917,6 +1949,9 @@ public abstract class HTTPConduit
             }
             if (LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, "HTTPConduit.makeTrustDecision: exit");
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HTTPConduit.makeTrustDecision: exit");
             }
 
         }
