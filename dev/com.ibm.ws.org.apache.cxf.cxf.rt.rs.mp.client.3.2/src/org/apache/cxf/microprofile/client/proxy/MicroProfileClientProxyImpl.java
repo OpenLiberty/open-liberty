@@ -21,13 +21,16 @@ package org.apache.cxf.microprofile.client.proxy;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 
 import javax.ws.rs.client.InvocationCallback;
+import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.client.ClientProxyImpl;
@@ -37,6 +40,7 @@ import org.apache.cxf.jaxrs.client.LocalClientState;
 import org.apache.cxf.jaxrs.model.ClassResourceInfo;
 import org.apache.cxf.jaxrs.model.OperationResourceInfo;
 import org.apache.cxf.jaxrs.utils.InjectionUtils;
+import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.microprofile.client.MPRestClientCallback;
 import org.apache.cxf.microprofile.client.MicroProfileClientProviderFactory;
@@ -56,16 +60,18 @@ public class MicroProfileClientProxyImpl extends ClientProxyImpl {
 
     public MicroProfileClientProxyImpl(URI baseURI, ClassLoader loader, ClassResourceInfo cri,
                                        boolean isRoot, boolean inheritHeaders, ExecutorService executorService,
-                                       Object... varValues) {
+                                       Configuration configuration, Object... varValues) {
         super(new LocalClientState(baseURI), loader, cri, isRoot, inheritHeaders, varValues);
         cfg.getRequestContext().put(EXECUTOR_SERVICE_PROPERTY, executorService);
+        cfg.getRequestContext().putAll(configuration.getProperties());
     }
 
     public MicroProfileClientProxyImpl(ClientState initialState, ClassLoader loader, ClassResourceInfo cri,
                                        boolean isRoot, boolean inheritHeaders, ExecutorService executorService,
-                                       Object... varValues) {
+                                       Configuration configuration, Object... varValues) {
         super(initialState, loader, cri, isRoot, inheritHeaders, varValues);
         cfg.getRequestContext().put(EXECUTOR_SERVICE_PROPERTY, executorService);
+        cfg.getRequestContext().putAll(configuration.getProperties());
     }
 
 
@@ -150,5 +156,29 @@ public class MicroProfileClientProxyImpl extends ClientProxyImpl {
             returnType = InjectionUtils.getActualType(t);
         }
         return returnType;
+    }
+
+    @Override
+    protected Message createMessage(Object body,
+                                    OperationResourceInfo ori,
+                                    MultivaluedMap<String, String> headers,
+                                    URI currentURI,
+                                    Exchange exchange,
+                                    Map<String, Object> invocationContext,
+                                    boolean proxy) {
+
+        Method m = ori.getMethodToInvoke();
+
+        Message msg = super.createMessage(body, ori, headers, currentURI, exchange, invocationContext, proxy);
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> filterProps = (Map<String, Object>) msg.getExchange()
+                                                                   .get("jaxrs.filter.properties");
+        if (filterProps == null) {
+            filterProps = new HashMap<>();
+            msg.getExchange().put("jaxrs.filter.properties", filterProps);
+        }
+        filterProps.put("org.eclipse.microprofile.rest.client.invokedMethod", m);
+        return msg;
     }
 }

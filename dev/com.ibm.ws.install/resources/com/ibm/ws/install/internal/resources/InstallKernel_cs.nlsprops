@@ -771,6 +771,14 @@ ERROR_UNKNOWN_OSLIST_VALUE=CWWKF1387E: Hodnota {0} nen\u00ed platn\u00e1 polo\u0
 ERROR_UNKNOWN_OSLIST_VALUE.explanation=Tato hodnota bude ignorov\u00e1na, proto\u017ee se nejedn\u00e1 o rozpoznan\u00fd n\u00e1zev opera\u010dn\u00edho syst\u00e9mu.
 ERROR_UNKNOWN_OSLIST_VALUE.useraction=Hodnotu upravte, nebo ji odeberte ze souboru typu manifest funkce.
 
+ERROR_ESA_NOT_FOUND=CWWKF1388E: Uveden\u00fd soubor ESA {0} neobsahuje \u017e\u00e1dn\u00e9 funkce.
+ERROR_ESA_NOT_FOUND.explanation=Funkce nebude nainstalov\u00e1na ze souboru ESA.
+ERROR_ESA_NOT_FOUND.useraction=Ujist\u011bte se, \u017ee uveden\u00fd soubor ESA je platn\u00fd a obsahuje funkci.
+
+ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: Nelze vytvo\u0159it soubor JSON v {0} pro soubor ESA {1}.
+ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=Funkce v souboru ESA nebude nainstalov\u00e1na.
+ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Ujist\u011bte se, \u017ee je k dispozici p\u0159\u00edstup pro z\u00e1pis pro adres\u00e1\u0159, kde bude vytvo\u0159en soubor JSON.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Funkce byla \u00fasp\u011b\u0161n\u011b sta\u017eena.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=Funkce byla sta\u017eena.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

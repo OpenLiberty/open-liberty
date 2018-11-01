@@ -180,5 +180,12 @@ JWK_RETRIEVE_FAILED=CWWKS1747E: Es wurde kein JSON Web Key (JWK) \u00fcber die U
 JWK_RETRIEVE_FAILED.explanation=\u00dcber die angegebene URL kann kein JSON Web Key zur\u00fcckgegeben werden. Die m\u00f6glichen Ursachen sind folgende: Die URL ist nicht g\u00fcltig, die URL ist nicht f\u00fcr die R\u00fcckgabe eines JWK konfiguriert, die Antwort von der URL ist leer oder es ist ein unbekannter Fehler aufgetreten.
 JWK_RETRIEVE_FAILED.useraction=Vergewissern Sie sich, dass die URL ordnungsgem\u00e4\u00df formatiert ist und eine Position angibt, die JSON Web Keys zur\u00fcckgeben kann. \u00dcberpr\u00fcfen Sie den Statuscode und den Inhalt der Antwort, um weitere Informationen zu erhalten.
 
+USERINFO_RETREIVE_FAILED=CWWKS1748E: Es konnte keine Verbindung zur URL f\u00fcr Benutzerinformationen [{0}] hergestellt werden. Der Antwortstatus [{1}] und Inhalt [{2}] wurden zur\u00fcckgegeben.
+USERINFO_RETREIVE_FAILED.explanation=Es konnten keine Benutzerinformationen  von der angegebenen URL abgerufen werden. Die URL ist m\u00f6glicherweise nicht g\u00fcltig, das angegebene Zugriffstoken ist m\u00f6glicherweise nicht g\u00fcltig, die Antwort von der URL ist m\u00f6glicherweise leer oder es ist ein unbekannter Fehler aufgetreten.
+USERINFO_RETREIVE_FAILED.useraction=Vergewissern Sie sich, dass die URL ordnungsgem\u00e4\u00df formatiert ist und eine Position angibt, die Benutzerinformationen zur\u00fcckgeben kann. \u00dcberpr\u00fcfen Sie den Statuscode und den Inhalt der Antwort, um weitere Informationen zu erhalten.
+
+USERINFO_INVALID=CWWKS1749E: Die Benutzerinformationen [{0}] sind ung\u00fcltig, weil der untergeordnete Anspruch nicht dem untergeordneten Anspruch des ID-Tokens [{1}] entspricht.
+USERINFO_INVALID.explanation=Der untergeordnete Anspruch muss mit dem untergeordneten Anspruch des ID-Token \u00fcbereinstimmen, was aber nicht der Fall ist. 
+USERINFO_INVALID.useraction=Stellen Sie sicher, dass der OpenID Connect-Provider g\u00fcltige Benutzerinformationen generiert.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 

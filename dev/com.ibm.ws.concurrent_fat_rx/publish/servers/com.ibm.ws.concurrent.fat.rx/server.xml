@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017 IBM Corporation and others.
+    Copyright (c) 2017,2018 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -8,19 +8,25 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="new server">
+<server>
 
 	<featureManager>
 	    <feature>componenttest-1.0</feature>
-	    <feature>concurrent-1.0</feature>
+	    <feature>mpConcurrency-1.0</feature>
 	    <feature>jndi-1.0</feature>
-	    <feature>managedCompletableFuture-1.0</feature>
+	    <feature>managedCompletableFuture-1.0</feature> <!-- TODO remove this feature once the CompletableFuture implementation is moved to mpConcurrency -->
 		<feature>servlet-4.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
     
-    <application location="concurrentrxfat.war" />
+    <application location="concurrentrxfat.war">
+        <classloader commonLibraryRef="customContextProviderLib"/>
+    </application>
+
+    <library id="customContextProviderLib">
+        <file name="${server.config.dir}/lib/customContextProviders.jar"/>
+    </library>
 
     <!-- Do not change the concurrency policies associated with the following executors. Tests make assumptions based on this configuration -->
 

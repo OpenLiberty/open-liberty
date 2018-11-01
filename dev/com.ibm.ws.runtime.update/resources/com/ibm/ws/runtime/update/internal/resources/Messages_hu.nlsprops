@@ -48,3 +48,15 @@ client.quiesce.begin.useraction=Nincs teend\u0151.
 client.quiesce.end=CWWKE1104I: \u00dcgyf\u00e9l fokozatos le\u00e1ll\u00edt\u00e1sa befejez\u0151d\u00f6tt.
 client.quiesce.end.explanation=A fokozatos le\u00e1ll\u00edt\u00e1s m\u0171velete sikeresen befejez\u0151d\u00f6tt.
 client.quiesce.end.useraction=Nincs teend\u0151.
+
+notifications.not.complete=CWWKE1105W: {0} fut\u00e1si k\u00f6rnyezet friss\u00edt\u00e9s nem fejez\u0151d\u00f6tt be a fokozatos le\u00e1ll\u00edt\u00e1si id\u0151szakban. 
+notifications.not.complete.explanation=Legal\u00e1bb egy szolg\u00e1ltat\u00e1s-, konfigur\u00e1ci\u00f3- vagy alkalmaz\u00e1sfriss\u00edt\u00e9s nem fejez\u0151d\u00f6tt be a kiszolg\u00e1l\u00f3 le\u00e1ll\u00e1sa el\u0151tt.
+notifications.not.complete.useraction=Nincs teend\u0151. 
+
+quiesce.listeners.not.complete=CWWKE1106W: {0} rendszerz\u00e1r\u00e1si m\u0171velet nem fejez\u0151d\u00f6tt be a fokozatos le\u00e1ll\u00edt\u00e1si id\u0151szakban. 
+quiesce.listeners.not.complete.explanation=N\u00e9h\u00e1ny, a rendszerz\u00e1r\u00e1si m\u0171velet k\u00f6zben ind\u00edtott m\u0171velet nem fejez\u0151d\u00f6tt be. 
+quiesce.listeners.not.complete.useraction=Nincs teend\u0151.
+
+quiesce.waiting.on.threads=CWWKE1107W: {0} sz\u00e1l nem fejez\u0151d\u00f6tt be a fokozatos le\u00e1ll\u00edt\u00e1si id\u0151szakban. 
+quiesce.waiting.on.threads.explanation=N\u00e9h\u00e1ny, a kiszolg\u00e1l\u00f3 rendszerz\u00e1r\u00e1si m\u0171velete el\u0151tt akt\u00edv sz\u00e1l a fokozatos le\u00e1ll\u00edt\u00e1si id\u0151szak v\u00e9g\u00e9n m\u00e9g mindig akt\u00edv volt.
+quiesce.waiting.on.threads.useraction=Nincs teend\u0151. 

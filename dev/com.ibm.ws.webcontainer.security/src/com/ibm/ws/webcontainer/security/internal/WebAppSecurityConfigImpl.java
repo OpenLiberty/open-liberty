@@ -57,6 +57,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     static final String CFG_KEY_SSO_DOMAIN_NAMES = "ssoDomainNames";
     static final String CFG_KEY_SSO_REQUIRES_SSL = "ssoRequiresSSL";
     static final String CFG_KEY_SSO_USE_DOMAIN_FROM_URL = "ssoUseDomainFromURL";
+    public static final String CFG_KEY_USE_LTPA_SSO_FOR_JASPIC = "useLtpaSSOForJaspic";
     public static final String CFG_KEY_USE_AUTH_DATA_FOR_UNPROTECTED = "useAuthenticationDataForUnprotectedResource";
     public static final String CFG_KEY_LOGIN_FORM_URL = "loginFormURL";
     public static final String CFG_KEY_LOGIN_ERROR_URL = "loginErrorURL";
@@ -86,6 +87,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean ssoRequiresSSL;
     private final String ssoDomainNames;
     private final Boolean ssoUseDomainFromURL;
+    private final Boolean useLtpaSSOForJaspic;
     private final Boolean useAuthenticationDataForUnprotectedResource;
     private final String loginFormURL;
     private final String loginErrorURL;
@@ -119,6 +121,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
             put(CFG_KEY_SSO_DOMAIN_NAMES, "ssoDomainNames");
             put(CFG_KEY_SSO_REQUIRES_SSL, "ssoRequiresSSL");
             put(CFG_KEY_SSO_USE_DOMAIN_FROM_URL, "ssoUseDomainFromURL");
+            put(CFG_KEY_USE_LTPA_SSO_FOR_JASPIC, "useLtpaSSOForJaspic");
             put(CFG_KEY_USE_AUTH_DATA_FOR_UNPROTECTED, "useAuthenticationDataForUnprotectedResource");
             put(CFG_KEY_WEB_ALWAYS_LOGIN, "webAlwaysLogin");
             put(CFG_KEY_LOGIN_FORM_URL, "loginFormURL");
@@ -156,6 +159,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         ssoRequiresSSL = (Boolean) newProperties.get(CFG_KEY_SSO_REQUIRES_SSL);
         ssoDomainNames = (String) newProperties.get(CFG_KEY_SSO_DOMAIN_NAMES);
         ssoUseDomainFromURL = (Boolean) newProperties.get(CFG_KEY_SSO_USE_DOMAIN_FROM_URL);
+        useLtpaSSOForJaspic = (Boolean) newProperties.get(CFG_KEY_USE_LTPA_SSO_FOR_JASPIC);
         useAuthenticationDataForUnprotectedResource = (Boolean) newProperties.get(CFG_KEY_USE_AUTH_DATA_FOR_UNPROTECTED);
         loginFormURL = (String) newProperties.get(CFG_KEY_LOGIN_FORM_URL);
         loginErrorURL = (String) newProperties.get(CFG_KEY_LOGIN_ERROR_URL);
@@ -347,6 +351,12 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     @Override
     public boolean getSSOUseDomainFromURL() {
         return ssoUseDomainFromURL;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isUseLtpaSSOForJaspic() {
+        return useLtpaSSOForJaspic;
     }
 
     @Override

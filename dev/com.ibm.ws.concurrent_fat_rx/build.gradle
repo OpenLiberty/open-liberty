@@ -10,6 +10,6 @@
  *******************************************************************************/
 
 dependencies {
-  requiredLibs project(':com.ibm.ws.concurrent.rx')
+  requiredLibs project(':com.ibm.ws.concurrent.mp.1.0')
 }
 

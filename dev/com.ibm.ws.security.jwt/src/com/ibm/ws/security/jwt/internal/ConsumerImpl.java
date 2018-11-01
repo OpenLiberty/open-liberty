@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.jwt.internal;
@@ -186,7 +186,7 @@ public class ConsumerImpl implements Consumer {
         JwtToken token = null;
         try {
             token = util.parseJwt(encodedTokenString, config);
-        } catch (Exception e) {
+        } catch (Exception e) { // CWWKS6031E
             String msg = Tr.formatMessage(tc, "JWT_ERROR_PROCESSING_JWT", new Object[] { configId, e.getLocalizedMessage() });
             throw new InvalidTokenException(msg, e);
         }

@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -25,6 +26,12 @@ import componenttest.custom.junit.runner.Mode;
 @RunWith(FATRunner.class)
 @Mode(FULL)
 public class CommonWebServerTests15Servlet40 extends CommonWebServerTests {
+    @AfterClass
+    public static void stopTestServer() throws Exception {
+        if (!javaVersion.startsWith("1.")) {
+            server.stopServer("CWWKC0265W");
+        }
+    }
 
     @Test
     public void testBasicSpringBootApplication15Servlet40() throws Exception {

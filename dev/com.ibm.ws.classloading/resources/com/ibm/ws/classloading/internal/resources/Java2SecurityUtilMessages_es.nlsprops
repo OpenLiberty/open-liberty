@@ -1,0 +1,24 @@
+###############################################################################
+# Copyright (c) 2010, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.classloading/resources/com/ibm/ws/classloading/internal/resources/Java2SecurityUtilMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Java 2 Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+INCORRECT_PERMISSION_CONFIGURATION=CWWKS1800W: La configuraci\u00f3n del permiso de Java en {2} es incorrecta. Un intento de crear el permiso {0} ha generado una excepci\u00f3n debida a {1}.
+INCORRECT_PERMISSION_CONFIGURATION.explanation=Uno o m\u00e1s par\u00e1metros proporcionados en la configuraci\u00f3n del permiso es incorrecto, el permiso se ha descartado. Analice la excepci\u00f3n mencionada en el mensaje para determinar qu\u00e9 par\u00e1metro motiv\u00f3 el error.
+INCORRECT_PERMISSION_CONFIGURATION.useraction=Aseg\u00farese de que los par\u00e1metros proporcionados como parte de la configuraci\u00f3n del permiso sean correctos.
+PERMISSION_CLASSNOTFOUND=CWWKS1801W: La configuraci\u00f3n de permisos Java en {2} es incorrecta. Un intento de crear el permiso {0} ha generado una excepci\u00f3n debida a {1}. Esto puede ocurrir si la aplicaci\u00f3n contiene una clase de permisos personalizada. En tal caso, la clase de permisos se encuentra en un procesamiento posterior y puede hacerse caso omiso de este error.
+PERMISSION_CLASSNOTFOUND.explanation= Error al cargar una clase de permisos. Si se trata de una clase de permisos personalizada empaquetada en la aplicaci\u00f3n, se encontrar\u00e1 en un procesamiento posterior y puede hacerse caso omiso de este error.
+PERMISSION_CLASSNOTFOUND.useraction= Aseg\u00farese de que la clase de permisos sea una clase personalizada y de que est\u00e9 almacenada en los binarios de la aplicaci\u00f3n. En caso contrario, habr\u00e1 que seguir investigando el error.

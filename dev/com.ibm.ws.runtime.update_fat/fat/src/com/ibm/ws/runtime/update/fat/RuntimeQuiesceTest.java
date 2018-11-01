@@ -95,6 +95,7 @@ public class RuntimeQuiesceTest {
             // Always ensure that the installed resources are cleaned up between runs..
             server.uninstallSystemBundle("test.server.quiesce");
             server.uninstallSystemFeature("quiescelistener-1.0");
+            server.uninstallSystemFeature("quiesceInternal-1.0");
             server.uninstallUserBundle("test.server.quiesce");
             server.uninstallUserFeature("quiescelistener-1.0");
         } finally {
@@ -155,6 +156,7 @@ public class RuntimeQuiesceTest {
     public void testSingleUserQuiesceListener() throws Exception {
         // Add a single quiesce listener as a usr feature/bundle (SPI)
         server.setServerConfigurationFile("user-quiesce-listener.server.xml");
+        server.installSystemFeature("quiesceInternal-1.0");
         server.installUserBundle("test.server.quiesce");
         server.installUserFeature("quiescelistener-1.0");
 

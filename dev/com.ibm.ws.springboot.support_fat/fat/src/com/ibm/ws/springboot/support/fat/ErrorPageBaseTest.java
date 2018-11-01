@@ -13,7 +13,6 @@ package com.ibm.ws.springboot.support.fat;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -46,11 +45,6 @@ public abstract class ErrorPageBaseTest extends CommonWebServerTests {
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/other-exception");
         HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_INTERNAL_ERROR, new int[0], 5, HTTPRequestMethod.GET);
         HttpUtils.findStringInHttpConnection(con, "This is a default error handling page");
-    }
-
-    @AfterClass
-    public static void stopit() throws Exception {
-        CommonWebServerTests.stopServer(true, "Exception: Thrown on purpose for FAT test", "SRVE0777E: Exception thrown by application class");
     }
 
 }

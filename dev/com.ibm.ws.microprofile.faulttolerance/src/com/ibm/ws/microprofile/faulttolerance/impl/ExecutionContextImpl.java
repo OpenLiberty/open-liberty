@@ -84,6 +84,8 @@ public class ExecutionContextImpl implements FTExecutionContext {
 
     private boolean mainExecutionComplete = false;
 
+    private QueuedFuture<?> queuedFuture = null;
+
     public ExecutionContextImpl(String id, Method method, Object[] params, TimeoutImpl timeout, CircuitBreakerImpl circuitBreaker, FallbackPolicy fallbackPolicy, RetryImpl retry,
                                 MetricRecorder metricRecorder) {
         this.id = id;
@@ -122,6 +124,14 @@ public class ExecutionContextImpl implements FTExecutionContext {
         return failure;
     }
 
+    public QueuedFuture<?> getQueuedFuture() {
+        return queuedFuture;
+    }
+
+    public void setQueuedFuture(QueuedFuture<?> queuedFuture) {
+        this.queuedFuture = queuedFuture;
+    }
+
     /**
     *
     */
@@ -133,19 +143,11 @@ public class ExecutionContextImpl implements FTExecutionContext {
         this.attemptStartTime = this.startTime;
         debugRelativeTime("start");
         if (timeout != null) {
-            timeout.start(Thread.currentThread());
-        }
-    }
-
-    public void start(QueuedFuture<?> future) {
-        if (this.closed) {
-            throw new IllegalStateException();
-        }
-        this.startTime = System.nanoTime();
-        this.attemptStartTime = this.startTime;
-        debugRelativeTime("start");
-        if (timeout != null) {
-            timeout.start(future);
+            if (queuedFuture == null) {
+                timeout.start(Thread.currentThread());
+            } else {
+                timeout.start(queuedFuture);
+            }
         }
     }
 
@@ -306,9 +308,9 @@ public class ExecutionContextImpl implements FTExecutionContext {
      * As an asynchronous execution moves from the outer part to the nested inner part, update the context's policies
      */
     public void setNested() {
-        // Stop the timeout and restart in synchronous mode
-        if (timeout != null) {
-            timeout.restartOnNewThread(Thread.currentThread());
+        // If using fallback or retry, stop the timeout and restart in synchronous mode
+        if (timeout != null && (retry.getMaxRetries() != 0 || fallbackPolicy != null)) {
+            timeout.runSyncOnNewThread(Thread.currentThread());
         }
 
         int retriesRemaining = this.retry.getMaxRetries() - this.retries;

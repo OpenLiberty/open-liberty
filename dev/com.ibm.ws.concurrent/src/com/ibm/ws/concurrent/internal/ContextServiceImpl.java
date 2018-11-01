@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,6 +70,12 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
  * Captures and propagates thread context.
+ *
+ * All declarative services annotations on this class are ignored.
+ * The annotations on
+ * com.ibm.ws.concurrent.ee.ContextServiceImpl and
+ * com.ibm.ws.concurrent.mp.ThreadContextImpl
+ * apply instead.
  */
 @Component(name = "com.ibm.ws.context.service",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
@@ -79,13 +85,11 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
     private static final TraceComponent tc = Tr.register(ContextServiceImpl.class);
 
     // Names of references
-    private static final String
-                    BASE_INSTANCE = "baseInstance",
+    private static final String BASE_INSTANCE = "baseInstance",
                     THREAD_CONTEXT_MANAGER = "threadContextManager";
 
     // Names of supported properties
-    private static final String
-                    CONFIG_ID = "config.displayId",
+    private static final String CONFIG_ID = "config.displayId",
                     BASE_CONTEXT_REF = "baseContextRef",
                     ID = "id",
                     JNDI_NAME = "jndiName";
@@ -121,7 +125,7 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
      * Name of this thread context service.
      * The name is the jndiName if specified, otherwise the config id.
      */
-    private String name;
+    protected String name; // TODO this is temporarily switched from private to protected in order to accommodate test case
 
     /**
      * Service properties.
@@ -130,7 +134,7 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
 
     /**
      * Map of thread context provider name to configured thread context.
-     * 
+     *
      * This value will be NULL when the context service hasn't (re)initialized yet.
      */
     private Map<String, Map<String, ?>> threadContextConfigurations;
@@ -148,7 +152,7 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
     /**
      * DS method to activate this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param context for this component instance
      */
     @Trivial
@@ -209,7 +213,7 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
 
     /**
      * Capture thread context.
-     * 
+     *
      * @param execProps execution properties. Custom property keys must not begin with "javax.enterprise.concurrent."
      * @param task the task for which we are capturing context. This is optional and is used to compute a default value for the IDENTITY_NAME execution property.
      * @param internalNames list to be updated with names of internally added execution properties. Null if this information should not be tracked.
@@ -373,7 +377,7 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
     /**
      * DS method to deactivate this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param context for this component instance
      */
     @Deactivate
@@ -404,7 +408,7 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
      * Adds each thread context configuration from this - the base instance - to a another context service
      * if the thread context configuration is not already present on the context service.
      * Precondition: invoker must have a write lock on the contextSvc parameter.
-     * 
+     *
      * @param contextSvc ContextService that is using this instance as a base instance.
      */
     private void addComplementaryThreadContextConfigurationsTo(ContextServiceImpl contextSvc) {
@@ -442,7 +446,7 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
      * When not configured, this returns null, in which case the invoker should
      * default to all methods that aren't defined on java.lang.Object.
      * So, for example, myTask.doSomething would run with context but .toString or .equals would not.
-     * 
+     *
      * @return list of methods to which we should apply context. Null for default.
      */
     @Trivial
@@ -486,7 +490,7 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
      * This is copied from Tim's code in tWAS and updated slightly to
      * override with the Liberty ignore/warn/fail setting.
      * Precondition: invoker must have lock on this context service, in order to read the onError property.
-     * 
+     *
      * @param throwable an already created Throwable object, which can be used if the desired action is fail.
      * @param exceptionClassToRaise the class of the Throwable object to return
      * @param msgKey the NLS message key
@@ -588,7 +592,7 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
 
     /**
      * Called by Declarative Services to modify service config properties
-     * 
+     *
      * @param context DeclarativeService defined/populated component context
      */
     @Trivial
@@ -627,7 +631,7 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
 
     /**
      * Declarative Services method for setting the service reference to the base contextService instance.
-     * 
+     *
      * @param ref reference to the service
      */
     @Reference(name = BASE_INSTANCE,
@@ -647,7 +651,7 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
 
     /**
      * Declarative Services method for setting the thread context manager.
-     * 
+     *
      * @param svc the service
      */
     @Reference(name = THREAD_CONTEXT_MANAGER,
@@ -661,7 +665,7 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
 
     /**
      * Declarative Services method for unsetting the service reference to the base contextService instance.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetBaseInstance(ServiceReference<ContextService> ref) {
@@ -675,7 +679,7 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
 
     /**
      * Declarative Services method for unsetting the thread context manager.
-     * 
+     *
      * @param svc the service
      */
     protected void unsetThreadContextManager(WSContextService svc) {

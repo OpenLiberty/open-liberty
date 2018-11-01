@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import com.ibm.websphere.simplicity.log.Log;
 import componenttest.common.apiservices.cmdline.LocalProvider;
@@ -447,6 +449,26 @@ public class RemoteFile {
         return RemoteFile.copy(srcFile, this, false, true, binary);
     }
 
+
+    /**
+     * Uses the {@link Files} class for the deletion operation because
+     * it throws informational exception on operation failure. Outputs 
+     * exception message to liberty output for debugging.
+     * 
+     * @param path
+     *              The {@link File} object that represents a file to be deleted
+     * @return true if deletetion was successful, false if failure
+     */
+    private boolean deleteExecutionWrapper(File path) {
+        try{
+            java.nio.file.Files.delete(path.toPath());
+            return true;
+        }catch(Exception e){
+            Log.info(c, "deleteExecutionWrapper", "Delete Operation for [" + path + "] could not be completed.\n" + e.getMessage());
+            return false;
+        }
+    }
+
     /**
      * Deletes the file or directory denoted by this abstract pathname.
      * 
@@ -458,7 +480,7 @@ public class RemoteFile {
             if (localFile.isDirectory()) {
                 return this.deleteLocalDirectory(localFile);
             } else
-                return this.localFile.delete();
+                return this.deleteExecutionWrapper(localFile);
         } else
             return LocalProvider.delete(this);
     }
@@ -477,14 +499,14 @@ public class RemoteFile {
                 if (files[i].isDirectory()) {
                     deleteLocalDirectory(files[i]);
                 } else {
-                    boolean b = files[i].delete();
+                    boolean b = this.deleteExecutionWrapper(files[i]);
                     if (!b) {
                         Log.info(c, "deleteLocalDirectory", "couldn't delete localfile = " + files[i]);
                     }
                 }
             }
         }
-        return (path.delete());
+        return (this.deleteExecutionWrapper(path));
     }
 
     /**
@@ -598,6 +620,8 @@ public class RemoteFile {
             return LocalProvider.mkdir(this);
     }
 
+    //
+
     /**
      * Creates the directory named by this RemoteFile, including any necessary
      * but nonexistent parent directories. Note that if this operation fails it
@@ -613,12 +637,98 @@ public class RemoteFile {
             return LocalProvider.mkdirs(this);
     }
 
-    public boolean rename(RemoteFile newFile) throws Exception {
-        if (host.isLocal())
-            return this.localFile.renameTo(new File(newFile.getAbsolutePath()));
-        else
-            return LocalProvider.rename(this, newFile);
+    //
+
+    /**
+     * Sleep a specified interval, measured in nano-seconds.
+     *
+     * @param ns The interval, in nano-seconds.
+     *
+     * @throws Exception Thrown if an error occurs.  This should only
+     *     ever be {@link InterruptedException}.
+     */
+    public static void sleep(long ns) throws Exception {
+        Thread.currentThread().sleep( (long) (ns / 1000), (int) (ns % 1000) );
+        // throws InterruptedException;
     }
+
+    //
+
+    /**
+     * Attempt to rename this file.  The file may be non-local.
+     *
+     * @param newFile The target file.
+     *
+     * @throws Exception Thrown if the rename failed.
+     */
+    public boolean rename(RemoteFile newFile) throws Exception {
+        if ( host.isLocal() ) {
+            return this.localFile.renameTo(new File(newFile.getAbsolutePath()));
+        } else {
+            return LocalProvider.rename(this, newFile);
+        }
+    }
+
+    /**
+     * The standard retry interval for rename operations.
+     * This is based on the artifact file system minimum
+     * retry interval of 200 nano-seconds, per
+     * <code>
+     *   open-liberty/dev/com.ibm.ws.artifact.zip/src/
+     *   com/ibm/ws/artifact/zip/cache/
+     *   ZipCachingProperties.java
+     * </code>
+     *
+     * The default largest pending close time is specified
+     * by property <code>zip.reaper.slow.pend.max</code>.
+     */
+    public static final long STANDARD_RENAME_INTERVAL = 2 * 200 * 1000 * 1000; // 2 * 200 nano-seconds.
+
+    /**
+     * Attempt to rename a file including a retry interval.  Use the standard
+     * retry interval, {@link #STANDARD_RENAME_INTERVAL}.
+     *
+     * If the initial rename fails, sleep for the specified interval, then try again.
+     *
+     * This is provided as a guard against latent holds on archive files, which
+     * occur because of zip file caching.
+     *
+     * See also {@link #renameWithRetry(RemoteFile, long)}, {@link #rename(RemoteFile)},
+     * and {@link #sleep(long)}.
+     *
+     * @param newFile The new file.
+     *
+     * @return True or false telling if the retry was successful.
+     */
+    public boolean renameWithRetry(RemoteFile newFile) throws Exception {
+        return renameWithRetry(newFile, STANDARD_RENAME_INTERVAL);
+    }
+
+    /**
+     * Attempt to rename a file including a retry interval.  A retry will be
+     * attempted even when the source file is non-local, since the lock can
+     * be on either the source or the target file, and the target file is
+     * always local.
+     *
+     * This is provided as a guard against latent holds on archive files, which
+     * occur because of zip file caching.
+     *
+     * @param newFile The new file.
+     * @param retryNs The retry interval, in nano-seconds.
+     *
+     * @return True or false telling if the retry was successful.
+     */
+    public boolean renameWithRetry(RemoteFile newFile, long retryNs) throws Exception {
+        boolean firstResult = rename(newFile); // throws Exception
+        if ( firstResult ) {
+            return firstResult;
+        }
+        sleep(retryNs); // throws Exception
+        boolean secondResult = rename(newFile); // throws Exception
+        return secondResult;
+    }
+
+    //
 
     /**
      * Returns the name of the file or directory denoted by this RemoteFile

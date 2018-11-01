@@ -22,13 +22,32 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: concurrent
 
-Export-Package:\
-  com.ibm.ws.concurrent.mp
+Private-Package:\
+  com.ibm.ws.concurrent.mp.*
     
 instrument.classesExcludes: com/ibm/ws/concurrent/mp/resources/*.class
 
+-dsannotations: \
+  com.ibm.ws.concurrent.mp.ConcurrencyProviderImpl,\
+  com.ibm.ws.concurrent.mp.ContextServiceImpl,\
+  com.ibm.ws.concurrent.mp.ManagedExecutorImpl,\
+  com.ibm.ws.concurrent.mp.ManagedScheduledExecutorImpl
+
 -buildpath: \
   com.ibm.websphere.appserver.spi.logging,\
+  com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+  com.ibm.websphere.org.eclipse.microprofile.concurrency.1.0,\
+  com.ibm.websphere.org.osgi.core,\
+  com.ibm.websphere.org.osgi.service.component,\
+  com.ibm.ws.app.manager.lifecycle;version=latest,\
+  com.ibm.ws.bnd.annotations;version=latest, \
+  com.ibm.ws.concurrency.policy;version=latest,\
   com.ibm.ws.concurrent;version=latest,\
   com.ibm.ws.context;version=latest,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest
+  com.ibm.ws.kernel.service;version=latest,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.resource;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations,\
+  com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest,\
+  com.ibm.ws.threading;version=latest
+  

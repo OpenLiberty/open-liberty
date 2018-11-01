@@ -105,17 +105,17 @@ sdo_classgenerator_usage_help_1of8={0} Uso: org.eclipse.persistence.sdo.helper.{
 
 sdo_classgenerator_usage_help_2of8=Opciones:
 
-sdo_classgenerator_usage_help_3of8=    -help                        Imprime el texto del mensaje de ayuda
+sdo_classgenerator_usage_help_3of8=-help                        Imprime el texto del mensaje de ayuda
 
-sdo_classgenerator_usage_help_4of8=    -sourceFile <FileName>       El archivo de esquema de entrada (necesario)
+sdo_classgenerator_usage_help_4of8=-sourceFile <FileName>       El archivo de esquema de entrada (necesario)
 
-sdo_classgenerator_usage_help_5of8=    -targetDirectory <DirName>   El directorio para generar el origen Java (opcional)
+sdo_classgenerator_usage_help_5of8=-targetDirectory <DirName>   El directorio para generar el origen Java (opcional)
 
-sdo_classgenerator_usage_help_6of8=    -logLevel <level int>        Especifique el valor de entero del nivel de registro (8=OFF,7=SEVERE,6=WARNING,5=INFO,4=CONFIG,3=FINE,2=FINER(predeterminado),1=FINEST,0=ALL).
+sdo_classgenerator_usage_help_6of8=-logLevel <level int>        Especifique el valor de entero del nivel de registro (8=OFF,7=SEVERE,6=WARNING,5=INFO,4=CONFIG,3=FINE,2=FINER(predeterminado),1=FINEST,0=ALL).
 
-sdo_classgenerator_usage_help_7of8=    -noInterfaces                No genere clases de interfaz
+sdo_classgenerator_usage_help_7of8=-noInterfaces                No genere clases de interfaz
 
-sdo_classgenerator_usage_help_8of8=    -noImpls                     No genere clases de impl
+sdo_classgenerator_usage_help_8of8=-noImpls                     No genere clases de impl
 
 sdo_classgenerator_usage_missing_sourcefile={0} El par\u00e1metro -sourceFile no se ha especificado y es necesario.
 
@@ -127,43 +127,43 @@ server_name=nombre de servidor
 
 shortestTime=tiempo m\u00e1s corto
 
-staticweave_commandline_help_message_10of19=    -log
+staticweave_commandline_help_message_10of19=-log
 
-staticweave_commandline_help_message_11of19=           Especifique archivo de registro.-
+staticweave_commandline_help_message_11of19=Especifique archivo de registro.-
 
-staticweave_commandline_help_message_12of19=    -loglevel
+staticweave_commandline_help_message_12of19=-loglevel
 
-staticweave_commandline_help_message_13of19=           Especifique el valor de entero del nivel de registro (8=OFF,7=SEVERE,6=WARNING,5=INFO,4=CONFIG,3=FINE,2=FINER(predeterminado),1=FINEST,0=ALL).
+staticweave_commandline_help_message_13of19=Especifique el valor de entero del nivel de registro (8=OFF,7=SEVERE,6=WARNING,5=INFO,4=CONFIG,3=FINE,2=FINER(predeterminado),1=FINEST,0=ALL).
 
-staticweave_commandline_help_message_14of19=    La classpath debe contener todas las clases necesarias para cargar las clases en el origen
+staticweave_commandline_help_message_14of19=La classpath debe contener todas las clases necesarias para cargar las clases en el origen
 
-staticweave_commandline_help_message_15of19=    El entrelazado se realizar\u00e1n en el lugar si el punto de origen y de destino est\u00e1n en la misma ubicaci\u00f3n.  El entrelazado en el lugar SOLO es aplicable para or\u00edgenes basados en directorios.
+staticweave_commandline_help_message_15of19=El entrelazado se realizar\u00e1n en el lugar si el punto de origen y de destino est\u00e1n en la misma ubicaci\u00f3n.  El entrelazado en el lugar SOLO es aplicable para or\u00edgenes basados en directorios.
 
-staticweave_commandline_help_message_16of19=  Ejemplo:
+staticweave_commandline_help_message_16of19=Ejemplo:
 
-staticweave_commandline_help_message_17of19=    Para entrelazar todas las entidades incidas en C:\\foo-source.jar con su persistence.xml incluido en C:\\foo-containing-persistence-xml.jar,
+staticweave_commandline_help_message_17of19=Para entrelazar todas las entidades contenidas en C:\foo-source.jar con su persistence.xml contenido en C:\foo-containing-persistence-xml.jar,
 
-staticweave_commandline_help_message_18of19=    y salida en C:\\foo-target.jar:
+staticweave_commandline_help_message_18of19=y salida en C:\foo-target.jar:
 
-staticweave_commandline_help_message_19of19=    StaticWeave -persistenceinfo C:\\foo-containing-persistence-xml.jar -classpath C:\\classpath1;C:\\classpath2 C:\\foo-source.jar C:\\foo-target.jar
+staticweave_commandline_help_message_19of19=StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:\classpath1;C:\classpath2 C:\foo-source.jar C:\foo-target.jar
 
-staticweave_commandline_help_message_1of19=  Uso: StaticWeave [opciones] source target
+staticweave_commandline_help_message_1of19=Uso: StaticWeave [opciones] source target
 
-staticweave_commandline_help_message_2of19=  Opciones:
+staticweave_commandline_help_message_2of19=Opciones:
 
-staticweave_commandline_help_message_3of19=    -classpath classpath
+staticweave_commandline_help_message_3of19=-classpath classpath
 
-staticweave_commandline_help_message_4of19=           Defina la classpath del usuario.  Utilice ";" como delimitador en Windows y ":" en Unix.
+staticweave_commandline_help_message_4of19=Defina la classpath del usuario.  Utilice ";" como delimitador en Windows y ":" en Unix.
 
-staticweave_commandline_help_message_5of19=    -persistenceinfo
+staticweave_commandline_help_message_5of19=-persistenceinfo
 
-staticweave_commandline_help_message_6of19=           Identifique de forma expl\u00edcita donde se almacena META-INF/persistence.xml.  Debe ser el root de META-INF/persistence.xml.
+staticweave_commandline_help_message_6of19=Identifique de forma expl\u00edcita donde se almacena META-INF/persistence.xml.  Debe ser el root de META-INF/persistence.xml.
 
-staticweave_commandline_help_message_7of19=           Esta opci\u00f3n normalmente se utiliza para especificar el jar principal al entrelazar archivos referenciados por <jar-file> en persistence.xml.
+staticweave_commandline_help_message_7of19=Esta opci\u00f3n normalmente se utiliza para especificar el jar principal al entrelazar archivos referenciados por <jar-file> en persistence.xml.
 
-staticweave_commandline_help_message_8of19=    -persistencexml
+staticweave_commandline_help_message_8of19=-persistencexml
 
-staticweave_commandline_help_message_9of19=           Identifique la ubicaci\u00f3n del persistence.xml relativo al root de la unidad de persistencia si est\u00e1 en alg\u00fan otro lugar distinto a META-INF/persistence.xml
+staticweave_commandline_help_message_9of19=Identifique la ubicaci\u00f3n del persistence.xml relativo al root de la unidad de persistencia si est\u00e1 en alg\u00fan otro lugar distinto a META-INF/persistence.xml
 
 staticweave_processor_dir_not_created=El directorio {0} no se puede crear.
 

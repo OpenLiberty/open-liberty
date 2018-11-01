@@ -11,6 +11,7 @@
 package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.security.Key;
+import java.util.HashMap;
 import java.util.List;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -91,6 +92,8 @@ public interface ConvergedClientConfig {
 
     public boolean getUseAccessTokenAsIdToken();
 
+    public boolean getUseSystemPropertiesForHttpClientConnections();
+
     public boolean isMapIdentityToRegistryUser();
 
     public boolean isIncludeCustomCacheKeyInSubject();
@@ -134,6 +137,17 @@ public interface ConvergedClientConfig {
 
     public String getJwkClientId();
 
+    @Sensitive
     public String getJwkClientSecret();
+
+    public String getDiscoveryEndpointUrl();
+
+    public HashMap<String, String> getAuthzRequestParams();
+
+    public HashMap<String, String> getTokenRequestParams();
+
+    public HashMap<String, String> getUserinfoRequestParams();
+
+    public HashMap<String, String> getJwkRequestParams();
 
 }

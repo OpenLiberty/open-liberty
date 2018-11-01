@@ -66,7 +66,8 @@ public class JwtUtils {
     public static final String CFG_KEY_ISSUER = "issuer";
     public static final String CFG_KEY_JWK_ENABLED = "jwkEnabled";
     public static final String CFG_KEY_VALID = "expiry";
-    public static final String CFG_KEY_JTI = "jti";
+    public static final String CFG_KEY_JTI = "jti"; // builder
+    public static final String CFG_KEY_JTI_CHECK_ENABLED = "jtiCheckEnabled"; // consumer
     public static final String CFG_KEY_SCOPE = "scope";
     public static final String CFG_KEY_AUDIENCES = "audiences";
     public static final String CFG_KEY_SIGNATURE_ALGORITHM = "signatureAlgorithm";
@@ -83,6 +84,7 @@ public class JwtUtils {
     public static final String CFG_KEY_VALIDATION_REQUIRED = "validationRequired";
     public static final String CFG_KEY_SSL_REF = "sslRef";
     public static final String CFG_KEY_EXPIRES_IN_SECONDS = "expiresInSeconds";
+    public static final String CFG_KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
 
     public static final String JCEPROVIDER_IBM = "IBMJCE";
     public static final String SECRANDOM_SHA1PRNG = "SHA1PRNG";

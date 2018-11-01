@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -149,13 +153,13 @@
 
 7093=V dotazu s n\u00e1zvem [{0}] nelze naj\u00edt t\u0159\u00eddu [{2}] pro argument dotazu s n\u00e1zvem [{1}]. Zahr\u0148te chyb\u011bj\u00edc\u00ed t\u0159\u00eddu do cesty ke t\u0159\u00edd\u011b.
 
-7095=Na cest\u011b k prost\u0159edku nebyl nalezen prost\u0159edek sessions.xml [{0}]. Zkontrolujte spr\u00e1vnost n\u00e1zvu/cesty k prost\u0159edku a zavad\u011b\u010de t\u0159\u00edd p\u0159edan\u00fdch metod\u011b SessionManager.getSession. Soubor sessions.xml by m\u011bl b\u00fdt zahrnut\u00fd do ko\u0159enov\u00e9ho adres\u00e1\u0159e implementovan\u00e9ho souboru JAR aplikace. Pokud je soubor sessions.xml v souboru JAR aplikace implementovan\u00fd v podadres\u00e1\u0159i, zkontrolujte, zda se pou\u017e\u00edv\u00e1 spr\u00e1vn\u00e1 cesta k prost\u0159edku s pou\u017eit\u00edm dop\u0159edn\u00fdch lom\u00edtek "/", nikoli zp\u011btn\u00fdch lom\u00edtek "\".
+7095=Na cest\u011b k prost\u0159edku nebyl nalezen prost\u0159edek sessions.xml [{0}]. Zkontrolujte spr\u00e1vnost n\u00e1zvu/cesty k prost\u0159edku a zavad\u011b\u010de t\u0159\u00edd p\u0159edan\u00fdch metod\u011b SessionManager.getSession. Soubor sessions.xml by m\u011bl b\u00fdt zahrnut\u00fd do ko\u0159enov\u00e9ho adres\u00e1\u0159e implementovan\u00e9ho souboru JAR aplikace. Pokud je soubor sessions.xml v souboru JAR aplikace implementovan\u00fd v podadres\u00e1\u0159i, zkontrolujte, zda se pou\u017e\u00edv\u00e1 spr\u00e1vn\u00e1 cesta k prost\u0159edku s pou\u017eit\u00edm dop\u0159edn\u00e9ho lom\u00edtka "/", nikoli "".
 
 7096=K op\u011btovn\u00e9mu potvrzen\u00ed rozhran\u00ed UnitOfWork nelze pou\u017e\u00edt metodu commit().
 
 7097=Operace nen\u00ed podporov\u00e1na: [{0}].
 
-7099=Na cest\u011b k prost\u0159edku nebyl nalezen prost\u0159edek XML projektu implementace [{0}]. Zkontrolujte spr\u00e1vnost n\u00e1zvu/cesty k prost\u0159edku a zavad\u011b\u010de t\u0159\u00edd p\u0159edan\u00fdch t\u0159\u00edd\u011b XMLProjectReader. Soubor XML projektu by m\u011bl b\u00fdt zahrnut\u00fd do ko\u0159enov\u00e9ho adres\u00e1\u0159e implementovan\u00e9ho souboru JAR aplikace. Pokud je soubor XML projektu v souboru JAR aplikace implementovan\u00fd v podadres\u00e1\u0159i, zkontrolujte, zda se pou\u017e\u00edv\u00e1 spr\u00e1vn\u00e1 cesta k prost\u0159edku s pou\u017eit\u00edm dop\u0159edn\u00fdch lom\u00edtek "/", nikoli zp\u011btn\u00fdch lom\u00edtek "\".
+7099=Na cest\u011b k prost\u0159edku nebyl nalezen prost\u0159edek XML projektu implementace [{0}]. Zkontrolujte spr\u00e1vnost n\u00e1zvu/cesty k prost\u0159edku a zavad\u011b\u010de t\u0159\u00edd p\u0159edan\u00fdch t\u0159\u00edd\u011b XMLProjectReader. Soubor XML projektu by m\u011bl b\u00fdt zahrnut\u00fd do ko\u0159enov\u00e9ho adres\u00e1\u0159e implementovan\u00e9ho souboru JAR aplikace. Pokud je soubor XML projektu v souboru JAR aplikace implementovan\u00fd v podadres\u00e1\u0159i, zkontrolujte, zda se pou\u017e\u00edv\u00e1 spr\u00e1vn\u00e1 cesta k prost\u0159edku s pou\u017eit\u00edm dop\u0159edn\u00e9ho lom\u00edtka "/", nikoli "".
 
 7100=Nelze naj\u00edt relaci s n\u00e1zvem [{0}] v souboru session.xml [{1}]
 

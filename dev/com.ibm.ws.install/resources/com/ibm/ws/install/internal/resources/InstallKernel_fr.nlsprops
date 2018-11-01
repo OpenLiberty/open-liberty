@@ -771,6 +771,14 @@ ERROR_UNKNOWN_OSLIST_VALUE=CWWKF1387E: La valeur {0} n''est pas une entr\u00e9e 
 ERROR_UNKNOWN_OSLIST_VALUE.explanation=Cette valeur sera ignor\u00e9e car il ne s'agit pas d'un nom de syst\u00e8me d'exploitation connu.
 ERROR_UNKNOWN_OSLIST_VALUE.useraction=Modifiez ou supprimez cette valeur de fichier manifeste de fonction.
 
+ERROR_ESA_NOT_FOUND=CWWKF1388E: Le fichier ESA sp\u00e9cifi\u00e9, {0}, ne contenait aucune fonction.
+ERROR_ESA_NOT_FOUND.explanation=Une fonction sera install\u00e9e \u00e0 partir du fichier ESA.
+ERROR_ESA_NOT_FOUND.useraction=Assurez-vous que le fichier ESA fourni est valide et contient une fonction.
+
+ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: Impossible de cr\u00e9er un fichier JSON sur {0} pour le fichier ESA {1}.
+ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=La fonction dans le fichier ESA ne sera pas install\u00e9e.
+ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Assurez-vous de disposer d'un acc\u00e8s en \u00e9criture au r\u00e9pertoire dans lequel le fichier JSON sera cr\u00e9\u00e9.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Le t\u00e9l\u00e9chargement de la fonction a abouti.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=La fonction a \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9e.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Aucune action n'est requise.

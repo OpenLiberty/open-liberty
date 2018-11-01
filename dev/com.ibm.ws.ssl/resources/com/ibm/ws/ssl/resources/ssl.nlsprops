@@ -616,3 +616,11 @@ ssl.defaultKeyStore.not.created.CWPKI0819I.useraction=No action is required.
 ssl.defaultKeyStore.env.password.CWPKI0820A=CWPKI0820A: The default keystore has been created using the 'keystore_password' environment variable.
 ssl.defaultKeyStore.env.password.CWPKI0820A.explanation=The default keystore has been created using the 'keystore_password' environment variable. This is generated into the server.env file during server creation, or overridden in the environment the server was launched from.
 ssl.defaultKeyStore.env.password.CWPKI0820A.useraction=No action is required.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.loaded.CWPKI0821I=CWPKI0821I: The {1} default keystore with the {2} keystore type was loaded.
+ssl.defaultKeyStore.loaded.CWPKI0821I.explanation=The default keystore at the specified location and keystore type has been loaded.
+ssl.defaultKeyStore.loaded.CWPKI0821I.useraction=No action is required.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W=CWPKI0822W: A minimal default keystore configuration has been specified and the keystores key.jks and key.p12 both exist in the default keystore location. The key.jks will be used as the default keystore.
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.explanation=With a minimal default keystore configuration, and with both a key.jks file and key.p12 file defined in the default keystore location, the key.jks file will be used as the default keystore.
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.useraction=To make the key.p12 file the default keystore, either change the keystore configuration to specify the key.p12 location or remove the key.jks file from the configuration. To have the key.jks file as the default keystore, no changes are needed. 

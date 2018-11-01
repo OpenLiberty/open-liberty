@@ -67,3 +67,15 @@ JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=Verify that all custom JAAS 
 JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: Duplicate login configuration name {0} was specified in the JAAS configuration and the server.xml/client.xml files. The login configuration name in the server.xml/client.xml file will be used.
 JAAS_DUPLICATE_ENTRY_NAME.explanation=A Duplicate login configuration name was specified in the JAAS configuration file and server.xml/client.xml file
 JAAS_DUPLICATE_ENTRY_NAME.useraction=Check the JAAS configuration file and server.xml/client.xml file.
+
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR=CWWKS1143E: The {0} login module is not supported for version {1} by the {2} Java vendor.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.explanation=The Krb5LoginModule module specified in the server.xml file, the jaas.conf file, or both files is not supported in the Java vendor and version that was used.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.useraction=Use the correct Java vendor and version that is supported for the Krb5LoginModule module or use a Krb5LoginModule module that is supported by the Java vendor and version.
+
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS=CWWKS1144E: The {0} login module options are not supported with the {1} Java vendor and version {2}.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.explanation=The Krb5LoginModule options specified in the server.xml file, the jaas.conf file, or both files is not supported in the Java vendor and version that was used.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=Verify that all the Krb5LoginModule options that are specified in the server.xml file, the jaas.conf file, or both files are supported by the Java vendor and version.
+
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: A {0} jaasLoginContext entry cannot be specified as a JAAS configuration entry in the server.xml file, the jaas.conf file, or both files.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=The run time uses a default Krb5LoginModule configuration and the SPNEGO configuration in the server.xml file.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Remove the jaasLoginContext entry from the server.xml file or let the run time use the default entry.

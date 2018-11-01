@@ -31,7 +31,7 @@ import org.osgi.framework.Version;
 import org.osgi.framework.VersionRange;
 
 import com.ibm.ws.app.manager.springboot.container.ApplicationError;
-import com.ibm.ws.app.manager.springboot.container.ApplicationError.Type;
+import com.ibm.ws.app.manager.springboot.container.ApplicationTr.Type;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory;
 import com.ibm.ws.app.manager.springboot.container.config.ConfigElementList;
 import com.ibm.ws.app.manager.springboot.container.config.HttpEndpoint;
@@ -103,7 +103,7 @@ public class ServerConfigurationFactory {
             // version parsing issues; auto-FFDC here
         }
         if (!range.includes(vActual)) {
-            throw new ApplicationError(Type.UNSUPPORTED_SPRING_BOOT_VERSION, actual, range.toString());
+            throw new ApplicationError(Type.ERROR_UNSUPPORTED_SPRING_BOOT_VERSION, actual, range.toString());
         }
 
     }

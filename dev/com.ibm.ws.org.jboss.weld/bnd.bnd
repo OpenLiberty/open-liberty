@@ -8,8 +8,8 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.jboss.weld:weld-osgi-bundle;[2.4.7.Final,3)}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.jboss.weld:weld-osgi-bundle;[2.4.8.Final,3)}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -buildpath: \
-	org.jboss.weld:weld-osgi-bundle;version=2.4.7.Final, \
+	org.jboss.weld:weld-osgi-bundle;version=2.4.8.Final, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

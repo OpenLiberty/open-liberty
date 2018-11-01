@@ -48,3 +48,15 @@ client.quiesce.begin.useraction=Aucune action n'est requise.
 client.quiesce.end=CWWKE1104I: Mise au repos du client termin\u00e9e.
 client.quiesce.end.explanation=L'op\u00e9ration de mise au repos est termin\u00e9e.
 client.quiesce.end.useraction=Aucune action n'est requise.
+
+notifications.not.complete=CWWKE1105W: Les mises \u00e0 jour \u00e0 l''ex\u00e9cution pour {0} n''ont pas \u00e9t\u00e9 achev\u00e9es pendant la p\u00e9riode de mise au repos.
+notifications.not.complete.explanation=Une ou plusieurs mises \u00e0 jour de fonctions, de configuration ou des applications n'ont pas \u00e9t\u00e9 termin\u00e9es avant que le serveur ne soit arr\u00eat\u00e9.
+notifications.not.complete.useraction=Aucune action n'est requise. 
+
+quiesce.listeners.not.complete=CWWKE1106W: Les op\u00e9rations d''arr\u00eat de {0} n''ont pas \u00e9t\u00e9 achev\u00e9es pendant la p\u00e9riode de mise au repos.
+quiesce.listeners.not.complete.explanation=Une ou plusieurs op\u00e9rations qui ont \u00e9t\u00e9 lanc\u00e9es pendant l'op\u00e9ration d'arr\u00eat n'ont pas \u00e9t\u00e9 achev\u00e9es.
+quiesce.listeners.not.complete.useraction=Aucune action n'est requise.
+
+quiesce.waiting.on.threads=CWWKE1107W: Les unit\u00e9s d''ex\u00e9cution de {0} n''ont pas \u00e9t\u00e9 achev\u00e9es pendant la p\u00e9riode de mise au repos.
+quiesce.waiting.on.threads.explanation=Une ou plusieurs unit\u00e9s d'ex\u00e9cution qui \u00e9taient actives avant l'arr\u00eat du serveur \u00e9taient toujours actives \u00e0 la fin de la p\u00e9riode de mise au repos.
+quiesce.waiting.on.threads.useraction=Aucune action n'est requise. 

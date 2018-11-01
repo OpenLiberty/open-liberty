@@ -42,4 +42,8 @@ public class ConfigConstants {
     public static final long MINIMUM_DYNAMIC_REFRESH_INTERVAL = 500;
     //In MP Config 1.3 this constant provides the regex to specify allowable characters in an Environment Variable Config Source
     public static final String CONFIG13_ALLOWABLE_CHARS_IN_ENV_VAR_SOURCE = "[^A-Za-z0-9_]";
+
+    //We try to keep track of which application is using which Config. There are cases where the Config is used by a global component
+    //or we just can't work out which app it is. Then we fall back to this global name.
+    public static final String GLOBAL_CONFIG_APPLICATION_NAME = "!GLOBAL_CONFIG_APPLICATION_NAME!";
 }

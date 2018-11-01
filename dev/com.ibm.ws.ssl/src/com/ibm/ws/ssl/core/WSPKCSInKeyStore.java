@@ -16,12 +16,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.KeyStore;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.Provider;
+import java.security.ProviderException;
 import java.security.Security;
+import java.util.Iterator;
+import java.util.ServiceLoader;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
@@ -30,13 +34,14 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.JSSEProvider;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 
 /**
  * <p>
  * This class represents a configured crytographic token device.
  * </p>
- * 
+ *
  * @author IBM Corporation
  * @version WAS 7.0
  * @since WAS 7.0
@@ -77,7 +82,7 @@ public final class WSPKCSInKeyStore {
 
     /**
      * Constructor.
-     * 
+     *
      * @param tokenConfigName
      * @throws Exception
      */
@@ -207,12 +212,14 @@ public final class WSPKCSInKeyStore {
     public void initializePKCS11ImplProvider(String tokenConfigName) throws Exception {
         final String configFile = tokenConfigName;
         try {
-            hwProvider = AccessController.doPrivileged(new PrivilegedExceptionAction<Provider>()
-            {
+            hwProvider = AccessController.doPrivileged(new PrivilegedExceptionAction<Provider>() {
                 @Override
-                public Provider run() throws Exception
-                {
+                public Provider run() throws Exception {
                     Provider p = createPKCS11Provider(configFile);
+                    // if no provider found throw ProviderException
+                    if (p == null) {
+                        throw new ProviderException("No PKCS11 provider available.");
+                    }
                     Security.addProvider(p);
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "The provider: " + p + "is added at the end of the provider list");
@@ -226,28 +233,54 @@ public final class WSPKCSInKeyStore {
             FFDCFilter.processException(ex, getClass().getName(), "initializePKCS11ImplProvider");
             throw ex;
         }
-        convertFileToBuffer(tokenConfigName);
     }
 
     /*
      * Create the pkcs11 provider and config file that will be loaded in the provider list
      */
     private Provider createPKCS11Provider(String configFileName) throws Exception {
+
+        Provider provider = null;
+        if (JavaInfo.majorVersion() >= 9) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "The java version is 9 or higher so take new path to setup the pkcs11 provider.");
+            provider = getProvider(configFileName);
+        } else {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Calling legacy method to setup the pkcs11 provider.");
+            provider = getProviderLegacy(configFileName);
+        }
+        return provider;
+    }
+
+    private Provider getProviderLegacy(String configFileName) throws Exception {
         Provider provider = null;
         Class pkcs11ProviderClass = Class.forName(pkcsProviderClass);
-        if (pkcs11ProviderClass != null)
-        {
-            if (configFileName != null && configFileName.isEmpty() == false)
-            {
+        if (pkcs11ProviderClass != null) {
+            if (configFileName != null && configFileName.isEmpty() == false) {
                 Constructor constructor = pkcs11ProviderClass.getDeclaredConstructor(new Class[] { java.lang.String.class });
                 provider = (Provider) constructor.newInstance(new Object[] { configFileName });
-            }
-            else
-            {
+            } else {
                 provider = (Provider) pkcs11ProviderClass.newInstance();
             }
         }
         return provider;
+    }
+
+    private Provider getProvider(String configFileName) throws Exception {
+        ServiceLoader sl = ServiceLoader.load(java.security.Provider.class);
+        Iterator<Provider> iter = sl.iterator();
+        Provider p = null;
+
+        while (iter.hasNext()) {
+            p = iter.next();
+            if (p.getName().equals(pkcsProvider)) {
+                Method configure = p.getClass().getMethod("configure", java.lang.String.class);
+                configure.invoke(p, configFileName);
+                break;
+            }
+        }
+        return p;
     }
 
     private BufferedReader convertFileToBuffer(String tokenConfigName) throws Exception {

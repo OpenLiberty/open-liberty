@@ -5,8 +5,8 @@
  *
  * Copyright IBM Corp. 2015
  *
- * The source code for this program is not published or otherwise divested 
- * of its trade secrets, irrespective of what has been deposited with the 
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
  * U.S. Copyright Office.
  */
 package com.ibm.ws.repository.parsers.internal;
@@ -50,7 +50,7 @@ public class ManifestInfo {
 
     /**
      * Constructor
-     * 
+     *
      * @param wlpInfo
      * @param prov
      */
@@ -66,7 +66,7 @@ public class ManifestInfo {
 
     /**
      * Get the provider from the manifest
-     * 
+     *
      * @return _prov
      */
     public String getProviderName() {
@@ -75,7 +75,7 @@ public class ManifestInfo {
 
     /**
      * Get the applies to field from the manifest
-     * 
+     *
      * @return _appliesTo
      */
     public String getAppliesTo() {
@@ -84,7 +84,7 @@ public class ManifestInfo {
 
     /**
      * Get the type field from the manifest
-     * 
+     *
      * @return
      */
     public ResourceType getType() {
@@ -93,7 +93,7 @@ public class ManifestInfo {
 
     /**
      * Get the required features list from the manifest
-     * 
+     *
      * @return
      */
     public List<String> getRequiredFeature() {
@@ -118,7 +118,7 @@ public class ManifestInfo {
      * Extracts information from the manifest in the supplied jar file and
      * populates a newly created WlpInformation object with the extracted
      * information as well as putting information into the asset itself.
-     * 
+     *
      * @param jar
      *            The jar file to parse
      * @param ass
@@ -134,7 +134,6 @@ public class ManifestInfo {
         String prov = null;
 
         // Create the WLPInformation and populate it
-        System.out.println("Converting..." + jar.getName());
         Manifest mf = null;
         try {
             mf = jar.getManifest();
@@ -157,7 +156,6 @@ public class ManifestInfo {
         List<String> requiresList = new ArrayList<String>();
 
         Attributes mainattrs = mf.getMainAttributes();
-        System.out.println("Got main attribs " + mainattrs.size());
 
         // Iterate over the main attributes in the manifest and look for the ones we are interested in.
         for (Object at : mainattrs.keySet()) {

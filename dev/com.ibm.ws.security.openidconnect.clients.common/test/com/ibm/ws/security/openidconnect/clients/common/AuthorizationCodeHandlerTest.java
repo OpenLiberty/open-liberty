@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -95,6 +95,8 @@ public class AuthorizationCodeHandlerTest {
                 allowing(webAppSecConfig).getSSODomainList();
                 will(returnValue(null));
                 allowing(webAppSecConfig).getSSOUseDomainFromURL();
+                will(returnValue(false));
+                allowing(convClientConfig).getUseSystemPropertiesForHttpClientConnections();
                 will(returnValue(false));
                 allowing(webAppSecConfig).createSSOCookieHelper();
                 will(returnValue(new SSOCookieHelperImpl(webAppSecConfig)));
@@ -290,7 +292,9 @@ public class AuthorizationCodeHandlerTest {
                 SSLSocketFactory sslSocketFactory,
                 boolean b,
                 String authMethod,
-                String resources) throws HttpException, IOException {
+                String resources,
+                HashMap<String, String> customParams,
+                boolean useJvmProps) throws HttpException, IOException {
             if (ioe != null) {
                 throw ioe;
             }

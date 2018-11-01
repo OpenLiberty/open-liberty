@@ -519,8 +519,27 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
+    
+    @Test
+    public void getUseSystemPropertiesForHttpClientConnections(){
+        try {
+            Map<String, Object> props = getStandardConfigProps();
+            props.put(OidcLoginConfigImpl.KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS, new Boolean(true));
+            configImpl.initProps(cc, props);
+
+            assertTrue("useSysprops not true as expected", configImpl.getUseSystemPropertiesForHttpClientConnections());
+
+            verifyNoLogMessage(outputMgr, MSG_BASE);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
 
     /************************************** Helper methods **************************************/
+    
+    
+   
 
     protected OidcLoginConfigImpl getActivatedConfig(Map<String, Object> props) throws SocialLoginException {
         OidcLoginConfigImpl config = new OidcLoginConfigImpl();

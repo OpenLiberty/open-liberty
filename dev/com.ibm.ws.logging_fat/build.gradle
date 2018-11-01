@@ -9,7 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-
 task copyBundles {
   enabled project.file('test-bundles').exists()
   doLast {

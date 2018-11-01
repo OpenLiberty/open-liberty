@@ -1,5 +1,4 @@
 
-
 task addRequiredFiles(type: Copy) {
   dependsOn ':com.ibm.ws.kernel.feature:jar'
   from new File(projectDir, 'publish/files/sampleServer.xml')

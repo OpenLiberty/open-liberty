@@ -486,6 +486,10 @@ DEFAULT_MATCH_ORIGINAL.useraction=Verifica\u0163i c\u0103 proprietatea personali
 
 # 8780 deleted
 
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST=DSRA8790W: Metodele beginRequest \u015fi endRequest trebuie folosite doar de managerii de conexiuni. Specifica\u0163ia JDBC nu \u0163ine cont de manageri de conexiuni multiple care pot gestiona o conexiune. Utilizarea beginRequest \u0163i endRequest de al\u0163i manageri de conexiune este suprimat\u0103 c\u00e2nd managementul conexiunii este furnizat de serverul de aplica\u0163ii. Urm\u0103toarea stiv\u0103 indic\u0103 calea de cod pe care a fost invocat\u0103 opera\u0163ia beginRequest sau endRequest: {0}.
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST.explanation=Indiciile beginRequest \u015fi endRequest au fost suprimate pentru a evita efectele colaterale care interfer\u0103 cu managementul conexiunii.
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST.useraction=Pentru a evita acest avertisment, \u00eenl\u0103tura\u0163i codul identificat de stiva furnizat\u0103 care invoc\u0103 beginRequest \u015fi endRequest.
+
 # ----------------------------------------------------------------------------
 # 
 # Using the 9000's for JDBC wrapper messages.

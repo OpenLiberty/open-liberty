@@ -12,6 +12,7 @@ package com.ibm.ws.app.manager.springboot.container;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.app.manager.springboot.container.ApplicationTr.Type;
 
 /**
  *
@@ -20,24 +21,6 @@ public class ApplicationError extends RuntimeException {
     private static final TraceComponent tc = Tr.register(ApplicationError.class);
 
     private static final long serialVersionUID = 1L;
-
-    public enum Type {
-        NEED_SPRING_BOOT_VERSION_15("error.need.springboot.version.15"),
-        NEED_SPRING_BOOT_VERSION_20("error.need.springboot.version.20"),
-        MISSING_SERVLET_FEATURE("error.missing.servlet"),
-        MISSING_WEBSOCKET_FEATURE("error.missing.websocket"),
-        UNSUPPORTED_SPRING_BOOT_VERSION("error.wrong.spring.boot.version");
-
-        private final String msgKey;
-
-        private Type(String msgKey) {
-            this.msgKey = msgKey;
-        }
-
-        public String getMessageKey() {
-            return msgKey;
-        }
-    }
 
     public final Type type;
     public final Object[] messageArgs;

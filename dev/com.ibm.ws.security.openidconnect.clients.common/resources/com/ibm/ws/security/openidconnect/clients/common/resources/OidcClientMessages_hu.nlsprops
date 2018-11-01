@@ -180,5 +180,12 @@ JWK_RETRIEVE_FAILED=CWWKS1747E: A(z) [{0}] URL nem adott vissza JSON webkulcsot 
 JWK_RETRIEVE_FAILED.explanation=A megadott URL nem tud visszaadni JSON webkulcsot. Elk\u00e9pzelhet\u0151, hogy az URL nem \u00e9rv\u00e9nyes, az URL nincs be\u00e1ll\u00edtva JWK visszaad\u00e1s\u00e1ra, az URL \u00e1ltal visszaadott v\u00e1lasz \u00fcres, vagy ismeretlen hiba t\u00f6rt\u00e9nt.
 JWK_RETRIEVE_FAILED.useraction=Ellen\u0151rizze, hogy az URL megfelel\u0151en form\u00e1zott \u00e9s megad egy helyet, amely vissza tud adni JSON webkulcsokat. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt ellen\u0151rizze az v\u00e1lasz \u00e1llapotk\u00f3dj\u00e1t \u00e9s tartalm\u00e1t.
 
+USERINFO_RETREIVE_FAILED=CWWKS1748E: A(z) [{0}] UserInfo URL nem \u00e9rhet\u0151 el. A v\u00e1lasz \u00e1llapota [{1}], \u00e9s a visszaadott tartalom a k\u00f6vetkez\u0151: [{2}].
+USERINFO_RETREIVE_FAILED.explanation=A felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3kra vonatkoz\u00f3 adatokat nem lehetett lek\u00e9rni a megadott URL-c\u00edmr\u0151l. Elk\u00e9pzelhet\u0151, hogy az URL vagy a megadott hozz\u00e1f\u00e9r\u00e9si token nem \u00e9rv\u00e9nyes, az URL \u00e1ltal visszaadott v\u00e1lasz \u00fcres, vagy ismeretlen hiba t\u00f6rt\u00e9nt.
+USERINFO_RETREIVE_FAILED.useraction=Ellen\u0151rizze, hogy az URL megfelel\u0151en form\u00e1zott \u00e9s megad egy helyet, amely vissza tud adni UserInfo adatokat. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt ellen\u0151rizze az v\u00e1lasz \u00e1llapotk\u00f3dj\u00e1t \u00e9s tartalm\u00e1t.
+
+USERINFO_INVALID=CWWKS1749E: A(z) [{0}] User Info adatok \u00e9rv\u00e9nytelenek, mert az alig\u00e9ny nem egyezik a(z) [{1}] azonos\u00edt\u00f3 token alig\u00e9ny\u00e9vel.
+USERINFO_INVALID.explanation=A user info adatok alig\u00e9ny\u00e9nek egyeznie kell az azonos\u00edt\u00f3 token alig\u00e9ny\u00e9vel, de nem egyezik. 
+USERINFO_INVALID.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect szolg\u00e1ltat\u00f3 \u00e9rv\u00e9nyes User Info adatokat \u00e1ll\u00edt-e el\u0151.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 

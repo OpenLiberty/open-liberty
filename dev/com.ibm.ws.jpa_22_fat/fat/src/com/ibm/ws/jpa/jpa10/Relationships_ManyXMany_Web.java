@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.ws.jpa.FATSuite;
 import com.ibm.ws.jpa.JPAFATServletClient;
 import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.web.TestManyXManyBidirectionalServlet;
 import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.web.TestManyXManyCollectionTypeServlet;
@@ -65,7 +66,7 @@ public class Relationships_ManyXMany_Web extends JPAFATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        PrivHelper.generateCustomPolicy(server1, PrivHelper.JAXB_PERMISSION);
+        PrivHelper.generateCustomPolicy(server1, FATSuite.JAXB_PERMS);
         bannerStart(CallbackTest.class);
         timestart = System.currentTimeMillis();
 
@@ -144,6 +145,7 @@ public class Relationships_ManyXMany_Web extends JPAFATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         try {
+            server1.dumpServer("relationships_manyXmany_web");
             server1.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
                                "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
             );

@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -32,7 +33,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.apache.aries.util.manifest.ManifestProcessor;
-import org.apache.tools.ant.BuildException;
 
 import com.ibm.ws.install.CancelException;
 import com.ibm.ws.install.InstallConstants;
@@ -108,6 +108,7 @@ public class InstallKernelMap implements Map {
 
     //Headers in Manifest File
     private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
+    private static final String SYMBOLICNAME_HEADER_NAME = "Subsystem-SymbolicName";
 
     // Return code
     private static final Integer OK = Integer.valueOf(0);
@@ -116,7 +117,8 @@ public class InstallKernelMap implements Map {
 
     // License identifiers
     private static final String LICENSE_EPL_PREFIX = "https://www.eclipse.org/legal/epl-";
-    private static final String LICENSE_FEATURE_TERMS_PREFIX = "http://www.ibm.com/licenses/wlp-featureterms-";
+    private static final String LICENSE_FEATURE_TERMS = "http://www.ibm.com/licenses/wlp-featureterms-v1";
+    private static final String LICENSE_FEATURE_TERMS_RESTRICTED = "http://www.ibm.com/licenses/wlp-featureterms-restricted-v1";
 
     private enum ActionType {
         install,
@@ -564,15 +566,17 @@ public class InstallKernelMap implements Map {
 
                     RepositoryConnection repo = new SingleFileRepositoryConnection(individualEsaJson);
                     repoList.add(repo);
-                    for (String feature : featureToInstall) {
-                        if (feature.endsWith(".esa")) {
-                            if (shortNameMap.containsKey(feature)) {
-                                String shortName = shortNameMap.get(feature);
-                                featureToInstall.remove(feature);
-                                featureToInstall.add(shortName);
-                            }
+
+                    List<String> shortNamesToInstall = new ArrayList<String>();
+                    Iterator<String> it = featureToInstall.iterator();
+                    while (it.hasNext()) {
+                        String feature = it.next();
+                        if (feature.endsWith(".esa") && shortNameMap.containsKey(feature)) {
+                            it.remove();
+                            shortNamesToInstall.add(shortNameMap.get(feature));
                         }
                     }
+                    featureToInstall.addAll(shortNamesToInstall);
                 }
             } catch (NullPointerException e) {
                 data.put(ACTION_RESULT, ERROR);
@@ -601,11 +605,27 @@ public class InstallKernelMap implements Map {
             for (List<RepositoryResource> item : resolveResult) {
                 for (RepositoryResource repoResrc : item) {
                     String license = repoResrc.getLicenseId();
-                    if (license != null && !(license.startsWith(LICENSE_EPL_PREFIX) || license.startsWith(LICENSE_FEATURE_TERMS_PREFIX))) {
-                        Boolean accepted = (Boolean) data.get(LICENSE_ACCEPT);
-                        if (accepted == null || !accepted) {
-                            featuresResolved.clear(); // clear the result since the licenses were not accepted
-                            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_LICENSES_NOT_ACCEPTED"));
+                    if (license != null) {
+                        // determine whether the runtime is ND
+                        boolean isNDRuntime = false;
+                        for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
+                            if ("com.ibm.websphere.appserver".equals(productInfo.getId()) && "ND".equals(productInfo.getEdition())) {
+                                isNDRuntime = true;
+                                break;
+                            }
+                        }
+
+                        // determine whether the license should be auto accepted
+                        boolean autoAcceptLicense = license.startsWith(LICENSE_EPL_PREFIX) || license.equals(LICENSE_FEATURE_TERMS)
+                                                    || (isNDRuntime && license.equals(LICENSE_FEATURE_TERMS_RESTRICTED));
+
+                        if (!autoAcceptLicense) {
+                            // check whether the license has been accepted
+                            Boolean accepted = (Boolean) data.get(LICENSE_ACCEPT);
+                            if (accepted == null || !accepted) {
+                                featuresResolved.clear(); // clear the result since the licenses were not accepted
+                                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_LICENSES_NOT_ACCEPTED"));
+                            }
                         }
                     }
 
@@ -774,7 +794,14 @@ public class InstallKernelMap implements Map {
         return OK;
     }
 
-    private static void populateShortNameFromManifest(File esa, Map<String, String> shortNameMap) throws IOException {
+    /**
+     * Populate the feature name (short name if available, otherwise symbolic name) from the ESA's manifest into the shortNameMap.
+     *
+     * @param esa ESA file
+     * @param shortNameMap Map to populate with keys being ESA canonical paths and values being feature names (short name or symbolic name)
+     * @throws IOException If the ESA's canonical path cannot be resolved or the ESA cannot be read
+     */
+    private static void populateFeatureNameFromManifest(File esa, Map<String, String> shortNameMap) throws IOException {
         String esaLocation = esa.getCanonicalPath();
         ZipFile zip = null;
         try {
@@ -791,8 +818,12 @@ public class InstallKernelMap implements Map {
             if (subsystemEntry != null) {
                 Manifest m = ManifestProcessor.parseManifest(zip.getInputStream(subsystemEntry));
                 Attributes manifestAttrs = m.getMainAttributes();
-                String shortNameAttr = manifestAttrs.getValue(SHORTNAME_HEADER_NAME);
-                shortNameMap.put(esa.getCanonicalPath(), shortNameAttr);
+                String featureName = manifestAttrs.getValue(SHORTNAME_HEADER_NAME);
+                if (featureName == null) {
+                    // Symbolic name field has ";" as delimiter between the actual symbolic name and other tokens such as visibility
+                    featureName = manifestAttrs.getValue(SYMBOLICNAME_HEADER_NAME).split(";")[0];
+                }
+                shortNameMap.put(esa.getCanonicalPath(), featureName);
             }
         } finally {
             if (zip != null) {
@@ -808,19 +839,17 @@ public class InstallKernelMap implements Map {
      * @param shortNameMap contains features parsed from individual esa files
      * @return singleJson file
      * @throws IOException
-     * @throws BuildException
      * @throws RepositoryException
      * @throws InstallException
      */
-    private File generateJsonFromIndividualESAs(Path jsonDirectory, Map<String, String> shortNameMap) throws IOException, BuildException, RepositoryException, InstallException {
-
+    private File generateJsonFromIndividualESAs(Path jsonDirectory, Map<String, String> shortNameMap) throws IOException, RepositoryException, InstallException {
         String dir = jsonDirectory.toString();
         List<File> esas = (List<File>) data.get(INDIVIDUAL_ESAS);
         File singleJson = new File(dir + "/SingleJson.json");
 
         for (File esa : esas) {
             try {
-                populateShortNameFromManifest(esa, shortNameMap);
+                populateFeatureNameFromManifest(esa, shortNameMap);
             } catch (IOException e) {
                 throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_ESA_NOT_FOUND", esa.getAbsolutePath()));
             }
@@ -840,8 +869,11 @@ public class InstallKernelMap implements Map {
             RepositoryResourceWritable resource = parser.parseFileToResource(esa, null, null);
             resource.updateGeneratedFields(true);
             resource.setRepositoryConnection(mySingleFileRepo);
-            resource.uploadToMassive(new AddThenDeleteStrategy());
 
+            // Overload the Maven coordinates field with the file path, since the ESA should be installed from that path
+            resource.setMavenCoordinates(esa.getAbsolutePath());
+
+            resource.uploadToMassive(new AddThenDeleteStrategy());
         }
 
         return singleJson;

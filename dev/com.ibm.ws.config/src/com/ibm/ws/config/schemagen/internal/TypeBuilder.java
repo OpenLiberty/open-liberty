@@ -211,7 +211,7 @@ class TypeBuilder {
 
     private void buildNestedTypeInfo() {
         for (OCDType child : children) {
-            if (!child.getHasFactoryReference()) {
+            if (!child.getHasFactoryReference() && !child.getHasIBMFinalWithDefault()) {
                 error("schemagen.invalid.child", child.getObjectClassDefinition().getID());
                 continue;
             }

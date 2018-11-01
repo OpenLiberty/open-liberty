@@ -22,6 +22,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 CDITest.class,
                 PackageJsonBTestNoFeature.class,
                 PackageJsonBTestWithFeature.class,
-                FormBehaviorTest.class
+                FormBehaviorTest.class,
+                MutableHeadersTest.class,
+                SubResourceTest.class
 })
 public class FATSuite {}

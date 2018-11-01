@@ -42,8 +42,7 @@ instrument.disabled: true
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.kernel.feature.cmdline;version=latest,\
 	com.ibm.ws.kernel.feature.core;version=latest,\
-	wlp.lib.extract;version=latest,\
-	com.ibm.ws.org.apache.ant;version=latest	
+	wlp.lib.extract;version=latest
 
 -testpath: \
     com.ibm.websphere.javaee.jaxb.2.2;version=latest,\

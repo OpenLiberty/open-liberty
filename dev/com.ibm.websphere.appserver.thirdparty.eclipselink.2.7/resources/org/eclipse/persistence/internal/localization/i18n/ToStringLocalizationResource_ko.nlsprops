@@ -105,17 +105,17 @@ sdo_classgenerator_usage_help_1of8={0} \uc0ac\uc6a9\ubc95: org.eclipse.persisten
 
 sdo_classgenerator_usage_help_2of8=\uc635\uc158:
 
-sdo_classgenerator_usage_help_3of8=    -help                        \ub3c4\uc6c0\ub9d0 \uba54\uc2dc\uc9c0 \ud14d\uc2a4\ud2b8 \uc778\uc1c4
+sdo_classgenerator_usage_help_3of8=-help                        \ub3c4\uc6c0\ub9d0 \uba54\uc2dc\uc9c0 \ud14d\uc2a4\ud2b8 \uc778\uc1c4
 
-sdo_classgenerator_usage_help_4of8=    -sourceFile <FileName>       \uc785\ub825 \uc2a4\ud0a4\ub9c8 \ud30c\uc77c(\ud544\uc218)
+sdo_classgenerator_usage_help_4of8=-sourceFile <FileName>       \uc785\ub825 \uc2a4\ud0a4\ub9c8 \ud30c\uc77c(\ud544\uc218)
 
-sdo_classgenerator_usage_help_5of8=    -targetDirectory <DirName>   Java \uc18c\uc2a4\ub97c \uc0dd\uc131\ud560 \ub514\ub809\ud1a0\ub9ac(\uc120\ud0dd\uc0ac\ud56d)
+sdo_classgenerator_usage_help_5of8=-targetDirectory <DirName>   Java \uc18c\uc2a4\ub97c \uc0dd\uc131\ud560 \ub514\ub809\ud1a0\ub9ac(\uc120\ud0dd\uc0ac\ud56d)
 
-sdo_classgenerator_usage_help_6of8=    -logLevel <level int>        \ub85c\uae45 \ub808\ubca8\uc758 \uc815\uc218 \uac12 \uc9c0\uc815(8=OFF,7=SEVERE,6=WARNING,5=INFO,4=CONFIG,3=FINE,2=FINER(\uae30\ubcf8\uac12),1=FINEST,0=ALL).
+sdo_classgenerator_usage_help_6of8=-logLevel <level int>        \ub85c\uae45 \ub808\ubca8\uc758 \uc815\uc218 \uac12 \uc9c0\uc815(8=OFF,7=SEVERE,6=WARNING,5=INFO,4=CONFIG,3=FINE,2=FINER(\uae30\ubcf8\uac12),1=FINEST,0=ALL).
 
-sdo_classgenerator_usage_help_7of8=    -noInterfaces                \uc778\ud130\ud398\uc774\uc2a4 \ud074\ub798\uc2a4 \uc0dd\uc131 \uae08\uc9c0
+sdo_classgenerator_usage_help_7of8=-noInterfaces                \uc778\ud130\ud398\uc774\uc2a4 \ud074\ub798\uc2a4 \uc0dd\uc131 \uae08\uc9c0
 
-sdo_classgenerator_usage_help_8of8=    -noImpls                     impl \ud074\ub798\uc2a4 \uc0dd\uc131 \uae08\uc9c0
+sdo_classgenerator_usage_help_8of8=-noImpls                     impl \ud074\ub798\uc2a4 \uc0dd\uc131 \uae08\uc9c0
 
 sdo_classgenerator_usage_missing_sourcefile={0} -sourceFile \ub9e4\uac1c\ubcc0\uc218\uac00 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc558\uace0 \uc774\ub294 \ud544\uc218\uc785\ub2c8\ub2e4.
 
@@ -127,43 +127,43 @@ server_name=\uc11c\ubc84 \uc774\ub984
 
 shortestTime=\ucd5c\ub2e8 \uc2dc\uac04
 
-staticweave_commandline_help_message_10of19=    -log
+staticweave_commandline_help_message_10of19=-log
 
-staticweave_commandline_help_message_11of19=           \ub85c\uae45 \ud30c\uc77c\uc744 \uc9c0\uc815\ud569\ub2c8\ub2e4.
+staticweave_commandline_help_message_11of19=\ub85c\uae45 \ud30c\uc77c\uc744 \uc9c0\uc815\ud569\ub2c8\ub2e4.
 
-staticweave_commandline_help_message_12of19=    -loglevel
+staticweave_commandline_help_message_12of19=-loglevel
 
-staticweave_commandline_help_message_13of19=           \ub85c\uae45 \ub808\ubca8\uc758 \uc815\uc218 \uac12\uc744 \uc9c0\uc815\ud569\ub2c8\ub2e4(8=OFF,7=SEVERE,6=WARNING,5=INFO,4=CONFIG,3=FINE,2=FINER(\uae30\ubcf8\uac12),1=FINEST,0=ALL).
+staticweave_commandline_help_message_13of19=\ub85c\uae45 \ub808\ubca8\uc758 \uc815\uc218 \uac12\uc744 \uc9c0\uc815\ud569\ub2c8\ub2e4(8=OFF,7=SEVERE,6=WARNING,5=INFO,4=CONFIG,3=FINE,2=FINER(\uae30\ubcf8\uac12),1=FINEST,0=ALL).
 
-staticweave_commandline_help_message_14of19=    \uc18c\uc2a4\uc5d0\uc11c \ud074\ub798\uc2a4\ub97c \ub85c\ub4dc\ud558\ub294 \ub370 \ud544\uc694\ud55c \ubaa8\ub4e0 \ud074\ub798\uc2a4\uac00 \ud074\ub798\uc2a4 \uacbd\ub85c\uc5d0 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+staticweave_commandline_help_message_14of19=\uc18c\uc2a4\uc5d0\uc11c \ud074\ub798\uc2a4\ub97c \ub85c\ub4dc\ud558\ub294 \ub370 \ud544\uc694\ud55c \ubaa8\ub4e0 \ud074\ub798\uc2a4\uac00 \ud074\ub798\uc2a4 \uacbd\ub85c\uc5d0 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.
 
-staticweave_commandline_help_message_15of19=    \uc18c\uc2a4 \ubc0f \ub300\uc0c1\uc774 \ub3d9\uc77c\ud55c \uc704\uce58\ub97c \uac00\ub974\ud0a4\ub294 \uacbd\uc6b0 \uc704\ube59\uc774 \uc801\uc808\ud558\uac8c \uc218\ud589\ub429\ub2c8\ub2e4. \uc801\uc808\ud55c \uc704\ube59\uc740 \ub514\ub809\ud1a0\ub9ac \uae30\ubc18 \uc18c\uc2a4\uc5d0\uc11c\ub9cc \uc801\uc6a9 \uac00\ub2a5\ud569\ub2c8\ub2e4.
+staticweave_commandline_help_message_15of19=\uc18c\uc2a4 \ubc0f \ub300\uc0c1\uc774 \ub3d9\uc77c\ud55c \uc704\uce58\ub97c \uac00\ub974\ud0a4\ub294 \uacbd\uc6b0 \uc704\ube59\uc774 \uc801\uc808\ud558\uac8c \uc218\ud589\ub429\ub2c8\ub2e4. \uc801\uc808\ud55c \uc704\ube59\uc740 \ub514\ub809\ud1a0\ub9ac \uae30\ubc18 \uc18c\uc2a4\uc5d0\uc11c\ub9cc \uc801\uc6a9 \uac00\ub2a5\ud569\ub2c8\ub2e4.
 
-staticweave_commandline_help_message_16of19=  \uc608\uc81c:
+staticweave_commandline_help_message_16of19=\uc608\uc81c:
 
-staticweave_commandline_help_message_17of19=    C:\\foo-containing-persistence-xml.jar \ub0b4\uc5d0 \ud3ec\ud568\ub41c \ud574\ub2f9 persistence.xml\uc774 \ud3ec\ud568\ub41c C:\\foo-source.jar\uc5d0 \uc788\ub294 \ubaa8\ub4e0 \uc5d4\ud2f0\ud2f0 \uc704\ube0c
+staticweave_commandline_help_message_17of19=C:\foo-containing-persistence-xml.jar \ub0b4\uc5d0 \ud3ec\ud568\ub41c \ud574\ub2f9 persistence.xml\uc774 \ud3ec\ud568\ub41c C:\foo-source.jar\uc5d0 \uc788\ub294 \ubaa8\ub4e0 \uc5d4\ud2f0\ud2f0 \uc704\ube0c
 
-staticweave_commandline_help_message_18of19=    C:\\foo-target.jar\uc5d0 \ucd9c\ub825:
+staticweave_commandline_help_message_18of19=\ubc0f C:\foo-target.jar\uc5d0 \ucd9c\ub825:
 
-staticweave_commandline_help_message_19of19=    StaticWeave -persistenceinfo C:\\foo-containing-persistence-xml.jar -classpath C:\\classpath1;C:\\classpath2 C:\\foo-source.jar C:\\foo-target.jar
+staticweave_commandline_help_message_19of19=StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:\classpath1;C:\classpath2 C:\foo-source.jar C:\foo-target.jar
 
-staticweave_commandline_help_message_1of19=  \uc0ac\uc6a9\ubc95: StaticWeave [\uc635\uc158] \uc18c\uc2a4 \ub300\uc0c1
+staticweave_commandline_help_message_1of19=\uc0ac\uc6a9\ubc95: StaticWeave [\uc635\uc158] \uc18c\uc2a4 \ub300\uc0c1
 
-staticweave_commandline_help_message_2of19=  \uc635\uc158:
+staticweave_commandline_help_message_2of19=\uc635\uc158:
 
-staticweave_commandline_help_message_3of19=    -classpath classpath
+staticweave_commandline_help_message_3of19=-classpath classpath
 
-staticweave_commandline_help_message_4of19=           \uc0ac\uc6a9\uc790 \ud074\ub798\uc2a4 \uacbd\ub85c\ub97c \uc124\uc815\ud569\ub2c8\ub2e4. \uad6c\ubd84 \uae30\ud638\ub85c ";"(Windows) \ubc0f ":"(Unix)\ub97c \uc0ac\uc6a9\ud569\ub2c8\ub2e4.
+staticweave_commandline_help_message_4of19=\uc0ac\uc6a9\uc790 \ud074\ub798\uc2a4 \uacbd\ub85c\ub97c \uc124\uc815\ud569\ub2c8\ub2e4. \uad6c\ubd84 \uae30\ud638\ub85c ";"(Windows) \ubc0f ":"(Unix)\ub97c \uc0ac\uc6a9\ud569\ub2c8\ub2e4.
 
-staticweave_commandline_help_message_5of19=    -persistenceinfo
+staticweave_commandline_help_message_5of19=-persistenceinfo
 
-staticweave_commandline_help_message_6of19=           META-INF/persistence.xml\uc774 \uc800\uc7a5\ub41c \uc704\uce58\ub97c \uba85\uc2dc\uc801\uc73c\ub85c \uc2dd\ubcc4\ud569\ub2c8\ub2e4. \uc774\ub294 META-INF/persistence.xml\uc758 \ub8e8\ud2b8\uc5ec\uc57c \ud569\ub2c8\ub2e4.
+staticweave_commandline_help_message_6of19=META-INF/persistence.xml\uc774 \uc800\uc7a5\ub41c \uc704\uce58\ub97c \uba85\uc2dc\uc801\uc73c\ub85c \uc2dd\ubcc4\ud569\ub2c8\ub2e4. \uc774\ub294 META-INF/persistence.xml\uc758 \ub8e8\ud2b8\uc5ec\uc57c \ud569\ub2c8\ub2e4.
 
-staticweave_commandline_help_message_7of19=           \uc774 \uc635\uc158\uc740 persistence.xml\uc758 <jar-file>\uc5d0\uc11c \ucc38\uc870\ub41c \ud30c\uc77c\uc744 \uc704\ube0c\ud558\ub294 \uacbd\uc6b0 \uae30\ubcf8 jar\uc744 \uc9c0\uc815\ud558\ub294 \ub370 \uc77c\ubc18\uc801\uc73c\ub85c \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
+staticweave_commandline_help_message_7of19=\uc774 \uc635\uc158\uc740 persistence.xml\uc758 <jar-file>\uc5d0\uc11c \ucc38\uc870\ub41c \ud30c\uc77c\uc744 \uc704\ube0c\ud558\ub294 \uacbd\uc6b0 \uae30\ubcf8 jar\uc744 \uc9c0\uc815\ud558\ub294 \ub370 \uc77c\ubc18\uc801\uc73c\ub85c \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 
-staticweave_commandline_help_message_8of19=    -persistencexml
+staticweave_commandline_help_message_8of19=-persistencexml
 
-staticweave_commandline_help_message_9of19=           META-INF/persistence.xml\uc774 \uc544\ub2cc \uc704\uce58\uc5d0 \uc788\ub294 \uacbd\uc6b0 \uc9c0\uc18d\uc131 \ub2e8\uc704\uc758 \ub8e8\ud2b8\uc5d0 \uc0c1\ub300\uc801\uc73c\ub85c persistence.xml\uc758 \uc704\uce58\ub97c \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
+staticweave_commandline_help_message_9of19=META-INF/persistence.xml\uc774 \uc544\ub2cc \uc704\uce58\uc5d0 \uc788\ub294 \uacbd\uc6b0 \uc9c0\uc18d\uc131 \ub2e8\uc704\uc758 \ub8e8\ud2b8\uc5d0 \uc0c1\ub300\uc801\uc73c\ub85c persistence.xml\uc758 \uc704\uce58\ub97c \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
 
 staticweave_processor_dir_not_created={0} \ub514\ub809\ud1a0\ub9ac\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 

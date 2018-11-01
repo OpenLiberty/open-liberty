@@ -107,10 +107,10 @@ public class MicroProfileClientFactoryBean extends JAXRSClientFactoryBean {
         MicroProfileClientProxyImpl clientProxy;
         if (actualState == null) {
             clientProxy = new MicroProfileClientProxyImpl(URI.create(getAddress()), proxyLoader, cri, isRoot,
-                    inheritHeaders, executorService, varValues);
+                    inheritHeaders, executorService, configuration, varValues);
         } else {
             clientProxy = new MicroProfileClientProxyImpl(actualState, proxyLoader, cri, isRoot,
-                    inheritHeaders, executorService, varValues);
+                    inheritHeaders, executorService, configuration, varValues);
         }
         RestClientNotifier notifier = RestClientNotifier.getInstance();
         if (notifier != null) {

@@ -20,7 +20,8 @@ WS-TraceGroup: concurrent
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Export-Package:\
-  com.ibm.ws.concurrent
+  com.ibm.ws.concurrent,\
+  com.ibm.ws.concurrent.service
     
 Private-Package:\
   com.ibm.ws.concurrent.internal.*,\
@@ -51,11 +52,6 @@ Service-Component:\
     immediate:=true;\
     deferrableScheduledExecutor='java.util.concurrent.ScheduledExecutorService(deferrable=true)';\
     metadataIdentifierService=com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService
-    
--dsannotations: \
-  com.ibm.ws.concurrent.internal.ContextServiceImpl,\
-  com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl,\
-  com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceImpl
 
 instrument.classesExcludes: com/ibm/ws/concurrent/resources/*.class
 

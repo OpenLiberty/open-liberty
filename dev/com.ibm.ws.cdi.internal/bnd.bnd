@@ -52,7 +52,7 @@ WS-TraceGroup: JCDI
         com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
         com.ibm.websphere.javaee.transaction.1.2;version=latest,\
         com.ibm.ws.container.service;version=latest,\
-        com.ibm.ws.org.jboss.weld.2.4.7;version=latest,\
+        com.ibm.ws.org.jboss.weld.2.4.8;version=latest,\
         com.ibm.websphere.org.osgi.core,\
         com.ibm.ws.cdi.interfaces;version=latest,\
         com.ibm.ws.managedobject;version=latest,\
