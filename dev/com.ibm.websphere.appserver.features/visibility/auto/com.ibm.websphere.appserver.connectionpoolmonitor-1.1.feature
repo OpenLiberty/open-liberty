@@ -1,7 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.connectionpoolmonitor-1.0
+symbolicName=com.ibm.websphere.appserver.connectionpoolmonitor-1.1
 IBM-API-Package: com.ibm.websphere.connectionpool.monitor; type="ibm-api"
-Manifest-Version: 1.0
+Manifest-Version: 1.1
 IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.monitor-1.0))", \
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.connectionManagement-1.0))"
 IBM-Install-Policy: when-satisfied

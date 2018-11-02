@@ -17,8 +17,8 @@
   <!-- IBM-API required properties. -->
   <property name="bundleName" value="WebSphere ConnectionPool Stats" />
   <property name="api.ibm.symbolic.suffix" value="connectionpool" />
-  <property name="api.ibm.version" value="1.0"/>  
-  <property name="feature.name" value="com.ibm.websphere.appserver.connectionpoolmonitor-1.0"/>
+  <property name="api.ibm.version" value="1.1"/>  
+  <property name="feature.name" value="com.ibm.websphere.appserver.connectionpoolmonitor-1.1"/>
         
   <import file="../ant_build/public_imports/apibnd_imports.xml"/>
   <property name="additional.javadoc.src.dirs" value="${basedir}/../com.ibm.websphere.connectionpool.monitor/src/"/>
