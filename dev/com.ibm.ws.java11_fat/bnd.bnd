@@ -12,8 +12,12 @@
 bVersion=1.0
 
 src: \
-	fat/src
+	fat/src,\
+	test-applications/cnfeApp/src
 
 fat.project: true
 
 fat.minimum.java.level: 11
+
+-buildpath: \
+    com.ibm.websphere.javaee.servlet.4.0;version=latest
