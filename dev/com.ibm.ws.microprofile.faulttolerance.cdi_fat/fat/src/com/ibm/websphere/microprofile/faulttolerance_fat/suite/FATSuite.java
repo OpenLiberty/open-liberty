@@ -29,6 +29,7 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDICircuitBreaker
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDIFallbackTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDIRetryTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDITimeoutTest;
+import com.ibm.websphere.microprofile.faulttolerance_fat.tests.FallbackMethodTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.TxRetryReorderedTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.TxRetryTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.enablement.DisableEnableTest;
@@ -49,6 +50,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
                 TestMultiModuleConfigLoad.class,
                 TestMultiModuleClassLoading.class,
                 ValidationTest.class,
+                FallbackMethodTest.class,
                 DisableEnableTest.class,
 })
 
