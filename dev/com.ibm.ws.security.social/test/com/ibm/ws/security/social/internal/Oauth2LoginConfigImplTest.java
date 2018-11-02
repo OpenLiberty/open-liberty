@@ -139,6 +139,23 @@ public class Oauth2LoginConfigImplTest extends CommonConfigTestClass {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
+    
+    @Test
+    public void testUseJvmProps() {
+        try {
+            Map<String, Object> minimumProps = getRequiredConfigProps();
+            minimumProps.put(Oauth2LoginConfigImpl.KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS, new Boolean(true));
+
+            configImpl.initProps(cc, minimumProps);
+            configImpl.setOptionalConfigAttributes(minimumProps);
+            assertTrue(configImpl.getUseSystemPropertiesForHttpClientConnections());
+
+            verifyNoLogMessage(outputMgr, MSG_BASE);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
 
     /************************************** initializeJwt **************************************/
 

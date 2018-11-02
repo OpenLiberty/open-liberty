@@ -59,6 +59,7 @@ import org.osgi.service.url.URLStreamHandlerService;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.classloading.ClassGenerator;
 import com.ibm.ws.classloading.ClassLoaderIdentifierService;
 import com.ibm.ws.classloading.LibertyClassLoadingService;
@@ -433,6 +434,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
         }
     }
 
+    @Trivial // injected trace calls ProtectedDomain.toString() which requires privileged access
     public Map<String, ProtectionDomain> getProtectionDomainMap() {
         return protectionDomainMap;
     }
@@ -701,6 +703,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
      * @see com.ibm.wsspi.classloading.ClassLoadingService#setSharedLibraryProtectionDomains(java.util.Map)
      */
     @Override
+    @Trivial // injected trace calls ProtectedDomain.toString() which requires privileged access
     public void setSharedLibraryProtectionDomains(Map<String, ProtectionDomain> protectionDomainMap) {
         this.protectionDomainMap = protectionDomainMap;
     }

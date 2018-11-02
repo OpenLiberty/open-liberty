@@ -1,0 +1,24 @@
+###############################################################################
+# Copyright (c) 2010, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.classloading/resources/com/ibm/ws/classloading/internal/resources/Java2SecurityUtilMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Java 2 Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+INCORRECT_PERMISSION_CONFIGURATION=CWWKS1800W: Konfigurace opr\u00e1vn\u011bn\u00ed java v {2} je chybn\u00e1. Pokus o vytvo\u0159en\u00ed opr\u00e1vn\u011bn\u00ed {0} zp\u016fsobil v\u00fdjimku kv\u016fli {1}.
+INCORRECT_PERMISSION_CONFIGURATION.explanation=Nejm\u00e9n\u011b jeden z parametr\u016f uveden\u00fdch v konfiguraci opr\u00e1vn\u011bn\u00ed je chybn\u00fd a opr\u00e1vn\u011bn\u00ed bylo zru\u0161eno. Prove\u010fte anal\u00fdzu v\u00fdjimky uveden\u00e9 ve zpr\u00e1v\u011b a ur\u010dete, kter\u00fd parametr byl p\u0159\u00ed\u010dinou tohoto selh\u00e1n\u00ed.
+INCORRECT_PERMISSION_CONFIGURATION.useraction=Ujist\u011bte se, \u017ee r\u016fzn\u00e9 parametry, kter\u00e9 jsou k dispozici jako sou\u010d\u00e1st konfigurace opr\u00e1vn\u011bn\u00ed, jsou spr\u00e1vn\u00e9.
+PERMISSION_CLASSNOTFOUND=CWWKS1801W: Konfigurace opr\u00e1vn\u011bn\u00ed Java v {2} je chybn\u00e1. Pokus o vytvo\u0159en\u00ed opr\u00e1vn\u011bn\u00ed {0} zp\u016fsobil v\u00fdjimku kv\u016fli {1}. K t\u00e9to situaci m\u016f\u017ee doj\u00edt, pokud aplikace obsahuje vlastn\u00ed t\u0159\u00eddu opr\u00e1vn\u011bn\u00ed. V takov\u00e9m p\u0159\u00edpad\u011b, se t\u0159\u00edda opr\u00e1vn\u011bn\u00ed nach\u00e1z\u00ed v pozd\u011bj\u0161\u00edm zpracov\u00e1n\u00ed a tuto chybu m\u016f\u017eete ignorovat.
+PERMISSION_CLASSNOTFOUND.explanation= Nepoda\u0159ilo se na\u010d\u00edst t\u0159\u00eddu opr\u00e1vn\u011bn\u00ed. Pokud se jedn\u00e1 o vlastn\u00ed t\u0159\u00eddu opr\u00e1vn\u011bn\u00ed zabalenou v aplikaci, bude nalezena p\u0159i pozd\u011bj\u0161\u00edm zpracov\u00e1n\u00ed a tuto chybu je mo\u017eno ignorovat.
+PERMISSION_CLASSNOTFOUND.useraction= P\u0159esv\u011bd\u010dte se, \u017ee je t\u0159\u00edda opr\u00e1vn\u011bn\u00ed vlastn\u00ed t\u0159\u00edda, a je ulo\u017eena v bin\u00e1rn\u00edch souborech aplikace. Jinak je t\u0159eba tuto chybu prozkoumat bl\u00ed\u017ee.

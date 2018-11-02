@@ -36,7 +36,12 @@ public class TAIUserApiUtils {
         UserApiConfig userApiConfig = userinfoCfg[0];
         String userinfoApi = userApiConfig.getApi();
         try {
-            String userApiResp = clientUtil.getUserApiResponse(userinfoApi, accessToken, sslSocketFactory, false, clientConfig.getUserApiNeedsSpecialHeader());
+            String userApiResp = clientUtil.getUserApiResponse(userinfoApi,
+                    accessToken, 
+                    sslSocketFactory,
+                    false,
+                    clientConfig.getUserApiNeedsSpecialHeader(),
+                    clientConfig.getUseSystemPropertiesForHttpClientConnections());
             if (userApiResp != null && userApiResp.startsWith("[") && userApiResp.endsWith("]")) {
                 return convertToJson(userApiResp, clientConfig.getUserNameAttribute());
             } else {

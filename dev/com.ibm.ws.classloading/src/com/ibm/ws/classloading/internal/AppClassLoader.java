@@ -48,6 +48,7 @@ import com.ibm.ws.artifact.url.WSJarURLConnection;
 import com.ibm.ws.classloading.ClassGenerator;
 import com.ibm.ws.classloading.internal.providers.Providers;
 import com.ibm.ws.classloading.internal.util.ClassRedefiner;
+import com.ibm.ws.classloading.internal.util.FeatureSuggestion;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -70,7 +71,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     };
 
     static final List<SearchLocation> PARENT_FIRST_SEARCH_ORDER = freeze(list(PARENT, SELF, DELEGATES));
-
+    
     static final String CLASS_LOADING_TRACE_PREFIX = "com.ibm.ws.class.load.";
     static final String DEFAULT_PACKAGE = "default.package";
     /** per class loader collection of per-package trace components */
@@ -347,6 +348,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         return clazz;
     }
 
+    @Trivial // injected trace calls ProtectedDomain.toString() which requires privileged access
     private ProtectionDomain getClassSpecificProtectionDomain(final String name, final URL resourceUrl) {
         ProtectionDomain pd = config.getProtectionDomain();
         try {
@@ -454,7 +456,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                 return generatedClass;
 
             // could not generate class - throw CNFE
-            throw e;
+            throw FeatureSuggestion.getExceptionWithSuggestion(e);
         } finally {
             ThreadIdentityManager.reset(token);
         }

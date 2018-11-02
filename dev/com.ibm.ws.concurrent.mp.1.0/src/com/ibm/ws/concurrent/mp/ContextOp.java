@@ -16,7 +16,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
  * Describes an operation that is performed with regard to establishing context on a thread.
  */
 @Trivial
-enum ContextOp {
+public enum ContextOp {
     /**
      * Thread context of the specified type is cleared from the thread of execution
      * before performing the action/task.

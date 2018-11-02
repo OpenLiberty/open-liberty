@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.jwt.internal;
 
@@ -48,6 +48,7 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
     private boolean jwkEnabled;
     private String jwkEndpointUrl;
     private boolean validationRequired = true;
+    private boolean useSystemPropertiesForHttpClientConnections = false;
     String sslRef;
 
     private ConsumerUtils consumerUtil = null; // init during process(activate and modify)
@@ -107,6 +108,7 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
         jwkEnabled = (Boolean) props.get(JwtUtils.CFG_KEY_JWK_ENABLED); // internal
         jwkEndpointUrl = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_JWK_ENDPOINT_URL)); // internal
         sslRef = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_SSL_REF));
+        useSystemPropertiesForHttpClientConnections = (Boolean) props.get(JwtUtils.CFG_KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS);
 
         consumerUtil = new ConsumerUtils(keyStoreServiceRef);
         jwkSet = null; // the jwkEndpoint may have been changed during dynamic update
@@ -196,6 +198,11 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
     public boolean getTokenReuse() {
         // The common JWT code is not allowed to reuse JWTs. This could be revisited later as a potential config option.
         return false;
+    }
+
+    @Override
+    public boolean getUseSystemPropertiesForHttpClientConnections() {
+        return useSystemPropertiesForHttpClientConnections;
     }
 
 }

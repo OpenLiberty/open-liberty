@@ -36,6 +36,6 @@ public class StateContextProvider implements ThreadContextProvider {
 
     @Override
     public String getThreadContextType() {
-        return "State";
+        return TestContextTypes.STATE;
     }
 }

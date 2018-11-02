@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -96,7 +96,7 @@ public class JtiNonceCache {
     }
 
     /**
-     * Find and return the object associated with the specified key.
+     * Find and return the object associated with the specified key. Add it if not already present.
      */
     public boolean contain(OidcTokenImplBase token) { //(IdToken token) {
 

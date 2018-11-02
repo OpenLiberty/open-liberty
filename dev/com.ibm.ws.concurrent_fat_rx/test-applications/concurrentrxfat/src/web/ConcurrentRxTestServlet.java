@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ServiceLoader;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
@@ -64,6 +63,7 @@ import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.eclipse.microprofile.concurrent.ThreadContextBuilder;
 import org.junit.Test;
 import org.test.context.location.CurrentLocation;
+import org.test.context.location.TestContextTypes;
 
 import componenttest.app.FATServlet;
 
@@ -1248,16 +1248,10 @@ public class ConcurrentRxTestServlet extends FATServlet {
         final CompletableFuture<String> cf = new CompletableFuture<String>();
         CompletionStage<Void> cs1 = cs0.thenAcceptAsync(value -> cf.complete(Thread.currentThread().getName() + ":" + value));
 
-        // It's odd that the lambda supplied to cf.complete could run on the thread that invokes cf.get,
-        // but that appears to happen infrequently, and it is Java's code, not OpenLiberty.  The test can
-        // cope with it by polling for the cf to be done.
-        for (long start = System.nanoTime(); !cf.isDone() && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
-        assertTrue(cf.isDone());
-
-        String result = cf.getNow("value-if-absent");
+        String result = cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertTrue(result, result.endsWith(":86"));
         assertTrue(result, result.startsWith("Default Executor-thread-"));
-        assertTrue(result, !result.startsWith(Thread.currentThread().getName()));
+        assertTrue(result, !result.startsWith(Thread.currentThread().getName() + ':'));
 
         // Disallow CompletableFuture methods on dependent stage:
         CompletableFuture<Void> cf1 = (CompletableFuture<Void>) cs1;
@@ -1442,21 +1436,6 @@ public class ConcurrentRxTestServlet extends FATServlet {
         assertEquals(Long.valueOf(100), cf0.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertTrue(cf0.isDone());
         assertFalse(cf0.isCompletedExceptionally());
-    }
-
-    // TODO replace this test with one that expects the custom thread context to be propagated to completion stage actions
-    @Test
-    public void testCustomContextProvider() throws Exception {
-        CurrentLocation.setLocation("Minnesota");
-        try {
-            assertEquals(6.875, CurrentLocation.getStateSalesTax(100.0), 0.000001);
-        } finally {
-            CurrentLocation.setLocation("");
-        }
-
-        ServiceLoader<org.eclipse.microprofile.concurrent.spi.ThreadContextProvider> providers = ServiceLoader
-                        .load(org.eclipse.microprofile.concurrent.spi.ThreadContextProvider.class);
-        providers.iterator().next();
     }
 
     /**
@@ -1735,7 +1714,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
         String result = cf2.get();
         assertTrue(result, result.endsWith(":5f"));
         assertTrue(result, result.startsWith("Default Executor-thread-"));
-        assertTrue(result, !result.startsWith(Thread.currentThread().getName()));
+        assertTrue(result, !result.startsWith(Thread.currentThread().getName() + ':'));
 
         // obtrude and the get operation above are possible having obtained a CompletableFuture
         cf2.obtrudeValue("95");
@@ -2518,6 +2497,44 @@ public class ConcurrentRxTestServlet extends FATServlet {
             assertNull(supplier.executionThread);
         } finally {
             continueLatch.countDown(); // unblock
+        }
+    }
+
+    /**
+     * Test that prerequisite context is applied to the thread before the type(s) of
+     * context that declared it prerequisite. This test relies upon two custom thread context
+     * types where the "City" context type validates that the current "State" context type
+     * indicates a valid combination of (city, state) upon its application to the thread.
+     */
+    @Test
+    public void testPrerequisiteContext() throws Exception {
+        Function<Double, Double> totalCost = purchaseAmount -> {
+            return purchaseAmount + CurrentLocation.getTotalSalesTax(purchaseAmount);
+        };
+        Function<Double, Double> totalCostInRochesterMN;
+        Function<Double, Double> totalCostInAmesIA;
+
+        ThreadContext contextSvc = ThreadContextBuilder.instance()
+                        .propagated(TestContextTypes.CITY, TestContextTypes.STATE)
+                        .build();
+
+        try {
+            CurrentLocation.setLocation("Rochester", "Minnesota");
+            totalCostInRochesterMN = contextSvc.withCurrentContext(totalCost);
+
+            CurrentLocation.setLocation("Ames", "Iowa");
+            totalCostInAmesIA = contextSvc.withCurrentContext(totalCost);
+
+            CurrentLocation.setLocation("Madison", "Wisconsin");
+
+            assertEquals(212.60, totalCostInRochesterMN.apply(198.00), 0.01);
+
+            assertEquals(211.86, totalCostInAmesIA.apply(198.00), 0.01);
+
+            // Verify that context is restored
+            assertEquals(208.89, totalCost.apply(198.00), 0.01);
+        } finally {
+            CurrentLocation.clear();
         }
     }
 
@@ -3476,24 +3493,54 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
-     * Basic test of ThreadContextBuilder used to create a ThreadContext with customized context propagation.
-     * TODO finish writing this test after ThreadContext is more fully implemented.
+     * Basic test of ThreadContextBuilder, including one built-in container context type (APPLICATION)
+     * and one custom context provider type (TestContextTypes.STATE). Build a MicroProfile ThreadContext
+     * instance and use it to contextualize a task based on current context of the servlet thread.
+     * Change the custom "State" context of the servlet thread and run the contextualized task,
+     * verifying that the originally captured context is used. After the task ends, verify that
+     * the custom "State" context on the servlet thread has been restored to what we most recently set.
+     * Submit the same contextual task to an asynchronous unmanaged executor thread (lacking context)
+     * and verify that it runs with the context that was originally captured.
      */
     @Test
     public void testThreadContextBuilder() throws Exception {
-        ThreadContext contextSvc = ThreadContextBuilder.instance().propagated(ThreadContext.APPLICATION).build();
-        Supplier<Object> supplier = contextSvc.withCurrentContext((Supplier<Object>) () -> { // TODO remove cast
-            try {
-                return InitialContext.doLookup("java:comp/env/executorRef"); // requires application context
-            } catch (NamingException x) {
-                throw new RuntimeException(x);
-            }
-        });
+        ThreadContext contextSvc = ThreadContextBuilder.instance()
+                        .propagated(ThreadContext.APPLICATION, TestContextTypes.STATE)
+                        .build();
+
+        Callable<Object[]> task;
+        Object[] results;
+
+        CurrentLocation.setLocation("Minnesota");
+        try {
+            task = contextSvc.withCurrentContext((Callable<Object[]>) () -> { // TODO remove cast
+                try {
+                    return new Object[] {
+                                          InitialContext.doLookup("java:comp/env/executorRef"), // requires Application context
+                                          CurrentLocation.getStateSalesTax(100.0) // requires State context
+                    };
+                } catch (NamingException x) {
+                    throw new RuntimeException(x);
+                }
+            });
+
+            CurrentLocation.setLocation("Wisconsin");
+
+            results = task.call();
+            assertNotNull(results[0]); // lookup from same thread
+            assertEquals(6.875, (Double) results[1], 0.000001); // MN tax rate
+
+            // verify that context is restored once complete
+            assertEquals(5.000, CurrentLocation.getStateSalesTax(100.0), 0.000001); // WI tax rate
+        } finally {
+            CurrentLocation.clear();
+        }
 
         // Run on a thread that lacks access to the application's name space
-        Future<?> resultRef = testThreads.submit(() -> supplier.get());
-        Object result = resultRef.get();
-        assertNotNull(result);
+        Future<Object[]> resultRef = testThreads.submit(task);
+        results = resultRef.get();
+        assertNotNull(results[0]); // lookup from executor thread
+        assertEquals(6.875, (Double) results[1], 0.000001); // MN tax rate
     }
 
     /**

@@ -53,7 +53,7 @@ public class BaseMetrics {
     private void populateGcNames(Set<ObjectInstance> mBeanObjectInstanceSet) {
         for (ObjectInstance objInstance : mBeanObjectInstanceSet) {
             String objectName = objInstance.getObjectName().toString();
-            if (objectName.contains(BaseMetricConstants.GC_OBJECT_TYPE)) {
+            if (objectName.matches(BaseMetricConstants.GC_OBJECT_TYPE)) {
                 for (String subString : objectName.split(",")) {
                     subString = subString.trim();
                     if (subString.contains("name=")) {
