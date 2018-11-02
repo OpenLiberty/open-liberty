@@ -536,8 +536,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         // PK80362 Start
         // String header = _request.getHeader(name);
         String header = null;
-        if ( (suppressHeadersInRequest == null) ||  !(isHeaderinSuppressedHeadersList(name))){       				
-            header = _request.getHeader(name);
+        if ( (suppressHeadersInRequest == null) ||  !(isHeaderinSuppressedHeadersList(name))){  
+            if (this._request != null) {
+                header = _request.getHeader(name);
+            }
         }// PK80362 End
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getHeader", "this->"+this+": "+" name --> " + name + " header --> " + PasswordNullifier.nullifyParams(header));
@@ -776,7 +778,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             checkRequestObjectInUse();
         }
         // 321485
-        String host = this._request.getRemoteHost();
+        String host = null;
+        if (this._request != null) {
+            host = this._request.getRemoteHost();
+        }
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getRemoteHost", "this->"+this+": "+" host --> " + host);
         }
@@ -1341,7 +1346,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             checkRequestObjectInUse();
         }
         // 321485
-        String addr = this._request.getLocalAddr();
+        String addr = null;
+        if (this._request != null) {
+            addr = this._request.getLocalAddr();
+        }
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getLocalAddr", " address --> " + addr);
         }
@@ -1371,7 +1379,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             checkRequestObjectInUse();
         }
         // 321485
-        int port = this._request.getLocalPort();
+        int port = 0;
+        if (this._request != null) {
+            port = this._request.getLocalPort();
+        }
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getLocalPort", " port --> " + String.valueOf(port));
         }
@@ -1386,7 +1397,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             checkRequestObjectInUse();
         }
         // 321485
-        int port = this._request.getRemotePort();
+        int port = 0;
+        if (this._request != null) {
+            port = this._request.getRemotePort();
+        }
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getRemotePort", " port --> " + String.valueOf(port));
         }
@@ -2080,11 +2094,12 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
             checkRequestObjectInUse();
         }
-        String remoteUser;
+        String remoteUser = null;
         Principal principal = getUserPrincipal();
         if (principal == null) {
             //remoteUser = null;
-            remoteUser = _request.getRemoteUser();
+            if (this._request != null) 
+                remoteUser = _request.getRemoteUser();
         } else {
             remoteUser = principal.getName();
             if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
