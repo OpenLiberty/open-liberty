@@ -18,7 +18,7 @@ import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.webcontainer.WebContainer;
+import com.ibm.ws.webcontainer.osgi.WebContainer;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
 
 /**
@@ -94,7 +94,10 @@ public class WCCustomProperties {
     public static String SUPPRESS_HEADERS_IN_REQUEST; //PK80362
 
     public static boolean DISPATCHER_RETHROW_SER; // PK79464
+    
+    //18.0.0.4 Do not use ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS.  Use SERVLET_PATH_FOR_DEFAULT_MAPPING instead going forward
     public static boolean ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS; // PK80340
+
     public static boolean COPY_ATTRIBUTES_KEY_SET; //PK81452	
     public static boolean SUPPRESS_LAST_ZERO_BYTE_PACKAGE; // PK82794
     public static boolean DEFAULT_TRACE_REQUEST_BEHAVIOR; // PK83258.2
@@ -474,6 +477,8 @@ public class WCCustomProperties {
         }
 
         setCustomPropertyVariables(); //Need to update all the variables.
+        
+        setCustomizedDefaultValues();      //Customize default value depending on servlet level, initial size....etc..
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "setCustomProperties");
@@ -777,7 +782,22 @@ public class WCCustomProperties {
 
 	//18.0.0.3
 	SERVLET_PATH_FOR_DEFAULT_MAPPING = customProps.getProperty("com.ibm.ws.webcontainer.servletpathfordefaultmapping"); //4666
+	
+    }
+    
+    private static void setCustomizedDefaultValues(){
+        Tr.debug(tc, "Customized default values: ");
 
+        //18.0.0.4 SERVLET_PATH_FOR_DEFAULT_MAPPING has highest priority.  If not present AND ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS is true, set SERVLET_PATH_FOR_DEFAULT_MAPPING
+        if (SERVLET_PATH_FOR_DEFAULT_MAPPING == null || SERVLET_PATH_FOR_DEFAULT_MAPPING.isEmpty()){
+            if (ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS)
+                SERVLET_PATH_FOR_DEFAULT_MAPPING = "true";
+            else
+                SERVLET_PATH_FOR_DEFAULT_MAPPING = ((WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_40) ? "true" : "false" ); 
+
+            Tr.debug(tc, "servletpathfordefaultmapping = " + SERVLET_PATH_FOR_DEFAULT_MAPPING);
+        }
+        
     }
 
 }

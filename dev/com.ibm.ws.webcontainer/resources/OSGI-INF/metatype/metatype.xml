@@ -305,8 +305,8 @@
             
         <!--com.ibm.ws.webcontainer.-->
         <AD id="servletPathForDefaultMapping"
-            name="internal" 
-            description="internal" 
+            name="%servletPathForDefaultMapping.name" 
+            description="%servletPathForDefaultMapping.desc" 
             required="false" type="String" default="" />
 
         <!--com.ibm.ws.webcontainer.-->
