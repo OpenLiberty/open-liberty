@@ -33,6 +33,9 @@ import com.ibm.wsspi.classloading.ClassLoaderConfiguration;
  * and the parent classloader second.
  */
 class ParentLastClassLoader extends AppClassLoader {
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
     ParentLastClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> urls, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator) {
         super(parent, config, urls, access, redefiner, generator);
     }
@@ -71,7 +74,7 @@ class ParentLastClassLoader extends AppClassLoader {
     protected Class<?> findOrDelegateLoadClass(String className) throws ClassNotFoundException {
         // search order: 1) my class path 2) parent loader
         Class<?> rc;
-        synchronized (this) {
+        synchronized (getClassLoadingLock(className)) {
             // first check whether we already loaded this class
             rc = findLoadedClass(className);
             if (rc == null) {

@@ -64,6 +64,9 @@ import com.ibm.wsspi.library.Library;
  * to discover the special methods:
  */
 public class AppClassLoader extends ContainerClassLoader implements SpringLoader {
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
     static final TraceComponent tc = Tr.register(AppClassLoader.class);
 
     enum SearchLocation {
@@ -71,7 +74,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     };
 
     static final List<SearchLocation> PARENT_FIRST_SEARCH_ORDER = freeze(list(PARENT, SELF, DELEGATES));
-    
+
     static final String CLASS_LOADING_TRACE_PREFIX = "com.ibm.ws.class.load.";
     static final String DEFAULT_PACKAGE = "default.package";
     /** per class loader collection of per-package trace components */
@@ -261,7 +264,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             Class<?> clazz = null;
             Object token = ThreadIdentityManager.runAsServer();
             try {
-                synchronized (this) {
+                synchronized (getClassLoadingLock(name)) {
                     // This method may be invoked directly instead of via loadClass
                     // (e.g. when doing a "shallow" scan of the common library classloaders).
                     // So we first must check whether we've already defined/loaded the class.
@@ -444,21 +447,23 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     @Override
     @Trivial
     @FFDCIgnore(ClassNotFoundException.class)
-    protected final synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+    protected final Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         Object token = ThreadIdentityManager.runAsServer();
-        try {
-            return findOrDelegateLoadClass(name);
-        } catch (ClassNotFoundException e) {
-            // The class could not be found on the local class path or by
-            // delegating to parent/library class loaders.  Try to generate it.
-            Class<?> generatedClass = generateClass(name);
-            if (generatedClass != null)
-                return generatedClass;
+        synchronized (getClassLoadingLock(name)) {
+            try {
+                return findOrDelegateLoadClass(name);
+            } catch (ClassNotFoundException e) {
+                // The class could not be found on the local class path or by
+                // delegating to parent/library class loaders.  Try to generate it.
+                Class<?> generatedClass = generateClass(name);
+                if (generatedClass != null)
+                    return generatedClass;
 
-            // could not generate class - throw CNFE
-            throw FeatureSuggestion.getExceptionWithSuggestion(e);
-        } finally {
-            ThreadIdentityManager.reset(token);
+                // could not generate class - throw CNFE
+                throw FeatureSuggestion.getExceptionWithSuggestion(e);
+            } finally {
+                ThreadIdentityManager.reset(token);
+            }
         }
     }
 
