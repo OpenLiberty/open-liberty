@@ -25,3 +25,7 @@ MANAGEMENT_SECURITY_AUTHZ_FAILED.useraction=Nie jest wymagana \u017cadna czynno\
 ROLE_ENTRY_DUPLICATE=CWWKX0002E: Wykryto duplikat wpisu w powi\u0105zaniu roli {0}. Duplikat {1} wpisu to {2}.
 ROLE_ENTRY_DUPLICATE.explanation=Okre\u015blony wpis zosta\u0142 ju\u017c zdefiniowany dla okre\u015blonego powi\u0105zania roli. Podw\u00f3jne wpisy nie s\u0105 obs\u0142ugiwane.
 ROLE_ENTRY_DUPLICATE.useraction=Usu\u0144 podw\u00f3jny wpis.
+
+INVALID_ACCESS_ID=CWWKX0003E: Wykryto niepoprawny identyfikator dost\u0119pu w powi\u0105zaniu roli {0}. Niepoprawny wpis {1} to {2}.
+INVALID_ACCESS_ID.explanation=Podany wpis nie jest poprawnym identyfikatorem dost\u0119pu dla podanego powi\u0105zania roli.
+INVALID_ACCESS_ID.useraction=Usu\u0144 lub popraw niepoprawny wpis.
