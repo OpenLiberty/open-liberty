@@ -535,6 +535,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         // 321485
         // PK80362 Start
         // String header = _request.getHeader(name);
+       
         String header = null;
         if ( (suppressHeadersInRequest == null) ||  !(isHeaderinSuppressedHeadersList(name))){  
             if (this._request != null) {
@@ -2046,9 +2047,13 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         }
         SRTServletRequestThreadData reqData = SRTServletRequestThreadData.getInstance();
         if (reqData.getQueryString()==null && !reqData.isQSSetExplicit())
-            reqData.setQueryString(_request.getQueryString());
+            if (_request != null && reqData != null) {
+                reqData.setQueryString(_request.getQueryString());             
+            }
         // 321485
-        String queryString = reqData.getQueryString();
+        String queryString = null;
+        if (reqData != null)
+            queryString = reqData.getQueryString();
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getQueryString", " queryString --> " + PasswordNullifier.nullifyParams(queryString));
         }
@@ -2136,7 +2141,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         }
         // Begin PK06988, strip session id of when url rewriting is enabled
         SRTServletRequestThreadData reqData = SRTServletRequestThreadData.getInstance();
-        if (reqData.getRequestURI() == null)
+        if (reqData != null && reqData.getRequestURI() == null)
         {
             String aURI = getEncodedRequestURI();
             if (aURI == null)
@@ -2145,7 +2150,9 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
                 reqData.setRequestURI(WebGroup.stripURL(aURI));
         }
         // 321485
-        String uri = reqData.getRequestURI();
+        String uri = null;
+        if (reqData != null)
+            uri = reqData.getRequestURI();
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getRequestURI", " uri --> " + uri);
         }
