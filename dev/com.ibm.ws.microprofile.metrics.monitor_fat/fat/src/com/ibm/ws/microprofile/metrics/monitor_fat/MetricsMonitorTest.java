@@ -147,11 +147,19 @@ public class MetricsMonitorTest {
        		"vendor:connectionpool_jdbc_example_ds1_destroy_total",
        		"vendor:connectionpool_jdbc_example_ds1_create_total",
        		"vendor:connectionpool_jdbc_example_ds1_managed_connections",
+       		"vendor:connectionpool_jdbc_example_ds1_waitTime.total",
+       		"vendor:connectionpool_jdbc_example_ds1_inUseTime.total",
+       		"vendor:connectionpool_jdbc_example_ds1_grantedConnections.total",
+       		"vendor:connectionpool_jdbc_example_ds1_usedConnections.total",
        		"vendor:connectionpool_jdbc_example_ds2_connection_handles",
        		"vendor:connectionpool_jdbc_example_ds2_free_connections",
        		"vendor:connectionpool_jdbc_example_ds2_destroy_total",
        		"vendor:connectionpool_jdbc_example_ds2_create_total",
-       		"vendor:connectionpool_jdbc_example_ds2_managed_connections"
+       		"vendor:connectionpool_jdbc_example_ds2_managed_connections",
+       		"vendor:connectionpool_jdbc_example_ds2_waitTime.total",
+       		"vendor:connectionpool_jdbc_example_ds2_inUseTime.total",
+       		"vendor:connectionpool_jdbc_example_ds2_grantedConnections.total",
+       		"vendor:connectionpool_jdbc_example_ds2_usedConnections.total",
        	}, new String[] {});
        	
        	Log.info(c, testName, "------- Monitor filter ThreadPool and WebContainer  ------");
