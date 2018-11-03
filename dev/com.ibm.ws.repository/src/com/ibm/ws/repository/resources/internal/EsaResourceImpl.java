@@ -232,28 +232,44 @@ public class EsaResourceImpl extends RepositoryResourceImpl implements EsaResour
             return;
         }
 
-        String requiresJava8 = "Java SE 8";
-        String requiresJava7or8 = "Java SE 7, Java SE 8";
-        String requiresJava6or7or8 = "Java SE 6, Java SE 7, Java SE 8";
+        String minJava11 = "Java SE 11";
+        String minJava8 = "Java SE 8, Java SE 11";
+        String minJava7 = "Java SE 7, Java SE 8, Java SE 11";
+        String minJava6 = "Java SE 6, Java SE 7, Java SE 8, Java SE 11";
+
+        // TODO: Temporary special case for jdbc-4.3 (the first feature to require Java >8)
+        // Once all builds are upgrade to Java 11+, we can remove this workaround
+        if ("jdbc-4.3".equals(wlp.getLowerCaseShortName())) {
+            reqs.setVersionDisplayString(minJava11);
+            return;
+        }
 
         // The min version should have been validated when the ESA was constructed
         // so checking for the version string should be safe
         if (minVersion.equals("1.6.0")) {
-            reqs.setVersionDisplayString(requiresJava6or7or8);
+            reqs.setVersionDisplayString(minJava6);
             return;
         }
         if (minVersion.equals("1.7.0")) {
-            reqs.setVersionDisplayString(requiresJava7or8);
+            reqs.setVersionDisplayString(minJava7);
             return;
         }
         if (minVersion.equals("1.8.0")) {
-            reqs.setVersionDisplayString(requiresJava8);
+            reqs.setVersionDisplayString(minJava8);
+            return;
+        }
+        if (minVersion.startsWith("9.") ||
+            minVersion.startsWith("10.") ||
+            minVersion.startsWith("11.")) {
+            // If a feature requires a min of Java 9/10/11, state Java 11 is required because
+            // Liberty does not officially support Java 9 or 10
+            reqs.setVersionDisplayString(minJava11);
             return;
         }
 
         // The min version string has been generated/validated incorrectly
         // Can't recover from this, it is a bug in EsaUploader
-        throw new AssertionError();
+        throw new AssertionError("Unrecognized java version: " + minVersion);
 
     }
 
