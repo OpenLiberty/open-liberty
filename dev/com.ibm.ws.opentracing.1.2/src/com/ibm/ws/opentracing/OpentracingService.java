@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.opentracing;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.opentracing.filters.ExcludeFilter;
 import com.ibm.ws.opentracing.filters.SpanFilter;
 import com.ibm.ws.opentracing.filters.SpanFilterType;
 
@@ -39,6 +41,7 @@ import io.opentracing.tag.Tags;
 public class OpentracingService {
 
     private static final TraceComponent tc = Tr.register(OpentracingService.class);
+    private static String excludeFilterString = null;
 
     /**
      * List of all active span filters.
@@ -63,22 +66,26 @@ public class OpentracingService {
     @Modified
     protected void modified(Map<String, Object> map) {
 
+        String filterString = OpentracingConfiguration.getServerSkipPattern();
+        updateFilters(filterString);
+    }
+
+    private static void updateFilters(String filterString) {
+        excludeFilterString = filterString;
+
         // Build up the list of filters in a local list, then convert that to an array
         // and assign to the static reference. This is done to avoid creating an iterator
         // in the main path in `process`.
         List<SpanFilter> filters = new ArrayList<SpanFilter>();
 
-        /*
-         * Removing filter processing until microprofile spec for it is approved. Expect to add this code
-         * back in in 1Q18 - smf
-         */
-//        processFilters(filters, map, configAdmin, "excludeSpans", ExcludeFilter.class);
-//        processFilters(filters, map, configAdmin, "includeSpans", IncludeFilter.class);
+        processFilters(filters, filterString, "excludeSpans", ExcludeFilter.class);
+//      processFilters(filters, map, configAdmin, "includeSpans", IncludeFilter.class);
 
         SpanFilter[] finalFilters = new SpanFilter[filters.size()];
         filters.toArray(finalFilters);
 
         allFilters = finalFilters;
+
     }
 
     // Make sure ConfigProviderResolver is started
@@ -93,43 +100,30 @@ public class OpentracingService {
      * @param configAdmin Service to get child configurations.
      * @param childNames  The name of the configuration element to check for.
      * @param impl        The filter class to instantiate if an element is found.
-     *                        /
-     *                        private void processFilters(List<SpanFilter> filters, Map<String, Object> map, ConfigurationAdmin configAdmin, String childNames, Class<? extends
-     *                        SpanFilter>
-     *                        impl) {
-     *
-     *                        final String methodName = "processFilters";
-     *
-     *                        String[] children = (String[]) map.get(childNames);
-     *                        if (children != null) {
-     *                        for (String child : children) {
-     *                        try {
-     *                        Configuration config = configAdmin.getConfiguration(child, null);
-     *                        Dictionary<String, Object> childProperties = config.getProperties();
-     *
-     *                        String pattern = (String) childProperties.get("pattern");
-     *                        SpanFilterType type = SpanFilterType.valueOf(((String) childProperties.get("type")).trim());
-     *                        boolean ignoreCase = (Boolean) childProperties.get("ignoreCase");
-     *                        boolean regex = (Boolean) childProperties.get("regex");
-     *
-     *                        SpanFilter filter = (SpanFilter) Class.forName(impl.getName()).getConstructor(String.class, SpanFilterType.class, boolean.class,
-     *                        boolean.class).newInstance(pattern, type,
-     *                        ignoreCase, regex);
-     *
-     *                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-     *                        Tr.debug(tc, methodName, "filter " + filter);
-     *                        }
-     *
-     *                        filters.add(filter);
-     *                        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | SecurityException |
-     *                        IllegalArgumentException
-     *                        | InvocationTargetException | IOException e) {
-     *                        throw new IllegalStateException(e);
-     *                        }
-     *                        }
-     *                        }
-     *                        }
      */
+    private static void processFilters(List<SpanFilter> filters, String pattern, String childNames, Class<? extends SpanFilter> impl) {
+
+        final String methodName = "processFilters";
+
+        try {
+            SpanFilterType type = SpanFilterType.INCOMING;
+            boolean ignoreCase = false;
+            boolean regex = true;
+
+            SpanFilter filter = (SpanFilter) Class.forName(impl.getName()).getConstructor(String.class, SpanFilterType.class, boolean.class,
+                                                                                          boolean.class).newInstance(pattern, type,
+                                                                                                                     ignoreCase, regex);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, methodName, "filter " + filter);
+            }
+
+            filters.add(filter);
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | SecurityException | IllegalArgumentException
+                        | InvocationTargetException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
     /**
      * Return true if a span for the specified URI and type should be included.
@@ -140,6 +134,11 @@ public class OpentracingService {
      */
     public static boolean process(final URI uri, final SpanFilterType type) {
         final String methodName = "process";
+
+        String newExcludeFilterString = OpentracingConfiguration.getServerSkipPattern();
+        if (!newExcludeFilterString.equals(excludeFilterString)) {
+            updateFilters(newExcludeFilterString);
+        }
 
         boolean result = true;
 
