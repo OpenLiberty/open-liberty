@@ -31,6 +31,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.opentracing.filters.SpanFilterType;
 
 import io.opentracing.Scope;
 import io.opentracing.SpanContext;
@@ -86,6 +87,7 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         }
 
         URI incomingUri = incomingRequestContext.getUriInfo().getRequestUri();
+
         String incomingURL = incomingUri.toURL().toString();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, methodName + " incomingURL", incomingURL);
@@ -98,12 +100,7 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             Tr.debug(tc, methodName + " priorContext", priorOutgoingContext);
         }
 
-        /*
-         * Removing filter processing until microprofile spec for it is approved. Expect to add this code
-         * back in 1Q18 - smf
-         */
-        // boolean process = OpentracingService.process(incomingUri, SpanFilterType.INCOMING);
-        boolean process = true;
+        boolean process = OpentracingService.process(incomingUri, SpanFilterType.INCOMING);
 
         String buildSpanName;
         if (helper != null) {

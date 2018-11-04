@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.opentracing;
 
+import java.util.Optional;
+
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 
@@ -18,17 +20,22 @@ import org.eclipse.microprofile.config.ConfigProvider;
  */
 public class OpentracingConfiguration {
 
-    private static Config config = ConfigProvider.getConfig(Thread.currentThread().getContextClassLoader());
-
     public static final String MP_OT_SERVER_SKIP_PATTERN_KEY = "mp.opentracing.server.skip-pattern";
-    public static final String MP_OT_SERVER_SKIP_PATTERN_DEFAULT_VALUE = "/health|/metrics|/metrics/.*|/openapi";
+    public static final String MP_OT_SERVER_SKIP_PATTERN_DEFAULT_VALUE = "/health|/metrics|/metrics/base/.*|/metrics/vendor/.*|/metrics/application/.*|/openapi";
     public static final String MP_OT_SERVER_OPERATION_NAME_PROVIDER_KEY = "mp.opentracing.server.operation-name-provider";
 
     static String getServerSkipPattern() {
-        return config.getOptionalValue(MP_OT_SERVER_SKIP_PATTERN_KEY, String.class).orElse(MP_OT_SERVER_SKIP_PATTERN_DEFAULT_VALUE);
+        Config config = ConfigProvider.getConfig(Thread.currentThread().getContextClassLoader());
+        Optional<String> optValue = config.getOptionalValue(MP_OT_SERVER_SKIP_PATTERN_KEY, String.class);
+        if (optValue.isPresent()) {
+            return MP_OT_SERVER_SKIP_PATTERN_DEFAULT_VALUE + "|" + optValue.toString();
+        } else {
+            return MP_OT_SERVER_SKIP_PATTERN_DEFAULT_VALUE;
+        }
     }
 
     static String getOpertionNameProvider() {
+        Config config = ConfigProvider.getConfig(Thread.currentThread().getContextClassLoader());
         return config.getOptionalValue(MP_OT_SERVER_OPERATION_NAME_PROVIDER_KEY, String.class).orElse(null);
     }
 }
