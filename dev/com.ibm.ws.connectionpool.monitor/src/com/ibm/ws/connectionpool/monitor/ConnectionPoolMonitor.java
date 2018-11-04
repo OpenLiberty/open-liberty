@@ -133,6 +133,7 @@ public class ConnectionPoolMonitor extends StatisticActions {
             cStats.incCreateCount();
             cStats.incManagedConnectionCount();
             cStats.incFreeConnectionCount();
+            cStats.updateWaitTime(0);
             if (tc.isEntryEnabled()) {
                 Tr.exit(tc, "incCreateCount");
             }
