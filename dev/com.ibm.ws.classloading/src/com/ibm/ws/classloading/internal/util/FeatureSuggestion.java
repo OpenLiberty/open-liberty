@@ -103,8 +103,9 @@ public class FeatureSuggestion {
         ClassNotFoundException toThrow = new ClassNotFoundException(warnMsg, original);
         if (!suggestedFeatures.contains(suggestedFeature)) {
             suggestedFeatures.add(suggestedFeature);
-            Tr.warning(tc, warnMsg);
-            FFDCFilter.processException(toThrow, "com.ibm.ws.classloading.internal.util.FeatureSuggestion", "106");
+            // TODO: Temporarily disable the FFDC and downgrade to INFO message
+            Tr.info(tc, warnMsg);
+            //FFDCFilter.processException(toThrow, "com.ibm.ws.classloading.internal.util.FeatureSuggestion", "106");
         }
         return toThrow;
     }
@@ -121,6 +122,12 @@ public class FeatureSuggestion {
             !name.startsWith("org.omg."))
             return null;
         
+        // Weld will try to load javax.xml.ws.WebServiceRef to detect if JAX-WS API is available,
+        // so don't issue a feature suggestion for this specific class
+        // TODO: Figure out a more generic solution for internal components that do try-loads using the AppCL
+        if (name.equals("javax.xml.ws.WebServiceRef"))
+            return null;
+
         String pkg = name.substring(0, name.lastIndexOf('.'));
         return pkgToFeature.get(pkg);
     }
