@@ -769,8 +769,7 @@ public class WSKeyStore extends Properties {
 
                             // load the keystore
 
-                            if (password.isEmpty() && (type.equalsIgnoreCase(Constants.KEYSTORE_TYPE_JCEKS) || type.equalsIgnoreCase(Constants.KEYSTORE_TYPE_JKS) ||
-                                                       type.equalsIgnoreCase(Constants.KEYSTORE_TYPE_PKCS12))) {
+                            if (password.isEmpty() && (type.equalsIgnoreCase(Constants.KEYSTORE_TYPE_JCEKS) || type.equalsIgnoreCase(Constants.KEYSTORE_TYPE_JKS))) {
                                 ks1.load(is, null);
                             } else {
                                 ks1.load(is, password.toCharArray());
