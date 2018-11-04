@@ -28,8 +28,13 @@ public class ServerMessageExpectation extends Expectation {
         this(null, server, searchFor);
     }
 
-    public ServerMessageExpectation(LibertyServer server, String logFile, String searchFor) {
-        super(null, logFile, Constants.STRING_MATCHES, searchFor, String.format(DEFAULT_FAILURE_MSG, searchFor));
+    //    public ServerMessageExpectation(LibertyServer server, String logFile, String searchFor) {
+    //        super(null, logFile, Constants.STRING_MATCHES, searchFor, String.format(DEFAULT_FAILURE_MSG, searchFor));
+    //        this.server = server;
+    //    }
+
+    public ServerMessageExpectation(LibertyServer server, String searchFor, String failureMsg) {
+        super(null, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, searchFor, failureMsg);
         this.server = server;
     }
 
