@@ -44,10 +44,17 @@ public class Krb5Common {
     // Is Oracle JDK 1.8 or higher
     static private boolean isOracleJdk18OrHigher = (JavaInfo.vendor() == Vendor.ORACLE && JavaInfo.majorVersion() >= 8);
 
-    static private boolean isJava11Internal = false; //TODO - remove later
+    static private boolean isJava11Internal = false; //TODO need to remove later 
 
     // Is IBM, Oracle and Open JDK 11 or higher
     static private boolean isJdk11Up = JavaInfo.majorVersion() >= 11 || isJava11Internal;
+
+    // TODO: start stuffs that need to remove after deliver CL
+    static public boolean isJdk18Up = JavaInfo.majorVersion() >= 8;
+    static public boolean isIBMJdk18Lower = isIBMJdk18OrLower;
+    static public boolean isOracleJdk18Up = isOracleJdk18OrHigher;
+    static public boolean isSupportJDK = isIBMJdk18Lower || isOracleJdk18Up || isJdk11Up;
+    // end stuffs
 
     // SPNEGO support IBM JDK 8 and lower, Oracle JDK 8 and JDK 11 and higher
     static public boolean isOtherSupportJDKs = isOracleJdk18OrHigher || isJdk11Up;
