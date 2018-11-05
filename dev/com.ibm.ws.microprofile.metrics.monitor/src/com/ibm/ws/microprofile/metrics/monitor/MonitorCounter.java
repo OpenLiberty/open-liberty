@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.metrics.monitor;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+import javax.management.openmbean.CompositeData;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -23,19 +24,34 @@ public class MonitorCounter extends CounterImpl {
 	private static final TraceComponent tc = Tr.register(MonitorCounter.class);
 	
 	MBeanServer mbs;
-    String objectName, attribute;
+    String objectName, attribute, subAttribute;
+    boolean isComposite = false;
 
     public MonitorCounter(MBeanServer mbs, String objectName, String attribute) {
     	this.mbs = mbs;
         this.objectName = objectName;
         this.attribute = attribute;
     }
+    
+    public MonitorCounter(MBeanServer mbs, String objectName, String attribute, String subAttribute) {
+    	this.mbs = mbs;
+        this.objectName = objectName;
+        this.attribute = attribute;
+        this.subAttribute = subAttribute;
+        this.isComposite = true;
+    }
 
     @Override
     public long getCount() {
         try {
-            Number value = (Number) mbs.getAttribute(new ObjectName(objectName), attribute);
-            return value.longValue();
+        	if (isComposite) {
+                CompositeData value = (CompositeData) mbs.getAttribute(new ObjectName(objectName), attribute);
+                Number numValue = (Number) value.get(subAttribute);       
+                return numValue.longValue();
+        	} else {
+                Number value = (Number) mbs.getAttribute(new ObjectName(objectName), attribute);
+                return value.longValue();        		
+        	}
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "getCount exception message: ", e.getMessage());
