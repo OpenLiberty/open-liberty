@@ -24,8 +24,10 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.core.Configuration;
@@ -44,7 +46,12 @@ import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.microprofile.client.MPRestClientCallback;
 import org.apache.cxf.microprofile.client.MicroProfileClientProviderFactory;
+import org.apache.cxf.microprofile.client.cdi.CDIInterceptorWrapper;
+import org.apache.cxf.microprofile.client.cdi.InterceptorInvoker;
 import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;
+
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 public class MicroProfileClientProxyImpl extends ClientProxyImpl {
 
@@ -58,20 +65,26 @@ public class MicroProfileClientProxyImpl extends ClientProxyImpl {
 
     private final MPAsyncInvocationInterceptorImpl aiiImpl = new MPAsyncInvocationInterceptorImpl();
 
+    private final CDIInterceptorWrapper interceptorWrapper;
+
     public MicroProfileClientProxyImpl(URI baseURI, ClassLoader loader, ClassResourceInfo cri,
                                        boolean isRoot, boolean inheritHeaders, ExecutorService executorService,
-                                       Configuration configuration, Object... varValues) {
+                                       Configuration configuration, CDIInterceptorWrapper interceptorWrapper,
+                                       Object... varValues) {
         super(new LocalClientState(baseURI), loader, cri, isRoot, inheritHeaders, varValues);
         cfg.getRequestContext().put(EXECUTOR_SERVICE_PROPERTY, executorService);
         cfg.getRequestContext().putAll(configuration.getProperties());
+        this.interceptorWrapper = interceptorWrapper;
     }
 
     public MicroProfileClientProxyImpl(ClientState initialState, ClassLoader loader, ClassResourceInfo cri,
                                        boolean isRoot, boolean inheritHeaders, ExecutorService executorService,
-                                       Configuration configuration, Object... varValues) {
+                                       Configuration configuration, CDIInterceptorWrapper interceptorWrapper,
+                                       Object... varValues) {
         super(initialState, loader, cri, isRoot, inheritHeaders, varValues);
         cfg.getRequestContext().put(EXECUTOR_SERVICE_PROPERTY, executorService);
         cfg.getRequestContext().putAll(configuration.getProperties());
+        this.interceptorWrapper = interceptorWrapper;
     }
 
 
@@ -180,5 +193,45 @@ public class MicroProfileClientProxyImpl extends ClientProxyImpl {
         }
         filterProps.put("org.eclipse.microprofile.rest.client.invokedMethod", m);
         return msg;
+    }
+
+    @Trivial
+    @Override
+    @FFDCIgnore(Throwable.class)
+    public Object invoke(Object o, Method m, Object[] params) throws Throwable {
+            return interceptorWrapper.invoke(o, m, params, new Invoker(o, m, params, this));
+    }
+
+    @Trivial
+    private Object invokeActual(Object o, Method m, Object[] params) throws Throwable {
+        return super.invoke(o, m, params);
+    }
+
+    private static class Invoker implements Callable<Object> {
+        private final Object targetObject;
+        private final Method method;
+        private final Object[] params;
+        private final MicroProfileClientProxyImpl proxy;
+
+        @Trivial
+        Invoker(Object o, Method m, Object[] params, MicroProfileClientProxyImpl proxy) {
+            this.targetObject = o;
+            this.method = m;
+            this.params = params;
+            this.proxy = proxy;
+        }
+
+        @Trivial
+        @Override
+        public Object call() throws Exception {
+            try {
+                return proxy.invokeActual(targetObject, method, params);
+            } catch (Throwable t) {
+                if (t instanceof Exception) {
+                    throw (Exception) t;
+                }
+                throw new RuntimeException(t);
+            }
+        }
     }
 }

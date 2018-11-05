@@ -18,6 +18,7 @@ import org.apache.cxf.microprofile.client.proxy.MicroProfileClientProxyImpl;
 import org.apache.cxf.phase.Phase;
 import org.osgi.service.component.annotations.Component;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.client.configuration.LibertyJaxRsClientConfigInterceptor;
 import com.ibm.ws.microprofile.rest.client.component.RestClientBuildListener;
 
@@ -28,6 +29,15 @@ import com.ibm.ws.microprofile.rest.client.component.RestClientBuildListener;
 @Component(immediate=true)
 public class LibertyRestClientConfigListener implements RestClientBuildListener {
 
+    @FFDCIgnore(Throwable.class)
+    private boolean canLoadFTTimeoutClass() {
+        try {
+            Class.forName("org.eclipse.microprofile.faulttolerance.Timeout");
+            return true;
+        } catch (Throwable t) {
+            return false;
+        }
+    }
     /** {@inheritDoc} */
     @Override
     public void onNewRestClient(MicroProfileClientProxyImpl clientProxy) {
@@ -35,6 +45,11 @@ public class LibertyRestClientConfigListener implements RestClientBuildListener 
         LibertyJaxRsClientConfigInterceptor configInterceptor = new LibertyJaxRsClientConfigInterceptor(Phase.PRE_LOGICAL);
         ClientConfiguration ccfg = WebClient.getConfig(clientProxy);
         ccfg.getOutInterceptors().add(configInterceptor);
+        
+        if (canLoadFTTimeoutClass()) {
+            LibertyFTTimeoutInterceptor timeoutInterceptor = new LibertyFTTimeoutInterceptor(Phase.PRE_LOGICAL);
+            ccfg.getOutInterceptors().add(timeoutInterceptor);
+        }
     }
 
 }
