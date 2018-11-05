@@ -107,8 +107,8 @@ public class OAuthClientHttpUtil {
         return getMethod;
     }
 
-    HttpResponse executeRequest(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, HttpUriRequest httpUriRequest) throws SocialLoginException {
-        HttpClient httpClient = createHTTPClient(sslSocketFactory, url, isHostnameVerification);
+    HttpResponse executeRequest(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, HttpUriRequest httpUriRequest, boolean useJvmProps) throws SocialLoginException {
+        HttpClient httpClient = createHTTPClient(sslSocketFactory, url, isHostnameVerification, useJvmProps);
         HttpResponse response = null;
         try {
             response = httpClient.execute(httpUriRequest);
@@ -149,7 +149,7 @@ public class OAuthClientHttpUtil {
             SSLSocketFactory sslSocketFactory,
             final List<NameValuePair> commonHeaders,
             boolean isHostnameVerification,
-            String authMethod) throws SocialLoginException {
+            String authMethod, boolean useJvmProps) throws SocialLoginException {
 
         SocialUtil.validateEndpointWithQuery(url);
 
@@ -158,7 +158,7 @@ public class OAuthClientHttpUtil {
         HttpPost postMethod = createPostMethod(url, commonHeaders);
         postMethod = setPostParameters(postMethod, params);
 
-        return commonEndpointInvocation(postMethod, url, baUsername, baPassword, accessToken, sslSocketFactory, isHostnameVerification, authMethod);
+        return commonEndpointInvocation(postMethod, url, baUsername, baPassword, accessToken, sslSocketFactory, isHostnameVerification, authMethod, useJvmProps);
     }
 
     public Map<String, Object> getToEndpoint(String url,
@@ -169,7 +169,7 @@ public class OAuthClientHttpUtil {
             SSLSocketFactory sslSocketFactory,
             final List<NameValuePair> commonHeaders,
             boolean isHostnameVerification,
-            String authMethod) throws SocialLoginException {
+            String authMethod, boolean useJvmProps) throws SocialLoginException {
 
         SocialUtil.validateEndpointWithQuery(url);
 
@@ -184,7 +184,7 @@ public class OAuthClientHttpUtil {
             }
         }
 
-        return commonEndpointInvocation(getMethod, url, baUsername, baPassword, accessToken, sslSocketFactory, isHostnameVerification, authMethod);
+        return commonEndpointInvocation(getMethod, url, baUsername, baPassword, accessToken, sslSocketFactory, isHostnameVerification, authMethod, useJvmProps);
     }
 
     Map<String, Object> postToIntrospectEndpoint(String url,
@@ -195,7 +195,7 @@ public class OAuthClientHttpUtil {
             SSLSocketFactory sslSocketFactory,
             final List<NameValuePair> commonHeaders,
             boolean isHostnameVerification,
-            String authMethod) throws SocialLoginException {
+            String authMethod, boolean useJvmProps) throws SocialLoginException {
 
         SocialUtil.validateEndpointWithQuery(url);
 
@@ -204,7 +204,7 @@ public class OAuthClientHttpUtil {
         HttpPost postMethod = createPostMethod(url, commonHeaders);
         postMethod = setPostParameters(postMethod, params);
 
-        return commonEndpointInvocation(postMethod, url, baUsername, baPassword, accessToken, sslSocketFactory, isHostnameVerification, authMethod);
+        return commonEndpointInvocation(postMethod, url, baUsername, baPassword, accessToken, sslSocketFactory, isHostnameVerification, authMethod, useJvmProps);
     }
 
     HttpPost setPostParameters(HttpPost postMethod, List<NameValuePair> params) {
@@ -221,10 +221,10 @@ public class OAuthClientHttpUtil {
         return postMethod;
     }
 
-    Map<String, Object> commonEndpointInvocation(HttpUriRequest httpUriRequest, String url, String baUsername, @Sensitive String baPassword, String accessToken, SSLSocketFactory sslSocketFactory, boolean isHostnameVerification, String authMethod) throws SocialLoginException {
+    Map<String, Object> commonEndpointInvocation(HttpUriRequest httpUriRequest, String url, String baUsername, @Sensitive String baPassword, String accessToken, SSLSocketFactory sslSocketFactory, boolean isHostnameVerification, String authMethod, boolean useJvmProps) throws SocialLoginException {
         setAuthorizationHeader(baUsername, baPassword, accessToken, httpUriRequest, authMethod);
 
-        HttpResponse response = executeRequest(sslSocketFactory, url, isHostnameVerification, httpUriRequest);
+        HttpResponse response = executeRequest(sslSocketFactory, url, isHostnameVerification, httpUriRequest, useJvmProps);
 
         // Check the response from the endpoint to see if there was an error
         verifyResponse(url, response);
@@ -308,12 +308,12 @@ public class OAuthClientHttpUtil {
         Tr.debug(tc, "CURL Command: " + sb.toString());
     }
 
-    public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification) {
+    public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useJvmProps) {
 
         HttpClient client = null;
 
         if (url != null && url.startsWith("http:")) {
-            client = HttpClientBuilder.create().build();
+            client = getBuilder(useJvmProps).build();
         } else {
             SSLConnectionSocketFactory connectionFactory = null;
             if (!isHostnameVerification) {
@@ -321,13 +321,13 @@ public class OAuthClientHttpUtil {
             } else {
                 connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new StrictHostnameVerifier());
             }
-            client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
+            client = getBuilder(useJvmProps).setSSLSocketFactory(connectionFactory).build();
         }
 
         return client;
     }
 
-    public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, String baUser, @Sensitive String baPassword) {
+    public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, String baUser, @Sensitive String baPassword, boolean useJvmProps) {
 
         HttpClient client = null;
 
@@ -335,7 +335,7 @@ public class OAuthClientHttpUtil {
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(baUser, baPassword));
 
         if (url != null && url.startsWith("http:")) {
-            client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).build();
+            client = getBuilder(useJvmProps).setDefaultCredentialsProvider(credentialsProvider).build();
         } else {
             SSLConnectionSocketFactory connectionFactory = null;
             if (!isHostnameVerification) {
@@ -343,10 +343,14 @@ public class OAuthClientHttpUtil {
             } else {
                 connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new StrictHostnameVerifier());
             }
-            client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
+            client = getBuilder(useJvmProps).setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
         }
 
         return client;
+    }
+    
+    private HttpClientBuilder getBuilder(boolean useJvmProps){
+         return useJvmProps ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
     }
 
     public static OAuthClientHttpUtil getInstance() {

@@ -36,10 +36,11 @@ public class Krb5Common {
     // Kerberos mechanism OID
     static public Oid KRB5_MECH_OID;
 
+    static public boolean isJdk18Up = JavaInfo.majorVersion() >= 8;
     // Is IBM JDK 1.8 or lower
     static public boolean isIBMJdk18Lower = (JavaInfo.vendor() == Vendor.IBM && JavaInfo.majorVersion() <= 8);
     // Is Oracle JDK 1.8
-    static public boolean isOracleJdk18Up = (JavaInfo.vendor() == Vendor.ORACLE && JavaInfo.majorVersion() == 8);
+    static public boolean isOracleJdk18Up = (JavaInfo.vendor() == Vendor.ORACLE && JavaInfo.majorVersion() >= 8);
     // Is IBM, Oracle and Open JDK 11 or higher
     static public boolean isJdk11Up = JavaInfo.majorVersion() >= 11;
     // SPNEGO support IBM JDK 8 and lower, Oracle JDK 8 and JDK 11 and higher
@@ -60,14 +61,9 @@ public class Krb5Common {
 
     static public final String KRB5_NAME = "javax.security.auth.login.name";
     static public final String KRB5_PWD = "javax.security.auth.login.password";
-    static public final String KRB5_PRINCIPAL = "sun.security.krb5.principal";
-
-    public Krb5Common() {
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Jdk vendor: " + JavaInfo.vendor());
-            Tr.debug(tc, "Jdk major version: " + JavaInfo.majorVersion());
-        }
-    }
+    static public final String IBM_KRB5_PRINCIPAL = "com.ibm.security.krb5.principal";
+    static public final String SUN_KRB5_PRINCIPAL = "sun.security.krb5.principal";
+    static public String KRB5_PRINCIPAL = IBM_KRB5_PRINCIPAL;
 
     /**
      * This method set the system property if the property is null or property value is not the same with the new value
@@ -82,11 +78,13 @@ public class Krb5Common {
         String previousPropValue = (String) java.security.AccessController.doPrivileged(new java.security.PrivilegedAction() {
             @Override
             public String run() {
-                String oldValue = System.getProperty(propName);
-                if (oldValue == null || !oldValue.equalsIgnoreCase(propValue)) {
+                String oldPropValue = System.getProperty(propName);
+                if (propValue == null) {
+                    System.clearProperty(propName);
+                } else if (!propValue.equalsIgnoreCase(oldPropValue)) {
                     System.setProperty(propName, propValue);
                 }
-                return oldValue;
+                return oldPropValue;
             }
         });
         if (tc.isDebugEnabled())
@@ -137,7 +135,12 @@ public class Krb5Common {
         java.security.AccessController.doPrivileged(new java.security.PrivilegedAction() {
             @Override
             public Object run() {
-                return System.setProperty(propName, propValue);
+                if (propValue == null)
+                    System.clearProperty(propName);
+                else
+                    System.setProperty(propName, propValue);
+
+                return null;
             }
         });
     }
@@ -160,6 +163,13 @@ public class Krb5Common {
     }
 
     static {
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Jdk vendor: " + JavaInfo.vendor() + " and major version: " + JavaInfo.majorVersion());
+        }
+        if (isOtherSupportJDKs) {
+            KRB5_PRINCIPAL = SUN_KRB5_PRINCIPAL;
+        }
+
         try {
             KRB5_MECH_OID = new Oid("1.2.840.113554.1.2.2");
             SPNEGO_MECH_OID = new Oid("1.3.6.1.5.5.2");

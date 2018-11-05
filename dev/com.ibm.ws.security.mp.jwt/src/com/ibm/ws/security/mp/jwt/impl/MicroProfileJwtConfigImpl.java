@@ -111,6 +111,9 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     public static final String KEY_authFilterRef = "authFilterRef";
     protected String authFilterRef;
 
+    public static final String CFG_KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
+    private boolean useSystemPropertiesForHttpClientConnections = false;
+
     @com.ibm.websphere.ras.annotation.Sensitive
     private String sharedKey;
 
@@ -172,6 +175,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
         this.hostNameVerificationEnabled = configUtils.getBooleanConfigAttribute(props, CFG_KEY_HOST_NAME_VERIFICATION_ENABLED, hostNameVerificationEnabled);
         this.tokenReuse = configUtils.getBooleanConfigAttribute(props, CFG_KEY_TOKEN_REUSE, tokenReuse);
         this.ignoreApplicationAuthMethod = configUtils.getBooleanConfigAttribute(props, CFG_KEY_IGNORE_APP_AUTH_METHOD, ignoreApplicationAuthMethod);
+        this.useSystemPropertiesForHttpClientConnections = configUtils.getBooleanConfigAttribute(props, CFG_KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS, useSystemPropertiesForHttpClientConnections);
         this.mapToUserRegistry = configUtils.getBooleanConfigAttribute(props, CFG_KEY_mapToUserRegistry, mapToUserRegistry);
         jwkSet = null; // the jwkEndpoint may have been changed during dynamic update
         consumerUtils = null; // the parameters in consumerUtils may have been changed during dynamic changing
@@ -199,6 +203,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
             Tr.debug(tc, "sslRef = " + sslRef);
             Tr.debug(tc, "sigAlg = " + signatureAlgorithm);
             Tr.debug(tc, "sharedKey" + sharedKey == null ? "null" : "*********");
+            Tr.debug(tc, "useSystemPropertiesForHttpClientConnections = " + useSystemPropertiesForHttpClientConnections);
         }
     }
 
@@ -491,6 +496,11 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     public String getAuthFilterRef() {
         // TODO Auto-generated method stub
         return this.authFilterRef;
+    }
+
+    @Override
+    public boolean getUseSystemPropertiesForHttpClientConnections() {
+        return this.useSystemPropertiesForHttpClientConnections;
     }
 
 }

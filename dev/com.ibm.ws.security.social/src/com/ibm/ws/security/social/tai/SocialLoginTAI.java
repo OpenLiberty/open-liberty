@@ -479,6 +479,7 @@ public class SocialLoginTAI implements TrustAssociationInterceptor, UnprotectedR
 
         // call the oidc code.
         ProviderAuthenticationResult presult = oidccau.authenticate(request, response, clientConfig);
+        discoverOPAgain(presult, clientConfig);
         if (presult.getStatus().compareTo(AuthResult.REDIRECT_TO_PROVIDER) == 0) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.event(tc, "redirecting to provider, javascript redirect supported = " + clientConfig.isClientSideRedirect());
@@ -527,7 +528,19 @@ public class SocialLoginTAI implements TrustAssociationInterceptor, UnprotectedR
 
     }
 
-    /**
+    private void discoverOPAgain(ProviderAuthenticationResult presult, OidcLoginConfigImpl clientConfig) {
+		
+    	if (clientConfig.isDiscoveryInUse()) {
+    		if (presult.getStatus().compareTo(AuthResult.SUCCESS) == 0) {
+    			clientConfig.setNextDiscoveryTime();
+    		} else if (System.currentTimeMillis() > clientConfig.getNextDiscoveryTime()) {
+    			clientConfig.handleDiscoveryEndpoint(clientConfig.getDiscoveryEndpointUrl());
+    		}
+    	}
+		
+	}
+
+	/**
      * Check for some things that will always fail and emit message about bad config.
      * Do here so 1) classic oidc messages don't change and 2) put error message closer in log to failure.
      *

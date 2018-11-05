@@ -104,4 +104,10 @@ public class Http2FullTracingTests extends FATServletClient {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    // moved for debug - build break 257732
+    @Test
+    public void testInvalidPaddingValue() throws Exception {
+        runTest(dataServletPath, testName.getMethodName());
+    }
+
 }

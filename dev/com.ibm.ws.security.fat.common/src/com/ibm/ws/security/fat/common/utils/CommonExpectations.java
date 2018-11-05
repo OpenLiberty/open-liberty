@@ -35,6 +35,19 @@ public class CommonExpectations {
     }
 
     /**
+     * Set success for current action only
+     * 
+     * @param url
+     * @return
+     */
+    public static Expectations successfullyReachedUrl(String url) {
+        Expectations expectations = new Expectations();
+        expectations.addSuccessCodeForCurrentAction();
+        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_EQUALS, url, "Did not reach the expected URL."));
+        return expectations;
+    }
+
+    /**
      * Sets expectations that will check:
      * <ol>
      * <li>200 status code in the response for the specified test action
@@ -49,6 +62,13 @@ public class CommonExpectations {
         return expectations;
     }
 
+    public static Expectations successfullyReachedLoginPage() {
+        Expectations expectations = new Expectations();
+        expectations.addSuccessCodeForCurrentAction();
+        expectations.addExpectation(new ResponseTitleExpectation(Constants.STRING_EQUALS, Constants.FORM_LOGIN_TITLE, "Title of page returned did not match expected value."));
+        return expectations;
+    }
+
     /**
      * Sets expectations that will check:
      * <ol>
@@ -59,6 +79,12 @@ public class CommonExpectations {
     public static Expectations successfullyReachedFormLoginPage(String testAction) {
         Expectations expectations = successfullyReachedLoginPage(testAction);
         expectations.addExpectation(new ResponseFullExpectation(testAction, Constants.STRING_CONTAINS, Constants.FORM_LOGIN_HEADING, "Page returned during test step " + testAction + " did not match expected value."));
+        return expectations;
+    }
+
+    public static Expectations successfullyReachedFormLoginPage() {
+        Expectations expectations = successfullyReachedLoginPage();
+        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, Constants.FORM_LOGIN_HEADING, "Page returned did not match expected value."));
         return expectations;
     }
 }

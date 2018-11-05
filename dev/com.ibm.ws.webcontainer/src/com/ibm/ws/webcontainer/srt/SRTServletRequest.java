@@ -1346,7 +1346,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             checkRequestObjectInUse();
         }
         // 321485
-        String addr = this._request.getLocalAddr();
+        String addr = null;
+        if (this._request != null) {
+            addr = this._request.getLocalAddr();
+        }
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getLocalAddr", " address --> " + addr);
         }
@@ -2099,9 +2102,11 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         Principal principal = getUserPrincipal();
         if (principal == null) {
             //remoteUser = null;
+
             if (_request != null) {
                 remoteUser = _request.getRemoteUser();
             }
+
         } else {
             remoteUser = principal.getName();
             if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {

@@ -3,11 +3,13 @@ package com.ibm.ws.security.common.config;
 import java.util.ArrayList;
 import java.util.Map;
 
+import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.TraceConstants;
+import com.ibm.ws.security.common.crypto.HashUtils;
 
 public class DiscoveryConfigUtils {
     
@@ -18,8 +20,13 @@ public class DiscoveryConfigUtils {
     private String scope;
     private String signatureAlgorithm;
     private String id;
+    private String discoveryURL;
 
     private CommonConfigUtils configUtils = new CommonConfigUtils();
+
+    private Object discoveryDocumentHash;
+
+    private long discoveryPollingRate;
     
     public static final String OPDISCOVERY_AUTHZ_EP_URL = "authorization_endpoint";
     public static final String OPDISCOVERY_TOKEN_EP_URL = "token_endpoint";
@@ -40,22 +47,38 @@ public class DiscoveryConfigUtils {
     public static final String KEY_jwksUri = "jwksUri";
     public static final String KEY_ISSUER = "issuer";
     public static final String KEY_DISCOVERY_ENDPOINT = "discoveryEndpoint";
-    
-    
+       
+    public DiscoveryConfigUtils() {
+        
+    }
 
-    public DiscoveryConfigUtils(String configId, JSONObject json, String alg, String tokenepAuthMethod, String scope) {
-        discoveryjson = json;
-        tokenEndpointAuthMethod = tokenepAuthMethod;
+    public DiscoveryConfigUtils initialConfig(String configId, String ep, long discoveryRate) {
+        id = configId;
+        this.discoveryURL = ep;
+        this.discoveryPollingRate = discoveryRate;
+        return this;
+    }
+    
+    public DiscoveryConfigUtils discoveredConfig(String alg, String tokenepAuthMethod, String scope) {
+        this.signatureAlgorithm = alg;
+        this.tokenEndpointAuthMethod = tokenepAuthMethod;
         this.scope = scope;
-        signatureAlgorithm = alg;
-        id = configId;
+        return this;
     }
     
-    public DiscoveryConfigUtils(String configId) {
-        id = configId;
+    public DiscoveryConfigUtils discoveryDocumentHash(String discoveryHash) {    
+        //this.discoveryjson = json;
+        this.discoveryDocumentHash = discoveryHash;
+        //this.discoveryPollingRate = discoveryPollingRate;
+        return this;
+    }
+    
+    public DiscoveryConfigUtils discoveryDocumentResult(JSONObject json) {    
+        this.discoveryjson = json;
+        return this;
     }
 
-    public void adjustTokenEndpointAuthMethod() {
+    public String adjustTokenEndpointAuthMethod() {
         ArrayList<String> discoveryTokenepAuthMethod = discoverOPConfig(discoveryjson.get(OPDISCOVERY_TOKEN_EP_AUTH));
         if (isRPUsingDefault("authMethod") && !opHasRPDefault("authMethod", discoveryTokenepAuthMethod)) {
             if (tc.isDebugEnabled()) {
@@ -70,16 +93,18 @@ public class DiscoveryConfigUtils {
                 }
             }           
         }
+        return this.tokenEndpointAuthMethod;
     }
     
-    private Object getId() {
+    private String getId() {
         return id;
     }
 
     /**
+     * @return 
      * 
      */
-    public void adjustScopes() {
+    public String adjustScopes() {
         ArrayList<String> discoveryScopes = discoverOPConfig(discoveryjson.get(OPDISCOVERY_SCOPES));
         if (isRPUsingDefault("scope") && !opHasRPDefault("scope", discoveryScopes)) {
             if (tc.isDebugEnabled()) {
@@ -93,7 +118,8 @@ public class DiscoveryConfigUtils {
                     Tr.debug(tc, "The adjusted value is : " + this.scope);
                 }
             }           
-        }        
+        }
+        return this.scope;
     }
     
     /**
@@ -297,8 +323,39 @@ public class DiscoveryConfigUtils {
     private String buildDiscoveryWarning(String endpoints, String ep) { 
         return endpoints.concat(ep).concat(", ");
     }
-
     
+    /**
+     * @param string
+     */
+    public void logDiscoveryMessage(String key, String defaultMessage) {
+        //String defaultMessage = "Error processing discovery request";
+
+        String message = defaultMessage;
+        if (key != null) {
+            message = TraceNLS.getFormattedMessage(getClass(),
+                    "com.ibm.ws.security.common.internal.resources.SSOCommonMessages", key,
+                    new Object[] { getId(), this.discoveryURL }, defaultMessage);
+        }       
+        Tr.info(tc, message);
+    }
+
+    public boolean calculateDiscoveryDocumentHash(JSONObject json) {
+        String latestDiscoveryHash = HashUtils.digest(json.toString());
+        //TODO
+        String OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG="CWWKS6110I: The client [{" + getId() + "}] configuration has been updated with the new information received from the discovery endpoint URL [{"+ this.discoveryURL + "}].";
+        boolean updated = false;
+        if (this.discoveryDocumentHash == null || !this.discoveryDocumentHash.equals(latestDiscoveryHash)) {
+            if (this.discoveryDocumentHash != null) {
+                logDiscoveryMessage(null, OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG);
+            }
+            updated = true;
+            this.discoveryDocumentHash = latestDiscoveryHash;
+        } else if (this.discoveryDocumentHash != null && this.discoveryDocumentHash.equals(latestDiscoveryHash)) {
+            String OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG="CWWKS6110I: The client [{" + getId() + "}] configuration has been updated with the new information received from the discovery endpoint URL [{"+ this.discoveryURL + "}].";
+            logDiscoveryMessage(null, OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG);
+        }
+        return updated;
+    }
     
     
 }
