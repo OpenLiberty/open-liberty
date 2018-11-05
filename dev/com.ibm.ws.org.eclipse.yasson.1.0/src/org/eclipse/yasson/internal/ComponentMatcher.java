@@ -197,16 +197,17 @@ public class ComponentMatcher {
         if (componentBindingType.equals(runtimeType)) {
             return true;
         }
+
+        if (componentBindingType instanceof Class && runtimeType instanceof Class) {
+            return ((Class<?>) componentBindingType).isAssignableFrom((Class) runtimeType);
+        }
+
         //don't try to runtime generic scan if not needed
         if (!jsonbContext.genericComponentsPresent()) {
             return false;
         }
-        if (componentBindingType instanceof Class && runtimeType instanceof Class) {
-            //for polymorphic adapters
-            return ((Class<?>) componentBindingType).isAssignableFrom((Class) runtimeType);
-        }
         return runtimeType instanceof ParameterizedType && componentBindingType instanceof ParameterizedType &&
-                ReflectionUtils.getRawType(runtimeType) == ReflectionUtils.getRawType(componentBindingType) &&
+                ReflectionUtils.getRawType(componentBindingType).isAssignableFrom(ReflectionUtils.getRawType(runtimeType)) &&
                 matchTypeArguments((ParameterizedType) runtimeType, (ParameterizedType) componentBindingType);
     }
 
