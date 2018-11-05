@@ -118,6 +118,10 @@ connectionpool.destroy.total.description=The total number of managed connections
 connectionpool.managedConnections.description=The number of managed connections in the free, shared, and unshared pools.
 connectionpool.connectionHandles.description=The number of connections that are in use. This number might include multiple connections that are shared from a single managed connection.
 connectionpool.freeConnections.description=The number of managed connections in the free pool.
+connectionpool.waitTime.total.description=The total wait time on all connection requests since the start of the server.
+connectionpool.inUseTime.total.description=The total time that a connection is in use.
+connectionpool.grantedConnections.total.description=The total number of granted connections.
+connectionpool.usedConnections.total.description=The total number of used connections.
 
 session.create.total.description=The number of sessions that have logged in since this metric was enabled.
 session.liveSessions.description=The number of users that are currently logged in.
