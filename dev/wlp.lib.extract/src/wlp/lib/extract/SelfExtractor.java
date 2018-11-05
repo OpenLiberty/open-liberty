@@ -26,7 +26,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -39,7 +38,6 @@ import java.util.StringTokenizer;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -49,6 +47,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import wlp.lib.extract.Content.Entry;
 
 /**
  *
@@ -61,7 +61,9 @@ public class SelfExtractor implements LicenseProvider {
      */
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).indexOf("win") >= 0;
 
+    // TODO remove this
     protected final ZipFile jarFile;
+    protected final Content container;
     protected final String root;
     protected final List productMatches;
     private final String archiveContentType;
@@ -187,8 +189,18 @@ public class SelfExtractor implements LicenseProvider {
 
     }
 
+    // TODO remove this
     protected SelfExtractor(JarFile jar, LicenseProvider licenseProvider, Attributes attributes) {
+        this(jar, new Content.JarContent(jar), licenseProvider, attributes);
+    }
+
+    protected SelfExtractor(Content container, LicenseProvider licenseProvider, Attributes attributes) {
+        this(null, container, licenseProvider, attributes);
+    }
+
+    private SelfExtractor(JarFile jar, Content container, LicenseProvider licenseProvider, Attributes attributes) {
         this.jarFile = jar;
+        this.container = container;
         this.licensePresent = licenseProvider == null ? false : true;
         this.licenseProvider = licenseProvider;
         String rootDir = attributes.getValue("Archive-Root");
@@ -217,10 +229,11 @@ public class SelfExtractor implements LicenseProvider {
      * be returned.</p>
      *
      * @param appliesTo The string to construct the {@link ProductMatch} objects from. It is a comma separated list of items in the form:</p>
-     *            <code>{product_id}; productVersion={product_version}; productInstallType={product_install_type}; productEdition={product_edition(s)}</code></p>
-     *            Note that the {product_edition(s)} can be either a single edition or a comma separated list of editions enclosed in quotes. For example the following is a valid
-     *            applies to string:</p>
-     *            <code>com.ibm.websphere.appserver; productVersion=8.5.next.beta; productInstallType=Archive; productEdition="BASE,DEVELOPERS,EXPRESS,ND"</code>
+     *                      <code>{product_id}; productVersion={product_version}; productInstallType={product_install_type}; productEdition={product_edition(s)}</code></p>
+     *                      Note that the {product_edition(s)} can be either a single edition or a comma separated list of editions enclosed in quotes. For example the following is
+     *                      a valid
+     *                      applies to string:</p>
+     *                      <code>com.ibm.websphere.appserver; productVersion=8.5.next.beta; productInstallType=Archive; productEdition="BASE,DEVELOPERS,EXPRESS,ND"</code>
      * @return A list of {@link ProductMatch} objects or an empty list if none are found
      */
     public static List parseAppliesTo(String appliesTo) {
@@ -266,14 +279,14 @@ public class SelfExtractor implements LicenseProvider {
         if (self == null) {
             return new ReturnCode(ReturnCode.NOT_FOUND, "licenseNotFound", new Object[] {});
         }
-        JarFile jar = null;
+        Content container = null;
         String laPrefix = null;
         String liPrefix = null;
         Attributes mainAttributes = null;
         boolean hasLicense = true;
         try {
-            jar = new JarFile(self);
-            Manifest man = jar.getManifest();
+            container = Content.build(self);
+            Manifest man = container.getManifest();
             mainAttributes = man.getMainAttributes();
             laPrefix = mainAttributes.getValue("License-Agreement");
             liPrefix = mainAttributes.getValue("License-Information");
@@ -284,13 +297,13 @@ public class SelfExtractor implements LicenseProvider {
         }
 
         if (hasLicense) {
-            ReturnCode buildLicenseProviderReturnCode = ZipLicenseProvider.buildInstance(jar, laPrefix, liPrefix);
+            ReturnCode buildLicenseProviderReturnCode = ContentLicenseProvider.buildInstance(container, laPrefix, liPrefix);
             if (buildLicenseProviderReturnCode != ReturnCode.OK) {
                 return buildLicenseProviderReturnCode;
             }
         }
 
-        instance = new SelfExtractor(jar, hasLicense ? ZipLicenseProvider.getInstance() : null, mainAttributes);
+        instance = new SelfExtractor(container, hasLicense ? ContentLicenseProvider.getInstance() : null, mainAttributes);
 
         return ReturnCode.OK;
     }
@@ -328,7 +341,7 @@ public class SelfExtractor implements LicenseProvider {
     }
 
     public int getSize() {
-        return jarFile.size();
+        return container.size();
     }
 
     public int getTotalDepsSize() {
@@ -359,7 +372,7 @@ public class SelfExtractor implements LicenseProvider {
                     Set missingFeatures = listMissingCoreFeatures(outputDir);
 
                     if (!missingFeatures.isEmpty()) {
-                        result = new ReturnCode(ReturnCode.NOT_FOUND, "missingRequiredFeatures", new Object[] { jarFile.getName(), missingFeatures, outputDir });
+                        result = new ReturnCode(ReturnCode.NOT_FOUND, "missingRequiredFeatures", new Object[] { container.getName(), missingFeatures, outputDir });
                     }
                 } catch (SelfExtractorFileException sefe) {
                     result = new ReturnCode(ReturnCode.NOT_FOUND, "fileProcessingException", new Object[] { sefe.getFileName(), sefe.getCause() });
@@ -496,7 +509,7 @@ public class SelfExtractor implements LicenseProvider {
      * matches method must return either {@link ProductMatch#NOT_APPLICABLE} or {@link ProductMatch#MATCHED} for every properties file for this method to return
      * {@link ReturnCode#OK}.
      *
-     * @param outputDir Where the product is being installed to
+     * @param outputDir      Where the product is being installed to
      * @param productMatches The list of {@link ProductMatch} objects that need to be satisfied to the current install
      * @return A {@link ReturnCode} indicating if this was successful or not
      */
@@ -578,7 +591,7 @@ public class SelfExtractor implements LicenseProvider {
     }
 
     public ReturnCode extract(File wlpInstallDir, ExtractProgress ep) {
-        List createdDirectoriesAndFiles = new ArrayList();
+        List<File> createdDirectoriesAndFiles = new ArrayList<File>();
 
         File outputDir = null;
         if (isUserSample()) {
@@ -613,17 +626,17 @@ public class SelfExtractor implements LicenseProvider {
 
         //Do the extract
         byte[] buf = new byte[4096];
-        List extractedFiles = new ArrayList();
+        List<String> extractedFiles = new ArrayList<String>();
         boolean continueInstall = true;
 
         String metaInfDir = "META-INF/";
 
         // Stores the valid root file paths to extract along with the common directories with the archive root.
         // Any directories that are common with the archive root will be handled as part of the root extract.
-        HashMap filePathsToExtract = new HashMap();
+        HashMap<String, String> filePathsToExtract = new HashMap<String, String>();
         filePathsToExtract.put(root, root);
         filePathsToExtract.put(metaInfDir, "");
-        List extensionRootDirs = new ArrayList();
+        List<String> extensionRootDirs = new ArrayList<String>();
 
         if (!isUserSample() && !productAddOn) {
             try {
@@ -653,126 +666,127 @@ public class SelfExtractor implements LicenseProvider {
         }
 
         SelfExtract.out("extractDirectory", new Object[] { outputDir.getAbsolutePath() });
-        for (Enumeration en = jarFile.entries(); continueInstall && en.hasMoreElements();) {
-            ZipEntry ze = (ZipEntry) en.nextElement();
-            String name = ze.getName();
-            String commonRootDir = getCommonRootDir(name, filePathsToExtract);
-            if (null != commonRootDir) {
-                if (ze.isDirectory()) {
-                    //if it's  META-INF dir or below, being created, then create it under wlp/lib/extract
-                    //Do not extract the installer unless extractInstaller (Extract-Installer in manifest) is true.
-                    if (!extractInstaller && (name.startsWith(metaInfDir) || name.startsWith("wlp/lib/extract/"))) {
-                        ep.skippedFile();
-                        continue;
-                    }
-                    File file;
-                    if (name.startsWith(metaInfDir)) {
-                        file = new File(outputDir, "lib/extract");
+        if (!container.isExtracted()) {
+            for (Entry entry : container) {
+                String name = entry.getName();
+                String commonRootDir = getCommonRootDir(name, filePathsToExtract);
+                if (null != commonRootDir) {
+                    if (entry.isDirectory()) {
+                        //if it's  META-INF dir or below, being created, then create it under wlp/lib/extract
+                        //Do not extract the installer unless extractInstaller (Extract-Installer in manifest) is true.
+                        if (!extractInstaller && (name.startsWith(metaInfDir) || name.startsWith("wlp/lib/extract/"))) {
+                            ep.skippedFile();
+                            continue;
+                        }
+                        File file;
+                        if (name.startsWith(metaInfDir)) {
+                            file = new File(outputDir, "lib/extract");
+                            if (!file.exists() && !SelfExtractUtils.trackedMkdirs(file, createdDirectoriesAndFiles)) {
+                                SelfExtractUtils.rollbackExtract(createdDirectoriesAndFiles);
+                                return new ReturnCode(ReturnCode.BAD_OUTPUT, "extractDirectoryError", file.getAbsolutePath());
+                            }
+                            file = new File(new File(outputDir, "lib/extract"), name);
+                        } else if (name.startsWith(root)) {
+                            file = new File(outputDir, name.substring(commonRootDir.length()));
+                        } else {
+                            file = new File(outputDir.getParentFile(), name.substring(commonRootDir.length()));
+                        }
+
                         if (!file.exists() && !SelfExtractUtils.trackedMkdirs(file, createdDirectoriesAndFiles)) {
                             SelfExtractUtils.rollbackExtract(createdDirectoriesAndFiles);
                             return new ReturnCode(ReturnCode.BAD_OUTPUT, "extractDirectoryError", file.getAbsolutePath());
                         }
-                        file = new File(new File(outputDir, "lib/extract"), name);
-                    } else if (name.startsWith(root)) {
-                        file = new File(outputDir, name.substring(commonRootDir.length()));
-                    } else {
-                        file = new File(outputDir.getParentFile(), name.substring(commonRootDir.length()));
-                    }
-
-                    if (!file.exists() && !SelfExtractUtils.trackedMkdirs(file, createdDirectoriesAndFiles)) {
-                        SelfExtractUtils.rollbackExtract(createdDirectoriesAndFiles);
-                        return new ReturnCode(ReturnCode.BAD_OUTPUT, "extractDirectoryError", file.getAbsolutePath());
-                    }
-                    ep.skippedFile();
-                } else {
-                    //for a standard extract, move meta-inf under wlp/lib/extract.
-                    //Do not extract the installer unless extractInstaller (Extract-Installer in manifest) is true.
-                    if (!extractInstaller && (name.startsWith(metaInfDir) || name.startsWith("wlp/lib/extract/"))) {
                         ep.skippedFile();
-                        continue;
-                    }
-                    File file;
-                    if (name.startsWith(metaInfDir)) {
-                        file = new File(outputDir, "lib/extract");
-                        file = new File(file, name);
-                    } else if (name.startsWith(root)) {
-                        file = new File(outputDir, name.substring(commonRootDir.length()));
                     } else {
-                        file = new File(outputDir.getParentFile(), name.substring(commonRootDir.length()));
-                    }
+                        //for a standard extract, move meta-inf under wlp/lib/extract.
+                        //Do not extract the installer unless extractInstaller (Extract-Installer in manifest) is true.
+                        if (!extractInstaller && (name.startsWith(metaInfDir) || name.startsWith("wlp/lib/extract/"))) {
+                            ep.skippedFile();
+                            continue;
+                        }
+                        File file;
+                        if (name.startsWith(metaInfDir)) {
+                            file = new File(outputDir, "lib/extract");
+                            file = new File(file, name);
+                        } else if (name.startsWith(root)) {
+                            file = new File(outputDir, name.substring(commonRootDir.length()));
+                        } else {
+                            file = new File(outputDir.getParentFile(), name.substring(commonRootDir.length()));
+                        }
 
-                    if (file.exists()) {
-                        if (productAddOn) {
-                            continue; // If the file already exists just skip over it.
-                        } else if (allowNonEmptyInstallDirectory) {
-                            if (name.endsWith("wlp/lib/extract/META-INF/MANIFEST.MF")) {
-                                // Sometimes there will be 2 manifests, one at META-INF/ and one at wlp/lib/extract/META-INF/
-                                // In this case we want to take the one at META-INF/ and ignore the other one
-                                continue;
-                            } else if (name.endsWith("META-INF/MANIFEST.MF")) {
-                                file.delete();
-                            } else {
-                                SelfExtractUtils.rollbackExtract(createdDirectoriesAndFiles);
-                                return new ReturnCode(ReturnCode.BAD_OUTPUT, "extractFileExists", file.getAbsolutePath());
+                        if (file.exists()) {
+                            if (productAddOn) {
+                                continue; // If the file already exists just skip over it.
+                            } else if (allowNonEmptyInstallDirectory) {
+                                if (name.endsWith("wlp/lib/extract/META-INF/MANIFEST.MF")) {
+                                    // Sometimes there will be 2 manifests, one at META-INF/ and one at wlp/lib/extract/META-INF/
+                                    // In this case we want to take the one at META-INF/ and ignore the other one
+                                    continue;
+                                } else if (name.endsWith("META-INF/MANIFEST.MF")) {
+                                    file.delete();
+                                } else {
+                                    SelfExtractUtils.rollbackExtract(createdDirectoriesAndFiles);
+                                    return new ReturnCode(ReturnCode.BAD_OUTPUT, "extractFileExists", file.getAbsolutePath());
+                                }
                             }
                         }
-                    }
 
-                    File parentFile = file.getParentFile();
-                    if (!parentFile.exists() && !SelfExtractUtils.trackedMkdirs(parentFile, createdDirectoriesAndFiles)) {
-                        SelfExtractUtils.rollbackExtract(createdDirectoriesAndFiles);
-                        return new ReturnCode(ReturnCode.BAD_OUTPUT, "extractDirectoryError", parentFile.getAbsolutePath());
-                    }
+                        File parentFile = file.getParentFile();
+                        if (!parentFile.exists() && !SelfExtractUtils.trackedMkdirs(parentFile, createdDirectoriesAndFiles)) {
+                            SelfExtractUtils.rollbackExtract(createdDirectoriesAndFiles);
+                            return new ReturnCode(ReturnCode.BAD_OUTPUT, "extractDirectoryError", parentFile.getAbsolutePath());
+                        }
 
-                    ep.extractedFile(name);
-                    extractedFiles.add(name);
-                    createdDirectoriesAndFiles.add(file);
+                        ep.extractedFile(name);
+                        extractedFiles.add(name);
+                        createdDirectoriesAndFiles.add(file);
 
-                    OutputStream os = null;
-                    InputStream is = null;
+                        OutputStream os = null;
+                        InputStream is = null;
 
-                    // override the productInstallType property
-                    if (productInstallType != null &&
-                        name.equalsIgnoreCase("wlp/lib/versions/WebSphereApplicationServer.properties")) {
-                        Properties wasProps = new Properties();
+                        // override the productInstallType property
+                        if (productInstallType != null &&
+                            name.equalsIgnoreCase("wlp/lib/versions/WebSphereApplicationServer.properties")) {
+                            Properties wasProps = new Properties();
+                            try {
+                                is = entry.getInputStream();
+                                wasProps.load(is);
+                                wasProps.put("com.ibm.websphere.productInstallType", productInstallType);
+                                os = new FileOutputStream(file);
+                                wasProps.store(os, null);
+                            } catch (IOException ioe) {
+                                SelfExtractUtils.rollbackExtract(createdDirectoriesAndFiles);
+                                return new ReturnCode(ReturnCode.BAD_OUTPUT, "extractFileError", ioe.getMessage());
+                            } finally {
+                                SelfExtractUtils.tryToClose(is);
+                                SelfExtractUtils.tryToClose(os);
+                            }
+                            continue;
+                        }
+
                         try {
-                            is = jarFile.getInputStream(ze);
-                            wasProps.load(is);
-                            wasProps.put("com.ibm.websphere.productInstallType", productInstallType);
-                            os = new FileOutputStream(file);
-                            wasProps.store(os, null);
+                            os = new BufferedOutputStream(new FileOutputStream(file));
+                            is = entry.getInputStream();
+
+                            for (int read; (read = is.read(buf)) != -1;) {
+                                os.write(buf, 0, read);
+                            }
                         } catch (IOException ioe) {
+                            SelfExtractUtils.tryToClose(os);
+                            SelfExtractUtils.tryToClose(is);
                             SelfExtractUtils.rollbackExtract(createdDirectoriesAndFiles);
                             return new ReturnCode(ReturnCode.BAD_OUTPUT, "extractFileError", ioe.getMessage());
                         } finally {
-                            SelfExtractUtils.tryToClose(is);
                             SelfExtractUtils.tryToClose(os);
+                            SelfExtractUtils.tryToClose(is);
                         }
-                        continue;
                     }
-
-                    try {
-                        os = new BufferedOutputStream(new FileOutputStream(file));
-                        is = jarFile.getInputStream(ze);
-
-                        for (int read; (read = is.read(buf)) != -1;) {
-                            os.write(buf, 0, read);
-                        }
-                    } catch (IOException ioe) {
-                        SelfExtractUtils.tryToClose(os);
-                        SelfExtractUtils.tryToClose(is);
-                        SelfExtractUtils.rollbackExtract(createdDirectoriesAndFiles);
-                        return new ReturnCode(ReturnCode.BAD_OUTPUT, "extractFileError", ioe.getMessage());
-                    } finally {
-                        SelfExtractUtils.tryToClose(os);
-                        SelfExtractUtils.tryToClose(is);
-                    }
+                } else {
+                    ep.skippedFile();
                 }
-            } else {
-                ep.skippedFile();
-            }
 
-            continueInstall = !!!ep.isCanceled();
+                continueInstall = !!!ep.isCanceled();
+            }
         }
 
         if (continueInstall) {
@@ -796,7 +810,7 @@ public class SelfExtractor implements LicenseProvider {
 
     }
 
-    private ReturnCode setFilePermission(File outputDir, List extInstallDirs, ExtractProgress ep) {
+    private ReturnCode setFilePermission(File outputDir, List<String> extInstallDirs, ExtractProgress ep) {
         ReturnCode rc = fixScriptPermissions(ep, outputDir);
         if (rc != null)
             return rc;
@@ -811,8 +825,8 @@ public class SelfExtractor implements LicenseProvider {
             return rc;
 
         File outputDirParent = outputDir.getParentFile();
-        for (Iterator it = extInstallDirs.iterator(); it.hasNext();) {
-            String installDir = (String) it.next();
+        for (Iterator<String> it = extInstallDirs.iterator(); it.hasNext();) {
+            String installDir = it.next();
             File extDir = new File(outputDirParent, installDir);
 
             try {
@@ -890,7 +904,7 @@ public class SelfExtractor implements LicenseProvider {
         return in;
     }
 
-    private ReturnCode downloadFile(File downloadDir, List createdDirectoriesAndFiles, ExtractProgress ep) {
+    private ReturnCode downloadFile(File downloadDir, List<File> createdDirectoriesAndFiles, ExtractProgress ep) {
         if (doExternalDepsDownload && hasExternalDepsFile()) {
             List depList = null;
             try {
@@ -961,7 +975,7 @@ public class SelfExtractor implements LicenseProvider {
      * Retrieves the directory in common between the specified path and the archive root directory.
      * If the file path cannot be found among the valid paths then null is returned.
      *
-     * @param filePath Path to the file to check
+     * @param filePath       Path to the file to check
      * @param validFilePaths A list of valid file paths and their common directories with the root
      * @return The directory in common between the specified path and the root directory
      */
@@ -982,16 +996,14 @@ public class SelfExtractor implements LicenseProvider {
      * @return List of extension products' install directories.
      * @throws IOException
      */
-    private ArrayList getExtensionInstallDirs() throws IOException {
+    private ArrayList<String> getExtensionInstallDirs() throws IOException {
         String extensiondir = root + "etc/extensions/";
-        ArrayList extensionDirs = new ArrayList();
+        ArrayList<String> extensionDirs = new ArrayList<String>();
 
-        for (Enumeration en = jarFile.entries(); en.hasMoreElements();) {
-            ZipEntry ze = (ZipEntry) en.nextElement();
-
-            if (ze.getName().startsWith(extensiondir) && ze.getName().endsWith(".properties")) {
+        for (Entry entry : container) {
+            if (entry.getName().startsWith(extensiondir) && entry.getName().endsWith(".properties")) {
                 Properties prop = new Properties();
-                prop.load(jarFile.getInputStream(ze));
+                prop.load(entry.getInputStream());
                 String installDir = (prop.getProperty("com.ibm.websphere.productInstall"));
 
                 if (null != installDir && !installDir.equals("")) {
@@ -1004,7 +1016,7 @@ public class SelfExtractor implements LicenseProvider {
     }
 
     /**
-     * @param ep - The object that will invoke the chmod commands.
+     * @param ep        - The object that will invoke the chmod commands.
      * @param outputDir - The Liberty runtime install root.
      */
     public ReturnCode fixScriptPermissions(ExtractProgress ep, File outputDir) {
@@ -1012,9 +1024,9 @@ public class SelfExtractor implements LicenseProvider {
     }
 
     /**
-     * @param ep - The object that will invoke the chmod commands.
+     * @param ep        - The object that will invoke the chmod commands.
      * @param outputDir - The Liberty runtime install root.
-     * @param filter - A zip file containing files that we want to do the chmod against.
+     * @param filter    - A zip file containing files that we want to do the chmod against.
      */
     public ReturnCode fixScriptPermissions(ExtractProgress ep, File outputDir, ZipFile filter) {
         return SelfExtractUtils.fixScriptPermissions(ep, outputDir, filter);
@@ -1073,7 +1085,7 @@ public class SelfExtractor implements LicenseProvider {
     }
 
     public boolean hasExternalDepsFile() {
-        return (jarFile.getEntry(EXTERNAL_DEPS_FILE) != null);
+        return (container.getEntry(EXTERNAL_DEPS_FILE) != null);
     }
 
     public void setDoExternalDepsDownload(boolean value) {
@@ -1081,13 +1093,13 @@ public class SelfExtractor implements LicenseProvider {
     }
 
     private void buildExternalDependencies() throws Exception {
-        ZipEntry depsEntry = null;
+        Entry depsEntry = null;
         ExternalDependencies newDeps = new ExternalDependencies();
 
-        if ((depsEntry = jarFile.getEntry(EXTERNAL_DEPS_FILE)) != null) {
+        if ((depsEntry = container.getEntry(EXTERNAL_DEPS_FILE)) != null) {
             InputStream entryInputStream = null;
             try {
-                entryInputStream = jarFile.getInputStream(depsEntry);
+                entryInputStream = depsEntry.getInputStream();
 
                 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
                 DocumentBuilder db;
@@ -1125,7 +1137,7 @@ public class SelfExtractor implements LicenseProvider {
     /**
      * If necessary this will print a message saying that the installed files mean that an iFix needs to be re-installed.
      *
-     * @param outputDir The directory where the files were extracted to (typically the "wlp" directory)
+     * @param outputDir      The directory where the files were extracted to (typically the "wlp" directory)
      * @param extractedFiles A list of Strings which are file paths within the directory
      */
     public static void printNeededIFixes(File outputDir, List extractedFiles) {
@@ -1314,9 +1326,9 @@ public class SelfExtractor implements LicenseProvider {
      * case insensitive.
      *
      * @param arg
-     *            User specified argument
+     *                   User specified argument
      * @param option
-     *            Option for test/comparison
+     *                   Option for test/comparison
      * @return true if the argument matches the option
      */
     protected static boolean argIsOption(String arg, String option) {
@@ -1356,7 +1368,7 @@ public class SelfExtractor implements LicenseProvider {
      * license file, exit with a message
      *
      * @param licenseFile
-     *            The license file to display
+     *                        The license file to display
      */
     public void showLicenseFile(InputStream licenseFile) {
         Object e = SelfExtract.class;
@@ -1373,7 +1385,7 @@ public class SelfExtractor implements LicenseProvider {
      * This method will print out information about the license and if necessary prompt the user to accept it.
      *
      * @param licenseProvider The license provider to use to get information about the license from the archive
-     * @param acceptLicense <code>true</code> if the license should be automatically accepted
+     * @param acceptLicense   <code>true</code> if the license should be automatically accepted
      */
     public void handleLicenseAcceptance(LicenseProvider licenseProvider, boolean acceptLicense) {
         //
@@ -1453,7 +1465,7 @@ public class SelfExtractor implements LicenseProvider {
             return null;
         }
         try {
-            jarFile.close();
+            container.close();
             instance = null;
         } catch (IOException e) {
             return e.getMessage();

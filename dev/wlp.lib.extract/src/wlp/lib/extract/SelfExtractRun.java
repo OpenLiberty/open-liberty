@@ -96,11 +96,14 @@ public class SelfExtractRun extends SelfExtract {
         // do this first so we can access extractor, ok to invoke more than once
         createExtractor();
         // get <name> from path/<name>.jar
-        String fullyQualifiedFileName = extractor.jarFile.getName();
+        String fullyQualifiedFileName = extractor.container.getName();
         int lastSeparator = fullyQualifiedFileName.lastIndexOf(File.separatorChar);
         String simpleFileName = fullyQualifiedFileName.substring(lastSeparator + 1);
-        String namePartOnly = simpleFileName.substring(0, simpleFileName.lastIndexOf('.'));
-        return namePartOnly;
+        int dotIdx = simpleFileName.lastIndexOf('.');
+        if (dotIdx != -1) {
+            return simpleFileName.substring(0, simpleFileName.lastIndexOf('.'));
+        }
+        return simpleFileName;
     }
 
     /**
@@ -126,7 +129,13 @@ public class SelfExtractRun extends SelfExtract {
      * @return extraction directory
      */
     private static String getExtractDirectory() {
-
+        createExtractor();
+        String containerPath = extractor.container.getName();
+        File containerFile = new File(containerPath);
+        if (containerFile.isDirectory()) {
+            extractor.allowNonEmptyInstallDirectory(true);
+            return containerFile.getAbsolutePath();
+        }
         // check if user specified explicit directory
         String extractDirVar = System.getenv("WLP_JAR_EXTRACT_DIR");
 
@@ -377,7 +386,7 @@ public class SelfExtractRun extends SelfExtract {
 
         // If WLP_JAR_DEBUG is set then we use 2 JVM's
         boolean result = System.getenv("WLP_JAR_DEBUG") == null;
-        boolean outputMessage=true;
+        boolean outputMessage = true;
 
         // If we can find any jvm.options files we use 2 JVM's
         if (result) {

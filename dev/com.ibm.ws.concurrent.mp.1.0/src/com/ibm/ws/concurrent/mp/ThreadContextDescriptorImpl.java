@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.RejectedExecutionException;
 
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
+import org.eclipse.microprofile.concurrent.spi.ThreadContextSnapshot;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -46,15 +47,13 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
         for (Map.Entry<ThreadContextProvider, ContextOp> entry : configPerProvider.entrySet()) {
             ThreadContextProvider provider = entry.getKey();
             if (provider instanceof ContainerContextProvider) {
-                for (com.ibm.wsspi.threadcontext.ThreadContextProvider cp : ((ContainerContextProvider) provider).toContainerProviders()) {
-                    com.ibm.wsspi.threadcontext.ThreadContext tc = entry.getValue() == ContextOp.CLEARED //
-                                    ? cp.createDefaultThreadContext(EMPTY_MAP) //
-                                    : cp.captureThreadContext(EMPTY_MAP, EMPTY_MAP); // PROPAGATED
-                    contextSnapshots.add(tc);
-                }
+                ((ContainerContextProvider) provider).addContextSnapshot(entry.getValue(), contextSnapshots);
             } else {
-                // TODO support MP context types
-                throw new UnsupportedOperationException();
+                ThreadContextSnapshot contextSnapshot = entry.getValue() == ContextOp.CLEARED //
+                                ? provider.clearedContext(EMPTY_MAP) // CLEARED
+                                : provider.currentContext(EMPTY_MAP); // PROPAGATED
+                // Convert to the com.ibm.wsspi.threadcontext.ThreadContext type which the container understands
+                contextSnapshots.add(new ContextSnapshotProxy(contextSnapshot));
             }
         }
     }
@@ -74,7 +73,7 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
     @Override
     @Trivial
     public Map<String, String> getExecutionProperties() {
-        return Collections.emptyMap();
+        return EMPTY_MAP;
     }
 
     @Override

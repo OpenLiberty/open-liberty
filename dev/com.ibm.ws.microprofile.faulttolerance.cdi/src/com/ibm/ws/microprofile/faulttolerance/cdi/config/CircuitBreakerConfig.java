@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,10 +19,11 @@ import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefiniti
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.faulttolerance.cdi.config.impl.AbstractAnnotationConfig;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProvider;
 
-public class CircuitBreakerConfig extends AbstractAnnotationConfig<CircuitBreaker> implements CircuitBreaker {
+public class CircuitBreakerConfig extends AbstractAnnotationConfig<CircuitBreaker> {
 
     private static final TraceComponent tc = Tr.register(CircuitBreakerConfig.class);
 
@@ -41,39 +42,27 @@ public class CircuitBreakerConfig extends AbstractAnnotationConfig<CircuitBreake
         super(annotatedMethod, annotatedClass, annotation, CircuitBreaker.class);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Class<? extends Throwable>[] failOn() {
+    private Class<? extends Throwable>[] failOn() {
         return failOnConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public long delay() {
+    private long delay() {
         return delayConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public ChronoUnit delayUnit() {
+    private ChronoUnit delayUnit() {
         return delayUnitConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public int requestVolumeThreshold() {
+    private int requestVolumeThreshold() {
         return requestVolumeThresholdConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public double failureRatio() {
+    private double failureRatio() {
         return failureRatioConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public int successThreshold() {
+    private int successThreshold() {
         return successThresholdConfig.getValue();
     }
 

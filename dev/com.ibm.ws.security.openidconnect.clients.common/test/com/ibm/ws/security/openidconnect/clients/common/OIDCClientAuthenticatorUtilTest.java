@@ -230,8 +230,8 @@ public class OIDCClientAuthenticatorUtilTest {
 
         // digest with the client_secret value
         String tmpStr = new String(localEncoded);
-        tmpStr = tmpStr.concat("_").concat(convClientConfig.toString()+clientSecret);
-        
+        tmpStr = tmpStr.concat("_").concat(convClientConfig.toString() + clientSecret);
+
         encodedReqParams = new String(localEncoded).concat("_").concat(HashUtils.digest(tmpStr));
         reqParameterCookie = new Cookie(ClientConstants.WAS_OIDC_CODE, encodedReqParams);
     }
@@ -783,6 +783,8 @@ public class OIDCClientAuthenticatorUtilTest {
                 will(returnValue(false));
                 one(clientConfig).getAuthorizationEndpointUrl(); // TODO: Refactor code to remove duplicate calls
                 will(returnValue(TEST_AUTHORIZATION_ENDPOINT));
+                allowing(clientConfig).getUseSystemPropertiesForHttpClientConnections();
+                will(returnValue(false));
             }
         });
     }
@@ -889,6 +891,8 @@ public class OIDCClientAuthenticatorUtilTest {
                 will(returnValue(false));
                 one(clientConfig).getTokenEndpointAuthMethod();
                 will(returnValue(authMethod));
+                allowing(clientConfig).getUseSystemPropertiesForHttpClientConnections();
+                will(returnValue(false));
             }
         });
 
@@ -900,7 +904,7 @@ public class OIDCClientAuthenticatorUtilTest {
             {
                 one(oidcClientUtil).getTokensFromAuthzCode(TEST_TOKEN_ENDPOINT, CLIENT01, SHARED_KEY,
                         TEST_REDIRECT_URL, TEST_AUTHORIZATION_CODE,
-                        TEST_GRANT_TYPE, sslSocketFactory, false, authMethod, null);
+                        TEST_GRANT_TYPE, sslSocketFactory, false, authMethod, null, null, false);
                 will(returnValue(tokens));
             }
         });
@@ -1076,7 +1080,8 @@ public class OIDCClientAuthenticatorUtilTest {
             {
                 one(oidcClientUtil).getTokensFromAuthzCode(TEST_TOKEN_ENDPOINT, CLIENT01, SHARED_KEY,
                         TEST_REDIRECT_URL, TEST_AUTHORIZATION_CODE,
-                        TEST_GRANT_TYPE, sslSocketFactory, false, authMethod, null);
+                        TEST_GRANT_TYPE, sslSocketFactory, false, authMethod, null, null, false);
+
                 will(throwException(throwable));
             }
         });
@@ -1528,7 +1533,10 @@ public class OIDCClientAuthenticatorUtilTest {
                 SSLSocketFactory sslSocketFactory,
                 boolean b,
                 String authMethod,
-                String resources) throws HttpException, IOException {
+                String resources, 
+                HashMap<String, String> customParams, 
+                boolean useJvmProps) throws HttpException, IOException {
+
             if (ioe != null) {
                 throw ioe;
             }
