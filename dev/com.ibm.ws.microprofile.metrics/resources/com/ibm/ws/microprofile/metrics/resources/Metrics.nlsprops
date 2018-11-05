@@ -129,6 +129,13 @@ session.activeSessions.description=The number of concurrently active sessions. (
 session.invalidated.total.description=The number of sessions that have logged out since this metric was enabled.
 session.invalidatedbyTimeout.total.description=The number of sessions that have logged out by timeout since this metric was enabled.
 
+jaxws.invocations.total.description=The number of invocations to this endpoint or operation.
+jaxws.checkedApplicationFaults.total.description=The number of checked application faults.
+jaxws.logicalRuntimeFaults.total.description=The number of logical runtime faults.
+jaxws.runtimeFaults.total.description=The number of runtime faults.
+jaxws.uncheckedApplicationFaults.total.description=The number of unchecked application faults.
+jaxws.responseTime.total.description=The total response handling time since the start of the server.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------
