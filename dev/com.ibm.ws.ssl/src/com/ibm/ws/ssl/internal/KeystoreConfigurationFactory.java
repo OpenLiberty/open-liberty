@@ -52,7 +52,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  * of a DS service: throwing the exception does not deactivate the component,
  * it just fails the update.
  */
-@Component(service = ManagedServiceFactory.class,
+@Component(immediate = true, service = ManagedServiceFactory.class,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = { "service.vendor=IBM", "service.pid=com.ibm.ws.ssl.keystore" })
 public class KeystoreConfigurationFactory implements ManagedServiceFactory, FileBasedActionable {
