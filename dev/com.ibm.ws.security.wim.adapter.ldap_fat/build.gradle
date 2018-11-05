@@ -211,4 +211,6 @@ task certificateMapper_JAR(type: Jar, dependsOn: classes) {
 assemble { 
   dependsOn \
   certificateMapper_JAR
+  
+  dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble' 
 }
