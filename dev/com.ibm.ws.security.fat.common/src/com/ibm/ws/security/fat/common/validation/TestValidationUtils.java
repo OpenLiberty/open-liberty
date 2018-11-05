@@ -65,6 +65,11 @@ public class TestValidationUtils {
         return false;
     }
 
+    // short cut for validating when we don't have a response (ie: when we're just checking for server log messages)
+    public void validateResult(Expectations expectations) throws Exception {
+        validateResult(null, null, expectations);
+    }
+
     public void validateResult(Object response, Expectations expectations) throws Exception {
         validateResult(response, null, expectations);
     }

@@ -180,11 +180,6 @@ public class Krb5Common {
             KRB5_PRINCIPAL = SUN_KRB5_PRINCIPAL;
         }
 
-        //TODO - remove later
-        String version = getSystemProperty("java.version");
-        if (version.contains("11-internal"))
-            isJava11Internal = true;
-
         try {
             KRB5_MECH_OID = new Oid("1.2.840.113554.1.2.2");
             SPNEGO_MECH_OID = new Oid("1.3.6.1.5.5.2");

@@ -1,0 +1,16 @@
+
+<server>
+
+	<include location="${shared.config.dir}/mpConfigFeatures.xml" />
+
+	<include location="${shared.config.dir}/goodBasicRegistry.xml" />
+
+	<include location="${shared.config.dir}/goodSSLSettings.xml" />
+
+	<include location="${shared.config.dir}/rs_fatTestPorts.xml" />
+	
+	<include location="${shared.config.dir}/oidcRSClientBasicConfig_badServerXmlJwksUriOnly.xml"/>
+	
+	<include location="${shared.config.dir}/microProfileMPConfigNotInApps.xml"/>
+
+</server>

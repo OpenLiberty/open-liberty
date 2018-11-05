@@ -407,6 +407,7 @@ build {
 
 buildfat {
   dependsOn cleanFat
+  dependsOn assemble
   dependsOn build
   dependsOn zipProjectFVT
 }
