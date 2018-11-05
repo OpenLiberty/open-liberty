@@ -72,12 +72,18 @@
 			<version>1.2</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
+		 <dependency>
 			<groupId>com.ibm.ws.org.jboss.arquillian.container</groupId>
 			<artifactId>arquillian-wlp-managed-8.5</artifactId>
 			<version>1.0.0.Final-SNAPSHOT</version>
 			<scope>test</scope>
-		</dependency>
+			<exclusions>
+			    <exclusion>
+			        <groupId>com.sun</groupId>
+			        <artifactId>tools</artifactId>
+			    </exclusion>
+			</exclusions>
+		</dependency> 
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
