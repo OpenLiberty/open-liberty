@@ -280,7 +280,7 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
         // This test directly changes the cache data to give the appearance
         // that the servlet is no longer present.
 
-        String annoTargetsFileName = applicationWorkArea.getCanonicalPath() + "/M_%2FTestServlet40.war/seed/targets";
+        String annoTargetsFileName = applicationWorkArea.getCanonicalPath() + "/M_%2FTestServlet40.war/C_seed/targets";
         File annoTargetsFile = new File(annoTargetsFileName);
         String backupFileName =  annoTargetsFileName + ".backup";
         File backupFile = new File(backupFileName);
@@ -314,95 +314,133 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
      */
     public void logAnnoTargetsFileModifiedTime() throws Exception {
         File applicationWorkArea = getAnnoCacheAppRoot();
-        String annoTargetsFileName = applicationWorkArea.getCanonicalPath() + "/M_%2FTestServlet40.war/seed/targets";
+        String annoTargetsFileName = applicationWorkArea.getCanonicalPath() + "/M_%2FTestServlet40.war/C_seed/targets";
         File annoTargetsFile = new File(annoTargetsFileName);
         LOG.info("File [ " + annoTargetsFile.getName() + " ] last modified [ " + convertTime(annoTargetsFile.lastModified()) + " ]");
     }
 
-    public void modifyCache_AnnoTargets(File annoTargetsFile, File backupFile) throws Exception {
+    // The targets file will be modified by removing a servlet.
+
+    public void modifyCache_AnnoTargets(File targetsFile, File backupTargetsFile) throws Exception {
         LOG.info("In modifyCache_AnnoTargets");
 
-        // The targets file will be modified by removing a servlet.
-        String annoTargetsFileName = annoTargetsFile.getName();
-        String tempFileName = annoTargetsFileName + ".MissingSimpleServlet";  // Temp file for the new targets without the servlet.
+        LOG.info("Targets " + getFileData(targetsFile));
+        LOG.info("Targets backup " + getFileData(backupTargetsFile));
 
-        // Make a backup copy (for restoring cache after test)
-        LOG.info("annoTargetsFileName=[ " + annoTargetsFileName + " ]");
-        LOG.info("backing up file [ " + annoTargetsFileName + " ] to \n  [ " + backupFile.getName() + " ]");
-        FileUtils.copyFile(annoTargetsFile, backupFile);
+        FileUtils.copyFile(targetsFile, backupTargetsFile);
 
-        // Read the targets file
-        // Write to a temp file.  Write everything except the servlet.
-        BufferedReader targetsReader = new BufferedReader(new FileReader(annoTargetsFile)); 
-        BufferedWriter tempFileWriter = null;
-        FileWriter fw = null;
+        String targetsFileName = targetsFile.getName();
+        String modifiedTargetsFileName = targetsFileName + ".MissingSimpleServlet";
+        File modifiedTargetsFile = new File(modifiedTargetsFileName);
+
+        transferExcept( targetsFile,
+                        new String[] { "Class: testservlet40.jar.servlets.SimpleTestServlet" }, // Remove data for SimpleTestServlet
+                        new int[] { 2 }, // Skip the class line plus one additional line
+                        modifiedTargetsFile );
+
+        renameFile(modifiedTargetsFile, targetsFile);
+
+        LOG.info("Modified targets " + getFileData(targetsFile));
+
+        LOG.info("RETURN");
+    }
+
+    private String getFileData(File file) {
+        return "[ " + file.getPath() + " ] [ " + convertTime(file.lastModified()) + " ]";
+    }
+
+    public void transferExcept(File inputFile, String[] exceptLines, int[] regionSizes, File outputFile) throws IOException {
+        LOG.info("In readExcept");
+
+        LOG.info("Input [ " + inputFile.getPath() + " ]");
+        for ( int regionNo = 0; regionNo < exceptLines.length; regionNo++ ) {
+            LOG.info("  Skip [ " + exceptLines[regionNo] + " ] Count [ " + regionSizes[regionNo] + " ]");
+        }
+        LOG.info("Output [ " + outputFile.getPath() + " ]");
+
+        BufferedReader inputReader = null;
+        BufferedWriter outputWriter = null;
+
         try {
-            fw = new FileWriter(tempFileName);
-            LOG.info("new file name [ " + tempFileName + " ]");
-            tempFileWriter = new BufferedWriter(fw);
+            inputReader = new BufferedReader( new FileReader(inputFile) ); 
+            outputWriter = new BufferedWriter( new FileWriter(outputFile) );
 
             String line; 
-            while ((line = targetsReader.readLine()) != null) {
-                // Skip line containing SimpleTestServlet and skip the line after that.
-                // This removes the class and webservlet annotation from cache.
-                if (line.trim().equals("Class: testservlet40.jar.servlets.SimpleTestServlet")) {
-                    LOG.info("skipping: " + line);
-                    line = targetsReader.readLine();
-                    LOG.info("skipping: " + line);
-                } else {
-                    LOG.info(line);
-                    tempFileWriter.write(line + '\n');
+            while ( (line = inputReader.readLine()) != null ) {
+                boolean ignore = false;
+
+                String trimLine = line.trim();
+                for ( int regionNo = 0; regionNo < exceptLines.length; regionNo++ ) {
+                    if ( trimLine.equals(exceptLines[regionNo]) ) {
+                        LOG.info("Skip [ " + line + " ]");
+
+                        int regionSize = regionSizes[regionNo];
+                        for ( int ignoreNo = 1; ignoreNo < regionSize; ignoreNo++ ) {
+                            LOG.info("Skip [ " + inputReader.readLine() + " ]");
+                        }
+
+                        ignore = true;
+                        break;
+                    }
+                }
+
+                if ( !ignore ) {
+                    LOG.info("Keep [ " + line + " ]");
+                    outputWriter.write(line);
+                    outputWriter.write("\n");
                 }
             } 
 
-        } catch (IOException ioe) {
-            LOG.info(ioe.getMessage());
-            throw ioe;
+        } catch ( IOException e ) {
+            LOG.info( e.getMessage() );
+            throw e;
 
         } finally {
-            if (targetsReader != null) {
-                targetsReader.close();
-            }
-            if (tempFileWriter != null) {
-                tempFileWriter.close();
+            if ( outputWriter != null ) {
+                try {
+                    outputWriter.close();
+                } catch ( IOException e ) {
+                    LOG.info( e.getMessage() );
+                    throw e;
+                }
             }  
+
+            if ( inputReader != null ) {
+                try {
+                    inputReader.close();
+                } catch ( IOException e ) {
+                    LOG.info( e.getMessage() );
+                    throw e;
+                }
+            }
         }
-
-        // Replace the targets file with the temp file
-        LOG.info("Calling rename");
-        renameFile(new File(tempFileName), annoTargetsFile);
-
-        LOG.info("RETURN File [ " + annoTargetsFile.getName() + " ] last modified [ " + convertTime(annoTargetsFile.lastModified()) + " ]");
     }
     
+    private static final Format SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
+
     public String convertTime(long time){
-        Date date = new Date(time);
-        Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
-        return format.format(date);
+        return SIMPLE_DATE_FORMAT.format( new Date(time) );
     }
     
     public void renameFile(File oldFile, File newFile) throws Exception {
         if (newFile.exists()) {
             newFile.delete();
             if (newFile.exists()) {       
-                throw new IOException("Could not delete file [" + newFile.getAbsolutePath() + "]");
+                throw new IOException("Could not delete [" + newFile.getAbsolutePath() + "]");
             } else {
-                LOG.info("Deleted file [" + newFile.getName()  + "]");
+                LOG.info("Deleted [" + newFile.getPath()  + "]");
             }
         } else {
-            LOG.info(newFile.getName() + " does not exist.  Suspicious, but were going to delete it anyway.");
+            LOG.info("Cannot delete [ " + newFile.getPath() + " ].  It does not exist.  Suspicious, but we were going to delete it anyway.");
         }
 
-        // Make a backup copy (for debugging)
-        // String backupFileName =oldFile.getAbsolutePath() + ".backup";
-        // LOG.info("backing up file [ " + oldFile.getName() + " ] to \n  [ " + backupFileName + " ]");
-        // FileUtils.copyFile(oldFile, new File(backupFileName));
-
         if ( oldFile.renameTo(newFile) ) {
-            LOG.info("Successfully renamed [" + oldFile.getName() + "] to [" + newFile.getName() + "]");
+            LOG.info("Successfully renamed [" + oldFile.getPath() + "] to [" + newFile.getPath() + "]");
+
         } else {
-            String message = "Could not rename file [" + oldFile.getAbsolutePath() + "] to [" + newFile.getName() + "]";
+            String message = "Could not rename [ " + oldFile.getAbsolutePath() + " ] to [ " + newFile.getAbsolutePath()  + " ]";
             LOG.info(message);
+
             throw new IOException(message);
         }
     }

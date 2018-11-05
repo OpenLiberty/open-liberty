@@ -48,17 +48,17 @@ import com.ibm.ws.fat.util.FatLogHandler;
  * Alternatively, for a command line launch, add "-Dfat.test.mode=full".
  */
 @RunWith(Suite.class)
-@SuiteClasses({
-              	BasicAnnoCacheUsageTest.class,
-//              	MetadataCompleteTest.class,
-//              	MetadataCompleteTestMissingServlets.class,
-//
-//                JandexAppDefaultAppMgrDefaultTest.class,
-//                JandexAppDefaultAppMgrTrueTest.class,
-//                JandexAppFalseAppMgrFalseTest.class,
-//                JandexAppFalseAppMgrTrueTest.class,
-//                JandexAppTrueAppMgrFalseTest.class,
-//                JandexAppTrueAppMgrTrueTest.class
+@SuiteClasses( {
+    BasicAnnoCacheUsageTest.class,
+    MetadataCompleteTest.class,
+    MetadataCompleteTestMissingServlets.class,
+
+    JandexAppDefaultAppMgrDefaultTest.class,
+    JandexAppDefaultAppMgrTrueTest.class,
+    JandexAppFalseAppMgrFalseTest.class,
+    JandexAppFalseAppMgrTrueTest.class,
+    JandexAppTrueAppMgrFalseTest.class,
+    JandexAppTrueAppMgrTrueTest.class
 })
 
 public class FATSuite {

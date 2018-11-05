@@ -148,16 +148,16 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
     private final boolean isLightweight;
 
     public boolean getIsLightweight() {
-    	return isLightweight;
+        return isLightweight;
     }
 
     @Override
     public File getDataFile(String relativePath) {
-    	if ( getIsLightweight() ) {
-    		return null;
-    	} else {
-    		return super.getDataFile(relativePath);
-    	}
+        if ( getIsLightweight() ) {
+                return null;
+        } else {
+                return super.getDataFile(relativePath);
+        }
     }
 
     //
@@ -600,23 +600,30 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
     //
 
-    @Trivial
-    public boolean shouldAppWrite(String outputDescription) {
-        return getApp().shouldWrite(outputDescription);
+    public boolean shouldAppRead(String inputDescription) {
+        return getApp().shouldWrite(inputDescription);
     }
 
     @Override
     public boolean shouldRead(String inputDescription) {
         if ( !isNamed() || getIsLightweight() ) {
             return false;
+        } else if ( !shouldAppRead(inputDescription) ) {
+            return false;
         } else {
             return super.shouldRead(inputDescription);
         }
     }
 
+    public boolean shouldAppWrite(String outputDescription) {
+        return getApp().shouldWrite(outputDescription);
+    }
+
     @Override
     public boolean shouldWrite(String outputDescription) {
         if ( !isNamed() || getIsLightweight() ) {
+            return false;
+        } else if ( !shouldAppWrite(outputDescription) ) {
             return false;
         } else {
             return super.shouldWrite(outputDescription);
