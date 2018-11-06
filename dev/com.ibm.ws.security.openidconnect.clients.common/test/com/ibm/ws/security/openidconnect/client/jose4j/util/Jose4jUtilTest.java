@@ -260,8 +260,10 @@ public class Jose4jUtilTest extends CommonTestClass {
                 will(returnValue(SIGNATURE_ALG_RS256));
                 one(clientConfig).getJwkEndpointUrl();
                 will(returnValue(TEST_URL));
-                one(jwKRetriever).getPublicKeyFromJwk(KID, x5t, use);
+                one(jwKRetriever).getPublicKeyFromJwk(KID, x5t, use, false);
                 will(returnValue(publicKey));
+                one(clientConfig).getUseSystemPropertiesForHttpClientConnections();
+                will(returnValue(false));
             }
         });
         try {

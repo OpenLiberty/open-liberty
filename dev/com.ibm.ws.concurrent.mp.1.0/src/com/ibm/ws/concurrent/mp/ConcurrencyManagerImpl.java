@@ -12,6 +12,7 @@ package com.ibm.ws.concurrent.mp;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -24,6 +25,7 @@ import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
 
 /**
  * Concurrency manager, which includes the collection of ThreadContextProviders
@@ -48,14 +50,16 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
         // Thread context providers whose prerequisites are unmet
         LinkedList<ThreadContextProvider> unsatisfied = new LinkedList<ThreadContextProvider>();
 
-        // Built-in thread context providers
+        // Built-in thread context providers (always available)
 
-        contextProviders.add(concurrencyProvider.applicationContextProvider); // always available
+        contextProviders.add(concurrencyProvider.applicationContextProvider);
         available.add(ThreadContext.APPLICATION);
-
-        // TODO add other container-provided ThreadContextProviders
-        // TODO some of these will vary in availability which can change based on server config.
-        // Look into using ContainerContextProvider.toContainerProviders returning a NULL to indicate this.
+        contextProviders.add(concurrencyProvider.securityContextProvider);
+        available.add(ThreadContext.SECURITY);
+        contextProviders.add(concurrencyProvider.transactionContextProvider);
+        available.add(ThreadContext.TRANSACTION);
+        contextProviders.add(concurrencyProvider.wlmContextProvider);
+        available.add(WLMContextProvider.WORKLOAD);
 
         // Thread context providers for the supplied class loader
 
@@ -64,7 +68,7 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
             Set<String> prereqs = provider.getPrerequisites();
 
             if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, "context type " + type + " with prereqs " + prereqs + " provided by ");
+                Tr.debug(this, tc, "context type " + type + " with prereqs " + prereqs + " provided by " + provider);
 
             if (available.containsAll(prereqs)) {
                 if (available.add(type))
@@ -81,18 +85,19 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
 
         for (boolean changed = true; changed && !unsatisfied.isEmpty();) {
             changed = false;
-            for (ThreadContextProvider provider : unsatisfied) {
+            for (Iterator<ThreadContextProvider> providers = unsatisfied.iterator(); providers.hasNext();) {
+                ThreadContextProvider provider = providers.next();
+
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "previously unsatisfied provider " + provider);
 
                 if (available.containsAll(provider.getPrerequisites())) {
+                    providers.remove();
                     if (available.add(provider.getThreadContextType()))
                         contextProviders.add(provider);
                     else
                         throw new IllegalStateException(); // TODO same message from earlier
                     changed = true;
-                } else {
-                    unsatisfied.add(provider);
                 }
             }
         }

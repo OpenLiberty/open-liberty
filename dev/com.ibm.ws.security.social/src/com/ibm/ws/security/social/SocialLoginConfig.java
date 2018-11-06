@@ -108,5 +108,7 @@ public interface SocialLoginConfig {
     boolean getUserApiNeedsSpecialHeader();
 
     String getResponseMode();
+    
+    public boolean getUseSystemPropertiesForHttpClientConnections();
 
 }
