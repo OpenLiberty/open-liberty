@@ -18,7 +18,7 @@ instrument.disabled: true
 -includeresource: \
    @${repo;org.eclipse:yasson;1.0.2}!/org/eclipse/yasson/*,\
    @${repo;org.eclipse:yasson;1.0.2}!/META-INF/services/javax.json.bind.spi.JsonbProvider,\
-   @${repo;org.eclipse:yasson;1.0.2}!/messages.properties,\
+   @${repo;org.eclipse:yasson;1.0.2}!/yasson-messages.properties,\
    org/eclipse/yasson=${bin}/org/eclipse/yasson
 
 -buildpath: \
