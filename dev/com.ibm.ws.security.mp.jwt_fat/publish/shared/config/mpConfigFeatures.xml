@@ -11,8 +11,5 @@
 		<feature>mpConfig-1.3</feature>
 	</featureManager>
 
-<!-- 
-		<feature>securitylibertyinternals-1.0</feature>
- -->
 </server>
     
