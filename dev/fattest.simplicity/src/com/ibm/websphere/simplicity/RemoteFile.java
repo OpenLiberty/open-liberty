@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 import com.ibm.websphere.simplicity.log.Log;
 import componenttest.common.apiservices.cmdline.LocalProvider;
@@ -449,65 +448,92 @@ public class RemoteFile {
         return RemoteFile.copy(srcFile, this, false, true, binary);
     }
 
+    //
 
     /**
-     * Uses the {@link Files} class for the deletion operation because
-     * it throws informational exception on operation failure. Outputs 
-     * exception message to liberty output for debugging.
-     * 
-     * @param path
-     *              The {@link File} object that represents a file to be deleted
-     * @return true if deletetion was successful, false if failure
+     * Deletes this file or directory.
+     *
+     * Delegate to an implementation according to the type of this file:
+     *
+     * To delete a remote file, use {@link LocalProvider#delete(RemoteFile)}.
+     *
+     * To delete a local simple file, use {@link #deleteLocalFile(File)}.
+     *
+     * To delete a local directory, use {@link #deleteLocalDirectory(File)}.
+     *
+     * @return True or false telling if this file or directory was deleted.
      */
-    private boolean deleteExecutionWrapper(File path) {
-        try{
-            java.nio.file.Files.delete(path.toPath());
+    public boolean delete() throws Exception {
+        if ( host.isLocal() ) {
+            if ( localFile.isDirectory() ) {
+                return deleteLocalDirectory(localFile);
+            } else
+                return deleteLocalFile(localFile);
+        } else {
+            return LocalProvider.delete(this);
+        }
+    }
+
+    /**
+     * Attempt to recursively delete a local directory and its contents.
+     *
+     * Continue processing even if deletion of a child file fails. 
+     *
+     * @return True or false telling if the local directory and its
+     *     contents were deleted.
+     */
+    public boolean deleteLocalDirectory(File path) {
+    	String method = "deleteLocalDirectory";
+
+        if ( !path.exists() ) {
             return true;
-        }catch(Exception e){
-            Log.info(c, "deleteExecutionWrapper", "Delete Operation for [" + path + "] could not be completed.\n" + e.getMessage());
+        }
+
+        File[] files = path.listFiles();
+        for ( File file : files ) {
+            if ( file.isDirectory() ) {
+                // Failure logging in 'deleteLocalDirectory'.
+                deleteLocalDirectory(file);
+
+            } else {
+                if ( !deleteLocalFile(file) ) {
+                    Log.info(c, method, "Failed to delete: " + file);
+                }
+            }
+        }
+
+        // Failure logging in 'deleteLocalFile'.
+        return ( deleteLocalFile(path) );
+    }
+
+    /**
+     * Attempt to delete a local file using {@link Files#delete(java.nio.file.Path)}.
+     *
+     * The file is any simple local file or any empty local directory.  An attempt to delete
+     * a non-empty directory will fail.
+     *
+     * Catch any exception that occurs.
+     *
+     * If deletion fails because of a thrown exception, catch that exception, log
+     * an informational message with the exception message, and answer false.
+     *
+     * @param The file which is to be deleted.
+     *
+     * @return True or false telling if the file was deleted.
+     */
+    private boolean deleteLocalFile(File file) {
+    	String method = "delete";
+        try{
+            java.nio.file.Files.delete(file.toPath());
+            return true;
+
+        } catch ( Exception e ) {
+            Log.info(c, method, "Failed to delete [" + file + "]:\n" + e.getMessage());
             return false;
         }
     }
 
-    /**
-     * Deletes the file or directory denoted by this abstract pathname.
-     * 
-     * @return true if and only if the file or directory is successfully
-     *         deleted; false otherwise
-     */
-    public boolean delete() throws Exception {
-        if (host.isLocal()) {
-            if (localFile.isDirectory()) {
-                return this.deleteLocalDirectory(localFile);
-            } else
-                return this.deleteExecutionWrapper(localFile);
-        } else
-            return LocalProvider.delete(this);
-    }
-
-    /**
-     * Recursively deletes the contents then the directory denoted by this
-     * pathname.
-     * 
-     * @return true if and only if the directory is successfully deleted; false
-     *         otherwise
-     */
-    public boolean deleteLocalDirectory(File path) {
-        if (path.exists()) {
-            File[] files = path.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].isDirectory()) {
-                    deleteLocalDirectory(files[i]);
-                } else {
-                    boolean b = this.deleteExecutionWrapper(files[i]);
-                    if (!b) {
-                        Log.info(c, "deleteLocalDirectory", "couldn't delete localfile = " + files[i]);
-                    }
-                }
-            }
-        }
-        return (this.deleteExecutionWrapper(path));
-    }
+    //
 
     /**
      * Tests whether the file represented by this RemoteFile is a directory.
@@ -648,8 +674,7 @@ public class RemoteFile {
      *     ever be {@link InterruptedException}.
      */
     public static void sleep(long ns) throws Exception {
-        Thread.currentThread().sleep( (long) (ns / 1000), (int) (ns % 1000) );
-        // throws InterruptedException;
+        Thread.sleep( (long) (ns / 1000), (int) (ns % 1000) ); // throws InterruptedException;
     }
 
     //
@@ -787,26 +812,27 @@ public class RemoteFile {
                                 boolean recursive, boolean overwrite, boolean binary)
                     throws Exception {
         final String method = "copy";
-        Log.entering(c, method, new Object[] { srcFile, destFile, recursive,
-                                              overwrite });
-        boolean destExists = destFile.exists();
-        boolean destIsDir = destFile.isDirectory();
-        boolean copied = true;
-        if (destFile == null) {
-            throw new Exception("destFile cannot be null.");
+        Log.entering(c, method, new Object[] { srcFile, destFile, recursive, overwrite });
+
+        if (srcFile == null) {
+            throw new Exception("srcFile cannot be null.");
         }
         if (!srcFile.exists()) {
             throw new Exception("Cannot copy a file or directory that does not exist: "
                                 + srcFile.getAbsolutePath() + ": "
                                 + srcFile.getMachine().getHostname());
         }
+
+        if (destFile == null) {
+            throw new Exception("destFile cannot be null.");
+        }
+        boolean destExists = destFile.exists();
+        boolean destIsDir = destFile.isDirectory();
         if (!overwrite && destExists && !destIsDir) {
             throw new Exception("Destination " + destFile.getAbsolutePath()
                                 + " on machine " + destFile.getMachine().getHostname()
                                 + " already exists.");
         }
-
-        RemoteFile[] childEntries = null;
 
         if (srcFile.isDirectory()) {
             Log.finer(c, method, "Source file is a directory.");
@@ -818,15 +844,14 @@ public class RemoteFile {
                                             + destFile.getAbsolutePath());
                     }
                 }
-                // create the directory
                 Log.finer(c, method, "Creating the destination directory.");
                 if (!destFile.mkdirs()) {
                     throw new Exception("Unable to create destination directory " + destFile.getAbsolutePath());
                 }
             }
-            childEntries = srcFile.list(false);
 
-            // now copy any children
+            RemoteFile[] childEntries = srcFile.list(false);
+            boolean copied = true;
             if (childEntries != null && recursive) {
                 Log.finer(c, method, "Copying children...");
                 for (int i = 0; i < childEntries.length; ++i) {
@@ -838,17 +863,18 @@ public class RemoteFile {
 
             Log.exiting(c, method, copied);
             return copied;
+
         } else {
             Log.finer(c, method, "The source file is a file. Copying the file.");
             //Now we ensure the parent directory path exists and create if it doesn't as long as it has a parent
-            if (!!!destFile.getParentFile().equals(null)) {
+            if (!destFile.getParentFile().equals(null)) {
                 RemoteFile parentFolder = new RemoteFile(destFile.getMachine(), destFile.getParent());
                 Log.finer(c, method, destFile.getParent()); // info level is inconsistent with other messages in this method, and also very loud for large transfers
                 parentFolder.mkdirs();
             }
 
-            // copy the file
             boolean result = LocalProvider.copy(srcFile, destFile, binary);
+
             Log.exiting(c, method, result);
             return result;
         }

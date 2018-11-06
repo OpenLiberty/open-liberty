@@ -2749,6 +2749,8 @@ public class LibertyServer implements LogMonitorClient {
         return serverToUse;
     }
 
+    //
+
     public void deleteFileFromLibertyInstallRoot(String filePath) throws Exception {
         LibertyFileManager.deleteLibertyFile(machine, (installRoot + "/" + filePath));
     }
@@ -2764,6 +2766,8 @@ public class LibertyServer implements LogMonitorClient {
     public void deleteFileFromLibertyServerRoot(String filePath) throws Exception {
         LibertyFileManager.deleteLibertyFile(machine, (serverRoot + "/" + filePath));
     }
+
+    //
 
     public RemoteFile getServerBootstrapPropertiesFile() throws Exception {
         return new RemoteFile(machine, serverRoot + "/bootstrap.properties");
@@ -5390,7 +5394,7 @@ public class LibertyServer implements LogMonitorClient {
     public boolean restartDropinsApplication(String appFileName) throws Exception {
         final String method = "restartDropinsApplication";
 
-        String appName = appFileName.substring(0, appFileName.lastIndexOf("."));
+        // String appName = appFileName.substring(0, appFileName.lastIndexOf("."));
         String appInDropinsPath = serverRoot + "/dropins/" + appFileName;
         String appExcisedPath = serverRoot + "/" + appFileName;
 
@@ -5411,7 +5415,7 @@ public class LibertyServer implements LogMonitorClient {
             Log.info(c, method, appFileName + " successfully moved out of dropins, waiting for message...");
         }
 
-        String stopMsg = waitForStringInLogUsingMark("CWWKZ0009I:.*" + appName); // throws Exception
+        // String stopMsg = waitForStringInLogUsingMark("CWWKZ0009I:.*" + appName); // throws Exception
 
         if (!LibertyFileManager.renameLibertyFile(machine, appExcisedPath, appInDropinsPath)) { // throws Exception
             Log.info(c, method, "Unable to move " + appFileName + " back into dropins, failing.");
@@ -5420,7 +5424,7 @@ public class LibertyServer implements LogMonitorClient {
             Log.info(c, method, appFileName + " successfully moved back into dropins, waiting for message...");
         }
 
-        String startMsg = waitForStringInLogUsingMark("CWWKZ0001I:.*" + appName); // throws Exception
+        // String startMsg = waitForStringInLogUsingMark("CWWKZ0001I:.*" + appName); // throws Exception
 
         return true;
     }

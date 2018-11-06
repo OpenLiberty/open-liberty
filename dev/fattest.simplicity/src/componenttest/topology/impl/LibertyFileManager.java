@@ -345,55 +345,56 @@ public class LibertyFileManager {
         return new RemoteFile(machine, LibertyServerUtils.makeJavaCompatible(fileAbsPath, machine));
     }
 
-    public static void deleteLibertyFile(Machine machine, String fileToDeleteAbsPath) throws Exception {
-        final String method = "deleteLibertyFile";
-        Log.info(c, method, "Deleting file '" + fileToDeleteAbsPath + "\'");
+    //
+
+    public static void deleteLibertyFile(Machine machine, String remoteFileAbsPath) throws Exception {
+        String method = "deleteLibertyFile";
+        Log.info(c, method, "Remote absolute path'" + remoteFileAbsPath + "\'");
+
         try {
-            RemoteFile fileToDelete = getLibertyFile(machine, fileToDeleteAbsPath);
-            if (fileToDelete.exists()) {
-                boolean deleted = fileToDelete.delete();
-                if (!deleted) {
-                    Log.info(c, method, "File \'" + fileToDeleteAbsPath
-                                        + "\' was not able to be deleted");
+            RemoteFile remoteFile = getLibertyFile(machine, remoteFileAbsPath); // throws Exception
+            if ( remoteFile.exists() ) { // throws Exception
+                boolean deleted = remoteFile.delete(); // throws Exception
+                if ( !deleted ) {
+                    Log.info(c, method, "File \'" + remoteFileAbsPath + "\' was not able to be deleted");
+                } else {
+                    // Log.info(c, method, "File \'" + remoteFileAbsPath + "\' was deleted");
                 }
             } else {
-                Log.info(c, method, "File \'" + fileToDeleteAbsPath
-                                    + "\' does not exist so cannot be deleted");
+                Log.info(c, method, "File \'" + remoteFileAbsPath + "\' does not exist so cannot be deleted");
             }
-        } catch (FileNotFoundException e) {
-            Log.info(c, method, "File \'" + fileToDeleteAbsPath
-                                + "\' does not exist so cannot be deleted");
+        } catch ( FileNotFoundException e ) {
+            Log.info(c, method, "File \'" + remoteFileAbsPath + "\' does not exist so cannot be deleted");
         }
-
     }
 
-    public static void deleteLibertyDirectoryAndContents(Machine machine, String dirToDeleteAbsPath) throws Exception {
-        final String method = "deleteLibertyDirectoryAndContents";
-        Log.finer(c, method, "deleting Directory and Contents: " + dirToDeleteAbsPath);
+    public static void deleteLibertyDirectoryAndContents(Machine machine, String remoteDirAbsPath) throws Exception {
+        String method = "deleteLibertyDirectoryAndContents";
+        Log.finer(c, method, "Remote absolute path: " + remoteDirAbsPath);
         try {
-            RemoteFile fileToDelete = getLibertyFile(machine, dirToDeleteAbsPath);
-            if (fileToDelete.exists()) {
-                recursivelyDeleteDirectory(machine, fileToDelete);
+            RemoteFile remoteDir = getLibertyFile(machine, remoteDirAbsPath); // throws Exception
+            if ( remoteDir.exists() ) { // throws Exception
+                recursivelyDeleteDirectory(machine, remoteDir); // throws Exception
+                // Log.info(c, method, "File \'" + remoteDireAbsPath + "\' was deleted");
+            } else {
+                // Log.info(c, method, "File \'" + remoteDirAbsPath + "\' does not exist so cannot be deleted");
             }
-        } catch (FileNotFoundException e) {
+        } catch ( FileNotFoundException e ) {
+            // Log.info(c, method, "Directory \'" + remoteDirAbsPath + "\' does not exist so cannot be deleted");
         }
     }
 
-    private static void recursivelyDeleteDirectory(Machine machine, RemoteFile destinationToDelete) throws Exception {
-        ArrayList<String> contents = new ArrayList<String>();
-        contents = listRemoteContents(destinationToDelete);
-        for (String l : contents) {
-            RemoteFile toDelete = new RemoteFile(machine, destinationToDelete, l);
-            if (toDelete.isDirectory()) {
-                //Recurse if a directory
-                recursivelyDeleteDirectory(machine, toDelete);
+    private static void recursivelyDeleteDirectory(Machine machine, RemoteFile remoteDir) throws Exception {
+        List<String> fileNames = listRemoteContents(remoteDir); // throws Exception
+        for ( String fileName : fileNames ) {
+            RemoteFile remoteFile = new RemoteFile(machine, remoteDir, fileName);
+            if ( remoteFile.isDirectory() ) {
+                recursivelyDeleteDirectory(machine, remoteFile); // throws Exception
             } else {
-                //else we can delete
-                toDelete.delete();
+                remoteFile.delete(); // throws Exception
             }
         }
-        //Delete directory once contents deleted
-        destinationToDelete.delete();
+        remoteDir.delete(); // throws Exception
     }
 
     private static ArrayList<String> listRemoteContents(RemoteFile remoteDir) throws Exception {
@@ -411,6 +412,8 @@ public class LibertyFileManager {
         }
         return firstLevelFileNames;
     }
+
+    //
 
     /**
      * This copies the named file into the liberty server and maintains the name of the file. This is equivalent to calling
