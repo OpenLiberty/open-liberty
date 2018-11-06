@@ -688,6 +688,10 @@ warning.package.root.invalid=CWWKE0947W: A --server-root option with an empty ar
 warning.package.root.invalid.explanation=The user performed a package request with a --server-root option specifying an empty argument and Product Extensions were detected. The default server root of wlp will be used.
 warning.package.root.invalid.useraction=No action is required.
 
+warning.package.root.invalid.runnable=CWWKE0948W: A --server-root option with --include=runnable is not an allowed combination. The default argument of wlp is used for the server root.
+warning.package.root.invalid.runnable.explanation=The user performed a package request with a --server-root option and --include=runnable, which is not an allowed combination. The default server root of wlp is used.
+warning.package.root.invalid.runnable.useraction=No action is required.
+
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
 info.serverStartedWithPID=Server {0} started with process ID {1}.

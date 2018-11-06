@@ -238,7 +238,13 @@ public class PackageCommand {
                 System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.package.root.invalid"),
                                                         serverName));
             } else {
-                processor.setArchivePrefix(rootOption);
+                if (!PackageProcessor.IncludeOption.RUNNABLE.matches(includeOption)) {
+                    processor.setArchivePrefix(rootOption);
+                } else {
+                    // --server-root and --include=runnable is not a valid combo, thus --server-root will be ignored.
+                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.package.root.invalid.runnable"),
+                                                            serverName));
+                }
             }
         }
 
