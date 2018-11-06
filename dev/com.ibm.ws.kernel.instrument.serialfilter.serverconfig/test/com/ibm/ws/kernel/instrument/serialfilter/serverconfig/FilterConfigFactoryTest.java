@@ -42,17 +42,23 @@ public class FilterConfigFactoryTest {
     };
 
     private boolean isStopping;
+    private boolean isEnabled;
     private SimpleConfig simpleConfig, mockSimpleConfig;
     
     private FilterConfigFactory fcf = new FilterConfigFactory() {
-        @Override
+    	@Override
         protected boolean isStopping() {
             return isStopping;
+        }
+    	@Override
+        protected boolean isEnabled() {
+            return isEnabled;
         }
         @Override
         protected SimpleConfig getSystemConfigProxy() {
             return simpleConfig;
         }
+        
     };
 
     
@@ -88,6 +94,7 @@ public class FilterConfigFactoryTest {
         Map<String, Dictionary> configMap = fcf.getConfigMap();
         configMap.clear();
         isStopping = false;
+        isEnabled = true;
         simpleConfig = mockSimpleConfig;
         String pid = "pid1";
         Properties props = new Properties();
@@ -108,6 +115,7 @@ public class FilterConfigFactoryTest {
         Map<String, Dictionary> configMap = fcf.getConfigMap();
         configMap.clear();
         isStopping = false;
+        isEnabled = true;
         simpleConfig = mockSimpleConfig;
         String pid = "pid1";
         Properties props = new Properties();
@@ -131,6 +139,7 @@ public class FilterConfigFactoryTest {
         Map<String, Dictionary> configMap = fcf.getConfigMap();
         configMap.clear();
         isStopping = false;
+        isEnabled = true;
         simpleConfig = mockSimpleConfig;
         String pid = "pid1";
         Properties props = new Properties();

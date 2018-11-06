@@ -10,28 +10,17 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.instrument.serialfilter.serverconfig;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Dictionary;
 import java.util.Properties;
-import java.util.ResourceBundle;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
@@ -62,12 +51,14 @@ public class FilterConfigFactory implements ManagedServiceFactory {
     public static final String VALUE_PERMISSION_ALLOW = "Allow";
     public static final String VALUE_PERMISSION_DENY = "Deny";
 
-    private volatile ComponentContext cc = null;
+    private static final String KEY_SERIALFILTER_AGENT_ACTIVE = "com.ibm.websphere.serialfilter.active";
 
-    private Map<String, Dictionary> serialFilterConfigMap = new HashMap<String, Dictionary>();
-
+    @SuppressWarnings("rawtypes")
+	private Map<String, Dictionary> serialFilterConfigMap = new HashMap<String, Dictionary>();
+    private static boolean isEnableMessageShown=false;
+    
     @Override
-    public void updated(String pid, Dictionary properties) throws ConfigurationException {
+    public void updated(String pid, @SuppressWarnings("rawtypes") Dictionary properties) throws ConfigurationException {
         // If we are stopping ignore the update
         if (isStopping()) {
             return;
@@ -75,13 +66,18 @@ public class FilterConfigFactory implements ManagedServiceFactory {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "updated filterConfig pid : " + pid, properties);
         }
-
-        serialFilterConfigMap.put(pid, properties);
-        try {
-            propagateConfigMap(serialFilterConfigMap);
-        } catch (ConfigurationException e) {
-            serialFilterConfigMap.remove(pid);
-            throw e;
+        if (isEnabled()) {
+            serialFilterConfigMap.put(pid, properties);
+            try {
+                propagateConfigMap(serialFilterConfigMap);
+                if (!isEnableMessageShown) {
+                	isEnableMessageShown=true;
+                	Tr.info(tc, "SF_INFO_ENABLED");
+                }
+            } catch (ConfigurationException e) {
+                serialFilterConfigMap.remove(pid);
+                throw e;
+            }
         }
     }
 
@@ -90,12 +86,14 @@ public class FilterConfigFactory implements ManagedServiceFactory {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "deleted filterConfig pid : " + pid);
         }
-        if (serialFilterConfigMap.containsKey(pid)) {
-            serialFilterConfigMap.remove(pid);
-            try {
-                propagateConfigMap(serialFilterConfigMap);
-            } catch (ConfigurationException e) {
-                // ignore.
+        if (isEnabled()) {
+            if (serialFilterConfigMap.containsKey(pid)) {
+                serialFilterConfigMap.remove(pid);
+                try {
+                    propagateConfigMap(serialFilterConfigMap);
+                } catch (ConfigurationException e) {
+                    // ignore.
+                }
             }
         }
     }
@@ -109,7 +107,6 @@ public class FilterConfigFactory implements ManagedServiceFactory {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "activate", ctx.getProperties());
         }
-        cc = ctx;
     }
 
     protected void deactivate(ComponentContext ctx, int reason) {
@@ -118,7 +115,7 @@ public class FilterConfigFactory implements ManagedServiceFactory {
         }
     }
 
-    protected void propagateConfigMap(Map<String, Dictionary> map) throws ConfigurationException {
+    protected void propagateConfigMap(@SuppressWarnings("rawtypes") Map<String, Dictionary> map) throws ConfigurationException {
         SimpleConfig configObject = getSystemConfigProxy();
         Properties filterConfig = new Properties();
         try {
@@ -144,7 +141,8 @@ public class FilterConfigFactory implements ManagedServiceFactory {
         }
     }
 
-    protected void convertData(Map<String, Dictionary> map, Properties filterConfig) throws ConfigurationException {
+    @SuppressWarnings("rawtypes")
+	protected void convertData(Map<String, Dictionary> map, Properties filterConfig) throws ConfigurationException {
         for ( Map.Entry<String, Dictionary> entry : map.entrySet() ) {
             String pid = entry.getKey();
             Dictionary props = entry.getValue();
@@ -158,7 +156,6 @@ public class FilterConfigFactory implements ManagedServiceFactory {
                 String mode = (String)props.get(CONFIG_MODE);
                 String permission = (String)props.get(CONFIG_PERMISSION);
                 String method = (String)props.get(CONFIG_METHOD);
-                String key = clazz;
                 String value = mode.toUpperCase();
                 // valid value.
                 if (method != null && !method.isEmpty()) {
@@ -178,11 +175,24 @@ public class FilterConfigFactory implements ManagedServiceFactory {
         return FrameworkState.isStopping();
     }
 
+    protected boolean isEnabled() {
+        String activeSerialFilter = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            public String run() {
+                return System.getProperty(KEY_SERIALFILTER_AGENT_ACTIVE);
+            }
+        });
+        if ("true".equalsIgnoreCase(activeSerialFilter)) {
+	        return true;
+	    }
+        return false;
+    }
+
     protected SimpleConfig getSystemConfigProxy() {
         return ConfigFacade.getSystemConfigProxy();
     }
 
-    protected Map<String, Dictionary> getConfigMap() {
+    @SuppressWarnings("rawtypes")
+	protected Map<String, Dictionary> getConfigMap() {
         return serialFilterConfigMap;
     }
 }
