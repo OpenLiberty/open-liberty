@@ -8,7 +8,7 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 ###############################################################################
-#CMVCPATHNAME com.ibm.ws.kernel.instrument.serialfilter.serverconfig/resources/com/ibm/ws/kernel/instrument/serialfilter/SerialFilterMessages.nlsprops
+#CMVCPATHNAME com.ibm.ws.kernel.instrument.serialfilter/resources/com/ibm/ws/kernel/instrument/serialfilter/internal/resources/SerialFilterMessages.nlsprops
 #COMPONENTPREFIX CWWKS
 #COMPONENTNAMEFOR SerialFilter
 #ISMESSAGEFILE TRUE
@@ -16,12 +16,9 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 
-# Message prefix block: CWWKS8000 - CWWKS8099
+# Message prefix block: CWWKS8001 - CWWKS8069
 
 # do not translate a word "serialFilter".
-SF_INFO_LOADED=CWWKS8000I: WebSphere Application Server serialFilter is loaded.
-SF_INFO_LOADED.explanation=This message is for informational purposes only.
-SF_INFO_LOADED.useraction=No action is required.
 SF_INFO_NOT_ON_WHITELIST=CWWKS8001I: The following class is not on the serialFilter whitelist. {0}
 SF_INFO_NOT_ON_WHITELIST.explanation=The class is not on the serialFiter whiltelist
 SF_INFO_NOT_ON_WHITELIST.useraction=Make sure that the class is added to the whitelist if it is required.

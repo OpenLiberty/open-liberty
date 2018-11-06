@@ -11,5 +11,11 @@
 /**
  * @version 1.0
  */
+
 @org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(messageBundle = "com.ibm.ws.kernel.instrument.serialfilter.serverconfig.internal.resources.SerialFilterConfigMessages")
+
 package com.ibm.ws.kernel.instrument.serialfilter.serverconfig;
+
+import com.ibm.websphere.ras.annotation.TraceOptions;
+

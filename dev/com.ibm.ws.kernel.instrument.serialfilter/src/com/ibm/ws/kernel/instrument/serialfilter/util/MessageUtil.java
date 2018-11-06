@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 
 
 public class MessageUtil {
-    private static final String MESSAGE_BUNDLE = "com.ibm.ws.kernel.instrument.serialfilter.SerialFilterMessages";
+    private static final String MESSAGE_BUNDLE = "com.ibm.ws.kernel.instrument.serialfilter.internal.resources.SerialFilterMessages";
 
     public static String format(String messageName, Object... arguments) {
         return MessageFormat.format(ResourceBundle.getBundle(MESSAGE_BUNDLE).getString(messageName), arguments);
