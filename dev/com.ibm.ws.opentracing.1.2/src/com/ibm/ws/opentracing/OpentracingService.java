@@ -28,6 +28,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.opentracing.filters.ExcludeFilter;
+import com.ibm.ws.opentracing.filters.ExcludePathFilter;
 import com.ibm.ws.opentracing.filters.SpanFilter;
 import com.ibm.ws.opentracing.filters.SpanFilterType;
 
@@ -42,6 +43,13 @@ public class OpentracingService {
 
     private static final TraceComponent tc = Tr.register(OpentracingService.class);
     private static String excludeFilterString = null;
+
+    private static final String MP_METRICS_ENDPOINT = "/metrics";
+    private static final String MP_METRICS_BASE_ENDPOINT = "/metrics/base/.*";
+    private static final String MP_METRICS_VENDOR_ENDPOINT = "/metrics/vendor/.*";
+    private static final String MP_METRICS_APPLICATION_ENDPOINT = "/metrics/application/.*";
+    private static final String MP_HEALTH_ENDPOINT = "/health";
+    private static final String MP_OPENAPI_ENDPOINT = "/openapi";
 
     /**
      * List of all active span filters.
@@ -78,7 +86,22 @@ public class OpentracingService {
         // in the main path in `process`.
         List<SpanFilter> filters = new ArrayList<SpanFilter>();
 
-        processFilters(filters, filterString, "excludeSpans", ExcludeFilter.class);
+        // Pre-defined exclude filters for MicroProfile endpoints
+        processFilters(filters, MP_METRICS_ENDPOINT, "excludeSpans", ExcludeFilter.class);
+        processFilters(filters, MP_METRICS_BASE_ENDPOINT, "excludeSpans", ExcludeFilter.class);
+        processFilters(filters, MP_METRICS_VENDOR_ENDPOINT, "excludeSpans", ExcludeFilter.class);
+        processFilters(filters, MP_METRICS_APPLICATION_ENDPOINT, "excludeSpans", ExcludeFilter.class);
+        processFilters(filters, MP_HEALTH_ENDPOINT, "excludeSpans", ExcludeFilter.class);
+        processFilters(filters, MP_OPENAPI_ENDPOINT, "excludeSpans", ExcludeFilter.class);
+
+        // Exclude filters
+        // Use ExcludePathFilter here because MicroProfile OpenTracing specification does not support
+        // multiple applications
+        if (filterString != null) {
+            processFilters(filters, filterString, "excludeSpans", ExcludePathFilter.class);
+        }
+
+        // Include filters
 //      processFilters(filters, map, configAdmin, "includeSpans", IncludeFilter.class);
 
         SpanFilter[] finalFilters = new SpanFilter[filters.size()];
@@ -132,11 +155,11 @@ public class OpentracingService {
      * @param type The type of the request.
      * @return true if a span for the specified URI and type should be included.
      */
-    public static boolean process(final URI uri, final SpanFilterType type) {
+    public static boolean process(final URI uri, final String path, final SpanFilterType type) {
         final String methodName = "process";
 
         String newExcludeFilterString = OpentracingConfiguration.getServerSkipPattern();
-        if (!newExcludeFilterString.equals(excludeFilterString)) {
+        if (!compare(excludeFilterString, newExcludeFilterString)) {
             updateFilters(newExcludeFilterString);
         }
 
@@ -147,7 +170,7 @@ public class OpentracingService {
         final SpanFilter[] filters = allFilters;
 
         for (int i = 0; i < filters.length; i++) {
-            result = filters[i].process(result, uri, type);
+            result = filters[i].process(result, uri, path, type);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, methodName, "filter " + filters[i] + " set result to " + result);
@@ -190,4 +213,11 @@ public class OpentracingService {
             span.log(log);
         }
     }
+
+    private static boolean compare(String str1, String str2) {
+        if (str1 == null || str2 == null)
+            return str1 == str2;
+        return str1.equals(str2);
+    }
+
 }

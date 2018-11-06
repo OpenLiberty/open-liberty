@@ -20,10 +20,10 @@ public class IncludeFilter extends SpanFilterBase {
      * Create a new filter with a pattern, filter type, and whether to ignore case on the pattern match.
      * If the URI and type match, then include the request.
      *
-     * @param pattern The pattern for which this filter matches.
-     * @param type The filter types for which this filter matches.
+     * @param pattern    The pattern for which this filter matches.
+     * @param type       The filter types for which this filter matches.
      * @param ignoreCase Whether to ignore case on the pattern match.
-     * @param regex If true, pattern is treated as a regular expression.
+     * @param regex      If true, pattern is treated as a regular expression.
      */
     public IncludeFilter(String pattern, SpanFilterType type, boolean ignoreCase, boolean regex) {
         super(pattern, type, ignoreCase, regex);
@@ -33,7 +33,7 @@ public class IncludeFilter extends SpanFilterBase {
      * {@inheritDoc}
      */
     @Override
-    protected final boolean matchAction(final boolean previousState, final URI uri, final SpanFilterType contextType) {
+    protected final boolean matchAction(final boolean previousState, final URI uri, final String path, final SpanFilterType contextType) {
         return true;
     }
 }
