@@ -76,12 +76,13 @@ public class CxfClientPropsTestServlet extends FATServlet {
         Client client = ClientBuilder.newBuilder()
                                      .property("client.ConnectionTimeout", CXF_TIMEOUT)
                                      .build();
-        //Connect to telnet port - which should be disabled on all test machines - so we should expect a timeout
+        
         long startTime = System.currentTimeMillis();
         try {
-            client.target("http://localhost:23/blah").request().get();
-            _log.info(m + " aborting test... we actually connected to the remote telnet port...");
-            return; // we accidentally connected to the telnet port... abort the test here
+            // https://stackoverflow.com/a/904609/6575578
+            client.target("http://example.com:81").request().get();
+            _log.info(m + " aborting test... we actually connected to the remote port...");
+            return; // we accidentally connected ... abort the test here
         } catch (ProcessingException expected) {
         }
 
@@ -129,12 +130,13 @@ public class CxfClientPropsTestServlet extends FATServlet {
                                      .property("com.ibm.ws.jaxrs.client.connection.timeout", IBM_TIMEOUT)
                                      .property("client.ConnectionTimeout", CXF_TIMEOUT)
                                      .build();
-        //Connect to telnet port - which should be disabled on all test machines - so we should expect a timeout
+        
         long startTime = System.currentTimeMillis();
         try {
-            client.target("http://localhost:23/blah").request().get();
-            _log.info(m + " aborting test... we actually connected to the remote telnet port...");
-            return; // we accidentally connected to the telnet port... abort the test here
+            // https://stackoverflow.com/a/904609/6575578
+            client.target("http://example.com:81").request().get();
+            _log.info(m + " aborting test... we actually connected to the remote port...");
+            return; // we accidentally connected ... abort the test here
         } catch (ProcessingException expected) {
         }
 
