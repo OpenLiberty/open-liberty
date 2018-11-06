@@ -22,7 +22,7 @@
   <property name="spi.ibm.symbolic.suffix" value="anno"/>
   <property name="spi.ibm.bundleName" value="WebSphere Annotations SPI"/>
   <property name="spi.ibm.version" value="2.0"/>
-  <property name="feature.name" value="com.ibm.websphere.appserver.anno-2.0"/>
+  <property name="feature.name" value="com.ibm.websphere.appserver.anno-1.0"/>
 
   <property name="spi.ibm.packages.exceptions" value="com.ibm.ws.anno"/>
 
