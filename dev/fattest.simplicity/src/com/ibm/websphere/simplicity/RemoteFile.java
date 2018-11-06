@@ -448,29 +448,77 @@ public class RemoteFile {
         return RemoteFile.copy(srcFile, this, false, true, binary);
     }
 
-    //
+    // Delete ...
+
+    /**
+     * The standard retry interval for delete operations.
+     * This is based on the artifact file system minimum
+     * retry interval of 200 nano-seconds, per
+     * <code>
+     *   open-liberty/dev/com.ibm.ws.artifact.zip/src/
+     *   com/ibm/ws/artifact/zip/cache/
+     *   ZipCachingProperties.java
+     * </code>
+     *
+     * The default largest pending close time is specified
+     * by property <code>zip.reaper.slow.pend.max</code>.
+     */
+    public static final long STANDARD_DELETE_INTERVAL = 2 * 200 * 1000 * 1000; // 2 * 200 nano-seconds.
 
     /**
      * Deletes this file or directory.
      *
-     * Delegate to an implementation according to the type of this file:
-     *
-     * To delete a remote file, use {@link LocalProvider#delete(RemoteFile)}.
-     *
-     * To delete a local simple file, use {@link #deleteLocalFile(File)}.
-     *
-     * To delete a local directory, use {@link #deleteLocalDirectory(File)}.
+     * Delegate to an implementation according to the type of this file.
      *
      * @return True or false telling if this file or directory was deleted.
+     * 
+     * @throws Exception Thrown if the delete attempt encountered an error.
      */
     public boolean delete() throws Exception {
         if ( host.isLocal() ) {
             if ( localFile.isDirectory() ) {
                 return deleteLocalDirectory(localFile);
-            } else
+            } else {
                 return deleteLocalFile(localFile);
+            }
         } else {
-            return LocalProvider.delete(this);
+            return deleteRemoteFile(); // throws Exception
+        }
+    }
+
+    /**
+     * Attempt to delete this file, retrying a second time after the
+     * default delete retry interval ({@link #STANDARD_DELETE_INTERVAL})
+     * if the first delete attempt failed.
+     * 
+     * @return True or false telling if the deletion was successful.
+     * 
+     * @throws Exception Thrown if the delete attempt encountered an error.
+     *     Only possible for remote files.
+     */
+    public boolean deleteWithRetry() throws Exception {
+        return deleteWithRetry(STANDARD_DELETE_INTERVAL); // throws Exception
+    }
+
+    /**
+     * Attempt to delete this file, retrying a second time after the
+     * specified interval if the first delete attempt failed.
+     * 
+     * @return True or false telling if the deletion was successful.
+     * 
+     * @throws Exception Thrown if the delete attempt encountered an error.
+     *     Only possible for remote files.
+     */
+
+    public boolean deleteWithRetry(long retryNs) throws Exception {
+        if ( host.isLocal() ) {
+            if ( localFile.isDirectory() ) {
+                return deleteLocalDirectory(localFile, retryNs);
+            } else {
+                return deleteLocalFile(localFile, retryNs);
+            }
+        } else {
+            return deleteRemoteFile(retryNs); // throws Exception
         }
     }
 
@@ -479,17 +527,19 @@ public class RemoteFile {
      *
      * Continue processing even if deletion of a child file fails. 
      *
+     * @param localDir A local directory which is to be deleted.
+     *
      * @return True or false telling if the local directory and its
      *     contents were deleted.
      */
-    public boolean deleteLocalDirectory(File path) {
-    	String method = "deleteLocalDirectory";
+    public boolean deleteLocalDirectory(File localDir) {
+        String method = "deleteLocalDirectory";
 
-        if ( !path.exists() ) {
+        if ( !localDir.exists() ) {
             return true;
         }
 
-        File[] files = path.listFiles();
+        File[] files = localDir.listFiles();
         for ( File file : files ) {
             if ( file.isDirectory() ) {
                 // Failure logging in 'deleteLocalDirectory'.
@@ -503,7 +553,45 @@ public class RemoteFile {
         }
 
         // Failure logging in 'deleteLocalFile'.
-        return ( deleteLocalFile(path) );
+        return ( deleteLocalFile(localDir) );
+    }
+
+    /**
+     * Attempt to delete a local directory and its contents.
+     * 
+     * Immediately return with a true result if the local directory
+     * does not exist.
+     *
+     * Retry on all failed simple file deletion attempts.
+     *
+     * @param localDir The local directory which is to be deleted. 
+     * @param retryNs The interval between retry attempts.
+     *
+     * @return True or false telling if the directory and its
+     *     contents were deleted.
+     */
+    public boolean deleteLocalDirectory(File localDir, long retryNs) {
+        String method = "deleteLocalDirectory";
+
+        if ( !localDir.exists() ) {
+            return true;
+        }
+
+        File[] childFiles = localDir.listFiles();
+        for ( File childFile : childFiles ) {
+            if ( childFile.isDirectory() ) {
+                // Failure logging in 'deleteLocalDirectory'.
+                deleteLocalDirectory(childFile, retryNs);
+
+            } else {
+                if ( !deleteLocalFile(childFile, retryNs) ) {
+                    Log.info(c, method, "Failed to delete: " + childFile);
+                }
+            }
+        }
+
+        // Failure logging in 'deleteLocalFile'.
+        return ( deleteLocalFile(localDir, retryNs) );
     }
 
     /**
@@ -522,15 +610,75 @@ public class RemoteFile {
      * @return True or false telling if the file was deleted.
      */
     private boolean deleteLocalFile(File file) {
-    	String method = "delete";
-        try{
+        String method = "deleteLocalFile";
+        try {
             java.nio.file.Files.delete(file.toPath());
             return true;
-
         } catch ( Exception e ) {
             Log.info(c, method, "Failed to delete [" + file + "]:\n" + e.getMessage());
             return false;
         }
+    }
+    
+    private boolean deleteLocalFile(File file, long retryNs) {
+        String method = "deleteLocalFile";
+
+        try {
+            java.nio.file.Files.delete(file.toPath());
+            return true;
+        } catch ( Exception e ) {
+            Log.info(c, method, "Failed to delete (first try) [" + file + "]:\n" + e.getMessage());
+        }
+
+        try {
+            sleep(retryNs);
+        } catch ( Exception e ) {
+            Log.info(c, method, "Interrupted while deleting [" + file + "]:\n" + e.getMessage());
+            return false;
+		}
+
+        try {
+            java.nio.file.Files.delete(file.toPath());
+            return true;
+        } catch ( Exception e ) {
+            Log.info(c, method, "Failed to delete (second try) [" + file + "]:\n" + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Attempt to delete this file as a remote file.
+     *
+     * @return True or false telling if the delete was successful.
+     *
+     * @throws Exception Thrown in case of an error attempting to delete
+     *     this file as a remote file.
+     */
+    private boolean deleteRemoteFile() throws Exception {
+        return LocalProvider.delete(this); // throws Exception
+    }
+
+    /**
+     * Attempt to delete this file as a remote file.
+     * 
+     * Retry after the specified retry interval if the first
+     * attempt fails.
+     *
+     * @param retryNs The interval between retry attempts.
+     *
+     * @return True or false telling if the delete was successful.
+     *
+     * @throws Exception Thrown in case of an error attempting to delete
+     *     this file as a remote file.
+     */
+    private boolean deleteRemoteFile(long retryNs) throws Exception {
+        boolean firstResult = deleteRemoteFile(); // throws Exception
+        if ( firstResult ) {
+            return firstResult;
+        }
+        sleep(retryNs); // throws Exception
+        boolean secondResult = deleteRemoteFile(); // throws Exception
+        return secondResult;
     }
 
     //
