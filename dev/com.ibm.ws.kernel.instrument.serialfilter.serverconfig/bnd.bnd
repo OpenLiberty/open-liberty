@@ -15,12 +15,15 @@ Bundle-Name: Java Serialization Filter Server Configuration
 Bundle-SymbolicName: com.ibm.ws.kernel.instrument.serialfilter.serverconfig
 Bundle-Description: Java Serialization Filter Server Configuration, version=${bVersion}
 
+Private-Package: \
+ com.ibm.ws.kernel.instrument.serialfilter.serverconfig.internal.resources
+
 Export-Package: \
  com.ibm.ws.kernel.instrument.serialfilter.serverconfig;provide:=true
 
 Import-Package: *
 
-instrument.disabled: true
+instrument.classesExcludes: com/ibm/ws/kernel/instrument/serialfilter/serverconfig/internal/resources/*.class
 
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF

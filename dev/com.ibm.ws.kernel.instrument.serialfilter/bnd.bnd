@@ -20,6 +20,7 @@ Export-Package: \
  com.ibm.ws.kernel.instrument.serialfilter.validators;provide:=true
 
 Private-Package: \
+ com.ibm.ws.kernel.instrument.serialfilter.internal.resources, \
  com.ibm.ws.kernel.instrument.serialfilter.*
 
 Import-Package: *
