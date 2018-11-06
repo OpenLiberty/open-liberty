@@ -42,7 +42,7 @@ public interface ConnectionPoolStatsMXBean {
     public long getManagedConnectionCount();
 
     /**
-     * The average waiting time in milliseconds until a connection is granted.
+     * The average waiting time in milliseconds until a connection is granted if a connection is not currently available..
      */
     public double getWaitTime();
 
