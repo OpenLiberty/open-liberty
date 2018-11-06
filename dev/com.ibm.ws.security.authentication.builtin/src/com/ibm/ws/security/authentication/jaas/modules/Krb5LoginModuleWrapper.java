@@ -48,9 +48,9 @@ public class Krb5LoginModuleWrapper implements LoginModule {
      */
     public Krb5LoginModuleWrapper() {
         String targetClass = null;
-        if (Krb5Common.isIBMJdk18Lower)
+        if (Krb5Common.isIBMJdk18OrLower)
             targetClass = JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
-        else if (Krb5Common.isJdk11Up || Krb5Common.isOracleJdk18Up)
+        else if (Krb5Common.isOtherSupportJDKs)
             targetClass = JaasLoginConfigConstants.COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
         else {
             //TODO: NLS msg
@@ -77,7 +77,7 @@ public class Krb5LoginModuleWrapper implements LoginModule {
         this.options = new HashMap();
         this.options.putAll(options);
 
-        if (Krb5Common.isJdk11Up)
+        if (Krb5Common.isOtherSupportJDKs)
             useKeytabValue = options.get("useKeyTab");
 
         if (useKeytabValue != null && useKeytabValue.equals("true")) {
