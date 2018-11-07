@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-
+import com.ibm.ws.kernel.instrument.serialfilter.agenthelper.PreMainUtil;
 import com.ibm.ws.kernel.instrument.serialfilter.config.ConfigFacade;
 import com.ibm.ws.kernel.instrument.serialfilter.config.SimpleConfig;
 
@@ -50,8 +50,6 @@ public class FilterConfigFactory implements ManagedServiceFactory {
 
     public static final String VALUE_PERMISSION_ALLOW = "Allow";
     public static final String VALUE_PERMISSION_DENY = "Deny";
-
-    private static final String KEY_SERIALFILTER_AGENT_ACTIVE = "com.ibm.websphere.serialfilter.active";
 
     @SuppressWarnings("rawtypes")
 	private Map<String, Dictionary> serialFilterConfigMap = new HashMap<String, Dictionary>();
@@ -178,7 +176,7 @@ public class FilterConfigFactory implements ManagedServiceFactory {
     protected boolean isEnabled() {
         String activeSerialFilter = AccessController.doPrivileged(new PrivilegedAction<String>() {
             public String run() {
-                return System.getProperty(KEY_SERIALFILTER_AGENT_ACTIVE);
+                return System.getProperty(PreMainUtil.KEY_SERIALFILTER_AGENT_ACTIVE);
             }
         });
         if ("true".equalsIgnoreCase(activeSerialFilter)) {

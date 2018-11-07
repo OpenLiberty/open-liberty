@@ -22,6 +22,10 @@ import java.io.ObjectInputStream;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 /**
  * This agent does the following:
@@ -36,6 +40,11 @@ import java.lang.reflect.Modifier;
 public class PreMain {
     /** Note: this property name corresponds with code in some IBM JDKs. It must NEVER be changed. */
     public static void premain(String args, Instrumentation instrumentation) {
+        if (!PreMainUtil.isBeta() && !PreMainUtil.isEnableAgentPropertySet()) {
+            // if it's not beta, do nothing.
+            // this implementation should be changed when this will be in the production code.
+            return;
+        }
         ObjectInputStreamTransformer transform = null;
         if (ObjectInputStreamClassInjector.injectionNeeded()) {
             // Install the transformer to modify ObjectInputStream.
@@ -56,6 +65,14 @@ public class PreMain {
                 instrumentation.removeTransformer(transform);
             }
         }
+        
+        AccessController.doPrivileged(new PrivilegedAction<String>() {
+            public String run() {
+                return System.setProperty(PreMainUtil.KEY_SERIALFILTER_AGENT_ACTIVE, "true");
+            }
+        });
+        System.out.println(MessageFormat.format(ResourceBundle.getBundle("com.ibm.ws.kernel.instrument.serialfilter.agent.internal.resources.SerialFilterAgentMessages").getString("SFA_INFO_AGENT_LOADED"), ""));
+
     }
 
     public static void agentmain(String args, Instrumentation instrumentation) throws Exception {
