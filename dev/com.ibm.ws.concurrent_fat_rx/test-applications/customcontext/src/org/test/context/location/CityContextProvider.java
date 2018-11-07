@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.test.context.location;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,15 +21,9 @@ import org.eclipse.microprofile.concurrent.spi.ThreadContextSnapshot;
  * This context associates a city name with a thread, such that the applicable
  * sales tax rate for the corresponding city (and state that it is in) is included
  * when the getTotalSalesTax() methods is invoked from the thread.
- *
- * As a way of testing prerequisites, this context type declares the "State" context
- * to be a prerequisite and relies on it having already been established on the
- * thread when City context is applied. CityContextSnapshot.begin validates this.
  */
 public class CityContextProvider implements ThreadContextProvider {
     static ThreadLocal<String> cityName = ThreadLocal.withInitial(() -> "");
-
-    private static final Set<String> PREREQ_STATE_CONTEXT = Collections.singleton(TestContextTypes.STATE);
 
     @Override
     public ThreadContextSnapshot clearedContext(Map<String, String> props) {
@@ -42,9 +35,9 @@ public class CityContextProvider implements ThreadContextProvider {
         return new CityContextSnapshot(cityName.get());
     }
 
-    @Override
+    @Override // TODO remove this method once we pick up the binaries where prerequisite context is removed from the spec
     public Set<String> getPrerequisites() {
-        return PREREQ_STATE_CONTEXT;
+        return null;
     }
 
     @Override
