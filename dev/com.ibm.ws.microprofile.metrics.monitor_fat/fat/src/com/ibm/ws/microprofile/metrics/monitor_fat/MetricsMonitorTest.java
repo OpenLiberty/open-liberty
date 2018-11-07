@@ -108,6 +108,7 @@ public class MetricsMonitorTest {
     	String logMsg = server.waitForStringInLogUsingMark("CWPMI2001I");
     	Log.info(c, testName, logMsg);
 		Assert.assertNotNull("No CWPMI2001I was found.", logMsg);
+       	server.setMarkToEndOfLog(server.getMostRecentTraceFile());
 
        	Log.info(c, testName, "------- threadpool metrics should be available ------");
 		getHttpsServlet("/metrics/vendor");

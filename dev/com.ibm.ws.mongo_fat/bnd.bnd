@@ -15,6 +15,7 @@ src: \
 	fat/src,\
 	test-applications/mongo/src
 
+test.project: true
 fat.project: true
 publish.wlp.jar.disabled: false
 generate.replacement: true

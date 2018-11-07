@@ -325,37 +325,35 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
         Set<File> absoluteDeleted = PathUtils.getFixedPathFiles(deleted);
         Set<File> absoluteModified = PathUtils.getFixedPathFiles(modified);
         for (MonitorHolder mh : fileMonitors.values())
-            mh.externalScan(absoluteCreated, absoluteDeleted, absoluteModified, true);
+            mh.externalScan(absoluteCreated, absoluteDeleted, absoluteModified, true, null);
     }
 
     /**
-     * Processing the pending configuration update by checking the filemonitors for the identification
-     * name of com.ibm.ws.kernel.monitor.config and calling the
-     * triggeredScan on that <code>MonitorHolder</code>
-     *
+     * Processes pending server configuration file events (additions/modifications/removals).
      */
     @Override
     public void processConfigurationChanges() {
-        for (ServiceReference<FileMonitor> mh : fileMonitors.keySet()) {
-            String monitorId = (String) mh.getProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME);
+        // The monitor ID is used to determine who is called to process file events.
+        for (ServiceReference<FileMonitor> fm : fileMonitors.keySet()) {
+            String monitorId = (String) fm.getProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME);
             if (monitorId != null && monitorId.equals("com.ibm.ws.kernel.monitor.config")) {
-                fileMonitors.get(mh).processFileRefresh();
+                fileMonitors.get(fm).processFileRefresh(false, null);
             }
         }
     }
 
     /**
-     * Processing the pending application update by checking the filemonitors for the identification
-     * name of com.ibm.ws.kernel.monitor.artifact and calling the
-     * triggeredScan on that <code>MonitorHolder</code>
-     *
+     * Processes pending application artifact events (modifications).
      */
     @Override
     public void processApplicationChanges() {
-        for (ServiceReference<FileMonitor> mh : fileMonitors.keySet()) {
-            String monitorId = (String) mh.getProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME);
+        // Application update events are tracked by the artifact framework.
+        // The registered artifact monitor ID and the ID of the artifact listener registered by the
+        // application component are used to determine who is called to process file events.
+        for (ServiceReference<FileMonitor> fm : fileMonitors.keySet()) {
+            String monitorId = (String) fm.getProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME);
             if (monitorId != null && monitorId.equals("com.ibm.ws.kernel.monitor.artifact")) {
-                fileMonitors.get(mh).processFileRefresh();
+                fileMonitors.get(fm).processFileRefresh(false, "com.ibm.ws.app.listener");
             }
         }
     }

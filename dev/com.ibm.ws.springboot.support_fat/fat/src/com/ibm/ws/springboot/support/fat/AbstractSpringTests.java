@@ -95,10 +95,12 @@ public abstract class AbstractSpringTests {
     public static final Collection<RemoteFile> dropinFiles = new ArrayList<>();
     private static final Properties bootStrapProperties = new Properties();
     private static File bootStrapPropertiesFile;
+    protected static final List<String> extraServerArgs = new ArrayList<>();
 
     @AfterClass
     public static void stopServer() throws Exception {
         stopServer(true);
+        extraServerArgs.clear();
     }
 
     public static void stopServer(boolean cleanupApps, String... expectedFailuresRegExps) throws Exception {
@@ -190,6 +192,7 @@ public abstract class AbstractSpringTests {
     public void configureServer() throws Exception {
         System.out.println("Configuring server for " + testName.getMethodName());
         if (serverStarted.compareAndSet(false, true)) {
+            server.setExtraArgs(extraServerArgs);;
             ServerConfiguration config = server.getServerConfiguration();
 
             // START CLEAR out configs from previous tests

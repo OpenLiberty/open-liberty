@@ -60,7 +60,7 @@ import componenttest.topology.impl.LibertyServer;
  * 
  * This class should encompass all tests required for the minimal certification for the Basic RP profile.
  */
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 public abstract class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
 
     public static Class<?> thisClass = OidcCertificationRPBasicProfileTests.class;

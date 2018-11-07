@@ -253,6 +253,8 @@ public class LibertyServer implements LogMonitorClient {
     protected String consoleAbsPath = null;
     protected String traceAbsPath = null;
 
+    protected final List<String> extraArgs = new ArrayList<String>();
+
     protected String machineJava; // Path to Java 6 JDK on the Machine
 
     protected String machineJarPath; //Path to the jar command
@@ -1043,6 +1045,8 @@ public class LibertyServer implements LogMonitorClient {
         if (args != null) {
             parametersList.addAll(args);
         }
+
+        parametersList.addAll(extraArgs);
 
         //Setup the server logs assuming the default setting.
         messageAbsPath = logsRoot + messageFileName;
@@ -4408,7 +4412,7 @@ public class LibertyServer implements LogMonitorClient {
      * file at the offset where the last mark was set (or the beginning of the file
      * if no mark has been set) and reads until the end of the file.
      *
-     * @param regexp pattern to search for
+     * @param regexp  pattern to search for
      * @param logFile RemoteFile for log file to search
      * @return A list of the lines in the trace files which contain the matching
      *         pattern. No matches result in an empty list.
@@ -5486,6 +5490,11 @@ public class LibertyServer implements LogMonitorClient {
 
     public String getLogsRoot() {
         return logsRoot;
+    }
+
+    public void setExtraArgs(List<String> extraArgs) {
+        this.extraArgs.clear();
+        this.extraArgs.addAll(extraArgs);
     }
 
     /**
