@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.streams.operators.tck;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -18,6 +21,7 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -33,6 +37,11 @@ public class ReactiveStreamsTCKLauncher {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        Map<String,String> props = new HashMap<String,String>();
+        //Set timeout for the tests.
+        props.put("DEFAULT_TIMEOUT_MILLIS","10000");//Increase timeout before tests fail.
+        props.put("DEFAULT_NO_SIGNALS_TIMEOUT_MILLIS","100"); //By default NO_SIGNALS_TIMEOUT == DEFAULT_TIMEOUT_MILLIS. Every test will sleep for NO_SIGNALS_TIMEOUT so set this back to the original default to prevent the tests taking hours. 
+        server.setAdditionalSystemProperties(props);
         server.startServer();
     }
 
@@ -42,6 +51,7 @@ public class ReactiveStreamsTCKLauncher {
     }
 
     @Test
+    @Mode(TestMode.EXPERIMENTAL)
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchReactiveStreamsTck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.reactive.streams_fat_tck", this.getClass() + ":launchReactiveStreamsTck");

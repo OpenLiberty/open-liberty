@@ -162,10 +162,16 @@
                 <version>2.17</version>
                 <configuration>
                     <systemPropertyVariables>
+                        <argLine>UTF-8</argLine> <!-- Needed for ZOS becuase arquillian calls string.getBtytes() -->
                         <wlp>${wlp}</wlp>
                         <tck_server>${tck_server}</tck_server>
                         <tck_port>${tck_port}</tck_port>
                     </systemPropertyVariables>
+                    <!--These did not get picked up by the server and have been set in ReactiveStreamsTCKLauncher.java. 
+                    <environmentVariables>  
+                        <DEFAULT_TIMEOUT_MILLIS>10000</DEFAULT_TIMEOUT_MILLIS>
+                        <DEFAULT_NO_SIGNALS_TIMEOUT_MILLIS>100</DEFAULT_NO_SIGNALS_TIMEOUT_MILLIS>
+                    </environmentVariables>-->
                     <suiteXmlFiles>
                         <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
                     </suiteXmlFiles>
