@@ -334,17 +334,15 @@ public class RequestUtils extends com.ibm.wsspi.webcontainer.util.RequestUtils
             paramData[index] = data.toCharArray(); 
             index++;
             remaining-=readLen;
-            
-            // MultiRead Start
-            if (multireadPropertyEnabled) {
-                in.close();
-            }
-            // MultiRead End
-            
-         }
+        }
+
+        // MultiRead Start
+        if (multireadPropertyEnabled) {
+            in.close();
+        }
+        // MultiRead End
         
-         return  parseQueryString(paramData, encoding);
-                
+        return parseQueryString(paramData, encoding);
     }
     
     // begin 231634    Support posts with query parms in chunked body    WAS.webcontainer    

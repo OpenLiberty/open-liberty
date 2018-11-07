@@ -48,3 +48,16 @@ client.quiesce.begin.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 client.quiesce.end=CWWKE1104I: Zako\u0144czono wyciszanie klienta.
 client.quiesce.end.explanation=Operacja wyciszania zosta\u0142a zako\u0144czona pomy\u015blnie.
 client.quiesce.end.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+notifications.not.complete=CWWKE1105W: Nast\u0119puj\u0105ca liczba aktualizacji \u015brodowiska wykonawczego: {0} nie zosta\u0142a zako\u0144czona w trakcie okresu wyciszania. 
+notifications.not.complete.explanation=Co najmniej jedna aktualizacja sk\u0142adnik\u00f3w, konfiguracji lub aplikacji nie zosta\u0142a zako\u0144czona przed zamkni\u0119ciem serwera.
+notifications.not.complete.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+
+quiesce.listeners.not.complete=CWWKE1106W: Nast\u0119puj\u0105ca liczba operacji zamkni\u0119cia systemu: {0} nie zosta\u0142a zako\u0144czona w trakcie okresu wyciszania. 
+quiesce.listeners.not.complete.explanation=Co najmniej jedna operacja zainicjowana w czasie operacji zamkni\u0119cia systemu nie zosta\u0142a zako\u0144czona.
+
+quiesce.listeners.not.complete.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+quiesce.waiting.on.threads=CWWKE1107W: Nast\u0119puj\u0105ca liczba w\u0105tk\u00f3w: {0} nie zosta\u0142a zako\u0144czona w trakcie okresu wyciszania. 
+quiesce.waiting.on.threads.explanation=Co najmniej jeden w\u0105tek, kt\u00f3ry by\u0142y aktywny przed wy\u0142\u0105czeniem serwera, by\u0142 nadal aktywny na koniec okresu wyciszania.
+quiesce.waiting.on.threads.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 

@@ -15,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,15 +27,23 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.jpa.diagnostics.AbstractIntrospection;
 import com.ibm.ws.jpa.diagnostics.JPAORMDiagnostics;
+import com.ibm.ws.jpa.diagnostics.OpenJPAIntrospection;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ClassInfoType;
-import com.ibm.ws.jpa.diagnostics.puscanner.PersistenceUnitScannerResults2;
+import com.ibm.ws.jpa.diagnostics.puscanner.PersistenceUnitScannerResults;
 
 /**
  *
  */
 public class JPAIntrospection {
+    private static final TraceComponent tc = Tr.register(JPAIntrospection.class,
+                                                         "JPAORM",
+                                                         "com.ibm.ws.jpa.jpa");
+
     private static final ThreadLocal<JPAIntrospection> threadLocal = new ThreadLocal<JPAIntrospection>() {
         @Override
         protected JPAIntrospection initialValue() {
@@ -42,15 +51,125 @@ public class JPAIntrospection {
         }
     };
 
-    public static final JPAIntrospection getJPAIntrospection() {
-        return threadLocal.get();
+    public static final void beginJPAIntrospection() {
+        final JPAIntrospection jpaIntrospector = threadLocal.get();
+        jpaIntrospector.validIntrospector = true;
     }
 
     public static final void endJPAIntrospection() {
         threadLocal.remove();
     }
 
+    public static final void beginApplicationVisit(String appname, JPAApplInfo appl) {
+        final JPAIntrospection jpaIntrospector = getJPAIntrospection();
+        if (jpaIntrospector != null) {
+            try {
+                jpaIntrospector.doBeginApplicationVisit(appname, appl);
+            } catch (Throwable t) {
+                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".beginApplicationVisit", "66");
+            }
+        }
+    }
+
+    public static final void endApplicationVisit() {
+        final JPAIntrospection jpaIntrospector = getJPAIntrospection();
+        if (jpaIntrospector != null) {
+            jpaIntrospector.doEndApplicationVisit();
+        }
+    }
+
+    public static final void beginPUScopeVisit(JPAScopeInfo scopeInfo) {
+        final JPAIntrospection jpaIntrospector = getJPAIntrospection();
+        if (jpaIntrospector != null) {
+            try {
+                jpaIntrospector.doBeginPUScopeVisit(scopeInfo);
+            } catch (Throwable t) {
+                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".beginPUScopeVisit", "84");
+            }
+
+        }
+    }
+
+    public static final void endPUScopeVisit() {
+        final JPAIntrospection jpaIntrospector = getJPAIntrospection();
+        if (jpaIntrospector != null) {
+            jpaIntrospector.doEndPUScopeVisit();
+        }
+    }
+
+    public static final void beginPXmlInfoVisit(JPAPxmlInfo pxmlInfo) {
+        final JPAIntrospection jpaIntrospector = getJPAIntrospection();
+        if (jpaIntrospector != null) {
+            try {
+                jpaIntrospector.doBeginPXmlInfoVisit(pxmlInfo);
+            } catch (Throwable t) {
+                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".beginPXmlInfoVisit", "103");
+            }
+        }
+    }
+
+    public static final void endPXmlInfoVisit() {
+        final JPAIntrospection jpaIntrospector = getJPAIntrospection();
+        if (jpaIntrospector != null) {
+            jpaIntrospector.doEndPXmlInfoVisit();
+        }
+    }
+
+    public static final void visitJPAPUnitInfo(String puName, JPAPUnitInfo jpaPuInfo) {
+        final JPAIntrospection jpaIntrospector = getJPAIntrospection();
+        if (jpaIntrospector != null) {
+            try {
+                jpaIntrospector.doVisitJPAPUnitInfo(puName, jpaPuInfo);
+            } catch (Throwable t) {
+                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".visitJPAPUnitInfo", "121");
+            }
+        }
+    }
+
+    public static final void executeIntrospectionAnalysis(final PrintWriter dout) {
+        final JPAIntrospection jpaIntrospector = getJPAIntrospection();
+        if (jpaIntrospector != null) {
+            try {
+                jpaIntrospector.doExecuteIntrospectionAnalysis(dout);
+                dout.println();
+                jpaIntrospector.doDumpJPARuntimeStates(dout);
+                dout.println();
+                jpaIntrospector.doDumpOpenJPAPCRegistry(dout);
+            } catch (Throwable t) {
+                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".executeIntrospectionAnalysis", "132");
+            }
+        }
+    }
+
+    public static final void executeTraceAnalysis() {
+        final JPAIntrospection jpaIntrospector = getJPAIntrospection();
+        if (jpaIntrospector != null) {
+            try {
+                jpaIntrospector.doExecuteTraceAnalysis();
+            } catch (Throwable t) {
+                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".executeTraceAnalysis", "143");
+            }
+        }
+    }
+
+    private static final JPAIntrospection getJPAIntrospection() {
+        final JPAIntrospection jpaIntrospector = threadLocal.get();
+        if (jpaIntrospector.validIntrospector == false) {
+            threadLocal.remove();
+            return null;
+        }
+
+        return jpaIntrospector;
+    }
+
+    /*
+     * Internal Implementation
+     */
+
+    private boolean validIntrospector = false;
+
     private final HashMap<String, JPAApplInfoIntrospect> jpaApplInfoMap = new HashMap<String, JPAApplInfoIntrospect>();
+    private final List<JPAPUnitInfo> allJPAPUnitInfoList = new ArrayList<JPAPUnitInfo>();
 
     private JPAApplInfoIntrospect currentAppl = null;
     private JPAScopeInfoIntrospect currentScopeInfo = null;
@@ -60,16 +179,16 @@ public class JPAIntrospection {
         return Collections.unmodifiableMap(jpaApplInfoMap);
     }
 
-    public void beginApplicationVisit(String appname, JPAApplInfo appl) {
+    private void doBeginApplicationVisit(String appname, JPAApplInfo appl) {
         currentAppl = new JPAApplInfoIntrospect(appname, appl);
         jpaApplInfoMap.put(appname, currentAppl);
     }
 
-    public void endApplicationVisit() {
+    private void doEndApplicationVisit() {
         currentAppl = null;
     }
 
-    public void beginPUScopeVisit(JPAScopeInfo scopeInfo) {
+    private void doBeginPUScopeVisit(JPAScopeInfo scopeInfo) {
         if (currentAppl == null) {
             return; // Bad State
         }
@@ -77,11 +196,11 @@ public class JPAIntrospection {
         currentAppl.scopeInfoList.add(currentScopeInfo);
     }
 
-    public void endPUScopeVisit() {
+    private void doEndPUScopeVisit() {
         currentScopeInfo = null;
     }
 
-    public void beginPXmlInfoVisit(JPAPxmlInfo pxmlInfo) {
+    private void doBeginPXmlInfoVisit(JPAPxmlInfo pxmlInfo) {
         if (currentAppl == null || currentScopeInfo == null) {
             return; // Bad State
         }
@@ -89,11 +208,11 @@ public class JPAIntrospection {
         currentScopeInfo.pxmlInfoList.add(currentPxmlInfo);
     }
 
-    public void endPXmlInfoVisit() {
+    private void doEndPXmlInfoVisit() {
         currentPxmlInfo = null;
     }
 
-    public void visitJPAPUnitInfo(String puName, JPAPUnitInfo jpaPuInfo) {
+    private void doVisitJPAPUnitInfo(String puName, JPAPUnitInfo jpaPuInfo) {
         if (currentAppl == null || currentScopeInfo == null || currentPxmlInfo == null) {
             return; // Bad State
         }
@@ -101,57 +220,59 @@ public class JPAIntrospection {
         currentPxmlInfo.jpaPuInfoList.add(new JPAPUnitInfoIntrospect(puName, jpaPuInfo));
         currentAppl.puCount++;
         currentPxmlInfo.puCount++;
+
+        allJPAPUnitInfoList.add(jpaPuInfo);
     }
 
-    public void executeIntrospectionAnalysis(final PrintWriter dout) {
+    private Map<String, JPAAnalysisResult> executeDiagnostics(boolean isIntrospectorDump) {
         final Map<String, JPAAnalysisResult> analysisResultMap = new HashMap<String, JPAAnalysisResult>();
 
-        try {
-            for (Map.Entry<String, JPAApplInfoIntrospect> entry : jpaApplInfoMap.entrySet()) {
-                final String appName = entry.getKey();
-                final JPAApplInfoIntrospect jpaAppl = entry.getValue();
-                final JPAApplInfo appl = jpaAppl.getJPAApplInfo();
+        for (Map.Entry<String, JPAApplInfoIntrospect> entry : jpaApplInfoMap.entrySet()) {
+            final String appName = entry.getKey();
+            final JPAApplInfoIntrospect jpaAppl = entry.getValue();
+            final JPAApplInfo appl = jpaAppl.getJPAApplInfo();
 
-                final JPAAnalysisResult analysisResult = new JPAAnalysisResult(appName, jpaAppl);
-                analysisResultMap.put(appName, analysisResult);
+            final JPAAnalysisResult analysisResult = new JPAAnalysisResult(appName, jpaAppl);
+            analysisResultMap.put(appName, analysisResult);
 
-                final PrintWriter out = analysisResult.getPw();
+            final PrintWriter out = analysisResult.getPw();
 
-                final ArrayList<JPAPUnitInfo> puInfoList = new ArrayList<JPAPUnitInfo>();
-                final HashMap<URL, List<JPAPUnitInfo>> puRootURL_PUInfo_Map = new HashMap<URL, List<JPAPUnitInfo>>();
-                final HashMap<URL, String> puRootURL_pxml_Map = new HashMap<URL, String>();
+            final ArrayList<JPAPUnitInfo> puInfoList = new ArrayList<JPAPUnitInfo>();
+            final HashMap<URL, List<JPAPUnitInfo>> puRootURL_PUInfo_Map = new HashMap<URL, List<JPAPUnitInfo>>();
+            final HashMap<URL, String> puRootURL_pxml_Map = new HashMap<URL, String>();
 
-                final List<JPAScopeInfoIntrospect> scopeInfoList = jpaAppl.getScopeInfoList();
-                for (JPAScopeInfoIntrospect puScope : scopeInfoList) {
-                    final JPAScopeInfo scopeInfo = puScope.getJPAScopeInfo();
+            final List<JPAScopeInfoIntrospect> scopeInfoList = jpaAppl.getScopeInfoList();
+            for (JPAScopeInfoIntrospect puScope : scopeInfoList) {
+                final JPAScopeInfo scopeInfo = puScope.getJPAScopeInfo();
 
-                    final List<JPAPxmlInfoIntrospect> pxmlList = puScope.getPxmlInfoList(); // persistence.xml
-                    for (JPAPxmlInfoIntrospect pxml : pxmlList) {
-                        final JPAPxmlInfo pxmlInfo = pxml.getJPAPxmlInfo();
-                        final List<JPAPUnitInfoIntrospect> jpaPuInfoList = pxml.getJPAPUnitInfoList();
-                        for (JPAPUnitInfoIntrospect puInfoIntro : jpaPuInfoList) {
-                            final JPAPUnitInfo jpaPuInfo = puInfoIntro.getJpaPuInfo();
-                            final URL puRootURL = jpaPuInfo.getPersistenceUnitRootUrl();
+                final List<JPAPxmlInfoIntrospect> pxmlList = puScope.getPxmlInfoList(); // persistence.xml
+                for (JPAPxmlInfoIntrospect pxml : pxmlList) {
+                    final JPAPxmlInfo pxmlInfo = pxml.getJPAPxmlInfo();
+                    final List<JPAPUnitInfoIntrospect> jpaPuInfoList = pxml.getJPAPUnitInfoList();
+                    for (JPAPUnitInfoIntrospect puInfoIntro : jpaPuInfoList) {
+                        final JPAPUnitInfo jpaPuInfo = puInfoIntro.getJpaPuInfo();
+                        final URL puRootURL = jpaPuInfo.getPersistenceUnitRootUrl();
 
-                            puInfoList.add(jpaPuInfo);
-                            analysisResult.registerJPAPUInfo(puInfoIntro);
+                        puInfoList.add(jpaPuInfo);
+                        analysisResult.registerJPAPUInfo(puInfoIntro);
 
-                            List<JPAPUnitInfo> list = puRootURL_PUInfo_Map.get(puRootURL);
-                            if (list == null) {
-                                list = new ArrayList<JPAPUnitInfo>();
-                                puRootURL_PUInfo_Map.put(puRootURL, list);
-                            }
-                            list.add(jpaPuInfo);
+                        List<JPAPUnitInfo> list = puRootURL_PUInfo_Map.get(puRootURL);
+                        if (list == null) {
+                            list = new ArrayList<JPAPUnitInfo>();
+                            puRootURL_PUInfo_Map.put(puRootURL, list);
                         }
+                        list.add(jpaPuInfo);
                     }
                 }
+            }
 
-                // Get the persistence.xml associated with each persistence unit root.
-                for (URL url : puRootURL_PUInfo_Map.keySet()) {
-                    String pxml = resolvePersistenceXML(url);
-                    puRootURL_pxml_Map.put(url, pxml);
-                }
+            // Get the persistence.xml associated with each persistence unit root.
+            for (URL url : puRootURL_PUInfo_Map.keySet()) {
+                String pxml = resolvePersistenceXML(url);
+                puRootURL_pxml_Map.put(url, pxml);
+            }
 
+            if (isIntrospectorDump) {
                 for (Map.Entry<URL, String> ent : puRootURL_pxml_Map.entrySet()) {
                     out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                     out.println("Contents of persistence.xml at Peristence Unit Root:\n" + ent.getKey());
@@ -166,92 +287,133 @@ public class JPAIntrospection {
                     }
                 }
 
-                jpaAppl.results = JPAORMDiagnostics.performJPAORMDiagnostics(
-                                                                             new ArrayList<javax.persistence.spi.PersistenceUnitInfo>(puInfoList),
-                                                                             puRootURL_pxml_Map,
-                                                                             out);
-            }
-        } finally {
-            dout.println("Applications: ");
-            dout.println();
-
-            for (Map.Entry<String, JPAAnalysisResult> entry : analysisResultMap.entrySet()) {
-                dout.println(entry.getKey() + " ("
-                             + entry.getValue().getAppl().getPersistenceUnitCount()
-                             + " persistence units, " + entry.getValue().getLineCount() + " lines) :");
-                dout.println("   Persistence Unit Roots:");
-                final Map<URL, List<JPAPUnitInfoIntrospect>> urlPUInfoMap = entry.getValue().getURL_JPAPuInfoMap();
-                if (urlPUInfoMap.size() == 0) {
-                    dout.println("      None");
-                } else {
-                    for (Map.Entry<URL, List<JPAPUnitInfoIntrospect>> e2 : urlPUInfoMap.entrySet()) {
-                        dout.println("      " + getShortenedURLPath(e2.getKey()) + " (" + e2.getValue().size() + " persistence units)");
-                    }
-                }
+                jpaAppl.results = JPAORMDiagnostics.performJPAORMDiagnosticsForIntrospector(
+                                                                                            new ArrayList<javax.persistence.spi.PersistenceUnitInfo>(puInfoList),
+                                                                                            puRootURL_pxml_Map,
+                                                                                            out);
+            } else {
+                jpaAppl.results = JPAORMDiagnostics.performJPAORMDiagnosticsForTrace(
+                                                                                     new ArrayList<javax.persistence.spi.PersistenceUnitInfo>(puInfoList),
+                                                                                     puRootURL_pxml_Map);
             }
 
-            dout.println();
+        }
+
+        return analysisResultMap;
+    }
+
+    private void doExecuteTraceAnalysis() {
+        if (!(tc.isAnyTracingEnabled() && tc.isDebugEnabled())) {
+            return;
+        }
+
+        try {
+            final Map<String, JPAAnalysisResult> analysisResultMap = executeDiagnostics(false);
 
             for (Map.Entry<String, JPAAnalysisResult> entry : analysisResultMap.entrySet()) {
                 final JPAAnalysisResult result = entry.getValue();
-                final PersistenceUnitScannerResults2 scannerResults = result.getAppl().results;
+                final JPAApplInfoIntrospect applInfoIntro = result.getAppl();
+                final PersistenceUnitScannerResults results = applInfoIntro.results;
 
-                dout.println();
-                dout.println("################################################################################");
-                dout.println("Application \"" + entry.getKey() + "\":");
-
-                if (scannerResults == null) {
-                    dout.println("   No JPA Materials to Analyze.");
+                if (results == null) {
                     continue;
                 }
 
-                dout.println("   Total ORM Files: " + scannerResults.getAllEntityMappingsDefinitions().size());
+                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                results.generateORMDump(new PrintWriter(baos));
 
-                {
-                    final Map<URL, Set<ClassInfoType>> urlCitMap = scannerResults.getAllScannedClasses();
-                    int count = 0;
-                    for (Set<ClassInfoType> citSet : urlCitMap.values()) {
-                        count += citSet.size();
-                    }
+                final StringBuilder sb = new StringBuilder();
+                sb.append("\nJPA Diagnostic Dump for Application " + entry.getKey() + " : \n");
+                sb.append(baos.toString());
 
-                    dout.println("   Total JPA Involved Classes: " + count);
+                Tr.debug(tc, "JPAORMDiagnostics Dump", sb.toString());
+            }
+        } catch (Throwable t) {
+            FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".executeTraceAnalysis", "185");
+        }
+    }
+
+    private void doExecuteIntrospectionAnalysis(final PrintWriter dout) {
+        final Map<String, JPAAnalysisResult> analysisResultMap = executeDiagnostics(true);
+
+        dout.println("Applications: ");
+        dout.println();
+
+        for (Map.Entry<String, JPAAnalysisResult> entry : analysisResultMap.entrySet()) {
+            dout.println(entry.getKey() + " ("
+                         + entry.getValue().getAppl().getPersistenceUnitCount()
+                         + " persistence units, " + entry.getValue().getLineCount() + " lines) :");
+            dout.println("   Persistence Unit Roots:");
+            final Map<URL, List<JPAPUnitInfoIntrospect>> urlPUInfoMap = entry.getValue().getURL_JPAPuInfoMap();
+            if (urlPUInfoMap.size() == 0) {
+                dout.println("      None");
+            } else {
+                for (Map.Entry<URL, List<JPAPUnitInfoIntrospect>> e2 : urlPUInfoMap.entrySet()) {
+                    dout.println("      " + getShortenedURLPath(e2.getKey()) + " (" + e2.getValue().size() + " persistence units)");
                 }
-
-                final Map<URL, List<JPAPUnitInfoIntrospect>> urlPUInfoMap = entry.getValue().getURL_JPAPuInfoMap();
-                if (urlPUInfoMap.size() == 0) {
-                    dout.println("   Persistence Unit Roots:");
-                    dout.println("      None");
-                } else {
-                    dout.println("   Persistence Unit Roots:");
-                    for (Map.Entry<URL, List<JPAPUnitInfoIntrospect>> e2 : urlPUInfoMap.entrySet()) {
-                        dout.println("      " + getShortenedURLPath(e2.getKey()) + " (" + e2.getValue().size() + " persistence units)");
-                    }
-
-                    dout.println("   Persistence Units:");
-                    for (Map.Entry<URL, List<JPAPUnitInfoIntrospect>> e2 : urlPUInfoMap.entrySet()) {
-                        dout.println("      At Persistence Unit Root: " + getShortenedURLPath(e2.getKey()));
-                        final List<JPAPUnitInfoIntrospect> ispecList = new ArrayList<JPAPUnitInfoIntrospect>(e2.getValue());
-                        Collections.sort(ispecList, new Comparator<JPAPUnitInfoIntrospect>() {
-                            @Override
-                            public int compare(JPAPUnitInfoIntrospect o1, JPAPUnitInfoIntrospect o2) {
-                                if (o1 == null || o2 == null || o1.puName == null || o2.puName == null) {
-                                    return 0;
-                                }
-
-                                return o1.puName.compareTo(o2.puName);
-                            }
-                        });
-                        for (JPAPUnitInfoIntrospect puIspec : ispecList) {
-                            dout.println("         " + puIspec.getPuName());
-                        }
-                    }
-                }
-
-                dout.println();
-                dout.println(result.getBaos().toString());
             }
         }
 
+        dout.println();
+
+        for (Map.Entry<String, JPAAnalysisResult> entry : analysisResultMap.entrySet()) {
+            final JPAAnalysisResult result = entry.getValue();
+            final PersistenceUnitScannerResults scannerResults = result.getAppl().results;
+
+            dout.println();
+            dout.println("################################################################################");
+            dout.println("Application \"" + entry.getKey() + "\":");
+
+            if (scannerResults == null) {
+                dout.println("   No JPA Materials to Analyze.");
+                continue;
+            }
+
+            dout.println("   Total ORM Files: " + scannerResults.getAllEntityMappingsDefinitions().size());
+
+            {
+                final Map<URL, Set<ClassInfoType>> urlCitMap = scannerResults.getAllScannedClasses();
+                int count = 0;
+                for (Set<ClassInfoType> citSet : urlCitMap.values()) {
+                    count += citSet.size();
+                }
+
+                dout.println("   Total JPA Involved Classes: " + count);
+            }
+
+            final Map<URL, List<JPAPUnitInfoIntrospect>> urlPUInfoMap = entry.getValue().getURL_JPAPuInfoMap();
+            if (urlPUInfoMap.size() == 0) {
+                dout.println("   Persistence Unit Roots:");
+                dout.println("      None");
+            } else {
+                dout.println("   Persistence Unit Roots:");
+                for (Map.Entry<URL, List<JPAPUnitInfoIntrospect>> e2 : urlPUInfoMap.entrySet()) {
+                    dout.println("      " + getShortenedURLPath(e2.getKey()) + " (" + e2.getValue().size() + " persistence units)");
+                }
+
+                dout.println("   Persistence Units:");
+                for (Map.Entry<URL, List<JPAPUnitInfoIntrospect>> e2 : urlPUInfoMap.entrySet()) {
+                    dout.println("      At Persistence Unit Root: " + getShortenedURLPath(e2.getKey()));
+                    final List<JPAPUnitInfoIntrospect> ispecList = new ArrayList<JPAPUnitInfoIntrospect>(e2.getValue());
+                    Collections.sort(ispecList, new Comparator<JPAPUnitInfoIntrospect>() {
+                        @Override
+                        public int compare(JPAPUnitInfoIntrospect o1, JPAPUnitInfoIntrospect o2) {
+                            if (o1 == null || o2 == null || o1.puName == null || o2.puName == null) {
+                                return 0;
+                            }
+
+                            return o1.puName.compareTo(o2.puName);
+                        }
+                    });
+                    for (JPAPUnitInfoIntrospect puIspec : ispecList) {
+                        dout.println("         " + puIspec.getPuName());
+                    }
+                }
+            }
+
+            dout.println();
+            dout.println(result.getBaos().toString());
+        }
     }
 
     private String getShortenedURLPath(URL url) {
@@ -264,9 +426,6 @@ public class JPAIntrospection {
 
         return ptcols + "..." + path;
     }
-
-    // out.println("************************************************************");
-    // out.println(jpaPuInfo.dump());
 
     private String resolvePersistenceXML(final URL puRootURL) {
         final String pxmlPath = "META-INF/persistence.xml";
@@ -340,7 +499,7 @@ public class JPAIntrospection {
         private final JPAApplInfo appl;
         private final ArrayList<JPAScopeInfoIntrospect> scopeInfoList = new ArrayList<JPAScopeInfoIntrospect>();
         private int puCount = 0;
-        private PersistenceUnitScannerResults2 results;
+        private PersistenceUnitScannerResults results;
 
         public JPAApplInfoIntrospect(String appname, JPAApplInfo appl) {
             this.appname = appname;
@@ -475,4 +634,132 @@ public class JPAIntrospection {
             return count;
         }
     }
+
+    /*
+     * Methods involved with dumping the current state of the JPA EntityManagerFactory instances associated with the JPAPUnitInfo objects.
+     */
+
+    private final static String[] openJPAEntityManagerFactoryImplClasses = { "org.apache.openjpa.persistence.EntityManagerFactoryImpl",
+                                                                             "com.ibm.ws.persistence.EntityManagerFactoryImpl" };
+    private final static String[] eclipselinkEntityManagerFactoryImplClasses = { "org.eclipse.persistence.internal.jpa.EntityManagerFactoryImpl" };
+
+    private void doDumpJPARuntimeStates(final PrintWriter out) {
+        out.println();
+        out.println("################################################################################");
+        out.println("################################################################################");
+        out.println("################################################################################");
+        out.println();
+        out.println("Dumping JPA Runtime States:");
+        out.println();
+
+        for (JPAPUnitInfo puinfo : allJPAPUnitInfoList) {
+            doDumpJPARuntimeState(puinfo, out);
+        }
+    }
+
+    private void doDumpJPARuntimeState(final JPAPUnitInfo jpaPuInfo, final PrintWriter out) {
+        out.println();
+        out.println("JPA Runtime State Analysis for JPAPUnitInfo: ");
+        out.println(jpaPuInfo.dump());
+        out.println();
+
+        // First, get the EntityManagerFactory associated with the JPAPUnitInfo, or the multitudes of them if this is a persistence
+        // unit that has a java:comp/env JNDI name in the jta-data-source and/or non-jta-data-source
+        Object ivEMFactory = null; // get EntityManagerFactory ivEMFactory
+        try {
+            ivEMFactory = reflectObjValue(jpaPuInfo, "ivEMFactory");
+        } catch (Throwable t) {
+            out.println("*** Unable to access ivEMFactory due to Exception ***");
+        }
+
+        Map ivEMFMap = null; // EntityManager for every java:comp, when Datasource is in java:comp. Map<J2EEName, EntityManagerFactory>
+        try {
+            ivEMFMap = (Map) reflectObjValue(jpaPuInfo, "ivEMFMap");
+        } catch (Throwable t) {
+            out.println("*** Unable to access ivEMFactory due to Exception ***");
+        }
+
+        if (ivEMFactory == null && (ivEMFMap == null || ivEMFMap.isEmpty())) {
+            // No EntityManagerFactories to work with, so there is very little to work with.
+            out.println("No EntityManagerFactory available for introspection with persistence unit " + jpaPuInfo.getPersistenceUnitName());
+            return;
+        }
+
+        Class emfClass = null;
+        if (ivEMFactory != null) {
+            emfClass = ivEMFactory.getClass();
+        } else if (ivEMFMap != null && ivEMFMap.size() > 0) {
+            emfClass = ivEMFMap.values().toArray()[0].getClass();
+        } else {
+            out.println("Encountered a problem acquiring an EntityManagerFactory from JPAPUnitInfo");
+            return;
+        }
+
+        if (!AbstractIntrospection.isSupportedPlatform(emfClass)) {
+            out.println("Introspector doesn't support EntityManagerFactory impl type " + emfClass.getName());
+            return;
+        }
+
+        if (ivEMFactory != null && (ivEMFMap == null || ivEMFMap.size() == 0)) {
+            out.println("EntityManagerFactory state for ivEMFactory:");
+            AbstractIntrospection.getPlatformIntrospection(emfClass).dumpJPAEntityManagerFactoryState(ivEMFactory, out);
+        }
+
+        if (ivEMFMap != null && ivEMFMap.size() > 0) {
+            for (Map.Entry<?, ?> entry : ((Map<?, ?>) ivEMFMap).entrySet()) {
+                out.println();
+                out.println("EntityManagerFactory state for java:comp/env EMF: " + entry.getKey());
+                AbstractIntrospection.getPlatformIntrospection(emfClass).dumpJPAEntityManagerFactoryState(entry.getValue(), out);
+            }
+        }
+    }
+
+    /*
+     * OpenJPA Diagnostic Enhancements
+     */
+    private void doDumpOpenJPAPCRegistry(final PrintWriter out) {
+        ArrayList<ClassLoader> tclList = new ArrayList<ClassLoader>();
+        for (JPAPUnitInfo puinfo : allJPAPUnitInfoList) {
+            tclList.add(puinfo.getNewTempClassLoader());
+        }
+
+        OpenJPAIntrospection.dumpOpenJPAPCRegistry(tclList, out);
+    }
+
+    /*
+     * Utility methods used for introspecting JPA Persistence Provider Implementation Data Structures
+     */
+    private static Object reflectObjValue(Object o, String field) throws Exception {
+        final Class<?> c = o.getClass();
+        final Field f = findField(c, field); //        c.getField(field);
+        if (f == null) {
+            return null;
+        }
+        final boolean accessible = f.isAccessible();
+        try {
+            f.setAccessible(true);
+            return f.get(o);
+        } finally {
+            f.setAccessible(accessible);
+        }
+    }
+
+    private static Field findField(final Class<?> c, String field) {
+        if (c == null) {
+            return null;
+        }
+
+        try {
+            return c.getDeclaredField(field);
+        } catch (Exception e) {
+
+        }
+
+        if (Object.class.equals(c)) {
+            return null;
+        }
+
+        return findField(c.getSuperclass(), field);
+    }
+
 }

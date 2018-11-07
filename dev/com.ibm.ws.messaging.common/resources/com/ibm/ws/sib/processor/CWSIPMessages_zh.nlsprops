@@ -102,7 +102,7 @@
 #   - Msgs in the range CWSIP0551-CWSIP0560 belong to class com.ibm.ws.sib.processor.impl.store.itemstreams.PtoPLocalMsgsItemStream
 #   - Msgs in the range CWSIP0561-CWSIP0570 belong to class com.ibm.ws.sib.processor.impl.AsynchConsumer
 #   - Msgs in the range CWSIP0571-CWSIP0579 belong to class com.ibm.ws.sib.processor.impl.mediation.MessagePump
-#
+#   - Msgs in the range CWSIP0580-CWSIP0589 belong to class com.ibm.ws.sib.processor.impl.store.items.MessageItem
 #
 #
 #
@@ -1283,6 +1283,14 @@ MESSAGE_EXISTS_ERROR_CWSIP0572=CWSIP0572E: \u6807\u8bc6\u4e3a {0} \u7684\u6d88\u
 MESSAGE_EXISTS_ERROR_CWSIP0572.explanation=\u65e0\u6cd5\u5c1d\u8bd5\u8bbf\u95ee\u5177\u6709\u8be5\u6307\u5b9a\u6807\u8bc6\u7684\u6d88\u606f\u3002\u8fd9\u53ef\u80fd\u662f\u56e0\u4e3a\u6d88\u606f\u5df2\u5230\u671f\uff0c\u6216\u8005\u5e94\u7528\u7a0b\u5e8f\u5df2\u9664\u53bb\u8be5\u6d88\u606f\u3002
 MESSAGE_EXISTS_ERROR_CWSIP0572.useraction=\u65e0
 
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The destination name
+# {3} The action taken
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580=CWSIP0580W: \u5728\u76ee\u6807 {2} \u4e2d\u627e\u5230\u4e86\u6807\u8bc6\u4e3a {0} \u4e14\u7cfb\u7edf\u6d88\u606f\u6807\u8bc6\u4e3a {1} \u7684\u6d88\u606f\uff0c\u5e76\u4e14\u4f20\u9012\u5ef6\u8fdf\u8d85\u8fc7\u5c5e\u6027 sib.msgstore.maximumAllowedDeliveryDelayInterval \u6240\u8bbe\u7f6e\u7684\u9650\u5236\uff0c\u6267\u884c\u7684\u64cd\u4f5c\u4e3a\u201c{3}\u201d\u3002
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580.explanation=\u6b64\u8b66\u544a\u6307\u793a\u5df2\u6267\u884c\u7684\u64cd\u4f5c\u3002
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580.useraction=\u7528\u6237\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
 # -------------------------------------------------------------------------------------------------
 NO_ELEMENTS_ERROR_CWSIP0601=CWSIP0601E: \u8fed\u4ee3\u5668\u4e2d\u4e0d\u518d\u6709\u5143\u7d20\u3002
 NO_ELEMENTS_ERROR_CWSIP0601.explanation=\u65e0\u3002

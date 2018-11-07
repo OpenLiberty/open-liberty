@@ -136,20 +136,26 @@ public class JwKRetriever {
     //      hostNameVerificationEnabled = config.isHostNameVerificationEnabled();
     //      
     //  }
+    
+    // temporary to get CL built. remove me. 
+    public PublicKey getPublicKeyFromJwk(String kid, String x5t)
+            throws PrivilegedActionException, IOException, KeyStoreException, InterruptedException{
+        return getPublicKeyFromJwk(kid, x5t, false);
+    }
 
     /**
      * Either kid or x5t will work. But not both
      */
-    public PublicKey getPublicKeyFromJwk(String kid, String x5t)
+    public PublicKey getPublicKeyFromJwk(String kid, String x5t, boolean useSystemPropertiesForHttpClientConnections)
             throws PrivilegedActionException, IOException, KeyStoreException, InterruptedException {
-        return getPublicKeyFromJwk(kid, x5t, null);
+        return getPublicKeyFromJwk(kid, x5t, null, useSystemPropertiesForHttpClientConnections);
     }
 
     /**
      * Either kid, x5t, or use will work, but not all
      */
     @FFDCIgnore({ KeyStoreException.class })
-    public PublicKey getPublicKeyFromJwk(String kid, String x5t, String use)
+    public PublicKey getPublicKeyFromJwk(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections)
             throws PrivilegedActionException, IOException, KeyStoreException, InterruptedException {
         PublicKey key = null;
         KeyStoreException errKeyStoreException = null;
@@ -158,7 +164,7 @@ public class JwKRetriever {
         boolean isHttp = remoteHttpCall(this.jwkEndpointUrl, this.publicKeyText, this.keyLocation);
         try {
             if (isHttp) {
-                key = this.getJwkRemote(kid, x5t, use);
+                key = this.getJwkRemote(kid, x5t, use , useSystemPropertiesForHttpClientConnections);
             } else {
                 key = this.getJwkLocal(kid, x5t, publicKeyText, keyLocation, use);
             }
@@ -312,7 +318,7 @@ public class JwKRetriever {
     }
 
     @FFDCIgnore({ KeyStoreException.class })
-    protected PublicKey getJwkRemote(String kid, String x5t, String use) throws KeyStoreException, InterruptedException {
+    protected PublicKey getJwkRemote(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections) throws KeyStoreException, InterruptedException {
         locationUsed = jwkEndpointUrl;
         if (locationUsed == null) {
             locationUsed = keyLocation;
@@ -325,7 +331,7 @@ public class JwKRetriever {
             synchronized (jwkSet) {
                 key = getJwkFromJWKSet(locationUsed, kid, x5t, use);
                 if (key == null) {
-                    key = doJwkRemote(kid, x5t, use);
+                    key = doJwkRemote(kid, x5t, use, useSystemPropertiesForHttpClientConnections);
                 }
             }
         } catch (KeyStoreException e) {
@@ -335,7 +341,7 @@ public class JwKRetriever {
     }
 
     @FFDCIgnore({ Exception.class, KeyStoreException.class })
-    protected PublicKey doJwkRemote(String kid, String x5t, String use) throws KeyStoreException {
+    protected PublicKey doJwkRemote(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections) throws KeyStoreException {
 
         String jsonString = null;
         locationUsed = jwkEndpointUrl;
@@ -345,8 +351,8 @@ public class JwKRetriever {
 
         try {
             // TODO - validate url
-            SSLSocketFactory sslSocketFactory = getSSLSocketFactory(locationUsed, sslConfigurationName, sslSupport);
-            HttpClient client = createHTTPClient(sslSocketFactory, locationUsed, hostNameVerificationEnabled);
+            SSLSocketFactory sslSocketFactory = getSSLSocketFactory(locationUsed, sslConfigurationName, sslSupport);            
+            HttpClient client = createHTTPClient(sslSocketFactory, locationUsed, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
             jsonString = getHTTPRequestAsString(client, locationUsed);
             boolean bJwk = parseJwk(jsonString, null, jwkSet, sigAlg);
 
@@ -663,7 +669,7 @@ public class JwKRetriever {
         return message;
     }
 
-    public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification) {
+    public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections) {
 
         HttpClient client = null;
         boolean addBasicAuthHeader = false;
@@ -677,13 +683,17 @@ public class JwKRetriever {
             credentialsProvider = createCredentialsProvider();
         }
 
-        client = createHttpClient(url.startsWith("https:"), isHostnameVerification, sslSocketFactory, addBasicAuthHeader, credentialsProvider);
+        client = createHttpClient(url.startsWith("https:"), isHostnameVerification, sslSocketFactory, addBasicAuthHeader, credentialsProvider, useSystemPropertiesForHttpClientConnections);
         return client;
 
     }
+    
+    protected HttpClientBuilder getBuilder(boolean useSystemPropertiesForHttpClientConnections)
+    {        
+        return useSystemPropertiesForHttpClientConnections ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
+    }
 
-    private HttpClient createHttpClient(boolean isSecure, boolean isHostnameVerification, SSLSocketFactory sslSocketFactory, boolean addBasicAuthHeader, BasicCredentialsProvider credentialsProvider) {
-
+    private HttpClient createHttpClient(boolean isSecure, boolean isHostnameVerification, SSLSocketFactory sslSocketFactory, boolean addBasicAuthHeader, BasicCredentialsProvider credentialsProvider, boolean useSystemPropertiesForHttpClientConnections) {       
         HttpClient client = null;
         if (isSecure) {
             SSLConnectionSocketFactory connectionFactory = null;
@@ -693,15 +703,15 @@ public class JwKRetriever {
                 connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new StrictHostnameVerifier());
             }
             if (addBasicAuthHeader) {
-                client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
+                client = getBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
             } else {
-                client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
+                client = getBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory).build();
             }
         } else {
             if (addBasicAuthHeader) {
-                client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).build();
+                client = getBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).build();
             } else {
-                client = HttpClientBuilder.create().build();
+                client = getBuilder(useSystemPropertiesForHttpClientConnections).build();
             }
         }
         return client;

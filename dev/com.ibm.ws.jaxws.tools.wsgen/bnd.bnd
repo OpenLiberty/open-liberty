@@ -16,7 +16,9 @@ Bundle-SymbolicName: com.ibm.ws.jaxws.tools.wsgen
 
 Require-Compiler: true
 
-Require-Bundle: com.ibm.ws.jaxws.tools.2.2.10; version="[1,1.0.100)", \
+Require-Bundle: com.ibm.websphere.javaee.jws.1.0; version="[1,1.0.100)"; location="dev/api/spec/", \
+ com.ibm.ws.com.sun.xml.messaging.saaj; version="[1,1.0.100)", \
+ com.ibm.ws.jaxws.tools.2.2.10; version="[1,1.0.100)", \
  com.ibm.ws.jaxb.tools.2.2.10; version="[1,1.0.100)", \
  com.ibm.websphere.javaee.activation.1.1; version="[1,1.0.100)"; location="dev/api/spec/", \
  com.ibm.websphere.javaee.jaxws.2.2; version="[1,1.0.100)"; location="dev/api/spec/", \

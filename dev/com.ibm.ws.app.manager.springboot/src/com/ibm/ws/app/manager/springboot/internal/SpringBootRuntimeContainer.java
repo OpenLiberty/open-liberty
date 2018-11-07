@@ -30,6 +30,7 @@ import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ModuleRuntimeContainer;
 import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.container.service.state.StateChangeException;
+import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaDataImpl;
@@ -77,6 +78,9 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
     private ExecutorService executor;
     @Reference
     private FutureMonitor futureMonitor;
+
+    @Reference
+    private LibertyProcess libertyProcess;
 
     @Override
     public ModuleMetaData createModuleMetaData(ExtendedModuleInfo moduleInfo) throws MetaDataException {
@@ -126,7 +130,11 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
             });
             try {
                 // get the application args to pass from the springBootApplication
-                main.invoke(null, new Object[] { springBootApplication.getAppArgs().toArray(new String[0]) });
+                String[] appArgs = libertyProcess.getArgs();
+                if (appArgs.length == 0) {
+                    appArgs = springBootApplication.getAppArgs().toArray(new String[0]);
+                }
+                main.invoke(null, new Object[] { appArgs });
                 futureMonitor.setResult(mainInvokeResult, true);
             } catch (InvocationTargetException e) {
                 Throwable target = e.getTargetException();

@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.internal.impl.LoggingConstants.FFDCSummaryPolicy;
 import com.ibm.ws.logging.internal.impl.LoggingConstants.TraceFormat;
+import com.ibm.ws.logging.utils.FileLogHolder;
 import com.ibm.wsspi.logging.TextFileOutputStreamFactory;
 import com.ibm.wsspi.logprovider.FFDCFilterService;
 import com.ibm.wsspi.logprovider.LogProviderConfig;
@@ -107,6 +108,9 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
     /** Format to use for console.log / console */
     protected volatile String consoleFormat = LoggingConstants.DEFAULT_CONSOLE_FORMAT;
+
+    /** Whether to fill up any existing primary file instead of immediately rolling it. */
+    protected volatile boolean newLogsOnStart = FileLogHolder.NEW_LOGS_ON_START_DEFAULT;
 
     /** The header written at the beginning of all log files. */
     private final String logHeader;
@@ -222,6 +226,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         messageFormat = InitConfgAttribute.MESSAGE_FORMAT.getStringValueAndSaveInit(c, messageFormat, isInit);
         consoleSource = InitConfgAttribute.CONSOLE_SOURCE.getStringCollectionValueAndSaveInit("consoleSource", c, consoleSource, isInit);
         consoleFormat = InitConfgAttribute.CONSOLE_FORMAT.getStringValueAndSaveInit(c, consoleFormat, isInit);
+
+        newLogsOnStart = InitConfgAttribute.NEW_LOGS_ON_START.getBooleanValue(c, newLogsOnStart, isInit);
     }
 
     /**
@@ -373,6 +379,10 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         return consoleFormat;
     }
 
+    public boolean getNewLogsOnStart() {
+        return newLogsOnStart;
+    }
+
     /**
      * @return true if we should use the logger -> tr handler
      */
@@ -392,6 +402,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         sb.append(",traceFormat=").append(traceFormat);
         sb.append(",isoDateFormat=").append(isoDateFormat);
         sb.append(",traceFileName=").append(traceFileName);
+        sb.append(",newLogsOnStart=").append(newLogsOnStart);
         sb.append("]");
 
         return sb.toString();
@@ -414,7 +425,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         MESSAGE_SOURCE("messageSource", "com.ibm.ws.logging.message.source"),
         MESSAGE_FORMAT("messageFormat", "com.ibm.ws.logging.message.format"),
         CONSOLE_SOURCE("consoleSource", "com.ibm.ws.logging.console.source"),
-        CONSOLE_FORMAT("consoleFormat", "com.ibm.ws.logging.console.format");
+        CONSOLE_FORMAT("consoleFormat", "com.ibm.ws.logging.console.format"),
+        NEW_LOGS_ON_START("newLogsOnStart", FileLogHolder.NEW_LOGS_ON_START_PROPERTY);
 
         final String configKey;
         final String propertyKey;

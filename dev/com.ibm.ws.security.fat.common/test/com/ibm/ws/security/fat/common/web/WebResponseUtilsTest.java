@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -110,13 +111,30 @@ public class WebResponseUtilsTest extends CommonTestClass {
     @Test
     public void test_getResponseText_unknownObject() {
         try {
-            Object pageOrResponse = "some unknown object";
+            Object pageOrResponse = 12345;
             try {
                 String result = WebResponseUtils.getResponseText(pageOrResponse);
                 fail("Should have thrown an exception but got result [" + result + "].");
             } catch (Exception e) {
-                verifyException(e, "Unknown response type: java.lang.String");
+                verifyException(e, "Unknown response type: " + Pattern.quote(pageOrResponse.getClass().getName()));
             }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Argument: String
+     * Expects:
+     * - Result match the content
+     */
+    @Test
+    public void test_getResponseText_string() {
+        try {
+            Object pageOrResponse = "some string";
+            String result = WebResponseUtils.getResponseText(pageOrResponse);
+            assertEquals("Result did not match expected value.", pageOrResponse, result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }

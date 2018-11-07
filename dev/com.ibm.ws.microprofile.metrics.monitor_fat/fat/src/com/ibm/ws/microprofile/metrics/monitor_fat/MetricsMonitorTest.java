@@ -108,12 +108,12 @@ public class MetricsMonitorTest {
     	String logMsg = server.waitForStringInLogUsingMark("CWPMI2001I");
     	Log.info(c, testName, logMsg);
 		Assert.assertNotNull("No CWPMI2001I was found.", logMsg);
+       	server.setMarkToEndOfLog(server.getMostRecentTraceFile());
 
        	Log.info(c, testName, "------- threadpool metrics should be available ------");
 		getHttpsServlet("/metrics/vendor");
     	
        	Log.info(c, testName, "------- serlvet metrics should be available ------");
-       	server.setMarkToEndOfLog(server.getMostRecentTraceFile());
        	Log.info(c, testName, server.waitForStringInTrace("Monitoring MXBean WebSphere:type=ServletStats", 60000));
        	checkStrings(getHttpsServlet("/metrics/vendor"), new String[] {
        		"vendor:threadpool_default_executor_active_threads",

@@ -122,16 +122,21 @@ public class RequestUtils {
 
         abstract protected char getNextChar();
 
+        protected void increment() {
+            i++;
+        }
+
         protected void setEqualSign() {
             equalSign = i;
         }
 
         boolean findNextPair() {
-            pair_start = ++i;
+            increment();
+            pair_start = i;
             isKeySingleByteString = true;
             isValueSingleByteString = true;
             equalsFound = false;
-            for (; lessThanEqualLength(); i++) {
+            for (; lessThanEqualLength(); increment()) {
                 if (isEqualLength()) {
                     if (!equalsFound) {
                         setEqualSign();
@@ -188,12 +193,12 @@ public class RequestUtils {
         protected String parseName(final char[] ch, final int startOffset, final int endOffset, boolean isKey) {
             int j = 0;
             char[] c = null;
-            for (int i = startOffset; i < endOffset; i++) {
-                switch (ch[i]) {
+            for (int offset = startOffset; offset < endOffset; offset++) {
+                switch (ch[offset]) {
                     case '+':
                         if (c == null) {
                             c = new char[endOffset - startOffset];
-                            j = i - startOffset;
+                            j = offset - startOffset;
                             if (j != 0) {
                                 System.arraycopy(ch, startOffset, c, 0, j);
                             }
@@ -201,16 +206,16 @@ public class RequestUtils {
                         c[j++] = ' ';
                         break;
                     case '%':
-                        if (i + 2 < endOffset) { // @RWS2
+                        if (offset + 2 < endOffset) { // @RWS2
                             if (c == null) {
                                 c = new char[endOffset - startOffset];
-                                j = i - startOffset;
+                                j = offset - startOffset;
                                 if (j != 0) {
                                     System.arraycopy(ch, startOffset, c, 0, j);
                                 }
                             }
-                            int num1 = Character.digit(ch[++i], 16); //@RWS7
-                            int num2 = Character.digit(ch[++i], 16); //@RWS7
+                            int num1 = Character.digit(ch[++offset], 16); //@RWS7
+                            int num2 = Character.digit(ch[++offset], 16); //@RWS7
                             if (num1 == -1 || num2 == -1) //@RWS5
                             { //PK75617 starts
                                 if (ignoreInvalidQueryString) {
@@ -231,16 +236,16 @@ public class RequestUtils {
                             c[j++] = newChar;
                         } else { // allow '%' at end of value or second to last character (as original code does)
                             if (c != null) {
-                                for (; i < endOffset; i++) // @RWS2
-                                    c[j++] = ch[i]; // @RWS7
+                                for (; offset < endOffset; offset++) // @RWS2
+                                    c[j++] = ch[offset]; // @RWS7
                             } else {
-                                i = endOffset;
+                                offset = endOffset;
                             }
                         }
                         break;
                     default:
                         if (c != null) {
-                            c[j++] = ch[i];
+                            c[j++] = ch[offset];
                         }
                         break;
                 }
@@ -292,28 +297,28 @@ public class RequestUtils {
 
         private String parseName(final int startOffset, final int endOffset, boolean isKey) {
             StringBuilder sb = null;
-            for (int i = startOffset; i < endOffset; i++) {
-                char c = queryString.charAt(i);
+            for (int offset = startOffset; offset < endOffset; offset++) {
+                char c = queryString.charAt(offset);
                 switch (c) {
                     case '+':
                         if (sb == null) {
                             sb = new StringBuilder(endOffset - startOffset);
-                            if (i != startOffset) {
-                                sb.append(queryString, startOffset, i);
+                            if (offset != startOffset) {
+                                sb.append(queryString, startOffset, offset);
                             }
                         }
                         sb.append(' ');
                         break;
                     case '%':
-                        if (i + 2 < endOffset) { // @RWS2
+                        if (offset + 2 < endOffset) { // @RWS2
                             if (sb == null) {
                                 sb = new StringBuilder(endOffset - startOffset);
-                                if (i != startOffset) {
-                                    sb.append(queryString, startOffset, i);
+                                if (offset != startOffset) {
+                                    sb.append(queryString, startOffset, offset);
                                 }
                             }
-                            int num1 = Character.digit(queryString.charAt(++i), 16); //@RWS7
-                            int num2 = Character.digit(queryString.charAt(++i), 16); //@RWS7
+                            int num1 = Character.digit(queryString.charAt(++offset), 16); //@RWS7
+                            int num2 = Character.digit(queryString.charAt(++offset), 16); //@RWS7
                             if (num1 == -1 || num2 == -1) //@RWS5
                             { //PK75617 starts
                                 if (ignoreInvalidQueryString) {
@@ -334,11 +339,11 @@ public class RequestUtils {
                             sb.append(newChar);
                         } else { // allow '%' at end of value or second to last character (as original code does)
                             if (sb != null) {
-                                if (i < endOffset) {
-                                    sb.append(queryString, i, endOffset);
+                                if (offset < endOffset) {
+                                    sb.append(queryString, offset, endOffset);
                                 }
                             } else {
-                                i = endOffset;
+                                offset = endOffset;
                             }
                         }
                         break;
@@ -413,11 +418,16 @@ public class RequestUtils {
         }
 
         protected char getNextChar() {
-            if (i >= queryString[k].length) {
+            return queryString[k][i];
+        }
+
+        @Override
+        protected void increment() {
+            i++;
+            while (k < queryString.length - 1 && i >= queryString[k].length) {
                 i = 0;
                 k++;
             }
-            return queryString[k][i];
         }
 
         @Override
@@ -428,11 +438,21 @@ public class RequestUtils {
 
         @Override
         boolean findNextPair() {
-            if (i + 1 >= queryString[k].length) {
+            while (k < queryString.length && i + 1 >= queryString[k].length) {
+                queryString[k] = null;
                 i = -1;
                 k++;
             }
+
+            // release buffers for garbage collection that may not have gotten consumed
+            if (pair_start_index < k && queryString[pair_start_index] != null) {
+                for (int j = pair_start_index; j < k; ++j) {
+                    queryString[j] = null;
+                }
+            }
+
             pair_start_index = k;
+
             return super.findNextPair();
         }
 
@@ -619,7 +639,9 @@ public class RequestUtils {
 
         // Call optimized version if there is only 1 char[]
         if (cha.length == 1) {
-            return parseQueryString(new CharArrayQueryString(cha[0]), encoding);
+            Hashtable returnValue = parseQueryString(new CharArrayQueryString(cha[0]), encoding);
+            cha[0] = null;
+            return returnValue;
         }
 
         return parseQueryString(new CharArrayArrayQueryString(cha), encoding);

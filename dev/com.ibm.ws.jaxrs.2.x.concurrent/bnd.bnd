@@ -1,0 +1,58 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: JAX-RS Concurrent
+Bundle-SymbolicName: com.ibm.ws.jaxrs.2.x.concurrent
+Bundle-Description: IBM JAX-RS-2.X Concurrency support; version=${bVersion}
+
+WS-TraceGroup: JAXRS
+
+# jaxrs-2.0-beanValidation is part of EE7 and therefore requires java 1.7 
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))" 
+
+# Technically we should never have allowed javax.validation packages at the 1.0 version
+# but to maintain backwards compatibility we will allow it 
+Import-Package: \
+  org.apache.cxf.*;version="[3.0.2,4)", \
+  com.ibm.websphere.*, \
+  javax.ws.rs.*, \
+  com.ibm.ws.jaxrs20.client, \
+  com.ibm.ws.ffdc, \
+  com.ibm.ws.ffdc.*, \
+  com.ibm.ws.concurrent, \
+  com.ibm.wsspi.kernel.service.utils, \
+  com.ibm.wsspi.threadcontext, \
+  org.osgi.framework, \
+  org.osgi.service.component
+
+  
+# If you need use MESSAGE, you must enable this Private-Package, or message will translate wrong
+Private-Package:\
+   com.ibm.ws.jaxrs2x.concurrent.*
+
+-dsannotations: com.ibm.ws.jaxrs2x.concurrent.component.*    
+ 
+-buildpath: \
+	org.apache.cxf.cxf-core;strategy=exact;version=3.1.16,\
+	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version=3.1.16,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.jaxrs.2.0.client;version=latest,\
+	com.ibm.ws.jaxrs.2.0.common;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.concurrent;version=latest,\
+	com.ibm.ws.context;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging.core;version=latest

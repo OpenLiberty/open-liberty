@@ -27,11 +27,12 @@ Private-Package: \
 
 src: \
     src,\
+    fat/src,\
     test-applications/testmarker/src,\
     test-applications/formlogin/src
 
 test.project: true
-publish.wlp.jar.disabled: true
+generate.replacement: true
 
 -buildpath: \
     com.ibm.ws.kernel.service;version=latest, \

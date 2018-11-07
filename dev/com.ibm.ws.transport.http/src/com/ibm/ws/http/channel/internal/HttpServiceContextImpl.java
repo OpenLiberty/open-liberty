@@ -2378,9 +2378,16 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
         if (isOutgoingBodyValid()) {
             HttpInboundServiceContextImpl hisc = null;
-            if (wsbb == null && this instanceof HttpInboundServiceContextImpl) {
-                hisc = (HttpInboundServiceContextImpl) this;
+
+            if (this instanceof HttpInboundServiceContextImpl) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "sendFullOutgoing : getContentLength(): " + this.getContentLength());
+                }
+                if (wsbb == null || this.getContentLength() == -1) {
+                    hisc = (HttpInboundServiceContextImpl) this;
+                }
             }
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && hisc != null && hisc.getLink() != null) {
                 Tr.debug(tc, "sendFullOutgoing : " + hisc + ", " + hisc.getLink().toString());
             }

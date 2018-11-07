@@ -15,7 +15,10 @@ src: \
 	fat/src,\
 	test-applications/mongo/src
 
+test.project: true
 fat.project: true
+publish.wlp.jar.disabled: false
+generate.replacement: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\

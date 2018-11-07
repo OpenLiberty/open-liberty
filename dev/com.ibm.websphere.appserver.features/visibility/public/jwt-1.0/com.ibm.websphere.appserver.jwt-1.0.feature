@@ -10,6 +10,8 @@ Subsystem-Name: JSON Web Token 1.0
 -jars=com.ibm.websphere.appserver.api.jwt; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.jwt_1.1-javadoc.zip
 -bundles=com.ibm.ws.security.jwt, \
+  com.ibm.ws.org.apache.httpcomponents, \
+  com.ibm.ws.org.apache.commons.logging.1.0.3, \
   com.ibm.ws.security.common, \
   com.ibm.ws.security.common.jsonwebkey, \
   com.ibm.ws.org.apache.commons.codec.1.4, \

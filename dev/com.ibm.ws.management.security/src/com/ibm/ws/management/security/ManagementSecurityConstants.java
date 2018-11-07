@@ -18,5 +18,6 @@ public interface ManagementSecurityConstants {
     static final String ADMINISTRATOR_ROLE_NAME = "Administrator";
     static final String ADMIN_RESOURCE_NAME = "com.ibm.ws.management.security.resource";
     static final String ALL_AUTHENTICATED_USERS_ROLE_NAME = "allAuthenticatedUsers";
+    static final String VIEWER_ROLE_NAME = "Viewer";
 
 }

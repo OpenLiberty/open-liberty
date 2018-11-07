@@ -39,3 +39,16 @@ CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID.useraction=Ensure that the specifi
 JAVASCRIPT_REDIRECT_URL_NOT_VALID=CWWKS6106E: The security service cannot create the appropriate JavaScript to redirect the browser because the redirect URL [{0}] is not valid.
 JAVASCRIPT_REDIRECT_URL_NOT_VALID.explanation=The browser must be redirected to a valid URL, but the specified URL is not valid. The URL might be null or empty, or might contain characters that are not allowed by RFC 3986.
 JAVASCRIPT_REDIRECT_URL_NOT_VALID.useraction=Check the format of the URL to ensure that it is not null or empty and that it contains only characters that are allowed in URI paths by RFC 3986.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS6107W: The OpenId Connect client (Relying Party or RP) [{2}] configuration specifies both the [{0}] discovery endpoint URL and the other endpoints, but must be configured either the discovery endpoint or the other endpoints. RP used the information from the discovery request and ignored the other endpoints [{1}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=The RP configuration specified both the discovery endpoint and the other endpoints such as authorization,token, but only one of the two can be specified..
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.useraction=Configure either the discovery endpoint or the other endpoints such as authorization and token and userinfo, not both.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER=CWWKS6108W: The OpenId Connect client (Relying Party or RP) [{2}] configuration specifies both the [{0}] discovery endpoint URL and the issuer identifier [{1}]. RP used the information from the discovery request and ignored the configured issuer identifier..
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.explanation=The RP configuration specified both the discovery endpoint and the issuer identifier, but only one of the two can be specified..
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.useraction=Configure either the discovery endpoint or the issuer identifier, not both.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT=CWWKS6109I: The OpenId Connect client (Relying Party or RP) or social login [{3}] configuration specifies [{0}], a default value for the [{1}] and as a result of discovery this is changed to [{2}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.explanation=If the OpenID Connect provider (OP) does not support RP defaults, depending on the capacity of the RP, the defaults can be adjusted to what the OP supports.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.useraction=Informational message. No action is required.
+

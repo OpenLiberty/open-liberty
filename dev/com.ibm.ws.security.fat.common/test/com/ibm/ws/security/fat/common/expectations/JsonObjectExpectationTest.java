@@ -40,7 +40,6 @@ public class JsonObjectExpectationTest extends CommonSpecificExpectationTest {
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.fat.common.*=all");
 
     private static final String FAILURE_REGEX_FAILED_TO_READ_JSON = ".*Failed to read JSON data.*";
-    private static final String FAILURE_REGEX_CONTENT_NOT_A_STRING = ".*content is not a string.*";
     private static final String FAILURE_REGEX_CONTENT_MISSING_KEY = ".+content does not contain.*";
     private static final String FAILURE_REGEX_VALUE_TYPE_DID_NOT_MATCH_THE_EXPECTED_TYPE = ".*ValueType.*did not match the expected type.*";
     private static final String FAILURE_REGEX_VALUE_DID_NOT_MATCH_EXPECTED_VALUE = ".*Value for.*" + "%s" + ".*did not match the expected value.*" + "expected:<" + "%s" + ">.*was:<" + "%s" + ">";
@@ -168,7 +167,7 @@ public class JsonObjectExpectationTest extends CommonSpecificExpectationTest {
                 exp.validate(null);
                 fail("Should have thrown an exception because the content is not a string, but did not.");
             } catch (Throwable e) {
-                verifyException(e, Pattern.quote(exp.getFailureMsg()) + FAILURE_REGEX_CONTENT_NOT_A_STRING);
+                verifyException(e, Pattern.quote(exp.getFailureMsg()) + ".*content is null");
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -185,11 +184,12 @@ public class JsonObjectExpectationTest extends CommonSpecificExpectationTest {
     public void test_validate_contentObjectNotAString() {
         try {
             JsonObjectExpectation exp = new JsonObjectExpectation(SEARCH_KEY, ValueType.OBJECT, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+            Object content = 123;
             try {
-                exp.validate(123);
+                exp.validate(content);
                 fail("Should have thrown an exception because the content is not a string, but did not.");
             } catch (Throwable e) {
-                verifyException(e, Pattern.quote(exp.getFailureMsg()) + FAILURE_REGEX_CONTENT_NOT_A_STRING);
+                verifyException(e, Pattern.quote(exp.getFailureMsg()) + ".*" + String.format(UnitTestUtils.ERR_UNKNOWN_RESPONSE_TYPE, Pattern.quote(content.getClass().getName())));
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

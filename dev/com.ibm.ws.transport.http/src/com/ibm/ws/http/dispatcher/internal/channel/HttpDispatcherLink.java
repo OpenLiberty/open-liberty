@@ -226,6 +226,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                                 Tr.debug(tc, "Upgraded Web Connection closing Dispatcher Link");
                             }
                         } else {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Upgraded Web Connection already called close; returning");
+                            }
                             return;
                         }
                     }
@@ -934,15 +937,24 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Finishing conn; " + finalSc + " error=" + e);
         }
+
         if (vc != null) { // This is added for Upgrade Servlet3.1 WebConnection
             String webconn = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
             if (webconn != null && webconn.equalsIgnoreCase("CLOSED_NON_UPGRADED_STREAMS")) {
                 vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "null");
             } else {
-                error = closeStreams();
+                synchronized (WebConnCanCloseSync) {
+                    if (WebConnCanClose) {
+                        error = closeStreams();
+                    }
+                }
             }
         } else {
-            error = closeStreams();
+            synchronized (WebConnCanCloseSync) { 
+                if (WebConnCanClose) {
+                    error = closeStreams();
+                }
+            }
         }
 
         close(getVirtualConnection(), error);

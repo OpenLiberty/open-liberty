@@ -16,7 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        OidcCertificationRPBasicProfileTests.class,
+        SocialOidcCertificationRPBasicProfileTests.class,
 })
 
 public class FATSuite {

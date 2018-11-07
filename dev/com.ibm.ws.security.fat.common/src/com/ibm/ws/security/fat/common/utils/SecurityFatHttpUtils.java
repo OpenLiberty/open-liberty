@@ -12,8 +12,10 @@ package com.ibm.ws.security.fat.common.utils;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -24,6 +26,8 @@ import componenttest.topology.utils.HttpUtils;
  * Utilities for testing HTTP connections.
  */
 public class SecurityFatHttpUtils extends HttpUtils {
+
+    protected static Class<?> thisClass = SecurityFatHttpUtils.class;
 
     /**
      * This method creates a connection to a webpage and then returns the connection, it doesn't care what the response code is.
@@ -39,7 +43,7 @@ public class SecurityFatHttpUtils extends HttpUtils {
         int timeout = DEFAULT_TIMEOUT;
         URL url = createURL(server, path);
         HttpURLConnection con = getHttpConnection(url, timeout, HTTPRequestMethod.GET);
-        Log.finer(HttpUtils.class, "getHttpConnection", "Connecting to " + url.toExternalForm() + " expecting http response in " + timeout + " seconds.");
+        Log.info(SecurityFatHttpUtils.class, "getHttpConnection", "Connecting to " + url.toExternalForm() + " expecting http response in " + timeout + " seconds.");
         con.connect();
         return con;
     }
@@ -49,6 +53,46 @@ public class SecurityFatHttpUtils extends HttpUtils {
             path = "/" + path;
         }
         return new URL("http://" + server.getHostname() + ":" + server.getBvtPort() + path);
+    }
+
+    public static void saveServerPorts(LibertyServer server, String propertyNameRoot) throws Exception {
+        server.setBvtPortPropertyName(propertyNameRoot);
+        server.setBvtSecurePortPropertyName(propertyNameRoot + ".secure");
+        Log.info(thisClass, "saveServerPorts", server.getServerName() + " ports are: " + server.getBvtPort() + " " + server.getBvtSecurePort());
+
+    }
+
+    public static InetAddress getServerIdentity() throws UnknownHostException {
+        InetAddress addr = InetAddress.getLocalHost();
+        return addr;
+    }
+
+    public static String getServerHostName() throws Exception {
+        return getServerIdentity().getHostName();
+    }
+
+    public String getServerCanonicalHostName() throws Exception {
+        return getServerIdentity().getCanonicalHostName();
+    }
+
+    public static String getServerHostIp() throws Exception {
+        return getServerIdentity().toString().split("/")[1];
+    }
+
+    public static String getServerUrlBase(LibertyServer server) {
+        return "http://" + server.getHostname() + ":" + server.getBvtPort() + "/";
+    }
+
+    public static String getServerSecureUrlBase(LibertyServer server) {
+        return "https://" + server.getHostname() + ":" + server.getBvtSecurePort() + "/";
+    }
+
+    public static String getServerIpUrlBase(LibertyServer server) throws Exception {
+        return "http://" + getServerHostIp() + ":" + server.getBvtPort() + "/";
+    }
+
+    public static String getServerIpSecureUrlBase(LibertyServer server) throws Exception {
+        return "https://" + getServerHostIp() + ":" + server.getBvtSecurePort() + "/";
     }
 
 }

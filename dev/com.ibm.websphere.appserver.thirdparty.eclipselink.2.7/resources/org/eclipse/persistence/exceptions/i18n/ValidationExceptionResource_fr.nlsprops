@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -149,13 +153,13 @@
 
 7093=Dans la requ\u00eate nomm\u00e9e [{0}], la classe [{2}] pour l''argument de requ\u00eate nomm\u00e9 [{1}] est introuvable. Incluez la classe manquante dans votre chemin d''acc\u00e8s aux classes.
 
-7095=La ressource sessions.xml [{0}] est introuvable dans le chemin d''acc\u00e8s \u00e0 la ressource.  V\u00e9rifiez que le nom/chemin de ressource et le chargeur de classe transmis \u00e0 l''\u00e9l\u00e9ment SessionManager.getSession sont corrects.  Le fichier sessions.xml doit \u00eatre inclus \u00e0 la racine du fichier jar d\u00e9ploy\u00e9e de l''application ; si le fichier sessions.xml est d\u00e9ploy\u00e9 dans un sous-r\u00e9pertoire du jar de l''application, assurez-vous que le chemin de ressource correct utilisant "/" not "\" est utilis\u00e9.
+7095=La ressource sessions.xml [{0}] est introuvable dans le chemin d''acc\u00e8s \u00e0 la ressource.  V\u00e9rifiez que le nom/chemin de ressource et le chargeur de classe transmis \u00e0 l''\u00e9l\u00e9ment SessionManager.getSession sont corrects.  Le fichier sessions.xml doit \u00eatre inclus \u00e0 la racine du fichier jar d\u00e9ploy\u00e9 de l''application ; si le fichier sessions.xml est d\u00e9ploy\u00e9 dans un sous-r\u00e9pertoire du jar de l''application, assurez-vous que le chemin de ressource utilise le s\u00e9parateur correct, "/" (barre oblique normale, non invers\u00e9e).
 
 7096=Impossible d''utiliser la m\u00e9thode commit() pour valider de nouveau UnitOfWork.
 
 7097=Op\u00e9ration non prise en charge : [{0}].
 
-7099=La ressource XML du projet de d\u00e9ploiement [{0}] est introuvable dans le chemin d''acc\u00e8s \u00e0 la ressource.  V\u00e9rifiez que le nom/chemin de ressource et le chargeur de classe transmis \u00e0 l''\u00e9l\u00e9ment XMLProjectReader sont corrects.  Le fichier XML de projet doit \u00eatre inclus \u00e0 la racine du fichier jar d\u00e9ploy\u00e9e de l''application ; si le fichier XML du projet est d\u00e9ploy\u00e9 dans un sous-r\u00e9pertoire du jar de l''application, assurez-vous que le chemin de ressource correct utilisant "/" not "\" est utilis\u00e9.
+7099=La ressource XML du projet de d\u00e9ploiement [{0}] est introuvable dans le chemin d''acc\u00e8s \u00e0 la ressource.  V\u00e9rifiez que le nom/chemin de ressource et le chargeur de classe transmis \u00e0 l''\u00e9l\u00e9ment XMLProjectReader sont corrects.  Le fichier XML du projet doit \u00eatre inclus \u00e0 la racine du fichier jar d\u00e9ploy\u00e9 de l''application ; si le XML du projet est d\u00e9ploy\u00e9 dans un sous-r\u00e9pertoire du jar de l''application, assurez-vous que le chemin de ressource utilise le s\u00e9parateur correct, "/" (barre oblique normale, non invers\u00e9e).
 
 7100=Impossible de trouver la session nomm\u00e9e {0}] dans le fichier session.xml [{1}]
 

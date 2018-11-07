@@ -1,0 +1,48 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: MicroProfile Concurrency Non-Implementation
+Bundle-SymbolicName: com.ibm.ws.concurrent.mp.0.0.0.noImpl
+Bundle-Description: Placeholder that indicates the lack of a MicroProfile Concurrency implementation when using Java 7; version=${bVersion}
+
+WS-TraceGroup: concurrent
+
+Import-Package:\
+  com.ibm.ws.context.service.serializable,*
+# TODO the above is a temporary workaround for a test case that accesses internals. Remove once the test is updated
+
+Private-Package:\
+  com.ibm.ws.concurrent.ee.*
+
+instrument.classesExcludes: com/ibm/ws/concurrent/ee/resources/*.class
+
+-dsannotations: \
+  com.ibm.ws.concurrent.ee.ContextServiceImpl,\
+  com.ibm.ws.concurrent.ee.ManagedExecutorServiceImpl,\
+  com.ibm.ws.concurrent.ee.ManagedScheduledExecutorServiceImpl
+
+-buildpath: \
+  com.ibm.websphere.appserver.spi.logging,\
+  com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+  com.ibm.websphere.org.osgi.core,\
+  com.ibm.websphere.org.osgi.service.component,\
+  com.ibm.ws.app.manager.lifecycle;version=latest,\
+  com.ibm.ws.bnd.annotations;version=latest, \
+  com.ibm.ws.concurrency.policy;version=latest,\
+  com.ibm.ws.concurrent;version=latest,\
+  com.ibm.ws.context;version=latest,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.resource;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations,\
+  com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest,\
+  com.ibm.ws.threading;version=latest

@@ -40,7 +40,6 @@ import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.DefaultNotification;
 import com.ibm.wsspi.adaptable.module.Notifier;
 import com.ibm.wsspi.adaptable.module.Notifier.Notification;
-import com.ibm.wsspi.adaptable.module.Notifier.NotificationListener;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.application.handler.ApplicationMonitoringInformation;
 
@@ -318,7 +317,7 @@ public class ApplicationMonitor {
         REMOVE
     }
 
-    private static abstract class BaseApplicationListener implements NotificationListener {
+    private static abstract class BaseApplicationListener implements com.ibm.ws.adaptable.module.NotifierExtension.NotificationListener {
 
         /** This is the notifier that the listener is registered against */
         protected final Notifier applicationNotifier;
@@ -328,6 +327,9 @@ public class ApplicationMonitor {
         protected final Notification monitoringInformation;
 
         protected final ApplicationListeners listeners;
+
+        /** This listener's ID */
+        private final String id = "com.ibm.ws.app.listener";
 
         /**
          * Constructs a new instance of this listener and creates the notifier to which we'll be registered. It does not actually start the listener though.
@@ -363,6 +365,15 @@ public class ApplicationMonitor {
             if (isListening.compareAndSet(true, false)) {
                 applicationNotifier.removeListener(this);
             }
+        }
+
+        /**
+         * Returns this listener's ID.
+         *
+         * @return This listener's ID.
+         */
+        public String getId() {
+            return id;
         }
 
     }

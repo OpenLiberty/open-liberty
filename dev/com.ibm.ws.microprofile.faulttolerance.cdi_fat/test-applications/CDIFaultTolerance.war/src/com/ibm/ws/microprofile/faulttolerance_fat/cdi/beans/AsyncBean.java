@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.context.RequestScoped;
 
@@ -62,6 +63,26 @@ public class AsyncBean {
         System.out.println(System.currentTimeMillis() + " - " + CONNECT_C_DATA + " started");
         Thread.sleep(TestConstants.WORK_TIME);
         System.out.println(System.currentTimeMillis() + " - " + CONNECT_C_DATA + " returning");
+        return CompletableFuture.completedFuture(null);
+    }
+
+    @Asynchronous
+    @Timeout(TestConstants.TIMEOUT)
+    public Future<Void> waitNoInterrupt() {
+        long waitNanos = TimeUnit.MILLISECONDS.toNanos(TestConstants.WORK_TIME);
+        long startTime = System.nanoTime();
+
+        // This is a loop which will not respond to a thread interruption
+        // This is necessary to test that the future returned to the caller completes when
+        // the timeout expires, even if the method running doesn't respect it.
+        while (System.nanoTime() - startTime < waitNanos) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                // Ignore
+            }
+        }
+
         return CompletableFuture.completedFuture(null);
     }
 }

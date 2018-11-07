@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -21,6 +22,12 @@ import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
 public class SSLTests15 extends SSLCommonTests {
+    @AfterClass
+    public static void stopTestServer() throws Exception {
+        if (!javaVersion.startsWith("1.")) {
+            server.stopServer("CWWKC0265W");
+        }
+    }
 
     @Test
     public void testSSLSpringBootApplication15() throws Exception {

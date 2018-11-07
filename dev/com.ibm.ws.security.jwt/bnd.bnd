@@ -64,7 +64,7 @@ Import-Package: \
     javax.servlet, \
     javax.servlet.http, \
     javax.net.ssl, \
-    org.apache.http.*;resolution:=optional, \
+    org.apache.http.*, \
     com.google.gson.*;resolution:=optional, \
     javax.ws.rs.client;version="[2.0.0, 3.0.0)";resolution:=optional, \
     javax.ws.rs.core;version="[2.0.0, 3.0.0)";resolution:=optional, \

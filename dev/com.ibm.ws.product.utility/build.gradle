@@ -14,5 +14,5 @@ plugins {
 }
 
 audit {
-    failOnError = false
+    failOnError = true
 }

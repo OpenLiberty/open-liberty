@@ -144,4 +144,8 @@ class ConfigFileMonitor implements com.ibm.ws.kernel.filemonitor.FileMonitor {
         configRefresher.refreshConfiguration();
     }
 
+    @Override
+    public void onChange(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles, String filter) {
+        configRefresher.refreshConfiguration();
+    }
 }

@@ -180,5 +180,12 @@ JWK_RETRIEVE_FAILED=CWWKS1747E: A Z adresy URL [{0}] nebyl vr\u00e1cen kl\u00ed\
 JWK_RETRIEVE_FAILED.explanation=Webov\u00fd kl\u00ed\u010d JSON nelze vr\u00e1tit z ur\u010den\u00e9 adresy URL. Adresa URL je mo\u017en\u00e1 neplatn\u00e1, adresa URL nemus\u00ed b\u00fdt nakonfigurov\u00e1na pro vr\u00e1cen\u00ed JWK, odezva z adresy URL m\u016f\u017ee b\u00fdt pr\u00e1zdn\u00e1 nebo do\u0161lo k nezn\u00e1m\u00e9 chyb\u011b.
 JWK_RETRIEVE_FAILED.useraction=Ov\u011b\u0159te, \u017ee adresa URL je spr\u00e1vn\u011b naform\u00e1tov\u00e1na a ur\u010duje um\u00edst\u011bn\u00ed, kter\u00e9 je schopn\u00e9 vracet webov\u00e9 kl\u00ed\u010de JSON. Dal\u0161\u00ed informace z\u00edsk\u00e1te kontrolou stavov\u00e9ho k\u00f3du a obsahu odezvy.
 
+USERINFO_RETREIVE_FAILED=CWWKS1748E: Adresu URL UserInfo [{0}] nelze kontaktovat. Stav odezvy: [{1}], vr\u00e1cen\u00fd obsah: [{2}].
+USERINFO_RETREIVE_FAILED.explanation=Z uveden\u00e9 adresy URL nebylo mo\u017en\u00e9 z\u00edskat data s informacemi o u\u017eivateli. Adresa URL nemus\u00ed b\u00fdt platn\u00e1, dodan\u00fd p\u0159\u00edstupov\u00fd token nemus\u00ed b\u00fdt platn\u00fd, odezva z adresy URL m\u016f\u017ee b\u00fdt pr\u00e1zdn\u00e1, nebo do\u0161lo k nezn\u00e1m\u00e9 chyb\u011b.
+USERINFO_RETREIVE_FAILED.useraction=Ov\u011b\u0159te, \u017ee adresa URL je spr\u00e1vn\u011b naform\u00e1tov\u00e1na a ur\u010duje um\u00edst\u011bn\u00ed, kter\u00e9 je schopn\u00e9 vracet data s informacemi o u\u017eivateli. Dal\u0161\u00ed informace z\u00edsk\u00e1te kontrolou stavov\u00e9ho k\u00f3du a obsahu odezvy.
+
+USERINFO_INVALID=CWWKS1749E: Data s informacemi o u\u017eivateli [{0}] jsou neplatn\u00e1, proto\u017ee d\u00edl\u010d\u00ed n\u00e1rok se neshoduje s d\u00edl\u010d\u00edm n\u00e1rokem tokenu ID [{1}].
+USERINFO_INVALID.explanation=Je vy\u017eadov\u00e1na shoda d\u00edl\u010d\u00edho n\u00e1roku dat s informacemi o u\u017eivateli s d\u00edl\u010d\u00edm n\u00e1rokem tokenu ID, tomu ale tak nen\u00ed. 
+USERINFO_INVALID.useraction=Ujist\u011bte se, \u017ee poskytovatel OpenID Connect generuje platn\u00e1 data s informacemi o u\u017eivateli.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 

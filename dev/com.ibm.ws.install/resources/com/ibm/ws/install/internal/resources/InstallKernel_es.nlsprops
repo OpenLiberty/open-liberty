@@ -771,6 +771,14 @@ ERROR_UNKNOWN_OSLIST_VALUE=CWWKF1387E: El valor {0} no es una entrada v\u00e1lid
 ERROR_UNKNOWN_OSLIST_VALUE.explanation=Se ignorar\u00e1 este valor, dado que no es un nombre de sistema operativo reconocido.
 ERROR_UNKNOWN_OSLIST_VALUE.useraction=Modifique o elimine este valor del archivo de manifiesto de la caracter\u00edstica.
 
+ERROR_ESA_NOT_FOUND=CWWKF1388E: El archivo ESA especificado {0} no conten\u00eda ninguna caracter\u00edstica.
+ERROR_ESA_NOT_FOUND.explanation=No se instalar\u00e1 ninguna caracter\u00edstica desde el archivo ESA.
+ERROR_ESA_NOT_FOUND.useraction=Aseg\u00farese de que el archivo ESA individual proporcionado sea v\u00e1lido y contenga una caracter\u00edstica.
+
+ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: No se puede crear un archivo JSON en {0} para el archivo ESA {1}.
+ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=La caracter\u00edstica del archivo ESA no se instalar\u00e1.
+ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Aseg\u00farese de que el acceso de escritura est\u00e9 disponible para el directorio donde se crear\u00e1 el archivo JSON.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: La caracter\u00edstica se ha descargado satisfactoriamente.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=La caracter\u00edstica se ha descargado.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=No se requiere ninguna acci\u00f3n.

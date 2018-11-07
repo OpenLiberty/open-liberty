@@ -18,9 +18,9 @@ import com.ibm.wsspi.adaptable.module.DefaultNotification;
 import com.ibm.wsspi.adaptable.module.Notifier;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactNotifier;
-import com.ibm.wsspi.artifact.DefaultArtifactNotification;
 import com.ibm.wsspi.artifact.ArtifactNotifier.ArtifactListener;
 import com.ibm.wsspi.artifact.ArtifactNotifier.ArtifactNotification;
+import com.ibm.wsspi.artifact.DefaultArtifactNotification;
 
 /**
  * This is the default implementation of the {@link Notifier} interface.
@@ -48,7 +48,7 @@ public class NotifierImpl implements Notifier {
 
     /**
      * This method checks that the root of the container on the target matches the one that we are the notifier for.
-     * 
+     *
      * @param targets The notification object being targeted
      * @throws IllegalArgumentException if the root of the container being targeted doesn't match the root for this notifier
      */
@@ -97,9 +97,10 @@ public class NotifierImpl implements Notifier {
      * This is an {@link ArtifactListener} that will convert any {@link ArtifactListener#notifyEntryChange(ArtifactNotification, ArtifactNotification, ArtifactNotification)} call
      * into a {@link NotificationListener#notifyEntryChange(Notification, Notification, Notification)} call.
      */
-    private class DelegateListener implements ArtifactListener {
+    private class DelegateListener implements com.ibm.ws.artifact.ArtifactNotifierExtension.ArtifactListener {
 
         private final NotificationListener listenerToInform;
+        private String id;
 
         /**
          * @param root
@@ -108,10 +109,20 @@ public class NotifierImpl implements Notifier {
         public DelegateListener(Container root, NotificationListener listenerToInform) {
             super();
             this.listenerToInform = listenerToInform;
+
+            // If the listener has an Id, save it.
+            if (listenerToInform instanceof com.ibm.ws.adaptable.module.NotifierExtension.NotificationListener) {
+                id = ((com.ibm.ws.adaptable.module.NotifierExtension.NotificationListener) listenerToInform).getId();
+            }
         }
 
         @Override
         public void notifyEntryChange(ArtifactNotification added, ArtifactNotification removed, ArtifactNotification modified) {
+            notifyEntryChange(added, removed, modified, null);
+        }
+
+        @Override
+        public void notifyEntryChange(ArtifactNotification added, ArtifactNotification removed, ArtifactNotification modified, String filter) {
             /*
              * Our delegate called us so we need to call all of our listeners having converted the artifact notification to notifications objects. We know these must be under the
              * root for this notifier so just use that in all the new notificaitons
@@ -120,6 +131,11 @@ public class NotifierImpl implements Notifier {
             Notification removedNotification = new DefaultNotification(root, removed.getPaths());
             Notification modifiedNotification = new DefaultNotification(root, modified.getPaths());
             this.listenerToInform.notifyEntryChange(addedNotification, removedNotification, modifiedNotification);
+        }
+
+        @Override
+        public String getId() {
+            return id;
         }
     }
 

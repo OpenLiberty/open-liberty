@@ -13,7 +13,6 @@
 	</featureManager>
 
    <application id="mpReactiveStreamsFAT" name="ReactiveStreamsTest" type="war" location="ReactiveStreamsTest.war">
-  		<classloader apiTypeVisibility="+third-party"/>
    </application>
 
 

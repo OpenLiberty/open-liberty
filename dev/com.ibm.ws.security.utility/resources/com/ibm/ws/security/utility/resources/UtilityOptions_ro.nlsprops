@@ -91,8 +91,8 @@ encode.option-desc.listCustom=\tAfi\u015feaz\u0103 informa\u0163iile de criptare
 sslCert.desc=\tCrea\u0163i un certificat SSL implicit de utilizat de server sau             \n\
 \tde configura\u0163ia de client. 
 #Note to translator the word "createSSLCertificate" should not be translated
-sslCert.usage.options=\t{0} createSSLCertificate '{--server nume_server|--client nume_client'}  \n\
-\t--password parola [op\u0163iuni]
+sslCert.usage.options=\t{0} createSSLCertificate '{--server=servername |--client=clientname'}\n\
+\t--password[=password] [options]
 sslCert.required-key.server=\ \ \ \ --server=nume
 sslCert.required-desc.server=\tServerul pentru care se creeaz\u0103 certificatul.  Acest argument nu poate \n\
 \tfi utilizat dac\u0103 este utilizat argumentul --client.

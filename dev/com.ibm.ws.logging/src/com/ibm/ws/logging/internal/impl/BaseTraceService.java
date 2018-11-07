@@ -124,6 +124,7 @@ public class BaseTraceService implements TrService {
     public static final String NULL_FORMATTED_MSG = null;
 
     protected static RecursionCounter counterForTraceRouter = new RecursionCounter();
+    protected static RecursionCounter counterForMessageRouter = new RecursionCounter();
     protected static RecursionCounter counterForTraceSource = new RecursionCounter();
     protected static RecursionCounter counterForTraceWriter = new RecursionCounter();
     protected static RecursionCounter counterForLogSource = new RecursionCounter();
@@ -684,19 +685,35 @@ public class BaseTraceService implements TrService {
 
         boolean retMe = true;
 
-        if (externalMsgRouter != null) {
-            retMe &= externalMsgRouter.route(routedMessage.getFormattedMsg(), routedMessage.getLogRecord());
-        }
-        if (internalMsgRouter != null) {
-            retMe &= internalMsgRouter.route(routedMessage);
-        } else if (earlierMessages != null) {
-            String message = formatter.messageLogFormat(routedMessage.getLogRecord(), routedMessage.getFormattedVerboseMsg());
-            RoutedMessage specialRoutedMessage = new RoutedMessageImpl(routedMessage.getFormattedMsg(), routedMessage.getFormattedVerboseMsg(), message, routedMessage.getLogRecord());
-            synchronized (this) {
-                if (earlierMessages != null) {
-                    earlierMessages.add(specialRoutedMessage);
+        try {
+            /*
+             * Need a recursion Counter for invokingMessageRouters
+             * If an osgi framework debugging options is enabled then a message
+             * is sent to sysout/syserr from wsMessageRouterImpl during the
+             * Reentrant Read Write lock and will cause an infinite loop -- crash.
+             *
+             * Setting it to 2 to allows the "osgi" debug statement to occur once.
+             * i.e Original message goes through and then osgi statement is emitted and is looped back once
+             * and recursion counter will prevent any further statements.
+             */
+            if (!(counterForMessageRouter.incrementCount() > 2)) {
+                if (externalMsgRouter != null) {
+                    retMe &= externalMsgRouter.route(routedMessage.getFormattedMsg(), routedMessage.getLogRecord());
+                }
+                if (internalMsgRouter != null) {
+                    retMe &= internalMsgRouter.route(routedMessage);
+                } else {
+                    String message = formatter.messageLogFormat(routedMessage.getLogRecord(), routedMessage.getFormattedVerboseMsg());
+                    RoutedMessage specialRoutedMessage = new RoutedMessageImpl(routedMessage.getFormattedMsg(), routedMessage.getFormattedVerboseMsg(), message, routedMessage.getLogRecord());
+                    synchronized (this) {
+                        if (earlierMessages != null) {
+                            earlierMessages.add(specialRoutedMessage);
+                        }
+                    }
                 }
             }
+        } finally {
+            counterForMessageRouter.decrementCount();
         }
         return retMe;
     }
@@ -983,7 +1000,8 @@ public class BaseTraceService implements TrService {
                                                         config.getLogDirectory(),
                                                         config.getMessageFileName(),
                                                         config.getMaxFiles(),
-                                                        config.getMaxFileBytes());
+                                                        config.getMaxFileBytes(),
+                                                        config.getNewLogsOnStart());
 
         // Always create a traceLog when using Tr -- this file won't actually be
         // created until something is logged to it...
@@ -998,7 +1016,8 @@ public class BaseTraceService implements TrService {
                                                          config.getLogDirectory(),
                                                          config.getTraceFileName(),
                                                          config.getMaxFiles(),
-                                                         config.getMaxFileBytes());
+                                                         config.getMaxFileBytes(),
+                                                         config.getNewLogsOnStart());
             if (!TraceComponent.isAnyTracingEnabled()) {
                 ((FileLogHolder) traceLog).releaseFile();
             }

@@ -44,6 +44,7 @@ public class CommonSecurityFat {
 
     @BeforeClass
     public static void commonBeforeClass() throws Exception {
+        Log.info(thisClass, "commonBeforeClass", "Starting Class");
         serverTracker = new ServerTracker();
     }
 
@@ -64,6 +65,7 @@ public class CommonSecurityFat {
     @AfterClass
     public static void commonAfterClass() throws Exception {
         serverTracker.stopAllServers();
+        Log.info(thisClass, "commonAfterClass", "Ending Class");
     }
 
     public void logTestCaseInServerLogs(String actionToLog) {
@@ -81,16 +83,22 @@ public class CommonSecurityFat {
         }
     }
 
+    /**
+     * Restore all running server configurations to their startup state.
+     * Override this method if a particular test class does NOT want
+     * to have servers restored between tests or if you only want
+     * to restore a specific subset of servers.
+     */
     public void restoreTestServers() {
         logTestCaseInServerLogs("ReStoringConfig");
         for (LibertyServer server : serverTracker.getServers()) {
             try {
-                Log.info(thisClass, "commonAfterTest", "Restoring server: " + server.getServerName());
+                Log.info(thisClass, "restoreTestServers", "Restoring server: " + server.getServerName());
                 server.restoreServerConfiguration();
                 server.waitForConfigUpdateInLogUsingMark(server.listAllInstalledAppsForValidation());
             } catch (Exception e) {
                 e.printStackTrace(System.out);
-                Log.info(thisClass, "commonAfterTest", "**********************FAILED to restore original server configuration**********************");
+                Log.info(thisClass, "restoreTestServers", "**********************FAILED to restore original server configuration**********************");
             }
         }
     }

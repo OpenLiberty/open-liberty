@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<application version="6"
+      xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd">
+   <display-name>InjectionMiscTestApp</display-name>
+   <module>
+      <ejb>InjectionMiscBean.jar</ejb>
+   </module>
+   <module>
+      <web>
+          <web-uri>InjectionMiscWeb.war</web-uri>
+          <context-root>/InjectionMiscWeb</context-root>
+      </web>
+   </module>
+   <env-entry>
+      <env-entry-name>java:app/env/envEntryInjection</env-entry-name>
+      <env-entry-type>java.lang.Integer</env-entry-type>
+      <env-entry-value>1</env-entry-value>
+   </env-entry>
+</application>

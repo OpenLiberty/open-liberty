@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.app.manager.module.ApplicationNestedConfigHelper;
 import com.ibm.ws.classloading.ClassLoaderConfigHelper;
 import com.ibm.ws.classloading.ClassLoadingButler;
+import com.ibm.ws.classloading.java2sec.PermissionManager;
 import com.ibm.ws.container.service.app.deploy.ApplicationClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
@@ -53,7 +54,6 @@ import com.ibm.ws.container.service.app.deploy.extended.LibraryContainerInfo.Lib
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.permissions.PermissionsConfig;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
-import com.ibm.ws.security.java2sec.PermissionManager;
 import com.ibm.ws.threadContext.ModuleMetaDataAccessorImpl;
 import com.ibm.ws.threading.FutureMonitor;
 import com.ibm.ws.threading.listeners.CompletionListener;

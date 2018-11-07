@@ -9,7 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-
 // Define G:A:V coordinates of each dependency
 dependencies {
   requiredLibs 'commons-logging:commons-logging:1.1.3'

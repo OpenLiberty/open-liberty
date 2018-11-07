@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -145,7 +145,7 @@ public class OidcClientUtilTest extends CommonTestClass {
             mock.checking(new Expectations() {
                 {
                     one(oidcHttpUtil).createHTTPClient(with(any(SSLSocketFactory.class)), with(any(String.class)),
-                            with(any(Boolean.class)), with(any(String.class)), with(any(String.class)));
+                            with(any(Boolean.class)), with(any(String.class)), with(any(String.class)), with(any(Boolean.class)));
                     will(returnValue(mockHttpClient));
                     one(mockHttpClient).execute(with(any(HttpUriRequest.class)));
                     will(returnValue(mockHttpResponse));
@@ -154,7 +154,7 @@ public class OidcClientUtilTest extends CommonTestClass {
 
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             oicu.oidcHttpUtil = oidcHttpUtil;
-            Map<String, Object> result = oicu.getFromEndpoint("http://localhost:8010/oidc/someEndPoint", params, "baUsername", "baPassword", access_token_content, sslSocketFactory, false);
+            Map<String, Object> result = oicu.getFromEndpoint("http://localhost:8010/oidc/someEndPoint", params, "baUsername", "baPassword", access_token_content, sslSocketFactory, false, false);
             HttpResponse responseCode = (HttpResponse) result.get(ClientConstants.RESPONSEMAP_CODE);
             assertNotNull("Expect to see valid response code", responseCode);
             HttpGet getMethod2 = (HttpGet) result.get(ClientConstants.RESPONSEMAP_METHOD);
@@ -180,13 +180,13 @@ public class OidcClientUtilTest extends CommonTestClass {
             mock.checking(new Expectations() {
                 {
                     one(oidcHttpUtil).createHTTPClient(with(any(SSLSocketFactory.class)), with(any(String.class)),
-                            with(any(Boolean.class)));
+                            with(any(Boolean.class)), with(any(Boolean.class)));
                     will(returnValue(mockHttpClient));
                     one(mockHttpClient).execute(with(any(HttpUriRequest.class)));
                     will(returnValue(mockHttpResponse));
                 }
             });
-            Map<String, Object> userInfoResponse = oicu.getUserinfo(userInfoEndpoint, access_token_content, sslSocketFactory, false);
+            Map<String, Object> userInfoResponse = oicu.getUserinfo(userInfoEndpoint, access_token_content, sslSocketFactory, false, false);
             assertNotNull("Expected to get an instance of userInfo map", userInfoResponse);
             assertTrue("Returned map did not contain expected " + ClientConstants.RESPONSEMAP_CODE + " entry. Map was: " + userInfoResponse, userInfoResponse.containsKey(ClientConstants.RESPONSEMAP_CODE));
             assertTrue("Returned map did not contain expected " + ClientConstants.RESPONSEMAP_METHOD + " entry. Map was: " + userInfoResponse, userInfoResponse.containsKey(ClientConstants.RESPONSEMAP_METHOD));
@@ -228,12 +228,13 @@ public class OidcClientUtilTest extends CommonTestClass {
                             with(any(String.class)), // (String) null,
                             with(any(SSLSocketFactory.class)), // sslContext,
                             with(any(List.class)), // commonHeaders
-                            with(any(Boolean.class)),
-                            with(any(String.class))); //isHostnameVerification
+                            with(any(Boolean.class)), //isHostnameVerification
+                            with(any(String.class)),
+                            with(any(Boolean.class))); // use jvm props
                     will(returnValue(postResponseMap));
                 }
             });
-            Map<String, Object> tokenResponse = oicu.checkToken(strTokenEndpoint, strClientId, strClientSecret, access_token_content, false, authMethod, sslSocketFactory);
+            Map<String, Object> tokenResponse = oicu.checkToken(strTokenEndpoint, strClientId, strClientSecret, access_token_content, false, authMethod, sslSocketFactory, false);
             assertEquals("token response = ", tokenResponse.get(access_token), "qOuZdH6Anmxclul5d71AXoDbFVmRG2dPnHn9moaw");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -273,8 +274,8 @@ public class OidcClientUtilTest extends CommonTestClass {
                             with(any(SSLSocketFactory.class)), // sslContext,
                             with(any(List.class)), // commonHeaders
                             with(any(Boolean.class)),
-                            with(any(String.class)) //isHostnameVerification
-                    );
+                            with(any(String.class)), //isHostnameVerification
+                            with(any(Boolean.class)));
                     will(returnValue(postResponseMap));
                     allowing(oidcHttpUtil).setClientId(strClientId);
                     one(oidcHttpUtil).extractTokensFromResponse(with(any(Map.class)));
@@ -290,7 +291,8 @@ public class OidcClientUtilTest extends CommonTestClass {
                     sslSocketFactory,
                     false,
                     authMethod,
-                    null);
+                    null, null, false);
+
             Set<String> keys = results.keySet();
             boolean bAccessToken = false;
             boolean bTokenType = false;
@@ -355,7 +357,8 @@ public class OidcClientUtilTest extends CommonTestClass {
                             with(any(SSLSocketFactory.class)), // sslContext,
                             with(any(List.class)), // commonHeaders
                             with(any(Boolean.class)), //isHostnameVerification
-                            with(any(String.class)));
+                            with(any(String.class)),
+                            with(any(Boolean.class)));
                     will(returnValue(postResponseMap));
                 }
             });
@@ -370,7 +373,8 @@ public class OidcClientUtilTest extends CommonTestClass {
                     strClientSecret,
                     sslSocketFactory,
                     false,
-                    authMethod);
+                    authMethod,
+                    false);
             Set<String> keys = results.keySet();
             boolean bAccessToken = false;
             boolean bTokenType = false;

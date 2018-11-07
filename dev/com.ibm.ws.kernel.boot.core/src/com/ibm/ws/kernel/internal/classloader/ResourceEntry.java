@@ -27,6 +27,8 @@ public interface ResourceEntry {
 
     byte[] getBytes() throws IOException;
 
+    URL toExternalURL();
+
     URL toURL();
 
 }

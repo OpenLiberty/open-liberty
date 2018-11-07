@@ -88,6 +88,7 @@ broadcast_remote_command_wrong_type=Ostrze\u017cenie: {0}: odebrano komunikat {1
 call_timeout_not_migrated=Warto\u015b\u0107 parametru call-timeout {1} jest zdefiniowana w jednostce {0} orion-ejb-jar.xml, ale w pliku deskryptora nie ma zdefiniowanych trwa\u0142ych odwzorowa\u0144, wi\u0119c migracja nie zostanie wykonana.  Je\u015bli p\u00f3\u017aniej domy\u015blne odwzorowanie produktu EclipseLink zostanie u\u017cyte do wygenerowania deskryptora odwzorowania produktu EclipseLink, nale\u017cy wiedzie\u0107, \u017ce ustawienie call-timeout zostanie utracone, poniewa\u017c odwzorowanie domy\u015blne EclipseLink nie ma dost\u0119pu do rodzimego pliku deskryptora.  Po wygenerowaniu odwzorowania domy\u015blnego wymagane b\u0119dzie r\u0119czne zresetowanie limitu czasu wywo\u0142ania lub zresetowanie go za po\u015brednictwem \u015brodowiska roboczego odwzorowywania produktu EclipseLink.
 
 cannot_get_nested_collection_type=Nie mo\u017cna uzyska\u0107 zagnie\u017cd\u017conego typu kolekcji. 
+
 cannot_get_server_name_and_version=Nie mo\u017cna uzyska\u0107 nazwy i wersji serwera z powodu nast\u0119puj\u0105cego wyj\u0105tku.  {0}
 
 cannot_unwrap_connection=Nie mo\u017cna rozpakowa\u0107 po\u0142\u0105czenia Oracle opakowanego przez serwer aplikacji z powodu nast\u0119puj\u0105cego wyj\u0105tku.  {0}
@@ -608,13 +609,13 @@ osgi_initializer_failed=Konstruowanie inicjatora OSGi specyficznego dla \u015bro
 
 overriding_cache_isolation=Obiekt nadrz\u0119dny {0} ma poziom odseparowania: {1}, kt\u00f3ry zapewnia wi\u0119ksz\u0105 ochron\u0119, ni\u017c podklasa {2} z odseparowaniem: {3}; dlatego te\u017c dla podklasy ustawiono poziom odseparowania {1}.
 
-ox_lowering_global_logging_from_default_info_to_warning= {0} Obni\u017canie rejestrowania globalnego z poziomu domy\u015blnego INFORMACJA do poziomu OSTRZE\u017bENIE.
+ox_lowering_global_logging_from_default_info_to_warning={0} Obni\u017canie rejestrowania globalnego z poziomu domy\u015blnego INFORMACJA do poziomu OSTRZE\u017bENIE.
 
-ox_lowering_session_logging_from_default_info_to_warning= {0} Obni\u017canie rejestrowania sesji z poziomu domy\u015blnego INFORMACJA do poziomu OSTRZE\u017bENIE.
+ox_lowering_session_logging_from_default_info_to_warning={0} Obni\u017canie rejestrowania sesji z poziomu domy\u015blnego INFORMACJA do poziomu OSTRZE\u017bENIE.
 
-ox_turn_global_logging_off= {0} Wy\u0142\u0105czanie globalnego rejestrowania sesji.
+ox_turn_global_logging_off={0} Wy\u0142\u0105czanie globalnego rejestrowania sesji.
 
-ox_turn_session_logging_off= {0} Wy\u0142\u0105czanie rejestrowania sesji.
+ox_turn_session_logging_off={0} Wy\u0142\u0105czanie rejestrowania sesji.
 
 parse_ejb_jar_with_validation_fails=Analizowanie pliku ejb-jar.xml pod k\u0105tem sprawdzenia poprawno\u015bci powoduje niepowodzenie i b\u0142\u0105d ({0}). Narz\u0119dzie migracji przeanalizuje plik XML bez sprawdzania poprawno\u015bci.
 

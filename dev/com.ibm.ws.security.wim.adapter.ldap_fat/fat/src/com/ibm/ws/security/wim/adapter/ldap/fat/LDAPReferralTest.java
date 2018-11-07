@@ -162,9 +162,10 @@ public class LDAPReferralTest {
         Log.info(c, "setUp", "Creating servlet connection the server");
         servlet = new UserRegistryServletConnection(libertyServer.getHostname(), libertyServer.getHttpDefaultPort());
 
-        servlet.getRealm();
-        Thread.sleep(5000);
-        servlet.getRealm();
+        if (servlet.getRealm() == null) {
+            Thread.sleep(5000);
+            servlet.getRealm();
+        }
 
         /*
          * The original server configuration has no registry or Federated Repository configuration.
@@ -260,7 +261,7 @@ public class LDAPReferralTest {
      * will connect to {@link #delegateServer}.
      *
      * @param referral The 'referral' attribute value to set. Null indicates to leave it unset.
-     * @param referal  The 'referal' attribute value to set. Null indicates to leave it unset.
+     * @param referal The 'referal' attribute value to set. Null indicates to leave it unset.
      * @throws Exception If there was an error configuring the server.
      */
     private static void updateLibertyServer(String referral, String referal) throws Exception {

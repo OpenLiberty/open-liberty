@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.security.authentication.AuthenticationException;
 
-public interface JaspiService {
+public interface JaspiService extends WebAuthenticator {
 
     void postInvoke(WebSecurityContext webSecurityContext) throws AuthenticationException;
 

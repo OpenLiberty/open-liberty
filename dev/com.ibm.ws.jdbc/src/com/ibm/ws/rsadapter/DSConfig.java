@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
                     CONNECTION_MANAGER_REF = "connectionManagerRef",
                     CONNECTION_SHARING = "connectionSharing",
                     CONTAINER_AUTH_DATA_REF = "containerAuthDataRef",
+                    ENABLE_BEGIN_END_REQUEST = "enableBeginEndRequest", // Not a supported property. Only for internal testing/experimentation.
                     ENABLE_CONNECTION_CASTING = "enableConnectionCasting",
                     ENABLE_MULTITHREADED_ACCESS_DETECTION = "enableMultithreadedAccessDetection", // currently disabled in liberty profile
                     JDBC_DRIVER_REF = "jdbcDriverRef",
@@ -68,6 +69,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
                                                                CONNECTION_SHARING,
                                                                CONTAINER_AUTH_DATA_REF,
                                                                DataSourceDef.isolationLevel.name(),
+                                                               ENABLE_BEGIN_END_REQUEST, // Not a supported property. Only for internal testing/experimentation.
                                                                ENABLE_CONNECTION_CASTING,
                                                                JDBC_DRIVER_REF,
                                                                ON_CONNECT,
@@ -112,6 +114,51 @@ public class DSConfig implements FFDCSelfIntrospectable {
      * Component with access to various core services needed for JDBC/connection management
      */
     public final ConnectorService connectorSvc;
+
+    /**
+     * <p>Not a supported property. Only for internal testing/experimentation.</p>
+     *
+     * <p>Controls whether the Connection.beginRequest and Connection.endRequest hints are sent to the
+     * JDBC driver. These methods were introduced in JDBC 4.3, but unfortunately with insufficient
+     * guarantees that these methods will not lead to the JDBC driver corrupting the connection state.
+     * At the time of writing this, we have found only a single JDBC 4.3 driver in existence.
+     * Its documentation describes a vendor-specific implementation of endRequest that is severely
+     * destructive in nature (closing prepared statements, altering connection state without the
+     * prompting of the application). If the first and only JDBC 4.3 has interpreted the poorly written
+     * JDBC 4.3 requirements around begin/endRequest in a way that led them to implement this behavior
+     * that is contrary to the intent to the specification (invocation of these methods is supposed to
+     * be transparent!), we can expect that other JDBC drivers will do similar things. Therefore, given
+     * that beginRequest/endRequest are optional, we cannot see any good reason to subject our users
+     * to this sort of instability and risk, and so OpenLiberty will neither supply these "hints" to
+     * the JDBC driver by default nor in any other supported mode of operation.</p>
+     *
+     * <p>It should be noted that per the JDBC 4.3 JavaDoc for java.sql.Connection, the
+     * connection pooling manager does not need to call beginRequest and endRequest if
+     * <ul>
+     * <li>The connection pool caches PooledConnection objects
+     * <li>Returns a logical connection handle when getConnection is called by the application
+     * <li>The logical Connection is closed by calling Connection.close prior to returning the PooledConnection to the cache.
+     * </ul>
+     * The OpenLiberty implementation meets all of the above requirements.
+     * Our connection pool does cache PooledConnection (we also cache XAConnection, which is a type of PooledConnection, and Connection).
+     * We always return a logical handle (WSJdbc*Connection) to the application when it invokes getConnection.
+     * The application uses the Connection.close API to close its logical connection handle, and after
+     * that we decide whether to return the underlying PooledConnection (or XAConnection and so forth)
+     * to the cache. For example, we might decide to destroy it instead of caching it if a connection error
+     * has occurred.
+     * It should also be noted that requirements of JCA/Java EE in some cases supersede or alter how the
+     * JDBC spec is complied with.  For example, in the case of sharable connections, the application
+     * is able to have multiple logical handles to the same underlying PooledConnection.  In light of the
+     * intent of the JDBC spec, when JCA connection sharing is used, we ensure that each of these logical
+     * handles has either been closed with Connection.close or otherwise dissociated by crossing a
+     * sharing scope boundary before we allow the PooledConnection (or XAConnection and so forth) to be
+     * returned to the cache.
+     * </p>
+     *
+     * <p>WARNING: usage of this property can lead to unstable and unpredictable behavior.
+     * Do not enable this in production.</p> 
+     */
+    public final boolean enableBeginEndRequest;
 
     /**
      * Indicates to automatically create a dynamic proxy for interfaces implemented by the connection. 
@@ -232,6 +279,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
         beginTranForVendorAPIs = remove(BEGIN_TRAN_FOR_VENDOR_APIS, true);
         CommitOrRollbackOnCleanup commitOrRollback = remove(COMMIT_OR_ROLLBACK_ON_CLEANUP, null, CommitOrRollbackOnCleanup.class);
         connectionSharing = remove(CONNECTION_SHARING, ConnectionSharing.MatchOriginalRequest, ConnectionSharing.class);
+        enableBeginEndRequest = remove(ENABLE_BEGIN_END_REQUEST, false); // Not a supported property. Only for internal testing/experimentation.
         enableConnectionCasting = remove(ENABLE_CONNECTION_CASTING, false);
         enableMultithreadedAccessDetection = false;
         isolationLevel = remove(DataSourceDef.isolationLevel.name(), -1, -1, null, -1, 0, 1, 2, 4, 8, 16, 4096);

@@ -375,6 +375,9 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             }
         }
 
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "About to begin quiesce of executor service threads.");
+
         // Notify the executor service that we are quiescing
         ThreadQuiesce tq = (ThreadQuiesce) executorService;
         if (tq.quiesceThreads()) {

@@ -48,3 +48,15 @@ client.quiesce.begin.useraction=Nicio ac\u0163iune necesar\u0103.
 client.quiesce.end=CWWKE1104I: Dezactivare client complet\u0103.
 client.quiesce.end.explanation=Opera\u0163ia de dezactivare s-a finalizat cu succes.
 client.quiesce.end.useraction=Nicio ac\u0163iune necesar\u0103.
+
+notifications.not.complete=CWWKE1105W: {0} actualiz\u0103ri runtime nu s-au finalizat \u00een timpul perioadei de lini\u015ftire (quiesce).
+notifications.not.complete.explanation=Una sau mai multe actualiz\u0103ri pentru caracteristici, configura\u0163ie sau aplica\u0163ii nu s-au finalizat \u00eenainte de oprirea serverului.  
+notifications.not.complete.useraction=Nu este necesar\u0103 nici o ac\u0163iune. 
+
+quiesce.listeners.not.complete=CWWKE1106W: {0} opera\u0163ii de oprire (shutdown) nu s-au finalizat \u00een timpul perioadei de lini\u015ftire (quiesce). 
+quiesce.listeners.not.complete.explanation=Una sau mai multe opera\u0163ii care au fost ini\u0163iate \u00een timpul opera\u0163iei de oprire nu s-au finalizat.
+quiesce.listeners.not.complete.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+quiesce.waiting.on.threads=CWWKE1107W: {0} fire de execu\u0163ie nu s-au finalizat \u00een timpul perioadei de lini\u015ftire (quiesce). 
+quiesce.waiting.on.threads.explanation=Unul sau mai multe fire de execu\u0163ie care au fost active \u00eenainte de a opri serverul au fost \u00eenc\u0103 active la sf\u00e2r\u015fitul perioadei de lini\u015ftire.
+quiesce.waiting.on.threads.useraction=Nu este necesar\u0103 nici o ac\u0163iune. 

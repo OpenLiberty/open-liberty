@@ -43,6 +43,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -121,6 +124,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 public class SpringBootApplicationImpl extends DeployedAppInfoBase implements SpringBootConfigFactory, SpringBootApplication {
     private static final TraceComponent tc = Tr.register(SpringBootApplicationImpl.class);
+    final CountDownLatch applicationReadyLatch = new CountDownLatch(1);
 
     final class SpringModuleContainerInfo extends ModuleContainerInfoBase {
         public SpringModuleContainerInfo(List<Container> springBootSupport, ModuleHandler moduleHandler, List<ModuleMetaDataExtender> moduleMetaDataExtenders,
@@ -952,5 +956,31 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
 
     protected final ClassLoadingService getClassLoadingService() {
         return this.classLoadingService;
+    }
+
+    @Override
+    public boolean postDeployApp(Future<Boolean> result) {
+        try {
+            // Ensure that the liberty module started event has time to fire before postDeploy().
+            Integer waitTime = new Integer(5);
+            applicationReadyLatch.await(waitTime.intValue(), TimeUnit.MINUTES);
+            if (applicationReadyLatch.getCount() > 0) {
+                Tr.audit(tc, "warning.application.started.event.timeout", applicationInformation.getName(),
+                         "ApplicationReadyEvent", waitTime);
+            }
+        } catch (InterruptedException e) {
+            // Allow FFDC
+        }
+        return super.postDeployApp(result);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory#getContextStartedLatch()
+     */
+    @Override
+    public CountDownLatch getApplicationReadyLatch() {
+        return applicationReadyLatch;
     }
 }

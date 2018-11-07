@@ -43,6 +43,7 @@
             required="false" type="Boolean"  default="true" />
             
         <AD id="sharedKey" name="%sharedKey" description="%sharedKey.desc" required="false" type="String" ibm:type="password" />
+        <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
                     
         <AD id="signatureAlgorithm" required="false" type="String" name="%signatureAlgorithm" description="%signatureAlgorithm.desc" default="RS256">
             <Option label="%tokenSignAlgorithm.RS256" value="RS256" />

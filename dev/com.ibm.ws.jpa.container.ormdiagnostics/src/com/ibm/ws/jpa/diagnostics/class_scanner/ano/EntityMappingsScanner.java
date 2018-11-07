@@ -14,8 +14,11 @@ package com.ibm.ws.jpa.diagnostics.class_scanner.ano;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.JarURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,12 +26,15 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ClassInfoType;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ClassInformationType;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.InnerClassesType;
@@ -74,13 +80,15 @@ public final class EntityMappingsScanner {
                     citSet.addAll(processExplodedJarFormat(taPath));
                 } else {
                     // Unexploded Archive
-                    System.err.println("Unexploded Archive Path");
+                    citSet.addAll(processUnexplodedFile(taPath));
                 }
-
             } catch (URISyntaxException e) {
+                FFDCFilter.processException(e, EntityMappingsScanner.class.getName() + ".scanTargetArchive", "85");
                 throw new ClassScannerException(e);
             }
 
+        } else if (targetArchive.toString().startsWith("jar:file")) {
+            citSet.addAll(processJarFileURL(targetArchive));
         } else {
             // InputStream will be in jar format.
             citSet.addAll(processJarFormatInputStreamURL(targetArchive));
@@ -88,18 +96,6 @@ public final class EntityMappingsScanner {
 
         // Find Inner Classes, merge them into their encapsulating class, and remove them as a standalone ClassInfoType.
         processInnerClasses(citSet);
-
-        // // Scan the classes found in the referenced archive
-        // final Set<ClassInfoType> scannedClasses = new HashSet<ClassInfoType>();
-        // for (final String className : classNames) {
-        // try {
-        // final Class<?> targetClass = scannerCL.loadClass(className);
-        // scannedClasses.add(AsmClassAnalyzer.analyzeClass(targetClass));
-        // } catch (ClassNotFoundException e) {
-        // // TODO: Properly log
-        // e.printStackTrace();
-        // }
-        // }
 
         ClassInformationType cit = new ClassInformationType();
         List<ClassInfoType> citList = cit.getClassInfo();
@@ -168,8 +164,9 @@ public final class EntityMappingsScanner {
                     }
 
                     if (higherInnerClass == null) {
-                        // Didn't find the inner class containing its nested inner class.  That's a problem.
-                        // TODO: <spaceballs>Do Something!</spaceballs>
+                        // Didn't find the inner class containing its nested inner class.
+                        FFDCFilter.processException(new IllegalStateException("Could not locate outer-type \"" + outerClassName + "\" for inner-type \"" + innerClassName + "\""),
+                                                    EntityMappingsScanner.class.getName() + ".processInnerClasses", "173");
                     } else {
                         // Now we need to walk the higher level inner class's inner classes list until we find the
                         // placeholder for he current inner class
@@ -261,9 +258,83 @@ public final class EntityMappingsScanner {
                 }
             }
         } catch (ClassScannerException cse) {
+            FFDCFilter.processException(cse, EntityMappingsScanner.class.getName() + ".processExplodedJarFormat", "258");
             throw cse;
         } catch (Throwable t) {
+            FFDCFilter.processException(t, EntityMappingsScanner.class.getName() + ".processExplodedJarFormat", "261");
             throw new ClassScannerException(t);
+        }
+
+        return citSet;
+    }
+
+    private Set<ClassInfoType> processUnexplodedFile(Path path) throws ClassScannerException {
+        final HashSet<ClassInfoType> citSet = new HashSet<ClassInfoType>();
+        final HashSet<Path> archiveFiles = new HashSet<Path>();
+
+        if (path == null) {
+            throw new ClassScannerException("Null argument is invalid for method processUnexplodedFile().");
+        }
+
+        // URL referring to a jar file is the only legal option here.
+        try {
+            try (FileSystem fs = FileSystems.getFileSystem(path.toUri())) {
+                for (Path jarRootPath : fs.getRootDirectories()) {
+                    Files.walkFileTree(jarRootPath, new SimpleFileVisitor<Path>() {
+                        @Override
+                        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                            if (Files.isRegularFile(file) && Files.size(file) > 0
+                                && file.getFileName().toString().endsWith(".class")) {
+                                archiveFiles.add(file);
+                            }
+
+                            return FileVisitResult.CONTINUE;
+                        }
+                    });
+                }
+
+                for (Path p : archiveFiles) {
+                    String cName = path.relativize(p).toString().replace("/", ".");
+                    cName = cName.substring(0, cName.length() - 6); // Remove ".class" from name
+
+                    try (InputStream is = Files.newInputStream(p)) {
+                        citSet.add(scanByteCodeFromInputStream(cName, is));
+                    } catch (Throwable t) {
+                        throw new ClassScannerException(t);
+                    }
+                }
+            }
+        } catch (ClassScannerException cse) {
+            FFDCFilter.processException(cse, EntityMappingsScanner.class.getName() + ".processUnexplodedFile", "304");
+            throw cse;
+        } catch (Throwable t) {
+            FFDCFilter.processException(t, EntityMappingsScanner.class.getName() + ".processUnexplodedFile", "307");
+            throw new ClassScannerException(t);
+        }
+
+        return citSet;
+    }
+
+    private Set<ClassInfoType> processJarFileURL(URL jarFileURL) throws ClassScannerException {
+        final HashSet<ClassInfoType> citSet = new HashSet<ClassInfoType>();
+
+        try {
+            final JarURLConnection conn = (JarURLConnection) jarFileURL.openConnection();
+            try (final JarFile jarFile = conn.getJarFile()) {
+                final Enumeration<JarEntry> jarEntryEnum = jarFile.entries();
+                while (jarEntryEnum.hasMoreElements()) {
+                    final JarEntry jEntry = jarEntryEnum.nextElement();
+                    final String jEntryName = jEntry.getName();
+                    if (jEntryName != null && jEntryName.endsWith(".class")) {
+                        final String name = jEntryName.substring(0, jEntryName.length() - 6).replace("/", ".");
+                        final InputStream jis = jarFile.getInputStream(jEntry);
+                        citSet.add(scanByteCodeFromInputStream(name, jis));
+                    }
+                }
+            }
+        } catch (IOException e) {
+            FFDCFilter.processException(e, EntityMappingsScanner.class.getName() + ".processJarFileURL", "291");
+            throw new ClassScannerException(e);
         }
 
         return citSet;
@@ -282,6 +353,7 @@ public final class EntityMappingsScanner {
                 }
             }
         } catch (Throwable t) {
+            FFDCFilter.processException(t, EntityMappingsScanner.class.getName() + ".processJarFormatInputStreamURL", "311");
             throw new ClassScannerException(t);
         }
 
@@ -307,6 +379,7 @@ public final class EntityMappingsScanner {
 
             return AsmClassAnalyzer.analyzeClass(cName, classByteCode, ioResolver);
         } catch (Throwable t) {
+            FFDCFilter.processException(t, EntityMappingsScanner.class.getName() + ".scanByteCodeFromInputStream", "337");
             throw new ClassScannerException(t);
         }
     }

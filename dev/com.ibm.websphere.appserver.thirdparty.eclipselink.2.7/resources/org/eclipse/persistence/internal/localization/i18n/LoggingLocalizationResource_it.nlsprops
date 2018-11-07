@@ -609,13 +609,13 @@ osgi_initializer_failed=Costruzione dell''inizializzatore OSGi specifico dell''a
 
 overriding_cache_isolation=L''entit\u00e0 parent {0} ha un livello di isolamento di: {1} che \u00e8 maggiormente protettivo rispetto alla sottoclasse {2} con isolamento: {3}, quindi la sottoclasse \u00e8 stata impostata sul livello di isolamento {1}.
 
-ox_lowering_global_logging_from_default_info_to_warning= {0} Viene abbassato il livello della registrazione globale dal valore predefinito INFO a AVVERTENZA.
+ox_lowering_global_logging_from_default_info_to_warning={0} Viene abbassato il livello della registrazione globale dal valore predefinito INFO a AVVERTENZA.
 
-ox_lowering_session_logging_from_default_info_to_warning= {0} Viene abbassato il livello della registrazione della sessione dal valore predefinito INFO a AVVERTENZA.
+ox_lowering_session_logging_from_default_info_to_warning={0} Viene abbassato il livello della registrazione della sessione dal valore predefinito INFO a AVVERTENZA.
 
-ox_turn_global_logging_off= {0} Disattivazione della registrazione globale.
+ox_turn_global_logging_off={0} Disattivazione della registrazione globale.
 
-ox_turn_session_logging_off= {0} Disattivazione della registrazione sessione.
+ox_turn_session_logging_off={0} Disattivazione della registrazione sessione.
 
 parse_ejb_jar_with_validation_fails=Analisi di ejb-jar.xml con convalida non riuscita con errore ({0}). Lo strumento di migrazione analizzer\u00e0 il file xml senza convalida.
 

@@ -153,7 +153,13 @@ public class Tree {
 
         // Change status unless told not to
         if (status != NODE_STATUS.ACTION_NO_CHANGE) {
-            nodeToUpdate.setStatus(status);
+            if (status == NODE_STATUS.ACTION_RESET_IF_LATCHED) {
+                if (nodeToUpdate.getStatus() == NODE_STATUS.WRITE_LATCHED) {
+                    nodeToUpdate.setStatus(NODE_STATUS.NOT_REQUESTING);
+                }
+            } else {
+                nodeToUpdate.setStatus(status);
+            }
         }
 
         // Do the count action, unless it is NO_ACTION

@@ -102,7 +102,7 @@
 #   - Msgs in the range CWSIP0551-CWSIP0560 belong to class com.ibm.ws.sib.processor.impl.store.itemstreams.PtoPLocalMsgsItemStream
 #   - Msgs in the range CWSIP0561-CWSIP0570 belong to class com.ibm.ws.sib.processor.impl.AsynchConsumer
 #   - Msgs in the range CWSIP0571-CWSIP0579 belong to class com.ibm.ws.sib.processor.impl.mediation.MessagePump
-#
+#   - Msgs in the range CWSIP0580-CWSIP0589 belong to class com.ibm.ws.sib.processor.impl.store.items.MessageItem
 #
 #
 #
@@ -1292,6 +1292,15 @@ CONNECTION_CONTROLLABLE_ERROR_CWSIP0571.useraction=Nessuno
 MESSAGE_EXISTS_ERROR_CWSIP0572=CWSIP0572E: Il messaggio con id {0} non esiste pi\u00f9 sulla destinazione {1}.
 MESSAGE_EXISTS_ERROR_CWSIP0572.explanation=Il tentativo di accedere ad un messaggio con l'ID specificato non \u00e8 riuscito.  Questo potrebbe essersi verificato perch\u00e9 il messaggio \u00e8 scaduto o un'applicazione lo ha rimosso.
 MESSAGE_EXISTS_ERROR_CWSIP0572.useraction=Nessuno
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The destination name
+# {3} The action taken
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580=CWSIP0580W: Un messaggio con ID {0} ID messaggio di sistema {1} \u00e8 stato trovato nella destinazione {2} con un ritardo di consegna superiore al limite impostato dalla propriet\u00e0 sib.msgstore.maximumAllowedDeliveryDelayInterval, l''azione intrapresa era ''{3}''
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580.explanation=Questa avvertenza indica l'azione intrapresa.
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580.useraction=Non \u00e8 richiesta alcuna azione da parte dell'utente.
 
 # -------------------------------------------------------------------------------------------------
 NO_ELEMENTS_ERROR_CWSIP0601=CWSIP0601E: Non ci sono pi\u00f9 elementi nell'iteratore.

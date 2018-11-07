@@ -542,7 +542,7 @@ public class BundleList {
                 writeTime = System.currentTimeMillis();
                 writer.write(String.valueOf(writeTime));
                 writer.write(';');
-                writer.write(JavaInfo.majorVersion());
+                writer.write(Integer.toString(JavaInfo.majorVersion()));
                 writer.write(FeatureDefinitionUtils.NL);
                 for (RuntimeFeatureResource entry : resources) {
                     if (entry.getURLString() != null) {

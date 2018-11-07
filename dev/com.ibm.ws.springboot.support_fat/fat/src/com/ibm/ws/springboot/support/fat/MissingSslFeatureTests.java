@@ -78,7 +78,12 @@ public class MissingSslFeatureTests extends AbstractSpringTests {
 
     @After
     public void stopTestServer() throws Exception {
-        super.stopServer(true);
+        String methodName = testName.getMethodName();
+        if (TEST_MISSING_SSL_FOR_15.equals(methodName) && !javaVersion.startsWith("1.")) {
+            super.stopServer(true, "CWWKC0258E", "CWWKZ0002E", "CWWKC0265W");
+        } else {
+            super.stopServer(true, "CWWKC0258E", "CWWKZ0002E");
+        }
     }
 
     @Test
@@ -93,7 +98,6 @@ public class MissingSslFeatureTests extends AbstractSpringTests {
 
     public void testMissingSslFeature() throws Exception {
         assertNotNull("No error message was found for missing ssl feature ", server.waitForStringInLog("CWWKC0258E"));
-        stopServer(true, "CWWKC0258E", "CWWKZ0002E");
     }
 
 }

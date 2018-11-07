@@ -486,6 +486,10 @@ DEFAULT_MATCH_ORIGINAL.useraction=Stellen Sie sicher, dass die angepasste Datenq
 
 # 8780 deleted
 
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST=DSRA8790W: Die Methoden beginRequest und endRequest d\u00fcrfen nur von Verbindungsmanagern verwendet werden. In der JDBC-Spezifikation wird die Verwendung mehrerer Verbindungsmanager, die eine Verbindung verwalten k\u00f6nnen, nicht ber\u00fccksichtigt. Die Verwendung der Methoden beginRequest und endRequest durch andere Verbindungsmanager wird unterdr\u00fcckt, wenn das Verbindungsmanagement vom Anwendungsserver \u00fcbernommen wird. Der folgende Stack gibt den Codepfad an, in dem die beginRequest- oder endRequest-Operation aufgerufen wird: {0}.
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST.explanation=Die beginRequest- und endRequest-Hinweise werden unterdr\u00fcckt, um Nebeneffekte zu verhindern, die sich st\u00f6rend auf das Verbindungsmanagement auswirken k\u00f6nnen.
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST.useraction=Zur Vermeidung dieser Warnung entfernen Sie den Code, der beginRequest und endRequest aufruft, anhand des bereitgestellten Stacks.
+
 # ----------------------------------------------------------------------------
 # 
 # Using the 9000's for JDBC wrapper messages.

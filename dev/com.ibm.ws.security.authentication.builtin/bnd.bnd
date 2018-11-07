@@ -120,6 +120,8 @@ instrument.classesExcludes: com/ibm/ws/security/authentication/internal/resource
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.websphere.appserver.spi.kernel.service, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.kernel.boot,\
 	com.ibm.ws.security.mp.jwt.proxy;version=latest
 
 -testpath: \

@@ -23,9 +23,7 @@ import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jpa.JPAPuId;
-import com.ibm.ws.jpa.diagnostics.JPAORMDiagnostics;
 
 /**
  * This is a data container manages persistence unit information defined in a ejb-jar, war or jar.
@@ -149,12 +147,6 @@ class JPAPxmlInfo {
                              "|" + pxml.getArchiveName() + "|" + rootURLStr + "|" +
                              puInfo.getPersistenceUnitName() + "|" +
                              ivScopeInfo.getScopeType() + "|" + puInfo.dump());
-
-                try {
-                    JPAORMDiagnostics.writeJPAORMDiagnostics(puInfo, pxml.openStream());
-                } catch (Throwable t) {
-                    FFDCFilter.processException(t, JPAPxmlInfo.class.getName() + ".extractPersistenceUnits", "155");
-                }
             }
 
             if (getPuInfo(puName) != null) // d441029
@@ -190,6 +182,8 @@ class JPAPxmlInfo {
                 // will have a factory created with the correct datasource.
                 puInfo.initialize(); // d429219 d510184
             }
+
+            JPAIntrospection.visitJPAPUnitInfo(puName, puInfo);
         }
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -288,13 +282,11 @@ class JPAPxmlInfo {
             ivPuListCopy.putAll(ivPuList);
         }
 
-        final JPAIntrospection jpaIntro = JPAIntrospection.getJPAIntrospection();
-
         for (Map.Entry<String, JPAPUnitInfo> entry : ivPuListCopy.entrySet()) {
             final String puName = entry.getKey();
             final JPAPUnitInfo jpaPUInfo = entry.getValue();
 
-            jpaIntro.visitJPAPUnitInfo(puName, jpaPUInfo);
+            JPAIntrospection.visitJPAPUnitInfo(puName, jpaPUInfo);
         }
     }
 }
