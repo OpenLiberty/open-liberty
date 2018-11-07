@@ -33,6 +33,10 @@ public class CurrentLocation {
         return getTotalTaxRate(cityName, stateName) * purchaseAmount;
     }
 
+    public static boolean isUnspecified() {
+        return StateContextProvider.stateName.get().length() == 0 && CityContextProvider.cityName.get().length() == 0;
+    }
+
     public static void setLocation(String state) {
         StateContextProvider.stateName.set(state);
     }
