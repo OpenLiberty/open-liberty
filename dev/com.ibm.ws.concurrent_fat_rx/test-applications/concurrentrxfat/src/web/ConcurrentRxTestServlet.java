@@ -47,6 +47,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ContextService;
@@ -2901,6 +2902,66 @@ public class ConcurrentRxTestServlet extends FATServlet {
         } finally {
             // allow threads to complete in case test fails
             blocker.countDown();
+        }
+    }
+
+    /**
+     * Complete an incomplete stage and verify that dependent actions of the stage run on the same thread
+     * that performs the completion.
+     */
+    @Test
+    public void testRunUponCompletion() throws Exception {
+        ClassLoader original = Thread.currentThread().getContextClassLoader();
+        CompletableFuture<ClassLoader> cf1 = defaultManagedExecutor.newIncompleteFuture();
+        CompletableFuture<ClassLoader> cf2 = cf1.thenApply(cl -> Thread.currentThread().getContextClassLoader());
+
+        Thread.currentThread().setContextClassLoader(null);
+        try {
+            cf1.complete(null);
+            assertSame(original, cf2.getNow(null));
+        } finally {
+            Thread.currentThread().setContextClassLoader(original);
+        }
+    }
+
+    /**
+     * This test aims to intermittently cover a situation where the thread invoking
+     * completableFuture.get() can end up running the action in line.
+     * There isn't any known way to force this path through the CompletableFuture because
+     * it depends on timing, but this test case covers a scenario where it is possible
+     * and verifies the thread context propagation regardless of where the action runs.
+     */
+    @Test
+    public void testRunUponGet() throws Exception {
+        ClassLoader original = Thread.currentThread().getContextClassLoader();
+
+        CompletableFuture<Integer> cf1 = defaultManagedExecutor.newIncompleteFuture();
+
+        CompletableFuture<ClassLoader> cf2 = cf1.thenApply(i -> {
+            System.out.println("cf2 stack " + Arrays.stream(Thread.currentThread().getStackTrace()).map(st -> st.toString()).collect(Collectors.joining("\r\n at ")));
+            return Thread.currentThread().getContextClassLoader();
+        });
+
+        CompletableFuture<ClassLoader> cf3 = cf2.thenApply(cl -> {
+            System.out.println("cf3 stack " + Arrays.stream(Thread.currentThread().getStackTrace()).map(st -> st.toString()).collect(Collectors.joining("\r\n at ")));
+            return Thread.currentThread().getContextClassLoader();
+        });
+
+        // clear context from the current thread, which helps verify that the
+        // previously captured context gets applied when the action runs on this thread
+        Thread.currentThread().setContextClassLoader(null);
+        try {
+            // Complete on a separate thread, with the hope that the current thread which is awaiting
+            // the result of the dependent stage is able to at least sometimes step in and run the
+            // dependent stage action
+            testThreads.submit(() -> cf1.complete(112));
+
+            // Dependent stage can run on current thread if the completing thread hasn't already started it
+            assertEquals(Integer.valueOf(112), cf1.get());
+            assertSame(original, cf2.get());
+            assertSame(original, cf3.get());
+        } finally {
+            Thread.currentThread().setContextClassLoader(original);
         }
     }
 
