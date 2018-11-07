@@ -25,6 +25,9 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.jar.JarFile;
 
@@ -224,7 +227,7 @@ public class SelfExtractRun extends SelfExtract {
      * @throws IOException
      * @throws InterruptedException
      */
-    private static int runServer(String extractDirectory, String serverName) throws IOException, InterruptedException {
+    private static int runServer(String extractDirectory, String serverName, String[] args) throws IOException, InterruptedException {
         int rc = 0;
         Runtime rt = Runtime.getRuntime();
 
@@ -238,6 +241,13 @@ public class SelfExtractRun extends SelfExtract {
             disable2PC(extractDirectory, serverName);
 
         String cmd = extractDirectory + File.separator + "wlp" + File.separator + "bin" + File.separator + "server " + action + " " + serverName;
+        if (args.length > 0) {
+            StringBuilder appArgs = new StringBuilder(" --");
+            for (String arg : args) {
+                appArgs.append(" ").append(arg);
+            }
+            cmd += appArgs.toString();
+        }
 
         System.out.println(cmd);
 
@@ -286,9 +296,9 @@ public class SelfExtractRun extends SelfExtract {
                 try {
                     String serverName = getServerName();
                     if (shouldRunInJVM(extractDirectory, serverName)) {
-                        rc = runServerInline(extractDirectory, serverName);
+                        rc = runServerInline(extractDirectory, serverName, args);
                     } else {
-                        rc = runServer(extractDirectory, serverName);
+                        rc = runServer(extractDirectory, serverName, args);
                     }
                 } catch (Exception e) {
                     throw new RuntimeException("Failed to run jar due to error " + e.getMessage(), e);
@@ -312,7 +322,8 @@ public class SelfExtractRun extends SelfExtract {
      * @throws IllegalAccessException
      */
     private static int runServerInline(String extractDirectory,
-                                       String serverName) throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+                                       String serverName,
+                                       String[] args) throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         File serverLaunchJar = new File(extractDirectory, "wlp/bin/tools/ws-server.jar");
         JarFile jar = new JarFile(serverLaunchJar);
         String className = jar.getManifest().getMainAttributes().getValue("Main-Class");
@@ -326,12 +337,17 @@ public class SelfExtractRun extends SelfExtract {
                           extractDirectory + File.separator + "wlp" + File.separator + "usr" + File.separator + "servers" + File.separator + serverName + File.separator + "logs");
 
         Class clazz = cl.loadClass(className);
-        String[] options = new String[] { serverName };
-        Method m = clazz.getDeclaredMethod("main", new Class[] { options.getClass() });
+        List<String> argList = new ArrayList<String>(args.length + 2);
+        argList.add(serverName);
+        if (args.length > 0) {
+            argList.add("--");
+            argList.addAll(Arrays.asList(args));
+        }
+        Method m = clazz.getDeclaredMethod("main", new Class[] { String[].class });
 
         attachJavaAgent(extractDirectory);
 
-        m.invoke(null, new Object[] { options });
+        m.invoke(null, new Object[] { argList.toArray(new String[0]) });
 
         return 0;
     }
