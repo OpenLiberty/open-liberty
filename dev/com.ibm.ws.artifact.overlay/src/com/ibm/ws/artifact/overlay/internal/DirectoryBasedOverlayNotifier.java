@@ -18,27 +18,30 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.ibm.ws.artifact.ArtifactListenerSelector;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.ArtifactNotifier;
-import com.ibm.wsspi.artifact.DefaultArtifactNotification;
 import com.ibm.wsspi.artifact.ArtifactNotifier.ArtifactListener;
+import com.ibm.wsspi.artifact.DefaultArtifactNotification;
 
 /**
  *
  */
-public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, ArtifactListener {
+public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, com.ibm.ws.artifact.ArtifactNotifierExtension.ArtifactListener {
     private final DirectoryBasedOverlayContainerImpl root;
     private final ArtifactContainer overlayContainer;
     private final ArtifactContainer overlaidContainer;
 
     private boolean listeningToContainers;
 
-    private final Map<String, Collection<ArtifactListener>> listeners;
+    private final Map<String, Collection<ArtifactListenerSelector>> listeners;
     private final Set<String> pathsMonitored = new HashSet<String>();
 
     private final DirectoryBasedOverlayNotifier parentNotifier;
     private final String pathOfEntryInParent;
+
+    private String id;
 
     public DirectoryBasedOverlayNotifier(DirectoryBasedOverlayContainerImpl root, ArtifactContainer artifactContainer, DirectoryBasedOverlayNotifier parent,
                                          ArtifactEntry entryInParent) {
@@ -51,7 +54,7 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, Artifact
             this.pathOfEntryInParent = entryInParent.getPath();
         else
             this.pathOfEntryInParent = null;
-        this.listeners = new ConcurrentHashMap<String, Collection<ArtifactListener>>();
+        this.listeners = new ConcurrentHashMap<String, Collection<ArtifactListenerSelector>>();
     }
 
     private void verifyTargets(ArtifactNotification targets) throws IllegalArgumentException {
@@ -60,7 +63,7 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, Artifact
         }
     }
 
-    private boolean addTarget(String path, ArtifactListener listener) {
+    private boolean addTarget(String path, ArtifactListenerSelector listener) {
         boolean pathIsNew = true;
         for (String lpath : listeners.keySet()) {
             if (path.equals(lpath) || path.startsWith(lpath + "/")) {
@@ -68,9 +71,9 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, Artifact
             }
         }
 
-        Collection<ArtifactListener> list = this.listeners.get(path);
+        Collection<ArtifactListenerSelector> list = this.listeners.get(path);
         if (list == null) {
-            list = new ConcurrentLinkedQueue<ArtifactListener>();
+            list = new ConcurrentLinkedQueue<ArtifactListenerSelector>();
             this.listeners.put(path, list);
         }
         list.add(listener);
@@ -79,10 +82,10 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, Artifact
     }
 
     private void collapsePaths(Collection<String> input) {
-        //file monitor will listen recursively to dirs, so no point in listening to 
-        //children and to parents.. 
+        //file monitor will listen recursively to dirs, so no point in listening to
+        //children and to parents..
         Set<String> subPathsToRemove = new HashSet<String>();
-        //compare each path, against all the others, mark each of the others for 
+        //compare each path, against all the others, mark each of the others for
         //removal if it is a subPath. Additionally, do not process identified subPaths.
         for (String path : input) {
             if (path.startsWith("!"))
@@ -92,7 +95,7 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, Artifact
                     if (!subPathsToRemove.contains(testAgainst)) {
                         //append a / so the compare will match subpaths only.
                         String pathToCompare = path.equals("/") ? "/" : (path + "/");
-                        //skip self.. 
+                        //skip self..
                         if (path != testAgainst && path.length() != testAgainst.length() && testAgainst.startsWith(pathToCompare)) {
                             subPathsToRemove.add(testAgainst);
                         }
@@ -104,6 +107,10 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, Artifact
         return;
     }
 
+    public String getId() {
+        return id;
+    }
+
     /** {@inheritDoc} */
     @Override
     public synchronized boolean registerForNotifications(ArtifactNotification targets, ArtifactListener callbackObject) throws IllegalArgumentException {
@@ -111,22 +118,22 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, Artifact
 
         //build the aggregate set of paths to monitor from the caller's args.
         //addTarget will always add the listener, but will return false if the
-        //path is already in the monitor list.. 
+        //path is already in the monitor list..
         Set<String> pathsToMonitor = new HashSet<String>();
         for (String path : targets.getPaths()) {
             //do not remove the ! paths here.. as they must be passed onto the other containers.
-
-            boolean addToMonitorList = addTarget(path, callbackObject);
+            ArtifactListenerSelector artifactSelectorCallback = new ArtifactListenerSelector(callbackObject);
+            boolean addToMonitorList = addTarget(path, artifactSelectorCallback);
             if (addToMonitorList) {
                 pathsToMonitor.add(path);
             }
         }
 
-        //figure out the new minset of paths to monitor. 
+        //figure out the new minset of paths to monitor.
         pathsToMonitor.addAll(pathsMonitored);
         collapsePaths(pathsToMonitor);
 
-        //if we're already listening, we need to stop briefly to update the list.. 
+        //if we're already listening, we need to stop briefly to update the list..
         if (listeningToContainers) {
             overlayContainer.getArtifactNotifier().removeListener(this);
             overlaidContainer.getArtifactNotifier().removeListener(this);
@@ -143,28 +150,31 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, Artifact
     /** {@inheritDoc} */
     @Override
     public synchronized boolean removeListener(ArtifactListener listenerToRemove) {
+        // Wrap the input artifact listener in a ArtifactListenerSelector.
+        ArtifactListenerSelector listenerSelectorToRemove = new ArtifactListenerSelector(listenerToRemove);
+
         //this isn't too frequent an operation, so the implementation is a little unoptimal ;p
         boolean success = false;
 
         //find all the places where the listener is registered..
         //2 pass. pass#1 find affected paths.
         Set<String> pathsToRemove = new HashSet<String>();
-        for (Map.Entry<String, Collection<ArtifactListener>> listenersByPath : listeners.entrySet()) {
-            for (ArtifactListener listener : listenersByPath.getValue()) {
-                if (listener == listenerToRemove) {
+        for (Map.Entry<String, Collection<ArtifactListenerSelector>> listenersByPath : listeners.entrySet()) {
+            for (ArtifactListenerSelector listener : listenersByPath.getValue()) {
+                if (listener.equals(listenerSelectorToRemove)) {
                     pathsToRemove.add(listenersByPath.getKey());
                 }
             }
         }
         //2 pass. pass#2 process affected paths.
         for (String path : pathsToRemove) {
-            Collection<ArtifactListener> listenersForPath = listeners.get(path);
+            Collection<ArtifactListenerSelector> listenersForPath = listeners.get(path);
             if (listenersForPath.size() == 1) {
-                //only person listening to this path just left.. 
+                //only person listening to this path just left..
                 listeners.remove(path);
             } else {
-                //other parties still care about this path.. 
-                listenersForPath.remove(listenerToRemove);
+                //other parties still care about this path..
+                listenersForPath.remove(listenerSelectorToRemove);
             }
         }
 
@@ -236,8 +246,14 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, Artifact
 
     /** {@inheritDoc} */
     @Override
-    //TODO: invoke parent overlay notifyEntryChange for the entry representing this overlay in parent, if this overlay is a nested overlay.
     public void notifyEntryChange(ArtifactNotification added, ArtifactNotification removed, ArtifactNotification modified) {
+        notifyEntryChange(added, removed, modified, null);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    //TODO: invoke parent overlay notifyEntryChange for the entry representing this overlay in parent, if this overlay is a nested overlay.
+    public void notifyEntryChange(ArtifactNotification added, ArtifactNotification removed, ArtifactNotification modified, String filter) {
         //the overlay will call us via this method as the mask set is manipulated.
         //if we have no listeners, we have no need to do anything.
         if (listeners.isEmpty())
@@ -245,7 +261,7 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, Artifact
 
         //added/removed/modified will all have the same container set for any invocation, so we can just test 'added'
         if (added.getContainer() == overlayContainer) {
-            //remove any paths from the notification that were already present in the original container. 
+            //remove any paths from the notification that were already present in the original container.
             //eg.
             //  if added to overlay and already present in base, convert to modified.
             //  if removed from overlay and already present in base, convert to modified.
@@ -268,21 +284,21 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, Artifact
             newModified.addAll(filteredRemoved);
 
             //now iterate the registered listeners, and invoke them with the subsets that they cared about..
-            notifyAllListeners(newAdd, newRemoved, newModified);
+            notifyAllListeners(newAdd, newRemoved, newModified, filter);
         }
         if (added.getContainer() == overlaidContainer) {
-            //remove any paths from the notification that are overlaid. 
+            //remove any paths from the notification that are overlaid.
             Set<String> filteredAdd = filterOverlaidPaths(added.getPaths());
             Set<String> filteredRemoved = filterOverlaidPaths(removed.getPaths());
             Set<String> filteredModified = filterOverlaidPaths(modified.getPaths());
 
             //now iterate the registered listeners, and invoke them with the subsets that they cared about..
-            notifyAllListeners(filteredAdd, filteredRemoved, filteredModified);
+            notifyAllListeners(filteredAdd, filteredRemoved, filteredModified, filter);
         }
         if (added.getContainer() == root) {
-            //this is a special invocation coming in from the mask unmask logic.. 
+            //this is a special invocation coming in from the mask unmask logic..
             //there is no need to prefilter the paths here.
-            notifyAllListeners(added.getPaths(), removed.getPaths(), modified.getPaths());
+            notifyAllListeners(added.getPaths(), removed.getPaths(), modified.getPaths(), filter);
         }
 
     }
@@ -301,7 +317,7 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, Artifact
             for (String path : paths) {
                 if (path.startsWith(prefix + "/") || path.equals(prefix)) {
                     if (notRecurse) {
-                        //needs a bit more care.. user asked for prefix, and immediate children.. 
+                        //needs a bit more care.. user asked for prefix, and immediate children..
                         //strip the prefix from the front.. this should always work.. as path has to be at least one char, as does prefix.
                         String fragment = path.substring(prefix.length());
                         //if resulting fragment has no path seps, notify on it.
@@ -318,21 +334,29 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, Artifact
         return new DefaultArtifactNotification(root, gatheredPaths);
     }
 
-    private void notifyAllListeners(Collection<String> created, Collection<String> deleted, Collection<String> modified) {
-        //if we have changed.. and we have a parent, tell the parent the entry changed. 
+    private void notifyAllListeners(Collection<String> created, Collection<String> deleted, Collection<String> modified, String filter) {
+        //if we have changed.. and we have a parent, tell the parent the entry changed.
         //this helps simulate jar behavior
         if (this.parentNotifier != null) {
-            this.parentNotifier.notifyAllListeners(Collections.<String> emptySet(), Collections.<String> emptySet(), Collections.<String> singleton(pathOfEntryInParent));
+            this.parentNotifier.notifyAllListeners(Collections.<String> emptySet(), Collections.<String> emptySet(), Collections.<String> singleton(pathOfEntryInParent), filter);
         }
 
-        for (Map.Entry<String, Collection<ArtifactListener>> listenersForPath : listeners.entrySet()) {
+        for (Map.Entry<String, Collection<ArtifactListenerSelector>> listenersForPath : listeners.entrySet()) {
             String path = listenersForPath.getKey();
             ArtifactNotification createdForPath = collectNotificationsForPrefix(path, created);
             ArtifactNotification modifiedForPath = collectNotificationsForPrefix(path, modified);
             ArtifactNotification deletedForPath = collectNotificationsForPrefix(path, deleted);
             //only notify if we have paths to notify for!
             if (!createdForPath.getPaths().isEmpty() || !modifiedForPath.getPaths().isEmpty() || !deletedForPath.getPaths().isEmpty()) {
-                for (ArtifactListener listener : listenersForPath.getValue()) {
+                for (ArtifactListenerSelector listener : listenersForPath.getValue()) {
+                    // If there is no filter, or the artifact listener id does not match the filter, skip the notification.
+                    if (filter != null) {
+                        String id = listener.getId();
+                        if (!(filter.equals(id))) {
+                            continue;
+                        }
+                    }
+
                     //Invoke the notifier.. here we are branching out to code not part of the File artifact impl.
                     listener.notifyEntryChange(createdForPath, deletedForPath, modifiedForPath);
                 }

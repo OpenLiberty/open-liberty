@@ -28,6 +28,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 
+import com.ibm.ws.artifact.ArtifactListenerSelector;
 import com.ibm.ws.artifact.loose.internal.LooseArchive.EntryInfo;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -39,7 +40,7 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
 /**
  *
  */
-public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
+public class LooseArtifactNotifier implements ArtifactNotifier, com.ibm.ws.kernel.filemonitor.FileMonitor {
 
     private final LooseArchive root;
     private final List<EntryInfo> entries;
@@ -59,7 +60,7 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
     private final Set<String> dirsBeingMonitored = new HashSet<String>();
 
     private class Registration {
-        ArtifactListener listener;
+        ArtifactListenerSelector listener;
         Collection<String> paths;
     }
 
@@ -72,7 +73,7 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
     private final Collection<LooseArtifactNotifier> enabledChildren = new ArrayList<LooseArtifactNotifier>();
     private final String pathInParent;
 
-    //this notifier works a bit differently to the others, as the information it requires to initiate 
+    //this notifier works a bit differently to the others, as the information it requires to initiate
     //the filemonitors, is only available long after the construction of the LooseArchive to which it belongs.
     //thus for this Notifier, the creation is delayed until the 'getArtifactNotifier' call is placed to the owning LooseArchive.
     public LooseArtifactNotifier(LooseArchive owner, List<EntryInfo> entries, BundleContext ctx, LooseArtifactNotifier parent, String pathInParent) {
@@ -111,7 +112,7 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
         verifyTargets(targets);
         //remember this listener..
         Registration r = new Registration();
-        r.listener = callbackObject;
+        r.listener = new ArtifactListenerSelector(callbackObject);
         //copy the paths, rather than using the user supplied collection, as we don't trust it to remain immutable.
         Collection<String> srcPaths = targets.getPaths();
         r.paths = new ArrayList<String>(srcPaths.size());
@@ -145,8 +146,8 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
                     childNotifier.registerForNotifications(artifactNotification, new ArtifactListener() {
                         @Override
                         public void notifyEntryChange(ArtifactNotification added, ArtifactNotification removed, ArtifactNotification modified) {
-                            // no operation in this listener as the main action is to notify its parent listener 
-                            // when the child LooseArchive is changed 
+                            // no operation in this listener as the main action is to notify its parent listener
+                            // when the child LooseArchive is changed
                         }
                     });
                     enabledChildren.add(children.get(entry));
@@ -154,7 +155,7 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
             } else {
                 if (enabledChildren.contains(childNotifier)) {
                     // We only added one listener for each child notifier
-                    childNotifier.removeListener(((Registration) childNotifier.listeners.toArray()[0]).listener);
+                    childNotifier.removeListener(((Registration) childNotifier.listeners.toArray()[0]).listener.getListener());
                     enabledChildren.remove(childNotifier);
                 }
             }
@@ -187,13 +188,13 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
 
         //the root path requires us to monitor the xml file itself if current LooseArtifactNotifier monitors the root
         //LooseArchive (i.e., pathInParent == null)
-        //if the xml is removed the loose app is gone. 
+        //if the xml is removed the loose app is gone.
         if (pathInParent == null && (pathsBeingMonitored.contains("/") || pathsBeingMonitored.contains("!/"))) {
             fileSubPaths.add(root.getXMLFile().getAbsolutePath());
         }
 
         //the recursive root path of / is a special case
-        //this is not a problem, as / means 'everything'.. 
+        //this is not a problem, as / means 'everything'..
         if (pathsBeingMonitored.contains("/")) {
             for (Set<String> s : filesToMonitor.values()) {
                 fileSubPaths.addAll(s);
@@ -202,7 +203,7 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
                 dirSubPaths.addAll(s);
             }
         } else {
-            //rebuild the file/dir sets 
+            //rebuild the file/dir sets
             for (String path : pathsBeingMonitored) {
                 String fixedPath = path.startsWith("!") ? path.substring(1) : path;
                 //go through already processed entries to see if we've already processed the one we have now
@@ -253,9 +254,10 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
     /** {@inheritDoc} */
     @Override
     public synchronized boolean removeListener(ArtifactListener listenerToRemove) {
+        ArtifactListenerSelector listenerSelectorToRemove = new ArtifactListenerSelector(listenerToRemove);
         List<Registration> rToRemove = new ArrayList<Registration>();
         for (Registration r : listeners) {
-            if (r.listener == listenerToRemove) {
+            if (r.listener.equals(listenerSelectorToRemove)) {
                 rToRemove.add(r);
             }
         }
@@ -267,7 +269,7 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
     }
 
     private synchronized void updateFileMonitorService() {
-        //split the files out to recurse & non recurse.. 
+        //split the files out to recurse & non recurse..
         Set<String> nonRecurseFiles = new HashSet<String>();
         Set<String> recurseFiles = new HashSet<String>();
         Set<String> nonRecurseDirs = new HashSet<String>();
@@ -294,11 +296,13 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
     private synchronized void updateRecurseFileMonitorService(Set<String> dirs, Set<String> files) {
         if (service == null) {
             serviceProperties.put(Constants.SERVICE_VENDOR, "IBM");
+            serviceProperties.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, "com.ibm.ws.kernel.monitor.artifact");
 
             Long newInterval = 5000L; //default of 5seconds.
             if (interval != null) {
                 newInterval = interval;
             }
+
             serviceProperties.put(FileMonitor.MONITOR_INTERVAL, "" + newInterval + "ms");
             String type = notificationType;
             if (type == null) {
@@ -343,6 +347,7 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
     private synchronized void updateNonRecurseFileMonitorService(Set<String> dirs, Set<String> files) {
         if (nonRecurseService == null) {
             nonRecurseServiceProperties.put(Constants.SERVICE_VENDOR, "IBM");
+            serviceProperties.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, "com.ibm.ws.kernel.monitor.artifact");
 
             Long newInterval = 5000L; // 5 seconds default
             if (interval != null) {
@@ -358,7 +363,7 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
             nonRecurseServiceProperties.put(FileMonitor.MONITOR_DIRECTORIES, dirs);
             nonRecurseServiceProperties.put(FileMonitor.MONITOR_FILES, files);
 
-            //set this service to use no recursion.. 
+            //set this service to use no recursion..
             nonRecurseServiceProperties.put(FileMonitor.MONITOR_RECURSE, false);
 
             // set the monitor to also include the monitored dir in the result set.
@@ -397,11 +402,9 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
         }
 
         Long compareInterval = Long.valueOf(interval);
-        if (compareInterval.equals(this.interval) && (
-            (useMBean && FileMonitor.MONITOR_TYPE_EXTERNAL.equals(this.notificationType))
-            ||
-            (!useMBean && FileMonitor.MONITOR_TYPE_TIMED.equals(this.notificationType))
-            )) {
+        if (compareInterval.equals(this.interval) && ((useMBean && FileMonitor.MONITOR_TYPE_EXTERNAL.equals(this.notificationType))
+                                                      ||
+                                                      (!useMBean && FileMonitor.MONITOR_TYPE_TIMED.equals(this.notificationType)))) {
             return true;
         }
         this.interval = compareInterval;
@@ -426,13 +429,13 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
 
                 if (filter.equals("/") || path.startsWith(filter + "/") || path.equals(filter)) {
                     if (!nonRecurse) {
-                        //easy case, just add path, it starts with the right stuff.. 
+                        //easy case, just add path, it starts with the right stuff..
                         pathsToAdd.add(path);
                     } else {
-                        //needs a bit more care.. user asked for filter, and immediate children.. 
+                        //needs a bit more care.. user asked for filter, and immediate children..
                         //strip the filter from the front.. this should always work.. as path has to be at least one char, as does filter.
                         String fragment = path.substring(filter.length());
-                        //if resulting fragment has no path seps, notify on it. 
+                        //if resulting fragment has no path seps, notify on it.
                         // <1 lets / exist as first char or not at all
                         if (fragment.indexOf("/") < 1) {
                             pathsToAdd.add(path);
@@ -461,7 +464,7 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
                     if (absPath.size() > 0) {
                         String path = f.getAbsolutePath();
                         for (String compare : absPath) {
-                            //convert both paths to use just "/" for now.. 
+                            //convert both paths to use just "/" for now..
                             compare = new File(compare).getAbsolutePath().replace(File.separatorChar, '/');
                             path = path.replace(File.separatorChar, '/');
 
@@ -555,7 +558,7 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
                 }
             }
             if (xmlSpecialCase) {
-                //xmlSpecialCase is for the root xml, we just pass the path through. 
+                //xmlSpecialCase is for the root xml, we just pass the path through.
                 switch (op) {
                     case ADDED: {
                         rAdded.add(path);
@@ -579,16 +582,16 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
                     switch (op) {
                         case ADDED: {
                             if (firstExistingIndex < firstMatchingIndex) {
-                                //the node that matched, is further along than a node that knows about the file already 
+                                //the node that matched, is further along than a node that knows about the file already
                                 //so this add is obscured, as the preceeding node will still own the file in the vfs
                             } else if (firstExistingIndex > firstMatchingIndex) {
-                                //the node that matched, is before nodes that knew of the file before. 
+                                //the node that matched, is before nodes that knew of the file before.
                                 //so this add is only a modify, as we already knew about this file.
                                 rModified.add(path);
                             } else if (firstExistingIndex == firstMatchingIndex) {
                                 //the node that matched, is the first node we find in search order.
                                 //this add needs more care.. it is only an add if there were
-                                //no other matches for the entry.. 
+                                //no other matches for the entry..
                                 if (existingMatchCount > 1) {
                                     rModified.add(path);
                                 } else {
@@ -596,7 +599,7 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
                                 }
                             } else if (firstExistingIndex == Integer.MAX_VALUE) {
                                 //there is no node that could claim to own the path
-                                //odd.. we were told the path exists, yet no node agrees.. 
+                                //odd.. we were told the path exists, yet no node agrees..
                                 FFDCFilter.processException(new IllegalStateException("No matching EntryInfo for path"), getClass().getName(), "entryInfoMatchNotFoundForAdd");
                             }
                             break;
@@ -659,8 +662,14 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
     /** {@inheritDoc} */
     @Override
     public synchronized void onChange(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles) {
+        onChange(createdFiles, modifiedFiles, deletedFiles, null);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public synchronized void onChange(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles, String filter) {
         //scan the collections of absolute paths, and resolve them into sets of vfs locations
-        //this involves not just abs->relative translation but also 
+        //this involves not just abs->relative translation but also
         // - removing obscured notifications
         // - converting deleted into modified as appropriate
         Set<String> fRelativeAddedSet = new HashSet<String>();
@@ -671,20 +680,20 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
         //if any of the sets are not empty, we may need to push a notification to parent.
         if (parent != null && (!fRelativeAddedSet.isEmpty() || !fRelativeModifiedSet.isEmpty() || !fRelativeRemovedSet.isEmpty())) {
             //notify as a modified of pathInParent.
-            parent.notifyListenersByPath(Collections.<String> emptySet(), Collections.<String> singleton(pathInParent), Collections.<String> emptySet());
+            parent.notifyListenersByPath(Collections.<String> emptySet(), Collections.<String> singleton(pathInParent), Collections.<String> emptySet(), filter);
         }
 
         //now we notify all our listeners.
-        notifyListenersByPath(fRelativeAddedSet, fRelativeModifiedSet, fRelativeRemovedSet);
+        notifyListenersByPath(fRelativeAddedSet, fRelativeModifiedSet, fRelativeRemovedSet, filter);
     }
 
-    private void notifyListenersByPath(Set<String> relativeAddedSet, Set<String> relativeModifedSet, Set<String> relativeRemovedSet) {
+    private void notifyListenersByPath(Set<String> relativeAddedSet, Set<String> relativeModifedSet, Set<String> relativeRemovedSet, String filter) {
         for (Registration r : listeners) {
             ArtifactNotification added = filterSetByPaths(relativeAddedSet, r.paths);
             ArtifactNotification removed = filterSetByPaths(relativeRemovedSet, r.paths);
             ArtifactNotification modified = filterSetByPaths(relativeModifedSet, r.paths);
             if (added.getPaths().size() > 0 || removed.getPaths().size() > 0 || modified.getPaths().size() > 0) {
-                r.listener.notifyEntryChange(added, removed, modified);
+                r.listener.notifyEntryChange(added, removed, modified, filter);
             }
         }
     }
@@ -697,5 +706,9 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
 
     public void addChild(EntryInfo entryInfo, LooseArtifactNotifier notifier) {
         this.children.put(entryInfo, notifier);
+    }
+
+    public String getId() {
+        return null;
     }
 }
