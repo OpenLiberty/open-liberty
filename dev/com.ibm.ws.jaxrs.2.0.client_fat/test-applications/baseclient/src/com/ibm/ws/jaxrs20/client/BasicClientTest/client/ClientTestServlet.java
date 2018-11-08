@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.client.BasicClientTest.client;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -163,5 +166,55 @@ public class ClientTestServlet extends HttpServlet {
                         .get(String.class);
         c.close();
         ret.append(res);
+    }
+
+    /*
+     * Test to make sure uri's with query parameters with empty values do not
+     * get the '=' character stripped away, aka "?param=" should not become "?param"
+     * If the '=' character is stripped, then by default web container will ignore
+     * the param entirely
+     */
+    public void testQueryParam(Map<String, String> param, StringBuilder ret) {
+        String serverIP = param.get("serverIP");
+        String serverPort = param.get("serverPort");
+        String base = "http://" + serverIP + ":" + serverPort + "/" + moduleName + "/BasicClientTest/BasicResource/query";
+        String uri = base + "?param=";
+        String uri2 = base + "?param";
+
+        ClientBuilder cb = ClientBuilder.newBuilder();
+        Client c = cb.build();
+        WebTarget webTarget = c.target(uri);
+        WebTarget webTarget2 = c.target(uri2);
+
+        // verify that the trailing '=' character is not lost when we build the uri
+        assertEquals(uri, webTarget.getUri().toString());
+
+        // try again with no '='
+        // verify that '=' is not added to the uri
+        assertEquals(uri2, webTarget2.getUri().toString());
+
+        // verify that the resource class got a query parameter with an empty value
+        if (!sendQueryRequest(webTarget)) {
+            fail("Query param ignored for " + webTarget.getUri().toString());
+        }
+
+        // we know that CXF removes query parameters with null values
+        // which is the case for requests from the same server.
+        if (sendQueryRequest(webTarget2)) {
+            fail("Behavior change - query param not ignored for " + webTarget2.getUri().toString());
+        }
+
+        c.close();
+        ret.append("OK");
+    }
+
+    private boolean sendQueryRequest(WebTarget webTarget) {
+        String res = webTarget.request().get(String.class);
+        System.out.println(webTarget.getUri().toString() + " res=" + res);
+        if (res.equals("null")) {
+            System.out.println(webTarget.getUri().toString() + " - param was ignored by webcontainer");
+            return false;
+        }
+        return true;
     }
 }
