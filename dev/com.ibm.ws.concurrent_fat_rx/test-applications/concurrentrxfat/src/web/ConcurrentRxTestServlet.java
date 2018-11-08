@@ -147,7 +147,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
     public void init(ServletConfig config) throws ServletException {
         testThreads = Executors.newFixedThreadPool(20);
 
-        Class cl = defaultManagedExecutor.completedFuture(0).getClass();
+        Class<?> cl = defaultManagedExecutor.completedFuture(0).getClass();
         try {
             completeAsync = (cf, supplier) -> {
                 try {
@@ -293,7 +293,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
             assertFalse(cf3.isDone());
             try {
                 Object result = cf3.get(100, TimeUnit.MILLISECONDS);
-                fail("Dependent completion stage must not complete first");
+                fail("Dependent completion stage must not complete first: " + result);
             } catch (TimeoutException x) {
             }
 
@@ -383,7 +383,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
             assertFalse(cf3.isDone());
             try {
                 Object result = cf3.get(100, TimeUnit.MILLISECONDS);
-                fail("Dependent completion stage must not complete first");
+                fail("Dependent completion stage must not complete first: " + result);
             } catch (TimeoutException x) {
             }
 
@@ -472,7 +472,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
             assertFalse(cf3.isDone());
             try {
                 Object result = cf3.get(100, TimeUnit.MILLISECONDS);
-                fail("Dependent completion stage must not complete first");
+                fail("Dependent completion stage must not complete first: " + result);
             } catch (TimeoutException x) {
             }
 
@@ -550,6 +550,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
         BlockableIncrementFunction increment2 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor2", null, null, false);
         BlockableIncrementFunction increment3 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor3", null, null, false);
         BlockableIncrementFunction increment4 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor4", null, null, false);
+        @SuppressWarnings("unchecked")
         CompletableFuture<Integer> cf0 = (CompletableFuture<Integer>) ManagedCompletableFuture_newIncompleteFuture.apply(sameThreadExecutor);
         CompletableFuture<Integer> cf1 = cf0.thenApplyAsync(increment1);
         CompletableFuture<Integer> cf2 = cf1.thenApplyAsync(increment2);
@@ -822,7 +823,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
             assertFalse(cf1.isDone());
             try {
                 Object result = cf1.get(100, TimeUnit.MILLISECONDS);
-                fail("Dependent completion stage must not complete first");
+                fail("Dependent completion stage must not complete first: " + result);
             } catch (TimeoutException x) {
             }
             assertFalse(cf1.isDone()); // still blocked
@@ -1131,6 +1132,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
     /**
      * Verify that completeAsync is a no-op on an already-completed stage
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testCompleteAsyncOfCompletedStage() throws Exception {
         CompletableFuture<Integer> cf0 = defaultManagedExecutor.completedFuture(90);
@@ -1153,6 +1155,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
     /**
      * Verify that completeAsync can be used on an incomplete stage to cause it to complete.
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testCompleteAsyncOfIncompleteStage() throws Exception {
         CompletableFuture<String> cf1 = defaultManagedExecutor.newIncompleteFuture();
@@ -1190,6 +1193,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
     /**
      * Use the completeAsync method to complete a stage that is already running.
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testCompleteAsyncWhileRunning() throws Exception {
         // supplier that is blocked
@@ -1317,6 +1321,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
     /**
      * Verify that a CompletableFuture can be completed prematurely after a timeout.
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testCompleteOnTimeout() throws Exception {
         // completeOnTimeout not allowed on Java SE 8, but is otherwise a no-op on an already-completed future
@@ -1406,8 +1411,11 @@ public class ConcurrentRxTestServlet extends FATServlet {
                 continueLatch.countDown();
             }
 
+        @SuppressWarnings("unchecked")
         CompletableFuture<Long> cf1 = (CompletableFuture<Long>) copy.apply(cf0);
+        @SuppressWarnings("unchecked")
         CompletableFuture<Long> cf2 = (CompletableFuture<Long>) copy.apply(cf0);
+        @SuppressWarnings("unchecked")
         CompletableFuture<Long> cf3 = (CompletableFuture<Long>) copy.apply(cf0);
 
         String s;
@@ -1506,6 +1514,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
         }
 
         Executor delay397msNoContext = CompletableFuture_delayedExecutor_.apply(397l, TimeUnit.MILLISECONDS, noContextExecutor);
+        @SuppressWarnings("unchecked")
         CompletableFuture<Integer> cf0 = (CompletableFuture<Integer>) ManagedCompletableFuture_newIncompleteFuture.apply(delay397msNoContext);
         cf0.complete(97);
 
@@ -1539,7 +1548,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
         assertTrue(noContextMSES instanceof ManagedExecutor);
 
         ExecutorService oneContextES = InitialContext.doLookup("concurrent/oneContextExecutor");
-        assertTrue(oneContextExecutor instanceof ManagedExecutor);
+        assertTrue(oneContextES instanceof ManagedExecutor);
     }
 
     /**
@@ -2215,6 +2224,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
      * Verify that for post Java SE 8, a minimal completion stage can be obtained and restricts operations
      * such that the stage only completes naturally.
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testMinimalCompletionStage() throws Exception {
         CompletionStage<Short> cs1, cs2, cs4, cs5;
@@ -2417,6 +2427,143 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
+     * Covers the newIncompleteFuture method of CompletableFutures created by ManagedExecutor.
+     * Verify that this method creates a new instance, backed by the same executor and
+     * following the same thread context propagation, but is not a dependent stage of the
+     * stage that creates it. Also covers invalid parameters to ManagedExecutorBuilder.
+     */
+    @Test
+    public void testNewIncompleteFuture() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+
+        CurrentLocation.setLocation("Des Moines", "Iowa");
+        try {
+            ManagedExecutorBuilder builder = ManagedExecutorBuilder.instance()
+                            .maxAsync(1)
+                            .maxQueued(1);
+
+            try {
+                fail("Should not be able to set maxAsync to 0 on " + builder.maxAsync(0));
+            } catch (IllegalArgumentException x) {
+                if (!"0".equals(x.getMessage()))
+                    throw x;
+            }
+
+            try {
+                fail("Should not be able to set maxAsync to -2 on " + builder.maxAsync(-2));
+            } catch (IllegalArgumentException x) {
+                if (!"-2".equals(x.getMessage()))
+                    throw x;
+            }
+
+            try {
+                fail("Should not be able to set maxQueued to 0 on " + builder.maxQueued(0));
+            } catch (IllegalArgumentException x) {
+                if (!"0".equals(x.getMessage()))
+                    throw x;
+            }
+
+            try {
+                fail("Should not be able to set maxQueued to -10 on " + builder.maxQueued(-10));
+            } catch (IllegalArgumentException x) {
+                if (!"-10".equals(x.getMessage()))
+                    throw x;
+            }
+
+            try {
+                fail("Should not be able to build when type to propagate does not exist: " +
+                     builder.propagated("ContextType1ThatDoesNotExist").build());
+            } catch (IllegalStateException x) {
+            }
+
+            try {
+                fail("Should not be able to build when type to clear does not exist: " +
+                     builder.propagated(ThreadContext.SECURITY).cleared("ContextType2ThatDoesNotExist").build());
+            } catch (IllegalStateException x) {
+            }
+
+            // builder is still usable
+            ManagedExecutor executor = builder
+                            .cleared(ThreadContext.ALL_REMAINING)
+                            .build();
+
+            CompletableFuture<Integer> cf1 = executor.newIncompleteFuture();
+            @SuppressWarnings("unchecked")
+            CompletableFuture<Integer> cf2 = (CompletableFuture<Integer>) newIncompleteFuture.apply(cf1);
+
+            cf1.completeExceptionally(new Error("Intentionally caused error"));
+
+            // newIncompleteFuture is not a dependent stage, the outcome of the prior stage does not impact it at all
+            assertFalse(cf2.isCancelled());
+            assertFalse(cf2.isDone());
+            assertFalse(cf2.isCompletedExceptionally());
+
+            CompletableFuture<Integer> cf3 = cf2.thenApply(x -> ++x);
+            @SuppressWarnings("unchecked")
+            CompletableFuture<Integer> cf4 = (CompletableFuture<Integer>) newIncompleteFuture.apply(cf2);
+
+            CompletableFuture<Void> cf5 = cf4.thenAcceptBoth(cf3, (x, y) -> {
+                assertEquals(x, y);
+                assertTrue(CurrentLocation.isUnspecified()); // context is cleared
+            });
+
+            cf4.complete(114);
+            cf2.complete(113);
+            cf5.join();
+
+            // verify that cleared context is restored once complete
+            assertEquals(6.0, CurrentLocation.getTotalSalesTax(100.0), 0.000001); // sales tax for Des Moines, IA
+
+            // verify that the managed executor is maintained as the default asynchronous execution facility
+            // for newIncompleteFuture. We will do this by confirming the that its maxQueued constraint is honored.
+
+            // use up maximum async
+            CompletableFuture<Integer> cf6 = cf4.thenApplyAsync(new BlockableIncrementFunction("testNewIncompleteFuture", beginLatch, continueLatch));
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // use up the queue
+            CompletableFuture<Void> cf7 = cf4.thenAcceptAsync(System.out::println);
+
+            // fail to enqueue
+            try {
+                CompletableFuture<Integer> cf8 = cf4.whenCompleteAsync((result, x) -> {
+                    System.out.println("Should not be possible to run this action. Result: " + result);
+                    if (x != null)
+                        x.printStackTrace(System.out);
+                });
+
+                try {
+                    Integer result = cf8.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                    fail("Should not be possible to submit this action for async execution. Result: " + result);
+                } catch (ExecutionException x) {
+                    // valid to report the failure when trying to access the result of the stage
+                    if (!(x.getCause() instanceof RejectedExecutionException))
+                        throw x;
+
+                }
+
+                assertTrue(cf8.isDone());
+                assertTrue(cf8.isCompletedExceptionally());
+                assertFalse(cf8.isCancelled());
+            } catch (RejectedExecutionException x) {
+                // valid to report the failure upon attempt to submit the action for asynchronous execution
+            }
+
+            assertFalse(cf6.isDone());
+            assertFalse(cf7.isDone());
+
+            // canceling the blocking action will allow the queued action to run
+            cf6.cancel(true);
+
+            assertNull(cf7.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            continueLatch.countDown(); // unblock if still running
+            CurrentLocation.clear();
+        }
+    }
+
+    /**
      * Proxying an implementation class rather than an interface is a bit dangerous because when new methods are added to
      * the class, our proxy implementation won't be aware that it needs to be updated accordingly. This test exists to detect
      * any methods that are added so that we have the opportunity to properly implement.
@@ -2515,6 +2662,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
     /**
      * Verify that a CompletableFuture can be completed prematurely with a TimeoutException after a timeout.
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testOrTimeout() throws Exception {
         // orTimeout not allowed on Java SE 8, but is otherwise a no-op on an already-completed future
@@ -3749,11 +3897,6 @@ public class ConcurrentRxTestServlet extends FATServlet {
     @Test
     public void testUnmanagedThenCombineThenAcceptBoth() {
         LinkedList<String> results = new LinkedList<String>();
-        BiFunction<String, String, List<String>> fn = (item1, item2) -> {
-            results.add(item1);
-            results.add(item2);
-            return results;
-        };
         CompletableFuture<String> cf1 = noContextExecutor.supplyAsync(() -> "param1");
         CompletableFuture<String> cf2 = CompletableFuture.supplyAsync(() -> "param2");
         CompletableFuture<String> cf3 = CompletableFuture.supplyAsync(() -> "param3");

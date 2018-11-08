@@ -76,13 +76,12 @@ class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
             ContextOp op = propagated.contains(contextType) ? ContextOp.PROPAGATED //
                             : cleared.contains(contextType) ? ContextOp.CLEARED //
                                             : remaining;
-            if (op != ContextOp.UNCHANGED)
-                configPerProvider.put(provider, op);
+            configPerProvider.put(provider, op);
         }
 
         // unknown thread context types
         if (unknown.size() > 0)
-            throw new IllegalArgumentException(unknown.toString());
+            throw new IllegalStateException(unknown.toString()); // TODO meaningful error message
 
         // TODO generate better formated identifier without commas and spaces
         String name = "ManagedExecutor-" + maxAsync + '-' + maxQueued + '-' + propagated + "#" + instanceCount.incrementAndGet();
@@ -105,14 +104,16 @@ class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
 
     @Override
     public ManagedExecutorBuilder maxAsync(int max) {
-        // TODO validation
+        if (max == 0 || max < -1)
+            throw new IllegalArgumentException(Integer.toString(max));
         maxAsync = max;
         return this;
     }
 
     @Override
     public ManagedExecutorBuilder maxQueued(int max) {
-        // TODO validation
+        if (max == 0 || max < -1)
+            throw new IllegalArgumentException(Integer.toString(max));
         maxQueued = max;
         return this;
     }
