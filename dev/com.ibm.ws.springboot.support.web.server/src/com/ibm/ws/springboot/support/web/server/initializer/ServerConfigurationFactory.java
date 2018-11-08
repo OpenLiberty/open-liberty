@@ -113,7 +113,6 @@ public class ServerConfigurationFactory {
         virtualHosts.clear();
         VirtualHost virtualHost = new VirtualHost();
         virtualHost.setId(ID_VIRTUAL_HOST + port);
-        virtualHost.setAllowFromEndpointRef(ID_HTTP_ENDPOINT + port);
         Set<String> aliases = virtualHost.getHostAliases();
         aliases.clear();
         aliases.add("*:" + port);
