@@ -121,7 +121,7 @@ connectionpool.freeConnections.description=The number of managed connections in 
 connectionpool.waitTime.total.description=The total wait time on all connection requests since the start of the server.
 connectionpool.inUseTime.total.description=The total time that all connections are in use since the start of the server.
 connectionpool.usedConnections.total.description=The total number of connection requests that waited because of a full connection pool or did not have to wait since the start of the server. Any connections that are currently in use are not included in this total.
-connectionpool.queuedRequests.total=The total number of connection requests that had to wait for a connection because of a full connection pool since the start of the server.
+connectionpool.queuedRequests.total.description=The total number of connection requests that had to wait for a connection because of a full connection pool since the start of the server.
 
 session.create.total.description=The number of sessions that have logged in since this metric was enabled.
 session.liveSessions.description=The number of users that are currently logged in.
