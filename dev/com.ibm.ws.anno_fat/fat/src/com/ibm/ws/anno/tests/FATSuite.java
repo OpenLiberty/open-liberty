@@ -16,9 +16,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.anno.tests.caching.AbsoluteOrderingTest;
 import com.ibm.ws.anno.tests.caching.BasicAnnoCacheUsageTest;
+
 import com.ibm.ws.anno.tests.caching.MetadataCompleteTest;
-import com.ibm.ws.anno.tests.caching.MetadataCompleteTestMissingServlets;
+import com.ibm.ws.anno.tests.caching.MetadataCompleteMissingServletsTest;
 import com.ibm.ws.anno.tests.jandex.JandexAppDefaultAppMgrDefaultTest;
 import com.ibm.ws.anno.tests.jandex.JandexAppDefaultAppMgrTrueTest;
 import com.ibm.ws.anno.tests.jandex.JandexAppFalseAppMgrFalseTest;
@@ -49,16 +51,17 @@ import com.ibm.ws.fat.util.FatLogHandler;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+                
               	BasicAnnoCacheUsageTest.class,
-//              	MetadataCompleteTest.class,
-//              	MetadataCompleteTestMissingServlets.class,
-//
-//                JandexAppDefaultAppMgrDefaultTest.class,
-//                JandexAppDefaultAppMgrTrueTest.class,
-//                JandexAppFalseAppMgrFalseTest.class,
-//                JandexAppFalseAppMgrTrueTest.class,
-//                JandexAppTrueAppMgrFalseTest.class,
-//                JandexAppTrueAppMgrTrueTest.class
+              	AbsoluteOrderingTest.class,
+              	MetadataCompleteTest.class,
+              	MetadataCompleteMissingServletsTest.class,
+                JandexAppDefaultAppMgrDefaultTest.class,
+                JandexAppDefaultAppMgrTrueTest.class,
+                JandexAppFalseAppMgrFalseTest.class,
+                JandexAppFalseAppMgrTrueTest.class,
+                JandexAppTrueAppMgrFalseTest.class,
+                JandexAppTrueAppMgrTrueTest.class
 })
 
 public class FATSuite {

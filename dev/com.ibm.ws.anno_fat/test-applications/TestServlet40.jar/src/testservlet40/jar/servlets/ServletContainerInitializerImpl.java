@@ -24,10 +24,11 @@ public class ServletContainerInitializerImpl implements ServletContainerInitiali
 
     @Override
     public void onStartup(Set<Class<?>> setOfClassesInterestedIn, ServletContext context) throws ServletException {
-
+        
         System.out.println("--- TestServlet40 CONTAINER INITIALIZER! ---");
         //going to add a context attribute to show the set of classes that were passed in
         if (setOfClassesInterestedIn != null) {
+            context.setAttribute("SciTestMessage", "  SCI says Hi!");
             context.setRequestCharacterEncoding("KSC5601");
             context.setResponseCharacterEncoding("KSC5601");
             //context.setResponseCharacterEncoding("PMDINH"); //causes new message CWWWC0401E: Failed to set response character encoding

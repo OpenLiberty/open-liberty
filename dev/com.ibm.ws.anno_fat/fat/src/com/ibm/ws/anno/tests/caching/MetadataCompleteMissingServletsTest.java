@@ -35,11 +35,12 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.ibm.ws.anno.tests.caching.Utils.*;
 import com.ibm.ws.anno.tests.util.Ear;
 import com.ibm.ws.anno.tests.util.FatHelper;
 import com.ibm.ws.anno.tests.util.Jar;
+import com.ibm.ws.anno.tests.util.Utils;
 import com.ibm.ws.anno.tests.util.War;
+import com.ibm.ws.anno.tests.util.Utils.*;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 
@@ -48,8 +49,8 @@ import componenttest.topology.utils.FileUtils;
 /**
  * Test that the annotation cache is created, restart the server, and check that the cache is being used.
  */
-public class MetadataCompleteTestMissingServlets extends LoggingTest {
-    private static final Logger LOG = Logger.getLogger(MetadataCompleteTestMissingServlets.class.getName());
+public class MetadataCompleteMissingServletsTest extends LoggingTest {
+    private static final Logger LOG = Logger.getLogger(MetadataCompleteMissingServletsTest.class.getName());
 
     //
 

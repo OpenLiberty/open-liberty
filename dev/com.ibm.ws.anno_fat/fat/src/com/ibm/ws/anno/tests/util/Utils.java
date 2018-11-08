@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.anno.tests.caching;
+package com.ibm.ws.anno.tests.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,6 +25,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import com.ibm.ws.anno.tests.caching.AnnoCacheLocations;
 import com.ibm.ws.fat.util.SharedServer;
 
 import componenttest.topology.utils.FileUtils;
