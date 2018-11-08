@@ -27,6 +27,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 public class CommandLineVarTests extends ServletRunner {
 
     private static final String CONTEXT_ROOT = "varmergedconfig";
+    private static final String UPDATED_SERVER = "clv/updated.xml";
 
     @Override
     protected String getContextRoot() {
@@ -46,6 +47,10 @@ public class CommandLineVarTests extends ServletRunner {
 
         test(server);
 
+        // check that variables are still overridden after updating the server
+        server.setServerConfigurationFile(UPDATED_SERVER);
+
+        test(server);
     }
 
     @BeforeClass
