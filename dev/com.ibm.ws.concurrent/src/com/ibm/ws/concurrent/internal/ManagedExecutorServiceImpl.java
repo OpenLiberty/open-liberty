@@ -58,6 +58,7 @@ import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.resource.ResourceInfo;
+import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
@@ -82,19 +83,14 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     static final String APP_RECYCLE_SERVICE = "ApplicationRecycleCoordinator";
 
     /**
-     * Name of the unique identifier property
-     */
-    private static final String CONFIG_ID = "config.displayId";
-
-    /**
      * Names of applications using this ResourceFactory
      */
     private final Set<String> applications = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 
     /**
-     * Privileged action to lazily obtain the context service.
+     * Privileged action to lazily obtain the context service. Available only on the OSGi code path.
      */
-    final PrivilegedAction<WSContextService> contextSvcAccessor = new PrivilegedAction<WSContextService>() {
+    private final PrivilegedAction<WSContextService> contextSvcAccessor = new PrivilegedAction<WSContextService>() {
         @Override
         @Trivial
         public WSContextService run() {
@@ -107,7 +103,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     };
 
     /**
-     * Reference to the context service for this managed executor service.
+     * Reference to the context service for this managed executor service. Available only on the OSGi code path.
      */
     private final AtomicServiceReference<WSContextService> contextSvcRef = new AtomicServiceReference<WSContextService>("ContextService");
 
@@ -128,6 +124,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     final AtomicReference<PolicyExecutor> longRunningPolicyExecutorRef = new AtomicReference<PolicyExecutor>();
 
     /**
+     * Available only on the MicroProfile code path (CDI injection or ManagedExecutorBuilder).
+     */
+    private final WSContextService mpContextService;
+
+    /**
      * Reference to the name of this managed executor service.
      * The name is the jndiName if specified, otherwise the config id.
      */
@@ -141,7 +142,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     /**
      * Privileged action to lazily obtain the transaction context provider.
      */
-    final PrivilegedAction<ThreadContextProvider> tranContextProviderAccessor = new PrivilegedAction<ThreadContextProvider>() {
+    private final PrivilegedAction<ThreadContextProvider> tranContextProviderAccessor = new PrivilegedAction<ThreadContextProvider>() {
         @Override
         @Trivial
         public ThreadContextProvider run() {
@@ -152,7 +153,28 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     /**
      * Reference to the transaction context provider.
      */
-    private final AtomicServiceReference<ThreadContextProvider> tranContextProviderRef = new AtomicServiceReference<ThreadContextProvider>("TransactionContextProvider");
+    private AtomicServiceReference<ThreadContextProvider> tranContextProviderRef = new AtomicServiceReference<ThreadContextProvider>("TransactionContextProvider");
+
+    /**
+     * Constructor for OSGi code path.
+     */
+    @Trivial
+    public ManagedExecutorServiceImpl() {
+        mpContextService = null;
+    }
+
+    /**
+     * Constructor for MicroProfile Concurrency (ManagedExecutorBuilder and CDI injected ManagedExecutor).
+     */
+    @Trivial // traced in super super class
+    public ManagedExecutorServiceImpl(String name, PolicyExecutor policyExecutor, WSContextService mpThreadContext,
+                                      AtomicServiceReference<ThreadContextProvider> tranContextProviderRef) {
+        this.name.set(name);
+        this.policyExecutor = policyExecutor;
+        this.longRunningPolicyExecutorRef.set(policyExecutor);
+        this.mpContextService = mpThreadContext;
+        this.tranContextProviderRef = tranContextProviderRef;
+    }
 
     /**
      *
@@ -241,7 +263,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      */
     @SuppressWarnings("unchecked")
     private <T> TaskLifeCycleCallback[] createCallbacks(Collection<? extends Callable<T>> tasks) {
-        WSContextService contextSvc = AccessController.doPrivileged(contextSvcAccessor);
+        WSContextService contextSvc = getContextService();
 
         int numTasks = tasks.size();
         TaskLifeCycleCallback[] callbacks = new TaskLifeCycleCallback[numTasks];
@@ -281,7 +303,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
 
     @Override
     public WSContextService getContextService() {
-        return AccessController.doPrivileged(contextSvcAccessor);
+        return mpContextService == null ? AccessController.doPrivileged(contextSvcAccessor) : mpContextService;
     }
 
     @Override
@@ -457,7 +479,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     public <T> Future<T> submit(Callable<T> task) {
         Map<String, String> execProps = getExecutionProperties(task);
 
-        WSContextService contextSvc = AccessController.doPrivileged(contextSvcAccessor);
+        WSContextService contextSvc = getContextService();
 
         @SuppressWarnings("unchecked")
         TaskLifeCycleCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
@@ -469,7 +491,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     public <T> Future<T> submit(Runnable task, T result) {
         Map<String, String> execProps = getExecutionProperties(task);
 
-        WSContextService contextSvc = AccessController.doPrivileged(contextSvcAccessor);
+        WSContextService contextSvc = getContextService();
 
         @SuppressWarnings("unchecked")
         TaskLifeCycleCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
@@ -480,6 +502,20 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @Override
     public Future<?> submit(Runnable task) {
         return submit(task, null);
+    }
+
+    /**
+     * Uses the transaction context provider to suspends the currently active transaction or LTC on the thread.
+     *
+     * @return ThreadContext instance that must be used to restore the suspended transaction context if returned.
+     *         Null if transaction context is unavailable.
+     */
+    ThreadContext suspendTransaction() {
+        ThreadContextProvider tranContextProvider = AccessController.doPrivileged(tranContextProviderAccessor);
+        ThreadContext suspendedTranSnapshot = tranContextProvider == null ? null : tranContextProvider.captureThreadContext(AbstractTask.XPROPS_SUSPEND_TRAN, null);
+        if (suspendedTranSnapshot != null)
+            suspendedTranSnapshot.taskStarting();
+        return suspendedTranSnapshot;
     }
 
     /**

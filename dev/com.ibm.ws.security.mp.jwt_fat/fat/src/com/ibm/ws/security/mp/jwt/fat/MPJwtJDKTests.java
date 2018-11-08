@@ -14,23 +14,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
+import com.ibm.ws.security.fat.common.utils.MySkipRule;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
-import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 
-import componenttest.annotation.MaximumJavaLevel;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -48,22 +51,57 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
-// TODO - need to finish on Windows - don't have a Java 7 for Mac right now.
-
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class MPJwtJDKTests extends CommonMpJwtFat {
 
     public static Class<?> thisClass = MPJwtJDKTests.class;
 
-    private static final String javaVersion = System.getProperty("java.version");
-    private static boolean isJava80OrGreater = true;
-    private static boolean shouldGetServletInitializationException = true;
-
     @Server("com.ibm.ws.security.mp.jwt.fat")
     public static LibertyServer resourceServer;
 
-    private final TestValidationUtils validationUtils = new TestValidationUtils();
+    @Rule
+    public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
+
+    public static class skipIfJava8OrHigher extends MySkipRule {
+        @Override
+        public Boolean callSpecificCheck() {
+
+            try {
+                JavaInfo javaInfo = JavaInfo.forServer(resourceServer);
+                int majorVersion = javaInfo.majorVersion();
+                if (majorVersion < 8) {
+                    Log.info(thisClass, "skipIfJava8OrHigher", "Skip Tests: false,  Major version is: " + majorVersion);
+                    return false;
+                } else {
+                    Log.info(thisClass, "skipIfJava8OrHigher", "Skip Tests: true,   Major version is: " + majorVersion);
+                    return true;
+                }
+
+            } catch (Exception e) {
+                Log.info(thisClass, "skipIfJava8OrHigher", "Exception occurred: " + e.getMessage());
+                // if there is some problem assume we should run the tests
+                // if there really is a problem with the setup, tests will fail and we can investigate
+                // if we skip the test, we may be sweeping problems under the rug
+                return false;
+            }
+        }
+    }
+
+    /**
+     * Don't restore between tests
+     * The server is not running between tests...
+     */
+    @Override
+    public void restoreTestServers() {
+        Log.info(thisClass, "restoreTestServersWithCheck", "* Skipping server restore **");
+        logTestCaseInServerLogs("** Skipping server restore **");
+        try {
+            resourceServer.setStarted(false);
+        } catch (Exception e) {
+            Log.info(thisClass, "restoreTestServers", "Failed trying to reset server stared state: " + e.getMessage());
+        }
+    }
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -72,137 +110,114 @@ public class MPJwtJDKTests extends CommonMpJwtFat {
 
     }
 
+    @AfterClass
+    public static void commonAfterClass() throws Exception {
+        serverTracker.stopAllRunningServers();
+        Log.info(thisClass, "commonAfterClass", "Ending Class");
+    }
+
     protected static void setUpAndStartRSServerForTests(LibertyServer server, String configFile) throws Exception {
+
         bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
         bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "rsacert");
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
-        deployRSServerApiTestApps(server);
         serverTracker.addServer(server);
-        // make sure we get error messages during startup
-        server.startServerUsingExpandedConfiguration(configFile, getExpectedMsgsBasedOnJavaVersion());
-        SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
-        server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH));
+        server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKZ0002E_EXCEPTION_WHILE_STARTING_APP));
+        server.setStarted(false);
+        Log.info(thisClass, "setUpAndStartRSServerForTests", "Is server started: " + server.isStarted());
+
     }
 
-    // this test should be done during startup...
-    //    @AllowedFFDC("java.lang.NoClassDefFoundError")
-    //    @Mode(TestMode.LITE)
-    //    @Test
-    //    public void MPJwtEarlyJavaVersionsTests_basicSetup_runtimeJDKVersion() throws Exception {
-    //        resourceTestServer.reconfigServer("rs_server_jdk.xml", _testName, MpJwtConstants.JUNIT_REPORTING, getExpectedMsgsBasedOnJavaVersion());
-    //        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, configFile, reconfigMsgs);
-    //        expectedMessages();
-    //    }
-
-    @MaximumJavaLevel(javaLevel = 7)
-    //    @AllowedFFDC(value = { "java.lang.NoClassDefFoundError", "javax.servlet.ServletException" })
+    // to run tests locally, we need java 8 in the gradle (and therefore junit client env).  The @MaximumJavaLevel rule will check the clients java version.  We're interested in the
+    // servers java version, so, we have our own rule, skipIfJava8OrHigher
+    //@MaximumJavaLevel(javaLevel = 7)
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJava8OrHigher.class) // skip test if Java 8 or higher
+    @AllowedFFDC(value = { "java.lang.UnsupportedClassVersionError" }) // framework checks for the ffdc even if the test is skipped, so, need to use Allowed instead of Expected
     @Test
     public void MPJwtEarlyJavaVersionsTests_IncludeJWTToken_BasicApp() throws Exception {
 
-        MPJwtEarlyJavaVersionsTests_mainPath_ContextNull_test(MpJwtFatConstants.MPJWT_APP_SEC_CONTEXT_REQUEST_SCOPE);
+        MPJwtEarlyJavaVersionsTests_mainPath_ContextNull_test(MpJwtFatConstants.MPJWT_APP_SEC_CONTEXT_REQUEST_SCOPE,
+                                                              createAppClassList("com.ibm.ws.jaxrs.fat.microProfileApp.SecurityContext.ApplicationScoped.MicroProfileApp",
+                                                                                 "com.ibm.ws.jaxrs.fat.microProfileApp.SecurityContext.NotScoped.MicroProfileApp",
+                                                                                 "com.ibm.ws.jaxrs.fat.microProfileApp.SecurityContext.RequestScoped.MicroProfileApp",
+                                                                                 "com.ibm.ws.jaxrs.fat.microProfileApp.SecurityContext.SessionScoped.MicroProfileApp",
+                                                                                 "com.ibm.ws.jaxrs.fat.microProfileApp.SecurityContextMicroProfileApp"));
 
     }
 
-    @MaximumJavaLevel(javaLevel = 7)
-    //    @AllowedFFDC(value = { "java.lang.NoClassDefFoundError", "javax.servlet.ServletException" })
+    // to run tests locally, we need java 8 in the gradle (and therefore junit client env).  The @MaximumJavaLevel rule will check the clients java version.  We're interested in the
+    // servers java version, so, we have our own rule, skipIfJava8OrHigher
+    //@MaximumJavaLevel(javaLevel = 7)
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJava8OrHigher.class) // skip test if Java 8 or higher
+    @AllowedFFDC(value = { "java.lang.UnsupportedClassVersionError" }) // framework checks for the ffdc even if the test is skipped, so, need to use Allowed instead of Expected
     @Test
     public void MPJwtEarlyJavaVersionsTests_IncludeJWTToken_usingInjection() throws Exception {
 
-        MPJwtEarlyJavaVersionsTests_mainPath_ContextNull_test(MpJwtFatConstants.MPJWT_APP_TOKEN_INJECT_REQUEST_SCOPE);
+        MPJwtEarlyJavaVersionsTests_mainPath_ContextNull_test(MpJwtFatConstants.MPJWT_APP_TOKEN_INJECT_REQUEST_SCOPE,
+                                                              createAppClassList("com.ibm.ws.jaxrs.fat.microProfileApp.Injection.ApplicationScoped.MicroProfileApp",
+                                                                                 "com.ibm.ws.jaxrs.fat.microProfileApp.Injection.NotScoped.MicroProfileApp",
+                                                                                 "com.ibm.ws.jaxrs.fat.microProfileApp.Injection.RequestScoped.MicroProfileApp",
+                                                                                 "com.ibm.ws.jaxrs.fat.microProfileApp.Injection.SessionScoped.MicroProfileApp",
+                                                                                 "com.ibm.ws.jaxrs.fat.microProfileApp.JsonWebTokenInjectionMicroProfileApp"));
     }
 
-    @MaximumJavaLevel(javaLevel = 7)
-    //    @AllowedFFDC(value = { "java.lang.NoClassDefFoundError", "javax.servlet.ServletException" })
+    // to run tests locally, we need java 8 in the gradle (and therefore junit client env).  The @MaximumJavaLevel rule will check the clients java version.  We're interested in the
+    // servers java version, so, we have our own rule, skipIfJava8OrHigher
+    //@MaximumJavaLevel(javaLevel = 7)
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJava8OrHigher.class) // skip test if Java 8 or higher
+    @AllowedFFDC(value = { "java.lang.UnsupportedClassVersionError" }) // framework checks for the ffdc even if the test is skipped, so, need to use Allowed instead of Expected
     @Test
     public void MPJwtEarlyJavaVersionsTests_IncludeJWTToken_usingClaimInjection() throws Exception {
 
-        MPJwtEarlyJavaVersionsTests_mainPath_ContextNull_test(MpJwtFatConstants.MPJWT_APP_CLAIM_INJECT_REQUEST_SCOPE);
+        MPJwtEarlyJavaVersionsTests_mainPath_ContextNull_test(MpJwtFatConstants.MPJWT_APP_CLAIM_INJECT_REQUEST_SCOPE,
+                                                              createAppClassList("com.ibm.ws.jaxrs.fat.microProfileApp.ClaimInjection.ApplicationScoped.Instance.MicroProfileApp",
+                                                                                 "com.ibm.ws.jaxrs.fat.microProfileApp.ClaimInjection.NotScoped.MicroProfileApp",
+                                                                                 "com.ibm.ws.jaxrs.fat.microProfileApp.ClaimInjection.RequestScoped.MicroProfileApp",
+                                                                                 "com.ibm.ws.jaxrs.fat.microProfileApp.ClaimInjection.SessionScoped.Instance.MicroProfileApp",
+                                                                                 "com.ibm.ws.jaxrs.fat.microProfileApp.ClaimInjectionAllTypesMicroProfileApp",
+                                                                                 "com.ibm.ws.jaxrs.fat.microProfileApp.ClaimInjectionInstanceMicroProfileApp"));
 
     }
 
-    public void MPJwtEarlyJavaVersionsTests_mainPath_ContextNull_test(String app) throws Exception {
+    public List<String> createAppClassList(String... apps) throws Exception {
 
-        String builtToken = "eyJhbGciOiJSUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiQmVhcmVyIiwic3ViIjoidGVzdHVzZXIiLCJ1cG4iOiJ0ZXN0dXNlciIsImlzcyI6Imh0dHBzOi8vOS40MS4yNDQuMTgyOjg5NDcvand0L2RlZmF1bHRKV1QiLCJleHAiOjkyMjMzNzIwMzY4NTQ3NzYsImlhdCI6MTUwNTIzMTI5MH0.M1MZ8PCVvE5xrHCWGuk9h-9C3QUhOLKXaQjV3jknFXhV2DP7jT_hTqehVMG8bqYAw2aoRwLiDnXTyWAuenei-hDYKhDB4pEHBAKvSJUzL5CrCWkwlFV4uMAq2bZI5S9AkS_8JClrJJcOemvoLV-OXQU60BuCSevhdlv7rDdm75M_kHtDNiQQXi9LywgQM54nG4vCx7lVghWniLtLP8609VUpTAnMIwKrtu54eXJY4R906p9Po79_0NPVWPnS64C4bsi-H8ubYzB4QltiuWavgmt59C4ggHXQ8YsAntc_cFjZRTI3HDo4nxTCZC72aXoFThRkrsiw_VERgh0M7Bmyeg";
-
-        String testUrl = buildAppUrl(resourceServer, MpJwtFatConstants.MICROPROFILE_SERVLET, app);
-
-        WebClient webClient = actions.createWebClient();
-
-        Page response = actions.invokeUrlWithBearerToken(_testName, webClient, testUrl, builtToken);
-        Expectations expectations = new Expectations();
-        expectations.addSuccessCodeForCurrentAction();
-
-        validationUtils.validateResult(response, expectations);
-
-        //        WebConversation wc = new WebConversation();
-        //
-        //        JwtBuilderSettings updatedJwtBuilderSettings = jwtBuilderSettings.copyTestSettings();
-        //
-        //        updatedJwtBuilderSettings.setRSProtectedResource(app);
-        //
-        //        updatedJwtBuilderSettings.setConfigId(null);
-        //        // in order to consume the token, we need a subject, so add
-        //        updatedJwtBuilderSettings.setUser("testuser");
-        //        updatedJwtBuilderSettings.setClaims("upn#:#testuser");
-        //        updatedJwtBuilderSettings.setSignatureAlgorithm(updatedJwtBuilderSettings.getSignatureAlg());
-        //
-        //        // get the token so that we can pass it in the header to the RS Protected App request
-        //        String token = "eyJhbGciOiJSUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiQmVhcmVyIiwic3ViIjoidGVzdHVzZXIiLCJ1cG4iOiJ0ZXN0dXNlciIsImlzcyI6Imh0dHBzOi8vOS40MS4yNDQuMTgyOjg5NDcvand0L2RlZmF1bHRKV1QiLCJleHAiOjkyMjMzNzIwMzY4NTQ3NzYsImlhdCI6MTUwNTIzMTI5MH0.M1MZ8PCVvE5xrHCWGuk9h-9C3QUhOLKXaQjV3jknFXhV2DP7jT_hTqehVMG8bqYAw2aoRwLiDnXTyWAuenei-hDYKhDB4pEHBAKvSJUzL5CrCWkwlFV4uMAq2bZI5S9AkS_8JClrJJcOemvoLV-OXQU60BuCSevhdlv7rDdm75M_kHtDNiQQXi9LywgQM54nG4vCx7lVghWniLtLP8609VUpTAnMIwKrtu54eXJY4R906p9Po79_0NPVWPnS64C4bsi-H8ubYzB4QltiuWavgmt59C4ggHXQ8YsAntc_cFjZRTI3HDo4nxTCZC72aXoFThRkrsiw_VERgh0M7Bmyeg";
-        //
-        //        List<validationData> expectations = vData.addSuccessStatusCodesForActions(MpJwtConstants.INVOKE_RS_PROTECTED_RESOURCE_LOGIN_ACTIONS);
-        //        if (shouldGetServletInitializationException) {
-        //            shouldGetServletInitializationException = false;
-        //            expectations = validationTools.addMessageExpectation(resourceTestServer, expectations, MpJwtConstants.INVOKE_RS_PROTECTED_RESOURCE, MpJwtConstants.MESSAGES_LOG, MpJwtConstants.STRING_CONTAINS, "Message log did not contain the exception while starting the servlet.", MpJwtMessageConstants.SERVLET_DID_NOT_START);
-        //        }
-        //        expectations = vData.addExpectation(expectations, MpJwtConstants.INVOKE_PROTECTED_RESOURCE, MpJwtConstants.RESPONSE_FULL, MpJwtConstants.STRING_CONTAINS, "Did not obtained the expected response: " + MpJwtConstants.JWT_CONTEXT_NULL, null, MpJwtConstants.JWT_CONTEXT_NULL);
-        //
-        //        WebResponse response = invokeMPJWTApp(_testName, wc, token, updatedJwtBuilderSettings, expectations);
-        //
-        //        List<validationData> expectations2 = vData.addSuccessStatusCodesForActions(MpJwtConstants.INVOKE_RS_PROTECTED_RESOURCE, MpJwtConstants.INVOKE_RS_PROTECTED_RESOURCE_ONLY_ACTIONS);
-        //        expectations2 = vData.addExpectation(expectations2, MpJwtConstants.PERFORM_LOGIN, MpJwtConstants.RESPONSE_FULL, MpJwtConstants.STRING_CONTAINS, "Did not receive error 500 and ServletException in Response.", null, MpJwtConstants.RECV_ERROR_CODE);
-        //        updatedJwtBuilderSettings.setAdminUser("testuser");
-        //        updatedJwtBuilderSettings.setAdminPswd("testuserpwd");
-        //        helper.performLogin(_testName, wc, response, updatedJwtBuilderSettings, expectations2);
-
-    }
-
-    public static boolean isLessThanJava80() {
-        if (javaVersion.startsWith("1.6") || javaVersion.startsWith("1.7")) {
-            isJava80OrGreater = false;
+        List<String> classList = new ArrayList<String>();
+        for (String app : apps) {
+            classList.add(app);
         }
-        return isJava80OrGreater;
+        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.CommonMicroProfileMarker");
+        classList.add("com.ibm.ws.jaxrs.fat.microProfileApp.Utils");
+        return classList;
+
     }
 
-    public static List<String> getExpectedMsgsBasedOnJavaVersion() {
-        String thisMethod = "getExpectedMsgsBasedOnJavaVersion()";
-        if (!isLessThanJava80()) {
-            List<String> msgs = new ArrayList<String>();
-            msgs.add(MpJwtMessageConstants.MIN_JDK_FEATURE_REQUIREMENT);
-            msgs.add(MpJwtMessageConstants.UNRESOLVED_BUNDLE);
-            return msgs;
-        } else {
-            Log.info(thisClass, thisMethod, "The test class will not run because this test class is designed to run on JDK 1.6 and 1.7");
-            //            return MpJwtFatConstants.NO_EXTRA_MSGS;
-            return null;
+    public void tryToDeployApp(LibertyServer server, List<String> classList) throws Exception {
+
+        ShrinkHelper.exportAppToServer(server, setupUtils.genericCreateArchiveWithJsps(MpJwtFatConstants.MICROPROFILE_SERVLET, classList));
+    }
+
+    public void MPJwtEarlyJavaVersionsTests_mainPath_ContextNull_test(String app, List<String> classList) throws Exception {
+
+        try {
+            tryToDeployApp(resourceServer, classList);
+            resourceServer.startServerUsingExpandedConfiguration("rs_server_jdk.xml", getExpectedMsgs());
+        } catch (Exception e) {
+            Log.info(thisClass, _testName, "Server start: " + e.getMessage());
+        } finally {
+            try {
+                resourceServer.stopServer((String[]) null);
+            } catch (Exception e) {
+                Log.info(thisClass, _testName, "Server stop: " + e.getMessage());
+            }
         }
-
     }
 
-    //    public static void expectedMessages() throws Exception {
-    //        if (!isLessThanJava80()) {
-    //            ignoreMessages(resourceServer, getExpectedMsgsBasedOnJavaVersion().toArray(new String[getExpectedMsgsBasedOnJavaVersion().size()]));
-    //            resourceServer.addIgnoredServerException(MpJwtMessageConstants.ANNOTATION_METHOD_WARNING);
-    //            resourceServer.addIgnoredServerException(MpJwtMessageConstants.MICROPROFILE_NOCLASSDEFFOUND);
-    //            resourceServer.addIgnoredServerException(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH);
-    //            resourceServer.addIgnoredServerException(MpJwtMessageConstants.ANNOTATION_FIELD_WARNING);
-    //            resourceServer.addIgnoredServerException(MpJwtMessageConstants.MICROPROFILE_APP_DID_NOT_START_EXCEPTION);
-    //            resourceServer.addIgnoredServerException(MpJwtMessageConstants.MICROPROFILE_INITIALIZATION_EXCEPTION);
-    //            resourceServer.addIgnoredServerException(MpJwtMessageConstants.MICROPROFILE_INITIALIZATION_EXCEPTION_2);
-    //        } else {
-    //            resourceServer.addIgnoredServerException(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH);
-    //        }
-    //
-    //    }
+    public static List<String> getExpectedMsgs() {
+        List<String> msgs = new ArrayList<String>();
+        msgs.add(MpJwtMessageConstants.MIN_JDK_FEATURE_REQUIREMENT);
+        msgs.add(MpJwtMessageConstants.UNRESOLVED_BUNDLE);
+        return msgs;
+    }
 
 }

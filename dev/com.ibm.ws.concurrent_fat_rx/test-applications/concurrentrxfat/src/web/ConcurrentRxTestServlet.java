@@ -47,6 +47,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ContextService;
@@ -59,6 +60,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
+import org.eclipse.microprofile.concurrent.ManagedExecutorBuilder;
 import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.eclipse.microprofile.concurrent.ThreadContextBuilder;
 import org.junit.Test;
@@ -1848,6 +1850,70 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
+     * Basic test of ManagedExecutorBuilder, including one built-in container context type (APPLICATION)
+     * and one custom context provider type (TestContextTypes.STATE). Build a MicroProfile ManagedExecutor
+     * instance and use it to create several completion stages based on current context of the servlet thread.
+     * Change the custom "State" context of the servlet thread and allow the completion stage actions to run,
+     * verifying that the originally captured context is used. After completion, verify that
+     * the custom "State" context on the servlet thread has been restored to what we most recently set.
+     */
+    @Test
+    public void testManagedExecutorBuilder() throws Exception {
+        ClassLoader original = Thread.currentThread().getContextClassLoader();
+
+        ManagedExecutor executor = ManagedExecutorBuilder.instance()
+                        .propagated(ThreadContext.APPLICATION, TestContextTypes.STATE)
+                        .build();
+
+        CompletableFuture<Double> costOfItem;
+        CompletableFuture<Double> mnSalesTax;
+        CompletableFuture<Double> iaSalesTax;
+        CompletableFuture<Double> averageSalesTax;
+
+        try {
+            costOfItem = executor.newIncompleteFuture();
+
+            CurrentLocation.setLocation("Minnesota");
+            mnSalesTax = costOfItem.thenApply(cost -> {
+                assertSame(original, Thread.currentThread().getContextClassLoader()); // requires Application context
+                return CurrentLocation.getStateSalesTax(cost); // requires State context
+            });
+
+            CurrentLocation.setLocation("Iowa");
+            iaSalesTax = costOfItem.thenApply(cost -> {
+                assertSame(original, Thread.currentThread().getContextClassLoader()); // requires Application context
+                return CurrentLocation.getStateSalesTax(cost); // requires State context
+            });
+
+            CurrentLocation.clear();
+            Thread.currentThread().setContextClassLoader(null);
+
+            averageSalesTax = mnSalesTax.thenCombine(iaSalesTax, (mnTax, iaTax) -> {
+                assertTrue(CurrentLocation.isUnspecified());
+                assertNotSame(original, Thread.currentThread().getContextClassLoader()); // requires Application context
+                return (mnTax + iaTax) / 2.0;
+            });
+
+            // Put a different state context on the thread before allowing the actions to run
+            CurrentLocation.setLocation("Wisconsin");
+
+            costOfItem.complete(400.00);
+
+            double average = averageSalesTax.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            assertEquals(24.00, iaSalesTax.getNow(20.0), 0.000001); // IA sales tax
+            assertEquals(27.50, mnSalesTax.getNow(30.0), 0.000001); // MN sales tax
+            assertEquals(25.75, average, 0.000001);
+
+            // verify that context is restored once complete
+            assertEquals(5.000, CurrentLocation.getStateSalesTax(100.0), 0.000001); // WI tax rate
+        } finally {
+            CurrentLocation.clear();
+            Thread.currentThread().setContextClassLoader(original);
+        }
+    }
+
+    /**
      * Test a managed completable future using a managed executor with maximum concurrency of 2 and maximum policy of loose.
      * This should limit concurrent async actions to 2, while not limiting synchronous actions.
      */
@@ -2901,6 +2967,66 @@ public class ConcurrentRxTestServlet extends FATServlet {
         } finally {
             // allow threads to complete in case test fails
             blocker.countDown();
+        }
+    }
+
+    /**
+     * Complete an incomplete stage and verify that dependent actions of the stage run on the same thread
+     * that performs the completion.
+     */
+    @Test
+    public void testRunUponCompletion() throws Exception {
+        ClassLoader original = Thread.currentThread().getContextClassLoader();
+        CompletableFuture<ClassLoader> cf1 = defaultManagedExecutor.newIncompleteFuture();
+        CompletableFuture<ClassLoader> cf2 = cf1.thenApply(cl -> Thread.currentThread().getContextClassLoader());
+
+        Thread.currentThread().setContextClassLoader(null);
+        try {
+            cf1.complete(null);
+            assertSame(original, cf2.getNow(null));
+        } finally {
+            Thread.currentThread().setContextClassLoader(original);
+        }
+    }
+
+    /**
+     * This test aims to intermittently cover a situation where the thread invoking
+     * completableFuture.get() can end up running the action in line.
+     * There isn't any known way to force this path through the CompletableFuture because
+     * it depends on timing, but this test case covers a scenario where it is possible
+     * and verifies the thread context propagation regardless of where the action runs.
+     */
+    @Test
+    public void testRunUponGet() throws Exception {
+        ClassLoader original = Thread.currentThread().getContextClassLoader();
+
+        CompletableFuture<Integer> cf1 = defaultManagedExecutor.newIncompleteFuture();
+
+        CompletableFuture<ClassLoader> cf2 = cf1.thenApply(i -> {
+            System.out.println("cf2 stack " + Arrays.stream(Thread.currentThread().getStackTrace()).map(st -> st.toString()).collect(Collectors.joining("\r\n at ")));
+            return Thread.currentThread().getContextClassLoader();
+        });
+
+        CompletableFuture<ClassLoader> cf3 = cf2.thenApply(cl -> {
+            System.out.println("cf3 stack " + Arrays.stream(Thread.currentThread().getStackTrace()).map(st -> st.toString()).collect(Collectors.joining("\r\n at ")));
+            return Thread.currentThread().getContextClassLoader();
+        });
+
+        // clear context from the current thread, which helps verify that the
+        // previously captured context gets applied when the action runs on this thread
+        Thread.currentThread().setContextClassLoader(null);
+        try {
+            // Complete on a separate thread, with the hope that the current thread which is awaiting
+            // the result of the dependent stage is able to at least sometimes step in and run the
+            // dependent stage action
+            testThreads.submit(() -> cf1.complete(112));
+
+            // Dependent stage can run on current thread if the completing thread hasn't already started it
+            assertEquals(Integer.valueOf(112), cf1.get());
+            assertSame(original, cf2.get());
+            assertSame(original, cf3.get());
+        } finally {
+            Thread.currentThread().setContextClassLoader(original);
         }
     }
 

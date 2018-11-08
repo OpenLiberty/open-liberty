@@ -87,6 +87,10 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         }
 
         URI incomingUri = incomingRequestContext.getUriInfo().getRequestUri();
+        String incomingPath = incomingRequestContext.getUriInfo().getPath();
+        if (!incomingPath.startsWith("/")) {
+            incomingPath = "/" + incomingPath;
+        }
 
         String incomingURL = incomingUri.toURL().toString();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -100,7 +104,7 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             Tr.debug(tc, methodName + " priorContext", priorOutgoingContext);
         }
 
-        boolean process = OpentracingService.process(incomingUri, SpanFilterType.INCOMING);
+        boolean process = OpentracingService.process(incomingUri, incomingPath, SpanFilterType.INCOMING);
 
         String buildSpanName;
         if (helper != null) {
