@@ -1226,7 +1226,7 @@ public class ProfileManager implements ProfileServiceLite {
         if (uniqueName == null) {
             List<Context> ctxs = inRoot.getContexts();
             for (Context c : ctxs) {
-                if (c.getKey() == "useUserFilterForSearch" || c.getKey() == "useGroupFilterForSearch") {
+                if ("useUserFilterForSearch".equals(c.getKey()) || "useGroupFilterForSearch".equals(c.getKey())) {
                     uniqueName = (String) c.getValue();
                 }
             }
