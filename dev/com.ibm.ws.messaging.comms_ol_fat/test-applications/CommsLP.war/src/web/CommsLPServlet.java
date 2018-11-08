@@ -1,10 +1,8 @@
 package web;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Collections;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import test.util.ResourceList;
 
 import javax.annotation.Resource;
 import javax.jms.JMSException;
@@ -26,11 +24,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
-
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import test.util.ResourceList;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class CommsLPServlet extends HttpServlet {
     private static final long serialVersionUID = 7709282314904580334L;

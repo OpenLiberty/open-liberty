@@ -11,8 +11,10 @@
 package com.ibm.ws.messaging.comms.fat;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import componenttest.matchers.Matchers;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import org.hamcrest.CoreMatchers;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
@@ -31,7 +33,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.OVERWRITE;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 public class FeatureUpdate {
@@ -179,21 +185,22 @@ public class FeatureUpdate {
         server.setServerConfigurationFile(newServerXml);
 
         // wait for configuration update to complete
-        server.waitForStringInLogUsingMark("CWWKG0017I");
+        String logLine = server.waitForStringInLogUsingMark("CWWKG001[78]I");
+        assertThat("Server configuration should have been updated", logLine, not(containsString("CWWKG0018I")));
     }
 
     public static void setupShrinkWrap() throws Exception {
-        JavaArchive utils = ShrinkWrap.create(JavaArchive.class, "utilLib.jar")
+        final JavaArchive utilsJar = ShrinkWrap.create(JavaArchive.class, "utilLib.jar")
                 .addPackages(true, "test.util");
 
-        Archive CommsLPwar = ShrinkWrap.create(WebArchive.class, "CommsLP.war")
+        final Archive testWar = ShrinkWrap.create(WebArchive.class, "CommsLP.war")
                 .addClass("web.CommsLPServlet")
                 .add(new FileAsset(new File("test-applications/CommsLP.war/resources/WEB-INF/web.xml")), "WEB-INF/web.xml")
                 .add(new FileAsset(new File("test-applications/CommsLP.war/resources/META-INF/permissions.xml")), "META-INF/permissions.xml")
-                .addAsLibrary(utils);
+                .addAsLibrary(utilsJar);
 
-        ShrinkHelper.exportDropinAppToServer(server2, CommsLPwar, OVERWRITE);
+        ShrinkHelper.exportDropinAppToServer(server2, testWar, OVERWRITE);
 
-        ShrinkHelper.exportDropinAppToServer(server1, CommsLPwar, OVERWRITE);
+        ShrinkHelper.exportDropinAppToServer(server1, testWar, OVERWRITE);
     }
 }
