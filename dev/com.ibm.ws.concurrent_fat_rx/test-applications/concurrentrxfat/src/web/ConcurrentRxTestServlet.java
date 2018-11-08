@@ -60,6 +60,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
+import org.eclipse.microprofile.concurrent.ManagedExecutorBuilder;
 import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.eclipse.microprofile.concurrent.ThreadContextBuilder;
 import org.junit.Test;
@@ -1846,6 +1847,70 @@ public class ConcurrentRxTestServlet extends FATServlet {
         }
 
         assertEquals(Integer.valueOf(2001), cf5.handle(increment).get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Basic test of ManagedExecutorBuilder, including one built-in container context type (APPLICATION)
+     * and one custom context provider type (TestContextTypes.STATE). Build a MicroProfile ManagedExecutor
+     * instance and use it to create several completion stages based on current context of the servlet thread.
+     * Change the custom "State" context of the servlet thread and allow the completion stage actions to run,
+     * verifying that the originally captured context is used. After completion, verify that
+     * the custom "State" context on the servlet thread has been restored to what we most recently set.
+     */
+    @Test
+    public void testManagedExecutorBuilder() throws Exception {
+        ClassLoader original = Thread.currentThread().getContextClassLoader();
+
+        ManagedExecutor executor = ManagedExecutorBuilder.instance()
+                        .propagated(ThreadContext.APPLICATION, TestContextTypes.STATE)
+                        .build();
+
+        CompletableFuture<Double> costOfItem;
+        CompletableFuture<Double> mnSalesTax;
+        CompletableFuture<Double> iaSalesTax;
+        CompletableFuture<Double> averageSalesTax;
+
+        try {
+            costOfItem = executor.newIncompleteFuture();
+
+            CurrentLocation.setLocation("Minnesota");
+            mnSalesTax = costOfItem.thenApply(cost -> {
+                assertSame(original, Thread.currentThread().getContextClassLoader()); // requires Application context
+                return CurrentLocation.getStateSalesTax(cost); // requires State context
+            });
+
+            CurrentLocation.setLocation("Iowa");
+            iaSalesTax = costOfItem.thenApply(cost -> {
+                assertSame(original, Thread.currentThread().getContextClassLoader()); // requires Application context
+                return CurrentLocation.getStateSalesTax(cost); // requires State context
+            });
+
+            CurrentLocation.clear();
+            Thread.currentThread().setContextClassLoader(null);
+
+            averageSalesTax = mnSalesTax.thenCombine(iaSalesTax, (mnTax, iaTax) -> {
+                assertTrue(CurrentLocation.isUnspecified());
+                assertNotSame(original, Thread.currentThread().getContextClassLoader()); // requires Application context
+                return (mnTax + iaTax) / 2.0;
+            });
+
+            // Put a different state context on the thread before allowing the actions to run
+            CurrentLocation.setLocation("Wisconsin");
+
+            costOfItem.complete(400.00);
+
+            double average = averageSalesTax.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            assertEquals(24.00, iaSalesTax.getNow(20.0), 0.000001); // IA sales tax
+            assertEquals(27.50, mnSalesTax.getNow(30.0), 0.000001); // MN sales tax
+            assertEquals(25.75, average, 0.000001);
+
+            // verify that context is restored once complete
+            assertEquals(5.000, CurrentLocation.getStateSalesTax(100.0), 0.000001); // WI tax rate
+        } finally {
+            CurrentLocation.clear();
+            Thread.currentThread().setContextClassLoader(original);
+        }
     }
 
     /**

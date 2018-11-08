@@ -33,10 +33,11 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
 import com.ibm.ws.concurrent.service.AbstractManagedExecutorService;
+import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.resource.ResourceFactory;
-import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
@@ -52,7 +53,24 @@ import com.ibm.wsspi.threadcontext.WSContextService;
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=org.eclipse.microprofile.concurrent.ManagedExecutor" })
 public class ManagedExecutorImpl extends AbstractManagedExecutorService implements ManagedExecutor {
+    /**
+     * Constructor for OSGi code path.
+     */
+    @Trivial
+    public ManagedExecutorImpl() {
+        super();
+    }
+
+    /**
+     * Constructor for MicroProfile Concurrency (ManagedExecutorBuilder and CDI injected ManagedExecutor).
+     */
+    public ManagedExecutorImpl(String name, PolicyExecutor policyExecutor, WSContextService mpThreadContext,
+                               AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> tranContextProviderRef) {
+        super(name, policyExecutor, mpThreadContext, tranContextProviderRef);
+    }
+
     @Activate
+    @Override
     @Trivial
     protected void activate(ComponentContext context, Map<String, Object> properties) {
         super.activate(context, properties);
@@ -69,6 +87,7 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
     }
 
     @Deactivate
+    @Override
     @Trivial
     protected void deactivate(ComponentContext context) {
         super.deactivate(context);
@@ -84,6 +103,7 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
         return ManagedCompletableFuture.failedStage(ex, this);
     }
 
+    @Override
     @Modified
     @Trivial
     protected void modified(final ComponentContext context, Map<String, Object> properties) {
@@ -100,27 +120,31 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
         return ManagedCompletableFuture.runAsync(runnable, this);
     }
 
+    @Override
     @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
     @Trivial
     protected void setConcurrencyPolicy(ConcurrencyPolicy svc) {
         super.setConcurrencyPolicy(svc);
     }
 
+    @Override
     @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
     @Trivial
     protected void setContextService(ServiceReference<WSContextService> ref) {
         super.setContextService(ref);
     }
 
+    @Override
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(id=unbound)")
     @Trivial
     protected void setLongRunningPolicy(ConcurrencyPolicy svc) {
         super.setLongRunningPolicy(svc);
     }
 
+    @Override
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(component.name=com.ibm.ws.transaction.context.provider)")
     @Trivial
-    protected void setTransactionContextProvider(ServiceReference<ThreadContextProvider> ref) {
+    protected void setTransactionContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
         super.setTransactionContextProvider(ref);
     }
 
@@ -129,23 +153,27 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
         return ManagedCompletableFuture.supplyAsync(supplier, this);
     }
 
+    @Override
     @Trivial
     protected void unsetConcurrencyPolicy(ConcurrencyPolicy svc) {
         super.unsetConcurrencyPolicy(svc);
     }
 
+    @Override
     @Trivial
     protected void unsetContextService(ServiceReference<WSContextService> ref) {
         super.unsetContextService(ref);
     }
 
+    @Override
     @Trivial
     protected void unsetLongRunningPolicy(ConcurrencyPolicy svc) {
         super.unsetLongRunningPolicy(svc);
     }
 
+    @Override
     @Trivial
-    protected void unsetTransactionContextProvider(ServiceReference<ThreadContextProvider> ref) {
+    protected void unsetTransactionContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
         super.unsetTransactionContextProvider(ref);
     }
 }

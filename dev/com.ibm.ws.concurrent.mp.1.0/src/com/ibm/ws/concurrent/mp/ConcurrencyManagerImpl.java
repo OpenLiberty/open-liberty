@@ -31,6 +31,8 @@ import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
 public class ConcurrencyManagerImpl implements ConcurrencyManager {
     private static final TraceComponent tc = Tr.register(ConcurrencyManagerImpl.class);
 
+    private final ConcurrencyProviderImpl concurrencyProvider;
+
     /**
      * List of available thread context providers, ordered according to their prerequisites.
      * This is the order in which thread context should be captured and applied to threads.
@@ -47,6 +49,8 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
      */
     ConcurrencyManagerImpl(ConcurrencyProviderImpl concurrencyProvider, ClassLoader classloader) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        this.concurrencyProvider = concurrencyProvider;
 
         // Thread context types for which providers are available
         HashSet<String> available = new HashSet<String>();
@@ -78,7 +82,7 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
 
     @Override
     public ManagedExecutorBuilder newManagedExecutorBuilder() {
-        throw new UnsupportedOperationException(); // TODO
+        return new ManagedExecutorBuilderImpl(concurrencyProvider, contextProviders);
     }
 
     @Override

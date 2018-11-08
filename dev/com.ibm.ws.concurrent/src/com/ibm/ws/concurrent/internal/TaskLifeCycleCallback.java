@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.internal;
 
-import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
@@ -30,7 +29,6 @@ import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.ws.threading.PolicyTaskFuture;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
-import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 
 /**
  * Callback that uses the notifications it receives about about task life cycle
@@ -134,10 +132,7 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
             ManagedTaskListener listener = ((ManagedTask) task).getManagedTaskListener();
             if (listener != null) {
                 Throwable failure = null;
-                ThreadContextProvider tranContextProvider = AccessController.doPrivileged(managedExecutor.tranContextProviderAccessor);
-                ThreadContext suspendTranContext = tranContextProvider == null ? null : tranContextProvider.captureThreadContext(AbstractTask.XPROPS_SUSPEND_TRAN, null);
-                if (suspendTranContext != null)
-                    suspendTranContext.taskStarting();
+                ThreadContext tranContextRestorer = managedExecutor.suspendTransaction();
                 try {
                     CancellationException x = new CancellationException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(task), managedExecutor.name));
 
@@ -164,8 +159,8 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
                         Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
                         throw x;
                     } finally {
-                        if (suspendTranContext != null)
-                            suspendTranContext.taskStopping();
+                        if (tranContextRestorer != null)
+                            tranContextRestorer.taskStopping();
                     }
                 }
             }
@@ -255,17 +250,14 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
         if (task instanceof ManagedTask) {
             ManagedTaskListener listener = ((ManagedTask) task).getManagedTaskListener();
             if (listener != null) {
-                ThreadContextProvider tranContextProvider = AccessController.doPrivileged(managedExecutor.tranContextProviderAccessor);
-                ThreadContext suspendTranContext = tranContextProvider == null ? null : tranContextProvider.captureThreadContext(AbstractTask.XPROPS_SUSPEND_TRAN, null);
-                if (suspendTranContext != null)
-                    suspendTranContext.taskStarting();
+                ThreadContext tranContextRestorer = managedExecutor.suspendTransaction();
                 try {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                         Tr.event(this, tc, "taskSubmitted", managedExecutor, task);
                     listener.taskSubmitted(future, managedExecutor, task);
                 } finally {
-                    if (suspendTranContext != null)
-                        suspendTranContext.taskStopping();
+                    if (tranContextRestorer != null)
+                        tranContextRestorer.taskStopping();
                 }
 
                 if (invokeAnyCount <= 1 && future.isCancelled())
