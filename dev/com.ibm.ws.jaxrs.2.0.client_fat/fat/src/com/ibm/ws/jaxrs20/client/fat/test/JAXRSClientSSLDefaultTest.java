@@ -54,7 +54,7 @@ public class JAXRSClientSSLDefaultTest extends AbstractTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.stopServer();
+            server.stopServer("CWWKO0801E");
         }
     }
 
