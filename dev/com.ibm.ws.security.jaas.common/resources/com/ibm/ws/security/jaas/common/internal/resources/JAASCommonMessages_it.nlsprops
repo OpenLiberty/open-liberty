@@ -67,3 +67,15 @@ JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=Verificare che tutti i modul
 JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: Nei file di configurazione JAAS e server.xml/client.xml \u00e8 stato specificato il nome configurazione login duplicato {0}. Verr\u00e0 utilizzato il nome configurazione di accesso nel file server.xml/client.xml.
 JAAS_DUPLICATE_ENTRY_NAME.explanation=Nei file di configurazione JAAS e server.xml/client.xml \u00e8 stato specificato un nome configurazione login duplicato.
 JAAS_DUPLICATE_ENTRY_NAME.useraction=Controllare il file di configurazione JAAS e il file server.xml/client.xml.
+
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR=CWWKS1143E: Il modulo di login {0} non \u00e8 supportato per la versione {1} dal fornitore Java {2}.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.explanation=Il modulo Krb5LoginModule specificato nel file server.xml, nel file jaas.conf o in entrambi non \u00e8 supportato dal fornitore e dalla versione di Java utilizzati.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.useraction=Utilizzare il fornitore e la versione di Java corretti supportati dal modulo Krb5LoginModule o utilizzare un modulo Krb5LoginModule supportato dal fornitore e dalla versione di Java.
+
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS=CWWKS1144E: Le opzioni del modulo di login {0} non sono supportate dal fornitore {1} e dalla versione {2} di Java.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.explanation=Le opzioni Krb5LoginModule specificate nel file server.xml, nel file jaas.conf o in entrambi non sono supportate dal fornitore e dalla versione di Java utilizzati.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=Verificare che tutte le opzioni Krb5LoginModule specificate nel file server.xml, nel file jaas.conf o entrambi siano supportate dal fornitore e dalla versione di Java.
+
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Non \u00e8 possibile specificare una voce jaasLoginContext {0} come voce di configurazione JAAS nel file server.xml, nel file jaas.conf o in entrambi.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=Il runtime utilizza una configurazione Krb5LoginModule predefinita e la configurazione SPNEGO nel file server.xml.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Rimuovere la voce jaasLoginContext dal file server.xml oppure consentire al runtime di utilizzare la voce predefinita.

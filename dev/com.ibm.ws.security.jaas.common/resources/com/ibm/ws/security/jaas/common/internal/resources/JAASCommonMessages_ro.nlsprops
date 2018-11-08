@@ -67,3 +67,15 @@ JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=Verifica\u0163i c\u0103 toat
 JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: A fost specificat un nume de configura\u0163ie de logare {0} duplicat \u00een fi\u015fierul de configura\u0163ie JAAS \u015fi \u00een fi\u015fierele server.xml/client.xml. Va fi folosit numele de configura\u0163ie de logare din fi\u015fierul server.xml/client.xml.
 JAAS_DUPLICATE_ENTRY_NAME.explanation=A fost specificat un nume de configura\u0163ie de logare duplicat \u00een fi\u015fierul de configura\u0163ie JAAS \u015fi \u00een fi\u015fierul server.xml/client.xml.
 JAAS_DUPLICATE_ENTRY_NAME.useraction=Verifica\u0163i fi\u015fierul de configura\u0163ie JAAS \u015fi fi\u015fierul server.xml/client.xml.
+
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR=CWWKS1143E: Modul de logare {0} nu este suportat pentru versiunea {1} vendorul Java {2}.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.explanation=Modulul Krb5LoginModule specificat \u00een fi\u015fierul server.xml, \u00een fi\u015fierul jaas.conf sau \u00een ambele fi\u015fiere nu este suportat \u00een vendorul Java \u015fi versiunea utilizate.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.useraction=Utiliza\u0163i vendor Java \u015fi versiune corecte care sunt suportate pentru modulul Krb5LoginModule sau utiliza\u0163i un modul Krb5LoginModule care este suportat de vendorul \u015fi versiunea Java.
+
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS=CWWKS1144E: Op\u0163iunile modulului de logare {0} nu sunt suportate de vendorul Java {1} \u015fi de versiunea {2}.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.explanation=Op\u0163iunile Krb5LoginModule specificate \u00een fi\u015fierul server.xml, \u00een fi\u015fierul jaas.conf sau \u00een ambele fi\u015fiere nu este suportat \u00een vendorul Java \u015fi versiunea utilizate.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=verifica\u0163i c\u0103 toate op\u0163iunile Krb5LoginModule specificate \u00een fi\u015fierul server.xml, \u00een fi\u015fierul jaas.conf sau \u00een ambele fi\u015fiere sunt suportate de vendorul \u015fi versiunea Java.
+
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Nu poate fi specificat\u0103 o intrare {0} jaasLoginContext ca o intrare de configura\u0163ie JAAS \u00een fi\u015fierul server.xml, \u00een fi\u015fierul jaas.conf sau \u00een ambele fi\u015fiere.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=Runtime-ul utilizeaz\u0103 o configura\u0163ie Krb5LoginModule implicit\u0103 \u015fi configura\u0163ia SPNEGO \u00een fi\u015fierul server.xml.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=\u00cenl\u0103tura\u0163i intrarea jaasLoginContext din fi\u015fierul server.xml sau l\u0103sa\u0163i runtime-ul s\u0103 foloseasc\u0103 intrarea implicit\u0103.
