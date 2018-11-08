@@ -113,32 +113,23 @@ public class FeatureUpdate {
 
     @Test
     public void testSendReceive2LP() throws Exception {
-
-    	
         setMarkMakeConfigUpdate(server1, "server1.xml");
-        setMarkMakeConfigUpdate(server2, "server2.xml");
+        setMarkEnsureConfigUpdate(server2, "server2.xml");
         
         runInServlet("testQueueSendMessage");
         runInServlet("testQueueReceiveMessages");
 
         String msg = server1.waitForStringInLog("Queue Message", server1.getMatchingLogFile("trace.log"));
         assertNotNull("Could not find the queue message in the trace file", msg);
-       
     }
    
 
     @Test
     public void testwasJmsSecurityFeatureUpdate() throws Exception {
-
-        //       server2.setServerConfigurationFile("SecurityDisabledServer.xml");
-//
-//        String uploadMessage = server2.waitForStringInLogUsingMark("CWWKG0017I:.*", server2.getMatchingLogFile("trace.log"));
-//        assertNotNull("Could not find CWWKG0017I (server update info message) in trace.log", uploadMessage);
-        
-    	System.out.println("starting testwasJmsSecurityFeatureUpdate");
-    	setMarkMakeConfigUpdate(server1, "server1.xml");
-    	setMarkMakeConfigUpdate(server2, "SecurityDisabledServer.xml");
-    	System.out.println("marker set , running test in servelet");
+        System.out.println("starting testwasJmsSecurityFeatureUpdate");
+        setMarkMakeConfigUpdate(server1, "server1.xml");
+        setMarkEnsureConfigUpdate(server2, "SecurityDisabledServer.xml");
+        System.out.println("marker set , running test in servelet");
         runInServlet("testQueueSendMessageExpectException");
 
         String uploadMessage = server1.waitForStringInLogUsingMark("CWSIC1001E:.*", server1.getMatchingLogFile("trace.log"));
@@ -175,9 +166,13 @@ public class FeatureUpdate {
         assertNotNull("Could not find CWSIT0127E (unable to connect to ME exception) in trace.log", uploadMessage);
     }
     
-  
 
-    static void setMarkMakeConfigUpdate(LibertyServer server, String newServerXml) throws Exception {
+    static void setMarkEnsureConfigUpdate(LibertyServer server, String newServerXml) throws Exception {
+        final String logLine = setMarkMakeConfigUpdate(server, newServerXml);
+        assertThat("Server configuration should have been updated", logLine, not(containsString("CWWKG0018I")));
+    }
+
+    static String setMarkMakeConfigUpdate(LibertyServer server, String newServerXml) throws Exception {
         // set a new mark
         server.setMarkToEndOfLog(server.getDefaultLogFile());
 
@@ -185,8 +180,7 @@ public class FeatureUpdate {
         server.setServerConfigurationFile(newServerXml);
 
         // wait for configuration update to complete
-        String logLine = server.waitForStringInLogUsingMark("CWWKG001[78]I");
-        assertThat("Server configuration should have been updated", logLine, not(containsString("CWWKG0018I")));
+        return server.waitForStringInLogUsingMark("CWWKG001[78]I");
     }
 
     public static void setupShrinkWrap() throws Exception {
