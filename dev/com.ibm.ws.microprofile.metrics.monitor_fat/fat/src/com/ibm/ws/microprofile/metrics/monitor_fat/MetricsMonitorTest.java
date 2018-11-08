@@ -83,7 +83,7 @@ public class MetricsMonitorTest {
     @After
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CWWKS4000E");
             server.removeAllInstalledAppsForValidation();
         }
     }
