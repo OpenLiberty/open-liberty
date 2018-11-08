@@ -105,6 +105,7 @@ org.apache.myfaces.config.impl.digester.elements;thread-context=true;mandatory:=
 org.apache.myfaces.flow;thread-context=true;mandatory:="thread-context", \
 org.apache.myfaces.flow.cdi;thread-context=true;mandatory:="thread-context", \
 org.apache.myfaces.lifecycle;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.push.cdi;thread-context=true;mandatory:="thread-context", \
 org.apache.myfaces.renderkit;thread-context=true;mandatory:="thread-context", \
 org.apache.myfaces.renderkit.html;thread-context=true;mandatory:="thread-context", \
 org.apache.myfaces.shared.context.flash;thread-context=true;mandatory:="thread-context", \
