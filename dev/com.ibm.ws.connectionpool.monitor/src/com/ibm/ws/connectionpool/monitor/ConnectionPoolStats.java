@@ -139,6 +139,16 @@ public class ConnectionPoolStats extends Meter implements ConnectionPoolStatsMXB
     }
 
     @Override
+    public StatisticsMeter getWaitTimeDetails() {
+        return this.waitTime;
+    }
+
+    @Override
+    public StatisticsMeter getInUseTimeDetails() {
+        return this.inUseTime;
+    }
+
+    @Override
     public long getFreeConnectionCount() {
         // TODO Auto-generated method stub
         return this.freeConnectionCount.getCurrentValue();
