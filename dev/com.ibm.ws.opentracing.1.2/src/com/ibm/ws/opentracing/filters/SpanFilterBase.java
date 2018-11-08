@@ -35,10 +35,10 @@ public abstract class SpanFilterBase implements SpanFilter {
     /**
      * Create a new filter with a pattern, filter type, and whether to ignore case on the pattern match.
      *
-     * @param pattern The pattern for which this filter matches.
-     * @param type The filter types for which this filter matches.
+     * @param pattern    The pattern for which this filter matches.
+     * @param type       The filter types for which this filter matches.
      * @param ignoreCase Whether to ignore case on the pattern match.
-     * @param regex If true, pattern is treated as a regular expression.
+     * @param regex      If true, pattern is treated as a regular expression.
      */
     public SpanFilterBase(String pattern, SpanFilterType type, boolean ignoreCase, boolean regex) {
 
@@ -122,31 +122,42 @@ public abstract class SpanFilterBase implements SpanFilter {
      */
     protected boolean match(final URI uri) {
 
-        final String methodName = "match";
         final String uriStr = prepareUri(uri);
+        return match(uriStr);
+    }
+
+    /**
+     * Check if the URI matches the pattern.
+     *
+     * @param uri The URI to check against our pattern.
+     * @return Whether or not the URI matches our pattern.
+     */
+    protected boolean match(final String path) {
+
+        final String methodName = "match";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, methodName, this, uriStr, ignoreCase, wildcard);
+            Tr.debug(tc, methodName, this, path, ignoreCase, wildcard);
         }
 
         if (this.matcher == null) {
             if (ignoreCase) {
-                if (pattern.equalsIgnoreCase(uriStr)) {
+                if (pattern.equalsIgnoreCase(path)) {
                     return true;
                 }
-                if (wildcard && uriStr.toLowerCase().startsWith(pattern)) {
+                if (wildcard && path.toLowerCase().startsWith(pattern)) {
                     return true;
                 }
             } else {
-                if (pattern.equals(uriStr)) {
+                if (pattern.equals(path)) {
                     return true;
                 }
-                if (wildcard && uriStr.startsWith(pattern)) {
+                if (wildcard && path.startsWith(pattern)) {
                     return true;
                 }
             }
         } else {
-            return this.matcher.matcher(uriStr).matches();
+            return this.matcher.matcher(path).matches();
         }
 
         return false;
@@ -191,10 +202,10 @@ public abstract class SpanFilterBase implements SpanFilter {
      * {@inheritDoc}
      */
     @Override
-    public boolean process(final boolean previousState, final URI uri, final SpanFilterType contextType) {
+    public boolean process(final boolean previousState, final URI uri, final String path, final SpanFilterType contextType) {
 
         if (contextApplies(contextType) && match(uri)) {
-            return matchAction(previousState, uri, contextType);
+            return matchAction(previousState, uri, path, contextType);
         }
 
         return previousState;
@@ -205,9 +216,10 @@ public abstract class SpanFilterBase implements SpanFilter {
      * exclude the request (contingent on subsequent filters).
      *
      * @param previousState It is expected that filters are called in sequence, so this is the result of the previous filter, or a default.
-     * @param uri The full URI of this request.
-     * @param contextType The type of request.
+     * @param uri           The full URI of this request.
+     * @param path          The path of this request.
+     * @param contextType   The type of request.
      * @return True to include or false to exclude.
      */
-    protected abstract boolean matchAction(final boolean previousState, final URI uri, final SpanFilterType contextType);
+    protected abstract boolean matchAction(final boolean previousState, final URI uri, final String path, final SpanFilterType contextType);
 }
