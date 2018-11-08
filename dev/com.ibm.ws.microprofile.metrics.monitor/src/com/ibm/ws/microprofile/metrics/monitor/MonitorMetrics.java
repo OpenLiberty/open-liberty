@@ -47,9 +47,12 @@ public class MonitorMetrics {
             String metricName = getMetricName(metricData[MappingTable.METRIC_NAME]);
             MetricType type = MetricType.valueOf(metricData[MappingTable.METRIC_TYPE]);
             if (MetricType.COUNTER.equals(type)) {
+                MonitorCounter mc = metricData[MappingTable.MBEAN_SUBATTRIBUTE] == null ? 
+                        new MonitorCounter(mbs, objectName, metricData[MappingTable.MBEAN_ATTRIBUTE]) :
+                        new MonitorCounter(mbs, objectName, metricData[MappingTable.MBEAN_ATTRIBUTE], metricData[MappingTable.MBEAN_SUBATTRIBUTE]);
         		registry.register(
-        				new Metadata(metricName, metricData[MappingTable.METRIC_DISPLAYNAME], metricData[MappingTable.METRIC_DESCRIPTION], type, metricData[MappingTable.METRIC_UNIT]), 
-        				new MonitorCounter(mbs, objectName, metricData[MappingTable.MBEAN_ATTRIBUTE]));            	
+        			new Metadata(metricName, metricData[MappingTable.METRIC_DISPLAYNAME], metricData[MappingTable.METRIC_DESCRIPTION], type, metricData[MappingTable.METRIC_UNIT]), 
+        			mc);            	
         		metricNames.add(metricName);
         		Tr.debug(tc, "Registered " + metricName);
         	} else if (MetricType.GAUGE.equals(type)) {

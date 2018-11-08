@@ -29,12 +29,6 @@ public class CityContextSnapshot implements ThreadContextSnapshot {
     @Override
     public ThreadContextController begin() {
         ThreadContextController cityContextRestorer = new CityContextRestorer(CityContextProvider.cityName.get());
-
-        // Validate that the city/state combination is valid before applying context.
-        // This introduces a dependency on the State context, so that we can test prerequisites.
-        if (cityName.length() > 0)
-            CurrentLocation.getTotalTaxRate(cityName, StateContextProvider.stateName.get());
-
         CityContextProvider.cityName.set(cityName);
         return cityContextRestorer;
     }
