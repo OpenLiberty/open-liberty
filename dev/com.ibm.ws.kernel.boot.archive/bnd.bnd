@@ -17,6 +17,8 @@ Export-Package: \
 Private-Package: \
 	org.apache.commons.compress.archivers, \
 	org.apache.commons.compress.archivers.zip, \
+	org.apache.commons.compress.compressors.bzip2, \
+	org.apache.commons.compress.compressors.deflate64, \
 	org.apache.commons.compress.compressors, \
 	org.apache.commons.compress.compressors.lzw, \
 	org.apache.commons.compress.utils
@@ -24,7 +26,6 @@ Private-Package: \
 
 instrument.disabled: true
 
-publish.wlp.jar.disabled: true
 
 -buildpath: \
 	com.ibm.ws.kernel.boot.common;version=latest,\
