@@ -419,13 +419,13 @@ public class ConfigAttributeTests extends CommonSecurityFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_useLtpaIfJwtAbsent_true() throws Exception {
-        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_noFeature.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_noFeature.xml", MessageConstants.CWWKT0016I_WEB_APP_AVAILABLE + ".*formlogin");
 
         // Obtain a valid LTPA token
         Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
         // Enable useLtpaIfJwtAbsent
-        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_useLtpaIfJwtAbsent_true.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_useLtpaIfJwtAbsent_true.xml", MessageConstants.CWWKT0016I_WEB_APP_AVAILABLE + ".*formlogin");
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
 
@@ -460,13 +460,13 @@ public class ConfigAttributeTests extends CommonSecurityFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_useLtpaIfJwtAbsent_false() throws Exception {
-        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_noFeature.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_noFeature.xml", MessageConstants.CWWKT0016I_WEB_APP_AVAILABLE + ".*formlogin");
 
         // Obtain a valid LTPA token
         Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
         // Disable useLtpaIfJwtAbsent
-        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_useLtpaIfJwtAbsent_false.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_useLtpaIfJwtAbsent_false.xml", MessageConstants.CWWKT0016I_WEB_APP_AVAILABLE + ".*formlogin");
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
 

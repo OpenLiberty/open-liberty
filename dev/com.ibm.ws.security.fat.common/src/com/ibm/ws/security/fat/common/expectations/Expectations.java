@@ -93,4 +93,8 @@ public class Expectations {
         }
     }
 
+    public void addSuccessCodeForCurrentAction() {
+        addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
+    }
+
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.opentracing;
 
+import javax.ws.rs.Path;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.ClientResponseFilter;
@@ -20,6 +21,7 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.opentracing.OpentracingConfiguration;
 import com.ibm.ws.opentracing.OpentracingFilterHelper;
 
 /**
@@ -61,14 +63,15 @@ public class OpenTracingFilterHelper implements OpentracingFilterHelper {
             return null;
         }
 
+        String operationName;
+
         // If there's no Traced annotation (operationName is null) or there is a Traced annotation
         // with value=true but a default operationName, then set it to the default based on the URI.
-
-        String operationName;
 
         if (OpenTracingService.hasExplicitOperationName(methodOperationName)) {
             operationName = methodOperationName;
         } else {
+
             // "The default operation name of the new Span for the incoming request is
             // <HTTP method>:<package name>.<class name>.<method name> [...]
             // If operationName is specified on a class, that operationName will be used
@@ -79,12 +82,35 @@ public class OpenTracingFilterHelper implements OpentracingFilterHelper {
             if (OpenTracingService.hasExplicitOperationName(classOperationName)) {
                 operationName = classOperationName;
             } else {
-                operationName = incomingRequestContext.getMethod() + ":"
-                                + resourceInfo.getResourceClass().getName() + "."
-                                + resourceInfo.getResourceMethod().getName();
+                if (OpentracingConfiguration.isOperationNameProviderHttpPath()) {
+
+                    StringBuilder operationNameSB = new StringBuilder();
+
+                    String classPathValue = "";
+                    if (resourceInfo.getResourceClass().isAnnotationPresent(Path.class)) {
+                        classPathValue = resourceInfo.getResourceClass().getAnnotation(Path.class).value();
+                    }
+                    String methodPathValue = "";
+                    if (resourceInfo.getResourceMethod().isAnnotationPresent(Path.class)) {
+                        methodPathValue = resourceInfo.getResourceMethod().getAnnotation(Path.class).value();
+                    }
+                    operationNameSB.append(incomingRequestContext.getMethod() + ":");
+                    if (!classPathValue.startsWith("/")) {
+                        operationNameSB.append("/");
+                    }
+                    operationNameSB.append(classPathValue);
+                    if (!methodPathValue.startsWith("/")) {
+                        operationNameSB.append("/");
+                    }
+                    operationNameSB.append(methodPathValue);
+                    operationName = operationNameSB.toString();
+                } else {
+                    operationName = incomingRequestContext.getMethod() + ":"
+                                    + resourceInfo.getResourceClass().getName() + "."
+                                    + resourceInfo.getResourceMethod().getName();
+                }
             }
         }
-
         return operationName;
     }
 }

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -14,23 +14,11 @@ bVersion=1.0
 Bundle-SymbolicName: com.ibm.ws.org.eclipse.yasson.1.0
 
 Export-Package: \
-  org.eclipse.yasson;version=1.0.1;thread-context=true,\
-  !org.eclipse.yasson.internal.*
+  org.eclipse.yasson;version=1.0.2;thread-context=true
 
 Import-Package: \
-  javax.enterprise.context.spi, \
-  javax.enterprise.inject.spi, \
-  javax.json, \
-  javax.json.bind, \
-  javax.json.bind.adapter, \
-  javax.json.bind.annotation, \
-  javax.json.bind.config, \
-  javax.json.bind.serializer, \
-  javax.json.bind.spi, \
-  javax.json.spi, \
-  javax.json.stream, \
-  javax.naming, \
-  com.ibm.wsspi.classloading
+  com.ibm.wsspi.classloading,\
+  *
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 

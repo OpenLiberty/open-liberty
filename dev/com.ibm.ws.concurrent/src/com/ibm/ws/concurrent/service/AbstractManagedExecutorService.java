@@ -12,6 +12,10 @@ package com.ibm.ws.concurrent.service;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl;
+import com.ibm.ws.threading.PolicyExecutor;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.threadcontext.ThreadContextProvider;
+import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
  * Extension point that enables MicroProfile and EE-only implementations to
@@ -21,4 +25,19 @@ import com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl;
  * back into ManagedExecutorServiceImpl.
  */
 @Trivial
-public class AbstractManagedExecutorService extends ManagedExecutorServiceImpl {}
+public class AbstractManagedExecutorService extends ManagedExecutorServiceImpl {
+    /**
+     * Constructor for OSGi code path.
+     */
+    public AbstractManagedExecutorService() {
+        super();
+    }
+
+    /**
+     * Constructor for MicroProfile Concurrency (ManagedExecutorBuilder and CDI injected ManagedExecutor).
+     */
+    public AbstractManagedExecutorService(String name, PolicyExecutor policyExecutor, WSContextService mpThreadContext,
+                                          AtomicServiceReference<ThreadContextProvider> tranContextProviderRef) {
+        super(name, policyExecutor, mpThreadContext, tranContextProviderRef);
+    }
+}

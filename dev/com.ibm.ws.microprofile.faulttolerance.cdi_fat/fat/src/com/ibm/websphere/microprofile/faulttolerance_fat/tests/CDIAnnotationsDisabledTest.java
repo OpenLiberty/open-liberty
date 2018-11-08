@@ -23,15 +23,19 @@ import java.util.concurrent.TimeUnit;
 import org.junit.AfterClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 import com.ibm.ws.fat.util.browser.WebResponse;
 
+import componenttest.custom.junit.runner.FATRunner;
+
 /**
  * Test the server when the non-Fallback annotations are disabled by setting MP_Fault_Tolerance_NonFallback_Enabled = false
  */
+@RunWith(FATRunner.class)
 public class CDIAnnotationsDisabledTest extends LoggingTest {
 
     @ClassRule

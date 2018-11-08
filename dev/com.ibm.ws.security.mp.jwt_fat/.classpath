@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileApp.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileApplicationScopedClaimInjectString.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileApplicationScopedClaimInjectLong.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileApplicationScopedClaimInjectSet.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileApplicationScopedClaimInjectBoolean.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileSessionScopedClaimInjectString.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileSessionScopedClaimInjectLong.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileSessionScopedClaimInjectSet.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileSessionScopedClaimInjectBoolean.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileLoginConfig_MpJwtInWebXml_MpJwtInApp.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileLoginConfig_MpJwtInWebXml_BasicInApp.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileLoginConfig_MpJwtInWebXml_NotInApp.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileLoginConfig_FormLoginInWebXml_MpJwtInApp.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileLoginConfig_FormLoginInWebXml_BasicInApp.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileLoginConfig_FormLoginInWebXml_NotInApp.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileLoginConfig_NotInWebXml_MpJwtInApp.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileLoginConfig_NotInWebXml_BasicInApp.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileLoginConfig_NotInWebXml_NotInApp.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileLoginConfig_MultiLayer_NotInWebXml_MpJwtInApp.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfilePropagationClient.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileMP-ConfigUnderWeb-INF.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileMP-ConfigInMETA-INF.war/src"/>
+	<classpathentry kind="src" path="test-applications/microProfileMP-ConfigNotInApp.war/src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

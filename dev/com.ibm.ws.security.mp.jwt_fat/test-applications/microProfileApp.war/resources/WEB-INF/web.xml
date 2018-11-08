@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app
+	id="microProfileApp"
+	version="3.0"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+     http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+>
+
+	<display-name>JAX-RS Service client</display-name>
+	<description>Server-side application to test microprofile apis</description>
+	<!-- SERVLET DEFINITIONS -->
+<!-- 
+	<servlet id="Servlet_SecurityContextRequestScoped">
+		<servlet-name>SecurityContextRequestScoped</servlet-name>
+		<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+ 	    <init-param>
+ 	        <param-name>javax.ws.rs.Application</param-name>
+ 	        <param-value>com.ibm.ws.jaxrs.fat.microProfileApp.SecurityContext.RequestScoped.MicroProfileApp</param-value>
+	     </init-param>
+	     <init-param>
+         	<param-name>requestProcessorAttribute</param-name>
+         	<param-value>SecurityContextRequestScoped</param-value>
+     	</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet id="Servlet_SecurityContextApplicationScoped">
+		<servlet-name>SecurityContextApplicationScoped</servlet-name>
+		<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+ 	    <init-param>
+ 	        <param-name>javax.ws.rs.Application</param-name>
+ 	        <param-value>com.ibm.ws.jaxrs.fat.microProfileApp.SecurityContext.ApplicationScoped.MicroProfileApp</param-value>
+	     </init-param>
+	     <init-param>
+         	<param-name>requestProcessorAttribute</param-name>
+         	<param-value>SecurityContextApplicationScoped</param-value>
+     	</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet id="Servlet_SecurityContextSessionScoped">
+		<servlet-name>SecurityContextSessionScoped</servlet-name>
+		<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+ 	    <init-param>
+ 	        <param-name>javax.ws.rs.Application</param-name>
+ 	        <param-value>com.ibm.ws.jaxrs.fat.microProfileApp.SecurityContext.SessionScoped.MicroProfileApp</param-value>
+	     </init-param>
+	     <init-param>
+         	<param-name>requestProcessorAttribute</param-name>
+         	<param-value>SecurityContextSessionScoped</param-value>
+     	</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet id="Servlet_SecurityContextNotScoped">
+		<servlet-name>SecurityContextNotScoped</servlet-name>
+		<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+ 	    <init-param>
+ 	        <param-name>javax.ws.rs.Application</param-name>
+ 	        <param-value>com.ibm.ws.jaxrs.fat.microProfileApp.SecurityContext.NotScoped.MicroProfileApp</param-value>
+	     </init-param>
+	     <init-param>
+         	<param-name>requestProcessorAttribute</param-name>
+         	<param-value>SecurityContextNotScoped</param-value>
+     	</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet id="Servlet_InjectionRequestScoped">
+		<servlet-name>InjectionRequestScoped</servlet-name>
+		<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+ 	    <init-param>
+ 	        <param-name>javax.ws.rs.Application</param-name>
+ 	        <param-value>com.ibm.ws.jaxrs.fat.microProfileApp.Injection.RequestScoped.MicroProfileApp</param-value>
+	     </init-param>
+	     <init-param>
+         	<param-name>requestProcessorAttribute</param-name>
+         	<param-value>InjectionRequestScoped</param-value>
+     	</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet id="Servlet_InjectionApplicationScoped">
+		<servlet-name>InjectionApplicationScoped</servlet-name>
+		<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+ 	    <init-param>
+ 	        <param-name>javax.ws.rs.Application</param-name>
+ 	        <param-value>com.ibm.ws.jaxrs.fat.microProfileApp.Injection.ApplicationScoped.MicroProfileApp</param-value>
+	     </init-param>
+	     <init-param>
+         	<param-name>requestProcessorAttribute</param-name>
+         	<param-value>InjectionApplicationScoped</param-value>
+     	</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet id="Servlet_InjectionSessionScoped">
+		<servlet-name>InjectionSessionScoped</servlet-name>
+		<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+ 	    <init-param>
+ 	        <param-name>javax.ws.rs.Application</param-name>
+ 	        <param-value>com.ibm.ws.jaxrs.fat.microProfileApp.Injection.SessionScoped.MicroProfileApp</param-value>
+	     </init-param>
+	     <init-param>
+         	<param-name>requestProcessorAttribute</param-name>
+         	<param-value>InjectionSessionScoped</param-value>
+     	</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet id="Servlet_InjectionNotScoped">
+		<servlet-name>InjectionNotScoped</servlet-name>
+		<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+ 	    <init-param>
+ 	        <param-name>javax.ws.rs.Application</param-name>
+ 	        <param-value>com.ibm.ws.jaxrs.fat.microProfileApp.Injection.NotScoped.MicroProfileApp</param-value>
+	     </init-param>
+	     <init-param>
+         	<param-name>requestProcessorAttribute</param-name>
+         	<param-value>InjectionNotScoped</param-value>
+     	</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet id="Servlet_ClaimInjectionRequestScoped">
+		<servlet-name>ClaimInjectionRequestScoped</servlet-name>
+		<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+ 	    <init-param>
+ 	        <param-name>javax.ws.rs.Application</param-name>
+ 	        <param-value>com.ibm.ws.jaxrs.fat.microProfileApp.ClaimInjection.RequestScoped.MicroProfileApp</param-value>
+	     </init-param>
+	     <init-param>
+         	<param-name>requestProcessorAttribute</param-name>
+         	<param-value>ClaimInjectionRequestScoped</param-value>
+     	</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet id="Servlet_ClaimInjectionNotScoped">
+		<servlet-name>ClaimInjectionNotScoped</servlet-name>
+		<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+ 	    <init-param>
+ 	        <param-name>javax.ws.rs.Application</param-name>
+ 	        <param-value>com.ibm.ws.jaxrs.fat.microProfileApp.ClaimInjection.NotScoped.MicroProfileApp</param-value>
+	     </init-param>
+	     <init-param>
+         	<param-name>requestProcessorAttribute</param-name>
+         	<param-value>ClaimInjectionNotScoped</param-value>
+     	</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet id="Servlet_ClaimInjectionApplicationScopedInstance">
+		<servlet-name>ClaimInjectionApplicationScopedInstance</servlet-name>
+		<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+ 	    <init-param>
+ 	        <param-name>javax.ws.rs.Application</param-name>
+ 	        <param-value>com.ibm.ws.jaxrs.fat.microProfileApp.ClaimInjection.ApplicationScoped.Instance.MicroProfileApp</param-value>
+	     </init-param>
+	     <init-param>
+         	<param-name>requestProcessorAttribute</param-name>
+         	<param-value>ClaimInjectionApplicationScopedInstance</param-value>
+     	</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet id="Servlet_ClaimInjectionSessionScopedInstance">
+		<servlet-name>ClaimInjectionSessionScopedInstance</servlet-name>
+		<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+ 	    <init-param>
+ 	        <param-name>javax.ws.rs.Application</param-name>
+ 	        <param-value>com.ibm.ws.jaxrs.fat.microProfileApp.ClaimInjection.SessionScoped.Instance.MicroProfileApp</param-value>
+	     </init-param>
+	     <init-param>
+         	<param-name>requestProcessorAttribute</param-name>
+         	<param-value>ClaimInjectionSessionScopedInstance</param-value>
+     	</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+-->
+	<!-- SERVLET MAPPINGS -->
+	<!-- 
+	<servlet-mapping>
+		<servlet-name>SecurityContextRequestScoped</servlet-name>
+		<url-pattern>/microProfileApp/rest/SecurityContextRequestScoped/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>SecurityContextApplicationScoped</servlet-name>
+		<url-pattern>/microProfileApp/rest/SecurityContextApplicationScoped/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>SecurityContextSessionScoped</servlet-name>
+		<url-pattern>/microProfileApp/rest/SecurityContextSessionScoped/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>SecurityContextNotScoped</servlet-name>
+		<url-pattern>/microProfileApp/rest/SecurityContextNotScoped/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>InjectionRequestScoped</servlet-name>
+		<url-pattern>/microProfileApp/rest/InjectionRequestScoped/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>InjectionApplicationScoped</servlet-name>
+		<url-pattern>/microProfileApp/rest/InjectionApplicationScoped/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>InjectionSessionScoped</servlet-name>
+		<url-pattern>/microProfileApp/rest/InjectionSessionScoped/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>InjectionNotScoped</servlet-name>
+		<url-pattern>/microProfileApp/rest/InjectionNotScoped/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ClaimInjectionRequestScoped</servlet-name>
+		<url-pattern>/microProfileApp/rest/ClaimInjectionRequestScoped/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ClaimInjectionNotScoped</servlet-name>
+		<url-pattern>/microProfileApp/rest/ClaimInjectionNotScoped/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ClaimInjectionApplicationScopedInstance</servlet-name>
+		<url-pattern>/microProfileApp/rest/ClaimInjectionApplicationScopedInstance/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ClaimInjectionSessionScopedInstance</servlet-name>
+		<url-pattern>/microProfileApp/rest/ClaimInjectionSessionScopedInstance/*</url-pattern>
+	</servlet-mapping>
+-->
+	<!-- SECURITY CONSTRAINTS -->
+	<security-constraint id="SecurityConstraint_1">
+		<web-resource-collection id="WebResourceCollection_1">
+			<web-resource-name>Protected with Employee or Manager roles</web-resource-name>
+			<url-pattern>/rest/SecurityContextRequestScoped/*</url-pattern>
+			<url-pattern>/rest/SecurityContextApplicationScoped/*</url-pattern>
+			<url-pattern>/rest/SecurityContextSessionScoped/*</url-pattern>
+			<url-pattern>/rest/SecurityContextNotScoped/*</url-pattern>
+			<url-pattern>/rest/InjectionRequestScoped/*</url-pattern>
+			<url-pattern>/rest/InjectionApplicationScoped/*</url-pattern>
+			<url-pattern>/rest/InjectionSessionScoped/*</url-pattern>
+			<url-pattern>/rest/InjectionNotScoped/*</url-pattern>
+			<url-pattern>/rest/ClaimInjectionRequestScoped/*</url-pattern>
+			<url-pattern>/rest/ClaimInjectionNotScoped/*</url-pattern>
+			<url-pattern>/rest/ClaimInjectionApplicationScopedInstance/*</url-pattern>
+			<url-pattern>/rest/ClaimInjectionSessionScopedInstance/*</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<auth-constraint id="AuthConstraint_1">
+			<role-name>Employee</role-name>
+			<role-name>Manager</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<!-- ROLES DEFINITION -->
+	<security-role id="SecurityRole_1">
+		<description>Employee role</description>
+		<role-name>Employee</role-name>
+	</security-role>
+	<security-role id="SecurityRole_2">
+		<description>Manager role</description>
+		<role-name>Manager</role-name>
+	</security-role>
+	<security-role id="SecurityRole_3">
+		<description>AllAuthenticated role</description>
+		<role-name>AllAuthenticated</role-name>
+	</security-role>
+	
+	<!-- CHALLENGE TYPE -->
+  <login-config>
+  	<auth-method>FORM</auth-method>
+  	<realm-name>Test Realm</realm-name>
+    <form-login-config id="FormLoginConfig_1">
+    	<form-login-page>/login.jsp</form-login-page>
+        <form-error-page>/loginError.jsp</form-error-page>
+    </form-login-config>
+  </login-config>
+
+</web-app>

@@ -18,17 +18,26 @@ import org.eclipse.microprofile.config.ConfigProvider;
  */
 public class OpentracingConfiguration {
 
-    private static Config config = ConfigProvider.getConfig(Thread.currentThread().getContextClassLoader());
-
     public static final String MP_OT_SERVER_SKIP_PATTERN_KEY = "mp.opentracing.server.skip-pattern";
-    public static final String MP_OT_SERVER_SKIP_PATTERN_DEFAULT_VALUE = "/health|/metrics|/metrics/.*|/openapi";
     public static final String MP_OT_SERVER_OPERATION_NAME_PROVIDER_KEY = "mp.opentracing.server.operation-name-provider";
+    public static final String MP_OT_SERVER_OPERATION_NAME_PROVIDER_HTTP_PATH = "http-path";
 
-    static String getServerSkipPattern() {
-        return config.getOptionalValue(MP_OT_SERVER_SKIP_PATTERN_KEY, String.class).orElse(MP_OT_SERVER_SKIP_PATTERN_DEFAULT_VALUE);
+    public static String getServerSkipPattern() {
+        Config config = ConfigProvider.getConfig(Thread.currentThread().getContextClassLoader());
+        return config.getOptionalValue(MP_OT_SERVER_SKIP_PATTERN_KEY, String.class).orElse(null);
     }
 
     static String getOpertionNameProvider() {
+        Config config = ConfigProvider.getConfig(Thread.currentThread().getContextClassLoader());
         return config.getOptionalValue(MP_OT_SERVER_OPERATION_NAME_PROVIDER_KEY, String.class).orElse(null);
+    }
+
+    public static boolean isOperationNameProviderHttpPath() {
+        String providerName = getOpertionNameProvider();
+        if (providerName != null) {
+            return MP_OT_SERVER_OPERATION_NAME_PROVIDER_HTTP_PATH.equals(providerName);
+        } else {
+            return false;
+        }
     }
 }

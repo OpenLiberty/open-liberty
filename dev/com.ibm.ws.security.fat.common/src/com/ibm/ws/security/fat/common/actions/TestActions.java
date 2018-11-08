@@ -30,6 +30,7 @@ public class TestActions {
 
     public static final String ACTION_INVOKE_PROTECTED_RESOURCE = "invokeProtectedResource";
     public static final String ACTION_SUBMIT_LOGIN_CREDENTIALS = "submitLoginCredentials";
+    public static final String ACTION_INSTALL_APP = "installApp";
 
     protected CommonFatLoggingUtils loggingUtils = new CommonFatLoggingUtils();
     WebFormUtils webFormUtils = new WebFormUtils();
@@ -75,11 +76,18 @@ public class TestActions {
      * Invoke the specified URL, adding a bearer token header first.
      */
     public Page invokeUrlWithBearerToken(String currentTest, WebClient wc, String url, String token) throws Exception {
+        return invokeUrlWithBearerToken(currentTest, wc, url, token, null);
+    }
+
+    public Page invokeUrlWithBearerToken(String currentTest, WebClient wc, String url, String token, List<NameValuePair> requestParms) throws Exception {
         String thisMethod = "invokeUrlWithBearerToken";
         loggingUtils.printMethodName(thisMethod);
         try {
             WebRequest request = createGetRequest(url);
             request.setAdditionalHeader("Authorization", "Bearer " + token);
+            if (requestParms != null) {
+                request.setRequestParameters(requestParms);
+            }
             return submitRequest(currentTest, wc, request);
         } catch (Exception e) {
             throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
@@ -208,11 +216,14 @@ public class TestActions {
         return new WebRequest(new URL(url), HttpMethod.GET);
     }
 
-    public WebRequest createPostRequest(String url, String body) throws MalformedURLException {
+    public WebRequest createPostRequest(String url) throws MalformedURLException {
+        return new WebRequest(new URL(url), HttpMethod.POST);
+    }
+
+public WebRequest createPostRequest(String url, String body) throws MalformedURLException {
         URL reqUrl = new URL(url);
         WebRequest request = new WebRequest(reqUrl, HttpMethod.POST);
         request.setRequestBody(body);
         return request;
     }
-
 }

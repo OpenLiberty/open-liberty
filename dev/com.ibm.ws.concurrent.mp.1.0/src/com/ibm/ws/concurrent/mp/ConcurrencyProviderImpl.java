@@ -36,6 +36,7 @@ import com.ibm.ws.concurrent.mp.context.SecurityContextProvider;
 import com.ibm.ws.concurrent.mp.context.TransactionContextProvider;
 import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
 import com.ibm.ws.kernel.service.util.SecureAction;
+import com.ibm.ws.threading.PolicyExecutorProvider;
 
 /**
  * Registers this implementation as the provider of MicroProfile Concurrency.
@@ -48,6 +49,9 @@ public class ConcurrencyProviderImpl implements ConcurrencyProvider {
     final WLMContextProvider wlmContextProvider = new WLMContextProvider();
 
     private static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
+
+    @Reference
+    protected PolicyExecutorProvider policyExecutorProvider;
 
     private final ConcurrentHashMap<ClassLoader, ConcurrencyManager> providersPerClassLoader = new ConcurrentHashMap<ClassLoader, ConcurrencyManager>();
 

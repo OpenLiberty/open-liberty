@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
     <classpathentry kind="src" output="bin" path="src"/>
+    <classpathentry kind="src" output="bin" path="fat/src"/>
     <classpathentry kind="src" output="bin_test" path="test"/>
     <classpathentry kind="src" path="test-applications/testmarker/src"/>
     <classpathentry kind="src" path="test-applications/formlogin/src"/>

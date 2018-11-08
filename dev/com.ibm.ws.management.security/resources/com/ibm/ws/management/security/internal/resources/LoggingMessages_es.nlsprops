@@ -21,6 +21,11 @@
 MANAGEMENT_SECURITY_AUTHZ_FAILED=CWWKX0001A: La autorizaci\u00f3n ha fallado para el usuario {0} al invocar la operaci\u00f3n de gesti\u00f3n {1}. No se ha otorgado al usuario acceso en ninguno de los roles necesarios: {2}.
 MANAGEMENT_SECURITY_AUTHZ_FAILED.explanation=El usuario especificado no tiene la autorizaci\u00f3n adecuada para acceder a la operaci\u00f3n de gesti\u00f3n especificada.
 MANAGEMENT_SECURITY_AUTHZ_FAILED.useraction=No se requiere ninguna acci\u00f3n.  
+
 ROLE_ENTRY_DUPLICATE=CWWKX0002E: Se ha detectado una entrada duplicada en el enlace de rol {0}. La entrada {1} duplicada es {2}.
 ROLE_ENTRY_DUPLICATE.explanation=La entrada especificada ya est\u00e1 definida para el enlace de rol especificado. No est\u00e1n soportadas las entradas duplicadas.
 ROLE_ENTRY_DUPLICATE.useraction=Elimine la entrada duplicada.
+
+INVALID_ACCESS_ID=CWWKX0003E: Se ha detectado un ID de acceso no v\u00e1lido en el enlace de rol {0}. La entrada no v\u00e1lida {1} es {2}.
+INVALID_ACCESS_ID.explanation=La entrada especificada no es un ID de acceso v\u00e1lido para el enlace de rol especificado.
+INVALID_ACCESS_ID.useraction=Elimine o corrija la entrada no v\u00e1lida.

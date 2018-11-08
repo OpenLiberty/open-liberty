@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+
+	<jwtBuilder id="defaultJWT" 
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="rsa_key"
+        		keyAlias="rsacert"
+				signatureAlgorithm="RS256"
+				/>
+				
+	<jwtBuilder id="noUniqueIssuer" 
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="rsa_key"
+        		keyAlias="rsacert"
+				signatureAlgorithm="RS256"
+				/>
+				
+	<jwtBuilder id="defaultJWT1" 
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="rsa_key"
+        		keyAlias="rsacert"
+				signatureAlgorithm="RS256"
+				audiences="client01, client02"
+				/>			
+				
+	<jwtBuilder id="defaultJWT_withAudience" 
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="rsa_key"
+        		keyAlias="rsacert"
+				signatureAlgorithm="RS256"
+				audiences="client01, client02"
+				/>			
+								
+	<jwtBuilder id="JWKEnabled" 
+				issuer="testIssuer"
+				jwkEnabled="true"
+				keyStoreRef="rsa_key"
+        		keyAlias="rsacert"
+				signatureAlgorithm="RS256"
+				/>
+				
+	<jwtBuilder id="JWKEnabled2" 
+				issuer="testIssuer"
+				jwkEnabled="true"
+				keyStoreRef="rsa_key"
+        		keyAlias="rsacert"
+				signatureAlgorithm="RS256"
+				/>
+				
+	<jwtBuilder id="JWKNotEnabled" 
+				issuer="testIssuer"
+				jwkEnabled="false"
+				keyStoreRef="rsa_key"
+        		keyAlias="rsacert"
+				signatureAlgorithm="RS256"
+				/>
+				
+	<jwtBuilder id="JTIEnabled" 
+				issuer="testIssuer"
+				jti="true"
+				jwkEnabled="false"
+				keyStoreRef="rsa_key"
+        		keyAlias="rsacert"
+				signatureAlgorithm="RS256"
+				/>
+				
+	<jwtBuilder id="audience_mismatch" 
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="rsa_key"
+        		keyAlias="rsacert"
+				signatureAlgorithm="RS256"
+				audiences="client98, client99"
+				/>
+				
+	<jwtBuilder id="audience_subset" 
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="rsa_key"
+        		keyAlias="rsacert"
+				signatureAlgorithm="RS256"
+				audiences="client02"
+				/>
+				
+	<jwtBuilder id="audience_superset" 
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="rsa_key"
+        		keyAlias="rsacert"
+				signatureAlgorithm="RS256"
+				audiences="client01, client98, client02"
+				/>	
+					
+	<jwtBuilder id="subject_claim_included" 
+				issuer="testIssuer"
+				jwkEnabled="false"
+				keyStoreRef="rsa_key"
+        		keyAlias="rsacert"
+				signatureAlgorithm="RS256"
+				claims="sub"
+				/>			
+					
+	<jwtBuilder id="hs256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="true"
+				signatureAlgorithm="HS256"
+				sharedKey="someKeyValue"
+				/>		
+				
+	<jwtBuilder id="hs256_keyMisMatch" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="true"
+				signatureAlgorithm="HS256"
+				sharedKey="someOtherKeyValue"
+				/>				
+													
+<!-- 
+ -->				
+
+</server>

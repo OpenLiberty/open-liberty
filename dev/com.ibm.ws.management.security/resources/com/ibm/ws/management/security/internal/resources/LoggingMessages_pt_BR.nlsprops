@@ -25,3 +25,7 @@ MANAGEMENT_SECURITY_AUTHZ_FAILED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess
 ROLE_ENTRY_DUPLICATE=CWWKX0002E: Foi detectada uma entrada duplicada na liga\u00e7\u00e3o de fun\u00e7\u00e3o {0}. A entrada {1} duplicada \u00e9 {2}.
 ROLE_ENTRY_DUPLICATE.explanation=A entrada especificada j\u00e1 est\u00e1 definida para a liga\u00e7\u00e3o de fun\u00e7\u00e3o especificada. Entradas duplicadas n\u00e3o s\u00e3o suportadas.
 ROLE_ENTRY_DUPLICATE.useraction=Remova a entrada duplicada.
+
+INVALID_ACCESS_ID=CWWKX0003E: Foi detectado um ID de acesso inv\u00e1lido na liga\u00e7\u00e3o da fun\u00e7\u00e3o {0}. A entrada {1} inv\u00e1lida \u00e9 {2}.
+INVALID_ACCESS_ID.explanation=A entrada especificada n\u00e3o \u00e9 um ID de acesso v\u00e1lido para a liga\u00e7\u00e3o de fun\u00e7\u00e3o especificada.
+INVALID_ACCESS_ID.useraction=Remova ou corrija a entrada inv\u00e1lida.

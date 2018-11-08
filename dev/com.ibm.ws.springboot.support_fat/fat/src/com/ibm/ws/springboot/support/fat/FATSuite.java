@@ -33,6 +33,7 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 ConfigSpringBootApplicationWithArgsTests20.class,
                 ConfigServerXMLOverrideTests20.class,
                 ConfigActuatorXMLOverrideTests20.class,
+                ApplicationArgsTests.class,
                 CDITests.class,
                 GenerateWebServerPluginTest.class,
                 UseDefaultHostTest15.class,
