@@ -16,5 +16,5 @@ Subsystem-Name: Java Database Connectivity 4.3
  com.ibm.ws.jdbc.4.2, \
  com.ibm.ws.jdbc.4.3, \
  com.ibm.ws.jdbc.4.3.feature
-kind=noship
-edition=full
+kind=beta
+edition=core
