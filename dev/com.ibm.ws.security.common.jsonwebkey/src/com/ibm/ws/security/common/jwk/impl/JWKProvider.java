@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.common.jwk.impl;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.jwk.constants.TraceConstants;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
+import com.ibm.ws.security.common.jwk.utils.JwkKidBuilder;
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 
 /**
@@ -50,6 +53,8 @@ public class JWKProvider {
 
     protected PublicKey publicKey = null;
     protected PrivateKey privateKey = null;
+    
+    protected String publicKeyKid = null;
 
     protected JWKProvider() {
         this(DEFAULT_KEY_SIZE, RS256, DEFAULT_ROTATION_TIME);
@@ -95,6 +100,12 @@ public class JWKProvider {
 
         this.publicKey = publicKey;
         this.privateKey = privateKey;
+        this.publicKeyKid = getKeyId(this.publicKey);
+    }
+
+    private String getKeyId(PublicKey cert) {
+        JwkKidBuilder kidbuilder = new JwkKidBuilder();
+        return kidbuilder.buildKeyId(cert);
     }
 
     public JSONWebKey getJWK() {
@@ -118,7 +129,7 @@ public class JWKProvider {
         JWK jwk = null;
         if (RS256.equals(alg)) {
             if (publicKey != null && privateKey != null) {
-                jwk = Jose4jRsaJWK.getInstance(alg, use, publicKey, privateKey);
+                jwk = Jose4jRsaJWK.getInstance(alg, use, publicKey, privateKey, publicKeyKid);
                 jwk.generateKey();
             } else {
                 jwk = generateRsaJWK(alg, size);
