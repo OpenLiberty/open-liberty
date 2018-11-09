@@ -59,7 +59,7 @@ interface QuickStartSecurityConfig {
     String userName();
 
     @AttributeDefinition(name = "%quickStartSecurity.userPassword", description = "%quickStartSecurity.userPassword.desc", required = false)
-    @Ext.Type("passwordHash")
+    @Ext.Type("password")
     SerializableProtectedString userPassword();
 
     @AttributeDefinition(name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, defaultValue = "*")
@@ -260,6 +260,7 @@ public class QuickStartSecurity {
         properties.put("id", QUICK_START_SECURITY_REGISTRY_ID);
         properties.put(UserRegistryService.REGISTRY_TYPE, QUICK_START_SECURITY_REGISTRY_TYPE);
         properties.put(CFG_KEY_USER, config.userName());
+        properties.put(CFG_KEY_PASSWORD, getPasswordValue(config.userPassword()));
         properties.put("service.vendor", "IBM");
         return properties;
     }
@@ -303,7 +304,7 @@ public class QuickStartSecurity {
         }
         Dictionary<String, Object> props = buildUserRegistryConfigProps();
 
-        quickStartRegistry = new QuickStartSecurityRegistry(config.userName(), Password.create(config.userPassword()));
+        quickStartRegistry = new QuickStartSecurityRegistry(config.userName(), getPasswordValue(config.userPassword()));
         urConfigReg = bc.registerService(UserRegistry.class,
                                          quickStartRegistry,
                                          props);
@@ -324,7 +325,7 @@ public class QuickStartSecurity {
         if (!isStringValueUndefined(config.userName()) && !isStringValueUndefined(config.userPassword())
             && (config.UserRegistry() == null || config.UserRegistry().length == 0)
             && (config.ManagementRole() == null || config.ManagementRole().length == 0)) {
-            quickStartRegistry.update(config.userName(), Password.create(config.userPassword()));
+            quickStartRegistry.update(config.userName(), getPasswordValue(config.userPassword()));
 
             // Update the service registration with the new configuration
             Dictionary<String, Object> newConfigProps = buildUserRegistryConfigProps();
@@ -412,6 +413,25 @@ public class QuickStartSecurity {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "QuickStartSecurityAdministratorRole is not registered.");
             }
+        }
+    }
+
+    /**
+     * Get the password value from the list of properties
+     *
+     * @param props
+     * @return the password
+     */
+    private ProtectedString getPasswordValue(SerializableProtectedString pw) {
+        if (pw != null) {
+            String password = new String(pw.getChars());
+            // The password may have been encoded, if so we need to decode it first before we store it
+            password = PasswordUtil.passwordDecode(password.trim());
+            char[] passswordArray = new char[password.length()];
+            password.getChars(0, password.length(), passswordArray, 0);
+            return new ProtectedString(passswordArray);
+        } else {
+            return null;
         }
     }
 }
