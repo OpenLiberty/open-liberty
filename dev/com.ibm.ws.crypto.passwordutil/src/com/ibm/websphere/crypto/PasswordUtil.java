@@ -87,7 +87,7 @@ public class PasswordUtil {
 
     /**
      * Return the default algorithm for the encoding or decoding.
-     *
+     * 
      * @return The default algorithm.
      */
     public static final String getDefaultEncoding() {
@@ -101,7 +101,7 @@ public class PasswordUtil {
      * <p>
      * An empty algorithm "{}" is treated as not encoded.
      * However, a missing algorithm will trigger the InvalidPasswordDecodingException.
-     *
+     * 
      * @param encoded_string the string to be decoded.
      * @return The decoded string
      * @throws InvalidPasswordDecodingException If the encoded_string is null or invalid. Or the decoded_string is null.
@@ -111,7 +111,7 @@ public class PasswordUtil {
                     throws InvalidPasswordDecodingException, UnsupportedCryptoAlgorithmException {
         /*
          * check input:
-         *
+         * 
          * -- encoded_string: any string, any length, cannot be null,
          * must start with valid (supported) crypto algorithm tag
          */
@@ -168,7 +168,7 @@ public class PasswordUtil {
      * If the decoded_string is already encoded, the string will be decoded and then encoded by using the specified crypto algorithm.
      * Use this method for encoding the string by using specific encoding algorithm.
      * Use securityUtility encode --listCustom command line utility to see if any additional custom encryptions are supported.
-     *
+     * 
      * @param decoded_string the string to be encoded.
      * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, or hash.
      * @return The encoded string.
@@ -204,7 +204,7 @@ public class PasswordUtil {
      * Encode the provided string with the specified algorithm and the properties
      * If the decoded_string is already encoded, the string will be decoded and then encoded by using the specified crypto algorithm.
      * Note that this method is only avaiable for the Liberty profile.
-     *
+     * 
      * @param decoded_string the string to be encoded.
      * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, or hash.
      * @param properties the properties for the encryption.
@@ -216,10 +216,10 @@ public class PasswordUtil {
                     throws InvalidPasswordEncodingException, UnsupportedCryptoAlgorithmException {
         /*
          * check input:
-         *
+         * 
          * -- decoded_string: any string, any length, cannot be null,
          * cannot start with crypto algorithm tag
-         *
+         * 
          * -- crypto_algorithm: any string, any length, cannot be null,
          * must be valid (supported) crypto algorithm
          */
@@ -257,7 +257,7 @@ public class PasswordUtil {
     /**
      * Return the crypto algorithm of the provided password.
      * For example, if the password is {xor}CDo9Hgw=, "xor" will be returned.
-     *
+     * 
      * @param password the encoded string with encoding algorithm.
      * @return The encoding algorithm. Null if not present.
      */
@@ -283,7 +283,7 @@ public class PasswordUtil {
     /**
      * Return the algorithm tag of the provided string.
      * For example, if the password is {xor}CDo9Hgw=, "{xor}" will be returned.
-     *
+     * 
      * @param password the encoded string with encoding algorithm.
      * @return The encoding algorithm with algorithm tags. Null if not present.
      */
@@ -314,7 +314,7 @@ public class PasswordUtil {
     /**
      * Check whether the encoded string contains a valid crypto algorithm.
      * For example, "{xor}CDo9Hgw=" returns true, while "{unknown}CDo9Hgw=" or "CDo9Hgw=" returns false.
-     *
+     * 
      * @param encoded_string the encoded string.
      * @return true if the encoding algorithm is supported.
      */
@@ -327,7 +327,7 @@ public class PasswordUtil {
      * Determine if the provided algorithm string is valid.
      * The valid values are xor, aes, or hash.
      * Use securityUtility encode --listCustom command line utility to see if any additional custom encryptions are supported.
-     *
+     * 
      * @param crypto_algorithm the string of algorithm.
      * @return true if the algorithm is supported. false otherwise.
      */
@@ -353,7 +353,7 @@ public class PasswordUtil {
      * Determine if the provided algorithm tag is valid. the algorithm tag consists of "{<algorithm>}" such as "{xor}".
      * The valid values are {xor}, {aes}, or {hash}.
      * Use securityUtility encode --listCustom command line utility to see if any additional custom encryptions are supported.
-     *
+     * 
      * @param tag the string of algorithm tag to be examined.
      * @return true if the algorithm is supported. false otherwise.
      */
@@ -364,7 +364,7 @@ public class PasswordUtil {
     /**
      * Determine if the provided string is hashed by examining the algorithm tag.
      * Note that this method is only avaiable for the Liberty profile.
-     *
+     * 
      * @param encoded_string the string with the encoded algorithm tag.
      * @return true if the encoded algorithm is hash. false otherwise.
      */
@@ -392,14 +392,14 @@ public class PasswordUtil {
     /**
      * Decode the provided string. The string should consist of the algorithm to be used for decoding and encoded string.
      * For example, {xor}CDo9Hgw=.
-     *
+     * 
      * @param encoded_string the string to be decoded.
      * @return The decoded string, null if there is any failure during decoding, or invalid or null encoded_string.
      */
     public static String passwordDecode(String encoded_string) {
         /*
          * check input:
-         *
+         * 
          * -- encoded_string: any string, any length, cannot be null,
          * may start with valid (supported) crypto algorithm tag
          */
@@ -423,7 +423,7 @@ public class PasswordUtil {
     /**
      * Encode the provided password by using the default encoding algorithm. The encoded string consists of the algorithm of the encoding and the encoded value.
      * For example, {xor}CDo9Hgw=.
-     *
+     * 
      * @param decoded_string the string to be encoded.
      * @return The encoded string. null if there is any failure during encoding, or invalid or null decoded_string
      */
@@ -434,7 +434,7 @@ public class PasswordUtil {
     /**
      * Encode the provided password with the algorithm. If another algorithm
      * is already applied, it will be removed and replaced with the new algorithm.
-     *
+     * 
      * @param decoded_string the string to be encoded, or the encoded string.
      * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, or hash.
      * @return The encoded string. Null if there is any failure during encoding, or invalid or null decoded_string
@@ -442,10 +442,10 @@ public class PasswordUtil {
     public static String passwordEncode(String decoded_string, String crypto_algorithm) {
         /*
          * check input:
-         *
+         * 
          * -- decoded_string: any string, any length, cannot be null,
          * may start with valid (supported) crypto algorithm tag
-         *
+         * 
          * -- crypto_algorithm: any string, any length, cannot be null,
          * must be valid (supported) crypto algorithm
          */
@@ -472,7 +472,7 @@ public class PasswordUtil {
 
     /**
      * Remove the algorithm tag from the input encoded password.
-     *
+     * 
      * @param password the string which contains the crypto algorithm tag.
      * @return The string which the crypto algorithm tag is removed.
      */
@@ -502,7 +502,7 @@ public class PasswordUtil {
 
     /**
      * Convert the provided string to a byte[] using the UTF-8 encoding.
-     *
+     * 
      * @param string
      * @return byte[] - null if input is null or if UTF-8 is not supported
      */
@@ -523,7 +523,7 @@ public class PasswordUtil {
 
     /**
      * Convert the byte[] data to a String using the UTF-8 encoding.
-     *
+     * 
      * @param bytes
      * @return String - null if input is null or if UTF-8 is not supported
      */
@@ -545,7 +545,7 @@ public class PasswordUtil {
     /**
      * Convert the string to bytes using UTF-8 encoding and then run it through
      * the base64 decoding.
-     *
+     * 
      * @param string
      * @return byte[] - null if null input or an error in the conversion happens
      */
@@ -562,7 +562,7 @@ public class PasswordUtil {
     /**
      * Use base64 encoding on the bytes and then convert them to a string using
      * UTF-8 encoding.
-     *
+     * 
      * @param bytes
      * @return String - null if input is null or an error happens during the conversion
      */
@@ -581,7 +581,7 @@ public class PasswordUtil {
 
     /**
      * Decode the provided string with the specified algorithm.
-     *
+     * 
      * @param encoded_string
      * @param crypto_algorithm
      * @return String
@@ -589,7 +589,7 @@ public class PasswordUtil {
     private static String decode_password(String encoded_string, String crypto_algorithm) {
         /*
          * decoding process:
-         *
+         * 
          * -- check for empty algorithm tag
          * -- convert input String to byte[] using base64 decoding
          * -- decipher byte[]
@@ -648,7 +648,7 @@ public class PasswordUtil {
 
     /**
      * Encode the provided string by using the specified encoding algorithm and properties
-     *
+     * 
      * @param decoded_string the string to be encoded.
      * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, or hash.
      * @param properties the properties for the encryption.
@@ -657,7 +657,7 @@ public class PasswordUtil {
     public static String encode_password(String decoded_string, String crypto_algorithm, Map<String, String> properties) {
         /*
          * encoding process:
-         *
+         * 
          * -- check for empty algorithm tag
          * -- convert input String to byte[] UTF8 conversion code
          * -- encipher byte[]

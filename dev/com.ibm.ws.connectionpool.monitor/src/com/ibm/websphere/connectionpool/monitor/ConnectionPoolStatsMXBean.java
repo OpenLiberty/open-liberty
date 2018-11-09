@@ -66,7 +66,7 @@ public interface ConnectionPoolStatsMXBean {
     /**
      * Retrieves StatisticMeter object of InUseTime detail, which provides statistical details on the connection in use time.
      *
-     * @return wait time details
+     * @return in use time details
      */
     public StatisticsMeter getInUseTimeDetails();
 }
