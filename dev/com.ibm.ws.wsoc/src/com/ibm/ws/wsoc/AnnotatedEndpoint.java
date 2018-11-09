@@ -1165,12 +1165,12 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
 
     /*
      * maxMessageSize attribute in @OnMessage: Specifies the maximum size of message in bytes that the method this annotates will be able to process, or -1 to indicate that there
-     * is no maximum. If not defined, the max buffer size defined in the session object will be used.
+     * is no maximum defined, and therefore it is undefined which means unlimited.
      */
     private void setMaxMessageSize(Method method, EndpointMethodHelper endpointMethodHelper) {
         OnMessage onMsgAnnotation = method.getAnnotation(OnMessage.class);
         Long maxMessageSize = onMsgAnnotation.maxMessageSize();
-        // maxMessageSize is apparently -1 if it is not defined.
+        // maxMessageSize is -1 if it is not defined.
         if (maxMessageSize < -1) {
             // user has put in an invalid value, so change it to undefined.
             maxMessageSize = Constants.ANNOTATED_UNDEFINED_MAX_MSG_SIZE;
