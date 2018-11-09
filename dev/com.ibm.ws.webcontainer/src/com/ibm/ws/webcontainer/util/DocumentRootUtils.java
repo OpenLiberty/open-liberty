@@ -562,10 +562,13 @@ public class DocumentRootUtils {
     	    ExtDocRootFile edrFile = edr.getExtDocRootFile();
     	    if (edrFile  instanceof  ZipFileResource) {
     	        matchedZipFile = (ZipFileResource)edrFile;
+    	        logger.logp(Level.FINE, CLASS_NAME,"checkEDR", "matched Zip");
     	    } else if (edrFile instanceof FileResource){
     	    	matchedFile = ((FileResource)edrFile).getMatch();
+    	    	logger.logp(Level.FINE, CLASS_NAME,"checkEDR", "matched File");
     	    }	else if (edrFile instanceof EntryResource) {
     	        matchedEntry = (EntryResource) edrFile;
+    	        logger.logp(Level.FINE, CLASS_NAME,"checkEDR", "matched Entry");
     	    }
     	    
     	    matched = (matchedZipFile!=null || matchedFile != null || matchedEntry != null);
