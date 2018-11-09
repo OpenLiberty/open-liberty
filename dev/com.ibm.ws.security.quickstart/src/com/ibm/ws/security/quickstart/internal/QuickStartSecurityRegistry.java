@@ -33,7 +33,8 @@ import com.ibm.ws.security.registry.UserRegistry;
 class QuickStartSecurityRegistry implements UserRegistry {
     static final String REALM_NAME = "QuickStartSecurityRealm";
     private volatile String user;
-    private volatile Password password;
+    @Sensitive
+    private volatile ProtectedString password;
 
     /**
      * Create QuickStartSecurityRegistry instance.
@@ -42,7 +43,7 @@ class QuickStartSecurityRegistry implements UserRegistry {
      * @param password
      * @throws IllegalArgumentException
      */
-    QuickStartSecurityRegistry(String user, Password password) {
+    QuickStartSecurityRegistry(String user, ProtectedString password) {
         update(user, password);
     }
 
@@ -50,7 +51,7 @@ class QuickStartSecurityRegistry implements UserRegistry {
      * @param user
      * @param password
      */
-    void update(String user, Password password) {
+    void update(String user, ProtectedString password) {
         if (user == null) {
             throw new IllegalArgumentException("user must not be null");
         }
@@ -60,7 +61,7 @@ class QuickStartSecurityRegistry implements UserRegistry {
         if (password == null) {
             throw new IllegalArgumentException("password must not be null");
         }
-        if (password.isEmpty()) {
+        if (new String(password.getChars()).trim().isEmpty()) {
             throw new IllegalArgumentException("password must not be empty");
         }
         this.user = user;
@@ -88,9 +89,8 @@ class QuickStartSecurityRegistry implements UserRegistry {
         if (password.isEmpty()) {
             throw new IllegalArgumentException("password is an empty String");
         }
-
-
-        if (this.user.equals(userSecurityName) && this.password.checkPassword(password)) {
+        String savedPassword = new String(this.password.getChars());
+        if (this.user.equals(userSecurityName) && savedPassword.equals(password)) {
             return user;
         } else {
             return null;
