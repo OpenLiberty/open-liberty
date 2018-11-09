@@ -48,4 +48,9 @@ public class AsyncBulkheadStateNullImpl implements AsyncBulkheadState {
         }
     }
 
+    @Override
+    public void shutdown() {
+        // Nothing to do
+    }
+
 }

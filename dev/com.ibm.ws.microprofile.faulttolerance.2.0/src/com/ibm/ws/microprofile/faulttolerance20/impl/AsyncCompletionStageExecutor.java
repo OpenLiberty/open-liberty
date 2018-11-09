@@ -21,6 +21,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
+import com.ibm.ws.threading.PolicyExecutorProvider;
 
 /**
  * Executor for asynchronous methods which return a {@link CompletionStage}{@code<R>}
@@ -32,8 +33,8 @@ public class AsyncCompletionStageExecutor<R> extends AsyncExecutor<CompletionSta
     private static final TraceComponent tc = Tr.register(AsyncCompletionStageExecutor.class);
 
     public AsyncCompletionStageExecutor(RetryPolicy retry, CircuitBreakerPolicy cbPolicy, TimeoutPolicy timeoutPolicy, FallbackPolicy fallbackPolicy, BulkheadPolicy bulkheadPolicy,
-                                        ScheduledExecutorService executorService) {
-        super(retry, cbPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, executorService);
+                                        ScheduledExecutorService executorService, PolicyExecutorProvider policyExecutorProvider) {
+        super(retry, cbPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, executorService, policyExecutorProvider);
     }
 
     @Override

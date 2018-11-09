@@ -39,6 +39,11 @@ public interface AsyncBulkheadState {
     public ExecutionReference submit(Runnable runnable);
 
     /**
+     * Shutdown the bulkhead. Any new tasks will be rejected.
+     */
+    public void shutdown();
+
+    /**
      * A reference to an execution submitted to the bulkhead
      * <p>
      * Allows the caller to abort the execution and to check whether it was accepted by the bulkhead

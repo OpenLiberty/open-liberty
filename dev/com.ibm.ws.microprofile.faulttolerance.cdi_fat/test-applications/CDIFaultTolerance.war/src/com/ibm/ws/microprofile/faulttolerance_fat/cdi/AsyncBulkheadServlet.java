@@ -95,9 +95,13 @@ public class AsyncBulkheadServlet extends FATServlet {
 
         try {
             Future<Boolean> future5 = bean2.connectA("Five");
+            future5.get(TestConstants.TIMEOUT, TimeUnit.MILLISECONDS);
             throw new AssertionError("BulkheadException not thrown");
         } catch (BulkheadException e) {
-            //expected
+            // expected for 1.0
+        } catch (ExecutionException e) {
+            // expected for 2.0
+            assertThat(e.getCause(), instanceOf(BulkheadException.class));
         }
 
     }

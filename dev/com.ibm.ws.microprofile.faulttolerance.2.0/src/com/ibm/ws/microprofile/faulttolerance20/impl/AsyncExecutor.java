@@ -37,6 +37,7 @@ import com.ibm.ws.microprofile.faulttolerance20.state.FaultToleranceStateFactory
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState;
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState.RetryResult;
 import com.ibm.ws.microprofile.faulttolerance20.state.TimeoutState;
+import com.ibm.ws.threading.PolicyExecutorProvider;
 
 /**
  * Abstract executor for asynchronous calls.
@@ -53,13 +54,13 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
     private static final TraceComponent tc = Tr.register(AsyncExecutor.class);
 
     public AsyncExecutor(RetryPolicy retry, CircuitBreakerPolicy cbPolicy, TimeoutPolicy timeoutPolicy, FallbackPolicy fallbackPolicy, BulkheadPolicy bulkheadPolicy,
-                         ScheduledExecutorService executorService) {
+                         ScheduledExecutorService executorService, PolicyExecutorProvider policyExecutorProvider) {
         retryPolicy = retry;
         circuitBreaker = FaultToleranceStateFactory.INSTANCE.createCircuitBreakerState(cbPolicy);
         this.timeoutPolicy = timeoutPolicy;
         this.executorService = executorService;
         this.fallbackPolicy = fallbackPolicy;
-        bulkhead = FaultToleranceStateFactory.INSTANCE.createAsyncBulkheadState(executorService, bulkheadPolicy);
+        bulkhead = FaultToleranceStateFactory.INSTANCE.createAsyncBulkheadState(policyExecutorProvider, executorService, bulkheadPolicy);
     }
 
     private final RetryPolicy retryPolicy;
@@ -268,7 +269,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
 
     @Override
     public void close() {
-        // Nothing to close
+        bulkhead.shutdown();
     }
 
     /**

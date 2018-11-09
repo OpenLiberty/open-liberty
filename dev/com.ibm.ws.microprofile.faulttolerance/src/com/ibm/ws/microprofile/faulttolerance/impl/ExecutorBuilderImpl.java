@@ -36,7 +36,7 @@ public class ExecutorBuilderImpl<T, R> implements ExecutorBuilder<T, R> {
     protected TimeoutPolicy timeoutPolicy = null;
     protected MetricRecorder metricRecorder = DummyMetricRecorder.get();
     private final WSContextService contextService;
-    private final PolicyExecutorProvider policyExecutorProvider;
+    protected final PolicyExecutorProvider policyExecutorProvider;
     protected final ScheduledExecutorService scheduledExecutorService;
 
     public ExecutorBuilderImpl(WSContextService contextService, PolicyExecutorProvider policyExecutorProvider, ScheduledExecutorService scheduledExecutorService) {
