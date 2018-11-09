@@ -100,10 +100,13 @@ public class JWKProvider {
 
         this.publicKey = publicKey;
         this.privateKey = privateKey;
-        this.publicKeyKid = getKeyId(this.publicKey);
+        this.publicKeyKid = buildKidFromPublicKey(this.publicKey);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "kid = " + this.publicKeyKid);
+        }
     }
 
-    private String getKeyId(PublicKey cert) {
+    private String buildKidFromPublicKey(PublicKey cert) {
         JwkKidBuilder kidbuilder = new JwkKidBuilder();
         return kidbuilder.buildKeyId(cert);
     }
