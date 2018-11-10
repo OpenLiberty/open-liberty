@@ -16,8 +16,8 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.List;
 
-import com.ibm.ws.org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import com.ibm.ws.org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 
 import com.ibm.ws.kernel.boot.archive.UnixModeHelper;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
