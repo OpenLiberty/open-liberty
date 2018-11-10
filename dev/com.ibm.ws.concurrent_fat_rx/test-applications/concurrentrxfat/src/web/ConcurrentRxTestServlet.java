@@ -128,6 +128,8 @@ public class ConcurrentRxTestServlet extends FATServlet {
         runnable.run();
     };
 
+    ThreadContext stateContextPropagator; // propagates State context, clears City context, leaves Application context unchanged
+
     // Executor that can be used when tests don't want to tie up threads from the Liberty global thread pool to perform concurrent test logic
     private ExecutorService testThreads;
 
@@ -145,6 +147,12 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
+        stateContextPropagator = ThreadContextBuilder.instance()
+                        .propagated(ThreadContext.SECURITY, TestContextTypes.STATE)
+                        .unchanged(ThreadContext.APPLICATION)
+                        .cleared(ThreadContext.ALL_REMAINING)
+                        .build();
+
         testThreads = Executors.newFixedThreadPool(20);
 
         Class cl = defaultManagedExecutor.completedFuture(0).getClass();
@@ -2599,6 +2607,108 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
             // Verify that context is restored
             assertEquals(208.89, totalCost.apply(198.00), 0.01);
+        } finally {
+            CurrentLocation.clear();
+        }
+    }
+
+    /**
+     * Use the currentContextExecutor method to capture a reusable snapshot of current thread context.
+     * Apply the snapshot multiple times and verify the correctness of it.
+     */
+    @Test
+    public void testReusableContextSnapshot() throws Exception {
+        // Capture the snapshot from an unmanaged thread that lacks the current application context
+        Executor stateContextSnapshot = testThreads.submit(() -> {
+            CurrentLocation.setLocation("Minneapolis", "Minnesota");
+            try {
+                return stateContextPropagator.currentContextExecutor();
+            } finally {
+                CurrentLocation.clear();
+            }
+        }).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        try {
+            CurrentLocation.setLocation("Duluth", "Nebraska");
+
+            // Run on current thread. City should be cleared, State should be replaced, Application context should remain.
+            stateContextSnapshot.execute(() -> {
+                assertEquals(68.75, CurrentLocation.getTotalSalesTax(1000.00), 0.000001); // MN state tax
+                try {
+                    assertNotNull(InitialContext.doLookup("java:comp/env/executorRef")); // requires Application context
+                } catch (NamingException x) {
+                    throw new RuntimeException(x);
+                }
+            });
+
+            // context must be restored afterward
+            assertEquals("Duluth", CurrentLocation.getCity());
+            assertEquals("Nebraska", CurrentLocation.getState());
+
+            // Run on a thread that lacks the current application context.
+            testThreads.submit(() -> {
+                stateContextSnapshot.execute(() -> {
+                    assertEquals(68.75, CurrentLocation.getTotalSalesTax(1000.00), 0.000001); // MN state tax
+                    try {
+                        fail("Lookup should fail without application context: " + InitialContext.doLookup("java:comp/env/executorRef"));
+                    } catch (NamingException x) { // expected
+                    }
+                });
+
+                // context must be restored afterward
+                assertTrue(CurrentLocation.isUnspecified());
+            }).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            // The above is using ThreadContext from MicroProfile ThreadContextBuilder.
+
+            // ThreadContext injected via @Resource is based on server configuration, which
+            // does not currently permit the configuration of third-party context types,
+            Executor appContextSnapshot = defaultThreadContext.currentContextExecutor();
+            testThreads.submit(() -> {
+                try {
+                    CurrentLocation.setLocation("Davenport", "Iowa");
+
+                    appContextSnapshot.execute(() -> {
+                        // assertTrue(CurrentLocation.isUnspecified());
+                        CurrentLocation.clear(); // TODO remove and enable above once EE Concurrency learns how to clear MP context types
+                        try {
+                            assertNotNull(InitialContext.doLookup("java:comp/env/executorRef")); // requires Application context
+                        } catch (NamingException x) {
+                            throw new RuntimeException(x);
+                        }
+
+                        // snapshot within a snapshot
+                        stateContextSnapshot.execute(() -> {
+                            assertEquals(68.75, CurrentLocation.getTotalSalesTax(1000.00), 0.000001); // MN state tax
+                            try {
+                                assertNotNull(InitialContext.doLookup("java:comp/env/executorRef")); // requires Application context
+                            } catch (NamingException x) {
+                                throw new RuntimeException(x);
+                            }
+
+                            CurrentLocation.setLocation("Indianapolis", "Indiana");
+                        });
+
+                        // city/state context restored to unspecified
+                        assertTrue(CurrentLocation.isUnspecified());
+                    });
+                } finally {
+                    CurrentLocation.clear();
+                }
+
+                // context must be restored afterward
+                CurrentLocation.setLocation("Davenport", "Iowa"); // TODO because EE Concurrency path does know how to restore MP context yet
+                //assertEquals("Davenport", CurrentLocation.getCity());
+                //assertEquals("Iowa", CurrentLocation.getState());
+            }).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            // TODO enable once EE Concurrency path actually clears MP context types
+            // appContextSnapshot.execute(() -> assertTrue(CurrentLocation.isUnspecified()));
+
+            // context must be restored afterward
+            assertEquals("Duluth", CurrentLocation.getCity());
+            assertEquals("Nebraska", CurrentLocation.getState());
+            assertNotNull(InitialContext.doLookup("java:comp/env/executorRef"));
         } finally {
             CurrentLocation.clear();
         }
