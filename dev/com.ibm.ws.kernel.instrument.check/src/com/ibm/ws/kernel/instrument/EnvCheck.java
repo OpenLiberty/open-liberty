@@ -10,7 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.instrument;
 
+
+import java.io.FileNotFoundException;
 import java.lang.instrument.Instrumentation;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
 /**
@@ -20,7 +25,13 @@ import java.util.ResourceBundle;
 public class EnvCheck {
     // See Launcher.ReturnCode.
     private static final int ERROR_BAD_JAVA_VERSION = 30;
+    private static final int ERROR_LAUNCH_EXCEPTION = 24;
+    
+    private static final String SERIALFILTER_AGENT_JAR = "ws-serialfilteragent.jar";
+    private static final String KEY_SERIALFILTER_AGENT_ENABLE = "com.ibm.websphere.serialfilter.enable";
+    private static final String KEY_SERIALFILTER_AGENT_ACTIVE = "com.ibm.websphere.serialfilter.active";
 
+    
     /**
      * @param args - will just get passed onto BootstrapAgent if version check is successful
      */
@@ -44,6 +55,23 @@ public class EnvCheck {
     public static void premain(String arg, Instrumentation inst) {
         try {
             BootstrapAgent.premain(arg, inst);
+            String enableSerialFilter = AccessController.doPrivileged(new PrivilegedAction<String>() {
+                public String run() {
+                    return System.getProperty(KEY_SERIALFILTER_AGENT_ENABLE);
+                }
+            });
+            if ("true".equalsIgnoreCase(enableSerialFilter)) {
+                BootstrapAgent.loadAgent(SERIALFILTER_AGENT_JAR, null);
+                AccessController.doPrivileged(new PrivilegedAction<String>() {
+                    public String run() {
+                        return System.setProperty(KEY_SERIALFILTER_AGENT_ACTIVE, "true");
+                    }
+                });
+                System.out.println(MessageFormat.format(ResourceBundle.getBundle("com.ibm.ws.kernel.boot.resources.LauncherMessages").getString("info.serialfilteragent.loaded"), ""));
+            }
+        } catch (FileNotFoundException fnfe) {
+             System.out.println(MessageFormat.format(ResourceBundle.getBundle("com.ibm.ws.kernel.boot.resources.LauncherMessages").getString("error.no.serialfilteragent"), fnfe.getMessage()));
+             System.exit(ERROR_LAUNCH_EXCEPTION);
         } catch (UnsupportedClassVersionError versionError) {
             System.out.println(ResourceBundle.getBundle("com.ibm.ws.kernel.boot.resources.LauncherMessages").getString("error.badVersion"));
             System.exit(ERROR_BAD_JAVA_VERSION);

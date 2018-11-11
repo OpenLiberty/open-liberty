@@ -688,6 +688,10 @@ warning.package.root.invalid=CWWKE0947W: A --server-root option with an empty ar
 warning.package.root.invalid.explanation=The user performed a package request with a --server-root option specifying an empty argument and Product Extensions were detected. The default server root of wlp will be used.
 warning.package.root.invalid.useraction=No action is required.
 
+error.no.serialfilteragent=CWWKE0948E: The specified serial filter agent jar file {0} does not exist.
+error.no.serialfilteragent.explanation=The specified serial filter agent jar file does not exist, or fail to read.
+error.no.serialfilteragent.useraction= Ensure that the file exists and can be read by the current user.
+
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
 info.serverStartedWithPID=Server {0} started with process ID {1}.
@@ -767,3 +771,5 @@ info.initlogs=Redirecting stdout and stderr to file {0}
 info.no.servers.defined=There are no servers defined in the user directory {0}.
 info.list.of.defined.servers=The following servers are defined relative to the user directory {0}.
 info.communicate.server=A communication error has occurred between the command {0} and the server {1}.
+info.serialfilteragent.loaded=WebSphere Application Server Serial Filter Agent is loaded.
+
