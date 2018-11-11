@@ -389,6 +389,7 @@ public class PackageProcessor implements ArchiveProcessor {
          * Add wlp's root directory
          */
         DirEntryConfig rootDirConfig = new DirEntryConfig(packageArchiveEntryPrefix, bootProps.getInstallRoot(), true, PatternStrategy.IncludePreference);
+
         entryConfigs.add(rootDirConfig);
 
         // include all underneath install-root except usr directory
@@ -456,13 +457,13 @@ public class PackageProcessor implements ArchiveProcessor {
         if (bootProps.getProcessType() == BootstrapConstants.LOC_PROCESS_TYPE_CLIENT) {
             locAreaName = BootstrapConstants.LOC_AREA_NAME_CLIENTS;
         }
+
         DirEntryConfig processConfigDirConfig = null;
-        if (isServerRootOptionSet) {
-            // if --server-root set, then don't add /usr/ in path
+        // if --server-root set, then don't add /usr/ in path
+        if (isServerRootOptionSet && (includeUsr(options.get(PackageOption.INCLUDE)))) {
             processConfigDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
                                                         + locAreaName + "/"
                                                         + processName + "/", processConfigDir, true, PatternStrategy.IncludePreference);
-
         } else {
             processConfigDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
                                                         + BootstrapConstants.LOC_AREA_NAME_USR + "/"
@@ -470,6 +471,7 @@ public class PackageProcessor implements ArchiveProcessor {
                                                         + processName + "/", processConfigDir, true, PatternStrategy.IncludePreference);
         }
         entryConfigs.add(processConfigDirConfig);
+
         // avoid any special characters in processName when construct patterns
         String regexProcessName = Pattern.quote(processName);
 
@@ -506,7 +508,7 @@ public class PackageProcessor implements ArchiveProcessor {
         File sharedDir = ProcessorUtils.getFileFromDirectory(wlpUserDir, "shared");
         if (sharedDir.exists()) {
             DirEntryConfig serverSharedDirConfig = null;
-            if (isServerRootOptionSet) {
+            if (isServerRootOptionSet && (includeUsr(options.get(PackageOption.INCLUDE)))) {
                 serverSharedDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
                                                            + BootstrapConstants.LOC_AREA_NAME_SHARED + "/", sharedDir, true, PatternStrategy.IncludePreference);
             } else {
@@ -536,7 +538,7 @@ public class PackageProcessor implements ArchiveProcessor {
             File extensionDir = ProcessorUtils.getFileFromDirectory(wlpUserDir, BootstrapConstants.LOC_AREA_NAME_EXTENSION);
             DirEntryConfig serverExtensionDirConfig = null;
             if (extensionDir.exists()) {
-                if (isServerRootOptionSet) {
+                if (isServerRootOptionSet && (includeUsr(options.get(PackageOption.INCLUDE)))) {
                     serverExtensionDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
                                                                   + BootstrapConstants.LOC_AREA_NAME_EXTENSION
                                                                   + "/", extensionDir, true, PatternStrategy.IncludePreference);
