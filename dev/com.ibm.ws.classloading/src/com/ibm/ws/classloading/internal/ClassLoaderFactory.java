@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Semaphore;
 
 import org.eclipse.equinox.region.RegionDigraph;
 import org.osgi.framework.Bundle;
@@ -58,10 +59,10 @@ class ClassLoaderFactory extends GatewayBundleFactory {
     private final ClassRedefiner redefiner;
     private final ClassGenerator generator;
 
-    ClassLoaderFactory(BundleContext bundleContext, RegionDigraph digraph, Map<Bundle, Set<GatewayClassLoader>> classloaders,
+    ClassLoaderFactory(BundleContext bundleContext, RegionDigraph digraph, Map<Bundle, Set<GatewayClassLoader>> classloaders, Semaphore concurrentBundleOps,
                        CanonicalStore<ClassLoaderIdentity, AppClassLoader> store,
                        CompositeResourceProvider resourceProviders, ClassRedefiner redefiner, ClassGenerator generator) {
-        super(bundleContext, digraph, classloaders);
+        super(bundleContext, digraph, classloaders, concurrentBundleOps);
         this.store = store;
         this.resourceProviders = resourceProviders;
         this.redefiner = redefiner;
@@ -124,9 +125,7 @@ class ClassLoaderFactory extends GatewayBundleFactory {
     private AppClassLoader createClassLoader() {
         validate();
         inferParentLoader();
-        AppClassLoader result = config.getDelegateToParentAfterCheckingLocalClasspath()
-                        ? new ParentLastClassLoader(parentClassLoader, config, classPath, access, redefiner, generator)
-                        : new AppClassLoader(parentClassLoader, config, classPath, access, redefiner, generator);
+        AppClassLoader result = config.getDelegateToParentAfterCheckingLocalClasspath() ? new ParentLastClassLoader(parentClassLoader, config, classPath, access, redefiner, generator) : new AppClassLoader(parentClassLoader, config, classPath, access, redefiner, generator);
         addSharedLibPaths(result);
         runPostCreateAction(result);
         return result;

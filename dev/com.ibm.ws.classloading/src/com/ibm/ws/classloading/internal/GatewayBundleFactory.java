@@ -14,6 +14,7 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Semaphore;
 
 import org.eclipse.equinox.region.Region;
 import org.eclipse.equinox.region.RegionDigraph;
@@ -59,12 +60,14 @@ class GatewayBundleFactory {
     private final FrameworkWiring frameworkWiring;
     private final RegionDigraph digraph;
     final Map<Bundle, Set<GatewayClassLoader>> classloaders;
+    final Semaphore concurrentBundleOps;
 
-    GatewayBundleFactory(BundleContext bundleContext, RegionDigraph digraph, Map<Bundle, Set<GatewayClassLoader>> classloaders) {
+    GatewayBundleFactory(BundleContext bundleContext, RegionDigraph digraph, Map<Bundle, Set<GatewayClassLoader>> classloaders, Semaphore concurrentBunldeOps) {
         this.bundleContext = bundleContext;
         this.frameworkWiring = bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).adapt(FrameworkWiring.class);
         this.digraph = digraph;
         this.classloaders = classloaders;
+        this.concurrentBundleOps = concurrentBunldeOps;
     }
 
     private void setStartLevel(Bundle b) {
@@ -84,16 +87,19 @@ class GatewayBundleFactory {
         // while creating the shared-library for a lazy-activated JDBC bundle.
         Object token = ThreadIdentityManager.runAsServer();
         try {
-            Bundle b = createGatewayBundle(gwConfig, clConfig);
-            setStartLevel(b);
+            Bundle b;
+            concurrentBundleOps.acquireUninterruptibly();
             try {
+                b = createGatewayBundle(gwConfig, clConfig);
+                setStartLevel(b);
                 start(b);
             } catch (BundleException e) {
                 // Failed to resolve gateway bundle;
                 throw new ClassLoadingServiceException(
                                 Tr.formatMessage(tc, "cls.gateway.not.resolvable", gwConfig.getApplicationName(), gwConfig.getApplicationVersion()),
                                 e);
-
+            } finally {
+                concurrentBundleOps.release();
             }
             BundleWiring bw = b.adapt(BundleWiring.class);
             ClassLoader bundleLoader = null;

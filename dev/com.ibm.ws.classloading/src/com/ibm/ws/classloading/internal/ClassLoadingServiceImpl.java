@@ -33,6 +33,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
@@ -130,6 +131,8 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
     private final ReferenceQueue<Bundle> collectedBundles = new ReferenceQueue<Bundle>();
     private final ConcurrentServiceReferenceSet<ClassGenerator> generatorRefs = new ConcurrentServiceReferenceSet<ClassGenerator>(REFERENCE_GENERATORS);
     private final ClassGeneratorManager generatorManager = new ClassGeneratorManager(generatorRefs);
+    // only allow 10 threads at a time to perform install/resolve/start of gateway bundles
+    private final Semaphore concurrentBundleOps = new Semaphore(10);
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE,
                policy = ReferencePolicy.DYNAMIC,
@@ -274,7 +277,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
     public AppClassLoader createTopLevelClassLoader(List<Container> classPath, GatewayConfiguration gwConfig, ClassLoaderConfiguration clConfig) {
         if (clConfig.getIncludeAppExtensions())
             addAppExtensionLibs(clConfig);
-        AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager)
+        AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, concurrentBundleOps, aclStore, resourceProviders, redefiner, generatorManager)
                         .setClassPath(classPath)
                         .configure(gwConfig)
                         .configure(clConfig)
@@ -286,7 +289,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
 
     @Override
     public AppClassLoader createBundleAddOnClassLoader(List<File> classPath, ClassLoader gwClassLoader, ClassLoaderConfiguration clConfig) {
-        return new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager)
+        return new ClassLoaderFactory(bundleContext, digraph, classloaders, concurrentBundleOps, aclStore, resourceProviders, redefiner, generatorManager)
                         .setSharedLibPath(classPath)
                         .configure(createGatewayConfiguration())
                         .useBundleAddOnLoader(gwClassLoader)
@@ -298,7 +301,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
     public AppClassLoader createChildClassLoader(List<Container> classPath, ClassLoaderConfiguration config) {
         if (config.getIncludeAppExtensions())
             addAppExtensionLibs(config);
-        return new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager)
+        return new ClassLoaderFactory(bundleContext, digraph, classloaders, concurrentBundleOps, aclStore, resourceProviders, redefiner, generatorManager)
                         .setClassPath(classPath)
                         .configure(config)
                         .create();
@@ -399,7 +402,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
             }
         }
 
-        AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager)
+        AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, concurrentBundleOps, aclStore, resourceProviders, redefiner, generatorManager)
                         .configure(createGatewayConfiguration().setApplicationName(SHARED_LIBRARY_DOMAIN + ": " + lib.id())
                                         .setDynamicImportPackage("*")
                                         .setApiTypeVisibility(apiTypeVisibility))
@@ -573,7 +576,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
                         .setDynamicImportPackage("*;thread-context=\"true\"")
                         .setDelegateToSystem(false);
         ClassLoaderConfiguration clConfig = this.createClassLoaderConfiguration().setId(createIdentity("Thread Context", key));
-        GatewayBundleFactory gatewayBundleFactory = new GatewayBundleFactory(bundleContext, digraph, classloaders);
+        GatewayBundleFactory gatewayBundleFactory = new GatewayBundleFactory(bundleContext, digraph, classloaders, concurrentBundleOps);
         GatewayClassLoader aug = gatewayBundleFactory.createGatewayBundleClassLoader(gwConfig, clConfig, resourceProviders);
 
         ThreadContextClassLoader tccl;
