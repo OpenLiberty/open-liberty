@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -32,8 +31,14 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 /**
  * Programmatically built ThreadContext instance - either via ThreadContextBuilder
  * or injected by CDI and possibly annotated by <code>@ThreadContextConfig</code>
+ *
+ * TODO eventually this should be merged with ContextServiceImpl such that it also
+ * implements EE Concurrency ContextService. However, because the MP Concurrency spec
+ * is not covering serializable thread context in its initial version, we must defer
+ * this to the future. In the mean time, there will be duplicate of the MP Concurrency
+ * method implementations between the two.
  */
-class ThreadContextImpl implements ThreadContext, WSContextService { // TODO add ContextService?
+class ThreadContextImpl implements ThreadContext, WSContextService {
     private final LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider;
 
     ThreadContextImpl(LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
@@ -41,7 +46,8 @@ class ThreadContextImpl implements ThreadContext, WSContextService { // TODO add
     }
 
     @Override
-    public ThreadContextDescriptor captureThreadContext(Map<String, String> executionProperties, Map<String, ?>... additionalThreadContextConfig) {
+    public ThreadContextDescriptor captureThreadContext(Map<String, String> executionProperties,
+                                                        @SuppressWarnings("unchecked") Map<String, ?>... additionalThreadContextConfig) {
         return new ThreadContextDescriptorImpl(configPerProvider);
     }
 
@@ -52,7 +58,8 @@ class ThreadContextImpl implements ThreadContext, WSContextService { // TODO add
 
     @Override
     public Executor currentContextExecutor() {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(configPerProvider);
+        return new ContextualExecutor(contextDescriptor);
     }
 
     @Override
@@ -67,43 +74,43 @@ class ThreadContextImpl implements ThreadContext, WSContextService { // TODO add
 
     @Override
     public <T, U> BiConsumer<T, U> withCurrentContext(BiConsumer<T, U> consumer) {
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(configPerProvider);
         return new ContextualBiConsumer<T, U>(contextDescriptor, consumer);
     }
 
     @Override
     public <T, U, R> BiFunction<T, U, R> withCurrentContext(BiFunction<T, U, R> function) {
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(configPerProvider);
         return new ContextualBiFunction<T, U, R>(contextDescriptor, function);
     }
 
     @Override
     public <R> Callable<R> withCurrentContext(Callable<R> callable) {
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(configPerProvider);
         return new ContextualCallable<R>(contextDescriptor, callable);
     }
 
     @Override
     public <T> Consumer<T> withCurrentContext(Consumer<T> consumer) {
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(configPerProvider);
         return new ContextualConsumer<T>(contextDescriptor, consumer);
     }
 
     @Override
     public <T, R> Function<T, R> withCurrentContext(Function<T, R> function) {
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(configPerProvider);
         return new ContextualFunction<T, R>(contextDescriptor, function);
     }
 
     @Override
     public Runnable withCurrentContext(Runnable runnable) {
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(configPerProvider);
         return new ContextualRunnable(contextDescriptor, runnable);
     }
 
     @Override
     public <R> Supplier<R> withCurrentContext(Supplier<R> supplier) {
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(configPerProvider);
         return new ContextualSupplier<R>(contextDescriptor, supplier);
     }
 }
