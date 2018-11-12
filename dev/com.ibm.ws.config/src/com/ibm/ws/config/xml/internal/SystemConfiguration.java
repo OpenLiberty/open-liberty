@@ -17,6 +17,7 @@ import java.util.Hashtable;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -26,7 +27,7 @@ import com.ibm.websphere.config.WSConfigurationHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.admin.SystemConfigSupport;
-import com.ibm.ws.config.xml.ConfigVariables;
+import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
@@ -82,7 +83,9 @@ class SystemConfiguration {
         WsLocationAdmin locationService = locationTracker.getService();
         VariableRegistry variableRegistryService = variableRegistryTracker.getService();
 
-        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryService, bc.getDataFile("variableCache"));
+        ServiceReference<LibertyProcess> procRef = bc.getServiceReference(LibertyProcess.class);
+        LibertyProcess libertyProcess = bc.getService(procRef);
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryService, libertyProcess.getArgs(), bc.getDataFile("variableCache"));
 
         MetaTypeRegistry metatypeRegistry = metatypeRegistryTracker.getService();
 
