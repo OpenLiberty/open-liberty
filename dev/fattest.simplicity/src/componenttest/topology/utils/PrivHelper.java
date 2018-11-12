@@ -71,7 +71,6 @@ public class PrivHelper {
         } else {
             policyPath = JavaInfo.forServer(server).javaHome() + "/lib/security/java.policy";
         }
-        //String policyPath = JavaInfo.forServer(server).javaHome() + "/lib/security/java.policy";
         String policyContents = FileUtils.readFile(policyPath);
 
         // Add in our custom policy for JAX-B permissions:
