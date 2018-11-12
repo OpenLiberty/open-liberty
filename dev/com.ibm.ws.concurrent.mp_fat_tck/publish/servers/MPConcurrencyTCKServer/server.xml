@@ -1,0 +1,20 @@
+<server>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>cdi-2.0</feature>
+        <feature>mpConcurrency-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml" />
+    
+    <!-- Perms required by arquillian/testng -->
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+
+    <!-- Ain't nobody got time for this -->
+    <javaPermission className="java.security.AllPermission"/>
+</server>
