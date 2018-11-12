@@ -19,6 +19,8 @@ import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.ws.threading.PolicyExecutorProvider;
+import com.ibm.ws.threading.PolicyTaskCallback;
+import com.ibm.ws.threading.PolicyTaskFuture;
 
 /**
  * Implements the asynchronous bulkhead using a {@link PolicyExecutor}
@@ -35,10 +37,10 @@ public class AsyncBulkheadStateImpl implements AsyncBulkheadState {
 
     @Override
     @FFDCIgnore(RejectedExecutionException.class)
-    public ExecutionReference submit(Runnable runnable) {
+    public ExecutionReference submit(Runnable runnable, ExceptionHandler exceptionHandler) {
         ExecutionReferenceImpl execution = new ExecutionReferenceImpl();
         try {
-            execution.future = executorService.submit(runnable);
+            execution.future = executorService.submit(runnable, new TaskMonitor(exceptionHandler));
             execution.accepted = true;
         } catch (RejectedExecutionException e) {
             execution.accepted = false;
@@ -62,6 +64,24 @@ public class AsyncBulkheadStateImpl implements AsyncBulkheadState {
         public boolean wasAccepted() {
             return accepted;
         }
+    }
+
+    private class TaskMonitor extends PolicyTaskCallback {
+
+        private final ExceptionHandler exceptionHandler;
+
+        public TaskMonitor(ExceptionHandler exceptionHandler) {
+            super();
+            this.exceptionHandler = exceptionHandler;
+        }
+
+        @Override
+        public void onEnd(Object task, PolicyTaskFuture<?> future, Object startObj, boolean aborted, int pending, Throwable failure) {
+            if (failure != null) {
+                exceptionHandler.handle(failure);
+            }
+        }
+
     }
 
     @Override
