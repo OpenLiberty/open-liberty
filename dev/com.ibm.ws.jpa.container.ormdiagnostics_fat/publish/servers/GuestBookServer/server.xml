@@ -11,21 +11,33 @@
 <server description="JPA Diagnostics">
 
     <featureManager>
-        <feature>jpa-2.2</feature>
-        <feature>servlet-4.0</feature>
-        <feature>componenttest-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>jdbc-4.2</feature>
+        <feature>jpa-2.1</feature>
+        <feature>jsp-2.3</feature>
+        <feature>ejbLite-3.2</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
 
-    <dataSource id="DefaultDataSource" fat.modify="true">
+    <library id="DerbyLib" fat.modify="true">
+        <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    </library>
+
+    <dataSource id="samplejpadatasource" 
+                jndiName="jdbc/samplejpadatasource" 
+                transactional="false" 
+                fat.modify="true">
         <jdbcDriver libraryRef="DerbyLib"/>
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>
 
-    <library id="DerbyLib" fat.modify="true">
-        <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
-    </library>
+    <dataSource id="samplejpadatasourcenonjta" 
+                jndiName="jdbc/samplejpadatasourcenonjta" 
+                fat.modify="true">
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
 
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 
