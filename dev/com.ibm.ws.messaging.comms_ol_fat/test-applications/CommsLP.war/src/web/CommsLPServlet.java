@@ -1,7 +1,5 @@
 package web;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import test.util.ResourceList;
 
 import javax.annotation.Resource;
@@ -29,6 +27,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.logging.Logger;
 
 public class CommsLPServlet extends HttpServlet {
     private static final long serialVersionUID = 7709282314904580334L;
@@ -46,16 +45,16 @@ public class CommsLPServlet extends HttpServlet {
         String test = request.getParameter("test");
         PrintWriter out = response.getWriter();
         out.printf("Starting %s<br>%n", test);
-        final TraceComponent tc = Tr.register(CommsLPServlet.class); // injection engine doesn't like this at the class level
-        Tr.entry(this, tc, test);
+        Logger log = Logger.getLogger(this.getClass().getName());
+        log.entering(this.getClass().getName(), test);
         try {
             getClass().getMethod(test, HttpServletRequest.class, HttpServletResponse.class).invoke(this, request, response);
             out.printf("%s %s%n", test, SUCCESS_MESSAGE);
-            Tr.exit(this, tc, test);
+            log.exiting(this.getClass().getName(), test);
         } catch (Throwable x) {
             if (x instanceof InvocationTargetException)
                 x = x.getCause();
-            Tr.exit(this, tc, test, x);
+            log.throwing(this.getClass().getName(), test, x);
             out.printf("<pre>ERROR in %s:%n", test);
             x.printStackTrace(out);
             out.println("</pre>");

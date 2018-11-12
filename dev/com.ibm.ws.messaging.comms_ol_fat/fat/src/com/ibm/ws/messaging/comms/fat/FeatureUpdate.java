@@ -11,10 +11,8 @@
 package com.ibm.ws.messaging.comms.fat;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import componenttest.matchers.Matchers;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-import org.hamcrest.CoreMatchers;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
@@ -35,7 +33,6 @@ import java.net.URL;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.OVERWRITE;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -74,17 +71,14 @@ public class FeatureUpdate {
         }
     }
 
+
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-            setupShrinkWrap();
-
-
-        server2.copyFileToLibertyInstallRoot("lib/features", "features/testjmsinternals-1.0.mf");
+        setupShrinkWrap();
         server2.copyFileToLibertyServerRoot("resources/security", "serverLTPAKeys/certnew.der");
         server2.copyFileToLibertyServerRoot("resources/security", "serverLTPAKeys/ltpa.keys");
         server2.copyFileToLibertyServerRoot("resources/security", "serverLTPAKeys/mykeynew.jks");
 
-        server1.copyFileToLibertyInstallRoot("lib/features", "features/testjmsinternals-1.0.mf");
         server1.copyFileToLibertyServerRoot("resources/security", "clientLTPAKeys/mykeynew.jks");
 
         server2.startServer();
@@ -111,10 +105,10 @@ public class FeatureUpdate {
         System.out.println("completed  teardown ");
     }
 
+
     @Test
     public void testSendReceive2LP() throws Exception {
-        setMarkMakeConfigUpdate(server1, "server1.xml");
-        setMarkEnsureConfigUpdate(server2, "server2.xml");
+        setMarkUpdateConfigs(server1, "server1.xml", "server2.xml");
         
         runInServlet("testQueueSendMessage");
         runInServlet("testQueueReceiveMessages");
@@ -127,8 +121,7 @@ public class FeatureUpdate {
     @Test
     public void testwasJmsSecurityFeatureUpdate() throws Exception {
         System.out.println("starting testwasJmsSecurityFeatureUpdate");
-        setMarkMakeConfigUpdate(server1, "server1.xml");
-        setMarkEnsureConfigUpdate(server2, "SecurityDisabledServer.xml");
+        setMarkUpdateConfigs(server1, "server1.xml", "SecurityDisabledServer.xml");
         System.out.println("marker set , running test in servelet");
         runInServlet("testQueueSendMessageExpectException");
 
@@ -143,8 +136,6 @@ public class FeatureUpdate {
         server2.startServer();
     }
 
-    
-    
     
     @Test
     public void testSSLFeatureUpdate() throws Exception {
@@ -165,14 +156,18 @@ public class FeatureUpdate {
         uploadMessage = server1.waitForStringInLogUsingMark("CWSIT0127E:.*", server1.getMatchingLogFile("trace.log"));
         assertNotNull("Could not find CWSIT0127E (unable to connect to ME exception) in trace.log", uploadMessage);
     }
-    
 
-    static void setMarkEnsureConfigUpdate(LibertyServer server, String newServerXml) throws Exception {
-        final String logLine = setMarkMakeConfigUpdate(server, newServerXml);
-        assertThat("Server configuration should have been updated", logLine, not(containsString("CWWKG0018I")));
+
+    private static void setMarkUpdateConfigs(LibertyServer server, String initialConfig, String... subsequentConfigs) throws Exception {
+        updateConfig(server, initialConfig);
+        for (String config: subsequentConfigs) {
+            final String logLine = updateConfig(server, config);
+            assertThat("Server configuration should have been updated", logLine, not(containsString("CWWKG0018I")));
+        }
     }
 
-    static String setMarkMakeConfigUpdate(LibertyServer server, String newServerXml) throws Exception {
+
+    private static String updateConfig(LibertyServer server, String newServerXml) throws Exception {
         // set a new mark
         server.setMarkToEndOfLog(server.getDefaultLogFile());
 
@@ -183,7 +178,8 @@ public class FeatureUpdate {
         return server.waitForStringInLogUsingMark("CWWKG001[78]I");
     }
 
-    public static void setupShrinkWrap() throws Exception {
+
+    private static void setupShrinkWrap() throws Exception {
         final JavaArchive utilsJar = ShrinkWrap.create(JavaArchive.class, "utilLib.jar")
                 .addPackages(true, "test.util");
 
