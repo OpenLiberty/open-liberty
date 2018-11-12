@@ -10,8 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.common.jwk.impl;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;

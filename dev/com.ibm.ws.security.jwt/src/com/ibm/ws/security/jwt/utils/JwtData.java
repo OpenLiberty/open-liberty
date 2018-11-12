@@ -11,9 +11,7 @@
 package com.ibm.ws.security.jwt.utils;
 
 import java.security.Key;
-import java.security.KeyStoreException;
 import java.security.PublicKey;
-import java.security.cert.CertificateException;
 import java.security.interfaces.RSAPrivateKey;
 
 import org.jose4j.keys.HmacKey;
@@ -21,7 +19,6 @@ import org.jose4j.keys.HmacKey;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.jwk.impl.JWKProvider;
 import com.ibm.ws.security.common.jwk.utils.JwkKidBuilder;
@@ -158,7 +155,7 @@ public class JwtData {
         }
     }
 
-    private String buildKidFromPublicKey(PublicKey cert) throws KeyStoreException, CertificateException, InvalidTokenException {
+    private String buildKidFromPublicKey(PublicKey cert)  {
     	JwkKidBuilder kidbuilder = new JwkKidBuilder();
         return kidbuilder.buildKeyId(cert);
 	}
