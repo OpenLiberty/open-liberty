@@ -48,6 +48,7 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.persistent.ejb.TimerStatus;
 import com.ibm.ws.concurrent.persistent.ejb.TimersPersistentExecutor;
 import com.ibm.ws.ejbcontainer.osgi.EJBPersistentTimerRuntime;
@@ -504,5 +505,25 @@ public class EJBPersistentTimerRuntimeImpl implements EJBPersistentTimerRuntime 
     @Override
     public void serverStopping() {
         serverStopping = true;
+    }
+
+    @Trivial
+    @Override
+    public boolean isConfigured() {
+        ServiceReference<PersistentExecutor> defaultPExecutorRef;
+        EJBTimerRuntime timerRuntime = ejbTimerRuntimeServiceRef.getService();
+        if (timerRuntime != null && timerRuntime.getPersistentExecutorRef() != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tcContainer.isDebugEnabled())
+                Tr.debug(tcContainer, "isServiceConfigured : true : configured persistent executor");
+            return true;
+        } else if ((defaultPExecutorRef = defaultPersistentExecutorRef.getReference()) != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tcContainer.isDebugEnabled())
+                Tr.debug(tcContainer, "isServiceConfigured : true : default persistent executor");
+            return true;
+        }
+        // Unable to determine which PersistentExecutor is being used; configuration is incomplete.
+        if (TraceComponent.isAnyTracingEnabled() && tcContainer.isDebugEnabled())
+            Tr.debug(tcContainer, "isServiceConfigured : false : no persistent executor");
+        return false;
     }
 }
