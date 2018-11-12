@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.org.hibernate.validator;
+package com.ibm.ws.org.eclipse.yasson;
 
 import test.common.OSSMessageTest;
 
@@ -16,14 +16,14 @@ import test.common.OSSMessageTest;
  * The purpose of this test is to ensure that we always pick up changes in Hibernate Validator NLS files so we can translate
  * the changes into languages that OpenLiberty ships but Hibernate Validator does not.
  * Currently OpenLiberty provides: cs, de, es, fr, hu, it, ja, ko, pl, pt_BR, ro, ru, zh_TW, zh
- * Currently Hibernate Validator provides: ar, cs, de, en, es, fa, fr, hu, ko, mn_MN, pt_BR, ru, sk, tr, uk, zh_CN
+ * Currently Yasson provides English only
  *
- * This means that OpenLiberty must provide the following languages: it, ja, pl, ro, zh_TW, zh
+ * This means that OpenLiberty must provide the other languages
  */
-public class HibernateValidatorMessageTest extends OSSMessageTest {
+public class YassonMessageTest extends OSSMessageTest {
 
-    public HibernateValidatorMessageTest() {
-        super("hibernate-validator-6", "com.ibm.ws.org.hibernate.validator", "org/hibernate/validator/ValidationMessages.properties");
+    public YassonMessageTest() {
+        super("yasson-1", "com.ibm.ws.org.eclipse.yasson.1", "yasson-messages.properties");
     }
 
 }
