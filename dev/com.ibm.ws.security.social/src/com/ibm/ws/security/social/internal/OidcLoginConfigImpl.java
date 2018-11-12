@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.social.internal;
 
-import java.security.KeyStoreException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,7 +22,6 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -665,13 +663,6 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     public String getAuthContextClassReference() {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getGrantType() {
-        // TODO Auto-generated method stub
-        return "authorization_code";
     }
 
     /** {@inheritDoc} */
