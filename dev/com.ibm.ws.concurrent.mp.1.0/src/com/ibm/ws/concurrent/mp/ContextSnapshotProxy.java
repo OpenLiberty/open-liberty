@@ -24,6 +24,7 @@ import com.ibm.wsspi.threadcontext.ThreadContext;
  * Proxies a MicroProfile ThreadContextSnapshot as a com.ibm.wsspi.threadcontext.ThreadContext
  * which is used internally for compatibility with container-provided context types.
  */
+@Trivial
 public class ContextSnapshotProxy implements com.ibm.wsspi.threadcontext.ThreadContext {
     private static final long serialVersionUID = 1L;
 
@@ -51,10 +52,11 @@ public class ContextSnapshotProxy implements com.ibm.wsspi.threadcontext.ThreadC
     }
 
     @Override
-    @Trivial
     public String toString() {
-        StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append('@').append(Integer.toHexString(hashCode())) //
-                        .append(" for ").append(snapshot).append(" ThreadContextController: ").append(contextRestorer);
+        StringBuilder sb = new StringBuilder("proxy@").append(Integer.toHexString(hashCode())) //
+                        .append(" for ").append(snapshot);
+        if (contextRestorer != null)
+            sb.append(" with ").append(contextRestorer);
         return sb.toString();
     }
 
