@@ -45,9 +45,9 @@ public class OpentracingService {
     private static String excludeFilterString = null;
 
     private static final String MP_METRICS_ENDPOINT = "/metrics";
-    private static final String MP_METRICS_BASE_ENDPOINT = "/metrics/base/.*";
-    private static final String MP_METRICS_VENDOR_ENDPOINT = "/metrics/vendor/.*";
-    private static final String MP_METRICS_APPLICATION_ENDPOINT = "/metrics/application/.*";
+    private static final String MP_METRICS_BASE_ENDPOINT = "/metrics/base|/metrics/base/.*";
+    private static final String MP_METRICS_VENDOR_ENDPOINT = "/metrics/vendor|/metrics/vendor/.*";
+    private static final String MP_METRICS_APPLICATION_ENDPOINT = "/metrics/application|/metrics/application/.*";
     private static final String MP_HEALTH_ENDPOINT = "/health";
     private static final String MP_OPENAPI_ENDPOINT = "/openapi";
 
@@ -177,7 +177,12 @@ public class OpentracingService {
             }
         }
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, methodName, "Checking to see if this request should be excluded. request uri=" + uri + ", path=" + path + " result=" + (result ? "INCLUDE" : "EXCLUDE"));
+        }
+
         return result;
+
     }
 
     /**
