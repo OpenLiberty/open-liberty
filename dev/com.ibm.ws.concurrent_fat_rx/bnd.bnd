@@ -29,5 +29,3 @@ fat.project: true
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.concurrent.mp.1.0;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest
-
--sub: *.bnd
