@@ -99,6 +99,9 @@ public class AutoExtractTest extends AbstractAppManagerTest {
 
             server.setMarkToEndOfLog();
 
+            // Sleep for one second to ensure that the updated WAR doesn't end up with the same timestamp
+            Thread.sleep(1000);
+
             //replace original application with new version to test that it updates
             server.copyFileToLibertyServerRoot(PUBLISH_UPDATED, DROPINS_DIR, TEST_WAR_APPLICATION);
 
