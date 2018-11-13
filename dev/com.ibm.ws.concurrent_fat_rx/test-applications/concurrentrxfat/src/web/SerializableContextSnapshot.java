@@ -8,15 +8,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.streams.operators.tck;
+package web;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.io.Serializable;
+import java.util.concurrent.Executor;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                ReactiveStreamsTCKLauncher.class
-})
+public class SerializableContextSnapshot implements Executor, Serializable {
+    private static final long serialVersionUID = 1L;
 
-public class FATSuite {}
+    @Override
+    public void execute(Runnable runnable) {
+        runnable.run();
+    }
+}

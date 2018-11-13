@@ -67,3 +67,15 @@ JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=Upewnij si\u0119, \u017ce ws
 JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: W konfiguracji JAAS i plikach server.xml/client.xml okre\u015blono zduplikowan\u0105 nazw\u0119 konfiguracji logowania {0}. Zostanie u\u017cyta nazwa konfiguracji logowania podana w pliku server.xml/client.xml.
 JAAS_DUPLICATE_ENTRY_NAME.explanation=W pliku konfiguracyjnym JAAS i pliku server.xml/client.xml okre\u015blono zduplikowan\u0105 nazw\u0119 konfiguracji logowania.
 JAAS_DUPLICATE_ENTRY_NAME.useraction=Sprawd\u017a plik konfiguracyjny JAAS i plik server.xml/client.xml.
+
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR=CWWKS1143E: Modu\u0142 logowania {0} nie jest obs\u0142ugiwany w wersji {1} \u015brodowiska Java dostawcy {2}.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.explanation=Modu\u0142 Krb5LoginModule podany w pliku server.xml, jaas.conf lub obu tych plikach nie jest obs\u0142ugiwany w tej wersji \u015brodowiska Java danego dostawcy.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.useraction=U\u017cyj poprawnych warto\u015bci dostawcy i wersji \u015brodowiska Java, kt\u00f3re s\u0105 obs\u0142ugiwane dla modu\u0142u Krb5LoginModule lub u\u017cyj modu\u0142u Krb5LoginModule, kt\u00f3ry jest obs\u0142ugiwany przez tego dostawc\u0119 i wersj\u0119 \u015brodowiska Java.
+
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS=CWWKS1144E: Opcje modu\u0142u logowania {0} nie s\u0105 obs\u0142ugiwane w przypadku dostawcy {1} i wersji {2} \u015brodowiska Java.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.explanation=Opcje modu\u0142u Krb5LoginModule okre\u015blone w pliku server.xml, jaas.conf lub w obu tych plikach nie s\u0105 obs\u0142ugiwane w u\u017cywanej wersji \u015brodowiska Java danego dostawcy.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=Sprawd\u017a, czy wszystkie opcje modu\u0142u Krb5LoginModule, kt\u00f3re zosta\u0142y podane w pliku server.xml, jaas.conf lub obu tych plikach, s\u0105 obs\u0142ugiwane przez u\u017cywan\u0105 wersj\u0119 \u015brodowiska Java danego dostawcy.
+
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Wpisu {0} jaasLoginContext nie mo\u017cna poda\u0107 jako wpisu konfiguracji JAAS w pliku server.xml, jaas.conf lub w obu tych plikach.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=W \u015brodowisku wykonawczym s\u0105 u\u017cywane domy\u015blne konfiguracje modu\u0142u Krb5LoginModule i mechanizm SPNEGO z pliku server.xml.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Usu\u0144 wpis jaasLoginContext z pliku server.xml lub pozw\u00f3l, aby \u015brodowisko wykonawcze u\u017cywa\u0142o wpisu domy\u015blnego.

@@ -95,7 +95,7 @@ public abstract class AbstractAppManagerTest {
         addDirectory(war2, "test-applications/app-j2ee.ear/test-web1.war/resources");
 
         EnterpriseArchive j2eeApp = ShrinkWrap.create(EnterpriseArchive.class, "app-j2ee.ear").addAsModule(war1).addAsModule(war2);
-        j2eeApp = (EnterpriseArchive) addDirectory(j2eeApp, "test-applications/app-j2ee.ear/resources");
+        j2eeApp = (EnterpriseArchive) addDirectory(j2eeApp, "test-applications/app-j2ee.ear/startResources");
 
         // Copy app-j2ee.ear to publish/files
         ShrinkHelper.exportArtifact(j2eeApp, PUBLISH_FILES, true, true);
@@ -111,7 +111,7 @@ public abstract class AbstractAppManagerTest {
 
         // testWarApplication.war
         WebArchive testWar = buildDefaultApp("testWarApplication.war", "test.simple.war");
-        addDirectory(testWar, "test-applications/testWarApplication.war/resources");
+        addDirectory(testWar, "test-applications/testWarApplication.war/startResources");
         ShrinkHelper.exportArtifact(testWar, PUBLISH_FILES, true, true);
 
         // updated testWarApplication.war

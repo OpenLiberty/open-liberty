@@ -12,6 +12,7 @@ package com.ibm.ws.concurrent.mp.context;
 
 import java.util.ArrayList;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.mp.ContextOp;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
@@ -19,6 +20,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * Partial implementation of MicroProfile thread context provider,
  * backed by Liberty's z/OS WLM context.
  */
+@Trivial
 public class WLMContextProvider extends ContainerContextProvider {
     public static final String WORKLOAD = "Workload";
 

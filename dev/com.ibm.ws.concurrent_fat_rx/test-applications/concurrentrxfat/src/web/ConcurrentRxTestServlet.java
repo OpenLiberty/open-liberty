@@ -19,8 +19,12 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1101,6 +1105,63 @@ public class ConcurrentRxTestServlet extends FATServlet {
         } finally {
             // in case the test fails, unblock the thread that is running the supplier
             continueLatch.countDown();
+        }
+    }
+
+    /**
+     * Ensure that MicroProfile thread context types are cleared and restored
+     * when using the EE Concurrency ContextService, even when contextual proxies
+     * are serialized/deserialized.
+     */
+    @Test
+    public void testClearMicroProfileThreadContextTypes() throws Exception {
+        CurrentLocation.setLocation("Winona", "Minnesota");
+        try {
+            ContextService contextSvc = InitialContext.doLookup("java:comp/DefaultContextService");
+            Executor contextSnapshot = contextSvc.createContextualProxy(new SerializableContextSnapshot(), Executor.class);
+
+            // verify before serializing/deserializing
+            contextSnapshot.execute(() -> {
+                try {
+                    assertNotNull(InitialContext.doLookup("java:comp/env/executorRef"));
+                } catch (NamingException x) {
+                    throw new RuntimeException(x);
+                }
+                assertTrue(CurrentLocation.isUnspecified());
+            });
+
+            // verify context restored
+            assertEquals("Winona", CurrentLocation.getCity());
+            assertEquals("Minnesota", CurrentLocation.getState());
+
+            // serialize
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(contextSnapshot);
+            byte[] bytes = bos.toByteArray();
+            oos.close();
+
+            CurrentLocation.setLocation("Decorah", "Iowa");
+
+            // deserialize
+            ObjectInputStream oin = new ObjectInputStream(new ByteArrayInputStream(bytes));
+            contextSnapshot = (Executor) oin.readObject();
+            oin.close();
+
+            contextSnapshot.execute(() -> {
+                try {
+                    assertNotNull(InitialContext.doLookup("java:comp/env/executorRef"));
+                } catch (NamingException x) {
+                    throw new RuntimeException(x);
+                }
+                assertTrue(CurrentLocation.isUnspecified());
+            });
+
+            // verify context restored
+            assertEquals("Decorah", CurrentLocation.getCity());
+            assertEquals("Iowa", CurrentLocation.getState());
+        } finally {
+            CurrentLocation.clear();
         }
     }
 
@@ -2817,8 +2878,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
                     CurrentLocation.setLocation("Davenport", "Iowa");
 
                     appContextSnapshot.execute(() -> {
-                        // assertTrue(CurrentLocation.isUnspecified());
-                        CurrentLocation.clear(); // TODO remove and enable above once EE Concurrency learns how to clear MP context types
+                        assertTrue(CurrentLocation.isUnspecified());
                         try {
                             assertNotNull(InitialContext.doLookup("java:comp/env/executorRef")); // requires Application context
                         } catch (NamingException x) {
@@ -2840,18 +2900,16 @@ public class ConcurrentRxTestServlet extends FATServlet {
                         // city/state context restored to unspecified
                         assertTrue(CurrentLocation.isUnspecified());
                     });
+
+                    // context must be restored afterward
+                    assertEquals("Davenport", CurrentLocation.getCity());
+                    assertEquals("Iowa", CurrentLocation.getState());
                 } finally {
                     CurrentLocation.clear();
                 }
-
-                // context must be restored afterward
-                CurrentLocation.setLocation("Davenport", "Iowa"); // TODO because EE Concurrency path does know how to restore MP context yet
-                //assertEquals("Davenport", CurrentLocation.getCity());
-                //assertEquals("Iowa", CurrentLocation.getState());
             }).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
 
-            // TODO enable once EE Concurrency path actually clears MP context types
-            // appContextSnapshot.execute(() -> assertTrue(CurrentLocation.isUnspecified()));
+            appContextSnapshot.execute(() -> assertTrue(CurrentLocation.isUnspecified()));
 
             // context must be restored afterward
             assertEquals("Duluth", CurrentLocation.getCity());
