@@ -53,6 +53,30 @@ public class ServerTracker {
         }
     }
 
+    /**
+     * The normal stopAllServers will go down a path that will
+     * try to back up servers that were stopped and already backed up
+     * In some special cases, that does not work out so well...
+     * This method will only call stop if the server is still running.
+     * 
+     * @throws Exception
+     */
+    public void stopAllRunningServers() throws Exception {
+        List<Exception> exceptions = new ArrayList<Exception>();
+        for (LibertyServer server : libertyServers) {
+            try {
+                if (server.isStarted()) {
+                    stopServerOrThrowException(server);
+                }
+            } catch (Exception e) {
+                exceptions.add(e);
+            }
+        }
+        if (!exceptions.isEmpty()) {
+            throw FatExceptionUtils.buildCumulativeException(exceptions);
+        }
+    }
+
     void stopServerOrThrowException(LibertyServer server) throws Exception {
         if (server == null) {
             return;

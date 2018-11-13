@@ -58,7 +58,7 @@ public class XMLConfigParserTest {
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
 
-        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper());
+        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
     }
 
     @AfterClass

@@ -981,11 +981,11 @@ public class LibertyServer implements LogMonitorClient {
         return args;
     }
 
-    protected ProgramOutput startServerWithArgs(boolean preClean, boolean cleanStart,
-                                                boolean validateApps, boolean expectStartFailure,
-                                                String serverCmd, List<String> args,
-                                                boolean validateTimedExit) throws Exception {
-        final String method = "startServerAndValidate";
+    public ProgramOutput startServerWithArgs(boolean preClean, boolean cleanStart,
+                                             boolean validateApps, boolean expectStartFailure,
+                                             String serverCmd, List<String> args,
+                                             boolean validateTimedExit) throws Exception {
+        final String method = "startServerWithArgs";
         Log.info(c, method, ">>> STARTING SERVER: " + this.getServerName());
         Log.info(c, method, "Starting " + this.getServerName() + "; clean=" + cleanStart + ", validateApps=" + validateApps + ", expectStartFailure=" + expectStartFailure
                             + ", cmd=" + serverCmd + ", args=" + args);

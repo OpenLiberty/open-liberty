@@ -26,17 +26,16 @@ import com.ibm.websphere.ssl.Constants;
 public class SSLLinkConfig {
 
     /** Trace component for WAS */
-    private static final TraceComponent tc =
-                    Tr.register(SSLLinkConfig.class,
-                                SSLChannelConstants.SSL_TRACE_NAME,
-                                SSLChannelConstants.SSL_BUNDLE);
+    private static final TraceComponent tc = Tr.register(SSLLinkConfig.class,
+                                                         SSLChannelConstants.SSL_TRACE_NAME,
+                                                         SSLChannelConstants.SSL_BUNDLE);
 
     /** Configuration reference */
     private Properties myConfig = null;
 
     /**
      * Constructor.
-     * 
+     *
      * @param config
      */
     public SSLLinkConfig(Properties config) {
@@ -45,7 +44,7 @@ public class SSLLinkConfig {
 
     /**
      * Access a boolean property.
-     * 
+     *
      * @param key
      * @return boolean - false if the property does not exist
      */
@@ -55,7 +54,7 @@ public class SSLLinkConfig {
 
     /**
      * Access a property.
-     * 
+     *
      * @param key
      * @return String
      */
@@ -65,7 +64,7 @@ public class SSLLinkConfig {
 
     /**
      * Access the set of properties.
-     * 
+     *
      * @return Properties
      */
     public Properties getProperties() {
@@ -74,7 +73,7 @@ public class SSLLinkConfig {
 
     /**
      * Query the list of enabled cipher suites for this connection.
-     * 
+     *
      * @param sslEngine
      * @return String[]
      */
@@ -128,6 +127,30 @@ public class SSLLinkConfig {
             Tr.exit(tc, "getEnabledCipherSuites");
         }
         return ciphers;
+    }
+
+    /**
+     * Query the SSL Protocol for this connection.
+     *
+     * @return String
+     */
+    public String getSSLProtocol() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "getSSLProtocol");
+        }
+
+        // First check the properties object for the ciphers.
+        String protocol = (String) this.myConfig.get(Constants.SSLPROP_PROTOCOL);
+
+        // we only want to set the protocol on the engine if it a specific protocol name
+        // don't set to TLS or SSL
+        if (protocol.equals(Constants.PROTOCOL_SSL) || protocol.equals(Constants.PROTOCOL_TLS))
+            protocol = null;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "getSSLProtocol " + protocol);
+        }
+        return protocol;
     }
 
 }

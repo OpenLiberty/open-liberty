@@ -40,8 +40,6 @@ public class ConcurrentRxTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server1.copyFileToLibertyInstallRoot("lib/features/", "features/managedCompletableFuture-1.0.mf");
-
         WebArchive app = ShrinkWrap.create(WebArchive.class, "concurrentrxfat.war")//
                         .addPackages(true, "web")//
                         .addAsWebInfResource(new File("test-applications/concurrentrxfat/resources/index.jsp"));
@@ -58,6 +56,5 @@ public class ConcurrentRxTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server1.stopServer();
-        server1.deleteFileFromLibertyInstallRoot("lib/features/managedCompletableFuture-1.0.mf");
     }
 }

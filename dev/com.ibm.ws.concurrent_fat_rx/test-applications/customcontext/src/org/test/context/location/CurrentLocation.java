@@ -22,6 +22,14 @@ public class CurrentLocation {
         setLocation("", "");
     }
 
+    public static String getCity() {
+        return CityContextProvider.cityName.get();
+    }
+
+    public static String getState() {
+        return StateContextProvider.stateName.get();
+    }
+
     public static double getStateSalesTax(double purchaseAmount) {
         String stateName = StateContextProvider.stateName.get();
         return getStateTaxRate(stateName) * purchaseAmount;
@@ -31,6 +39,10 @@ public class CurrentLocation {
         String cityName = CityContextProvider.cityName.get();
         String stateName = StateContextProvider.stateName.get();
         return getTotalTaxRate(cityName, stateName) * purchaseAmount;
+    }
+
+    public static boolean isUnspecified() {
+        return StateContextProvider.stateName.get().length() == 0 && CityContextProvider.cityName.get().length() == 0;
     }
 
     public static void setLocation(String state) {
@@ -94,12 +106,9 @@ public class CurrentLocation {
                         return 0.07375;
                     case "Saint Paul":
                         return 0.07625;
-                    case "Byron":
-                    case "Stewartville":
-                    case "Winona":
+                    default:
                         return getStateTaxRate(state);
                 }
-                break;
             case "Wisconsin":
                 switch (city) {
                     case "Madison":

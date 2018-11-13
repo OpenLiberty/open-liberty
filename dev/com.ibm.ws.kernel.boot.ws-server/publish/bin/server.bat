@@ -43,6 +43,11 @@
 @REM WLP_DEBUG_ADDRESS - The port to use when running the server in debug mode.
 @REM              The default value is 7777.
 @REM
+@REM WLP_DEBUG_SUSPEND - Whether to suspend the jvm on startup or not. This can be
+@REM              set to y to suspend the jvm on startup until a debugger attaches,
+@REM              or set to n to startup without waiting for a debugger to attach.
+@REM              The default value is y.
+@REM
 @REM ----------------------------------------------------------------------------
 
 setlocal enabledelayedexpansion
@@ -117,7 +122,8 @@ if "help" == "%ACTION%" (
   call:runServer
 ) else if "debug" == "%ACTION%" (
   if not defined WLP_DEBUG_ADDRESS set WLP_DEBUG_ADDRESS=7777
-  set JAVA_PARAMS_QUOTED=-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address="!WLP_DEBUG_ADDRESS!" !JAVA_PARAMS_QUOTED!
+  if not defined WLP_DEBUG_SUSPEND set WLP_DEBUG_SUSPEND=y
+  set JAVA_PARAMS_QUOTED=-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend="!WLP_DEBUG_SUSPEND!",address="!WLP_DEBUG_ADDRESS!" !JAVA_PARAMS_QUOTED!
   call:runServer
 ) else if "status" == "%ACTION%" (
   call:serverStatus
@@ -470,7 +476,7 @@ goto:eof
 
   @REM Command-line parsing of -Xshareclasses does not allow "," in cacheDir.
   if "!WLP_OUTPUT_DIR:,=!" == "!WLP_OUTPUT_DIR!" (
-    set SERVER_IBM_JAVA_OPTIONS=-Xshareclasses:name=liberty-%%u,nonfatal,cacheDir="%WLP_OUTPUT_DIR%\.classCache" -XX:ShareClassesEnableBCI -Xscmx60m -Xscmaxaot8m !IBM_JAVA_OPTIONS!
+    set SERVER_IBM_JAVA_OPTIONS=-Xshareclasses:name=liberty-%%u,nonfatal,cacheDir="%WLP_OUTPUT_DIR%\.classCache" -XX:ShareClassesEnableBCI -Xscmx80m !IBM_JAVA_OPTIONS!
   ) else (
     set SERVER_IBM_JAVA_OPTIONS=!IBM_JAVA_OPTIONS!
   )

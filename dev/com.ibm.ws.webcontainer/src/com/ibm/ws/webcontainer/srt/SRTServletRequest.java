@@ -538,9 +538,8 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
        
         String header = null;
         if ( (suppressHeadersInRequest == null) ||  !(isHeaderinSuppressedHeadersList(name))){  
-            if (this._request != null) {
+            if (_request != null)
                 header = _request.getHeader(name);
-            }
         }// PK80362 End
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getHeader", "this->"+this+": "+" name --> " + name + " header --> " + PasswordNullifier.nullifyParams(header));
@@ -2103,8 +2102,11 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         Principal principal = getUserPrincipal();
         if (principal == null) {
             //remoteUser = null;
-            if (this._request != null) 
+
+            if (_request != null) {
                 remoteUser = _request.getRemoteUser();
+            }
+
         } else {
             remoteUser = principal.getName();
             if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {

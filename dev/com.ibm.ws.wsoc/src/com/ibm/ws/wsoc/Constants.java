@@ -35,10 +35,10 @@ public class Constants {
 
     public static final String MC_HEADER_NAME_SEC_WEBSOCKET_ACCEPT = "Sec-WebSocket-Accept";
 
-    public static final long DEFAULT_MAX_MSG_SIZE = 32767;
-    // javadoc says -1 for annotation max message sizie attribute means "unlimit", but is also the default, which doesn't play well
-    // with there being a get/set max message size on the Session and Container object.  We will treat -1 as undefined, and the
-    // Session and Container values will then have precedence.
+    // Websocket Spec says max messsage size should default  to -1, which means unlimited.
+    public static final long DEFAULT_MAX_MSG_SIZE = -1;
+
+    // javadoc says -1 for annotation max message size attribute means "unlimited", and that is also the default.
     public static final long ANNOTATED_UNDEFINED_MAX_MSG_SIZE = -1;
 
     public static final String GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
