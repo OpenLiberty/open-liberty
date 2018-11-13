@@ -45,8 +45,6 @@ import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.WsMessageRouter;
 import com.ibm.ws.logging.WsTraceRouter;
 import com.ibm.ws.logging.collector.CollectorConstants;
-import com.ibm.ws.logging.collector.LogFieldConstants;
-import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.PackageProcessor;
 import com.ibm.ws.logging.internal.TraceSpecification;
 import com.ibm.ws.logging.internal.WsLogRecord;
@@ -1036,7 +1034,7 @@ public class BaseTraceService implements TrService {
     private FileLogHeader newFileLogHeader(boolean trace, LogProviderConfigImpl config) {
         boolean isJSON = false;
         String messageFormat = config.getMessageFormat();
-        if ("json".equals(messageFormat)) {
+        if (LoggingConstants.JSON_FORMAT.equals(messageFormat)) {
             isJSON = true;
             String jsonHeader = constructJSONHeader(messageFormat, config);
             return new FileLogHeader(jsonHeader, trace, javaLangInstrument, isJSON);
@@ -1044,7 +1042,7 @@ public class BaseTraceService implements TrService {
         return new FileLogHeader(logHeader, trace, javaLangInstrument, isJSON);
     }
 
-    public String constructJSONHeader(String messageFormat, LogProviderConfigImpl config) {
+    private String constructJSONHeader(String messageFormat, LogProviderConfigImpl config) {
         //retrieve information for header
         String serverHostName = getServerHostName();
         String wlpUserDir = config.getWlpUsrDir();
@@ -1070,26 +1068,23 @@ public class BaseTraceService implements TrService {
         return sb.toString();
     }
 
-    public String getSequenceNumber() {
+    private String getSequenceNumber() {
         SequenceNumber sequenceNumber = new SequenceNumber();
-        LogTraceData logData = new LogTraceData();
         long rawSequenceNumber = sequenceNumber.getRawSequenceNumber();
-        logData.setRawSequenceNumber(rawSequenceNumber);
-        String sequenceId = logData.getStringValue(14);
+        String sequenceId = null;
         if (sequenceId == null || sequenceId.isEmpty()) {
             sequenceId = SequenceNumber.formatSequenceNumber(System.currentTimeMillis(), rawSequenceNumber);
-            logData.setPair(14, LogFieldConstants.IBM_SEQUENCE, sequenceId);
         }
         return sequenceId;
     }
 
-    public String getDatetime() {
+    private String getDatetime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         String datetime = dateFormat.format(System.currentTimeMillis());
         return datetime;
     }
 
-    public String getServerName(LogProviderConfigImpl config) {
+    private String getServerName(LogProviderConfigImpl config) {
         //Resolve server name to be the DOCKER Container name or the wlp server name.
         String containerName = System.getenv("CONTAINER_NAME");
         if (containerName == null || containerName.equals("") || containerName.length() == 0) {
@@ -1100,7 +1095,7 @@ public class BaseTraceService implements TrService {
         return serverName;
     }
 
-    public String getServerHostName() {
+    private String getServerHostName() {
         String serverHostName = null;
         //Resolve server name to be the DOCKER HOST name or the cannonical host name.
         String containerHost = System.getenv("CONTAINER_HOST");
@@ -1129,7 +1124,7 @@ public class BaseTraceService implements TrService {
      * @param sb String builder to append to
      * @param s String to escape
      */
-    public void jsonEscape(StringBuilder sb, String s) {
+    private void jsonEscape(StringBuilder sb, String s) {
         if (s == null) {
             sb.append(s);
             return;
