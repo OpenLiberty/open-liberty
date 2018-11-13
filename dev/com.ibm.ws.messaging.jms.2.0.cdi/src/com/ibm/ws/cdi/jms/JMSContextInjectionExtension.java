@@ -18,6 +18,7 @@ import javax.enterprise.inject.spi.Extension;
 
 import org.osgi.service.component.annotations.Component;
 
+import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 
 /*
@@ -32,6 +33,6 @@ public class JMSContextInjectionExtension implements Extension, WebSphereCDIExte
 
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
         AnnotatedType<JMSContextInjectionBean> producer = bm.createAnnotatedType(JMSContextInjectionBean.class);
-        bbd.addAnnotatedType(producer);
+        bbd.addAnnotatedType(producer, CDIServiceUtils.getAnnotatedTypeIdentifier(producer, this.getClass()));
     }
 }

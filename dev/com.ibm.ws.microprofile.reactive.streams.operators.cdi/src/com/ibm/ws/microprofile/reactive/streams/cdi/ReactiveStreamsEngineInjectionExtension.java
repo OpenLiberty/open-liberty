@@ -20,6 +20,7 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 
 @Component(service = WebSphereCDIExtension.class)
@@ -38,6 +39,6 @@ public class ReactiveStreamsEngineInjectionExtension implements Extension, WebSp
             Tr.debug(tc, "ReactiveStreamsEngineInjectionExtension bbd ");
         }
         AnnotatedType<ReactiveStreamsEngineProducer> producer = bm.createAnnotatedType(ReactiveStreamsEngineProducer.class);
-        bbd.addAnnotatedType(producer);
+        bbd.addAnnotatedType(producer, CDIServiceUtils.getAnnotatedTypeIdentifier(producer, this.getClass()));
     }
 }
