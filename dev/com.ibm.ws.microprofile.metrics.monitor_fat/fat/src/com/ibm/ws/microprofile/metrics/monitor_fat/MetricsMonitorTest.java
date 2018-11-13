@@ -112,7 +112,9 @@ public class MetricsMonitorTest {
 
        	Log.info(c, testName, "------- threadpool metrics should be available ------");
 		getHttpsServlet("/metrics/vendor");
-       	Log.info(c, testName, "------- serlvet metrics should be available ------");
+    	
+       	Log.info(c, testName, "------- servlet metrics should be available ------");
+       	server.setMarkToEndOfLog(server.getMostRecentTraceFile());
        	Log.info(c, testName, server.waitForStringInTrace("Monitoring MXBean WebSphere:type=ServletStats", 60000));
        	checkStrings(getHttpsServlet("/metrics/vendor"), new String[] {
        		"vendor:threadpool_default_executor_active_threads",
