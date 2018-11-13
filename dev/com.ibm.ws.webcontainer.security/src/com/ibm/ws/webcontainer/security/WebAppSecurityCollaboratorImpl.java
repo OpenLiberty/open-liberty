@@ -151,7 +151,6 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     protected AuditManager auditManager;
     public HashMap<String, Object> extraAuditData = new HashMap<String, Object>();
-    private HttpServletRequest loginRequest;
 
     protected WebAuthenticatorProxy authenticatorProxy;
     protected WebProviderAuthenticatorProxy providerAuthenticatorProxy;
@@ -579,8 +578,6 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             extraAuditData.put("HTTP_SERVLET_REQUEST", req);
             //auditManager.setHttpServletRequest(req);
 
-            // Store the login request here, so during the post invoke we can
-            // set the login token in the security context to the unauth user
             performDelegation(servletName);
 
             syncToOSThread(webSecurityContext);
