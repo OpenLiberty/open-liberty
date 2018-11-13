@@ -111,6 +111,16 @@ public class ZipFileHandleImpl implements ZipFileHandle {
         Tr.debug(tc, message);
     }
 
+    @Trivial
+    private void warning(String methodName, String text) {
+        String message =
+            methodName +
+            " ZipFileHandle@0x" + Integer.toHexString(hashCode()) +
+            " (" + path + ", " + Integer.toString(openCount) + ")" +
+            " " + text;
+        Tr.warning(tc, message);
+    }
+
     //
 
     private static final ZipFileReaper zipFileReaper;
@@ -141,7 +151,6 @@ public class ZipFileHandleImpl implements ZipFileHandle {
      * @return The zip file.
      */
     @Override
-    @Trivial
     public ZipFile open() throws IOException {
         String methodName = "open";
 
@@ -163,7 +172,6 @@ public class ZipFileHandleImpl implements ZipFileHandle {
     }
 
     @Override
-    @Trivial
     public void close() {
         String methodName = "close";
 
@@ -250,11 +258,21 @@ public class ZipFileHandleImpl implements ZipFileHandle {
         new ByteArrayInputStream( new byte[0] );
 
     @Override
-    @Trivial
     public InputStream getInputStream(ZipFile useZipFile, String zipEntryName) throws IOException {
+        String methodName = "getInputStream";
+
+        synchronized( zipFileLock ) {
+            if ( openCount == 0 ) {
+                warning(methodName, "Closed: Active zip [ " + useZipFile + " ] entry [ " + zipEntryName + " ]");
+            } else if ( useZipFile != zipFile ) {
+                warning(methodName, "Unstable: New zip [ " + zipFile + " ] active zip [ " + useZipFile + " ] entry [ " + zipEntryName + " ]");
+            }
+        }
+
         ZipEntry zipEntry = useZipFile.getEntry(zipEntryName);
         if ( zipEntry == null ) {
-            throw new FileNotFoundException("Zip file [ " + getPath() + " ] does not container entry [ " + zipEntryName + " ]");
+            ZipFileUtils.diagnose("getInputStream(" + zipEntryName + ")", file, zipFile);
+            throw new FileNotFoundException("Zip file [ " + getPath() + " ] does not contain entry [ " + zipEntryName + " ]");
         }
 
         return getInputStream(useZipFile, zipEntry);
