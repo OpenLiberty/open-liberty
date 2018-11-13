@@ -145,6 +145,9 @@ javac.bootclasspath.1.4: ${defaultjdklib.bootclasspath}
 javac.bootclasspath.1.6: ${defaultjdklib.bootclasspath}
 javac.bootclasspath.1.7: ${defaultjdklib.bootclasspath}
 javac.bootclasspath.1.8: ${defaultjdklib.bootclasspath}
+javac.bootclasspath.9:
+javac.bootclasspath.10:
+javac.bootclasspath.11:
 	
 javac.bootclasspath.java6:
 javac.bootclasspath.java7:
