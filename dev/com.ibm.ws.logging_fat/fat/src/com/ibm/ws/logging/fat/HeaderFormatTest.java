@@ -27,9 +27,6 @@ import componenttest.topology.impl.LibertyServerFactory;
  *
  */
 public class HeaderFormatTest {
-//    private static final String MESSAGE_LOG = "logs/messages.log";
-//    private static final String CONSOLE_LOG = "logs/console.log";
-    //private static final String SERVER_NAME = "com.ibm.ws.logging.headerformatjson";
     public static final String[] JSON_MESSAGES = { "\\{.*\"type\":\"liberty_accesslog\".*\\}",
                                                    "\\{.*\"type\":\"liberty_gc\".*\\}",
                                                    "\\{.*\"type\":\"liberty_message\".*\\}",
@@ -41,15 +38,6 @@ public class HeaderFormatTest {
     public static final String[] JSON_CONSOLE = { "\\{\".*Launching.*(Open Liberty.*).*\"\\}" };
 
     private static LibertyServer server;
-
-//    @BeforeClass
-//    public static void initialSetup() throws Exception {
-//        //server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
-//
-//        System.out.println("Starting server...");
-//        server.startServer();
-//        System.out.println("Started server.");
-//    }
 
     @AfterClass
     public static void tearDownClass() {
