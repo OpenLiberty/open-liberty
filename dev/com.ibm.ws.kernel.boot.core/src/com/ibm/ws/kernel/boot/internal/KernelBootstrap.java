@@ -48,8 +48,6 @@ import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 import com.ibm.ws.kernel.provisioning.NameBasedLocalBundleRepository;
 import com.ibm.ws.kernel.provisioning.ServiceFingerprint;
 import com.ibm.ws.kernel.provisioning.VersionUtility;
-import com.ibm.ws.logging.collector.LogFieldConstants;
-import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.utils.SequenceNumber;
 
 /**
@@ -508,7 +506,7 @@ public class KernelBootstrap {
 
     }
 
-    public static String constructJSONHeader(String consoleLogHeader, BootstrapConfig bootProps) {
+    private static String constructJSONHeader(String consoleLogHeader, BootstrapConfig bootProps) {
         //retrieve information for header
         String serverName = bootProps.get(BootstrapConstants.INTERNAL_SERVER_NAME);
         String wlpUserDir = System.getProperty("wlp.user.dir");
@@ -536,26 +534,23 @@ public class KernelBootstrap {
 
     }
 
-    public static String getSequenceNumber() {
+    private static String getSequenceNumber() {
         SequenceNumber sequenceNumber = new SequenceNumber();
-        LogTraceData logData = new LogTraceData();
         long rawSequenceNumber = sequenceNumber.getRawSequenceNumber();
-        logData.setRawSequenceNumber(rawSequenceNumber);
-        String sequenceId = logData.getStringValue(14);
+        String sequenceId = null;
         if (sequenceId == null || sequenceId.isEmpty()) {
             sequenceId = SequenceNumber.formatSequenceNumber(System.currentTimeMillis(), rawSequenceNumber);
-            logData.setPair(14, LogFieldConstants.IBM_SEQUENCE, sequenceId);
         }
         return sequenceId;
     }
 
-    public static String getDatetime() {
+    private static String getDatetime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         String datetime = dateFormat.format(System.currentTimeMillis());
         return datetime;
     }
 
-    public static String getServerHostName() {
+    private static String getServerHostName() {
         String serverHostName = null;
         //Resolve server name to be the DOCKER HOST name or the cannonical host name.
         String containerHost = System.getenv("CONTAINER_HOST");
@@ -585,7 +580,7 @@ public class KernelBootstrap {
      * // * @param s String to escape
      * //
      */
-    public static StringBuilder jsonEscape(StringBuilder sb, String s) {
+    private static StringBuilder jsonEscape(StringBuilder sb, String s) {
         if (s == null) {
             return sb.append(s);
         }
