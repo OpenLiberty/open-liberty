@@ -151,18 +151,19 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         discoveryjson = null;
     	if (discoveryEndpointUrl != null) {
             discovery = handleDiscoveryEndpoint(discoveryEndpointUrl);
-        }
-		if (!discovery) {
-			this.userInfoEndpoint = configUtils.getConfigAttribute(props, KEY_USERINFO_ENDPOINT);		
+            if (discovery) {
+            	discoveryUtil.logDiscoveryWarning(props);
+            } else {
+            	reConfigEndpointsAfterDiscoveryFailure();
+            }
+        } else {
+        	this.userInfoEndpoint = configUtils.getConfigAttribute(props, KEY_USERINFO_ENDPOINT);		
 			this.authorizationEndpoint = configUtils.getConfigAttribute(props, KEY_authorizationEndpoint);
 			this.tokenEndpoint = configUtils.getConfigAttribute(props, KEY_tokenEndpoint);
 			this.jwksUri = configUtils.getConfigAttribute(props, KEY_jwksUri);
 			this.issuer = configUtils.getConfigAttribute(props, KEY_ISSUER);
-		} else {
-			discoveryUtil.logDiscoveryWarning(props);
-		}
-       
-        
+        }
+		
         this.userNameAttribute = configUtils.getConfigAttribute(props, KEY_userNameAttribute);
         this.mapToUserRegistry = configUtils.getBooleanConfigAttribute(props, KEY_mapToUserRegistry, this.mapToUserRegistry); 
         this.authFilterRef = configUtils.getConfigAttribute(props, KEY_authFilterRef);
@@ -215,6 +216,19 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         }
         
     }
+    
+	/**
+	 * 
+	 */
+	private void reConfigEndpointsAfterDiscoveryFailure() {
+		authorizationEndpoint = null;
+		tokenEndpoint = null;
+		userInfoEndpoint = null;
+		jwksUri = null;
+		issuer = null;
+		this.discoveryDocumentHash = null;
+		discoveryUtil = discoveryUtil.initialConfig(getId(), this.discoveryEndpointUrl, this.discoveryPollingRate).discoveryDocumentResult(null).discoveryDocumentHash(this.discoveryDocumentHash).discoveredConfig(this.signatureAlgorithm, this.tokenEndpointAuthMethod, this.scope);
+	}
     
     public boolean handleDiscoveryEndpoint(String discoveryUrl) {
 
