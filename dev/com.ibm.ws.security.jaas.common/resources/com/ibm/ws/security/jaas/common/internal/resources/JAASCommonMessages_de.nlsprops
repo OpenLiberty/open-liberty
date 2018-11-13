@@ -67,3 +67,15 @@ JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=Vergewissern Sie sich, dass 
 JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: Doppelter Anmeldekonfigurationsname. Der Anmeldekonfigurationsname {0} wurde in der JAAS-Konfigurationsdatei und in den Dateien server.xml und client.xml angegeben. Es wird der in den Dateien server.xml und client.xml angegebene Anmeldekonfigurationsname verwendet.
 JAAS_DUPLICATE_ENTRY_NAME.explanation=Ein Anmeldekonfigurationsname wurde in der JAAS-Konfigurationsdatei und in den Dateien server.xml und client.xml angegeben.
 JAAS_DUPLICATE_ENTRY_NAME.useraction=\u00dcberpr\u00fcfen Sie die JAAS-Konfigurationsdatei sowie die Dateien server.xml und client.xml.
+
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR=CWWKS1143E: Das Anmeldemodul {0} wird nicht von der Version {1} des Java-Anbieter {2} unterst\u00fctzt.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.explanation=Das Krb5LoginModule-Modul, das in der Datei server.xml und/oder in der Datei jaas.conf angegeben ist, wird von dem verwendeten Java-Anieter und der Java-Version nicht unterst\u00fctzt.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.useraction=Verwenden Sie den Java-Anbieter und die Version, die f\u00fcr das Modul Krb5LoginModule unterst\u00fctzt wird, oder verwenden Sie ein Krb5LoginModule-Modul, das von dem Java-Anbieter und der Version unterst\u00fctzt wird.
+
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS=CWWKS1144E: Die {0}-Anmeldemoduloptionen werden von dem {1}-Java-Anbieter und der Version {2} nicht unterst\u00fctzt.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.explanation=Die Krb5LoginModule-Optionen, die in der Datei server.xml und/oder in der Datei jaas.conf angegeben sind, werden von dem verwendeten Java-Anieter und der Java-Version nicht unterst\u00fctzt.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=\u00dcberpr\u00fcfen Sie, ob alle Krb5LoginModule-Optionen, die in der Datei server.xml und/oder in der Datei jaas.conf angegeben sind, vom Java-Anbieter und der Version unterst\u00fctzt werden.
+
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Ein {0}-jaasLoginContext-Eintrag kann nicht als JAAS-Konfigurationseintrag in der Datei server.xml und/oder in der Datei jaas.conf angegeben werden.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=Die Laufzeit verwendet eine Krb5LoginModule-Konfiguration und die SPNEGO-Konfiguration in der Datei server.xml.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Entfernen Sie den jaasLoginContext-Eintrag aus der Datei server.xml oder lassen Sie die Laufzeit den Standardeintrag verwenden.

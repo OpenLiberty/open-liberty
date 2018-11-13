@@ -39,3 +39,16 @@ CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID.useraction=Asigura\u0163i-v\u0103 
 JAVASCRIPT_REDIRECT_URL_NOT_VALID=CWWKS6106E: Serviciul de securitate nu poate crea JavaScript-ul corespunz\u0103tor pentru a redirec\u0163iona browser-ul, deoarece URL-ul de redirec\u0163ionare [{0}] nu este valid.
 JAVASCRIPT_REDIRECT_URL_NOT_VALID.explanation=Browser-ul trebuie s\u0103 fie redirec\u0163ionat la un URL valid, dar URL-ul specificat nu este valid. Este posibil ca URL-ul s\u0103 fie nul sau gol sau s\u0103 con\u0163in\u0103 caractere care nu sunt permise de RFC 3986.
 JAVASCRIPT_REDIRECT_URL_NOT_VALID.useraction=Verifica\u0163i formatul URL-ului pentru a v\u0103 asigura c\u0103 nu este nul sau gol \u015fi c\u0103 con\u0163ine numai caractere care sunt permise \u00een c\u0103ile URI de RFC 3986.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS6107W: Configura\u0163ia clientului OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) [{2}] specific\u0103 at\u00e2t URL-ul de punct final descoperire [{0}], c\u00e2t \u015fi alte puncte finale, dar trebuie configurat fie punctul final de descoperire, fie celelalte puncte finale. RP a folosit informa\u0163iile de la cererea de descoperire \u015fi va ignora celelalte puncte finale [{1}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=Configura\u0163ia RP a specificat at\u00e2t punctul final de descoperire, c\u00e2t \u015fi alte puncte finale, cum ar fi de autorizare, de jeton, dar numai unul dintre cele dou\u0103 poate fi specificat.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.useraction=Configura\u0163i fie punctul final de descoperire, fie celelalte puncte finale, cum ar fi de autorizare, de jeton sau de informa\u0163ii, dar nu ambele.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER=CWWKS6108W: Configura\u0163ia clientului OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) [{2}] specific\u0103 at\u00e2t URL-ul de punct final descoperire [{0}], c\u00e2t \u015fi identificatorul emitentului [{1}]. RP a folosit informa\u0163iile de la cererea de descoperire \u015fi a ignorat identificatorul de emitent configurat.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.explanation=Configura\u0163ia RP a specificat at\u00e2t punctul final de descoperire, c\u00e2t \u015fi identificatorul de emitent, dar numai unul dintre cele dou\u0103 poate fi specificat.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.useraction=Configura\u0163i fie punctul final de descoperire, fie identificatorul de emitent, dar nu ambele.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT=CWWKS6109I: Configura\u0163ia clientului OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) sau logarea social\u0103 [{3}] specific\u0103 [{0}], o valoare implicit\u0103 pentru [{1}] \u015fi ca rezultat al descoperirii aceasta este modificat\u0103 la [{2}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.explanation=\u00cen cazul \u00een care furnizorul OpenID Connect (OP) nu suport\u0103 valorile implicite ale RP, \u00een func\u0163ie de capacitatea RP, valorile implicite pot fi ajustate la ce suport\u0103 OP.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.useraction=Mesaj informativ. Nicio ac\u0163iune necesar\u0103.
+

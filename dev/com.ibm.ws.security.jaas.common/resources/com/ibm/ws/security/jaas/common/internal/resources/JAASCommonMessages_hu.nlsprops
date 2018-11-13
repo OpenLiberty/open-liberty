@@ -67,3 +67,15 @@ JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=Ellen\u0151rizze, hogy a JAA
 JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: A(z) {0} t\u00f6bbsz\u00f6r\u00f6s bejelentkez\u00e9si be\u00e1ll\u00edt\u00e1sn\u00e9v ker\u00fclt megad\u00e1sra a JAAS konfigur\u00e1ci\u00f3ban \u00e9s a server.xml/client.xml f\u00e1jlban. A rendszer a server.xml/client.xml f\u00e1jlban szerepl\u0151 bejelentkez\u00e9si be\u00e1ll\u00edt\u00e1snevet fogja haszn\u00e1lni.
 JAAS_DUPLICATE_ENTRY_NAME.explanation=A JAAS konfigur\u00e1ci\u00f3s f\u00e1jlban \u00e9s a server.xml/client.xml f\u00e1jlban t\u00f6bbsz\u00f6r\u00f6s bejelentkez\u00e9si be\u00e1ll\u00edt\u00e1sn\u00e9v ker\u00fclt megad\u00e1sra.
 JAAS_DUPLICATE_ENTRY_NAME.useraction=Ellen\u0151rizze a JAAS konfigur\u00e1ci\u00f3s f\u00e1jlt \u00e9s a server.xml/client.xml f\u00e1jlt.
+
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR=CWWKS1143E: A(z) {0} bejelentkez\u00e9si modul nem t\u00e1mogatott a(z) {2} Java sz\u00e1ll\u00edt\u00f3 {1} v\u00e1ltozat\u00e1hoz.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.explanation=A server.xml \u00e9s/vagy f\u00e1jlban megadott Krb5LoginModule modul nem t\u00e1mogatott a haszn\u00e1lt Java sz\u00e1ll\u00edt\u00f3 \u00e9s v\u00e1ltozat eset\u00e9n.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.useraction=Haszn\u00e1lja a Krb5LoginModule modulhoz t\u00e1mogatott megfelel\u0151 Java sz\u00e1ll\u00edt\u00f3t \u00e9s v\u00e1ltozatot, vagy haszn\u00e1ljon egy olyan Krb5LoginModule modult, amelyet a Java sz\u00e1ll\u00edt\u00f3 \u00e9s v\u00e1ltozat t\u00e1mogat.
+
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS=CWWKS1144E: A(z) {0} bejelentkez\u00e9si modul be\u00e1ll\u00edt\u00e1sait a(z) {1} Java sz\u00e1ll\u00edt\u00f3 \u00e9s {2} v\u00e1ltozat nem t\u00e1mogatja.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.explanation=A server.xml \u00e9s/vagy f\u00e1jlban megadott Krb5LoginModule be\u00e1ll\u00edt\u00e1sok nem t\u00e1mogatottak a haszn\u00e1lt Java sz\u00e1ll\u00edt\u00f3 \u00e9s v\u00e1ltozat eset\u00e9n.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a Java sz\u00e1ll\u00edt\u00f3 \u00e9s v\u00e1ltozat a server.xml f\u00e1jlban \u00e9s/vagy jaas.conf f\u00e1jlban megadott \u00f6sszes Krb5LoginModule be\u00e1ll\u00edt\u00e1st t\u00e1mogatja.
+
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Nem adhat\u00f3 meg egy {0} jaasLoginContext bejegyz\u00e9s JAAS konfigur\u00e1ci\u00f3s bejegyz\u00e9sk\u00e9nt a server.xml f\u00e1jlban \u00e9s/vagy a jaas.conf f\u00e1jlban.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=A fut\u00e1si k\u00f6rnyezet egy alap\u00e9rtelmezett Krb5LoginModule konfigur\u00e1ci\u00f3t \u00e9s a server.xml f\u00e1jlban l\u00e9v\u0151 SPNEGO konfigur\u00e1ci\u00f3t haszn\u00e1lja.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=T\u00e1vol\u00edtsa el a jaasLoginContext bejegyz\u00e9st a server.xml f\u00e1jlb\u00f3l, vagy hagyja, hogy a fut\u00e1si k\u00f6rnyezet az alap\u00e9rtelmezett bejegyz\u00e9st haszn\u00e1lja.
