@@ -104,7 +104,7 @@ public class GenericData {
         lastIndex = (index > lastIndex) ? index : lastIndex;
     }
 
-    public String getStringValue(int index) {
+    protected String getStringValue(int index) {
         KeyValueStringPair kvp = (KeyValueStringPair) pairs[index];
         return kvp == null ? null : kvp.getStringValue();
     }
