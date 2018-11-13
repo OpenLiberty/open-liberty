@@ -16,6 +16,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayDeque;
@@ -170,6 +171,18 @@ public class MethodFinder {
             }
         }
 
+        if (typeToMatch instanceof WildcardType) {
+            if (type instanceof WildcardType) {
+                return typesEquivalent((WildcardType) typeToMatch, (WildcardType) type, ctx);
+            } else {
+                return false;
+            }
+        } else {
+            if (type instanceof WildcardType) {
+                return false;
+            }
+        }
+
         if (type instanceof GenericArrayType) {
             return typesEquivalent(typeToMatch, (GenericArrayType) type, ctx);
         }
@@ -235,6 +248,40 @@ public class MethodFinder {
         }
 
         return false;
+    }
+
+    /**
+     * Computes whether two WildcardTypes are equivalent.
+     * <p>
+     * This method will recursively check that the upper and lower wildcard bounds are equivalent
+     *
+     * @param typeToMatch the type to match against
+     * @param type the type to check, type variable resolution will be performed for this type
+     * @param ctx the resolution context to use to perform type variable resolution
+     * @return {@code true} if {@code type} is equivalent to {@code typeToMatch} after type resolution, otherwise {@code false}
+     */
+    private static boolean typesEquivalent(WildcardType typeToMatch, WildcardType type, ResolutionContext ctx) {
+        if (typeToMatch.getUpperBounds().length != type.getUpperBounds().length) {
+            return false;
+        }
+
+        if (typeToMatch.getLowerBounds().length != type.getLowerBounds().length) {
+            return false;
+        }
+
+        for (int i = 0; i < typeToMatch.getUpperBounds().length; i++) {
+            if (!typesEquivalent(typeToMatch.getUpperBounds()[i], ctx.resolve(type.getUpperBounds()[i]), ctx)) {
+                return false;
+            }
+        }
+
+        for (int i = 0; i < typeToMatch.getLowerBounds().length; i++) {
+            if (!typesEquivalent(typeToMatch.getLowerBounds()[i], ctx.resolve(type.getLowerBounds()[i]), ctx)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

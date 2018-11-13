@@ -120,6 +120,34 @@ public class MethodFinderTest {
     }
 
     @Test
+    public void testWildcard() {
+        Method source = getSource(WildcardSearch.class);
+        Method target = getTarget(WildcardSearch.class);
+        assertEquals(target, MethodFinder.findMatchingMethod(source, "target"));
+    }
+
+    @Test
+    public void testWildcardNegative() {
+        Method source = getSource(WildcardNegativeSearch.class);
+        //Method target = getTarget(WildcardNegativeSearch.class);
+        assertNull(MethodFinder.findMatchingMethod(source, "target"));
+    }
+
+    @Test
+    public void testGenericWildcard() {
+        Method source = getSource(GenericWildcardSearchA.class);
+        Method target = getTarget(GenericWildcardSearchB.class);
+        assertEquals(target, MethodFinder.findMatchingMethod(source, "target"));
+    }
+
+    @Test
+    public void testVarargs() {
+        Method source = getSource(VarargsSearch.class);
+        Method target = getTarget(VarargsSearch.class);
+        assertEquals(target, MethodFinder.findMatchingMethod(source, "target"));
+    }
+
+    @Test
     @Ignore // Not needed or supported as non-static inner classes cannot be beans
     public void testInnerClass() {
         Method source = getSource(GenericInnerSearchA1.class);

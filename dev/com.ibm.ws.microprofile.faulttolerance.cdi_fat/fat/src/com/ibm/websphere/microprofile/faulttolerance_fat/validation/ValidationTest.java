@@ -26,6 +26,8 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericL
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericLongSearchC;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericSearchA;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericSearchB;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericWildcardSearchA;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericWildcardSearchB;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.InPackageSearchA;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.InPackageSearchB;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.InterfaceSearchA;
@@ -35,11 +37,14 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.PrivateS
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.SimpleSearch;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.SuperclassSearchA;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.SuperclassSearchB;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.VarargsSearch;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.WildcardSearch;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.invalid.OutOfPackageSearchA;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.invalid.SubclassSearchA;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.invalid.SubclassSearchB;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.invalid.SuperclassPrivateSearchA;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.invalid.SuperclassPrivateSearchB;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.invalid.WildcardNegativeSearch;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.invalid.subpackage.OutOfPackageSearchB;
 import com.ibm.ws.fat.util.SharedServer;
 
@@ -385,6 +390,39 @@ public class ValidationTest {
                         .withClass(SubclassSearchA.class)
                         .withClass(SubclassSearchB.class)
                         .failsWith("CWMFT5021E")
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodWildcard() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(WildcardSearch.class)
+                        .succeeds()
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodGenericWildcard() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(GenericWildcardSearchA.class)
+                        .withClass(GenericWildcardSearchB.class)
+                        .succeeds()
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodWildcardNegative() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(WildcardNegativeSearch.class)
+                        .failsWith("CWMFT5021E")
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodVarargs() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(VarargsSearch.class)
+                        .succeeds()
                         .run();
     }
 

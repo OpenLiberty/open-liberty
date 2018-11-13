@@ -13,6 +13,8 @@ package com.ibm.websphere.microprofile.faulttolerance_fat.tests;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+import java.util.Collections;
+
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
@@ -23,11 +25,14 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericA
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericComplexSearchA;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericLongSearchA;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericSearchA;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericWildcardSearchA;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.InPackageSearchA;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.InterfaceSearchA;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.PrivateSearch;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.SimpleSearch;
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.SuperclassSearchA;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.VarargsSearch;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.WildcardSearch;
 
 import componenttest.app.FATServlet;
 
@@ -117,6 +122,30 @@ public class FallbackMethodServlet extends FATServlet {
     @Test
     public void testInterface() {
         assertThat(interfaceBean.source(1, 2L), equalTo("target"));
+    }
+
+    @Inject
+    private WildcardSearch wildcardBean;
+
+    @Test
+    public void testWildcard() {
+        assertThat(wildcardBean.source(Collections.emptyList()), equalTo("target"));
+    }
+
+    @Inject
+    private GenericWildcardSearchA genericWildcardBean;
+
+    @Test
+    public void testGenericWildcard() {
+        assertThat(genericWildcardBean.source(Collections.emptyList()), equalTo("target"));
+    }
+
+    @Inject
+    private VarargsSearch varargsBean;
+
+    @Test
+    public void testVarargs() {
+        assertThat(varargsBean.source(1, 2L, 3L), equalTo("target"));
     }
 
 }
