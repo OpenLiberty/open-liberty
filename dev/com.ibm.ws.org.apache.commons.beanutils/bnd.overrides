@@ -8,9 +8,9 @@ Bundle-Description: Apache Commons BeanUtils; version=1.8.3
 
 Private-Package:
 
-# Make the resolution of org.apache.commons.collections optional to avoid breaking existing features.
+# Make sure that if you use beanutils in your feature, that you also include commons collections
 Import-Package: \
-  org.apache.commons.collections.*;resolution:=optional, \
+  org.apache.commons.collections.*, \
   *
 
 Export-Package: \
