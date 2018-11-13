@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2014 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -155,3 +155,9 @@ cls.classloader.config.typo.useraction=Recherchez d'\u00e9ventuels types d'API n
 cls.classloader.config.typo2=CWWKL0083E: Lorsque vous utilisez le pr\u00e9fixe + ou -, le type d''API [{0}] n''est pas valide dans cette liste [{1}]. Tous les types d''API doivent avoir le pr\u00e9fixe + ou -.
 cls.classloader.config.typo2.explanation=Remplacez le type d'API non valide par un type d'API valide avec + ou -.
 cls.classloader.config.typo2.useraction=Recherchez d'\u00e9ventuels types d'API non valides dans la configuration du serveur pour vous assurer que le type d'API est correct.
+
+# {0} - class name
+# {1} - suggested feature
+cls.classloader.suggested.feature=CWWKL0084W: La classe {0} n''a pas pu \u00eatre charg\u00e9e. Essayez d''activer la fonction {1} ou une version plus r\u00e9cente de celle-ci dans le fichier server.xml.
+cls.classloader.suggested.feature.explanation=Une classe habituellement fournie par une ou plusieurs fonctions du serveur n'a pas pu \u00eatre charg\u00e9e.
+cls.classloader.suggested.feature.useraction=Essayez d'activer la fonction sp\u00e9cifi\u00e9e ou une version plus r\u00e9cente de celle-ci dans le fichier server.xml.

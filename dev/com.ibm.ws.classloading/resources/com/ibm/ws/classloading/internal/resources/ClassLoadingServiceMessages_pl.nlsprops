@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2014 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -155,3 +155,9 @@ cls.classloader.config.typo.useraction=Sprawd\u017a konfiguracj\u0119 serwera po
 cls.classloader.config.typo2=CWWKL0083E: Je\u015bli zosta\u0142 u\u017cyty przedrostek + lub -, ta lista [{1}] zawiera niepoprawny typ interfejsu API [{0}]. Wszystkie typy interfejsu API musz\u0105 mie\u0107 przedrostek + lub -
 cls.classloader.config.typo2.explanation=Zmie\u0144 niepoprawny typ interfejsu API na poprawny typ interfejsu API z przedrostkiem + lub -.
 cls.classloader.config.typo2.useraction=Sprawd\u017a konfiguracj\u0119 serwera pod k\u0105tem niepoprawnego typu interfejsu API, aby upewni\u0107 si\u0119, \u017ce interfejs API ma poprawny typ.
+
+# {0} - class name
+# {1} - suggested feature
+cls.classloader.suggested.feature=CWWKL0084W: Nie mo\u017cna za\u0142adowa\u0107 klasy {0}. Spr\u00f3buj w\u0142\u0105czy\u0107 sk\u0142adnik {1} lub jego nowsz\u0105 wersj\u0119 w pliku server.xml.
+cls.classloader.suggested.feature.explanation=Nie mo\u017cna za\u0142adowa\u0107 klasy, kt\u00f3ra jest zazwyczaj dostarczana przez jeden lub wi\u0119cej sk\u0142adnik\u00f3w serwera.
+cls.classloader.suggested.feature.useraction=Spr\u00f3buj w\u0142\u0105czy\u0107 okre\u015blony sk\u0142adnik lub jego nowsz\u0105 wersj\u0119 w pliku server.xml.

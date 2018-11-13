@@ -1545,7 +1545,15 @@ programmatic.session.cookie.retrieve.cell.xml.failure.useraction=Verifique se o 
 
 AsyncContext.lock.already.held=SRVE8113W: N\u00e3o \u00e9 poss\u00edvel obter um bloqueio.  O processamento de erro j\u00e1 foi chamado por outro encadeamento.
 AsyncContext.lock.already.held.explanation=O processamento de erro j\u00e1 foi chamado por outro encadeamento.
-AsyncContext.lock.already.held.useraction=Certifique-se de que o aplicativo pode tratar de uma exce\u00e7\u00e3o aqui.  Se for necess\u00e1rio que este m\u00e9todo seja retornado mesmo se a chamada n\u00e3o tiver \u00eaxito, entre em contato com o suporte IBM.
+AsyncContext.lock.already.held.useraction=Certifique-se de que o aplicativo pode tratar de uma exce\u00e7\u00e3o aqui.  Se for necess\u00e1rio que esse m\u00e9todo retorne, mesmo se a chamada n\u00e3o for bem-sucedida, considere configurar a propriedade customizada throwexceptionwhenunabletocompleteordispatch como false.
+
+Cannot.set.session.cookie.Response.already.committed=SRVE8114W: AVISO: n\u00e3o \u00e9 poss\u00edvel configurar o cookie de sess\u00e3o. Resposta j\u00e1 confirmada.
+Cannot.set.session.cookie.Response.already.committed.explanation=Ap\u00f3s uma resposta ser confirmada, n\u00e3o ser\u00e1 poss\u00edvel configurar o cookie de sess\u00e3o.
+Cannot.set.session.cookie.Response.already.committed.useraction=Verifique se esta chamada \u00e9 necess\u00e1ria. Se for necess\u00e1rio definir o cookie de sess\u00e3o, configure-o antes de confirmar a resposta.
+
+Cannot.set.status.Response.already.committed=SRVE8115W: AVISO: n\u00e3o \u00e9 poss\u00edvel configurar o status. Resposta j\u00e1 confirmada.
+Cannot.set.status.Response.already.committed.explanation=Ap\u00f3s uma resposta ser confirmada, n\u00e3o ser\u00e1 poss\u00edvel configurar o c\u00f3digo de status da resposta.
+Cannot.set.status.Response.already.committed.useraction=Verifique se esta chamada \u00e9 necess\u00e1ria. Se for necess\u00e1rio configurar o c\u00f3digo de status da resposta, configure-o antes de confirmar a resposta.
 
 servlet.with.same.name.already.exists=SRVE8500W: Um servlet denominado {0} n\u00e3o pode ser inclu\u00eddo dinamicamente pois j\u00e1 existe uma configura\u00e7\u00e3o de servlet com o mesmo nome.  
 servlet.with.same.name.already.exists.explanation=J\u00e1 existe um servlet com o mesmo nome neste aplicativo.

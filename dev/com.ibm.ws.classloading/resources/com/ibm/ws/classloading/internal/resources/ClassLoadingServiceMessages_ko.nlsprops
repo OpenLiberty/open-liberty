@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2014 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -155,3 +155,9 @@ cls.classloader.config.typo.useraction=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 API
 cls.classloader.config.typo2=CWWKL0083E: \uc811\ub450\ubd80 + \ub610\ub294 -\ub97c \uc0ac\uc6a9\ud560 \ub54c [{0}] API \uc720\ud615\uc740 \uc774 [{1}] \ubaa9\ub85d\uc5d0\uc11c \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ubaa8\ub4e0 API \uc720\ud615\uc5d0\ub294  \uc811\ub450\ubd80 + \ub610\ub294 -\uac00 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.
 cls.classloader.config.typo2.explanation=+ \ub610\ub294 -\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 API \uc720\ud615\uc744 \uc62c\ubc14\ub978 API \uc720\ud615\uc73c\ub85c \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624.
 cls.classloader.config.typo2.useraction=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 API \uc720\ud615\uc5d0 \ub300\ud55c \uc11c\ubc84 \uad6c\uc131\uc744 \ud655\uc778\ud558\uc5ec API \uc720\ud615\uc774 \uc62c\ubc14\ub978\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# {0} - class name
+# {1} - suggested feature
+cls.classloader.suggested.feature=CWWKL0084W: {0} \ud074\ub798\uc2a4\ub97c \ub85c\ub4dc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. server.xml \ud30c\uc77c\uc5d0\uc11c {1} \uae30\ub2a5 \ub610\ub294 \uc774 \uae30\ub2a5\uc758 \ucd5c\uc2e0 \ubc84\uc804\uc744 \uc0ac\uc6a9 \uac00\ub2a5\ud558\uac8c \uc124\uc815\ud574 \ubcf4\uc2ed\uc2dc\uc624.
+cls.classloader.suggested.feature.explanation=\uc77c\ubc18\uc801\uc73c\ub85c \ud558\ub098 \uc774\uc0c1\uc758 \uc11c\ubc84 \uae30\ub2a5\uc5d0\uc11c \uc81c\uacf5\ub418\ub294 \ud074\ub798\uc2a4\ub97c \ub85c\ub4dc\ud560 \uc218 \uc5c6\uc5c8\uc2b5\ub2c8\ub2e4.
+cls.classloader.suggested.feature.useraction=server.xml \ud30c\uc77c\uc5d0\uc11c \uc9c0\uc815\ub41c \uae30\ub2a5 \ub610\ub294 \uc774 \uae30\ub2a5\uc758 \ucd5c\uc2e0 \ubc84\uc804\uc744 \uc0ac\uc6a9 \uac00\ub2a5\ud558\uac8c \uc124\uc815\ud574 \ubcf4\uc2ed\uc2dc\uc624.

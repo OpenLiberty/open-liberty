@@ -624,3 +624,11 @@ ssl.defaultKeyStore.not.created.CWPKI0819I.useraction=Es ist keine Aktion erford
 ssl.defaultKeyStore.env.password.CWPKI0820A=CWPKI0820A: Der Standard-Keystore wurde mit der Umgebungsvariablen 'keystore_password' erstellt.
 ssl.defaultKeyStore.env.password.CWPKI0820A.explanation=Der Standard-Keystore wurde mit der Umgebungsvariablen 'keystore_password' erstellt. Diese wird w\u00e4hrend der Servererstellung in der Datei server.env erstellt oder in der Umgebung \u00fcberschrieben, in der der Server gestartet wurde.
 ssl.defaultKeyStore.env.password.CWPKI0820A.useraction=Es ist keine Aktion erforderlich.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.loaded.CWPKI0821I=CWPKI0821I: Der Standardkeystore {1} mit dem Keystore-Typ {2} wurde geladen.
+ssl.defaultKeyStore.loaded.CWPKI0821I.explanation=Der Standardkeystore an der angegebenen Position und der Keystore-Typ wurden geladen.
+ssl.defaultKeyStore.loaded.CWPKI0821I.useraction=Es ist keine Aktion erforderlich.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W=CWPKI0822W: Es wurde eine minimale Standardkeystorekonfiguration angegeben und die Keystores key.jks und key.p12 sind beide an der Standardkeystoreposition vorhanden. Der Keystore key.jks wird als Standardkeystore verwendet.
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.explanation=Wenn eine minimale Standardkeystorekonfiguration vorhanden ist und die Dateien key.jks und key.p12 an der Standardkeystoreposition definiert sind, wird die Datei key.jks als Standardkeystore verwendet.
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.useraction=Wenn Sie die Datei key.p12 als Standardkeystore verwenden m\u00f6chten, \u00e4ndern Sie die Keystorekonfiguration und geben Sie die Position der Datei key.p12 an, oder entfernen Sei die Datei key.jks aus der Konfiguration. Es sind keine \u00c4nderungen erforderlich, wenn Sie die Datei key.jks als Standardkeystore verwenden m\u00f6chten. 

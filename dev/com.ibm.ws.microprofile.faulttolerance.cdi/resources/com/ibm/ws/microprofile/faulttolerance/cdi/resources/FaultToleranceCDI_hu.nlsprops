@@ -124,6 +124,11 @@ retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W: A Retry ir\u00e1nyelv ingad
 retry.parameter.invalid.value.CWMFT5019W.explanation=Az ingadoz\u00e1si k\u00e9sleltet\u00e9snek kisebbnek kell lennie, mint a k\u00e9sleltet\u00e9s. Az ingadoz\u00e1si k\u00e9sleltet\u00e9st a jitter param\u00e9ter \u00e9s a jitterDelayUnit param\u00e9ter alkotja. A k\u00e9sleltet\u00e9st a delay param\u00e9ter \u00e9s a delayUnit param\u00e9ter alkotja.
 retry.parameter.invalid.value.CWMFT5019W.useraction=Jav\u00edtsa legal\u00e1bb az egyik param\u00e9ter \u00e9rt\u00e9k\u00e9t, hogy az ingadoz\u00e1si k\u00e9sleltet\u00e9s id\u0151tartama kisebb legyen, mint a k\u00e9sleltet\u00e9s id\u0151tartama.
 
+# A method does not return Future or CompletionStage
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E=CWMFT5020E:  A(z) {0} aszinkron met\u00f3dus visszat\u00e9r\u00e9si t\u00edpusa nem java.util.concurrent.Future vagy java.util.concurrent.CompletionStage.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.explanation= Minden olyan met\u00f3dusnak, amely meg van jel\u00f6lve az org.eclipse.microprofile.faulttolerance.Asynchronous annot\u00e1ci\u00f3val, java.util.concurrent.Future vagy java.util.concurrent.CompletionStage visszat\u00e9r\u00e9si t\u00edpussal kell rendelkeznie.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=Friss\u00edtse a visszat\u00e9r\u00e9si t\u00edpust.
+
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A kiv\u00e9tel: {0}.
 internal.error.CWMFT5997E.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3n bels\u0151 hiba t\u00f6rt\u00e9nt.
