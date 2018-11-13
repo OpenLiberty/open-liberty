@@ -18,16 +18,19 @@ public class FileLogHeader {
     private final String header;
     private final boolean javaLangInstrument;
     private final boolean trace;
+    private final boolean isJSON;
 
-    public FileLogHeader(String header, boolean trace, boolean javaLangInstrument) {
+    public FileLogHeader(String header, boolean trace, boolean javaLangInstrument, boolean isJSON) {
         this.header = header;
         this.trace = trace;
         this.javaLangInstrument = javaLangInstrument;
+        this.isJSON = isJSON;
     }
 
     private void process(Processor processor) {
-        processor.println(BaseTraceFormatter.banner);
-
+        if (!isJSON) {
+            processor.println(BaseTraceFormatter.banner);
+        }
         processor.print(header);
 
         if (trace) {
@@ -38,7 +41,9 @@ public class FileLogHeader {
             }
         }
 
-        processor.println(BaseTraceFormatter.banner);
+        if (!isJSON) {
+            processor.println(BaseTraceFormatter.banner);
+        }
     }
 
     public void print(PrintStream ps) {

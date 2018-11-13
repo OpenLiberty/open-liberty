@@ -25,6 +25,8 @@ Export-Package: \
 	com.ibm.ws.kernel.internal.classloader,\
 	com.ibm.ws.kernel.productinfo,\
 	com.ibm.ws.kernel.provisioning,\
+	com.ibm.ws.logging.utils,\
+	com.ibm.ws.logging.data,\
 	com.ibm.wsspi.kernel.embeddable
 	
 
