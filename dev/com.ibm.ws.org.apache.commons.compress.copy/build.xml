@@ -8,7 +8,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<project name="com.ibm.ws.org.apache.commons.compress" default="build">
+<project name="com.ibm.ws.org.apache.commons.compress.copy" default="build">
   <import file="../ant_build/public_imports/standard_imports.xml"/>
 
 </project>
