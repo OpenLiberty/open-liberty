@@ -1539,17 +1539,15 @@ public class FATOpentracing implements FATOpentracingConstants {
      * @throws Exception Thrown if the service request failed, or if the completed
      *     spans could not be marshalled from the text obtained from the FAT service.
      */
-    // @Test
+     @Test
     public void testExcludes() throws Exception {
         testExcludedPath("simple");
-        testExcludedPath("wildcardTest");
-        testExcludedPath("absoluteUri");
-        testExcludedPath("regexTest123");
-        testIncludedPath("wildcardInclude");
-        testNestedExcludePath("nestedSuccess", 1, false);
-        testNestedExcludePath("nestedExcludeTest1", 1, true);
-        testExcludedPath("incomingExcluded");
-        testIncludedPath("incomingIncluded");
+        //testExcludedPath("wildcardTest");
+        //testExcludedPath("absoluteUri");
+        //testExcludedPath("regexTest123");
+        //testNestedExcludePath("nestedSuccess", 1, false);
+        //testNestedExcludePath("nestedExcludeTest1", 1, true);
+        //testExcludedPath("incomingExcluded");
     }
 
     private void testExcludedPath(String param) throws Exception, UnsupportedEncodingException {
