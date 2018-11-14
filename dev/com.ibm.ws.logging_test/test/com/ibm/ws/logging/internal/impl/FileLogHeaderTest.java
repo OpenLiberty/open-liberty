@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013. 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ public class FileLogHeaderTest {
             PrintStream out = new PrintStream(baos, true, "UTF-8");
 
             final String header = "header" + LoggingConstants.nl;
-            FileLogHeader flh = new FileLogHeader(header, trace, javaLangInstrument);
+            FileLogHeader flh = new FileLogHeader(header, trace, javaLangInstrument, false);
             flh.print(out);
             byte[] bytes = baos.toByteArray();
 
