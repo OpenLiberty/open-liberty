@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web;
+package concurrent.mp.fat.web;
 
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CountDownLatch;
@@ -83,7 +83,7 @@ public class BlockableIncrementFunction implements Function<Integer, Integer> {
         if (beginLatch != null)
             beginLatch.countDown();
         try {
-            if (continueLatch != null && !continueLatch.await(ConcurrentRxTestServlet.TIMEOUT_NS * 3, TimeUnit.NANOSECONDS))
+            if (continueLatch != null && !continueLatch.await(MPConcurrentTestServlet.TIMEOUT_NS * 3, TimeUnit.NANOSECONDS))
                 throw new TimeoutException();
 
             System.out.println("BlockableIncrementFunction < apply: " + (++t));

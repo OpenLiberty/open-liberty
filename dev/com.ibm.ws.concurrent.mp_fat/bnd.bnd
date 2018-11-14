@@ -16,7 +16,7 @@ javac.target: 1.8
 
 src: \
 	fat/src,\
-	test-applications/concurrentrxfat/src,\
+	test-applications/MPConcurrentApp/src,\
 	test-applications/customcontext/src
 
 fat.project: true

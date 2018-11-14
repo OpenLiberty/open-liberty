@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.concurrent.rx;
+package com.ibm.ws.concurrent.mp.fat;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -16,8 +16,6 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                ConcurrentRxTest.class,
+                MPConcurrentTest.class,
 })
-public class FATSuite {
-
-}
+public class FATSuite {}
