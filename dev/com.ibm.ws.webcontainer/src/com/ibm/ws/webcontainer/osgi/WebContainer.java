@@ -112,10 +112,6 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
 
     private static final String CLASS_NAME = "com.ibm.ws.webcontainer.osgi.WebContainer";
 
-    // uncomment if the getConnectionContext() method uses it again
-    // private static ThreadLocal<SRTConnectionContext> _threadLocal =
-    // new ThreadLocal<SRTConnectionContext>();
-
     private boolean initialized;
 
     /** required dynamic reference */
@@ -799,22 +795,6 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
      */
     @Override
     protected com.ibm.ws.webcontainer.srt.SRTConnectionContext getConnectionContext() {
-        // SRTConnectionContext srt = _threadLocal.get();
-        // if (srt == null) {
-        // srt = new SRTConnectionContext();
-        // _threadLocal.set(srt);
-        // }
-        // return srt;
-
-        /*
-         * TODO: Investigate performance impact of removing thread locals and
-         * instead creating a new connection context each time. The threadlocal
-         * approach causes problems for requests that go async as a subsequent
-         * request may use the same thread and therefore get the same
-         * SRTServletRequest instance from the SRTConnectionContext.
-         */
-
-        // return new SRTConnectionContext();
         return connContextPool.get();
     }
 
