@@ -96,8 +96,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
     private TriFunction<CompletableFuture<?>, Supplier<?>, Executor, CompletableFuture<?>> completeAsync_;
     private QuadFunction<CompletableFuture<?>, Object, Long, TimeUnit, CompletableFuture<?>> completeOnTimeout;
     private Function<CompletableFuture<?>, CompletableFuture<?>> copy;
-    private BiFunction<Long, TimeUnit, Executor> CompletableFuture_delayedExecutor; // invokes static method
-    private TriFunction<Long, TimeUnit, Executor, Executor> CompletableFuture_delayedExecutor_; // invokes static method
+    private TriFunction<Long, TimeUnit, Executor, Executor> ManagedCompletableFuture_delayedExecutor; // invokes static method
     private Function<CompletableFuture<?>, CompletionStage<?>> minimalCompletionStage;
     private Function<CompletableFuture<?>, CompletableFuture<?>> newIncompleteFuture;
     private TriFunction<CompletableFuture<?>, Long, TimeUnit, CompletableFuture<?>> orTimeout;
@@ -195,15 +194,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
                 }
             };
 
-            CompletableFuture_delayedExecutor = (time, unit) -> {
-                try {
-                    return (Executor) cl.getMethod("delayedExecutor", long.class, TimeUnit.class).invoke(null, time, unit);
-                } catch (Exception x) {
-                    throw convertToRuntimeException(x);
-                }
-            };
-
-            CompletableFuture_delayedExecutor_ = (time, unit, executor) -> {
+            ManagedCompletableFuture_delayedExecutor = (time, unit, executor) -> {
                 try {
                     return (Executor) cl.getMethod("delayedExecutor", long.class, TimeUnit.class, Executor.class)
                                     .invoke(null, time, unit, executor);
@@ -1525,7 +1516,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
     public void testDelayedExecutor() throws Exception {
         Executor delay1hour;
         try {
-            delay1hour = CompletableFuture_delayedExecutor.apply(1l, TimeUnit.HOURS);
+            delay1hour = ManagedCompletableFuture_delayedExecutor.apply(1l, TimeUnit.HOURS, defaultManagedExecutor);
         } catch (UnsupportedOperationException x) {
             if (AT_LEAST_JAVA_9)
                 throw x;
@@ -1535,7 +1526,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
         CountDownLatch latch1 = new CountDownLatch(1);
         delay1hour.execute(() -> latch1.countDown());
 
-        Executor delay100ms = CompletableFuture_delayedExecutor.apply(100l, TimeUnit.MILLISECONDS);
+        Executor delay100ms = ManagedCompletableFuture_delayedExecutor.apply(100l, TimeUnit.MILLISECONDS, defaultManagedExecutor);
         CountDownLatch latch3 = new CountDownLatch(3);
         delay100ms.execute(() -> latch3.countDown());
         delay100ms.execute(() -> {
@@ -1574,7 +1565,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
     public void testDelayedExecutorViaSuppliedExecutor() throws Exception {
         Executor delay97ms;
         try {
-            delay97ms = CompletableFuture_delayedExecutor_.apply(97l, TimeUnit.MILLISECONDS, oneContextExecutor);
+            delay97ms = ManagedCompletableFuture_delayedExecutor.apply(97l, TimeUnit.MILLISECONDS, oneContextExecutor);
         } catch (UnsupportedOperationException x) {
             if (AT_LEAST_JAVA_9)
                 throw x;
@@ -1582,7 +1573,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
                 return;
         }
 
-        Executor delay397msNoContext = CompletableFuture_delayedExecutor_.apply(397l, TimeUnit.MILLISECONDS, noContextExecutor);
+        Executor delay397msNoContext = ManagedCompletableFuture_delayedExecutor.apply(397l, TimeUnit.MILLISECONDS, noContextExecutor);
         @SuppressWarnings("unchecked")
         CompletableFuture<Integer> cf0 = (CompletableFuture<Integer>) ManagedCompletableFuture_newIncompleteFuture.apply(delay397msNoContext);
         cf0.complete(97);
@@ -2963,7 +2954,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
         String s;
         assertTrue(s = cf3.toString(), s.startsWith("ManagedCompletableFuture@"));
 
-        // static runAsync
+        // runAsync
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertNotNull(threadName1 = result[0].toString());
         assertNotSame(currentThreadName, threadName1);
@@ -2976,7 +2967,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
         else
             fail("Unexpected result of lookup: " + lookupResult);
 
-        // static runAsync
+        // runAsync
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertNotNull(threadName2 = result[0].toString());
         assertNotSame(currentThreadName, threadName2);
@@ -3070,7 +3061,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
             String s;
             assertTrue(s = cf3.toString(), s.startsWith("ManagedCompletableFuture@"));
 
-            // static runAsync
+            // runAsync
             assertNotNull(threadName2 = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
             assertNotSame(currentThreadName, threadName2);
             assertTrue(threadName2, threadName2.startsWith("Default Executor-thread-"));
@@ -4050,7 +4041,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
         // static runAsync
         assertNotNull(results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
-        // static runAsync
+        // runAsync
         assertNotNull(results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
         // runAfterBoth

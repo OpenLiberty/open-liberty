@@ -112,7 +112,10 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
 
     @Override
     public <U> CompletableFuture<U> newIncompleteFuture() {
-        return ManagedCompletableFuture.newIncompleteFuture(this);
+        if (ManagedCompletableFuture.JAVA8)
+            return new ManagedCompletableFuture<U>(new CompletableFuture<U>(), this, null);
+        else
+            return new ManagedCompletableFuture<U>(this, null);
     }
 
     @Override
