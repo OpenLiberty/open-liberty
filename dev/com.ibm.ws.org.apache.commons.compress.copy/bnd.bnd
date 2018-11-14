@@ -8,15 +8,11 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/bundle.props
-bVersion=1.0
+-include= jar:${fileuri;${repo;org.apache.commons:commons-compress;1.18}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-Export-Package: com.ibm.ws.filetransfer.routing.archiveExpander
-
-instrument.disabled: true
+-includeresource: \
+    @${repo;org.apache.commons:commons-compress;1.18}!/!META-INF/maven/*
 
 publish.wlp.jar.disabled: true
 
--buildpath: \
-	com.ibm.ws.filetransfer.routing.archiveExpander.common;version=latest,\
-	com.ibm.ws.org.apache.commons.compress;version=latest
+-buildpath: org.apache.commons:commons-compress;version=1.18
