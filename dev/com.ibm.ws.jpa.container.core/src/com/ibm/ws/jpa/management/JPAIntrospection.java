@@ -349,7 +349,7 @@ public class JPAIntrospection {
                 dout.println("      None");
             } else {
                 for (Map.Entry<URL, List<JPAPUnitInfoIntrospect>> e2 : urlPUInfoMap.entrySet()) {
-                    dout.println("      " + getShortenedURLPath(e2.getKey()) + " (" + e2.getValue().size() + " persistence units)");
+                    dout.println("      " + JPAIntrospection.getShortenedURLPath(e2.getKey()) + " (" + e2.getValue().size() + " persistence units)");
                 }
             }
         }
@@ -416,7 +416,7 @@ public class JPAIntrospection {
         }
     }
 
-    private String getShortenedURLPath(URL url) {
+    private static String getShortenedURLPath(URL url) {
         final String urlStr = url.toString().replace("%21", "!");
         final String ptcols = urlStr.substring(0, urlStr.indexOf("/"));
         String path = urlStr.substring(urlStr.indexOf("/"));
@@ -424,6 +424,21 @@ public class JPAIntrospection {
             path = path.substring(path.lastIndexOf(".cache") + 6);
         }
 
+        int index = path.length();
+        int temp = path.lastIndexOf(".jar");
+        if (temp > 0)
+            index = temp;
+        temp = path.lastIndexOf(".war", index);
+        if (temp > 0)
+            index = temp;
+        temp = path.lastIndexOf(".ear", index);
+        if (temp > 0)
+            index = temp;
+
+        if (index > 0) {
+            index = path.lastIndexOf("/", index);
+            path = path.substring(index);
+        }
         return ptcols + "..." + path;
     }
 

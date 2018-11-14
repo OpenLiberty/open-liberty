@@ -72,11 +72,11 @@ public class PersistenceUnitScannerResults {
     private final Map<PersistenceUnitInfo, List<EntityMappingsDefinition>> pu_ormFileParsed_map = new HashMap<PersistenceUnitInfo, List<EntityMappingsDefinition>>();
 
     public PersistenceUnitScannerResults(List<PersistenceUnitInfo> puiList,
-                                          Map<URL, String> pxmlMap,
-                                          Set<URL> urlSet,
-                                          Map<URL, Set<ClassInfoType>> scannedClassesMap,
-                                          Map<URL, EntityMappingsDefinition> scanned_ormfile_map,
-                                          Map<PersistenceUnitInfo, List<EntityMappingsDefinition>> pu_ormFileParsed_map) {
+                                         Map<URL, String> pxmlMap,
+                                         Set<URL> urlSet,
+                                         Map<URL, Set<ClassInfoType>> scannedClassesMap,
+                                         Map<URL, EntityMappingsDefinition> scanned_ormfile_map,
+                                         Map<PersistenceUnitInfo, List<EntityMappingsDefinition>> pu_ormFileParsed_map) {
         if (puiList != null)
             this.puiList.addAll(puiList);
 
@@ -277,14 +277,7 @@ public class PersistenceUnitScannerResults {
             out.println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
             out.println("Object Relational Mapping (ORM) File:");
 
-            String urlStr = entry.getKey().toString().replace("%21", "!");
-            String ptcols = urlStr.substring(0, urlStr.indexOf("/"));
-            String path = urlStr.substring(urlStr.indexOf("/"));
-            if (path.contains(".cache")) {
-                path = path.substring(path.lastIndexOf(".cache") + 6);
-            }
-
-            out.println("Location: " + ptcols + "..." + path);
+            out.println("Location: " + PersistenceUnitScannerResults.getShortenedURLPath(entry.getKey()));
 
             out.println("Referenced by Persistence Unit:");
             for (Map.Entry<PersistenceUnitInfo, List<EntityMappingsDefinition>> e2 : pu_ormFileParsed_map.entrySet()) {
@@ -302,13 +295,6 @@ public class PersistenceUnitScannerResults {
             out.println();
             out.println("Scanned Classes for location: " + entry.getKey());
 
-            String urlStr = entry.getKey().toString().replace("%21", "!");
-            String ptcols = urlStr.substring(0, urlStr.indexOf("/"));
-            String path = urlStr.substring(urlStr.indexOf("/"));
-            if (path.contains(".cache")) {
-                path = path.substring(path.lastIndexOf(".cache") + 6);
-            }
-
             final ArrayList<ClassInfoType> sortedCitList = new ArrayList<ClassInfoType>(entry.getValue());
             Collections.sort(sortedCitList, new Comparator<ClassInfoType>() {
                 @Override
@@ -322,7 +308,7 @@ public class PersistenceUnitScannerResults {
             for (ClassInfoType cit : sortedCitList) {
                 out.println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
                 out.println("Class: " + cit.getClassName());
-                out.println("Location: " + ptcols + "..." + path);
+                out.println("Location: " + PersistenceUnitScannerResults.getShortenedURLPath(entry.getKey()));
                 out.println();
                 out.println(process(cit));
             }
@@ -639,5 +625,31 @@ public class PersistenceUnitScannerResults {
         } else {
             sb.append(vit.getSimple());
         }
+    }
+
+    private static String getShortenedURLPath(URL url) {
+        final String urlStr = url.toString().replace("%21", "!");
+        final String ptcols = urlStr.substring(0, urlStr.indexOf("/"));
+        String path = urlStr.substring(urlStr.indexOf("/"));
+        if (path.contains(".cache")) {
+            path = path.substring(path.lastIndexOf(".cache") + 6);
+        }
+
+        int index = path.length();
+        int temp = path.lastIndexOf(".jar");
+        if (temp > 0)
+            index = temp;
+        temp = path.lastIndexOf(".war", index);
+        if (temp > 0)
+            index = temp;
+        temp = path.lastIndexOf(".ear", index);
+        if (temp > 0)
+            index = temp;
+
+        if (index > 0) {
+            index = path.lastIndexOf("/", index);
+            path = path.substring(index);
+        }
+        return ptcols + "..." + path;
     }
 }
