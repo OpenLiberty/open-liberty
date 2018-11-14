@@ -83,10 +83,10 @@ public class Krb5LoginModuleWrapper implements LoginModule {
         if (useKeytabValue != null && useKeytabValue.equals("true")) {
             this.options.put("keyTab", getSystemProperty("KRB5_KTNAME"));
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            this.options.put("debug", "true");
-            Krb5Common.debugKrb5LoginModule(subject, callbackHandler, sharedState, this.options);
-        }
+//        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//            this.options.put("debug", "true");
+//            Krb5Common.debugKrb5LoginModule(subject, callbackHandler, sharedState, this.options);
+//        }
 
         Class[] params = new Class[4];
         params[0] = Subject.class;
