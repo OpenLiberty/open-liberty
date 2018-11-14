@@ -27,7 +27,7 @@ public class FileLogHeaderTest {
             PrintStream out = new PrintStream(baos, true, "UTF-8");
 
             final String header = "header" + LoggingConstants.nl;
-            FileLogHeader flh = new FileLogHeader(header, trace, javaLangInstrument);
+            FileLogHeader flh = new FileLogHeader(header, trace, javaLangInstrument, false);
             flh.print(out);
             byte[] bytes = baos.toByteArray();
 

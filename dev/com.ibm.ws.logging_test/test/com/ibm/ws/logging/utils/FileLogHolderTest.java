@@ -81,7 +81,7 @@ public class FileLogHolderTest {
         int rolledRecordLen = rolledRecord.length() + LoggingConstants.nl.length();
 
         // Create a log file with 50byte limit that will keep at most 2 files.
-        FileLogHolder a1 = FileLogHolder.createFileLogHolder(null, new FileLogHeader(headerLine, false, false),
+        FileLogHolder a1 = FileLogHolder.createFileLogHolder(null, new FileLogHeader(headerLine, false, false, false),
                                                              testLogDir, "a.log", 2, headerLen + aRecordLen + (rolledRecordLen / 2));
         a1.writeRecord(aRecord);
 
@@ -116,7 +116,7 @@ public class FileLogHolderTest {
 
         // Now lets change the maxNumFiles and maxFileSizeBytes and repeat.
         // a1 and a2 should be the same instance (updates applied)
-        FileLogHolder a2 = FileLogHolder.createFileLogHolder(a1, new FileLogHeader(headerLine, false, false),
+        FileLogHolder a2 = FileLogHolder.createFileLogHolder(a1, new FileLogHeader(headerLine, false, false, false),
                                                              testLogDir, "a.log", 1, headerLen + 20);
         assertSame("a1 and a2 should be the same instance", a1, a2);
         assertEquals("maxNumFiles should have changed to new value", 1, a2.fileLogSet.getMaxFiles());
@@ -293,7 +293,7 @@ public class FileLogHolderTest {
     }
 
     private void writeFileOnce(String headerLine, String record, String logName, boolean newLogsOnStart) {
-        FileLogHolder d1 = FileLogHolder.createFileLogHolder(null, new FileLogHeader(headerLine, false, false),
+        FileLogHolder d1 = FileLogHolder.createFileLogHolder(null, new FileLogHeader(headerLine, false, false, false),
                                                              testLogDir, logName, 2, 0, newLogsOnStart);
 
         d1.writeRecord(record);
