@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.RemoteFile;
@@ -35,12 +35,12 @@ public class HeaderFormatTest {
                                                    "\\{.*\"type\":\"liberty_recommendations\".*\\}",
                                                    "\\{.*\"type\":\"liberty_audit\".*\\}" };
     public static final String[] BASIC_MESSSAGE = { "\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*" };
-    public static final String[] JSON_CONSOLE = { "\\{\".*Launching.*(Open Liberty.*).*\"\\}" };
+    public static final String[] JSON_CONSOLE = { "\\{\".*Launching.*\"\\}" };
 
     private static LibertyServer server;
 
-    @AfterClass
-    public static void tearDownClass() {
+    @After
+    public void tearDownClass() {
         if ((server != null) && (server.isStarted())) {
             try {
                 server.stopServer();
