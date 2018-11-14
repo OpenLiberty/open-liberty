@@ -100,7 +100,7 @@ public class RepeatTests extends ExternalResource {
                 Log.info(c, m, "  [" + i + "] " + actions.get(i));
             for (RepeatTestAction action : actions) {
                 RepeatTestFilter.CURRENT_REPEAT_ACTION = action.getID();
-                if (action.isEnabled()) {
+                if (shouldRun(action)) {
                     Log.info(c, m, "===================================");
                     Log.info(c, m, "");
                     Log.info(c, m, "Running tests with action: " + action);
@@ -109,6 +109,16 @@ public class RepeatTests extends ExternalResource {
                     action.setup();
                     statement.evaluate();
                 }
+            }
+        }
+
+        private static boolean shouldRun(RepeatTestAction action) {
+            String repeatOnly = System.getProperty("fat.repeat.only");
+            if (repeatOnly == null) {
+                return action.isEnabled();
+            } else {
+                // Note: If the user has requested this specific action, we ignore the isEnabled() flag
+                return action.getID().equals(repeatOnly);
             }
         }
     }
