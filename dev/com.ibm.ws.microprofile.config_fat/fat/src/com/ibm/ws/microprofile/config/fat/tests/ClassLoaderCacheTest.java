@@ -109,7 +109,6 @@ public class ClassLoaderCacheTest extends FATServletClient {
         runConfigTest(WARA1, 0, 2); //initially there are zero configs, the test is expected to load two; one specific to the war and one global one
         runConfigTest(WARA2, 2, 3); //after the previous test there should be two configs, this test is expected to load one new one specific to the war and reuse the global one (total 3)
         server.restartDropinsApplication(EARA_NAME); //restarting the app should clear out all three configs
-        Thread.sleep(1000);
         runConfigTest(WARA1, 0, 2); //so performing the same tests again should yeild the same results
         runConfigTest(WARA2, 2, 3);
     }
@@ -120,8 +119,7 @@ public class ClassLoaderCacheTest extends FATServletClient {
         runConfigTest(WARA2, 2, 3); //after the previous test there should be two configs, this test is expected to load one new one specific to the war and reuse the global one (total 3)
         runConfigTest(WARB1, 3, 4); //after the previous test there should be three configs, this test is expected to load one new one specific to the war and reuse the global one (total 4)
         runConfigTest(WARB2, 4, 5); //after the previous test there should be four configs, this test is expected to load one new one specific to the war and reuse the global one (total 5)
-        server.removeDropinsApplications(EARB_NAME); // removing EARB should clear it's two war specific configs but leave the others (total 3)
-        Thread.sleep(1000);
+        server.removeAndStopDropinsApplications(EARB_NAME); // removing EARB should clear it's two war specific configs but leave the others (total 3)
         runConfigTest(WARA1, 3, 3); //there should be three configs at this point; one for each war and the global one. they should all be reused so the total remains the same
         runConfigTest(WARA2, 3, 3); //there should be three configs at this point; one for each war and the global one. they should all be reused so the total remains the same
     }
