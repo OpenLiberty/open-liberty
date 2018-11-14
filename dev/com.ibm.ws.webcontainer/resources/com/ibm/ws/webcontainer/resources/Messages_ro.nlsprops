@@ -1545,7 +1545,15 @@ programmatic.session.cookie.retrieve.cell.xml.failure.useraction=Verifica\u0163i
 
 AsyncContext.lock.already.held=SRVE8113W: Nu se ob\u0163ine o blocare.  Eroare la procesare, s-a invocat deja de alt fir de execu\u0163ie.
 AsyncContext.lock.already.held.explanation=Eroare la procesare, s-a invocat deja de alt fir de execu\u0163ie.
-AsyncContext.lock.already.held.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia poate trata o excep\u0163ie aici.  Dac\u0103 e necesar ca aceast\u0103 metod\u0103 s\u0103 returneze chiar dac\u0103 apelul nu are succes, contacta\u0163i suportul IBM.
+AsyncContext.lock.already.held.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia poate trata o excep\u0163ie aici.  Dac\u0103 este necesar ca aceast\u0103 metod\u0103 s\u0103 returneze chiar dac\u0103 apelul nu a reu\u015fit, lua\u0163i \u00een considerare setarea propriet\u0103\u0163ii personalizate throwexceptionwhenunabletocompleteordispatch la false.
+
+Cannot.set.session.cookie.Response.already.committed=SRVE8114W: AVERTISMENT: Nu se poate seta cookie-ul de sesiune. R\u0103spuns deja comis.
+Cannot.set.session.cookie.Response.already.committed.explanation=Dup\u0103 ce un r\u0103spuns a fost comis, nu pute\u0163i seta cookie-ul de sesiune.
+Cannot.set.session.cookie.Response.already.committed.useraction=Verifica\u0163i dac\u0103 acest apel este necesar. Dac\u0103 ave\u0163i nevoie s\u0103 seta\u0163i cookie-ul de sesiune, seta\u0163i-l \u00eenainte de a comite r\u0103spunsul.
+
+Cannot.set.status.Response.already.committed=SRVE8115W: AVERTISMENT: Nu se poate seta starea. R\u0103spuns deja comis.
+Cannot.set.status.Response.already.committed.explanation=Dup\u0103 ce un r\u0103spuns a fost comis, nu pute\u0163i seta codul de stare r\u0103spuns.
+Cannot.set.status.Response.already.committed.useraction=Verifica\u0163i dac\u0103 acest apel este necesar. Dac\u0103 ave\u0163i nevoie s\u0103 seta\u0163i codul de stare r\u0103spuns, seta\u0163i-l \u00eenainte de a comite r\u0103spunsul.
 
 servlet.with.same.name.already.exists=SRVE8500W: Un servlet cu numele {0} nu poate fi ad\u0103ugat dinamic pentru exist\u0103 deja o configura\u0163ie de servlet cu acela\u015fi nume.  
 servlet.with.same.name.already.exists.explanation=Exist\u0103 deja un servlet cu acela\u015fi nume pentru aceast\u0103 aplica\u0163ie.

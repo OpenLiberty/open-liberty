@@ -1545,7 +1545,15 @@ programmatic.session.cookie.retrieve.cell.xml.failure.useraction=Ellen\u0151rizz
 
 AsyncContext.lock.already.held=SRVE8113W: Nem foganatos\u00edthat\u00f3 z\u00e1rol\u00e1s.  A hibafeldolgoz\u00e1st m\u00e1r megh\u00edvta egy m\u00e1sik sz\u00e1l.
 AsyncContext.lock.already.held.explanation=A hibafeldolgoz\u00e1st m\u00e1r megh\u00edvta egy m\u00e1sik sz\u00e1l.
-AsyncContext.lock.already.held.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s k\u00e9pes kezelni egy kiv\u00e9telt itt.  Ha sz\u00fcks\u00e9ges, hogy visszat\u00e9rjen a met\u00f3dus akkor is, ha a h\u00edv\u00e1s sikertelen, akkor l\u00e9pjen kapcsolatba az IBM term\u00e9kt\u00e1mogat\u00e1ssal.
+AsyncContext.lock.already.held.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s k\u00e9pes kezelni egy kiv\u00e9telt itt.  Ha sz\u00fcks\u00e9ges, hogy visszat\u00e9rjen a met\u00f3dus akkor is, ha a h\u00edv\u00e1s sikertelen, akkor vegye fontol\u00f3ra a throwexceptionwhenunabletocompleteordispatch egy\u00e9ni v\u00e1ltoz\u00f3 FALSE \u00e9rt\u00e9kre \u00e1ll\u00edt\u00e1s\u00e1t.
+
+Cannot.set.session.cookie.Response.already.committed=SRVE8114W: FIGYELMEZTET\u00c9S: A munkamenet cookie-t nem lehet be\u00e1ll\u00edtani. A v\u00e1lasz m\u00e1r v\u00e9gleges\u00edtve lett.
+Cannot.set.session.cookie.Response.already.committed.explanation=Miut\u00e1n a v\u00e1lasz v\u00e9gleges\u00edt\u00e9sre ker\u00fclt, nem lehet munkamenet cookie-t be\u00e1ll\u00edtani.
+Cannot.set.session.cookie.Response.already.committed.useraction=Ellen\u0151rizze, hogy sz\u00fcks\u00e9g van-e erre a h\u00edv\u00e1sra. Ha munkamenet cookie-t szeretne be\u00e1ll\u00edtani, azt a v\u00e1lasz v\u00e9gleges\u00edt\u00e9se el\u0151tt tegye meg.
+
+Cannot.set.status.Response.already.committed=SRVE8115W: FIGYELMEZTET\u00c9S: Az \u00e1llapotot nem lehet be\u00e1ll\u00edtani. A v\u00e1lasz m\u00e1r v\u00e9gleges\u00edtve lett.
+Cannot.set.status.Response.already.committed.explanation=Miut\u00e1n a v\u00e1lasz v\u00e9gleges\u00edt\u00e9sre ker\u00fclt, nem lehet a v\u00e1lasz \u00e1llapotk\u00f3dot be\u00e1ll\u00edtani.
+Cannot.set.status.Response.already.committed.useraction=Ellen\u0151rizze, hogy sz\u00fcks\u00e9g van-e erre a h\u00edv\u00e1sra. Ha v\u00e1lasz \u00e1llapotk\u00f3dot szeretne be\u00e1ll\u00edtani, azt a v\u00e1lasz v\u00e9gleges\u00edt\u00e9se el\u0151tt tegye meg.
 
 servlet.with.same.name.already.exists=SRVE8500W: A(z) {0} nev\u0171 szervletet nem lehet dinamikusan hozz\u00e1adni, mert a szervlet be\u00e1ll\u00edt\u00e1sa ugyanezzel a n\u00e9vvel m\u00e1r l\u00e9tezik.  
 servlet.with.same.name.already.exists.explanation=Ehhez az alkalmaz\u00e1shoz m\u00e1r l\u00e9tezik egy ilyen nev\u0171 szervlet.

@@ -124,6 +124,11 @@ retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W: Il ritardo di jitter di {0}
 retry.parameter.invalid.value.CWMFT5019W.explanation=Il ritardo di jitter deve essere minore del ritardo. Il ritardo di jitter consiste dei parametri jitter e jitterDelayUnit. Il ritardo consiste dei parametri delay e delayUnit.
 retry.parameter.invalid.value.CWMFT5019W.useraction=Correggere il valore di uno o pi\u00f9 parametri in modo che la durata del ritardo di jitter sia minore della durata del ritardo.
 
+# A method does not return Future or CompletionStage
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E=CWMFT5020E: Il metodo asincrono {0} non ha un tipo di restituzione java.util.concurrent.Future o java.util.concurrent.CompletionStage.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.explanation=Tutti i metodi annotati con org.eclipse.microprofile.faulttolerance.Asynchronous devono avere un tipo di restituzione java.util.concurrent.Future o java.util.concurrent.CompletionStage.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=Aggiornare il tipo di restituzione.
+
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: Si \u00e8 verificato un errore interno. L'eccezione \u00e8 {0}.
 internal.error.CWMFT5997E.explanation=Il server delle applicazioni ha rilevato un errore interno.

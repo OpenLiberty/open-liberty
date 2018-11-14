@@ -271,6 +271,7 @@ RUN_IN_CHILD_JVM_DEBUG=WLP_JAR_DEBUG impostato. Il server funzioner\u00e0 in una
 RUN_IN_CHILD_JVM_JVM_OPTIONS=Il jar contiene file jvm.options. Il server funzioner\u00e0 in una JVM separata.
 RUN_IN_CHILD_JVM_IBM_AGENT_ISSUE=Si sta utilizzando un IBM SDK senza l''opzione -XX:+EnableHCR. Il server funzioner\u00e0 in una JVM separata.
 RUN_IN_CHILD_JVM_JRE=Si sta utilizzando un''installazione JRE (Java runtime environment). Il server funzioner\u00e0 in una JVM separata.
+RUN_IN_CHILD_JVM_SET_JAVA_HOME=Impostazione della variabile di ambiente JAVA_HOME: {0}
 
 # messages for LicenseSelfEctractor
 LICENSE_invalidInstall=La directory {0} non \u00e8 un''installazione Liberty valida. Specificare la directory root dell''installazione Liberty che si desidera aggiornare.
