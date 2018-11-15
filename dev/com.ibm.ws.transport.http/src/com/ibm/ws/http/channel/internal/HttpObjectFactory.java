@@ -12,28 +12,30 @@ package com.ibm.ws.http.channel.internal;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.service.util.ConcurrentObjectPool;
+import com.ibm.wsspi.channelfw.objectpool.TwoTierObjectPool;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 import com.ibm.wsspi.http.channel.outbound.HttpOutboundServiceContext;
 
 /**
  * Factory for all of the pooled objects used in the HTTP channel.
- *
+ * 
  */
 public class HttpObjectFactory {
 
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(HttpObjectFactory.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
-    /** Size of the pool */
-    private static final int POOL_SIZE = 100;
+    /** Size of each thread based object pool */
+    private static final int SIZE_THREAD = 50;
+    /** Size of the main group */
+    private static final int SIZE_MAIN = 50;
 
     /** Pool of http request objects */
-    private final ConcurrentObjectPool<HttpRequestMessageImpl> reqPool = new ConcurrentObjectPool<>(POOL_SIZE);
+    private final TwoTierObjectPool reqPool = new TwoTierObjectPool(SIZE_THREAD, SIZE_MAIN);
     /** Pool of http response objects */
-    private final ConcurrentObjectPool<HttpResponseMessageImpl> respPool = new ConcurrentObjectPool<>(POOL_SIZE);
+    private final TwoTierObjectPool respPool = new TwoTierObjectPool(SIZE_THREAD, SIZE_MAIN);
     /** Pool of http trailer objects */
-    private final ConcurrentObjectPool<HttpTrailersImpl> hdrPool = new ConcurrentObjectPool<>(POOL_SIZE);
+    private final TwoTierObjectPool hdrPool = new TwoTierObjectPool(SIZE_THREAD, SIZE_MAIN);
 
     /**
      * Constructor of the object factory.
@@ -47,11 +49,11 @@ public class HttpObjectFactory {
 
     /**
      * Retrieve an uninitialized request message.
-     *
+     * 
      * @return HttpRequestMessageImpl
      */
     public HttpRequestMessageImpl getRequest() {
-        HttpRequestMessageImpl req = this.reqPool.get();
+        HttpRequestMessageImpl req = (HttpRequestMessageImpl) this.reqPool.get();
         if (null == req) {
             req = new HttpRequestMessageImpl();
         }
@@ -63,7 +65,7 @@ public class HttpObjectFactory {
 
     /**
      * Retrieve an incoming request object from the factory.
-     *
+     * 
      * @param hsc
      * @return HttpRequestMessageImpl
      */
@@ -75,7 +77,7 @@ public class HttpObjectFactory {
 
     /**
      * Retrieve an outgoing request object from the factory.
-     *
+     * 
      * @param hsc
      * @return HttpRequestMessageImpl
      */
@@ -87,7 +89,7 @@ public class HttpObjectFactory {
 
     /**
      * Return a request object to the factory for pooling.
-     *
+     * 
      * @param request
      */
     public void releaseRequest(HttpRequestMessageImpl request) {
@@ -99,11 +101,11 @@ public class HttpObjectFactory {
 
     /**
      * Retrieve an uninitialized response message.
-     *
+     * 
      * @return HttpResponseMessageImpl
      */
     public HttpResponseMessageImpl getResponse() {
-        HttpResponseMessageImpl resp = this.respPool.get();
+        HttpResponseMessageImpl resp = (HttpResponseMessageImpl) this.respPool.get();
         if (null == resp) {
             resp = new HttpResponseMessageImpl();
         }
@@ -115,7 +117,7 @@ public class HttpObjectFactory {
 
     /**
      * Retrieve an outgoing response object from the factory.
-     *
+     * 
      * @param hsc
      * @return HttpResponseMessageImpl
      */
@@ -127,7 +129,7 @@ public class HttpObjectFactory {
 
     /**
      * Retrieve an incoming response object from the factory.
-     *
+     * 
      * @param hsc
      * @return HttpResponseMessageImpl
      */
@@ -139,7 +141,7 @@ public class HttpObjectFactory {
 
     /**
      * Return a response object to the factory for pooling.
-     *
+     * 
      * @param response
      */
     public void releaseResponse(HttpResponseMessageImpl response) {
@@ -152,7 +154,7 @@ public class HttpObjectFactory {
     /**
      * Get a new trailers object. init() is not called on the object so the
      * default values for certain variables are used (byte cache size, etc).
-     *
+     * 
      * @return HttpTrailersImpl
      */
     public HttpTrailersImpl getTrailers() {
@@ -168,7 +170,7 @@ public class HttpObjectFactory {
 
     /**
      * Return a trailers object to the pool.
-     *
+     * 
      * @param h
      */
     public void releaseTrailers(HttpTrailersImpl h) {

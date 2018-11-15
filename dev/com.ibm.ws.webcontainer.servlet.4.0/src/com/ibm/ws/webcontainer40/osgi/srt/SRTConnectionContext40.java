@@ -18,6 +18,11 @@ import com.ibm.ws.webcontainer40.srt.SRTServletResponse40;
 
 public class SRTConnectionContext40 extends com.ibm.ws.webcontainer31.osgi.srt.SRTConnectionContext31 {
 
+    /**
+     * Used for pooling the SRTConnectionContext31 objects.
+     */
+    public SRTConnectionContext40 nextContext;
+
     @Override
     protected void init() {
         this._dispatchContext = new WebAppDispatcherContext40(_request);

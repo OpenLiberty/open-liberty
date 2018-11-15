@@ -175,7 +175,7 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
 
         LibertyJaxRsResourceMethodCache resourceMethodCache = exchange.getBus().getExtension(LibertyJaxRsResourceMethodCache.class);
 
-        MultivaluedMap<String, String> matchedValues = null;
+        MultivaluedMap<String, String> matchedValues = new MetadataMap<String, String>();
 
         OperationResourceInfo ori = null;
 
@@ -217,7 +217,6 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
             Tr.debug(tc, "shouldFind = " + shouldFind);
         }
         if (shouldFind == true) {
-            matchedValues = new MetadataMap<String, String>();
 
             Map<ClassResourceInfo, MultivaluedMap<String, String>> matchedResources = JAXRSUtils.selectResourceClass(resources, rawPath, message);
 

@@ -16,6 +16,8 @@
  */
 package com.ibm.ws.webcontainer31.osgi.srt;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpUpgradeHandler;
 
 import com.ibm.websphere.ras.Tr;
@@ -44,6 +46,11 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
 {
 
     private final static TraceComponent tc = Tr.register(SRTConnectionContext31.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS);
+
+    /**
+     * Used for pooling the SRTConnectionContext31 objects.
+     */
+    public SRTConnectionContext31 nextContext;
 
     protected SRTServletRequest newSRTServletRequest() {
         return new SRTServletRequest31(this);
