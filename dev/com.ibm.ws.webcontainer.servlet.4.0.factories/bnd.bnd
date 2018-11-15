@@ -70,7 +70,6 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     com.ibm.ws.transport.http;version=latest,\
     com.ibm.ws.channelfw;version=latest,\
-    com.ibm.ws.kernel.service;version=latest,\
     com.ibm.ws.managedobject;version=latest,\
     com.ibm.ws.container.service;version=latest,\
     com.ibm.ws.injection;version=latest,\

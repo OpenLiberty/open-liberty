@@ -12,31 +12,37 @@ package com.ibm.ws.webcontainer40.osgi.srt.factory;
 
 import org.osgi.service.component.annotations.Component;
 
-import com.ibm.ws.kernel.service.util.ConcurrentObjectPool;
-import com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext;
 import com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContextPool;
 import com.ibm.ws.webcontainer40.osgi.srt.SRTConnectionContext40;
 
 /**
- * A simple pool for SRTConnectionContext40 objects.
+ * A simple pool for SRTConnectionContext31 objects.
  */
-@Component(property = { "service.vendor=IBM", "service.ranking:Integer=40", "servlet.version=4.0" })
+@Component(property = { "service.vendor=IBM", "service.ranking:Integer=31", "servlet.version=3.1" })
 public class SRTConnectionContextPool40Impl implements SRTConnectionContextPool {
-    private final ConcurrentObjectPool<SRTConnectionContext> pool = new ConcurrentObjectPool<>(100);
+    private final ThreadLocal<com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext> head = new ThreadLocal<com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext>();
 
     @Override
-    public final SRTConnectionContext get() {
-        SRTConnectionContext context = pool.get();
+    public final com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext get() {
+        com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext context = null;
+        com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext headContext = head.get();
+        if (headContext != null) {
+            context = headContext;
+            head.set(context.nextContext);
+        }
 
         if (context == null) {
             context = new SRTConnectionContext40();
         }
 
+        context.nextContext = null;
+
         return context;
     }
 
     @Override
-    public final void put(SRTConnectionContext context) {
-        pool.put(context);
+    public final void put(com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext context) {
+        context.nextContext = head.get();
+        head.set(context);
     }
 }
