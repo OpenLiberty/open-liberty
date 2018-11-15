@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web;
+package concurrent.mp.fat.web;
 
 import java.io.Serializable;
 import java.util.concurrent.Executor;

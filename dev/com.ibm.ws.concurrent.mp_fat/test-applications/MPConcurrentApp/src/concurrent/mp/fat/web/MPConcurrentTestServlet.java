@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web;
+package concurrent.mp.fat.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -74,8 +74,8 @@ import org.test.context.location.TestContextTypes;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
-@WebServlet(urlPatterns = "/ConcurrentRxTestServlet")
-public class ConcurrentRxTestServlet extends FATServlet {
+@WebServlet(urlPatterns = "/MPConcurrentTestServlet")
+public class MPConcurrentTestServlet extends FATServlet {
     // Maximum number of nanoseconds to wait for a task to complete
     static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 

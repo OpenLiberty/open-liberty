@@ -8,14 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.concurrent.rx;
-
-import java.io.File;
+package com.ibm.ws.concurrent.mp.fat;
 
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -29,32 +26,31 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import web.ConcurrentRxTestServlet;
+import concurrent.mp.fat.web.MPConcurrentTestServlet;
 
 @RunWith(FATRunner.class)
-public class ConcurrentRxTest extends FATServletClient {
+public class MPConcurrentTest extends FATServletClient {
 
-    @Server("com.ibm.ws.concurrent.fat.rx")
-    @TestServlet(servlet = ConcurrentRxTestServlet.class, path = "concurrentrxfat/ConcurrentRxTestServlet")
-    public static LibertyServer server1;
+    private static final String APP_NAME = "MPConcurrentApp";
+
+    @Server("MPConcurrentTestServer")
+    @TestServlet(servlet = MPConcurrentTestServlet.class, contextRoot = APP_NAME)
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive app = ShrinkWrap.create(WebArchive.class, "concurrentrxfat.war")//
-                        .addPackages(true, "web")//
-                        .addAsWebInfResource(new File("test-applications/concurrentrxfat/resources/index.jsp"));
-        ShrinkHelper.exportAppToServer(server1, app);
+        ShrinkHelper.defaultApp(server, APP_NAME, "concurrent.mp.fat.web");
 
         JavaArchive customContextProviders = ShrinkWrap.create(JavaArchive.class, "customContextProviders.jar")
                         .addPackage("org.test.context.location")
                         .addAsServiceProvider(ThreadContextProvider.class, CityContextProvider.class, StateContextProvider.class);
-        ShrinkHelper.exportToServer(server1, "lib", customContextProviders);
+        ShrinkHelper.exportToServer(server, "lib", customContextProviders);
 
-        server1.startServer();
+        server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer();
+        server.stopServer();
     }
 }
