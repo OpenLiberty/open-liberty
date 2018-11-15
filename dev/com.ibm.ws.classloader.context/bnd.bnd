@@ -17,9 +17,11 @@ Bundle-Description: Classloader context; version=${bVersion}
 
 WS-TraceGroup: ClassloaderContext
 
-Export-Package: com.ibm.ws.classloader.context;provide:=true
+Export-Package: \
+  com.ibm.ws.classloader.context;provide:=true
 
-Private-Package: com.ibm.ws.classloader.context.internal
+Private-Package: \
+  com.ibm.ws.classloader.context.internal*
 
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF

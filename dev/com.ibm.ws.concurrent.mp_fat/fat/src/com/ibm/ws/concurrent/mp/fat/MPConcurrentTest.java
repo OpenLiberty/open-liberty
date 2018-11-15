@@ -51,6 +51,6 @@ public class MPConcurrentTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKL0090E");
     }
 }
