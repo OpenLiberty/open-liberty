@@ -15,7 +15,6 @@
     
                <logging 
   traceSpecification="SIBJFapChannel:SIBCommunications:SSLChannel:SSL=all"
-  traceFileName="myTraceS1.log"
   maxFileSize="200"
   maxFiles="2"
   />

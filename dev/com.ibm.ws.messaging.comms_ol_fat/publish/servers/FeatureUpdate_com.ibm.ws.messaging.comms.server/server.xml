@@ -33,7 +33,6 @@
     
                <logging 
   traceSpecification="SIBJFapChannel:SIBCommunications:SSLChannel:SSL=all"
-  traceFileName="myTraceS.log"
   maxFileSize="200"
   maxFiles="2"
   />
