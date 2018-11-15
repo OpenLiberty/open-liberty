@@ -24,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@Path("/basic")
 public interface BasicServiceClient {
     @GET
     Set<String> getWidgetNames();
