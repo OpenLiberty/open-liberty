@@ -152,6 +152,7 @@ public class FATTest extends AbstractAppManagerTest {
         } finally {
             //if we failed to delete file before, try to delete it now.
             pathsToCleanup.add(server.getServerRoot() + "/" + DROPINS_DIR);
+            server.stopServer("CWWKZ0014W");
         }
     }
 
@@ -257,6 +258,7 @@ public class FATTest extends AbstractAppManagerTest {
             //if we failed to delete file before, try to delete it now.
             pathsToCleanup.add(server.getServerRoot() + "/" + DROPINS_DIR);
             pathsToCleanup.add(server.getServerRoot() + "/testWarApplication.war");
+            server.stopServer("CWWKZ0014W");
         }
     }
 
