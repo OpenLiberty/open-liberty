@@ -22,6 +22,6 @@
 # NOTE: This message bundle has only reserved CWWKL0090-CWWKL0099 if more messages #
 #       are needed, reserve a new block of messages in the classloading bundle     #
 ####################################################################################
-cannot.apply.classloader.context=CWWKL0090E: Unable to apply classloader context to an unmanaged thread. Ensure that work is being submitted to a thread pool that is managed by the server.
-cannot.apply.classloader.context.explanation=Work was submitted to an unmanaged thread that does not support setting the ClassLoader
-cannot.apply.classloader.context.useraction=Ensure that work is being submitted to a thread pool that is managed by the server.
+cannot.apply.classloader.context=CWWKL0090E: Unable to apply class loader context to unmanaged thread {0}. Ensure that work runs on a thread that is managed by the server or allows the setContextClassLoader operation.
+cannot.apply.classloader.context.explanation=Work was submitted to an unmanaged thread that does not support setting the ClassLoader.
+cannot.apply.classloader.context.useraction=Ensure that work runs on a thread that is managed by the server or allows the setContextClassLoader operation.

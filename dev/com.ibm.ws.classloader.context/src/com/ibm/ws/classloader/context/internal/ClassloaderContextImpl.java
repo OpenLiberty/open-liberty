@@ -24,6 +24,8 @@ import java.util.concurrent.RejectedExecutionException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 
 /**
@@ -51,17 +53,12 @@ public class ClassloaderContextImpl implements ThreadContext {
                                                                                                 new ObjectStreamField(CLASS_LOADER_IDENTIFIER, String.class)
     };
 
+    static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
+
     /**
      * An empty classloader context which erases any classloader context on the thread of execution.
      */
-    static final ClassLoader SYSTEM_CLASS_LOADER = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-        @Override
-        public ClassLoader run() {
-            // This matches the default used by Java.  We might consider using
-            // ClassLoadingService.createThreadContextClassLoader in the future.
-            return ClassLoader.getSystemClassLoader();
-        }
-    });
+    static final ClassLoader SYSTEM_CLASS_LOADER = priv.getSystemClassLoader();
 
     transient ClassloaderContextProviderImpl classLoaderContextProvider;
 
@@ -86,7 +83,7 @@ public class ClassloaderContextImpl implements ThreadContext {
      * @param classloaderContextProviderImpl
      */
     ClassloaderContextImpl(ClassloaderContextProviderImpl provider) {
-        this(provider, getCL());
+        this(provider, priv.getContextClassLoader());
     }
 
     /**
@@ -133,7 +130,7 @@ public class ClassloaderContextImpl implements ThreadContext {
         }
 
         // Save the current thread's classLoader and set the propagated classloader on the current thread.
-        previousClassLoader = getCL();
+        previousClassLoader = priv.getContextClassLoader();
         setCL(classLoaderToPropagate);
     }
 
@@ -154,6 +151,7 @@ public class ClassloaderContextImpl implements ThreadContext {
     private void setCL(final ClassLoader cl) {
         PrivilegedAction<Object> action = new PrivilegedAction<Object>() {
             @Override
+            @FFDCIgnore(SecurityException.class)
             public Object run() {
                 final Thread t = Thread.currentThread();
                 try {
@@ -162,9 +160,7 @@ public class ClassloaderContextImpl implements ThreadContext {
                     // If this work happens to run on an java.util.concurrent.ForkJoinWorkerThread$InnocuousForkJoinWorkerThread,
                     // setting the ClassLoader may be rejected. If this happens, give a decent error message.
                     if (t instanceof ForkJoinWorkerThread && "InnocuousForkJoinWorkerThreadGroup".equals(t.getThreadGroup().getName())) {
-                        String msg = Tr.formatMessage(tc, "cannot.apply.classloader.context");
-                        Tr.error(tc, msg);
-                        throw new SecurityException(msg, e);
+                        throw new SecurityException(Tr.formatMessage(tc, "cannot.apply.classloader.context", t.getName()), e);
                     } else {
                         throw e;
                     }
@@ -173,23 +169,6 @@ public class ClassloaderContextImpl implements ThreadContext {
             }
         };
         AccessController.doPrivileged(action);
-    }
-
-    /**
-     * Retrieves the classloader on the current thread.
-     *
-     * @return The classloader on the current thread.
-     */
-    private static ClassLoader getCL() {
-        PrivilegedAction<ClassLoader> action = new PrivilegedAction<ClassLoader>() {
-            @Override
-            public ClassLoader run() {
-                ClassLoader cl = Thread.currentThread().getContextClassLoader();
-                return cl;
-            }
-        };
-
-        return AccessController.doPrivileged(action);
     }
 
     /**
