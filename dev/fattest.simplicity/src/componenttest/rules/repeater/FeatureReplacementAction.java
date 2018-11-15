@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -135,7 +136,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      *
      * ...to be clear, this is not the opposite of addFeatures()
      *
-     * @param removeFeatures the features to be removed
+     * @param removeFeatures the features to be removed. Wildcards are supported.
      * @return this
      */
     public FeatureReplacementAction removeFeatures(Set<String> removeFeatures) {
@@ -159,7 +160,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      *
      * ...to be clear, this is not the opposite of addFeature()
      *
-     * @param removeFeature the feature to be removed
+     * @param removeFeature the feature to be removed. Wildcards are supported.
      * @return this
      */
     public FeatureReplacementAction removeFeature(String removeFeature) {
@@ -308,16 +309,31 @@ public class FeatureReplacementAction implements RepeatTestAction {
             Log.info(c, m, "Original features:  " + features);
             if (forceAddFeatures) {
                 features.removeAll(removeFeatures);
+                //remove any wildcard features, before adding the new feature.
+                for (String removeFeature : removeFeatures) {
+                    if (removeFeature.endsWith("*")) {
+                        removeWildcardFeature(features, removeFeature);
+                    }
+                }
                 features.addAll(addFeatures);
             } else {
-                for (String removeFeature : removeFeatures)
-                    if (features.remove(removeFeature)) {
-                        // If we found a feature to remove that is actually present in config file, then
-                        // remove it and replace it with the corresponding feature
+                for (String removeFeature : removeFeatures) {
+                    boolean removed = false; 
+                    if (removeFeature.endsWith("*")) {
+                        removed = removeWildcardFeature(features, removeFeature);
+                    }
+                    else if (features.remove(removeFeature)) {
+                        removed = true; 
+                    }
+
+                    // If we found a feature to remove that is actually present in config file, then
+                    // replace it with the corresponding feature
+                    if (removed) {
                         String toAdd = getReplacementFeature(removeFeature, addFeatures);
                         if (toAdd != null)
                             features.add(toAdd);
                     }
+                }
             }
             Log.info(c, m, "Resulting features: " + features);
 
@@ -345,6 +361,20 @@ public class FeatureReplacementAction implements RepeatTestAction {
         // We may need to remove a feature without adding any replacement
         // (e.g. jsonb-1.0 is EE8 only) so in this case return null
         return null;
+    }
+
+    private static boolean removeWildcardFeature(Set<String> features, String removeFeature) {
+        String matcher = removeFeature.substring(0, removeFeature.length() - 1);
+        boolean removed = false;
+        Iterator<String> iterator = features.iterator();
+        while (iterator.hasNext()) {
+            String feature = iterator.next();
+            if (feature.startsWith(matcher)) {
+                iterator.remove();
+                removed = true;
+            }
+        }
+        return removed; 
     }
 
     private static Set<File> findFile(File dir, String suffix) {
