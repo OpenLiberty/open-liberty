@@ -27,6 +27,7 @@ Import-Package: \
   org.eclipse.microprofile.reactive.streams.spi; version="[1.0,1.1)",\
   org.eclipse.microprofile.reactive.streams; version="[1.0,1.1)",\
   com.lightbend.microprofile.reactive.streams.zerodep; version="[1.0,1.1)",\
+  org.reactivestreams;version="[1.0,2)",\
   *
 
 Private-Package: \
