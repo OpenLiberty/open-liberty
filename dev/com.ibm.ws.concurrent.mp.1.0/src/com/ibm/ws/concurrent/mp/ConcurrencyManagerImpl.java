@@ -31,7 +31,7 @@ import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
 public class ConcurrencyManagerImpl implements ConcurrencyManager {
     private static final TraceComponent tc = Tr.register(ConcurrencyManagerImpl.class);
 
-    private final ConcurrencyProviderImpl concurrencyProvider;
+    final ConcurrencyProviderImpl concurrencyProvider;
 
     /**
      * List of available thread context providers.
@@ -88,6 +88,6 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
 
     @Override
     public ThreadContextBuilder newThreadContextBuilder() {
-        return new ThreadContextBuilderImpl(contextProviders);
+        return new ThreadContextBuilderImpl(this, contextProviders);
     }
 }

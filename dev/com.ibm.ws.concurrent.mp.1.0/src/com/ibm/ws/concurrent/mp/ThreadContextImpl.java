@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -25,6 +26,7 @@ import java.util.function.Supplier;
 import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 
+import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
@@ -39,10 +41,48 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * method implementations between the two.
  */
 class ThreadContextImpl implements ThreadContext, WSContextService {
+    /**
+     * Concurrency manager that was used to obtain thread context providers. Null if created by a managed executor.
+     */
+    private final ConcurrencyManagerImpl concurrencyManager;
+
+    /**
+     * Map of thread context provider to type of instruction for applying context to threads.
+     * The values are either PROPAGATED or CLEARED. Contexts types that should be left on the
+     * thread UNCHANGED are omitted from this map.
+     */
     private final LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider;
 
-    ThreadContextImpl(LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
+    /**
+     * Lazily initialized reference to a cached managed executor instance, which is
+     * backed by the Liberty global thread pool without concurrency constraints,
+     * propagates the type of context configured for this thread context service, and
+     * clears all other types of context.
+     * Null if created by a managed executor because it isn't needed on that path.
+     */
+    private final AtomicReference<ManagedExecutorImpl> managedExecutorRef;
+
+    /**
+     * Construct a new instance to be used directly as a MicroProfile ThreadContext service.
+     *
+     * @param concurrencyManager
+     * @param configPerProvider
+     */
+    ThreadContextImpl(ConcurrencyManagerImpl concurrencyManager, LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
+        this.concurrencyManager = concurrencyManager;
         this.configPerProvider = configPerProvider;
+        this.managedExecutorRef = new AtomicReference<ManagedExecutorImpl>();
+    }
+
+    /**
+     * Create an instance to be used by ManagedExecutor.
+     *
+     * @param configPerProvider
+     */
+    ThreadContextImpl(LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
+        this.concurrencyManager = null;
+        this.configPerProvider = configPerProvider;
+        this.managedExecutorRef = null;
     }
 
     @Override
@@ -62,9 +102,73 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
         return new ContextualExecutor(contextDescriptor);
     }
 
+    /**
+     * Obtain a ManagedExecutor backed by the Liberty global thread pool, without constraints,
+     * and propagating the same types as this ThreadContext service, clearing all others.
+     * If possible, a cached instance is returned. If it doesn't exist yet, then an instance
+     * is lazily created by this method.
+     *
+     * @return ManagedExecutor instance.
+     */
+    private ManagedExecutorImpl getManagedExecutor() {
+        ManagedExecutorImpl executor = managedExecutorRef.get();
+
+        if (executor == null) {
+            StringBuilder nameBuilder = new StringBuilder("ManagedExecutor_-1_-1_");
+
+            // Copy the propagated context types, adding all other types as cleared
+            LinkedHashMap<ThreadContextProvider, ContextOp> newConfigPerProvider = new LinkedHashMap<ThreadContextProvider, ContextOp>();
+            for (ThreadContextProvider provider : concurrencyManager.contextProviders) {
+                ContextOp op = configPerProvider.get(provider);
+                if (op == ContextOp.PROPAGATED) {
+                    newConfigPerProvider.put(provider, ContextOp.PROPAGATED);
+                    String contextType = provider.getThreadContextType();
+                    if (contextType != null && contextType.matches("\\w*")) // one or more of a-z, A-Z, _, 0-9
+                        nameBuilder.append(contextType).append("_");
+                } else {
+                    newConfigPerProvider.put(provider, ContextOp.CLEARED);
+                }
+            }
+            ThreadContextImpl threadContextSvc = new ThreadContextImpl(newConfigPerProvider);
+
+            String name = nameBuilder.append(ManagedExecutorBuilderImpl.instanceCount.incrementAndGet()).toString();
+
+            ConcurrencyProviderImpl concurrencyProvider = concurrencyManager.concurrencyProvider;
+            PolicyExecutor policyExecutor = concurrencyProvider.policyExecutorProvider.create(name);
+            policyExecutor.maxConcurrency(-1).maxQueueSize(-1);
+            // TODO these policy executor instances, as well as those created via ManagedExecutorBuilder are never shut down
+            // and removed from PolicyExecutorProvider's list. This is a memory leak and needs to be fixed.
+
+            executor = new ManagedExecutorImpl(name, policyExecutor, threadContextSvc, concurrencyProvider.transactionContextProvider.transactionContextProviderRef);
+
+            if (!managedExecutorRef.compareAndSet(null, executor)) {
+                // Another thread updated the reference first. Discard the instance we created and use the other.
+                executor.shutdown();
+                executor = managedExecutorRef.get();
+            }
+        }
+
+        return executor;
+    }
+
     @Override
     public <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage) {
-        return null; // TODO
+        CompletableFuture<T> completableFuture;
+
+        ManagedExecutorImpl executor = getManagedExecutor();
+        if (ManagedCompletableFuture.JAVA8)
+            completableFuture = new ManagedCompletableFuture<T>(new CompletableFuture<T>(), executor, null);
+        else
+            completableFuture = new ManagedCompletableFuture<T>(executor, null);
+
+        stage.whenComplete((t, x) -> {
+            if (x == null)
+                completableFuture.complete(t);
+            else
+                completableFuture.completeExceptionally(x);
+        });
+
+        return completableFuture;
     }
 
     @Override

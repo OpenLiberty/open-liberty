@@ -63,6 +63,8 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
 
     /**
      * Constructor for MicroProfile Concurrency (ManagedExecutorBuilder and CDI injected ManagedExecutor).
+     * Also used to construct a managed executor for use by the ManagedCompletableFuture returned from
+     * ThreadContext.withContextCapture.
      */
     public ManagedExecutorImpl(String name, PolicyExecutor policyExecutor, WSContextService mpThreadContext,
                                AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> tranContextProviderRef) {
