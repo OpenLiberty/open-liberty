@@ -35,6 +35,7 @@ public class AbsoluteOrderingTest extends CachingTest {
     public static void setUp() throws Exception {
         LOG.info("setUp AbsoluteOrderingTest");
        
+        setEarName("TestServlet40.ear");
         setSharedServer();
         
         installServerXml("jandexDefaultsAutoExpandTrue_server.xml");  // Default Jandex settings.  NOT using Jandex.

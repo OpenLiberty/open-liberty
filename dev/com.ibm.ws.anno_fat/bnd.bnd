@@ -18,7 +18,12 @@ src: \
     test-applications/TestServletA.jar/src,\
     test-applications/TestServletB.jar/src,\
     test-applications/TestServletC.jar/src,\
-    test-applications/TestServletD.jar/src
+    test-applications/TestServletD.jar/src,\
+    test-applications/LooseConfig/LooseWeb1.war/src,\
+    test-applications/LooseConfig/LooseWeb2.war/src,\
+    test-applications/LooseConfig/LooseServlet1.jar/src,\
+    test-applications/LooseConfig/LooseServlet2.jar/src,\
+    test-applications/LooseConfig/LooseServlet3.jar/src
 
 fat.project: true
 

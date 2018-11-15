@@ -18,7 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.anno.tests.caching.AbsoluteOrderingTest;
 import com.ibm.ws.anno.tests.caching.BasicAnnoCacheUsageTest;
-
+import com.ibm.ws.anno.tests.caching.LooseConfigTest;
 import com.ibm.ws.anno.tests.caching.MetadataCompleteTest;
 import com.ibm.ws.anno.tests.caching.MetadataCompleteMissingServletsTest;
 import com.ibm.ws.anno.tests.jandex.JandexAppDefaultAppMgrDefaultTest;
@@ -53,7 +53,8 @@ import com.ibm.ws.fat.util.FatLogHandler;
 @SuiteClasses({
                 
               	BasicAnnoCacheUsageTest.class,
-              	AbsoluteOrderingTest.class,
+            	AbsoluteOrderingTest.class,
+             	LooseConfigTest.class,
               	MetadataCompleteTest.class,
               	MetadataCompleteMissingServletsTest.class,
                 JandexAppDefaultAppMgrDefaultTest.class,

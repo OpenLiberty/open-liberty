@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package testservletd.jar.servlets;
+package looseservlet1.jar.servlets;
 
 import java.io.IOException;
 
@@ -21,11 +21,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-@WebServlet("/ServletD")
-public class ServletD extends HttpServlet {
+@WebServlet("/Servlet1")
+public class Servlet1 extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    public ServletD() {
+    public Servlet1() {
         super();
     }
 
@@ -33,8 +33,8 @@ public class ServletD extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ServletOutputStream sos = response.getOutputStream();
         ServletContext sc = request.getServletContext();
-        
-        String servletName = "D";
+    
+        String servletName = "1";
         
         // SCI
         String sciRanMsg = (String)(sc.getAttribute("Sci_" + servletName + "_RanMsg"));   
@@ -49,7 +49,7 @@ public class ServletD extends HttpServlet {
                      + "\nSCI Order [ " + sciOrder + " ]\n" 
                      + listenerRanMsg 
                      + "\nListener order [ " + listenerOrder + " ]");
-        }
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

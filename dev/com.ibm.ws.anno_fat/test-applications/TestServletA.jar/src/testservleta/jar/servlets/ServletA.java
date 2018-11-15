@@ -37,12 +37,12 @@ public class ServletA extends HttpServlet {
         String servletName = "A";
         
         // SCI
-        String sciRanMsg = (String)(sc.getAttribute("Sci_" + servletName + "_RanMsg")); // Only ServletA_Listener sets this   
-        String sciOrder = (String)(sc.getAttribute("sciOrder"));  // All listeners set this
+        String sciRanMsg = (String)(sc.getAttribute("Sci_" + servletName + "_RanMsg"));    
+        String sciOrder = (String)(sc.getAttribute("sciOrder"));  
         
         // Listener
-        String listenerRanMsg = (String)(sc.getAttribute("Listener_" + servletName + "_Ran_Msg")); // Only ServletContainerInitializer_A sets this   
-        String listenerOrder = (String)(sc.getAttribute("listenerOrder"));  // All SCIs set this
+        String listenerRanMsg = (String)(sc.getAttribute("Listener_" + servletName + "_Ran_Msg"));    
+        String listenerOrder = (String)(sc.getAttribute("listenerOrder")); 
         
         sos.println("Hello From Servlet " + servletName + ". \n"  
                      + sciRanMsg 
