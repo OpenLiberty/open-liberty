@@ -12,12 +12,18 @@ package com.ibm.ws.kernel.boot.archive.internal;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.zip.GZIPOutputStream;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.ArchiveOutputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 
 import com.ibm.ws.kernel.boot.archive.UnixModeHelper;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
@@ -28,7 +34,7 @@ public class ZipArchive extends AbstractArchive {
 
     private final File archiveFile;
 
-    private final ZipArchiveOutputStream zipOutputStream;
+    private final ArchiveOutputStream archiveOutputStream;
 
     private static UnixModeHelper helper;
 
@@ -50,7 +56,23 @@ public class ZipArchive extends AbstractArchive {
      */
     public ZipArchive(File archiveFile) throws IOException {
         this.archiveFile = archiveFile;
-        this.zipOutputStream = new ZipArchiveOutputStream(archiveFile);
+
+        String fileName = archiveFile.getName().toLowerCase();
+        FileOutputStream fOut = new FileOutputStream(archiveFile);
+
+        if (fileName.endsWith(".zip")) {
+          this.archiveOutputStream = new ZipArchiveOutputStream(fOut);
+        } else if (fileName.endsWith(".tar.gz")) {
+          this.archiveOutputStream = new TarArchiveOutputStream(new GZIPOutputStream(fOut));
+        } else if (fileName.endsWith(".tar")) {
+          this.archiveOutputStream = new TarArchiveOutputStream(fOut);
+        } else {
+          throw new IllegalArgumentException(fileName);
+        }
+
+        if (archiveOutputStream instanceof TarArchiveOutputStream) {
+          ((TarArchiveOutputStream) archiveOutputStream).setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
+        }
     }
 
     @Override
@@ -91,12 +113,17 @@ public class ZipArchive extends AbstractArchive {
         }
 
         // add the entry
-        ZipArchiveEntry entry = (ZipArchiveEntry) zipOutputStream.createArchiveEntry(sourceFile, targetPath);
+        ArchiveEntry entry = archiveOutputStream.createArchiveEntry(sourceFile, targetPath);
 
         if (helper != null) {
-            entry.setUnixMode(helper.getUnixMode(sourceFile));
+            int mode = helper.getUnixMode(sourceFile);
+            if (entry instanceof ZipArchiveEntry) {
+              ((ZipArchiveEntry)entry).setUnixMode(mode);
+            } else if (entry instanceof TarArchiveEntry) {
+              ((TarArchiveEntry)entry).setMode(mode);
+            }
         }
-        zipOutputStream.putArchiveEntry(entry);
+        archiveOutputStream.putArchiveEntry(entry);
         if (sourceFile.isFile()) {
             // Add the file data
             FileInputStream fileInputStream = null;
@@ -106,7 +133,7 @@ public class ZipArchive extends AbstractArchive {
                 byte[] readBuffer = new byte[8192];
                 bytesIn = fileInputStream.read(readBuffer);
                 while (bytesIn != -1) {
-                    zipOutputStream.write(readBuffer, 0, bytesIn);
+                    archiveOutputStream.write(readBuffer, 0, bytesIn);
                     bytesIn = fileInputStream.read(readBuffer);
                 }
             } catch (IOException e) {
@@ -115,11 +142,11 @@ public class ZipArchive extends AbstractArchive {
                 Utils.tryToClose(fileInputStream);
             }
         }
-        zipOutputStream.closeArchiveEntry();
+        archiveOutputStream.closeArchiveEntry();
     }
 
     @Override
     public void close() throws IOException {
-        zipOutputStream.close();
+        archiveOutputStream.close();
     }
 }

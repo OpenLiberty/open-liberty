@@ -17,6 +17,7 @@ Export-Package: \
 Private-Package: \
 	org.apache.commons.compress.archivers, \
 	org.apache.commons.compress.archivers.zip, \
+	org.apache.commons.compress.archivers.tar, \
 	org.apache.commons.compress.compressors.bzip2, \
 	org.apache.commons.compress.compressors.deflate64, \
 	org.apache.commons.compress.compressors, \
