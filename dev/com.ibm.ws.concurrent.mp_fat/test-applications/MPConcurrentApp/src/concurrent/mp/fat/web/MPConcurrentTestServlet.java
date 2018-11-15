@@ -4302,4 +4302,63 @@ public class MPConcurrentTestServlet extends FATServlet {
 
         assertEquals(3, count.get());
     }
+
+    /**
+     * Use ThreadContext.testWithContextCapture to create a contextualized CompletableFuture
+     * based on one that isn't context aware. Verify that its dependent actions run with the
+     * configured context of the ThreadContext instance and that Async operations run on the
+     * Liberty global thread pool.
+     */
+    @Test
+    public void testWithContextCapture_CompletableFuture() throws Exception {
+        ThreadContext contextSvc = ThreadContextBuilder.instance()
+                        .propagated(ThreadContext.APPLICATION)
+                        .cleared(TestContextTypes.CITY)
+                        .unchanged(TestContextTypes.STATE)
+                        .build();
+        CompletableFuture<Integer> cf1 = CompletableFuture.supplyAsync(() -> 115, testThreads);
+
+        CurrentLocation.setLocation("Bemidji", "Minnesota");
+        try {
+            CompletableFuture<Integer> cf2 = contextSvc.withContextCapture(cf1);
+            CompletableFuture<Integer> cf3 = cf2.thenApplyAsync(i -> {
+                try {
+                    assertNotNull(InitialContext.doLookup("java:comp/env/executorRef"));
+                } catch (NamingException x) {
+                    throw new RuntimeException(x);
+                }
+                String threadName = Thread.currentThread().getName();
+                assertEquals("", CurrentLocation.getCity());
+                assertEquals("", CurrentLocation.getState()); // empty context on thread from pool
+                assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // Liberty executor thread
+                return i + 1;
+            });
+
+            assertEquals(Integer.valueOf(116), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            CompletableFuture<Integer> cf4 = cf3.thenApply(i -> {
+                try {
+                    assertNotNull(InitialContext.doLookup("java:comp/env/executorRef"));
+                } catch (NamingException x) {
+                    throw new RuntimeException(x);
+                }
+                String threadName = Thread.currentThread().getName();
+                assertEquals("", CurrentLocation.getCity()); // context of servlet thread is cleared
+                assertEquals("Minnesota", CurrentLocation.getState()); // context of servlet thread not cleared
+                assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // Liberty executor thread
+                CurrentLocation.setLocation("La Crosse", "Wisconsin");
+                return i + 1;
+            });
+
+            assertEquals(Integer.valueOf(117), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // context restored on current thread
+            assertEquals("Bemidji", CurrentLocation.getCity());
+
+            // context not restored on current thread
+            assertEquals("Wisconsin", CurrentLocation.getState());
+        } finally {
+            CurrentLocation.clear();
+        }
+    }
 }

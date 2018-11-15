@@ -88,6 +88,6 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
 
     @Override
     public ThreadContextBuilder newThreadContextBuilder() {
-        return new ThreadContextBuilderImpl(this, contextProviders);
+        return new ThreadContextBuilderImpl(contextProviders);
     }
 }

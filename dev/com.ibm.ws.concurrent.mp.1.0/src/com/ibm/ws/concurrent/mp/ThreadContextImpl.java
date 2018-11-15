@@ -24,8 +24,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.eclipse.microprofile.concurrent.ThreadContext;
+import org.eclipse.microprofile.concurrent.spi.ConcurrencyProvider;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
@@ -41,10 +44,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * method implementations between the two.
  */
 class ThreadContextImpl implements ThreadContext, WSContextService {
-    /**
-     * Concurrency manager that was used to obtain thread context providers. Null if created by a managed executor.
-     */
-    private final ConcurrencyManagerImpl concurrencyManager;
+    private static final TraceComponent tc = Tr.register(ThreadContextImpl.class);
 
     /**
      * Map of thread context provider to type of instruction for applying context to threads.
@@ -58,31 +58,17 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
      * backed by the Liberty global thread pool without concurrency constraints,
      * propagates the type of context configured for this thread context service, and
      * clears all other types of context.
-     * Null if created by a managed executor because it isn't needed on that path.
      */
-    private final AtomicReference<ManagedExecutorImpl> managedExecutorRef;
+    private final AtomicReference<ManagedExecutorImpl> managedExecutorRef = new AtomicReference<ManagedExecutorImpl>();
 
     /**
-     * Construct a new instance to be used directly as a MicroProfile ThreadContext service.
+     * Construct a new instance to be used directly as a MicroProfile ThreadContext service or by a ManagedExecutor.
      *
      * @param concurrencyManager
      * @param configPerProvider
      */
-    ThreadContextImpl(ConcurrencyManagerImpl concurrencyManager, LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
-        this.concurrencyManager = concurrencyManager;
-        this.configPerProvider = configPerProvider;
-        this.managedExecutorRef = new AtomicReference<ManagedExecutorImpl>();
-    }
-
-    /**
-     * Create an instance to be used by ManagedExecutor.
-     *
-     * @param configPerProvider
-     */
     ThreadContextImpl(LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
-        this.concurrencyManager = null;
         this.configPerProvider = configPerProvider;
-        this.managedExecutorRef = null;
     }
 
     @Override
@@ -104,7 +90,8 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
 
     /**
      * Obtain a ManagedExecutor backed by the Liberty global thread pool, without constraints,
-     * and propagating the same types as this ThreadContext service, clearing all others.
+     * and propagating the same types as this ThreadContext service, clearing those which are
+     * configured to be cleared.
      * If possible, a cached instance is returned. If it doesn't exist yet, then an instance
      * is lazily created by this method.
      *
@@ -116,30 +103,23 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
         if (executor == null) {
             StringBuilder nameBuilder = new StringBuilder("ManagedExecutor_-1_-1_");
 
-            // Copy the propagated context types, adding all other types as cleared
-            LinkedHashMap<ThreadContextProvider, ContextOp> newConfigPerProvider = new LinkedHashMap<ThreadContextProvider, ContextOp>();
-            for (ThreadContextProvider provider : concurrencyManager.contextProviders) {
-                ContextOp op = configPerProvider.get(provider);
-                if (op == ContextOp.PROPAGATED) {
-                    newConfigPerProvider.put(provider, ContextOp.PROPAGATED);
-                    String contextType = provider.getThreadContextType();
+            // Identify the propagated context types for the name
+            for (Map.Entry<ThreadContextProvider, ContextOp> entry : configPerProvider.entrySet())
+                if (entry.getValue() == ContextOp.PROPAGATED) {
+                    String contextType = entry.getKey().getThreadContextType();
                     if (contextType != null && contextType.matches("\\w*")) // one or more of a-z, A-Z, _, 0-9
                         nameBuilder.append(contextType).append("_");
-                } else {
-                    newConfigPerProvider.put(provider, ContextOp.CLEARED);
                 }
-            }
-            ThreadContextImpl threadContextSvc = new ThreadContextImpl(newConfigPerProvider);
 
             String name = nameBuilder.append(ManagedExecutorBuilderImpl.instanceCount.incrementAndGet()).toString();
 
-            ConcurrencyProviderImpl concurrencyProvider = concurrencyManager.concurrencyProvider;
+            ConcurrencyProviderImpl concurrencyProvider = (ConcurrencyProviderImpl) ConcurrencyProvider.instance();
             PolicyExecutor policyExecutor = concurrencyProvider.policyExecutorProvider.create(name);
             policyExecutor.maxConcurrency(-1).maxQueueSize(-1);
             // TODO these policy executor instances, as well as those created via ManagedExecutorBuilder are never shut down
             // and removed from PolicyExecutorProvider's list. This is a memory leak and needs to be fixed.
 
-            executor = new ManagedExecutorImpl(name, policyExecutor, threadContextSvc, concurrencyProvider.transactionContextProvider.transactionContextProviderRef);
+            executor = new ManagedExecutorImpl(name, policyExecutor, this, concurrencyProvider.transactionContextProvider.transactionContextProviderRef);
 
             if (!managedExecutorRef.compareAndSet(null, executor)) {
                 // Another thread updated the reference first. Discard the instance we created and use the other.
@@ -153,27 +133,46 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
 
     @Override
     public <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage) {
-        CompletableFuture<T> completableFuture;
+        CompletableFuture<T> newCompletableFuture;
 
         ManagedExecutorImpl executor = getManagedExecutor();
         if (ManagedCompletableFuture.JAVA8)
-            completableFuture = new ManagedCompletableFuture<T>(new CompletableFuture<T>(), executor, null);
+            newCompletableFuture = new ManagedCompletableFuture<T>(new CompletableFuture<T>(), executor, null);
         else
-            completableFuture = new ManagedCompletableFuture<T>(executor, null);
+            newCompletableFuture = new ManagedCompletableFuture<T>(executor, null);
 
-        stage.whenComplete((t, x) -> {
-            if (x == null)
-                completableFuture.complete(t);
+        stage.whenComplete((result, failure) -> {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "whenComplete", result, failure);
+            if (failure == null)
+                newCompletableFuture.complete(result);
             else
-                completableFuture.completeExceptionally(x);
+                newCompletableFuture.completeExceptionally(failure);
         });
 
-        return completableFuture;
+        return newCompletableFuture;
     }
 
     @Override
     public <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage) {
-        return null; // TODO
+        ManagedCompletionStage<T> newStage;
+
+        ManagedExecutorImpl executor = getManagedExecutor();
+        if (ManagedCompletableFuture.JAVA8)
+            newStage = new ManagedCompletionStage<T>(new CompletableFuture<T>(), executor, null);
+        else
+            newStage = new ManagedCompletionStage<T>(executor);
+
+        stage.whenComplete((result, failure) -> {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "whenComplete", result, failure);
+            if (failure == null)
+                newStage.super_complete(result);
+            else
+                newStage.super_completeExceptionally(failure);
+        });
+
+        return newStage;
     }
 
     @Override
