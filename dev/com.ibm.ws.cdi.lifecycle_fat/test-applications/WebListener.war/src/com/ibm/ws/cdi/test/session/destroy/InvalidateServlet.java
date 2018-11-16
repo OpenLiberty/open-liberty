@@ -27,9 +27,8 @@ public class InvalidateServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        TestHttpSessionListener.setInvalidateSession(request.getSession());
         PrintWriter pw = response.getWriter();
-
-        TestHttpSessionListener.clearResults();
 
         request.getSession().invalidate();
         pw.println("Invalidated the session");
