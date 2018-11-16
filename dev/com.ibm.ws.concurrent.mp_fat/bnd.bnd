@@ -17,11 +17,13 @@ javac.target: 1.8
 src: \
 	fat/src,\
 	test-applications/MPConcurrentApp/src,\
+	test-applications/MPConcurrentCDIApp/src,\
 	test-applications/customcontext/src
 
 fat.project: true
 
 -buildpath: \
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.concurrency.1.0;version=latest,\

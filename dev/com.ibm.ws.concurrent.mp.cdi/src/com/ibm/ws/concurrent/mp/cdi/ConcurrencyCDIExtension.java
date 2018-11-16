@@ -10,26 +10,39 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp.cdi;
 
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AfterTypeDiscovery;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
-import org.eclipse.microprofile.concurrent.ManagedExecutorConfig;
-import org.eclipse.microprofile.concurrent.ThreadContextConfig;
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Deactivate;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 
-// TODO replace with real implementation
-@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE,
+           immediate = true,
+           property = { "api.classes=" +
+                        "org.eclipse.microprofile.concurrent.ManagedExecutor;" +
+                        "org.eclipse.microprofile.concurrent.ManagedExecutorConfig;" +
+                        "org.eclipse.microprofile.concurrent.ThreadContext;" +
+                        "org.eclipse.microprofile.concurrent.ThreadContextConfig",
+                        "service.vendor=IBM"
+           })
 public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension {
-    @Activate
-    protected void activate(ComponentContext osgiComponentContext) {
-        System.out.println("TODO add integration for " + ManagedExecutorConfig.class + " and " + ThreadContextConfig.class);
+
+    private static final TraceComponent tc = Tr.register(ConcurrencyCDIExtension.class);
+
+    public void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager bm) {
+        // This method gets called once after all types have been discovered
+        // Register producer classes now so that @Produces annotations get picked up later
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "Registering MP Concurrency producers");
+        AnnotatedType<ManagedExecutorProducer> execType = bm.createAnnotatedType(ManagedExecutorProducer.class);
+        event.addAnnotatedType(execType, ManagedExecutorProducer.class.getName());
     }
 
-    @Deactivate
-    protected void deactivate(ComponentContext osgiComponentContext) {}
 }

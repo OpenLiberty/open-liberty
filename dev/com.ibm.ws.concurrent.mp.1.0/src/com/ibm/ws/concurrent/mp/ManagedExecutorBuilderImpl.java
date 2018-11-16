@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
@@ -29,6 +30,15 @@ import com.ibm.ws.threading.PolicyExecutor;
  */
 class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
     static final AtomicLong instanceCount = new AtomicLong();
+
+    // TODO: Verify this list when the 1.0 spec is finalized
+    private static final String[] BUILT_IN_TYPES = {
+                                                     ThreadContext.ALL_REMAINING,
+                                                     ThreadContext.APPLICATION,
+                                                     ThreadContext.CDI,
+                                                     ThreadContext.SECURITY,
+                                                     ThreadContext.TRANSACTION
+    };
 
     private final ConcurrencyProviderImpl concurrencyProvider;
     private final ArrayList<ThreadContextProvider> contextProviders;
@@ -69,8 +79,12 @@ class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
 
         LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider = new LinkedHashMap<ThreadContextProvider, ContextOp>();
 
+        Set<String> knownTypes = new HashSet<>();
+        for (String builtin : BUILT_IN_TYPES)
+            knownTypes.add(builtin);
         for (ThreadContextProvider provider : contextProviders) {
             String contextType = provider.getThreadContextType();
+            knownTypes.add(contextType);
             unknown.remove(contextType);
 
             ContextOp op = propagated.contains(contextType) ? ContextOp.PROPAGATED //
@@ -81,7 +95,8 @@ class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
 
         // unknown thread context types
         if (unknown.size() > 0)
-            throw new IllegalStateException(unknown.toString()); // TODO meaningful error message
+            throw new IllegalStateException("Unknown thread contexts specified: " + unknown.toString() +
+                                            ". Allowed thread contexts values are: " + knownTypes); // TODO translated error message
 
         StringBuilder nameBuilder = new StringBuilder("ManagedExecutor_") //
                         .append(maxAsync).append('_') //
