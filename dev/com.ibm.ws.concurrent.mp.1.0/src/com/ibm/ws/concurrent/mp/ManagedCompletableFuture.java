@@ -1116,21 +1116,29 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
-     * Invokes complete on the superclass.
+     * Invokes complete on the superclass,
+     * or, in the case of Java SE 8, on the CompletableFuture instance that this class proxies.
      *
      * @see java.util.concurrent.CompletableFuture#complete(T)
      */
     final boolean super_complete(T value) {
-        return super.complete(value);
+        if (JAVA8)
+            return completableFuture.complete(value);
+        else
+            return super.complete(value);
     }
 
     /**
-     * Invokes completeExceptionally on the superclass.
+     * Invokes completeExceptionally on the superclass,
+     * or, in the case of Java SE 8, on the CompletableFuture instance that this class proxies.
      *
      * @see java.util.concurrent.CompletableFuture#completeExceptionally(java.lang.Throwable)
      */
     final boolean super_completeExceptionally(Throwable x) {
-        return super.completeExceptionally(x);
+        if (JAVA8)
+            return completableFuture.completeExceptionally(x);
+        else
+            return super.completeExceptionally(x);
     }
 
     /**

@@ -24,15 +24,13 @@ import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
  * Builder that programmatically configures and creates ThreadContext instances.
  */
 class ThreadContextBuilderImpl implements ThreadContextBuilder {
-    private final ConcurrencyManagerImpl concurrencyManager;
     private final ArrayList<ThreadContextProvider> contextProviders;
 
     private final HashSet<String> cleared = new HashSet<String>();
     private final HashSet<String> propagated = new HashSet<String>();
     private final HashSet<String> unchanged = new HashSet<String>();
 
-    ThreadContextBuilderImpl(ConcurrencyManagerImpl concurrencyManager, ArrayList<ThreadContextProvider> contextProviders) {
-        this.concurrencyManager = concurrencyManager;
+    ThreadContextBuilderImpl(ArrayList<ThreadContextProvider> contextProviders) {
         this.contextProviders = contextProviders;
 
         // built-in defaults from spec:
@@ -80,7 +78,7 @@ class ThreadContextBuilderImpl implements ThreadContextBuilder {
         if (unknown.size() > 0)
             throw new IllegalArgumentException(unknown.toString());
 
-        return new ThreadContextImpl(concurrencyManager, configPerProvider);
+        return new ThreadContextImpl(configPerProvider);
     }
 
     @Override
