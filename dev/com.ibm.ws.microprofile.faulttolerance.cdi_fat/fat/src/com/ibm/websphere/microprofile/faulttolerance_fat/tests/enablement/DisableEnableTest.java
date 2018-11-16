@@ -26,8 +26,7 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatMicroProfile13;
-import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatMicroProfile20;
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
 
@@ -52,7 +51,7 @@ public class DisableEnableTest extends FATServletClient {
     private static final String SERVER_NAME = "CDIFaultTolerance";
 
     @ClassRule
-    public static RepeatTests repeatTests = RepeatTests.with(new RepeatMicroProfile13(SERVER_NAME)).andWith(new RepeatMicroProfile20(SERVER_NAME));
+    public static RepeatTests repeatTests = RepeatFaultTolerance.repeatAll(SERVER_NAME);
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = DisableEnableServlet.class, contextRoot = APP_NAME)

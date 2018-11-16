@@ -15,16 +15,13 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
+import org.junit.Test;
 
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.TimeoutBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.TimeoutBean2;
@@ -46,7 +43,8 @@ public class TimeoutServlet extends FATServlet {
     @Inject
     TimeoutBean2 classScopedConfigBean;
 
-    public void testTimeout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Test
+    public void testTimeout() throws ConnectException {
         //should timeout after a second as per default
         long start = System.currentTimeMillis();
         try {
@@ -59,13 +57,11 @@ public class TimeoutServlet extends FATServlet {
             if (duration > 3000) { //the default timeout is 1000ms, if it takes 3000ms to fail then there is something wrong
                 throw new AssertionError("TimeoutException not thrown quickly enough: " + duration);
             }
-        } catch (ConnectException e) {
-            throw new ServletException(e);
         }
-
     }
 
-    public void testException(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Test
+    public void testException() {
         //should just throw an exception (we're checking we get the right exception even thought it is async internally)
         try {
             bean.connectB();
@@ -79,24 +75,10 @@ public class TimeoutServlet extends FATServlet {
     }
 
     /**
-     * This test should only pass if MP_Fault_Tolerance_NonFallback_Enabled is set to false
-     */
-    public void testTimeoutDisabled(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        try {
-            bean.connectA();
-            fail("No exception thrown");
-        } catch (ConnectException e) {
-            // expected, as Timeout should be disabled
-        } catch (TimeoutException e) {
-            // Not expected! rethrow
-            throw e;
-        }
-    }
-
-    /**
      * This test ensures that a timeout prompts a retry
      */
-    public void testTimeoutWithRetry(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @Test
+    public void testTimeoutWithRetry() throws Exception {
         try {
             bean.connectC();
             fail("No exception thrown");
@@ -106,7 +88,8 @@ public class TimeoutServlet extends FATServlet {
         }
     }
 
-    public void testTimeoutWithRetryAsync(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @Test
+    public void testTimeoutWithRetryAsync() throws Exception {
         try {
             bean.connectD().get();
             fail("No exception thrown");
@@ -118,16 +101,19 @@ public class TimeoutServlet extends FATServlet {
         }
     }
 
+    @Test
     public void testTimeoutWithFallback() throws Exception {
         Connection result = bean.connectF();
         assertThat(result.getData(), is("Fallback for: connectF - data!"));
     }
 
-    public void testTimeoutZero(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @Test
+    public void testTimeoutZero() throws Exception {
         bean.connectE();
         // No TimeoutException expected
     }
 
+    @Test
     public void testNonInterruptableTimeout() throws InterruptedException {
         try {
             bean.busyWait(1000); // Busy wait time is greater than timeout (=500)
@@ -141,6 +127,7 @@ public class TimeoutServlet extends FATServlet {
         }
     }
 
+    @Test
     public void testNonInterruptableDoesntTimeout() throws Exception {
         bean.busyWait(10); // Busy wait time is less than timeout (=500)
 
@@ -155,13 +142,9 @@ public class TimeoutServlet extends FATServlet {
      * Test method level override of Timeout value on a synchronous service.
      *
      * A timeout will not occur unless the configuration overrides the value set on the connectG method.
-     *
-     * @param request
-     * @param response
-     * @throws ServletException
-     * @throws IOException
      */
-    public void testTimeoutConfig(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Test
+    public void testTimeoutConfig() throws ConnectException {
         //should timeout after a second as per default
         long start = System.currentTimeMillis();
         try {
@@ -174,8 +157,6 @@ public class TimeoutServlet extends FATServlet {
             if (duration > 1000) { //the configured timeout is 500ms, if it takes 1000ms to fail then there is something wrong
                 throw new AssertionError("TimeoutException not thrown quickly enough: " + duration);
             }
-        } catch (ConnectException e) {
-            throw new ServletException(e);
         }
     }
 
@@ -183,13 +164,9 @@ public class TimeoutServlet extends FATServlet {
      * Test method level override of Timeout value on a synchronous service.
      *
      * A timeout will not occur unless the configuration overrides the value set on the classScopedConfigBean.
-     *
-     * @param request
-     * @param response
-     * @throws ServletException
-     * @throws IOException
      */
-    public void testTimeoutClassScopeConfig(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Test
+    public void testTimeoutClassScopeConfig() throws ConnectException {
         //should timeout after a second as per default
         long start = System.currentTimeMillis();
         try {
@@ -202,8 +179,6 @@ public class TimeoutServlet extends FATServlet {
             if (duration > 1000) { //the configured timeout is 500ms, if it takes 1000ms to fail then there is something wrong
                 throw new AssertionError("TimeoutException not thrown quickly enough: " + duration);
             }
-        } catch (ConnectException e) {
-            throw new ServletException(e);
         }
     }
 }
