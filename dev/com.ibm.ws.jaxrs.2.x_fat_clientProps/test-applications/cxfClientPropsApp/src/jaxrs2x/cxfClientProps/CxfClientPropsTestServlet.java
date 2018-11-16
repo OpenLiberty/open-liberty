@@ -266,7 +266,7 @@ public class CxfClientPropsTestServlet extends FATServlet {
         assertEquals("30000:30000", result);
     }
     
-    static boolean isZOS() {
+    static final boolean isZOS() {
         String osName = System.getProperty("os.name");
         if (osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS")) {
             return true;
