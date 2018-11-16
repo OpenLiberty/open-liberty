@@ -289,6 +289,39 @@ public class RetryStateImplTest {
         assertThat(values, hasSize(greaterThan(10)));
     }
 
+    @Test
+    public void testMaxRetriesForever() {
+        // Test a policy with maxRetries = -1 -> no retry count limit
+        RetryPolicyImpl retryPolicy = new RetryPolicyImpl();
+        retryPolicy.setMaxRetries(-1);
+        retryPolicy.setJitter(Duration.ZERO);
+
+        RetryStateImpl retryState = new RetryStateImpl(retryPolicy);
+        retryState.start();
+
+        // Should retry forever
+        for (int i = 0; i < 100; i++) {
+            assertTrue(retryState.recordResult(MethodResult.failure(new TestExceptionA())).shouldRetry());
+        }
+    }
+
+    @Test
+    public void testMaxDurationForever() throws InterruptedException {
+        // Test a policy with maxDuration = 0 -> no retry time limit
+        RetryPolicyImpl retryPolicy = new RetryPolicyImpl();
+        retryPolicy.setMaxDuration(Duration.ZERO);
+
+        RetryStateImpl retryState = new RetryStateImpl(retryPolicy);
+        retryState.start();
+
+        assertTrue(retryState.recordResult(MethodResult.failure(new TestExceptionA())).shouldRetry());
+
+        // Unfortunately, the default value is 3 minutes, we're not going to wait longer than that in a unit test
+        // Just check that we're not treating zero as "never retry"
+        Thread.sleep(300);
+        assertTrue(retryState.recordResult(MethodResult.failure(new TestExceptionA())).shouldRetry());
+    }
+
     private class TestExceptionA extends Exception {}
 
     private class TestExceptionB extends Exception {}

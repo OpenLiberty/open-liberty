@@ -38,7 +38,9 @@ public class TimeoutStateImpl implements TimeoutState {
             }
             result = TimeoutResult.STARTED;
             this.timeoutCallback = timeoutCallback;
-            executorService.schedule(this::timeout, policy.getTimeout().toMillis(), TimeUnit.MILLISECONDS);
+            if (!policy.getTimeout().isZero()) {
+                executorService.schedule(this::timeout, policy.getTimeout().toMillis(), TimeUnit.MILLISECONDS);
+            }
         }
     }
 
