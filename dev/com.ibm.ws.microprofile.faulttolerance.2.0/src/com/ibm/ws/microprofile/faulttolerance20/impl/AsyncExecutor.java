@@ -24,6 +24,7 @@ import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
@@ -154,6 +155,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
     /**
      * Run one attempt at the execution {@link #execute(Callable, ExecutionContext)}
      */
+    @FFDCIgnore(Throwable.class)
     private void runExecutionAttempt(AsyncAttemptContextImpl<W> attemptContext) {
         AsyncExecutionContextImpl<W> executionContext = attemptContext.getExecutionContext();
 
