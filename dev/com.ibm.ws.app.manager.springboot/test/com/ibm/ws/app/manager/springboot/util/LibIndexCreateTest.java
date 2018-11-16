@@ -69,13 +69,14 @@ public class LibIndexCreateTest {
         File thinJar = workingArea.newFile("thinJar.jar");
         File applicationLibs = workingArea.newFolder("AppLibs");
 
-        SpringBootThinUtil util = new TestThinUtil(createSourceFatJar(null, null), thinJar, applicationLibs);
         Stack<String> hashes = new Stack<String>();
         for (String s : Arrays.asList("aa003", "aa002", "aa001")) {
             hashes.push(s);
         }
-        ((TestThinUtil) util).hashValues = hashes;
-        util.execute();
+        try (SpringBootThinUtil util = new TestThinUtil(createSourceFatJar(null, null), thinJar, applicationLibs)) {
+            ((TestThinUtil) util).hashValues = hashes;
+            util.execute();
+        }
         //verify thin jar contents;
         HashSet<String> expectedThinJarContents = new HashSet<String>() {
             {
@@ -119,13 +120,14 @@ public class LibIndexCreateTest {
         File thinJar = workingArea.newFile("thinJar.jar");
         File applicationLibsDir = workingArea.newFolder("AppLibs");
 
-        SpringBootThinUtil util = new TestThinUtil(createSourceFatJar(null, null), thinJar, applicationLibsDir);
         Stack<String> hashes = new Stack<String>();
         for (String s : Arrays.asList("bb001", "aa001", "aa001")) {
             hashes.push(s);
         }
-        ((TestThinUtil) util).hashValues = hashes;
-        util.execute();
+        try (SpringBootThinUtil util = new TestThinUtil(createSourceFatJar(null, null), thinJar, applicationLibsDir)) {
+            ((TestThinUtil) util).hashValues = hashes;
+            util.execute();
+        }
         //verify thin jar contents;
         HashSet<String> expectedThinJarContents = new HashSet<String>() {
             {
