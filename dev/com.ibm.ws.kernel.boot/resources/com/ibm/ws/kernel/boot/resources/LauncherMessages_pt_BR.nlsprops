@@ -785,6 +785,14 @@ warning.package.root.invalid=CWWKE0947W: Uma op\u00e7\u00e3o --server-root com u
 warning.package.root.invalid.explanation=O usu\u00e1rio executou uma solicita\u00e7\u00e3o de pacote com uma op\u00e7\u00e3o --server-root especificando um argumento vazio e Extens\u00f5es do Produto foram detectadas. A raiz de servidor padr\u00e3o de wlp ser\u00e1 usada.
 warning.package.root.invalid.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
+warning.package.root.invalid.runnable=CWWKE0948W: Uma op\u00e7\u00e3o --server-root com \
+--include=runnable n\u00e3o \u00e9 uma combina\u00e7\u00e3o permitida. O argumento padr\u00e3o de wlp \u00e9 usado para a raiz do \
+servidor.
+warning.package.root.invalid.runnable.explanation=O usu\u00e1rio executou uma solicita\u00e7\u00e3o de \
+pacote com uma op\u00e7\u00e3o --server-root e --include=runnable, que n\u00e3o \u00e9 uma combina\u00e7\u00e3o permitida. A raiz do \
+servidor padr\u00e3o de wlp \u00e9 usada.
+warning.package.root.invalid.runnable.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
 info.serverStarting=Iniciando servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=O servidor {0} foi \
