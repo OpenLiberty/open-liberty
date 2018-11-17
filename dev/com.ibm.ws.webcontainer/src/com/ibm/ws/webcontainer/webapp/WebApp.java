@@ -5631,7 +5631,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                 ThreadContextHelper.setClassLoader(origLoader);
             }
             if (envObjectStack.isEmpty()) {
-                envObject.set(null);
+                envObject.remove();
             }
         }
 

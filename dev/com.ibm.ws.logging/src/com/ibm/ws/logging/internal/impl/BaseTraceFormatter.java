@@ -156,21 +156,6 @@ public class BaseTraceFormatter extends Formatter {
         return "";
     }
 
-    //copied from BTS
-    /** Flags for suppressing traceback output to the console */
-    private static class StackTraceFlags {
-        boolean needsToOutputInternalPackageMarker = false;
-        boolean isSuppressingTraces = false;
-    }
-
-    /** Track the stack trace printing activity of the current thread */
-    private static ThreadLocal<StackTraceFlags> traceFlags = new ThreadLocal<StackTraceFlags>() {
-        @Override
-        protected StackTraceFlags initialValue() {
-            return new StackTraceFlags();
-        }
-    };
-
     final TraceFormat traceFormat;
 
     static boolean useIsoDateFormat = false;

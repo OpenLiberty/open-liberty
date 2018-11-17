@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -50,7 +49,6 @@ public class JarFileClassLoader extends SecureClassLoader implements Closeable {
     private final CopyOnWriteArrayList<ResourceHandler> resourceHandlers;
     private final boolean verify;
     private final ClassLoaderHook hook;
-    private static final PrintStream sysOut = System.out;
 
     public JarFileClassLoader(URL[] urls, boolean verify, ClassLoader parent) {
         super(parent);

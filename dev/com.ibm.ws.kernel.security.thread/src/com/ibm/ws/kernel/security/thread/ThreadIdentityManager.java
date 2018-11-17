@@ -347,27 +347,29 @@ public class ThreadIdentityManager {
         if (threadIdentityServices.isEmpty() == false || j2cIdentityServices.isEmpty() == false) {
             if (!checkForRecursionAndSet()) {
                 try {
-                    Map tokenMap = (Map) token;
-                    int size = tokenMap.size();
-                    if (size > 0) {
-                        @SuppressWarnings("unchecked")
-                        List<Map.Entry> identityServicesToTokensMap = new ArrayList<Map.Entry>(tokenMap.entrySet());
+                    if (token != null) {
+                        Map tokenMap = (Map) token;
+                        int size = tokenMap.size();
+                        if (size > 0) {
+                            @SuppressWarnings("unchecked")
+                            List<Map.Entry> identityServicesToTokensMap = new ArrayList<Map.Entry>(tokenMap.entrySet());
 
-                        for (int idx = size - 1; idx >= 0; idx--) {
-                            Map.Entry entry = identityServicesToTokensMap.get(idx);
-                            Object identityService = entry.getKey();
-                            Object identityServiceToken = entry.getValue();
-                            try {
-                                if (identityService instanceof ThreadIdentityService) {
-                                    ((ThreadIdentityService) identityService).reset(identityServiceToken);
-                                } else if (identityService instanceof J2CIdentityService) {
-                                    ((J2CIdentityService) identityService).reset(identityServiceToken);
-                                }
-                            } catch (Exception e) {
-                                com.ibm.ws.ffdc.FFDCFilter.processException(e, thisClass, "385");
-                                if (cachedException == null)
-                                {
-                                    cachedException = e;
+                            for (int idx = size - 1; idx >= 0; idx--) {
+                                Map.Entry entry = identityServicesToTokensMap.get(idx);
+                                Object identityService = entry.getKey();
+                                Object identityServiceToken = entry.getValue();
+                                try {
+                                    if (identityService instanceof ThreadIdentityService) {
+                                        ((ThreadIdentityService) identityService).reset(identityServiceToken);
+                                    } else if (identityService instanceof J2CIdentityService) {
+                                        ((J2CIdentityService) identityService).reset(identityServiceToken);
+                                    }
+                                } catch (Exception e) {
+                                    com.ibm.ws.ffdc.FFDCFilter.processException(e, thisClass, "385");
+                                    if (cachedException == null)
+                                    {
+                                        cachedException = e;
+                                    }
                                 }
                             }
                         }
