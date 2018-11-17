@@ -293,9 +293,11 @@ class ConfigEvaluator {
         context.setAttributeName(attributeName);
         context.addProcessed(attributeName);
 
+        final String prefixedAttributeName = flatPrefix.length() == 0 ? attributeName : flatPrefix + attributeName;
+
         Object rawValue = null;
         if (attributeDef.getCopyOf() != null) {
-            AttributeValueCopy copy = new AttributeValueCopy(flatPrefix + attributeName, attributeDef.getCopyOf());
+            AttributeValueCopy copy = new AttributeValueCopy(prefixedAttributeName, attributeDef.getCopyOf());
             context.addAttributeValueCopy(copy);
         }
 
@@ -415,7 +417,7 @@ class ConfigEvaluator {
                     actualValue = pids;
                 }
                 if (actualValue != null) {
-                    context.setProperty(flatPrefix + attributeName, actualValue);
+                    context.setProperty(prefixedAttributeName, actualValue);
                 }
                 evaluateFinish(context);
                 return actualValue;
@@ -444,7 +446,7 @@ class ConfigEvaluator {
                     actualValue = pids;
                 }
                 if (actualValue != null) {
-                    context.setProperty(flatPrefix + attributeName, actualValue);
+                    context.setProperty(prefixedAttributeName, actualValue);
                 }
                 evaluateFinish(context);
                 return actualValue;
@@ -501,7 +503,7 @@ class ConfigEvaluator {
             }
 
             if (actualValue != null) {
-                context.setProperty(flatPrefix + attributeName, actualValue);
+                context.setProperty(prefixedAttributeName, actualValue);
             }
             evaluateFinish(context);
         }

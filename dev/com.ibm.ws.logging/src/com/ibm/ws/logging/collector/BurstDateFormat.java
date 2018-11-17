@@ -117,7 +117,8 @@ public class BurstDateFormat {
             String str = refTime.substring(position.getBeginIndex(), position.getEndIndex());
 
             // Make sure we are using ascii digits (The loop could be unwrapped)
-            for (char a : str.toCharArray()) {
+            for (int i = str.length() - 1; i >= 0; --i) {
+                char a = str.charAt(i);
                 if (a < 48 || a > 57) {
                     invalidFormat = true;
                     break;
