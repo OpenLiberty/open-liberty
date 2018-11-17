@@ -4361,4 +4361,94 @@ public class MPConcurrentTestServlet extends FATServlet {
             CurrentLocation.clear();
         }
     }
+
+    /**
+     * Use ThreadContext.testWithContextCapture to create a contextualized CompletionStage
+     * based on one that isn't context aware. Verify that its dependent actions run with the
+     * configured context of the ThreadContext instance and that Async operations run on the
+     * Liberty global thread pool.
+     */
+    @Test
+    public void testWithContextCapture_CompletionStage() throws Exception {
+        ThreadContext contextSvc = ThreadContextBuilder.instance()
+                        .propagated(ThreadContext.APPLICATION)
+                        .cleared(TestContextTypes.CITY)
+                        .unchanged(TestContextTypes.STATE)
+                        .build();
+
+        // Ensure that our CompletionStage runs on an unmanaged thread by blocking execution of the
+        // stage it will depend on until after we create it.
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        CompletableFuture<Integer> cf1 = CompletableFuture.supplyAsync(new BlockableSupplier<Integer>(118, null, continueLatch), testThreads);
+        CompletionStage<Integer> cs1 = new MinimalSingleCompletionStage<Integer>(cf1);
+        continueLatch.countDown();
+
+        CurrentLocation.setLocation("International Falls", "Minnesota");
+        try {
+            CompletionStage<Integer> cs2 = contextSvc.withContextCapture(cs1);
+
+            // verify that cs2 is a CompletionStage or limited to CompletionStage methods
+            if (cs2 instanceof CompletableFuture)
+                try {
+                    fail("CompletionStage.complete returned " + ((CompletableFuture<Integer>) cs2).complete(-118));
+                } catch (UnsupportedOperationException x) {
+                    // expected
+                }
+
+            CompletionStage<Integer> cs3 = cs2.thenApplyAsync(i -> {
+                try {
+                    assertNotNull(InitialContext.doLookup("java:comp/env/executorRef"));
+                } catch (NamingException x) {
+                    throw new RuntimeException(x);
+                }
+                String threadName = Thread.currentThread().getName();
+                assertEquals("", CurrentLocation.getCity());
+                assertEquals("", CurrentLocation.getState()); // empty context on thread from pool
+                assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // Liberty executor thread
+                return i + 1;
+            });
+
+            // verify that cs3 is a CompletionStage or limited to CompletionStage methods
+            if (cs3 instanceof CompletableFuture)
+                try {
+                    fail("CompletionStage.completeExceptionally returned " + ((CompletableFuture<Integer>) cs3).completeExceptionally(new ArrayIndexOutOfBoundsException()));
+                } catch (UnsupportedOperationException x) {
+                    // expected
+                }
+
+            assertEquals(Integer.valueOf(119), cs3.toCompletableFuture().get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            CompletionStage<Integer> cs4 = cs3.thenApply(i -> {
+                try {
+                    assertNotNull(InitialContext.doLookup("java:comp/env/executorRef"));
+                } catch (NamingException x) {
+                    throw new RuntimeException(x);
+                }
+                String threadName = Thread.currentThread().getName();
+                assertEquals("", CurrentLocation.getCity()); // context of servlet thread is cleared
+                assertEquals("Minnesota", CurrentLocation.getState()); // context of servlet thread not cleared
+                assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // Liberty executor thread
+                CurrentLocation.setLocation("Clear Lake", "Iowa");
+                return i + 1;
+            });
+
+            // verify that cs4 is a CompletionStage or limited to CompletionStage methods
+            if (cs4 instanceof CompletableFuture)
+                try {
+                    fail("CompletionStage.cancel returned " + ((CompletableFuture<Integer>) cs4).cancel(true));
+                } catch (UnsupportedOperationException x) {
+                    // expected
+                }
+
+            assertEquals(Integer.valueOf(120), cs4.toCompletableFuture().get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // context restored on current thread
+            assertEquals("International Falls", CurrentLocation.getCity());
+
+            // context not restored on current thread
+            assertEquals("Iowa", CurrentLocation.getState());
+        } finally {
+            CurrentLocation.clear();
+        }
+    }
 }
