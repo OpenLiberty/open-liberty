@@ -29,6 +29,7 @@ public class ManagedExecutorProducer {
 
     // A new instance of this class will be constructed each time the producer is
     // called so we need to keep the config->executor map in a static variable
+    // TODO: This needs to be scoped per-application
     private static final Map<ManagedExecutorConfigContainer, ManagedExecutor> configMap = new ConcurrentHashMap<>();
 
     @Produces
@@ -45,7 +46,7 @@ public class ManagedExecutorProducer {
         return ManagedExecutorBuilder.instance()
                         .maxAsync(config.maxAsync)
                         .maxQueued(config.maxQueued)
-                        .propagated(config.propogated.toArray(new String[config.propogated.size()]))
+                        .propagated(config.propagated.toArray(new String[config.propagated.size()]))
                         .cleared(config.cleared.toArray(new String[config.cleared.size()]))
                         .build();
     }

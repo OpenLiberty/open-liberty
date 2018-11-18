@@ -9,21 +9,19 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-
-	<featureManager>
-	    <feature>componenttest-1.0</feature>
-	    <feature>mpConcurrency-1.0</feature>
-	    <feature>jndi-1.0</feature>
-		<feature>servlet-4.0</feature>
-		<feature>cdi-2.0</feature>
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>mpConcurrency-1.0</feature>
+        <feature>jndi-1.0</feature>
+        <feature>servlet-4.0</feature>
+        <feature>cdi-2.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
     
     <jndiEntry jndiName="foo" value="bar"/>
     
-    <application location="MPConcurrentCDIApp.war">
-    </application>
+    <application location="MPConcurrentCDIApp.war"/>
 
     <!-- Needed for application to use a ForkJoinPool, access the thread context class loader, and shut down an unmanaged ExecutorService that the test application creates -->
     <javaPermission codebase="${server.config.dir}/apps/MPConcurrentCDIApp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>

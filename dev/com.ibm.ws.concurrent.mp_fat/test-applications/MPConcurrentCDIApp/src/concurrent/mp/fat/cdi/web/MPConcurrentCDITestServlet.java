@@ -69,11 +69,11 @@ public class MPConcurrentCDITestServlet extends FATServlet {
 
     @Inject
     @ManagedExecutorConfig(propagated = { ThreadContext.APPLICATION, ThreadContext.TRANSACTION }, cleared = {})
-    ManagedExecutor propogatedAB;
+    ManagedExecutor propagatedAB;
 
     @Inject
     @ManagedExecutorConfig(propagated = { ThreadContext.TRANSACTION, ThreadContext.APPLICATION }, cleared = {})
-    ManagedExecutor propogatedBA;
+    ManagedExecutor propagatedBA;
 
     @Test
     public void testMEDefaultsEqual() {
@@ -92,12 +92,12 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     @Test
     public void testMEDifferent() {
         assertNotSame(noAnno, maxAsync5);
-        assertNotSame(noAnno, propogatedAB);
+        assertNotSame(noAnno, propagatedAB);
     }
 
     @Test
     public void testMEPropogationEqual() {
-        assertEquals(propogatedAB, propogatedBA);
+        assertEquals(propagatedAB, propagatedBA);
     }
 
     @Test
