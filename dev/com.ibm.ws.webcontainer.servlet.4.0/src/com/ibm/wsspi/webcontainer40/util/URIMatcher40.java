@@ -217,7 +217,9 @@ public class URIMatcher40 extends URIMatcher {
             // PK80340 Start
             Object starTarget = defaultNode.getStarTarget();
 
-            if (WCCustomProperties.ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS && (starTarget instanceof ServletWrapper) && ((ServletWrapper) starTarget).isDefaultServlet()) {
+            //PMDINH
+            if (URIMatcher.enableDefaultServletRequestPathElements && (starTarget instanceof ServletWrapper) && ((ServletWrapper) starTarget).isDefaultServlet()) {
+                System.out.println("PMDINH, URIMatcher.enableDefaultServletRequestPathElements is true");
                 dispatchContext.setPathElements(uri, null);
             } else {
                 dispatchContext.setPathElements("", uri);
