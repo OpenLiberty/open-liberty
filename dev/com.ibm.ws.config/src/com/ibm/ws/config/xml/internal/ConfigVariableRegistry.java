@@ -84,14 +84,14 @@ class ConfigVariableRegistry implements VariableRegistry, ConfigVariables {
          */
         public CommandLineVariable(String cmdArg) {
             int idx = cmdArg.indexOf('=');
-            if (idx <= 0) {
-                // No equal sign or an equal sign that starts the string means this is invalid
+            if (!cmdArg.startsWith("--") || (idx <= 2)) {
+                // Must start with "--". No equal sign or an equal sign that starts the variable means this is invalid
                 isValid = false;
                 name = null;
                 value = null;
             } else {
                 isValid = true;
-                name = cmdArg.substring(0, idx);
+                name = cmdArg.substring(2, idx);
                 value = cmdArg.substring(idx + 1);
             }
 
