@@ -64,13 +64,16 @@ public class CommandLineVarTests extends ServletRunner {
         server.setConsoleLogName("clv.log");
         ArrayList<String> args = new ArrayList<String>();
         args.add("--");
-        args.add("clvOnly=CLV");
-        args.add("clvOverrideBootstrap=CLV");
-        args.add("clvOverrideServerXML=CLV");
-        args.add("clvOverrideBoth=CLV");
-        args.add("clvEmpty=");
-        args.add("clvInvalid");
-        args.add("=clvInvalid2");
+        args.add("--clvOnly=CLV");
+        args.add("--clvOverrideBootstrap=CLV");
+        args.add("--clvOverrideServerXML=CLV");
+        args.add("--clvOverrideBoth=CLV");
+        args.add("--clvEmpty=");
+        args.add("--clvInvalid");
+        args.add("--=clvInvalid2");
+        args.add("clvOnly=invalidCLVOnly");
+        args.add("clvOverrideBootstrap=invalidOverrideBootstrap");
+        args.add("--");
         args.add("===");
 
         server.startServerWithArgs(true, true, true, false, "start", args, true);
