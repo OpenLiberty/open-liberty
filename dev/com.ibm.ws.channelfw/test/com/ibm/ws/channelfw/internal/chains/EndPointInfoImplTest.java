@@ -48,7 +48,6 @@ public class EndPointInfoImplTest {
     public void test_validateConstructor_nullName() throws Exception {
         System.out.println("\b");
         System.out.println("\u0007");
-        java.awt.Toolkit.getDefaultToolkit().beep();
         new EndPointInfoImpl(null, "localhost", 9080);
     }
 
@@ -61,7 +60,6 @@ public class EndPointInfoImplTest {
     public void test_validateConstructor_emptyName() throws Exception {
         System.out.println("\b");
         System.out.println("\u0007");
-        java.awt.Toolkit.getDefaultToolkit().beep();
         new EndPointInfoImpl("", "localhost", 9080);
     }
 
