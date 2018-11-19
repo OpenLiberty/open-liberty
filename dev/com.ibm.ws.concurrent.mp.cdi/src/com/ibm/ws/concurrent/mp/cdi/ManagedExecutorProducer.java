@@ -17,7 +17,6 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
-import org.eclipse.microprofile.concurrent.ManagedExecutorBuilder;
 import org.eclipse.microprofile.concurrent.ManagedExecutorConfig;
 
 import com.ibm.websphere.ras.Tr;
@@ -43,7 +42,7 @@ public class ManagedExecutorProducer {
     private ManagedExecutor createManagedExecutor(ManagedExecutorConfigContainer config) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Building a new ManagedExecutor for the requested configuration: " + config);
-        return ManagedExecutorBuilder.instance()
+        return ManagedExecutor.builder()
                         .maxAsync(config.maxAsync)
                         .maxQueued(config.maxQueued)
                         .propagated(config.propagated.toArray(new String[config.propagated.size()]))
