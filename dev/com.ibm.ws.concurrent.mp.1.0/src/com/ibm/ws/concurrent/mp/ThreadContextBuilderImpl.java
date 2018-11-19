@@ -17,13 +17,12 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 import org.eclipse.microprofile.concurrent.ThreadContext;
-import org.eclipse.microprofile.concurrent.ThreadContextBuilder;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 
 /**
  * Builder that programmatically configures and creates ThreadContext instances.
  */
-class ThreadContextBuilderImpl implements ThreadContextBuilder {
+class ThreadContextBuilderImpl implements ThreadContext.Builder {
     private final ArrayList<ThreadContextProvider> contextProviders;
 
     private final HashSet<String> cleared = new HashSet<String>();
@@ -82,21 +81,21 @@ class ThreadContextBuilderImpl implements ThreadContextBuilder {
     }
 
     @Override
-    public ThreadContextBuilder cleared(String... types) {
+    public ThreadContext.Builder cleared(String... types) {
         cleared.clear();
         Collections.addAll(cleared, types);
         return this;
     }
 
     @Override
-    public ThreadContextBuilder propagated(String... types) {
+    public ThreadContext.Builder propagated(String... types) {
         propagated.clear();
         Collections.addAll(propagated, types);
         return this;
     }
 
     @Override
-    public ThreadContextBuilder unchanged(String... types) {
+    public ThreadContext.Builder unchanged(String... types) {
         unchanged.clear();
         Collections.addAll(unchanged, types);
         return this;

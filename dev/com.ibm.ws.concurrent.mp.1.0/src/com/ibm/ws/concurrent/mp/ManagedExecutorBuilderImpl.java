@@ -19,7 +19,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
-import org.eclipse.microprofile.concurrent.ManagedExecutorBuilder;
 import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 
@@ -28,7 +27,7 @@ import com.ibm.ws.threading.PolicyExecutor;
 /**
  * Builder that programmatically configures and creates ManagedExecutor instances.
  */
-class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
+class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
     static final AtomicLong instanceCount = new AtomicLong();
 
     private final ConcurrencyProviderImpl concurrencyProvider;
@@ -114,14 +113,14 @@ class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
     }
 
     @Override
-    public ManagedExecutorBuilder cleared(String... types) {
+    public ManagedExecutor.Builder cleared(String... types) {
         cleared.clear();
         Collections.addAll(cleared, types);
         return this;
     }
 
     @Override
-    public ManagedExecutorBuilder maxAsync(int max) {
+    public ManagedExecutor.Builder maxAsync(int max) {
         if (max == 0 || max < -1)
             throw new IllegalArgumentException(Integer.toString(max));
         maxAsync = max;
@@ -129,7 +128,7 @@ class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
     }
 
     @Override
-    public ManagedExecutorBuilder maxQueued(int max) {
+    public ManagedExecutor.Builder maxQueued(int max) {
         if (max == 0 || max < -1)
             throw new IllegalArgumentException(Integer.toString(max));
         maxQueued = max;
@@ -137,7 +136,7 @@ class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
     }
 
     @Override
-    public ManagedExecutorBuilder propagated(String... types) {
+    public ManagedExecutor.Builder propagated(String... types) {
         propagated.clear();
         Collections.addAll(propagated, types);
         return this;

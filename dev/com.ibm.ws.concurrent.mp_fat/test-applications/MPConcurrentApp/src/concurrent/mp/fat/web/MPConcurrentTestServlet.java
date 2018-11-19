@@ -64,9 +64,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
-import org.eclipse.microprofile.concurrent.ManagedExecutorBuilder;
 import org.eclipse.microprofile.concurrent.ThreadContext;
-import org.eclipse.microprofile.concurrent.ThreadContextBuilder;
 import org.junit.Test;
 import org.test.context.location.CurrentLocation;
 import org.test.context.location.TestContextTypes;
@@ -153,7 +151,7 @@ public class MPConcurrentTestServlet extends FATServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        stateContextPropagator = ThreadContextBuilder.instance()
+        stateContextPropagator = ThreadContext.builder()
                         .propagated(ThreadContext.SECURITY, TestContextTypes.STATE)
                         .unchanged(ThreadContext.APPLICATION)
                         .cleared(ThreadContext.ALL_REMAINING)
@@ -1947,7 +1945,7 @@ public class MPConcurrentTestServlet extends FATServlet {
     public void testManagedExecutorBuilder() throws Exception {
         ClassLoader original = Thread.currentThread().getContextClassLoader();
 
-        ManagedExecutor executor = ManagedExecutorBuilder.instance()
+        ManagedExecutor executor = ManagedExecutor.builder()
                         .propagated(ThreadContext.APPLICATION, TestContextTypes.STATE)
                         .build();
 
@@ -2516,7 +2514,7 @@ public class MPConcurrentTestServlet extends FATServlet {
 
         CurrentLocation.setLocation("Des Moines", "Iowa");
         try {
-            ManagedExecutorBuilder builder = ManagedExecutorBuilder.instance()
+            ManagedExecutor.Builder builder = ManagedExecutor.builder()
                             .maxAsync(1)
                             .maxQueued(1);
 
@@ -2805,16 +2803,16 @@ public class MPConcurrentTestServlet extends FATServlet {
         Function<Double, Double> totalCostInRochesterMN;
         Function<Double, Double> totalCostInAmesIA;
 
-        ThreadContext contextSvc = ThreadContextBuilder.instance()
+        ThreadContext contextSvc = ThreadContext.builder()
                         .propagated(TestContextTypes.CITY, TestContextTypes.STATE)
                         .build();
 
         try {
             CurrentLocation.setLocation("Rochester", "Minnesota");
-            totalCostInRochesterMN = contextSvc.withCurrentContext(totalCost);
+            totalCostInRochesterMN = contextSvc.contextualFunction(totalCost);
 
             CurrentLocation.setLocation("Ames", "Iowa");
-            totalCostInAmesIA = contextSvc.withCurrentContext(totalCost);
+            totalCostInAmesIA = contextSvc.contextualFunction(totalCost);
 
             CurrentLocation.setLocation("Madison", "Wisconsin");
 
@@ -3954,7 +3952,7 @@ public class MPConcurrentTestServlet extends FATServlet {
      */
     @Test
     public void testThreadContextBuilder() throws Exception {
-        ThreadContext contextSvc = ThreadContextBuilder.instance()
+        ThreadContext contextSvc = ThreadContext.builder()
                         .propagated(ThreadContext.APPLICATION, TestContextTypes.STATE)
                         .build();
 
@@ -3963,7 +3961,7 @@ public class MPConcurrentTestServlet extends FATServlet {
 
         CurrentLocation.setLocation("Minnesota");
         try {
-            task = contextSvc.withCurrentContext((Callable<Object[]>) () -> { // TODO remove cast
+            task = contextSvc.contextualCallable(() -> {
                 try {
                     return new Object[] {
                                           InitialContext.doLookup("java:comp/env/executorRef"), // requires Application context
@@ -4328,7 +4326,7 @@ public class MPConcurrentTestServlet extends FATServlet {
      */
     @Test
     public void testWithContextCapture_CompletableFuture_builder() throws Exception {
-        ThreadContext contextSvc = ThreadContextBuilder.instance()
+        ThreadContext contextSvc = ThreadContext.builder()
                         .propagated(ThreadContext.APPLICATION)
                         .cleared(TestContextTypes.CITY)
                         .unchanged(TestContextTypes.STATE)
@@ -4439,7 +4437,7 @@ public class MPConcurrentTestServlet extends FATServlet {
      */
     @Test
     public void testWithContextCapture_CompletionStage_builder() throws Exception {
-        ThreadContext contextSvc = ThreadContextBuilder.instance()
+        ThreadContext contextSvc = ThreadContext.builder()
                         .propagated(ThreadContext.APPLICATION)
                         .cleared(TestContextTypes.CITY)
                         .unchanged(TestContextTypes.STATE)

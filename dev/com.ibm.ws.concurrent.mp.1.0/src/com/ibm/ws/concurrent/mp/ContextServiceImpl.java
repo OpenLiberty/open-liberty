@@ -78,6 +78,55 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
     }
 
     @Override
+    public <R> Callable<R> contextualCallable(Callable<R> callable) {
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualCallable<R>(contextDescriptor, callable);
+    }
+
+    @Override
+    public <T, U> BiConsumer<T, U> contextualConsumer(BiConsumer<T, U> consumer) {
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualBiConsumer<T, U>(contextDescriptor, consumer);
+    }
+
+    @Override
+    public <T> Consumer<T> contextualConsumer(Consumer<T> consumer) {
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualConsumer<T>(contextDescriptor, consumer);
+    }
+
+    @Override
+    public <T, U, R> BiFunction<T, U, R> contextualFunction(BiFunction<T, U, R> function) {
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualBiFunction<T, U, R>(contextDescriptor, function);
+    }
+
+    @Override
+    public <T, R> Function<T, R> contextualFunction(Function<T, R> function) {
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualFunction<T, R>(contextDescriptor, function);
+    }
+
+    @Override
+    public Runnable contextualRunnable(Runnable runnable) {
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualRunnable(contextDescriptor, runnable);
+    }
+
+    @Override
+    public <R> Supplier<R> contextualSupplier(Supplier<R> supplier) {
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualSupplier<R>(contextDescriptor, supplier);
+    }
+
+    @Override
     public Executor currentContextExecutor() {
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
@@ -208,54 +257,5 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
         });
 
         return newStage;
-    }
-
-    @Override
-    public <T, U> BiConsumer<T, U> withCurrentContext(BiConsumer<T, U> consumer) {
-        @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
-        return new ContextualBiConsumer<T, U>(contextDescriptor, consumer);
-    }
-
-    @Override
-    public <T, U, R> BiFunction<T, U, R> withCurrentContext(BiFunction<T, U, R> function) {
-        @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
-        return new ContextualBiFunction<T, U, R>(contextDescriptor, function);
-    }
-
-    @Override
-    public <R> Callable<R> withCurrentContext(Callable<R> callable) {
-        @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
-        return new ContextualCallable<R>(contextDescriptor, callable);
-    }
-
-    @Override
-    public <T> Consumer<T> withCurrentContext(Consumer<T> consumer) {
-        @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
-        return new ContextualConsumer<T>(contextDescriptor, consumer);
-    }
-
-    @Override
-    public <T, R> Function<T, R> withCurrentContext(Function<T, R> function) {
-        @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
-        return new ContextualFunction<T, R>(contextDescriptor, function);
-    }
-
-    @Override
-    public Runnable withCurrentContext(Runnable runnable) {
-        @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
-        return new ContextualRunnable(contextDescriptor, runnable);
-    }
-
-    @Override
-    public <R> Supplier<R> withCurrentContext(Supplier<R> supplier) {
-        @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
-        return new ContextualSupplier<R>(contextDescriptor, supplier);
     }
 }
