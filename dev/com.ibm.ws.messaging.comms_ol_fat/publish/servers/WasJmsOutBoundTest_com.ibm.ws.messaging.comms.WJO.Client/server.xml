@@ -1,51 +1,46 @@
 <server description="JMSClient">
     <include location="../fatTestPorts.xml"/>
-    
+
     <!-- Enable features -->
     <featureManager>
+        <feature>timedexit-1.0</feature>
         <feature>jsp-2.3</feature>
-		<feature>servlet-3.1</feature>      
-		<feature>wasJmsClient-2.0</feature>
-		<feature>ssl-1.0</feature>
-		<feature>jndi-1.0</feature>
-		<feature>testjmsinternals-1.0</feature>
-		
+        <feature>servlet-3.1</feature>
+        <feature>wasJmsClient-2.0</feature>
+        <feature>ssl-1.0</feature>
+        <feature>jndi-1.0</feature>
     </featureManager>
 
     <httpEndpoint id="defaultHttpEndpoint">
-		 <sslOptions sslRef="CustomSslOptions" />
-    </httpEndpoint> 
+        <sslOptions sslRef="CustomSslOptions" />
+    </httpEndpoint>
 
 
-    
 
-	<!-- <httpEndpoint id="defaultHttpEndpoint1" >
-	 <sslOptions sslRef="CustomSslOptions" />
+
+    <!-- <httpEndpoint id="defaultHttpEndpoint1" >
+     <sslOptions sslRef="CustomSslOptions" />
     </httpEndpoint> 
    -->
- 
- 
- <ssl id="CustomSslOptions" keyStoreRef="defaultKeystore"/>
-<keyStore id="defaultKeystore" location="clientKey.jks" type="JKS" password="key123"/>
+
+
+    <ssl id="CustomSslOptions" keyStoreRef="defaultKeystore"/>
+    <keyStore id="defaultKeystore" location="clientKey.jks" type="JKS" password="key123"/>
 
 
 
-<wasJmsOutbound id="jmsSecureCustomChain" useSSL="true">
- <sslOptions sslRef="CustomSslOptions" />
- </wasJmsOutbound>
+    <wasJmsOutbound id="jmsSecureCustomChain" useSSL="true">
+        <sslOptions sslRef="CustomSslOptions" />
+    </wasJmsOutbound>
 
- 
-  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
-      <properties.wasJms userName="persona99" password="ppersona99" remoteServerAddress="localhost:${bvt.prop.jms.0.ssl}:jmsSecureCustomChain" />
+
+    <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
+        <properties.wasJms userName="persona99" password="ppersona99" remoteServerAddress="localhost:${bvt.prop.jms.0.ssl}:jmsSecureCustomChain" />
     </jmsQueueConnectionFactory>
-    <connectionManager id="ConMgr6" maxPoolSize="2"/> 
+    <connectionManager id="ConMgr6" maxPoolSize="2"/>
 
-	
-	<jmsQueue jndiName="jndi_INPUT_Q">
-    	<properties.wasJms queueName="Queue1" />
+
+    <jmsQueue jndiName="jndi_INPUT_Q">
+        <properties.wasJms queueName="Queue1" />
     </jmsQueue>
-
-	
-	
-
 </server>
