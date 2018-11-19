@@ -1398,7 +1398,8 @@ public class ConfigEvaluatorTest {
         variableRegistryHelper.addVariable("emptyInCLV", "server.xml dir");
         variableRegistryHelper.addVariable("empty", "server.xml dir");
 
-        String[] commandLineVariables = new String[] { "onlyCLV=foo", "inBoth=fromCLV", "zzz", "emptyInCLV", "=====", "=bcd", "empty=" };
+        String[] commandLineVariables = new String[] { "--onlyCLV=foo", "--inBoth=fromCLV", "--zzz", "--emptyInCLV", "--=====", "--=bcd", "--empty=", "onlyCLV=invalidFromCLV",
+                                                       "-inBoth=invalidFromBoth" };
         ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, commandLineVariables, null);
         TestConfigEvaluator evaluator = createConfigEvaluator(registry, variableRegistry, null);
 
