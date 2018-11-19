@@ -11,17 +11,31 @@
 package com.ibm.ws.springboot.support.fat.utility;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -32,10 +46,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.springboot.support.fat.CommonWebServerTests;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
+import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 @Mode(FULL)
@@ -50,7 +67,12 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
+        Set<String> features = new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
+        String methodName = testName.getMethodName();
+        if ("testRunLibertyUberJarWithSSL".equals(methodName)) {
+            features.add("transportSecurity-1.0");
+        }
+        return features;
     }
 
     /*
@@ -117,6 +139,19 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public Map<String, String> getBootStrapProperties() {
+        String methodName = testName.getMethodName();
+        if ("testRunLibertyUberJarWithSSL".equals(methodName)) {
+            Map<String, String> properties = new HashMap<>();
+            properties.put("server.ssl.key-store", "classpath:server-keystore.jks");
+            properties.put("server.ssl.key-store-password", "secret");
+            properties.put("server.ssl.key-password", "secret");
+            return properties;
+        }
+        return super.getBootStrapProperties();
     }
 
     @Test
@@ -199,6 +234,121 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
     }
 
     @Test
+    public void testRunLibertyUberJarWithSSL() throws Exception {
+        String dropinsSpring = "dropins/" + SPRING_APP_TYPE + "/";
+        new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();
+        RemoteFile thinApp = new RemoteFile(server.getFileFromLibertyServerRoot(dropinsSpring), "springBootApp.jar");
+
+        List<String> cmd = new ArrayList<>();
+        cmd.add("thin");
+        cmd.add("--sourceAppPath=" + getApplicationFile().getAbsolutePath());
+        cmd.add("--targetLibCachePath=" + new RemoteFile(sharedResourcesDir, SPRING_LIB_INDEX_CACHE).getAbsolutePath());
+        cmd.add("--targetThinAppPath=" + thinApp.getAbsolutePath());
+        List<String> output = SpringBootUtilityScriptUtils.execute(null, cmd);
+        dropinFiles.add(thinApp);
+
+        Assert.assertTrue("Failed to thin the application: " + output,
+                          SpringBootUtilityScriptUtils.findMatchingLine(output, "Thin application: .*springBootApp\\.jar"));
+
+        Assert.assertTrue("Expected thin app does not exist: " + thinApp.getAbsolutePath(), thinApp.isFile());
+
+        configureBootStrapProperties(true, false);
+
+        ServerConfiguration config = getServerConfiguration();
+
+        server.updateServerConfiguration(config);
+
+        // now create the Liberty uber JAR
+        SpringBootUtilityScriptUtils.execute("server", null,
+                                             Arrays.asList("package", server.getServerName(), "--include=runnable,minify", "--archive=libertyUber.jar"), false);
+
+        RemoteFile libertyUberJar = server.getFileFromLibertyServerRoot("libertyUber.jar");
+        Assert.assertTrue("Expected Liberty uber JAR does not exist: " + libertyUberJar.getAbsolutePath(), libertyUberJar.isFile());
+
+        //Run libertyUberJar using java -jar command
+        Process proc = Runtime.getRuntime().exec("java -jar " + libertyUberJar.getAbsolutePath());
+
+        String line = null;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
+            line = reader.readLine();
+            while (line != null) {
+                if (line.contains("CWWKT0016I")) {
+                    break;
+                }
+                line = reader.readLine();
+            }
+        }
+        assertNotNull("The endpoint is not available", line);
+        assertTrue("Expected log not found", line.contains("CWWKT0016I"));
+
+        int start = line.indexOf("https");
+        String url = line.substring(start);
+
+        String result = sendHttpsGet(url, server);
+        assertNotNull(result);
+        assertEquals("Expected response not found.", "HELLO SPRING BOOT!!", result);
+        proc.destroy();
+    }
+
+    private String sendHttpsGet(String path, LibertyServer server) throws Exception {
+        String result = null;
+        SSLContext sslContext = SSLContext.getInstance("SSL");
+
+        TrustManager[] trustManagers = getTrustManager();
+        sslContext.init(null, trustManagers, null);
+
+        URL requestUrl = new URL(path);
+        Log.info(getClass(), "sendHttpsGet", requestUrl.toString());
+
+        HttpsURLConnection httpsConn = (HttpsURLConnection) requestUrl.openConnection();
+        httpsConn.setSSLSocketFactory(sslContext.getSocketFactory());
+        HostnameVerifier hostnamVerifier = new HostnameVerifier() {
+            @Override
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        };
+        httpsConn.setHostnameVerifier(hostnamVerifier);
+        httpsConn.setRequestMethod("GET");
+        httpsConn.setDoOutput(false);
+        httpsConn.setDoInput(true);
+
+        int code = httpsConn.getResponseCode();
+        assertEquals("Expected response code not found.", 200, code);
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(httpsConn.getInputStream()));
+        String temp = in.readLine();
+
+        while (temp != null) {
+            if (result != null)
+                result += temp;
+            else
+                result = temp;
+            temp = in.readLine();
+        }
+        return result;
+    }
+
+    private static TrustManager[] getTrustManager() {
+        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+            @Override
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+
+            @Override
+            public void checkClientTrusted(
+                                           java.security.cert.X509Certificate[] certs, String authType) {}
+
+            @Override
+            public void checkServerTrusted(
+                                           java.security.cert.X509Certificate[] certs, String authType) {}
+        } };
+
+        return trustAllCerts;
+    }
+
+    @Test
     public void testInvalidLibertyUberJar() throws Exception {
         String dropinsSpring = "dropins/" + SPRING_APP_TYPE + "/";
         new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();
@@ -207,6 +357,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         List<String> cmd = new ArrayList<>();
         cmd.add("thin");
         cmd.add("--sourceAppPath=" + getApplicationFile().getAbsolutePath());
+        //Put lib.index.cache in wrong location
         cmd.add("--targetLibCachePath=" + new RemoteFile(sharedResourcesDir, "libraries/" + SPRING_LIB_INDEX_CACHE).getAbsolutePath());
         cmd.add("--targetThinAppPath=" + thinApp.getAbsolutePath());
         List<String> output = SpringBootUtilityScriptUtils.execute(null, cmd);
@@ -237,6 +388,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
     @Test
     public void testErrorOccursWhenAppNotConfiguredInLibertyUberJar() throws Exception {
+        //Configure app in wrong location
         String dropinsSpring = "thin/";
         new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();
         RemoteFile thinApp = new RemoteFile(server.getFileFromLibertyServerRoot(dropinsSpring), "springBootApp.jar");
