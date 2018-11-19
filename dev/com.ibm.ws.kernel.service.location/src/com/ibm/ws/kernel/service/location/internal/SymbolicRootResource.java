@@ -270,7 +270,7 @@ public class SymbolicRootResource extends LocalDirectoryResource implements Inte
     @Override
     @Trivial
     public File asFile() {
-        return null;
+        return root;
     }
 
     /**
