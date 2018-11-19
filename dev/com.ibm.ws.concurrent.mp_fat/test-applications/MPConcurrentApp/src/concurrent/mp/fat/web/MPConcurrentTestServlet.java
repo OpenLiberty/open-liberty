@@ -4327,7 +4327,7 @@ public class MPConcurrentTestServlet extends FATServlet {
      * Liberty global thread pool.
      */
     @Test
-    public void testWithContextCapture_CompletableFuture() throws Exception {
+    public void testWithContextCapture_CompletableFuture_builder() throws Exception {
         ThreadContext contextSvc = ThreadContextBuilder.instance()
                         .propagated(ThreadContext.APPLICATION)
                         .cleared(TestContextTypes.CITY)
@@ -4380,13 +4380,65 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
+     * Use testWithContextCapture on a ContextService configured in server.xml
+     * to create a contextualized CompletableFuture based on one that isn't context aware.
+     * Verify that its dependent actions run with the configured context of the ContextService
+     * instance and that Async operations run on the Liberty global thread pool.
+     */
+    @Test
+    public void testWithContextCapture_CompletableFuture_serverConfig() throws Exception {
+        CompletableFuture<Integer> cf1 = CompletableFuture.supplyAsync(() -> 122, testThreads);
+
+        CurrentLocation.setLocation("Mankato", "Minnesota");
+        try {
+            CompletableFuture<Integer> cf2 = defaultThreadContext.withContextCapture(cf1);
+            CompletableFuture<Integer> cf3 = cf2.thenApplyAsync(i -> {
+                try {
+                    assertNotNull(InitialContext.doLookup("java:comp/env/executorRef"));
+                } catch (NamingException x) {
+                    throw new RuntimeException(x);
+                }
+                String threadName = Thread.currentThread().getName();
+                assertEquals("", CurrentLocation.getCity());
+                assertEquals("", CurrentLocation.getState());
+                assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // Liberty executor thread
+                return i + 1;
+            });
+
+            assertEquals(Integer.valueOf(123), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            CompletableFuture<Integer> cf4 = cf3.thenApply(i -> {
+                try {
+                    assertNotNull(InitialContext.doLookup("java:comp/env/executorRef"));
+                } catch (NamingException x) {
+                    throw new RuntimeException(x);
+                }
+                String threadName = Thread.currentThread().getName();
+                assertEquals("", CurrentLocation.getCity()); // context of servlet thread is cleared
+                assertEquals("", CurrentLocation.getState()); // context of servlet thread is cleared
+                assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // Liberty executor thread
+                CurrentLocation.setLocation("Onalaska", "Wisconsin");
+                return i + 1;
+            });
+
+            assertEquals(Integer.valueOf(124), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // context restored on current thread
+            assertEquals("Mankato", CurrentLocation.getCity());
+            assertEquals("Minnesota", CurrentLocation.getState());
+        } finally {
+            CurrentLocation.clear();
+        }
+    }
+
+    /**
      * Use ThreadContext.testWithContextCapture to create a contextualized CompletionStage
      * based on one that isn't context aware. Verify that its dependent actions run with the
      * configured context of the ThreadContext instance and that Async operations run on the
      * Liberty global thread pool.
      */
     @Test
-    public void testWithContextCapture_CompletionStage() throws Exception {
+    public void testWithContextCapture_CompletionStage_builder() throws Exception {
         ThreadContext contextSvc = ThreadContextBuilder.instance()
                         .propagated(ThreadContext.APPLICATION)
                         .cleared(TestContextTypes.CITY)
@@ -4464,6 +4516,90 @@ public class MPConcurrentTestServlet extends FATServlet {
 
             // context not restored on current thread
             assertEquals("Iowa", CurrentLocation.getState());
+        } finally {
+            CurrentLocation.clear();
+        }
+    }
+
+    /**
+     * Use ThreadContext.testWithContextCapture on a ContextService configured in server.xml
+     * to create a contextualized CompletionStage based on one that isn't context aware.
+     * Verify that its dependent actions run with the configured context of the ContextService
+     * instance and that Async operations run on the Liberty global thread pool.
+     */
+    @Test
+    public void testWithContextCapture_CompletionStage_serverConfig() throws Exception {
+        // Ensure that our CompletionStage runs on an unmanaged thread by blocking execution of the
+        // stage it will depend on until after we create it.
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        CompletableFuture<Integer> cf1 = CompletableFuture.supplyAsync(new BlockableSupplier<Integer>(125, null, continueLatch), testThreads);
+        CompletionStage<Integer> cs1 = new MinimalSingleCompletionStage<Integer>(cf1);
+        continueLatch.countDown();
+
+        CurrentLocation.setLocation("Grand Marais", "Minnesota");
+        try {
+            CompletionStage<Integer> cs2 = defaultThreadContext.withContextCapture(cs1);
+
+            // verify that cs2 is a CompletionStage or limited to CompletionStage methods
+            if (cs2 instanceof CompletableFuture)
+                try {
+                    fail("CompletionStage.complete returned " + ((CompletableFuture<Integer>) cs2).complete(-125));
+                } catch (UnsupportedOperationException x) {
+                    // expected
+                }
+
+            CompletionStage<Integer> cs3 = cs2.thenApplyAsync(i -> {
+                try {
+                    assertNotNull(InitialContext.doLookup("java:comp/env/executorRef"));
+                } catch (NamingException x) {
+                    throw new RuntimeException(x);
+                }
+                String threadName = Thread.currentThread().getName();
+                assertEquals("", CurrentLocation.getCity());
+                assertEquals("", CurrentLocation.getState());
+                assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // Liberty executor thread
+                return i + 1;
+            });
+
+            // verify that cs3 is a CompletionStage or limited to CompletionStage methods
+            if (cs3 instanceof CompletableFuture)
+                try {
+                    fail("CompletionStage.completeExceptionally returned " + ((CompletableFuture<Integer>) cs3).completeExceptionally(new ArrayIndexOutOfBoundsException()));
+                } catch (UnsupportedOperationException x) {
+                    // expected
+                }
+
+            assertEquals(Integer.valueOf(126), cs3.toCompletableFuture().get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            CompletionStage<Integer> cs4 = cs3.thenApply(i -> {
+                try {
+                    assertNotNull(InitialContext.doLookup("java:comp/env/executorRef"));
+                } catch (NamingException x) {
+                    throw new RuntimeException(x);
+                }
+                String threadName = Thread.currentThread().getName();
+                assertEquals("", CurrentLocation.getCity()); // context of servlet thread is cleared
+                assertEquals("", CurrentLocation.getState()); // context of servlet thread is cleared
+                assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // Liberty executor thread
+                CurrentLocation.setLocation("Superior", "Wisconsin");
+                return i + 1;
+            });
+
+            // verify that cs4 is a CompletionStage or limited to CompletionStage methods
+            if (cs4 instanceof CompletableFuture)
+                try {
+                    fail("CompletionStage.cancel returned " + ((CompletableFuture<Integer>) cs4).cancel(true));
+                } catch (UnsupportedOperationException x) {
+                    // expected
+                }
+
+            assertEquals(Integer.valueOf(127), cs4.toCompletableFuture().get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // context restored on current thread
+            assertEquals("Grand Marais", CurrentLocation.getCity());
+
+            // context not restored on current thread
+            assertEquals("Minnesota", CurrentLocation.getState());
         } finally {
             CurrentLocation.clear();
         }

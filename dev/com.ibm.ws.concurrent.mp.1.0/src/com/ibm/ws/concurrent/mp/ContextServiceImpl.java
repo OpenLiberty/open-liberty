@@ -15,6 +15,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -24,6 +25,7 @@ import java.util.function.Supplier;
 import javax.enterprise.concurrent.ContextService;
 
 import org.eclipse.microprofile.concurrent.ThreadContext;
+import org.eclipse.microprofile.concurrent.spi.ConcurrencyProvider;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -36,8 +38,11 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.service.AbstractContextService;
+import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
@@ -55,6 +60,16 @@ import com.ibm.wsspi.threadcontext.WSContextService;
            property = { "creates.objectClass=javax.enterprise.concurrent.ContextService",
                         "creates.objectClass=org.eclipse.microprofile.concurrent.ThreadContext" })
 public class ContextServiceImpl extends AbstractContextService implements ThreadContext {
+    private static final TraceComponent tc = Tr.register(ContextServiceImpl.class);
+
+    /**
+     * Lazily initialized reference to a cached managed executor instance, which is
+     * backed by the Liberty global thread pool without concurrency constraints,
+     * propagates the type of context configured for this thread context service, and
+     * clears all other types of context.
+     */
+    private final AtomicReference<ManagedExecutorImpl> managedExecutorRef = new AtomicReference<ManagedExecutorImpl>();
+
     @Activate
     @Override
     @Trivial
@@ -64,6 +79,7 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
 
     @Override
     public Executor currentContextExecutor() {
+        @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
         return new ContextualExecutor(contextDescriptor);
     }
@@ -73,6 +89,39 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
     @Trivial
     protected void deactivate(ComponentContext context) {
         super.deactivate(context);
+    }
+
+    /**
+     * Obtain a ManagedExecutor backed by the Liberty global thread pool, without constraints,
+     * and propagating the same types as this ThreadContext service, clearing those which are
+     * configured to be cleared.
+     * If possible, a cached instance is returned. If it doesn't exist yet, then an instance
+     * is lazily created by this method.
+     *
+     * @return ManagedExecutor instance.
+     */
+    private ManagedExecutorImpl getManagedExecutor() {
+        ManagedExecutorImpl executor = managedExecutorRef.get();
+
+        if (executor == null) {
+            String name = new StringBuilder("ManagedExecutor_-1_-1_").append(ManagedExecutorBuilderImpl.instanceCount.incrementAndGet()).toString();
+
+            ConcurrencyProviderImpl concurrencyProvider = (ConcurrencyProviderImpl) ConcurrencyProvider.instance();
+            PolicyExecutor policyExecutor = concurrencyProvider.policyExecutorProvider.create(name);
+            policyExecutor.maxConcurrency(-1).maxQueueSize(-1);
+            // TODO these policy executor instances, as well as those created via ManagedExecutorBuilder are never shut down
+            // and removed from PolicyExecutorProvider's list. This is a memory leak and needs to be fixed.
+
+            executor = new ManagedExecutorImpl(name, policyExecutor, this, concurrencyProvider.transactionContextProvider.transactionContextProviderRef);
+
+            if (!managedExecutorRef.compareAndSet(null, executor)) {
+                // Another thread updated the reference first. Discard the instance we created and use the other.
+                executor.shutdown();
+                executor = managedExecutorRef.get();
+            }
+        }
+
+        return executor;
     }
 
     @Modified
@@ -119,52 +168,93 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
 
     @Override
     public <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage) {
-        return null; // TODO
+        CompletableFuture<T> newCompletableFuture;
+
+        ManagedExecutorImpl executor = getManagedExecutor();
+        if (ManagedCompletableFuture.JAVA8)
+            newCompletableFuture = new ManagedCompletableFuture<T>(new CompletableFuture<T>(), executor, null);
+        else
+            newCompletableFuture = new ManagedCompletableFuture<T>(executor, null);
+
+        stage.whenComplete((result, failure) -> {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "whenComplete", result, failure);
+            if (failure == null)
+                newCompletableFuture.complete(result);
+            else
+                newCompletableFuture.completeExceptionally(failure);
+        });
+
+        return newCompletableFuture;
     }
 
     @Override
     public <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage) {
-        return null; // TODO
+        ManagedCompletionStage<T> newStage;
+
+        ManagedExecutorImpl executor = getManagedExecutor();
+        if (ManagedCompletableFuture.JAVA8)
+            newStage = new ManagedCompletionStage<T>(new CompletableFuture<T>(), executor, null);
+        else
+            newStage = new ManagedCompletionStage<T>(executor);
+
+        stage.whenComplete((result, failure) -> {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "whenComplete", result, failure);
+            if (failure == null)
+                newStage.super_complete(result);
+            else
+                newStage.super_completeExceptionally(failure);
+        });
+
+        return newStage;
     }
 
     @Override
     public <T, U> BiConsumer<T, U> withCurrentContext(BiConsumer<T, U> consumer) {
+        @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
         return new ContextualBiConsumer<T, U>(contextDescriptor, consumer);
     }
 
     @Override
     public <T, U, R> BiFunction<T, U, R> withCurrentContext(BiFunction<T, U, R> function) {
+        @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
         return new ContextualBiFunction<T, U, R>(contextDescriptor, function);
     }
 
     @Override
     public <R> Callable<R> withCurrentContext(Callable<R> callable) {
+        @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
         return new ContextualCallable<R>(contextDescriptor, callable);
     }
 
     @Override
     public <T> Consumer<T> withCurrentContext(Consumer<T> consumer) {
+        @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
         return new ContextualConsumer<T>(contextDescriptor, consumer);
     }
 
     @Override
     public <T, R> Function<T, R> withCurrentContext(Function<T, R> function) {
+        @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
         return new ContextualFunction<T, R>(contextDescriptor, function);
     }
 
     @Override
     public Runnable withCurrentContext(Runnable runnable) {
+        @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
         return new ContextualRunnable(contextDescriptor, runnable);
     }
 
     @Override
     public <R> Supplier<R> withCurrentContext(Supplier<R> supplier) {
+        @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
         return new ContextualSupplier<R>(contextDescriptor, supplier);
     }
