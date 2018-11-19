@@ -71,12 +71,15 @@ import org.junit.Test;
 import org.test.context.location.CurrentLocation;
 import org.test.context.location.TestContextTypes;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/MPConcurrentTestServlet")
 public class MPConcurrentTestServlet extends FATServlet {
-    // Maximum number of nanoseconds to wait for a task to complete
+    /**
+     * 2 minutes. Maximum number of nanoseconds to wait for a task to complete.
+     */
     static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
     static final boolean AT_LEAST_JAVA_9;
@@ -248,6 +251,7 @@ public class MPConcurrentTestServlet extends FATServlet {
      * creates the stage.
      */
     @Test
+    @AllowedFFDC("java.lang.SecurityException")
     public void testAcceptEither() throws Exception {
         CountDownLatch blocker1 = new CountDownLatch(1);
         CountDownLatch blocker2 = new CountDownLatch(1);
@@ -304,7 +308,20 @@ public class MPConcurrentTestServlet extends FATServlet {
             blocker2.countDown();
 
             // Dependent stage must be able to complete now
-            assertNull(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            try {
+                assertNull(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            } catch (ExecutionException ee) {
+                Throwable cause = ee.getCause();
+                if (cause != null &&
+                    cause instanceof java.lang.SecurityException &&
+                    cause.getMessage() != null &&
+                    cause.getMessage().contains("CWWKL0090E")) {
+                    System.out.println("Caught an acceptable SecurityException from task running on un-managed thread");
+                    return; // pass the test
+                } else {
+                    throw ee;
+                }
+            }
             assertTrue(cf3.isDone());
             assertFalse(cf3.isCancelled());
             assertFalse(cf3.isCompletedExceptionally());
