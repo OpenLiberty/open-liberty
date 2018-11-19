@@ -10,5 +10,5 @@
  *******************************************************************************/
 
 dependencies {
-  requiredLibs 'commons-logging:commons-logging:1.1.3', 'commons-codec:commons-codec:1.6'
+  requiredLibs 'commons-logging:commons-logging:1.1.3', project(':com.ibm.ws.microprofile.config_repeat_tests'), project(':com.ibm.websphere.org.eclipse.microprofile.config.1.2.1')
 }

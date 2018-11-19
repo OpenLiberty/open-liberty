@@ -20,7 +20,6 @@ import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 

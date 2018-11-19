@@ -16,6 +16,9 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig12EE8;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig13EE8;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig14EE8;
 import com.ibm.ws.microprofile.config12.converter.priority.web.ConverterPriorityServlet;
 
 import componenttest.annotation.Server;
@@ -46,7 +49,8 @@ public class ConverterPriorityTest extends FATServletClient {
     @ClassRule
     public static RepeatTests r = RepeatTests
                     .with(new RepeatConfig12EE8("ConverterServer"))
-                    .andWith(new RepeatConfig13EE8("ConverterServer"));
+                    .andWith(new RepeatConfig13EE8("ConverterServer"))
+                    .andWith(new RepeatConfig14EE8("ConverterServer"));
 
     @Server("ConverterServer")
     @TestServlet(servlet = ConverterPriorityServlet.class, contextRoot = APP_NAME)

@@ -20,15 +20,18 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.appConfig.classLoaderCache.test.ClassLoaderCacheTestServlet;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig14EE8;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -54,6 +57,10 @@ public class ClassLoaderCacheTest extends FATServletClient {
     public static final String WARB2 = EARB + "2";
     public static final String WARB1_NAME = WARB1 + ".war";
     public static final String WARB2_NAME = WARB2 + ".war";
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests //selected combinations
+                    .with(new RepeatConfig14EE8("ClassLoaderCacheServer"));
 
     @Server("ClassLoaderCacheServer")
     public static LibertyServer server;

@@ -27,8 +27,6 @@ import javax.enterprise.inject.spi.PassivationCapable;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
@@ -36,8 +34,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
  * They are all Dependent scope.
  */
 public class ConfigPropertyBean<T> extends AbstractConfigBean<T> implements Bean<T>, PassivationCapable {
-
-    private static final TraceComponent tc = Tr.register(ConfigPropertyBean.class);
 
     private final Class<T> beanClass;
 

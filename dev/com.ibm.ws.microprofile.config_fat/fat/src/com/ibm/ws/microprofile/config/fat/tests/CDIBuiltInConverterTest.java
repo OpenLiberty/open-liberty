@@ -18,8 +18,9 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.appConfig.cdi.web.BuiltInConverterTestServlet;
-import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig11EE7;
-import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig12EE8;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig11EE7;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig12EE8;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig14EE8;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
@@ -56,8 +57,9 @@ public class CDIBuiltInConverterTest extends FATServletClient {
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests
+    public static RepeatTests r = RepeatTests //selected combinations
                     .with(new RepeatConfig11EE7("CDIConfigServer"))
-                    .andWith(new RepeatConfig12EE8("CDIConfigServer"));
+                    .andWith(new RepeatConfig12EE8("CDIConfigServer"))
+                    .andWith(new RepeatConfig14EE8("CDIConfigServer"));
 
 }
