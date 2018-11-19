@@ -124,6 +124,11 @@ retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W: \u00cent\u00e2rzierea de ji
 retry.parameter.invalid.value.CWMFT5019W.explanation=\u00cent\u00e2rzierea de jitter trebuie s\u0103 fie mai mic\u0103 dec\u00e2t \u00eent\u00e2rzierea. \u00cent\u00e2rzierea de jitter const\u0103 din parametrul jitter \u015fi parametrul jitterDelayUnit. \u00cent\u00e2rzierea con\u0163ine parametrul \u00eent\u00e2rziere \u015fi parametrul delayUnit.
 retry.parameter.invalid.value.CWMFT5019W.useraction=Corecta\u0163i valoarea unuia sau mai multor parametri astfel \u00eenc\u00e2t durata pentru \u00eent\u00e2rzierea de jitter s\u0103 fie mai mic\u0103 dec\u00e2t durata \u00eent\u00e2rzierii.
 
+# A method does not return Future or CompletionStage
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E=CWMFT5020E: Metoda asincron\u0103 {0} nu are un tip de returnare java.util.concurrent.Future sau java.util.concurrent.CompletionStage.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.explanation=Toate metodele dintr-o clas\u0103 care este adnotat\u0103 cu org.eclipse.microprofile.faulttolerance.Asynchronous trebuie s\u0103 aib\u0103 un tip de returnare de java.util.concurrent.Future sau java.util.concurrent.CompletionStage.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=Actualiza\u0163i tipul de returnare.
+
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: A ap\u0103rut o eroare intern\u0103. Excep\u0163ia este {0}.
 internal.error.CWMFT5997E.explanation=Serverul de aplica\u0163ii a avut o eroare intern\u0103.

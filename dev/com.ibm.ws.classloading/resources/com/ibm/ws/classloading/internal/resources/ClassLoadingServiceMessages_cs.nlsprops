@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2014 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -155,3 +155,9 @@ cls.classloader.config.typo.useraction=Zkontrolujte konfiguraci serveru pro nepl
 cls.classloader.config.typo2=CWWKL0083E: P\u0159i pou\u017eit\u00ed p\u0159edpony + nebo -, nen\u00ed typ rozhran\u00ed API [{0}] platn\u00fd v tomto seznamu [{1}]. V\u0161echny typy rozhran\u00ed API mus\u00ed m\u00edt p\u0159edponu + nebo -.
 cls.classloader.config.typo2.explanation=Zm\u011b\u0148te neplatn\u00fd typ rozhran\u00ed API na platn\u00fd typ rozhran\u00ed API s p\u0159edponou + nebo -.
 cls.classloader.config.typo2.useraction=Zkontrolujte konfiguraci serveru pro neplatn\u00fd typ rozhran\u00ed API, abyste se ujistili, \u017ee tento typ rozhran\u00ed API je spr\u00e1vn\u00fd.
+
+# {0} - class name
+# {1} - suggested feature
+cls.classloader.suggested.feature=CWWKL0084W: T\u0159\u00eddu {0} nelze na\u010d\u00edst. Zkuste povolit funkci {1} nebo novou verzi funkce v souboru server.xml.
+cls.classloader.suggested.feature.explanation=T\u0159\u00edda, kter\u00e1 je zpravidla poskytov\u00e1na jednou nebo v\u00edce funkcemi serveru, nelze na\u010d\u00edst.
+cls.classloader.suggested.feature.useraction=Zkuste povolit ur\u010denou funkci nebo novou verzi funkce v souboru server.xml.

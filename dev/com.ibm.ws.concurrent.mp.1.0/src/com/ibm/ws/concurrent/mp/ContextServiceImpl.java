@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp;
 
+import java.util.Collections;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -39,6 +40,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.service.AbstractContextService;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.resource.ResourceFactory;
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
@@ -62,7 +64,8 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
 
     @Override
     public Executor currentContextExecutor() {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualExecutor(contextDescriptor);
     }
 
     @Deactivate
@@ -126,36 +129,43 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
 
     @Override
     public <T, U> BiConsumer<T, U> withCurrentContext(BiConsumer<T, U> consumer) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualBiConsumer<T, U>(contextDescriptor, consumer);
     }
 
     @Override
     public <T, U, R> BiFunction<T, U, R> withCurrentContext(BiFunction<T, U, R> function) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualBiFunction<T, U, R>(contextDescriptor, function);
     }
 
     @Override
     public <R> Callable<R> withCurrentContext(Callable<R> callable) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualCallable<R>(contextDescriptor, callable);
     }
 
     @Override
     public <T> Consumer<T> withCurrentContext(Consumer<T> consumer) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualConsumer<T>(contextDescriptor, consumer);
     }
 
     @Override
     public <T, R> Function<T, R> withCurrentContext(Function<T, R> function) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualFunction<T, R>(contextDescriptor, function);
     }
 
     @Override
     public Runnable withCurrentContext(Runnable runnable) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualRunnable(contextDescriptor, runnable);
     }
 
     @Override
     public <R> Supplier<R> withCurrentContext(Supplier<R> supplier) {
-        return null; // TODO
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualSupplier<R>(contextDescriptor, supplier);
     }
 }

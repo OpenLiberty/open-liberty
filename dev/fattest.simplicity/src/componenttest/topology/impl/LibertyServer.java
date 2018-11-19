@@ -981,11 +981,11 @@ public class LibertyServer implements LogMonitorClient {
         return args;
     }
 
-    protected ProgramOutput startServerWithArgs(boolean preClean, boolean cleanStart,
-                                                boolean validateApps, boolean expectStartFailure,
-                                                String serverCmd, List<String> args,
-                                                boolean validateTimedExit) throws Exception {
-        final String method = "startServerAndValidate";
+    public ProgramOutput startServerWithArgs(boolean preClean, boolean cleanStart,
+                                             boolean validateApps, boolean expectStartFailure,
+                                             String serverCmd, List<String> args,
+                                             boolean validateTimedExit) throws Exception {
+        final String method = "startServerWithArgs";
         Log.info(c, method, ">>> STARTING SERVER: " + this.getServerName());
         Log.info(c, method, "Starting " + this.getServerName() + "; clean=" + cleanStart + ", validateApps=" + validateApps + ", expectStartFailure=" + expectStartFailure
                             + ", cmd=" + serverCmd + ", args=" + args);
@@ -4412,7 +4412,7 @@ public class LibertyServer implements LogMonitorClient {
      * file at the offset where the last mark was set (or the beginning of the file
      * if no mark has been set) and reads until the end of the file.
      *
-     * @param regexp  pattern to search for
+     * @param regexp pattern to search for
      * @param logFile RemoteFile for log file to search
      * @return A list of the lines in the trace files which contain the matching
      *         pattern. No matches result in an empty list.
@@ -5404,6 +5404,8 @@ public class LibertyServer implements LogMonitorClient {
         // by property <code>zip.reaper.slow.pend.max</code>.  The default value
         // is 200 NS.  The retry interval is set at twice that.
 
+        setMarkToEndOfLog();
+
         if (!LibertyFileManager.renameLibertyFileWithRetry(machine, appInDropinsPath, appExcisedPath)) { // throws Exception
             Log.info(c, method, "Unable to move " + appFileName + " out of dropins, failing.");
             return false;
@@ -5412,6 +5414,11 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         String stopMsg = waitForStringInLogUsingMark("CWWKZ0009I:.*" + appName); // throws Exception
+        if (stopMsg == null) {
+            return false;
+        }
+
+        setMarkToEndOfLog();
 
         if (!LibertyFileManager.renameLibertyFile(machine, appExcisedPath, appInDropinsPath)) { // throws Exception
             Log.info(c, method, "Unable to move " + appFileName + " back into dropins, failing.");
@@ -5421,6 +5428,9 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         String startMsg = waitForStringInLogUsingMark("CWWKZ0001I:.*" + appName); // throws Exception
+        if (startMsg == null) {
+            return false;
+        }
 
         return true;
     }
@@ -5448,6 +5458,57 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         return allSucceeded;
+    }
+
+    /**
+     *
+     * Removes one or more applications from dropins and wait for them to stop
+     *
+     * @param fileNames the file name or names of the application, e.g. snoop.war
+     * @return {@code true} if the applications were moved successfully, {@code false} otherwise.
+     * @throws Exception
+     */
+    public boolean removeAndStopDropinsApplications(String... fileNames) throws Exception {
+        boolean allSucceeded = true;
+
+        for (String fileName : fileNames) {
+            allSucceeded = allSucceeded && removeAndStopDropinsApplication(fileName);
+        }
+
+        return allSucceeded;
+    }
+
+    /**
+     *
+     * Removes an application from dropins and waits for it to stop
+     *
+     * @param fileNames the file name or names of the application, e.g. snoop.war
+     * @return {@code true} if the applications were moved successfully, {@code false} otherwise.
+     * @throws Exception
+     */
+    private boolean removeAndStopDropinsApplication(String appFileName) throws Exception {
+        final String method = "removeAndStopDropinsApplication";
+
+        setMarkToEndOfLog();
+
+        String appName = appFileName.substring(0, appFileName.lastIndexOf("."));
+        String appInDropinsPath = serverRoot + "/dropins/" + appFileName;
+        String nonDropinsFilePath = serverRoot + "/" + appFileName;
+
+        if (!LibertyFileManager.renameLibertyFileWithRetry(machine, appInDropinsPath, nonDropinsFilePath)) { // throws Exception
+            Log.info(c, method, "Unable to move " + appFileName + " out of dropins, failing.");
+            return false;
+        } else {
+            Log.info(c, method, appFileName + " successfully moved out of dropins, waiting for message...");
+        }
+
+        String stopMsg = waitForStringInLogUsingMark("CWWKZ0009I:.*" + appName); // throws Exception
+
+        if (stopMsg == null) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

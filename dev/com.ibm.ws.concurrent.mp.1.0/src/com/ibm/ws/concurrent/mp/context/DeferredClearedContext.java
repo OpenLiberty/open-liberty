@@ -25,10 +25,11 @@ import com.ibm.wsspi.threadcontext.ThreadContext;
  * available at a later time, by deferring the creation of the cleared thread context snapshot
  * until the action or task is about to start.
  */
+@Trivial
 public class DeferredClearedContext implements com.ibm.wsspi.threadcontext.ThreadContext {
     private static final long serialVersionUID = 1L;
 
-    private com.ibm.wsspi.threadcontext.ThreadContext clearedContextController;
+    public com.ibm.wsspi.threadcontext.ThreadContext clearedContextController;
     public final AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> contextProviderRef;
 
     DeferredClearedContext(AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> contextProviderRef) {
@@ -58,10 +59,9 @@ public class DeferredClearedContext implements com.ibm.wsspi.threadcontext.Threa
     }
 
     @Override
-    @Trivial
     public String toString() {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append('@').append(Integer.toHexString(hashCode())) //
-                        .append(" for ").append(contextProviderRef).append(" clearedContextController: ").append(clearedContextController);
+                        .append(" for ").append(contextProviderRef);
         return sb.toString();
     }
 

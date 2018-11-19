@@ -124,6 +124,11 @@ retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W: Le d\u00e9lai de gigue de l
 retry.parameter.invalid.value.CWMFT5019W.explanation=Le d\u00e9lai de gigue doit \u00eatre inf\u00e9rieur au d\u00e9lai d'attente. Le d\u00e9lai de gigue comprend le param\u00e8tre jitter et le param\u00e8tre jitterDelayUnit. Le d\u00e9lai d'attente comprend le param\u00e8tre delay et le param\u00e8tre delayUnit.
 retry.parameter.invalid.value.CWMFT5019W.useraction=Corrigez la valeur d'un ou de plusieurs param\u00e8tres pour que la dur\u00e9e du d\u00e9lai de gigue soit inf\u00e9rieure \u00e0 la dur\u00e9e du d\u00e9lai d'attente.
 
+# A method does not return Future or CompletionStage
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E=CWMFT5020E: Le type de retour de la m\u00e9thode asynchrone {0} n'est pas java.util.concurrent.Future ou java.util.concurrent.CompletionStage.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.explanation=Toutes les m\u00e9thodes annot\u00e9es avec org.eclipse.microprofile.faulttolerance.Asynchronous doivent avoir un type de retour java.util.concurrent.Future ou java.util.concurrent.CompletionStage.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=Mettez \u00e0 jour le type de retour.
+
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: Une erreur interne s'est produite. L'exception est {0}.
 internal.error.CWMFT5997E.explanation=Le serveur d'application a rencontr\u00e9 une erreur interne.

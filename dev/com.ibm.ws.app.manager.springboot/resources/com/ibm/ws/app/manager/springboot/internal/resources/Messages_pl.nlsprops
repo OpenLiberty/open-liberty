@@ -85,3 +85,6 @@ warning.application.started.event.timeout=CWWKC0264W: Aplikacja {0} nie wys\u014
 warning.application.started.event.timeout.explanation=Aplikacja nie wys\u0142a\u0142a zdarzenia pocz\u0105tkowego w oczekiwanym czasie. Mo\u017cliwe, \u017ce serwer jest przeci\u0105\u017cony lub aplikacja jest du\u017ca. Je\u015bli ta aplikacja jest uruchamiana podczas uruchamiania serwera, serwer mo\u017ce zosta\u0107 uruchomiony bez oczekiwania na uruchomienie aplikacji.
 warning.application.started.event.timeout.useraction=Je\u015bli aplikacja zostanie w ko\u0144cu uruchomiona, nie jest wymagane \u017cadne dzia\u0142anie. Je\u015bli aplikacja nie zostanie uruchomiona, sprawd\u017a w dziennikach serwera, czy inne komunikaty wskazuj\u0105 przyczyn\u0119.
 
+warning.java.version.not.supported=CWWKC0265W: Bie\u017c\u0105ca wersja \u015brodowiska Java {0} nie jest obs\u0142ugiwana przez \u015brodowisko Spring Boot w wersji {1}. Zaktualizuj wersj\u0119 \u015brodowiska Spring Boot aplikacji do wersji 2.0.x lub nowszej.
+warning.java.version.not.supported.explanation=Wersje \u015brodowiska Java nowsze ni\u017c 1.8 nie s\u0105 obs\u0142ugiwane przez \u015brodowisko Spring Boot w wersji 1.5.x i starsze.
+warning.java.version.not.supported.useraction=Zaktualizuj wersj\u0119 \u015brodowiska Spring Boot aplikacji do wersji 2.0.x lub nowszej.

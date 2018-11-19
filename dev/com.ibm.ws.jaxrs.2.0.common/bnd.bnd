@@ -66,7 +66,6 @@ Import-Package: \
  org.apache.neethi;resolution:=optional, \
  org.apache.commons.logging.*;resolution:=optional, \
  javax.activation, \
- javax.mail;version="[0.0,2)", \
  javax.annotation;version="[1.2,2)", \
  javax.xml.stream.*, \
  !com.sun.xml.fastinfoset.stax.*, \
@@ -182,7 +181,6 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.ws.webservices.handler;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
-	com.ibm.websphere.javaee.mail.1.5;version=latest,\
 	com.ibm.websphere.javaee.jsonp.1.0,\
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\

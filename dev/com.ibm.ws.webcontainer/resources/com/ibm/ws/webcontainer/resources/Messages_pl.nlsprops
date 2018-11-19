@@ -1545,7 +1545,15 @@ programmatic.session.cookie.retrieve.cell.xml.failure.useraction=Sprawd\u017a, c
 
 AsyncContext.lock.already.held=SRVE8113W: Nie mo\u017cna uzyska\u0107 blokady.  Przetwarzanie b\u0142\u0119du zosta\u0142o ju\u017c wywo\u0142ane przez inny w\u0105tek.
 AsyncContext.lock.already.held.explanation=Przetwarzanie b\u0142\u0119du zosta\u0142o ju\u017c wywo\u0142ane przez inny w\u0105tek.
-AsyncContext.lock.already.held.useraction=Upewnij si\u0119, \u017ce aplikacja mo\u017ce obs\u0142u\u017cy\u0107 ten wyj\u0105tek.  Je\u015bli zwr\u00f3cenie tej metody jest konieczne nawet wtedy, gdy wywo\u0142anie si\u0119 nie powiedzie, skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+AsyncContext.lock.already.held.useraction=Upewnij si\u0119, \u017ce aplikacja mo\u017ce obs\u0142u\u017cy\u0107 ten wyj\u0105tek.  Je\u015bli zwr\u00f3cenie warto\u015bci z tej metody jest konieczne nawet wtedy, gdy wywo\u0142anie si\u0119 nie powiedzie, ustaw w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 throwexceptionwhenunabletocompleteordispatch na warto\u015b\u0107 false.
+
+Cannot.set.session.cookie.Response.already.committed=SRVE8114W: OSTRZE\u017bENIE: Nie mo\u017cna ustawi\u0107 informacji cookie sesji. Odpowied\u017a zosta\u0142a ju\u017c zatwierdzona.
+Cannot.set.session.cookie.Response.already.committed.explanation=Po zatwierdzeniu odpowiedzi nie mo\u017cna ju\u017c ustawia\u0107 tej informacji cookie sesji.
+Cannot.set.session.cookie.Response.already.committed.useraction=Sprawd\u017a, czy to wywo\u0142anie jest konieczne. Informacje cookie sesji nale\u017cy ustawi\u0107 przed zatwierdzeniem odpowiedzi.
+
+Cannot.set.status.Response.already.committed=SRVE8115W: OSTRZE\u017bENIE: Nie mo\u017cna ustawi\u0107 statusu. Odpowied\u017a zosta\u0142a ju\u017c zatwierdzona.
+Cannot.set.status.Response.already.committed.explanation=Po zatwierdzeniu odpowiedzi nie mo\u017cna ju\u017c ustawia\u0107 tego kodu statusu odpowiedzi.
+Cannot.set.status.Response.already.committed.useraction=Sprawd\u017a, czy to wywo\u0142anie jest konieczne. Kod statusu odpowiedzi nale\u017cy ustawi\u0107 przed zatwierdzeniem odpowiedzi.
 
 servlet.with.same.name.already.exists=SRVE8500W: Nie mo\u017cna doda\u0107 dynamicznie serwletu o nazwie {0}, poniewa\u017c istnieje ju\u017c konfiguracja serwletu o tej samej nazwie.  
 servlet.with.same.name.already.exists.explanation=Serwlet o takiej nazwie ju\u017c istnieje dla tej aplikacji.

@@ -939,7 +939,7 @@ public class EndpointServicesTest extends CommonTestClass {
                     allowing(request).getParameter(ClientConstants.ERROR);
                     will(returnValue(null));
                     // State parameter must be present and non-empty for the redirect request to be valid
-                    one(request).getParameter(ClientConstants.STATE);
+                    allowing(request).getParameter(ClientConstants.STATE);
                     will(returnValue(null));
                 }
             });
@@ -966,7 +966,7 @@ public class EndpointServicesTest extends CommonTestClass {
                     allowing(request).getParameter(ClientConstants.ERROR);
                     will(returnValue(null));
                     // State parameter must be present and non-empty for the redirect request to be valid
-                    one(request).getParameter(ClientConstants.STATE);
+                    allowing(request).getParameter(ClientConstants.STATE);
                     will(returnValue(""));
                 }
             });

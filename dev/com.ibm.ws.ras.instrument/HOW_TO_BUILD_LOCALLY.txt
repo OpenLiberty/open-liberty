@@ -1,0 +1,4 @@
+This is a primordial project that does not build in the same way as the rest of the Liberty bundles.
+If you are making a change in this project, run the following command to get your change included in your local Liberty install:
+
+  ./gradlew :com.ibm.ws.ras.instrument:build :com.ibm.ws.logging.osgi:build

@@ -42,21 +42,14 @@ public class Krb5Common {
     static public boolean isIBMJdk18OrLower = (JavaInfo.vendor() == Vendor.IBM && JavaInfo.majorVersion() <= 8);
 
     // Is Oracle JDK 1.8 or higher
-    static public boolean isOracleJdk18OrHigher = (JavaInfo.vendor() == Vendor.ORACLE && JavaInfo.majorVersion() >= 8);
-
-    static public boolean isJava11Internal = false; //TODO need to remove later
+    // static public boolean isOracleJdk18OrHigher = (JavaInfo.vendor() == Vendor.ORACLE && JavaInfo.majorVersion() >= 8);
 
     // Is IBM, Oracle and Open JDK 11 or higher
-    static public boolean isJdk11Up = JavaInfo.majorVersion() >= 11 || isJava11Internal;
+    static private boolean isJdk11OrUp = JavaInfo.majorVersion() >= 11;
 
-    // TODO: start stuffs that need to remove after deliver CL
-    static public boolean isIBMJdk18Lower = isIBMJdk18OrLower;
-    static public boolean isOracleJdk18Up = isOracleJdk18OrHigher;
-    static public boolean isSupportJDK = isIBMJdk18Lower || isOracleJdk18Up || isJdk11Up;
-    // end stuffs
-
-    // SPNEGO support IBM JDK 8 and lower, Oracle JDK 8 and JDK 11 and higher
-    static public boolean isOtherSupportJDKs = isOracleJdk18OrHigher || isJdk11Up;
+    // SPNEGO support IBM JDK 8 and lower and JDK 11 and higher
+    //static public boolean isOtherSupportJDKs = isOracleJdk18OrHigher || isJdk11OrUp;
+    static public boolean isOtherSupportJDKs = isJdk11OrUp;
 
     // Kerberos KDC host name
     static public final String KRB5_KDC = "java.security.krb5.kdc";

@@ -46,6 +46,7 @@ import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ValueType;
 
 public class AsmClassAnalyzer {
     private final static String JavaLangObject = "java.lang.Object";
+    private final static int ASM_LEVEL = Opcodes.ASM7;
 
     public static final ClassInfoType analyzeClass(String targetClass, byte[] bytecode, InnerOuterResolver ioResolver) throws ClassScannerException {
         if (bytecode == null || bytecode.length == 0) {
@@ -74,7 +75,7 @@ public class AsmClassAnalyzer {
 
     private class CAClassVisitor extends ClassVisitor {
         public CAClassVisitor() {
-            super(Opcodes.ASM6);
+            super(ASM_LEVEL);
         }
 
         @Override
@@ -213,12 +214,7 @@ public class AsmClassAnalyzer {
                             parmType.setIsArray(false);
                         }
 
-                        parmType.setIsSynthetic(false); // TODO
-
-                        // parmType.setIsBridge(parm.is); // TODO
-                        // parmType.setDefault(); // TODO
-                        // parmType.setIsPrimitive(parm.isPrimitive());
-                        // parmType.setIsVarArgs(parm.); // TODO
+                        parmType.setIsSynthetic(false);
                     }
                 }
 
@@ -245,8 +241,6 @@ public class AsmClassAnalyzer {
                     ExceptionType exType = new ExceptionType();
                     exList.add(exType);
                     exType.setExceptionType(AsmHelper.normalizeClassName(cName));
-                    // TODO: exType.setIsRuntimeException
-                    // TODO: exType.setSuperclassType
                 }
             }
 
@@ -255,7 +249,6 @@ public class AsmClassAnalyzer {
 
         @Override
         public void visitEnd() {
-            // TODO Auto-generated method stub
             super.visitEnd();
         }
 
@@ -300,7 +293,7 @@ public class AsmClassAnalyzer {
         final FieldInfoType fit;
 
         public CAFieldVisitor(FieldInfoType fit) {
-            super(Opcodes.ASM6);
+            super(ASM_LEVEL);
             this.fit = fit;
         }
 
@@ -328,7 +321,6 @@ public class AsmClassAnalyzer {
 
         @Override
         public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String desc, boolean visible) {
-            // TODO Auto-generated method stub
             return super.visitTypeAnnotation(typeRef, typePath, desc, visible);
         }
 
@@ -339,7 +331,6 @@ public class AsmClassAnalyzer {
 
         @Override
         public void visitEnd() {
-            // TODO Auto-generated method stub
             super.visitEnd();
         }
 
@@ -349,7 +340,7 @@ public class AsmClassAnalyzer {
         private final MethodInfoType mit;
 
         public CAMethodVisitor(MethodInfoType mit) {
-            super(Opcodes.ASM6);
+            super(ASM_LEVEL);
             this.mit = mit;
         }
 
@@ -389,7 +380,7 @@ public class AsmClassAnalyzer {
         final List<AnnotationValueType> eList;
 
         public CAAnnotationVisitor(AnnotationInfoType ait, String desc, boolean visible) {
-            super(Opcodes.ASM6);
+            super(ASM_LEVEL);
             this.ait = ait;
             this.desc = desc;
             this.visible = visible;
@@ -463,7 +454,7 @@ public class AsmClassAnalyzer {
         private final String name;
 
         public CAElementAnnotationVisitor(AnnotationValueType aet, String name) {
-            super(Opcodes.ASM6);
+            super(ASM_LEVEL);
             this.aet = aet;
             this.name = name;
         }
@@ -568,7 +559,7 @@ public class AsmClassAnalyzer {
 
         @Override
         public AnnotationVisitor visitArray(String name) {
-            return super.visitArray(name); // TODO
+            return super.visitArray(name);
         }
 
         @Override

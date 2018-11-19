@@ -53,3 +53,7 @@ SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.useraction=Zadejte pouze jednu funkc
 SEC_TOO_MANY_PRINCIPALS=CWWKS0010E: P\u0159i z\u00edsk\u00e1v\u00e1n\u00ed \u010dinitele volaj\u00edc\u00edho bylo zji\u0161t\u011bno, \u017ee p\u0159edm\u011bt volaj\u00edc\u00edho m\u00e1 v\u00edce ne\u017e jednoho \u010dinitele typu WSPrincipal. V subjektu m\u016f\u017ee existovat pouze jeden \u010dinitel WSPrincipal. N\u00e1zvy \u010dinitel\u016f WSPrincipal: {}
 SEC_TOO_MANY_PRINCIPALS.explanation=Subjekt volaj\u00edc\u00edho obsahuje p\u0159\u00edli\u0161 \u010dinitel\u016f typu WSPrincipal. Je podporov\u00e1n pouze jeden \u010dinitel tohoto typu.
 SEC_TOO_MANY_PRINCIPALS.useraction=Zkontrolujte aplikaci a zjist\u011bte, pro\u010d m\u00e1 subjekt v\u00edce ne\u017e jednoho \u010dinitele WSPrincipal.
+
+SPNEGO_API_IS_NOT_SUPPORT=CWWKS0011E: Rozhran\u00ed SPNEGO API {0} nen\u00ed podporov\u00e1no pro verzi {0} prost\u0159ed\u00ed {1} Java Runtime.
+SPNEGO_API_IS_NOT_SUPPORT.explanation=Rozhran\u00ed SPNEGO API nelze pou\u017e\u00edt s poskytovatelem a verz\u00ed prost\u0159ed\u00ed Java Runtime.
+SPNEGO_API_IS_NOT_SUPPORT.useraction=Pou\u017eijte dodavatele a verzi Java podporovan\u00e9 rozhran\u00edmi SPNEGO API.

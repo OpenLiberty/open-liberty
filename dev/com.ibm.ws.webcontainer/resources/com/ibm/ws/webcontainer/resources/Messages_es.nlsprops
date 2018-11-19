@@ -1545,7 +1545,15 @@ programmatic.session.cookie.retrieve.cell.xml.failure.useraction=Verifique que c
 
 AsyncContext.lock.already.held=SRVE8113W: No se puede obtener un bloqueo.  Otra hebra ya ha invocado el procesamiento de errores.
 AsyncContext.lock.already.held.explanation=Otra hebra ya ha invocado el procesamiento de errores.
-AsyncContext.lock.already.held.useraction=Aseg\u00farese de que la aplicaci\u00f3n puede manejar una excepci\u00f3n aqu\u00ed.  Si es necesario que se devuelva este m\u00e9todo aunque no se realice la llamada, p\u00f3ngase en contacto con el soporte de IBM.
+AsyncContext.lock.already.held.useraction=Aseg\u00farese de que la aplicaci\u00f3n puede manejar una excepci\u00f3n aqu\u00ed. Si es necesario que se devuelva este m\u00e9todo aunque no se realice la llamada, considere establecer la propiedad personalizada throwexceptionwhenunabletocompleteordispatch en false.
+
+Cannot.set.session.cookie.Response.already.committed=SRVE8114W: AVISO: No se puede establecer la cookie de sesi\u00f3n. Ya se ha confirmado la respuesta.
+Cannot.set.session.cookie.Response.already.committed.explanation=Una vez confirmada la respuesta, ya no se puede establecer la cookie de sesi\u00f3n.
+Cannot.set.session.cookie.Response.already.committed.useraction=Verifique si esta llamada es necesaria. Si debe establecer la cookie de sesi\u00f3n, establ\u00e9zcala antes de confirmar la respuesta.
+
+Cannot.set.status.Response.already.committed=SRVE8115W: AVISO: No se puede establecer el estado. Ya se ha confirmado la respuesta.
+Cannot.set.status.Response.already.committed.explanation=Una vez confirmada la respuesta, ya no se puede establecer el c\u00f3digo de estado de respuesta.
+Cannot.set.status.Response.already.committed.useraction=Verifique si esta llamada es necesaria. Si debe establecer el c\u00f3digo de estado de respuesta, establ\u00e9zcalo antes de confirmar la respuesta.
 
 servlet.with.same.name.already.exists=SRVE8500W: El servlet denominado {0} no se puede a\u00f1adir din\u00e1micamente porque ya existe una configuraci\u00f3n de servlet con el mismo nombre.  
 servlet.with.same.name.already.exists.explanation=Ya existe un servlet con el mismo nombre en esta aplicaci\u00f3n.

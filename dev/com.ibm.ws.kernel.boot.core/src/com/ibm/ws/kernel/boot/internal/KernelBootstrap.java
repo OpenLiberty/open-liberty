@@ -15,12 +15,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Field;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.security.AccessController;
 import java.security.Policy;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +48,7 @@ import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 import com.ibm.ws.kernel.provisioning.NameBasedLocalBundleRepository;
 import com.ibm.ws.kernel.provisioning.ServiceFingerprint;
 import com.ibm.ws.kernel.provisioning.VersionUtility;
+import com.ibm.ws.logging.utils.SequenceNumber;
 
 /**
  * Bootstrap the runtime: Resolve the few jar files required to construct the nested
@@ -142,12 +147,7 @@ public class KernelBootstrap {
 
             // Find the bootstrap resources we need to launch the nested framework.
             // MAY THROW if these resources can not be found or read
-            KernelResolver resolver = new KernelResolver(bootProps.getInstallRoot(),
-                            bootProps.getWorkareaFile(KernelResolver.CACHE_FILE),
-                            bootDefaults.getKernelDefinition(bootProps),
-                            bootDefaults.getLogProviderDefinition(bootProps),
-                            bootDefaults.getOSExtensionDefinition(bootProps),
-                            libertyBoot);
+            KernelResolver resolver = new KernelResolver(bootProps.getInstallRoot(), bootProps.getWorkareaFile(KernelResolver.CACHE_FILE), bootDefaults.getKernelDefinition(bootProps), bootDefaults.getLogProviderDefinition(bootProps), bootDefaults.getOSExtensionDefinition(bootProps), libertyBoot);
 
             // ISSUE LAUNCH FEEDBACK TO THE CONSOLE -- we've done the cursory validation at least.
             String logLevel = bootProps.get("com.ibm.ws.logging.console.log.level");
@@ -398,6 +398,7 @@ public class KernelBootstrap {
         enableJava2SecurityIfSet(this.bootProps, urlList);
 
         ClassLoader loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+
             @Override
             public ClassLoader run() {
                 ClassLoader parent = getClass().getClassLoader();
@@ -413,6 +414,7 @@ public class KernelBootstrap {
                     }
                 }
             }
+
         });
 
         return loader;
@@ -476,6 +478,8 @@ public class KernelBootstrap {
         final String launchString;
         final String versionString;
 
+        String consoleFormat = System.getenv("WLP_LOGGING_CONSOLE_FORMAT");
+
         if (productInfo == null) {
             // RARE/CORNER-CASE: All bets are off, we don't have product info anyway... :(
             launchString = "WebSphere Application Server/" + kernelVersion;
@@ -484,16 +488,133 @@ public class KernelBootstrap {
             launchString = productInfo + "/" + kernelVersion;
             versionString = productInfo + " (" + kernelVersion + ")";
         }
-
+        String consoleLogHeader = MessageFormat.format(BootstrapConstants.messages.getString(msgKey),
+                                                       "info.serverLaunch".equals(msgKey) ? launchString : versionString,
+                                                       System.getProperty("java.vm.name"),
+                                                       System.getProperty("java.runtime.version") + " (" + Locale.getDefault() + ")",
+                                                       bootProps.getProcessName());
         if (printVersion) {
-            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString(msgKey),
-                                                    "info.serverLaunch".equals(msgKey) ? launchString : versionString,
-                                                    System.getProperty("java.vm.name"),
-                                                    System.getProperty("java.runtime.version") + " (" + Locale.getDefault() + ")",
-                                                    bootProps.getProcessName()));
+            if ("json".equals(consoleFormat)) {
+                String jsonConsoleHeader = constructJSONHeader(consoleLogHeader, bootProps);
+                System.out.println(jsonConsoleHeader);
+            } else {
+                System.out.println(consoleLogHeader);
+            }
         }
         // Store the product version in the map for use by log providers
         bootProps.put(BootstrapConstants.BOOTPROP_PRODUCT_INFO, versionString);
+
+    }
+
+    private static String constructJSONHeader(String consoleLogHeader, BootstrapConfig bootProps) {
+        //retrieve information for header
+        String serverName = bootProps.get(BootstrapConstants.INTERNAL_SERVER_NAME);
+        String wlpUserDir = System.getProperty("wlp.user.dir");
+        String serverHostName = getServerHostName();
+        String datetime = getDatetime();
+        String sequenceNumber = getSequenceNumber();
+        //construct json header
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"type\":\"liberty_message\"");
+        sb.append(",\"host\":\"");
+        sb = jsonEscape(sb, serverHostName);
+        sb.append("\",\"ibm_userDir\":\"");
+        sb = jsonEscape(sb, wlpUserDir);
+        sb.append("\",\"ibm_serverName\":\"");
+        sb = jsonEscape(sb, serverName);
+        sb.append("\",\"message\":\"");
+        sb = jsonEscape(sb, consoleLogHeader);
+        sb.append("\",\"ibm_datetime\":\"");
+        sb = jsonEscape(sb, datetime);
+        sb.append("\",\"ibm_sequence\":\"");
+        sb = jsonEscape(sb, sequenceNumber);
+        sb.append("\"}");
+
+        return sb.toString();
+
+    }
+
+    private static String getSequenceNumber() {
+        SequenceNumber sequenceNumber = new SequenceNumber();
+        long rawSequenceNumber = sequenceNumber.getRawSequenceNumber();
+        String sequenceId = null;
+        if (sequenceId == null || sequenceId.isEmpty()) {
+            sequenceId = SequenceNumber.formatSequenceNumber(System.currentTimeMillis(), rawSequenceNumber);
+        }
+        return sequenceId;
+    }
+
+    private static String getDatetime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        String datetime = dateFormat.format(System.currentTimeMillis());
+        return datetime;
+    }
+
+    private static String getServerHostName() {
+        String serverHostName = null;
+        //Resolve server name to be the DOCKER HOST name or the cannonical host name.
+        String containerHost = System.getenv("CONTAINER_HOST");
+        if (containerHost == null || containerHost.equals("") || containerHost.length() == 0) {
+            try {
+                serverHostName = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
+                    @Override
+                    public String run() throws UnknownHostException {
+                        return InetAddress.getLocalHost().getCanonicalHostName();
+                    }
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                serverHostName = "";
+            }
+        } else {
+            serverHostName = containerHost;
+        }
+        return serverHostName;
+    }
+
+    /**
+     * // * Escape \b, \f, \n, \r, \t, ", \, / characters and appends to a string builder
+     * // *
+     * // * @param sb String builder to append to
+     * // * @param s String to escape
+     * //
+     */
+    private static StringBuilder jsonEscape(StringBuilder sb, String s) {
+        if (s == null) {
+            return sb.append(s);
+        }
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            switch (c) {
+                case '\b':
+                    sb.append("\\b");
+                    break;
+                case '\f':
+                    sb.append("\\f");
+                    break;
+                case '\n':
+                    sb.append("\\n");
+                    break;
+                case '\r':
+                    sb.append("\\r");
+                    break;
+                case '\t':
+                    sb.append("\\t");
+                    break;
+
+                // Fall through because we just need to add \ (escaped) before the character
+                case '\\':
+                case '\"':
+                case '/':
+                    sb.append("\\");
+                    sb.append(c);
+                    break;
+                default:
+                    sb.append(c);
+            }
+        }
+        return sb;
     }
 
     /**

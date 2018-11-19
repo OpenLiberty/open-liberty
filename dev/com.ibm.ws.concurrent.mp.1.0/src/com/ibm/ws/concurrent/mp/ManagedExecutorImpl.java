@@ -63,6 +63,8 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
 
     /**
      * Constructor for MicroProfile Concurrency (ManagedExecutorBuilder and CDI injected ManagedExecutor).
+     * Also used to construct a managed executor for use by the ManagedCompletableFuture returned from
+     * ThreadContext.withContextCapture.
      */
     public ManagedExecutorImpl(String name, PolicyExecutor policyExecutor, WSContextService mpThreadContext,
                                AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> tranContextProviderRef) {
@@ -112,7 +114,10 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
 
     @Override
     public <U> CompletableFuture<U> newIncompleteFuture() {
-        return ManagedCompletableFuture.newIncompleteFuture(this);
+        if (ManagedCompletableFuture.JAVA8)
+            return new ManagedCompletableFuture<U>(new CompletableFuture<U>(), this, null);
+        else
+            return new ManagedCompletableFuture<U>(this, null);
     }
 
     @Override

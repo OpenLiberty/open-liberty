@@ -21,7 +21,7 @@ Bundle-Description: Self extracting jar tools; version=${bVersion}
 Archive-Content-Type: install
 Archive-Root: wlp/
 Extract-Installer: true
-IBM-Java-Options: -Xshareclasses:name=liberty-%u,nonfatal,cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx60m -Xscmaxaot8m -XX:+EnableHCR
+IBM-Java-Options: -Xshareclasses:name=liberty-%u,nonfatal,cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx80m -XX:+EnableHCR
 Main-Class: wlp.lib.extract.SelfExtract
 Map-Based-Self-Extractor: wlp.lib.extract.MapBasedSelfExtractor
 

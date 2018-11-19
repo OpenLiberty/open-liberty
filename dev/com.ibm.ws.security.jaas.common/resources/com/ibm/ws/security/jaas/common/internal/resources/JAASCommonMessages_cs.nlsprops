@@ -67,3 +67,15 @@ JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=Ov\u011b\u0159te, \u017ee ve
 JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: V konfiguraci JAAS a v souboru server.xml/client.xml byl ur\u010den duplicitn\u00ed n\u00e1zev konfigurace p\u0159ihla\u0161ov\u00e1n\u00ed {0}. Pou\u017eije se n\u00e1zev konfigurace p\u0159ihla\u0161ov\u00e1n\u00ed v souboru server.xml/client.xml.
 JAAS_DUPLICATE_ENTRY_NAME.explanation=V konfigura\u010dn\u00edm souboru JAAS a v souboru server.xml/client.xml byl ur\u010den duplicitn\u00ed n\u00e1zev konfigurace p\u0159ihla\u0161ov\u00e1n\u00ed.
 JAAS_DUPLICATE_ENTRY_NAME.useraction=Zkontrolujte konfigura\u010dn\u00ed soubor JAAS a soubor server.xml/client.xml.
+
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR=CWWKS1143E: P\u0159ihla\u0161ovac\u00ed modul {0} nen\u00ed podporov\u00e1n pro verzi {1} dodavatelem Java {2}.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.explanation=Modul Krb5LoginModule uveden\u00fd v souboru server.xml, souboru jaas.conf nebo v obou souborech nen\u00ed podporov\u00e1n v dodavateli a pou\u017eit\u00e9 verzi Java.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.useraction=Pou\u017eijte spr\u00e1vn\u00e9ho dodavatele a verzi Java, kter\u00e1 je podporov\u00e1na pro modul Krb5LoginModule, nebo pou\u017eijte modul Krb5LoginModule, kter\u00fd je podporov\u00e1n dodavatelem a verz\u00ed Java.
+
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS=CWWKS1144E: Volby p\u0159ihla\u0161ovac\u00edho modulu {0} nejsou podporov\u00e1ny u dodavatele {1} a verze {2} Java.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.explanation=Volby Krb5LoginModule uveden\u00e9 v souboru server.xml, souboru jaas.conf nebo v obou souborech nejsou podporov\u00e1ny v dodavateli a pou\u017eit\u00e9 verzi Java.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=Ov\u011b\u0159te, \u017ee v\u0161echny volby Krb5LoginModule uveden\u00e9 v souboru server.xml, souboru jaas.conf nebo v obou souborech, jsou podporov\u00e1ny dodavatelem a verz\u00ed Java.
+
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Polo\u017eku jaasLoginContext {0} nelze ur\u010dit jako polo\u017eku konfigurace JAAS v souboru server.xml, souboru jaas.conf nebo v obou souborech.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=B\u011bhov\u00e9 prost\u0159ed\u00ed pou\u017e\u00edv\u00e1 v\u00fdchoz\u00ed konfiguraci Krb5LoginModule a konfiguraci SPNEGO v souboru server.xml.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Odeberte polo\u017eku jaasLoginContext ze souboru server.xml nebo nechte b\u011bhov\u00e9 prost\u0159ed\u00ed pou\u017e\u00edt v\u00fdchoz\u00ed polo\u017eku.

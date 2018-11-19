@@ -1545,7 +1545,15 @@ programmatic.session.cookie.retrieve.cell.xml.failure.useraction=Ov\u011b\u0159t
 
 AsyncContext.lock.already.held=SRVE8113W: Nelze z\u00edskat z\u00e1mek. Chyba zpracov\u00e1n\u00ed ji\u017e byla vyvol\u00e1na jin\u00fdm podprocesem.
 AsyncContext.lock.already.held.explanation=Chyba zpracov\u00e1n\u00ed ji\u017e byla vyvol\u00e1na jin\u00fdm podprocesem.
-AsyncContext.lock.already.held.useraction=Ov\u011b\u0159te, \u017ee aplikace zde m\u016f\u017ee zpracovat v\u00fdjimku. Pokud je nezbytn\u00e9, aby se provedl n\u00e1vrat z t\u00e9to metody i v p\u0159\u00edpad\u011b ne\u00fasp\u011b\u0161n\u00e9ho vol\u00e1n\u00ed, kontaktujte podporu IBM.
+AsyncContext.lock.already.held.useraction=Ov\u011b\u0159te, \u017ee aplikace zde m\u016f\u017ee zpracovat v\u00fdjimku. Pokud je nezbytn\u00e9, aby se provedl n\u00e1vrat z t\u00e9to metody i v p\u0159\u00edpad\u011b ne\u00fasp\u011b\u0161n\u00e9ho vol\u00e1n\u00ed, zva\u017ete nastaven\u00ed p\u0159izp\u016fsoben\u00e9 vlastnosti throwexceptionwhenunabletocompleteordispatch na false.
+
+Cannot.set.session.cookie.Response.already.committed=SRVE8114W: VAROV\u00c1N\u00cd: Nelze nastavit soubor cookie relace. Odpov\u011b\u010f ji\u017e byla potvrzena.
+Cannot.set.session.cookie.Response.already.committed.explanation=Po potvrzen\u00ed odezvy nem\u016f\u017ee nastavit soubor cookie relace.
+Cannot.set.session.cookie.Response.already.committed.useraction=Ov\u011b\u0159te, zda je toto vol\u00e1n\u00ed pot\u0159ebn\u00e9. Pot\u0159ebujete-li nastavit soubor cookie relace, nastavte jej p\u0159ed potvrzen\u00edm odezvy.
+
+Cannot.set.status.Response.already.committed=SRVE8115W: VAROV\u00c1N\u00cd: Nelze nastavit stav. Odpov\u011b\u010f ji\u017e byla potvrzena.
+Cannot.set.status.Response.already.committed.explanation=Po potvrzen\u00ed odezvy nem\u016f\u017ee nastavit stavov\u00fd k\u00f3d odezvy.
+Cannot.set.status.Response.already.committed.useraction=Ov\u011b\u0159te, zda je toto vol\u00e1n\u00ed pot\u0159ebn\u00e9. Pot\u0159ebujete-li nastavit stavov\u00fd k\u00f3d odezvy, nastavte jej p\u0159ed potvrzen\u00edm odezvy.
 
 servlet.with.same.name.already.exists=SRVE8500W: Servlet s n\u00e1zvem {0} nelze dynamicky p\u0159idat, proto\u017ee konfigurace servletu s t\u00edmto n\u00e1zvem ji\u017e existuje. 
 servlet.with.same.name.already.exists.explanation=Servlet s t\u00edmto n\u00e1zvem ji\u017e pro tuto aplikaci existuje.

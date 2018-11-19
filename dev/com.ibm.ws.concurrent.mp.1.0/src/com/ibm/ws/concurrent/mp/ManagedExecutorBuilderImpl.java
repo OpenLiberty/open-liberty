@@ -28,7 +28,7 @@ import com.ibm.ws.threading.PolicyExecutor;
  * Builder that programmatically configures and creates ManagedExecutor instances.
  */
 class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
-    private static final AtomicLong instanceCount = new AtomicLong();
+    static final AtomicLong instanceCount = new AtomicLong();
 
     private final ConcurrencyProviderImpl concurrencyProvider;
     private final ArrayList<ThreadContextProvider> contextProviders;
@@ -76,16 +76,24 @@ class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
             ContextOp op = propagated.contains(contextType) ? ContextOp.PROPAGATED //
                             : cleared.contains(contextType) ? ContextOp.CLEARED //
                                             : remaining;
-            if (op != ContextOp.UNCHANGED)
-                configPerProvider.put(provider, op);
+            configPerProvider.put(provider, op);
         }
 
         // unknown thread context types
         if (unknown.size() > 0)
-            throw new IllegalArgumentException(unknown.toString());
+            throw new IllegalStateException(unknown.toString()); // TODO meaningful error message
 
-        // TODO generate better formated identifier without commas and spaces
-        String name = "ManagedExecutor-" + maxAsync + '-' + maxQueued + '-' + propagated + "#" + instanceCount.incrementAndGet();
+        StringBuilder nameBuilder = new StringBuilder("ManagedExecutor_") //
+                        .append(maxAsync).append('_') //
+                        .append(maxQueued).append('_');
+
+        for (String propagatedType : propagated)
+            if (propagatedType.matches("\\w*")) // one or more of a-z, A-Z, _, 0-9
+                nameBuilder.append(propagatedType).append('_');
+
+        nameBuilder.append(instanceCount.incrementAndGet());
+
+        String name = nameBuilder.toString();
 
         PolicyExecutor policyExecutor = concurrencyProvider.policyExecutorProvider.create(name) //
                         .maxConcurrency(maxAsync) //
@@ -105,14 +113,16 @@ class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
 
     @Override
     public ManagedExecutorBuilder maxAsync(int max) {
-        // TODO validation
+        if (max == 0 || max < -1)
+            throw new IllegalArgumentException(Integer.toString(max));
         maxAsync = max;
         return this;
     }
 
     @Override
     public ManagedExecutorBuilder maxQueued(int max) {
-        // TODO validation
+        if (max == 0 || max < -1)
+            throw new IllegalArgumentException(Integer.toString(max));
         maxQueued = max;
         return this;
     }

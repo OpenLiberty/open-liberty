@@ -624,3 +624,11 @@ ssl.defaultKeyStore.not.created.CWPKI0819I.useraction=No se requiere ninguna acc
 ssl.defaultKeyStore.env.password.CWPKI0820A=CWPKI0820A: El almac\u00e9n de claves predeterminado se ha creado con la variable de entorno 'keystore_password'.
 ssl.defaultKeyStore.env.password.CWPKI0820A.explanation=El almac\u00e9n de claves predeterminado se ha creado con la variable de entorno 'keystore_password'. Se genera en el archivo server.env durante la creaci\u00f3n del servidor o se sustituye en el entorno en el que se ha iniciado el servidor.
 ssl.defaultKeyStore.env.password.CWPKI0820A.useraction=No se requiere ninguna acci\u00f3n.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.loaded.CWPKI0821I=CWPKI0821I: Se ha cargado el almac\u00e9n de claves {1} predeterminado con el tipo de almac\u00e9n de claves {2}.
+ssl.defaultKeyStore.loaded.CWPKI0821I.explanation=Se han cargado el almac\u00e9n de claves predeterminado en la ubicaci\u00f3n especificada y el tipo de almac\u00e9n de claves.
+ssl.defaultKeyStore.loaded.CWPKI0821I.useraction=No se requiere ninguna acci\u00f3n.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W=CWPKI0822W: Se ha especificado una configuraci\u00f3n m\u00ednima predeterminada de almac\u00e9n de claves y los almacenes de clave key.jks y key.p12 existen en la ubicaci\u00f3n de almac\u00e9n de claves predeterminada. Se utilizar\u00e1 key.jks como almac\u00e9n de claves predeterminado.
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.explanation=Con una configuraci\u00f3n m\u00ednima predeterminada de almac\u00e9n de claves, y con los archivos key.jks y key.p12 definidos en la ubicaci\u00f3n de almac\u00e9n de claves predeterminada, el archivo key.jks se utilizar\u00e1 como almac\u00e9n de claves predeterminado.
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.useraction=Para hacer que el archivo key.p12 sea el almac\u00e9n de claves predeterminado, cambie la configuraci\u00f3n de almac\u00e9n de claves de modo que especifique la ubicaci\u00f3n de key.p12 o elimine el archivo key.jks de la configuraci\u00f3n. Para continuar con el archivo key.jks como almac\u00e9n de claves predeterminado, no es necesario realizar ning\u00fan cambio.

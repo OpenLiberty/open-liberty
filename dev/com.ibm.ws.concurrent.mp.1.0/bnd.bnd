@@ -22,6 +22,10 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: concurrent
 
+Import-Package:\
+  javax.inject;resolution:=optional,\
+  *
+
 Private-Package:\
   com.ibm.ws.concurrent.mp.*
     
@@ -31,7 +35,8 @@ instrument.classesExcludes: com/ibm/ws/concurrent/mp/resources/*.class
   com.ibm.ws.concurrent.mp.ConcurrencyProviderImpl,\
   com.ibm.ws.concurrent.mp.ContextServiceImpl,\
   com.ibm.ws.concurrent.mp.ManagedExecutorImpl,\
-  com.ibm.ws.concurrent.mp.ManagedScheduledExecutorImpl
+  com.ibm.ws.concurrent.mp.ManagedScheduledExecutorImpl,\
+  com.ibm.ws.concurrent.mp.MicroProfileClearedContextProvider
 
 -buildpath: \
   com.ibm.websphere.appserver.spi.logging,\

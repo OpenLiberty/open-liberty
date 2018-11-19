@@ -143,7 +143,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         AuthResult result = authResult.getStatus();
         if (result != AuthResult.CONTINUE) {
             if (!isNewAuth) {
-                if (authResult.getAuditAuthConfigProviderAuthType() == "BASIC") {
+                if ("BASIC".equals(authResult.getAuditAuthConfigProviderAuthType())) {
                     // check BA header, and if it exists, use denied and set username, otherwise, challenge
                     String authHeader = webRequest.getHttpServletRequest().getHeader("Authorization");
                     if (authHeader != null && authHeader.startsWith("Basic ")) {

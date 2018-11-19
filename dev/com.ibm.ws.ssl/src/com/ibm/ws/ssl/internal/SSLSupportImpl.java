@@ -86,10 +86,12 @@ public class SSLSupportImpl implements SSLSupport {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "updatedSSLSupportOptional: delegate: " + delegate + " props: " + props);
         }
-        this.props = props;
-        ServiceRegistration<SSLSupport> registration = this.registration;
-        if (registration != null) {
-            registration.setProperties(new Hashtable<String, Object>(this.props));
+        if (props != null) {
+            this.props = props;
+            ServiceRegistration<SSLSupport> registration = this.registration;
+            if (registration != null) {
+                registration.setProperties(new Hashtable<String, Object>(this.props));
+            }
         }
     }
 

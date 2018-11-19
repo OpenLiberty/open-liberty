@@ -31,14 +31,15 @@ import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
 public class ConcurrencyManagerImpl implements ConcurrencyManager {
     private static final TraceComponent tc = Tr.register(ConcurrencyManagerImpl.class);
 
-    private final ConcurrencyProviderImpl concurrencyProvider;
+    final ConcurrencyProviderImpl concurrencyProvider;
 
     /**
-     * List of available thread context providers, ordered according to their prerequisites.
+     * List of available thread context providers.
+     * Container-implemented context providers are ordered according to their prerequisites.
      * This is the order in which thread context should be captured and applied to threads.
      * It is the reverse of the order in which thread context is restored on threads.
      */
-    private final ArrayList<ThreadContextProvider> contextProviders = new ArrayList<ThreadContextProvider>();
+    final ArrayList<ThreadContextProvider> contextProviders = new ArrayList<ThreadContextProvider>();
 
     /**
      * Merge built-in thread context providers from the container with those found
@@ -87,6 +88,6 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
 
     @Override
     public ThreadContextBuilder newThreadContextBuilder() {
-        return new ThreadContextBuilderImpl(contextProviders);
+        return new ThreadContextBuilderImpl(this, contextProviders);
     }
 }

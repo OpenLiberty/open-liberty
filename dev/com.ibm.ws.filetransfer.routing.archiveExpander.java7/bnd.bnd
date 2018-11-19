@@ -19,4 +19,4 @@ publish.wlp.jar.disabled: true
 
 -buildpath: \
 	com.ibm.ws.filetransfer.routing.archiveExpander.common;version=latest,\
-	com.ibm.ws.org.apache.commons.compress.1.10;version=latest
+	com.ibm.ws.org.apache.commons.compress;version=latest

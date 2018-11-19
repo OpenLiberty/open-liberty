@@ -67,3 +67,15 @@ JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=Verifique que todos los m\u0
 JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: Se ha especificado un nombre de configuraci\u00f3n de inicio de sesi\u00f3n {0} duplicado en la configuraci\u00f3n JAAS y los archivos server.xml/client.xml. Se utilizar\u00e1 el nombre de configuraci\u00f3n de inicio de sesi\u00f3n en el archivo server.xml/client.xml.
 JAAS_DUPLICATE_ENTRY_NAME.explanation=Se ha especificado un nombre de configuraci\u00f3n de inicio de sesi\u00f3n duplicado en el archivo de configuraci\u00f3n JAAS y el archivo server.xml/client.xml
 JAAS_DUPLICATE_ENTRY_NAME.useraction=Verifique el archivo de configuraci\u00f3n JAAS y el archivo server.xml/client.xml.
+
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR=CWWKS1143E: El proveedor de Java {2} no admite el m\u00f3dulo de inicio de sesi\u00f3n de {0} para la versi\u00f3n {1}.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.explanation=El m\u00f3dulo Krb5LoginModule especificado en el archivo server.xml, en el archivo jaas.conf o en ambos archivos no est\u00e1 soportado en el proveedor y la versi\u00f3n de Java que se ha utilizado.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.useraction=Utilice el proveedor y la versi\u00f3n de Java correctos soportados para el m\u00f3dulo Krb5LoginModule o utilice un m\u00f3dulo Krb5LoginModule soportado por el proveedor y la versi\u00f3n de Java.
+
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS=CWWKS1144E: Las opciones de m\u00f3dulo de inicio de sesi\u00f3n {0} no est\u00e1n soportadas con el proveedor de Java {1} y versi\u00f3n {2}.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.explanation=Las opciones de Krb5LoginModule especificadas en el archivo server.xml, en el archivo jaas.conf o en ambos archivos, no est\u00e1n soportadas en el proveedor y la versi\u00f3n de Java que se han utilizado.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=Verifique que todas las opciones de Krb5LoginModule que se han especificado en el archivo server.xml, en el archivo jaas.conf o en ambos archivos est\u00e9n soportadas en el proveedor y la versi\u00f3n de Java.
+
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Una entrada {0} jaasLoginContext no se puede especificar como una entrada de configuraci\u00f3n JAAS en el archivo server.xml, en el archivo jaas.conf o en ambos archivos.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=El tiempo de ejecuci\u00f3n utiliza una configuraci\u00f3n predeterminada de Krb5LoginModule y la configuraci\u00f3n de SPNEGO en el archivo server.xml.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Elimine la entrada jaasLoginContext del archivo server.xml o deje que el tiempo de ejecuci\u00f3n utilice la entrada predeterminada.

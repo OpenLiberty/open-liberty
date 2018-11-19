@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import org.eclipse.microprofile.concurrent.ThreadContext;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.mp.ContextOp;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
@@ -21,6 +22,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * Partial implementation of MicroProfile Application context, backed by Liberty's
  * Classloader Context and JEE Metadata Context.
  */
+@Trivial
 public class ApplicationContextProvider extends ContainerContextProvider {
     public final AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> classloaderContextProviderRef = new AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider>("ClassloaderContextProvider");
     public final AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> jeeMetadataContextProviderRef = new AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider>("JeeMetadataContextProvider");

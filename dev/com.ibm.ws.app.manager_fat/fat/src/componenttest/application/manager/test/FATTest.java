@@ -54,6 +54,8 @@ import test.utils.TestUtils;
 public class FATTest extends AbstractAppManagerTest {
 
     /**  */
+    private static final String UPDATED_MESSAGE = "this is an updated test servlet.";
+    /**  */
 
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("appManagerTestServer");
     private final Class<?> c = FATTest.class;
@@ -120,7 +122,7 @@ public class FATTest extends AbstractAppManagerTest {
             br = HttpUtils.getConnectionStream(con);
             line = br.readLine();
             assertTrue("The response did not contain the \'updated test servlet\'",
-                       line.contains("this is an updated test servlet."));
+                       line.contains(UPDATED_MESSAGE));
             con.disconnect();
 
             // remove file
@@ -197,8 +199,17 @@ public class FATTest extends AbstractAppManagerTest {
             con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
             br = HttpUtils.getConnectionStream(con);
             line = br.readLine();
+            if (!line.contains(UPDATED_MESSAGE)) {
+                // It's possible that we're restarting twice because the file monitor picked up the changes in the middle
+                // of the unzip. If that happens, wait for another updated message and try again.
+                assertNotNull("The application testWarApplication did not appear to have been updated a second time.",
+                              server.waitForStringInLog("CWWKZ0003I.* testWarApplication|CWWKZ0062I.* testWarApplication"));
+                con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
+                br = HttpUtils.getConnectionStream(con);
+                line = br.readLine();
+            }
             assertTrue("The response did not contain the \'updated test servlet\' : " + line,
-                       line.contains("this is an updated test servlet."));
+                       line.contains(UPDATED_MESSAGE));
 
             //add a file, only WEB-INF is monitored so add it in there
             server.setMarkToEndOfLog();
@@ -569,7 +580,7 @@ public class FATTest extends AbstractAppManagerTest {
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String line = br.readLine();
             assertTrue("The response did not contain the \'Test servlet\'",
-                       line.contains("this is an updated test servlet."));
+                       line.contains(UPDATED_MESSAGE));
             con.disconnect();
 
             //now we have confirmed it is excluding .txt file updates, add a non txt file and make sure it updates
@@ -618,7 +629,7 @@ public class FATTest extends AbstractAppManagerTest {
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String line = br.readLine();
             assertTrue("The response did not contain the \'Test servlet\'",
-                       line.contains("this is an updated test servlet."));
+                       line.contains(UPDATED_MESSAGE));
             con.disconnect();
 
             //now we have confirmed it is installed and running correctly, add an excluded file type, only web-inf is monitored so copy it to there
@@ -695,7 +706,7 @@ public class FATTest extends AbstractAppManagerTest {
                 BufferedReader br = HttpUtils.getConnectionStream(con);
                 String line = br.readLine();
                 assertTrue("The response did not contain the \'Test servlet\'",
-                           line.contains("this is an updated test servlet."));
+                           line.contains(UPDATED_MESSAGE));
                 con.disconnect();
             } finally {
                 // manually do this clean up because the stopServer command will try
