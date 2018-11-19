@@ -172,6 +172,7 @@ public class Constants {
     public final static String requestIsWrapped = "The httpServletRequest has been wrapped by httpServletRequestWrapper.";
     public final static String responseIsWrapped = "The httpServletRestponse has been wrapped by httpServletResponseWrapper.";
     public final static String secContextGetPrincipal = "securityContext.getCallerPrincipal():";
+    public final static String secContextGetPrincipalNull = "securityContext.getCallerPrincipal(): null";
     public final static String secContextGetPrincipalName = "securityContext.getCallerPrincipal().getName():";
     public final static String secContextIsCallerInRole = "securityContext.isCallerInRole";
 
