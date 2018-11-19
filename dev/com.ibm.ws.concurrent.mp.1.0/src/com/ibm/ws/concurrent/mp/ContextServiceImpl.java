@@ -116,7 +116,7 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
 
             if (!managedExecutorRef.compareAndSet(null, executor)) {
                 // Another thread updated the reference first. Discard the instance we created and use the other.
-                executor.shutdown();
+                policyExecutor.shutdown();
                 executor = managedExecutorRef.get();
             }
         }
