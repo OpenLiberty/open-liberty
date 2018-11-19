@@ -461,7 +461,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     /** {@inheritDoc} */
     @Override
     @Trivial
-    public void shutdown() {
+    public final void shutdown() {
         // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException
         throw new IllegalStateException(new UnsupportedOperationException("shutdown"));
     }
@@ -469,7 +469,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     /** {@inheritDoc} */
     @Override
     @Trivial
-    public List<Runnable> shutdownNow() {
+    public final List<Runnable> shutdownNow() {
         // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException
         throw new IllegalStateException(new UnsupportedOperationException("shutdownNow"));
     }

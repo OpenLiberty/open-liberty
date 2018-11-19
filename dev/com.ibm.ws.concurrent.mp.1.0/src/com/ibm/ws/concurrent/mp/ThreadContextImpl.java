@@ -46,6 +46,15 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 class ThreadContextImpl implements ThreadContext, WSContextService {
     private static final TraceComponent tc = Tr.register(ThreadContextImpl.class);
 
+    // TODO: Verify this list when the 1.0 spec is finalized
+    public static final String[] BUILT_IN_TYPES = {
+                                                    ALL_REMAINING,
+                                                    APPLICATION,
+                                                    CDI,
+                                                    SECURITY,
+                                                    TRANSACTION
+    };
+
     /**
      * Map of thread context provider to type of instruction for applying context to threads.
      * The values are either PROPAGATED or CLEARED. Contexts types that should be left on the

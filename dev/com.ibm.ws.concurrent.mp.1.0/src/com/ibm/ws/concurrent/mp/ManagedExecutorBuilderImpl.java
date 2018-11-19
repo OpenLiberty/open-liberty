@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
@@ -69,8 +70,13 @@ class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
 
         LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider = new LinkedHashMap<ThreadContextProvider, ContextOp>();
 
+        // TODO: Take knownTypes processing off of the main code path, since this is only used on error path
+        Set<String> knownTypes = new HashSet<>();
+        for (String builtin : ThreadContextImpl.BUILT_IN_TYPES)
+            knownTypes.add(builtin);
         for (ThreadContextProvider provider : contextProviders) {
             String contextType = provider.getThreadContextType();
+            knownTypes.add(contextType);
             unknown.remove(contextType);
 
             ContextOp op = propagated.contains(contextType) ? ContextOp.PROPAGATED //
@@ -81,11 +87,14 @@ class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
 
         // unknown thread context types
         if (unknown.size() > 0)
-            throw new IllegalStateException(unknown.toString()); // TODO meaningful error message
+            throw new IllegalStateException("Unknown thread contexts specified: " + unknown.toString() +
+                                            ". Allowed thread contexts values are: " + knownTypes); // TODO translated error message
 
         StringBuilder nameBuilder = new StringBuilder("ManagedExecutor_") //
-                        .append(maxAsync).append('_') //
-                        .append(maxQueued).append('_');
+                        .append(maxAsync)
+                        .append('_') //
+                        .append(maxQueued)
+                        .append('_');
 
         for (String propagatedType : propagated)
             if (propagatedType.matches("\\w*")) // one or more of a-z, A-Z, _, 0-9

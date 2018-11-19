@@ -24,6 +24,9 @@ WS-TraceGroup: concurrent
 
 Private-Package:\
   com.ibm.ws.concurrent.mp.cdi.*
+  
+Include-Resource: \
+  META-INF=resources/META-INF
     
 instrument.classesExcludes: com/ibm/ws/concurrent/mp/cdi/resources/*.class
 
