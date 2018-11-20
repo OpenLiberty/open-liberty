@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.faulttolerance20.impl;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
@@ -87,7 +88,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
 
         executionContext.setCallable(callable);
 
-        W returnWrapper = createReturnWrapper();
+        W returnWrapper = createReturnWrapper(executionContext);
         executionContext.setReturnWrapper(returnWrapper);
 
         RetryState retryState = FaultToleranceStateFactory.INSTANCE.createRetryState(retryPolicy);
@@ -104,7 +105,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
      *
      * @return the wrapper instance
      */
-    abstract protected W createReturnWrapper();
+    abstract protected W createReturnWrapper(AsyncExecutionContextImpl<W> executionContext);
 
     /**
      * Stores the result of the execution inside the wrapper instance
@@ -148,6 +149,12 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
             finalizeAttempt(attemptContext, MethodResult.failure(new BulkheadException()));
             return;
         }
+
+        // Update what we should do if the user cancels the execution
+        executionContext.setCancelCallback((mayInterrupt) -> {
+            ref.abort(mayInterrupt);
+            finalizeAttempt(attemptContext, MethodResult.failure(new CancellationException()));
+        });
 
         timeout.start(handleExceptions(() -> timeout(attemptContext, ref), attemptContext, executionContext));
     }
@@ -196,7 +203,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
             Tr.event(tc, "Method {0} timed out, attempting to cancel execution attempt", attemptContext.getExecutionContext().getMethod());
         }
 
-        ref.abort();
+        ref.abort(true);
 
         MethodResult<W> result = MethodResult.failure(new TimeoutException());
         finalizeAttempt(attemptContext, result);
@@ -232,8 +239,8 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
 
             circuitBreaker.recordResult(result);
 
-            // Note: don't process retries or fallback for internal failures
-            if (!result.isInternalFailure()) {
+            // Note: don't process retries or fallback for internal failures or if the user has cancelled the execution
+            if (!result.isInternalFailure() && !executionContext.isCancelled()) {
                 RetryResult retryResult = executionContext.getRetryState().recordResult(result);
                 if (retryResult.shouldRetry()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {

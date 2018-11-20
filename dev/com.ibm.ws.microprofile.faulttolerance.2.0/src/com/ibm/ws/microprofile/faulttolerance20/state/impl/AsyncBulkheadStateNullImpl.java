@@ -38,8 +38,8 @@ public class AsyncBulkheadStateNullImpl implements AsyncBulkheadState {
         }
 
         @Override
-        public void abort() {
-            future.cancel(true);
+        public void abort(boolean mayInterrupt) {
+            future.cancel(mayInterrupt);
         }
 
         @Override
