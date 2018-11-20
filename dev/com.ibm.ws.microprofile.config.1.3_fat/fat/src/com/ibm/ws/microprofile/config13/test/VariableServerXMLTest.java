@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collections;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -94,9 +95,7 @@ public class VariableServerXMLTest extends FATServletClient {
         server.setMarkToEndOfLog();
         server.copyFileToLibertyServerRoot(filename);
 
-        // Wait for message: "the server configuration was successfully updated"
-        assertNotNull("The variableServerXMLApp.xml was not updated",
-                      server.waitForStringInLog("CWWKG0017I"));
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false);
 
         Thread.sleep(DEFAULT_DYNAMIC_REFRESH_INTERVAL * 2); // We need this pause so that the MP config change is picked up through the polling mechanism
     }
