@@ -15,6 +15,37 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.AbstractSearchA;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.AbstractSearchB;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericArraySearchA;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericArraySearchB;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericComplexSearchA;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericComplexSearchB;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericLongSearchA;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericLongSearchB;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericLongSearchC;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericSearchA;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericSearchB;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericWildcardSearchA;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.GenericWildcardSearchB;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.InPackageSearchA;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.InPackageSearchB;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.InterfaceSearchA;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.InterfaceSearchB;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.InterfaceSearchC;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.PrivateSearch;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.SimpleSearch;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.SuperclassSearchA;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.SuperclassSearchB;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.VarargsSearch;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.WildcardSearch;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.invalid.OutOfPackageSearchA;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.invalid.SubclassSearchA;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.invalid.SubclassSearchB;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.invalid.SuperclassPrivateSearchA;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.invalid.SuperclassPrivateSearchB;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.invalid.WildcardNegativeSearch;
+import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.invalid.subpackage.OutOfPackageSearchB;
 import com.ibm.ws.fat.util.SharedServer;
 
 import componenttest.annotation.AllowedFFDC;
@@ -33,8 +64,7 @@ public class ValidationTest {
     @AfterClass
     public static void shutdown() throws Exception {
         if (SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().stopServer("CWMFT50[01][0-9]E.*badMethod",
-                                                        "CWMFT5019W.*badMethod");
+            SHARED_SERVER.getLibertyServer().stopServer();
         }
     }
 
@@ -58,7 +88,7 @@ public class ValidationTest {
     public void testFallbackMethodNotExist() {
         AppValidator.validateAppOn(SHARED_SERVER)
                         .withClass(FallbackMethodNotExist.class)
-                        .failsWith("CWMFT5003E")
+                        .failsWith("CWMFT5021E")
                         .run();
     }
 
@@ -66,7 +96,7 @@ public class ValidationTest {
     public void testFallbackMethodWrongParameters() {
         AppValidator.validateAppOn(SHARED_SERVER)
                         .withClass(FallbackMethodWrongParameters.class)
-                        .failsWith("CWMFT5003E")
+                        .failsWith("CWMFT5021E")
                         .run();
     }
 
@@ -74,7 +104,7 @@ public class ValidationTest {
     public void testFallbackMethodWrongReturnType() {
         AppValidator.validateAppOn(SHARED_SERVER)
                         .withClass(FallbackMethodWrongReturnType.class)
-                        .failsWith("CWMFT5002E")
+                        .failsWith("CWMFT5021E")
                         .run();
     }
 
@@ -243,6 +273,156 @@ public class ValidationTest {
         AppValidator.validateAppOn(SHARED_SERVER)
                         .withClass(CircuitBreakerFailOnEmpty.class)
                         .failsWith("CWMFT5018E")
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodSimple() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(SimpleSearch.class)
+                        .succeeds()
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodPrivate() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(PrivateSearch.class)
+                        .succeeds()
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodInSuperclass() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(SuperclassSearchA.class)
+                        .withClass(SuperclassSearchB.class)
+                        .succeeds()
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodGeneric() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(GenericSearchA.class)
+                        .withClass(GenericSearchB.class)
+                        .succeeds()
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodGenericLong() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(GenericLongSearchA.class)
+                        .withClass(GenericLongSearchB.class)
+                        .withClass(GenericLongSearchC.class)
+                        .succeeds()
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodGenericComplex() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(GenericComplexSearchA.class)
+                        .withClass(GenericComplexSearchB.class)
+                        .succeeds()
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodGenericArray() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(GenericArraySearchA.class)
+                        .withClass(GenericArraySearchB.class)
+                        .succeeds()
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodInPackage() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(InPackageSearchA.class)
+                        .withClass(InPackageSearchB.class)
+                        .succeeds()
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodAbstract() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(AbstractSearchA.class)
+                        .withClass(AbstractSearchB.class)
+                        .succeeds()
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodOnInterface() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(InterfaceSearchA.class)
+                        .withClass(InterfaceSearchB.class)
+                        .withClass(InterfaceSearchC.class)
+                        .succeeds()
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodOutOfPackage() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(OutOfPackageSearchA.class)
+                        .withClass(OutOfPackageSearchB.class)
+                        .failsWith("CWMFT5021E")
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodSuperclassPrivate() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(SuperclassPrivateSearchA.class)
+                        .withClass(SuperclassPrivateSearchB.class)
+                        .failsWith("CWMFT5021E")
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodSubclass() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(SubclassSearchA.class)
+                        .withClass(SubclassSearchB.class)
+                        .failsWith("CWMFT5021E")
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodWildcard() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(WildcardSearch.class)
+                        .succeeds()
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodGenericWildcard() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(GenericWildcardSearchA.class)
+                        .withClass(GenericWildcardSearchB.class)
+                        .succeeds()
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodWildcardNegative() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(WildcardNegativeSearch.class)
+                        .failsWith("CWMFT5021E")
+                        .run();
+    }
+
+    @Test
+    public void testFallbackMethodVarargs() {
+        AppValidator.validateAppOn(SHARED_SERVER)
+                        .withClass(VarargsSearch.class)
+                        .succeeds()
                         .run();
     }
 
