@@ -118,12 +118,23 @@ connectionpool.destroy.total.description=Die Gesamtzahl verwalteter Verbindungen
 connectionpool.managedConnections.description=Die Anzahl verwalteter Verbindungen in den freien, gemeinsam genutzten und nicht gemeinsam genutzten Pools.
 connectionpool.connectionHandles.description=Die Anzahl der Verbindungen, die im Gebrauch sind. Dieser Wert kann mehrere Verbindungen enthalten, die von einer einzigen verwalteten Verbindung gemeinsam genutzt werden.
 connectionpool.freeConnections.description=Die Anzahl verwalteter Verbindungen im freien Pool.
+connectionpool.waitTime.total.description=Die Gesamtwartezeit bei allen Verbindungsanforderungen seit dem Start des Servers.
+connectionpool.inUseTime.total.description=Die Gesamtzeit, in der alle Verbindungen seit dem Start des Servers im Gebrauch sind.
+connectionpool.usedConnections.total.description=Die Gesamtzahl der Verbindungsanforderungen, die aufgrund eines vollen Verbindungspools seit dem Start des Servers gewartet haben, oder die seit dem Start des Servers nicht gewartet haben. Alle Verbindungen, die momentan im Gebrauch sind, werden in dieser Gesamtzahl nicht erfasst.
+connectionpool.queuedRequests.total.description=Die Gesamtzahl der Verbindungsanforderungen, die aufgrund eines vollen Verbindungspools seit dem Start des Servers auf eine Verbindung warten mussten.
 
 session.create.total.description=Die Anzahl der Sitzungen, die seit der Aktivierung dieser Metrik angemeldet wurden.
 session.liveSessions.description=Die Anzahl der Benutzer, die derzeit angemeldet sind.
 session.activeSessions.description=Die Anzahl gleichzeitig aktiver Sitzungen. (Eine Sitzung ist aktiv, wenn das Produkt momentan eine Anforderung verarbeitet, die diese Benutzersitzung verwendet.)
 session.invalidated.total.description=Die Anzahl der Sitzungen, die seit der Aktivierung dieser Metrik abgemeldet wurden.
 session.invalidatedbyTimeout.total.description=Die Anzahl der Sitzungen, die seit der Aktivierung dieser Metrik aufgrund einer Zeitlimit\u00fcberschreitung abgemeldet wurden.
+
+jaxws.invocations.total.description=Die Anzahl der Aufrufe an diesen Endpunkt bzw. diese Operation.
+jaxws.checkedApplicationFaults.total.description=Die Anzahl gepr\u00fcfter Anwendungsfehler.
+jaxws.logicalRuntimeFaults.total.description=Die Anzahl logischer Laufzeitfehler.
+jaxws.runtimeFaults.total.description=Die Anzahl der Laufzeitfehler.
+jaxws.uncheckedApplicationFaults.total.description=Die Anzahl nicht gepr\u00fcfter Anwendungsfehler.
+jaxws.responseTime.total.description=Die Gesamtantwortverarbeitungszeit seit dem Start des Servers.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message

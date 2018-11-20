@@ -688,6 +688,11 @@ warning.package.root.invalid=CWWKE0947W: L'option --server-root associ\u00e9e \u
 warning.package.root.invalid.explanation=L'utilisateur a \u00e9mis une demande de package avec une option --server-root sp\u00e9cifiant un argument vide alors que des extensions de produit ont \u00e9t\u00e9 d\u00e9tect\u00e9es. La racine de serveur par d\u00e9faut de wlp sera utilis\u00e9e.
 warning.package.root.invalid.useraction=Aucune action n'est requise.
 
+warning.package.root.invalid.runnable=CWWKE0948W: La combinaison de l'option --server-root et de --include=runnable n'est pas autoris\u00e9e. L'argument par d\u00e9faut wlp sera utilis\u00e9 pour la racine du serveur.
+warning.package.root.invalid.runnable.explanation=L'utilisateur a \u00e9mis une demande de package avec une option --server-root et --include=runnable alors que cette combinaison n'est pas autoris\u00e9e. La racine de serveur par d\u00e9faut wlp sera utilis\u00e9e.
+warning.package.root.invalid.runnable.useraction=Aucune action n'est \
+requise.
+
 info.serverStarting=D\u00e9marrage du serveur {0}.
 info.serverStarted=Le serveur {0} a d\u00e9marr\u00e9.
 info.serverStartedWithPID=Le serveur {0} a d\u00e9marr\u00e9 avec l''ID de processus {1}.

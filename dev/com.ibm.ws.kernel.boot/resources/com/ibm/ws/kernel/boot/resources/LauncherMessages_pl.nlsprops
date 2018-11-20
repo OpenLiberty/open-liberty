@@ -940,6 +940,10 @@ warning.package.root.invalid=CWWKE0947W: Opcja --server-root z pustym argumentem
 warning.package.root.invalid.explanation=U\u017cytkownik wykona\u0142 \u017c\u0105danie utworzenia pakietu z opcj\u0105 --server-root okre\u015blaj\u0105c\u0105 argument pusty i wykryto rozszerzenia produktu. Zostanie u\u017cyty domy\u015blny katalog g\u0142\u00f3wny serwera wlp.
 warning.package.root.invalid.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
+warning.package.root.invalid.runnable=CWWKE0948W: Opcja --server-root z opcj\u0105 --include=runnable nie jest dozwolon\u0105 kombinacj\u0105. Dla katalogu g\u0142\u00f3wnego serwera u\u017cywany jest argument domy\u015blny komendy o warto\u015bci wlp.
+warning.package.root.invalid.runnable.explanation=U\u017cytkownik wykona\u0142 \u017c\u0105danie utworzenia pakietu z opcj\u0105 --server-root i opcj\u0105 --include=runnable, co nie jest dozwolon\u0105 kombinacj\u0105. Zostanie u\u017cyty domy\u015blny katalog g\u0142\u00f3wny serwera - wlp.
+warning.package.root.invalid.runnable.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.
 info.serverStartedWithPID=Serwer {0} zosta\u0142 \

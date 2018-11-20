@@ -118,11 +118,23 @@ connectionpool.destroy.total.description=Nombre total de connexions g\u00e9r\u00
 connectionpool.managedConnections.description=Nombre de connexions g\u00e9r\u00e9es dans les pools libres, partag\u00e9s et non partag\u00e9s.
 connectionpool.connectionHandles.description=Nombre de connexions utilis\u00e9es. Il peut inclure plusieurs connexions partag\u00e9es \u00e0 partir d'une seule connexion g\u00e9r\u00e9e.
 connectionpool.freeConnections.description=Nombre de connexions g\u00e9r\u00e9es dans le pool libre.
+connectionpool.waitTime.total.description=Le temps total d'attente sur l'ensemble des demandes de connexion depuis que le serveur a d\u00e9marr\u00e9.
+connectionpool.inUseTime.total.description=Le temps total d'utilisation de l'ensemble des connexions depuis que le serveur a d\u00e9marr\u00e9.
+connectionpool.usedConnections.total.description=Le nombre total de demandes de connexion qui ont attendu en raison d'un pool de connexions complet ou qui n'ont pas eu \u00e0 attendre, depuis que le serveur a d\u00e9marr\u00e9. Ce total ne tient pas compte des connexions actuellement utilis\u00e9es.
+connectionpool.queuedRequests.total.description=Le nombre total de demandes de connexion qui ont d\u00fb attendre en raison d'un pool de connexions complet, depuis que le serveur a d\u00e9marr\u00e9.
+
 session.create.total.description=Nombre de sessions connect\u00e9es depuis l'activation de la m\u00e9trique.
 session.liveSessions.description=Nombre d'utilisateurs actuellement connect\u00e9s.
 session.activeSessions.description=Nombre de sessions actives simultan\u00e9ment. (Une session est active si le produit est en train de traiter une demande qui utilise cette session utilisateur).
 session.invalidated.total.description=Nombre de sessions d\u00e9connect\u00e9es depuis l'activation de cette m\u00e9trique.
 session.invalidatedbyTimeout.total.description=Nombre de sessions d\u00e9connect\u00e9es suite au d\u00e9passement du d\u00e9lai d'attente depuis l'activation de cette m\u00e9trique.
+
+jaxws.invocations.total.description=Le nombre d'appels \u00e0 ce point d'extr\u00e9mit\u00e9 ou \u00e0 cette op\u00e9ration.
+jaxws.checkedApplicationFaults.total.description=Le nombre de d\u00e9fauts d'application v\u00e9rifi\u00e9s.
+jaxws.logicalRuntimeFaults.total.description=Le nombre de d\u00e9fauts d'ex\u00e9cution logiques.
+jaxws.runtimeFaults.total.description=Le nombre de d\u00e9fauts d'ex\u00e9cution.
+jaxws.uncheckedApplicationFaults.total.description=Le nombre de d\u00e9fauts d'application non v\u00e9rifi\u00e9s.
+jaxws.responseTime.total.description=Temps total de traitement des r\u00e9ponses depuis que le serveur a d\u00e9marr\u00e9.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
