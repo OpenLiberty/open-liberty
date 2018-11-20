@@ -81,21 +81,6 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
 
     private static final boolean removeServletPathSlash = WCCustomProperties.REMOVE_TRAILING_SERVLET_PATH_SLASH;
     private boolean possibleSlashStarMapping = true; //PK39337
-    
-    //4666
-    private static final String SET_SERVLET_PATH_FOR_DEFAULT_MAPPING = WCCustomProperties.SERVLET_PATH_FOR_DEFAULT_MAPPING;
-    private static boolean isServletPathForDefaultMapping = false;
-    static{
-        if (SET_SERVLET_PATH_FOR_DEFAULT_MAPPING == null){
-            if (WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_40)
-                isServletPathForDefaultMapping = true;
-        }
-        else{
-            isServletPathForDefaultMapping =  Boolean.valueOf(SET_SERVLET_PATH_FOR_DEFAULT_MAPPING).booleanValue();
-        }
-        logger.logp(Level.FINE, CLASS_NAME,"static", "set servlet path for default mapping " + isServletPathForDefaultMapping);
-    }
-    //4666
 
     //other object not needing Cloning
     //========================
@@ -931,7 +916,7 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
             logger.logp(Level.FINE, CLASS_NAME,"setPathElements", "servletPath = " + servletPath +", pathInfo = " + pathInfo +" : this = " + this);
         }
         //PK39337 - start
-        if (removeServletPathSlash || isServletPathForDefaultMapping) { //4666 preserve the old removeServletPathSlash in case of migration/upgrade.
+        if (removeServletPathSlash) {
 
             boolean hasSlashStar = false;
             boolean isPossible = isPossibleSlashStarMapping();
@@ -975,7 +960,7 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
             }       		
         }
         //PK39337 - end
-        else if (servletPath.length()==1 && servletPath.charAt(0)=='/'){
+        else if (servletPath.length()==1 && servletPath.charAt(0)=='/' && !Boolean.valueOf(WCCustomProperties.SERVLET_PATH_FOR_DEFAULT_MAPPING).booleanValue()) {
             this._servletPath = "";
             if (pathInfo ==null)
                 this._pathInfo = "/";
