@@ -1645,7 +1645,7 @@ public class RecoveryManager implements Runnable {
 
         try {
             if (_leaseLog != null && closeLeaseLog) {
-//                _leaseLog.deleteServerLease(_failureScopeController.serverName());
+                _leaseLog.deleteServerLease(_failureScopeController.serverName());
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block

@@ -28,6 +28,7 @@ import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.jta.util.TranLogConfiguration;
+import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.logging.FFDCFilter;
 import com.ibm.tx.util.logging.Tr;
 import com.ibm.tx.util.logging.TraceComponent;
@@ -284,12 +285,14 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 int locked = CoordinationLock.LOCK_FAILURE;
                 if (tlc.type() == TranLogConfiguration.TYPE_CUSTOM) {
                     // TODO
+                    locked = CoordinationLock.LOCK_SUCCESS;
                 } else {
                     locked = new CoordinationLock(tranLogDirToUse).lock();
                 }
 
                 if (locked != CoordinationLock.LOCK_SUCCESS) {
                     _recoveryDirector.serialRecoveryComplete(this, fs);
+                    TMHelper.asynchRecoveryProcessingComplete(null);
 
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "initiateRecovery", "Could not lock tranlogs");
@@ -300,7 +303,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Test to see if peer recovery is supported -  ", _isPeerRecoverySupported);
                 if (_isPeerRecoverySupported) {
-
                     _leaseLog = rlm.getLeaseLog(localRecoveryIdentity,
                                                 _recoveryGroup,
                                                 cp.getLeaseLogDirectory(),

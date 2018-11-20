@@ -812,7 +812,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
      */
     @Override
     public boolean releasePeerLease(String recoveryIdentity) throws Exception {
-        // Noop in RDBMS implementation
+        deleteServerLease(recoveryIdentity);
         return true;
     }
 }

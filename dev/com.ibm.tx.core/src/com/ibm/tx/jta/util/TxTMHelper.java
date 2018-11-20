@@ -160,6 +160,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
     public void asynchRecoveryProcessingComplete(Throwable t) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "asynchRecoveryProcessingComplete", t);
+             resyncComplete(new RuntimeException(t));
     }
 
     /**

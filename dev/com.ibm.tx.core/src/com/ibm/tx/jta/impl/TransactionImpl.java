@@ -17,16 +17,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.transaction.Status;
 import javax.transaction.HeuristicCommitException;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.RollbackException;
-import javax.transaction.Status;
 import javax.transaction.Synchronization;
-import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
+
+import javax.transaction.SystemException;
 
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProvider;
@@ -1987,8 +1988,13 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             if (xaRes instanceof OnePhaseXAResource) {
                 getResources().enlistResource(xaRes);
             } else {
-
-                final int recoveryId = TransactionManagerFactory.getTransactionManager().registerResourceInfo("unused", new DirectEnlistXAResourceInfo(xaRes));
+                final int recoveryId;
+                if (!_disableTwoPhase) {
+                    recoveryId = TransactionManagerFactory.getTransactionManager().registerResourceInfo("unused", new DirectEnlistXAResourceInfo(xaRes));
+                } else {
+                    // This is an easy way to cause this enlist to fail with a ISE. We've got 2PC disabled but we're trying to enlist an XA resource so it did ought to fail.
+                    recoveryId = -1;
+                }
                 enlistResource(xaRes, recoveryId);
             }
         } catch (IllegalStateException ise) {

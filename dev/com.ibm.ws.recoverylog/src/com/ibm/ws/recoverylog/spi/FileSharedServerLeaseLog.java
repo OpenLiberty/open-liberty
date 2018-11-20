@@ -102,13 +102,13 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
      */
     public static FileSharedServerLeaseLog getFileSharedServerLeaseLog(String logDirStem, String leaseLogDir, String localRecoveryIdentity, String recoveryGroup) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "FileSharedServerLeaseLog", new Object[] { logDirStem, leaseLogDir, localRecoveryIdentity, recoveryGroup });
+            Tr.entry(tc, "getFileSharedServerLeaseLog", new Object[] { logDirStem, leaseLogDir, localRecoveryIdentity, recoveryGroup });
 
         if (_serverInstallLeaseLogDir == null)
             setLeaseLog(logDirStem, leaseLogDir, localRecoveryIdentity, recoveryGroup);
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "FileSharedServerLeaseLog", _fileLeaseLog);
+            Tr.exit(tc, "getFileSharedServerLeaseLog", _fileLeaseLog);
         return _fileLeaseLog;
     }
 
@@ -120,11 +120,13 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
         if (recoveryGroup == null)
             recoveryGroup = "defaultGroup";
 
-        if (leaseLogDir == null || "".equals(leaseLogDir.trim())) {
-            _serverInstallLeaseLogDir = System.getenv("WLP_USER_DIR") + File.separator + recoveryGroup;
+        if (leaseLogDir == null || leaseLogDir.trim().isEmpty()) {
+            _serverInstallLeaseLogDir = System.getenv("WLP_USER_DIR") + File.separator + "shared" + File.separator + recoveryGroup;
         } else {
             _serverInstallLeaseLogDir = leaseLogDir + (leaseLogDir.endsWith(File.separator) ? "" : File.separator) + recoveryGroup;
         }
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "_serverInstallLeaseLogDir: " + _serverInstallLeaseLogDir);
 
         // Cache the supplied information
         if (tranRecoveryLogDirStem != null) {
@@ -133,7 +135,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
             if (_leaseLogDirectory == null) {
                 _leaseLogDirectory = new File(_serverInstallLeaseLogDir);
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Have instantiated directory, " + _leaseLogDirectory);
+                    Tr.debug(tc, "Have instatiated directory: " + _leaseLogDirectory.getAbsolutePath());
 
                 AccessController.doPrivileged(new PrivilegedAction<Void>() {
                     @Override
@@ -153,7 +155,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
                                         Tr.debug(tc, "Lease log directory has been created");
                                     if (_controlFile.createNewFile()) {
                                         if (tc.isDebugEnabled())
-                                            Tr.debug(tc, "Control has been created");
+                                            Tr.debug(tc, "Control has been created: " + _controlFile.getAbsolutePath());
                                     }
                                 }
                             } catch (IOException e) {
