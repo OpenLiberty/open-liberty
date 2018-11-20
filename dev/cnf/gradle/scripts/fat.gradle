@@ -14,17 +14,6 @@ ext.autoFvtDir = new File(project.buildDir, 'autoFVT')
 // Local vars
 File publishDir = new File(autoFvtDir, 'publish')
 
-publishing {
-  publications {
-    maven(MavenPublication) {
-      artifactId project.name + '_autoFVT'
-      groupId 'test'
-      version project.version
-      artifact zipProjectFVT
-    }
-  }
-}
-
 task cleanFat(type: Delete) {
   delete autoFvtDir
 }
@@ -289,6 +278,17 @@ task zipProjectFVT(type: Zip) {
   baseName project.name
   into project.name + '/build/lib', {from "${distsDir}/autoFVT.zip"}
   into project.name, {from 'build-test.xml'}
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+      artifactId project.name + '_autoFVT'
+      groupId 'test'
+      version project.version
+      artifact zipProjectFVT
+    }
+  }
 }
 
 task runfat(type: Exec) {

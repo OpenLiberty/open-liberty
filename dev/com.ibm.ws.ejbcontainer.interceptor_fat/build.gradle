@@ -26,10 +26,12 @@ dependencies {
   ejbTools 'test:com.ibm.ws.ejbcontainer.fat_tools:1.+'
 }
 
-task addEJBTools << {
-  copy {
-    from configurations.ejbTools
-    into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer/lib/global"
+task addEJBTools {
+  doLast {
+    copy {
+      from configurations.ejbTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer/lib/global"
+    }
   }
 }
 
