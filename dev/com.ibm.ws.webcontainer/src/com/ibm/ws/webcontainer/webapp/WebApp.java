@@ -306,6 +306,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
     private static boolean errorExceptionTypeFirst = WCCustomProperties.ERROR_EXCEPTION_TYPE_FIRST;
     private static boolean initFilterBeforeServletInit = WCCustomProperties.INIT_FILTER_BEFORE_INIT_SERVLET; //PM62909
     //protected final static boolean stopAppStartupOnListenerException = WCCustomProperties.STOP_APP_STARTUP_ON_LISTENER_EXCEPTION ; //PI58875 update server.xml without restarting server may not pick up the change dynamically.
+    private static boolean SET_400_SC_ON_TOO_MANY_PARENT_DIRS = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.set400scontoomanyparentdirs")).booleanValue(); //PI80786
 
     private List<IServletConfig> sortedServletConfigs;
     private int effectiveMajorVersion;
@@ -4022,10 +4023,12 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             logger.entering(CLASS_NAME, "sendError", "error :" + error.getMessage());
 
         req.setAttribute("javax.servlet.jsp.jspException", error);
+        
+        WebContainerRequestState reqState = WebContainerRequestState.getInstance(true);   //PI80786
 
         // PK82794
         if (WCCustomProperties.SUPPRESS_LAST_ZERO_BYTE_PACKAGE)
-            WebContainerRequestState.getInstance(true).setAttribute("com.ibm.ws.webcontainer.suppresslastzerobytepackage", "true");
+            reqState.setAttribute("com.ibm.ws.webcontainer.suppresslastzerobytepackage", "true");
         // PK82794
 
         if (!res.isCommitted())
@@ -4059,6 +4062,18 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             // 198256 - end
             this.eventSource.onServletServiceDenied(new ServletErrorEvent(this, this, servletName, null, error));
         }
+        
+        //PI80786 set error code to 400 to avoid logging as 500
+        if (SET_400_SC_ON_TOO_MANY_PARENT_DIRS){
+            if(reqState.getAttribute("com.ibm.ws.webcontainer.set400") != null) {
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                    logger.logp(Level.FINE, CLASS_NAME, "sendError", "Setting the status code to 400");
+                }
+                error.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
+                reqState.removeAttribute("com.ibm.ws.webcontainer.set400");
+            }
+        }
+        //PI80786
 
         if (error.getErrorCode() >= 500) {
             if (servletName == null)
@@ -4219,7 +4234,6 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                     }
                 } catch (IllegalStateException ise) {
                     ServletOutputStream os = res.getOutputStream();
-                    WebContainerRequestState reqState = WebContainerRequestState.getInstance(true);
                     reqState.setAttribute("com.ibm.ws.webcontainer.AllowWriteFromE", true); 
                     if( WCCustomProperties.DISPLAY_TEXT_WHEN_NO_ERROR_PAGE_DEFINED == null) {                                             
                         // PM03788 Start
@@ -4961,6 +4975,20 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                 }
             }
         } catch (Throwable th) {
+            //PI80786
+            if (SET_400_SC_ON_TOO_MANY_PARENT_DIRS) { 
+                if(th.getMessage().contains("is invalid because it contains more references to parent directories")){
+                    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                        logger.logp(Level.FINE, CLASS_NAME, "handleRequest", "Request contains more ../ than allowed, will set 400 SC");
+                    }
+
+                    WebContainerRequestState reqState = WebContainerRequestState.getInstance(false);
+                    if(reqState != null)
+                        reqState.setAttribute("com.ibm.ws.webcontainer.set400", "true");
+                }
+            }
+            //PI80786
+
             boolean logStack = true;
             boolean donothandleexception = false;
             if (th instanceof ServletException) {
