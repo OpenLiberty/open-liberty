@@ -176,9 +176,9 @@ public class SelfExtract {
                 outputDirFromUser = new File(targetString.trim());
             }
 
-            if (outputDirFromUser.getPath().indexOf('~') >= 0) {
+            if (outputDirFromUser.getPath().charAt(0) == '~') {
                 String pathName = outputDirFromUser.getPath();
-                String pathNameToReturn = pathName.replaceAll("~", "");
+                String pathNameToReturn = pathName.substring(1);
                 String home = System.getenv("HOME");
                 pathNameToReturn = home + pathNameToReturn;
                 outputDirFromUser = new File(pathNameToReturn);
