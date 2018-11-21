@@ -176,12 +176,18 @@ public class SelfExtract {
                 outputDirFromUser = new File(targetString.trim());
             }
 
-            if (outputDirFromUser.getPath().charAt(0) == '~') {
-                String pathName = outputDirFromUser.getPath();
+            String pathName = outputDirFromUser.getPath();
+            if (pathName.startsWith("~")) {
                 String pathNameToReturn = pathName.substring(1);
                 String home = System.getenv("HOME");
-                pathNameToReturn = home + pathNameToReturn;
-                outputDirFromUser = new File(pathNameToReturn);
+                if (home == null) {
+                    home = System.getProperty("user.home");
+                }
+                if (home == null) {
+                    err("invalidInstall", pathName);
+                    System.exit(ReturnCode.BAD_INPUT);
+                }
+                outputDirFromUser = new File(home, pathNameToReturn);
             }
 
             outputDirFromUser = outputDirFromUser.getAbsoluteFile();
