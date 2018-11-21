@@ -107,7 +107,7 @@ class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
                         .maxConcurrency(maxAsync) //
                         .maxQueueSize(maxQueued);
 
-        ThreadContextImpl mpThreadContext = new ThreadContextImpl(configPerProvider);
+        ThreadContextImpl mpThreadContext = new ThreadContextImpl(concurrencyProvider, configPerProvider);
 
         return new ManagedExecutorImpl(name, policyExecutor, mpThreadContext, concurrencyProvider.transactionContextProvider.transactionContextProviderRef);
     }
