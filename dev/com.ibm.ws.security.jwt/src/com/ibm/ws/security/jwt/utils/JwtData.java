@@ -11,7 +11,6 @@
 package com.ibm.ws.security.jwt.utils;
 
 import java.security.Key;
-import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateKey;
 
 import org.jose4j.keys.HmacKey;
@@ -21,7 +20,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.jwk.impl.JWKProvider;
-import com.ibm.ws.security.common.jwk.impl.JwkKidBuilder;
 import com.ibm.ws.security.jwt.config.JwtConfig;
 import com.ibm.ws.security.jwt.internal.BuilderImpl;
 import com.ibm.ws.security.jwt.internal.JwtTokenException;
@@ -117,9 +115,8 @@ public class JwtData {
                         keyAlias = jwtConfig.getKeyAlias();
                         keyStoreRef = jwtConfig.getKeyStoreRef();
                         _signingKey = JwtUtils.getPrivateKey(keyAlias, keyStoreRef);
-                        _keyId = buildKidFromPublicKey(JwtUtils.getPublicKey(keyAlias, keyStoreRef));
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Key alias: " + keyAlias + ", Keystore: " + keyStoreRef+ ", kid: " + _keyId);
+                            Tr.debug(tc, "Key alias: " + keyAlias + ", Keystore: " + keyStoreRef);
                         }
                     }
 
@@ -132,7 +129,6 @@ public class JwtData {
                         // Object[] objs = new Object[] { signatureAlgorithm, errorMsg };
                         // noKeyException = JWTTokenException.newInstance(false, "JWT_BAD_SIGNING_KEY", objs);
                         _signingKey = null; // we will catch this later in jwtSigner
-                        _keyId = null;
                     }
                 }
             }
@@ -154,11 +150,6 @@ public class JwtData {
             throw JwtTokenException.newInstance(true, "JWT_NO_SIGNING_KEY_WITH_ERROR", objs);
         }
     }
-    
-    private String buildKidFromPublicKey(PublicKey cert)  {
-    	JwkKidBuilder kidbuilder = new JwkKidBuilder();
-        return kidbuilder.buildKeyId(cert);
-	}
 
     public String getSignatureAlgorithm() {
         return signatureAlgorithm;

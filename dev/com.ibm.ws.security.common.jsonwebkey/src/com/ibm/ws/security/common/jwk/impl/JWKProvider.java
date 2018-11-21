@@ -50,8 +50,6 @@ public class JWKProvider {
 
     protected PublicKey publicKey = null;
     protected PrivateKey privateKey = null;
-    
-    protected String publicKeyKid = null;
 
     protected JWKProvider() {
         this(DEFAULT_KEY_SIZE, RS256, DEFAULT_ROTATION_TIME);
@@ -97,15 +95,6 @@ public class JWKProvider {
 
         this.publicKey = publicKey;
         this.privateKey = privateKey;
-        this.publicKeyKid = buildKidFromPublicKey(this.publicKey);
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "kid = " + this.publicKeyKid);
-        }
-    }
-    
-    private String buildKidFromPublicKey(PublicKey cert) {
-        JwkKidBuilder kidbuilder = new JwkKidBuilder();
-        return kidbuilder.buildKeyId(cert);
     }
 
     public JSONWebKey getJWK() {
@@ -129,7 +118,7 @@ public class JWKProvider {
         JWK jwk = null;
         if (RS256.equals(alg)) {
             if (publicKey != null && privateKey != null) {
-                jwk = Jose4jRsaJWK.getInstance(alg, use, publicKey, privateKey, publicKeyKid);
+                jwk = Jose4jRsaJWK.getInstance(alg, use, publicKey, privateKey);
                 jwk.generateKey();
             } else {
                 jwk = generateRsaJWK(alg, size);
