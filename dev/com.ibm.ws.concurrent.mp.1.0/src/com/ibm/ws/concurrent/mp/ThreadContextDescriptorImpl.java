@@ -39,7 +39,6 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
 
     /**
      * List of thread context snapshots (either captured from the requesting thread or cleared/empty)
-     * which is ordered based on thread context provider prerequisites.
      */
     private ArrayList<com.ibm.wsspi.threadcontext.ThreadContext> contextSnapshots = new ArrayList<com.ibm.wsspi.threadcontext.ThreadContext>();
 

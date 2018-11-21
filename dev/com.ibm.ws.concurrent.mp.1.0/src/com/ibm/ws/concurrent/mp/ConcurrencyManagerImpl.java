@@ -14,9 +14,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.ServiceLoader;
 
-import org.eclipse.microprofile.concurrent.ManagedExecutorBuilder;
+import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.eclipse.microprofile.concurrent.ThreadContext;
-import org.eclipse.microprofile.concurrent.ThreadContextBuilder;
 import org.eclipse.microprofile.concurrent.spi.ConcurrencyManager;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 
@@ -26,7 +25,7 @@ import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
 
 /**
  * Concurrency manager, which includes the collection of ThreadContextProviders
- * for a particular class loader, ordered by their prerequisites.
+ * for a particular class loader.
  */
 public class ConcurrencyManagerImpl implements ConcurrencyManager {
     private static final TraceComponent tc = Tr.register(ConcurrencyManagerImpl.class);
@@ -82,12 +81,12 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
     }
 
     @Override
-    public ManagedExecutorBuilder newManagedExecutorBuilder() {
+    public ManagedExecutor.Builder newManagedExecutorBuilder() {
         return new ManagedExecutorBuilderImpl(concurrencyProvider, contextProviders);
     }
 
     @Override
-    public ThreadContextBuilder newThreadContextBuilder() {
+    public ThreadContext.Builder newThreadContextBuilder() {
         return new ThreadContextBuilderImpl(contextProviders);
     }
 }

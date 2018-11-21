@@ -11,7 +11,6 @@
 package org.test.context.location;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextSnapshot;
@@ -33,11 +32,6 @@ public class CityContextProvider implements ThreadContextProvider {
     @Override
     public ThreadContextSnapshot currentContext(Map<String, String> props) {
         return new CityContextSnapshot(cityName.get());
-    }
-
-    @Override // TODO remove this method once we pick up the binaries where prerequisite context is removed from the spec
-    public Set<String> getPrerequisites() {
-        return null;
     }
 
     @Override
