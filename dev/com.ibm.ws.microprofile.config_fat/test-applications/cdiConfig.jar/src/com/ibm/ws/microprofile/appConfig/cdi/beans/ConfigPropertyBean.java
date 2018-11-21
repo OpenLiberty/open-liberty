@@ -11,14 +11,11 @@
 package com.ibm.ws.microprofile.appConfig.cdi.beans;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Provider;
-
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 

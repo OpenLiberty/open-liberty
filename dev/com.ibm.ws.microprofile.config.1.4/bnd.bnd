@@ -22,11 +22,12 @@ Bundle-Description:MicroProfile Configuration 1.4 Implementation, version ${bVer
 testsrc: test/src
 
 Export-Package: \
-    !com.ibm.ws.microprofile.config14.resources, \
-    com.ibm.ws.microprofile.config14.*
+    com.ibm.ws.microprofile.config14.impl
+    
 
 Private-Package: \
-	com.ibm.ws.microprofile.config14.resources
+	com.ibm.ws.microprofile.config14.resources, \
+	com.ibm.ws.microprofile.config14.interfaces
 
 Import-Package: \
         org.eclipse.microprofile.config;version="[1.4,2)", \

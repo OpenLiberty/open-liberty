@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config14.archaius;
+package com.ibm.ws.microprofile.config14.impl;
 
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -17,7 +17,7 @@ import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
-import com.ibm.ws.microprofile.config13.archaius.Config13BuilderImpl;
+import com.ibm.ws.microprofile.config13.impl.Config13BuilderImpl;
 
 public class Config14BuilderImpl extends Config13BuilderImpl implements ConfigBuilder {
 
@@ -25,7 +25,7 @@ public class Config14BuilderImpl extends Config13BuilderImpl implements ConfigBu
      * Constructor
      *
      * @param classLoader the classloader which scopes this config
-     * @param executor the executor to use for async update threads
+     * @param executor    the executor to use for async update threads
      */
     public Config14BuilderImpl(ClassLoader classLoader, ScheduledExecutorService executor) {
         super(classLoader, executor);

@@ -44,6 +44,7 @@ import com.ibm.ws.microprofile.test.AbstractConfigTest;
 
 public class ConverterTest extends AbstractConfigTest {
 
+    @SuppressWarnings("unchecked")
     private static <T> T defaultConversion(Class<T> type, String value) {
         return (T) DefaultConverters.getDefaultConverters().getConverter(type).convert(value);
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,6 +54,7 @@ public abstract class AbstractConfig implements WebSphereConfig {
     /** {@inheritDoc} */
     @Override
     public Iterable<ConfigSource> getConfigSources() {
+        assertNotClosed();
         return sources;
     }
 
@@ -96,6 +97,10 @@ public abstract class AbstractConfig implements WebSphereConfig {
         }
     }
 
+    protected boolean isClosed() {
+        return this.closed;
+    }
+
     /** {@inheritDoc} */
     @Override
     @Trivial
@@ -133,14 +138,29 @@ public abstract class AbstractConfig implements WebSphereConfig {
     /** {@inheritDoc} */
     @Override
     public Object getValue(String propertyName, Type propertyType, boolean optional) {
+        Object value = getValue(propertyName, propertyType, optional, ConfigProperty.UNCONFIGURED_VALUE);
+        return value;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object getValue(String propertyName, Type propertyType, String defaultString) {
+        Object value = getValue(propertyName, propertyType, true, defaultString);
+        return value;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object getValue(String propertyName, Type propertyType, boolean optional, String defaultString) {
         Object value = null;
         assertNotClosed();
+
         SourcedValue sourced = getSourcedValue(propertyName, propertyType);
         if (sourced != null) {
             value = sourced.getValue();
         } else {
             if (optional) {
-                value = convertValue(ConfigProperty.UNCONFIGURED_VALUE, propertyType);
+                value = convertValue(defaultString, propertyType);
             } else {
                 throw new NoSuchElementException(Tr.formatMessage(tc, "no.such.element.CWMCG0015E", propertyName));
             }
@@ -150,24 +170,10 @@ public abstract class AbstractConfig implements WebSphereConfig {
 
     /** {@inheritDoc} */
     @Override
-    public Object getValue(String propertyName, Type propertyType, String defaultString) {
-        Object value = null;
-        assertNotClosed();
-
-        SourcedValue sourced = getSourcedValue(propertyName, propertyType);
-        if (sourced != null) {
-            value = sourced.getValue();
-        } else {
-            value = convertValue(defaultString, propertyType);
-        }
-        return value;
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public <T> T convertValue(String rawValue, Class<T> type) {
+        assertNotClosed();
         @SuppressWarnings("unchecked")
-        T value = (T) conversionManager.convert(rawValue, type);
+        T value = (T) getConversionManager().convert(rawValue, type);
         return value;
     }
 
@@ -175,8 +181,12 @@ public abstract class AbstractConfig implements WebSphereConfig {
     @Override
     public Object convertValue(String rawValue, Type type) {
         assertNotClosed();
-        Object value = conversionManager.convert(rawValue, type);
+        Object value = getConversionManager().convert(rawValue, type);
         return value;
+    }
+
+    public ConversionManager getConversionManager() {
+        return this.conversionManager;
     }
 
 }

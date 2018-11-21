@@ -40,7 +40,7 @@ public class ClassLoaderCacheTestServlet extends FATServlet {
         System.out.println("Resolver: " + resolver.getClass().getName());
         Method getConfigCacheSize = resolver.getClass().getMethod("getConfigCacheSize");
 
-        int size = (int) getConfigCacheSize.invoke(resolver, null);
+        int size = (int) getConfigCacheSize.invoke(resolver);
         System.out.println("Before: " + size);
         assertEquals("Wrong number of Configs in the cache", before, size);
 
@@ -52,7 +52,7 @@ public class ClassLoaderCacheTestServlet extends FATServlet {
         String testB = configB.getValue("TEST", String.class);
         assertEquals("Incorrect config value", "OK", testB);
 
-        size = (int) getConfigCacheSize.invoke(resolver, null);
+        size = (int) getConfigCacheSize.invoke(resolver);
         System.out.println("After: " + size);
         assertEquals("Wrong number of Configs in the cache", after, size);
     }
