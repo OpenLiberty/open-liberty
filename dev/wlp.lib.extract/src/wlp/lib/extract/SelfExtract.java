@@ -181,9 +181,6 @@ public class SelfExtract {
                 String pathNameToReturn = pathName.substring(1);
                 String home = System.getenv("HOME");
                 if (home == null) {
-                    home = System.getProperty("user.home");
-                }
-                if (home == null) {
                     err("invalidInstall", pathName);
                     System.exit(ReturnCode.BAD_INPUT);
                 }
