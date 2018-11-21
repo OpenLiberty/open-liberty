@@ -8,17 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config14.archaius;
+package com.ibm.ws.microprofile.config14.interfaces;
 
-import com.ibm.ws.microprofile.config.impl.AbstractConfigBuilder;
-import com.ibm.ws.microprofile.config13.archaius.Config13ProviderResolverImpl;
+import org.eclipse.microprofile.config.ConfigSnapshot;
 
-public class Config14ProviderResolverImpl extends Config13ProviderResolverImpl {
+import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 
-    /** {@inheritDoc} */
-    @Override
-    protected AbstractConfigBuilder newBuilder(ClassLoader classLoader) {
-        return new Config14BuilderImpl(classLoader, getScheduledExecutorService());
-    }
+public interface WebSphereConfigSnapshot extends ConfigSnapshot {
+
+    public SourcedValue getSourcedValue(String propertyName);
 
 }

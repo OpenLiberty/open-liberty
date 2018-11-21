@@ -28,8 +28,6 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
@@ -39,7 +37,6 @@ import com.ibm.ws.microprofile.config.sources.StaticConfigSource;
 
 public class CompositeConfig implements Closeable, ConfigListener {
 
-    private static final TraceComponent tc = Tr.register(CompositeConfig.class);
     private final CopyOnWriteArrayList<PollingDynamicConfig> children = new CopyOnWriteArrayList<PollingDynamicConfig>();
     private final CopyOnWriteArrayList<ConfigListener> listeners = new CopyOnWriteArrayList<ConfigListener>();
     private final ConversionManager conversionManager;

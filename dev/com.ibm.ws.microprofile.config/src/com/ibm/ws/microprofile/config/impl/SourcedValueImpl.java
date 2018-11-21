@@ -33,6 +33,14 @@ public class SourcedValueImpl implements SourcedValue {
         this.source = source;
     }
 
+    @Trivial
+    public SourcedValueImpl(SourcedValue original, Object value) {
+        this.key = original.getKey();
+        this.value = value;
+        this.type = original.getType();
+        this.source = original.getSource();
+    }
+
     /**
      * Get the key
      *

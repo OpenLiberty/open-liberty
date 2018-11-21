@@ -8,12 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.microprofile.config12.impl;
 
-/**
- * @version 2.0
- */
-@org.osgi.annotation.versioning.Version("2.0")
-@TraceOptions(traceGroup = "APPCONFIG", messageBundle = "com.ibm.ws.microprofile.config.resources.Config")
-package com.ibm.ws.microprofile.config.archaius;
+import com.ibm.ws.microprofile.config.impl.AbstractConfigBuilder;
+import com.ibm.ws.microprofile.config.impl.ConfigProviderResolverImpl;
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
+public class Config12ProviderResolverImpl extends ConfigProviderResolverImpl {
+
+    /** {@inheritDoc} */
+    @Override
+    protected AbstractConfigBuilder newBuilder(ClassLoader classLoader) {
+        return new Config12BuilderImpl(classLoader, getScheduledExecutorService());
+    }
+
+}

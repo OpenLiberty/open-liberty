@@ -249,7 +249,7 @@ public class StressTestServlet extends FATServlet {
             // Should be empty.
             Config configE = ConfigProvider.getConfig();
             Iterable<String> names = configE.getPropertyNames();
-            for (Iterator iterator = names.iterator(); iterator.hasNext();) {
+            for (Iterator<String> iterator = names.iterator(); iterator.hasNext();) {
                 passed = false;
                 break;
             }

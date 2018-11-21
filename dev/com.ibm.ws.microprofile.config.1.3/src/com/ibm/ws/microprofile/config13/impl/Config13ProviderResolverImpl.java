@@ -8,17 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config12.archaius;
+package com.ibm.ws.microprofile.config13.impl;
 
-import com.ibm.ws.microprofile.config.archaius.ConfigProviderResolverImpl;
 import com.ibm.ws.microprofile.config.impl.AbstractConfigBuilder;
+import com.ibm.ws.microprofile.config12.impl.Config12ProviderResolverImpl;
 
-public class Config12ProviderResolverImpl extends ConfigProviderResolverImpl {
+public class Config13ProviderResolverImpl extends Config12ProviderResolverImpl {
 
     /** {@inheritDoc} */
     @Override
     protected AbstractConfigBuilder newBuilder(ClassLoader classLoader) {
-        return new Config12BuilderImpl(classLoader, getScheduledExecutorService());
+        return new Config13BuilderImpl(classLoader, getScheduledExecutorService());
     }
 
 }

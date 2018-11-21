@@ -14,7 +14,7 @@ import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.After;
 import org.junit.Before;
 
-import com.ibm.ws.microprofile.config14.archaius.Config14ProviderResolverImpl;
+import com.ibm.ws.microprofile.config14.impl.Config14ProviderResolverImpl;
 
 /**
  *

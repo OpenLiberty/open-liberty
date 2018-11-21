@@ -27,6 +27,11 @@
 # Messages used by Config 1.4 Impl -  range is 0300-0399, plus 9996 for the emergency message
 #-----------------------------------------------------------------------------------------------------------------------------
 
+# The property {0} was not found in the configuration.
+no.such.element.CWMCG0300E=CWMCG0300E: The property {0} was not found in the configuration.
+no.such.element.CWMCG0300E.explanation=The requested property did not exist in any of the configured sources.
+no.such.element.CWMCG0300E.useraction=Add the property to one of the existing sources or add a new source that contains the property.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 1.4 error message
 #-----------------------------------------------------------------------------------------------------------------------------

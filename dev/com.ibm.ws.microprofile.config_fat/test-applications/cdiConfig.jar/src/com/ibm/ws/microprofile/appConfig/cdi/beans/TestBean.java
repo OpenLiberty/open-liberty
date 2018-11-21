@@ -8,12 +8,27 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.microprofile.appConfig.cdi.beans;
 
-/**
- * @version 1.0
- */
-@org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "APPCONFIG", messageBundle = "com.ibm.ws.microprofile.config14.resources.Config14")
-package com.ibm.ws.microprofile.config14.archaius;
+import java.io.Serializable;
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+@ApplicationScoped
+public class TestBean implements Serializable {
+
+    /**  */
+    private static final long serialVersionUID = 333492054092155085L;
+
+    @Inject
+    @ConfigProperty(name = "SYS_PROP_ONE")
+    private int SYS_PROP_ONE;
+
+    public int getSysPropOne() {
+        return SYS_PROP_ONE;
+    }
+
+}

@@ -22,10 +22,15 @@ Bundle-Description:MicroProfile Configuration Implementation, version ${bVersion
 testsrc: test/src
 
 Export-Package: \
-    !com.ibm.ws.microprofile.config.resources, \
-    com.ibm.ws.microprofile.config*
+        com.ibm.ws.microprofile.config.converters,\
+        com.ibm.ws.microprofile.config.impl,\
+        com.ibm.ws.microprofile.config.interfaces,\
+        com.ibm.ws.microprofile.config.sources
 
-Private-Package: com.ibm.ws.microprofile.config.resources
+Private-Package: \
+        com.ibm.ws.microprofile.config.resources,\
+        com.ibm.ws.microprofile.config.archaius.cache,\
+        com.ibm.ws.microprofile.config.archaius.composite
 
 Import-Package: \
         org.eclipse.microprofile.config;version="[1.0,2)", \

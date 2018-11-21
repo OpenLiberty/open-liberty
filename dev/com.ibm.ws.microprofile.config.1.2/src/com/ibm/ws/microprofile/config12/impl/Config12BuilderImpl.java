@@ -8,19 +8,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config12.archaius;
+package com.ibm.ws.microprofile.config12.impl;
 
 import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.Converter;
 
-import com.ibm.ws.microprofile.config.archaius.ConfigBuilderImpl;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config.converters.UserConverter;
+import com.ibm.ws.microprofile.config.impl.ConfigBuilderImpl;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config12.converters.Config12DefaultConverters;
-import com.ibm.ws.microprofile.config12.impl.Config12ConversionManager;
 
 public class Config12BuilderImpl extends ConfigBuilderImpl implements ConfigBuilder {
 

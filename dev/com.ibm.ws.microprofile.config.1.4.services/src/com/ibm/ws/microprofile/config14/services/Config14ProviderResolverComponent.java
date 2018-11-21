@@ -14,7 +14,7 @@ import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.container.service.state.ApplicationStateListener;
-import com.ibm.ws.microprofile.config14.archaius.Config14ProviderResolverImpl;
+import com.ibm.ws.microprofile.config14.impl.Config14ProviderResolverImpl;
 
 @Component(service = { ConfigProviderResolver.class, ApplicationStateListener.class }, property = { "service.vendor=IBM" }, immediate = true)
 public class Config14ProviderResolverComponent extends Config14ProviderResolverImpl {}

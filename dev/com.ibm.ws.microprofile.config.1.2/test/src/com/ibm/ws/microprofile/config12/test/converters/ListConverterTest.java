@@ -54,7 +54,7 @@ public class ListConverterTest extends AbstractConfigTest {
         String fourB = "FourB";
 
         String input = one + "," + two + "," + three + "," + fourA + "\\," + fourB;
-        Set<String> expected = new HashSet(Arrays.asList(new String[] { one, two, three, fourA + "," + fourB }));
+        Set<String> expected = new HashSet<String>(Arrays.asList(new String[] { one, two, three, fourA + "," + fourB }));
         System.out.println("String: " + input);
 
         SetConverter converter = new SetConverter();

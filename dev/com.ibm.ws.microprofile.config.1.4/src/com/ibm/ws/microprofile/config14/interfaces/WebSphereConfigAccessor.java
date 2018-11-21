@@ -8,12 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.microprofile.config14.interfaces;
 
-/**
- * @version 1.0
- */
-@org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "APPCONFIG", messageBundle = "com.ibm.ws.microprofile.config12.resources.Config12")
-package com.ibm.ws.microprofile.config12.archaius;
+import org.eclipse.microprofile.config.ConfigAccessor;
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
+import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
+
+public interface WebSphereConfigAccessor<T> extends ConfigAccessor<T> {
+
+    SourcedValue getSourcedValue();
+
+}

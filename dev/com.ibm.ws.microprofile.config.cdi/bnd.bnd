@@ -26,8 +26,7 @@ Import-Package: \
 	*
 
 Export-Package: \
-    !com.ibm.ws.microprofile.config.cdi.resources, \
-    com.ibm.ws.microprofile.config.cdi*
+    com.ibm.ws.microprofile.config.cdi
 
 Private-Package: \
     com.ibm.ws.microprofile.config.cdi.resources

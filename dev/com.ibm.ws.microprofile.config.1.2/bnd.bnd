@@ -22,8 +22,8 @@ Bundle-Description:MicroProfile Configuration 1.2 Implementation, version ${bVer
 testsrc: test/src
 
 Export-Package: \
-    !com.ibm.ws.microprofile.config12.resources, \
-    com.ibm.ws.microprofile.config12.*
+    com.ibm.ws.microprofile.config12.converters, \
+    com.ibm.ws.microprofile.config12.impl
 
 Private-Package: com.ibm.ws.microprofile.config12.resources
 
