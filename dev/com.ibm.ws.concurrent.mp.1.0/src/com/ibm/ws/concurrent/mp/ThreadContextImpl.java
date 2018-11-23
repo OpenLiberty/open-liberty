@@ -56,6 +56,11 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
     };
 
     /**
+     * The concurrency provider.
+     */
+    private final ConcurrencyProviderImpl concurrencyProvider;
+
+    /**
      * Map of thread context provider to type of instruction for applying context to threads.
      * The values are either PROPAGATED or CLEARED. Contexts types that should be left on the
      * thread UNCHANGED are omitted from this map.
@@ -73,58 +78,59 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
     /**
      * Construct a new instance to be used directly as a MicroProfile ThreadContext service or by a ManagedExecutor.
      *
-     * @param concurrencyManager
+     * @param concurrencyProvider
      * @param configPerProvider
      */
-    ThreadContextImpl(LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
+    ThreadContextImpl(ConcurrencyProviderImpl concurrencyProvider, LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
+        this.concurrencyProvider = concurrencyProvider;
         this.configPerProvider = configPerProvider;
     }
 
     @Override
     public ThreadContextDescriptor captureThreadContext(Map<String, String> executionProperties,
                                                         @SuppressWarnings("unchecked") Map<String, ?>... additionalThreadContextConfig) {
-        return new ThreadContextDescriptorImpl(configPerProvider);
+        return new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
     }
 
     @Override
     public <R> Callable<R> contextualCallable(Callable<R> callable) {
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(configPerProvider);
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
         return new ContextualCallable<R>(contextDescriptor, callable);
     }
 
     @Override
     public <T, U> BiConsumer<T, U> contextualConsumer(BiConsumer<T, U> consumer) {
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(configPerProvider);
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
         return new ContextualBiConsumer<T, U>(contextDescriptor, consumer);
     }
 
     @Override
     public <T> Consumer<T> contextualConsumer(Consumer<T> consumer) {
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(configPerProvider);
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
         return new ContextualConsumer<T>(contextDescriptor, consumer);
     }
 
     @Override
     public <T, U, R> BiFunction<T, U, R> contextualFunction(BiFunction<T, U, R> function) {
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(configPerProvider);
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
         return new ContextualBiFunction<T, U, R>(contextDescriptor, function);
     }
 
     @Override
     public <T, R> Function<T, R> contextualFunction(Function<T, R> function) {
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(configPerProvider);
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
         return new ContextualFunction<T, R>(contextDescriptor, function);
     }
 
     @Override
     public Runnable contextualRunnable(Runnable runnable) {
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(configPerProvider);
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
         return new ContextualRunnable(contextDescriptor, runnable);
     }
 
     @Override
     public <R> Supplier<R> contextualSupplier(Supplier<R> supplier) {
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(configPerProvider);
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
         return new ContextualSupplier<R>(contextDescriptor, supplier);
     }
 
@@ -135,7 +141,7 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
 
     @Override
     public Executor currentContextExecutor() {
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(configPerProvider);
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
         return new ContextualExecutor(contextDescriptor);
     }
 

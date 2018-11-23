@@ -35,6 +35,7 @@ import com.ibm.ws.concurrent.mp.context.ApplicationContextProvider;
 import com.ibm.ws.concurrent.mp.context.SecurityContextProvider;
 import com.ibm.ws.concurrent.mp.context.TransactionContextProvider;
 import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
+import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.threading.PolicyExecutorProvider;
 
@@ -55,6 +56,9 @@ public class ConcurrencyProviderImpl implements ConcurrencyProvider {
     private static final String NO_CONTEXT_CLASSLOADER = "NO_CONTEXT_CLASSLOADER";
 
     private static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
+
+    @Reference
+    protected MetaDataIdentifierService metadataIdentifierService;
 
     @Reference
     protected PolicyExecutorProvider policyExecutorProvider;

@@ -26,6 +26,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.mp.context.ContainerContextProvider;
 import com.ibm.ws.concurrent.mp.context.DeferredClearedContext;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
 /**
@@ -38,11 +40,26 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
     private final Map<String, String> EMPTY_MAP = Collections.emptyMap();
 
     /**
+     * The concurrency provider.
+     */
+    private final ConcurrencyProviderImpl concurrencyProvider;
+
+    /**
      * List of thread context snapshots (either captured from the requesting thread or cleared/empty)
      */
     private ArrayList<com.ibm.wsspi.threadcontext.ThreadContext> contextSnapshots = new ArrayList<com.ibm.wsspi.threadcontext.ThreadContext>();
 
-    ThreadContextDescriptorImpl(LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
+    /**
+     * Metadata identifier for the application component. Can be null if not associated with an application component.
+     */
+    private final String metadataIdentifier;
+
+    ThreadContextDescriptorImpl(ConcurrencyProviderImpl concurrencyProvider, LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
+        this.concurrencyProvider = concurrencyProvider;
+
+        ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        metadataIdentifier = cData == null ? null : concurrencyProvider.metadataIdentifierService.getMetaDataIdentifier(cData);
+
         // create snapshots of captured or cleared context here, per the configured instructions for each type
         for (Map.Entry<ThreadContextProvider, ContextOp> entry : configPerProvider.entrySet()) {
             ThreadContextProvider provider = entry.getKey();
@@ -101,7 +118,10 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
     public ArrayList<com.ibm.wsspi.threadcontext.ThreadContext> taskStarting() throws RejectedExecutionException {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        // TODO enforce application availability
+        // EE Concurrency 3.3.4: All invocations to any of the proxied interface methods will fail with a
+        // java.lang.IllegalStateException exception if the application component is not started or deployed.
+        if (metadataIdentifier != null && concurrencyProvider.metadataIdentifierService.getMetaData(metadataIdentifier) == null)
+            com.ibm.ws.context.service.serializable.ThreadContextDescriptorImpl.notAvailable(metadataIdentifier, "");
 
         ArrayList<com.ibm.wsspi.threadcontext.ThreadContext> contextAppliedToThread = new ArrayList<com.ibm.wsspi.threadcontext.ThreadContext>(contextSnapshots.size());
         try {
