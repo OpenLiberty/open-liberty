@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="resources"/>
-	<classpathentry kind="src" output="testbin" path="test/src">
+	<classpathentry kind="src" output="bin_test" path="test/src">
 		<attributes>
 			<attribute name="test" value="true"/>
 		</attributes>
