@@ -14,6 +14,7 @@
  * Depends on bnd_* values from gradle.properties.
  */
 
+
 ext {
   cnf = rootProject.project(bnd_cnf)
   buildImage = project(':build.image')
@@ -74,6 +75,15 @@ subprojects {
   release.dependsOn assemble
   release.dependsOn publish
 }
+task testReport(type: TestReport) {
+    // make sure this task is run after all subproject test tasks
+    mustRunAfter subprojects*.test
+
+    destinationDir = file("$buildDir/reports/allTests")
+    // Include the results from the `test` task in all subprojects
+    reportOn subprojects*.test
+}
+    
 
 task testResults {
   dependsOn subprojects.test
@@ -90,4 +100,5 @@ task testResults {
 task wrapper(type: Wrapper) {
   jarFile = rootProject.file('.gradle-wrapper/gradle-wrapper.jar')
 }
+
 
