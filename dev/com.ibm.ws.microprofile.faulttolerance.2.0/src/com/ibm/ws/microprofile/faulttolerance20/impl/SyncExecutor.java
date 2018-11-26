@@ -120,6 +120,7 @@ public class SyncExecutor<R> implements Executor<R> {
             if (result == null) {
                 timeoutState.start(() -> runningThread.interrupt());
 
+                // The call to the application code happens here
                 result = bulkhead.run(callable);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
