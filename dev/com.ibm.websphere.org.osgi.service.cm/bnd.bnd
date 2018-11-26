@@ -18,4 +18,4 @@ publish.wlp.jar.suffix: dev/api/spec
 instrument.disabled: true
 
 -buildpath: \
-	org.osgi:org.osgi.service.cm;version=1.5.0
+	org.osgi:org.osgi.service.cm;version=1.6.0
