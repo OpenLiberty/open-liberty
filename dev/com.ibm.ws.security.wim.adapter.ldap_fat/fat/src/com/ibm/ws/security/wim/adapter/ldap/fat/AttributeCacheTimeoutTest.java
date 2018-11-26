@@ -101,7 +101,7 @@ public class AttributeCacheTimeoutTest {
         }
         if (ldapServer != null) {
             try {
-                ldapServer.stopServer();
+                ldapServer.stopService();
             } catch (Exception e) {
                 Log.error(c, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
             }
