@@ -17,6 +17,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
@@ -52,6 +56,7 @@ import com.ibm.ws.springboot.support.fat.CommonWebServerTests;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -61,43 +66,31 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
     private static String SPRING_BOOT_20_BASE_THIN = SPRING_BOOT_20_APP_BASE.substring(0, SPRING_BOOT_20_APP_BASE.length() - 3) + SPRING_APP_TYPE;
     private static String SPRING_BOOT_20_WAR_THIN = SPRING_BOOT_20_APP_WAR.substring(0, SPRING_BOOT_20_APP_WAR.length() - 3) + SPRING_APP_TYPE;
     private static String installDir = null;
+    private static boolean wlpLibExtractCreated;
     private String application = SPRING_BOOT_20_APP_BASE;
     private RemoteFile sharedResourcesDir;
     private RemoteFile appsDir;
 
-    @Override
-    public Set<String> getFeatures() {
-        Set<String> features = new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
-        String methodName = testName.getMethodName();
-        if ("testRunLibertyUberJarWithSSL".equals(methodName)) {
-            features.add("transportSecurity-1.0");
-        }
-        return features;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.springboot.support.fat.AbstractSpringTests#getApplication()
-     */
-    @Override
-    public String getApplication() {
-        return application;
-    }
-
     @BeforeClass
-    public static void getInstallDir() {
+    public static void setUp() throws Exception {
         installDir = System.setProperty(PROPERTY_KEY_INSTALL_DIR, server.getInstallRoot());
+        createWLPLibExtract();
     }
 
     @AfterClass
-    public static void resetInstallDir() {
+    public static void tearDown() throws Exception {
         if (installDir == null) {
             System.clearProperty(PROPERTY_KEY_INSTALL_DIR);
         } else {
             System.setProperty(PROPERTY_KEY_INSTALL_DIR, installDir);
         }
         installDir = null;
+
+        //Delete the wlp/lib/extract folder
+        if (wlpLibExtractCreated) {
+            RemoteFile extract = server.getFileFromLibertyInstallRoot("lib/extract");
+            extract.delete();
+        }
     }
 
     @Override
@@ -112,11 +105,6 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         appsDir = server.getFileFromLibertyServerRoot("apps");
     }
 
-    @Override
-    public String getLogMethodName() {
-        return "-" + testName.getMethodName();
-    }
-
     @After
     public void deleteThinAppsAndStopServer() throws Exception {
         new RemoteFile(appsDir, SPRING_BOOT_20_BASE_THIN).delete();
@@ -126,10 +114,24 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         stopServer();
     }
 
-    public void configureServerThin() throws Exception {
-        // now really configure
-        application = SPRING_BOOT_20_BASE_THIN;
-        super.configureServer();
+    @Override
+    public Set<String> getFeatures() {
+        Set<String> features = new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
+        String methodName = testName.getMethodName();
+        if ("testRunLibertyUberJarWithSSL".equals(methodName)) {
+            features.add("transportSecurity-1.0");
+        }
+        return features;
+    }
+
+    @Override
+    public String getApplication() {
+        return application;
+    }
+
+    @Override
+    public String getLogMethodName() {
+        return "-" + testName.getMethodName();
     }
 
     @Override
@@ -152,6 +154,67 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
             return properties;
         }
         return super.getBootStrapProperties();
+    }
+
+    /**
+     * As of today, the FAT environment's installation of WLP does not include lib/extract directory.
+     * The package command requires that the lib/extract directory exists, as this directory
+     * contains a required manifest, self extractable classes, etc. Copy the wlp.lib.extract.jar
+     * contents to wlp/lib/extract folder.
+     *
+     * @throws Exception
+     */
+    private static void createWLPLibExtract() throws Exception {
+        try {
+            server.getFileFromLibertyInstallRoot("lib/extract");
+            return;
+        } catch (FileNotFoundException ex) {
+            //expected - the directory does not exist - so proceed.
+        }
+        RemoteFile libExtractDir = LibertyFileManager.createRemoteFile(server.getMachine(), server.getInstallRoot() + "/lib/extract");
+        libExtractDir.mkdirs();
+
+        JarFile libExtractJar = new JarFile("lib/LibertyFATTestFiles/wlp.lib.extract.jar");
+
+        for (Enumeration<JarEntry> entries = libExtractJar.entries(); entries.hasMoreElements();) {
+            JarEntry entry = entries.nextElement();
+            String entryName = entry.getName();
+
+            if ("wlp/".equals(entryName) || "wlp/lib/".equals(entryName) || "wlp/lib/extract/".equals(entryName)) {
+                continue;
+            }
+            File libExtractFile = new File(libExtractDir.getAbsolutePath() + "/" + entryName);
+
+            //Jar contains some contents in wlp/lib/extract folder. Copy those contents in libExtractDir directly.
+            if (entryName.startsWith("wlp/lib/extract")) {
+                libExtractFile = new File(libExtractDir.getAbsolutePath() + "/" + entryName.substring(entryName.lastIndexOf("extract/") + 8));
+            }
+
+            if (entryName.endsWith("/")) {
+                libExtractFile.mkdirs();
+            } else if (!entryName.endsWith("/")) {
+                writeFile(libExtractJar, entry, libExtractFile);
+            }
+        }
+        wlpLibExtractCreated = true;
+    }
+
+    private static void writeFile(JarFile jar, JarEntry entry, File file) throws IOException, FileNotFoundException {
+        try (InputStream is = jar.getInputStream(entry)) {
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                byte[] buffer = new byte[4096];
+                int read = -1;
+                while ((read = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, read);
+                }
+            }
+        }
+    }
+
+    public void configureServerThin() throws Exception {
+        // now really configure
+        application = SPRING_BOOT_20_BASE_THIN;
+        super.configureServer();
     }
 
     @Test
@@ -271,7 +334,9 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         String line = null;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
             line = reader.readLine();
+            Log.info(getClass(), "testRunLibertyUberJarWithSSL", line);
             while (line != null) {
+                Log.info(getClass(), "testRunLibertyUberJarWithSSL", line);
                 if (line.contains("CWWKT0016I")) {
                     break;
                 }
