@@ -80,3 +80,11 @@ warning.spring_config.ignored.session.useraction=Configura\u0163i timeout-ul de 
 error.wrong.spring.boot.version=CWWKC0263E: Versiunea de Spring Boot {0} nu este suportat\u0103. Este necesar\u0103 o versiune Spring Boot din intervalul {1}.
 error.wrong.spring.boot.version.explanation=A fost detectat\u0103 o versiune de Spring Boot care nu este suportat\u0103 de server.
 error.wrong.spring.boot.version.useraction=Actualiza\u0163i aplica\u0163ia Spring Boot s\u0103 foloseasc\u0103 o versiune de Spring Boot din intervalul cerut.
+
+warning.application.started.event.timeout=CWWKC0264W: Aplica\u0163ia {0} nu a emis evenimentul {1} \u00een {2} minute.
+warning.application.started.event.timeout.explanation=Aplica\u0163ia nu a emis evenimentul de pornire \u00een timpul a\u015fteptat. Serverul ar putea fi supra\u00eenc\u0103rcat sau aplica\u0163ia este prea mare. Dac\u0103 aplica\u0163ia porne\u015fte ca parte a pornirii serverului, pornirea serverului se poate finaliza f\u0103r\u0103 a se a\u015ftepta ca aplica\u0163ia s\u0103 porneasc\u0103.
+warning.application.started.event.timeout.useraction=Dac\u0103 aplica\u0163ia porne\u015fte p\u00e2n\u0103 la urm\u0103, atunci nu este necesar\u0103 nicio ac\u0163iune. Dac\u0103 aplica\u0163ia nu porne\u015fte, verifica\u0163i istoricele serverului pentru a vedea dac\u0103 alte mesaje indic\u0103 o cauz\u0103.
+
+warning.java.version.not.supported=CWWKC0265W: Versiunea curent\u0103 de Java {0} nu este suportat\u0103 de Spring Boot versiunea {1}. Moderniza\u0163i versiunea Spring Boot a aplica\u0163iei la 2.0.x sau mai nou\u0103.
+warning.java.version.not.supported.explanation=Versiunile Java mai mari dec\u00e2t 1.8 nu sunt suportate de Spring Boot versiunile 1.5.x \u015fi mai mici.
+warning.java.version.not.supported.useraction=Moderniza\u0163i versiunea Spring Boot a aplica\u0163iei la 2.0.x sau mai nou\u0103.

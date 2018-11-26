@@ -609,13 +609,13 @@ osgi_initializer_failed=Construc\u0163ia ini\u0163ializatorului OSGi specific me
 
 overriding_cache_isolation=Entitatea p\u0103rinte {0} are un nivel de izolare: {1} care este mai protector dec\u00e2t subclasa {2} cu izolarea: {3} a\u015fa c\u0103 subclasa a fost setat\u0103 la nivelul de izolare {1}.
 
-ox_lowering_global_logging_from_default_info_to_warning= {0} Se scade jurnalizarea global\u0103 de la valoarea implicit\u0103 INFO la nivelul WARNING (avertisment).
+ox_lowering_global_logging_from_default_info_to_warning={0} Se scade jurnalizarea global\u0103 de la valoarea implicit\u0103 INFO la nivelul WARNING (avertisment).
 
-ox_lowering_session_logging_from_default_info_to_warning= {0} Se scade jurnalizarea sesiunii de la valoarea implicit\u0103 INFO la nivelul WARNING (avertisment).
+ox_lowering_session_logging_from_default_info_to_warning={0} Se scade jurnalizarea sesiunii de la valoarea implicit\u0103 INFO la nivelul WARNING (avertisment).
 
-ox_turn_global_logging_off= {0} Se dezactiveaz\u0103 jurnalizarea sesiunii globale.
+ox_turn_global_logging_off={0} Se dezactiveaz\u0103 jurnalizarea sesiunii globale.
 
-ox_turn_session_logging_off= {0} Se dezactiveaz\u0103 jurnalizarea sesiunii.
+ox_turn_session_logging_off={0} Se dezactiveaz\u0103 jurnalizarea sesiunii.
 
 parse_ejb_jar_with_validation_fails=Parsarea ejb-jar.xml cu validare e\u015fueaz\u0103 cu eroarea ({0}). Unealta de migrare va parsa fi\u015fierul xml f\u0103r\u0103 validare.
 

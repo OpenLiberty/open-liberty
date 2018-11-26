@@ -125,9 +125,10 @@ public class SearchPagingTest {
         Log.info(c, "setUp", "Creating servlet connection the server");
         servlet = new UserRegistryServletConnection(libertyServer.getHostname(), libertyServer.getHttpDefaultPort());
 
-        servlet.getRealm();
-        Thread.sleep(5000);
-        servlet.getRealm();
+        if (servlet.getRealm() == null) {
+            Thread.sleep(5000);
+            servlet.getRealm();
+        }
 
         /*
          * The original server configuration has no registry or Federated Repository configuration.
@@ -205,7 +206,7 @@ public class SearchPagingTest {
         ldap.setBindDN(EmbeddedApacheDS.getBindDN());
         ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
         ldap.setLdapType("Custom");
-        ldap.setLdapCache(new LdapCache(new AttributesCache(false, 0, 0, "0s", null), new SearchResultsCache(false, 0, 0, "0s")));
+        ldap.setLdapCache(new LdapCache(new AttributesCache(false, 0, 0, "0s"), new SearchResultsCache(false, 0, 0, "0s")));
 
         if (searchPageSize != null) {
             ldap.setSearchPageSize(searchPageSize);

@@ -22,8 +22,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -37,6 +44,7 @@ public class PackageRunnableTest {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
     private static final File runnableJar = new File("publish/" + serverName + ".jar");
     private static final File extractDirectory = new File("publish" + File.separator + "wlpExtract");
+    private static final File extractAndRunDir = new File("publish" + File.separator + "wlpExtractAndRun");
 
     /*
      * return env as array and add WLP_JAR_EXTRACT_DIR=extractDirectory
@@ -45,19 +53,20 @@ public class PackageRunnableTest {
 
         Map<String, String> envmap = System.getenv();
         Iterator<String> iKeys = envmap.keySet().iterator();
-        String[] envArray = new String[envmap.size() + 1];
+        List<String> envArray = new ArrayList<String>();
 
         int i = 0;
         while (iKeys.hasNext()) {
             String key = iKeys.next();
             String val = envmap.get(key);
-            envArray[i++] = key + "=" + val;
+            envArray.add(key + "=" + val);
         }
-        // add extract dir to end
-        String extDirVar = "WLP_JAR_EXTRACT_DIR=" + extractDirectory;
-        envArray[envArray.length - 1] = extDirVar;
-
-        return envArray;
+        if (extractDirectory != null) {
+            // add extract dir to end
+            String extDirVar = "WLP_JAR_EXTRACT_DIR=" + extractDirectory;
+            envArray.add(extDirVar);
+        }
+        return envArray.toArray(new String[0]);
 
     }
 
@@ -93,6 +102,12 @@ public class PackageRunnableTest {
             return; // get out
         }
 
+        executeTheJar();
+
+        extractAndExecuteMain();
+    }
+
+    private void executeTheJar() throws IOException, InterruptedException {
         if (!extractDirectory.exists()) {
             extractDirectory.mkdirs();
         }
@@ -130,6 +145,67 @@ public class PackageRunnableTest {
         System.out.println("Removing WLP installation directory: " + extractDirectory.getAbsolutePath());
         if (extractDirectory.exists()) {
             deleteDir(extractDirectory);
+            System.out.println("WLP installation directory was removed.");
+        }
+        System.out.println("Waiting 30 seconds...to make sure all Liberty thread exiting.");
+        Thread.sleep(30000); // wait 30 second
+    }
+
+    /**
+     * @throws IOException
+     * @throws InterruptedException
+     *
+     */
+    private void extractAndExecuteMain() throws IOException, InterruptedException {
+        if (!extractAndRunDir.exists()) {
+            extractAndRunDir.mkdirs();
+        }
+        Path extractAndRunPath = extractAndRunDir.toPath();
+        assertTrue("Extract and run directory " + extractAndRunDir.getAbsolutePath() + " does not exist.", extractAndRunDir.exists());
+        try (JarFile jar = new JarFile(runnableJar)) {
+            for (Enumeration<JarEntry> entries = jar.entries(); entries.hasMoreElements();) {
+                JarEntry entry = entries.nextElement();
+                if (!entry.isDirectory()) {
+                    Path toPath = extractAndRunPath.resolve(entry.getName());
+                    toPath.toFile().getParentFile().mkdirs();
+                    try (InputStream in = jar.getInputStream(entry)) {
+                        Files.copy(in, toPath);
+                    }
+                }
+            }
+        }
+
+        String cmd = "java -cp " + extractAndRunDir.getAbsolutePath() + " wlp.lib.extract.SelfExtractRun";
+        Process proc = Runtime.getRuntime().exec(cmd, runEnv(null), null); // run server
+
+        // setup and start reader threads for error and output streams
+//        StreamReader errorReader = new StreamReader(proc.getErrorStream(), "ERROR", null);
+//        errorReader.start();
+        StreamReader outputReader = new StreamReader(proc.getInputStream(), "OUTPUT", "CWWKF0011I");
+        outputReader.start();
+
+        int count = 0;
+
+        // wait up to 90 seconds to find watch for string
+
+        boolean found = outputReader.foundWatchFor();
+        while (!found && count <= 90) {
+
+            synchronized (proc) {
+                proc.wait(1000); // wait 1 second
+                System.out.println("Waiting for server to complete initialization - " + count + " seconds elapsed.");
+            }
+            found = outputReader.foundWatchFor();
+            count++;
+        }
+
+        assertTrue("Server did not start successfully in time.", found);
+
+        outputReader.setIs(null);
+        proc.destroy(); // ensure no process left behind
+        System.out.println("Removing WLP installation directory: " + extractDirectory.getAbsolutePath());
+        if (extractAndRunDir.exists()) {
+            deleteDir(extractAndRunDir);
             System.out.println("WLP installation directory was removed.");
         }
         System.out.println("Waiting 30 seconds...to make sure all Liberty thread exiting.");

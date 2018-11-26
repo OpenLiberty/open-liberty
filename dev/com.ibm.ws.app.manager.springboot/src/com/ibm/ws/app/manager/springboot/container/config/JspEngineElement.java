@@ -10,18 +10,30 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container.config;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 /**
  *
  */
 public class JspEngineElement extends ConfigElement {
+
+    public final static String XML_ATTRIBUTE_NAME_USE_STRING_CAST = "useStringCast";
     private Boolean useStringCast;
+
+    public final static String XML_ATTRIBUTE_NAME_USE_SCRIPT_VAR_DUP_INIT = "useScriptVarDupInit";
     private Boolean usescriptvardupinit;
+
+    public final static String XML_ATTRIBUTE_NAME_JDK_SOURCE_LEVEL = "jdkSourceLevel";
     private String jdkSourceLevel;
+
+    public final static String XML_ATTRIBUTE_NAME_DISABLE_RESOURCE_INJECTION = "disableResourceInjection";
     private Boolean disableResourceInjection;
+
+    public final static String XML_ATTRIBUTE_NAME_DISABLE_TLD_SEARCH = "disableTldSearch";
     private Boolean disableTldSearch;
+
+    public final static String XML_ATTRIBUTE_NAME_SCRATCH_DIR = "scratchdir";
     private String scratchdir;
+
+    public final static String XML_ATTRIBUTE_NAME_KEEP_GENERATED = "keepGenerated";
     private Boolean keepGenerated;
 
     /**
@@ -31,7 +43,6 @@ public class JspEngineElement extends ConfigElement {
         return useStringCast;
     }
 
-    @XmlAttribute(name = "useStringCast")
     public void setUseStringCast(Boolean b) {
         this.useStringCast = b;
     }
@@ -43,7 +54,6 @@ public class JspEngineElement extends ConfigElement {
         return usescriptvardupinit;
     }
 
-    @XmlAttribute(name = "useScriptVarDupInit")
     public void setUsescriptvardupinit(Boolean b) {
         this.usescriptvardupinit = b;
     }
@@ -55,7 +65,6 @@ public class JspEngineElement extends ConfigElement {
         return jdkSourceLevel;
     }
 
-    @XmlAttribute(name = "jdkSourceLevel")
     public void setJdkSourceLevel(String s) {
         this.jdkSourceLevel = s;
     }
@@ -67,7 +76,6 @@ public class JspEngineElement extends ConfigElement {
         return disableResourceInjection;
     }
 
-    @XmlAttribute(name = "disableResourceInjection")
     public void setDisableResourceInjection(Boolean b) {
         this.disableResourceInjection = b;
     }
@@ -79,12 +87,10 @@ public class JspEngineElement extends ConfigElement {
         return disableTldSearch;
     }
 
-    @XmlAttribute(name = "disableTldSearch")
     public void setDisableTldSearch(Boolean b) {
         this.disableTldSearch = b;
     }
 
-    @XmlAttribute(name = "scratchdir")
     public void setScratchdir(String value) {
         this.scratchdir = value;
 
@@ -93,7 +99,7 @@ public class JspEngineElement extends ConfigElement {
     public String getScratchdir() {
         return scratchdir;
     }
-    
+
     /**
      * @return the keepGenerated
      */
@@ -101,7 +107,6 @@ public class JspEngineElement extends ConfigElement {
         return keepGenerated;
     }
 
-    @XmlAttribute(name = "keepGenerated")
     public void setKeepGenerated(Boolean b) {
         this.keepGenerated = b;
     }

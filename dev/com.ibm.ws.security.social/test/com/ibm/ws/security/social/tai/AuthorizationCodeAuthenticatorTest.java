@@ -436,10 +436,11 @@ public class AuthorizationCodeAuthenticatorTest extends CommonTestClass {
                     one(config).getClientId();
                     one(config).getClientSecret();
                     one(config).getTokenEndpointAuthMethod();
+                    one(config).getUseSystemPropertiesForHttpClientConnections();
                     one(config).getResource();
                     one(taiWebUtils).getRedirectUrl(request, config);
                     one(clientUtil).getTokensFromAuthzCode(with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)),
-                            with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(boolean.class)), with(any(String.class)), with(any(String.class)));
+                            with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(boolean.class)), with(any(String.class)), with(any(String.class)), with(any(Boolean.class)));
                     will(throwException(new SocialLoginException(defaultExceptionMsg, null, null)));
                 }
             });
@@ -467,10 +468,11 @@ public class AuthorizationCodeAuthenticatorTest extends CommonTestClass {
                     one(config).getClientId();
                     one(config).getClientSecret();
                     one(config).getTokenEndpointAuthMethod();
+                    one(config).getUseSystemPropertiesForHttpClientConnections();
                     one(config).getResource();
                     one(taiWebUtils).getRedirectUrl(request, config);
                     one(clientUtil).getTokensFromAuthzCode(with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)),
-                            with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(boolean.class)), with(any(String.class)), with(any(String.class)));
+                            with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(boolean.class)), with(any(String.class)), with(any(String.class)), with(any(Boolean.class)));
                     will(returnValue(null));
                 }
             });
@@ -496,10 +498,11 @@ public class AuthorizationCodeAuthenticatorTest extends CommonTestClass {
                     one(config).getClientId();
                     one(config).getClientSecret();
                     one(config).getTokenEndpointAuthMethod();
+                    one(config).getUseSystemPropertiesForHttpClientConnections();
                     one(config).getResource();
                     one(taiWebUtils).getRedirectUrl(request, config);
                     one(clientUtil).getTokensFromAuthzCode(with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)),
-                            with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(boolean.class)), with(any(String.class)), with(any(String.class)));
+                            with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(boolean.class)), with(any(String.class)), with(any(String.class)), with(any(Boolean.class)));
                     will(returnValue(tokens));
                 }
             });
@@ -1001,10 +1004,11 @@ public class AuthorizationCodeAuthenticatorTest extends CommonTestClass {
                     will(returnValue(new UserApiConfig[] { userApiConfig }));
                     one(userApiConfig).getApi();
                     one(config).getUserApiNeedsSpecialHeader();
-                    one(clientUtil).getUserApiResponse(with(any(String.class)), with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(Boolean.class)), with(any(Boolean.class)));
+                    one(clientUtil).getUserApiResponse(with(any(String.class)), with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(Boolean.class)), with(any(Boolean.class)), with(any(Boolean.class)));
                     will(returnValue(userApiResponse));
                     allowing(config).getUniqueId();
                     will(returnValue(uniqueId));
+                    one(config).getUseSystemPropertiesForHttpClientConnections(); will(returnValue(false));
                 }
             });
 
@@ -1034,7 +1038,8 @@ public class AuthorizationCodeAuthenticatorTest extends CommonTestClass {
                     will(returnValue(new UserApiConfig[] { userApiConfig }));
                     one(userApiConfig).getApi();
                     one(config).getUserApiNeedsSpecialHeader();
-                    one(clientUtil).getUserApiResponse(with(any(String.class)), with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(Boolean.class)), with(any(Boolean.class)));
+                    one(config).getUseSystemPropertiesForHttpClientConnections();
+                    one(clientUtil).getUserApiResponse(with(any(String.class)), with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(Boolean.class)), with(any(Boolean.class)), with(any(Boolean.class)));
                     will(returnValue(userApiResponse));
                 }
             });

@@ -32,4 +32,5 @@ WS-TraceGroup: REACTIVESTREAMS
 
 instrument.disabled: true
 
-publish.wlp.jar.suffix: dev/api/third-party
+publish.wlp.jar.suffix: dev/api/stable
+

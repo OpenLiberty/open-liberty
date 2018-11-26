@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -149,13 +153,13 @@
 
 7093=\u00cen interogarea numit\u0103 [{0}], clasa [{2}] pentru argumentul numit [{1}] nu poate fi g\u0103sit\u0103. Include\u0163i clasa lips\u0103 \u00een calea dumneavoastr\u0103 de clase.
 
-7095=Resursa sessions.xml [{0}] nu a fost g\u0103sit\u0103 \u00een calea resursei.  Verifica\u0163i dac\u0103 numele/calea resursei \u015fi classloader transmis \u00een SessionManager.getSession sunt corecte.  sessions.xml ar trebui incluse \u00een root al jar-ului implementat al aplica\u0163iei, dac\u0103 sessions.xml este implementat \u00eentr-un subdirector \u00een jar-ul aplica\u0163iei, asigura\u0163i-v\u0103 c\u0103 este utilizat\u0103 calea corect\u0103 a resursei "/" not "\".
+7095=Resursa sessions.xml [{0}] nu a fost g\u0103sit\u0103 \u00een calea resursei.  Verifica\u0163i dac\u0103 numele/calea resursei \u015fi classloader transmis \u00een SessionManager.getSession sunt corecte.  sessions.xml trebuie inclus \u00een r\u0103d\u0103cina jar-ului aplica\u0163iei implementate, dac\u0103 sessions.xml este implementat \u00eentr-un subdirector din jar-ul aplica\u0163iei asigura\u0163i-v\u0103 c\u0103 este folosit\u0103 calea la resurs\u0103 corect\u0103 care folose\u015fte "/", nu "".
 
 7096=Nu se poate utiliza metoda commit() pentru a comite din nou UnitOfWork.
 
 7097=Opera\u0163ie ce nu e suportat\u0103: [{0}].
 
-7099=Resursa XML a proiectului de implementare [{0}] nu a fost g\u0103sit\u0103 \u00een calea resursei.  Verifica\u0163i dac\u0103 numele/calea resursei \u015fi classloader-ul transmis c\u0103tre XMLProjectReader sunt corecte.  XML-ul proiectului ar trebui inclus \u00een root-ul jar-ului de implementare a aplica\u0163iei, dac\u0103 XML-ul proiectului este implementat \u00eentr-un subdirector din jar-ul aplica\u0163iei, asigura\u0163i-v\u0103 c\u0103 este utilizat\u0103 calea corect\u0103 a resursei utiliz\u00e2nd "/" not "\".
+7099=Resursa XML a proiectului de implementare [{0}] nu a fost g\u0103sit\u0103 \u00een calea resursei.  Verifica\u0163i dac\u0103 numele/calea resursei \u015fi classloader-ul transmis c\u0103tre XMLProjectReader sunt corecte.  XML-ul proiectului trebuie inclus \u00een r\u0103d\u0103cina jar-ului aplica\u0163iei implementate, dac\u0103 XML proiect este implementat \u00eentr-un subdirector din jar-ul aplica\u0163iei asigura\u0163i-v\u0103 c\u0103 este folosit\u0103 calea la resurs\u0103 corect\u0103 care folose\u015fte "/", nu "".
 
 7100=Nu s-a putut g\u0103si sesiunea cu numele [{0}] \u00een fi\u015fierul session.xml [{1}]
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 IBM Corporation and others.
+ * Copyright (c) 2013, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,13 @@ import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
+/**
+ * All declarative services annotations on this class are ignored.
+ * The annotations on
+ * com.ibm.ws.concurrent.ee.ManagedScheduledExecutorServiceImpl and
+ * com.ibm.ws.concurrent.mp.ManagedScheduledExecutorImpl
+ * apply instead.
+ */
 @Component(configurationPid = "com.ibm.ws.concurrent.managedScheduledExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = { ExecutorService.class, ManagedExecutorService.class, ResourceFactory.class, ApplicationRecycleComponent.class, ScheduledExecutorService.class,
                        ManagedScheduledExecutorService.class },
@@ -76,7 +83,6 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     /**
      * Reference to the (unmanaged) scheduled executor service for this managed scheduled executor service.
      */
-    @Reference(target = "(deferrable=false)")
     ScheduledExecutorService scheduledExecSvc;
 
     @Activate
@@ -221,6 +227,12 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
         super.setLongRunningPolicy(svc);
     }
 
+    @Reference(target = "(deferrable=false)")
+    @Trivial
+    protected void setScheduledExecutor(ScheduledExecutorService svc) {
+        scheduledExecSvc = svc;
+    }
+
     @Override
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(component.name=com.ibm.ws.transaction.context.provider)")
     @Trivial
@@ -244,6 +256,11 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     @Trivial
     protected void unsetLongRunningPolicy(ConcurrencyPolicy svc) {
         super.unsetLongRunningPolicy(svc);
+    }
+
+    @Trivial
+    protected void unsetScheduledExecutor(ScheduledExecutorService svc) {
+        scheduledExecSvc = null;
     }
 
     @Override

@@ -31,6 +31,7 @@ import org.osgi.framework.ServiceRegistration;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.artifact.ArtifactListenerSelector;
 import com.ibm.ws.artifact.zip.internal.ZipFileContainerUtils.ZipEntryData;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.artifact.ArtifactContainer;
@@ -51,7 +52,7 @@ import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
  *       representation of the zip file.  The artifact file system does not
  *       guarantee that containers or container entries are unique.
  */
-public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, ArtifactListener {
+public class ZipFileArtifactNotifier implements ArtifactNotifier, com.ibm.ws.kernel.filemonitor.FileMonitor, ArtifactListener {
     static final TraceComponent tc = Tr.register(ZipFileArtifactNotifier.class);
 
     /**
@@ -81,7 +82,7 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
         this.listenerRegistered = false; // Not used for an exposed notifier.
 
         this.listenersLock = new ListenersLock();
-        this.listeners = new HashMap<String, Collection<ArtifactListener>>();
+        this.listeners = new HashMap<String, Collection<ArtifactListenerSelector>>();
         this.coveringPaths = new HashSet<String>();
     }
 
@@ -113,7 +114,7 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
         this.listenerRegistered = false; // False until a listener is registered.
 
         this.listenersLock = new ListenersLock();
-        this.listeners = new HashMap<String, Collection<ArtifactListener>>();
+        this.listeners = new HashMap<String, Collection<ArtifactListenerSelector>>();
         this.coveringPaths = new HashSet<String>();
     }
 
@@ -382,6 +383,8 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
         serviceProperties.put(FileMonitor.MONITOR_DIRECTORIES, new String[] { a_exposedRootPath });
         serviceProperties.put(FileMonitor.MONITOR_RECURSE, Boolean.TRUE);
         serviceProperties.put(FileMonitor.MONITOR_FILTER, ".*");
+        // Adding INTERNAL parameter MONITOR_IDENTIFICATION_NAME to identify this monitor.
+        serviceProperties.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, "com.ibm.ws.kernel.monitor.artifact");
     }
 
     //
@@ -390,7 +393,7 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
         // EMPTY
     }
     private final ListenersLock listenersLock;
-    private final Map<String, Collection<ArtifactListener>> listeners;
+    private final Map<String, Collection<ArtifactListenerSelector>> listeners;
     private final Set<String> coveringPaths;
 
     /**
@@ -430,7 +433,8 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
                     newListenerPath = newListenerPath.substring(1);
                 }
 
-                if ( registerListener(newListenerPath, newListener) ) {
+                ArtifactListenerSelector artifactSelectorCallback = new ArtifactListenerSelector(newListener);
+                if ( registerListener(newListenerPath, artifactSelectorCallback) ) {
                     addedUncoveredPaths = true;
                 }
             }
@@ -459,13 +463,13 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
      * @return True or false telling if the uncovered paths collection
      *     was updated.
      */
-    private boolean registerListener(String newPath, ArtifactListener newListener) {
+    private boolean registerListener(String newPath, ArtifactListenerSelector newListener) {
         boolean updatedCoveringPaths = addCoveringPath(newPath);
 
-        Collection<ArtifactListener> listenersForPath = listeners.get(newPath);
+        Collection<ArtifactListenerSelector> listenersForPath = listeners.get(newPath);
         if ( listenersForPath == null ) {
             // Each listeners collection is expected to be small.
-            listenersForPath = new LinkedList<ArtifactListener>();
+            listenersForPath = new LinkedList<ArtifactListenerSelector>();
             listeners.put(newPath, listenersForPath);
         }
         listenersForPath.add(newListener);
@@ -557,10 +561,11 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
     @Override
     public boolean removeListener(ArtifactListener listenerToRemove) {
         synchronized(listenersLock) {
+            ArtifactListenerSelector listenerSelectorToRemove = new ArtifactListenerSelector(listenerToRemove);
             List<String> pathsToRemove = new ArrayList<String>(1);
-            for ( Map.Entry<String, Collection<ArtifactListener>> listenersEntry : listeners.entrySet() ) {
-                for ( ArtifactListener listener : listenersEntry.getValue() ) {
-                    if ( listener == listenerToRemove ) {
+            for ( Map.Entry<String, Collection<ArtifactListenerSelector>> listenersEntry : listeners.entrySet() ) {
+                for ( ArtifactListenerSelector listener : listenersEntry.getValue() ) {
+                    if ( listener.equals(listenerSelectorToRemove)) {
                         pathsToRemove.add( listenersEntry.getKey() );
                         break;
                     }
@@ -570,11 +575,11 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
             Iterator<String> usePathsToRemove = pathsToRemove.iterator();
             while ( usePathsToRemove.hasNext() ) {
                 String pathToRemove = usePathsToRemove.next();
-                Collection<ArtifactListener> listenersForPath = listeners.get(pathToRemove);
+                Collection<ArtifactListenerSelector> listenersForPath = listeners.get(pathToRemove);
                 if ( listenersForPath.size() == 1 ) {
                     listeners.remove(pathToRemove); // The last listner for the path.
                 } else {
-                    listenersForPath.remove(listenerToRemove);
+                    listenersForPath.remove(listenerSelectorToRemove);
                     usePathsToRemove.remove();
                 }
             }
@@ -629,6 +634,14 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
         // Ignore
     }
 
+    @Override
+    public void onChange(
+                         Collection<File> addedFiles,
+                         Collection<File> updatedFiles,
+                         Collection<File> removedFiles) {
+        onChange(addedFiles, updatedFiles, removedFiles, null);
+        
+    }
     /**
      * File monitor API. Callback for a change. See {@link FileMonitor#onChange}.
      *
@@ -641,25 +654,22 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
      */
     // @Trivial // Allow this to be logged: One entry in one change collection is expected.
     @Override
-    public void onChange(
-        Collection<File> addedFiles,
-        Collection<File> updatedFiles,
-        Collection<File> removedFiles) {
 
+        public void onChange(
+                             Collection<File> addedFiles,
+                             Collection<File> updatedFiles,
+                             Collection<File> removedFiles,
+                             String filter) {
         boolean isUpdate = !updatedFiles.isEmpty();
-        if ( addedFiles.isEmpty() && !isUpdate && removedFiles.isEmpty() ) {
-            return; // Ignore completely null updates
-        }
 
         // The net is to allow updates alone or removals alone.
-
         String validationMessage = validateNotification(addedFiles, updatedFiles, removedFiles);
         if ( validationMessage != null ) {
             // TODO: Need to understand what is happening here.
             // Tr.warning(tc,  "Unexpected notification on [ " + rootContainer + " ]: " + validationMessage);
             Tr.debug(tc,  "Unexpected notification on [ " + rootContainer + " ]: " + validationMessage);
         } else {
-            notifyAllListeners(isUpdate);
+            notifyAllListeners(isUpdate, filter);
         }
     }
 
@@ -714,7 +724,7 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
             // Tr.warning(tc,  "Unexpected notification on [ " + rootContainer + " ]: " + validationMessage);
             Tr.debug(tc,  "Unexpected notification on [ " + rootContainer + " ]: " + validationMessage);
         } else {
-            notifyAllListeners(isUpdate);
+            notifyAllListeners(isUpdate, null);
         }
     }
 
@@ -773,8 +783,10 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
      *
      * @param isUpdate Control parameter: Tell if the notification was an
      *     update of the entire zip file, or a removal of the entire zip file.
+     * @param filter The filter string that allows only those artifact listeners with a matching id to be called to process the artifact event.
+     *     
      */
-    private void notifyAllListeners(boolean isUpdate) {
+    private void notifyAllListeners(boolean isUpdate, String filter) {
         // Can't reuse the registered paths collection across the loop
         // because the listener notification can do processing in a new
         // thread.  Reusing the registered paths could cause a collision
@@ -786,8 +798,14 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
         //       from being locked during a possibly extensive steps of the listeners handling
         //       their notifications.
 
+        // TODO: See the comment, below.  The notification step has been separated from the
+        //       listener collection step.
+
+        List<QueuedNotification> notifications = null;
+
         synchronized( listenersLock ) {
-            for ( Map.Entry<String, Collection<ArtifactListener>> listenersEntry : listeners.entrySet() ) {
+            for ( Map.Entry<String, Collection<ArtifactListenerSelector>> listenersEntry : listeners.entrySet() ) {
+                
                 List<String> a_registeredPaths = new ArrayList<String>();
                 collectRegisteredPaths( listenersEntry.getKey(), a_registeredPaths );
                 if ( a_registeredPaths.isEmpty() ) {
@@ -797,14 +815,99 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
                 ArtifactNotification registeredPaths =
                     new DefaultArtifactNotification(rootContainer, a_registeredPaths);
 
-                for ( ArtifactListener listener : listenersEntry.getValue() ) {
-                    // Additions, removals, updates
-                    if ( isUpdate ) {
-                        listener.notifyEntryChange(emptyNotification, emptyNotification, registeredPaths);
-                    } else {
-                        listener.notifyEntryChange(emptyNotification, registeredPaths, emptyNotification);
+                for ( ArtifactListenerSelector listener : listenersEntry.getValue() ) {
+                    if ( notifications == null ) {
+                        notifications = new ArrayList<QueuedNotification>( listenersEntry.getValue().size() );
                     }
+
+                    QueuedNotification notification = new QueuedNotification(isUpdate, registeredPaths, listener, filter);
+                    notifications.add(notification);
+
+                    // parm1: additions, parm2: removals, parm3: updates
+                    // if ( isUpdate ) {
+                    //     listener.notifyEntryChange(emptyNotification, emptyNotification, registeredPaths);
+                    // } else {
+                    //     listener.notifyEntryChange(emptyNotification, registeredPaths, emptyNotification);
+                    // }
                 }
+            }
+        }
+
+        if ( notifications != null ) {
+            for ( QueuedNotification notification : notifications ) {
+                notification.fire();
+            }
+        }
+    }
+    
+    public String getId() {
+        return null;
+    }
+
+    // Shift notification outside of the listeners lock.
+    //
+    // That is intended to prevent deadlocks, such as the following:
+
+//    Thread 69:
+//
+//      at com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier.notifyAllListeners(ZipFileArtifactNotifier.java:791)
+//      at com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier.notifyEntryChange(ZipFileArtifactNotifier.java:719)
+//      at com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier.notifyAllListeners(ZipFileArtifactNotifier.java:807)
+//        (entered lock: com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier$ListenersLock@0x00000000E0C2DBB0, entry count: 1)
+//      at com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier.onChange(ZipFileArtifactNotifier.java:664)
+//      at com/ibm/ws/kernel/filemonitor/internal/MonitorHolder.scheduledScan(MonitorHolder.java:705(Compiled Code))
+//
+//      private void notifyAllListeners(boolean isUpdate) { ..
+//      synchronized( listenersLock ) { ..
+//      for ( ArtifactListener listener : listenersEntry.getValue() ) { ..
+//      listener.notifyEntryChange(emptyNotification, emptyNotification, registeredPaths);
+//
+//    'notifyAllListeners' walks downwards to forward change notification to nested entries
+//
+//    Thread 70:
+//
+//      at com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier.removeListener(ZipFileArtifactNotifier.java:561)
+//      at com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier.updateEnclosingMonitor(ZipFileArtifactNotifier.java:355)
+//      at com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier.updateMonitor(ZipFileArtifactNotifier.java:248)
+//      at com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier.removeListener(ZipFileArtifactNotifier.java:610)
+//         (entered lock: com/ibm/ws/artifact/zip/internal/ZipFileArtifactNotifier$ListenersLock@0x00000000E0C2DBA0, entry count: 1)
+//      at com/ibm/ws/artifact/overlay/internal/DirectoryBasedOverlayNotifier.removeListener(DirectoryBasedOverlayNotifier.java:176)
+//         (entered lock: com/ibm/ws/artifact/overlay/internal/DirectoryBasedOverlayNotifier@0x00000000E0C478C8, entry count: 1)
+//      at com/ibm/ws/adaptable/module/internal/NotifierImpl.removeListener(NotifierImpl.java:87)
+//      at com/ibm/ws/adaptable/module/internal/InterpretedNotifier.removeListener(InterpretedNotifier.java:150)
+//      at com/ibm/ws/app/manager/internal/monitor/ApplicationMonitor$BaseApplicationListener.stop(ApplicationMonitor.java:364)
+//
+//    'removeListener' walks upwards to remove listeners from enclosing notifiers.
+//
+//      public boolean removeListener(ArtifactListener listenerToRemove) { ..
+//      synchronized(listenersLock) { ..
+//      updateMonitor(); ..
+//      private void updateMonitor() { ..
+//      updateEnclosingMonitor(); ..
+//      private void updateEnclosingMonitor() { ..
+//      ArtifactContainer enclosingRootContainer = entryInEnclosingContainer.getRoot();
+//      ArtifactNotifier enclosingNotifier = enclosingRootContainer.getArtifactNotifier();
+//      enclosingNotifier.removeListener(this);
+
+    private class QueuedNotification {
+        private final boolean isUpdate;
+        private final ArtifactNotification registeredPaths;
+        private final ArtifactListenerSelector listener;
+        private final String filter;
+
+        public QueuedNotification(boolean isUpdate, ArtifactNotification registeredPaths, ArtifactListenerSelector listener, String filter) {
+            this.isUpdate = isUpdate;
+            this.registeredPaths = registeredPaths;
+            this.listener = listener;
+            this.filter = filter;
+        }
+
+        public void fire() {
+            // parm1: additions, parm2: removals, parm3: updates         
+            if ( isUpdate ) {
+                listener.notifyEntryChange(emptyNotification, emptyNotification, registeredPaths, filter);
+            } else {
+                listener.notifyEntryChange(emptyNotification, registeredPaths, emptyNotification, filter);
             }
         }
     }

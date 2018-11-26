@@ -1,0 +1,40 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="microprofile-jwt-auth-BaseTCK" verbose="1" preserve-order="true" configfailurepolicy="continue" >
+
+    <!-- The required base JAX-RS and CDI based tests that all MP-JWT implementations
+    must pass.
+    -->
+    <test name="base-tests" verbose="10">
+        <groups>
+            <define name="base-groups">
+                <include name="arquillian" description="Arquillian internal"/>
+                <include name="utils" description="Utility tests"/>
+                <include name="jwt" description="Base JsonWebToken tests"/>
+                <include name="jaxrs" description="JAX-RS invocation tests"/>
+                <include name="cdi" description="Base CDI injection of ClaimValues"/>
+                <include name="cdi-json" description="CDI injection of JSON-P values"/>
+                <include name="cdi-provider" description="CDI injection of javax.inject.Provider values"/>
+                <include name="config" description="Validate configuration using MP-config"/>
+            </define>
+            <define name="excludes">
+                <include name="debug" description="Internal debugging tests" />
+            </define>
+            <run>
+                <include name="base-groups" />
+                <exclude name="excludes" />
+            </run>
+        </groups>
+        <classes>
+             <!--  these next two tests are marked skip (enabled=false) in the test case -->
+             <!-- 
+             <class name="org.eclipse.microprofile.jwt.tck.config.IssNoValidationNoIssTest" />
+             <class name="org.eclipse.microprofile.jwt.tck.config.IssNoValidationBadIssTest" />
+             -->
+             <!-- this one requires no audience,  test was invalid , checked for mp.jwt.verify.requireiss=false returns HTTP_OK 
+                  but has since been fixed. -->
+              <class name="org.eclipse.microprofile.jwt.tck.config.IssValidationFailTest" />  
+             
+        </classes>
+    </test>
+
+</suite>

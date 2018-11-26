@@ -1,0 +1,32 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.target: 1.8
+javac.source: 1.8
+
+src: \
+    fat/src, \
+    test-applications/jpasimple.war/src, \
+    test-applications/GuestBookAPP.war/src, \
+    test-applications/GuestBookEJB.jar/src, \
+    test-applications/GuestBookJPA.jar/src
+
+fat.project: true
+
+# Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
+#      or binaries from an archive repository like Maven (e.g. commons-logging:commons-logging)
+-buildpath: \
+    com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+    com.ibm.websphere.javaee.persistence.2.2;version=latest,\
+    com.ibm.websphere.javaee.transaction.1.2;version=latest

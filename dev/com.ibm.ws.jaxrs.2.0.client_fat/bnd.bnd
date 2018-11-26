@@ -39,6 +39,13 @@ src: \
 
 fat.project: true
 
+# These features get added programatically
+tested.features: \
+  jaxrsclient-2.1,\
+  jaxrs-2.1,\
+  appsecurity-3.0,\
+  cdi-2.0
+
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\
   com.ibm.websphere.javaee.cdi.1.2;version=latest,\

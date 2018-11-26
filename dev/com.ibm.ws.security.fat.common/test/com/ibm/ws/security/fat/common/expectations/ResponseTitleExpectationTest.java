@@ -115,6 +115,18 @@ public class ResponseTitleExpectationTest extends CommonSpecificExpectationTest 
     }
 
     @Test
+    public void test_validate_nullAction() {
+        try {
+            Expectation exp = new ResponseTitleExpectation(null, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+            Object content = "Some " + SEARCH_FOR_VAL + " content";
+
+            exp.validate(content);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
     public void test_validate_nullResponseTitle() {
         try {
             Expectation exp = createBasicExpectation();
@@ -284,11 +296,16 @@ public class ResponseTitleExpectationTest extends CommonSpecificExpectationTest 
         return new ResponseTitleExpectation(TEST_ACTION, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
     }
 
+    @Override
+    protected Expectation createBasicExpectationWithNoAction() {
+        return new ResponseTitleExpectation(null, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+    }
+
     private void runNegativeValidateTestForResponseTypeWithoutTitle(Expectation exp, Object response) throws Exception {
         try {
             exp.validate(response);
             fail("Should have thrown an exception saying this response object cannot return a title, but did not.");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             verifyException(e, Pattern.quote(exp.getFailureMsg()) + ".+" + Pattern.quote(response.getClass().getName()) + ".+no title");
         }
     }

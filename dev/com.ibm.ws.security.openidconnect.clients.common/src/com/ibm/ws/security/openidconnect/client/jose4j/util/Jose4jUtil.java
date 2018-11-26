@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.jose4j.util;
 
@@ -59,7 +59,7 @@ public class Jose4jUtil {
     private static final String SIGNATURE_ALG_RS256 = "RS256";
     private static final String SIGNATURE_ALG_NONE = "none";
     private final SSLSupport sslSupport;
-    private final JtiNonceCache jtiCache = new JtiNonceCache(); // Jose4jUil has only one instance
+    private static final JtiNonceCache jtiCache = new JtiNonceCache(); // Jose4jUil has only one instance
 
     // set org.jose4j.jws.default-allow-none to true to behave the same as old jwt
     // allow signatureAlgorithme as none
@@ -134,6 +134,9 @@ public class Jose4jUtil {
                 Hashtable<String, Object> props = new Hashtable<String, Object>();
                 props.put(Constants.ID_TOKEN, tokenStr);
                 props.put(Constants.ACCESS_TOKEN, accessToken);
+                if (idToken != null) {
+                    props.put(Constants.ID_TOKEN_OBJECT, idToken);
+                }
                 oidcResult = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK, null, null, props, null);
                 return oidcResult;
             }
@@ -354,7 +357,7 @@ public class Jose4jUtil {
         } else if (SIGNATURE_ALG_RS256.equals(signatureAlgorithm)) {
             if (clientConfig.getJwkEndpointUrl() != null || clientConfig.getJsonWebKey() != null) {
                 JwKRetriever retriever = createJwkRetriever(clientConfig);
-                keyValue = retriever.getPublicKeyFromJwk(kid, x5t);
+                keyValue = retriever.getPublicKeyFromJwk(kid, x5t, "sig", clientConfig.getUseSystemPropertiesForHttpClientConnections());
             } else {
                 keyValue = clientConfig.getPublicKey();
             }
@@ -460,13 +463,12 @@ public class Jose4jUtil {
         return oidcResult;
     }
 
-    // TODO: bug suspected, jticache never has any entries added.
     ProviderAuthenticationResult checkForReusedJwt(ConvergedClientConfig clientConfig, OidcTokenImplBase idToken) {
         if (clientConfig.getTokenReuse()) {
             // Tokens are allowed to be reused, so don't bother checking any further
             return null;
         }
-        if (jtiCache.contain(idToken)) {
+        if (jtiCache.contain(idToken)) { // this has effect of adding token to cache if not already present.
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Jwt token can only be submitted once. The issuer is " + idToken.getIssuer() + ", and JTI is " + idToken.getJwtId());
             }

@@ -167,6 +167,9 @@ public class AsyncOuterExecutorImpl<R> extends SynchronousExecutorImpl<Future<R>
             }
         }
 
+        QueuedFuture<R> queuedFuture = new QueuedFuture<>();
+        context.setQueuedFuture(queuedFuture);
+
         return super.execute(callable, executionContext);
     }
 
@@ -221,18 +224,18 @@ public class AsyncOuterExecutorImpl<R> extends SynchronousExecutorImpl<Future<R>
                 if (contextService != null) {
                     threadContext = contextService.captureThreadContext(new HashMap<String, String>(), THREAD_CONTEXT_PROVIDERS);
                 }
-                QueuedFuture<R> queuedFuture = new QueuedFuture<>(innerTask, executionContext, threadContext);
+                QueuedFuture<R> queuedFuture = (QueuedFuture<R>) executionContext.getQueuedFuture();
 
                 try {
                     //begin the queuedFuture execution
                     executionContext.onQueued();
-                    queuedFuture.start(executorService);
+                    queuedFuture.start(executorService, innerTask, threadContext);
                     metricRecorder.incrementBulkeadAcceptedCount();
                 } catch (RejectedExecutionException e) {
                     //if the execution was rejected then end the execution and throw a BulkheadException
                     //TODO there might not really have been a bulkhead?? but it's pretty unlikely that the execution would
                     //be rejected otherwise!
-                    executionContext.close();
+                    executionContext.end();
 
                     metricRecorder.incrementBulkheadRejectedCount();
 

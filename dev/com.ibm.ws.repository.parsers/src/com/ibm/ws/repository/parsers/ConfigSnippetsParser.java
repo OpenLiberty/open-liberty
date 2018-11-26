@@ -14,6 +14,7 @@ package com.ibm.ws.repository.parsers;
 import java.io.File;
 
 import com.ibm.ws.repository.exceptions.RepositoryException;
+import com.ibm.ws.repository.parsers.exceptions.RepositoryArchiveException;
 import com.ibm.ws.repository.resources.writeable.ConfigSnippetResourceWritable;
 import com.ibm.ws.repository.resources.writeable.WritableResourceFactory;
 
@@ -25,6 +26,11 @@ public class ConfigSnippetsParser extends ParserBase implements Parser<ConfigSni
 
         ArtifactMetadata artifactMetadata = explodeArtifact(assetFile, metadataFile);
 
+        // Throw an exception if there is no metadata and properties, we get various required data from there
+        if (artifactMetadata == null) {
+            throw new RepositoryArchiveException("Unable to find sibling metadata zip for " + assetFile.getName()
+                                                 + " so do not have the required information", assetFile);
+        }
         // create the empty ConfigSnippetResource
         ConfigSnippetResourceWritable resource = WritableResourceFactory.createConfigSnippet(null);
 

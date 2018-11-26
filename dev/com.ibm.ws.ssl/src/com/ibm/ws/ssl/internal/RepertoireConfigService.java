@@ -21,6 +21,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ssl.config.SSLConfigManager;
 
 /**
  * Class use to uniquely identify SSL configuration Repertoires
@@ -43,16 +44,33 @@ public class RepertoireConfigService extends GenericSSLConfigService implements 
     protected void activate(Map<String, Object> properties) {
         id = (String) properties.get(LibertyConstants.KEY_ID);
         servicePid = (String) properties.get("service.pid");
+
+        // Put SSL properties in the map.
+        try {
+            SSLConfigManager.getInstance().addSSLPropertiesToMap(properties, true);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "SSL properties not added to map " + properties.get("id"), e.getMessage());
+            }
+        }
         super.activate(id, properties);
     }
 
     @Modified
     protected void modified(Map<String, Object> properties) {
+        try {
+            SSLConfigManager.getInstance().addSSLPropertiesToMap(properties, true);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "SSL properties not added to map " + properties.get("id"), e.getMessage());
+            }
+        }
         super.modified(id, properties);
     }
 
     @Deactivate
     protected void deactivate(int reason) {
+        SSLConfigManager.getInstance().removeSSLPropertiesFromMap(id, true);
         super.deactivate(id, reason);
     }
 

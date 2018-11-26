@@ -18,15 +18,22 @@ import java.io.ObjectOutputStream.PutField;
 import java.io.ObjectStreamField;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.concurrent.ForkJoinWorkerThread;
 import java.util.concurrent.RejectedExecutionException;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 
 /**
  * Classloader context implementation.
  */
 public class ClassloaderContextImpl implements ThreadContext {
+
+    static final TraceComponent tc = Tr.register(ClassloaderContextImpl.class);
 
     /**
      * Serial version UID.
@@ -42,22 +49,16 @@ public class ClassloaderContextImpl implements ThreadContext {
     /**
      * Fields to serialize.
      */
-    private static final ObjectStreamField[] serialPersistentFields =
-                    new ObjectStreamField[] {
-                                             new ObjectStreamField(CLASS_LOADER_IDENTIFIER, String.class)
-                    };
+    private static final ObjectStreamField[] serialPersistentFields = new ObjectStreamField[] {
+                                                                                                new ObjectStreamField(CLASS_LOADER_IDENTIFIER, String.class)
+    };
+
+    static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     /**
      * An empty classloader context which erases any classloader context on the thread of execution.
      */
-    static final ClassLoader SYSTEM_CLASS_LOADER = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-        @Override
-        public ClassLoader run() {
-            // This matches the default used by Java.  We might consider using
-            // ClassLoadingService.createThreadContextClassLoader in the future.
-            return ClassLoader.getSystemClassLoader();
-        }
-    });
+    static final ClassLoader SYSTEM_CLASS_LOADER = priv.getSystemClassLoader();
 
     transient ClassloaderContextProviderImpl classLoaderContextProvider;
 
@@ -78,16 +79,16 @@ public class ClassloaderContextImpl implements ThreadContext {
 
     /**
      * A context that propagates the current thread context class loader.
-     * 
+     *
      * @param classloaderContextProviderImpl
      */
     ClassloaderContextImpl(ClassloaderContextProviderImpl provider) {
-        this(provider, getCL());
+        this(provider, priv.getContextClassLoader());
     }
 
     /**
      * Constructor
-     * 
+     *
      * @param provider
      * @param classLoaderIdentifier the id of the classloader for this context
      */
@@ -98,7 +99,7 @@ public class ClassloaderContextImpl implements ThreadContext {
 
     /**
      * Constructor.
-     * 
+     *
      * @param cl the class loader to propagate
      */
     ClassloaderContextImpl(ClassloaderContextProviderImpl provider, ClassLoader cl) {
@@ -123,13 +124,13 @@ public class ClassloaderContextImpl implements ThreadContext {
     public void taskStarting() throws RejectedExecutionException {
 
         if (classLoaderIdentifier != null && classLoaderToPropagate == null) {
-            classLoaderToPropagate = classLoaderIdentifier.length() == 0
-                            ? ClassloaderContextImpl.SYSTEM_CLASS_LOADER
+            classLoaderToPropagate = classLoaderIdentifier.length() == 0 //
+                            ? ClassloaderContextImpl.SYSTEM_CLASS_LOADER //
                             : classLoaderContextProvider.classLoaderIdentifierService.getClassLoader(classLoaderIdentifier);
         }
 
         // Save the current thread's classLoader and set the propagated classloader on the current thread.
-        previousClassLoader = getCL();
+        previousClassLoader = priv.getContextClassLoader();
         setCL(classLoaderToPropagate);
     }
 
@@ -144,14 +145,26 @@ public class ClassloaderContextImpl implements ThreadContext {
 
     /**
      * Sets the provided classloader on the current thread.
-     * 
+     *
      * @param cl The clasloader to be set.
      */
     private void setCL(final ClassLoader cl) {
         PrivilegedAction<Object> action = new PrivilegedAction<Object>() {
             @Override
+            @FFDCIgnore(SecurityException.class)
             public Object run() {
-                Thread.currentThread().setContextClassLoader(cl);
+                final Thread t = Thread.currentThread();
+                try {
+                    t.setContextClassLoader(cl);
+                } catch (SecurityException e) {
+                    // If this work happens to run on an java.util.concurrent.ForkJoinWorkerThread$InnocuousForkJoinWorkerThread,
+                    // setting the ClassLoader may be rejected. If this happens, give a decent error message.
+                    if (t instanceof ForkJoinWorkerThread && "InnocuousForkJoinWorkerThreadGroup".equals(t.getThreadGroup().getName())) {
+                        throw new SecurityException(Tr.formatMessage(tc, "cannot.apply.classloader.context", t.getName()), e);
+                    } else {
+                        throw e;
+                    }
+                }
                 return null;
             }
         };
@@ -159,28 +172,10 @@ public class ClassloaderContextImpl implements ThreadContext {
     }
 
     /**
-     * Retrieves the classloader on the current thread.
-     * 
-     * @return The classloader on the current thread.
-     */
-    private static ClassLoader getCL() {
-        PrivilegedAction<ClassLoader> action = new PrivilegedAction<ClassLoader>() {
-            @Override
-            public ClassLoader run()
-            {
-                ClassLoader cl = Thread.currentThread().getContextClassLoader();
-                return cl;
-            }
-        };
-
-        return AccessController.doPrivileged(action);
-    }
-
-    /**
      * Reads and deserializes the input object.
-     * 
+     *
      * @param in The object to deserialize.
-     * 
+     *
      * @throws IOException
      * @throws ClassNotFoundException
      */
@@ -195,8 +190,7 @@ public class ClassloaderContextImpl implements ThreadContext {
     @Override
     @Trivial
     public String toString() {
-        StringBuilder sb = new StringBuilder(100)
-                        .append(getClass().getSimpleName()).append('@').append(Integer.toHexString(hashCode())).append(' ');
+        StringBuilder sb = new StringBuilder(100).append(getClass().getSimpleName()).append('@').append(Integer.toHexString(hashCode())).append(' ');
         if (classLoaderIdentifier != null)
             sb.append(classLoaderIdentifier);
         else
@@ -206,9 +200,9 @@ public class ClassloaderContextImpl implements ThreadContext {
 
     /**
      * Serialize the given object.
-     * 
+     *
      * @param outStream The stream to write the serialized data.
-     * 
+     *
      * @throws IOException
      */
     private void writeObject(ObjectOutputStream outStream) throws IOException {

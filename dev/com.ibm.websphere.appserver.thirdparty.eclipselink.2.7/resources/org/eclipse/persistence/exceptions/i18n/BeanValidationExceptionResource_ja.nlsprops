@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -28,7 +32,8 @@
 7501={0}marshaller \u3067\u306e Bean \u691c\u8a3c\u30e2\u30fc\u30c9\u304c\u3001\u6b63\u3057\u304f\u306a\u3044\u5024\u300c{1}\u300d\u306b\u8a2d\u5b9a\u3055\u308c\u3066\u3044\u307e\u3059\u3002
 
 7510={0}marshalled Bean \u3067\u5236\u7d04\u306b\u9055\u53cd\u3057\u3066\u3044\u307e\u3059:
-{1}{2}
 
 7525=\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc {0} \u306f @NotNull \u306e\u30a2\u30ce\u30c6\u30fc\u30b7\u30e7\u30f3\u304c\u4ed8\u3051\u3089\u308c\u3066\u3044\u3066\u3001\u304b\u3064\u5c5e\u6027\u300cxs:nillable=true\u300d\u304c\u8a2d\u5b9a\u3055\u308c\u3066\u3044\u308b\u305f\u3081\u3001\u69cb\u6587\u89e3\u6790\u3067\u304d\u307e\u305b\u3093\u3002
+
+{1}{2}=
 

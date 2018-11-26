@@ -37,6 +37,7 @@ import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
+import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
 /**
  * Core of file monitor service. Looks for registered FileMonitors (via declarative services).
@@ -44,7 +45,8 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
  * The two required references (WsLocationAdmin and ScheduledExecutorService) are dynamic, to allow
  * those services to be refreshed/replaced without recycling the component.
  */
-public abstract class CoreServiceImpl implements CoreService, FileNotification {
+public abstract class CoreServiceImpl implements CoreService, FileNotification, ServerQuiesceListener {
+
     /**  */
     static final String MONITOR = "Monitor";
 
@@ -295,7 +297,7 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification {
     @Override
     public FileMonitor getReferencedMonitor(ServiceReference<FileMonitor> monitorRef) {
         // This is done once per monitor: cached by the caller (MonitorHolder.init)
-        return (FileMonitor) cContext.locateService(MONITOR, monitorRef);
+        return cContext.locateService(MONITOR, monitorRef);
     }
 
     @Override
@@ -323,6 +325,46 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification {
         Set<File> absoluteDeleted = PathUtils.getFixedPathFiles(deleted);
         Set<File> absoluteModified = PathUtils.getFixedPathFiles(modified);
         for (MonitorHolder mh : fileMonitors.values())
-            mh.externalScan(absoluteCreated, absoluteDeleted, absoluteModified);
+            mh.externalScan(absoluteCreated, absoluteDeleted, absoluteModified, true, null);
     }
+
+    /**
+     * Processes pending server configuration file events (additions/modifications/removals).
+     */
+    @Override
+    public void processConfigurationChanges() {
+        // The monitor ID is used to determine who is called to process file events.
+        for (ServiceReference<FileMonitor> fm : fileMonitors.keySet()) {
+            String monitorId = (String) fm.getProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME);
+            if (monitorId != null && monitorId.equals("com.ibm.ws.kernel.monitor.config")) {
+                fileMonitors.get(fm).processFileRefresh(false, null);
+            }
+        }
+    }
+
+    /**
+     * Processes pending application artifact events (modifications).
+     */
+    @Override
+    public void processApplicationChanges() {
+        // Application update events are tracked by the artifact framework.
+        // The registered artifact monitor ID and the ID of the artifact listener registered by the
+        // application component are used to determine who is called to process file events.
+        for (ServiceReference<FileMonitor> fm : fileMonitors.keySet()) {
+            String monitorId = (String) fm.getProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME);
+            if (monitorId != null && monitorId.equals("com.ibm.ws.kernel.monitor.artifact")) {
+                fileMonitors.get(fm).processFileRefresh(false, "com.ibm.ws.app.listener");
+            }
+        }
+    }
+
+    @Override
+    public void serverStopping() {
+
+        for (MonitorHolder mh : fileMonitors.values()) {
+            mh.serverStopping();
+        }
+
+    }
+
 }

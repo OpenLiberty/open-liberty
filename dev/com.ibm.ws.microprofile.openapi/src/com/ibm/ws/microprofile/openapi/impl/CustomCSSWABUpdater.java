@@ -138,4 +138,8 @@ public class CustomCSSWABUpdater {
             }
         }
     }
+
+    public void serverStopping() {
+        OpenAPIUIBundlesUpdater.serverStopping();
+    }
 }

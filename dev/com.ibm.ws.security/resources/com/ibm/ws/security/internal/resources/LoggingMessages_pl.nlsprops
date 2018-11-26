@@ -53,3 +53,7 @@ SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.useraction=Podaj tylko jedn\u0105 op
 SEC_TOO_MANY_PRINCIPALS=CWWKS0010E: Podczas pobierania nazwy u\u017cytkownika programu wywo\u0142uj\u0105cego okre\u015blono, \u017ce temat programu wywo\u0142uj\u0105cego ma wiele nazw u\u017cytkownika typu WSPrincipal. W temacie mo\u017ce istnie\u0107 tylko jedna nazwa u\u017cytkownika WSPrincipal. Nazwy typu WSPrincipal to: {}
 SEC_TOO_MANY_PRINCIPALS.explanation=Temat programu wywo\u0142uj\u0105cego ma zbyt wiele nazw u\u017cytkownika typu WSPrincipal. Obs\u0142ugiwana jest tylko jedna nazwa u\u017cytkownika tego typu.
 SEC_TOO_MANY_PRINCIPALS.useraction=Przejrzyj aplikacj\u0119 i sprawd\u017a, dlaczego temat zawiera wi\u0119cej ni\u017c jedn\u0105 nazw\u0119 u\u017cytkownika WSPrincipal.
+
+SPNEGO_API_IS_NOT_SUPPORT=CWWKS0011E: Interfejs API mechanizmu SPNEGO {0} nie jest obs\u0142ugiwany dla wersji {0} \u015brodowiska wykonawczego Java {1}.
+SPNEGO_API_IS_NOT_SUPPORT.explanation=Interfejs API SPNEGO nie mo\u017ce by\u0107 u\u017cywany w przypadku tego dostawcy i wersji \u015brodowiska wykonawczego Java.
+SPNEGO_API_IS_NOT_SUPPORT.useraction=U\u017cyj dostawcy i wersji \u015brodowiska Java obs\u0142ugiwanych przez ten interfejsy API SPNEGO.

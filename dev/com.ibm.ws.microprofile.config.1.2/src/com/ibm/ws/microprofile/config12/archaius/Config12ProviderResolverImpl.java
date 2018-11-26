@@ -10,13 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config12.archaius;
 
-import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
-import org.osgi.service.component.annotations.Component;
-
 import com.ibm.ws.microprofile.config.archaius.ConfigProviderResolverImpl;
 import com.ibm.ws.microprofile.config.impl.AbstractConfigBuilder;
 
-@Component(name = "com.ibm.ws.microprofile.config12.archaius.Config12ProviderResolverImpl", service = { ConfigProviderResolver.class }, property = { "service.vendor=IBM" }, immediate = true)
 public class Config12ProviderResolverImpl extends ConfigProviderResolverImpl {
 
     /** {@inheritDoc} */

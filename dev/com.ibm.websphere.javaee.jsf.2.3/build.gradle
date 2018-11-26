@@ -9,6 +9,14 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+plugins {
+  id "net.ossindex.audit" version "0.3.8-beta"
+}
+
+audit {
+    failOnError = true
+}
+
 // Global vars
 File downloadSrcDir = project.file('build/source')
 File downloadJavadocDir = project.file('build/javadoc')
@@ -19,8 +27,8 @@ configurations {
 }
 
 dependencies {
-    sourceJar 'org.apache.myfaces.core:myfaces-api:2.3.1:sources'
-    javadocJar 'org.apache.myfaces.core:myfaces-api:2.3.1:javadoc'
+    sourceJar 'org.apache.myfaces.core:myfaces-api:2.3.2:sources'
+    javadocJar 'org.apache.myfaces.core:myfaces-api:2.3.2:javadoc'
 }
 
 task copySource(type: Copy) {
@@ -50,21 +58,4 @@ task deleteJars(type:Delete) {
 
 clean {
     dependsOn deleteJars
-}
-
-buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
-  }
-  dependencies {
-    classpath "gradle.plugin.net.ossindex:ossindex-gradle-plugin:0.3.8-beta"
-  }
-}
-
-apply plugin: "net.ossindex.audit"
-
-audit {
-    failOnError = false
 }

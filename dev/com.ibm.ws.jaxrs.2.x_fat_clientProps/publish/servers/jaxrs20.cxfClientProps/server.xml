@@ -6,4 +6,7 @@
 
 	<include location="../fatTestPorts.xml"/>
 
+	<javaPermission className="java.net.SocketPermission" name="*" actions="connect"/>
+	<javaPermission className="java.net.URLPermission" name="http://localhost:23/blah" actions="GET"/>
+	<javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
 </server>

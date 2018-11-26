@@ -90,8 +90,8 @@ encode.option-desc.listCustom=\t\u4ee5\n\
 sslCert.desc=\t\u521b\u5efa\u7f3a\u7701 SSL \u8bc1\u4e66\uff0c\u4ee5\u4f9b\u670d\u52a1\u5668\u6216\n\
 \t\u5ba2\u6237\u673a\u914d\u7f6e\u4f7f\u7528\u3002
 #Note to translator the word "createSSLCertificate" should not be translated
-sslCert.usage.options=\t{0} createSSLCertificate '{--server servername|--client clientname'}  \n\
-\t--password password [\u9009\u9879]
+sslCert.usage.options=\t{0} createSSLCertificate '{--server=servername |--client=clientname'}\n\
+\t--password[=password] [options]
 sslCert.required-key.server=\ \ \ \ --server=name
 sslCert.required-desc.server=\t\u8981\u4e3a\u5176\u521b\u5efa\u8be5\u8bc1\u4e66\u7684\u670d\u52a1\u5668\u3002\
 \u5982\u679c\u4f7f\u7528\u4e86 --client \u81ea\u53d8\u91cf\uff0c\u90a3\u4e48\u4e0d\u80fd\n\

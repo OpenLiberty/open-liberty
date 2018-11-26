@@ -1321,6 +1321,8 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                             // If the RAR has been removed, we don't need to wait on it.
                             resolveDependency(startedFuture);
                         }
+                        flushQueuedActions();
+                        setInterruptible();
                         return;
                 }
             }

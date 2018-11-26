@@ -1,0 +1,20 @@
+<server>
+    <variable name="string_variable" value="string_value"/>
+    <variable name="int_variable" value="999"/>
+    <variable name="bool_variable" value="true"/>
+    <variable name="multi_string_variable" value="first,second,third"/>
+    <variable name="changeable_variable" value="original_value" />
+    <variable name="serverXMLKey1" value="valueinServerXMLVariable1" />
+    <variable name="serverXMLKey2" value="valueinServerXMLVariable2" />    
+   	
+   	<application location="variableServerXMLApp.war">
+   		<appProperties>
+   		       <property name="serverXMLKey1" value="valueinAppProperties1"/>
+   		       <property name="serverXMLKey3" value="valueinAppProperties3"/>
+   		       <property name="serverXMLKey4" value="valueinAppProperties4"/>
+   		       <property name="serverXMLChangeableKey" value="updatedvalueinAppProperties"/>
+   		</appProperties>
+	</application>
+	
+    <variable name="serverXMLKey3" value="valueinServerXMLVariable3" />
+</server>

@@ -42,11 +42,16 @@ import org.apache.cxf.transports.http.configuration.ConnectionType;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.transports.http.configuration.ProxyServerType;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 /**
  * Applies configuration properties to a HTTPConduit
  */
 public class HttpConduitConfigApplier { //Liberty make public
     private static final String SECURE_HTTP_PREFIX = "https";
+
+    private static final TraceComponent tc = Tr.register(HttpConduitConfigApplier.class);
 
     HttpConduitConfigApplier() {}
 
@@ -323,8 +328,16 @@ public class HttpConduitConfigApplier { //Liberty make public
                     p.setReceiveTimeout(Long.parseLong(v.trim()));
                 } else if ("AsyncExecuteTimeout".equals(k)) {
                     p.setAsyncExecuteTimeout(Long.parseLong(v.trim()));
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "The Liberty threadpool maximum length is infinite.  The AsyncExecuteTimeout property will be ignored.");
+                    }
                 } else if ("AsyncExecuteTimeoutRejection".equals(k)) {
                     p.setAsyncExecuteTimeoutRejection(Boolean.parseBoolean(v.trim()));
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "The Liberty threadpool maximum length is infinite.  The AsyncExecuteTimeoutRejection property will be ignored.");
+                    }
                 } else if ("AutoRedirect".equals(k)) {
                     p.setAutoRedirect(Boolean.parseBoolean(v.trim()));
                 } else if ("MaxRetransmits".equals(k)) {

@@ -13,6 +13,7 @@ Subsystem-Name: Internal Java RESTful Services 2.1
  com.ibm.websphere.appserver.classloading-1.0, \
  com.ibm.websphere.appserver.javax.mail-1.6, \
  com.ibm.websphere.appserver.globalhandler-1.0, \
+ com.ibm.websphere.appserver.httpcommons-1.0, \
  com.ibm.websphere.appserver.javaeeCompatible-8.0, \
  com.ibm.websphere.appserver.internal.optional.jaxb-2.2,\
  com.ibm.websphere.appserver.internal.cxf.common-3.2
@@ -24,6 +25,7 @@ Subsystem-Name: Internal Java RESTful Services 2.1
  com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.rs.service.description.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.rs.sse.3.2, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.hc.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.tools.wadlto.jaxrs.3.2, \
  com.ibm.ws.jaxrs.2.0.tools, \
  com.ibm.ws.jaxrs.2.0.web, \

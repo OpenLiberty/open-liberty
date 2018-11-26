@@ -54,7 +54,7 @@ public class JAXRSClientSSLTest extends AbstractTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.stopServer();
+            server.stopServer("CWWKO0801E");
         }
     }
 
@@ -100,6 +100,7 @@ public class JAXRSClientSSLTest extends AbstractTest {
     public void testClientBasicSSL_CustomizedSSLContext() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "alex");
+        p.put("SERVER_CONFIG_DIR", server.getServerRoot());
         this.runTestOnServer(target, "testClientBasicSSL_CustomizedSSLContext", p, "unable to find valid certification path to requested target");
     }
 

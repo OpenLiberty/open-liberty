@@ -85,12 +85,16 @@ public class Expectations {
             return;
         }
         for (String action : testActions) {
-            if (exceptAction != null && action.equals(exceptAction)) {
+            if (exceptAction != null && exceptAction.equals(action)) {
                 Log.info(thisClass, thisMethod, "Skip adding expected status code for action: " + exceptAction);
                 continue;
             }
             addExpectation(new ResponseStatusExpectation(action, HttpServletResponse.SC_OK));
         }
+    }
+
+    public void addSuccessCodeForCurrentAction() {
+        addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
     }
 
 }

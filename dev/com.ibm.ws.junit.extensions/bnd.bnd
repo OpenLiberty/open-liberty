@@ -12,6 +12,12 @@
 
 bVersion=1.0
 
+# Say that we export these packages to eliminate the Eclipse warnings
+Export-Package:\
+  com.ibm.websphere.ras;version=1.0,\
+  org.apache.tools.ant.taskdefs;version=1.0,\
+  test.common.*;version=1.0
+
 publish.wlp.jar.disabled: true
 instrument.disabled: true
 

@@ -24,7 +24,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -79,8 +78,8 @@ public class JSF23CDIGeneralTests {
         ShrinkHelper.defaultDropinApp(jsf23CDIServer, "ConvertDateTime.war", "com.ibm.ws.jsf23.fat.convertdatetime.beans");
         ShrinkHelper.defaultDropinApp(jsf23CDIServer, "ConverterValidatorBehaviorInjectionTarget.war", "com.ibm.ws.jsf23.fat.converter.validator.behavior.injection.beans");
         ShrinkHelper.defaultDropinApp(jsf23CDIServer, "JSF23CDITests.war",
-                                      "com.ibm.ws.jsf23.fat.cdi.beans.factory",
-                                      "com.ibm.ws.jsf23.fat.cdi.managed.factories");
+                                      "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
+                                      "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
         ShrinkHelper.defaultDropinApp(jsf23CDIServer, "CDIIntegrationTest.war",
                                       "com.ibm.ws.jsf23.fat.cdi.integration.application",
                                       "com.ibm.ws.jsf23.fat.cdi.integration.beans",
@@ -588,9 +587,9 @@ public class JSF23CDIGeneralTests {
         // TestConverter, TestValidator and TestBehavior objects should have been injected
         assertTrue(page.asText().contains("JSF 2.3 support injection of JSF Managed Objects: FacesConverter, FacesValidator, FacesBehavior"));
         assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter.validator.behavior.injection.beans.TestConverter"));
-        // NOTE: Uncomment this once we pull the latest MyFaces 2.3.x
-//        assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter.validator.behavior.injection.beans.TestValidator"));
-//        assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter.validator.behavior.injection.beans.TestBehavior"));
+
+        assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter.validator.behavior.injection.beans.TestValidator"));
+        assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter.validator.behavior.injection.beans.TestBehavior"));
     }
 
     /**
@@ -844,7 +843,6 @@ public class JSF23CDIGeneralTests {
      */
     @Mode(TestMode.FULL)
     @Test
-    @Ignore("Ignore until MYFACES-4229 is fixed in the open source.")
     public void testSpecIssue790Test1() throws Exception {
         WebClient webClient = new WebClient();
         // Use a synchronizing ajax controller to allow proper ajax updating

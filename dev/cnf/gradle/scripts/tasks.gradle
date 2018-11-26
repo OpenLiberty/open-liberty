@@ -44,6 +44,27 @@ task publishWLPJars(type: Copy) {
       rename '(.*).jar', '$1' + "_${bnd.bFullVersion}.${qualifier}.jar"
     }
   }
+  if (!bnd('-sub', '').empty) {
+    def hasIFIXHeaders = [:]
+    fileTree(dir: projectDir, include: bnd('-sub', '')).each { subBndFile ->
+      Properties subBndProperties = new Properties()
+      subBndFile.withInputStream { subBndProperties.load(it) }
+      if (subBndProperties.getProperty("IBM-Interim-Fixes") != null
+          || subBndProperties.getProperty("IBM-Test-Fixes") != null) {
+        hasIFIXHeaders.put(subBndProperties.getProperty("Bundle-SymbolicName"), true)
+      }
+    }
+
+    eachFile {
+      // If the sub.bnd that built this jar contains iFix headers, rename it with a qualifer.
+      def symbolicName = it.getSourceName().substring(0, it.getSourceName().lastIndexOf("."))
+      if (!hasIFIXHeaders.get(symbolicName)) {
+        it.setName(symbolicName + "_${bnd.bFullVersion}.jar")
+      } else {
+        it.setName(symbolicName + "_${bnd.bFullVersion}.${qualifier}.jar")
+      }
+    }
+  }
 }
 
 task apiSpiJavadoc(type: Javadoc) {
@@ -333,7 +354,7 @@ compileJava {
 }
 
 test {
-  ignoreFailures = Boolean.valueOf(rootProject.ext.generatedProps.getProperty("gradle.test.ignoreFailures", "false"))
+  ignoreFailures = Boolean.valueOf(rootProject.ext.userProps.getProperty("gradle.test.ignoreFailures", "false"))
   environment("WLP_INSTALL_DIR", buildImage.file('wlp'))
   jvmArgs "-Dtest.buildDir=${buildDir}"
   jvmArgs "-Djava.io.tmpdir=${buildDir}/tmp"

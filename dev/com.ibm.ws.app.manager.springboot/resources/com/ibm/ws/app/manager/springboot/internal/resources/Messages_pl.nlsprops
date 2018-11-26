@@ -80,3 +80,11 @@ warning.spring_config.ignored.session.useraction=Skonfiguruj ustawienia limitu c
 error.wrong.spring.boot.version=CWWKC0263E: Wersja {0} aplikacji Spring Boot nie jest obs\u0142ugiwana. Wymagana jest wersja aplikacji Spring Boot z zakresu {1}.
 error.wrong.spring.boot.version.explanation=Wykryto wersj\u0119 aplikacji Spring Boot, kt\u00f3ra nie jest obs\u0142ugiwana przez serwer.
 error.wrong.spring.boot.version.useraction=Zaktualizuj aplikacj\u0119 Spring Boot tak, aby by\u0142a u\u017cywana jej wersja nale\u017c\u0105ca do wymaganego zakresu wersji.
+
+warning.application.started.event.timeout=CWWKC0264W: Aplikacja {0} nie wys\u0142a\u0142a zdarzenia {1} w ci\u0105gu {2} min.
+warning.application.started.event.timeout.explanation=Aplikacja nie wys\u0142a\u0142a zdarzenia pocz\u0105tkowego w oczekiwanym czasie. Mo\u017cliwe, \u017ce serwer jest przeci\u0105\u017cony lub aplikacja jest du\u017ca. Je\u015bli ta aplikacja jest uruchamiana podczas uruchamiania serwera, serwer mo\u017ce zosta\u0107 uruchomiony bez oczekiwania na uruchomienie aplikacji.
+warning.application.started.event.timeout.useraction=Je\u015bli aplikacja zostanie w ko\u0144cu uruchomiona, nie jest wymagane \u017cadne dzia\u0142anie. Je\u015bli aplikacja nie zostanie uruchomiona, sprawd\u017a w dziennikach serwera, czy inne komunikaty wskazuj\u0105 przyczyn\u0119.
+
+warning.java.version.not.supported=CWWKC0265W: Bie\u017c\u0105ca wersja \u015brodowiska Java {0} nie jest obs\u0142ugiwana przez \u015brodowisko Spring Boot w wersji {1}. Zaktualizuj wersj\u0119 \u015brodowiska Spring Boot aplikacji do wersji 2.0.x lub nowszej.
+warning.java.version.not.supported.explanation=Wersje \u015brodowiska Java nowsze ni\u017c 1.8 nie s\u0105 obs\u0142ugiwane przez \u015brodowisko Spring Boot w wersji 1.5.x i starsze.
+warning.java.version.not.supported.useraction=Zaktualizuj wersj\u0119 \u015brodowiska Spring Boot aplikacji do wersji 2.0.x lub nowszej.

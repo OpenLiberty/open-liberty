@@ -1,0 +1,6 @@
+<server description="default server">
+	<applicationMonitor dropins="dropins(fish)"/>
+    <featureManager>
+    </featureManager>
+    <include location="../fatTestPorts.xml"/>
+</server>

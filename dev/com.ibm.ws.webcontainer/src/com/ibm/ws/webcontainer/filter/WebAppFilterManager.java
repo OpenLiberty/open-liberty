@@ -1214,7 +1214,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                     }
                                 }
                             }
-                            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
+                            if (h2InUse && com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
                                 logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "in H2 processing calling requestProcessor.handleRequest");
 
                             try {

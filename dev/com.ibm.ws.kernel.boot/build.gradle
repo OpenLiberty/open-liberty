@@ -9,6 +9,14 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+plugins {
+  id "net.ossindex.audit" version "0.3.8-beta"
+}
+
+audit {
+    failOnError = true
+}
+
 task publishEmptyTemplatesFolders {
   outputs.dirs(buildImage.file('wlp/templates/servers/defaultServer/apps'),
                buildImage.file('wlp/templates/servers/defaultServer/dropins'))
@@ -20,21 +28,4 @@ task publishEmptyTemplatesFolders {
 
 assemble {
   dependsOn publishEmptyTemplatesFolders
-}
-
-buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
-  }
-  dependencies {
-    classpath "gradle.plugin.net.ossindex:ossindex-gradle-plugin:0.3.8-beta"
-  }
-}
-
-apply plugin: "net.ossindex.audit"
-
-audit {
-    failOnError = false
 }

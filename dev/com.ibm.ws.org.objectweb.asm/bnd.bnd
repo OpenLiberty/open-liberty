@@ -8,22 +8,20 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.objectweb.asm;6.2.1}}!/META-INF/MANIFEST.MF,\
-          jar:${fileuri;${repo;org.objectweb.asm.tree.analysis;6.2.1}}!/META-INF/MANIFEST.MF,\
-          jar:${fileuri;${repo;org.objectweb.asm.commons;6.2.1}}!/META-INF/MANIFEST.MF,\
-          jar:${fileuri;${repo;org.objectweb.asm.tree;6.2.1}}!/META-INF/MANIFEST.MF,\
-          jar:${fileuri;${repo;org.objectweb.asm.util;6.2.1}}!/META-INF/MANIFEST.MF,\
-          jar:${fileuri;${repo;org.objectweb.asm.xml;6.2.1}}!/META-INF/MANIFEST.MF,\
+-include= jar:${fileuri;${repo;org.objectweb.asm;7.0}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;org.objectweb.asm.tree.analysis;7.0}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;org.objectweb.asm.commons;7.0}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;org.objectweb.asm.tree;7.0}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;org.objectweb.asm.util;7.0}}!/META-INF/MANIFEST.MF,\
           bnd.overrides
 
 instrument.disabled: true
 
-asmVersion=6.2.1
+asmVersion=7.0
 
 -buildpath: \
 	org.objectweb.asm;version=${asmVersion},\
 	org.objectweb.asm.tree.analysis;version=${asmVersion},\
 	org.objectweb.asm.commons;version=${asmVersion},\
 	org.objectweb.asm.tree;version=${asmVersion},\
-	org.objectweb.asm.util;version=${asmVersion},\
-	org.objectweb.asm.xml;version=${asmVersion}
+	org.objectweb.asm.util;version=${asmVersion}

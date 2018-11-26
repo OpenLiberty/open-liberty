@@ -124,6 +124,11 @@ retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W: {2} \u76ee\u6807\u7684 Retr
 retry.parameter.invalid.value.CWMFT5019W.explanation=\u6296\u52a8\u5ef6\u8fdf\u5fc5\u987b\u6bd4\u5ef6\u8fdf\u77ed\u3002\u6296\u52a8\u5ef6\u8fdf\u7531 jitter \u53c2\u6570\u548c jitterDelayUnit \u53c2\u6570\u7ec4\u6210\u3002\u5ef6\u8fdf\u7531 delay \u53c2\u6570\u548c delayUnit \u53c2\u6570\u7ec4\u6210\u3002
 retry.parameter.invalid.value.CWMFT5019W.useraction=\u8bf7\u66f4\u6b63\u5176\u4e2d\u4e00\u4e2a\u6216\u591a\u4e2a\u53c2\u6570\u7684\u503c\uff0c\u4ee5\u4f7f\u6296\u52a8\u5ef6\u8fdf\u7684\u6301\u7eed\u65f6\u95f4\u6bd4\u5ef6\u8fdf\u7684\u6301\u7eed\u65f6\u95f4\u77ed\u3002
 
+# A method does not return Future or CompletionStage
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E=CWMFT5020E: {0} \u5f02\u6b65\u65b9\u6cd5\u4e0d\u5177\u6709\u8fd4\u56de\u7c7b\u578b java.util.concurrent.Future \u6216 java.util.concurrent.CompletionStage\u3002
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.explanation=\u4f7f\u7528 org.eclipse.microprofile.faulttolerance.Asynchronous \u6ce8\u91ca\u7684\u6240\u6709\u65b9\u6cd5\u90fd\u5fc5\u987b\u5177\u6709\u8fd4\u56de\u7c7b\u578b java.util.concurrent.Future \u6216 java.util.concurrent.CompletionStage\u3002
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=\u66f4\u65b0\u8fd4\u56de\u7c7b\u578b\u3002
+
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u5f02\u5e38\u4e3a {0}\u3002
 internal.error.CWMFT5997E.explanation=\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u9047\u5230\u4e86\u5185\u90e8\u9519\u8bef\u3002

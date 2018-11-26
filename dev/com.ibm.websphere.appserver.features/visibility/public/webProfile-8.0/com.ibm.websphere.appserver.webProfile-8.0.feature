@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.webProfile-8.0
 visibility=public
+singleton=true
 IBM-App-ForceRestart: install, uninstall
 IBM-ShortName: webProfile-8.0
 Subsystem-Version: 8.0.0

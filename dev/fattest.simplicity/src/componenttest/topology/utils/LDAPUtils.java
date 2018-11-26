@@ -184,35 +184,23 @@ public class LDAPUtils {
                 try {
                     services = getLdapServices(3, CONSUL_LDAP_IBM_SECURITY_FVT_SERVICE);
 
-                    // TODO Work around LDAP entity sync issues until fixed.
-                    ExternalTestService service1 = null, service2 = null, service3 = null;
-                    for (ExternalTestService s : services) {
-                        if (s.getAddress().contains("7195") || (service2 != null && service3 != null)) {
-                            service1 = s;
-                        } else if (service2 == null) {
-                            service2 = s;
-                        } else {
-                            service3 = s;
-                        }
-                    }
+                    LDAP_SERVER_4_NAME = services.get(0).getAddress();
+                    LDAP_SERVER_4_PORT = services.get(0).getProperties().get(CONSUL_LDAP_PORT_KEY);
+                    LDAP_SERVER_4_SSL_PORT = services.get(0).getProperties().get(CONSUL_LDAPS_PORT_KEY);
+                    LDAP_SERVER_4_BINDDN = services.get(0).getProperties().get(CONSUL_BIND_DN_KEY);
+                    LDAP_SERVER_4_BINDPWD = services.get(0).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
 
-                    LDAP_SERVER_4_NAME = service1.getAddress();
-                    LDAP_SERVER_4_PORT = service1.getProperties().get(CONSUL_LDAP_PORT_KEY);
-                    LDAP_SERVER_4_SSL_PORT = service1.getProperties().get(CONSUL_LDAPS_PORT_KEY);
-                    LDAP_SERVER_4_BINDDN = service1.getProperties().get(CONSUL_BIND_DN_KEY);
-                    LDAP_SERVER_4_BINDPWD = service1.getProperties().get(CONSUL_BIND_PASSWORD_KEY);
+                    LDAP_SERVER_7_NAME = services.get(1).getAddress();
+                    LDAP_SERVER_7_PORT = services.get(1).getProperties().get(CONSUL_LDAP_PORT_KEY);
+                    LDAP_SERVER_7_SSL_PORT = services.get(1).getProperties().get(CONSUL_LDAPS_PORT_KEY);
+                    LDAP_SERVER_7_BINDDN = services.get(1).getProperties().get(CONSUL_BIND_DN_KEY);
+                    LDAP_SERVER_7_BINDPWD = services.get(1).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
 
-                    LDAP_SERVER_7_NAME = service2.getAddress();
-                    LDAP_SERVER_7_PORT = service2.getProperties().get(CONSUL_LDAP_PORT_KEY);
-                    LDAP_SERVER_7_SSL_PORT = service2.getProperties().get(CONSUL_LDAPS_PORT_KEY);
-                    LDAP_SERVER_7_BINDDN = service2.getProperties().get(CONSUL_BIND_DN_KEY);
-                    LDAP_SERVER_7_BINDPWD = service2.getProperties().get(CONSUL_BIND_PASSWORD_KEY);
-
-                    LDAP_SERVER_8_NAME = service3.getAddress();
-                    LDAP_SERVER_8_PORT = service3.getProperties().get(CONSUL_LDAP_PORT_KEY);
-                    LDAP_SERVER_8_SSL_PORT = service3.getProperties().get(CONSUL_LDAPS_PORT_KEY);
-                    LDAP_SERVER_8_BINDDN = service3.getProperties().get(CONSUL_BIND_DN_KEY);
-                    LDAP_SERVER_8_BINDPWD = service3.getProperties().get(CONSUL_BIND_PASSWORD_KEY);
+                    LDAP_SERVER_8_NAME = services.get(2).getAddress();
+                    LDAP_SERVER_8_PORT = services.get(2).getProperties().get(CONSUL_LDAP_PORT_KEY);
+                    LDAP_SERVER_8_SSL_PORT = services.get(2).getProperties().get(CONSUL_LDAPS_PORT_KEY);
+                    LDAP_SERVER_8_BINDDN = services.get(2).getProperties().get(CONSUL_BIND_DN_KEY);
+                    LDAP_SERVER_8_BINDPWD = services.get(2).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
                 } finally {
                     releaseServices(services);
                 }
@@ -271,13 +259,51 @@ public class LDAPUtils {
          * the remote servers.
          */
         Log.info(c, "<clinit>", "USE_LOCAL_LDAP_SERVER=" + USE_LOCAL_LDAP_SERVER);
+        if (USE_LOCAL_LDAP_SERVER == false) {
+            Log.info(c, "<clinit>", "Active Directory WAS SVT LDAP Servers");
+            Log.info(c, "<clinit>", "           LDAP_SERVER_2_NAME=" + LDAP_SERVER_2_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_2_PORT=" + LDAP_SERVER_2_PORT + '\n');
+            Log.info(c, "<clinit>", "           LDAP_SERVER_6_NAME=" + LDAP_SERVER_6_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_6_PORT=" + LDAP_SERVER_6_PORT + '\n');
+
+            Log.info(c, "<clinit>", "IBM Continuous Delivery LDAP Servers");
+            Log.info(c, "<clinit>", "           LDAP_SERVER_1_NAME=" + LDAP_SERVER_1_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_1_PORT=" + LDAP_SERVER_1_PORT + '\n');
+            Log.info(c, "<clinit>", "           LDAP_SERVER_5_NAME=" + LDAP_SERVER_5_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_5_PORT=" + LDAP_SERVER_5_PORT + '\n');
+
+            Log.info(c, "<clinit>", "IBM WAS Security FVT LDAP Servers");
+            Log.info(c, "<clinit>", "           LDAP_SERVER_4_NAME=" + LDAP_SERVER_4_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_4_PORT=" + LDAP_SERVER_4_PORT);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_4_SSL_PORT=" + LDAP_SERVER_4_SSL_PORT + '\n');
+            Log.info(c, "<clinit>", "           LDAP_SERVER_7_NAME=" + LDAP_SERVER_7_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_7_PORT=" + LDAP_SERVER_7_PORT);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_7_SSL_PORT=" + LDAP_SERVER_7_SSL_PORT + '\n');
+            Log.info(c, "<clinit>", "           LDAP_SERVER_8_NAME=" + LDAP_SERVER_8_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_8_PORT=" + LDAP_SERVER_8_PORT);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_8_SSL_PORT=" + LDAP_SERVER_8_SSL_PORT + '\n');
+
+            Log.info(c, "<clinit>", "IBM WAS Security LDAP Servers");
+            Log.info(c, "<clinit>", "           LDAP_SERVER_10_NAME=" + LDAP_SERVER_10_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_10_PORT=" + LDAP_SERVER_10_PORT + '\n');
+            Log.info(c, "<clinit>", "           LDAP_SERVER_12_NAME=" + LDAP_SERVER_12_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_12_PORT=" + LDAP_SERVER_12_PORT + '\n');
+
+            Log.info(c, "<clinit>", "Oracle WAS SVT LDAP Servers");
+            Log.info(c, "<clinit>", "           LDAP_SERVER_3_NAME=" + LDAP_SERVER_3_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_3_PORT=" + LDAP_SERVER_3_PORT);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_3_SSL_PORT=" + LDAP_SERVER_3_SSL_PORT + '\n');
+            Log.info(c, "<clinit>", "           LDAP_SERVER_13_NAME=" + LDAP_SERVER_13_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_13_PORT=" + LDAP_SERVER_13_PORT);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_13_SSL_PORT=" + LDAP_SERVER_13_SSL_PORT + '\n');
+        }
     }
 
     /**
      * Get a list of LDAP services from Consul.
      *
-     * @param count The number of services requested. If unable to get unique 'count' instances,
-     *            the returned List will contain duplicate entries.
+     * @param count   The number of services requested. If unable to get unique 'count' instances,
+     *                    the returned List will contain duplicate entries.
      * @param service The service to return.
      * @return A list of services returned. This list may return duplicates if unable to return enough
      *         unique service instances.
@@ -358,7 +384,7 @@ public class LDAPUtils {
      * </ul>
      *
      * @param server
-     *            server for which bootstrap properties file needs updating with LDAP server host/ports
+     *                   server for which bootstrap properties file needs updating with LDAP server host/ports
      * @throws Exception
      */
     public static void addLDAPVariables(LibertyServer server) throws Exception {

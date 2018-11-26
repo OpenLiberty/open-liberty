@@ -25,13 +25,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import test.common.SharedLocationManager;
-import test.common.SharedOutputManager;
-import test.utils.SharedConstants;
-
 import com.ibm.websphere.config.ConfigEvaluatorException;
 import com.ibm.ws.kernel.service.location.internal.VariableRegistryHelper;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
+
+import test.common.SharedLocationManager;
+import test.common.SharedOutputManager;
+import test.utils.SharedConstants;
 
 /**
  * Test merge behavior on include elements
@@ -52,7 +52,7 @@ public class MergeBehaviorTest {
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
 
-        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper());
+        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
     }
 
     @AfterClass
@@ -94,9 +94,8 @@ public class MergeBehaviorTest {
         changeLocationSettings("default");
 
         // Import include.xml without a merge behavior, then specify an element
-        // The top level config element will be used because it comes last. 
-        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(
-                        "<server><include location=\"${shared.config.dir}/include.xml\"/><foo bar=\"test\"/></server>"));
+        // The top level config element will be used because it comes last.
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader("<server><include location=\"${shared.config.dir}/include.xml\"/><foo bar=\"test\"/></server>"));
 
         ConfigElement applied = serverConfig.getSingleton("foo", null);
 
@@ -110,8 +109,7 @@ public class MergeBehaviorTest {
         changeLocationSettings("default");
 
         // Import include.xml which contains <foo bar="include"/>.. Include will be used because it comes last
-        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(
-                        "<server><foo bar=\"test\"/><include location=\"${shared.config.dir}/include.xml\"/></server>"));
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader("<server><foo bar=\"test\"/><include location=\"${shared.config.dir}/include.xml\"/></server>"));
 
         ConfigElement applied = serverConfig.getSingleton("foo", null);
 
@@ -124,10 +122,9 @@ public class MergeBehaviorTest {
     public void testImportNotSpecifiedListValue() throws Exception {
         changeLocationSettings("default");
 
-        // Import include.xml without a merge behavior, then specify an element. 
-        // The elements will be merged. 
-        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(
-                        "<server><include location=\"${shared.config.dir}/include.xml\"/><foo><list>test1</list><list>test2</list></foo></server>"));
+        // Import include.xml without a merge behavior, then specify an element.
+        // The elements will be merged.
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader("<server><include location=\"${shared.config.dir}/include.xml\"/><foo><list>test1</list><list>test2</list></foo></server>"));
 
         ConfigElement applied = serverConfig.getSingleton("foo", null);
 
@@ -148,8 +145,7 @@ public class MergeBehaviorTest {
 
         // Specify an element, then import include.xml
         // The elements will be merged
-        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(
-                        "<server><foo><list>test1</list><list>test2</list></foo><include location=\"${shared.config.dir}/include.xml\"/></server>"));
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader("<server><foo><list>test1</list><list>test2</list></foo><include location=\"${shared.config.dir}/include.xml\"/></server>"));
 
         ConfigElement applied = serverConfig.getSingleton("foo", null);
 
@@ -170,8 +166,7 @@ public class MergeBehaviorTest {
 
         // Import include.xml with a merge behavior of "merge", then specify an element
         // The elements will be merged
-        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(
-                        "<server><include onConflict=\"merge\" location=\"${shared.config.dir}/include.xml\"/><foo><list>test1</list><list>test2</list></foo></server>"));
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader("<server><include onConflict=\"merge\" location=\"${shared.config.dir}/include.xml\"/><foo><list>test1</list><list>test2</list></foo></server>"));
 
         ConfigElement applied = serverConfig.getSingleton("foo", null);
 
@@ -192,8 +187,7 @@ public class MergeBehaviorTest {
 
         // Specify an element, then import include.xml with a merge behavior of "merge"
         // The elements will be merged
-        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(
-                        "<server><foo><list>test1</list><list>test2</list></foo><include onConflict=\"merge\" location=\"${shared.config.dir}/include.xml\"/></server>"));
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader("<server><foo><list>test1</list><list>test2</list></foo><include onConflict=\"merge\" location=\"${shared.config.dir}/include.xml\"/></server>"));
 
         ConfigElement applied = serverConfig.getSingleton("foo", null);
 
@@ -212,10 +206,9 @@ public class MergeBehaviorTest {
     public void testImportReplaceListValue() throws Exception {
         changeLocationSettings("default");
 
-        // Import include.xml with a behavior of "replace", then specify an element. 
+        // Import include.xml with a behavior of "replace", then specify an element.
         // The elements will be merged because last behavior wins
-        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(
-                        "<server><include onConflict=\"replace\" location=\"${shared.config.dir}/include.xml\"/><foo><list>test1</list><list>test2</list></foo></server>"));
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader("<server><include onConflict=\"replace\" location=\"${shared.config.dir}/include.xml\"/><foo><list>test1</list><list>test2</list></foo></server>"));
 
         ConfigElement applied = serverConfig.getSingleton("foo", null);
 
@@ -236,8 +229,7 @@ public class MergeBehaviorTest {
 
         // Specify an element and then import include.xml with a behavior of "replace"
         // The include.xml element will be used because it replaces the existing element
-        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(
-                        "<server><foo><list>test1</list><list>test2</list></foo><include onConflict=\"replace\" location=\"${shared.config.dir}/include.xml\"/></server>"));
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader("<server><foo><list>test1</list><list>test2</list></foo><include onConflict=\"replace\" location=\"${shared.config.dir}/include.xml\"/></server>"));
 
         ConfigElement applied = serverConfig.getSingleton("foo", null);
 
@@ -256,8 +248,7 @@ public class MergeBehaviorTest {
 
         // Import with "Ignore", then specify an element
         // The elements are merged because the behavior on the element wins
-        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(
-                        "<server><include onConflict=\"ignore\" location=\"${shared.config.dir}/include.xml\"/><foo><list>test1</list><list>test2</list></foo></server>"));
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader("<server><include onConflict=\"ignore\" location=\"${shared.config.dir}/include.xml\"/><foo><list>test1</list><list>test2</list></foo></server>"));
 
         ConfigElement applied = serverConfig.getSingleton("foo", null);
 
@@ -278,8 +269,7 @@ public class MergeBehaviorTest {
 
         // Specify an element, import with "ignore"
         // The included element is ignored
-        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(
-                        "<server><foo><list>test1</list><list>test2</list></foo><include onConflict=\"ignore\" location=\"${shared.config.dir}/include.xml\"/></server>"));
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader("<server><foo><list>test1</list><list>test2</list></foo><include onConflict=\"ignore\" location=\"${shared.config.dir}/include.xml\"/></server>"));
 
         ConfigElement applied = serverConfig.getSingleton("foo", null);
 

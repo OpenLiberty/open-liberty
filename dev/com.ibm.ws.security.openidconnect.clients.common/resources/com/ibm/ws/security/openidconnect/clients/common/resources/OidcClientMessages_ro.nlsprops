@@ -180,5 +180,12 @@ JWK_RETRIEVE_FAILED=CWWKS1747E: Nu a fost returnat\u0103 o Cheie web JSON (JWK) 
 JWK_RETRIEVE_FAILED.explanation=Nu a putut fi returnat\u0103 o cheie web JSON (JWK) de la URL-ul specificat. URL-ul ar putea s\u0103 nu fie valid, URL-ul ar putea s\u0103 nu fie configurat pentru a returna un JWK, r\u0103spuns de la URL-ul ar putea fi gol sau a ap\u0103rut o eroare necunoscut\u0103.
 JWK_RETRIEVE_FAILED.useraction=Verifica\u0163i c\u0103 URL-ul este formatat corect \u015fi c\u0103 specific\u0103 o loca\u0163ie care este capabil\u0103 s\u0103 returneze chei web JSON. Pentru mai multe informa\u0163ii verifica\u0163i codul de stare \u015fi con\u0163inutul r\u0103spunsului.
 
+USERINFO_RETREIVE_FAILED=CWWKS1748E: URL-ul de informa\u0163ii utilizator [{0}] nu a putut fi contactat. Status-ul r\u0103spunsului a fost [{1}] \u015fi con\u0163inutul returnat a fost [{2}].
+USERINFO_RETREIVE_FAILED.explanation=Informa\u0163iile de utilizator nu au putut fi ob\u0163inute la URL-ul specificat. URL-ul s-ar putea s\u0103 nu fie valid, jeton de acces furnizat s-ar putea s\u0103 nu fie valid, r\u0103spunsul de la URL ar putea fi gol sau a ap\u0103rut o eroare necunoscut\u0103.
+USERINFO_RETREIVE_FAILED.useraction=Verifica\u0163i c\u0103 URL-ul este formatat corect \u015fi c\u0103 specific\u0103 o loca\u0163ie care este capabil\u0103 s\u0103 returneze date de informa\u0163ii utilizator. Pentru mai multe informa\u0163ii verifica\u0163i codul de stare \u015fi con\u0163inutul r\u0103spunsului.
+
+USERINFO_INVALID=CWWKS1749E: Datele de informa\u0163ii utilizator [{0}] sunt invalide deoarece subcererea nu se potrive\u015fte cu subcererea jetonului de ID [{1}].
+USERINFO_INVALID.explanation=Subcererea datelor de informa\u0163ii utilizator trebuie s\u0103 se potriveasc\u0103 cu subcerera jetonului de ID, dar nu se potrive\u015fte. 
+USERINFO_INVALID.useraction=Asigura\u0163i-v\u0103 c\u0103 furnizorul OpenID Connect genereaz\u0103 informa\u0163ii de utilizator valide.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 

@@ -18,11 +18,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAnyAttribute;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
@@ -30,51 +25,63 @@ import org.w3c.dom.Element;
 /**
  * Represents a server configuration document for the WAS 8.5 Liberty Profile.
  */
-@XmlRootElement(name = "server")
 public class ServerConfiguration implements Cloneable {
+
+    public static String XML_ELEMENT_NAME_SERVER = "server";
 
     private String description;
 
-    @XmlElement(name = "httpEndpoint")
+    public static String XML_ELEMENT_NAME_HTTP_ENDPOINT = "httpEndpoint";
+
     private ConfigElementList<HttpEndpoint> httpEndpoints;
 
-    @XmlElement(name = "virtualHost")
+    public static String XML_ELEMENT_NAME_VIRTUAL_HOST = "virtualHost";
+
     private ConfigElementList<VirtualHost> virtualHosts;
 
-    @XmlElement(name = "httpSession")
+    public static String XML_ELEMENT_NAME_HTTP_SESSION = "httpSession";
+
     private HttpSession httpSession;
 
-    @XmlElement(name = "connectionManager")
+    public static String XML_ELEMENT_NAME_CONNECTION_MANAGER = "connectionManager";
+
     private ConfigElementList<ConnectionManager> connManagers;
 
-    @XmlElement(name = "logging")
+    public static String XML_ELEMENT_NAME_LOGGING = "logging";
+
     private Logging logging;
 
-    @XmlElement(name = "config")
+    public static String XML_ELEMENT_NAME_CONFIG = "config";
+
     private ConfigMonitorElement config;
 
-    @XmlElement(name = "webContainer")
+    public static String XML_ELEMENT_NAME_WEB_CONTAINER = "webContainer";
+
     private WebContainerElement webContainer;
 
-    @XmlElement(name = "ssl")
+    public static String XML_ELEMENT_NAME_SSL = "ssl";
+
     private ConfigElementList<SSLConfig> ssls;
 
-    @XmlElement(name = "keyStore")
+    public static String XML_ELEMENT_NAME_KEYSTORE = "keyStore";
+
     private ConfigElementList<KeyStore> keyStores;
 
-    @XmlElement(name = "jspEngine")
+    public static String XML_ELEMENT_NAME_JSP_ENGINE = "jspEngine";
+
     private JspEngineElement jspEngine;
 
-    @XmlElement(name = "authData")
+    public static String XML_ELEMENT_NAME_AUTH_DATA = "authData";
+
     private ConfigElementList<AuthData> authDataElements;
 
-    @XmlElement(name = "variable")
+    public static String XML_ELEMENT_NAME_VARIABLE = "variable";
+
     private ConfigElementList<Variable> variables;
 
-    @XmlAnyAttribute
+    @SuppressWarnings("unused")
     private Map<QName, Object> unknownAttributes;
 
-    @XmlAnyElement
     private List<Element> unknownElements;
 
     public ServerConfiguration() {
@@ -118,7 +125,6 @@ public class ServerConfiguration implements Cloneable {
      *
      * @param description the description of this configuration
      */
-    @XmlAttribute
     public void setDescription(String description) {
         this.description = ConfigElement.getValue(description);
     }
@@ -237,72 +243,6 @@ public class ServerConfiguration implements Cloneable {
         return this.variables;
     }
 
-    private List<Field> getAllXmlElements() {
-        List<Field> xmlElements = new ArrayList<Field>();
-        for (Field field : getClass().getDeclaredFields()) {
-            if (field.isAnnotationPresent(XmlElement.class))
-                xmlElements.add(field);
-        }
-        return xmlElements;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public ServerConfiguration clone() throws CloneNotSupportedException {
-        ServerConfiguration clone = (ServerConfiguration) super.clone();
-
-        for (Field field : getAllXmlElements()) {
-            try {
-                Object val = field.get(this);
-                if (val instanceof ConfigElementList) {
-                    field.set(clone, ((ConfigElementList<ConfigElement>) val).clone());
-                } else if (val != null) {
-                    field.set(clone, ((ConfigElement) val).clone());
-                }
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            } catch (RuntimeException e) {
-                throw new RuntimeException("Error on field: " + field);
-            }
-        }
-        return clone;
-    }
-
-    @Override
-    public String toString() {
-        String nl = System.getProperty("line.separator");
-        StringBuffer buf = new StringBuffer("ServerConfiguration" + nl);
-
-        for (Field field : getAllXmlElements()) {
-            try {
-                buf.append(field.get(this).toString());
-            } catch (Exception ignore) {
-            }
-        }
-        return buf.toString();
-    }
-
-    @Override
-    public boolean equals(Object otherConfig) {
-        if (otherConfig == null)
-            return false;
-        if (!(otherConfig instanceof ServerConfiguration))
-            return false;
-
-        // Consider server configurations equal if their XmlElements match up
-        for (Field field : getAllXmlElements()) {
-            try {
-                Object thisVal = field.get(this);
-                Object otherVal = field.get(otherConfig);
-                if (!(thisVal == null ? otherVal == null : thisVal.equals(otherVal)))
-                    return false;
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return true;
-    }
-
     /**
      * Calls modify() on elements in the configuration that implement the ModifiableConfigElement interface.
      *
@@ -321,7 +261,7 @@ public class ServerConfiguration implements Cloneable {
      * Finds all of the objects in the given config element that implement the
      * ModifiableConfigElement interface.
      *
-     * @param element The config element to check.
+     * @param element                  The config element to check.
      * @param modifiableConfigElements The list containing all modifiable elements.
      * @throws Exception
      */

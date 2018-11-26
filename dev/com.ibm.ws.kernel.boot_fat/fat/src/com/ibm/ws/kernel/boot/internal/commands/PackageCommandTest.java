@@ -223,13 +223,12 @@ public class PackageCommandTest {
             // Ensure root is correct in the .zip
             ZipFile zipFile = new ZipFile(server.getServerRoot() + "/" + archivePackage);
             try {
-
+                boolean foundMyRootEntry = false;
                 for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
                     ZipEntry entry = en.nextElement();
-                    String entryName = entry.getName();
-                    assertTrue("The package did not contain MyRoot as expected. Entry Name is = " + entryName, entryName.contains("MyRoot"));
+                    foundMyRootEntry |= entry.getName().startsWith("MyRoot");
                 }
-
+                assertTrue("The package did not contain /MyRoot as expected.", foundMyRootEntry);
             } finally {
                 try {
                     zipFile.close();
@@ -239,6 +238,77 @@ public class PackageCommandTest {
         } catch (FileNotFoundException ex) {
             assumeTrue(false); // the directory does not exist, so we skip this test.
         }
+    }
+
+    @Test
+    public void testSharedFolderWithServerRootandUsrSpecified() throws Exception {
+
+        LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
+        try {
+
+            server.getFileFromLibertyInstallRoot("lib/extract");
+
+            String[] cmd = new String[] { "--archive=" + archivePackage,
+                                          "--include=usr",
+                                          "--server-root=MyRoot" };
+            // Ensure package completes
+            String stdout = server.executeServerScript("package", cmd).getStdout();
+            assertTrue("The package command did not complete as expected. STDOUT = " + stdout, stdout.contains("package complete"));
+
+            // Ensure root is correct in the .zip
+            ZipFile zipFile = new ZipFile(server.getServerRoot() + "/" + archivePackage);
+            try {
+                boolean foundMyRootSharedEntry = false;
+                for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
+                    ZipEntry entry = en.nextElement();
+                    foundMyRootSharedEntry |= entry.getName().contains("MyRoot/shared");
+                }
+                assertTrue("The package did not contain MyRoot/shared/ as expected.", foundMyRootSharedEntry);
+            } finally {
+                try {
+                    zipFile.close();
+                } catch (IOException ex) {
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            assumeTrue(false); // the directory does not exist, so we skip this test.
+        }
+    }
+
+    @Test
+    public void testServerFoundWithServerRootSpecified() throws Exception {
+
+        LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
+        try {
+
+            server.getFileFromLibertyInstallRoot("lib/extract");
+
+            String[] cmd = new String[] { "--archive=" + archivePackage,
+                                          "--include=minify",
+                                          "--server-root=MyRoot" };
+            // Ensure package completes
+            String stdout = server.executeServerScript("package", cmd).getStdout();
+            assertTrue("The package command did not complete as expected. STDOUT = " + stdout, stdout.contains("package complete"));
+
+            // Ensure root is correct in the .zip
+            ZipFile zipFile = new ZipFile(server.getServerRoot() + "/" + archivePackage);
+            try {
+                boolean foundServerEntry = false;
+                for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
+                    ZipEntry entry = en.nextElement();
+                    foundServerEntry |= entry.getName().contains("MyRoot/servers/com.ibm.ws.kernel.boot.root.fat/");
+                }
+                assertTrue("The package did not contain MyRoot/servers/com.ibm.ws.kernel.boot.root.fat as expected.", foundServerEntry);
+            } finally {
+                try {
+                    zipFile.close();
+                } catch (IOException ex) {
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            assumeTrue(false); // the directory does not exist, so we skip this test.
+        }
+
     }
 
 }

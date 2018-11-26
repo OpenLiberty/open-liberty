@@ -34,10 +34,15 @@ import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
 public class MetricsConnection {
 
     public static final String METRICS_ENDPOINT = "/metrics/";
-    public static final String SERVER_PASSWORD = "adminpwd";
-    public static final String SERVER_USERNAME = "admin";
-    public static final String WRONG_SERVER_PASSWORD = "user";
-    public static final String WRONG_SERVER_USERNAME = "user";
+    public static final String ADMINISTRATOR_USERNAME = "admin";
+    public static final String ADMINISTRATOR_PASSWORD = "adminpwd";
+    public static final String VIEWER_USERNAME = "viewer";
+    public static final String VIEWER_PASSWORD = "viewerpwd";
+    public static final String UNAUTHORIZED_USER_USERNAME = "user";
+    public static final String UNAUTHORIZED_USER_PASSWORD = "userpwd";
+    public static final String INVALID_USER_USERNAME = "idontexist";
+    public static final String INVALID_USER_PASSWORD = "idontexistpwd";
+
     private int expectedResponseCode = HttpURLConnection.HTTP_OK;
     private final int[] allowedUnexpectedResponseCodes = new int[] { HttpURLConnection.HTTP_MOVED_TEMP };
     private final Map<String, String> headers = new HashMap<>();
@@ -187,33 +192,65 @@ public class MetricsConnection {
     }
 
     /**
-     * creates default connection for private docs endpoint using HTTPS
+     * Creates a connection for private (authorized) docs endpoint using HTTPS
+     * and the Administrator role
      *
      * @param server - server to connect to
      * @return
      */
-    public static MetricsConnection privateConnection(LibertyServer server) {
-        return new MetricsConnection(server, METRICS_ENDPOINT).secure(true).header("Authorization", "Basic " + Base64Coder.base64Encode(SERVER_USERNAME + ":" + SERVER_PASSWORD));
+    public static MetricsConnection connection_administratorRole(LibertyServer server) {
+        return new MetricsConnection(server, METRICS_ENDPOINT).secure(true)
+                        .header("Authorization",
+                                "Basic " + Base64Coder.base64Encode(ADMINISTRATOR_USERNAME + ":" + ADMINISTRATOR_PASSWORD));
     }
 
     /**
-     * creates default connection for private docs endpoint using HTTPS
+     * Creates a connection for private (authorized) docs endpoint using HTTPS
+     * and the Viewer role
      *
      * @param server - server to connect to
      * @return
      */
-    public static MetricsConnection privateConnectionInvalidHeader(LibertyServer server) {
-        return new MetricsConnection(server, METRICS_ENDPOINT).secure(true).header("Authorization",
-                                                                                   "Basic " + Base64Coder.base64Encode(WRONG_SERVER_USERNAME + ":" + WRONG_SERVER_PASSWORD));
+    public static MetricsConnection connection_viewerRole(LibertyServer server) {
+        return new MetricsConnection(server, METRICS_ENDPOINT).secure(true)
+                        .header("Authorization",
+                                "Basic " + Base64Coder.base64Encode(VIEWER_USERNAME + ":" + VIEWER_PASSWORD));
     }
 
     /**
-     * creates default connection for public docs endpoint using HTTP
+     * Creates a connection for private (authorized) docs endpoint using HTTPS
+     * and an unauthorized user ID
      *
      * @param server - server to connect to
      * @return
      */
-    public static MetricsConnection publicConnection(LibertyServer server) {
+    public static MetricsConnection connection_unauthorized(LibertyServer server) {
+        return new MetricsConnection(server, METRICS_ENDPOINT).secure(true)
+                        .header("Authorization",
+                                "Basic " + Base64Coder
+                                                .base64Encode(UNAUTHORIZED_USER_USERNAME + ":" + UNAUTHORIZED_USER_PASSWORD));
+    }
+
+    /**
+     * Creates a connection for private (authorized) docs endpoint using HTTPS
+     * and an invalid user ID
+     *
+     * @param server - server to connect to
+     * @return
+     */
+    public static MetricsConnection connection_invalidUser(LibertyServer server) {
+        return new MetricsConnection(server, METRICS_ENDPOINT).secure(true)
+                        .header("Authorization",
+                                "Basic " + Base64Coder.base64Encode(INVALID_USER_USERNAME + ":" + INVALID_USER_PASSWORD));
+    }
+
+    /**
+     * Creates a connection for public (unauthenticated) docs endpoint using HTTP
+     *
+     * @param server - server to connect to
+     * @return
+     */
+    public static MetricsConnection connection_unauthenticated(LibertyServer server) {
         return new MetricsConnection(server, METRICS_ENDPOINT);
     }
 

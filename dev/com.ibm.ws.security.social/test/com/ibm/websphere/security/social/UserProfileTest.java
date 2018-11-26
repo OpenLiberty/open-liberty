@@ -50,6 +50,8 @@ public class UserProfileTest {
     private JwtToken jwtAccessToken;
     private Claims jwtClaimsMap;
     private Map<String, Object> customProperties;
+    private static final String USERINFO = 
+    "{\"sub\":\"testuser\",\"iss\":\"https:\\/\\/localhost:29443\\/oidc\\/endpoint\\/OP\\\",\"name\":\"testuser\"}";
 
     @Before
     public void setUp() {
@@ -76,7 +78,7 @@ public class UserProfileTest {
         customProperties.put(ClientConstants.SCOPE, SCOPE);
         customProperties.put("encrypted_token", ENCRYPTED_TOKEN);
         customProperties.put("accessTokenAlias", ACCESS_TOKEN_ALIAS);
-        userProfile = new UserProfile(jwtToken, customProperties, jwtClaims);
+        userProfile = new UserProfile(jwtToken, customProperties, jwtClaims, USERINFO);
     }
 
     @After
@@ -145,6 +147,11 @@ public class UserProfileTest {
     @Test
     public void getAccessTokenAlias() {
         assertEquals("The access token alias must be set in the UserProfile.", ACCESS_TOKEN_ALIAS, userProfile.getAccessTokenAlias());
+    }
+    
+    @Test
+    public void getUserInfo(){
+        assertEquals("userinfo must match what was used in constructor.", USERINFO, userProfile.getUserInfo());
     }
     
 }

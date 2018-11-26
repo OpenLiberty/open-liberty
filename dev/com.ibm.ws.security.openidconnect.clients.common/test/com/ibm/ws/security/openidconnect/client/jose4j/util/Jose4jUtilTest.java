@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.jose4j.util;
 
@@ -253,14 +253,17 @@ public class Jose4jUtilTest extends CommonTestClass {
     public void testGetVerifyKey_getKeyFromJwkUrl() throws Exception {
         final String KID = "kid";
         final String x5t = "x5t";
+        final String use = "sig";
         mockery.checking(new Expectations() {
             {
                 one(clientConfig).getSignatureAlgorithm();
                 will(returnValue(SIGNATURE_ALG_RS256));
                 one(clientConfig).getJwkEndpointUrl();
                 will(returnValue(TEST_URL));
-                one(jwKRetriever).getPublicKeyFromJwk(KID, x5t);
+                one(jwKRetriever).getPublicKeyFromJwk(KID, x5t, use, false);
                 will(returnValue(publicKey));
+                one(clientConfig).getUseSystemPropertiesForHttpClientConnections();
+                will(returnValue(false));
             }
         });
         try {

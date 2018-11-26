@@ -1,0 +1,63 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Name: com.ibm.ws.microprofile.reactive.streams.operators.cdi
+Bundle-SymbolicName: com.ibm.ws.microprofile.reactive.streams.operators.cdi
+
+Export-Package: \
+  !com.ibm.ws.microprofile.reactive.streams.cdi.resources, \
+  com.ibm.ws.microprofile.reactive.streams.cdi*
+    
+Import-Package: \
+  javax.enterprise.*; version="[1.1,3)",\
+  com.ibm.ws.microprofile.reactive.streams.spi.impl; version="[1.0,1.1)",\
+  org.eclipse.microprofile.reactive.streams.spi; version="[1.0,1.1)",\
+  org.eclipse.microprofile.reactive.streams; version="[1.0,1.1)",\
+  com.lightbend.microprofile.reactive.streams.zerodep; version="[1.0,1.1)",\
+  org.reactivestreams;version="[1.0,2)",\
+  *
+
+Private-Package: \
+    com.ibm.ws.microprofile.reactive.streams.cdi.resources
+    
+Include-Resource: \
+  META-INF=resources/META-INF
+
+WS-TraceGroup: REACTIVESTREAMS
+
+-dsannotations-inherit: true
+-dsannotations: com.ibm.ws.microprofile.reactive.streams.cdi.ReactiveStreamsEngineInjectionExtension
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+src: src
+testsrc: test/src
+  
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2;version=latest,\
+	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+	com.ibm.ws.cdi.interfaces;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.com.lightbend.microprofile.reactive.streams.zerodep;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0;version=latest, \
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.microprofile.reactive.streams.operators

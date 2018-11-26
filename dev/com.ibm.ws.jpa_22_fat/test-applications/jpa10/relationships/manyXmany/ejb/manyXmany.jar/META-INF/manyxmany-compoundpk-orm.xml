@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+    xmlns="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+    version="1.0">
+    
+    <!-- Compound Primary Key Entities -->
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.xml.XMLEmbedIDMMEntityA">
+        <table name="XMLEmbIDManyXManyEntA"></table>
+        <attributes>
+            <id name="id"></id>
+            <basic name="userName"></basic>
+            <basic name="password"></basic>
+            <many-to-many name="identity">
+                <join-table name="XMLEmbManyXManyJoinTable">
+                    <inverse-join-column name="identity_id" referenced-column-name="id" />
+                    <inverse-join-column name="identity_country" referenced-column-name="country" />
+                </join-table>
+            </many-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.xml.XMLEmbedIDMMEntityB">
+        <table name="XMLEmbIDManyXManyEntB"></table>
+        <attributes>
+            <embedded-id name="id"></embedded-id>
+            <basic name="name"></basic>
+            <basic name="salary"></basic>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.xml.XMLIDClassMMEntityA">
+        <attributes>
+            <id name="id"></id>
+            <basic name="userName"></basic>
+            <basic name="password"></basic>
+            <many-to-many name="identity">
+                <join-table name="XMLIDClassMMEntA_IDClassMMEntB">
+                    <inverse-join-column name="identity_id" referenced-column-name="id" />
+                    <inverse-join-column name="identity_country" referenced-column-name="country" />
+                </join-table>
+            </many-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.xml.XMLIDClassMMEntityB">
+        <id-class class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.CompoundPK" />
+        <attributes>
+            <id name="id"></id>
+            <id name="country"></id>
+            <basic name="name"></basic>
+            <basic name="salary"></basic>
+        </attributes>
+    </entity>
+    
+    
+    <!--  Embeddable Declarations -->
+    <embeddable class="com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.xml.XMLEmbeddableID">
+    </embeddable>    
+</entity-mappings>

@@ -331,7 +331,8 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
     }
 
     /**
-     * Create any type of data source or java.sql.Driver - whichever is available, looking for known data source impl classes in the following order,
+     * Create any type of data source or java.sql.Driver - whichever is available, looking for
+     * known data source impl classes in the following order,
      * <ul>
      * <li>javax.sql.ConnectionPoolDataSource
      * <li>javax.sql.DataSource
@@ -341,8 +342,9 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * @param props typed data source properties
      * @return the data source or driver instance
      * @throws Exception if an error occurs
+     * @deprecated only use this method if the jdbc-4.2 or earlier feature is enabled.
      */
-    public Object createAnyDataSourceOrDriver(Properties props, String dataSourceID) throws Exception {
+    public Object createAnyPreferLegacyOrder(Properties props, String dataSourceID) throws Exception {
         lock.readLock().lock();
         try {
             if (!isInitialized)
@@ -406,20 +408,22 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
     }
     
     /**
-     * Create any type of data source or java.sql.Driver - whichever is available, looking for known data source impl classes in the following order,
+     * Create any type of data source or java.sql.Driver - whichever is available, looking for
+     * known data source impl classes in the following order,
      * <ul>
      * <li>javax.sql.XADataSource
      * <li>javax.sql.ConnectionPoolDataSource
      * <li>javax.sql.DataSource
      * </ul>
-     * This order is different than the standard priority, which prioritizes javax.sql.XADataSource after ConnectionPoolDataSource and DataSource.
+     * This order is different than the legacy (prior to jdbc-4.3 feature) priority,
+     * which prioritizes javax.sql.XADataSource after ConnectionPoolDataSource and DataSource.
      * 
      * @param props typed data source properties
      * @param dataSourceID identifier for the data source config
      * @return the data source or driver instance
      * @throws Exception if an error occurs
      */
-    public Object createDefaultDataSourceOrDriver(Properties props, String dataSourceID) throws Exception {
+    public Object createAnyPreferXADataSource(Properties props, String dataSourceID) throws Exception {
         lock.readLock().lock();
         try {
             if (!isInitialized)

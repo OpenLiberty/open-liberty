@@ -365,6 +365,11 @@ public class SocketFactory extends SocketFactoryHelper {
 
             serverSocket.setEnabledCipherSuites(cipherSuites);
 
+	    // set the SSL protocol on the server socket
+	    String protocol = sslConfig.getSSLProtocol(sslConfigName);
+	    if (protocol != null)
+		serverSocket.setEnabledProtocols(new String[] {protocol});
+
             boolean clientAuthRequired = ((options.requires & EstablishTrustInClient.value) == EstablishTrustInClient.value);
             boolean clientAuthSupported = ((options.supports & EstablishTrustInClient.value) == EstablishTrustInClient.value);
             if (clientAuthRequired) {

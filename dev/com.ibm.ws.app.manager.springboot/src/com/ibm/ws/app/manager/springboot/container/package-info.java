@@ -12,7 +12,7 @@
  * Provides the classes necessary to implement a &quot;work-stealing&quot; threading
  * implementation.
  */
-@Version("1.0.0")
+@Version("2.0.0")
 @TraceOptions(traceGroups = { "springboot", "applications", "app.manager" }, messageBundle = "com.ibm.ws.app.manager.springboot.internal.resources.Messages")
 package com.ibm.ws.app.manager.springboot.container;
 

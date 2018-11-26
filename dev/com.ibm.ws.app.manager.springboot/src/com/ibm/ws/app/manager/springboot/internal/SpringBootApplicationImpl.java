@@ -43,6 +43,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -51,7 +54,7 @@ import java.util.jar.Manifest;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -121,6 +124,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 public class SpringBootApplicationImpl extends DeployedAppInfoBase implements SpringBootConfigFactory, SpringBootApplication {
     private static final TraceComponent tc = Tr.register(SpringBootApplicationImpl.class);
+    final CountDownLatch applicationReadyLatch = new CountDownLatch(1);
 
     final class SpringModuleContainerInfo extends ModuleContainerInfoBase {
         public SpringModuleContainerInfo(List<Container> springBootSupport, ModuleHandler moduleHandler, List<ModuleMetaDataExtender> moduleMetaDataExtenders,
@@ -464,7 +468,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
                 ServerConfigurationWriter.getInstance().write(libertyConfig, result);
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            } catch (JAXBException e) {
+            } catch (XMLStreamException e) {
                 throw new RuntimeException(e);
             }
             return result.toString();
@@ -612,8 +616,8 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             applicationInformation.setContainer(container);
             return artifactContainer;
         } catch (NoSuchAlgorithmException | IOException e) {
-            // Log error and continue to use the container for the SPRING file
-            Tr.error(tc, "warning.could.not.thin.application", applicationInformation.getName(), e.getMessage());
+            // Log warning and continue to use the container for the SPRING file
+            Tr.warning(tc, "warning.could.not.thin.application", applicationInformation.getName(), e.getMessage());
         }
         return rawContainer;
     }
@@ -621,8 +625,9 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     private static void thinSpringApp(LibIndexCache libIndexCache, File springAppFile, File thinSpringAppFile, long lastModified) throws IOException, NoSuchAlgorithmException {
         File parent = libIndexCache.getLibIndexParent();
         File workarea = libIndexCache.getLibIndexWorkarea();
-        SpringBootThinUtil springBootThinUtil = new SpringBootThinUtil(springAppFile, thinSpringAppFile, workarea, parent);
-        springBootThinUtil.execute();
+        try (SpringBootThinUtil springBootThinUtil = new SpringBootThinUtil(springAppFile, thinSpringAppFile, workarea, parent)) {
+            springBootThinUtil.execute();
+        }
         thinSpringAppFile.setLastModified(lastModified);
     }
 
@@ -951,6 +956,32 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     }
 
     protected final ClassLoadingService getClassLoadingService() {
-    	return this.classLoadingService;
+        return this.classLoadingService;
+    }
+
+    @Override
+    public boolean postDeployApp(Future<Boolean> result) {
+        try {
+            // Ensure that the liberty module started event has time to fire before postDeploy().
+            Integer waitTime = new Integer(5);
+            applicationReadyLatch.await(waitTime.intValue(), TimeUnit.MINUTES);
+            if (applicationReadyLatch.getCount() > 0) {
+                Tr.audit(tc, "warning.application.started.event.timeout", applicationInformation.getName(),
+                         "ApplicationReadyEvent", waitTime);
+            }
+        } catch (InterruptedException e) {
+            // Allow FFDC
+        }
+        return super.postDeployApp(result);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory#getContextStartedLatch()
+     */
+    @Override
+    public CountDownLatch getApplicationReadyLatch() {
+        return applicationReadyLatch;
     }
 }

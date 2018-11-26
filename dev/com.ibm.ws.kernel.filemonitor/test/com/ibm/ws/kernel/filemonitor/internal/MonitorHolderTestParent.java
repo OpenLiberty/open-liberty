@@ -49,14 +49,14 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-import test.utils.TestUtils;
-
 import com.ibm.ws.kernel.filemonitor.internal.MonitorHolder.MonitorState;
 import com.ibm.ws.kernel.filemonitor.internal.scan.ScanningCoreServiceImpl;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
+
+import test.common.SharedOutputManager;
+import test.utils.TestUtils;
 
 /**
  *
@@ -133,7 +133,7 @@ public abstract class MonitorHolderTestParent {
      */
     @Test
     public void testMonitorHolderBadFilter() {
-        // To test the filter we need to be doing directory monitoring 
+        // To test the filter we need to be doing directory monitoring
         props.put(FileMonitor.MONITOR_DIRECTORIES, "somedirs");
         // Return an Integer value for the recurse property, which expects a String
         props.put(FileMonitor.MONITOR_FILTER, Integer.valueOf(1));
@@ -305,7 +305,7 @@ public abstract class MonitorHolderTestParent {
                     will(returnValue(f1.getAbsolutePath()));
 
                     // Explicitly throw when trying to resolve/add the second file,
-                    // this should not bomb the whole method, but should generate a 
+                    // this should not bomb the whole method, but should generate a
                     // warning.
                     allowing(mockLocation).resolveString(f2.getAbsolutePath());
                     will(throwException(new RuntimeException("Dummy forced exception")));
@@ -316,7 +316,7 @@ public abstract class MonitorHolderTestParent {
             assertEquals("State should be INIT after constructor", MonitorState.INIT, getMonitorState(monitor));
 
             // Verify behavior with a bad file as the cache root:
-            // expect a message about being forced to store information about resources last 
+            // expect a message about being forced to store information about resources last
             // seen in memory
             monitor.init();
             assertNotNull("ScheduledFuture should be allocated to monitor directories", getFuture(monitor));
@@ -358,7 +358,7 @@ public abstract class MonitorHolderTestParent {
                     will(returnValue(f1.getAbsolutePath()));
 
                     // Explicitly throw when trying to resolve/add the second file,
-                    // this should not bomb the whole method, but should generate a 
+                    // this should not bomb the whole method, but should generate a
                     // warning.
                     allowing(mockLocation).resolveString(f2.getAbsolutePath());
                     will(throwException(new RuntimeException("Dummy forced exception")));
@@ -369,13 +369,13 @@ public abstract class MonitorHolderTestParent {
             assertEquals("State should be INIT after constructor", MonitorState.INIT, getMonitorState(monitor));
 
             // Verify behavior with a bad file as the cache root:
-            // expect a message about being forced to store information about resources last 
+            // expect a message about being forced to store information about resources last
             // seen in memory
             monitor.init();
             assertNull("ScheduledFuture should NOT be allocated to monitor directories", getFuture(monitor));
             assertEquals("Should NOT have a monitor due to throw when resolving .4",
                          0, getUpdateMonitors(monitor).size());
-            //will not be this message, as the monitor will never power up, due to having a null service.. 
+            //will not be this message, as the monitor will never power up, due to having a null service..
             assertTrue("CWWKE0403W should NOT present when exception occurs creating UpdateMonitor",
                        !outputMgr.checkForStandardOut("CWWKE0403W"));
             assertEquals("State should be DESTROYED after init", MonitorState.DESTROYED, getMonitorState(monitor));
@@ -409,7 +409,7 @@ public abstract class MonitorHolderTestParent {
             MonitorHolder monitor = instantiateMonitor(mockCoreService, mockServiceReference);
 
             // Verify behavior with a bad file as the cache root:
-            // expect a message about being forced to store information about resources last 
+            // expect a message about being forced to store information about resources last
             // seen in memory
             monitor.init();
             assertNotNull("ScheduledFuture should be allocated to monitor directories", getFuture(monitor));
@@ -571,7 +571,7 @@ public abstract class MonitorHolderTestParent {
         Set<File> canonicalDeleted = PathUtils.getFixedPathFiles(paths);
         Set<File> canonicalModified = PathUtils.getFixedPathFiles(paths);
 
-        monitor.externalScan(canonicalCreated, canonicalDeleted, canonicalModified);
+        monitor.externalScan(canonicalCreated, canonicalDeleted, canonicalModified, true, null);
 
         // check that scanComplete() was called
         context.assertIsSatisfied();
@@ -600,13 +600,13 @@ public abstract class MonitorHolderTestParent {
         Set<File> canonicalDeleted = PathUtils.getFixedPathFiles(paths);
         Set<File> canonicalModified = PathUtils.getFixedPathFiles(paths);
 
-        monitor.externalScan(canonicalCreated, canonicalDeleted, canonicalModified);
+        monitor.externalScan(canonicalCreated, canonicalDeleted, canonicalModified, true, null);
 
         // delete the file then trigger an 'external' scan
         subFile.delete();
         subDir.delete();
 
-        monitor.externalScan(canonicalCreated, canonicalDeleted, canonicalModified);
+        monitor.externalScan(canonicalCreated, canonicalDeleted, canonicalModified, true, null);
 
         // check that scanComplete() was called
         context.assertIsSatisfied();
@@ -673,7 +673,7 @@ public abstract class MonitorHolderTestParent {
         // initialise the mock object properties
         setConfigExpectations();
         // This is subtly different from setFullInitExpectations()
-        // They should be unified, but this is deferred indefinitely 
+        // They should be unified, but this is deferred indefinitely
         // as not critical to any of our function.
         context.checking(new Expectations() {
             {
@@ -711,7 +711,7 @@ public abstract class MonitorHolderTestParent {
 
     @SuppressWarnings("unchecked")
     private File createDirAndSetExpectationsForInit() throws IOException {
-        // create the temporary dir.. 
+        // create the temporary dir..
         final File temporaryFile = File.createTempFile(MonitorHolder.class.getSimpleName(), ".tmp");
         if (!temporaryFile.delete())
             throw new IOException("Test failure could not delete temp file to create temp dir.");
@@ -727,7 +727,7 @@ public abstract class MonitorHolderTestParent {
         // initialise the mock object properties
         setConfigExpectations();
         // This is subtly different from setFullInitExpectations()
-        // They should be unified, but this is deferred indefinitely 
+        // They should be unified, but this is deferred indefinitely
         // as not critical to any of our function.
         context.checking(new Expectations() {
             {
@@ -839,7 +839,7 @@ public abstract class MonitorHolderTestParent {
             context.checking(new Expectations() {
                 {
                     // Explicitly throw when trying to resolve/add the second file,
-                    // this should not bomb the whole method, but should generate a 
+                    // this should not bomb the whole method, but should generate a
                     // warning.
                     allowing(mockLocation).resolveString(f2.getAbsolutePath());
                     will(throwException(new RuntimeException("Dummy forced exception")));
@@ -867,8 +867,8 @@ public abstract class MonitorHolderTestParent {
                                                             with(any(Long.class)),
                                                             with(any(TimeUnit.class)));
 
-                //bad init is testing null referenced monitor.. 
-                //possible at runtime if supplying bundle went away after registration, 
+                //bad init is testing null referenced monitor..
+                //possible at runtime if supplying bundle went away after registration,
                 //but after init invocation.
                 atLeast(1).of(mockCoreService).getReferencedMonitor(mockServiceReference);
                 will(returnValue(null));
@@ -881,7 +881,7 @@ public abstract class MonitorHolderTestParent {
             context.checking(new Expectations() {
                 {
                     // Explicitly throw when trying to resolve/add the second file,
-                    // this should not bomb the whole method, but should generate a 
+                    // this should not bomb the whole method, but should generate a
                     // warning.
                     allowing(mockLocation).resolveString(f2.getAbsolutePath());
                     will(throwException(new RuntimeException("Dummy forced exception")));

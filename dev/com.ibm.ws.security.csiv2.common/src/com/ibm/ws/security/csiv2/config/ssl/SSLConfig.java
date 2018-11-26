@@ -97,6 +97,17 @@ public class SSLConfig {
         }
     }
 
+    public String getSSLProtocol(String sslAliasName) throws SSLException {
+        Properties props = jsseHelper.getProperties(sslAliasName);
+        String protocol = props.getProperty(Constants.SSLPROP_PROTOCOL);
+
+        // only set the protocol on the socket if it is set to a specific protocol
+        if (protocol.equals(Constants.PROTOCOL_SSL) || protocol.equals(Constants.PROTOCOL_TLS))
+            protocol = null;
+
+        return protocol;
+    }
+
     /**
      * This method will warn if any requested cipher suites appear to not match the options
      *

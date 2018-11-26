@@ -54,7 +54,7 @@ public class HttpUtils {
     private final static Class<?> c = HttpUtils.class;
     private final static String LS = System.getProperty("line.separator");
 
-    private final static int DEFAULT_TIMEOUT = 5000;
+    public final static int DEFAULT_TIMEOUT = 5000;
 
     private final static int LOWEST_ERROR_CODE = 400;
 
@@ -568,7 +568,7 @@ public class HttpUtils {
      * @throws IOException
      * @throws ProtocolException
      */
-    private static HttpURLConnection getHttpConnection(URL url, int timeout, HTTPRequestMethod requestMethod) throws IOException, ProtocolException {
+    public static HttpURLConnection getHttpConnection(URL url, int timeout, HTTPRequestMethod requestMethod) throws IOException, ProtocolException {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setDoInput(true);
         con.setDoOutput(true);

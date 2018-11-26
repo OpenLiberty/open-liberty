@@ -44,7 +44,7 @@ public class VarMergeTestServlet extends HttpServlet {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
@@ -133,4 +133,20 @@ public class VarMergeTestServlet extends HttpServlet {
 
     }
 
+    public void testCommandLineVariables() throws Exception {
+        ServiceReference<WsLocationAdmin> ref = bundleContext.getServiceReference(WsLocationAdmin.class);
+        assertNotNull("No location service", ref);
+        references.add(ref);
+        WsLocationAdmin locationAdmin = bundleContext.getService(ref);
+
+        assertEquals("CLV", locationAdmin.resolveString("${clvOnly}"));
+        assertEquals("CLV", locationAdmin.resolveString("${clvOverrideBootstrap}"));
+        assertEquals("CLV", locationAdmin.resolveString("${clvOverrideServerXML}"));
+        assertEquals("CLV", locationAdmin.resolveString("${clvOverrideBoth}"));
+        assertEquals("fromBootstrap", locationAdmin.resolveString("${bootstrapOnly}"));
+        assertEquals("fromServerXML", locationAdmin.resolveString("${serverXMLOnly}"));
+        assertEquals("", locationAdmin.resolveString("${clvEmpty}"));
+        assertEquals("${clvInvalid}", locationAdmin.resolveString("${clvInvalid}"));
+        assertEquals("${clvInvalid2}", locationAdmin.resolveString("${clvInvalid2}"));
+    }
 }

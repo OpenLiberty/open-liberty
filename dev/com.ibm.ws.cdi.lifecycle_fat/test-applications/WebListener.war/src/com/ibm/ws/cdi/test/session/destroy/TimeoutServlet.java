@@ -27,9 +27,8 @@ public class TimeoutServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        TestHttpSessionListener.setTimeoutSession(request.getSession());
         PrintWriter pw = response.getWriter();
-
-        TestHttpSessionListener.clearResults();
 
         request.getSession().setMaxInactiveInterval(1);
 

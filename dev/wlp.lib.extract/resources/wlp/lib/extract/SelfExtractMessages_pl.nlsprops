@@ -312,6 +312,7 @@ RUN_IN_CHILD_JVM_DEBUG=Ustawiono zmienn\u0105 WLP_JAR_DEBUG. Serwer zostanie uru
 RUN_IN_CHILD_JVM_JVM_OPTIONS=Plik jar zawiera pliki jvm.options. Serwer zostanie uruchomiony w osobnej wirtualnej maszynie j\u0119zyka Java.
 RUN_IN_CHILD_JVM_IBM_AGENT_ISSUE=Pakiet IBM SDK jest u\u017cywany bez opcji -XX:+EnableHCR. Serwer zostanie uruchomiony w osobnej wirtualnej maszynie j\u0119zyka Java.
 RUN_IN_CHILD_JVM_JRE=U\u017cywana jest instalacja \u015brodowiska wykonawczego program\u00f3w Java. Serwer zostanie uruchomiony w osobnej wirtualnej maszynie j\u0119zyka Java.
+RUN_IN_CHILD_JVM_SET_JAVA_HOME=Ustawianie zmiennej \u015brodowiskowej JAVA_HOME: {0}
 
 # messages for LicenseSelfEctractor
 LICENSE_invalidInstall=Katalog {0} nie zawiera poprawnej instalacji produktu Liberty. Podaj katalog g\u0142\u00f3wny instalacji produktu Liberty, kt\u00f3ry chcesz zaktualizowa\u0107.

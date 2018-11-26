@@ -192,7 +192,21 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed</artifactId>
-	    <version>1.0.2</version>
+	    <version>1.0.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.2.11</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>javax.activation-api</artifactId>
+            <version>1.2.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -255,6 +269,7 @@
                 <configuration>
                     <!-- <argLine>-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=7777</argLine> -->
                     <systemPropertyVariables>
+                        <argLine>-Dfile.encoding=UTF-8</argLine> <!-- Needed for ZOS becuase arquillian calls string.getBtytes() -->
                         <wlp>${wlp}</wlp>
                         <!-- <wlp>/home/andymc/mpRestClientTCK/open-liberty/dev/build.image/wlp</wlp> -->
                         <!-- <tck_server>${tck_server}</tck_server> -->

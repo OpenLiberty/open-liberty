@@ -14,43 +14,12 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.expectations.Expectation;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
-import com.ibm.ws.security.fat.common.expectations.ResponseTitleExpectation;
-import com.ibm.ws.security.fat.common.expectations.ResponseUrlExpectation;
 import com.ibm.ws.security.jwtsso.fat.expectations.CookieExpectation;
 import com.ibm.ws.security.jwtsso.fat.expectations.JwtExpectation;
 
-public class CommonExpectations {
+public class CommonExpectations extends com.ibm.ws.security.fat.common.utils.CommonExpectations {
 
     protected static Class<?> thisClass = CommonExpectations.class;
-
-    /**
-     * Sets expectations that will check:
-     * <ol>
-     * <li>200 status code in the response for the specified test action
-     * <li>Response URL is equivalent to provided URL
-     * </ol>
-     */
-    public static Expectations successfullyReachedUrl(String testAction, String url) {
-        Expectations expectations = new Expectations();
-        expectations.addSuccessStatusCodesForActions(new String[] { testAction });
-        expectations.addExpectation(new ResponseUrlExpectation(testAction, JwtFatConstants.STRING_EQUALS, url, "Did not reach the expected URL."));
-        return expectations;
-    }
-
-    /**
-     * Sets expectations that will check:
-     * <ol>
-     * <li>200 status code in the response for the specified test action
-     * <li>Response title is equivalent to expected login page title
-     * </ol>
-     */
-    public static Expectations successfullyReachedLoginPage(String testAction) {
-        Expectations expectations = new Expectations();
-        expectations.addSuccessStatusCodesForActions(new String[] { testAction });
-        expectations.addExpectation(new ResponseTitleExpectation(testAction, JwtFatConstants.STRING_EQUALS, "login.jsp", "Title of page returned during test step " + testAction
-                                                                                                                         + " did not match expected value."));
-        return expectations;
-    }
 
     /**
      * Sets expectations that will check:

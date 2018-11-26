@@ -1353,7 +1353,7 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
             throw new ServletErrorReport(e);
         } finally {
             WebContainerRequestState reqState = WebContainerRequestState.getInstance(false);
-            if (reqState.getAttribute("webcontainer.resetAsyncStartedOnExit") != null){
+            if (reqState != null && reqState.getAttribute("webcontainer.resetAsyncStartedOnExit") != null){
                 ((SRTServletRequest) ServletUtil.unwrapRequest(req)).setAsyncStarted(false);
                 reqState.removeAttribute("webcontainer.resetAsyncStartedOnExit");
             }

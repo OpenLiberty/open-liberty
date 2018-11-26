@@ -57,6 +57,8 @@ public class ServerMessageExpectationTest extends CommonSpecificExpectationTest 
 
     /************************************** Constructors/getters **************************************/
 
+    // TODO - tests for trace searching
+
     @Test
     public void test_constructor_nullArgs_noFailureMsg() {
         try {
@@ -126,6 +128,23 @@ public class ServerMessageExpectationTest extends CommonSpecificExpectationTest 
     }
 
     @Test
+    public void test_validate_nullAction() {
+        try {
+            Expectation exp = new ServerMessageExpectation(null, server, SEARCH_FOR_VAL);
+            mockery.checking(new org.jmock.Expectations() {
+                {
+                    one(server).addIgnoredErrors(Arrays.asList(SEARCH_FOR_VAL));
+                    one(server).waitForStringInLogUsingMark(SEARCH_FOR_VAL, 100);
+                    will(returnValue(SEARCH_FOR_VAL));
+                }
+            });
+            exp.validate(htmlunitHtmlPage);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
     public void test_validate_messageNotLogged() {
         try {
             Expectation exp = createBasicExpectation();
@@ -134,6 +153,8 @@ public class ServerMessageExpectationTest extends CommonSpecificExpectationTest 
                     one(server).addIgnoredErrors(Arrays.asList(SEARCH_FOR_VAL));
                     one(server).waitForStringInLogUsingMark(SEARCH_FOR_VAL, 100);
                     will(returnValue(null));
+                    one(server).getServerName();
+                    will(returnValue("myServer"));
                 }
             });
             try {
@@ -169,6 +190,11 @@ public class ServerMessageExpectationTest extends CommonSpecificExpectationTest 
     @Override
     protected Expectation createBasicExpectation() {
         return new ServerMessageExpectation(TEST_ACTION, server, SEARCH_FOR_VAL);
+    }
+
+    @Override
+    protected Expectation createBasicExpectationWithNoAction() {
+        return new ServerMessageExpectation(null, server, SEARCH_FOR_VAL);
     }
 
 }

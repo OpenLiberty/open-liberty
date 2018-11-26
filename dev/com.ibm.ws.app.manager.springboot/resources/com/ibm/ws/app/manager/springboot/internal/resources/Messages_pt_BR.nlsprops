@@ -80,3 +80,11 @@ warning.spring_config.ignored.session.useraction=Configure o tempo limite da ses
 error.wrong.spring.boot.version=CWWKC0263E: A vers\u00e3o {0} do Spring Boot n\u00e3o \u00e9 suportada. Uma vers\u00e3o do Spring Boot dentro do intervalo {1} \u00e9 necess\u00e1ria.
 error.wrong.spring.boot.version.explanation=Uma vers\u00e3o do Spring Boot que n\u00e3o \u00e9 suportada pelo servidor foi detectada.
 error.wrong.spring.boot.version.useraction=Atualize o aplicativo Spring Boot para usar uma vers\u00e3o que esteja dentro do intervalo de vers\u00e3o necess\u00e1rio.
+
+warning.application.started.event.timeout=CWWKC0264W: O aplicativo {0} n\u00e3o emitiu o evento {1} em {2} minutos.
+warning.application.started.event.timeout.explanation=O aplicativo n\u00e3o emitiu o evento de in\u00edcio no hor\u00e1rio esperado. O servidor pode estar sobrecarregado ou o aplicativo pode ser muito grande. Se o aplicativo estiver sendo iniciado como parte da inicializa\u00e7\u00e3o do servidor, a inicializa\u00e7\u00e3o do servidor poder\u00e1 ser conclu\u00edda sem aguardar o in\u00edcio do aplicativo.
+warning.application.started.event.timeout.useraction=Se o aplicativo for iniciado, nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria. Se o aplicativo n\u00e3o for iniciado, verifique os logs do servidor para ver se outras mensagens indicam uma causa.
+
+warning.java.version.not.supported=CWWKC0265W: A vers\u00e3o Java atual {0} n\u00e3o \u00e9 suportada pela vers\u00e3o do Spring Boot {1}. Fa\u00e7a upgrade da vers\u00e3o do aplicativo Spring Boot para a 2.0.x ou superior.
+warning.java.version.not.supported.explanation=As vers\u00f5es Java superiores a 1.8 n\u00e3o s\u00e3o suportadas pelas vers\u00f5es 1.5.x e abaixo do Spring Boot.
+warning.java.version.not.supported.useraction=Fa\u00e7a upgrade da vers\u00e3o do aplicativo Spring Boot para a 2.0.x ou superior.

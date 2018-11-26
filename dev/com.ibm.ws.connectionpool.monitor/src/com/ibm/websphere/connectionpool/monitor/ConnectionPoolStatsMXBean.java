@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.websphere.connectionpool.monitor;
 
+import com.ibm.websphere.monitor.jmx.StatisticsMeter;
+
 /**
  * Management interface for the MBean "WebSphere:type=ConnectionPoolStats".
  * The Liberty profile makes this MBean available in its platform MBean server when the monitor-1.0 feature is
@@ -45,6 +47,13 @@ public interface ConnectionPoolStatsMXBean {
     public double getWaitTime();
 
     /**
+     * Retrieves StatisticMeter object of WaitTime detail, which provides statistical details on the connection wait time.
+     *
+     * @return wait time details
+     */
+    public StatisticsMeter getWaitTimeDetails();
+
+    /**
      * The number of managed connections in the free pool.
      */
     public long getFreeConnectionCount();
@@ -53,4 +62,11 @@ public interface ConnectionPoolStatsMXBean {
      * The average time in milliseconds a connection is in use.
      */
     public double getInUseTime();
+
+    /**
+     * Retrieves StatisticMeter object of InUseTime detail, which provides statistical details on the connection in use time.
+     *
+     * @return in use time details
+     */
+    public StatisticsMeter getInUseTimeDetails();
 }

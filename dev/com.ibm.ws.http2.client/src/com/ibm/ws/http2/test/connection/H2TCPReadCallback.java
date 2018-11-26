@@ -40,8 +40,8 @@ public class H2TCPReadCallback implements TCPReadCompletedCallback {
      */
     @Override
     public void complete(VirtualConnection arg0, TCPReadRequestContext tcpReadRequestContext) {
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "complete", "H2TCPReadCallback.complete: Calling processData from callback");
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "complete", "H2TCPReadCallback.complete: Calling processData from callback");
 
         h2connetion.processData();
     }

@@ -19,17 +19,17 @@
     <servlet-class>com.ibm.ws.microprofile.metrics.privateapi.PrivateMetricsRESTProxyServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
-  
+
   <servlet-mapping id="ServletMapping_Default">
     <servlet-name>PrivateMetricsRESTProxyServlet</servlet-name>
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
 
   <security-constraint id="SecurityConstraint_1">
-    <display-name>MicroProfile Metrics Security Constraint</display-name>
+    <display-name>MicroProfile Metrics Security Constraint - Administrator Role</display-name>
     <web-resource-collection id="WebResourceCollection_1">
         <web-resource-name>MicroProfile Metrics URL</web-resource-name>
-        <url-pattern>/*</url-pattern>     
+        <url-pattern>/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>Administrator</role-name>
@@ -39,11 +39,31 @@
     </user-data-constraint>
   </security-constraint>
 
+  <security-constraint id="SecurityConstraint_2">
+    <display-name>MicroProfile Metrics Security Constraint - Viewer Role</display-name>
+    <web-resource-collection id="WebResourceCollection_3">
+        <web-resource-name>MicroProfile Metrics URL</web-resource-name>
+        <url-pattern>/*</url-pattern>
+        <http-method>GET</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>Viewer</role-name>
+    </auth-constraint>
+    <user-data-constraint id="UserDataConstraint_2">
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
   <security-role id="SecurityRole_1">
     <description>Administrator Role</description>
     <role-name>Administrator</role-name>
   </security-role>
-  
+
+  <security-role id="SecurityRole_2">
+    <description>Viewer Role</description>
+    <role-name>Viewer</role-name>
+  </security-role>
+
   <login-config id="LoginConfig_1">
   	<auth-method>BASIC</auth-method>
     <realm-name>MicroProfileMetrics</realm-name>

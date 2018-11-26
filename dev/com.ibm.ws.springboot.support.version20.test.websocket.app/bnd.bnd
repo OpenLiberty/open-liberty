@@ -1,0 +1,35 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+-nouses=true
+
+src: \
+    src/main/java, \
+    src/main/resources
+
+instrument.disabled: true
+publish.wlp.jar.disabled: true
+
+bVersion=1.0
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+javac.source: 1.8
+javac.target: 1.8
+
+-testpath: \
+	org.springframework:spring-context;strategy=exact;version=5.0.8.RELEASE, \
+	org.springframework:spring-web;strategy=exact;version=5.0.8.RELEASE, \
+	org.springframework.boot:spring-boot-autoconfigure;strategy=exact;version=2.0.4.RELEASE, \
+	org.springframework.boot:spring-boot;strategy=exact;version=2.0.4.RELEASE, \
+	org.springframework:spring-beans;strategy=exact;version=5.0.8.RELEASE, \
+	org.springframework:spring-websocket;strategy=exact;version=5.0.8.RELEASE, \
+	com.ibm.websphere.javaee.websocket.1.1;version=latest

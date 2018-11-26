@@ -40,6 +40,12 @@ import com.ibm.wsspi.logging.TextFileOutputStreamFactory;
  */
 public class FileLogHolder implements TraceWriter {
 
+    /** Whether to fill up any existing primary file instead of immediately rolling it. */
+    public static final boolean NEW_LOGS_ON_START_DEFAULT = true;
+
+    /** The bootstrap property to change whether to fill up existing primary file instead of immediately rolling it. */
+    public static final String NEW_LOGS_ON_START_PROPERTY = "com.ibm.ws.logging.newLogsOnStart";
+
     private static TraceComponent tc = null;
 
     enum StreamStatus {
@@ -77,6 +83,11 @@ public class FileLogHolder implements TraceWriter {
      * log will be rolled over into a new file.
      */
     protected long maxFileSizeBytes;
+
+    /**
+     * Whether to fill up an existing primary file instead of rolling it.
+     */
+    protected final boolean newLogsOnStart;
 
     /**
      * Capture when checked the existence of the log directory
@@ -121,6 +132,33 @@ public class FileLogHolder implements TraceWriter {
     public static FileLogHolder createFileLogHolder(TraceWriter oldLog, FileLogHeader logHeader,
                                                     File logDirectory, String newFileName,
                                                     int maxFiles, long maxSizeBytes) {
+        return createFileLogHolder(oldLog, logHeader, logDirectory, newFileName, maxFiles, maxSizeBytes, NEW_LOGS_ON_START_DEFAULT);
+    }
+
+    /**
+     * This method will check to see if the supplied parameters match the settings on the <code>oldLog</code>,
+     * if they do then the <code>oldLog</code> is returned, otherwise a new FileLogHolder will be created.
+     *
+     * @param oldLog The previous FileLogHolder that may or may not be replaced by a new one, may
+     *            be <code>null</code> (will cause a new instance to be created)
+     * @param logHeader
+     *            Header to print at the top of new log files
+     * @param logDirectory
+     *            Directory in which to store created log files
+     * @param newFileName
+     *            File name for new log: this will be split into a name and extension
+     * @param maxFiles
+     *            New maximum number of log files. If 0, log files won't be pruned.
+     * @param maxSizeBytes
+     *            New maximum log file size in bytes. If 0, log files won't be rolled.
+     * @param newLogsOnStart
+     *            Whether to fill an existing primary file if there's space (if it exists).
+     * @return a log holder. If all values are the same, the old one is returned, otherwise a new log holder is created.
+     */
+    public static FileLogHolder createFileLogHolder(TraceWriter oldLog, FileLogHeader logHeader,
+                                                    File logDirectory, String newFileName,
+                                                    int maxFiles, long maxSizeBytes,
+                                                    boolean newLogsOnStart) {
 
         final FileLogHolder logHolder;
 
@@ -165,7 +203,7 @@ public class FileLogHolder implements TraceWriter {
             }
 
             // Send to bit bucket until the file is created (true -- create/replace if needed).
-            logHolder = new FileLogHolder(logHeader, logDirectory, fileName, fileExtension, maxFiles, maxSizeBytes);
+            logHolder = new FileLogHolder(logHeader, logDirectory, fileName, fileExtension, maxFiles, maxSizeBytes, newLogsOnStart);
         }
 
         return logHolder;
@@ -181,9 +219,11 @@ public class FileLogHolder implements TraceWriter {
      * @param maxNumFiles The maximum number of files to create if this is a rolling log (i.e. when <code>alwaysCreateNewFile</code> is <code>false</code> and
      *            <code>maxSizeBytes</code> is greater than 0)
      * @param maxFileSizeBytes The maximum file size a single file should create when this is a rolling log (i.e. when <code>alwaysCreateNewFile</code> is <code>false</code>)
+     * @param newLogsOnStart Whether to fill an existing primary file if there's space (if it exists).
      */
-    private FileLogHolder(FileLogHeader logHeader, File directory, String fileName, String fileExtension, int maxNumFiles, long maxFileSizeBytes) {
+    private FileLogHolder(FileLogHeader logHeader, File directory, String fileName, String fileExtension, int maxNumFiles, long maxFileSizeBytes, boolean newLogsOnStart) {
         this.logHeader = logHeader;
+        this.newLogsOnStart = newLogsOnStart;
 
         currentPrintStream = DummyOutputStream.psInstance;
         update(directory, fileName, fileExtension, maxNumFiles, maxFileSizeBytes);
@@ -242,10 +282,18 @@ public class FileLogHolder implements TraceWriter {
             setStreamStatus(StreamStatus.CLOSED, null, null, DummyOutputStream.psInstance);
             // to avoid junit test to print an error message
             if (System.getProperty("test.classesDir") == null && System.getProperty("test.buildDir") == null) {
-                File exf = new File(this.fileLogSet.getDirectory(), this.fileLogSet.getFileName() + this.fileLogSet.getFileExtension());
-                System.err.println(Tr.formatMessage(getTc(), "FAILED_TO_WRITE_LOG", new Object[] { exf.getAbsolutePath() }));
+                System.err.println(Tr.formatMessage(getTc(), "FAILED_TO_WRITE_LOG", new Object[] { getPrimaryFile().getAbsolutePath() }));
             }
         }
+    }
+
+    /**
+     * Return the primary (non-unique) file for this logset.
+     *
+     * @return File for the primary file of this logset.
+     */
+    private File getPrimaryFile() {
+        return new File(this.fileLogSet.getDirectory(), this.fileLogSet.getFileName() + this.fileLogSet.getFileExtension());
     }
 
     /**
@@ -257,6 +305,31 @@ public class FileLogHolder implements TraceWriter {
     private synchronized PrintStream getPrintStream(long numNewChars) {
         switch (currentStatus) {
             case INIT:
+
+                if (!newLogsOnStart) {
+
+                    // Check if we can fill into an existing file (including a new log header).
+                    File primaryFile = getPrimaryFile();
+                    if (primaryFile.exists()) {
+
+                        // If maxFileSize is set in bootstrap.properties, then maxFileSizeBytes will have been
+                        // updated before this INIT check to that value; otherwise, if maxFileSize was not
+                        // set (i.e. default) or it was set in server.xml, then config processing hasn't run
+                        // yet, so maxFileSizeBytes will be 0 (there will be an `update` call later). In the
+                        // latter case, this means that we might add the logging header (about 1KB) plus
+                        // any other messages up until that size update, meaning that we could go
+                        // over the configured maxFileSize by a little bit, but this is okay. In that case,
+                        // maxFileSizeBytes will be 0, so we'll fill the existing file, and then later on,
+                        // it'll roll over if needed.
+
+                        if (maxFileSizeBytes <= 0 || primaryFile.length() + logHeader.length() + numNewChars <= maxFileSizeBytes) {
+                            // There's space, so print the header and return the stream.
+
+                            return getPrimaryStream(true);
+                        }
+                    }
+                }
+
                 return createStream(true);
             case ACTIVE:
                 if (maxFileSizeBytes > 0) {
@@ -287,8 +360,7 @@ public class FileLogHolder implements TraceWriter {
                         PrintStream ps = createStream(showError);
                         if (this.currentStatus == StreamStatus.ACTIVE) {
                             // stream successfully created
-                            File exf = new File(this.fileLogSet.getDirectory(), this.fileLogSet.getFileName() + this.fileLogSet.getFileExtension());
-                            Tr.audit(getTc(), "LOG_FILE_RESUMED", new Object[] { exf.getAbsolutePath() });
+                            Tr.audit(getTc(), "LOG_FILE_RESUMED", new Object[] { getPrimaryFile().getAbsolutePath() });
                             this.checkTime = null;
                             this.retryTime = null;
                         }
@@ -304,11 +376,25 @@ public class FileLogHolder implements TraceWriter {
      * @return a new print stream
      */
     private synchronized PrintStream createStream(boolean showError) {
-        FileOutputStream newFileStream = null;
-        CountingOutputStream newCountingStream = null;
-        PrintStream newPrintStream = null;
 
-        File targetLogFile = null;
+        // Create the non-unique file (e.g. trace.log)
+        File targetLogFile = LoggingFileUtils.createNewFile(fileLogSet, showError);
+
+        setStreamFromFile(targetLogFile, true, 0);
+
+        return currentPrintStream;
+    }
+
+    /**
+     * This has a side effect of calling
+     * {@link #setStreamStatus(StreamStatus, FileOutputStream, CountingOutputStream, PrintStream)}
+     * with the new stream, thus setting various member variables.
+     *
+     * @param targetLogFile The file to create the stream from.
+     * @param closeExisting Whether to close the existing streams.
+     * @param startOffset The start of the file.
+     */
+    private void setStreamFromFile(File targetLogFile, boolean closeExisting, long startOffset) {
         long realMaxFileSizeBytes = maxFileSizeBytes;
 
         // Store the value, and temporarily "disable" log rolling to avoid
@@ -318,16 +404,18 @@ public class FileLogHolder implements TraceWriter {
 
         Object token = ThreadIdentityManager.runAsServer();
         try {
-            // Close the existing file
-            currentPrintStream.flush();
-            if (currentFileStream != null) {
-                LoggingFileUtils.tryToClose(currentFileStream);
+            if (closeExisting) {
+                // Close the existing file
+                currentPrintStream.flush();
+                if (currentFileStream != null) {
+                    LoggingFileUtils.tryToClose(currentFileStream);
+                }
             }
 
-            // Get the non-unique file (e.g. trace.log)
-            targetLogFile = LoggingFileUtils.createNewFile(fileLogSet, showError);
-
             if (targetLogFile != null) {
+                FileOutputStream newFileStream = null;
+                CountingOutputStream newCountingStream = null;
+                PrintStream newPrintStream = null;
                 try {
                     // create the new file stream -- never append
                     // When asking Erin about the above comment, she could not find a reason for why we would
@@ -336,7 +424,7 @@ public class FileLogHolder implements TraceWriter {
                     // switch to using append = true is being made to address APAR PI57488
                     TextFileOutputStreamFactory fileStreamFactory = TrConfigurator.getFileOutputStreamFactory();
                     newFileStream = fileStreamFactory.createOutputStream(targetLogFile, true);
-                    newCountingStream = new CountingOutputStream(newFileStream);
+                    newCountingStream = new CountingOutputStream(newFileStream, startOffset);
                     newPrintStream = new PrintStream(newCountingStream);
                 } catch (IOException e) {
                     // should not happen: we created the new file in createNewFile
@@ -366,7 +454,17 @@ public class FileLogHolder implements TraceWriter {
             ThreadIdentityManager.reset(token);
             maxFileSizeBytes = realMaxFileSizeBytes;
         }
+    }
 
+    /**
+     * This assume that the primary file exists.
+     *
+     * @param showError
+     * @return
+     */
+    private PrintStream getPrimaryStream(boolean showError) {
+        File primaryFile = getPrimaryFile();
+        setStreamFromFile(primaryFile, false, primaryFile.length());
         return currentPrintStream;
     }
 

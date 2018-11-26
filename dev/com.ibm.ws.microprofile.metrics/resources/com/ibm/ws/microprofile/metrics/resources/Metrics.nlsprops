@@ -118,12 +118,23 @@ connectionpool.destroy.total.description=The total number of managed connections
 connectionpool.managedConnections.description=The number of managed connections in the free, shared, and unshared pools.
 connectionpool.connectionHandles.description=The number of connections that are in use. This number might include multiple connections that are shared from a single managed connection.
 connectionpool.freeConnections.description=The number of managed connections in the free pool.
+connectionpool.waitTime.total.description=The total wait time on all connection requests since the start of the server.
+connectionpool.inUseTime.total.description=The total time that all connections are in use since the start of the server.
+connectionpool.usedConnections.total.description=The total number of connection requests that waited because of a full connection pool or did not have to wait since the start of the server. Any connections that are currently in use are not included in this total.
+connectionpool.queuedRequests.total.description=The total number of connection requests that had to wait for a connection because of a full connection pool since the start of the server.
 
 session.create.total.description=The number of sessions that have logged in since this metric was enabled.
 session.liveSessions.description=The number of users that are currently logged in.
 session.activeSessions.description=The number of concurrently active sessions. (A session is active if the product is currently processing a request that uses that user session).
 session.invalidated.total.description=The number of sessions that have logged out since this metric was enabled.
 session.invalidatedbyTimeout.total.description=The number of sessions that have logged out by timeout since this metric was enabled.
+
+jaxws.invocations.total.description=The number of invocations to this endpoint or operation.
+jaxws.checkedApplicationFaults.total.description=The number of checked application faults.
+jaxws.logicalRuntimeFaults.total.description=The number of logical runtime faults.
+jaxws.runtimeFaults.total.description=The number of runtime faults.
+jaxws.uncheckedApplicationFaults.total.description=The number of unchecked application faults.
+jaxws.responseTime.total.description=The total response handling time since the start of the server.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message

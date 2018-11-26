@@ -22,6 +22,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.Phaser;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
@@ -39,7 +40,9 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.CpuInfo;
+import com.ibm.ws.threading.ThreadQuiesce;
 import com.ibm.wsspi.threading.ExecutorServiceTaskInterceptor;
 import com.ibm.wsspi.threading.WSExecutorService;
 
@@ -50,7 +53,7 @@ import com.ibm.wsspi.threading.WSExecutorService;
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            property = "service.vendor=IBM",
            service = { java.util.concurrent.ExecutorService.class, com.ibm.wsspi.threading.WSExecutorService.class })
-public final class ExecutorServiceImpl implements WSExecutorService {
+public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuiesce {
 
     /**
      * The target ExecutorService.
@@ -104,6 +107,8 @@ public final class ExecutorServiceImpl implements WSExecutorService {
      * The ThreadFactory used by the executor to create new threads.
      */
     ThreadFactory threadFactory = null;
+
+    private Boolean serverStopping = false;
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL,
                policy = ReferencePolicy.DYNAMIC,
@@ -206,6 +211,59 @@ public final class ExecutorServiceImpl implements WSExecutorService {
         }
     }
 
+    private class RunnableWrapper implements Runnable {
+
+        private final Runnable wrappedTask;
+
+        RunnableWrapper(Runnable r) {
+            this.wrappedTask = r;
+
+            phaser.register();
+        }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see java.lang.Runnable#run()
+         */
+        @Override
+        public void run() {
+            try {
+                this.wrappedTask.run();
+            } finally {
+
+                phaser.arriveAndDeregister();
+            }
+        }
+
+    }
+
+    // Used to keep track of the number of threads that are not finished
+    protected final Phaser phaser = new Phaser(1);
+
+    private class CallableWrapper<T> implements Callable<T> {
+        private final Callable<T> callable;
+
+        CallableWrapper(Callable<T> c) {
+            this.callable = c;
+            phaser.register();
+        }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see java.util.concurrent.Callable#call()
+         */
+        @Override
+        public T call() throws Exception {
+            try {
+                return this.callable.call();
+            } finally {
+                phaser.arriveAndDeregister();
+            }
+        }
+    }
+
     /** {@inheritDoc} */
     @Override
     public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
@@ -269,35 +327,35 @@ public final class ExecutorServiceImpl implements WSExecutorService {
     @Override
     public <T> Future<T> submit(Callable<T> task) {
         threadPoolController.resumeIfPaused();
-        return threadPool.submit(interceptorsActive ? wrap(task) : task);
+        return threadPool.submit(createWrappedCallable(task));
     }
 
     /** {@inheritDoc} */
     @Override
     public Future<?> submit(Runnable task) {
         threadPoolController.resumeIfPaused();
-        return threadPool.submit(interceptorsActive ? wrap(task) : task);
+        return threadPool.submit(createWrappedRunnable(task));
     }
 
     /** {@inheritDoc} */
     @Override
     public <T> Future<T> submit(Runnable task, T result) {
         threadPoolController.resumeIfPaused();
-        return threadPool.submit(interceptorsActive ? wrap(task) : task, result);
+        return threadPool.submit(createWrappedRunnable(task), result);
     }
 
     /** {@inheritDoc} */
     @Override
     public void execute(Runnable command) {
         threadPoolController.resumeIfPaused();
-        threadPool.execute(interceptorsActive ? wrap(command) : command);
+        threadPool.execute(createWrappedRunnable(command));
     }
 
     /** {@inheritDoc} */
     @Override
     public void executeGlobal(Runnable command) {
         threadPoolController.resumeIfPaused();
-        threadPool.execute(interceptorsActive ? wrap(command) : command);
+        threadPool.execute(createWrappedRunnable(command));
     }
 
     /**
@@ -386,12 +444,29 @@ public final class ExecutorServiceImpl implements WSExecutorService {
         }
     }
 
+    private Runnable createWrappedRunnable(Runnable in) {
+        Runnable r = interceptorsActive ? wrap(in) : in;
+        if (serverStopping)
+            return r;
+
+        return new RunnableWrapper(r);
+    }
+
     Runnable wrap(Runnable r) {
         Iterator<ExecutorServiceTaskInterceptor> i = interceptors.iterator();
         while (i.hasNext()) {
             r = i.next().wrap(r);
         }
+
         return r;
+    }
+
+    private <T> Callable<T> createWrappedCallable(Callable<T> in) {
+
+        Callable<T> c = interceptorsActive ? wrap(in) : in;
+        if (serverStopping)
+            return c;
+        return new CallableWrapper<T>(c);
     }
 
     <T> Callable<T> wrap(Callable<T> c) {
@@ -399,15 +474,60 @@ public final class ExecutorServiceImpl implements WSExecutorService {
         while (i.hasNext()) {
             c = i.next().wrap(c);
         }
+
         return c;
     }
 
+    // This is private, so handling both interceptors and wrapping in this method for simplicity
     private <T> Collection<? extends Callable<T>> wrap(Collection<? extends Callable<T>> tasks) {
         List<Callable<T>> wrappedTasks = new ArrayList<Callable<T>>();
         Iterator<? extends Callable<T>> i = tasks.iterator();
         while (i.hasNext()) {
-            wrappedTasks.add(wrap(i.next()));
+            Callable<T> c = wrap(i.next());
+            if (serverStopping)
+                wrappedTasks.add(c);
+            else
+                wrappedTasks.add(new CallableWrapper<T>(c));
         }
         return wrappedTasks;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.threading.ThreadQuiesce#quiesceThreads()
+     */
+    @Override
+    @FFDCIgnore(TimeoutException.class)
+    public boolean quiesceThreads() {
+        this.serverStopping = true;
+
+        try {
+            // Wait 30 seconds for all pre-quiesce work to complete
+            phaser.arriveAndDeregister();
+            phaser.awaitAdvanceInterruptibly(0, 30, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            //FFDC and fail quiesce notification
+            return false;
+        } catch (TimeoutException e) {
+            // If we time out, quiesce has failed. This is normal, so no FFDC.
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int getActiveThreads() {
+        int count = phaser.getUnarrivedParties();
+        if (this.serverStopping)
+            return count;
+
+        return count - 1;
+    }
+
+    @Override
+    public boolean quiesceStarted() {
+        return this.serverStopping;
     }
 }

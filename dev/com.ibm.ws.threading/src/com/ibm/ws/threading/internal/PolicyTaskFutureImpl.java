@@ -116,7 +116,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
 
     /**
      * Result of the task. Can be a value, an exception, or other indicator (the state distinguishes).
-     * PRESUBMITized to the state field as a way of indicating a result is not set. This allows the possibility of null results.
+     * Initialized to the state field as a way of indicating a result is not set. This allows the possibility of null results.
      */
     private final AtomicReference<Object> result = new AtomicReference<Object>(state);
 
@@ -384,9 +384,10 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             executor.maxQueueSizeConstraint.release();
         if (nsAcceptEnd == nsAcceptBegin - 1) // currently unset
             nsRunEnd = nsQueueEnd = nsAcceptEnd = System.nanoTime();
-        boolean aborted = result.compareAndSet(state, cause) && state.releaseShared(ABORTED);
+        boolean aborted = result.compareAndSet(state, cause);
         if (aborted)
             try {
+                state.releaseShared(ABORTED);
                 if (nsQueueEnd == nsAcceptBegin - 2) // currently unset
                     nsRunEnd = nsQueueEnd = System.nanoTime();
                 if (callback != null)
@@ -395,6 +396,12 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                 if (latch != null)
                     latch.countDown();
             }
+        else {
+            // Prevent premature return from abort that would allow subsequent getState() to indicate
+            // that the task is still in SUBMITTED state.
+            while (state.get() < RUNNING)
+                Thread.yield();
+        }
         return aborted;
     }
 

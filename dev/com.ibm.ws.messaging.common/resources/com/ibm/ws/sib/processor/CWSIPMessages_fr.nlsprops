@@ -102,7 +102,7 @@
 #   - Msgs in the range CWSIP0551-CWSIP0560 belong to class com.ibm.ws.sib.processor.impl.store.itemstreams.PtoPLocalMsgsItemStream
 #   - Msgs in the range CWSIP0561-CWSIP0570 belong to class com.ibm.ws.sib.processor.impl.AsynchConsumer
 #   - Msgs in the range CWSIP0571-CWSIP0579 belong to class com.ibm.ws.sib.processor.impl.mediation.MessagePump
-#
+#   - Msgs in the range CWSIP0580-CWSIP0589 belong to class com.ibm.ws.sib.processor.impl.store.items.MessageItem
 #
 #
 #
@@ -1292,6 +1292,15 @@ CONNECTION_CONTROLLABLE_ERROR_CWSIP0571.useraction=Aucune
 MESSAGE_EXISTS_ERROR_CWSIP0572=CWSIP0572E: Le message avec l''ID {0} n''existe plus sur la destination {1}.
 MESSAGE_EXISTS_ERROR_CWSIP0572.explanation=Une tentative d'acc\u00e8s \u00e0 un message avec l'ID sp\u00e9cifi\u00e9 n'a pas abouti.  Cette situation est sans doute due au fait que le message est arriv\u00e9 \u00e0 expiration ou qu'une application l'a supprim\u00e9.
 MESSAGE_EXISTS_ERROR_CWSIP0572.useraction=Aucune
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The destination name
+# {3} The action taken
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580=CWSIP0580W: Un message dont l''ID est {0} et dont l''ID de message syst\u00e8me est {1} a \u00e9t\u00e9 trouv\u00e9 dans la destination {2} avec un d\u00e9lai de distribution qui d\u00e9passe la limite d\u00e9finie par la propri\u00e9t\u00e9 sib.msgstore.maximumAllowedDeliveryDelayInterval. L''action suivante a \u00e9t\u00e9 effectu\u00e9e : ''{3}''
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580.explanation=Cet avertissement indique l'action qui a \u00e9t\u00e9 effectu\u00e9e.
+DELIVERY_DELAY_TIME_WARNING_CWSIP0580.useraction=Aucune action de l'utilisateur n'est requise.
 
 # -------------------------------------------------------------------------------------------------
 NO_ELEMENTS_ERROR_CWSIP0601=CWSIP0601E: Il n'existe plus d'\u00e9l\u00e9ments dans l'it\u00e9rateur.

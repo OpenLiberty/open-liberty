@@ -50,6 +50,7 @@ Class-Path: com.ibm.ws.kernel.boot.nls_${bFullVersion}.jar
 #
 Export-Package: com.ibm.ws.kernel.launch.service;provide:=true, \
   com.ibm.ws.kernel;provide:=true, \
+  com.ibm.ws.kernel.boot.classloader.*;provide:=true, \
   com.ibm.ws.kernel.boot.delegated.*;provide:=true, \
   com.ibm.ws.kernel.boot.jmx.service;provide:=true, \
   com.ibm.ws.kernel.boot.security.*;thread-context=true, \
@@ -57,6 +58,8 @@ Export-Package: com.ibm.ws.kernel.launch.service;provide:=true, \
   com.ibm.ws.kernel.provisioning;provide:=true, \
   com.ibm.ws.kernel.security.thread;provide:=true, \
   com.ibm.ws.kernel.provisioning.packages;provide:=true, \
+  com.ibm.ws.logging.utils,\
+  com.ibm.ws.logging.data,\
   com.ibm.wsspi.kernel.security.thread;provide:=true
  
 Import-Package: !org.omg.CORBA*, *

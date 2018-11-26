@@ -13,17 +13,12 @@ package com.ibm.ws.rsadapter.jdbc.v43;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.impl.StatementCacheKey;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcUtil;
 import com.ibm.ws.rsadapter.jdbc.v42.WSJdbc42PreparedStatement;
 
 public class WSJdbc43PreparedStatement extends WSJdbc42PreparedStatement implements PreparedStatement {
-
-    private static final TraceComponent tc = Tr.register(WSJdbc43PreparedStatement.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
 
     /**
      * Do not use. Constructor exists only for CallableStatement wrapper.

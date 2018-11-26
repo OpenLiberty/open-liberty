@@ -80,3 +80,11 @@ warning.spring_config.ignored.session.useraction=Zkonfigurujte \u010dasov\u00fd 
 error.wrong.spring.boot.version=CWWKC0263E: Aplikace Spring Boot verze {0} nen\u00ed podporov\u00e1na. Verze Spring Boot v rozsahu {1} je povinn\u00e1.
 error.wrong.spring.boot.version.explanation=Byla zji\u0161t\u011bna verze Spring Boot, kter\u00e1 nen\u00ed podporov\u00e1na serverem.
 error.wrong.spring.boot.version.useraction=Aktualizujte aplikaci Spring Boot, aby pou\u017e\u00edvala verzi Spring Boot, kter\u00e1 je v r\u00e1mci po\u017eadovan\u00e9ho rozsahu verze.
+
+warning.application.started.event.timeout=CWWKC0264W: Aplikace {0} nevydala ud\u00e1lost {1} za {2} min.
+warning.application.started.event.timeout.explanation=Aplikace nevydala po\u010d\u00e1te\u010dn\u00ed ud\u00e1lost v o\u010dek\u00e1van\u00e9m \u010dase. Je mo\u017en\u00e9, \u017ee je server p\u0159et\u00ed\u017een nebo m\u016f\u017ee b\u00fdt aplikace velk\u00e1. Pokud se aplikace spou\u0161t\u00ed jako sou\u010d\u00e1st spu\u0161t\u011bn\u00ed serveru, m\u016f\u017ee se spu\u0161t\u011bn\u00ed serveru dokon\u010dit bez \u010dek\u00e1n\u00ed na spu\u0161t\u011bn\u00ed aplikace.
+warning.application.started.event.timeout.useraction=Pokud se aplikace nakonec spust\u00ed, nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Pokud se aplikace nespust\u00ed, zkontrolujte protokoly serveru a zjist\u011bte, zda p\u0159\u00ed\u010dinu nenazna\u010duj\u00ed dal\u0161\u00ed zpr\u00e1vy.
+
+warning.java.version.not.supported=CWWKC0265W: Aktu\u00e1ln\u00ed verze Java {0} nen\u00ed podporov\u00e1na aplikac\u00ed Spring Boot verze {1}. Upgradujte verzi Spring Boot aplikace na 2.0.x nebo nov\u011bj\u0161\u00ed.
+warning.java.version.not.supported.explanation=Verze Java vy\u0161\u0161\u00ed ne\u017e 1.8 nejsou podporov\u00e1ny verzemi Spring Boot 1.5.x a ni\u017e\u0161\u00edmi.
+warning.java.version.not.supported.useraction=Upgradujte verzi Spring Boot aplikace na 2.0.x nebo nov\u011bj\u0161\u00ed.

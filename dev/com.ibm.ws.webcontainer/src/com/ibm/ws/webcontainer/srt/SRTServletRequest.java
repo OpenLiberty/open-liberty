@@ -202,6 +202,8 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
     private boolean usedStartAsyncNoParameters = false;
     //PI43752 end
     
+    protected static final boolean SERVLET_PATH_FOR_DEFAULT_MAPPING = Boolean.valueOf(WCCustomProperties.SERVLET_PATH_FOR_DEFAULT_MAPPING).booleanValue();
+
     public SRTServletRequest(SRTConnectionContext context)
     {
         this._connContext = context;
@@ -535,9 +537,11 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         // 321485
         // PK80362 Start
         // String header = _request.getHeader(name);
+       
         String header = null;
-        if ( (suppressHeadersInRequest == null) ||  !(isHeaderinSuppressedHeadersList(name))){       				
-            header = _request.getHeader(name);
+        if ( (suppressHeadersInRequest == null) ||  !(isHeaderinSuppressedHeadersList(name))){  
+            if (_request != null)
+                header = _request.getHeader(name);
         }// PK80362 End
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getHeader", "this->"+this+": "+" name --> " + name + " header --> " + PasswordNullifier.nullifyParams(header));
@@ -757,11 +761,15 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             checkRequestObjectInUse();
         }
         // 321485
-        String addr = this._request.getRemoteAddr();
-        if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
-            logger.logp(Level.FINE, CLASS_NAME,"getRemoteAddr", "this->"+this+": "+" address --> " + addr);
+        
+        if (this._request != null) {
+            String addr = this._request.getRemoteAddr();
+            if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
+                logger.logp(Level.FINE, CLASS_NAME,"getRemoteAddr", "this->"+this+": "+" address --> " + addr);
+            }
+            return addr;
         }
-        return addr;
+        return null;
     }
 
     /* (non-Javadoc)
@@ -772,7 +780,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             checkRequestObjectInUse();
         }
         // 321485
-        String host = this._request.getRemoteHost();
+        String host = null;
+        if (this._request != null) {
+            host = this._request.getRemoteHost();
+        }
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getRemoteHost", "this->"+this+": "+" host --> " + host);
         }
@@ -1337,7 +1348,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             checkRequestObjectInUse();
         }
         // 321485
-        String addr = this._request.getLocalAddr();
+        String addr = null;
+        if (this._request != null) {
+            addr = this._request.getLocalAddr();
+        }
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getLocalAddr", " address --> " + addr);
         }
@@ -1367,7 +1381,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             checkRequestObjectInUse();
         }
         // 321485
-        int port = this._request.getLocalPort();
+        int port = 0;
+        if (this._request != null) {
+            port = this._request.getLocalPort();
+        }
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getLocalPort", " port --> " + String.valueOf(port));
         }
@@ -1382,7 +1399,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             checkRequestObjectInUse();
         }
         // 321485
-        int port = this._request.getRemotePort();
+        int port = 0;
+        if (this._request != null) {
+            port = this._request.getRemotePort();
+        }
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getRemotePort", " port --> " + String.valueOf(port));
         }
@@ -1985,7 +2005,9 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         // 321485
         String path = ((WebAppDispatcherContext) this.getDispatchContext()).getServletPath();
         //PM59297 ...in case this servlet is a default servlet AND contains a ;jsessionid= which needs to be stripped off
-        if (WCCustomProperties.ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS || WCCustomProperties.REMOVE_TRAILING_SERVLET_PATH_SLASH) {
+
+        //Starting 18.0.0.4, use SERVLET_PATH_FOR_DEFAULT_MAPPING instead.
+        if (SERVLET_PATH_FOR_DEFAULT_MAPPING || WCCustomProperties.REMOVE_TRAILING_SERVLET_PATH_SLASH) {
             if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //306998.15
                 logger.logp(Level.FINE, CLASS_NAME, "getServletPath", "stripping path -> " + path);
             }
@@ -2028,9 +2050,13 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         }
         SRTServletRequestThreadData reqData = SRTServletRequestThreadData.getInstance();
         if (reqData.getQueryString()==null && !reqData.isQSSetExplicit())
-            reqData.setQueryString(_request.getQueryString());
+            if (_request != null && reqData != null) {
+                reqData.setQueryString(_request.getQueryString());             
+            }
         // 321485
-        String queryString = reqData.getQueryString();
+        String queryString = null;
+        if (reqData != null)
+            queryString = reqData.getQueryString();
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getQueryString", " queryString --> " + PasswordNullifier.nullifyParams(queryString));
         }
@@ -2076,11 +2102,15 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
             checkRequestObjectInUse();
         }
-        String remoteUser;
+        String remoteUser = null;
         Principal principal = getUserPrincipal();
         if (principal == null) {
             //remoteUser = null;
-            remoteUser = _request.getRemoteUser();
+
+            if (_request != null) {
+                remoteUser = _request.getRemoteUser();
+            }
+
         } else {
             remoteUser = principal.getName();
             if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
@@ -2117,7 +2147,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         }
         // Begin PK06988, strip session id of when url rewriting is enabled
         SRTServletRequestThreadData reqData = SRTServletRequestThreadData.getInstance();
-        if (reqData.getRequestURI() == null)
+        if (reqData != null && reqData.getRequestURI() == null)
         {
             String aURI = getEncodedRequestURI();
             if (aURI == null)
@@ -2126,7 +2156,9 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
                 reqData.setRequestURI(WebGroup.stripURL(aURI));
         }
         // 321485
-        String uri = reqData.getRequestURI();
+        String uri = null;
+        if (reqData != null)
+            uri = reqData.getRequestURI();
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getRequestURI", " uri --> " + uri);
         }

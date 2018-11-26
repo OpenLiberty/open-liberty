@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.propagation;
 
@@ -24,6 +24,7 @@ import org.osgi.service.component.annotations.Modified;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.jaxrs20.client.MpJwtPropagation;
 
 /*
@@ -31,40 +32,40 @@ import com.ibm.ws.jaxrs20.client.MpJwtPropagation;
  */
 @Component(service = MpJwtPropagation.class, name = "MpJwtPropagation", immediate = true, property = "service.vendor=IBM")
 public class MpJwtPropagationImpl implements MpJwtPropagation {
-	private static final TraceComponent tc = Tr.register(MpJwtPropagationImpl.class);
+    private static final TraceComponent tc = Tr.register(MpJwtPropagationImpl.class);
 
-	@Activate
-	protected void activate(ComponentContext cc) {
-		if (tc.isDebugEnabled()) {
-			Tr.debug(tc, "MpJwtPropagation service is being activated!!");
-		}
-	}
+    @Activate
+    protected void activate(ComponentContext cc) {
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "MpJwtPropagation service is being activated!!");
+        }
+    }
 
-	@Modified
-	protected void modified(Map<String, Object> props) {
-	}
+    @Modified
+    protected void modified(Map<String, Object> props) {
+    }
 
-	@Deactivate
-	protected void deactivate(ComponentContext cc) {
-		if (tc.isDebugEnabled()) {
-			Tr.debug(tc, "MpJwtPropagation service is being deactivated!!");
-		}
-	}
+    @Deactivate
+    protected void deactivate(ComponentContext cc) {
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "MpJwtPropagation service is being deactivated!!");
+        }
+    }
 
-	@Override
-	public String getJsonWebTokenPrincipal(Subject subject) {
-		if (subject != null) {
-			Set<JsonWebToken> jsonWebTokenPrincipal = subject.getPrincipals(JsonWebToken.class);
+    @Override
+    public String getJsonWebTokenPrincipal(@Sensitive Subject subject) {
+        if (subject != null) {
+            Set<JsonWebToken> jsonWebTokenPrincipal = subject.getPrincipals(JsonWebToken.class);
 
-			if (!jsonWebTokenPrincipal.isEmpty()) {
-				JsonWebToken jwtPrincipal = jsonWebTokenPrincipal.iterator().next();
-				if (jwtPrincipal != null) {
-					return jwtPrincipal.getRawToken();
-				}
-			}
-		}
+            if (!jsonWebTokenPrincipal.isEmpty()) {
+                JsonWebToken jwtPrincipal = jsonWebTokenPrincipal.iterator().next();
+                if (jwtPrincipal != null) {
+                    return jwtPrincipal.getRawToken();
+                }
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
 }

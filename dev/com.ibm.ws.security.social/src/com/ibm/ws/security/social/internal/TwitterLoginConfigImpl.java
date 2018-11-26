@@ -40,6 +40,7 @@ public class TwitterLoginConfigImpl extends Oauth2LoginConfigImpl {
 
     @Override
     protected void setOptionalConfigAttributes(Map<String, Object> props) throws SocialLoginException {
+        this.useSystemPropertiesForHttpClientConnections = configUtils.getBooleanConfigAttribute(props, KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS, false);
         this.requestTokenUrl = configUtils.getConfigAttribute(props, KEY_requestTokenUrl);
         this.authorizationEndpoint = configUtils.getConfigAttribute(props, KEY_userAuthorizationUrl);
         this.tokenEndpoint = configUtils.getConfigAttribute(props, KEY_accessTokenUrl);

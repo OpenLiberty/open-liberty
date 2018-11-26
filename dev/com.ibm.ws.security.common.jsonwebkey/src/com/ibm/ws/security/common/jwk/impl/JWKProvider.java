@@ -38,7 +38,7 @@ public class JWKProvider {
     public static final String RS256 = "RS256";
     public static final String HS256 = "HS256";
 
-    private final int JWKS_TO_GENERATE = 1;
+    private int JWKS_TO_GENERATE = 1;
     private static final int DEFAULT_KEY_SIZE = 2048;
     private static final long DEFAULT_ROTATION_TIME = 12 * 60 * 60 * 1000; //12 hours
 
@@ -63,6 +63,7 @@ public class JWKProvider {
             keySize = DEFAULT_KEY_SIZE;
         }
         this.size = keySize;
+        JWKS_TO_GENERATE = 2;
         this.alg = alg;
         if (rotationTimeMs <= 0) {
             if (tc.isDebugEnabled()) {
@@ -91,7 +92,7 @@ public class JWKProvider {
             rotationTimeMs = DEFAULT_ROTATION_TIME;
         }
         this.rotationTimeInMilliseconds = rotationTimeMs;
-        //this.jwkEnabled = jwkEnabled;
+
         this.publicKey = publicKey;
         this.privateKey = privateKey;
     }
@@ -101,7 +102,7 @@ public class JWKProvider {
         while (jwks.size() < JWKS_TO_GENERATE) {
             generateJWKs();
         }
-        jwk = jwks.get(0);
+        jwk = jwks.get(JWKS_TO_GENERATE-1);
         return jwk;
     }
 

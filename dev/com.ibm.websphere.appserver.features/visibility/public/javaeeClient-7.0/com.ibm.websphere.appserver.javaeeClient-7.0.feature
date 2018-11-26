@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.javaeeClient-7.0
 visibility=public
+singleton=true
 IBM-API-Package: com.ibm.ws.ejb.portable; type="internal", \
  javax.xml.ws; type="internal"
 IBM-ShortName: javaeeClient-7.0

@@ -87,17 +87,6 @@ public class Http2FullModeTests extends FATServletClient {
                                  testName);
     }
 
-    public void runStressTest(int iterations) throws Exception {
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "runTest()", "Running test with iterations of: " + Utils.STRESS_ITERATIONS);
-        }
-
-        FATServletClient.runTest(runtimeServer,
-                                 "H2FATDriver/H2FATDriverServlet?hostName=" + server.getHostname() + "&port=" + server.getHttpSecondaryPort() + "&iterations="
-                                                + iterations + "&testdir=" + Utils.TEST_DIR,
-                                 testName);
-    }
-
     /**
      * Test Coverage: Client Sends Upgrade Header followed by a SETTINGS frame
      * Test Outcome: Connection should work ok
@@ -583,6 +572,7 @@ public class Http2FullModeTests extends FATServletClient {
      *
      * @throws Exception
      */
+
     @Test
     public void testPingFrameBadFlags() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
@@ -910,6 +900,21 @@ public class Http2FullModeTests extends FATServletClient {
      */
     @Test
     public void testPriorityFrameLength4() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Sending a priority frame on an idle stream
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 6.3
+     *
+     * Test Notes:
+     * An endpoint MUST NOT send frames other than PRIORITY on a closed stream.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testPriorityFrameOnIdlePushStream() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
@@ -1547,22 +1552,6 @@ public class Http2FullModeTests extends FATServletClient {
     public void testSendPushPromise() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
-
-//    /**
-//     * Endpoints MUST NOT exceed the limit set by their peer. An endpoint
-//     * that receives a HEADERS frame that causes its advertised concurrent
-//     * stream limit to be exceeded MUST treat this as a stream error
-//     * (Section 5.4.2) of type PROTOCOL_ERROR or REFUSED_STREAM.
-//     *
-//     * WTL: this is not how SETTINGS_MAX_CONCURRENT_STREAMS works - that setting is only dictates how many streams the other peer is
-//     * allowed to open, not how many the current peer is.
-//     *
-//     * @throws Exception
-//     */
-//    //@Test
-//    public void testSingleConnectionStressMaxStreams() throws Exception {
-//        runStressTest(5);
-//    }
 
     /**
      * Test Coverage: Send a DATA frame payload of 16384 bytes.

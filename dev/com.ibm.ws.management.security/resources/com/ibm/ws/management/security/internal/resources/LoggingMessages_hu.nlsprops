@@ -25,3 +25,7 @@ MANAGEMENT_SECURITY_AUTHZ_FAILED.useraction=Nem kell semmit tennie.
 ROLE_ENTRY_DUPLICATE=CWWKX0002E: A rendszer t\u00f6bbsz\u00f6r szerepl\u0151 bejegyz\u00e9st tal\u00e1lt a(z) {0} szerepk\u00f6t\u00e9sben. A t\u00f6bbsz\u00f6r szerepl\u0151 {1} bejegyz\u00e9s: {2}.
 ROLE_ENTRY_DUPLICATE.explanation=A megadott bejegyz\u00e9s m\u00e1r meg van hat\u00e1rozva a megadott szerepk\u00f6t\u00e9shez. A t\u00f6bbsz\u00f6r szerepl\u0151 bejegyz\u00e9sek nem t\u00e1mogatottak.
 ROLE_ENTRY_DUPLICATE.useraction=T\u00e1vol\u00edtsa el a t\u00f6bbsz\u00f6r szerepl\u0151 bejegyz\u00e9st.
+
+INVALID_ACCESS_ID=CWWKX0003E: \u00c9rv\u00e9nytelen hozz\u00e1f\u00e9r\u00e9si azonos\u00edt\u00f3 fordult el\u0151 a(z) {0} szerep \u00f6sszerendel\u00e9sben. Az \u00e9rv\u00e9nytelen {1} bejegyz\u00e9s a k\u00f6vetkez\u0151: {2}.
+INVALID_ACCESS_ID.explanation=A megadott bejegyz\u00e9s nem \u00e9rv\u00e9nyes hozz\u00e1f\u00e9r\u00e9si azonos\u00edt\u00f3ja a megadott szerep \u00f6sszerendel\u00e9snek.
+INVALID_ACCESS_ID.useraction=T\u00e1vol\u00edtsa el vagy jav\u00edtsa az \u00e9rv\u00e9nytelen bejegyz\u00e9st.

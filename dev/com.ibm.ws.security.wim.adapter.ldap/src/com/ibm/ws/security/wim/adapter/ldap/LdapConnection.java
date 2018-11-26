@@ -39,7 +39,6 @@ import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_SEARCH_
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_SEARCH_PAGE_SIZE;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_SEARCH_RESULTS_SIZE_LIMIT;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_SEARCH_TIME_OUT;
-import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_SERVER_TTL_ATTRIBUTE;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_SSL_ENABLED;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_REUSE_CONNECTION;
 import static com.ibm.websphere.security.wim.ConfigConstants.SEARCH_CACHE_CONFIG;
@@ -158,9 +157,6 @@ public class LdapConnection {
 
     /** default attributes cache size limit */
     private int iAttrsSizeLmit = 2000;
-
-    /** default server time to live */
-    private String iServerTTLAttr = null;
 
     /** The search result count limit. This is initialized as part of server initialization. */
     private int iCountLimit = 1000;
@@ -550,8 +546,6 @@ public class LdapConnection {
                     iAttrsCacheSize = (Integer) attrCacheConfig.get(CONFIG_PROP_CACHE_SIZE);
                     iAttrsCacheTimeOut = (Long) attrCacheConfig.get(CONFIG_PROP_CACHE_TIME_OUT);
                     iAttrsSizeLmit = (Integer) attrCacheConfig.get(CONFIG_PROP_ATTRIBUTE_SIZE_LIMIT);
-                    iServerTTLAttr = (String) attrCacheConfig.get(CONFIG_PROP_SERVER_TTL_ATTRIBUTE);
-
                     /*
                      * TODO:: Cache Distribution is not yet needed.
                      * String cacheDistPolicy = attrCacheConfig.getString(CONFIG_PROP_CACHE_DIST_POLICY);
@@ -615,7 +609,7 @@ public class LdapConnection {
 
         if (iSearchResultsCacheEnabled) {
             if (FactoryManager.getCacheUtil().isCacheAvailable()) {
-                iSearchResultsCache = FactoryManager.getCacheUtil().initialize(iSearchResultsCacheSize, iSearchResultsCacheSize, iSearchResultsCacheTimeOut);
+                iSearchResultsCache = FactoryManager.getCacheUtil().initialize("SearchResultsCache", iSearchResultsCacheSize, iSearchResultsCacheSize, iSearchResultsCacheTimeOut);
                 if (iSearchResultsCache != null) {
                     if (tc.isDebugEnabled()) {
                         StringBuilder strBuf = new StringBuilder(METHODNAME);
@@ -638,7 +632,7 @@ public class LdapConnection {
 
         if (iAttrsCacheEnabled) {
             if (FactoryManager.getCacheUtil().isCacheAvailable()) {
-                iAttrsCache = FactoryManager.getCacheUtil().initialize(iAttrsCacheSize, iAttrsCacheSize, iAttrsCacheTimeOut);
+                iAttrsCache = FactoryManager.getCacheUtil().initialize("AttributesCache", iAttrsCacheSize, iAttrsCacheSize, iAttrsCacheTimeOut);
                 if (iAttrsCache != null) {
                     if (tc.isDebugEnabled()) {
                         StringBuilder strBuf = new StringBuilder(METHODNAME);
@@ -646,7 +640,6 @@ public class LdapConnection {
                         strBuf.append("\tCacheSize: ").append(iAttrsCacheSize).append("\n");
                         strBuf.append("\tCacheTimeOut: ").append(iAttrsCacheTimeOut).append("\n");
                         strBuf.append("\tCacheSizeLimit: ").append(iAttrsSizeLmit).append("\n");
-                        strBuf.append("\tCacheTTLAttr: ").append(iServerTTLAttr).append("\n");
                         Tr.debug(tc, strBuf.toString());
                     }
                 }
@@ -1113,11 +1106,13 @@ public class LdapConnection {
     private void updateAttributesCache(String key, Attributes missAttrs, Attributes cachedAttrs, String[] missAttrIds) {
         final String METHODNAME = "updateAttributesCache(key,missAttrs,cachedAttrs,missAttrIds)";
         if (missAttrIds != null) {
+            boolean newattr = false; // differentiate between a new entry and an entry we'll update so we change the cache correctly and maintain the creation TTL.
             if (missAttrIds.length > 0) {
                 if (cachedAttrs != null) {
                     cachedAttrs = (Attributes) cachedAttrs.clone();
                 } else {
                     cachedAttrs = new BasicAttributes(true);
+                    newattr = true;
                 }
 
                 for (int i = 0; i < missAttrIds.length; i++) {
@@ -1151,9 +1146,13 @@ public class LdapConnection {
                         cachedAttrs.put(nullAttr);
                     }
                 }
-                getAttributesCache().put(key, cachedAttrs, 1, iAttrsCacheTimeOut, 0, null);
+                if (newattr) { // only set the the TTL if we're putting in a new entry
+                    getAttributesCache().put(key, cachedAttrs, 1, iAttrsCacheTimeOut, 0, null);
+                } else {
+                    getAttributesCache().put(key, cachedAttrs);
+                }
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, METHODNAME + " Update " + iAttrsCacheName + "(size: " + getAttributesCache().size() + ")\n" + key
+                    Tr.debug(tc, METHODNAME + " Update " + iAttrsCacheName + "(size: " + getAttributesCache().size() + " newEntry: " + newattr + ")\n" + key
                                  + ": " + cachedAttrs);
                 }
             }
@@ -1172,10 +1171,12 @@ public class LdapConnection {
     private void updateAttributesCache(String key, Attributes missAttrs, Attributes cachedAttrs) {
         final String METHODNAME = "updateAttributeCache(key,missAttrs,cachedAttrs)";
         if (missAttrs.size() > 0) {
+            boolean newAttr = false; // differentiate between a new entry and an entry we'll update so we change the cache correctly and maintain the creation TTL.
             if (cachedAttrs != null) {
                 cachedAttrs = (Attributes) cachedAttrs.clone();
             } else {
                 cachedAttrs = new BasicAttributes(true);
+                newAttr = true;
             }
 
             //Set extIdAttrs = iLdapConfigMgr.getExtIds();
@@ -1186,9 +1187,13 @@ public class LdapConnection {
                     cachedAttrs.put(attr);
                 }
             }
-            getAttributesCache().put(key, cachedAttrs, 1, iAttrsCacheTimeOut, 0, null);
+            if (newAttr) {
+                getAttributesCache().put(key, cachedAttrs, 1, iAttrsCacheTimeOut, 0, null);
+            } else {
+                getAttributesCache().put(key, cachedAttrs);
+            }
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, METHODNAME + " Update " + iAttrsCacheName + "(size: " + getAttributesCache().size() + ")\n" + key + ": " + cachedAttrs);
+                Tr.debug(tc, METHODNAME + " Update " + iAttrsCacheName + "(size: " + getAttributesCache().size() + " newEntry: " + newAttr + ")\n" + key + ": " + cachedAttrs);
             }
         }
     }
@@ -1433,9 +1438,17 @@ public class LdapConnection {
                          */
                         if (neu != null) {
                             pageCount++;
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(tc, METHODNAME + " Received search results, looping through elements. May include referral chasing.");
+                            }
+
                             while (neu.hasMoreElements()) {
                                 allNeu.add(neu.nextElement());
                                 count++;
+                            }
+
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(tc, METHODNAME + " Received search results, looped through elements. Num of elements retrieved: " + count);
                             }
 
                             /*
@@ -2220,7 +2233,6 @@ public class LdapConnection {
         sb.append(this.getClass().getName()).append(":{");
         sb.append("Repository ID=").append(iReposId).append("\n");
         sb.append(", SSL Factory=").append(iSSLFactory).append("\n");
-        sb.append(", Server TTL Attribute=").append(iServerTTLAttr).append("\n");
         sb.append(", Page Size=").append(iPageSize).append("\n");
         sb.append(", Attribute Range Step=").append(iAttrRangeStep).append("\n");
         sb.append(", Ignore DN Case=").append(ignoreDNCase).append("\n");

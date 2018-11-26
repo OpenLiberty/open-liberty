@@ -686,6 +686,10 @@ warning.package.root.invalid=CWWKE0947W: Un'opzione --server-root con un argomen
 warning.package.root.invalid.explanation=L'utente ha effettuato una richiesta di package con un'opzione --server-root che specifica un argomento vuoto e sono state rilevate le estensioni prodotto. Verr\u00e0 utilizzata la root server predefinita wlp.
 warning.package.root.invalid.useraction=Non \u00e8 richiesta alcuna azione.
 
+warning.package.root.invalid.runnable=CWWKE0948W: Una opzione --server-root con --include=runnable non \u00e8 una combinazione consentita. Per la root del server viene utilizzato l'argomento predefinito di wlp.
+warning.package.root.invalid.runnable.explanation=L'utente ha effettuato una richiesta di package con un'opzione --server-root e --include=runnable, che non \u00e8 una combinazione consentita. Viene utilizzata la root server predefinita wlp.
+warning.package.root.invalid.runnable.useraction=Non sono richieste azioni.
+
 info.serverStarting=Avvio del server {0} in corso.
 info.serverStarted=Server {0} avviato.
 info.serverStartedWithPID=Server {0} avviato con ID processo {1}.

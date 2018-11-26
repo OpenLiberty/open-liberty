@@ -607,13 +607,13 @@ osgi_initializer_failed=Die Erstellung des umgebungsspezifischen OSGi-Initialisi
 
 overriding_cache_isolation=Die \u00fcbergeordnete Entit\u00e4t {0} hat eine Isolationsstufe von {1}, die einen besseren Schutz bietet als Unterklasse {2} mit Isolationsstufe {3}. Daher wurde die Unterklasse auf die Isolationsstufe {1} gesetzt.
 
-ox_lowering_global_logging_from_default_info_to_warning= {0} Globale Protokollierungsstufe wird von der Standardstufe INFO auf die Warnstufe (WARNING) gesetzt.
+ox_lowering_global_logging_from_default_info_to_warning={0} Globale Protokollierungsstufe wird von der Standardstufe INFO auf die Warnstufe (WARNING) gesetzt.
 
-ox_lowering_session_logging_from_default_info_to_warning= {0} Die Sitzungsprotokollierungsstufe wird von der Standardstufe INFO auf die Warnstufe (WARNING) gesetzt.
+ox_lowering_session_logging_from_default_info_to_warning={0} Die Sitzungsprotokollierungsstufe wird von der Standardstufe INFO auf die Warnstufe (WARNING) gesetzt.
 
-ox_turn_global_logging_off= {0} Die globale Sitzungsprotokollierung wird inaktiviert.
+ox_turn_global_logging_off={0} Die globale Sitzungsprotokollierung wird inaktiviert.
 
-ox_turn_session_logging_off= {0} Die Sitzungsprotokollierung wird inaktiviert.
+ox_turn_session_logging_off={0} Die Sitzungsprotokollierung wird inaktiviert.
 
 parse_ejb_jar_with_validation_fails=Das Parsing der Datei ejb-jar.xml mit Validierung ist mit dem folgenden Fehler fehlschlagen: ({0}). Das Migrationstool f\u00fchrt das Parsing ohne Validierung durch.
 

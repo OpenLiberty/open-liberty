@@ -738,7 +738,7 @@ public class H2InboundLink extends HttpInboundLink {
         }
 
         try {
-            H2WriteQEntry e = new H2WriteQEntry(buf, bufs, numBytes, timeout, H2WriteQEntry.WRITE_TYPE.SYNC, fType, payloadLength, streamID);
+            H2WriteQEntry e = new H2WriteQEntry(buf, bufs, numBytes, timeout, fType, payloadLength, streamID);
             e.armWriteCompleteLatch();
 
             action = writeQ.writeOrAddToQ(e);
@@ -859,6 +859,10 @@ public class H2InboundLink extends HttpInboundLink {
         H2StreamProcessor stream;
         for (Integer i : streamTable.keySet()) {
             stream = streamTable.get(i);
+            // notify streams waiting for a window update
+            synchronized (stream) {
+                stream.notifyAll();
+            }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "destroying " + stream + ", " + stream.getId());
             }
@@ -1259,6 +1263,10 @@ public class H2InboundLink extends HttpInboundLink {
 
     public int getHighestClientStreamId() {
         return highestClientStreamId;
+    }
+
+    public int getHighestServerStreamId() {
+        return highestLocalStreamId;
     }
 
     /**

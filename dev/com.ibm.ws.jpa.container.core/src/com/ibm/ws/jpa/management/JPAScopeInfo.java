@@ -83,9 +83,15 @@ public class JPAScopeInfo {
                 pxmlInfo = new JPAPxmlInfo(this, pxmlRootURL); // F743-23167
                 pxmlsInfo.put(pxmlInfoKey, pxmlInfo);
 
-                // read in all the persistence unit define in this persistence.xml
-                pxmlInfo.extractPersistenceUnits(pxml); //PK62950
+                JPAIntrospection.beginPXmlInfoVisit(pxmlInfo);
+                try {
+                    // read in all the persistence unit define in this persistence.xml
+                    pxmlInfo.extractPersistenceUnits(pxml); //PK62950
+                } finally {
+                    JPAIntrospection.endPXmlInfoVisit();
+                }
             }
+
         }
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -249,8 +255,14 @@ public class JPAScopeInfo {
 
         for (Map.Entry<String, JPAPxmlInfo> entry : pxmlsInfoCopy.entrySet()) {
             final JPAPxmlInfo value = entry.getValue();
-            out.println();
-            value.doIntrospect(out);
+
+            JPAIntrospection.beginPXmlInfoVisit(value);
+            try {
+                out.println();
+                value.doIntrospect(out);
+            } finally {
+                JPAIntrospection.endPXmlInfoVisit();
+            }
         }
     }
 }

@@ -58,6 +58,13 @@
 			<groupId>org.eclipse.microprofile.metrics</groupId>
 			<artifactId>microprofile-metrics-api-tck</artifactId>
 			<version>${microprofile.metrics.version}</version>
+			<!-- Manually exclude the tools jar dependency because it doesn't exist on JDK 9+ and also is not needed -->
+			<exclusions>
+			    <exclusion>
+			        <groupId>com.sun</groupId>
+			        <artifactId>tools</artifactId>
+			    </exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>javax.enterprise</groupId>
@@ -114,9 +121,10 @@
                 <version>2.17</version>
 				<configuration>
 					<systemPropertyVariables>
+						<argLine>-Dfile.encoding=UTF-8</argLine> <!-- Needed for ZOS becuase arquillian calls string.getBtytes() -->
 						<wlp>${wlp}</wlp>
 						<tck_server>${tck_server}</tck_server>
-                        <tck_port>${tck_port}</tck_port>
+			                        <tck_port>${tck_port}</tck_port>
 					</systemPropertyVariables>
                     <dependenciesToScan>
                         <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-rest-tck</dependency>

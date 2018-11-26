@@ -78,9 +78,10 @@ public class FATTestAD {
         Log.info(c, "setUp", "Creating servlet connection the server");
         servlet = new UserRegistryServletConnection(server.getHostname(), server.getHttpDefaultPort());
 
-        servlet.getRealm();
-        Thread.sleep(5000);
-        servlet.getRealm();
+        if (servlet.getRealm() == null) {
+            Thread.sleep(5000);
+            servlet.getRealm();
+        }
 
         /*
          * The original server configuration has no registry or Federated Repository configuration.
@@ -538,7 +539,7 @@ public class FATTestAD {
          * First test WITHOUT the matching rule in the filter. We expect to find all of the users.
          */
         ServerConfiguration clone = serverConfiguration.clone();
-        clone.getLdapRegistries().get(0).setLdapCache(new LdapCache(new AttributesCache(false, null, null, null, null), new SearchResultsCache(false, null, null, null)));
+        clone.getLdapRegistries().get(0).setLdapCache(new LdapCache(new AttributesCache(false, null, null, null), new SearchResultsCache(false, null, null, null)));
         LdapFilters filters = clone.getActivedLdapFilterProperties().get(0);
         filters.setUserFilter("(&(sAMAccountName=%v)(objectclass=user))");
         updateConfigDynamically(server, clone);
@@ -585,7 +586,7 @@ public class FATTestAD {
          * account will be returned.
          */
         ServerConfiguration clone = serverConfiguration.clone();
-        clone.getLdapRegistries().get(0).setLdapCache(new LdapCache(new AttributesCache(false, null, null, null, null), new SearchResultsCache(false, null, null, null)));
+        clone.getLdapRegistries().get(0).setLdapCache(new LdapCache(new AttributesCache(false, null, null, null), new SearchResultsCache(false, null, null, null)));
         LdapFilters filters = clone.getActivedLdapFilterProperties().get(0);
         filters.setUserFilter("(&(sAMAccountName=%v)(objectclass=user))");
         updateConfigDynamically(server, clone);

@@ -686,6 +686,10 @@ warning.package.root.invalid=CWWKE0947W: O op\u0163iune --server-root cu un argu
 warning.package.root.invalid.explanation=Utilizatorul a realizat o cerere de pachet cu o op\u0163iune --server-root care specific\u0103 un argument gol \u015fi au fost detectate Product Extensions. Va fi folosit wpl, r\u0103d\u0103cina implicit\u0103 pentru server.
 warning.package.root.invalid.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 
+warning.package.root.invalid.runnable=CWWKE0948W: O op\u0163iune --server-root cu --include=runnable nu este o combina\u0163ie permis\u0103. Argumentul implicit wlp este folosit pentru serverul r\u0103d\u0103cin\u0103.
+warning.package.root.invalid.runnable.explanation=Utilizatorul a realizat o cerere de pachet cu o op\u0163iune --server-root \u015fi --include=runnable, care nu este o combina\u0163ie permis\u0103. Va fi folosit serverul r\u0103d\u0103cin\u0103 implicit wlp.
+warning.package.root.invalid.runnable.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.
 info.serverStartedWithPID=Serverul {0} a pornit cu ID de proces {1}.

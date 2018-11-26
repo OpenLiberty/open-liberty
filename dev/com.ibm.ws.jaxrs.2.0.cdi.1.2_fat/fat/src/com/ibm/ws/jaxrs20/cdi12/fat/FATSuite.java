@@ -10,49 +10,38 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.cdi12.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.jaxrs20.cdi12.fat.test.Basic12Test;
+import com.ibm.ws.jaxrs20.cdi12.fat.test.BeanValidation12Test;
+import com.ibm.ws.jaxrs20.cdi12.fat.test.Complex12Test;
+import com.ibm.ws.jaxrs20.cdi12.fat.test.DisableTest;
+import com.ibm.ws.jaxrs20.cdi12.fat.test.LifeCycle12Test;
+import com.ibm.ws.jaxrs20.cdi12.fat.test.LifeCycleMismatch12Test;
+import com.ibm.ws.jaxrs20.cdi12.fat.test.LoadOnStartup12Test;
+import com.ibm.ws.jaxrs20.cdi12.fat.test.ResourceInfoAtStartupTest;
+
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-               /**
-                *
-                * CDI 1.0 test (41)
-                * Test 1 @inject if inject correct in Resource for PerRequest/Singleton (OK)
-                *
-                * Test 2 @Context if inject correct in Resource for PerRequest/Singleton (OK)
-                *
-                * Test 3 @Inject and @Context if works fine in Provider and Filter for Singleton (OK, OK)
-                *
-                * Test 4 @Context and @Inject if inject correct in Application for PerRequest/Singleton (NoNeed, Null)
-                *
-                * Test 5 Scope/Lifecycle test for PerRequest/Singleton (Neal will do it)
-                *
-                * Test 6 Other functions: BeanValidation and Asyn(No Spec for CDI)
-                *
-                * Test 7 Singleton with Servlet: if CDI within Servlet and CDI is same instance (OK)
-                *
-                * Test 8 @Alternative to test if is not a managed bean (OK)
-                *
-                * Test 9 Singleton Constructor with Parameter(@Context), if report error (OK)
-                *
-                * Test 10 Disable CDI feature, test if works fine (OK)
-                *
-                * Test 11 Is Resource and Provider at the same time, check if works fine (OK)
-                *
-                * Test 12 Resource and provider are both in getClass and getSingleton (OK)
-                *
-                *
-                */
-
-               // About 100 test cases
                AlwaysPassesTest.class,
-               FATSuiteCDI12WithJava7.class
-
-// ignore the cdi-1.0 tests, because no need support JavaEE 6 feature
-// FATSuiteCDI10WithJava7.class
+               DisableTest.class,
+               Basic12Test.class,
+               BeanValidation12Test.class,
+               LifeCycle12Test.class,
+               LifeCycleMismatch12Test.class,
+               LoadOnStartup12Test.class,
+               Complex12Test.class,
+               ResourceInfoAtStartupTest.class
 })
-public class FATSuite {}
+public class FATSuite {
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1"));
+}

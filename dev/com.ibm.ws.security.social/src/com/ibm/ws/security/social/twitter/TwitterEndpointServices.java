@@ -894,9 +894,9 @@ public class TwitterEndpointServices {
 
         Map<String, Object> result = null;
         if (requestMethod != null && requestMethod.equalsIgnoreCase("POST")) {
-            result = httpUtil.postToEndpoint(uri.toString(), params, null, null, null, sslSocketFactory, headers, false, null);
+            result = httpUtil.postToEndpoint(uri.toString(), params, null, null, null, sslSocketFactory, headers, false, null, config.getUseSystemPropertiesForHttpClientConnections());
         } else {
-            result = httpUtil.getToEndpoint(uri.toString(), params, null, null, null, sslSocketFactory, headers, false, null);
+            result = httpUtil.getToEndpoint(uri.toString(), params, null, null, null, sslSocketFactory, headers, false, null, config.getUseSystemPropertiesForHttpClientConnections());
         }
         return result;
     }

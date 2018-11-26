@@ -545,3 +545,13 @@ REQUEST_URL_NOT_VALID.useraction=Verify that the request URL that is specified i
 INVALID_CONFIG_PARAM=CWWKS5500E: A required configuration parameter {0} is missing or has an invalid value {1}
 INVALID_CONFIG_PARAM.explanation=The social login runtime code did not find a required parameter when processing the client request.
 INVALID_CONFIG_PARAM.useraction=Check the missing parameter in the configuration and make sure that it is specified and correct.
+
+OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5501E: The social login feature failed to obtain Open ID Connect Provider endpoint information through the discovery endpoint URL of [{0}]. Update the configuration for the OIDC Social Login (oidcLogin configuration) with the correct HTTPS discovery endpoint URL. 
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=The oidcLogin configuration is configured to discover the OpenID Connect Provider endpoints through the discovery URL, but the discovery process failed. The social login feature is unable to process the authentication requests until the configuration of the discoveryEndpoint is corrected or the discovery is successful.
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Correct the oidcLogin configuration to ensure that 1) the discovery endpoint URL refers to the correct OpenID Connect provider, 2) the discovery endpoint URL is HTTPS and 3) the SSL feature and keystore elements are configured correctly with trust for OpenID Connect Provider 4) ensure that the OpenID Connect provider discovery endpoint is functional.
+
+OIDC_CLIENT_DISC_RESPONSE_ERROR=CWWKS5502E: A successful response was not returned from the URL of [{0}]. The [{1}] response status and the [{2}] error are from the discovery request.
+OIDC_CLIENT_DISC_RESPONSE_ERROR.explanation=The social feature failed to access the OpenID Connect provider discovery end point and the message might contain more information about the error.
+OIDC_CLIENT_DISC_RESPONSE_ERROR.useraction=Ensure that the OpenID Connect provider is available and that the specified discovery end point is correct.
+
+

@@ -40,7 +40,9 @@ public class LogMonitor {
     protected static final long LOG_SEARCH_TIMEOUT = FATRunner.FAT_TEST_LOCALRUN ? 12 * 1000 : 120 * 1000;
 
     //Used for keeping track of mark positions of log files
-    protected final HashMap<String, Long> logMarks = new HashMap<String, Long>();
+    protected HashMap<String, Long> logMarks = new HashMap<String, Long>();
+
+    protected HashMap<String, Long> originMarks = new HashMap<String, Long>();
 
     //The sole client for this LogMonitor instance.  The LogMonitorClient provides a means of hiding
     //the underlying server class for which this class providing log monitoring services.
@@ -51,17 +53,37 @@ public class LogMonitor {
     }
 
     /**
-     * Reset the mark and offset values for logs back to the start of the file.
-     * <p>
+     * Reset the mark and offset values for logs back to the start of the JVM's run.
+     */
+    public void resetLogMarks() {
+        client.lmcResetLogOffsets();
+        logMarks = new HashMap<String, Long>(originMarks);
+        Log.info(c, "resetLogMarks", "Reset log offsets " + logMarks);
+    }
+
+    /**
      * Note: This method doesn't set the offset values to the beginning of the file per se,
      * rather this method sets the list of logs and their offset values to null. When one
      * of the findStringsInLogsAndTrace...(...) methods are called, it will recreate the
      * list of logs and set each offset value to 0L - the start of the file.
      */
-    public void resetLogMarks() {
-        client.lmcClearLogOffsets();//logOffsets.clear();
+    public void clearLogMarks() {
+        client.lmcClearLogOffsets();
         logMarks.clear();
-        Log.finer(c, "resetLogOffsets", "cleared log and mark offsets");
+        originMarks.clear();
+
+        Log.info(c, "clearLogMarks", "Cleared log marks");
+    }
+
+    /**
+     * Set the marks that we'll go back to when {@link #resetLogMarks()} is called.
+     */
+    public void setOriginLogMarks() {
+
+        client.lmcSetOriginLogOffsets();
+        originMarks = new HashMap<String, Long>(logMarks);
+
+        Log.info(c, "setOriginLogMarks", "Set origin log marks " + originMarks);
     }
 
     /**
@@ -89,7 +111,7 @@ public class LogMonitor {
             }
 
             Long oldMarkOffset = logMarks.put(path, offset);
-            Log.finer(c, "setMarkToEndOfLog", path + ", old mark offset=" + oldMarkOffset + ", new mark offset=" + offset);
+            Log.info(c, "setMarkToEndOfLog", path + ", old mark offset=" + oldMarkOffset + ", new mark offset=" + offset + " for " + logFile);
         }
     }
 
@@ -106,7 +128,7 @@ public class LogMonitor {
             logMarks.put(logFile, 0L);
         }
 
-        Log.finer(c, "getMarkOffset", "mark offset=" + logMarks.get(logFile));
+        Log.info(c, "getMarkOffset", "Mark offset for " + logFile + "=" + logMarks.get(logFile) + " for " + logFile);
         return logMarks.get(logFile);
     }
 
@@ -225,22 +247,35 @@ public class LogMonitor {
      * and verify that the regex does not show up in the logs during the
      * specfied duration.
      *
-     * @param regexp a regular expression to search for
-     * @param intendedTimeout a timeout, in milliseconds, within which the wait should complete. Exceeding this is a soft fail.
-     * @param extendedTimeout a timeout, in milliseconds, within which the wait must complete. Exceeding this is a hard fail.
-     * @param outputFile file to check
+     * @param timeout Timeout (in milliseconds)
      * @return line that matched the regexp
      */
-    public boolean verifyStringNotInLogUsingMark(String regexp, long timeout) {
+    public String verifyStringNotInLogUsingMark(String regexToSearchFor, long timeout) {
         try {
-            String result = waitForStringInLogUsingMarkWithException(regexp, timeout, timeout * 2, client.lmcGetDefaultLogFile());
-            if (result != null)
-                return false;
-            else
-                return true;
+            return verifyStringNotInLogUsingMark(regexToSearchFor, timeout, client.lmcGetDefaultLogFile());
         } catch (Exception ex) {
             if (ex instanceof NoStringFoundInLogException) {
-                return true;
+                return null;
+            } else {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
+    /**
+     * Wait for the specified regexp in the default logs from the last mark
+     * and verify that the regex does not show up in the logs during the
+     * specfied duration.
+     *
+     * @param timeout Timeout (in milliseconds)
+     * @return line that matched the regexp
+     */
+    public String verifyStringNotInLogUsingMark(String regexToSearchFor, long timeout, RemoteFile logFileToSearch) {
+        try {
+            return waitForStringInLogUsingMarkWithException(regexToSearchFor, timeout, timeout * 2, logFileToSearch);
+        } catch (Exception ex) {
+            if (ex instanceof NoStringFoundInLogException) {
+                return null;
             } else {
                 throw new RuntimeException(ex);
             }

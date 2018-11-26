@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.CollectingAlertHandler;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -179,7 +178,7 @@ public class JSF23CDIGeneralTests extends FATServletClient {
     @WebArchiveInfo(name = "CDIManagedProperty", pkgs = { "com.ibm.ws.jsf23.fat.cdi.managedproperty" })
     public void testCDIManagedProperty() throws Exception {
         String contextRoot = "CDIManagedProperty";
-        WebClient webClient = new WebClient(BrowserVersion.FIREFOX_24);
+        WebClient webClient = new WebClient();
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
         String initalValue = "numberManagedProperty = 0 textManagedProperty = zero "
@@ -515,9 +514,9 @@ public class JSF23CDIGeneralTests extends FATServletClient {
         // TestConverter, TestValidator and TestBehavior objects should have been injected
         assertTrue(page.asText().contains("JSF 2.3 support injection of JSF Managed Objects: FacesConverter, FacesValidator, FacesBehavior"));
         assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter_validator.beans.TestConverter"));
-        // NOTE: Uncomment this once we pull the latest MyFaces 2.3.x
-//        assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter_validator.beans.TestValidator"));
-//        assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter_validator.beans.TestBehavior"));
+
+        assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter_validator.beans.TestValidator"));
+        assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter_validator.beans.TestBehavior"));
     }
 
     @Test

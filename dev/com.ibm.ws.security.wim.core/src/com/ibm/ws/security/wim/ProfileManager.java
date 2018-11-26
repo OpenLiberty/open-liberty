@@ -1159,7 +1159,8 @@ public class ProfileManager implements ProfileServiceLite {
             if (pagingSearchCache == null) {
                 maxTotalPagingSearchResults = getConfigManager().getPageCacheSize();
                 pagingSearchResultsCacheTimeOut = getConfigManager().getPageCacheTimeOut();
-                pagingSearchCache = FactoryManager.getCacheUtil().initialize(maxTotalPagingSearchResults, maxTotalPagingSearchResults, pagingSearchResultsCacheTimeOut);
+                pagingSearchCache = FactoryManager.getCacheUtil().initialize("PagingSearchCache", maxTotalPagingSearchResults, maxTotalPagingSearchResults,
+                                                                             pagingSearchResultsCacheTimeOut);
             }
             if (pagingSearchCache != null) {
                 Root cachedRootDO = new Root();
@@ -1225,7 +1226,7 @@ public class ProfileManager implements ProfileServiceLite {
         if (uniqueName == null) {
             List<Context> ctxs = inRoot.getContexts();
             for (Context c : ctxs) {
-                if (c.getKey() == "useUserFilterForSearch" || c.getKey() == "useGroupFilterForSearch") {
+                if ("useUserFilterForSearch".equals(c.getKey()) || "useGroupFilterForSearch".equals(c.getKey())) {
                     uniqueName = (String) c.getValue();
                 }
             }
@@ -2454,7 +2455,7 @@ public class ProfileManager implements ProfileServiceLite {
      * If not found, then use the realm name from one of the
      * registries.
      * Added for populating audit records.
-     * 
+     *
      * @param root
      * @return
      */

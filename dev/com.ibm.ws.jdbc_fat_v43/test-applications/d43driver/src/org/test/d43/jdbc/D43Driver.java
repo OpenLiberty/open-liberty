@@ -29,7 +29,7 @@ public class D43Driver extends org.apache.derby.jdbc.AutoloadedDriver implements
         String url2 = url.replace("jdbc:d43:", "jdbc:derby:");
         Connection con = url2.equals(url) ? null : super.connect(url2, props);
         if (con != null)
-            con = (Connection) Proxy.newProxyInstance(D43Handler.class.getClassLoader(), new Class[] { Connection.class }, new D43Handler(con, null));
+            con = (Connection) Proxy.newProxyInstance(D43Handler.class.getClassLoader(), new Class[] { Connection.class }, new D43Handler(con, null, null));
         return con;
     }
 

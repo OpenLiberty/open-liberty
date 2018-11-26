@@ -2,16 +2,16 @@
 bVersion=1.0
 
 Bundle-Name: weld OSGi bundle
-Bundle-SymbolicName: com.ibm.ws.org.jboss.weld.2.4.7
-Bundle-Description: Weld OSGi Bundle, version 2.4.7.Final
+Bundle-SymbolicName: com.ibm.ws.org.jboss.weld.2.4.8
+Bundle-Description: Weld OSGi Bundle, version 2.4.8.Final
 Implementation-Title: Weld OSGi Bundle
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.html
-Implementation-Version: 2.4.7.Final
+Implementation-Version: 2.4.8.Final
 Embed-Dependency: *; scope=compile; inline=true
 Specification-Title: JSR-346 Contexts and Dependency Injection for the
   Java EE platform
-Export-Package: org.jboss.*;version="2.4.7.Final", \
- org.jboss.weld.context.beanstore;version="2.4.7.Final", \
+Export-Package: org.jboss.*;version="2.4.8.Final", \
+ org.jboss.weld.context.beanstore;version="2.4.8.Final", \
  org.jboss.weldx.transaction;version="1.0.16"
 DynamicImport-Package: *
 Import-Package: javax.annotation;version="1.1",javax.el;version="1.0";\
@@ -73,6 +73,6 @@ Service-Component: \
         |org.jboss.weld.util.bean"
 
 Include-Resource: \
-  @${repo;org.jboss.weld:weld-osgi-bundle;[2.4.7.Final,3)}!/!META-INF/maven/*
+  @${repo;org.jboss.weld:weld-osgi-bundle;[2.4.8.Final,3)}!/!META-INF/maven/*
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"

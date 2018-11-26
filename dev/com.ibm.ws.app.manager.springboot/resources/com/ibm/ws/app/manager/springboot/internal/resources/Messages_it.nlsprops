@@ -80,3 +80,11 @@ warning.spring_config.ignored.session.useraction=Configurare il timeout e la per
 error.wrong.spring.boot.version=CWWKC0263E: La versione Spring Boot {0} non \u00e8 supportata. \u00c8 richiesta una versione Spring Boot con l''intervallo {1}.
 error.wrong.spring.boot.version.explanation=\u00c8 stata individuata una versione di Spring Boot non supportata dal server.
 error.wrong.spring.boot.version.useraction=Aggiornare l'applicazione Spring Boot e utilizzare una versione nell'intervallo di versioni richiesto.
+
+warning.application.started.event.timeout=CWWKC0264W: L''applicazione {0} non ha emesso l''evento {1} in {2} minuti.
+warning.application.started.event.timeout.explanation=L'applicazione non ha emesso l'evento di avvio nel tempo previsto. Il server potrebbe essere sovraccarico o l'applicazione potrebbe avere dimensioni elevate. Se l'applicazione \u00e8 in fase di avvio come parte dell'avvio del server, tale avvio pu\u00f2 essere completato senza attendere l'avvio dell'applicazione.
+warning.application.started.event.timeout.useraction=Se infine l'applicazione viene avviata, non \u00e8 richiesta alcuna azione. Se l'applicazione non viene avviata, esaminare i log del server per individuare altri messaggi che indicano una causa.
+
+warning.java.version.not.supported=CWWKC0265W: La versione Java corrente {0} non \u00e8 supportata dalla versione Spring Boot {1}. Eseguire l''aggiornamento della versione Spring Boot dell''applicazione a 2.0.x o successive.
+warning.java.version.not.supported.explanation=Le versioni Java superiori a 1.8 non sono supportate dalle versioni Spring Boot 1.5.x e inferiori.
+warning.java.version.not.supported.useraction=Eseguire l'aggiornamento della versione Spring Boot dell'applicazione a 2.0.x o successive.

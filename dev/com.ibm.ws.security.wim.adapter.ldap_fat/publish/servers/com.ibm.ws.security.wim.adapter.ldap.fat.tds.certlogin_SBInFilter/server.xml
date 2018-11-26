@@ -35,7 +35,6 @@
 		searchTimeout="8m"
 		loginProperty="cn">
 		<failoverServers name="failoverLdapServers">
-		   <server host="${ldap.server.4.name}" port="${ldap.server.4.port}"/>
 		   <server host="${ldap.server.5.name}" port="${ldap.server.5.port}"/>
         </failoverServers>	
 	</ldapRegistry>
@@ -59,5 +58,6 @@
 	</application>
 
 	<include location="../fatTestPorts.xml"/>
-
+	<javaPermission className="javax.security.auth.PrivateCredentialPermission"  name='* * "*"' actions="read" />
+	<javaPermission className="java.net.SocketPermission"  name="*" actions="resolve" />
 </server>

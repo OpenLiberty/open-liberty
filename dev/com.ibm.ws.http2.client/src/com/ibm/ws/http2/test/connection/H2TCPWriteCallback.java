@@ -39,8 +39,8 @@ public class H2TCPWriteCallback implements TCPWriteCompletedCallback {
      */
     @Override
     public void complete(VirtualConnection arg0, TCPWriteRequestContext arg1) {
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "complete", "H2TCPWriteCallback complete");
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "complete", "H2TCPWriteCallback complete");
         h2connetion.syncWrite();
     }
 

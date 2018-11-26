@@ -19,10 +19,11 @@ import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefiniti
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.faulttolerance.cdi.config.impl.AbstractAnnotationConfig;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProvider;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 
-public class RetryConfig extends AbstractAnnotationConfig<Retry> implements Retry {
+public class RetryConfig extends AbstractAnnotationConfig<Retry> {
 
     private static final TraceComponent tc = Tr.register(RetryConfig.class);
 
@@ -44,57 +45,39 @@ public class RetryConfig extends AbstractAnnotationConfig<Retry> implements Retr
         super(annotatedMethod, annotatedClass, annotation, Retry.class);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public int maxRetries() {
+    private int maxRetries() {
         return maxRetriesConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public long delay() {
+    private long delay() {
         return delayConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public ChronoUnit delayUnit() {
+    private ChronoUnit delayUnit() {
         return delayUnitConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public long maxDuration() {
+    private long maxDuration() {
         return maxDurationConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public ChronoUnit durationUnit() {
+    private ChronoUnit durationUnit() {
         return durationUnitConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public long jitter() {
+    private long jitter() {
         return jitterConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public ChronoUnit jitterDelayUnit() {
+    private ChronoUnit jitterDelayUnit() {
         return jitterDelayUnitConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Class<? extends Throwable>[] retryOn() {
+    private Class<? extends Throwable>[] retryOn() {
         return retryOnConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Class<? extends Throwable>[] abortOn() {
+    private Class<? extends Throwable>[] abortOn() {
         return abortOnConfig.getValue();
     }
 

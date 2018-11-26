@@ -21,13 +21,16 @@ Export-Package: com.sun.tools.ws.ant;version="2.2.10", \
  com.ibm.jtc.jax.xml.ws.api;version=1.0.0, \
  com.ibm.jtc.jax.xml.ws.policy;version=1.0.0, \
  com.ibm.ws.jaxws.tools;version="2.2.10", \
+ org.jvnet.staxex;version="1.7.7", \
+ org.jvnet.staxex.util;version="1.7.7"
 
 Import-Package: \
  com.sun.xml.bind*;version="2.2.10"
 
 
 Private-Package:\
-   com.ibm.ws.jaxws.tools.*
+   com.ibm.ws.jaxws.tools.*, \
+   com.sun.tools.ws.wscompile;-split-package:=merge-last;version="2.2.10"
 
 -includeresource:\
  @${repo;com.sun.xml.ws:jaxws-rt;2.2.10}!/!META-INF/maven/*, \
@@ -35,7 +38,8 @@ Private-Package:\
  @${repo;com.sun.xml.ws:policy;2.4}!/!META-INF/maven/*, \
  @${repo;com.sun.org.apache.xml.internal:resolver;20050927}!/!META-INF/maven/*, \
  @${repo;org.jvnet.staxex:stax-ex;1.7.7}!/!META-INF/maven/*, \
- @${repo;com.sun.xml.stream.buffer:streambuffer;1.5.3}!/!META-INF/maven/*
+ @${repo;com.sun.xml.stream.buffer:streambuffer;1.5.3}!/!META-INF/maven/*, \
+ com/sun/tools/ws/wscompile=${bin}/com/sun/tools/ws/wscompile
 
 instrument.disabled: true
 
@@ -46,4 +50,6 @@ instrument.disabled: true
 	com.sun.org.apache.xml.internal:resolver;version=20050927, \
 	org.jvnet.staxex:stax-ex;version=1.7.7, \
 	com.sun.xml.stream.buffer:streambuffer;version=1.5.3, \
+	com.sun.xml.bind:jaxb-core;version=2.2.10,\
+	com.sun.xml.bind:jaxb-xjc;version=2.2.10,\
 	com.ibm.ws.org.apache.ant;version=latest

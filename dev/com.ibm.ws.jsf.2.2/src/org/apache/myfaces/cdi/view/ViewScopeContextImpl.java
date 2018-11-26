@@ -247,6 +247,8 @@ public class ViewScopeContextImpl implements Context
             }
         }
         
+        contextMap.clear();
+        
         storage.deactivate();
     }
     

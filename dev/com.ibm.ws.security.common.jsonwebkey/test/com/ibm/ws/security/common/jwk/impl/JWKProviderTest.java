@@ -140,7 +140,7 @@ public class JWKProviderTest {
             assertEquals("JWK's algorithm did not match expected algorithm.", RS256, jwk.getAlgorithm());
             assertNotNull("Public key was null when it should not have been.", jwk.getPublicKey());
             assertNotNull("Private key was null when it should not have been.", jwk.getPrivateKey());
-            assertEquals("Number of generated JWKs was not expected value.", 1, provider.jwks.size());
+            assertEquals("Number of generated JWKs was not expected value.", 2, provider.jwks.size());
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -161,14 +161,14 @@ public class JWKProviderTest {
 
             // Should generate new JWK
             JSONWebKey jwk = provider.getJWK();
-            assertEquals("Number of generated JWKs was not expected value.", 1, provider.jwks.size());
+            assertEquals("Number of generated JWKs was not expected value.", 2, provider.jwks.size());
             PublicKey publicKey = jwk.getPublicKey();
 
             provider.rotateKeys();
 
-            assertEquals("Number of generated JWKs was not expected value.", 1, provider.jwks.size());
+            assertEquals("Number of generated JWKs was not expected value.", 2, provider.jwks.size());
             JSONWebKey newJwk = provider.getJWK();
-            assertEquals("Number of generated JWKs was not expected value.", 1, provider.jwks.size());
+            assertEquals("Number of generated JWKs was not expected value.", 2, provider.jwks.size());
             PublicKey newPublicKey = newJwk.getPublicKey();
 
             // Testing equality of public keys should be sufficient to ensure keys are different

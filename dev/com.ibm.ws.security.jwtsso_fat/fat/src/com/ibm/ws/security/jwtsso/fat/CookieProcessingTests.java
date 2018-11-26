@@ -27,6 +27,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
@@ -41,7 +42,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-public class CookieProcessingTests extends CommonJwtFat {
+public class CookieProcessingTests extends CommonSecurityFat {
 
     protected static Class<?> thisClass = CookieProcessingTests.class;
 
@@ -56,12 +57,15 @@ public class CookieProcessingTests extends CommonJwtFat {
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
 
-    private TestActions actions = new TestActions();
-    private TestValidationUtils validationUtils = new TestValidationUtils();
+    private final TestActions actions = new TestActions();
+    private final TestValidationUtils validationUtils = new TestValidationUtils();
 
     @BeforeClass
     public static void setUp() throws Exception {
-        setUpAndStartServer(server, JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+        server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
+        serverTracker.addServer(server);
+        server.startServerUsingExpandedConfiguration("server_withFeature.xml");
+
     }
 
     /**
@@ -75,7 +79,7 @@ public class CookieProcessingTests extends CommonJwtFat {
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
         expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
-        response = actions.invokeUrl(testName.getMethodName(), wc, protectedUrl); // get back the login page
+        response = actions.invokeUrl(_testName, wc, protectedUrl); // get back the login page
         validationUtils.validateResult(response, currentAction, expectations);
 
         currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
@@ -100,7 +104,7 @@ public class CookieProcessingTests extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_largeCookies() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_testlargecookies.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_testlargecookies.xml");
 
         doHappyPath();
         // The test app logs the cookies,  check them that way.  Or we could look at the response headers.
@@ -109,7 +113,7 @@ public class CookieProcessingTests extends CommonJwtFat {
         assertTrue("expected cookie MPJWT02  not found in cookies", responseStr.contains(JwtFatConstants.EXPECTED_COOKIE_2_NAME));
 
         // now access resource a second time, force cookies to be rejoined into a single token
-        response = actions.invokeUrl(testName.getMethodName(), wc, protectedUrl);
+        response = actions.invokeUrl(_testName, wc, protectedUrl);
         responseStr = response.getWebResponse().getContentAsString();
         boolean check2 = responseStr.contains("SimpleServlet");
         assertTrue("Did not successfully access the protected resource a second time", check2);
@@ -151,20 +155,20 @@ public class CookieProcessingTests extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_ServletLogout() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_testlargecookies.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_testlargecookies.xml");
         doHappyPath();
 
         // add attribute to tell the app to logout
         String logoutUrl = protectedUrl + "?logout=true";
         // now access resource a second time, force cookies to be rejoined into a single token
-        response = actions.invokeUrl(testName.getMethodName(), wc, logoutUrl);
+        response = actions.invokeUrl(_testName, wc, logoutUrl);
         String responseStr = response.getWebResponse().getContentAsString();
         boolean check2 = responseStr.contains("Test Application class BaseServlet logged out");
         assertTrue("Did not get a response indicating logout was invoked", check2);
         confirmCookiesCleared(true);
 
         // and make sure we cannot access protected resource
-        response = actions.invokeUrl(testName.getMethodName(), wc, protectedUrl);
+        response = actions.invokeUrl(_testName, wc, protectedUrl);
         responseStr = response.getWebResponse().getContentAsString();
         assertFalse("should not have been able to access protected url ", responseStr.contains("SimpleServlet"));
     }
@@ -176,17 +180,17 @@ public class CookieProcessingTests extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_ibm_security_logout() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_testlargecookies.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_testlargecookies.xml");
         doHappyPath();
         // add attribute to tell the app to logout
         String logoutUrl = protectedUrl.replace("SimpleServlet", "ibm_security_logout");
         // now access resource a second time, force cookies to be rejoined into a single token
         WebRequest request = new WebRequest(new URL(logoutUrl), HttpMethod.POST);
-        response = actions.submitRequest(testName.getMethodName(), wc, request);
+        response = actions.submitRequest(_testName, wc, request);
         confirmCookiesCleared(true);
 
         // and make sure we cannot access protected resource
-        response = actions.invokeUrl(testName.getMethodName(), wc, protectedUrl);
+        response = actions.invokeUrl(_testName, wc, protectedUrl);
         String responseStr = response.getWebResponse().getContentAsString();
         assertFalse("should not have been able to access protected url ", responseStr.contains("SimpleServlet"));
     }
@@ -198,7 +202,7 @@ public class CookieProcessingTests extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_CookieReplay() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+
         doHappyPath();
         String responseStr = response.getWebResponse().getContentAsString();
         String beginStr = "cookie: " + JwtFatConstants.JWT_COOKIE_NAME + " value: ";
@@ -210,7 +214,7 @@ public class CookieProcessingTests extends CommonJwtFat {
 
         // perform logout
         String logoutUrl = protectedUrl + "?logout=true";
-        response = actions.invokeUrl(testName.getMethodName(), wc, logoutUrl);
+        response = actions.invokeUrl(_testName, wc, logoutUrl);
         responseStr = response.getWebResponse().getContentAsString();
         boolean check2 = responseStr.contains("Test Application class BaseServlet logged out");
         assertTrue("Did not get a response indicating logout was invoked", check2);
@@ -222,10 +226,10 @@ public class CookieProcessingTests extends CommonJwtFat {
         WebRequest request = new WebRequest(new URL(protectedUrl), HttpMethod.GET);
         Log.info(thisClass, "", "setting cookie for replay:" + token);
         request.setAdditionalHeader("Cookie", JwtFatConstants.JWT_COOKIE_NAME + "=" + token);
-        loggingUtils.printRequestParts(wc, request, testName.getMethodName());
+        loggingUtils.printRequestParts(wc, request, _testName);
 
         Page response = wc.getPage(request); // should get bounced to login page
-        loggingUtils.printResponseParts(response, testName.getMethodName(), "Response from URL: ");
+        loggingUtils.printResponseParts(response, _testName, "Response from URL: ");
 
         boolean accessedResource = response.getWebResponse().getContentAsString().contains("SimpleServlet");
         assertFalse("should not have been able to access the protected resource", accessedResource);
@@ -248,14 +252,13 @@ public class CookieProcessingTests extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_TokenInAuthHeader() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
 
         // get jwt token from token endpoint.
         String tokenEndpointUrl = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() +
                                   "/jwt/ibm/api/defaultJwtSso/token";
         wc = new WebClient();
         wc.getOptions().setUseInsecureSSL(true);
-        response = actions.invokeUrlWithBasicAuth(testName.getMethodName(), wc, tokenEndpointUrl, defaultUser, defaultPassword);
+        response = actions.invokeUrlWithBasicAuth(_testName, wc, tokenEndpointUrl, defaultUser, defaultPassword);
         String responseStr = response.getWebResponse().getContentAsString();
         Log.info(thisClass, "", "received this from token endpoint: " + responseStr);
         // strip json
@@ -263,7 +266,7 @@ public class CookieProcessingTests extends CommonJwtFat {
         Log.info(thisClass, "", "parsed token: " + token);
 
         wc = new WebClient();
-        response = actions.invokeUrlWithBearerToken(testName.getMethodName(), wc, protectedUrl, token);
+        response = actions.invokeUrlWithBearerToken(_testName, wc, protectedUrl, token);
 
         // should be able to reach protected page, skipping login form
         responseStr = response.getWebResponse().getContentAsString();

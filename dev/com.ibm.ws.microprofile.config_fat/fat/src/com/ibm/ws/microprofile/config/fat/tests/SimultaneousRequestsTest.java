@@ -13,9 +13,9 @@ package com.ibm.ws.microprofile.config.fat.tests;
 
 import java.io.File;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -26,7 +26,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.appConfig.ordForDefaults.test.OrdinalsForDefaultsTestServlet;
+import com.ibm.ws.microprofile.appConfig.simultaneousRequests.test.SimultaneousRequestsTestServlet;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig11EE7;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig12EE8;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig14EE8;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
@@ -36,21 +39,19 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
-import com.ibm.ws.fat.util.browser.WebBrowser;
-import com.ibm.ws.fat.util.browser.WebBrowserException;
-import com.ibm.ws.fat.util.browser.WebBrowserFactory;
-import com.ibm.ws.fat.util.browser.WebResponse;
-import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig11EE7;
-import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig12EE8;
-
-import com.ibm.websphere.simplicity.log.Log;
-
 @RunWith(FATRunner.class)
 public class SimultaneousRequestsTest extends FATServletClient {
 
     public static final String APP_NAME = "simultaneousRequests";
 
+    @ClassRule
+    public static RepeatTests r = RepeatTests
+                    .with(new RepeatConfig11EE7("SimultaneousRequestsServer"))
+                    .andWith(new RepeatConfig12EE8("SimultaneousRequestsServer"))
+                    .andWith(new RepeatConfig14EE8("SimultaneousRequestsServer"));
+
     @Server("SimultaneousRequestsServer")
+    @TestServlet(servlet = SimultaneousRequestsTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @BeforeClass
@@ -71,33 +72,27 @@ public class SimultaneousRequestsTest extends FATServletClient {
     @Test
     public void testSimultaneousRequests() throws Exception {
 
-        Callable<WebResponse> callableWebResponse = new Callable<WebResponse>() {
+        Callable<Void> callable = new Callable<Void>() {
             @Override
-            public WebResponse call() throws WebBrowserException {
-                WebResponse wr = WebBrowserFactory.getInstance().createWebBrowser().request("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/simultaneousRequests/");
-                return wr;
+            public Void call() throws Exception {
+                runTest(server, APP_NAME, "testSimultaneousRequests");
+                return null;
             }
         };
 
         ExecutorService executor = Executors.newFixedThreadPool(2);
 
-        Future<WebResponse> requestOne = executor.submit(callableWebResponse);
+        Future<Void> requestOne = executor.submit(callable);
         Thread.sleep(1000); //Just to be safe, space the requests out to ensure the first thread sets a flag.
-        Future<WebResponse> requestTwo = executor.submit(callableWebResponse);
+        Future<Void> requestTwo = executor.submit(callable);
 
-        requestOne.get().verifyResponseBodyContains("No exceptions were thrown");
-        requestTwo.get().verifyResponseBodyContains("No exceptions were thrown");
+        requestOne.get();
+        requestTwo.get();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
     }
-
-
-    @ClassRule
-    public static RepeatTests r = RepeatTests
-                    .with(new RepeatConfig11EE7("CDIConfigServer"))
-                    .andWith(new RepeatConfig12EE8("CDIConfigServer"));
 
 }

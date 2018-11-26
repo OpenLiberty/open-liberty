@@ -58,6 +58,10 @@ public class InstallConstants {
     public static final String VERSIONLESS = "VERSIONLESS";
     public static final String PRODUCTNAME = "IBM WebSphere Application Server Liberty";
 
+    public static final String LICENSE_EPL_PREFIX = "https://www.eclipse.org/legal/epl-";
+    public static final String LICENSE_FEATURE_TERMS = "http://www.ibm.com/licenses/wlp-featureterms-v1";
+    public static final String LICENSE_FEATURE_TERMS_RESTRICTED = "http://www.ibm.com/licenses/wlp-featureterms-restricted-v1";
+
     /**
      * An enum for specifying what action to take if a file to be installed
      * already exists.

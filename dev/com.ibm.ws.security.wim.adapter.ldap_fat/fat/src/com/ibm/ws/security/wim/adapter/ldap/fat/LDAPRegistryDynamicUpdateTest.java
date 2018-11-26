@@ -98,9 +98,10 @@ public class LDAPRegistryDynamicUpdateTest {
         Log.info(c, "setUp", "Creating servlet connection the server");
         servlet = new UserRegistryServletConnection(server.getHostname(), server.getHttpDefaultPort());
 
-        servlet.getRealm();
-        Thread.sleep(5000);
-        servlet.getRealm();
+        if (servlet.getRealm() == null) {
+            Thread.sleep(5000);
+            servlet.getRealm();
+        }
 
         /*
          * The original server configuration has no registry or Federated Repository configuration.
@@ -219,7 +220,7 @@ public class LDAPRegistryDynamicUpdateTest {
         ldap.getAttributeConfiguration().getAttributes().add(new Attribute("krbPrincipalName", "kerberosId", "PersonAccount", null, null));
 
         ldap.setContextPool(new ContextPool(true, 1, 0, 3, "0s", "3000s"));
-        ldap.setLdapCache(new LdapCache(new AttributesCache(true, 4000, 2000, "1200s", null), new SearchResultsCache(true, 2000, 1000, "600s")));
+        ldap.setLdapCache(new LdapCache(new AttributesCache(true, 4000, 2000, "1200s"), new SearchResultsCache(true, 2000, 1000, "600s")));
         ldap.setFailoverServer(new FailoverServers("failoverLdapServers", new String[][] { { "${ldap.server.3.name}", "${ldap.server.3.port}" } }));
 
         FederatedRepository federatedRepository = createFederatedRepository(clone, "vmmldaprealm", new String[] { ldap.getName() });
@@ -678,7 +679,7 @@ public class LDAPRegistryDynamicUpdateTest {
         ServerConfiguration clone = emptyConfiguration.clone();
         LdapRegistry ldap = createTDSLdapRegistry(clone, "LDAP", "SampleLdapIDSRealm");
         ldap.setContextPool(new ContextPool(true, 17, 19, 18, "1700ms", "1600ms"));
-        ldap.setLdapCache(new LdapCache(new AttributesCache(true, 4444, 2222, "700s", "ttl1"), new SearchResultsCache(true, 5555, 3333, "777s")));
+        ldap.setLdapCache(new LdapCache(new AttributesCache(true, 4444, 2222, "700s"), new SearchResultsCache(true, 5555, 3333, "777s")));
         createFederatedRepository(clone, "OneLDAPRealm", new String[] { ldap.getBaseDN() });
         updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
@@ -710,7 +711,6 @@ public class LDAPRegistryDynamicUpdateTest {
         assertFalse("Should have found, " + tr, errMsgs.isEmpty());
 
         Log.info(c, "testCustomContextAndCache", "Check cache config settings");
-        ///<attributesCache size="4444" timeout="700s" enabled="true" sizeLimit="2222" serverTTLAttribute="ttl1"/>
         // <searchResultsCache size="5555" timeout="777s" enabled="true" resultsSizeLimit="3333" />
 
         tr = "CacheTimeOut: 700000";
@@ -722,10 +722,6 @@ public class LDAPRegistryDynamicUpdateTest {
         assertFalse("Should have found, " + tr, errMsgs.isEmpty());
 
         tr = "CacheSizeLimit: 2222";
-        errMsgs = server.findStringsInLogsAndTrace(tr);
-        assertFalse("Should have found, " + tr, errMsgs.isEmpty());
-
-        tr = "CacheTTLAttr: ttl1";
         errMsgs = server.findStringsInLogsAndTrace(tr);
         assertFalse("Should have found, " + tr, errMsgs.isEmpty());
 

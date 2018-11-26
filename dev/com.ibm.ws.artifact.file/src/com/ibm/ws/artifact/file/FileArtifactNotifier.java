@@ -23,6 +23,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 
+import com.ibm.ws.artifact.ArtifactListenerSelector;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactNotifier;
@@ -43,8 +44,8 @@ public class FileArtifactNotifier implements ArtifactNotifier {
     private ServiceRegistration<FileMonitor> nonRecurseService = null;
     private final Hashtable<String, Object> nonRecurseServiceProperties = new Hashtable<String, Object>();
 
-    private final Map<String, Collection<ArtifactListener>> listeners;
-    private final Map<String, Collection<ArtifactListener>> nonRecurselisteners;
+    private final Map<String, Collection<ArtifactListenerSelector>> listeners;
+    private final Map<String, Collection<ArtifactListenerSelector>> nonRecurselisteners;
     private final Set<String> pathsBeingMonitored;
     private final Set<String> nonRecursePathsBeingMonitored;
 
@@ -57,8 +58,8 @@ public class FileArtifactNotifier implements ArtifactNotifier {
         this.root = root;
         this.rootAbsolutePath = PathUtils.fixPathString(absPath);
         this.cfh = cfh;
-        this.listeners = new ConcurrentHashMap<String, Collection<ArtifactListener>>();
-        this.nonRecurselisteners = new ConcurrentHashMap<String, Collection<ArtifactListener>>();
+        this.listeners = new ConcurrentHashMap<String, Collection<ArtifactListenerSelector>>();
+        this.nonRecurselisteners = new ConcurrentHashMap<String, Collection<ArtifactListenerSelector>>();
         this.pathsBeingMonitored = new HashSet<String>();
         this.nonRecursePathsBeingMonitored = new HashSet<String>();
     }
@@ -78,7 +79,8 @@ public class FileArtifactNotifier implements ArtifactNotifier {
         Set<String> nonRecursePathsToMonitor = new HashSet<String>();
 
         for (String path : targets.getPaths()) {
-            addTarget(path, callbackObject, pathsToMonitor, nonRecursePathsToMonitor);
+            ArtifactListenerSelector artifactSelectorCallback = new ArtifactListenerSelector(callbackObject);
+            addTarget(path, artifactSelectorCallback, pathsToMonitor, nonRecursePathsToMonitor);
         }
 
         updateMonitoredPaths(pathsToMonitor, null, nonRecursePathsToMonitor, null);
@@ -88,15 +90,18 @@ public class FileArtifactNotifier implements ArtifactNotifier {
 
     @Override
     public synchronized boolean removeListener(ArtifactListener callbackObject) {
+        // Wrap the input artifact listener in a ArtifactListenerSelector.
+        ArtifactListenerSelector listenerSelectorCallbackObject = new ArtifactListenerSelector(callbackObject);
+
         //this isn't too frequent an operation, so the implementation is a little unoptimal ;p
         boolean success = false;
 
         //find all the places where the listener is registered..
         //2 pass. pass#1 find affected paths.
         Set<String> pathsToRemove = new HashSet<String>();
-        for (Map.Entry<String, Collection<ArtifactListener>> listenersByPath : listeners.entrySet()) {
-            for (ArtifactListener listener : listenersByPath.getValue()) {
-                if (listener == callbackObject) {
+        for (Map.Entry<String, Collection<ArtifactListenerSelector>> listenersByPath : listeners.entrySet()) {
+            for (ArtifactListenerSelector listener : listenersByPath.getValue()) {
+                if (listener.equals(listenerSelectorCallbackObject)) {
                     pathsToRemove.add(listenersByPath.getKey());
                 }
             }
@@ -105,7 +110,7 @@ public class FileArtifactNotifier implements ArtifactNotifier {
         Set<String> pathsToReallyRemove = new HashSet<String>(pathsToRemove.size());
         //2 pass. pass#2 process affected paths.
         for (String path : pathsToRemove) {
-            Collection<ArtifactListener> listenersForPath = listeners.get(path);
+            Collection<ArtifactListenerSelector> listenersForPath = listeners.get(path);
             if (listenersForPath != null) {
                 if (listenersForPath.size() == 1) {
                     //only person listening to this path just left..
@@ -113,7 +118,7 @@ public class FileArtifactNotifier implements ArtifactNotifier {
                     pathsToReallyRemove.add(path);
                 } else {
                     //other parties still care about this path..
-                    listenersForPath.remove(callbackObject);
+                    listenersForPath.remove(listenerSelectorCallbackObject);
                 }
             }
         }
@@ -121,9 +126,9 @@ public class FileArtifactNotifier implements ArtifactNotifier {
         //find all the places where the listener is registered..
         //2 pass. pass#1 find affected paths.
         Set<String> nonRecursePathsToRemove = new HashSet<String>();
-        for (Map.Entry<String, Collection<ArtifactListener>> listenersByPath : nonRecurselisteners.entrySet()) {
-            for (ArtifactListener listener : listenersByPath.getValue()) {
-                if (listener == callbackObject) {
+        for (Map.Entry<String, Collection<ArtifactListenerSelector>> listenersByPath : nonRecurselisteners.entrySet()) {
+            for (ArtifactListenerSelector listener : listenersByPath.getValue()) {
+                if (listener.equals(listenerSelectorCallbackObject)) {
                     nonRecursePathsToRemove.add(listenersByPath.getKey());
                 }
             }
@@ -132,7 +137,7 @@ public class FileArtifactNotifier implements ArtifactNotifier {
         Set<String> nonRecursePathsToReallyRemove = new HashSet<String>(pathsToRemove.size());
         //2 pass. pass#2 process affected paths.
         for (String path : nonRecursePathsToRemove) {
-            Collection<ArtifactListener> listenersForPath = nonRecurselisteners.get(path);
+            Collection<ArtifactListenerSelector> listenersForPath = nonRecurselisteners.get(path);
             if (listenersForPath != null) {
                 if (listenersForPath.size() == 1) {
                     //only person listening to this path just left..
@@ -140,7 +145,7 @@ public class FileArtifactNotifier implements ArtifactNotifier {
                     nonRecursePathsToReallyRemove.add(path);
                 } else {
                     //other parties still care about this path..
-                    listenersForPath.remove(callbackObject);
+                    listenersForPath.remove(listenerSelectorCallbackObject);
                 }
             }
         }
@@ -156,8 +161,8 @@ public class FileArtifactNotifier implements ArtifactNotifier {
         return success;
     }
 
-    private void addTarget(String path, ArtifactListener listener, Set<String> pathsToMonitor, Set<String> nonRecursePathsToMonitor) {
-        Map<String, Collection<ArtifactListener>> l = listeners;
+    private void addTarget(String path, ArtifactListenerSelector listener, Set<String> pathsToMonitor, Set<String> nonRecursePathsToMonitor) {
+        Map<String, Collection<ArtifactListenerSelector>> l = listeners;
         boolean nonRecurse = false;
         if (path.startsWith("!")) {
             path = path.substring(1);
@@ -172,9 +177,9 @@ public class FileArtifactNotifier implements ArtifactNotifier {
             }
         }
 
-        Collection<ArtifactListener> list = l.get(path);
+        Collection<ArtifactListenerSelector> list = l.get(path);
         if (list == null) {
-            list = new ConcurrentLinkedQueue<ArtifactListener>();
+            list = new ConcurrentLinkedQueue<ArtifactListenerSelector>();
             l.put(path, list);
         }
         list.add(listener);
@@ -256,7 +261,7 @@ public class FileArtifactNotifier implements ArtifactNotifier {
         pathsBeingMonitored.removeAll(subPathsToRemove);
     }
 
-    static class FileArtifactMonitor implements FileMonitor {
+    static class FileArtifactMonitor implements com.ibm.ws.kernel.filemonitor.FileMonitor {
 
         FileArtifactNotifier owner;
         boolean recurse;
@@ -278,6 +283,11 @@ public class FileArtifactNotifier implements ArtifactNotifier {
             owner.scanComplete(createdFiles, modifiedFiles, deletedFiles, recurse);
         }
 
+        /** {@inheritDoc} */
+        @Override
+        public void onChange(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles, String filter) {
+            owner.scanComplete(createdFiles, modifiedFiles, deletedFiles, recurse, filter);
+        }
     }
 
     private final FileArtifactMonitor nonRecurseMonitor = new FileArtifactMonitor(this, false);
@@ -291,6 +301,8 @@ public class FileArtifactNotifier implements ArtifactNotifier {
                 return;
             }
             serviceProperties.put(Constants.SERVICE_VENDOR, "IBM");
+            // Adding INTERNAL parameter MONITOR_IDENTIFICATION_NAME to identify this monitor.
+            serviceProperties.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, "com.ibm.ws.kernel.monitor.artifact");
 
             Long newInterval = 5000L; //5 seconds default
             if (interval != null) {
@@ -367,6 +379,8 @@ public class FileArtifactNotifier implements ArtifactNotifier {
             }
             BundleContext ctx = cfh.getBundleContext();
             nonRecurseServiceProperties.put(Constants.SERVICE_VENDOR, "IBM");
+            //Adding INTERNAL parameter MONITOR_IDENTIFICATION_NAME to identify this monitor
+            nonRecurseServiceProperties.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, "com.ibm.ws.kernel.monitor.artifact");
 
             Long newInterval = 5000L; //5 seconds default
             if (interval != null) {
@@ -471,24 +485,28 @@ public class FileArtifactNotifier implements ArtifactNotifier {
     }
 
     public void scanComplete(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles, boolean recurse) {
+        scanComplete(createdFiles, modifiedFiles, deletedFiles, recurse, null);
+    }
+
+    public void scanComplete(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles, boolean recurse, String filter) {
+
         //the monitor for this File Container has called us back..
-        Map<String, Collection<ArtifactListener>> l = recurse ? this.listeners : this.nonRecurselisteners;
+        Map<String, Collection<ArtifactListenerSelector>> l = recurse ? this.listeners : this.nonRecurselisteners;
 
         //process the Files back to relative paths within this container.
         Set<String> created = convertAbsToRelative(createdFiles);
         Set<String> modified = convertAbsToRelative(modifiedFiles);
         Set<String> deleted = convertAbsToRelative(deletedFiles);
 
-        for (Map.Entry<String, Collection<ArtifactListener>> listenersForPath : l.entrySet()) {
+        for (Map.Entry<String, Collection<ArtifactListenerSelector>> listenersForPath : l.entrySet()) {
             String path = listenersForPath.getKey();
             ArtifactNotification createdForPath = collectNotificationsForPrefix(path, created);
             ArtifactNotification modifiedForPath = collectNotificationsForPrefix(path, modified);
             ArtifactNotification deletedForPath = collectNotificationsForPrefix(path, deleted);
             //only notify if we have paths to notify for!
             if (!createdForPath.getPaths().isEmpty() || !modifiedForPath.getPaths().isEmpty() || !deletedForPath.getPaths().isEmpty()) {
-                for (ArtifactListener listener : listenersForPath.getValue()) {
-                    //Invoke the notifier.. here we are branching out to code not part of the File artifact impl.
-                    listener.notifyEntryChange(createdForPath, deletedForPath, modifiedForPath);
+                for (ArtifactListenerSelector listener : listenersForPath.getValue()) {
+                    listener.notifyEntryChange(createdForPath, deletedForPath, modifiedForPath, filter);
                 }
             }
         }
@@ -503,8 +521,8 @@ public class FileArtifactNotifier implements ArtifactNotifier {
         //return false if current settings match args.
         Long compareInterval = Long.valueOf(interval);
         if (compareInterval.equals(this.interval) && ((useMBean && FileMonitor.MONITOR_TYPE_EXTERNAL.equals(this.notificationType))
-            ||
-            (!useMBean && FileMonitor.MONITOR_TYPE_TIMED.equals(this.notificationType)))) {
+                                                      ||
+                                                      (!useMBean && FileMonitor.MONITOR_TYPE_TIMED.equals(this.notificationType)))) {
             return true;
         }
         this.interval = compareInterval;

@@ -50,6 +50,11 @@
 # WLP_DEBUG_ADDRESS - The port to use when running the server in debug mode.
 #              The default value is 7777.
 #
+# WLP_DEBUG_SUSPEND - Whether to suspend the jvm on startup or not. This can be
+#              set to y to suspend the jvm on startup until a debugger attaches,
+#              or set to n to startup without waiting for a debugger to attach.
+#              The default value is y. 
+#
 # WLP_SKIP_UMASK -  Skip setting the umask value to allow the default value 
 #                   to be used.
 #
@@ -161,7 +166,13 @@ safeEcho()
   cat <<EOF
 $*
 EOF
+
+  return $?
 }
+
+# Starting the server with a full tmp directory may prevent the server from
+# reading server.env during startup.
+safeEcho "" || exit $?
 
 # Define escapeForEval functions using ${var//find/replace} and ${var#suffix}
 # if possible since those constructs are significantly faster than safeEcho+sed
@@ -570,9 +581,9 @@ serverEnvDefaults()
   *)
     if $shareclassesCacheDirPerm
     then
-      SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\",cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx60m -Xscmaxaot8m ${IBM_JAVA_OPTIONS}"
+      SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\",cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx80m ${IBM_JAVA_OPTIONS}"
     else
-      SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\" -XX:ShareClassesEnableBCI -Xscmx60m -Xscmaxaot8m ${IBM_JAVA_OPTIONS}"
+      SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\" -XX:ShareClassesEnableBCI -Xscmx80m ${IBM_JAVA_OPTIONS}"
     fi
   esac
 
@@ -1029,7 +1040,11 @@ case "$ACTION" in
         then
           WLP_DEBUG_ADDRESS=7777
         fi
-        JAVA_DEBUG="-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=${WLP_DEBUG_ADDRESS}"
+        if [ -z "${WLP_DEBUG_SUSPEND}" ]
+        then
+          WLP_DEBUG_SUSPEND=y
+        fi
+        JAVA_DEBUG="-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=${WLP_DEBUG_SUSPEND},address=${WLP_DEBUG_ADDRESS}"
       fi
 
       serverWorkingDirectory

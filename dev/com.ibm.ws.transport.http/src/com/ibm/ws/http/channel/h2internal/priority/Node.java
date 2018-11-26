@@ -31,9 +31,11 @@ public class Node {
 
     static public enum NODE_STATUS {
         REQUESTING_WRITE, // Stream/Node wants to write a frame
+        WRITE_LATCHED, // thread is waiting for the write to complete
         NOT_REQUESTING, // Stream/Node is not writing, but is not closed
         CLOSED, // Stream/Node is closed
-        ACTION_NO_CHANGE // This isn't a status/state, but a signal to methods that the status is not changing
+        ACTION_NO_CHANGE, // This isn't a status/state, but a signal to methods that the status is not changing
+        ACTION_RESET_IF_LATCHED // signal to move the state to NOT_REQUESTING if the current state is WRITE_LATCHED
     }
 
     static public enum WRITE_COUNT_ACTION {

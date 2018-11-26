@@ -53,3 +53,7 @@ SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.useraction=Specifica\u0163i doar o c
 SEC_TOO_MANY_PRINCIPALS=CWWKS0010E: \u00cen timpul ob\u0163inerii principalului apelant, s-a descoperit c\u0103 subiectul de apelant avea mai mult de un principal de tip WSPrincipal. Un singur WSPrincipal poate exista \u00een subiect. Numele WSPrincipals sunt: {}
 SEC_TOO_MANY_PRINCIPALS.explanation=Subiectul apelantului are prea mul\u0163i principali de tipul WSPrincipal. Un singur principal de acest tip este suportat.
 SEC_TOO_MANY_PRINCIPALS.useraction=Examina\u0163i aplica\u0163ia pentru a \u00een\u0163elege de ce subiectul are mai mult de un WSPrincipal.
+
+SPNEGO_API_IS_NOT_SUPPORT=CWWKS0011E: API-ul SPNEGO {0} nu este suportat pentru versiunea {0} vendorul Java {1}.
+SPNEGO_API_IS_NOT_SUPPORT.explanation=API-ul SPNEGO nu poate fi folosit cu vendorul \u015fi versiunea Java.
+SPNEGO_API_IS_NOT_SUPPORT.useraction=Utiliza\u0163i vendor Java \u015fi versiune corecte care sunt suportate de API-urile SPNEGO.

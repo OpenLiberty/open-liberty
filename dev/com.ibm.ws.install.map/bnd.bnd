@@ -29,6 +29,7 @@ Require-Bundle: com.ibm.ws.install; version="[1,1.0.100)", \
   com.ibm.ws.org.eclipse.equinox.metatype; version="[1,1.0.100)", \
   com.ibm.ws.repository.liberty; version="[1,1.0.100)", \
   com.ibm.ws.repository.resolver; version="[1,1.0.100)", \
+  com.ibm.ws.repository.parsers;version="[1,1.0.100)",\
   com.ibm.ws.repository; version="[1,1.0.100)", \
   com.ibm.websphere.javaee.jaxb.2.2; location="dev/api/spec/"; version="[1, 1.0.100)", \
   com.ibm.websphere.javaee.jsonp.1.0; location="dev/api/spec/"; version="[1, 1.0.100)", \

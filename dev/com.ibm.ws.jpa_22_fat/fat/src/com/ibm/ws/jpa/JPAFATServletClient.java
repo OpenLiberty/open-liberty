@@ -19,10 +19,12 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
@@ -76,7 +78,7 @@ public class JPAFATServletClient extends FATServletClient {
         ShrinkHelper.addDirectory(webApp, dbManagementResourcePath + "/databasemanagement.war");
         ShrinkHelper.addDirectory(webApp, ddlPath);
 
-        ShrinkHelper.exportToServer(server, "apps", webApp);
+        ShrinkHelper.exportToServer(server, "apps", webApp, DeployOptions.OVERWRITE);
         server.addInstalledAppForValidation("DatabaseManagement");
 
         Application appRecord = new Application();
@@ -174,4 +176,19 @@ public class JPAFATServletClient extends FATServletClient {
         return dbVendor;
     }
 
+    protected static final JavaArchive buildTestAPIJar() throws Exception {
+        final JavaArchive testApiJar = ShrinkWrap.create(JavaArchive.class, "TestAPI.jar");
+        testApiJar.addPackage("com.ibm.ws.testtooling.msgcli");
+        testApiJar.addPackage("com.ibm.ws.testtooling.msgcli.jms");
+        testApiJar.addPackage("com.ibm.ws.testtooling.msgcli.msc");
+        testApiJar.addPackage("com.ibm.ws.testtooling.testinfo");
+        testApiJar.addPackage("com.ibm.ws.testtooling.testlogic");
+        testApiJar.addPackage("com.ibm.ws.testtooling.tranjacket");
+        testApiJar.addPackage("com.ibm.ws.testtooling.vehicle");
+        testApiJar.addPackage("com.ibm.ws.testtooling.vehicle.ejb");
+        testApiJar.addPackage("com.ibm.ws.testtooling.vehicle.execontext");
+        testApiJar.addPackage("com.ibm.ws.testtooling.vehicle.resources");
+        testApiJar.addPackage("com.ibm.ws.testtooling.vehicle.web");
+        return testApiJar;
+    }
 }

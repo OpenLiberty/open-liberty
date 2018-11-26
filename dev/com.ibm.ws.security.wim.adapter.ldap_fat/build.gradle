@@ -118,7 +118,8 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.sslref.badssl',
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.failover',
     'com.ibm.ws.security.wim.adapter.ldap.fat.tworealms',
-    'com.ibm.ws.security.wim.adapter.ldap.fat.ids.allIbmGroups'
+    'com.ibm.ws.security.wim.adapter.ldap.fat.ids.allIbmGroups',
+    'com.ibm.ws.security.registry.ldap.fat.attr.timeout'
   ]
   servers.each { server ->
     copy { 
@@ -131,7 +132,8 @@ autoFVT.doLast {
    * Copy the WIM API WAR into test servers.
    */
   servers = [
-    'vmm.apis.tds.ldap'
+    'vmm.apis.tds.ldap',
+    'vmm.apis.empty'
   ]
   servers.each { server ->
     copy { 

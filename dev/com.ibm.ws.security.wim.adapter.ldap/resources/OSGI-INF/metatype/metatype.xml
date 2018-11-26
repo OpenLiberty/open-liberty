@@ -360,8 +360,6 @@
 		required="false" type="String" ibm:type="duration" default="1200s"/>
 	<AD id="sizeLimit" name="%sizeLimit" description="%sizeLimit.desc"
 		required="false" type="Integer" default="2000"/>
-	<AD id="serverTTLAttribute" name="%serverTTLAttribute" description="%serverTTLAttribute.desc"
-		required="false" type="String" />
 </OCD>
 <Designate factoryPid="com.ibm.ws.security.wim.adapter.ldap.attributeCache">
 	<Object ocdref="com.ibm.ws.security.wim.adapter.ldap.attributeCache"/>

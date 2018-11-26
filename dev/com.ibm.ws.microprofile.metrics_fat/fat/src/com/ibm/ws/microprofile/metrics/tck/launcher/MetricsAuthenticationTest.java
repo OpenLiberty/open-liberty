@@ -58,26 +58,22 @@ public class MetricsAuthenticationTest {
 
     @Test
     public void testMetrics10Auth() throws Exception {
-        addFeature(false);
+        addFeature("mpMetrics-1.0");
 
         testMetricsAuth();
     }
 
     @Test
     public void testMetrics11Auth() throws Exception {
-        addFeature(true);
+        addFeature("mpMetrics-1.1");
 
         testMetricsAuth();
     }
 
-    private void addFeature(boolean enable11) throws Exception {
+    private void addFeature(String feature) throws Exception {
         server.setMarkToEndOfLog();
 
-        if (enable11) {
-            MetricsAuthTestUtil.addFeature(server, "mpMetrics-1.1");
-        } else {
-            MetricsAuthTestUtil.addFeature(server, "mpMetrics-1.0");
-        }
+        MetricsAuthTestUtil.addFeature(server, feature);
 
         waitForMetricsEndpoint(server);
     }
@@ -105,19 +101,26 @@ public class MetricsAuthenticationTest {
 
         Thread.sleep(10000);
 
-        MetricsConnection authenticationNotSpecified = MetricsConnection.privateConnection(server);
+        MetricsConnection authenticationNotSpecified = MetricsConnection.connection_administratorRole(server);
         authenticationNotSpecified.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
 
-        //check that opening connection to /metrics with default authentication with invalid credentials returns HTTP 401 ERROR
+        // check that when the authenticated user is in the Viewer role, authorization is granted
+        MetricsConnection viewerRole200 = MetricsConnection.connection_viewerRole(server);
+        viewerRole200.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
 
-        MetricsConnection authenticationNotSpecifiedInvalidHeader = MetricsConnection.privateConnectionInvalidHeader(server);
-        authenticationNotSpecifiedInvalidHeader.expectedResponseCode(HttpURLConnection.HTTP_UNAUTHORIZED).getConnection();
+        // check that when the valid user is not in an authorized role, 403 FORBIDDEN is returned
+        MetricsConnection unauthorized403 = MetricsConnection.connection_unauthorized(server);
+        unauthorized403.expectedResponseCode(HttpURLConnection.HTTP_FORBIDDEN).getConnection();
+
+        //check that opening connection to /metrics with default authentication with invalid credentials returns HTTP 401 ERROR
+        MetricsConnection invalidUser401 = MetricsConnection.connection_invalidUser(server);
+        invalidUser401.expectedResponseCode(HttpURLConnection.HTTP_UNAUTHORIZED).getConnection();
 
         //2. When authentication is explicitly set to true in server.xml, metrics endpoint requires authentication,
         //  i.e. is private
 
         setMetricsAuthConfig(server, true);
-        MetricsConnection authenticationTrue = MetricsConnection.privateConnection(server);
+        MetricsConnection authenticationTrue = MetricsConnection.connection_administratorRole(server);
         authenticationTrue.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
 
         //3. When authentication is explicitly set to false in server.xml, metrics enpoint does not require authentication,
@@ -125,7 +128,7 @@ public class MetricsAuthenticationTest {
 
         setMetricsAuthConfig(server, false);
         waitForMetricsEndpoint(server);
-        MetricsConnection authenticationFalse = MetricsConnection.publicConnection(server);
+        MetricsConnection authenticationFalse = MetricsConnection.connection_unauthenticated(server);
         //Thread.sleep(5000);
         authenticationFalse.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
 
@@ -134,8 +137,9 @@ public class MetricsAuthenticationTest {
 
         setMetricsAuthConfig(server, null);
         waitForMetricsEndpoint(server);
-        MetricsConnection authenticationRemoved = MetricsConnection.privateConnection(server);
+        MetricsConnection authenticationRemoved = MetricsConnection.connection_administratorRole(server);
         authenticationRemoved.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
+
     }
 
 }

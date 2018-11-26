@@ -88,8 +88,8 @@ encode.option-desc.listCustom=\tWy\u015bwietl informacje o niestandardowym szyfr
 sslCert.desc=\tUtw\u00f3rz domy\u015blny certyfikat SSL na potrzeby konfiguracji serwera\n\
 \tlub klienta. 
 #Note to translator the word "createSSLCertificate" should not be translated
-sslCert.usage.options=\t{0} createSSLCertificate '{--server nazwa_serwera --client nazwa_klienta'}  \n\
-\t--password has\u0142o [opcje]
+sslCert.usage.options=\t{0} createSSLCertificate '{--server=nazwa_serwera |--client=nazwa_klienta'}\n\
+\t--password[=has\u0142o] [opcje]
 sslCert.required-key.server=\ \ \ \ --server=nazwa
 sslCert.required-desc.server=\tSerwer, dla kt\u00f3rego tworzony jest certyfikat.  Tego argumentu nie mo\u017cna     \n\
 \tu\u017cy\u0107, je\u015bli u\u017cyto argumentu --client.

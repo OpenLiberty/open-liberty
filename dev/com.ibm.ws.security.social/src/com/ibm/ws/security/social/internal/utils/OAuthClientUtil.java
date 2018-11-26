@@ -97,7 +97,8 @@ public class OAuthClientUtil {
             SSLSocketFactory sslSocketFactory,
             boolean isHostnameVerification,
             String authMethod,
-            String resources) throws SocialLoginException {
+            String resources, 
+            boolean useJvmProps ) throws SocialLoginException {
 
         if (tokenEndpoint == null || tokenEndpoint.isEmpty()) {
             throw new SocialLoginException("TOKEN_ENDPOINT_NULL_OR_EMPTY", null, new Object[0]);
@@ -133,7 +134,7 @@ public class OAuthClientUtil {
         }
 
         Map<String, Object> postResponseMap = httpUtil.postToEndpoint(tokenEndpoint, params,
-                clientId, clientSecret, null, sslSocketFactory, commonPostHeaders, isHostnameVerification, authMethod);
+                clientId, clientSecret, null, sslSocketFactory, commonPostHeaders, isHostnameVerification, authMethod, useJvmProps);
 
         String tokenResponse = httpUtil.extractTokensFromResponse(postResponseMap);
         if (tokenResponse == null) {
@@ -153,7 +154,7 @@ public class OAuthClientUtil {
     }
 
     public Map<String, Object> checkToken(String tokenEndpoint, String clientId, @Sensitive String clientSecret,
-            @Sensitive String accessToken, boolean isHostnameVerification, String authMethod, SSLSocketFactory sslSocketFactory) throws SocialLoginException {
+            @Sensitive String accessToken, boolean isHostnameVerification, String authMethod, SSLSocketFactory sslSocketFactory, boolean useJvmProps) throws SocialLoginException {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         if (accessToken != null) {
             params.add(new BasicNameValuePair("token", accessToken));
@@ -165,7 +166,7 @@ public class OAuthClientUtil {
         }
 
         Map<String, Object> postResponseMap = postToCheckTokenEndpoint(tokenEndpoint,
-                params, clientId, clientSecret, isHostnameVerification, authMethod, sslSocketFactory);
+                params, clientId, clientSecret, isHostnameVerification, authMethod, sslSocketFactory, useJvmProps);
 
         // String tokenResponse =
         // httpUtil.extractTokensFromResponse(postResponseMap);
@@ -175,13 +176,13 @@ public class OAuthClientUtil {
     }
 
     public Map<String, Object> getUserApi(String userApi, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory,
-            boolean isHostnameVerification, boolean needsSpecialHeader) throws Exception {
+            boolean isHostnameVerification, boolean needsSpecialHeader, boolean useJvmProps) throws Exception {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         if (accessToken != null) {
             params.add(new BasicNameValuePair("access_token", accessToken));
         }
 
-        Map<String, Object> getResponseMap = getFromUserApiEndpoint(userApi, params, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+        Map<String, Object> getResponseMap = getFromUserApiEndpoint(userApi, params, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, useJvmProps);
         return getResponseMap;
         // String userApiResponse =
         // httpUtil.extractTokensFromResponse(getResponseMap);
@@ -189,13 +190,13 @@ public class OAuthClientUtil {
         // return userApiResponse;
     }
 
-    public String getUserApiResponse(String userApi, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory, boolean isHostnameVerification, boolean needsSpecialHeader) throws Exception {
-        Map<String, Object> getResponseMap = getUserApi(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+    public String getUserApiResponse(String userApi, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory, boolean isHostnameVerification, boolean needsSpecialHeader, boolean useJvmProps) throws Exception {
+        Map<String, Object> getResponseMap = getUserApi(userApi, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, useJvmProps);
         return getJsonStringResponse(getResponseMap, userApi);
     }
 
     public JwtToken getUserApiAsJwtToken(String userApi, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory, boolean isHostnameVerification, SocialLoginConfig clientConfig) throws Exception {
-        Map<String, Object> getResponseMap = getUserApi(userApi, accessToken, sslSocketFactory, isHostnameVerification, clientConfig.getUserApiNeedsSpecialHeader());
+        Map<String, Object> getResponseMap = getUserApi(userApi, accessToken, sslSocketFactory, isHostnameVerification, clientConfig.getUserApiNeedsSpecialHeader(), clientConfig.getUseSystemPropertiesForHttpClientConnections());
         String jsonString = getJsonStringResponse(getResponseMap, userApi);
         if (jsonString != null) {
             return createJwtTokenFromJson(jsonString, clientConfig.getJwtRef());
@@ -373,9 +374,9 @@ public class OAuthClientUtil {
             @Sensitive String baPassword,
             SSLSocketFactory sslSocketFactory,
             boolean isHostnameVerification,
-            String authMethod)
+            String authMethod, boolean useJvmProps)
             throws Exception {
-        return httpUtil.postToEndpoint(tokenEnpoint, params, baUsername, baPassword, null, sslSocketFactory, commonHeaders, isHostnameVerification, authMethod);
+        return httpUtil.postToEndpoint(tokenEnpoint, params, baUsername, baPassword, null, sslSocketFactory, commonHeaders, isHostnameVerification, authMethod, useJvmProps);
     }
 
     Map<String, Object> getToTokenEndpoint(String tokenEnpoint,
@@ -384,9 +385,9 @@ public class OAuthClientUtil {
             @Sensitive String baPassword,
             SSLSocketFactory sslSocketFactory,
             boolean isHostnameVerification,
-            String authMethod)
+            String authMethod, boolean useJvmProps)
             throws Exception {
-        return httpUtil.getToEndpoint(tokenEnpoint, params, baUsername, baPassword, null, sslSocketFactory, commonHeaders, isHostnameVerification, authMethod);
+        return httpUtil.getToEndpoint(tokenEnpoint, params, baUsername, baPassword, null, sslSocketFactory, commonHeaders, isHostnameVerification, authMethod, useJvmProps);
     }
 
     Map<String, Object> postToCheckTokenEndpoint(String tokenEnpoint,
@@ -395,18 +396,20 @@ public class OAuthClientUtil {
             @Sensitive String baPassword,
             boolean isHostnameVerification,
             String authMethod,
-            SSLSocketFactory sslSocketFactory)
+            SSLSocketFactory sslSocketFactory, boolean useJvmProps)
             throws SocialLoginException {
         return httpUtil.postToIntrospectEndpoint(tokenEnpoint, params,
-                baUsername, baPassword, null, sslSocketFactory, commonHeaders, isHostnameVerification, authMethod);
+                baUsername, baPassword, null, sslSocketFactory, commonHeaders, isHostnameVerification, authMethod, useJvmProps);
     }
 
     Map<String, Object> getFromUserApiEndpoint(String userApiEndpoint,
             @Sensitive List<NameValuePair> params,
             @Sensitive String accessToken,
             SSLSocketFactory sslSocketFactory,
-            boolean isHostnameVerification, boolean needsSpecialHeader) throws ClientProtocolException, IOException, SocialLoginException {
-        return getFromEndpoint(userApiEndpoint, params, null, null, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader);
+            boolean isHostnameVerification,
+            boolean needsSpecialHeader,
+            boolean useJvmProps) throws ClientProtocolException, IOException, SocialLoginException {
+        return getFromEndpoint(userApiEndpoint, params, null, null, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, useJvmProps);
     }
 
     Map<String, Object> getFromEndpoint(String url,
@@ -415,7 +418,7 @@ public class OAuthClientUtil {
             @Sensitive String baPassword,
             @Sensitive String accessToken,
             SSLSocketFactory sslSocketFactory,
-            boolean isHostnameVerification, boolean needsSpecialHeader) throws ClientProtocolException, IOException, SocialLoginException {
+            boolean isHostnameVerification, boolean needsSpecialHeader, boolean useJvmProps) throws ClientProtocolException, IOException, SocialLoginException {
 
         SocialUtil.validateEndpointWithQuery(url);
 
@@ -445,7 +448,7 @@ public class OAuthClientUtil {
             request.addHeader("Authorization", "Bearer " + accessToken); // We need this for linkedIn, tested with Facebook also
         }
 
-        HttpClient httpClient = baUsername != null ? httpUtil.createHTTPClient(sslSocketFactory, url, isHostnameVerification, baUsername, baPassword) : httpUtil.createHTTPClient(sslSocketFactory, url, isHostnameVerification);
+        HttpClient httpClient = baUsername != null ? httpUtil.createHTTPClient(sslSocketFactory, url, isHostnameVerification, baUsername, baPassword, useJvmProps) : httpUtil.createHTTPClient(sslSocketFactory, url, isHostnameVerification, useJvmProps);
 
         HttpResponse responseCode = httpClient.execute(request);
 

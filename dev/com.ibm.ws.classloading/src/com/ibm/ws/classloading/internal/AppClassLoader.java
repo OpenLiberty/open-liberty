@@ -30,6 +30,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Enumeration;
@@ -47,6 +48,7 @@ import com.ibm.ws.artifact.url.WSJarURLConnection;
 import com.ibm.ws.classloading.ClassGenerator;
 import com.ibm.ws.classloading.internal.providers.Providers;
 import com.ibm.ws.classloading.internal.util.ClassRedefiner;
+import com.ibm.ws.classloading.internal.util.FeatureSuggestion;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -62,6 +64,9 @@ import com.ibm.wsspi.library.Library;
  * to discover the special methods:
  */
 public class AppClassLoader extends ContainerClassLoader implements SpringLoader {
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
     static final TraceComponent tc = Tr.register(AppClassLoader.class);
 
     enum SearchLocation {
@@ -259,7 +264,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             Class<?> clazz = null;
             Object token = ThreadIdentityManager.runAsServer();
             try {
-                synchronized (this) {
+                synchronized (getClassLoadingLock(name)) {
                     // This method may be invoked directly instead of via loadClass
                     // (e.g. when doing a "shallow" scan of the common library classloaders).
                     // So we first must check whether we've already defined/loaded the class.
@@ -288,10 +293,28 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             return findClassCommonLibraryClassLoaders(name);
         }
 
-        byte[] bytes = byteResourceInformation.getBytes();
+        byte[] bytes = transformClassBytes(byteResourceInformation.getBytes(), name);
+        
+
+        return definePackageAndClass(name, byteResourceInformation, bytes);
+    }
+
+    byte[] transformClassBytes(final byte[] originalBytes, String name) throws ClassNotFoundException {
+        byte[] bytes = originalBytes;
         for (ClassFileTransformer transformer : transformers) {
             try {
-                bytes = transformer.transform(this, name, null, config.getProtectionDomain(), bytes);
+                byte[] newBytes = transformer.transform(this, name, null, config.getProtectionDomain(), bytes);
+                if (newBytes != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        if (bytes == newBytes)
+                            Tr.debug(tc, "transformer " + transformer + " was invoked but returned an unaltered byte array");
+                        else
+                            Tr.debug(tc, "transformer " + transformer + " successfully transformed the class bytes");
+                    }
+                    bytes = newBytes;
+                } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "transformer " + transformer + " was invoked but did not alter the loaded bytes");
+                }
             } catch (IllegalClassFormatException ex) {
                 // FFDC
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -300,8 +323,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                 throw new ClassNotFoundException(name, ex);
             }
         }
-
-        return definePackageAndClass(name, byteResourceInformation, bytes);
+        return bytes;
     }
 
     private Class<?> definePackageAndClass(final String name, final ByteResourceInformation byteResourceInformation, byte[] bytes) throws ClassFormatError {
@@ -322,7 +344,8 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             cltc = getClassLoadingTraceComponent(DEFAULT_PACKAGE);
         }
 
-        ProtectionDomain pd = getClassSpecificProtectionDomain(name, byteResourceInformation.getResourceUrl());
+        URL resourcePath = byteResourceInformation.getResourceUrl();
+        ProtectionDomain pd = getClassSpecificProtectionDomain(name, resourcePath);
 
         Class<?> clazz = null;
         try {
@@ -339,9 +362,13 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                 Tr.debug(cltc, String.format("%s: [%s] [%s] [%s]", message, getKey(), loc, name));
             }
         }
+        if (hook != null && resourcePath != null && Arrays.equals(bytes, byteResourceInformation.getBytes())) {
+            hook.storeClass(resourcePath, clazz);
+        }
         return clazz;
     }
 
+    @Trivial // injected trace calls ProtectedDomain.toString() which requires privileged access
     private ProtectionDomain getClassSpecificProtectionDomain(final String name, final URL resourceUrl) {
         ProtectionDomain pd = config.getProtectionDomain();
         try {
@@ -437,21 +464,23 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     @Override
     @Trivial
     @FFDCIgnore(ClassNotFoundException.class)
-    protected final synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+    protected final Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         Object token = ThreadIdentityManager.runAsServer();
-        try {
-            return findOrDelegateLoadClass(name);
-        } catch (ClassNotFoundException e) {
-            // The class could not be found on the local class path or by
-            // delegating to parent/library class loaders.  Try to generate it.
-            Class<?> generatedClass = generateClass(name);
-            if (generatedClass != null)
-                return generatedClass;
+        synchronized (getClassLoadingLock(name)) {
+            try {
+                return findOrDelegateLoadClass(name);
+            } catch (ClassNotFoundException e) {
+                // The class could not be found on the local class path or by
+                // delegating to parent/library class loaders.  Try to generate it.
+                Class<?> generatedClass = generateClass(name);
+                if (generatedClass != null)
+                    return generatedClass;
 
-            // could not generate class - throw CNFE
-            throw e;
-        } finally {
-            ThreadIdentityManager.reset(token);
+                // could not generate class - throw CNFE
+                throw FeatureSuggestion.getExceptionWithSuggestion(e);
+            } finally {
+                ThreadIdentityManager.reset(token);
+            }
         }
     }
 

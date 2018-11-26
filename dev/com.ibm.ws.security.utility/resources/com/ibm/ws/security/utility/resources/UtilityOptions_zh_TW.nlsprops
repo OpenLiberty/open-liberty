@@ -90,8 +90,8 @@ encode.option-desc.listCustom=\t\u4ee5\u300cJavaScript \u7269\u4ef6\u8868\u793a\
 sslCert.desc=\t\u5efa\u7acb\u9810\u8a2d SSL \u6191\u8b49\u4ee5\u4f9b\u4f3a\u670d\u5668\u6216             \n\
 \t\u7528\u6236\u7aef\u914d\u7f6e\u4f7f\u7528\u3002
 #Note to translator the word "createSSLCertificate" should not be translated
-sslCert.usage.options=\t{0} createSSLCertificate '{--server servername|--client clientname'}  \n\
-\t--password password [\u9078\u9805]
+sslCert.usage.options=\t{0} createSSLCertificate '{--server=servername |--client=clientname'}\n\
+\t--password[=password] [options]
 sslCert.required-key.server=\ \ \ \ --server=name
 sslCert.required-desc.server=\t\u8981\u70ba\u5176\u5efa\u7acb\u6191\u8b49\u7684\u4f3a\u670d\u5668\u3002\
 \u5982\u679c\u4f7f\u7528 --client \u5f15\u6578\uff0c    \n\

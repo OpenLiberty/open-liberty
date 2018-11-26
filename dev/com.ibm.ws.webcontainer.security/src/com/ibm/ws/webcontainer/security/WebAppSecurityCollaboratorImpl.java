@@ -575,7 +575,9 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 performSecurityChecks(req, resp, receivedSubject, webSecurityContext);
             }
 
-            extraAuditData.put("HTTP_SERVLET_REQUEST", req);
+            if (req != null) {
+                extraAuditData.put("HTTP_SERVLET_REQUEST", req);
+            }
             //auditManager.setHttpServletRequest(req);
 
             performDelegation(servletName);
@@ -1611,7 +1613,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             List<String> requiredRoles = webRequest.getRequiredRoles();
 
             String defaultMethod = (String) req.getAttribute("com.ibm.ws.webcontainer.security.checkdefaultmethod");
-            if (defaultMethod == "TRACE" && requiredRoles.isEmpty()) {
+            if ("TRACE".equals(defaultMethod) && requiredRoles.isEmpty()) {
                 webReply = new DenyReply("Illegal request. Default implementation of TRACE not allowed.");
             }
         }

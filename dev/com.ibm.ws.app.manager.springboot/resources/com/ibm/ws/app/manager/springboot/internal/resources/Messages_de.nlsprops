@@ -80,3 +80,11 @@ warning.spring_config.ignored.session.useraction=Konfigurieren Sie das Sitzungsz
 error.wrong.spring.boot.version=CWWKC0263E: Die Spring Boot-Version {0} wird nicht unterst\u00fctzt. Es muss eine Spring Boot-Version aus dem Bereich {1} verwendet werden.
 error.wrong.spring.boot.version.explanation=Es wurde eine Spring Boot-Version gefunden, die vom Server nicht unterst\u00fctzt wird.
 error.wrong.spring.boot.version.useraction=Aktualisieren Sie die Spring Boot-Anwendung so, dass eine Spring Boot-Version aus dem vorausgesetzten Versionsbereich verwendet wird.
+
+warning.application.started.event.timeout=CWWKC0264W: Die {0}-Anwendung hat das {1}-Ereignis nicht in {2} Minuten ausgegeben.
+warning.application.started.event.timeout.explanation=Die Anwendung hat das Startereignis nicht in der erwarteten Zeit ausgegeben. Der Server ist m\u00f6glicherweise \u00fcberlastet oder die Anwendung ist sehr gro\u00df. Wenn die Anwendung als Teil eines Serverstarts startet, wird der Serverstart abgeschlossen, ohne auf den Anwendungsstart zu warten.
+warning.application.started.event.timeout.useraction=Wenn die Anwendung schlie\u00dflich startet, ist keine Aktion erforderlich. Startet die Anwendung nicht, suchen Sie in den Serverprotokollen, ob andere Nachrichten die Ursache f\u00fcr das Problem angeben.
+
+warning.java.version.not.supported=CWWKC0265W: Die aktuelle Java-Version {0} wird von der Spring Boot-Version {1} nicht unterst\u00fctzt. Aktualisieren Sie die Spring Boot-Version der Anwendung auf Version 2.0.x oder h\u00f6her.
+warning.java.version.not.supported.explanation=Java-Versionen, die h\u00f6her sind als Version 1.8 werden von den Spring Boot-Versionen 1.5.x und \u00e4lter nicht unterst\u00fctzt.
+warning.java.version.not.supported.useraction=Aktualisieren Sie die Spring Boot-Version der Anwendung auf Version 2.0.x oder h\u00f6her.

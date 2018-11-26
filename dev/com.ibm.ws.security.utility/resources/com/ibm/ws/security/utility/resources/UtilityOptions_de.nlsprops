@@ -95,8 +95,8 @@ sslCert.desc=\tErstellt ein SSL-Standardzertifikat f\u00fcr die Server- \n\
 \toder Clientkonfiguration.
 
 #Note to translator the word "createSSLCertificate" should not be translated
-sslCert.usage.options=\t{0} createSSLCertificate '{--server Servername|--client Clientname'}  \n\
-\t--password Kennwort [Optionen]
+sslCert.usage.options=\t{0} createSSLCertificate '{--server=Servername |--client=Clientname'}\n\
+\t--password[=Kennwort] [Optionen]
 sslCert.required-key.server=\ \ \ \ --server=Name
 sslCert.required-desc.server=\tServer, f\u00fcr den das Zertifikat erstellt werden soll. \
 Dieses Argument kann nicht verwendet werden, wenn\n\

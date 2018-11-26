@@ -82,8 +82,7 @@ dependencies {
 	'org.bouncycastle:bcprov-jdk15on:1.56',
 	'org.bouncycastle:bcmail-jdk15on:1.56',
 	'org.bouncycastle:bcpkix-jdk15on:1.56',
-	'org.skyscreamer:jsonassert:1.2.3',
-	'xerces:xerces:2.4.0'
+	'org.skyscreamer:jsonassert:1.2.3'
 }
 
 task addThirdPartyJerseyClient(type: Copy) {

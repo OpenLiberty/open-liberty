@@ -53,3 +53,7 @@ SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.useraction=Geben Sie nur ein einzige
 SEC_TOO_MANY_PRINCIPALS=CWWKS0010E: Beim Abrufen des Caller-Principals wurde festgestellt, dass ein Caller-Subjekt mehrere Principals des Typs WSPrincipal hat. Es ist nur ein einziger WSPrincipal pro Subjekt zul\u00e4ssig. Die Namen der WSPrincipals sind {}.
 SEC_TOO_MANY_PRINCIPALS.explanation=Das Caller-Subjekt enth\u00e4lt zu viele Principals des Typs WSPrincipal. Es wird nur ein einziger Principal dieses Typs unterst\u00fctzt.
 SEC_TOO_MANY_PRINCIPALS.useraction=\u00dcberpr\u00fcfen Sie die Anwendung, um festzustellen, warum das Subjekt mehrere WSPrincipals enth\u00e4lt.
+
+SPNEGO_API_IS_NOT_SUPPORT=CWWKS0011E: Die {0}-SPNEGO-API wird f\u00fcr Version {0} der Java-Laufzeit {1} nicht unterst\u00fctzt.
+SPNEGO_API_IS_NOT_SUPPORT.explanation=Die SPNEGO-API kann mit dem Java-Laufzeitanbieter und der zugeh\u00f6rigen Version nicht verwendet werden.
+SPNEGO_API_IS_NOT_SUPPORT.useraction=Verwenden Sie den Java-Anbieter mit der Version, die von den SPNEGO-APIs unterst\u00fctzt wird.

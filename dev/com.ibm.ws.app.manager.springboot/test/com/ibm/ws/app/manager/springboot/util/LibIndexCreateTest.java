@@ -13,9 +13,12 @@ package com.ibm.ws.app.manager.springboot.util;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -66,13 +69,14 @@ public class LibIndexCreateTest {
         File thinJar = workingArea.newFile("thinJar.jar");
         File applicationLibs = workingArea.newFolder("AppLibs");
 
-        SpringBootThinUtil util = new TestThinUtil(createSourceFatJar(null, null), thinJar, applicationLibs);
         Stack<String> hashes = new Stack<String>();
         for (String s : Arrays.asList("aa003", "aa002", "aa001")) {
             hashes.push(s);
         }
-        ((TestThinUtil) util).hashValues = hashes;
-        util.execute();
+        try (SpringBootThinUtil util = new TestThinUtil(createSourceFatJar(null, null), thinJar, applicationLibs)) {
+            ((TestThinUtil) util).hashValues = hashes;
+            util.execute();
+        }
         //verify thin jar contents;
         HashSet<String> expectedThinJarContents = new HashSet<String>() {
             {
@@ -116,13 +120,14 @@ public class LibIndexCreateTest {
         File thinJar = workingArea.newFile("thinJar.jar");
         File applicationLibsDir = workingArea.newFolder("AppLibs");
 
-        SpringBootThinUtil util = new TestThinUtil(createSourceFatJar(null, null), thinJar, applicationLibsDir);
         Stack<String> hashes = new Stack<String>();
         for (String s : Arrays.asList("bb001", "aa001", "aa001")) {
             hashes.push(s);
         }
-        ((TestThinUtil) util).hashValues = hashes;
-        util.execute();
+        try (SpringBootThinUtil util = new TestThinUtil(createSourceFatJar(null, null), thinJar, applicationLibsDir)) {
+            ((TestThinUtil) util).hashValues = hashes;
+            util.execute();
+        }
         //verify thin jar contents;
         HashSet<String> expectedThinJarContents = new HashSet<String>() {
             {
@@ -196,17 +201,38 @@ public class LibIndexCreateTest {
 
         File fatJar = workingArea.newFile("fat.jar");
         JarOutputStream fatJarStream = new JarOutputStream(new FileOutputStream(fatJar), manifest);
+        byte i = 0, j = 0;
         for (String filePath : filePaths) {
             ZipEntry ze = new ZipEntry(filePath);
             fatJarStream.putNextEntry(ze);
             if (!filePath.endsWith(sep)) {
-                //if this is an actual file entry write some data. The content is irrelevant
-                // to the test. We only care about the structure of the zip file.
-                fatJarStream.write(new byte[] { 'H', 'e', 'l', 'o' }, 0, 4);
+                if (filePath.endsWith(".jar")) {
+                    byte[] libContent = createBootInfLibContent(manifest, j++);
+                    try (InputStream is = new ByteArrayInputStream(libContent)) {
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = is.read(buffer)) != -1) {
+                            fatJarStream.write(buffer, 0, bytesRead);
+                        }
+                    }
+                } else {
+                    // If this is an actual file entry write some data. The content is not
+                    // relevant to the test. We only care about the structure of the zip file.
+                    fatJarStream.write(new byte[] { 'H', 'e', 'l', 'l', 'o', i++ }, 0, 6);
+                }
             }
         }
         fatJarStream.close();
         return fatJar;
+    }
+
+    private byte[] createBootInfLibContent(Manifest manifest, byte j) throws IOException, FileNotFoundException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try (JarOutputStream libJarStream = new JarOutputStream(out, manifest)) {
+            libJarStream.putNextEntry(new ZipEntry("hello.txt"));
+            libJarStream.write(new byte[] { 'h', 'e', 'l', 'l', '0', j }, 0, 6);
+        }
+        return out.toByteArray();
     }
 
     //verify that a passed in jarfile contains EXACTLY the set of expected entries.

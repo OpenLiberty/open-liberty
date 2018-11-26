@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.test.common.CommonTestClass;
 
 import componenttest.topology.impl.LibertyServer;
@@ -83,6 +84,7 @@ public class ServerTrackerTest extends CommonTestClass {
             assertEquals("Server size did not match expected value.", 1, servers.size());
             LibertyServer addedServer = servers.iterator().next();
             assertNull("Single entry should have been null but was: " + addedServer, addedServer);
+
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -97,6 +99,12 @@ public class ServerTrackerTest extends CommonTestClass {
     @Test
     public void test_addServer_addOneServer() {
         try {
+            mockery.checking(new Expectations() {
+                {
+                    one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                }
+            });
+
             tracker.addServer(server1);
 
             Set<LibertyServer> servers = tracker.getServers();
@@ -116,6 +124,12 @@ public class ServerTrackerTest extends CommonTestClass {
     @Test
     public void test_addServer_addSameServerTwice() {
         try {
+            mockery.checking(new Expectations() {
+                {
+                    exactly(2).of(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                }
+            });
+
             tracker.addServer(server1);
             tracker.addServer(server1);
 
@@ -136,6 +150,14 @@ public class ServerTrackerTest extends CommonTestClass {
     @Test
     public void test_addServer_addMultipleServers() {
         try {
+            mockery.checking(new Expectations() {
+                {
+                    one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                    one(server2).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                    one(server3).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                }
+            });
+
             tracker.addServer(server1);
             tracker.addServer(server2);
             tracker.addServer(server3);
@@ -193,6 +215,12 @@ public class ServerTrackerTest extends CommonTestClass {
     @Test
     public void test_stopAllServers_oneServer() {
         try {
+            mockery.checking(new Expectations() {
+                {
+                    one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                }
+            });
+
             tracker.addServer(server1);
 
             mockery.checking(new Expectations() {
@@ -217,6 +245,12 @@ public class ServerTrackerTest extends CommonTestClass {
     @Test
     public void test_stopAllServers_oneServerExceptionThrown() {
         try {
+            mockery.checking(new Expectations() {
+                {
+                    one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                }
+            });
+
             tracker.addServer(server1);
 
             mockery.checking(new Expectations() {
@@ -246,6 +280,14 @@ public class ServerTrackerTest extends CommonTestClass {
     @Test
     public void test_stopAllServers_multipleServers() {
         try {
+            mockery.checking(new Expectations() {
+                {
+                    one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                    one(server2).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                    one(server3).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                }
+            });
+
             tracker.addServer(server1);
             tracker.addServer(server2);
             tracker.addServer(server3);
@@ -274,6 +316,14 @@ public class ServerTrackerTest extends CommonTestClass {
     @Test
     public void test_stopAllServers_multipleServersExceptionsThrown() {
         try {
+            mockery.checking(new Expectations() {
+                {
+                    one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                    one(server2).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                    one(server3).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                }
+            });
+
             tracker.addServer(server1);
             tracker.addServer(server2);
             tracker.addServer(server3);

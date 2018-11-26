@@ -82,7 +82,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed</artifactId>
-            <version>1.0.2</version> 
+            <version>1.0.3</version> 
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -123,6 +123,7 @@
                 <version>2.17</version>
                 <configuration>
                     <systemPropertyVariables>
+                        <argLine>-Dfile.encoding=UTF-8</argLine> <!-- Needed for ZOS becuase arquillian calls string.getBtytes() -->
                         <wlp>${wlp}</wlp>
                         <tck_server>${tck_server}</tck_server>
                         <tck_port>${tck_port}</tck_port>

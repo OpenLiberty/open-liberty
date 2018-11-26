@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.eclipse.equinox.region.RegionDigraph;
@@ -58,6 +59,7 @@ import org.osgi.service.url.URLStreamHandlerService;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.classloading.ClassGenerator;
 import com.ibm.ws.classloading.ClassLoaderIdentifierService;
 import com.ibm.ws.classloading.LibertyClassLoadingService;
@@ -150,6 +152,11 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
      * For converting type/app/module/comp to a metadata ID under getClassLoaderIdentifier.
      */
     protected MetaDataIdentifierService metadataIdentifierService;
+
+    /**
+     * reference to the global library - primarily used for dump introspector output
+     */
+    private final AtomicReference<Library> globalSharedLibrary = new AtomicReference<>();
 
     @Activate
     protected void activate(ComponentContext cCtx, Map<String, Object> properties) {
@@ -427,6 +434,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
         }
     }
 
+    @Trivial // injected trace calls ProtectedDomain.toString() which requires privileged access
     public Map<String, ProtectionDomain> getProtectionDomainMap() {
         return protectionDomainMap;
     }
@@ -489,7 +497,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
             @Override
             protected void update() {
                 Object cl = get();
-                if (cl instanceof AppClassLoader)
+                if (cl instanceof AppClassLoader && aclStore != null)
                     aclStore.remove((AppClassLoader) cl);
                 deregister();
             }
@@ -695,8 +703,13 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
      * @see com.ibm.wsspi.classloading.ClassLoadingService#setSharedLibraryProtectionDomains(java.util.Map)
      */
     @Override
+    @Trivial // injected trace calls ProtectedDomain.toString() which requires privileged access
     public void setSharedLibraryProtectionDomains(Map<String, ProtectionDomain> protectionDomainMap) {
         this.protectionDomainMap = protectionDomainMap;
+    }
+
+    public void setGlobalSharedLibrary(Library gsl) {
+        this.globalSharedLibrary.set(gsl);
     }
 
     /*
@@ -745,6 +758,31 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
             out.println("  " + b.getSymbolicName());
             for (GatewayClassLoader gcl : entry.getValue()) {
                 out.println("    " + gcl.getBundle().getSymbolicName() + " " + gcl.getApiTypeVisibility());
+            }
+        }
+
+        out.println();
+        out.println();
+
+        Library gsl = globalSharedLibrary.get();
+        if (gsl == null) {
+            out.println("Global Shared Library not configured");
+        } else {
+            out.println("Global Shared Library contents:");
+            out.println("  filesets:");
+            for (Fileset fileset : gsl.getFilesets()) {
+                String dir = fileset.getDir();
+                for (File file : fileset.getFileset()) {
+                    out.println("    " + dir + "  " + file.getPath());
+                }
+            }
+            out.println("  folders:");
+            for (File folder : gsl.getFolders()) {
+                out.println("    " + folder.getAbsolutePath());
+            }
+            out.println("  files:");
+            for (File file : gsl.getFiles()) {
+                out.println("    " + file.getAbsolutePath());
             }
         }
 

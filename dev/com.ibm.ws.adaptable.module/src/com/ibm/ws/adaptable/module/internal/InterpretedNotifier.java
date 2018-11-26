@@ -20,7 +20,6 @@ import com.ibm.ws.adaptable.module.structure.StructureHelper;
 import com.ibm.wsspi.adaptable.module.DefaultNotification;
 import com.ibm.wsspi.adaptable.module.InterpretedContainer;
 import com.ibm.wsspi.adaptable.module.Notifier;
-import com.ibm.wsspi.adaptable.module.Notifier.NotificationListener;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactNotifier;
 import com.ibm.wsspi.artifact.ArtifactNotifier.ArtifactNotification;
@@ -71,7 +70,7 @@ public class InterpretedNotifier implements Notifier {
 
     /**
      * Construct a new instance of this notifier.
-     * 
+     *
      * @param rootContainer This is the root container that this interpreted notifier acts on. Note that this may be a fake root because of the structure helper
      * @param rootDelegate This is the ArtifactContainer that is at the root of the interpreted container. Note that this may not return <code>true</code> for
      *            {@link ArtifactContainer#isRoot()} because it is a fake root due to the structure helper
@@ -165,12 +164,15 @@ public class InterpretedNotifier implements Notifier {
      * part of the path up to the root and if the notification is fired within a child fake root then it will change it to a modification on the fake root itself rather than its
      * internals.
      */
-    private class CorrectInterpretedPathListener implements NotificationListener {
+    private class CorrectInterpretedPathListener implements com.ibm.ws.adaptable.module.NotifierExtension.NotificationListener {
 
         /** This is the listener to callback to with the corrected paths */
         private final NotificationListener listener;
         /** This is the length of the path in the real root that this fake root is at. Will be <code>null</code> if {@link #isNotifierForFakeRoot} is <code>false</code>. */
         private final int lengthOfPathInRoot;
+
+        /** The id associated with the registered notification listener */
+        private String id;
 
         /**
          * @param listener
@@ -179,6 +181,11 @@ public class InterpretedNotifier implements Notifier {
             super();
             this.listener = listener;
             this.lengthOfPathInRoot = (isNotifierForFakeRoot) ? pathInRealRoot.length() : -1;
+
+            // If the listener has an Id, save it.
+            if (listener instanceof com.ibm.ws.adaptable.module.NotifierExtension.NotificationListener) {
+                id = ((com.ibm.ws.adaptable.module.NotifierExtension.NotificationListener) listener).getId();
+            }
         }
 
         /** {@inheritDoc} */
@@ -201,7 +208,7 @@ public class InterpretedNotifier implements Notifier {
         /**
          * This method will correct the paths in the supplied <code>notification</code> so that they are interpreted. It will change them so they are absolute paths to any fake
          * root this interpreted notifier is working on and if any of the paths are events that happen in a fake root then it will add them to the <code>changedFakeRoots</code>.
-         * 
+         *
          * @param notification The notification to correct the paths on
          * @param changedFakeRoots A set of child fake root paths that should be added to if any of the paths in the notification have happened within a fake root
          * @return A new notification with the corrected paths and all of the child fake roots removed. The container will be the rootContainer for this notifier
@@ -230,7 +237,7 @@ public class InterpretedNotifier implements Notifier {
                      * The notification is coming from a fake root. We therefore need to send out a notification saying that fake root has changed rather than stating what part
                      * inside that fake root has changed. To do this we find the fake root. There is an isRoot method on the structure helper but the artifact container not
                      * actually exist (it could be a delete notification) so we can't use it. Instead we need to walk up the string paths testing isValid.
-                     * 
+                     *
                      * Currently we have the "correctedPath" that is the absolute path from this notifiers root (which may itself be fake!). First split this path into it's
                      * constituent parts, as it starts with a "/" the first split will be an empty string which should be ignored.
                      */
@@ -265,6 +272,15 @@ public class InterpretedNotifier implements Notifier {
             Notification interpretedNotification = new DefaultNotification(rootContainer, interpretedPaths);
             return interpretedNotification;
         }
-    }
 
+        /**
+         * Returns the associate callback listener's ID.
+         *
+         * @return The associate callback listener's ID.
+         */
+        @Override
+        public String getId() {
+            return id;
+        }
+    }
 }

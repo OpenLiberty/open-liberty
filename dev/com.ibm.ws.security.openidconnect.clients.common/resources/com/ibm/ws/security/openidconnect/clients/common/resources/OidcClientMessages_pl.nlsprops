@@ -180,5 +180,12 @@ JWK_RETRIEVE_FAILED=CWWKS1747E: Klucz JWK (JSON Web Key) nie zosta\u0142 zwr\u00
 JWK_RETRIEVE_FAILED.explanation=Klucza JWK (JSON Web Key) nie mo\u017cna zwr\u00f3ci\u0107 z podanego adresu URL. Adres URL mo\u017ce by\u0107 niepoprawny, adres URL mo\u017ce nie by\u0107 skonfigurowany pod k\u0105tem zwracania klucza JWK, odpowied\u017a z adresu URL mo\u017ce by\u0107 pusta lub wyst\u0105pi\u0142 nieznany b\u0142\u0105d.
 JWK_RETRIEVE_FAILED.useraction=Sprawd\u017a, czy adres URL jest poprawnie sformatowany i okre\u015bla po\u0142o\u017cenie obs\u0142uguj\u0105ce zwracanie kluczy JWK (JSON Web Key). Aby uzyska\u0107 wi\u0119cej informacji, sprawd\u017a kod statusu i tre\u015b\u0107 odpowiedzi.
 
+USERINFO_RETREIVE_FAILED=CWWKS1748E: Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia z adresem URL informacji o u\u017cytkowniku [{0}]. Status odpowiedzi: [{1}], zwr\u00f3cona tre\u015b\u0107: [{2}].
+USERINFO_RETREIVE_FAILED.explanation=Nie mo\u017cna uzyska\u0107 danych informacji o u\u017cytkowniku z podanego adresu URL. Adres URL mo\u017ce by\u0107 niepoprawny, podany znacznik dost\u0119pu mo\u017ce by\u0107 niepoprawny, odpowied\u017a z adresu URL mo\u017ce by\u0107 pusta lub wyst\u0105pi\u0142 nieznany b\u0142\u0105d.
+USERINFO_RETREIVE_FAILED.useraction=Sprawd\u017a, czy adres URL jest poprawnie sformatowany i okre\u015bla po\u0142o\u017cenie zwracaj\u0105ce dane informacji o u\u017cytkowniku. Aby uzyska\u0107 wi\u0119cej informacji, sprawd\u017a kod statusu i tre\u015b\u0107 odpowiedzi.
+
+USERINFO_INVALID=CWWKS1749E: Dane informacji o u\u017cytkowniku [{0}] s\u0105 niepoprawne, poniewa\u017c \u017c\u0105danie sub nie jest zgodne z \u017c\u0105daniem sub znacznika identyfikatora [{1}].
+USERINFO_INVALID.explanation=\u017b\u0105danie sub danych informacji o u\u017cytkowniku musi by\u0107 zgodne z \u017c\u0105daniem sub znacznika identyfikatora, ale nie jest. 
+USERINFO_INVALID.useraction=Upewnij si\u0119, \u017ce dostawca OpenID Connect generuje poprawne dane informacji o u\u017cytkowniku.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 

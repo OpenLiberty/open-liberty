@@ -145,19 +145,18 @@ public class ExpectationTest extends CommonExpectationTestClass {
         }
     }
 
-    /************************************** createJsonExpectation **************************************/
+    /************************************** createExceptionExpectation **************************************/
 
     @Test
-    public void test_createJsonExpectation_nullArgs() {
+    public void test_createExceptionExpectation_nullArgs() {
         try {
             String testAction = null;
-            String searchForKey = null;
-            String searchForVal = null;
+            String searchForValue = null;
             String failureMsg = null;
 
-            Expectation exp = Expectation.createJsonExpectation(testAction, searchForKey, searchForVal, failureMsg);
+            Expectation exp = Expectation.createExceptionExpectation(testAction, searchForValue, failureMsg);
 
-            verifyExpectationValues(exp, testAction, Constants.JSON_OBJECT, null, searchForKey, searchForVal, failureMsg);
+            verifyExpectationValues(exp, testAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, null, searchForValue, failureMsg);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -165,13 +164,16 @@ public class ExpectationTest extends CommonExpectationTestClass {
     }
 
     @Test
-    public void test_createJsonExpectation() {
+    public void test_createExceptionExpectation() {
         try {
-            String searchForKey = "searchForKey";
 
-            Expectation exp = Expectation.createJsonExpectation(TEST_ACTION, searchForKey, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+            String testAction = "testAction";
+            String searchForValue = "I'm looking for this value.";
+            String failureMsg = "Some failure message.";
 
-            verifyExpectationValues(exp, TEST_ACTION, Constants.JSON_OBJECT, null, searchForKey, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+            Expectation exp = Expectation.createExceptionExpectation(testAction, searchForValue, failureMsg);
+
+            verifyExpectationValues(exp, testAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, null, searchForValue, failureMsg);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

@@ -343,21 +343,20 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     }
 
     /**
-     * Creates a ConnectionFactory. The created ConnectionFactory will use the application server
-     * connection manager passed in as a parameter to manage the connections.
+     * Creates a javax.sql.DataSource that uses the application server provided
+     * connection manager to manage its connections.
      * 
-     * @param ConnectionManager connMgr - An application server ConnectionManager.
-     * @return a new instance of WSJdbcDataSource.
-     * @exception ResourceException
+     * @param ConnectionManager connMgr - An application server provided ConnectionManager.
+     * @return a new instance of WSJdbcDataSource or a subclass of it pertaining to a particular JDBC spec level.
      */
-    public final Object createConnectionFactory(ConnectionManager connMgr)
-                    throws ResourceException {
+    @Override
+    public final DataSource createConnectionFactory(ConnectionManager connMgr) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); 
 
         if (isTraceOn && tc.isEntryEnabled()) 
             Tr.entry(this, tc, "createConnectionFactory", connMgr); 
 
-        Object connFactory = new WSJdbcDataSource(this, (WSConnectionManager)connMgr);
+        DataSource connFactory = jdbcRuntime.newDataSource(this, connMgr);
 
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(this, tc, "createConnectionFactory", connFactory); 
@@ -982,35 +981,17 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         try {
             conn = AccessController.doPrivileged(new PrivilegedExceptionAction<Connection>() {
                 public Connection run() throws Exception {
-                    // OracleDataSource.getConnection(Properties)
-                    Properties oracleProps = cri.getOracleProperties();
-                    if (oracleProps != null)
-                        try {
-                            if (isTraceOn && tc.isDebugEnabled())
-                                Tr.debug(this, tc, "obtain Oracle data source with properties:", oracleProps);
-                            final Object ods = WSJdbcTracer.getImpl(dataSourceOrDriver);
-                            Class<?> dsClass = null;
-                            if(System.getSecurityManager() == null) {
-                                dsClass = jdbcDriverLoader.loadClass("oracle.jdbc.pool.OracleDataSource");
-                            } else 
-                                dsClass = AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
-                                    @Override
-                                    public Class<?> run() throws ClassNotFoundException {
-                                        return jdbcDriverLoader.loadClass("oracle.jdbc.pool.OracleDataSource");
-                                    }
-                                }); 
-                            Method method = dsClass.getMethod("getConnection", Properties.class);
-                            return (Connection) method.invoke(ods, oracleProps.clone());
-                        } catch (InvocationTargetException x) {
-                            throw x.getCause() instanceof Exception ? (Exception) x.getCause() : x;
-                        }
-
-                    if (dataSourceOrDriver instanceof XADataSource) {
+                    boolean buildConnection = cri.ivShardingKey != null || cri.ivSuperShardingKey != null;
+                    if (!buildConnection && dataSourceOrDriver instanceof XADataSource) {
+                        // TODO this code path is very suspect, and so we are not continuing it for connection builder path.
+                        // Why convert what was requested to be a DataSource to XADataSource?
+                        // And then it also leaks the XAConnection. It is not tracked, so it never gets closed! 
                         return user == null ? ((XADataSource) dataSourceOrDriver).getXAConnection().getConnection()
-                                        : ((XADataSource) dataSourceOrDriver).getXAConnection(user, pwd).getConnection();
+                                            : ((XADataSource) dataSourceOrDriver).getXAConnection(user, pwd).getConnection();
                     } else {
-                        return user == null ? ((DataSource) dataSourceOrDriver).getConnection()
-                                        : ((DataSource) dataSourceOrDriver).getConnection(user, pwd);
+                        return buildConnection ? jdbcRuntime.buildConnection((DataSource) dataSourceOrDriver, user, pwd, cri)
+                                        : user == null ? ((DataSource) dataSourceOrDriver).getConnection()
+                                                        : ((DataSource) dataSourceOrDriver).getConnection(user, pwd);
                     }
                 }
             });
@@ -1114,7 +1095,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * 
      * @return the underlying DataSource, null if a Driver is used
      */
-    public CommonDataSource getUnderlyingDataSource() throws SQLException
+    public CommonDataSource getUnderlyingDataSource()
     {
         if(Driver.class.equals(type))
             return null;

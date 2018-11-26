@@ -89,17 +89,6 @@ public class Http2LiteModeTests extends FATServletClient {
                                  testName);
     }
 
-    public void runStressTest() throws Exception {
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "runTest()", "Running test with iterations of: " + Utils.STRESS_ITERATIONS);
-        }
-
-        FATServletClient.runTest(runtimeServer,
-                                 "H2FATDriver/H2FATDriverServlet?hostName=" + server.getHostname() + "&port=" + server.getHttpSecondaryPort() + "&iterations="
-                                                + Utils.STRESS_ITERATIONS + "&testdir=" + Utils.TEST_DIR,
-                                 testName);
-    }
-
     @Test
     public void testUpgradeHeaderFollowedBySettingsFrame() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
@@ -160,10 +149,11 @@ public class Http2LiteModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
-    public void testHeaderAndDataPost() throws Exception {
-        runTest(defaultServletPath, testName.getMethodName());
-    }
+    // Currently in Http2FullTracingTests
+    //@Test
+    //public void testHeaderAndDataPost() throws Exception {
+    //    runTest(defaultServletPath, testName.getMethodName());
+    //}
 
     /**
      * Test Coverage: Client sends two HTTP/2 Requests on two HTTP/2 Streams.
@@ -393,10 +383,11 @@ public class Http2LiteModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
-    public void testInvalidPaddingValue() throws Exception {
-        runTest(dataServletPath, testName.getMethodName());
-    }
+    // Move to trace bucket for build break diagnosis 257732
+    //@Test
+    //public void testInvalidPaddingValue() throws Exception {
+    //    runTest(dataServletPath, testName.getMethodName());
+    //}
 
     // Move to trace bucket to debug build break @Test
     //public void testDataFrameExceedingMaxFrameSize() throws Exception {

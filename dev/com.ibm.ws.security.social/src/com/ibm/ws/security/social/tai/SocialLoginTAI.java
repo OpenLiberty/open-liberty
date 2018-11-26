@@ -479,6 +479,7 @@ public class SocialLoginTAI implements TrustAssociationInterceptor, UnprotectedR
 
         // call the oidc code.
         ProviderAuthenticationResult presult = oidccau.authenticate(request, response, clientConfig);
+        discoverOPAgain(presult, clientConfig);
         if (presult.getStatus().compareTo(AuthResult.REDIRECT_TO_PROVIDER) == 0) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.event(tc, "redirecting to provider, javascript redirect supported = " + clientConfig.isClientSideRedirect());
@@ -510,19 +511,36 @@ public class SocialLoginTAI implements TrustAssociationInterceptor, UnprotectedR
         try {
             aca.createJwtUserApiResponseAndIssuedJwtFromIdToken(idToken);
             TAISubjectUtils subjectUtils = getTAISubjectUtils(aca);
+            // if have userinfo data, put it in the UserProfile object
+            String userInfo = (String) presult.getCustomProperties().get(com.ibm.ws.security.openidconnect.common.Constants.USERINFO_STR);
+            if (userInfo != null) {
+                subjectUtils.setUserInfo(userInfo);
+            }       
             authnResult = subjectUtils.createResult(response, clientConfig);
         } catch (Exception e) {
             Tr.error(tc, "AUTH_CODE_ERROR_CREATING_RESULT", new Object[] { clientConfig.getUniqueId(), e.getLocalizedMessage() });
             return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
         }
-
+        
         taiWebUtils.restorePostParameters(request); // did oidc already do this?
 
         return authnResult;
 
     }
 
-    /**
+    private void discoverOPAgain(ProviderAuthenticationResult presult, OidcLoginConfigImpl clientConfig) {
+		
+    	if (clientConfig.isDiscoveryInUse()) {
+    		if (presult.getStatus().compareTo(AuthResult.SUCCESS) == 0) {
+    			clientConfig.setNextDiscoveryTime();
+    		} else if (System.currentTimeMillis() > clientConfig.getNextDiscoveryTime()) {
+    			clientConfig.handleDiscoveryEndpoint(clientConfig.getDiscoveryEndpointUrl());
+    		}
+    	}
+		
+	}
+
+	/**
      * Check for some things that will always fail and emit message about bad config.
      * Do here so 1) classic oidc messages don't change and 2) put error message closer in log to failure.
      *
