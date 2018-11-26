@@ -19,7 +19,7 @@
 		<feature>appSecurity-3.0</feature>
 		<feature>cdi-2.0</feature>
 		<feature>servlet-4.0</feature>
-		<feature>mpFaultTolerance-1.1</feature>
+		<feature>mpFaultTolerance-2.0</feature>
 	</featureManager>
 
     <logging traceSpecification="Transaction=all=enabled:FAULTTOLERANCE=all=enabled"/>

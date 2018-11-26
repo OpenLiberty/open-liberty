@@ -10,14 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.test;
 
-import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -27,7 +23,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.eclipse.microprofile.faulttolerance.ExecutionContext;
 import org.eclipse.microprofile.faulttolerance.exceptions.BulkheadException;
 import org.junit.Test;
 
@@ -36,7 +31,6 @@ import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.microprofile.faulttolerance.spi.ExecutorBuilder;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProvider;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
-import com.ibm.ws.microprofile.faulttolerance.test.util.AsyncTestFunction;
 import com.ibm.ws.microprofile.faulttolerance.test.util.TestTask;
 
 /**
@@ -204,89 +198,7 @@ public class BulkheadTest extends AbstractFTTest {
     }
 
     @Test
-    public void testAsyncBulkhead() throws InterruptedException, ExecutionException, TimeoutException {
-        BulkheadPolicy bulkhead = FaultToleranceProvider.newBulkheadPolicy();
-        bulkhead.setMaxThreads(20);
-        bulkhead.setQueueSize(20);
-
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
-        builder.setBulkheadPolicy(bulkhead);
-
-        Executor<Future<String>> executor = builder.buildAsync(Future.class);
-
-        Future<String>[] futures = new Future[10];
-        try {
-            for (int i = 0; i < 10; i++) {
-                String id = "testAsyncBulkhead" + i;
-                AsyncTestFunction callable = new AsyncTestFunction(Duration.ofMillis(2000), id);
-                ExecutionContext context = executor.newExecutionContext(id, (Method) null, id);
-                Future<String> future = executor.execute(callable, context);
-                assertFalse(future.isDone());
-                futures[i] = future;
-            }
-
-            for (int i = 0; i < 10; i++) {
-                String data = futures[i].get(2300, TimeUnit.MILLISECONDS);
-                assertEquals("testAsyncBulkhead" + i, data);
-            }
-        } finally {
-            for (int i = 0; i < 10; i++) {
-                Future<String> future = futures[i];
-                if (future != null && !future.isDone()) {
-                    future.cancel(true);
-                }
-            }
-        }
-    }
-
-    @Test
-    public void testAsyncBulkheadQueueFull() throws InterruptedException, ExecutionException, TimeoutException {
-        BulkheadPolicy bulkhead = FaultToleranceProvider.newBulkheadPolicy();
-        bulkhead.setMaxThreads(2);
-        bulkhead.setQueueSize(2);
-
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
-        builder.setBulkheadPolicy(bulkhead);
-
-        Executor<Future<String>> executor = builder.buildAsync(Future.class);
-
-        Future<String>[] futures = new Future[5];
-        try {
-            for (int i = 0; i < 4; i++) {
-                String id = "testAsyncBulkheadQueueFull" + i;
-                ExecutionContext context = executor.newExecutionContext(id, (Method) null, id);
-                AsyncTestFunction callable = new AsyncTestFunction(Duration.ofMillis(2000), id);
-                futures[i] = executor.execute(callable, context);
-                System.out.println(System.currentTimeMillis() + " Test " + context + " - submitted");
-                assertFalse(futures[i].isDone());
-                Thread.sleep(100);
-            }
-
-            String id = "testAsyncBulkheadQueueFull4";
-            ExecutionContext context = executor.newExecutionContext(id, (Method) null, id);
-            AsyncTestFunction callable = new AsyncTestFunction(Duration.ofMillis(2000), id);
-            try {
-                futures[4] = executor.execute(callable, context);
-                System.out.println(System.currentTimeMillis() + " Test " + id + " - submitted");
-                assertTrue(futures[4].isDone());
-                futures[4].get();
-                fail("Exception not thrown");
-            } catch (ExecutionException e) {
-                assertThat(e.getCause(), instanceOf(BulkheadException.class));
-            }
-        } finally {
-            for (int i = 0; i < 5; i++) {
-                Future<String> future = futures[i];
-                if (future != null && !future.isDone()) {
-                    future.cancel(true);
-                }
-            }
-        }
-
-    }
-
-    @Test
-    public void testAsyncBulkheadDefaults() throws InterruptedException, ExecutionException, TimeoutException {
+    public void testBulkheadDefaults() throws InterruptedException, ExecutionException, TimeoutException {
         BulkheadPolicy bulkhead = FaultToleranceProvider.newBulkheadPolicy();
 
         assertEquals(10, bulkhead.getMaxThreads());

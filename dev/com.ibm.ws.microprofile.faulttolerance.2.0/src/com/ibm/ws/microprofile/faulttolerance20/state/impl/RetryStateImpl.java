@@ -64,7 +64,7 @@ public class RetryStateImpl implements RetryState {
         // If we want to retry based on the methodResult, check if there's some other reason we shouldn't
         if (result.shouldRetry) {
             int maxAttempts = policy.getMaxRetries() + 1;
-            if (attempts >= maxAttempts) {
+            if (maxAttempts != 0 && attempts >= maxAttempts) {
                 result.shouldRetry = false;
             } else if (overMaxDuration(duration)) {
                 result.shouldRetry = false;
@@ -79,7 +79,8 @@ public class RetryStateImpl implements RetryState {
     }
 
     private boolean overMaxDuration(long duration) {
-        return Duration.ofNanos(duration).compareTo(policy.getMaxDuration()) >= 0; // duration >= policy.getMaxDuration()
+        return !policy.getMaxDuration().isZero() // Zero -> no duration limit
+               && Duration.ofNanos(duration).compareTo(policy.getMaxDuration()) >= 0; // duration >= policy.getMaxDuration()
     }
 
     private boolean abortOn(Throwable failure) {

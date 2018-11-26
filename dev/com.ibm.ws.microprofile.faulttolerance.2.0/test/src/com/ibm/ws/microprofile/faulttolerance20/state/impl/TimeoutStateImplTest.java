@@ -79,6 +79,26 @@ public class TimeoutStateImplTest {
         assertTrue(timeoutFlag.get());
     }
 
+    @Test
+    public void testTimeoutZero() throws InterruptedException {
+        TimeoutPolicyImpl policy = new TimeoutPolicyImpl();
+        policy.setTimeout(Duration.ZERO);
+
+        TimeoutStateImpl state = new TimeoutStateImpl(scheduledExecutorService, policy);
+        state.start(this::setTimeoutFlag);
+
+        assertFalse(timeoutFlag.get());
+
+        // Wait longer than the default timeout
+        Thread.sleep(1200L);
+
+        state.stop();
+
+        assertFalse(state.isTimedOut());
+        assertFalse(timeoutFlag.get());
+
+    }
+
     private void setTimeoutFlag() {
         timeoutFlag.set(true);
     }

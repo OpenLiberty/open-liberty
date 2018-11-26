@@ -26,6 +26,7 @@ import com.ibm.ws.microprofile.faulttolerance20.state.impl.SyncBulkheadStateImpl
 import com.ibm.ws.microprofile.faulttolerance20.state.impl.SyncBulkheadStateNullImpl;
 import com.ibm.ws.microprofile.faulttolerance20.state.impl.TimeoutStateImpl;
 import com.ibm.ws.microprofile.faulttolerance20.state.impl.TimeoutStateNullImpl;
+import com.ibm.ws.threading.PolicyExecutorProvider;
 
 /**
  * Factory for creating Fault Tolerance State objects, which implement one of the fault tolerance policies.
@@ -104,15 +105,16 @@ public class FaultToleranceStateFactory {
      * <p>
      * If {@code null} is passed for the policy, the returned object will still run submitted tasks asynchronously, but will not apply any bulkhead logic.
      *
+     * @param executorProvider the policy executor provider
      * @param executorService the executor to use to asynchronously run tasks
      * @param policy the BulkheadPolicy, may be {@code null}
      * @return a new AsyncBulkheadState
      */
-    public AsyncBulkheadState createAsyncBulkheadState(ScheduledExecutorService executorService, BulkheadPolicy policy) {
+    public AsyncBulkheadState createAsyncBulkheadState(PolicyExecutorProvider executorProvider, ScheduledExecutorService executorService, BulkheadPolicy policy) {
         if (policy == null) {
             return new AsyncBulkheadStateNullImpl(executorService);
         } else {
-            return new AsyncBulkheadStateImpl(executorService, policy);
+            return new AsyncBulkheadStateImpl(executorProvider, policy);
         }
     }
 
