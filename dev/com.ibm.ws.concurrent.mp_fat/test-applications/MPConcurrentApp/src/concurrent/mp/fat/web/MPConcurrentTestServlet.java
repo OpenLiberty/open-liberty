@@ -1995,6 +1995,12 @@ public class MPConcurrentTestServlet extends FATServlet {
             CurrentLocation.clear();
             Thread.currentThread().setContextClassLoader(original);
         }
+
+        List<Runnable> removedFromQueue = executor.shutdownNow();
+        assertEquals(Collections.EMPTY_LIST, removedFromQueue);
+        assertTrue(executor.isShutdown());
+        assertTrue(executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(executor.isTerminated());
     }
 
     /**
@@ -2632,6 +2638,8 @@ public class MPConcurrentTestServlet extends FATServlet {
             cf6.cancel(true);
 
             assertNull(cf7.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            executor.shutdown();
         } finally {
             continueLatch.countDown(); // unblock if still running
             CurrentLocation.clear();
@@ -3349,6 +3357,141 @@ public class MPConcurrentTestServlet extends FATServlet {
             assertSame(original, cf3.get());
         } finally {
             Thread.currentThread().setContextClassLoader(original);
+        }
+    }
+
+    /**
+     * Verify that managed executors created via MicroProfile builders can be shut down by the application.
+     * After shutdown, subsequent tasks are not accepted by the managed executor and async actions chained
+     * to completion stages do not run either. Existing completion stage actions are canceled and interrupted
+     * if shutdownNow is used.
+     */
+    @Test
+    public void testShutDownMicroProfileManagedExecutors() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(2);
+        CountDownLatch continueLatch1 = new CountDownLatch(1);
+        CountDownLatch continueLatch2 = new CountDownLatch(1);
+
+        CompletableFuture<Long> cf1a, cf1b, cf1c, cf1d, cf1e, cf2a, cf2b;
+
+        ManagedExecutor.Builder builder = ManagedExecutor.builder();
+        ManagedExecutor executor1 = builder
+                        .maxAsync(3)
+                        .maxQueued(10)
+                        .propagated(ThreadContext.APPLICATION)
+                        .cleared(ThreadContext.ALL_REMAINING)
+                        .build();
+        try {
+            cf1a = executor1.supplyAsync(new BlockableSupplier<Long>(128l, beginLatch, continueLatch1));
+            cf1b = cf1a.thenApplyAsync(x -> x + 1);
+
+            ManagedExecutor executor2 = builder
+                            .propagated(TestContextTypes.CITY, TestContextTypes.STATE)
+                            .build();
+            try {
+                cf2a = executor2.supplyAsync(new BlockableSupplier<Long>(228l, beginLatch, continueLatch2));
+                cf2b = cf2a.thenApplyAsync(x -> x + 1);
+
+                // Wait for both cf1a and cf2a to start running
+                assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            } finally {
+                List<Runnable> removedFromQueue = executor2.shutdownNow();
+                // cf2b isn't in the queue because it doesn't get submitted unless/until cf2a completes successfully
+                assertEquals(Collections.EMPTY_LIST, removedFromQueue);
+            }
+
+            try {
+                fail("first task from executor 2 should be canceled/interrupted due to shutdown. Instead result is: " + cf2a.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            } catch (CancellationException x) {
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof InterruptedException))
+                    throw x;
+            }
+
+            assertTrue(cf2a.isDone());
+            assertTrue(cf2a.isCompletedExceptionally());
+
+            try {
+                fail("second task from executor 2 should be canceled/interrupted due to shutdown. Instead result is: " + cf2b.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            } catch (CancellationException x) {
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof InterruptedException))
+                    throw x;
+            }
+
+            try {
+                Future<?> future = executor2.submit(() -> System.out.println("Should not be able to submit this task"));
+                fail("Executor 2 should not be able to submit additional task after shutdown " + future);
+            } catch (RejectedExecutionException x) {
+                // expected
+            }
+
+            assertTrue(executor2.isShutdown());
+            assertTrue(executor2.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(executor2.isTerminated());
+            assertFalse(executor1.isShutdown());
+            assertFalse(executor1.isTerminated());
+
+            cf1c = cf1b.thenApplyAsync(x -> x * x); // 16641
+
+            cf1d = cf1c.thenApply(x -> {
+                executor1.shutdown();
+                return x - 1; // 16640
+            });
+
+            cf1e = cf1d.thenApplyAsync(x -> x * 10); // 166400 if the executor wasn't shut down
+        } finally {
+            // unblock and allow tasks to run
+            continueLatch1.countDown();
+        }
+
+        assertEquals(Long.valueOf(128), cf1a.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Long.valueOf(129), cf1b.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Long.valueOf(16641), cf1c.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Long.valueOf(16640), cf1d.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        try {
+            fail("Executor 1 should not be able to run additional task after shutdown " + cf1e.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof RejectedExecutionException))
+                throw x;
+        }
+
+        assertTrue(executor1.isShutdown());
+        assertTrue(executor1.isTerminated());
+    }
+
+    /**
+     * Verify that EE Concurrency server configured managed executors and default instances
+     * cannot be shut down by the application, per section 3.1.6.1 of the Concurrency Utilities spec
+     */
+    @Test
+    public void testShutDownServerConfiguredExecutors() throws Exception {
+        try {
+            defaultManagedExecutor.shutdown();
+            fail("Should not be able to shut down the EE Concurrency default managed executor");
+        } catch (IllegalStateException x) {
+            // expected
+        }
+
+        try {
+            noContextExecutor.shutdown();
+            fail("Should not be able to shut down a server configured managed executor");
+        } catch (IllegalStateException x) {
+            // expected
+        }
+
+        try {
+            fail("Should not be able to shut down a server configured managed executor: " + oneContextExecutor.shutdownNow());
+        } catch (IllegalStateException x) {
+            // expected
+        }
+
+        ManagedScheduledExecutorService defaultScheduledExecutor = InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
+        try {
+            fail("Should not be able to await termination of the default managed scheduled executor: " +
+                 defaultScheduledExecutor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } catch (IllegalStateException x) {
+            // expected
         }
     }
 
