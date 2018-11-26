@@ -39,6 +39,7 @@ public interface WebAuthenticatorFactory {
      * @param collabUtils
      * @param webAuthenticatorRef
      * @param unprotectedResourceServiceRef
+     * @param unauthenticatedSubjectService
      * @return
      */
     AuthenticateApi createAuthenticateApi(SSOCookieHelper ssoCookieHelper,
@@ -47,6 +48,20 @@ public interface WebAuthenticatorFactory {
                                           ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
                                           ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef,
                                           UnauthenticatedSubjectService unauthenticatedSubjectService);
+
+    /**
+     * @param ssoCookieHelper
+     * @param securityServiceRef
+     * @param collabUtils
+     * @param webAuthenticatorRef
+     * @param unprotectedResourceServiceRef
+     * @return
+     */
+    AuthenticateApi createAuthenticateApi(SSOCookieHelper ssoCookieHelper,
+                                          AtomicServiceReference<SecurityService> securityServiceRef,
+                                          CollaboratorUtils collabUtils,
+                                          ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
+                                          ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef);
 
     /**
      * @param securityServiceRef

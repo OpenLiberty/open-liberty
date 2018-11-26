@@ -61,6 +61,15 @@ public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
     }
 
     @Override
+    public AuthenticateApi createAuthenticateApi(SSOCookieHelper ssoCookieHelper,
+                                                 AtomicServiceReference<SecurityService> securityServiceRef,
+                                                 CollaboratorUtils collabUtils,
+                                                 ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
+                                                 ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef) {
+        return new AuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef);
+    }
+
+    @Override
     public WebProviderAuthenticatorProxy createWebProviderAuthenticatorProxy(AtomicServiceReference<SecurityService> securityServiceRef,
                                                                              AtomicServiceReference<TAIService> taiServiceRef,
                                                                              ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
