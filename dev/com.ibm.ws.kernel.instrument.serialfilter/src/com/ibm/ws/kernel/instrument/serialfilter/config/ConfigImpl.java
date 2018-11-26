@@ -61,7 +61,11 @@ final class ConfigImpl implements Config {
         void init(ConfigImpl cfg) {
             Logger log = Logger.getLogger(ConfigImpl.class.getName());
             final String defaultConfigPropsFile = "default.properties";
-            InputStream in = ConfigImpl.class.getResourceAsStream(defaultConfigPropsFile);
+            InputStream in = AccessController.doPrivileged(new PrivilegedAction<InputStream>() {
+                public InputStream run() {
+                    return ConfigImpl.class.getResourceAsStream(defaultConfigPropsFile);
+                }
+            });
             if (in == null) {
                 // The resource should always be available, so this is an internal error
                 throw new Error("Could not read internal configuration file");
@@ -69,13 +73,13 @@ final class ConfigImpl implements Config {
             Properties props = new Properties();
             try {
                 props.load(in);
-                if (log.isLoggable(FINE)) log.fine("Reading default config from " + ConfigImpl.class.getResource(defaultConfigPropsFile));
+                if (log.isLoggable(FINE)) log.fine("Reading default config from " + in);
                 cfg.load(props);
                 if (log.isLoggable(FINE)) log.fine("Finished reading default config.");
             } catch (IOException e) {
                 // If the user has overridden the default config elsewhere in the class path,
                 // the user-provided file might be badly formatted
-                log.severe(MessageUtil.format("SF_ERROR_DEFAULT_CONFIGURATION", ConfigImpl.class.getResource(defaultConfigPropsFile), e.getMessage()));
+                log.severe(MessageUtil.format("SF_ERROR_DEFAULT_CONFIGURATION", in, e.getMessage()));
             } finally {
                 try {in.close();} catch (IOException suppressed) {}
             }
