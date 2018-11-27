@@ -23,6 +23,10 @@ ext {
 
 subprojects {
   plugins.apply 'java'
+  // Disable the test report for the individual test task
+    test {
+        reports.html.enabled = false
+    }
   def bndProject = bndWorkspace.getProject(name)
 
   if (bndProject != null) {
@@ -79,7 +83,7 @@ task testReport(type: TestReport) {
     // make sure this task is run after all subproject test tasks
     mustRunAfter subprojects*.test
 
-    destinationDir = file("$buildDir/reports/allTests")
+    destinationDir = cnf.file('testReports/allTests')
     // Include the results from the `test` task in all subprojects
     reportOn subprojects*.test
 }
