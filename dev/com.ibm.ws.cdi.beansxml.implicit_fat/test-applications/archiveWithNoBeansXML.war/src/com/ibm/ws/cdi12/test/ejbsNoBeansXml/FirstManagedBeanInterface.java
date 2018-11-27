@@ -1,7 +1,3 @@
-package com.ibm.ws.cdi12.test.ejbsNoBeansXml;
-
-import javax.ejb.Local;
-
 /*******************************************************************************
  * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -12,10 +8,10 @@ import javax.ejb.Local;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.cdi12.test.ejbsNoBeansXml;
 
-/**
- *
- */
+import javax.ejb.Local;
+
 @Local
 public interface FirstManagedBeanInterface {
 
