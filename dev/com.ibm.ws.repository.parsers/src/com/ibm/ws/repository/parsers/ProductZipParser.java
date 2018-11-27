@@ -39,7 +39,8 @@ public class ProductZipParser extends ProductRelatedParser<ProductResourceWritab
      * @throws ProductInfoParseException
      */
     @Override
-    protected AssetInformation extractInformationFromAsset(final File archive, final ArtifactMetadata metadata) throws PrivilegedActionException, ProductInfoParseException, IOException {
+    protected AssetInformation extractInformationFromAsset(final File archive,
+                                                           final ArtifactMetadata metadata) throws PrivilegedActionException, ProductInfoParseException, IOException {
 
         // Create the asset information
         AssetInformation assetInformtion = new AssetInformation();
