@@ -79,7 +79,7 @@ public class MetricsAuthenticationTest {
     }
 
     private void waitForMetricsEndpoint(LibertyServer server) throws Exception {
-        assertNotNull("Web application is not available at */metrics/", server.waitForStringInLog("CWWKT0016I.*/metrics/", TIMEOUT, server.getDefaultLogFile()));
+        assertNotNull("Web application is not available at */metrics/", server.waitForStringInLog("CWWKT0016I.*/metrics/", TIMEOUT * 2, server.getDefaultLogFile()));
     }
 
     private static void setMetricsAuthConfig(LibertyServer server, Boolean authentication) throws Exception {
