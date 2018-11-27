@@ -231,7 +231,7 @@ public class MetricsMonitorTest {
       		new String[] {}, 
       		new String[] { "vendor:" });
             
-        if (componenttest.topology.impl.JavaInfo.forServer(server).JAVA_VERSION<=8){
+        if (componenttest.topology.impl.JavaInfo.forServer(server).majorVersion()<=8){
             Log.info(c, testName, "------- Add jax-ws endpoint application and run jax-ws client servlet ------");
             ShrinkHelper.defaultDropinApp(server, "testJaxWsApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jaxws","com.ibm.ws.microprofile.metrics.monitor_fat.jaxws.client");
             Log.info(c, testName, "------- added testJaxWsApp to dropins -----");
