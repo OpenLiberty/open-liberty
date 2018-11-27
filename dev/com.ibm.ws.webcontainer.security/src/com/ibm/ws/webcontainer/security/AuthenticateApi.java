@@ -518,7 +518,7 @@ public class AuthenticateApi {
             Object loginToken = ThreadIdentityManager.setAppThreadIdentity(subject);
             WebSecurityContext webSecurityContext = (WebSecurityContext) SRTServletRequestUtils.getPrivateAttribute(req, SECURITY_CONTEXT);
 
-            if (webSecurityContext.getSyncToOSThreadToken() == null) {
+            if (webSecurityContext != null && webSecurityContext.getSyncToOSThreadToken() == null) {
                 webSecurityContext.setSyncToOSThreadToken(loginToken);
             }
         } catch (ThreadIdentityException e) {
