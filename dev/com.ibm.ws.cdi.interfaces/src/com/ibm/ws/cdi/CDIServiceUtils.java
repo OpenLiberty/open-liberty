@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.cdi;
 
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Extension;
+
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
@@ -55,6 +58,21 @@ public class CDIServiceUtils {
             throw new CDIException(e);
         }
         return moduleInfo;
+    }
+
+    /**
+     * Returns a unique identifying string for an annotated type. This method should be used when calling BeforeBeanIdentifer.addAnnotatedType()
+     *
+     * @param annotatedType the new annotated type you are createing. Null is an accepted value but should only be used if you know exactly what you are doing. 
+     * @param extensionClass the CDI extension which is to call BeforeBeanIdentifer.addAnnotatedType()
+     * @return a String that uniquely identifies this annotated type. 
+     */
+    public static String getAnnotatedTypeIdentifier(AnnotatedType annotatedType, Class<?> extensionClass) {
+        if (annotatedType != null) {
+            return (annotatedType.getJavaClass().getCanonicalName() + "#" + extensionClass.getClass().getCanonicalName() + "#" + annotatedType.getJavaClass().hashCode());
+        } else {
+            return ("NULL" + "#" + extensionClass.getClass().getCanonicalName() + "#" + extensionClass.getClass().hashCode());
+        }        
     }
 
 }

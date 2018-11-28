@@ -15,10 +15,10 @@ import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
-import org.eclipse.microprofile.concurrent.ManagedExecutorBuilder;
 import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 
@@ -27,8 +27,8 @@ import com.ibm.ws.threading.PolicyExecutor;
 /**
  * Builder that programmatically configures and creates ManagedExecutor instances.
  */
-class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
-    private static final AtomicLong instanceCount = new AtomicLong();
+class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
+    static final AtomicLong instanceCount = new AtomicLong();
 
     private final ConcurrencyProviderImpl concurrencyProvider;
     private final ArrayList<ThreadContextProvider> contextProviders;
@@ -69,56 +69,74 @@ class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
 
         LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider = new LinkedHashMap<ThreadContextProvider, ContextOp>();
 
+        // TODO: Take knownTypes processing off of the main code path, since this is only used on error path
+        Set<String> knownTypes = new HashSet<>();
+        for (String builtin : ThreadContextImpl.BUILT_IN_TYPES)
+            knownTypes.add(builtin);
         for (ThreadContextProvider provider : contextProviders) {
             String contextType = provider.getThreadContextType();
+            knownTypes.add(contextType);
             unknown.remove(contextType);
 
             ContextOp op = propagated.contains(contextType) ? ContextOp.PROPAGATED //
                             : cleared.contains(contextType) ? ContextOp.CLEARED //
                                             : remaining;
-            if (op != ContextOp.UNCHANGED)
-                configPerProvider.put(provider, op);
+            configPerProvider.put(provider, op);
         }
 
         // unknown thread context types
         if (unknown.size() > 0)
-            throw new IllegalArgumentException(unknown.toString());
+            throw new IllegalStateException("Unknown thread contexts specified: " + unknown.toString() +
+                                            ". Allowed thread contexts values are: " + knownTypes); // TODO translated error message
 
-        // TODO generate better formated identifier without commas and spaces
-        String name = "ManagedExecutor-" + maxAsync + '-' + maxQueued + '-' + propagated + "#" + instanceCount.incrementAndGet();
+        StringBuilder nameBuilder = new StringBuilder("ManagedExecutor_") //
+                        .append(maxAsync)
+                        .append('_') //
+                        .append(maxQueued)
+                        .append('_');
+
+        for (String propagatedType : propagated)
+            if (propagatedType.matches("\\w*")) // one or more of a-z, A-Z, _, 0-9
+                nameBuilder.append(propagatedType).append('_');
+
+        nameBuilder.append(instanceCount.incrementAndGet());
+
+        String name = nameBuilder.toString();
 
         PolicyExecutor policyExecutor = concurrencyProvider.policyExecutorProvider.create(name) //
                         .maxConcurrency(maxAsync) //
                         .maxQueueSize(maxQueued);
 
-        ThreadContextImpl mpThreadContext = new ThreadContextImpl(configPerProvider);
+        ThreadContextImpl mpThreadContext = new ThreadContextImpl(concurrencyProvider, configPerProvider);
 
         return new ManagedExecutorImpl(name, policyExecutor, mpThreadContext, concurrencyProvider.transactionContextProvider.transactionContextProviderRef);
     }
 
     @Override
-    public ManagedExecutorBuilder cleared(String... types) {
+    public ManagedExecutor.Builder cleared(String... types) {
         cleared.clear();
         Collections.addAll(cleared, types);
         return this;
     }
 
     @Override
-    public ManagedExecutorBuilder maxAsync(int max) {
-        // TODO validation
+    public ManagedExecutor.Builder maxAsync(int max) {
+        if (max == 0 || max < -1)
+            throw new IllegalArgumentException(Integer.toString(max));
         maxAsync = max;
         return this;
     }
 
     @Override
-    public ManagedExecutorBuilder maxQueued(int max) {
-        // TODO validation
+    public ManagedExecutor.Builder maxQueued(int max) {
+        if (max == 0 || max < -1)
+            throw new IllegalArgumentException(Integer.toString(max));
         maxQueued = max;
         return this;
     }
 
     @Override
-    public ManagedExecutorBuilder propagated(String... types) {
+    public ManagedExecutor.Builder propagated(String... types) {
         propagated.clear();
         Collections.addAll(propagated, types);
         return this;

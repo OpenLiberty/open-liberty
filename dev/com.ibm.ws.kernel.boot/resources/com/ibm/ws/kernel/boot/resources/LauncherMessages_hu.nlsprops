@@ -687,6 +687,10 @@ warning.package.root.invalid=CWWKE0947W: Ha term\u00e9kb\u0151v\u00edtm\u00e9nye
 warning.package.root.invalid.explanation=A felhaszn\u00e1l\u00f3 csomag k\u00e9r\u00e9st hajtott v\u00e9gre \u00fcres argumentummal a --server-root param\u00e9terben, \u00e9s a rendszer term\u00e9kb\u0151v\u00edtm\u00e9nyeket \u00e9szlelt. A wlp alap\u00e9rtelmezett kiszolg\u00e1l\u00f3gy\u00f6kere ker\u00fcl alkalmaz\u00e1sra.
 warning.package.root.invalid.useraction=Nincs teend\u0151.
 
+warning.package.root.invalid.runnable=CWWKE0948W: A --server-root param\u00e9ter kombin\u00e1l\u00e1sa az  --include=runnable param\u00e9terrel nem megengedett. Az alap\u00e9rtelmezett wlp argumentum ker\u00fcl alkalmaz\u00e1sra a kiszolg\u00e1l\u00f3gy\u00f6k\u00e9rhez.
+warning.package.root.invalid.runnable.explanation=A felhaszn\u00e1l\u00f3 csomag k\u00e9r\u00e9st hajtott v\u00e9gre --server-root \u00e9s --include=runnable param\u00e9terrel, ami nem megengedett kombin\u00e1ci\u00f3. A wlp alap\u00e9rtelmezett kiszolg\u00e1l\u00f3gy\u00f6kere ker\u00fcl alkalmaz\u00e1sra.
+warning.package.root.invalid.runnable.useraction=Nincs teend\u0151.
+
 info.serverStarting=A(z) {0} kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa.
 info.serverStarted=A(z) {0} kiszolg\u00e1l\u00f3 elindult.
 info.serverStartedWithPID=A(z) {0} kiszolg\u00e1l\u00f3 {1} folyamatazonos\u00edt\u00f3val elindult.

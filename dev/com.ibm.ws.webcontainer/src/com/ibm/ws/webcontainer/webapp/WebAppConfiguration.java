@@ -1589,7 +1589,7 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
     @Override
     public List<String> getLibBinPathList() {
         if (libBinPathList == null) {
-            libBinPathList = new ArrayList<String>();
+            List<String> libBinPathListTemp = new ArrayList<String>();
             if (webApp != null) {
                 MetaInfResourceFinder metaInfRes = webApp.getMetaInfResourceFinder();
                 for (URL url : metaInfRes.getJarResourceURLs()) {
@@ -1601,9 +1601,10 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
                     } else {
                         continue;
                     }
-                    libBinPathList.add(path);
+                    libBinPathListTemp.add(path);
                 }
             }
+            libBinPathList = libBinPathListTemp;
         }
         return libBinPathList;
     }

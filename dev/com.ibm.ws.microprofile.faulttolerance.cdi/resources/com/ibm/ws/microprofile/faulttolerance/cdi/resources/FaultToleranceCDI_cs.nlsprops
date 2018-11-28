@@ -124,6 +124,11 @@ retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W: Zpo\u017ed\u011bn\u00ed jit
 retry.parameter.invalid.value.CWMFT5019W.explanation=Zpo\u017ed\u011bn\u00ed jitter mus\u00ed b\u00fdt men\u0161\u00ed  ne\u017e zpo\u017ed\u011bn\u00ed. Zpo\u017ed\u011bn\u00ed jitter se skl\u00e1d\u00e1 z parametru jitter a parametru jitterDelayUnit. Zpo\u017ed\u011bn\u00ed se skl\u00e1d\u00e1 z parametru delay a parametru delayUnit.
 retry.parameter.invalid.value.CWMFT5019W.useraction=Opravte hodnotu jednoho nebo v\u00edce parametr\u016f tak, aby doba trv\u00e1n\u00ed pro zpo\u017ed\u011bn\u00ed jitter byla men\u0161\u00ed ne\u017e trv\u00e1n\u00ed zpo\u017ed\u011bn\u00ed.
 
+# A method does not return Future or CompletionStage
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E=CWMFT5020E: Asynchronn\u00ed metoda {0} nem\u00e1 n\u00e1vratov\u00fd typ java.util.concurrent.Future nebo java.util.concurrent.CompletionStage.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.explanation=V\u0161echny metody anotovan\u00e9 s org.eclipse.microprofile.faulttolerance.Asynchronous mus\u00ed m\u00edt n\u00e1vratov\u00fd typ java.util.concurrent.Future nebo java.util.concurrent.CompletionStage.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=Aktualizujte n\u00e1vratov\u00fd typ.
+
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: Do\u0161lo k intern\u00ed chyb\u011b. V\u00fdjimka: {0}.
 internal.error.CWMFT5997E.explanation=Aplika\u010dn\u00ed server zaznamenal intern\u00ed chybu.

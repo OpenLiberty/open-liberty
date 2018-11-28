@@ -1,0 +1,308 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+    <!-- false-positive dead local store -->
+    <Match>
+        <Class name="~com\.ibm\.ws\.kernel\.launch\.internal\.FrameworkManager.*" />
+        <Or>
+            <Method name="getInstrumentation" />
+            <Method name="getElapsedTime" />
+            <Method name="run" />
+            <Method name="stopFramework" />
+            <Method name="waitForFrameworkStop" />
+        </Or>
+        <Bug code="DLS" />
+    </Match>
+    
+    <!-- match generated nls classes: return mutable type -->
+    <Match> 
+      <Class name="~.*\.resources\..*" />
+      <Method name="getContents"/>
+      <Bug code="EI" />
+    </Match>
+    
+    <!-- Assume that kernel.boot has privilege, and can create threads-->
+    <Match>
+      <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED, DJV_DO_INSIDE_DO_PRIVILEGED, THREAD_START_CALLED, DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED"/>
+    </Match>
+    
+    <Match>
+      <Bug pattern="TR_COMPUTED_KEY"/>
+      <Class name="~com\.ibm\.ws\.kernel\.launch\.internal\.FrameworkManager.*" />
+      <Method name="outputLicenseRestrictionMessage"/>
+    </Match>
+    
+    <!-- Assume that kernel.boot has privilege and is permitted to make System.out.println and System.err.println etc. calls and to create threads-->
+    <Match>
+      <Or>
+        <Class name="~com\.ibm\.ws\.kernel\.boot\..*" />
+        <Class name="~com\.ibm\.ws\.kernel\.launch\.internal..*" />
+        <Class name="~com\.ibm\.ws\.kernel\.internal\.classloader\..*" />
+        <Class name="~com\.ibm\.ws\.kernel\.provisioning\..*" />
+      </Or>
+      <Bug pattern="SYSTEM_ERR_USED, SYSTEM_OUT_USED"/>
+    </Match>
+    
+    <Match>
+      <Class name="com.ibm.wsspi.kernel.embeddable.ServerBuilder"/>
+      <Method name="addProductExtension" signature="(Ljava/lang/String;Ljava/util/Properties;)Lcom/ibm/wsspi/kernel/embeddable/ServerBuilder;"/>
+      <Bug pattern="SYSTEM_OUT_USED"/>
+    </Match>
+
+    <!-- Debug.printStackTrace is preferred for launcher code. -->
+    <Match>
+      <Or>
+        <Class name="com.ibm.ws.kernel.boot.Debug" />
+        <Class name="com.ibm.ws.kernel.boot.Launcher" />
+        <Class name="com.ibm.ws.kernel.boot.ClientLauncher" />        
+        <Class name="com.ibm.ws.kernel.boot.security.PermissionsTraceSecurityManager" />
+        <Class name="com.ibm.ws.kernel.internal.classloader.JarResourceHandler" />
+      </Or>
+      <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED" />
+    </Match>
+
+    <!--  False positive (FFDC) -->
+    <Match>
+        <Class name="~com\.ibm\.ws\.kernel\.launch\.internal\.ServerCommandListener.*" />
+        <Or>
+            <Method name="close" />
+            <Method name="run" />
+            <Method name="acceptAndExecuteCommand" />
+        </Or>
+        <Or>
+            <Bug code="DLS" />
+            <Bug pattern="DE_MIGHT_IGNORE" />
+        </Or>
+    </Match>
+    
+    <!--  False positive (we don't need to use the exception that's been caught -->
+    <Match>
+      <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+      <Class name="com.ibm.ws.kernel.launch.internal.StartLevelFrameworkListener"/>
+      <Method name="levelReached"/>
+      <Local name="e"/>
+    </Match>
+    <!--  False positive (we don't need to use the exception that's been caught -->
+    <Match>
+      <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+      <Class name="com.ibm.ws.kernel.launch.internal.LibertyProcessImpl"/>
+      <Method name="getServiceProps"/>
+      <Local name="iae"/>
+    </Match>
+
+    <!-- Used to implement a timed FileChannel.lock. -->
+    <Match>
+      <Bug pattern="SWL_SLEEP_WITH_LOCK_HELD"/>
+      <Class name="com.ibm.ws.kernel.boot.internal.ServerLock"/>
+      <Method name="getServerLock"/>
+    </Match>
+
+    <!-- We don't want a warning to be provided during server shutdown as it won't be useful -->
+    <Match>
+    	<Class name="com.ibm.ws.kernel.boot.internal.ServerLock" />
+    	<Method name="releaseServerLock" />
+    	<Bug code="RV" />
+    </Match>
+    
+    <!--  We do a System.exit(0) to shut down the server -->
+   	<Match>
+     	<Bug pattern="DM_EXIT"/>
+     	<Class name="com.ibm.ws.kernel.agent.ProcessControlClient$1"/>
+     	<Method name="run"/>
+   	</Match>
+    
+    <Match>
+        <Class name="com.ibm.ws.kernel.launch.internal.classloader.JarResourceHandler" />
+        <Or>
+            <Method name="close" />
+            <Method name="downloadJarFile" />
+        </Or> 
+        <Bug code="RV" />
+    </Match>
+
+    <!-- File.delete() during server shutdown.  If this fails, there isn't much we can do. -->
+    <Match>
+        <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE" />
+    	<Class name="com.ibm.ws.kernel.launch.internal.ServerCommandListener" />
+    	<Method name="close" />
+    </Match>
+    
+    <!-- The MBeanServerDelegate passed to newMBeanServer() is always a PlatformMBeanServerDelegate. -->
+    <Match>
+        <Bug pattern="BC_UNCONFIRMED_CAST"/>
+        <Class name="com.ibm.ws.kernel.boot.jmx.internal.PlatformMBeanServerBuilder"/>
+        <Method name="newMBeanServer"/>
+    </Match>
+    
+    <!-- Volatile boolean which is guaranteed to only be set once. -->
+    <Match>
+        <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+        <Class name="com.ibm.ws.kernel.boot.jmx.internal.PlatformMBeanServerBuilder"/>
+        <Method name="newMBeanServer"/>
+    </Match>
+    <Match>
+        <Bug pattern="RV_DONT_JUST_NULL_CHECK_READLINE"/>
+        <Class name="com.ibm.ws.kernel.boot.BootstrapConfig"/>
+        <Method name="updateFileTagInfo"/>
+    </Match>
+    <Match>
+        <Bug pattern="DE_MIGHT_IGNORE"/>
+        <Class name="com.ibm.ws.kernel.boot.BootstrapConfig"/>
+        <Method name="updateFileTagInfo"/>
+    </Match>
+    
+    <Match>
+        <Bug pattern="OBL_UNSATISFIED_OBLIGATION, RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+        <or>
+	        <Class name="com.ibm.ws.kernel.agent.processor.PackageUtils"/>
+	        <Class name="com.ibm.ws.kernel.agent.processor.PackageProcessor"/>
+        </or>
+    </Match>
+    
+    <!-- Messages which have been edited to improve/fix their english! -->
+    <Match>
+      <Bug pattern="PII_CHANGE_OF_MESSAGE_TEXT"/>
+      <Or>
+        <Field name="CWWKE0003I"/>
+        <Field name="CWWKE0006E"/>
+        <Field name="CWWKE0038E"/>
+        <Field name="CWWKE0039E"/>
+        <Field name="CWWKE0011E"/>
+        <Field name="CWWKE0012E"/>
+        <Field name="CWWKE0016E"/>
+        <Field name="CWWKE0025E"/>
+        <Field name="CWWKE0027W"/>
+        <Field name="CWWKE0042E"/>
+        <Field name="CWWKE0066E"/>
+      </Or>
+    </Match>
+    
+    <!-- Wrapping method to choose between info and audit, so false positive -->
+    <Match>
+      <Class name="com.ibm.ws.kernel.launch.internal.FrameworkManager"/>
+      <Method name="printElapsedTime"/>
+      <Bug pattern="TR_COMPUTED_KEY"/>
+    </Match>
+    <Match>
+      <Class name="com.ibm.ws.kernel.launch.internal.MissingDoPrivDetectionSecurityManager"/>
+      <Method name="handleSecurityException"/>
+      <Bug pattern="TR_COMPUTED_KEY"/>
+    </Match>
+        <Match>
+      <Class name="com.ibm.ws.kernel.launch.internal.MissingDoPrivDetectionSecurityManager$2"/>
+      <Bug pattern="TR_COMPUTED_KEY"/>
+    </Match>
+    
+    <!-- Wrapper method, so again a false positive -->
+    <Match>
+      <Class name="com.ibm.ws.kernel.provisioning.ContentBasedLocalBundleRepository$TrMessages"/>
+      <Method name="warning"/>
+      <Bug pattern="TR_COMPUTED_KEY"/>
+    </Match>
+    
+    <!-- Pre-existing calls to System.currentTimeMillis -->
+    <Match>
+      <Class name="com.ibm.ws.kernel.boot.Launcher"/>
+      <Method name="packageServer"/>
+      <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+    </Match>
+    <!-- Assume that a subclass reads it -->
+    <Match>
+      <Class name="com.ibm.ws.kernel.boot.internal.KernelBootstrap"/>
+      <Field name="serverRunning"/>
+      <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
+    
+    <!-- Platform encoding is correct -->
+    <Match>
+      <Class name="com.ibm.ws.kernel.boot.internal.KernelResolver$ResolverCache"/>
+      <Method name="checkEntry"/>
+      <Bug pattern="DM_DEFAULT_ENCODING"/>
+    </Match>
+    <Match>
+    <Class name="com.ibm.ws.kernel.boot.internal.PSProcessStatusImpl"/>
+      <Method name="isPossiblyRunning"/>
+      <Bug pattern="DM_DEFAULT_ENCODING"/>
+    </Match>
+    <Match>
+      <Class name="com.ibm.ws.kernel.boot.internal.commands.PackageCommand"/>
+      <Method name="generatePackageInfo"/>
+      <Bug pattern="DM_DEFAULT_ENCODING"/>
+    </Match>
+    <Match>
+      <Class name="com.ibm.ws.kernel.boot.internal.commands.ServerDumpPackager$FolderStructureGenerator"/>
+      <Method name="generate"/>
+      <Bug pattern="DM_DEFAULT_ENCODING"/>
+    </Match>
+    <Match>
+      <Class name="com.ibm.ws.kernel.boot.internal.commands.ServerCommandClient"/>
+      <Method name="createServerCommand"/>
+      <Bug pattern="DM_DEFAULT_ENCODING"/>
+    </Match>
+    <Match>
+      <Class name="com.ibm.ws.kernel.launch.internal.FrameworkManager"/>
+      <Method name="introspectFramework"/>
+      <Bug pattern="DM_DEFAULT_ENCODING"/>
+    </Match>
+    <Match>
+      <Class name="com.ibm.ws.kernel.launch.internal.ServerCommandListener"/>
+      <Method name="init"/>
+      <Bug pattern="DM_DEFAULT_ENCODING"/>
+    </Match>
+    <Match>
+      <Class name="com.ibm.ws.kernel.productinfo.ProductInfo"/>
+      <Method name="getAllProductInfo"/>
+      <Bug pattern="DM_DEFAULT_ENCODING"/>
+    </Match>
+   <Match>
+     <Class name="com.ibm.ws.kernel.provisioning.ContentBasedLocalBundleRepository"/>
+     <Method name="~(dispose|readCache)"/>
+     <Bug pattern="DM_DEFAULT_ENCODING"/>
+   </Match>
+   <Match>
+     <Class name="com.ibm.ws.kernel.provisioning.ServiceFingerprint"/>
+     <Method name="~(readCache|flush|hasServiceBeenApplied)"/>
+     <Bug pattern="DM_DEFAULT_ENCODING"/>
+   </Match>
+    
+    <!-- Used by subclasses I believe -->
+    <Match>
+      <Class name="com.ibm.ws.kernel.boot.EmbeddedServerImpl"/>
+      <Field name="lastEvent"/>
+      <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
+    
+    <!-- Explicitly noted as not serializable -->
+    <Match>
+      <Class name="~com\.ibm\.ws\.kernel\.productinfo\..*Exception"/>
+      <Bug pattern="SE_BAD_FIELD"/>
+    </Match>
+    
+    <!-- Explicitly ignoring the exception :) -->
+    <Match>
+      <Class name="com.ibm.ws.kernel.productinfo.ProductInfo"/>
+      <Method name="parseProductInfo"/>
+      <Bug pattern="DE_MIGHT_IGNORE"/>
+    </Match>
+    
+    <!-- closing of file covered by utils method -->
+    <Match>
+      <Class name="com.ibm.ws.kernel.provisioning.ContentBasedLocalBundleRepository$BundleInfo"/>
+      <Method name="&lt;init&gt;"/>
+      <Bug pattern="OS_OPEN_STREAM"/>
+    </Match>
+</FindBugsFilter>

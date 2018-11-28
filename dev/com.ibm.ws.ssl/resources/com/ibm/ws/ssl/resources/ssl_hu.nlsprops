@@ -623,3 +623,19 @@ ssl.defaultKeyStore.not.created.CWPKI0819I.useraction=Nincs teend\u0151.
 ssl.defaultKeyStore.env.password.CWPKI0820A=CWPKI0820A: Az alap\u00e9rtelmezett kulcst\u00e1rol\u00f3 l\u00e9trehoz\u00e1sra ker\u00fclt a 'keystore_password' k\u00f6rnyezeti v\u00e1ltoz\u00f3 haszn\u00e1lat\u00e1val.
 ssl.defaultKeyStore.env.password.CWPKI0820A.explanation=Az alap\u00e9rtelmezett kulcst\u00e1rol\u00f3 l\u00e9trehoz\u00e1sra ker\u00fclt a 'keystore_password' k\u00f6rnyezeti v\u00e1ltoz\u00f3 haszn\u00e1lat\u00e1val. Ez a server.env f\u00e1jlban ker\u00fcl el\u0151\u00e1ll\u00edt\u00e1sra a kiszolg\u00e1l\u00f3 l\u00e9trehoz\u00e1sa sor\u00e1n, vagy fel\u00fcl lett b\u00edr\u00e1lva a k\u00f6rnyezetben, ahonnan a kiszolg\u00e1l\u00f3 elind\u00edt\u00e1sra ker\u00fclt.
 ssl.defaultKeyStore.env.password.CWPKI0820A.useraction=Nincs teend\u0151.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.loaded.CWPKI0821I=CWPKI0821I: Az alap\u00e9rtelmezett {1} kulcst\u00e1rol\u00f3 {2} kulcst\u00e1rol\u00f3 t\u00edpussal bet\u00f6lt\u00e9sre ker\u00fclt.
+ssl.defaultKeyStore.loaded.CWPKI0821I.explanation=A a megadott helyen tal\u00e1lhat\u00f3 \u00e9s megadott kulcst\u00e1rol\u00f3 t\u00edpussal rendelkez\u0151 alap\u00e9rtelmezett kulcst\u00e1rol\u00f3 bet\u00f6lt\u00e9sre ker\u00fclt.
+ssl.defaultKeyStore.loaded.CWPKI0821I.useraction=Nincs teend\u0151.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W=CWPKI0822W: Minim\u00e1lis \
+alap\u00e9rtelmezett kulcst\u00e1rol\u00f3-konfigur\u00e1ci\u00f3 ker\u00fclt meghat\u00e1roz\u00e1sra, \u00e9s a key.jks, valamint a key.p12 \
+kulcst\u00e1rol\u00f3k mindegyike megtal\u00e1lhat\u00f3 az alap\u00e9rtelmezett kulcst\u00e1rol\u00f3 helyen. Alap\u00e9rtelmezett kulcst\u00e1rol\u00f3k\u00e9nt a key.jks ker\u00fcl alkalmaz\u00e1sra.
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.explanation=Minim\u00e1lis \
+alap\u00e9rtelmezett kulcst\u00e1rol\u00f3-konfigur\u00e1ci\u00f3 meghat\u00e1roz\u00e1sa eset\u00e9n, \u00e9s ha a key.jks f\u00e1jl, valamint \
+key.p12 f\u00e1jl egyar\u00e1nt meg van adva az alap\u00e9rtelmezett kulcst\u00e1rol\u00f3 helyen, a key.jks f\u00e1jl ker\u00fcl \
+alkalmaz\u00e1sra alap\u00e9rtelmezett kulcst\u00e1rol\u00f3k\u00e9nt.
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.useraction=Ha a key.p12 \
+f\u00e1jlt k\u00edv\u00e1nja alap\u00e9rtelmezett kulcst\u00e1rol\u00f3v\u00e1 tenni, m\u00f3dos\u00edtsa a kulcst\u00e1rol\u00f3 konfigur\u00e1ci\u00f3t \u00fagy, hogy \
+az a key.p12 hely\u00e9t hat\u00e1rozza meg, vagy t\u00e1vol\u00edtsa el a key.jks f\u00e1jlt a konfigur\u00e1ci\u00f3b\u00f3l. \
+A key.jks f\u00e1jl alap\u00e9rtelmezett kulcst\u00e1rol\u00f3k\u00e9nti alkalmaz\u00e1s\u00e1hoz nincs sz\u00fcks\u00e9g m\u00f3dos\u00edt\u00e1sra. 

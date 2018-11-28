@@ -53,7 +53,7 @@ public class SessionDestroyTests extends LoggingTest {
         server = SHARED_SERVER.getLibertyServer();
     }
 
-    private final String expectedResults = "session created: true session destroyed: true session created: true ";
+    private final String expectedResults = "session created: true session destroyed: true";
 
     /*
      * (non-Javadoc)
@@ -80,8 +80,8 @@ public class SessionDestroyTests extends LoggingTest {
         wb.request(createURL("/InvalidateServlet"));
         WebResponse webResponse = wb.request(createURL("/ResultsServlet"));
 
-        Assert.assertTrue("expected " + expectedResults + " but saw " + webResponse.getResponseBody(),
-                          webResponse.getResponseBody().contains(expectedResults));
+        Assert.assertTrue("expected " + "Invalidate Session - " + expectedResults + " but saw " + webResponse.getResponseBody(),
+                          webResponse.getResponseBody().contains("Invalidate Session - " + expectedResults));
 
     }
 
@@ -94,8 +94,8 @@ public class SessionDestroyTests extends LoggingTest {
         wb.request(createURL("/ResultsServlet")); //poke it a second time to ensure that the timeout is processed.
         WebResponse webResponse = wb.request(createURL("/ResultsServlet"));
 
-        Assert.assertTrue("expected " + expectedResults + " but saw " + webResponse.getResponseBody(),
-                          webResponse.getResponseBody().contains(expectedResults));
+        Assert.assertTrue("expected " + "Timeout Session - " + expectedResults + " but saw " + webResponse.getResponseBody(),
+                          webResponse.getResponseBody().contains("Timeout Session - " + expectedResults));
 
     }
 

@@ -67,3 +67,15 @@ JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=\u9a8c\u8bc1\u7f3a\u7701 JAA
 JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: \u5728 JAAS \u914d\u7f6e\u548c server.xml/client.xml \u6587\u4ef6\u4e2d\u6307\u5b9a\u4e86\u91cd\u590d\u7684\u767b\u5f55\u914d\u7f6e\u540d {0}\u3002\u5c06\u4f7f\u7528 server.xml/client.xml \u6587\u4ef6\u4e2d\u7684\u767b\u5f55\u914d\u7f6e\u540d\u3002
 JAAS_DUPLICATE_ENTRY_NAME.explanation=\u5728 JAAS \u914d\u7f6e\u6587\u4ef6\u548c server.xml/client.xml \u6587\u4ef6\u4e2d\u6307\u5b9a\u4e86\u91cd\u590d\u7684\u767b\u5f55\u914d\u7f6e\u540d\u3002
 JAAS_DUPLICATE_ENTRY_NAME.useraction=\u68c0\u67e5 JAAS \u914d\u7f6e\u6587\u4ef6\u548c server.xml/client.xml \u6587\u4ef6\u3002
+
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR=CWWKS1143E: {2} Java \u4f9b\u5e94\u5546\u63d0\u4f9b\u7684\u7248\u672c {1} \u4e0d\u652f\u6301 {0} \u767b\u5f55\u6a21\u5757\u3002
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.explanation=server.xml \u6587\u4ef6\u548c/\u6216 jaas.conf \u6587\u4ef6\u4e2d\u6307\u5b9a\u7684 Krb5LoginModule \u6a21\u5757\u5728\u4f7f\u7528\u7684 Java \u4f9b\u5e94\u5546\u548c\u7248\u672c\u4e2d\u4e0d\u53d7\u652f\u6301\u3002
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.useraction=\u4f7f\u7528 Krb5LoginModule \u6a21\u5757\u652f\u6301\u7684\u6b63\u786e Java \u4f9b\u5e94\u5546\u548c\u7248\u672c\uff0c\u6216\u8005\u4f7f\u7528 Java \u4f9b\u5e94\u5546\u548c\u7248\u672c\u652f\u6301\u7684 Krb5LoginModule \u6a21\u5757\u3002
+
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS=CWWKS1144E: {1} Java \u4f9b\u5e94\u5546\u548c\u7248\u672c {2} \u4e0d\u652f\u6301 {0} \u767b\u5f55\u6a21\u5757\u9009\u9879\u3002
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.explanation=server.xml \u6587\u4ef6\u548c/\u6216 jaas.conf \u6587\u4ef6\u4e2d\u6307\u5b9a\u7684 Krb5LoginModule \u9009\u9879\u5728\u4f7f\u7528\u7684 Java \u4f9b\u5e94\u5546\u548c\u7248\u672c\u4e2d\u4e0d\u53d7\u652f\u6301\u3002
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=\u9a8c\u8bc1 server.xml \u6587\u4ef6\u548c/\u6216 jaas.conf \u6587\u4ef6\u4e2d\u6307\u5b9a\u7684\u6240\u6709 Krb5LoginModule \u9009\u9879\u662f\u5426\u90fd\u53d7 Java \u4f9b\u5e94\u5546\u548c\u7248\u672c\u652f\u6301\u3002
+
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: \u4e0d\u80fd\u5728 server.xml \u6587\u4ef6\u548c/\u6216 jaas.conf \u6587\u4ef6\u4e2d\u5c06 {0} jaasLoginContext \u6761\u76ee\u6307\u5b9a\u4e3a JAAS \u914d\u7f6e\u6761\u76ee\u3002
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=\u8fd0\u884c\u65f6\u4f7f\u7528\u7f3a\u7701 Krb5LoginModule \u914d\u7f6e\u548c  server.xml \u6587\u4ef6\u4e2d\u7684 SPNEGO \u914d\u7f6e\u3002
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=\u4ece server.xml \u6587\u4ef6\u4e2d\u79fb\u9664 jaasLoginContext \u6761\u76ee\uff0c\u6216\u8005\u8ba9\u8fd0\u884c\u65f6\u4f7f\u7528\u7f3a\u7701\u6761\u76ee\u3002

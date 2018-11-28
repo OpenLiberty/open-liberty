@@ -125,8 +125,8 @@ public class MessageReader {
 
     }
 
-    public MessageReadInfo processRead(TCPReadRequestContext rrc, boolean txtPartialAvailable, boolean binaryPartialAvailable, boolean anticipatingCloseFrame)
-                    throws FrameFormatException, WsocBufferException, MaxMessageException {
+    public MessageReadInfo processRead(TCPReadRequestContext rrc, boolean txtPartialAvailable, boolean binaryPartialAvailable,
+                                       boolean anticipatingCloseFrame) throws FrameFormatException, WsocBufferException, MaxMessageException {
         // return true if a full message has been read in, otherwise false
 
         WsByteBuffer currentBuf = null;
@@ -136,8 +136,7 @@ public class MessageReader {
         if (currentBuf == null) {
             currentBuf = nextMessageBuf;
             nextMessageBuf = null;
-        }
-        else {
+        } else {
             currentBuf.flip();
         }
         int nextMessagePosition;
@@ -159,7 +158,7 @@ public class MessageReader {
         }
 
         if (nextMessagePosition >= 0) {
-            // the buffer contains the last part of the current message, and at least the start of the next, 
+            // the buffer contains the last part of the current message, and at least the start of the next,
             // so slice off the new buffer so it can be processed separately
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "slicing buffer, since this buffer contains end of old message and start of the next");
@@ -192,7 +191,7 @@ public class MessageReader {
             Tr.debug(tc, "frameSequenceState after: " + frameSequenceState);
         }
 
-        // if we are reading for a close frame, and the message (control frame or not) being read is too big, then it is an error 
+        // if we are reading for a close frame, and the message (control frame or not) being read is too big, then it is an error
         if ((anticipatingCloseFrame) && (frameProcessor.getPayloadLength() >= 126)) {
             MessageReadInfo mri = new MessageReadInfo(MessageReadInfo.State.CLOSE_FRAME_ERROR, firstFrameOpcodeType, (nextMessagePosition >= 0));
             return mri;
@@ -230,8 +229,7 @@ public class MessageReader {
                         // Only gather up frames if partial method is available....
                         if ((firstFrameOpcodeType == OpcodeType.TEXT_WHOLE) && txtPartialAvailable) {
                             gatherUpAllFramesAndPayload();
-                        }
-                        else if ((firstFrameOpcodeType == OpcodeType.BINARY_WHOLE) && binaryPartialAvailable) {
+                        } else if ((firstFrameOpcodeType == OpcodeType.BINARY_WHOLE) && binaryPartialAvailable) {
                             gatherUpAllFramesAndPayload();
                         }
                         MessageReadInfo info = new MessageReadInfo(MessageReadInfo.State.PARTIAL_COMPLETE, firstFrameOpcodeType, (nextMessagePosition >= 0));
@@ -241,7 +239,7 @@ public class MessageReader {
 
             } else {
 
-                // we have a control frame inside an ongoing message.  Control Messages can not be fragmented, but consist of 1 frame 
+                // we have a control frame inside an ongoing message.  Control Messages can not be fragmented, but consist of 1 frame
                 gatherUpPayload_Control();
                 if ((frameSequenceState != FSeqState.FIRST_AND_LAST) && (frameSequenceState != FSeqState.EXPECTING_NEW)) {
                     // this is a control frame inside another message
@@ -273,7 +271,7 @@ public class MessageReader {
         messageCompletePayloadSize = 0;
     }
 
-    // This is never called, except in an exception case.  frame buffers should be cleaned up when reset is called on the FrameReadProcessor 
+    // This is never called, except in an exception case.  frame buffers should be cleaned up when reset is called on the FrameReadProcessor
     public void releaseBuffers() {
         // release buffers is desired
         if (payloadBuffers != null) {
@@ -341,7 +339,7 @@ public class MessageReader {
             // Special Debug. printOutBuffers(payloadBuffers);
 
             // Sum up the total number read in for later use
-            // at this point, only payload data should be between position and limit. 
+            // at this point, only payload data should be between position and limit.
             for (WsByteBuffer buf : payloadBuffers_Control) {
                 if (buf != null) {
                     this.messageCompletePayloadSize_Control += (buf.limit() - buf.position());
@@ -375,7 +373,7 @@ public class MessageReader {
             // Special Debug. printOutBuffers(payloadBuffers);
 
             // Sum up the total number read in for later use
-            // at this point, only payload data should be between position and limit. 
+            // at this point, only payload data should be between position and limit.
             for (WsByteBuffer buf : payloadBuffers) {
                 if (buf != null) {
                     this.messageCompletePayloadSize += (buf.limit() - buf.position());
@@ -568,7 +566,7 @@ public class MessageReader {
             }
 
             // TODO: will have to use English message for now, needs to be translated in the next release
-            if (payLoadSize > maxMessageSize) {
+            if ((maxMessageSize != -1) && (payLoadSize > maxMessageSize)) {
                 // String reasonPhrase = Tr.formatMessage(tc, "invalid.message.toobig", "MessageHandler", payLoadSize, maxMessageSize, "onMessage");
                 // also, this message needs be less than 123, the max for a control frame.
                 String reasonPhrase = "Invalid incoming WebSocket message. Message is too big. Message size: " +
@@ -578,7 +576,6 @@ public class MessageReader {
             return;
         } else {
             ae = (AnnotatedEndpoint) connLink.getEndpoint();
-
 
         }
 
@@ -624,8 +621,8 @@ public class MessageReader {
         } else if (inputType.equals(InputStream.class)) { //if message is InputStream type, don't check for maxMessageSize, per API doc
             return;
         }
-        //if payload size is greater than maxMessageSize, throw MaxMessageException which calls onClose() method of ServerEndpoint config 
-        if (payLoadSize > maxMessageSize) {
+        //if payload size is greater than maxMessageSize, throw MaxMessageException which calls onClose() method of ServerEndpoint config
+        if ((maxMessageSize != -1) && (payLoadSize > maxMessageSize)) {
             if (firstFrameOpcodeType == OpcodeType.BINARY_WHOLE) {
                 epMethodHelper = ae.getOnMessageBinaryMethod();
             } else if (firstFrameOpcodeType == OpcodeType.TEXT_WHOLE) {

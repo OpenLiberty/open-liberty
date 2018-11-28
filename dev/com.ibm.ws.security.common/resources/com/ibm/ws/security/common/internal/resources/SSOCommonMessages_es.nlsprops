@@ -39,3 +39,16 @@ CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID.useraction=Aseg\u00farese de que e
 JAVASCRIPT_REDIRECT_URL_NOT_VALID=CWWKS6106E: El servicio de seguridad no puede crear el JavaScript apropiado para redirigir el navegador porque el URL de redirecci\u00f3n [{0}] no es v\u00e1lido.
 JAVASCRIPT_REDIRECT_URL_NOT_VALID.explanation=El navegador debe redirigirse a un URL v\u00e1lido, pero el URL especificado no es v\u00e1lido. Es posible que el URL sea nulo o est\u00e9 vac\u00edo o puede que contenga caracteres que no est\u00e1n permitidos por la RFC 3986.
 JAVASCRIPT_REDIRECT_URL_NOT_VALID.useraction=Compruebe el formato del URL para asegurarse de que no es nulo o est\u00e1 vac\u00edo y de que s\u00f3lo contiene en las v\u00edas de acceso de URI caracteres permitidos por la RFC 3986.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS6107W: La configuraci\u00f3n del cliente de OpenId Connect (parte dependiente o RP) [{2}] especifica el URL de punto final de descubrimiento [{0}] y los otros puntos finales, pero se debe configurar el punto final de descubrimiento o los otros puntos finales. RP ha utilizado la informaci\u00f3n de la solicitud de descubrimiento e ignorar\u00e1 los otros puntos finales [{1}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=La configuraci\u00f3n de RP ha especificado el punto final de descubrimiento y los otros puntos finales tales como autorizaci\u00f3n, se\u00f1al, pero solo se pueden especificar uno de los dos.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.useraction=Configure el punto final de descubrimiento o los otros puntos finales como autorizaci\u00f3n y se\u00f1al e informaci\u00f3n de usuario, no los dos.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER=CWWKS6108W: La configuraci\u00f3n del cliente de OpenId Connect (parte dependiente o RP) [{2}] especifica el URL de punto final de descubrimiento [{0}] y el identificador de emisor [{1}]. RP ha utilizado la informaci\u00f3n de la solicitud de descubrimiento y ha ignorado el identificador de emisor configurado.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.explanation=La configuraci\u00f3n de RP ha especificado el punto final de descubrimiento y el identificador de emisor, pero solo se puede especificar uno de los dos.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.useraction=Configure el punto final de descubrimiento o el identificador de emisor, o ambos.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT=CWWKS6109I: La configuraci\u00f3n del cliente de OpenId Connect (parte dependiente o RP) o del inicio de sesi\u00f3n en redes sociales [{3}] especifica [{0}], un valor predeterminado para [{1}] que, como resultado del descubrimiento, cambia a [{2}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.explanation=Si el proveedor de OpenID Connect (OP) no da soporte a los valores predeterminados de RP, seg\u00fan la capacidad del RP, los valores predeterminados se pueden ajustar a los que OP admita.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.useraction=Mensaje informativo. No se requiere ninguna acci\u00f3n.
+

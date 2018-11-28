@@ -1545,7 +1545,15 @@ programmatic.session.cookie.retrieve.cell.xml.failure.useraction=Verificare che 
 
 AsyncContext.lock.already.held=SRVE8113W: Impossibile ottenere un blocco.  L'elaborazione dell'errore \u00e8 gi\u00e0 stata richiamata da un altro thread.
 AsyncContext.lock.already.held.explanation=L'elaborazione dell'errore \u00e8 gi\u00e0 stata richiamata da un altro thread.
-AsyncContext.lock.already.held.useraction=Assicurarsi che l'applicazione possa gestire un'eccezione qui.  Se \u00e8 necessario che questo metodo restituisca una risposta anche se la chiamata non riesce, contattare il supporto IBM.
+AsyncContext.lock.already.held.useraction=Assicurarsi che l'applicazione possa gestire un'eccezione qui.  Se \u00e8 necessario che questo metodo restituisca una risposta anche se la chiamata non riesce, tentare di impostare la propriet\u00e0 predefinita throwexceptionwhenunabletocompleteordispatch su false.
+
+Cannot.set.session.cookie.Response.already.committed=SRVE8114W: AVVERTENZA: impossibile impostare il cookie di sessione. Risposta gi\u00e0 sottoposta a commit.
+Cannot.set.session.cookie.Response.already.committed.explanation=Una volta sottoposta una risposta a commit, non \u00e8 possibile impostare il cookie di sessione.
+Cannot.set.session.cookie.Response.already.committed.useraction=Verificare se questa chiamata \u00e8 necessaria. Se \u00e8 necessario impostare il cookie di sessione, impostarlo prima di sottoporre a commit la risposta.
+
+Cannot.set.status.Response.already.committed=SRVE8115W: AVVERTENZA: impossibile impostare lo stato. Risposta gi\u00e0 sottoposta a commit.
+Cannot.set.status.Response.already.committed.explanation=Una volta sottoposta una risposta a commit, non \u00e8 possibile impostare il codice di stato della risposta.
+Cannot.set.status.Response.already.committed.useraction=Verificare se questa chiamata \u00e8 necessaria. Se \u00e8 necessario impostare il codice di stato della risposta, impostarlo prima di sottoporre a commit la risposta.
 
 servlet.with.same.name.already.exists=SRVE8500W: Il servlet {0} non pu\u00f2 essere aggiunto dinamicamente poich\u00e9 esiste gi\u00e0 una configurazione servlet con lo stesso nome.  
 servlet.with.same.name.already.exists.explanation=Esiste gi\u00e0 un servlet con lo stesso nome per questa applicazione.

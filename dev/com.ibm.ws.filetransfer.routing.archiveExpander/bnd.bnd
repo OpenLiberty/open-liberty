@@ -25,23 +25,30 @@ Private-Package: \
 
 Import-Package: \
  !org.apache.commons.compress.compressors.lzw, \
+ !org.apache.commons.compress, \
  !org.apache.commons.compress.parallel, *
 
 -includeresource: \
- @${repo;com.ibm.ws.org.apache.commons.compress.1.10}!/org/apache/commons/compress/archivers/ArchiveEntry*, \
- @${repo;com.ibm.ws.org.apache.commons.compress.1.10}!/org/apache/commons/compress/archivers/ArchiveInputStream*, \
- @${repo;com.ibm.ws.org.apache.commons.compress.1.10}!/org/apache/commons/compress/compressors/lzw/LZWInputStream*, \
- @${repo;com.ibm.ws.org.apache.commons.compress.1.10}!/org/apache/commons/compress/compressors/CompressorInputStream*, \
- @${repo;com.ibm.ws.org.apache.commons.compress.1.10}!/org/apache/commons/compress/archivers/ArchiveOutputStream*, \
- @${repo;com.ibm.ws.org.apache.commons.compress.1.10}!/org/apache/commons/compress/utils/BitInputStream*, \
- @${repo;com.ibm.ws.org.apache.commons.compress.1.10}!/org/apache/commons/compress/utils/CharsetNames*, \
- @${repo;com.ibm.ws.org.apache.commons.compress.1.10}!/org/apache/commons/compress/utils/Charsets*, \
- @${repo;com.ibm.ws.org.apache.commons.compress.1.10}!/org/apache/commons/compress/utils/IOUtils*
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/archivers/ArchiveEntry*, \
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/archivers/ArchiveInputStream*, \
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/compressors/bzip2/BZip2CompressorInputStream*, \
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/compressors/bzip2/BZip2Constants*, \
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/compressors/deflate64/Deflate64CompressorInputStream*, \
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/compressors/lzw/LZWInputStream*, \
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/compressors/CompressorInputStream*, \
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/archivers/ArchiveOutputStream*, \
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/archivers/EntryStreamOffsets*, \
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/BitInputStream*, \
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/ByteUtils*, \
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/CharsetNames*, \
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/Charsets*, \
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/InputStreamStatistics*, \
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/IOUtils*
 
 instrument.disabled: true
 
 -buildpath: \
-	com.ibm.ws.org.apache.commons.compress.1.10,\
+	com.ibm.ws.org.apache.commons.compress,\
 	com.ibm.ws.filetransfer.routing.archiveExpander.common;version=latest,\
 	com.ibm.ws.filetransfer.routing.archiveExpander.java7;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

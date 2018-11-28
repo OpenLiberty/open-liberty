@@ -146,9 +146,9 @@ public class ThinAppTask extends BaseCommandTask {
     private void performThinTask(File applicationFile, File thinAppFile, File libCache, File parentLibCache) throws IOException, NoSuchAlgorithmException {
         stdout.println(getMessage("thin.creating", applicationFile.getAbsolutePath()));
 
-        SpringBootThinUtil thinUtil = new SpringBootThinUtil(applicationFile, thinAppFile, libCache, parentLibCache);
-        thinUtil.execute();
-
+        try (SpringBootThinUtil thinUtil = new SpringBootThinUtil(applicationFile, thinAppFile, libCache, parentLibCache)) {
+            thinUtil.execute();
+        }
         stdout.println(getMessage("thin.libraryCache", libCache));
         stdout.println(getMessage("thin.applicationLoc", thinAppFile.getAbsolutePath()));
     }

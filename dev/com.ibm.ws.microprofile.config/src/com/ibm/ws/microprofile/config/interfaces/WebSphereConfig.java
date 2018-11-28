@@ -68,6 +68,18 @@ public interface WebSphereConfig extends Config, Closeable {
     public Object convertValue(String rawValue, Type type);
 
     /**
+     * Convert the given rawValue into the specified type
+     * 
+     * @param <T>
+     *
+     * @param rawValue The raw String value to convert
+     * @param type The type to convert to
+     * @return The converted value
+     * @throws IllegalArgumentException thrown if the raw String value was not compatible with the converter for the specified type
+     */
+    public <T> T convertValue(String rawValue, Class<T> type);
+
+    /**
      * The same as {@link #getValue(String, Type)} except that the value is wrapped in a SourcedPropertyValue which can also provide the id
      * if the ConfigSource that the property came from.
      *

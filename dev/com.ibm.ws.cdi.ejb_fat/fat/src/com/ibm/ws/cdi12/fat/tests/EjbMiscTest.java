@@ -68,6 +68,7 @@ public class EjbMiscTest extends LoggingTest {
     public static void setUp() throws Exception  {
        
        if (! hasSetUp) {
+            hasSetUp = true;
             JavaArchive multipleWarEmbeddedJar = ShrinkWrap.create(JavaArchive.class,"multipleWarEmbeddedJar.jar")
                         .addClass("com.ibm.ws.cdi.lib.MyEjb");
 

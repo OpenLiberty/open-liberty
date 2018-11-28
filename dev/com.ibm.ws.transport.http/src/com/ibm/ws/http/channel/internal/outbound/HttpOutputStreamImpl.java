@@ -615,7 +615,13 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             Tr.debug(tc, "Flushing stream: " + this);
         }
         validate();
-        flushBuffers();
+        if (!this.hasFinished) {
+            flushBuffers();
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "flush hasFinished=true; skipping flushBuffers() on " + this.hashCode() + " details: " + this);
+            }    
+        }
     }
 
     /*

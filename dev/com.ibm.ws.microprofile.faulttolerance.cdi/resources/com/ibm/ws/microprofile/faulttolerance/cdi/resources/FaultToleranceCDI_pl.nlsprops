@@ -124,6 +124,11 @@ retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W:  Op\u00f3\u017anienie zabur
 retry.parameter.invalid.value.CWMFT5019W.explanation=Op\u00f3\u017anienie zaburze\u0144 musi by\u0107 mniejsze ni\u017c op\u00f3\u017anienie. Op\u00f3\u017anienie zaburze\u0144 sk\u0142ada si\u0119 z parametr\u00f3w jitter i jitterDelayUnit. Op\u00f3\u017anienie sk\u0142ada si\u0119 z parametr\u00f3w delay i delayUnit.
 retry.parameter.invalid.value.CWMFT5019W.useraction=Popraw warto\u015b\u0107 co najmniej jednego parametru w taki spos\u00f3b, aby czas trwania op\u00f3\u017anienia zaburze\u0144 by\u0142 kr\u00f3tszy ni\u017c czas trwania op\u00f3\u017anienia.
 
+# A method does not return Future or CompletionStage
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E=CWMFT5020E: Metoda asynchroniczna {0} nie ma typu zwracanego java.util.concurrent.Future ani java.util.concurrent.CompletionStage.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.explanation=Wszystkie metody z adnotacj\u0105 org.eclipse.microprofile.faulttolerance.Asynchronous musz\u0105 mie\u0107 typ zwracany java.util.concurrent.Future lub java.util.concurrent.CompletionStage.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=Zaktualizuj typ zwracany.
+
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Wyj\u0105tek: {0}.
 internal.error.CWMFT5997E.explanation=Na serwerze aplikacji wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.

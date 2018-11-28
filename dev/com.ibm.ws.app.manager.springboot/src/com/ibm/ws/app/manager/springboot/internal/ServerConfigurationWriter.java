@@ -127,8 +127,9 @@ public class ServerConfigurationWriter {
 
             indent(1);
             xmlStreamWriter.writeStartElement(ServerConfiguration.XML_ELEMENT_NAME_VIRTUAL_HOST);
-
-            xmlStreamWriter.writeAttribute(VirtualHost.XML_ATTRIBUTE_NAME_ALLOW_FROM_ENDPOINT_REF, vh.getAllowFromEndpointRef());
+            if (vh.getAllowFromEndpointRef() != null && !vh.getAllowFromEndpointRef().isEmpty()) {
+                xmlStreamWriter.writeAttribute(VirtualHost.XML_ATTRIBUTE_NAME_ALLOW_FROM_ENDPOINT_REF, vh.getAllowFromEndpointRef());
+            }
             xmlStreamWriter.writeAttribute(ConfigElement.XML_ATTRIBUTE_NAME_ID, vh.getId());
 
             for (String ha : vh.getHostAliases()) {

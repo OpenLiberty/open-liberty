@@ -96,8 +96,9 @@ public class MetricsMonitorTest {
     	Log.info(c, testName, "------- No monitor-1.0: no vendor metrics should be available ------");
     	server.setServerConfigurationFile("server_mpMetric11.xml");
     	server.startServer();
-    	Log.info(c, testName, server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+    	Log.info(c, testName, server.waitForStringInLog("defaultHttpEndpoint-ssl",60000)); 
     	Log.info(c, testName, "------- server started -----");
+    	Assert.assertNotNull("Web application /metrics not loaded", server.waitForStringInLog("CWWKT0016I: Web application available \\(default_host\\): http:\\/\\/.*:.*\\/metrics\\/"));
       	checkStrings(getHttpsServlet("/metrics"), 
           	new String[] { "base:" }, 
           	new String[] { "vendor:" });

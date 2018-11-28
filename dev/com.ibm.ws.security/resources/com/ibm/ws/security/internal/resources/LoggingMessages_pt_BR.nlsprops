@@ -53,3 +53,7 @@ SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.useraction=Especifique apenas um rec
 SEC_TOO_MANY_PRINCIPALS=CWWKS0010E: Ao obter o diretor do respons\u00e1vel pela chamada, o assunto do respons\u00e1vel pela chamada foi considerado por ter mais de um diretor do tipo WSPrincipal. Apenas um WSPrincipal pode existir no assunto. Os nomes dos WSPrincipals s\u00e3o: {}
 SEC_TOO_MANY_PRINCIPALS.explanation=O assunto do respons\u00e1vel pela chamada tem muitos diretores do tipo WSPrincipal. Apenas um diretor desse tipo \u00e9 suportado.
 SEC_TOO_MANY_PRINCIPALS.useraction=Revise o aplicativo para entender porque o assunto tem mais de um WSPrincipal.
+
+SPNEGO_API_IS_NOT_SUPPORT=CWWKS0011E: A API SPNEGO {0} n\u00e3o \u00e9 suportada para a vers\u00e3o {0} do tempo de execu\u00e7\u00e3o Java {1}.
+SPNEGO_API_IS_NOT_SUPPORT.explanation=A API SPNEGO n\u00e3o pode ser usada com o fornecedor e a vers\u00e3o de Java Runtime.
+SPNEGO_API_IS_NOT_SUPPORT.useraction=Use o fornecedor e a vers\u00e3o Java que s\u00e3o suportados pelas APIs SPNEGO.

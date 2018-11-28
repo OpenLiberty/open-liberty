@@ -35,6 +35,7 @@ import com.ibm.ws.concurrent.mp.context.ApplicationContextProvider;
 import com.ibm.ws.concurrent.mp.context.SecurityContextProvider;
 import com.ibm.ws.concurrent.mp.context.TransactionContextProvider;
 import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
+import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.threading.PolicyExecutorProvider;
 
@@ -48,12 +49,21 @@ public class ConcurrencyProviderImpl implements ConcurrencyProvider {
     final TransactionContextProvider transactionContextProvider = new TransactionContextProvider();
     final WLMContextProvider wlmContextProvider = new WLMContextProvider();
 
+    /**
+     * Key for providersPerClassLoader indicating that there is no context class loader on the thread.
+     * This is needed because ConcurrentHashMap does not allow null keys.
+     */
+    private static final String NO_CONTEXT_CLASSLOADER = "NO_CONTEXT_CLASSLOADER";
+
     private static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
+
+    @Reference
+    protected MetaDataIdentifierService metadataIdentifierService;
 
     @Reference
     protected PolicyExecutorProvider policyExecutorProvider;
 
-    private final ConcurrentHashMap<ClassLoader, ConcurrencyManager> providersPerClassLoader = new ConcurrentHashMap<ClassLoader, ConcurrencyManager>();
+    private final ConcurrentHashMap<Object, ConcurrencyManager> providersPerClassLoader = new ConcurrentHashMap<Object, ConcurrencyManager>();
 
     private ConcurrencyProviderRegistration registration;
 
@@ -87,10 +97,11 @@ public class ConcurrencyProviderImpl implements ConcurrencyProvider {
 
     @Override
     public ConcurrencyManager getConcurrencyManager(ClassLoader classLoader) {
-        ConcurrencyManager ccmgr = providersPerClassLoader.get(classLoader);
+        Object key = classLoader == null ? NO_CONTEXT_CLASSLOADER : classLoader;
+        ConcurrencyManager ccmgr = providersPerClassLoader.get(key);
         if (ccmgr == null) {
             ConcurrencyManager ccmgrNew = new ConcurrencyManagerImpl(this, classLoader);
-            ccmgr = providersPerClassLoader.putIfAbsent(classLoader, ccmgrNew);
+            ccmgr = providersPerClassLoader.putIfAbsent(key, ccmgrNew);
             if (ccmgr == null)
                 ccmgr = ccmgrNew;
         }
@@ -112,8 +123,8 @@ public class ConcurrencyProviderImpl implements ConcurrencyProvider {
         // This is inefficient. Does the spec need to require it?
         // The container, which already knows the class loader,
         // can instead directly remove the entry based on the key.
-        for (Iterator<Map.Entry<ClassLoader, ConcurrencyManager>> entries = providersPerClassLoader.entrySet().iterator(); entries.hasNext();) {
-            Map.Entry<ClassLoader, ConcurrencyManager> entry = entries.next();
+        for (Iterator<Map.Entry<Object, ConcurrencyManager>> entries = providersPerClassLoader.entrySet().iterator(); entries.hasNext();) {
+            Map.Entry<Object, ConcurrencyManager> entry = entries.next();
             if (manager.equals(entry.getValue()))
                 entries.remove();
         }

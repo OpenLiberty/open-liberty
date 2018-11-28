@@ -9,6 +9,7 @@ IBM-App-ForceRestart: install, \
 -bundles=com.ibm.ws.org.apache.commons.lang3, \
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.apache.commons.beanutils.1.8.3, \
+ com.ibm.ws.org.apache.commons.collections, \
  com.ibm.ws.javaee.dd, \
  com.ibm.ws.javaee.dd.common, \
  com.ibm.ws.org.apache.commons.logging.1.0.3, \

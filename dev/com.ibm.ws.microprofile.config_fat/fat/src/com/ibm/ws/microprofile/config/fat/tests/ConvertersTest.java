@@ -21,9 +21,9 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.appConfig.converters.test.ConvertersTestServlet;
-import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig11EE8;
-import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig12EE8;
-import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig13EE8;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig11EE8;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig13EE8;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig14EE8;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
@@ -69,7 +69,7 @@ public class ConvertersTest extends FATServletClient {
     @ClassRule
     public static RepeatTests r = RepeatTests
                     .with(new RepeatConfig11EE8("ConvertersServer"))
-                    .andWith(new RepeatConfig12EE8("ConvertersServer"))
-                    .andWith(new RepeatConfig13EE8("ConvertersServer"));
+                    .andWith(new RepeatConfig13EE8("ConvertersServer"))
+                    .andWith(new RepeatConfig14EE8("ConvertersServer"));
 
 }

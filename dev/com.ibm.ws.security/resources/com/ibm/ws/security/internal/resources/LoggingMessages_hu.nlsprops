@@ -53,3 +53,7 @@ SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.useraction=Csak egy megadott t\u00ed
 SEC_TOO_MANY_PRINCIPALS=CWWKS0010E: A h\u00edv\u00f3 azonos\u00edt\u00f3 lek\u00e9r\u00e9se sor\u00e1n a rendszer \u00e9szlelte, hogy a h\u00edv\u00f3 t\u00e1rgy t\u00f6bbWSPrincipal t\u00edpus\u00fa azonos\u00edt\u00f3val rendelkezik. Csak egy WSPrincipal l\u00e9tezhet a t\u00e1rgyban. A WSPrincipal azonos\u00edt\u00f3k neve: {}
 SEC_TOO_MANY_PRINCIPALS.explanation=A h\u00edv\u00f3 t\u00e1rgy\u00e1ban t\u00fal sok WSPrincipal t\u00edpus\u00fa azonos\u00edt\u00f3 van. Csak egy ilyen t\u00edpus\u00fa azonos\u00edt\u00f3 t\u00e1mogatott.
 SEC_TOO_MANY_PRINCIPALS.useraction=Tekintse \u00e1t az alkalmaz\u00e1st \u00e9s \u00e1llap\u00edtsa meg, hogy mi\u00e9rt van t\u00f6bb WSPrincipal is a t\u00e1rgyban.
+
+SPNEGO_API_IS_NOT_SUPPORT=CWWKS0011E: A(z) {0} SPNEGO API nem t\u00e1mogatott a(z) {1} Java fut\u00e1si k\u00f6rnyezet {0} v\u00e1ltozat\u00e1hoz.
+SPNEGO_API_IS_NOT_SUPPORT.explanation=A SPNEGO API nem haszn\u00e1lhat\u00f3 a Java fut\u00e1si k\u00f6rnyezet sz\u00e1ll\u00edt\u00f3val \u00e9s v\u00e1ltozattal.
+SPNEGO_API_IS_NOT_SUPPORT.useraction=Haszn\u00e1ljon a SPNEGO API-k \u00e1ltal t\u00e1mogatott Java fut\u00e1si k\u00f6rnyezet sz\u00e1ll\u00edt\u00f3t \u00e9s v\u00e1ltozatot.

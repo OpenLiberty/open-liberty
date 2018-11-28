@@ -192,24 +192,9 @@ public abstract class AbstractSpringTests {
     public void configureServer() throws Exception {
         System.out.println("Configuring server for " + testName.getMethodName());
         if (serverStarted.compareAndSet(false, true)) {
-            server.setExtraArgs(extraServerArgs);;
-            ServerConfiguration config = server.getServerConfiguration();
+            server.setExtraArgs(extraServerArgs);
 
-            // START CLEAR out configs from previous tests
-            List<SpringBootApplication> applications = config.getSpringBootApplications();
-            applications.clear();
-            Set<String> features = config.getFeatureManager().getFeatures();
-            features.clear();
-            features.addAll(getFeatures());
-            List<VirtualHost> virtualHosts = config.getVirtualHosts();
-            virtualHosts.clear();
-            List<HttpEndpoint> endpoints = config.getHttpEndpoints();
-            endpoints.clear();
-            List<SSLConfig> ssls = config.getSsls();
-            ssls.clear();
-            List<KeyStore> keystores = config.getKeyStores();
-            keystores.clear();
-            // END CLEAR
+            ServerConfiguration config = getServerConfiguration();
 
             RemoteFile appFile = getApplicationFile();
             boolean dropinsTest = false;
@@ -250,7 +235,7 @@ public abstract class AbstractSpringTests {
                     if (!useDefaultVirtualHost()) {
                         app.getApplicationArguments().add("--" + LIBERTY_USE_DEFAULT_HOST + "=false");
                     }
-                    applications.add(app);
+                    config.getSpringBootApplications().add(app);
                     break;
                 }
                 default:
@@ -280,9 +265,16 @@ public abstract class AbstractSpringTests {
         server.setHttpDefaultSecurePort(EXPECTED_HTTP_PORT);
     }
 
-    private void configureBootStrapProperties(boolean dropinsTest) throws Exception {
+    protected void configureBootStrapProperties(boolean dropinsTest) throws Exception {
+        configureBootStrapProperties(dropinsTest, true);
+
+    }
+
+    protected void configureBootStrapProperties(boolean dropinsTest, boolean addDefaultProps) throws Exception {
         bootStrapPropertiesFile = new File(server.getFileFromLibertyServerRoot("bootstrap.properties").getAbsolutePath());
-        bootStrapProperties.putAll(getDefaultBootStrapProperties());
+        if (addDefaultProps) {
+            bootStrapProperties.putAll(getDefaultBootStrapProperties());
+        }
         bootStrapProperties.putAll(getBootStrapProperties());
         if (dropinsTest && !useDefaultVirtualHost()) {
             bootStrapProperties.put(LIBERTY_USE_DEFAULT_HOST, Boolean.FALSE.toString());
@@ -290,7 +282,28 @@ public abstract class AbstractSpringTests {
         try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
             bootStrapProperties.store(out, "");
         }
+    }
 
+    protected ServerConfiguration getServerConfiguration() throws Exception {
+        ServerConfiguration config = server.getServerConfiguration();
+
+        // START CLEAR out configs from previous tests
+        List<SpringBootApplication> applications = config.getSpringBootApplications();
+        applications.clear();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        features.clear();
+        features.addAll(getFeatures());
+        List<VirtualHost> virtualHosts = config.getVirtualHosts();
+        virtualHosts.clear();
+        List<HttpEndpoint> endpoints = config.getHttpEndpoints();
+        endpoints.clear();
+        List<SSLConfig> ssls = config.getSsls();
+        ssls.clear();
+        List<KeyStore> keystores = config.getKeyStores();
+        keystores.clear();
+        // END CLEAR
+
+        return config;
     }
 
 }

@@ -174,29 +174,20 @@ class ManagedCompletionStage<T> extends ManagedCompletableFuture<T> {
     @Override
     public CompletableFuture<T> toCompletableFuture() {
         ManagedCompletableFuture<T> dependentStage;
-        if (JAVA8) {
+        if (JAVA8)
             dependentStage = new ManagedCompletableFuture<T>(new CompletableFuture<T>(), defaultExecutor, null);
-            // The completable future that we are creating must complete upon completion of this stage
-            super.whenComplete((result, failure) -> {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(ManagedCompletionStage.this, tc, "whenComplete", result, failure);
-                if (failure == null)
-                    dependentStage.completableFuture.complete(result);
-                else
-                    dependentStage.completableFuture.completeExceptionally(failure);
-            });
-        } else {
+        else
             dependentStage = new ManagedCompletableFuture<T>(defaultExecutor, null);
-            // The completable future that we are creating must complete upon completion of this stage
-            super.whenComplete((result, failure) -> {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(ManagedCompletionStage.this, tc, "whenComplete", result, failure);
-                if (failure == null)
-                    dependentStage.super_complete(result);
-                else
-                    dependentStage.super_completeExceptionally(failure);
-            });
-        }
+
+        // The completable future that we are creating must complete upon completion of this stage
+        super.whenComplete((result, failure) -> {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(ManagedCompletionStage.this, tc, "whenComplete", result, failure);
+            if (failure == null)
+                dependentStage.super_complete(result);
+            else
+                dependentStage.super_completeExceptionally(failure);
+        });
 
         return dependentStage;
     }

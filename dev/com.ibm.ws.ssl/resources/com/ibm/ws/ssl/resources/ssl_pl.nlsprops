@@ -679,3 +679,11 @@ ssl.defaultKeyStore.not.created.CWPKI0819I.useraction=Nie jest wymagana \u017cad
 ssl.defaultKeyStore.env.password.CWPKI0820A=CWPKI0820A: Utworzono domy\u015blny magazyn kluczy przy u\u017cyciu zmiennej \u015brodowiskowej 'keystore_password'.
 ssl.defaultKeyStore.env.password.CWPKI0820A.explanation=Utworzono domy\u015blny magazyn kluczy przy u\u017cyciu zmiennej \u015brodowiskowej 'keystore_password'. Ta warto\u015b\u0107 jest generowana w pliku server.env podczas tworzenia serwera lub nadpisywana w \u015brodowisku, w kt\u00f3rym zosta\u0142 uruchomiony serwer.
 ssl.defaultKeyStore.env.password.CWPKI0820A.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.loaded.CWPKI0821I=CWPKI0821I: Za\u0142adowano domy\u015blny magazyn kluczy {1} o typie magazynu kluczy {2}.
+ssl.defaultKeyStore.loaded.CWPKI0821I.explanation=Za\u0142adowano domy\u015blny magazyn kluczy danego typu znajduj\u0105cy si\u0119 w okre\u015blonym po\u0142o\u017ceniu.
+ssl.defaultKeyStore.loaded.CWPKI0821I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W=CWPKI0822W: Podano minimaln\u0105 konfiguracj\u0119 domy\u015blnego magazynu kluczy, ale w po\u0142o\u017ceniu domy\u015blnego magazynu kluczy znajduj\u0105 si\u0119 dwa pliki: key.jks i key.p12. Jako domy\u015blny magazyn kluczy zostanie u\u017cyty plik key.jks.
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.explanation=W przypadku minimalnej konfiguracji magazynu kluczy i plik\u00f3w key.jks file i key.p12 zdefiniowanych w domy\u015blnym po\u0142o\u017cenia magazynu kluczy, jako domy\u015blny magazyn kluczy zostanie u\u017cyty plik key.jks.
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.useraction=Aby ustawi\u0107 plik key.p12 jako domy\u015blny magazyn kluczy, zmie\u0144 konfiguracj\u0119 magazynu kluczy, okre\u015blaj\u0105c po\u0142o\u017cenie pliku key.p12, lub usu\u0144 plik key.jks z konfiguracji. Aby plik key.jks by\u0142 domy\u015blnym magazynem kluczy, nie s\u0105 wymagane \u017cadne zmiany. 

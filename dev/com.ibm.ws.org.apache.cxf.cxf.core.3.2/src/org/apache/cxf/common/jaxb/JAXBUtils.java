@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.cxf.common.jaxb;
 
 
@@ -75,6 +76,8 @@ import org.w3c.dom.Node;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+
 import org.apache.cxf.common.classloader.ClassLoaderUtils;
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.ASMHelper;
@@ -126,7 +129,7 @@ public final class JAXBUtils {
     private static ClassLoader jaxbXjcLoader;
     private static volatile Optional<Object> jaxbMinimumEscapeHandler;
     private static volatile Optional<Object> jaxbNoEscapeHandler;
-    
+
     static {
         BUILTIN_DATATYPES_MAP = new HashMap<>();
         BUILTIN_DATATYPES_MAP.put("string", "java.lang.String");
@@ -175,6 +178,7 @@ public final class JAXBUtils {
     private JAXBUtils() {
     }
 
+    @FFDCIgnore(IOException.class)
     public static void closeUnmarshaller(Unmarshaller u) {
         if (u instanceof Closeable) {
             //need to do this to clear the ThreadLocal cache
@@ -262,6 +266,7 @@ public final class JAXBUtils {
      * @param namespaceURI the namespace URI.
      * @return the package name.
      */
+    @FFDCIgnore(URISyntaxException.class)
     public static String namespaceURIToPackage(String namespaceURI) {
         try {
             return nameSpaceURIToPackage(new URI(namespaceURI));
@@ -600,6 +605,7 @@ public final class JAXBUtils {
         return cls;
     }
 
+    @FFDCIgnore({Exception.class, Exception.class})
     private static synchronized ClassLoader getXJCClassLoader() {
         if (jaxbXjcLoader == null) {
             try {
@@ -646,6 +652,7 @@ public final class JAXBUtils {
         }
         return mapper;
     }
+    @FFDCIgnore({ClassNotFoundException.class, Exception.class})
     public static BridgeWrapper createBridge(Set<Class<?>> ctxClasses,
                                       QName qname,
                                       Class<?> refcls,
@@ -667,7 +674,7 @@ public final class JAXBUtils {
                                                  anns.getClass()).newInstance(qname, refcls, anns);
             List<Object> typeRefs = new ArrayList<>();
             typeRefs.add(ref);
-            List<Class<?>> clses = new ArrayList<Class<?>>(ctxClasses);
+            List<Class<?>> clses = new ArrayList<>(ctxClasses);
             clses.add(refClass.getField("type").get(ref).getClass());
             if (!refcls.isInterface()) {
                 clses.add(refcls);
@@ -710,6 +717,7 @@ public final class JAXBUtils {
     }
 
 
+    @FFDCIgnore({Throwable.class, Exception.class})
     public static SchemaCompiler createSchemaCompiler() throws JAXBException {
         try {
             Class<?> cls;
@@ -729,6 +737,7 @@ public final class JAXBUtils {
         }
     }
 
+    @FFDCIgnore(JAXBException.class)
     public static SchemaCompiler createSchemaCompilerWithDefaultAllocator(Set<String> allocatorSet) {
 
         try {
@@ -782,6 +791,7 @@ public final class JAXBUtils {
     public static Object createFileCodeWriter(File f) throws JAXBException {
         return createFileCodeWriter(f, StandardCharsets.UTF_8.name());
     }
+    @FFDCIgnore({ClassNotFoundException.class, Exception.class, Exception.class})
     public static Object createFileCodeWriter(File f, String encoding) throws JAXBException {
         try {
             Class<?> cls;
@@ -855,6 +865,7 @@ public final class JAXBUtils {
                                     Map<Package, CachedClass> objectFactoryCache) {
         scanPackages(classes, null, objectFactoryCache);
     }
+    @FFDCIgnore({ClassNotFoundException.class, Exception.class, Exception.class, Exception.class})
     public static void scanPackages(Set<Class<?>> classes,
                                     Class<?>[] extraClass,
                                     Map<Package, CachedClass> objectFactoryCache) {
@@ -873,7 +884,7 @@ public final class JAXBUtils {
         // that are in the same package. Also check for ObjectFactory classes
         Map<String, InputStream> packages = new HashMap<>();
         Map<String, ClassLoader> packageLoaders = new HashMap<>();
-        Set<Class<?>> objectFactories = new HashSet<Class<?>>();
+        Set<Class<?>> objectFactories = new HashSet<>();
         for (Class<?> jcls : classes) {
             String pkgName = PackageUtils.getPackageName(jcls);
             if (!packages.containsKey(pkgName)) {
@@ -1095,6 +1106,7 @@ public final class JAXBUtils {
         return false;
     }
 
+    @FFDCIgnore({RuntimeException.class, Throwable.class, Exception.class})
     private static synchronized Object createNamespaceWrapper(Class<?> mcls, Map<String, String> map) {
         String postFix = "";
         if (mcls.getName().contains("eclipse")) {
@@ -1146,13 +1158,13 @@ public final class JAXBUtils {
     public static class MapNamespacePrefixMapper2
         extends org.eclipse.persistence.internal.oxm.record.namespaces.MapNamespacePrefixMapper {
 
-        String nsctxt[];
+        String[] nsctxt;
 
         public MapNamespacePrefixMapper2(Map<String, String> foo) {
             super(foo);
         }
         public String[] getPreDeclaredNamespaceUris() {
-            String sup[] = super.getPreDeclaredNamespaceUris();
+            String[] sup = super.getPreDeclaredNamespaceUris();
             if (nsctxt == null) {
                 return sup;
             }
@@ -1162,7 +1174,7 @@ public final class JAXBUtils {
             }
             return s.toArray(new String[s.size()]);
         }
-        public void setContextualNamespaceDecls(String f[]) {
+        public void setContextualNamespaceDecls(String[] f) {
             nsctxt = f;
         }
         public String[] getContextualNamespaceDecls() {
@@ -1172,6 +1184,7 @@ public final class JAXBUtils {
     */
     //CHECKSTYLE:OFF
     //bunch of really long ASM based methods that cannot be shortened easily
+    @FFDCIgnore(Throwable.class)
     private static Object createEclipseNamespaceMapper(Class<?> mcls, Map<String, String> map) {
         ASMHelper helper = new ASMHelper();
         String className = "org.apache.cxf.jaxb.EclipseNamespaceMapper";
@@ -1340,7 +1353,7 @@ public final class JAXBUtils {
 
             cw.visitEnd();
 
-            byte bts[] = cw.toByteArray();
+            byte[] bts = cw.toByteArray();
             cls = helper.loadClass(className,
                                    mcls, bts);
         }
@@ -1355,7 +1368,7 @@ public final class JAXBUtils {
     private static Class<?> createNamespaceWrapperInternal(ASMHelper helper, ClassWriter cw,
                                                            String postFix, Class<?> ref) {
         String className = "org.apache.cxf.jaxb.NamespaceMapper" + postFix;
-        boolean useJdkJaxb = isJdkJaxbAvailable() && !"RI".equals(postFix);
+        boolean useJdkJaxb = isJdkJaxbAvailable() && !"RI".equals(postFix); //Liberty change
         String superName = "com/sun/xml/"
             + (useJdkJaxb ? "internal/" : "")
             + "bind/marshaller/NamespacePrefixMapper";
@@ -1506,7 +1519,7 @@ public final class JAXBUtils {
 
         cw.visitEnd();
 
-        byte bts[] = cw.toByteArray();
+        byte[] bts = cw.toByteArray();
         return helper.loadClass(className,
                                 ref, bts);
     }
@@ -1536,11 +1549,14 @@ public final class JAXBUtils {
     }
 
     private static String getPostfix(Class<?> cls) {
+        String className = cls.getName();
         if (!isJdkJaxbAvailable() && 
-            (cls.getName().contains("com.sun.xml.internal") || cls.getName().contains("eclipse"))) {
+            (className.contains("com.sun.xml.internal")
+             || className.contains("eclipse"))) {
             //eclipse moxy accepts sun package CharacterEscapeHandler 
             return ".internal";
-        } else if (cls.getName().contains("com.sun.xml.bind")) {
+        } else if (className.contains("com.sun.xml.bind")
+                   || className.startsWith("com.ibm.xml")) { //Liberty change) {
             return "";
         }
         return null;
@@ -1559,7 +1575,8 @@ public final class JAXBUtils {
         }
         jaxbNoEscapeHandler.ifPresent(p -> setEscapeHandler(marshaller, p));
     }
-    
+
+    @FFDCIgnore(PropertyException.class)
     public static void setEscapeHandler(Marshaller marshaller, Object escapeHandler) {
         try {
             String postFix = getPostfix(marshaller.getClass());
@@ -1570,15 +1587,16 @@ public final class JAXBUtils {
             LOG.log(Level.INFO, "Failed to set MinumEscapeHandler to jaxb marshaller", e);
         }
     }
-    
+
     public static Object createMininumEscapeHandler(Class<?> cls) {
         return createEscapeHandler(cls, "MinimumEscapeHandler");
     }
-    
+
     public static Object createNoEscapeHandler(Class<?> cls) {
         return createEscapeHandler(cls, "NoEscapeHandler");
     }
-    
+
+    @FFDCIgnore(Exception.class)
     private static Object createEscapeHandler(Class<?> cls, String simpleClassName) {
         try {
             String postFix = getPostfix(cls);
@@ -1617,7 +1635,6 @@ public final class JAXBUtils {
             }
         });
     }
-    
 
 }
 

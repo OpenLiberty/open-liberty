@@ -1602,7 +1602,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             List<String> requiredRoles = webRequest.getRequiredRoles();
 
             String defaultMethod = (String) req.getAttribute("com.ibm.ws.webcontainer.security.checkdefaultmethod");
-            if (defaultMethod == "TRACE" && requiredRoles.isEmpty()) {
+            if ("TRACE".equals(defaultMethod) && requiredRoles.isEmpty()) {
                 webReply = new DenyReply("Illegal request. Default implementation of TRACE not allowed.");
             }
         }
