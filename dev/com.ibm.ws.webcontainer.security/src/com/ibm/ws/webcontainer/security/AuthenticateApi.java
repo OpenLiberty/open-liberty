@@ -205,7 +205,9 @@ public class AuthenticateApi {
         ssoCookieHelper.createLogoutCookies(req, res);
 
         try {
-            ThreadIdentityManager.setAppThreadIdentity(unauthenticatedSubjectService.getUnauthenticatedSubject());
+            if (unauthenticatedSubjectService.getUnauthenticatedSubject() != null) {
+                ThreadIdentityManager.setAppThreadIdentity(unauthenticatedSubjectService.getUnauthenticatedSubject());
+            }
 
         } catch (ThreadIdentityException e) {
             //FFDC will be generated
