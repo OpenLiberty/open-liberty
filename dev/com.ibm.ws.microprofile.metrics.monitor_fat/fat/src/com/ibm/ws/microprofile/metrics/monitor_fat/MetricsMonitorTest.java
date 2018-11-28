@@ -164,6 +164,27 @@ public class MetricsMonitorTest {
        		"vendor:connectionpool_jdbc_example_ds2_used_connections_total",
        	}, new String[] {});
        	
+       	Log.info(c, testName, "------- Add jax-ws endpoint application and run jax-ws client servlet ------");
+       	ShrinkHelper.defaultDropinApp(server, "testJaxWsApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jaxws","com.ibm.ws.microprofile.metrics.monitor_fat.jaxws.client");
+       	Log.info(c, testName, "------- added testJaxWsApp to dropins -----");
+    	checkStrings(getHttpServlet("/testJaxWsApp/SimpleStubClientServlet"),
+    		new String[] { "Pass" }, new String[] {});
+       	Log.info(c, testName, "------- jax-ws metrics should be available ------");
+       	checkStrings(getHttpsServlet("/metrics/vendor"), new String[] {
+       		"vendor:jaxws_client_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_checked_application_faults_total",
+       		"vendor:jaxws_client_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_runtime_faults_total",
+       		"vendor:jaxws_client_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_response_time_total_seconds",
+       		"vendor:jaxws_client_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_invocations_total",
+       		"vendor:jaxws_client_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_unchecked_application_faults_total",
+       		"vendor:jaxws_client_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_logical_runtime_faults_total",
+       		"vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_checked_application_faults_total",
+       		"vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_runtime_faults_total",
+       		"vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_response_time_total_seconds",
+       		"vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_invocations_total",
+       		"vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_unchecked_application_faults_total",
+       		"vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_logical_runtime_faults_total"	
+       	}, new String[] {});
+       	
        	Log.info(c, testName, "------- Monitor filter ThreadPool and WebContainer  ------");
        	server.setMarkToEndOfLog();
        	server.setServerConfigurationFile("server_monitorFilter1.xml");
@@ -209,7 +230,16 @@ public class MetricsMonitorTest {
        		new String[] {"vendor:threadpool", "vendor:servlet", "vendor:session", "vendor:connectionpool" }, 
        		new String[] {});
        	
-
+       	Log.info(c, testName, "------- Remove JAX-WS application ------");
+       	boolean rc1 = server.removeDropinsApplications("testJaxWsApp.war");
+       	Log.info(c, testName, "------- " + (rc1 ? "successfully removed" : "failed to remove") + " JAX-WS application ------");
+       	server.setMarkToEndOfLog();
+       	server.setServerConfigurationFile("server_noJaxWs.xml");
+       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKF0007I"));
+       	Log.info(c, testName, "------- jax-ws metrics should not be available ------");
+      	checkStrings(getHttpsServlet("/metrics/vendor"), 
+      		new String[] { "vendor:" }, 
+      		new String[] { "vendor:jaxws_client", "vendor:jaxws_server"});
        	
        	Log.info(c, testName, "------- Remove JDBC application ------");
        	boolean rc2 = server.removeDropinsApplications("testJDBCApp.war");
@@ -230,40 +260,6 @@ public class MetricsMonitorTest {
       	checkStrings(getHttpsServlet("/metrics"), 
       		new String[] {}, 
       		new String[] { "vendor:" });
-            
-        if (componenttest.topology.impl.JavaInfo.forServer(server).majorVersion()<=8){
-            Log.info(c, testName, "------- Add jax-ws endpoint application and run jax-ws client servlet ------");
-            ShrinkHelper.defaultDropinApp(server, "testJaxWsApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jaxws","com.ibm.ws.microprofile.metrics.monitor_fat.jaxws.client");
-            Log.info(c, testName, "------- added testJaxWsApp to dropins -----");
-            checkStrings(getHttpServlet("/testJaxWsApp/SimpleStubClientServlet"),
-                new String[] { "Pass" }, new String[] {});
-            Log.info(c, testName, "------- jax-ws metrics should be available ------");
-            checkStrings(getHttpsServlet("/metrics/vendor"), new String[] {
-                "vendor:jaxws_client_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_checked_application_faults_total",
-                "vendor:jaxws_client_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_runtime_faults_total",
-                "vendor:jaxws_client_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_response_time_total_seconds",
-                "vendor:jaxws_client_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_invocations_total",
-                "vendor:jaxws_client_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_unchecked_application_faults_total",
-                "vendor:jaxws_client_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_logical_runtime_faults_total",
-                "vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_checked_application_faults_total",
-                "vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_runtime_faults_total",
-                "vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_response_time_total_seconds",
-                "vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_invocations_total",
-                "vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_unchecked_application_faults_total",
-                "vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_logical_runtime_faults_total"	
-            }, new String[] {});
-            
-            Log.info(c, testName, "------- Remove JAX-WS application ------");
-            boolean rc1 = server.removeDropinsApplications("testJaxWsApp.war");
-            Log.info(c, testName, "------- " + (rc1 ? "successfully removed" : "failed to remove") + " JAX-WS application ------");
-            server.setMarkToEndOfLog();
-            server.setServerConfigurationFile("server_noJaxWs.xml");
-            Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKF0007I"));
-            Log.info(c, testName, "------- jax-ws metrics should not be available ------");
-            checkStrings(getHttpsServlet("/metrics/vendor"), 
-                new String[] { "vendor:" }, 
-                new String[] { "vendor:jaxws_client", "vendor:jaxws_server"});
-        }
     }
 
     @Test
