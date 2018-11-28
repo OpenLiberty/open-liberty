@@ -156,6 +156,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         String recoveredServerIdentity = null;
         ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
 
+        CoordinationLock coordinationLock = null;
+
         try {
             recoveredServerIdentity = fs.serverName();
 
@@ -236,6 +238,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             RecoveryLog transactionLog = null;
             RecoveryLog partnerLog = null;
 
+            final boolean localRecovery = recoveredServerIdentity.equals(localRecoveryIdentity);
+
             // As long as a physical location for the recovery logs is found, and logging is enabled (ie user
             // has not specified ";0" as the log location string for a file based log) then create the
             if ((tlc != null) && (tlc.enabled())) {
@@ -287,16 +291,19 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     // TODO
                     locked = CoordinationLock.LOCK_SUCCESS;
                 } else {
-                    locked = new CoordinationLock(tranLogDirToUse).lock();
+                    coordinationLock = new CoordinationLock(tranLogDirToUse);
+                    locked = coordinationLock.lock();
                 }
 
                 if (locked != CoordinationLock.LOCK_SUCCESS) {
                     _recoveryDirector.serialRecoveryComplete(this, fs);
                     TMHelper.asynchRecoveryProcessingComplete(null);
 
+                    final RecoveryFailedException rfe = new RecoveryFailedException();
+
                     if (tc.isEntryEnabled())
-                        Tr.exit(tc, "initiateRecovery", "Could not lock tranlogs");
-                    return;
+                        Tr.exit(tc, "initiateRecovery", rfe);
+                    throw rfe;
                 }
 
                 // In the special case where we support tx recovery (eg for operating in the cloud), we'll also work with a "lease" log
@@ -326,7 +333,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             // just absorb resource.
 
             final RecoveryManager rm = fsc.getRecoveryManager();
-            final boolean localRecovery = recoveredServerIdentity.equals(localRecoveryIdentity);
 
             // If we have a lease log then we need to set it into the recovery manager, so that it too will be processed.
             if (_leaseLog != null) {
@@ -422,6 +428,10 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "initiateRecovery", e);
             throw new RecoveryFailedException(); // 171598
+        } finally {
+            if (coordinationLock != null) {
+                coordinationLock.unlock();
+            }
         }
 
         if (tc.isEntryEnabled())
