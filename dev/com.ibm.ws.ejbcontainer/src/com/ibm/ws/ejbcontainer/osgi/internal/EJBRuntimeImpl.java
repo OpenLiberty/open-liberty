@@ -138,6 +138,7 @@ import com.ibm.ws.ejbcontainer.runtime.NameSpaceBinder;
 import com.ibm.ws.ejbcontainer.util.ParsedScheduleExpression;
 import com.ibm.ws.exception.RuntimeWarning;
 import com.ibm.ws.exception.WsRuntimeFwException;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.DeploymentDescriptor;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
@@ -168,6 +169,7 @@ import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            property = { "deferredMetaData=EJB" })
 public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationStateListener, DeferredMetaDataFactory, ServerQuiesceListener {
+    private static final String CLASS_NAME = EJBRuntimeImpl.class.getName();
     private static final TraceComponent tc = Tr.register(EJBRuntimeImpl.class);
 
     private static RuntimeException rethrow(Throwable t) {
@@ -230,6 +232,8 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
 
     private WSEJBHandlerResolver webServicesHandlerResolver;
     private EJBPMICollaboratorFactory ejbPMICollaboratorFactory;
+
+    private boolean persistentTimerMsgLogged = false;
 
     private static final String CACHE_SIZE = "cacheSize";
     private static final String CACHE_CLEANUP_INTERVAL = "cacheCleanupInterval";
@@ -534,11 +538,43 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     }
 
     @Override
+    @FFDCIgnore(IllegalStateException.class)
     public void setupTimers(BeanMetaData bmd) {
 
-        EJBPersistentTimerRuntime ejbPersistentTimerRuntime = ejbPersistentTimerRuntimeServiceRef.getService();
-        if (ejbPersistentTimerRuntime != null) {
-            ejbPersistentTimerRuntime.enableDatabasePolling();
+        // No additional setup is required for non-persistent timers, but if the application has
+        // persistent automatic timers or a timeout method (programmatic) which could be persistent
+        // then database polling needs to be enabled in the persistent timer service.
+        //
+        // Note: if the ejbPersistentTimer feature is not enabled, then no setup is performed.
+        //       Persistent automatic timers are ignored; programmatic will fail on creation
+
+        boolean hasPersistentAutomaticTimers = bmd._moduleMetaData.ivHasPersistentAutomaticTimers;
+
+        if (bmd.isTimedObject || hasPersistentAutomaticTimers) {
+            EJBPersistentTimerRuntime ejbPersistentTimerRuntime = ejbPersistentTimerRuntimeServiceRef.getService();
+            if (ejbPersistentTimerRuntime != null) {
+                try {
+                    ejbPersistentTimerRuntime.enableDatabasePolling();
+                } catch (IllegalStateException ex) {
+                    if (hasPersistentAutomaticTimers) {
+                        FFDCFilter.processException(ex, CLASS_NAME + ".setupTimers", "560", this, new Object[] { bmd });
+
+                        // When automatic timers are present, fail application start if the ejbPersistentTimer feature
+                        // is enabled but cannot access the database; unable to automatically create them
+                        Tr.error(tc, "AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E", bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), bmd.j2eeName.getApplication());
+                        throw ex;
+                    } else {
+                        // When programmatic timers exist, provide an informational message if the ejbPersistentTimer
+                        // feature is enabled but cannot access the database; any previously created timers will not
+                        // run; new ones will fail on programmatic timer create. This is a one time message that occurs
+                        // if at least one programmatic timer application is present.
+                        if (!persistentTimerMsgLogged) {
+                            Tr.info(tc, "PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I");
+                            persistentTimerMsgLogged = true;
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -672,7 +708,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
 
         // Find all persistent timers for this bean
         EJBPersistentTimerRuntime ejbPersistentTimerRuntime = ejbPersistentTimerRuntimeServiceRef.getService();
-        if (ejbPersistentTimerRuntime != null) {
+        if (ejbPersistentTimerRuntime != null && ejbPersistentTimerRuntime.isConfigured()) {
             timers.addAll(ejbPersistentTimerRuntime.getTimers(beanId));
         }
 
@@ -712,7 +748,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
 
         // Find all persistent timers for this module
         EJBPersistentTimerRuntime ejbPersistentTimerRuntime = ejbPersistentTimerRuntimeServiceRef.getService();
-        if (ejbPersistentTimerRuntime != null) {
+        if (ejbPersistentTimerRuntime != null && ejbPersistentTimerRuntime.isConfigured()) {
             timers.addAll(ejbPersistentTimerRuntime.getAllTimers(mmd.ivAppName, mmd.ivName, mmd.ivAllowsCachedTimerData));
         }
 

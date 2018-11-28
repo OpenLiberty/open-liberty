@@ -4542,7 +4542,7 @@ public abstract class EJBMDOrchestrator {
      * <ol>
      * <li> javax.ejb.TimedObject interface ('ejbTimeout')
      * <li> <timeout-method> deployment descriptor entry
-     * <li> @Timeout annotatoin on the timeout method
+     * <li> @Timeout annotation on the timeout method
      * </ol>
      *
      * When more than one of the above are specified, they must match
@@ -5011,10 +5011,6 @@ public abstract class EJBMDOrchestrator {
                                                     + " module has an automatic timer.");
             }
 
-            // F743-13022 - Check now if the runtime environment supports timers
-            // rather than waiting until the automatic timers are created.
-            bmd.container.getEJBRuntime().setupTimers(bmd);
-
             // Sort the timer methods, and then assign method IDs.  We must sort
             // methods so that method IDs remain stable for persistent timers even
             // if the JVM changes the order of methods returned by getMethods().
@@ -5027,7 +5023,11 @@ public abstract class EJBMDOrchestrator {
 
             // Add the timer methods to module metadata so they will be created
             // once all the automatic timers for the module have been processed.
-            bmd._moduleMetaData.addAutomaticTimerBean(new AutomaticTimerBean(bmd, timerMethods)); // F743-13022, d604213
+            bmd._moduleMetaData.addAutomaticTimerBean(new AutomaticTimerBean(bmd, timerMethods));
+
+            // Check now if the runtime environment supports timers
+            // rather than waiting until the automatic timers are created.
+            bmd.container.getEJBRuntime().setupTimers(bmd);
         }
 
         // Always insert so finishBMDInit does not do extra work by calling

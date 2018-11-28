@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src"/>
+   	<classpathentry kind="src" path="test-applications/NoDBNonPersistAutoTimerEJB.jar/src"/>
+   	<classpathentry kind="src" path="test-applications/NoDBNonPersistAutoTimerWeb.war/src"/>
+   	<classpathentry kind="src" path="test-applications/NoDBPersistAutoTimerEJB.jar/src"/>
+   	<classpathentry kind="src" path="test-applications/NoDBProgrammaticTimerEJB.jar/src"/>
+   	<classpathentry kind="src" path="test-applications/NoDBProgrammaticTimerWeb.war/src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
