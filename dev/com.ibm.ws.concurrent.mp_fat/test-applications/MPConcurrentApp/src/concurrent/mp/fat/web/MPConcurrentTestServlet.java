@@ -2004,6 +2004,100 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
+     * Intentionally misconfigure managed executor builder with one or more of the same context type(s)
+     * appearing in both the cleared and propagated sets. Expect IllegalStateException reporting the overlap(s).
+     */
+    @Test
+    public void testManagedExecutorBuilderOverlappingContextTypes() throws Exception {
+        ManagedExecutor.Builder builder = ManagedExecutor.builder();
+
+        builder.cleared(ThreadContext.SECURITY, ThreadContext.APPLICATION, ThreadContext.TRANSACTION);
+        builder.propagated(TestContextTypes.CITY, TestContextTypes.STATE, ThreadContext.APPLICATION);
+
+        try {
+            builder.build();
+        } catch (IllegalStateException x) {
+            if (x.getMessage() == null || !x.getMessage().contains(ThreadContext.APPLICATION))
+                throw x;
+        }
+
+        builder.cleared(ThreadContext.TRANSACTION, TestContextTypes.CITY, TestContextTypes.STATE, ThreadContext.ALL_REMAINING);
+
+        try {
+            builder.build();
+        } catch (IllegalStateException x) {
+            if (x.getMessage() == null || !x.getMessage().contains(TestContextTypes.CITY) || !x.getMessage().contains(TestContextTypes.STATE))
+                throw x;
+        }
+
+        builder.propagated(ThreadContext.ALL_REMAINING);
+
+        try {
+            builder.build();
+        } catch (IllegalStateException x) {
+            if (x.getMessage() == null || !x.getMessage().contains(ThreadContext.ALL_REMAINING))
+                throw x;
+        }
+
+        // duplicates within the same set are ignored
+        builder.cleared(TestContextTypes.CITY, ThreadContext.ALL_REMAINING, ThreadContext.ALL_REMAINING);
+        builder.propagated(TestContextTypes.STATE, ThreadContext.APPLICATION, TestContextTypes.STATE);
+        ManagedExecutor executor = builder.build();
+        try {
+            CurrentLocation.setLocation("Wabasha", "Minnesota");
+
+            CompletableFuture<String> cf = executor.supplyAsync(() -> {
+                try {
+                    InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
+                } catch (NamingException x) {
+                    throw new RuntimeException(x);
+                }
+                String city = CurrentLocation.getCity();
+                String state = CurrentLocation.getState();
+                return city.length() == 0 ? state : (city + ", " + state);
+            });
+
+            CurrentLocation.setLocation("Eau Claire", "Wisconsin");
+
+            assertEquals("Minnesota", cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            CurrentLocation.clear();
+            executor.shutdown();
+        }
+    }
+
+    /**
+     * Intentionally misconfigure managed executor builder with one or more context type(s) that are not available.
+     * Expect IllegalStateException reporting the unavailable types(s).
+     */
+    @Test
+    public void testManagedExecutorBuilderUnavailableContextTypes() throws Exception {
+        ManagedExecutor.Builder builder = ManagedExecutor.builder();
+
+        builder.propagated(ThreadContext.APPLICATION, TestContextTypes.CITY, TestContextTypes.STATE, "Country", "Planet");
+
+        try {
+            builder.build();
+        } catch (IllegalStateException x) {
+            if (x.getMessage() == null || !x.getMessage().contains("Country") || !x.getMessage().contains("Planet"))
+                throw x;
+        }
+
+        builder.propagated();
+        builder.cleared(ThreadContext.TRANSACTION, "Galaxy", ThreadContext.ALL_REMAINING);
+
+        try {
+            builder.build();
+        } catch (IllegalStateException x) {
+            if (x.getMessage() == null || !x.getMessage().contains("Galaxy"))
+                throw x;
+        }
+
+        builder.cleared(ThreadContext.ALL_REMAINING);
+        builder.build().shutdown();
+    }
+
+    /**
      * Test a managed completable future using a managed executor with maximum concurrency of 2 and maximum policy of loose.
      * This should limit concurrent async actions to 2, while not limiting synchronous actions.
      */
@@ -4135,6 +4229,75 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
+     * Intentionally misconfigure thread context builder with one or more of the same context type(s)
+     * appearing in more than one of the (cleared, propagated, unchanged) sets. Expect IllegalStateException reporting the overlap(s).
+     */
+    @Test
+    public void testThreadContextBuilderOverlappingContextTypes() throws Exception {
+        ThreadContext.Builder builder = ThreadContext.builder();
+
+        builder.cleared(ThreadContext.SECURITY, ThreadContext.TRANSACTION, TestContextTypes.STATE);
+        builder.propagated(TestContextTypes.CITY, TestContextTypes.STATE, ThreadContext.APPLICATION);
+        builder.unchanged(ThreadContext.CDI, ThreadContext.TRANSACTION, TestContextTypes.CITY);
+
+        try {
+            builder.build();
+        } catch (IllegalStateException x) {
+            if (x.getMessage() == null
+                || !x.getMessage().contains(ThreadContext.TRANSACTION)
+                || !x.getMessage().contains(TestContextTypes.CITY)
+                || !x.getMessage().contains(TestContextTypes.STATE))
+                throw x;
+        }
+
+        // conflict between cleared & unchanged only
+        builder.propagated(ThreadContext.ALL_REMAINING);
+        builder.cleared(ThreadContext.SECURITY, ThreadContext.SECURITY, TestContextTypes.CITY);
+
+        try {
+            builder.build();
+        } catch (IllegalStateException x) {
+            if (x.getMessage() == null || !x.getMessage().contains(TestContextTypes.CITY))
+                throw x;
+        }
+
+        // conflict between propagated & unchanged only
+        builder.unchanged(ThreadContext.ALL_REMAINING);
+
+        try {
+            builder.build();
+        } catch (IllegalStateException x) {
+            if (x.getMessage() == null || !x.getMessage().contains(ThreadContext.ALL_REMAINING))
+                throw x;
+        }
+    }
+
+    /**
+     * Intentionally misconfigure thread context builder with one or more context type(s) that are not available.
+     * Expect IllegalStateException reporting the unavailable types(s).
+     */
+    @Test
+    public void testThreadContextBuilderUnavailableContextTypes() throws Exception {
+        ThreadContext.Builder builder = ThreadContext.builder();
+
+        builder.propagated(TestContextTypes.CITY, TestContextTypes.STATE, "Township", ThreadContext.APPLICATION);
+        builder.cleared("Ward");
+        builder.unchanged("Precinct"); // This is okay. Other than excluding from propagated/cleared, unchanged types are ignored.
+
+        try {
+            builder.build();
+        } catch (IllegalStateException x) {
+            if (x.getMessage() == null || !x.getMessage().contains("Township") || !x.getMessage().contains("Ward") || x.getMessage().contains("Precinct"))
+                throw x;
+        }
+
+        builder.propagated(ThreadContext.APPLICATION, ThreadContext.ALL_REMAINING);
+        builder.cleared();
+        builder.unchanged(ThreadContext.CDI, ThreadContext.SECURITY, ThreadContext.TRANSACTION);
+        builder.build();
+    }
+
+    /**
      * Validate that toString of a managed CompletableFuture includes information about the state of the completable future,
      * as well as indicating which PolicyExecutor Future it runs on and under which concurrency policy.
      */
@@ -4175,6 +4338,40 @@ public class MPConcurrentTestServlet extends FATServlet {
         // possible for this to run during small timing window before policy task future transitions from RUNNING to SUCCESSFUL
         assertTrue(s, s.contains("SUCCESSFUL") || s.contains("RUNNING"));
         assertTrue(s, s.contains("on managedScheduledExecutorService[noContextExecutor]/concurrencyPolicy[default-0]"));
+    }
+
+    /**
+     * It is not an error to include unknown types as 'unchanged' context. They should just be ignored.
+     */
+    @Test
+    public void testUnchangedContextTypesIgnoredIfUnknown() throws Exception {
+        ThreadContext contextSvc = ThreadContext.builder()
+                        .propagated(TestContextTypes.CITY, TestContextTypes.STATE)
+                        .unchanged("AnUnknownType", "AnotherUnknownType")
+                        .build();
+
+        CurrentLocation.setLocation("Pine Island", "Minnesota");
+        try {
+            BiConsumer<String, String> checkLocation = contextSvc.contextualConsumer((city, state) -> {
+                assertEquals(city, CurrentLocation.getCity());
+                assertEquals(state, CurrentLocation.getState());
+                try {
+                    fail("Should not have access to application namespace: " + InitialContext.doLookup("java:comp/env/executorRef"));
+                } catch (NamingException x) {
+                    // expected, application context must be cleared
+                }
+            });
+            CurrentLocation.setLocation("Janesville", "Wisconsin");
+
+            checkLocation.accept("Pine Island", "Minnesota");
+
+            // verify context is restored
+            assertEquals("Janesville", CurrentLocation.getCity());
+            assertEquals("Wisconsin", CurrentLocation.getState());
+            assertNotNull(InitialContext.doLookup("java:comp/env/executorRef"));
+        } finally {
+            CurrentLocation.clear();
+        }
     }
 
     /**

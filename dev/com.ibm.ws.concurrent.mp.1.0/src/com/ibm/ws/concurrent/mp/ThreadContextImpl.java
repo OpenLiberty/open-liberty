@@ -46,15 +46,6 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 class ThreadContextImpl implements ThreadContext, WSContextService {
     private static final TraceComponent tc = Tr.register(ThreadContextImpl.class);
 
-    // TODO: Verify this list when the 1.0 spec is finalized
-    public static final String[] BUILT_IN_TYPES = {
-                                                    ALL_REMAINING,
-                                                    APPLICATION,
-                                                    CDI,
-                                                    SECURITY,
-                                                    TRANSACTION
-    };
-
     /**
      * The concurrency provider.
      */
