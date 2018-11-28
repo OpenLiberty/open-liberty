@@ -15,28 +15,26 @@ bVersion=1.0
 javac.source: 1.8
 javac.target: 1.8
 
-Bundle-SymbolicName: com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0; singleton:=true
-
+Bundle-SymbolicName: com.ibm.ws.smallrye.reactive.streams.operators.1.0; singleton:=true
+                     
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Import-Package: \
-  org.reactivestreams; version="[1.0,1.1)", \
-  com.ibm.ws.microprofile.reactive.streams.operators.spi.impl;version="1.0";resolution:=optional, \
   *
-  
+
+# We will whittle this down once it is working
 Export-Package: \
-  org.eclipse.microprofile.reactive.streams.operators;version=1.0, \
-  org.eclipse.microprofile.reactive.streams.operators.core;version=1.0, \
-  org.eclipse.microprofile.reactive.streams.operators.spi;version=1.0
+  io.smallrye.reactive.streams; version="1.0.0", \
+  io.smallrye.reactive.streams.operators; version="1.0.0", \
+  io.smallrye.reactive.streams.spi; version="1.0.0", \
+  io.smallrye.reactive.streams.stages; version="1.0.0", \
+  io.smallrye.reactive.streams.utils; version="1.0.0", \
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-api;1.0}, \
-  @${repo;org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-core;1.0}
-
-
+  @${repo;com.ibm.ws.io.smallrye.reactive:smallrye-reactive-streams-operators;1.0.0}
 
 WS-TraceGroup: REACTIVESTREAMS
 
 instrument.disabled: true
 
-publish.wlp.jar.suffix: dev/api/stable
+-buildpath: com.ibm.ws.io.reactivex.rxjava.2.2;version=latest
