@@ -5394,7 +5394,7 @@ public class LibertyServer implements LogMonitorClient {
     public boolean restartDropinsApplication(String appFileName) throws Exception {
         final String method = "restartDropinsApplication";
 
-        // String appName = appFileName.substring(0, appFileName.lastIndexOf("."));
+        String appName = appFileName.substring(0, appFileName.lastIndexOf("."));
         String appInDropinsPath = serverRoot + "/dropins/" + appFileName;
         String appExcisedPath = serverRoot + "/" + appFileName;
 
