@@ -11,10 +11,12 @@
 package com.ibm.ws.concurrent.mp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
@@ -44,22 +46,20 @@ class ThreadContextBuilderImpl implements ThreadContext.Builder {
         // For detection of unknown and overlapping types,
         HashSet<String> unknown = new HashSet<String>(cleared);
         unknown.addAll(propagated);
-        unknown.addAll(unchanged); // TODO should not cause an error if an unchanged type is not known
 
-        if (unknown.size() < cleared.size() + propagated.size() + unchanged.size())
-            throw new IllegalArgumentException(/* TODO findOverlapping(configured) */);
+        if (unknown.size() < cleared.size() + propagated.size() || !Collections.disjoint(unknown, unchanged))
+            failOnOverlapOfClearedPropagatedUnchanged();
 
         // Determine what to with remaining context types that are not explicitly configured
         ContextOp remaining;
         if (unknown.remove(ThreadContext.ALL_REMAINING)) {
             remaining = propagated.contains(ThreadContext.ALL_REMAINING) ? ContextOp.PROPAGATED //
                             : cleared.contains(ThreadContext.ALL_REMAINING) ? ContextOp.CLEARED //
-                                            : unchanged.contains(ThreadContext.ALL_REMAINING) ? ContextOp.UNCHANGED //
-                                                            : null;
+                                            : null;
             if (remaining == null) // only possible if builder is concurrently modified during build
                 throw new ConcurrentModificationException();
         } else
-            remaining = ContextOp.CLEARED;
+            remaining = unchanged.contains(ThreadContext.ALL_REMAINING) ? ContextOp.UNCHANGED : ContextOp.CLEARED;
 
         LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider = new LinkedHashMap<ThreadContextProvider, ContextOp>();
 
@@ -77,7 +77,7 @@ class ThreadContextBuilderImpl implements ThreadContext.Builder {
 
         // unknown thread context types
         if (unknown.size() > 0)
-            throw new IllegalArgumentException(unknown.toString());
+            failOnUnknownContextTypes(unknown, contextProviders);
 
         return new ThreadContextImpl(concurrencyProvider, configPerProvider);
     }
@@ -87,6 +87,44 @@ class ThreadContextBuilderImpl implements ThreadContext.Builder {
         cleared.clear();
         Collections.addAll(cleared, types);
         return this;
+    }
+
+    /**
+     * Fail with error identifying the overlap(s) in context types between any two of:
+     * cleared, propagated, unchanged.
+     *
+     * @throws IllegalStateException identifying the overlap.
+     */
+    private void failOnOverlapOfClearedPropagatedUnchanged() {
+        HashSet<String> overlap = new HashSet<String>(cleared);
+        overlap.retainAll(propagated);
+        HashSet<String> s = new HashSet<String>(cleared);
+        s.retainAll(unchanged);
+        overlap.addAll(s);
+        s = new HashSet<String>(propagated);
+        s.retainAll(unchanged);
+        overlap.addAll(s);
+        if (overlap.isEmpty()) // only possible if builder is concurrently modified during build
+            throw new ConcurrentModificationException();
+        throw new IllegalStateException(overlap.toString()); // TODO NLS translated error message
+    }
+
+    /**
+     * Fail with error identifying unknown context type(s) that were specified.
+     *
+     * @param unknown set of unknown context types(s) that were specified.
+     * @param contextProviders
+     */
+    static void failOnUnknownContextTypes(HashSet<String> unknown, ArrayList<ThreadContextProvider> contextProviders) {
+        Set<String> known = new HashSet<>();
+        known.addAll(Arrays.asList(ThreadContext.ALL_REMAINING, ThreadContext.APPLICATION, ThreadContext.CDI, ThreadContext.SECURITY, ThreadContext.TRANSACTION));
+        for (ThreadContextProvider provider : contextProviders) {
+            String contextType = provider.getThreadContextType();
+            known.add(contextType);
+        }
+
+        throw new IllegalStateException("Unknown thread contexts specified: " + unknown.toString() +
+                                        ". Allowed thread contexts values are: " + known); // TODO NLS translated error message
     }
 
     @Override
