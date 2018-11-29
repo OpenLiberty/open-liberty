@@ -54,9 +54,9 @@ public class AsyncBulkheadStateImpl implements AsyncBulkheadState {
         private boolean accepted = false;
 
         @Override
-        public void abort() {
+        public void abort(boolean mayInterrupt) {
             if (future != null) {
-                future.cancel(true);
+                future.cancel(mayInterrupt);
             }
         }
 

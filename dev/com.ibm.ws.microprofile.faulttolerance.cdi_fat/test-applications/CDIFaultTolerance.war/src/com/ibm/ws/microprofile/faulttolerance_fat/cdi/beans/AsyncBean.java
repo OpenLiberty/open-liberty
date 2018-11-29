@@ -29,6 +29,8 @@ public class AsyncBean {
     public static final String CONNECT_B_DATA = "AsyncBean.connectB";
     public static final String CONNECT_C_DATA = "AsyncBean.connectC";
 
+    private boolean wasInterrupted = false;
+
     @Asynchronous
     public Future<Connection> connectA() throws InterruptedException {
         System.out.println(System.currentTimeMillis() + " - " + CONNECT_A_DATA + " started");
@@ -84,5 +86,19 @@ public class AsyncBean {
         }
 
         return CompletableFuture.completedFuture(null);
+    }
+
+    @Asynchronous
+    public Future<Void> waitCheckCancel() {
+        try {
+            Thread.sleep(TestConstants.WORK_TIME);
+        } catch (InterruptedException e) {
+            wasInterrupted = true;
+        }
+        return CompletableFuture.completedFuture(null);
+    }
+
+    public boolean wasInterrupted() {
+        return wasInterrupted;
     }
 }

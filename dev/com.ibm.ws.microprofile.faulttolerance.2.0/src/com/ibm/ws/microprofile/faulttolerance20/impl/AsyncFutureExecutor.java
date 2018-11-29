@@ -55,8 +55,10 @@ public class AsyncFutureExecutor<R> extends AsyncExecutor<Future<R>> {
     }
 
     @Override
-    protected Future<R> createReturnWrapper() {
-        return new FutureShell<>();
+    protected Future<R> createReturnWrapper(AsyncExecutionContextImpl<Future<R>> executionContext) {
+        FutureShell<R> returnWrapper = new FutureShell<>();
+        returnWrapper.setCancellationCallback(executionContext::cancel);
+        return returnWrapper;
     }
 
 }
