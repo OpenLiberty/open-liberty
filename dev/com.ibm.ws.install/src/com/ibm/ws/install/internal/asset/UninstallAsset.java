@@ -10,6 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.install.internal.asset;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.internal.InstallUtils;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
@@ -23,8 +29,12 @@ public class UninstallAsset {
     IFixInfo fixInfo;
     String name;
     String displayName;
+    String featurePath;
+
     ProvisioningFeatureDefinition pd;
     UninstallAssetType type;
+    List<File> featureFileList;
+    Set<IFixInfo> fixUpdatesFeature;
 
     public UninstallAsset(IFixInfo fixInfo) {
         this.fixInfo = fixInfo;
@@ -40,6 +50,50 @@ public class UninstallAsset {
         this.pd = pd;
         this.displayName = ext == null || ext.isEmpty() ? shortName : ext + ":" + shortName;
         this.type = UninstallAssetType.feature;
+        this.featureFileList = new ArrayList<File>();
+        this.fixUpdatesFeature = new HashSet<IFixInfo>();
+    }
+
+    /**
+     * @return the fixUpdatesFeature
+     */
+    public Set<IFixInfo> getFixUpdatesFeature() {
+        return fixUpdatesFeature;
+    }
+
+    /**
+     * @param fixUpdatesFeature the fixUpdatesFeature to set
+     */
+    public void setFixUpdatesFeature(Set<IFixInfo> fixUpdatesFeature) {
+        this.fixUpdatesFeature = fixUpdatesFeature;
+    }
+
+    /**
+     * @return the featurePath
+     */
+    public String getFeaturePath() {
+        return featurePath;
+    }
+
+    /**
+     * @param featurePath the featurePath to set
+     */
+    public void setFeaturePath(String featurePath) {
+        this.featurePath = featurePath;
+    }
+
+    /**
+     * @return the featureFileList
+     */
+    public List<File> getFeatureFileList() {
+        return featureFileList;
+    }
+
+    /**
+     * @param featureFileList the featureFileList to set
+     */
+    public void setFeatureFileList(List<File> featureFileList) {
+        this.featureFileList = featureFileList;
     }
 
     public IFixInfo getIFixInfo() {
