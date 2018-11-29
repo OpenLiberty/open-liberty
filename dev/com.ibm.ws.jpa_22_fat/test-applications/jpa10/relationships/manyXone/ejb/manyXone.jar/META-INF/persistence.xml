@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+    version="1.0">
+
+    <persistence-unit name="Cleanup" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="ManyXOne_JTA">
+        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="ManyXOne_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="ManyXOne_Uni_JTA">
+        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <mapping-file>META-INF/manyxone-uni-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.uni.annotation.MOUniEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.uni.annotation.MOUniEntityB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.nooptional.annotation.MONoOptEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.nooptional.annotation.MONoOptEntityB</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="ManyXOne_Uni_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <mapping-file>META-INF/manyxone-uni-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.uni.annotation.MOUniEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.uni.annotation.MOUniEntityB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.nooptional.annotation.MONoOptEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.nooptional.annotation.MONoOptEntityB</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="ManyXOne_Bi_JTA">
+        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <mapping-file>META-INF/manyxone-bi-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.annotation.MOBiEntA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.annotation.MOBiEntB_CA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.annotation.MOBiEntB_CM</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.annotation.MOBiEntB_CP</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.annotation.MOBiEntB_CRF</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.annotation.MOBiEntB_CRM</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.annotation.MOBiEntB_DR</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.annotation.MOBiEntB_JC</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.annotation.MOBiEntB_LZ</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.nooptional.annotation.MONoOptBiEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.nooptional.annotation.MONoOptBiEntityB</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="ManyXOne_Bi_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <mapping-file>META-INF/manyxone-bi-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.annotation.MOBiEntA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.annotation.MOBiEntB_CA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.annotation.MOBiEntB_CM</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.annotation.MOBiEntB_CP</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.annotation.MOBiEntB_CRF</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.annotation.MOBiEntB_CRM</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.annotation.MOBiEntB_DR</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.annotation.MOBiEntB_JC</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.annotation.MOBiEntB_LZ</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.nooptional.annotation.MONoOptBiEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.nooptional.annotation.MONoOptBiEntityB</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="ManyXOne_CompoundPK_JTA">
+        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <mapping-file>META-INF/manyxone-compoundpk-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.annotation.EmbedIDMOEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.annotation.EmbedIDMOEntityB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.annotation.IDClassMOEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.annotation.IDClassMOEntityB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.annotation.EmbeddableID</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="ManyXOne_CompoundPK_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <mapping-file>META-INF/manyxone-compoundpk-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.annotation.EmbedIDMOEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.annotation.EmbedIDMOEntityB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.annotation.IDClassMOEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.annotation.IDClassMOEntityB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.annotation.EmbeddableID</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+</persistence>
