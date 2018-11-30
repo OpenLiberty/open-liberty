@@ -73,7 +73,8 @@ class UninstallDirector extends AbstractDirector {
     }
 
     void retrieveUninstallFileList(UninstallAsset uninstallAsset, boolean checkDependency) throws InstallException {
-        if (uninstallAsset.getFeatureFileList().isEmpty()) {
+        if (uninstallAsset.getType().equals(UninstallAssetType.feature) &&
+            uninstallAsset.getFeatureFileList().isEmpty()) {
             uninstallAsset.setFeaturePath(ESAAdaptor.getFeaturePath(uninstallAsset.getProvisioningFeatureDefinition(),
                                                                     engine.getBaseDir(uninstallAsset.getProvisioningFeatureDefinition())));
             uninstallAsset.setFeatureFileList(ESAAdaptor.determineFilesToBeDeleted(uninstallAsset.getProvisioningFeatureDefinition(), product.getFeatureDefinitions(),
