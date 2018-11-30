@@ -37,6 +37,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.j2c.TranWrapper;
 import com.ibm.ws.jca.adapter.WSManagedConnection;
@@ -1777,7 +1778,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
                 if (xaTranWrapper != null && !isMCAborted()) {
                     xaTranWrapper.releaseResources();
                 }
-                if (localTranWrapper != null) {
+                if (localTranWrapper != null && !isMCAborted()) {
                     localTranWrapper.releaseResources();
                 }
                 if (noTranWrapper != null) {
@@ -2221,33 +2222,68 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
                 //  mychm.removeHandles(this,connectionEvent.getConnectionHandle());
 
                 this.clearHandleList();
-                try {
-                    if (state != STATE_INACTIVE) { // If this MCWrapper is inactive then it has already been destroyed, likely because
-                        //a connection error occurred event was called on this connection while it was in the free pool.  Skipping a second
-                        //cleanup and destroy so the connection count is not double decremented and we don't get an IllegalStateException.
-                        this.releaseToPoolManager();
-                    } else {
-                        if (isTracingEnabled && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Skipping release since the MCWrapper state was already STATE_INACTIVE");
+                releaseToPoolManagerHelper();
+            } else {
+                //if (isMCAborted() && LOCALTXWRAPPER == getTranWrapperId()) {   // fails two tests
+                if (isMCAborted()) {
+                    if (isTracingEnabled && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Connection is aborted, removing MCWrapper from the pool.");
+                    }
+
+                    try {
+                        getCurrentTranWrapper().delist();
+                    } catch (ResourceException e) {
+                        //TODO: need to review this error handling
+
+                        // Can't delist, something went wrong.
+                        // Destroy the connection(s) so it can't cause any future problems.
+                        FFDCFilter.processException(e, "com.ibm.ejs.j2c.MCWrapper.connectionErrorOccurred", "2240", this);
+                        // add datasource name to message
+                        Tr.error(tc, "DELIST_FAILED_J2CA0073", "connectionErrorOccurred", e, gConfigProps.cfName);
+                        // Moved connectionEvent.getSource() inside of catch block for performance reasons
+                        ManagedConnection mc = null;
+                        try {
+                            mc = (ManagedConnection) connectionEvent.getSource();
+                        } catch (ClassCastException cce) {
+                            Tr.error(tc, "GET_SOURCE_CLASS_CAST_EXCP_J2CA0098", cce);
+                            throw new IllegalStateException("ClassCastException occurred attempting to cast event.getSource to ManagedConnection");
                         }
                     }
-                } catch (Exception ex) {
-                    // Nothing to do here. PoolManager has already logged it.
-                    // Since we are in cleanup mode, we will not surface a Runtime exception to the ResourceAdapter
-                    com.ibm.ws.ffdc.FFDCFilter.processException(ex, "com.ibm.ejs.j2c.MCWrapper.connectionErrorOccurred", "197", this);
-
+                    releaseToPoolManagerHelper();
+                } else {
                     if (isTracingEnabled && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc,
-                                 "connectionClosed: Closing connection in pool "
-                                           + gConfigProps.cfName
-                                           + " caught exception, but will continue processing: ",
-                                 ex);
+                        Tr.debug(this, tc, "Cannot release MCWrapper to the pool, waiting for transaction to complete");
                     }
                 }
+            }
+        }
+    }
+
+    private void releaseToPoolManagerHelper() {
+
+        final boolean isTracingEnabled = TraceComponent.isAnyTracingEnabled();
+
+        try {
+            if (state != STATE_INACTIVE) { // If this MCWrapper is inactive then it has already been destroyed, likely because
+                //a connection error occurred event was called on this connection while it was in the free pool.  Skipping a second
+                //cleanup and destroy so the connection count is not double decremented and we don't get an IllegalStateException.
+                this.releaseToPoolManager();
             } else {
                 if (isTracingEnabled && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Cannot release MCWrapper to the pool, waiting for transaction to complete");
+                    Tr.debug(tc, "Skipping release since the MCWrapper state was already STATE_INACTIVE");
                 }
+            }
+        } catch (Exception ex) {
+            // Nothing to do here. PoolManager has already logged it.
+            // Since we are in cleanup mode, we will not surface a Runtime exception to the ResourceAdapter
+            com.ibm.ws.ffdc.FFDCFilter.processException(ex, "com.ibm.ejs.j2c.MCWrapper.connectionErrorOccurred", "197", this);
+
+            if (isTracingEnabled && tc.isDebugEnabled()) {
+                Tr.debug(this, tc,
+                         "connectionClosed: Closing connection in pool "
+                                   + gConfigProps.cfName
+                                   + " caught exception, but will continue processing: ",
+                         ex);
             }
         }
     }
