@@ -17,16 +17,6 @@
         <AD name="%name"         description="%name.desc"         id="name"        required="false" type="String"  default="Default Executor" />
         <AD name="%max.threads"  description="%max.threads.desc"  id="maxThreads"  required="false" type="Integer" default="-1" />
         <AD name="%core.threads" description="%core.threads.desc" id="coreThreads" required="false" type="Integer" default="-1" />
-        <AD name="%keep.alive"   description="%keep.alive.desc"   id="keepAlive"   required="false" type="String"  ibm:type="duration" default="60s" />
-        <AD name="%steal.policy" description="%steal.policy.desc" id="stealPolicy" required="false" type="String"  default="LOCAL" >
-            <Option label="%steal.policy.strict" value="STRICT"/>
-            <Option label="%steal.policy.local"  value="LOCAL"/>
-            <Option label="%steal.policy.never"  value="NEVER"/>
-        </AD>
-        <AD name="%reject.policy"  description="%reject.policy.desc" id="rejectedWorkPolicy" required="false" type="String" default="ABORT" >
-            <Option label="%reject.policy.abort"  value="ABORT"/>
-            <Option label="%reject.policy.caller" value="CALLER_RUNS"/>
-        </AD>
     </OCD>
 
     <!-- Designate pid="com.ibm.ws.threading" --> <!-- factoryPid="com.ibm.ws.threading" -->
