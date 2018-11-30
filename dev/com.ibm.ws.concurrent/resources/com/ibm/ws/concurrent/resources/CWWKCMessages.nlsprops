@@ -22,7 +22,7 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
+# All messages must use the range CWWCK1100 to CWWCK1149 except those specifically identified as moved
 
 # Moved from com.ibm.ws.context
 CWWKC1000.unrecognized.property=CWWKC1000E: The configuration element {0} contains an unrecognized attribute {1}.
