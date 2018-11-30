@@ -32,11 +32,19 @@ public interface AsyncBulkheadState {
      * Submit a runnable to be run asynchronously on the bulkhead
      * <p>
      * The caller should check the value of {@link ExecutionReference#wasAccepted()} on the returned object to see if the bulkhead accepted the execution
+     * <p>
+     * The exception handler will be called if an exception occurs handling the runnable after the submit method has returned.
      *
      * @param runnable the runnable
+     * @param exceptionHandler the exception handler
      * @return an ExecutionReference, allowing the caller to see whether the execution was accepted and to abort later if required
      */
-    public ExecutionReference submit(Runnable runnable);
+    public ExecutionReference submit(Runnable runnable, ExceptionHandler exceptionHandler);
+
+    /**
+     * Shutdown the bulkhead. Any new tasks will be rejected.
+     */
+    public void shutdown();
 
     /**
      * A reference to an execution submitted to the bulkhead
@@ -55,5 +63,20 @@ public interface AsyncBulkheadState {
          * @return {@code true} if the runnable was accepted, {@code false} otherwise
          */
         public boolean wasAccepted();
+    }
+
+    /**
+     * A callback to handle exceptions thrown while processing the runnable
+     */
+    @FunctionalInterface
+    public interface ExceptionHandler {
+
+        /**
+         * Handle an exception
+         *
+         * @param t the exception to handle
+         */
+        public void handle(Throwable t);
+
     }
 }

@@ -10,10 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import javax.enterprise.concurrent.ManagedExecutorService;
@@ -53,12 +55,15 @@ import com.ibm.wsspi.threadcontext.WSContextService;
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=org.eclipse.microprofile.concurrent.ManagedExecutor" })
 public class ManagedExecutorImpl extends AbstractManagedExecutorService implements ManagedExecutor {
+    private final boolean allowLifeCycleMethods;
+
     /**
      * Constructor for OSGi code path.
      */
     @Trivial
     public ManagedExecutorImpl() {
         super();
+        allowLifeCycleMethods = false;
     }
 
     /**
@@ -69,6 +74,7 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
     public ManagedExecutorImpl(String name, PolicyExecutor policyExecutor, WSContextService mpThreadContext,
                                AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> tranContextProviderRef) {
         super(name, policyExecutor, mpThreadContext, tranContextProviderRef);
+        allowLifeCycleMethods = true;
     }
 
     @Activate
@@ -76,6 +82,13 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
     @Trivial
     protected void activate(ComponentContext context, Map<String, Object> properties) {
         super.activate(context, properties);
+    }
+
+    @Override
+    public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
+        return allowLifeCycleMethods //
+                        ? getNormalPolicyExecutor().awaitTermination(timeout, unit) //
+                        : super.awaitTermination(timeout, unit);
     }
 
     @Override
@@ -103,6 +116,22 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
     @Override
     public <U> CompletionStage<U> failedStage(Throwable ex) {
         return ManagedCompletableFuture.failedStage(ex, this);
+    }
+
+    @Override
+    @Trivial
+    public boolean isShutdown() {
+        return allowLifeCycleMethods //
+                        ? getNormalPolicyExecutor().isShutdown() //
+                        : super.isShutdown();
+    }
+
+    @Override
+    @Trivial
+    public boolean isTerminated() {
+        return allowLifeCycleMethods //
+                        ? getNormalPolicyExecutor().isTerminated() //
+                        : super.isTerminated();
     }
 
     @Override
@@ -151,6 +180,23 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
     @Trivial
     protected void setTransactionContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
         super.setTransactionContextProvider(ref);
+    }
+
+    @Override
+    @Trivial
+    public final void shutdown() {
+        if (allowLifeCycleMethods)
+            getNormalPolicyExecutor().shutdown();
+        else
+            super.shutdown();
+    }
+
+    @Override
+    @Trivial
+    public final List<Runnable> shutdownNow() {
+        return allowLifeCycleMethods //
+                        ? getNormalPolicyExecutor().shutdownNow() //
+                        : super.shutdownNow();
     }
 
     @Override

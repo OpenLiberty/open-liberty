@@ -22,10 +22,9 @@ import java.util.concurrent.TimeoutException;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.microprofile.faulttolerance.exceptions.BulkheadException;
+import org.junit.Test;
 
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBulkheadBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBulkheadBean2;
@@ -48,8 +47,8 @@ public class AsyncBulkheadServlet extends FATServlet {
     @Inject
     AsyncBulkheadBean2 bean4;
 
-    public void testAsyncBulkheadSmall(HttpServletRequest request,
-                                       HttpServletResponse response) throws ServletException, IOException, InterruptedException, ExecutionException, TimeoutException {
+    @Test
+    public void testAsyncBulkheadSmall() throws InterruptedException, ExecutionException, TimeoutException {
         //connectA has a poolSize of 2
         //first two should be run straight away, in parallel, each around 5 seconds
         Future<Boolean> future1 = bean1.connectA("One");
@@ -83,8 +82,8 @@ public class AsyncBulkheadServlet extends FATServlet {
 
     }
 
-    public void testAsyncBulkheadQueueFull(HttpServletRequest request,
-                                           HttpServletResponse response) throws ServletException, IOException, InterruptedException, ExecutionException, TimeoutException {
+    @Test
+    public void testAsyncBulkheadQueueFull() throws InterruptedException, ExecutionException, TimeoutException {
         //connectA has a poolSize of 2
         //first two should be run straight away, in parallel, each around 5 seconds
         Future<Boolean> future1 = bean2.connectA("One");
@@ -95,15 +94,19 @@ public class AsyncBulkheadServlet extends FATServlet {
 
         try {
             Future<Boolean> future5 = bean2.connectA("Five");
+            future5.get(TestConstants.TIMEOUT, TimeUnit.MILLISECONDS);
             throw new AssertionError("BulkheadException not thrown");
         } catch (BulkheadException e) {
-            //expected
+            // expected for 1.0
+        } catch (ExecutionException e) {
+            // expected for 2.0
+            assertThat(e.getCause(), instanceOf(BulkheadException.class));
         }
 
     }
 
-    public void testAsyncBulkheadTimeout(HttpServletRequest request,
-                                         HttpServletResponse response) throws ServletException, IOException, InterruptedException, TimeoutException, ExecutionException, AssertionError {
+    @Test
+    public void testAsyncBulkheadTimeout() throws InterruptedException, TimeoutException, ExecutionException, AssertionError {
         //connectB has a poolSize of 2 but a timeout of 2s
         //first two should be run straight away, in parallel, but should timeout after 2s
         Future<Boolean> future1 = bean3.connectB("One"); //without timeout would take 5s
@@ -154,8 +157,8 @@ public class AsyncBulkheadServlet extends FATServlet {
      * @throws ExecutionException
      * @throws TimeoutException
      */
-    public void testAsyncBulkheadSmallConfig(HttpServletRequest request,
-                                             HttpServletResponse response) throws ServletException, IOException, InterruptedException, ExecutionException, TimeoutException {
+    @Test
+    public void testAsyncBulkheadSmallConfig() throws InterruptedException, ExecutionException, TimeoutException {
         //connectC has a poolSize of 2
         //first two should be run straight away, in parallel, each around 5 seconds
         Future<Boolean> future1 = bean1.connectC("One");
@@ -203,8 +206,8 @@ public class AsyncBulkheadServlet extends FATServlet {
      * @throws ExecutionException
      * @throws TimeoutException
      */
-    public void testAsyncBulkheadSmallClassScopeConfig(HttpServletRequest request,
-                                                       HttpServletResponse response) throws ServletException, IOException, InterruptedException, ExecutionException, TimeoutException {
+    @Test
+    public void testAsyncBulkheadSmallClassScopeConfig() throws InterruptedException, ExecutionException, TimeoutException {
         //connectC has a poolSize of 2
         //first two should be run straight away, in parallel, each around 5 seconds
         Future<Boolean> future1 = bean4.connectA("One");

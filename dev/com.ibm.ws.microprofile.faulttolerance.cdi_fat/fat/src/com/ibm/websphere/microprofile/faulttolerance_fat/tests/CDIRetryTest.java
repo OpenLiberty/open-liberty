@@ -16,91 +16,32 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatMicroProfile13;
-import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatMicroProfile20;
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
 import com.ibm.websphere.simplicity.RemoteFile;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.RetryServlet;
 
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 @Mode(TestMode.LITE)
 @RunWith(FATRunner.class)
-public class CDIRetryTest extends LoggingTest {
+public class CDIRetryTest extends FATServletClient {
 
+    public static final String SERVER_NAME = "CDIFaultTolerance";
+
+    @Server(SERVER_NAME)
+    @TestServlet(contextRoot = "CDIFaultTolerance", servlet = RetryServlet.class)
+    public static LibertyServer server;
+
+    //run against all FT versions
     @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("CDIFaultTolerance");
-
-    //run against both MP13 (EE7) and MP20 (EE8) features
-    @ClassRule
-    public static RepeatTests r = RepeatTests.with(new RepeatMicroProfile13(SHARED_SERVER.getServerName()))
-                    .andWith(new RepeatMicroProfile20(SHARED_SERVER.getServerName()));
-
-    @Test
-    public void testRetry() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/retry?testMethod=testRetry",
-                                         "SUCCESS");
-    }
-
-    @Test
-    public void testInheritedAnnotations() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/retry?testMethod=testInheritedAnnotations",
-                                         "SUCCESS");
-    }
-
-    @Test
-    public void testAbortOn() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/retry?testMethod=testRetryAbortOn", "SUCCESS");
-    }
-
-    @Test
-    public void testAbortOnAsync() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/retry?testMethod=testRetryAbortOnAsync", "SUCCESS");
-    }
-
-    @Test
-    public void testAbortOnConfig() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/retry?testMethod=testRetryAbortOnConfig", "SUCCESS");
-    }
-
-    @Test
-    public void testRetryForever() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/retry?testMethod=testRetryForever", "SUCCESS");
-    }
-
-    @Test
-    public void testRetryDurationZero() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/retry?testMethod=testRetryDurationZero", "SUCCESS");
-    }
-
-    @Test
-    public void testRetryMaxRetriesConfig() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/retry?testMethod=testRetryMaxRetriesConfig", "SUCCESS");
-    }
-
-    @Test
-    public void testRetryMaxRetriesClassScopeConfig() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/retry?testMethod=testRetryMaxRetriesClassScopeConfig", "SUCCESS");
-    }
-
-    @Test
-    public void testRetryMaxRetriesClassLevelConfigForMethodAnnotation() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/retry?testMethod=testRetryMaxRetriesClassLevelConfigForMethodAnnotation", "SUCCESS");
-    }
+    public static RepeatTests r = RepeatFaultTolerance.repeatAll(SERVER_NAME);
 
     /**
      * Not really related to retry but it's easiest to test it here
@@ -108,41 +49,30 @@ public class CDIRetryTest extends LoggingTest {
     @Test
     public void testExecutorsClose() throws Exception {
 
-        RemoteFile traceLog = SHARED_SERVER.getLibertyServer().getMostRecentTraceFile();
-        SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(traceLog);
+        RemoteFile traceLog = server.getMostRecentTraceFile();
+        server.setMarkToEndOfLog(traceLog);
 
         // This calls a RequestScoped bean which only has fault tolerance annotations on the method
         // This should cause executors to get cleaned up
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/retry?testMethod=testRetryAbortOn", "SUCCESS");
+        runTest(server, "CDIFaultTolerance/retry", "testRetryAbortOn");
 
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("Cleaning up executors", traceLog);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
+        server.waitForStringInLog("Cleaning up executors", traceLog);
     }
 
     @BeforeClass
     public static void setUp() throws Exception {
-        if (!SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().startServer();
-        }
+        server.startServer();
 
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        if (SHARED_SERVER != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            /*
-             * Ignore following exception as those are expected:
-             * CWWKC1101E: The task com.ibm.ws.microprofile.faulttolerance.cdi.FutureTimeoutMonitor@3f76c259, which was submitted to executor service
-             * managedScheduledExecutorService[DefaultManagedScheduledExecutorService], failed with the following error:
-             * org.eclipse.microprofile.faulttolerance.exceptions.FTTimeoutException: java.util.concurrent.TimeoutException
-             */
-            SHARED_SERVER.getLibertyServer().stopServer("CWWKC1101E");
-        }
+        /*
+         * Ignore following exception as those are expected:
+         * CWWKC1101E: The task com.ibm.ws.microprofile.faulttolerance.cdi.FutureTimeoutMonitor@3f76c259, which was submitted to executor service
+         * managedScheduledExecutorService[DefaultManagedScheduledExecutorService], failed with the following error:
+         * org.eclipse.microprofile.faulttolerance.exceptions.FTTimeoutException: java.util.concurrent.TimeoutException
+         */
+        server.stopServer("CWWKC1101E");
     }
 }

@@ -23,6 +23,7 @@ public class MethodResult<R> {
 
     private final R result;
     private final Throwable failure;
+    private final boolean isInternalFailure;
 
     /**
      * Create a MethodResult for a method which returned a value
@@ -31,7 +32,7 @@ public class MethodResult<R> {
      * @return the new MethodResult
      */
     public static <R> MethodResult<R> success(R result) {
-        return new MethodResult<>(result, null);
+        return new MethodResult<>(result, null, false);
     }
 
     /**
@@ -41,13 +42,24 @@ public class MethodResult<R> {
      * @return the new MethodResult
      */
     public static <R> MethodResult<R> failure(Throwable failure) {
-        return new MethodResult<>(null, failure);
+        return new MethodResult<>(null, failure, false);
+    }
+
+    /**
+     * Create a MethodResult for an internal exception which occurred while trying to run a method
+     *
+     * @param failure the internal exception
+     * @return the new MethodResult
+     */
+    public static <R> MethodResult<R> internalFailure(Throwable failure) {
+        return new MethodResult<R>(null, failure, true);
     }
 
     @Trivial
-    private MethodResult(R result, Throwable failure) {
+    private MethodResult(R result, Throwable failure, boolean isInternalFailure) {
         this.result = result;
         this.failure = failure;
+        this.isInternalFailure = isInternalFailure;
     }
 
     /**
@@ -78,6 +90,18 @@ public class MethodResult<R> {
     @Trivial
     public boolean isFailure() {
         return failure != null;
+    }
+
+    /**
+     * Whether an internal failure occurred while trying to run the method
+     * <p>
+     * If this method returns {@code true}, {@link #isFailure()} will also return {@code true}.
+     *
+     * @return {@code true} if an internal failure occurred, {@code false} otherwise
+     */
+    @Trivial
+    public boolean isInternalFailure() {
+        return isInternalFailure;
     }
 
     @Override

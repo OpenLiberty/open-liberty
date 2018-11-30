@@ -17,11 +17,10 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.microprofile.faulttolerance.exceptions.BulkheadException;
 import org.eclipse.microprofile.faulttolerance.exceptions.CircuitBreakerOpenException;
+import org.junit.Test;
 
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncRunnerBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.BulkheadBean;
@@ -41,8 +40,8 @@ public class SyncBulkheadServlet extends FATServlet {
     @Inject
     AsyncRunnerBean runner;
 
-    public void testSyncBulkheadSmall(HttpServletRequest request,
-                                      HttpServletResponse response) throws Exception {
+    @Test
+    public void testSyncBulkheadSmall() throws Exception {
         CountDownLatch notify = new CountDownLatch(2); //the tasks notify that they are running
         CountDownLatch wait = new CountDownLatch(1); //and then wait to be released
 
@@ -89,8 +88,8 @@ public class SyncBulkheadServlet extends FATServlet {
 
     }
 
-    public void testSyncBulkheadCircuitBreaker(HttpServletRequest request,
-                                               HttpServletResponse response) throws Exception {
+    @Test
+    public void testSyncBulkheadCircuitBreaker() throws Exception {
         CountDownLatch notify = new CountDownLatch(2); //the tasks notify that they are running
         CountDownLatch wait = new CountDownLatch(1); //and then wait to be released
 
@@ -138,8 +137,8 @@ public class SyncBulkheadServlet extends FATServlet {
 
     }
 
-    public void testSyncBulkheadFallback(HttpServletRequest request,
-                                         HttpServletResponse response) throws Exception {
+    @Test
+    public void testSyncBulkheadFallback() throws Exception {
         CountDownLatch notify = new CountDownLatch(2); //the tasks notify that they are running
         CountDownLatch wait = new CountDownLatch(1); //and then wait to be released
 

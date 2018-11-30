@@ -14,6 +14,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -35,5 +36,16 @@ public class BasicResource {
     @Produces(MediaType.TEXT_PLAIN)
     public String getHelloWorld() {
         return "Hello World";
+    }
+
+    @GET
+    @Path("query")
+    public String query(@QueryParam("param") String param) {
+        System.out.println("param=" + param);
+        if (param == null) {
+            return "null";
+        } else {
+            return "param";
+        }
     }
 }

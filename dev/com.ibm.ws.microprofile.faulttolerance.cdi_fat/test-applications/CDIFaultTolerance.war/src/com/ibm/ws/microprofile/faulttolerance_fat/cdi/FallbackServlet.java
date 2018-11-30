@@ -24,6 +24,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.junit.Test;
+
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.FallbackBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.FallbackBeanWithoutRetry;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
@@ -44,6 +46,7 @@ public class FallbackServlet extends FATServlet {
     @Inject
     FallbackBeanWithoutRetry beanWithoutRetry;
 
+    @Test
     public void testFallback(HttpServletRequest request,
                              HttpServletResponse response) throws ServletException, IOException, ConnectException, NoSuchMethodException, SecurityException {
         //should be retried twice and then fallback and we get a result
@@ -53,6 +56,7 @@ public class FallbackServlet extends FATServlet {
         assertThat("Call count", bean.getConnectCountA(), is(3));
     }
 
+    @Test
     public void testFallbackWithoutRetry(HttpServletRequest request,
                                          HttpServletResponse response) throws ServletException, IOException, ConnectException, NoSuchMethodException, SecurityException {
         //should fallback immediately
@@ -62,29 +66,21 @@ public class FallbackServlet extends FATServlet {
         assertThat("Call count", beanWithoutRetry.getConnectCountA(), is(1));
     }
 
-    /**
-     * This test should only pass if MP_Fault_Tolerance_NonFallback_Enabled is set to false
-     */
-    public void testFallbackRetryDisabled() throws ConnectException {
-        Connection connection = bean.connectA();
-        String data = connection.getData();
-        assertThat(data, equalTo("Fallback for: connectA - data!"));
-        // Connect count should only be 1 since retry is disabled
-        assertThat("Call count", bean.getConnectCountA(), is(1));
-    }
-
+    @Test
     public void testFallbackHandlerConfig() throws ConnectException {
         // Fallback handler overridden as FallbackHandler2 in config
         Connection connection = beanWithoutRetry.connectB();
         assertThat(connection.getData(), containsString("MyFallbackHandler2"));
     }
 
+    @Test
     public void testFallbackMethodConfig() throws ConnectException {
         // Fallback method overriden as connectFallback2 in config
         Connection connection = beanWithoutRetry.connectC();
         assertThat(connection.getData(), equalTo("connectFallback2"));
     }
 
+    @Test
     public void testFallbackAsync() throws Exception {
         Future<Connection> future = bean.connectC();
         Connection connection = future.get();
@@ -92,6 +88,7 @@ public class FallbackServlet extends FATServlet {
         assertThat("Call count", bean.getConnectCountC(), equalTo(3));
     }
 
+    @Test
     public void testFallbackMethodAsync() throws Exception {
         Future<Connection> future = bean.connectD();
         Connection connection = future.get();
