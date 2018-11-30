@@ -119,15 +119,15 @@ public class Engine {
                           List<File> filesRestored) throws IOException, ParserConfigurationException, SAXException, InstallException {
         if (uninstallAsset.getType().equals(UninstallAssetType.feature)) {
             // Remove the feature contents and metadata
-            ESAAdaptor.uninstallFeature(uninstallAsset, uninstallAsset.getProvisioningFeatureDefinition(),
-                                        getBaseDir(uninstallAsset.getProvisioningFeatureDefinition()), filesRestored);
+            ESAAdaptor.uninstallFeature(uninstallAsset.getProvisioningFeatureDefinition(), product.getFeatureDefinitions(),
+                                        getBaseDir(uninstallAsset.getProvisioningFeatureDefinition()), checkDependency, filesRestored);
         } else if (uninstallAsset.getType().equals(UninstallAssetType.fix)) {
             FixAdaptor.uninstallFix(uninstallAsset.getIFixInfo(), product.getInstallDir(), filesRestored);
         }
         InstallUtils.updateFingerprint(product.getInstallDir());
     }
 
-    public File getBaseDir(ProvisioningFeatureDefinition pd) throws InstallException {
+    private File getBaseDir(ProvisioningFeatureDefinition pd) throws InstallException {
         if (pd.getBundleRepositoryType().equals(ExtensionConstants.USER_EXTENSION)) {
             return product.getUserExtensionDir();
         } else if (pd.getBundleRepositoryType().equals(ExtensionConstants.CORE_EXTENSION)) {
@@ -145,10 +145,10 @@ public class Engine {
      * @param checkDependency If dependencies should be checked
      * @throws InstallException
      */
-    public void preCheck(UninstallAsset uninstallAsset) throws InstallException {
+    public void preCheck(UninstallAsset uninstallAsset, boolean checkDependency) throws InstallException {
         if (uninstallAsset.getType().equals(UninstallAssetType.feature)) {
-            ESAAdaptor.preCheck(uninstallAsset, uninstallAsset.getProvisioningFeatureDefinition(),
-                                getBaseDir(uninstallAsset.getProvisioningFeatureDefinition()));
+            ESAAdaptor.preCheck(uninstallAsset.getProvisioningFeatureDefinition(), product.getFeatureDefinitions(),
+                                getBaseDir(uninstallAsset.getProvisioningFeatureDefinition()), checkDependency);
         } else if (uninstallAsset.getType().equals(UninstallAssetType.fix)) {
             FixAdaptor.preCheck(uninstallAsset.getIFixInfo(), product.getInstallDir());
         }
