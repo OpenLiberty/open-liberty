@@ -205,7 +205,7 @@ public class AuthenticateApi {
         ssoCookieHelper.createLogoutCookies(req, res);
 
         try {
-            if (unauthenticatedSubjectService.getUnauthenticatedSubject() != null) {
+            if (unauthenticatedSubjectService != null) {
                 ThreadIdentityManager.setAppThreadIdentity(unauthenticatedSubjectService.getUnauthenticatedSubject());
             }
 
