@@ -60,6 +60,8 @@ public class BasicClientTestServlet extends FATServlet {
                         .register(DuplicateWidgetExceptionMapper.class)
                         .register(UnknownWidgetExceptionMapper.class)
                         .property("com.ibm.ws.jaxrs.client.ssl.config", "mySSLConfig")
+                        .property("com.ibm.ws.jaxrs.client.receive.timeout", "120000")
+                        .property("com.ibm.ws.jaxrs.client.connection.timeout", "120000")
                         .baseUrl(baseUrl);
     }
 
