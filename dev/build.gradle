@@ -81,11 +81,11 @@ subprojects {
 }
 task testReport(type: TestReport) {
     // make sure this task is run after all subproject test tasks
-    mustRunAfter subprojects*.test
+    mustRunAfter subprojects.test
 
-    destinationDir = cnf.file('testReports/allTests')
+    destinationDir = cnf.file('generated/testReports/allUnitTests')
     // Include the results from the `test` task in all subprojects
-    reportOn subprojects*.test
+    reportOn subprojects.test
 }
     
 
@@ -100,6 +100,7 @@ task testResults {
     userProps.store(propsFile.newWriter(), null)
   }
 }
+testResults.dependsOn testReport
 
 task wrapper(type: Wrapper) {
   jarFile = rootProject.file('.gradle-wrapper/gradle-wrapper.jar')
