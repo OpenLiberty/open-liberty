@@ -46,6 +46,7 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -97,7 +98,7 @@ public class MPConcurrentTestServlet extends FATServlet {
     private TriFunction<CompletableFuture<?>, Supplier<?>, Executor, CompletableFuture<?>> completeAsync_;
     private QuadFunction<CompletableFuture<?>, Object, Long, TimeUnit, CompletableFuture<?>> completeOnTimeout;
     private Function<CompletableFuture<?>, CompletableFuture<?>> copy;
-    private TriFunction<Long, TimeUnit, Executor, Executor> ManagedCompletableFuture_delayedExecutor; // invokes static method
+    private Function<CompletableFuture<?>, Executor> defaultExecutor;
     private Function<CompletableFuture<?>, CompletionStage<?>> minimalCompletionStage;
     private Function<CompletableFuture<?>, CompletableFuture<?>> newIncompleteFuture;
     private TriFunction<CompletableFuture<?>, Long, TimeUnit, CompletableFuture<?>> orTimeout;
@@ -195,10 +196,9 @@ public class MPConcurrentTestServlet extends FATServlet {
                 }
             };
 
-            ManagedCompletableFuture_delayedExecutor = (time, unit, executor) -> {
+            defaultExecutor = cf -> {
                 try {
-                    return (Executor) cl.getMethod("delayedExecutor", long.class, TimeUnit.class, Executor.class)
-                                    .invoke(null, time, unit, executor);
+                    return (Executor) cl.getMethod("defaultExecutor").invoke(cf);
                 } catch (Exception x) {
                     throw convertToRuntimeException(x);
                 }
@@ -1521,91 +1521,6 @@ public class MPConcurrentTestServlet extends FATServlet {
         assertEquals(Long.valueOf(100), cf0.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertTrue(cf0.isDone());
         assertFalse(cf0.isCompletedExceptionally());
-    }
-
-    /**
-     * Verify that tasks submitted to a delayed executor (100ms) do run, and that they run with the context of the submitter.
-     * Verify that tasks submitted to a delayed executor (1 hour) do not run during the duration of this test.
-     */
-    @Test
-    public void testDelayedExecutor() throws Exception {
-        Executor delay1hour;
-        try {
-            delay1hour = ManagedCompletableFuture_delayedExecutor.apply(1l, TimeUnit.HOURS, defaultManagedExecutor);
-        } catch (UnsupportedOperationException x) {
-            if (AT_LEAST_JAVA_9)
-                throw x;
-            else // method unavailable for Java SE 8
-                return;
-        }
-        CountDownLatch latch1 = new CountDownLatch(1);
-        delay1hour.execute(() -> latch1.countDown());
-
-        Executor delay100ms = ManagedCompletableFuture_delayedExecutor.apply(100l, TimeUnit.MILLISECONDS, defaultManagedExecutor);
-        CountDownLatch latch3 = new CountDownLatch(3);
-        delay100ms.execute(() -> latch3.countDown());
-        delay100ms.execute(() -> {
-            System.out.println("testDelayedExecutor expects to successfully look up from java:comp");
-            try {
-                InitialContext.doLookup("java:comp/env/executorRef"); // requires context of the web module
-                latch3.countDown();
-            } catch (NamingException x) {
-                fail("Unable to look up java:comp on task submitted to delayed executor: " + x);
-            }
-        });
-        // Request from unmanaged thread in order to lack the context of the web module,
-        testThreads.submit(() -> delay100ms.execute(() -> {
-            try {
-                System.out.println("testDelayedExecutor expects to fail look up from java:comp");
-                Object result = InitialContext.doLookup("java:comp/env/executorRef");
-                fail("Should not be able to look up " + result + " without web module's context");
-            } catch (NamingException x) { // expected when lacking web module's context
-                latch3.countDown();
-            }
-        }));
-        assertTrue(latch3.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-
-        // First delayed task (1 hour) didn't run yet
-        assertEquals(1, latch1.getCount());
-
-        // There is no way to cancel the task that is delayed for submit in 1 hour.
-        // Expect the server to shut down with this task still queued up to the scheduled executor.
-    }
-
-    /**
-     * Verify the delayed executor runs tasks on the supplied executor, and that thread context capture
-     * settings of the supplied executor are used when invoking ManagedCompletableFuture *async methods.
-     */
-    @Test
-    public void testDelayedExecutorViaSuppliedExecutor() throws Exception {
-        Executor delay97ms;
-        try {
-            delay97ms = ManagedCompletableFuture_delayedExecutor.apply(97l, TimeUnit.MILLISECONDS, oneContextExecutor);
-        } catch (UnsupportedOperationException x) {
-            if (AT_LEAST_JAVA_9)
-                throw x;
-            else // method unavailable for Java SE 8
-                return;
-        }
-
-        Executor delay397msNoContext = ManagedCompletableFuture_delayedExecutor.apply(397l, TimeUnit.MILLISECONDS, noContextExecutor);
-        @SuppressWarnings("unchecked")
-        CompletableFuture<Integer> cf0 = (CompletableFuture<Integer>) ManagedCompletableFuture_newIncompleteFuture.apply(delay397msNoContext);
-        cf0.complete(97);
-
-        CompletableFuture<Integer> cf1 = cf0.thenApplyAsync(i -> {
-            try {
-                InitialContext.doLookup("java:comp/env/executorRef"); // require web component's namespace
-            } catch (NamingException x) {
-                throw new RuntimeException(x);
-            }
-            return i + 1;
-        }, delay97ms);
-
-        assertEquals(Integer.valueOf(98), cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertTrue(cf1.isDone());
-        assertFalse(cf1.isCompletedExceptionally());
-        assertFalse(cf1.isCancelled());
     }
 
     /**
@@ -4662,10 +4577,14 @@ public class MPConcurrentTestServlet extends FATServlet {
      * Use ThreadContext.testWithContextCapture to create a contextualized CompletableFuture
      * based on one that isn't context aware. Verify that its dependent actions run with the
      * configured context of the ThreadContext instance and that Async operations run on the
-     * Liberty global thread pool.
+     * servlet thread rather than a different thread from the Liberty global thread pool,
+     * as required by the spec for CompletionStage that is backed by a ThreadContext rather
+     * than a managed executor.
      */
     @Test
     public void testWithContextCapture_CompletableFuture_builder() throws Exception {
+        String servletThreadName = Thread.currentThread().getName();
+
         ThreadContext contextSvc = ThreadContext.builder()
                         .propagated(ThreadContext.APPLICATION)
                         .cleared(TestContextTypes.CITY)
@@ -4684,8 +4603,8 @@ public class MPConcurrentTestServlet extends FATServlet {
                 }
                 String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity());
-                assertEquals("", CurrentLocation.getState()); // empty context on thread from pool
-                assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // Liberty executor thread
+                assertEquals("Minnesota", CurrentLocation.getState()); // runs on servlet thread
+                assertEquals(servletThreadName, threadName);
                 return i + 1;
             });
 
@@ -4700,7 +4619,7 @@ public class MPConcurrentTestServlet extends FATServlet {
                 String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity()); // context of servlet thread is cleared
                 assertEquals("Minnesota", CurrentLocation.getState()); // context of servlet thread not cleared
-                assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // Liberty executor thread
+                assertEquals(servletThreadName, threadName); // runs on servlet thread
                 CurrentLocation.setLocation("La Crosse", "Wisconsin");
                 return i + 1;
             });
@@ -4712,6 +4631,15 @@ public class MPConcurrentTestServlet extends FATServlet {
 
             // context not restored on current thread
             assertEquals("Wisconsin", CurrentLocation.getState());
+
+            if (AT_LEAST_JAVA_9) {
+                Executor executor = defaultExecutor.apply(cf4);
+                assertFalse(executor instanceof ExecutorService); // no way for the user to shut it down
+
+                AtomicReference<String> threadNameRef = new AtomicReference<String>();
+                executor.execute(() -> threadNameRef.set(Thread.currentThread().getName()));
+                assertEquals(servletThreadName, threadNameRef.get());
+            }
         } finally {
             CurrentLocation.clear();
         }
@@ -4721,10 +4649,14 @@ public class MPConcurrentTestServlet extends FATServlet {
      * Use testWithContextCapture on a ContextService configured in server.xml
      * to create a contextualized CompletableFuture based on one that isn't context aware.
      * Verify that its dependent actions run with the configured context of the ContextService
-     * instance and that Async operations run on the Liberty global thread pool.
+     * instance and that Async operations run on the servlet thread rather than a different
+     * thread from the Liberty global thread pool, as required by the spec for
+     * CompletionStage that is backed by a ThreadContext rather than a managed executor.
      */
     @Test
     public void testWithContextCapture_CompletableFuture_serverConfig() throws Exception {
+        String servletThreadName = Thread.currentThread().getName();
+
         CompletableFuture<Integer> cf1 = CompletableFuture.supplyAsync(() -> 122, testThreads);
 
         CurrentLocation.setLocation("Mankato", "Minnesota");
@@ -4739,7 +4671,7 @@ public class MPConcurrentTestServlet extends FATServlet {
                 String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity());
                 assertEquals("", CurrentLocation.getState());
-                assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // Liberty executor thread
+                assertEquals(servletThreadName, threadName);
                 return i + 1;
             });
 
@@ -4754,7 +4686,7 @@ public class MPConcurrentTestServlet extends FATServlet {
                 String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity()); // context of servlet thread is cleared
                 assertEquals("", CurrentLocation.getState()); // context of servlet thread is cleared
-                assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // Liberty executor thread
+                assertEquals(servletThreadName, threadName);
                 CurrentLocation.setLocation("Onalaska", "Wisconsin");
                 return i + 1;
             });
@@ -4764,6 +4696,15 @@ public class MPConcurrentTestServlet extends FATServlet {
             // context restored on current thread
             assertEquals("Mankato", CurrentLocation.getCity());
             assertEquals("Minnesota", CurrentLocation.getState());
+
+            if (AT_LEAST_JAVA_9) {
+                Executor executor = defaultExecutor.apply(cf4);
+                assertFalse(executor instanceof ExecutorService); // no way for the user to shut it down
+
+                AtomicReference<String> threadNameRef = new AtomicReference<String>();
+                executor.execute(() -> threadNameRef.set(Thread.currentThread().getName()));
+                assertEquals(servletThreadName, threadNameRef.get());
+            }
         } finally {
             CurrentLocation.clear();
         }
@@ -4773,10 +4714,14 @@ public class MPConcurrentTestServlet extends FATServlet {
      * Use ThreadContext.testWithContextCapture to create a contextualized CompletionStage
      * based on one that isn't context aware. Verify that its dependent actions run with the
      * configured context of the ThreadContext instance and that Async operations run on the
-     * Liberty global thread pool.
+     * servlet thread rather than a different thread from the Liberty global thread pool,
+     * as required by the spec for CompletionStage that is backed by a ThreadContext rather
+     * than a managed executor.
      */
     @Test
     public void testWithContextCapture_CompletionStage_builder() throws Exception {
+        String servletThreadName = Thread.currentThread().getName();
+
         ThreadContext contextSvc = ThreadContext.builder()
                         .propagated(ThreadContext.APPLICATION)
                         .cleared(TestContextTypes.CITY)
@@ -4810,8 +4755,8 @@ public class MPConcurrentTestServlet extends FATServlet {
                 }
                 String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity());
-                assertEquals("", CurrentLocation.getState()); // empty context on thread from pool
-                assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // Liberty executor thread
+                assertEquals("Minnesota", CurrentLocation.getState()); // current thread used instead of thread from pool
+                assertEquals(servletThreadName, threadName);
                 return i + 1;
             });
 
@@ -4834,7 +4779,7 @@ public class MPConcurrentTestServlet extends FATServlet {
                 String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity()); // context of servlet thread is cleared
                 assertEquals("Minnesota", CurrentLocation.getState()); // context of servlet thread not cleared
-                assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // Liberty executor thread
+                assertEquals(servletThreadName, threadName);
                 CurrentLocation.setLocation("Clear Lake", "Iowa");
                 return i + 1;
             });
@@ -4863,10 +4808,14 @@ public class MPConcurrentTestServlet extends FATServlet {
      * Use ThreadContext.testWithContextCapture on a ContextService configured in server.xml
      * to create a contextualized CompletionStage based on one that isn't context aware.
      * Verify that its dependent actions run with the configured context of the ContextService
-     * instance and that Async operations run on the Liberty global thread pool.
+     * instance and that Async operations run on the servlet thread rather than a different
+     * thread from the Liberty global thread pool, as required by the spec for
+     * CompletionStage that is backed by a ThreadContext rather than a managed executor.
      */
     @Test
     public void testWithContextCapture_CompletionStage_serverConfig() throws Exception {
+        String servletThreadName = Thread.currentThread().getName();
+
         // Ensure that our CompletionStage runs on an unmanaged thread by blocking execution of the
         // stage it will depend on until after we create it.
         CountDownLatch continueLatch = new CountDownLatch(1);
@@ -4895,7 +4844,7 @@ public class MPConcurrentTestServlet extends FATServlet {
                 String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity());
                 assertEquals("", CurrentLocation.getState());
-                assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // Liberty executor thread
+                assertEquals(servletThreadName, threadName);
                 return i + 1;
             });
 
@@ -4918,7 +4867,7 @@ public class MPConcurrentTestServlet extends FATServlet {
                 String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity()); // context of servlet thread is cleared
                 assertEquals("", CurrentLocation.getState()); // context of servlet thread is cleared
-                assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // Liberty executor thread
+                assertEquals(servletThreadName, threadName);
                 CurrentLocation.setLocation("Superior", "Wisconsin");
                 return i + 1;
             });
