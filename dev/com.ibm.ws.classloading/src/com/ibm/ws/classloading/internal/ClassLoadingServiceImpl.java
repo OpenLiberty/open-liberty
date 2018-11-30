@@ -137,7 +137,6 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
                policyOption = ReferencePolicyOption.GREEDY)
     protected volatile List<ApplicationExtensionLibrary> appExtLibs;
 
-    @Reference
     private GlobalClassloadingConfiguration globalConfig;
 
     /**
@@ -161,6 +160,17 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
      * reference to the global library - primarily used for dump introspector output
      */
     private final AtomicReference<Library> globalSharedLibrary = new AtomicReference<>();
+    
+    @Reference
+    protected void setGlobalClassloadingConfiguration(GlobalClassloadingConfiguration globalConfig) {
+        this.globalConfig = globalConfig;
+    }
+    
+    protected void unsetGlobalClassloadingConfiguration(GlobalClassloadingConfiguration globalConfig) {
+        if(this.globalConfig == globalConfig) {
+            this.globalConfig = null;
+        }      
+    }
 
     @Activate
     protected void activate(ComponentContext cCtx, Map<String, Object> properties) {
