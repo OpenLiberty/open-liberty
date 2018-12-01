@@ -3551,6 +3551,7 @@ public class MPConcurrentTestServlet extends FATServlet {
         }
 
         assertTrue(executor1.isShutdown());
+        assertTrue(executor1.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertTrue(executor1.isTerminated());
     }
 
