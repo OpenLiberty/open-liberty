@@ -4591,6 +4591,7 @@ public class MPConcurrentTestServlet extends FATServlet {
                         .unchanged(TestContextTypes.STATE)
                         .build();
         CompletableFuture<Integer> cf1 = CompletableFuture.supplyAsync(() -> 115, testThreads);
+        cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS); // to make thread use for dependent stages predictable
 
         CurrentLocation.setLocation("Bemidji", "Minnesota");
         try {
@@ -4658,6 +4659,7 @@ public class MPConcurrentTestServlet extends FATServlet {
         String servletThreadName = Thread.currentThread().getName();
 
         CompletableFuture<Integer> cf1 = CompletableFuture.supplyAsync(() -> 122, testThreads);
+        cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS); // to make thread use for dependent stages predictable
 
         CurrentLocation.setLocation("Mankato", "Minnesota");
         try {
@@ -4714,7 +4716,7 @@ public class MPConcurrentTestServlet extends FATServlet {
      * Use ThreadContext.testWithContextCapture to create a contextualized CompletionStage
      * based on one that isn't context aware. Verify that its dependent actions run with the
      * configured context of the ThreadContext instance and that Async operations run on the
-     * servlet thread rather than a different thread from the Liberty global thread pool,
+     * current thread rather than a different thread from the Liberty global thread pool,
      * as required by the spec for CompletionStage that is backed by a ThreadContext rather
      * than a managed executor.
      */
@@ -4728,15 +4730,14 @@ public class MPConcurrentTestServlet extends FATServlet {
                         .unchanged(TestContextTypes.STATE)
                         .build();
 
-        // Ensure that our CompletionStage runs on an unmanaged thread by blocking execution of the
-        // stage it will depend on until after we create it.
         CountDownLatch continueLatch = new CountDownLatch(1);
-        CompletableFuture<Integer> cf1 = CompletableFuture.supplyAsync(new BlockableSupplier<Integer>(118, null, continueLatch), testThreads);
-        CompletionStage<Integer> cs1 = new MinimalSingleCompletionStage<Integer>(cf1);
-        continueLatch.countDown();
 
-        CurrentLocation.setLocation("International Falls", "Minnesota");
         try {
+            CompletableFuture<Integer> cf1 = CompletableFuture.supplyAsync(new BlockableSupplier<Integer>(118, null, continueLatch), testThreads);
+            CompletionStage<Integer> cs1 = new MinimalSingleCompletionStage<Integer>(cf1);
+
+            CurrentLocation.setLocation("International Falls", "Minnesota");
+
             CompletionStage<Integer> cs2 = contextSvc.withContextCapture(cs1);
 
             // verify that cs2 is a CompletionStage or limited to CompletionStage methods
@@ -4755,8 +4756,8 @@ public class MPConcurrentTestServlet extends FATServlet {
                 }
                 String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity());
-                assertEquals("Minnesota", CurrentLocation.getState()); // current thread used instead of thread from pool
-                assertEquals(servletThreadName, threadName);
+                assertEquals("", CurrentLocation.getState()); // thread from prior stage used instead of thread from Liberty global thread pool
+                assertTrue(threadName, !threadName.startsWith("Default Executor-thread-"));
                 return i + 1;
             });
 
@@ -4768,7 +4769,11 @@ public class MPConcurrentTestServlet extends FATServlet {
                     // expected
                 }
 
-            assertEquals(Integer.valueOf(119), cs3.toCompletableFuture().get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            continueLatch.countDown();
+            // poll to avoid running on current thread
+            CompletableFuture<Integer> cf3 = cs3.toCompletableFuture();
+            for (long start = System.nanoTime(); !cf3.isDone() && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertEquals(Integer.valueOf(119), cf3.getNow(1119));
 
             CompletionStage<Integer> cs4 = cs3.thenApply(i -> {
                 try {
@@ -4801,6 +4806,7 @@ public class MPConcurrentTestServlet extends FATServlet {
             assertEquals("Iowa", CurrentLocation.getState());
         } finally {
             CurrentLocation.clear();
+            continueLatch.countDown();
         }
     }
 
@@ -4808,7 +4814,7 @@ public class MPConcurrentTestServlet extends FATServlet {
      * Use ThreadContext.testWithContextCapture on a ContextService configured in server.xml
      * to create a contextualized CompletionStage based on one that isn't context aware.
      * Verify that its dependent actions run with the configured context of the ContextService
-     * instance and that Async operations run on the servlet thread rather than a different
+     * instance and that Async operations run on the current thread rather than a different
      * thread from the Liberty global thread pool, as required by the spec for
      * CompletionStage that is backed by a ThreadContext rather than a managed executor.
      */
@@ -4819,12 +4825,12 @@ public class MPConcurrentTestServlet extends FATServlet {
         // Ensure that our CompletionStage runs on an unmanaged thread by blocking execution of the
         // stage it will depend on until after we create it.
         CountDownLatch continueLatch = new CountDownLatch(1);
-        CompletableFuture<Integer> cf1 = CompletableFuture.supplyAsync(new BlockableSupplier<Integer>(125, null, continueLatch), testThreads);
-        CompletionStage<Integer> cs1 = new MinimalSingleCompletionStage<Integer>(cf1);
-        continueLatch.countDown();
-
-        CurrentLocation.setLocation("Grand Marais", "Minnesota");
         try {
+            CompletableFuture<Integer> cf1 = CompletableFuture.supplyAsync(new BlockableSupplier<Integer>(125, null, continueLatch), testThreads);
+            CompletionStage<Integer> cs1 = new MinimalSingleCompletionStage<Integer>(cf1);
+
+            CurrentLocation.setLocation("Grand Marais", "Minnesota");
+
             CompletionStage<Integer> cs2 = defaultThreadContext.withContextCapture(cs1);
 
             // verify that cs2 is a CompletionStage or limited to CompletionStage methods
@@ -4844,7 +4850,7 @@ public class MPConcurrentTestServlet extends FATServlet {
                 String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity());
                 assertEquals("", CurrentLocation.getState());
-                assertEquals(servletThreadName, threadName);
+                assertTrue(threadName, !threadName.startsWith("Default Executor-thread-"));
                 return i + 1;
             });
 
@@ -4856,7 +4862,11 @@ public class MPConcurrentTestServlet extends FATServlet {
                     // expected
                 }
 
-            assertEquals(Integer.valueOf(126), cs3.toCompletableFuture().get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            continueLatch.countDown();
+            // poll to avoid running on current thread
+            CompletableFuture<Integer> cf3 = cs3.toCompletableFuture();
+            for (long start = System.nanoTime(); !cf3.isDone() && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertEquals(Integer.valueOf(126), cf3.getNow(1226));
 
             CompletionStage<Integer> cs4 = cs3.thenApply(i -> {
                 try {
@@ -4889,6 +4899,7 @@ public class MPConcurrentTestServlet extends FATServlet {
             assertEquals("Minnesota", CurrentLocation.getState());
         } finally {
             CurrentLocation.clear();
+            continueLatch.countDown();
         }
     }
 }
