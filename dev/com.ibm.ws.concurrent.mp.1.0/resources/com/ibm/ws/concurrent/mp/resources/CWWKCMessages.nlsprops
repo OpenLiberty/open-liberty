@@ -33,7 +33,7 @@ CWWKC1151.context.lists.overlap.explanation=A thread context type can be configu
 CWWKC1151.context.lists.overlap.useraction=Review and correct the categorization of thread context types in your ManagedExecutor builder or ManagedExecutorConfig annotation.
 
 CWWKC1152.context.lists.overlap=CWWKC1152E: The following thread context types are configured in more than one category of (cleared, propagated, unchanged): {0}.
-CWWKC1152.context.lists.overlap.explanation=A thread context type can be configured in at most one category when building or injecting a ManagedExecutor.
+CWWKC1152.context.lists.overlap.explanation=A thread context type can be configured in at most one category when building or injecting a ThreadContext instance.
 CWWKC1152.context.lists.overlap.useraction=Review and correct the categorization of thread context types in your ThreadContext builder or ThreadContextConfig annotation.
 
 CWWKC1153.invalid.name=CWWKC1153E: The name {0} is not valid for a ManagedExecutor or ThreadContext. Names must be limited to the following characters: {1}. 
