@@ -22,7 +22,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -267,22 +266,15 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
-     * Alternative to CompletableFuture.delayedExecutor(delay, unit, executor) with an implementation that uses the Liberty
-     * ScheduledExecutor for notification of the delay and captures thread context from the invoker of the execute method
-     * (if the specified executor is a ManagedExecutorService) and propagates it to the running action. Except if the
-     * action is already contextualized, then the context of the action overrides.
+     * Because CompletableFuture.delayedExecutor is static, this is not a true override.
+     * It will be difficult for the user to invoke this method because they would need to get the class
+     * of the CompletableFuture implementation and locate the static delayedExecutor method on that.
      *
-     * @param delay amount of time to delay
-     * @param unit time unit of the delay value
-     * @param executor executor upon which to run the task after the delay elapses
-     * @return new executor instance
+     * @throws UnsupportedOperationException
      */
-    // TODO given how difficult it will be for users to invoke this static method, should we even provide it?
+    @Trivial
     public static Executor delayedExecutor(long delay, TimeUnit unit, Executor executor) {
-        if (JAVA8)
-            throw new UnsupportedOperationException();
-
-        return new DelayedExecutor(delay, unit, executor);
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -609,12 +601,6 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (executor instanceof WSManagedExecutorService) {
             WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
             contextSvc = managedExecutor.getContextService();
-        } else if (executor instanceof DelayedExecutor) {
-            DelayedExecutor delayedExecutor = ((DelayedExecutor) executor);
-            if (delayedExecutor.executor instanceof WSManagedExecutorService) {
-                WSManagedExecutorService managedExecutor = (WSManagedExecutorService) delayedExecutor.executor;
-                contextSvc = managedExecutor.getContextService();
-            }
         }
 
         if (contextSvc == null)
@@ -1520,7 +1506,9 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     @Trivial
     public String toString() {
         StringBuilder s = new StringBuilder(250).append(getClass().getSimpleName()) //
-                        .append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
+                        .append('@')
+                        .append(Integer.toHexString(System.identityHashCode(this)))
+                        .append('[');
         if (JAVA8)
             s.append(Integer.toHexString(completableFuture.hashCode())).append(' ');
         if (JAVA8 ? completableFuture.isDone() : super.isDone())
@@ -1597,88 +1585,6 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             } finally {
                 futureRefLocal.remove();
             }
-        }
-    }
-
-    /**
-     * Executor returned by the static delayedExecutor methods.
-     */
-    private static class DelayedExecutor implements Executor {
-        private final long delay;
-        final Executor executor;
-        private final TimeUnit unit;
-
-        private DelayedExecutor(long delay, TimeUnit unit, Executor executor) {
-            this.delay = delay;
-            this.unit = unit;
-            this.executor = executor;
-        }
-
-        /**
-         * Schedule the specified action to be submitted in after the delay associated with this DelayedExecutor.
-         *
-         * @param action action to submit after the delay
-         */
-        @Override
-        @Trivial
-        public void execute(Runnable action) {
-            final boolean trace = TraceComponent.isAnyTracingEnabled();
-            if (trace && tc.isEntryEnabled())
-                Tr.entry(this, tc, "execute: schedule with delay", action);
-
-            // Context capture & propagation is only useful for DelayedExecutor when it is used on its own.
-            // Otherwise, if supplied to managedCompletableFuture.*Async methods, then context that is captured
-            // separately by the ManagedCompletableFuture overrides (as it should).
-            ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
-            if (contextDescriptor != null)
-                action = new ContextualRunnable(contextDescriptor, action);
-
-            Executor delayedTaskExecutor = executor instanceof WSManagedExecutorService //
-                            ? ((WSManagedExecutorService) executor).getNormalPolicyExecutor() //
-                            : executor;
-
-            ScheduledExecutorService scheduledExecutor = AccessController.doPrivileged(getScheduledExecutorAction);
-            ScheduledFuture<?> future = scheduledExecutor.schedule(new DelayedTask(action, delayedTaskExecutor), delay, unit);
-
-            if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "execute: schedule with delay", future);
-        }
-
-        @Override
-        public String toString() {
-            return new StringBuilder(super.toString()).append(": ").append(delay).append(' ').append(unit).append(" on ").append(executor).toString();
-        }
-    }
-
-    /**
-     * Task that a DelayedExecutor schedules in order to submit an action after a delay.
-     */
-    private static class DelayedTask implements Runnable {
-        private final Runnable action;
-        private final Executor executor;
-
-        private DelayedTask(Runnable action, Executor executor) {
-            this.action = action;
-            this.executor = executor;
-        }
-
-        @Override
-        @Trivial
-        public void run() {
-            final boolean trace = TraceComponent.isAnyTracingEnabled();
-            if (trace && tc.isEntryEnabled())
-                Tr.entry(this, tc, "run: delayed submit", action, executor);
-
-            Future<?> future;
-            if (executor instanceof ExecutorService) {
-                future = ((ExecutorService) executor).submit(action);
-            } else {
-                executor.execute(action);
-                future = null;
-            }
-
-            if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "run: delayed submit", future);
         }
     }
 

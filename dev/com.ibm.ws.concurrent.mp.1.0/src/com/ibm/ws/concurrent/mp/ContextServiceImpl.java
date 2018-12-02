@@ -15,7 +15,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -25,7 +24,6 @@ import java.util.function.Supplier;
 import javax.enterprise.concurrent.ContextService;
 
 import org.eclipse.microprofile.concurrent.ThreadContext;
-import org.eclipse.microprofile.concurrent.spi.ConcurrencyProvider;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -42,7 +40,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.service.AbstractContextService;
-import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
@@ -61,14 +58,6 @@ import com.ibm.wsspi.threadcontext.WSContextService;
                         "creates.objectClass=org.eclipse.microprofile.concurrent.ThreadContext" })
 public class ContextServiceImpl extends AbstractContextService implements ThreadContext {
     private static final TraceComponent tc = Tr.register(ContextServiceImpl.class);
-
-    /**
-     * Lazily initialized reference to a cached managed executor instance, which is
-     * backed by the Liberty global thread pool without concurrency constraints,
-     * propagates the type of context configured for this thread context service, and
-     * clears all other types of context.
-     */
-    private final AtomicReference<ManagedExecutorImpl> managedExecutorRef = new AtomicReference<ManagedExecutorImpl>();
 
     @Activate
     @Override
@@ -140,39 +129,6 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
         super.deactivate(context);
     }
 
-    /**
-     * Obtain a ManagedExecutor backed by the Liberty global thread pool, without constraints,
-     * and propagating the same types as this ThreadContext service, clearing those which are
-     * configured to be cleared.
-     * If possible, a cached instance is returned. If it doesn't exist yet, then an instance
-     * is lazily created by this method.
-     *
-     * @return ManagedExecutor instance.
-     */
-    private ManagedExecutorImpl getManagedExecutor() {
-        ManagedExecutorImpl executor = managedExecutorRef.get();
-
-        if (executor == null) {
-            String name = new StringBuilder("ManagedExecutor_-1_-1_").append(ManagedExecutorBuilderImpl.instanceCount.incrementAndGet()).toString();
-
-            ConcurrencyProviderImpl concurrencyProvider = (ConcurrencyProviderImpl) ConcurrencyProvider.instance();
-            PolicyExecutor policyExecutor = concurrencyProvider.policyExecutorProvider.create(name);
-            policyExecutor.maxConcurrency(-1).maxQueueSize(-1);
-            // TODO these policy executor instances, as well as those created via ManagedExecutorBuilder are never shut down
-            // and removed from PolicyExecutorProvider's list. This is a memory leak and needs to be fixed.
-
-            executor = new ManagedExecutorImpl(name, policyExecutor, this, concurrencyProvider.transactionContextProvider.transactionContextProviderRef);
-
-            if (!managedExecutorRef.compareAndSet(null, executor)) {
-                // Another thread updated the reference first. Discard the instance we created and use the other.
-                policyExecutor.shutdown();
-                executor = managedExecutorRef.get();
-            }
-        }
-
-        return executor;
-    }
-
     @Modified
     @Override
     @Trivial
@@ -219,7 +175,7 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
     public <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage) {
         CompletableFuture<T> newCompletableFuture;
 
-        ManagedExecutorImpl executor = getManagedExecutor();
+        SameThreadExecutor executor = new SameThreadExecutor(this);
         if (ManagedCompletableFuture.JAVA8)
             newCompletableFuture = new ManagedCompletableFuture<T>(new CompletableFuture<T>(), executor, null);
         else
@@ -241,7 +197,7 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
     public <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage) {
         ManagedCompletionStage<T> newStage;
 
-        ManagedExecutorImpl executor = getManagedExecutor();
+        SameThreadExecutor executor = new SameThreadExecutor(this);
         if (ManagedCompletableFuture.JAVA8)
             newStage = new ManagedCompletionStage<T>(new CompletableFuture<T>(), executor, null);
         else
