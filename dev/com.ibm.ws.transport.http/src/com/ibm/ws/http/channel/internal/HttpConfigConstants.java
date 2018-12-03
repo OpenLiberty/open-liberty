@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -403,5 +403,13 @@ public class HttpConfigConstants {
     public static final String PROPNAME_H2_CONNECTION_IDLE_TIMEOUT = "http2ConnectionIdleTimeout";
     public static final String PROPNAME_H2_MAX_CONCURRENT_STREAMS = "maxConcurrentStreams";
     public static final String PROPNAME_H2_MAX_FRAME_SIZE = "maxFrameSize";
+
+    public static final String DEFAULT_PROXIES_REGEX = "10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|192\\.168\\.\\d{1,3}\\.\\d{1,3}|169\\.254\\.\\d{1,3}\\.\\d{1,3}|127\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|172\\.1[6-9]{1}\\.\\d{1,3}\\.\\d{1,3}|172\\.2[0-9]{1}\\.\\d{1,3}\\.\\d{1,3}|172\\.3[0-1]{1}\\.\\d{1,3}\\.\\d{1,3}|0:0:0:0:0:0:0:1|::1";
+
+    public static final String PROPNAME_REMOTE_PROXIES = "proxiesInternal";
+
+    public static final String PROPNAME_REMOTE_IP = "useRemoteIpInternal";
+
+    public static final String PROPNAME_REMOTE_IP_ACCESS_LOG = "useRemoteIpInAccessLogInternal";
 
 }

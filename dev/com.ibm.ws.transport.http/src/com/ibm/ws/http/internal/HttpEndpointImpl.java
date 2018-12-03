@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -114,6 +114,9 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     /** Current endpoint configuration */
     private volatile Map<String, Object> endpointConfig = null;
+
+    /** Current remoteIp configuration */
+    private volatile ChannelConfiguration remoteIpConfig = null;
 
     private volatile boolean endpointStarted = false;
     private volatile String resolvedHostName = null;
@@ -604,6 +607,44 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     public Map<String, Object> getHttpOptions() {
         ChannelConfiguration c = httpOptions;
+        return c == null ? null : c.getConfiguration();
+    }
+
+    /**
+     * The specific remoteIpOptions is selected by a filter set through metatype that matches a specific user-configured option set or falls back to a default.
+     *
+     * @param service
+     */
+    @Trivial
+    @Reference(name = "remoteIp",
+               service = ChannelConfiguration.class,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY,
+               cardinality = ReferenceCardinality.MANDATORY)
+    protected void setRemoteIp(ChannelConfiguration config) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "set remote ip " + config.getProperty("id"), this);
+        }
+        this.remoteIpConfig = config;
+        if (remoteIpConfig != null) {
+            performAction(updateAction);
+        }
+    }
+
+    @Trivial
+    protected void updatedRemoteIp(ChannelConfiguration config) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "update remote ip " + config.getProperty("id"), this);
+        }
+        if (remoteIpConfig != null) {
+            performAction(updateAction);
+        }
+    }
+
+    protected void unsetRemoteIp(ChannelConfiguration config) {}
+
+    public Map<String, Object> getRemoteIpConfig() {
+        ChannelConfiguration c = remoteIpConfig;
         return c == null ? null : c.getConfiguration();
     }
 
