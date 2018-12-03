@@ -46,7 +46,7 @@ public class JsonUserFeatureTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKE0700W: .*ServiceThatRequiresJson"); // Sometimes DS reports this warning when it attempts to get the ref, but ultimately the svc component activates successfully
     }
 
     // Test a user feature with a service component that injects JsonProvider (from the bell)
