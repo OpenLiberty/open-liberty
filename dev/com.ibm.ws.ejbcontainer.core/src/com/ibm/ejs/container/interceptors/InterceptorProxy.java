@@ -74,13 +74,10 @@ import com.ibm.ws.ffdc.FFDCFilter;
  * lifecycle callback interceptor methods, those lifecycle callback interceptor methods
  * are not invoked. See section 12.4.1.
  */
-public class InterceptorProxy
-{
+public class InterceptorProxy {
     private static final String CLASS_NAME = InterceptorProxy.class.getName();
 
-    private static final TraceComponent tc = Tr.register(InterceptorProxy.class
-                                                         , "EJBContainer"
-                                                         , "com.ibm.ejs.container.container");
+    private static final TraceComponent tc = Tr.register(InterceptorProxy.class, "EJBContainer", "com.ibm.ejs.container.container");
 
     /**
      * Used when invoke an interceptor method that takes no arguments.
@@ -127,10 +124,8 @@ public class InterceptorProxy
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    public InterceptorProxy(Method m, int interceptorIndex)
-    {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-        {
+    public InterceptorProxy(Method m, int interceptorIndex) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "InterceptorProxy");
         }
 
@@ -142,18 +137,14 @@ public class InterceptorProxy
         // Ensure private interceptor methods can be invoked.
         final SetAccessiblePrivilegedAction priviledgedAction = new SetAccessiblePrivilegedAction(); //d446892
         priviledgedAction.setParameters(m, true); //d446892
-        try
-        {
+        try {
             AccessController.doPrivileged(priviledgedAction); //d446892
-        } catch (PrivilegedActionException e)
-        {
+        } catch (PrivilegedActionException e) {
             FFDCFilter.processException(e, CLASS_NAME + ".<init>", "178", this);
             SecurityException ex = (SecurityException) e.getException();
             throw ex;
-        } finally
-        {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            {
+        } finally {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.exit(tc, toString());
             }
         }
@@ -179,9 +170,7 @@ public class InterceptorProxy
      *
      * @throws Exception
      */
-    public final Object invokeInterceptor(Object bean, InvocationContext inv, Object[] interceptors)
-                    throws Exception
-    {
+    public final Object invokeInterceptor(Object bean, InvocationContext inv, Object[] interceptors) throws Exception {
         // Interceptor instance is the bean instance itself if the
         // interceptor index is < 0.
         Object interceptorInstance = (ivBeanInterceptor) ? bean : interceptors[ivInterceptorIndex];
@@ -193,14 +182,20 @@ public class InterceptorProxy
         }
 
         // Does interceptor method require InvocationContext as an argument?
-        if (ivRequiresInvocationContext)
-        {
-            // Yes it does, so pass it as an argument.
-            Object[] args = new Object[] { inv }; // d404122
-            return ivInterceptorMethod.invoke(interceptorInstance, args); // d404122
-        }
-        else
-        {
+        if (ivRequiresInvocationContext) {
+            try {
+                // Yes it does, so pass it as an argument.
+                Object[] args = new Object[] { inv }; // d404122
+                return ivInterceptorMethod.invoke(interceptorInstance, args); // d404122
+            } catch (IllegalArgumentException ie) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "ivInterceptorMethod: " + ivInterceptorMethod.toString() + " class: " + ivInterceptorMethod.getClass() + " declaring class: "
+                                 + ivInterceptorMethod.getDeclaringClass());
+                    Tr.debug(tc, "interceptorInstance: " + interceptorInstance.toString() + " class: " + interceptorInstance.getClass());
+                }
+                throw ie;
+            }
+        } else {
             // Nope, interceptor method takes no arguments.
             return ivInterceptorMethod.invoke(interceptorInstance, NO_ARGS);
         }
@@ -210,8 +205,7 @@ public class InterceptorProxy
      * Override of toString to provide better trace information.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "InterceptorProxy(" + ivInterceptorIndex + "): "
                + ivInterceptorMethod.toGenericString();
     }
