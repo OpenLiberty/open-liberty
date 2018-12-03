@@ -118,11 +118,13 @@ public class DataFrameTests extends H2FATDriverServlet {
         String testName = "testInvalidPaddingValue";
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
-        FrameHeaders headers = setupDefaultPreface(h2Client);
 
+        // Add expected goaway before the init sequence.
         byte[] debugData = "Error processing the payload for DATA frame on stream 5".getBytes();
         FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
+
+        FrameHeaders headers = setupDefaultPreface(h2Client);
 
         h2Client.addExpectedFrame(headers);
 
