@@ -12,9 +12,6 @@ package com.ibm.ws.cdi12.test.ejbsNoBeansXml;
 
 import javax.ejb.Local;
 
-/**
- *
- */
 @Local
 public interface SecondManagedBeanInterface {
 

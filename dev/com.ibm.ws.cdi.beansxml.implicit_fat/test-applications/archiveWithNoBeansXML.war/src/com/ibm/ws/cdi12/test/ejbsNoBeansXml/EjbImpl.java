@@ -12,9 +12,6 @@ package com.ibm.ws.cdi12.test.ejbsNoBeansXml;
 
 import javax.inject.Inject;
 
-/**
- *
- */
 public class EjbImpl implements FirstManagedBeanInterface, SecondManagedBeanInterface {
 
     private OtherManagedSimpleBean bean;

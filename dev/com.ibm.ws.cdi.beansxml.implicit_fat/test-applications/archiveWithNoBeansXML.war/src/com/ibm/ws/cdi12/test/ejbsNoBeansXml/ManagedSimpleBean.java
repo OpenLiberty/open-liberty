@@ -8,13 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package com.ibm.ws.cdi12.test.ejbsNoBeansXml;
 
 import javax.annotation.ManagedBean;
 
-/**
- *
- */
 @ManagedBean
 public class ManagedSimpleBean {
     private String value;
