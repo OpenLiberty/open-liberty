@@ -31,6 +31,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.cdi12.fat.tests.NonContextualTests;
 import com.ibm.ws.cdi12.fat.tests.NonContextualInjectionPointTest;
+import com.ibm.ws.cdi12.fat.tests.VetoAndExtendTests;
 import com.ibm.ws.fat.util.FatLogHandler;
 
 /**
@@ -39,7 +40,8 @@ import com.ibm.ws.fat.util.FatLogHandler;
 @RunWith(Suite.class)
 @SuiteClasses({
              NonContextualTests.class,
-             NonContextualInjectionPointTest.class
+             NonContextualInjectionPointTest.class,
+             VetoAndExtendTests.class
 })
 public class FATSuite {
     
