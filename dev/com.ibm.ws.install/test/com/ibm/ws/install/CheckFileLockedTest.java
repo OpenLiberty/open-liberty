@@ -19,18 +19,19 @@ import java.util.Set;
 import org.junit.Rule;
 import org.junit.Test;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.install.internal.InstallUtils;
 import com.ibm.ws.install.internal.InstallUtils.InputStreamFileWriter;
 import com.ibm.ws.install.internal.Product;
 import com.ibm.ws.install.internal.adaptor.ESAAdaptor;
 import com.ibm.ws.install.internal.adaptor.FixAdaptor;
 import com.ibm.ws.install.internal.asset.ESAAsset;
+import com.ibm.ws.install.internal.asset.UninstallAsset;
 import com.ibm.ws.product.utility.extension.ifix.xml.IFixInfo;
 import com.ibm.ws.product.utility.extension.ifix.xml.Offering;
 import com.ibm.ws.product.utility.extension.ifix.xml.Property;
 import com.ibm.ws.product.utility.extension.ifix.xml.UpdatedFile;
+
+import test.common.SharedOutputManager;
 
 public class CheckFileLockedTest {
     @Rule
@@ -47,17 +48,13 @@ public class CheckFileLockedTest {
     public void testFixAdaptorPreCheck() throws InstallException {
         File baseDir = new File("build/unittest/wlpDirs/developers/wlp").getAbsoluteFile();
 
-        IFixInfo f = new IFixInfo("testFixAdaptorPreCheck", "1.0.0", Collections.<String> emptySet(),
-                        "fix description", new ArrayList<Offering>(0), Collections.<Property> emptyList(),
-                        Collections.<UpdatedFile> emptySet());
+        IFixInfo f = new IFixInfo("testFixAdaptorPreCheck", "1.0.0", Collections.<String> emptySet(), "fix description", new ArrayList<Offering>(0), Collections.<Property> emptyList(), Collections.<UpdatedFile> emptySet());
         FixAdaptor.preCheck(f, baseDir);
 
         UpdatedFile uf = new UpdatedFile("scriptB", 1L, "01-01-2014", "hash");
         Set<UpdatedFile> ufSet = new HashSet<UpdatedFile>(1);
         ufSet.add(uf);
-        f = new IFixInfo("8550-wlp-archive-IFPM0003", "8.5.5000.02050824_1140", Collections.<String> emptySet(),
-                        "fix description", new ArrayList<Offering>(0), Collections.<Property> emptyList(),
-                        ufSet);
+        f = new IFixInfo("8550-wlp-archive-IFPM0003", "8.5.5000.02050824_1140", Collections.<String> emptySet(), "fix description", new ArrayList<Offering>(0), Collections.<Property> emptyList(), ufSet);
         FixAdaptor.preCheck(f, baseDir);
     }
 
@@ -68,7 +65,8 @@ public class CheckFileLockedTest {
         new InputStreamFileWriter(srcFile.getCanonicalFile().toURI().toURL().openConnection().getInputStream()).writeToFile(esaFile);
         ESAAsset esaAsset = new ESAAsset("usertest.with.ibm.license", "usertest.with.ibm.license", "usr", esaFile, true);
         File baseDir = new File("build/unittest/wlpDirs/developers/wlp").getAbsoluteFile();
+        UninstallAsset uninstallAsset = new UninstallAsset(esaAsset.getProvisioningFeatureDefinition());
         Product p = new Product(baseDir);
-        ESAAdaptor.preCheck(esaAsset.getProvisioningFeatureDefinition(), p.getFeatureDefinitions(), baseDir, false);
+        ESAAdaptor.preCheck(uninstallAsset, esaAsset.getProvisioningFeatureDefinition(), baseDir);
     }
 }
