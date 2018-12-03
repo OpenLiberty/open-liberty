@@ -11,7 +11,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ 
 	            
 				FeatureUpdate.class,
-				WasJmsOutBoundTest.class
+				//WasJmsOutBoundTest.class
 	})
 
 public class FATSuite {}
