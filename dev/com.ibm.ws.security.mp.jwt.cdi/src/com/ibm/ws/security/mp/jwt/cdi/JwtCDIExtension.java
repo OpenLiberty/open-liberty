@@ -41,6 +41,7 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 
 /**
@@ -55,7 +56,7 @@ public class JwtCDIExtension implements Extension, WebSphereCDIExtension {
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
         AnnotatedType<ClaimProducer> producer = bm.createAnnotatedType(ClaimProducer.class);
-        bbd.addAnnotatedType(producer, ClaimProducer.class.getName() + ":" + getClass().getClassLoader().hashCode());
+        bbd.addAnnotatedType(producer, CDIServiceUtils.getAnnotatedTypeIdentifier(producer, this.getClass()));
     }
 
     public void processInjectionTarget(@Observes ProcessInjectionTarget<?> pit) {

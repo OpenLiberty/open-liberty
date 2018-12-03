@@ -25,6 +25,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.mp.context.ContainerContextProvider;
+import com.ibm.ws.concurrent.mp.context.DeferredClearedContext;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
 /**
@@ -37,12 +40,26 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
     private final Map<String, String> EMPTY_MAP = Collections.emptyMap();
 
     /**
+     * The concurrency provider.
+     */
+    private final ConcurrencyProviderImpl concurrencyProvider;
+
+    /**
      * List of thread context snapshots (either captured from the requesting thread or cleared/empty)
-     * which is ordered based on thread context provider prerequisites.
      */
     private ArrayList<com.ibm.wsspi.threadcontext.ThreadContext> contextSnapshots = new ArrayList<com.ibm.wsspi.threadcontext.ThreadContext>();
 
-    ThreadContextDescriptorImpl(LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
+    /**
+     * Metadata identifier for the application component. Can be null if not associated with an application component.
+     */
+    private final String metadataIdentifier;
+
+    ThreadContextDescriptorImpl(ConcurrencyProviderImpl concurrencyProvider, LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
+        this.concurrencyProvider = concurrencyProvider;
+
+        ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        metadataIdentifier = cData == null ? null : concurrencyProvider.metadataIdentifierService.getMetaDataIdentifier(cData);
+
         // create snapshots of captured or cleared context here, per the configured instructions for each type
         for (Map.Entry<ThreadContextProvider, ContextOp> entry : configPerProvider.entrySet()) {
             ThreadContextProvider provider = entry.getKey();
@@ -59,6 +76,7 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
     }
 
     @Override
+    @Trivial
     public ThreadContextDescriptor clone() {
         try {
             ThreadContextDescriptorImpl clone = (ThreadContextDescriptorImpl) super.clone();
@@ -83,6 +101,7 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
     }
 
     @Override
+    @Trivial
     public void set(String providerName, com.ibm.wsspi.threadcontext.ThreadContext context) {
         throw new UnsupportedOperationException();
     }
@@ -95,30 +114,49 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
      * @throws RejectedExecutionException if context cannot be established on the thread.
      */
     @Override
+    @Trivial // traced with greater granularity within method
     public ArrayList<com.ibm.wsspi.threadcontext.ThreadContext> taskStarting() throws RejectedExecutionException {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        // TODO enforce application availability
+        // EE Concurrency 3.3.4: All invocations to any of the proxied interface methods will fail with a
+        // java.lang.IllegalStateException exception if the application component is not started or deployed.
+        if (metadataIdentifier != null && concurrencyProvider.metadataIdentifierService.getMetaData(metadataIdentifier) == null)
+            com.ibm.ws.context.service.serializable.ThreadContextDescriptorImpl.notAvailable(metadataIdentifier, "");
 
         ArrayList<com.ibm.wsspi.threadcontext.ThreadContext> contextAppliedToThread = new ArrayList<com.ibm.wsspi.threadcontext.ThreadContext>(contextSnapshots.size());
         try {
             for (com.ibm.wsspi.threadcontext.ThreadContext contextSnapshot : contextSnapshots) {
                 contextSnapshot = contextSnapshot.clone();
 
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "begin context " + toString(contextSnapshot));
                 contextSnapshot.taskStarting();
 
                 contextAppliedToThread.add(contextSnapshot);
+
+                if (trace && tc.isDebugEnabled()) {
+                    if (contextSnapshot instanceof DeferredClearedContext) {
+                        Object clearedContextController = ((DeferredClearedContext) contextSnapshot).clearedContextController;
+                        if (clearedContextController != null)
+                            Tr.debug(this, tc, "cleared context " + clearedContextController);
+                    } else {
+                        Tr.debug(this, tc, "applied context " + toString(contextSnapshot));
+                    }
+                }
             }
         } catch (RuntimeException | Error x) {
             // In the event of failure, undo all context propagation up to this point.
-
             for (int c = contextAppliedToThread.size() - 1; c >= 0; c--)
                 try {
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "end context " + toString(contextAppliedToThread.get(c)));
-                    contextAppliedToThread.get(c).taskStopping();
+                    com.ibm.wsspi.threadcontext.ThreadContext appliedContext = contextAppliedToThread.get(c);
+                    if (trace && tc.isDebugEnabled()) {
+                        if (appliedContext instanceof DeferredClearedContext) {
+                            Object clearedContextController = ((DeferredClearedContext) appliedContext).clearedContextController;
+                            if (clearedContextController != null)
+                                Tr.debug(this, tc, "restore context " + clearedContextController);
+                        } else {
+                            Tr.debug(this, tc, "restore context " + toString(appliedContext));
+                        }
+                    }
+                    appliedContext.taskStopping();
                 } catch (Throwable stopX) {
                 }
 
@@ -134,15 +172,24 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
      * @param threadContext list of context previously applied to thread, ordered according to the order in which it was applied to the thread.
      */
     @Override
+    @Trivial // traced with greater granularity within method
     public void taskStopping(ArrayList<com.ibm.wsspi.threadcontext.ThreadContext> contextAppliedToThread) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         Throwable failure = null;
         for (int c = contextAppliedToThread.size() - 1; c >= 0; c--)
             try {
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "end context " + toString(contextAppliedToThread.get(c)));
-                contextAppliedToThread.get(c).taskStopping();
+                com.ibm.wsspi.threadcontext.ThreadContext appliedContext = contextAppliedToThread.get(c);
+                if (trace && tc.isDebugEnabled()) {
+                    if (appliedContext instanceof DeferredClearedContext) {
+                        Object clearedContextController = ((DeferredClearedContext) appliedContext).clearedContextController;
+                        if (clearedContextController != null)
+                            Tr.debug(this, tc, "restore context " + clearedContextController);
+                    } else {
+                        Tr.debug(this, tc, "restore context " + toString(appliedContext));
+                    }
+                }
+                appliedContext.taskStopping();
             } catch (Throwable x) {
                 if (failure == null)
                     failure = x;

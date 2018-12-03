@@ -70,18 +70,27 @@ public class CxfClientPropsTestServlet extends FATServlet {
     @Test
     public void testCXFConnectTimeout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         final String m = "testCXFConnectTimeout";
+        String target = null;
         long CXF_TIMEOUT = 5000;
-        long MARGIN = 5000;
+        long MARGIN = 6000;
         
         Client client = ClientBuilder.newBuilder()
                                      .property("client.ConnectionTimeout", CXF_TIMEOUT)
                                      .build();
-        //Connect to telnet port - which should be disabled on all test machines - so we should expect a timeout
+        
+        if (isZOS()) {
+            // https://stackoverflow.com/a/904609/6575578
+               target = "http://example.com:81";
+           } else {
+             //Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a timeout
+               target = "http://localhost:23/blah";
+           }
+        
         long startTime = System.currentTimeMillis();
         try {
-            client.target("http://localhost:23/blah").request().get();
-            _log.info(m + " aborting test... we actually connected to the remote telnet port...");
-            return; // we accidentally connected to the telnet port... abort the test here
+            client.target(target).request().get();
+            _log.info(m + " aborting test... we actually connected to the remote port...");
+            return; // we accidentally connected ... abort the test here
         } catch (ProcessingException expected) {
         }
 
@@ -122,19 +131,28 @@ public class CxfClientPropsTestServlet extends FATServlet {
     @Test
     public void testIBMConnectTimeoutOverridesCXFConnectTimeout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         final String m = "testIBMConnectTimeoutOverridesCXFConnectTimeout";
+        String target = null;
         long IBM_TIMEOUT = 5000;
-        long MARGIN = 5000;
-        long CXF_TIMEOUT = 10000;
+        long MARGIN = 6000;
+        long CXF_TIMEOUT = 20000;
         Client client = ClientBuilder.newBuilder()
                                      .property("com.ibm.ws.jaxrs.client.connection.timeout", IBM_TIMEOUT)
                                      .property("client.ConnectionTimeout", CXF_TIMEOUT)
                                      .build();
-        //Connect to telnet port - which should be disabled on all test machines - so we should expect a timeout
+        
+        if (isZOS()) {
+         // https://stackoverflow.com/a/904609/6575578
+            target = "http://example.com:81";
+        } else {
+          //Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a timeout
+            target = "http://localhost:23/blah";
+        }
+        
         long startTime = System.currentTimeMillis();
         try {
-            client.target("http://localhost:23/blah").request().get();
-            _log.info(m + " aborting test... we actually connected to the remote telnet port...");
-            return; // we accidentally connected to the telnet port... abort the test here
+            client.target(target).request().get();
+            _log.info(m + " aborting test... we actually connected to the remote port...");
+            return; // we accidentally connected ... abort the test here
         } catch (ProcessingException expected) {
         }
 
@@ -246,5 +264,13 @@ public class CxfClientPropsTestServlet extends FATServlet {
                        .post(Entity.text(sb.toString()))
                        .readEntity(String.class);
         assertEquals("30000:30000", result);
+    }
+    
+    static final boolean isZOS() {
+        String osName = System.getProperty("os.name");
+        if (osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS")) {
+            return true;
+        }
+        return false;
     }
 }

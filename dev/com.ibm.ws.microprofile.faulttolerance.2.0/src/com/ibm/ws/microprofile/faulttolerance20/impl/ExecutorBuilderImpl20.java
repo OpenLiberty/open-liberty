@@ -34,9 +34,9 @@ public class ExecutorBuilderImpl20<T, R> extends ExecutorBuilderImpl<T, R> {
     @Override
     public <W> Executor<W> buildAsync(Class<?> asyncResultWrapperType) {
         if (asyncResultWrapperType == Future.class) {
-            return (Executor<W>) new AsyncFutureExecutor<Object>(retryPolicy, circuitBreakerPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, scheduledExecutorService);
+            return (Executor<W>) new AsyncFutureExecutor<Object>(retryPolicy, circuitBreakerPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, scheduledExecutorService, policyExecutorProvider);
         } else if (asyncResultWrapperType == CompletionStage.class) {
-            return (Executor<W>) new AsyncCompletionStageExecutor<Object>(retryPolicy, circuitBreakerPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, scheduledExecutorService);
+            return (Executor<W>) new AsyncCompletionStageExecutor<Object>(retryPolicy, circuitBreakerPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, scheduledExecutorService, policyExecutorProvider);
         } else {
             throw new IllegalArgumentException("Invalid return type for async execution: " + asyncResultWrapperType);
         }

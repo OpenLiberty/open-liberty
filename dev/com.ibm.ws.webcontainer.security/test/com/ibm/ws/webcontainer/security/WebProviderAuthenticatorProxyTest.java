@@ -18,10 +18,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.ibm.ws.security.SecurityService;
+import com.ibm.ws.security.SecurityService;  
+import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
+import com.ibm.ws.security.authentication.cache.AuthCacheService;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.tai.TAIService;
+import com.ibm.ws.security.credentials.wscred.WSCredentialImpl;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
@@ -41,6 +44,9 @@ public class WebProviderAuthenticatorProxyTest {
     private WebProviderAuthenticatorProxy webProviderAuthenticatorProxy;
 
     private AtomicServiceReference<SecurityService> securityServiceRef;
+    private SecurityService securityService;
+    private AuthenticationService authenticationService;
+    private AuthCacheService authCacheService;
     private AtomicServiceReference<TAIService> taiServiceRef;
     private ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef;
     private WebAppSecurityConfig webAppSecurityConfig;
@@ -62,6 +68,9 @@ public class WebProviderAuthenticatorProxyTest {
     @Before
     public void setUp() throws Exception {
         securityServiceRef = mockery.mock(AtomicServiceReference.class, "securityServiceRef");
+        securityService = mockery.mock(SecurityService.class, "securityService");
+        authenticationService = mockery.mock(AuthenticationService.class);
+        authCacheService = mockery.mock(AuthCacheService.class);
         taiServiceRef = mockery.mock(AtomicServiceReference.class, "taiServiceRef");
         interceptorServiceRef = mockery.mock(ConcurrentServiceReferenceMap.class, "interceptorServiceRef");
         webAppSecurityConfig = mockery.mock(WebAppSecurityConfig.class);
@@ -216,6 +225,7 @@ public class WebProviderAuthenticatorProxyTest {
         withGeneralExpectations();
         withSSOResult(ssoSUCCESS);
         withSSOForJaspic(false);
+        withClearCacheData(ssoSubject);
         doesNotAuthenticateWithJaspic();
         withAuditExpectations(null);
         withTokenUsage(ssoSubject, AuthenticationConstants.INTERNAL_AUTH_PROVIDER_JASPIC_FORM);
@@ -370,6 +380,25 @@ public class WebProviderAuthenticatorProxyTest {
                 will(returnValue(useLtpaSSOForJaspic));
             }
         });
+    }
+
+    private void withClearCacheData(Subject subject) {
+        final String securityName = "user1";
+        final String realm = "testRealm";
+        mockery.checking(new Expectations() {
+            {
+                allowing(securityServiceRef).getService();
+                will(returnValue(securityService));
+                allowing(securityService).getAuthenticationService();
+                will(returnValue(authenticationService));
+                allowing(authenticationService).getAuthCacheService();
+                will(returnValue(authCacheService));
+                allowing(authCacheService).remove(realm + ":" + securityName);
+                
+            }
+        });
+        WSCredentialImpl credential = new WSCredentialImpl(realm, securityName, "uniqueSecurityName", "UNAUTHENTICATED", "primaryGroupId", "accessId", null, null);
+        subject.getPublicCredentials().add(credential);
     }
 
     private void doesNotAuthenticateWithJaspic() {

@@ -22,7 +22,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -32,7 +31,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedTask;
 
 import org.osgi.framework.BundleContext;
@@ -82,23 +80,6 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     private static Map<String, String> XPROPS_SUSPEND_TRAN = Collections.singletonMap(ManagedTask.TRANSACTION, ManagedTask.SUSPEND);
 
     /**
-     * Privileged action that obtains the default instance of ManagedExecutorService from the service registry.
-     * This is the same as looking up java:comp/DefaultManagedExecutorService, except doesn't require the jndi-1.0 feature.
-     */
-    private static PrivilegedAction<ManagedExecutorService> getDefaultManagedExecutorAction = () -> {
-        BundleContext bc = FrameworkUtil.getBundle(ManagedCompletableFuture.class).getBundleContext();
-        Collection<ServiceReference<ManagedExecutorService>> refs;
-        try {
-            refs = bc.getServiceReferences(ManagedExecutorService.class, "(id=DefaultManagedExecutorService)");
-        } catch (InvalidSyntaxException x) {
-            throw new RuntimeException(x); // should never happen
-        }
-        if (refs.isEmpty())
-            throw new IllegalStateException("DefaultManagedExecutorService");
-        return bc.getService(refs.iterator().next());
-    };
-
-    /**
      * Privileged action that obtains the Liberty non-deferrable ScheduledExecutorService.
      */
     private static PrivilegedAction<ScheduledExecutorService> getScheduledExecutorAction = () -> {
@@ -113,8 +94,6 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             throw new IllegalStateException("ScheduledExecutorService");
         return bc.getService(refs.iterator().next());
     };
-
-    // TODO need optimization to avoid repeatedly invoking getDefaultManagedExecutorAction and getScheduledExecutorAction
 
     /**
      * For the Java SE 8 implementation, the real completable future to which meaningful operations are delegated.
@@ -217,16 +196,15 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     // static method equivalents for CompletableFuture, plus other static methods for ManagedExecutorImpl to use
 
     /**
-     * Replaces CompletableFuture.completedFuture(value) with an implementation that switches the
-     * default asynchronous execution facility to be the default managed executor.
+     * Because CompletableFuture.completedFuture is static, this is not a true override.
+     * It will be difficult for the user to invoke this method because they would need to get the class
+     * of the CompletableFuture implementation and locate the static completedFuture method on that.
      *
-     * @param value result of the completed future
-     * @return completed completable future where the default managed executor is the default asynchronous execution facility.
+     * @throws UnsupportedOperationException directing the user to use the ManagedExecutor spec interface instead.
      */
     @Trivial
     public static <U> CompletableFuture<U> completedFuture(U value) {
-        ManagedExecutorService defaultExecutor = AccessController.doPrivileged(getDefaultManagedExecutorAction);
-        return completedFuture(value, defaultExecutor);
+        throw new UnsupportedOperationException("Use ManagedExecutor.completedFuture instead"); // TODO NLS
     }
 
     /**
@@ -237,6 +215,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @param executor executor to become the default asynchronous execution facility for the completed future
      * @return completed completable future
      */
+    @Trivial // traced by caller
     static <U> CompletableFuture<U> completedFuture(U value, Executor executor) {
         if (JAVA8) {
             return new ManagedCompletableFuture<U>(CompletableFuture.completedFuture(value), executor, null);
@@ -248,25 +227,22 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
-     * Replaces CompletableFuture.completedStage(value) with an implementation that switches the
-     * default asynchronous execution facility to be the default managed executor.
+     * Because CompletableFuture.completedStage is static, this is not a true override.
+     * It will be difficult for the user to invoke this method because they would need to get the class
+     * of the CompletableFuture implementation and locate the static completedStage method on that.
      *
-     * @param value result of the completed future
-     * @return completed completion stage where the default managed executor is the default asynchronous execution facility.
+     * @throws UnsupportedOperationException directing the user to use the ManagedExecutor spec interface instead.
      */
+    @Trivial
     public static <U> CompletionStage<U> completedStage(U value) {
-        ManagedExecutorService defaultExecutor = AccessController.doPrivileged(getDefaultManagedExecutorAction);
-        return completedStage(value, defaultExecutor);
+        throw new UnsupportedOperationException("Use ManagedExecutor.completedStage instead"); // TODO NLS
     }
 
     /**
      * Provides the implementation of managedExecutor.completedStage(value) where the target
      * executor is the default asynchronous execution facility.
-     *
-     * @param value result of the completion stage
-     * @param executor executor to become the default asynchronous execution facility for the completion stage
-     * @return completed completion stage
      */
+    @Trivial // traced by caller
     static <U> CompletionStage<U> completedStage(U value, Executor executor) {
         if (JAVA8) {
             return new ManagedCompletionStage<U>(CompletableFuture.completedFuture(value), executor, null);
@@ -278,49 +254,39 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
-     * Replaces CompletableFuture.delayedExecutor(delay, unit) with an implementation that uses the Liberty
-     * ScheduledExecutor for notification of the delay and captures thread context from the invoker of the execute method
-     * and propagates it to the running action. Except if the action is already contextualized, then the context of the
-     * action overrides.
+     * Because CompletableFuture.delayedExecutor is static, this is not a true override.
+     * It will be difficult for the user to invoke this method because they would need to get the class
+     * of the CompletableFuture implementation and locate the static delayedExecutor method on that.
      *
-     * @param delay amount of time to delay
-     * @param unit time unit of the delay value
-     * @param executor executor upon which to run the task after the delay elapses
-     * @return new executor instance
+     * @throws UnsupportedOperationException
      */
     @Trivial
     public static Executor delayedExecutor(long delay, TimeUnit unit) {
-        return delayedExecutor(delay, unit, AccessController.doPrivileged(getDefaultManagedExecutorAction));
+        throw new UnsupportedOperationException();
     }
 
     /**
-     * Replaces CompletableFuture.delayedExecutor(delay, unit, executor) with an implementation that uses the Liberty
-     * ScheduledExecutor for notification of the delay and captures thread context from the invoker of the execute method
-     * (if the specified executor is a ManagedExecutorService) and propagates it to the running action. Except if the
-     * action is already contextualized, then the context of the action overrides.
+     * Because CompletableFuture.delayedExecutor is static, this is not a true override.
+     * It will be difficult for the user to invoke this method because they would need to get the class
+     * of the CompletableFuture implementation and locate the static delayedExecutor method on that.
      *
-     * @param delay amount of time to delay
-     * @param unit time unit of the delay value
-     * @param executor executor upon which to run the task after the delay elapses
-     * @return new executor instance
+     * @throws UnsupportedOperationException
      */
+    @Trivial
     public static Executor delayedExecutor(long delay, TimeUnit unit, Executor executor) {
-        if (JAVA8)
-            throw new UnsupportedOperationException();
-
-        return new DelayedExecutor(delay, unit, executor);
+        throw new UnsupportedOperationException();
     }
 
     /**
-     * Replaces CompletableFuture.failedFuture(Throwable) with an implementation that switches the
-     * default asynchronous execution facility to be the default managed executor.
+     * Because CompletableFuture.failedFuture is static, this is not a true override.
+     * It will be difficult for the user to invoke this method because they would need to get the class
+     * of the CompletableFuture implementation and locate the static failedFuture method on that.
      *
-     * @param x the exception.
-     * @return completed completable future where the default managed executor is the default asynchronous execution facility.
+     * @throws UnsupportedOperationException directing the user to use the ManagedExecutor spec interface instead.
      */
+    @Trivial
     public static <U> CompletableFuture<U> failedFuture(Throwable x) {
-        ManagedExecutorService defaultExecutor = AccessController.doPrivileged(getDefaultManagedExecutorAction);
-        return failedFuture(x, defaultExecutor);
+        throw new UnsupportedOperationException("Use ManagedExecutor.failedFuture instead"); // TODO NLS
     }
 
     /**
@@ -331,6 +297,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @param executor executor to become the default asynchronous execution facility for the completed future
      * @return completed completable future
      */
+    @Trivial // traced by caller
     static <U> CompletableFuture<U> failedFuture(Throwable x, Executor executor) {
         if (JAVA8) {
             CompletableFuture<U> failedFuture = new CompletableFuture<U>();
@@ -344,15 +311,15 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
-     * Replaces CompletableFuture.failedStage(Throwable) with an implementation that switches the
-     * default asynchronous execution facility to be the default managed executor.
+     * Because CompletableFuture.failedStage is static, this is not a true override.
+     * It will be difficult for the user to invoke this method because they would need to get the class
+     * of the CompletableFuture implementation and locate the static failedStage method on that.
      *
-     * @param x the exception.
-     * @return completed completion stage where the default managed executor is the default asynchronous execution facility.
+     * @throws UnsupportedOperationException directing the user to use the ManagedExecutor spec interface instead.
      */
+    @Trivial
     public static <U> CompletionStage<U> failedStage(Throwable x) {
-        ManagedExecutorService defaultExecutor = AccessController.doPrivileged(getDefaultManagedExecutorAction);
-        return failedStage(x, defaultExecutor);
+        throw new UnsupportedOperationException("Use ManagedExecutor.failedStage instead"); // TODO NLS
     }
 
     /**
@@ -363,6 +330,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @param executor executor to become the default asynchronous execution facility for the completion stage
      * @return completed completion stage
      */
+    @Trivial // traced by caller
     static <U> CompletionStage<U> failedStage(Throwable x, Executor executor) {
         if (JAVA8) {
             CompletableFuture<U> failedFuture = new CompletableFuture<U>();
@@ -375,8 +343,11 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         }
     }
 
-    // TODO this method (and the other static methods that don't directly equate to static methods on CompletableFuture)
-    // should eventually be moved to a different interface. For now, this is a convenient place to allow progress to be made
+    // TODO this method is only used (reflectively) by the test case to simulate the ability that JAX-RS
+    // and other components should have to construct CompletableFutures that are backed directly by the
+    // Liberty executor (no managed executor service).  Consider exposing this via
+    // WSExecutorService.newIncompleteFuture() SPI, or if we want to expose it more generically for
+    // ANY executor, then write a new SPI for it.
     /**
      * Construct a new incomplete CompletableFuture that is backed by the specified executor.
      *
@@ -391,26 +362,26 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
-     * Replaces CompletableFuture.runAsync(action) with an implementation that switches the
-     * default asynchronous execution facility to be the default managed executor.
+     * Because CompletableFuture.runAsync is static, this is not a true override.
+     * It will be difficult for the user to invoke this method because they would need to get the class
+     * of the CompletableFuture implementation and locate the static runAsync method on that.
      *
-     * @param action the action to run asynchronously.
-     * @return completable future where the default managed executor is the default asynchronous execution facility.
+     * @throws UnsupportedOperationException directing the user to use the ManagedExecutor spec interface instead.
      */
     @Trivial
     public static CompletableFuture<Void> runAsync(Runnable action) {
-        return runAsync(action, AccessController.doPrivileged(getDefaultManagedExecutorAction));
+        throw new UnsupportedOperationException("Use ManagedExecutor.runAsync instead"); // TODO NLS
     }
 
     /**
-     * Replaces CompletableFuture.runAsync(action, executor) with an implementation that switches the
+     * Alternative to CompletableFuture.runAsync(action, executor) with an implementation that switches the
      * default asynchronous execution facility to be the specified managed executor.
      *
      * @param action the action to run asynchronously.
      * @param executor the executor, typically a managed executor, that becomes the default asynchronous execution facility for the completable future.
      * @return completable future where the specified managed executor is the default asynchronous execution facility.
      */
-    @SuppressWarnings("unchecked")
+    @Trivial // traced by caller
     public static CompletableFuture<Void> runAsync(Runnable action, Executor executor) {
         // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
         if (action instanceof ManagedTask)
@@ -433,26 +404,26 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
-     * Replaces CompletableFuture.supplyAsync(supplier) with an implementation that switches the
-     * default asynchronous execution facility to be the default managed executor.
+     * Because CompletableFuture.supplyAsync is static, this is not a true override.
+     * It will be difficult for the user to invoke this method because they would need to get the class
+     * of the CompletableFuture implementation and locate the static supplyAsync method on that.
      *
-     * @param action the supplier to invoke asynchronously.
-     * @return completable future where the default managed executor is the default asynchronous execution facility.
+     * @throws UnsupportedOperationException directing the user to use the ManagedExecutor spec interface instead.
      */
     @Trivial
     public static <U> CompletableFuture<U> supplyAsync(Supplier<U> action) {
-        return supplyAsync(action, AccessController.doPrivileged(getDefaultManagedExecutorAction));
+        throw new UnsupportedOperationException("Use ManagedExecutor.supplyAsync instead"); // TODO NLS
     }
 
     /**
-     * Replaces CompletableFuture.supplyAsync(supplier, executor) with an implementation that switches the
+     * Alternative to CompletableFuture.supplyAsync(supplier, executor) with an implementation that switches the
      * default asynchronous execution facility to be the specified managed executor.
      *
      * @param action the supplier to invoke asynchronously.
      * @param executor the executor, typically a managed executor, that becomes the default asynchronous execution facility for the completable future.
      * @return completable future where the specified managed executor is the default asynchronous execution facility.
      */
-    @SuppressWarnings("unchecked")
+    @Trivial // traced by caller
     public static <U> CompletableFuture<U> supplyAsync(Supplier<U> action, Executor executor) {
         // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
         if (action instanceof ManagedTask)
@@ -630,12 +601,6 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (executor instanceof WSManagedExecutorService) {
             WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
             contextSvc = managedExecutor.getContextService();
-        } else if (executor instanceof DelayedExecutor) {
-            DelayedExecutor delayedExecutor = ((DelayedExecutor) executor);
-            if (delayedExecutor.executor instanceof WSManagedExecutorService) {
-                WSManagedExecutorService managedExecutor = (WSManagedExecutorService) delayedExecutor.executor;
-                contextSvc = managedExecutor.getContextService();
-            }
         }
 
         if (contextSvc == null)
@@ -950,8 +915,8 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @return a new instance of this class.
      */
     @Trivial
-    <T> CompletableFuture<T> newInstance(CompletableFuture<T> completableFuture, Executor managedExecutor, AtomicReference<Future<?>> futureRef) {
-        return new ManagedCompletableFuture<T>(completableFuture, managedExecutor, futureRef);
+    <R> CompletableFuture<R> newInstance(CompletableFuture<R> completableFuture, Executor managedExecutor, AtomicReference<Future<?>> futureRef) {
+        return new ManagedCompletableFuture<R>(completableFuture, managedExecutor, futureRef);
     }
 
     /**
@@ -1137,21 +1102,29 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
-     * Invokes complete on the superclass.
+     * Invokes complete on the superclass,
+     * or, in the case of Java SE 8, on the CompletableFuture instance that this class proxies.
      *
      * @see java.util.concurrent.CompletableFuture#complete(T)
      */
     final boolean super_complete(T value) {
-        return super.complete(value);
+        if (JAVA8)
+            return completableFuture.complete(value);
+        else
+            return super.complete(value);
     }
 
     /**
-     * Invokes completeExceptionally on the superclass.
+     * Invokes completeExceptionally on the superclass,
+     * or, in the case of Java SE 8, on the CompletableFuture instance that this class proxies.
      *
      * @see java.util.concurrent.CompletableFuture#completeExceptionally(java.lang.Throwable)
      */
     final boolean super_completeExceptionally(Throwable x) {
-        return super.completeExceptionally(x);
+        if (JAVA8)
+            return completableFuture.completeExceptionally(x);
+        else
+            return super.completeExceptionally(x);
     }
 
     /**
@@ -1533,7 +1506,9 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     @Trivial
     public String toString() {
         StringBuilder s = new StringBuilder(250).append(getClass().getSimpleName()) //
-                        .append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
+                        .append('@')
+                        .append(Integer.toHexString(System.identityHashCode(this)))
+                        .append('[');
         if (JAVA8)
             s.append(Integer.toHexString(completableFuture.hashCode())).append(' ');
         if (JAVA8 ? completableFuture.isDone() : super.isDone())
@@ -1614,88 +1589,6 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
-     * Executor returned by the static delayedExecutor methods.
-     */
-    private static class DelayedExecutor implements Executor {
-        private final long delay;
-        final Executor executor;
-        private final TimeUnit unit;
-
-        private DelayedExecutor(long delay, TimeUnit unit, Executor executor) {
-            this.delay = delay;
-            this.unit = unit;
-            this.executor = executor;
-        }
-
-        /**
-         * Schedule the specified action to be submitted in after the delay associated with this DelayedExecutor.
-         *
-         * @param action action to submit after the delay
-         */
-        @Override
-        @Trivial
-        public void execute(Runnable action) {
-            final boolean trace = tc.isAnyTracingEnabled();
-            if (trace && tc.isEntryEnabled())
-                Tr.entry(this, tc, "execute: schedule with delay", action);
-
-            // Context capture & propagation is only useful for DelayedExecutor when it is used on its own.
-            // Otherwise, if supplied to managedCompletableFuture.*Async methods, then context that is captured
-            // separately by the ManagedCompletableFuture overrides (as it should).
-            ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
-            if (contextDescriptor != null)
-                action = new ContextualRunnable(contextDescriptor, action);
-
-            Executor delayedTaskExecutor = executor instanceof WSManagedExecutorService //
-                            ? ((WSManagedExecutorService) executor).getNormalPolicyExecutor() //
-                            : executor;
-
-            ScheduledExecutorService scheduledExecutor = AccessController.doPrivileged(getScheduledExecutorAction);
-            ScheduledFuture<?> future = scheduledExecutor.schedule(new DelayedTask(action, delayedTaskExecutor), delay, unit);
-
-            if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "execute: schedule with delay", future);
-        }
-
-        @Override
-        public String toString() {
-            return new StringBuilder(super.toString()).append(": ").append(delay).append(' ').append(unit).append(" on ").append(executor).toString();
-        }
-    }
-
-    /**
-     * Task that a DelayedExecutor schedules in order to submit an action after a delay.
-     */
-    private static class DelayedTask implements Runnable {
-        private final Runnable action;
-        private final Executor executor;
-
-        private DelayedTask(Runnable action, Executor executor) {
-            this.action = action;
-            this.executor = executor;
-        }
-
-        @Override
-        @Trivial
-        public void run() {
-            final boolean trace = tc.isAnyTracingEnabled();
-            if (trace && tc.isEntryEnabled())
-                Tr.entry(this, tc, "run: delayed submit", action, executor);
-
-            Future<?> future;
-            if (executor instanceof ExecutorService) {
-                future = ((ExecutorService) executor).submit(action);
-            } else {
-                executor.execute(action);
-                future = null;
-            }
-
-            if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "run: delayed submit", future);
-        }
-    }
-
-    /**
      * Task that performs completion upon reaching a timeout.
      */
     @Trivial
@@ -1723,7 +1616,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         @Override
         @SuppressWarnings("unchecked")
         public void run() {
-            final boolean trace = tc.isAnyTracingEnabled();
+            final boolean trace = TraceComponent.isAnyTracingEnabled();
             if (trace && tc.isEntryEnabled())
                 Tr.entry(ManagedCompletableFuture.this, tc, "run: complete on timeout", this);
 

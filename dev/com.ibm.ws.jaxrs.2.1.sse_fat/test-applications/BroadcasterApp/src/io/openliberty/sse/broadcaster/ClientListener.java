@@ -54,7 +54,8 @@ public class ClientListener implements Runnable, Closeable {
             source.register(event -> {
                 _log.info("listener id " + id + " received event " + event);
                 String msg = event.readData();
-                receivedEvents.add(msg);
+                receivedEvents.add(msg);                
+                sharedLatch.get().countDown(); 
                 //_log.info("id " + id + " received event " + msg);
             });
             source.open();

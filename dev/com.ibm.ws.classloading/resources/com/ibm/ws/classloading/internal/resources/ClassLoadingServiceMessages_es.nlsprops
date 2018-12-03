@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2014 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -155,3 +155,9 @@ cls.classloader.config.typo.useraction=Para asegurarse de que el tipo de API es 
 cls.classloader.config.typo2=CWWKL0083E: Al utilizar el prefijo + o -, el tipo de API [{0}] no es v\u00e1lido en esta lista [{1}].  Todos los tipos de API deben tener un prefijo de + o -
 cls.classloader.config.typo2.explanation=Cambie el tipo de API no v\u00e1lido por un tipo de API v\u00e1lido con + o -.
 cls.classloader.config.typo2.useraction=Para asegurarse de que el tipo de API es correcto, compruebe en la configuraci\u00f3n del servidor que no haya tipos de API no v\u00e1lidos.
+
+# {0} - class name
+# {1} - suggested feature
+cls.classloader.suggested.feature=CWWKL0084W: No se ha podido cargar la clase {0}. Intente habilitar la caracter\u00edstica {1} o una versi\u00f3n m\u00e1s reciente de la caracter\u00edstica en el archivo server.xml.
+cls.classloader.suggested.feature.explanation=No se ha podido cargar una clase t\u00edpicamente proporcionada por una o m\u00e1s caracter\u00edsticas del servidor.
+cls.classloader.suggested.feature.useraction=Intente habilitar la caracter\u00edstica especificada o una versi\u00f3n m\u00e1s reciente de la caracter\u00edstica en el archivo server.xml.

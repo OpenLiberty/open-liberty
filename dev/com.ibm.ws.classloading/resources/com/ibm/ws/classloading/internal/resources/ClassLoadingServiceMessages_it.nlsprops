@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2014 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -155,3 +155,9 @@ cls.classloader.config.typo.useraction=Controllare se nella configurazione del s
 cls.classloader.config.typo2=CWWKL0083E: Quando si utilizza il prefisso + o -, il tipo API [{0}] non \u00e8 valido in questo elenco [{1}].  Tutti i tipi API devono avere un prefisso + o -
 cls.classloader.config.typo2.explanation=Modificare il tipo API non valido in un tipo valido con + o -.
 cls.classloader.config.typo2.useraction=Controllare se nella configurazione del server sono presenti tipi API non validi per accertarsi che i tipi API siano corretti.
+
+# {0} - class name
+# {1} - suggested feature
+cls.classloader.suggested.feature=CWWKL0084W: Non \u00e8 stato possibile caricare la classe {0}. Provare ad abilitare la funzione {1} o una nuova versione della funzione nel file server.xml.
+cls.classloader.suggested.feature.explanation=Non \u00e8 stato possibile caricare una classe che viene normalmente fornita da una o pi\u00f9 funzioni server.
+cls.classloader.suggested.feature.useraction=Provare ad abilitare la funzione specificata o una nuova versione della funzione nel file server.xml.

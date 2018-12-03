@@ -39,3 +39,16 @@ CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID.useraction=Assegure-se de que o at
 JAVASCRIPT_REDIRECT_URL_NOT_VALID=CWWKS6106E: O servi\u00e7o de seguran\u00e7a n\u00e3o pode criar o JavaScript apropriado para redirecionar o navegador porque a URL de redirecionamento [{0}] n\u00e3o \u00e9 v\u00e1lida.
 JAVASCRIPT_REDIRECT_URL_NOT_VALID.explanation=O navegador deve ser redirecionado a uma URL v\u00e1lida, mas a URL especificada n\u00e3o \u00e9 v\u00e1lida. A URL pode ser nula ou vazia ou pode conter caracteres que n\u00e3o sejam permitidos por RFC 3986.
 JAVASCRIPT_REDIRECT_URL_NOT_VALID.useraction=Verifique o formato da URL para assegurar que ela n\u00e3o seja nula ou vazia e que contenha somente caracteres permitidos nos caminhos de URI por RFC 3986.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS6107W: A configura\u00e7\u00e3o do cliente OpenId Connect (Parte Dependente ou RP) [{2}] especifica a URL do endpoint de descoberta [{0}] e os outros endpoints, mas deve ser configurada no endpoint de descoberta ou em outros endpoints. O RP usou as informa\u00e7\u00f5es da solicita\u00e7\u00e3o de descoberta e ignorou os outros endpoints [{1}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=A configura\u00e7\u00e3o do RP especificou o endpoint de descoberta e os outros endpoints, como autoriza\u00e7\u00e3o e token, mas apenas um dos dois pode ser especificado.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.useraction=Configure o endpoint de descoberta ou os outros endpoints, como autoriza\u00e7\u00e3o, token e userinfo, mas n\u00e3o configure ambos.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER=CWWKS6108W: A configura\u00e7\u00e3o do cliente OpenId Connect (Parte Dependente ou RP) [{2}] especifica a URL do endpoint de descoberta [{0}] e o identificador do emissor [{1}]. O RP usou as informa\u00e7\u00f5es da solicita\u00e7\u00e3o de descoberta e ignorou o identificador do emissor configurado.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.explanation=A configura\u00e7\u00e3o do RP especificou o endpoint de descoberta e o identificador do emissor, mas somente um deles pode ser especificado.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.useraction=Configure o endpoint de descoberta ou o identificador do emissor, n\u00e3o ambos.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT=CWWKS6109I: A configura\u00e7\u00e3o do cliente OpenId Connect (Parte Dependente ou RP) ou do login social [{3}] especifica [{0}], um valor padr\u00e3o para [{1}], e como resultado da descoberta, isso \u00e9 mudado para [{2}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.explanation=Se o provedor do OpenID Connect (OP) n\u00e3o suportar padr\u00f5es de RP, dependendo da capacidade do RP, os padr\u00f5es poder\u00e3o ser ajustados para o que o OP suporta.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.useraction=Mensagem informativa. Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+

@@ -23,6 +23,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 MultiClientCdiTest.class,
                 AsyncMethodTest.class,
                 ProduceConsumeTest.class,
-                PropsTest.class
+                PropsTest.class,
+                CdiPropsAndProvidersTest.class
 })
 public class FATSuite {}

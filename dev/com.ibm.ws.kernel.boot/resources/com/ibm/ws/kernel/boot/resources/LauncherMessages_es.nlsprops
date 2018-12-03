@@ -688,6 +688,10 @@ warning.package.root.invalid=CWWKE0947W: No se permite una opci\u00f3n --server-
 warning.package.root.invalid.explanation=El usuario ha realizado una solicitud de paquete con una opci\u00f3n --server-root que especifica un argumento vac\u00edo y se han detectado ampliaciones del producto. Se utilizar\u00e1 la ra\u00edz del servidor predeterminado wlp.
 warning.package.root.invalid.useraction=No se requiere ninguna acci\u00f3n.
 
+warning.package.root.invalid.runnable=CWWKE0948W: Una opci\u00f3n --server-root con --include=runnable no es una combinaci\u00f3n permitida. Se utiliza el argumento predeterminado de wlp para la ra\u00edz del servidor.
+warning.package.root.invalid.runnable.explanation=El usuario ha realizado una solicitud de paquete con una opci\u00f3n --server-root e --include=runnable, pero no es una combinaci\u00f3n permitida. Se utilizar\u00e1 la ra\u00edz del servidor predeterminado wlp.
+warning.package.root.invalid.runnable.useraction=No se requiere ninguna acci\u00f3n.
+
 info.serverStarting=Se est\u00e1 iniciando el servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=Servidor {0} iniciado con ID de proceso {1}.

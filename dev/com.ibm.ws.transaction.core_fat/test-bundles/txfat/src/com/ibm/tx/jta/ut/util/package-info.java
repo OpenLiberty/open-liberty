@@ -1,17 +1,16 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2018
- *
- * The source code for this program is not published or other-
- * wise divested of its trade secrets, irrespective of what has
- * been deposited with the U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 /**
  * using a package-info file here is kinda silly, but using a packageinfo file doesn't seem to work.
- * 
+ *
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")

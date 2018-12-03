@@ -12,6 +12,8 @@ package com.ibm.ws.microprofile.faulttolerance20.impl;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState;
 
@@ -25,6 +27,9 @@ public class AsyncExecutionContextImpl<W> extends SyncExecutionContextImpl {
     private W returnWrapper;
     private Callable<W> callable;
     private RetryState retryState;
+    private final AtomicBoolean isCancelled = new AtomicBoolean(false);
+    private boolean interruptOnCancellation;
+    private Consumer<Boolean> cancelCallback;
 
     public AsyncExecutionContextImpl(Method method, Object[] parameters) {
         super(method, parameters);
@@ -52,6 +57,26 @@ public class AsyncExecutionContextImpl<W> extends SyncExecutionContextImpl {
 
     public void setRetryState(RetryState retryState) {
         this.retryState = retryState;
+    }
+
+    public void setCancelCallback(Consumer<Boolean> cancelCallback) {
+        this.cancelCallback = cancelCallback;
+        if (isCancelled.get()) {
+            cancelCallback.accept(interruptOnCancellation);
+        }
+    }
+
+    public void cancel(boolean mayInterrupt) {
+        // Note cancelledValue must be set before updating isCancelled so we don't
+        // get a race condition between cancel and setCancelCallback.
+        interruptOnCancellation = mayInterrupt;
+        if (isCancelled.compareAndSet(false, true)) {
+            cancelCallback.accept(interruptOnCancellation);
+        }
+    }
+
+    public boolean isCancelled() {
+        return isCancelled.get();
     }
 
 }

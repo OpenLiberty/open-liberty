@@ -66,6 +66,29 @@ public class SyncExecutor<R> implements Executor<R> {
     /** {@inheritDoc} */
     @Override
     public R execute(Callable<R> callable, ExecutionContext context) {
+        MethodResult<R> result;
+
+        try {
+            result = run(callable, context);
+        } catch (Exception e) {
+            // Handle unexpected exceptions
+            // Exceptions from user code should have been caught and wrapped up in the MethodResult
+            Tr.error(tc, "internal.error.CWMFT4998E", e);
+            throw new FaultToleranceException(Tr.formatMessage(tc, "internal.error.CWMFT4998E", e), e);
+        }
+
+        if (result.isFailure()) {
+            if (result.getFailure() instanceof FaultToleranceException) {
+                throw (FaultToleranceException) result.getFailure();
+            } else {
+                throw new ExecutionException(result.getFailure());
+            }
+        }
+
+        return result.getResult();
+    }
+
+    private MethodResult<R> run(Callable<R> callable, ExecutionContext context) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Fault tolerance execution started for {0}", context.getMethod());
         }
@@ -97,6 +120,7 @@ public class SyncExecutor<R> implements Executor<R> {
             if (result == null) {
                 timeoutState.start(() -> runningThread.interrupt());
 
+                // The call to the application code happens here
                 result = bulkhead.run(callable);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -145,15 +169,7 @@ public class SyncExecutor<R> implements Executor<R> {
             Tr.event(tc, "Method {0} final fault tolerance result: {1}", context.getMethod(), result);
         }
 
-        if (result.getFailure() != null) {
-            if (result.getFailure() instanceof FaultToleranceException) {
-                throw (FaultToleranceException) result.getFailure();
-            } else {
-                throw new ExecutionException(result.getFailure());
-            }
-        }
-
-        return result.getResult();
+        return result;
     }
 
     @SuppressWarnings("unchecked")

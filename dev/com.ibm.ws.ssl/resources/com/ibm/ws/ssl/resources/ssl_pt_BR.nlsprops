@@ -734,3 +734,11 @@ ssl.defaultKeyStore.not.created.CWPKI0819I.useraction=Nenhuma a\u00e7\u00e3o \u0
 ssl.defaultKeyStore.env.password.CWPKI0820A=CWPKI0820A: O keystore padr\u00e3o foi criado usando a vari\u00e1vel de ambiente 'keystore_password'.
 ssl.defaultKeyStore.env.password.CWPKI0820A.explanation=O keystore padr\u00e3o foi criado usando a vari\u00e1vel de ambiente 'keystore_password'. Isso \u00e9 gerado no arquivo server.env durante a cria\u00e7\u00e3o do servidor ou substitu\u00eddo no ambiente do qual o servidor foi ativado.
 ssl.defaultKeyStore.env.password.CWPKI0820A.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.loaded.CWPKI0821I=CWPKI0821I: O keystore {1} padr\u00e3o com o tipo de keystore {2} foi carregado.
+ssl.defaultKeyStore.loaded.CWPKI0821I.explanation=O keystore padr\u00e3o no local especificado e o tipo de keystore foram carregados.
+ssl.defaultKeyStore.loaded.CWPKI0821I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W=CWPKI0822W: Uma configura\u00e7\u00e3o m\u00ednima de keystore padr\u00e3o foi especificada e os keystores key.jks e key.p12 existem no local do keystore padr\u00e3o. O keystore key.jks ser\u00e1 usado como o keystore padr\u00e3o.
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.explanation=Com uma configura\u00e7\u00e3o m\u00ednima de keystore padr\u00e3o e com um arquivo key.jks e um arquivo key.p12 definidos no local de keystore padr\u00e3o, o arquivo key.jks ser\u00e1 usado como keystore padr\u00e3o.
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.useraction=Para tornar o arquivo key.p12 o keystore padr\u00e3o, mude a configura\u00e7\u00e3o do keystore para especificar o local do key.p12 ou remova o arquivo key.jks da configura\u00e7\u00e3o. Para ter o arquivo key.jks como o keystore padr\u00e3o, n\u00e3o s\u00e3o necess\u00e1rias mudan\u00e7as. 

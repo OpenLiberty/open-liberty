@@ -16,15 +16,18 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.appConfig.customSources.test.CustomSourcesTestServlet;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig14EE8;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -35,6 +38,10 @@ import componenttest.topology.utils.FATServletClient;
 public class CustomSourcesTest extends FATServletClient {
 
     public static final String APP_NAME = "customSources";
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests //selected combinations
+                    .with(new RepeatConfig14EE8("CustomSourcesServer"));
 
     @Server("CustomSourcesServer")
     @TestServlet(servlet = CustomSourcesTestServlet.class, contextRoot = APP_NAME)

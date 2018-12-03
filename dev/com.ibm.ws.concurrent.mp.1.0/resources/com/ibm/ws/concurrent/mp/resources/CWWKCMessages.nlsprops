@@ -1,0 +1,53 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent/resources/com/ibm/ws/concurrent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC MicroProfile Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1150 to CWWCK1199 except those specifically identified as moved
+
+CWWKC1150.duplicate.context=CWWKC1150E: The same thread context type, {0}, is provided by multiple thread context providers which are available to the application: {1}, {2}. 
+CWWKC1150.duplicate.context.explanation=The MicroProfile Concurrency specification permits at most a single thread context provider for each context type.
+CWWKC1150.duplicate.context.useraction=Update the application and/or the libraries that are available to it such that there is only a single thread context provider of the specified type.
+
+CWWKC1151.context.lists.overlap=CWWKC1151E: The following thread context types are configured to be both cleared and propagated: {0}.
+CWWKC1151.context.lists.overlap.explanation=A thread context type can be configured in at most one category when building or injecting a ManagedExecutor.
+CWWKC1151.context.lists.overlap.useraction=Review and correct the categorization of thread context types in your ManagedExecutor builder or ManagedExecutorConfig annotation.
+
+CWWKC1152.context.lists.overlap=CWWKC1152E: The following thread context types are configured in more than one category of (cleared, propagated, unchanged): {0}.
+CWWKC1152.context.lists.overlap.explanation=A thread context type can be configured in at most one category when building or injecting a ThreadContext instance.
+CWWKC1152.context.lists.overlap.useraction=Review and correct the categorization of thread context types in your ThreadContext builder or ThreadContextConfig annotation.
+
+CWWKC1153.invalid.name=CWWKC1153E: The name {0} is not valid for a ManagedExecutor or ThreadContext. Names must be limited to the following characters: {1}. 
+CWWKC1153.invalid.name.explanation=Names for instances of ManagedExecutor and ThreadContext must consist of characters within the specified range.
+CWWKC1153.invalid.name.useraction=Update the application to specify a name that only uses characters within the specified range.
+
+CWWKC1154.duplicate.name=CWWKC1154E: The name {0} is used by another ManagedExecutor or ThreadContext. 
+CWWKC1154.duplicate.name.explanation=Names for instances of ManagedExecutor and ThreadContext must be unique.
+CWWKC1154.duplicate.name.useraction=Update the application to specify a unique name for all created instances of ManagedExecutor and ThreadContext.
+
+CWWKC1155.unknown.context=CWWKC1155E: Thread context types {0} are configured to be cleared or propagated, but no thread context providers for these types are available to the application. Available thread context types are: {1}.
+CWWKC1155.unknown.context.explanation=For each configured thread context type that is not provided by the server, a thread context provider must be available on the application's thread context class loader. Thread context types provided by the server include: Application, CDI, Security, Transaction.
+CWWKC1155.unknown.context.useraction=Update the application and/or the libraries to include a thread context provider for each configured thread context type that is not provided by the server. Alternatively, update the application to only use the context types which are indicated to be available. 
+
+CWWKC1156.not.supported=CWWKC1156E: The requested operation is not available as a static method on the managed executor implementation of CompletableFuture. Use the following operation instead: {0}.
+CWWKC1156.not.supported.explanation=The managed executor implementation of CompletableFuture does not provide static method equivalents to the static methods of CompletableFuture. 
+CWWKC1156.not.supported.useraction=Update the application to use the method that is recommended in the message in place of the requested method.

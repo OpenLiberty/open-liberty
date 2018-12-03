@@ -93,9 +93,10 @@ public interface SpanFilter {
      * Process a filter in sequence and return true if a span should be created for this request.
      *
      * @param previousState It is expected that filters are called in sequence, so this is the result of the previous filter, or a default.
-     * @param uri The full URI of this request.
-     * @param contextType The type of request.
+     * @param uri           The full URI of this request.
+     * @param path          The path of this request.
+     * @param contextType   The type of request.
      * @return True if a span should be created for this request; otherwise, false.
      */
-    boolean process(final boolean previousState, final URI uri, final SpanFilterType contextType);
+    boolean process(final boolean previousState, final URI uri, final String path, final SpanFilterType contextType);
 }

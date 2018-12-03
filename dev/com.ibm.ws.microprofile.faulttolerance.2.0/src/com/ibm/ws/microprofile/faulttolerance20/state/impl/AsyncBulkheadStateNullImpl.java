@@ -24,7 +24,7 @@ public class AsyncBulkheadStateNullImpl implements AsyncBulkheadState {
     }
 
     @Override
-    public ExecutionReference submit(Runnable runnable) {
+    public ExecutionReference submit(Runnable runnable, ExceptionHandler exceptionHandler) {
         Future<?> future = executorService.submit(runnable);
         return new ExecutionReferenceImpl(future);
     }
@@ -38,14 +38,19 @@ public class AsyncBulkheadStateNullImpl implements AsyncBulkheadState {
         }
 
         @Override
-        public void abort() {
-            future.cancel(true);
+        public void abort(boolean mayInterrupt) {
+            future.cancel(mayInterrupt);
         }
 
         @Override
         public boolean wasAccepted() {
             return true;
         }
+    }
+
+    @Override
+    public void shutdown() {
+        // Nothing to do
     }
 
 }

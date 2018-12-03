@@ -17,6 +17,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -233,14 +235,18 @@ public class SearchPagingTest {
          */
         LDAPFatUtils.resetMarksInLogs(libertyServer);
         assertEquals(MAX_ENTRIES, servlet.getUsers("*", 0).getList().size());
-        assertTrue(libertyServer.findStringsInLogsAndTrace("Search page: 1").isEmpty());
+        List<String> r = libertyServer.findStringsInLogsAndTrace("Search page: 1");
+        Log.info(c, "searchWithNoPaging", "Result " + r);
+        assertTrue("Should not find, Search page: 1, in the logs, found: " + r, r.isEmpty());
 
         /*
          * Check a group search.
          */
         LDAPFatUtils.resetMarksInLogs(libertyServer);
         assertEquals(MAX_ENTRIES, servlet.getGroups("*", 0).getList().size());
-        assertTrue(libertyServer.findStringsInLogsAndTrace("Search page: 1").isEmpty());
+        r = libertyServer.findStringsInLogsAndTrace("Search page: 1");
+        Log.info(c, "searchWithNoPaging", "Result " + r);
+        assertTrue("Should not find, Search page: 1, in the logs, found: " + r, r.isEmpty());
     }
 
     /**

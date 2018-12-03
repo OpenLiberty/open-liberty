@@ -141,7 +141,7 @@ public class HttpUtils {
                     throw new Exception(logErrorMessage(url, iStatusCode, json));
                 }
             } else {
-                String errMsg = EntityUtils.toString(result.getEntity(), "UTF-8");
+                String errMsg = statusLine.getReasonPhrase();
                 // error in getting the discovery response
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "status:" + iStatusCode + " errorMsg:" + errMsg);

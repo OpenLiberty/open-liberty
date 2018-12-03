@@ -37,12 +37,10 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.container.service.metadata.internal.J2EENameImpl;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.threadcontext.ThreadContext;
@@ -90,7 +88,7 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
 
     /**
      * Construct a thread context descriptor from bytes.
-     * 
+     *
      * @param execProps execution properties
      * @param bytes serialized bytes
      * @throws IOException if a deserialization error occurs.
@@ -177,7 +175,7 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
 
     /**
      * Construct a thread context descriptor.
-     * 
+     *
      * @param execProps execution properties
      * @param internalExecPropNames names of internal execution properties. Null if all execution properties are internal.
      * @param initialCapacity expected maximum count of thread context types
@@ -223,7 +221,7 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
 
     /**
      * Utility method that indicates whether or not a list of thread context providers contains all of the specified prerequisites.
-     * 
+     *
      * @param contextProviders list of thread context providers (actually a map, but the keys are used as a list)
      * @param prereqs prerequisite thread context providers
      * @return true if all prerequisites are met. Otherwise false.
@@ -243,14 +241,39 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
     }
 
     /**
+     * Raises IllegalStateException because the application or application component is unavailable.
+     *
+     * @param jeeName The metadata identifier, which is the JEE name (Application/Module/Component name with parts separated by hash signs).
+     *            For now, we'll parse the string and issue the appropriate message. This may not be appropriate in the future.
+     * @param taskName identifier for the task or contextual operation that cannot be performed
+     * @throws IllegalStateException indicating that the task cannot run because the application or application component is not available.
+     */
+    public static void notAvailable(String jeeName, String taskName) {
+        String message;
+        int modSepIndex = jeeName.indexOf('#');
+        if (modSepIndex == -1) {
+            message = Tr.formatMessage(tc, "CWWKC1011.app.unavailable", taskName, jeeName);
+        } else {
+            String application = jeeName.substring(0, modSepIndex);
+            int compSepIndex = jeeName.indexOf('#', modSepIndex + 1);
+            if (compSepIndex == -1) {
+                message = Tr.formatMessage(tc, "CWWKC1012.module.unavailable", taskName, jeeName.substring(modSepIndex + 1), application);
+            } else {
+                String module = jeeName.substring(modSepIndex + 1, compSepIndex);
+                message = Tr.formatMessage(tc, "CWWKC1013.component.unavailable", taskName, jeeName.substring(compSepIndex + 1), module, application);
+            }
+        }
+        throw new IllegalStateException(message);
+    }
+
+    /**
      * Serializes this thread context descriptor to bytes.
-     * 
+     *
      * @return serialized bytes representing the thread context descriptor.
      * @throws IOException if a serialization error occurs.
      */
     @Override
-    public @Sensitive
-    byte[] serialize() throws IOException {
+    public @Sensitive byte[] serialize() throws IOException {
         // Captured thread context
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         int size = threadContext.size();
@@ -308,7 +331,7 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
 
     /**
      * Establish context on a thread before a contextual operation is started.
-     * 
+     *
      * @return list of thread context matching the order in which context has been applied to the thread.
      * @throws IllegalStateException if the application component is not started or deployed.
      * @throws RejectedExecutionException if context cannot be established on the thread.
@@ -322,23 +345,7 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
         if (!"false".equalsIgnoreCase(execProps.get(WSContextService.REQUIRE_AVAILABLE_APP)) &&
             metaDataIdentifier != null && threadContextMgr.metadataIdentifierService.getMetaData(metaDataIdentifier) == null) {
             String taskName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME"); // ManagedTask.IDENTITY_NAME
-            String message = metaDataIdentifier.toString();
-            // The string returned by MetaDataIdentifier.toString() is the J2EE name (AMC name with parts separated by hash signs).
-            // For now, we'll parse the string and issue the appropriate message.  This may not be appropriate in the future.
-            int modSepIndex = message.indexOf('#');
-            if (modSepIndex == -1) {
-                message = Tr.formatMessage(tc, "CWWKC1011.app.unavailable", taskName, message);
-            } else {
-                String application = message.substring(0, modSepIndex);
-                int compSepIndex = message.indexOf('#', modSepIndex + 1);
-                if (compSepIndex == -1) {
-                    message = Tr.formatMessage(tc, "CWWKC1012.module.unavailable", taskName, message.substring(modSepIndex + 1), application);
-                } else {
-                    String module = message.substring(modSepIndex + 1, compSepIndex);
-                    message = Tr.formatMessage(tc, "CWWKC1013.component.unavailable", taskName, message.substring(compSepIndex + 1), module, application);
-                }
-            }
-            throw new IllegalStateException(message);
+            notAvailable(metaDataIdentifier, taskName);
         }
 
         String defaultContextTypes = execProps.get(WSContextService.DEFAULT_CONTEXT);
@@ -417,7 +424,7 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
 
     /**
      * Remove context from the thread (in reverse of the order in which is was applied) after a contextual operation completes.
-     * 
+     *
      * @param threadContext list of context previously applied to thread, ordered according to the order in which it was applied to the thread.
      */
     @Override
@@ -446,7 +453,7 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
 
     /**
      * Returns nicely formatted text describing this thread context provider.
-     * 
+     *
      * @return nicely formatted text describing this thread context provider.
      */
     @Override
@@ -459,7 +466,7 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
 
     /**
      * Returns text that uniquely identifies a context instance. This is only used for tracing.
-     * 
+     *
      * @param c a context
      * @return text formatted to include the class name and hashcode.
      */

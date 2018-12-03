@@ -10,17 +10,19 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -78,19 +80,57 @@ public class AsyncTest extends AbstractFTTest {
     public void testAsyncCancel() throws InterruptedException, ExecutionException, TimeoutException {
         ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
         Executor<Future<String>> executor = builder.buildAsync(Future.class);
+        ExecutionContext context = executor.newExecutionContext("testAsyncCancellation", null);
 
-        String id = "testAsyncCancel";
-        CountDownLatch runningLatch = new CountDownLatch(1);
-        CountDownLatch completedLatch = new CountDownLatch(1);
-        AsyncTestFunction callable = new AsyncTestFunction(Duration.ofMillis(10000), runningLatch, completedLatch, id);
-        ExecutionContext context = executor.newExecutionContext(id, (Method) null, id);
-        Future<String> future = executor.execute(callable, context);
-        assertFalse(future.isDone());
-        assertFalse(future.isCancelled());
-        boolean cancelled = future.cancel(true);
-        assertTrue("Future not cancelled", cancelled);
-        assertTrue("Future.isDone() returned false", future.isDone());
-        assertTrue("Future.isCancelled() returned false", future.isCancelled());
+        CompletableFuture<Void> runningFuture = new CompletableFuture<>();
+        CompletableFuture<Void> interruptedFuture = new CompletableFuture<>();
+
+        // Start a task that sleeps, waiting to be interrupted
+        Future<String> result = executor.execute(() -> {
+            runningFuture.complete(null);
+            try {
+                Thread.sleep(FUTURE_TIMEOUT);
+            } catch (InterruptedException e) {
+                interruptedFuture.complete(null);
+            }
+            return CompletableFuture.completedFuture("OK");
+        }, context);
+
+        // Wait for it to start running
+        runningFuture.get(FUTURE_TIMEOUT, TimeUnit.MILLISECONDS);
+
+        // Now cancel it
+        assertThat("Calling cancel returned wrong result", result.cancel(true), is(true));
+
+        // Assert we get the correct response from the result object
+        assertThat("Result did not report done", result.isDone(), is(true));
+        assertThat("Result did not report cancelled", result.isCancelled(), is(true));
+        try {
+            result.get(0, TimeUnit.SECONDS);
+            fail("result.get did not throw CancellationException");
+        } catch (CancellationException e) {
+            // Expected
+        }
+
+        // Check that the running task is actually interrupted
+        try {
+            interruptedFuture.get(FUTURE_TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            fail("Running task was not interrupted when future was cancelled");
+        }
+
+        // Give it a moment to finish
+        Thread.sleep(DURATION_UNIT);
+
+        // Check that the result still gives the correct response after the cancelled execution has finished successfully
+        assertThat("Result does not report done", result.isDone(), is(true));
+        assertThat("Result does not report cancelled", result.isCancelled(), is(true));
+        try {
+            result.get(0, TimeUnit.SECONDS);
+            fail("result.get did not throw CancellationException");
+        } catch (CancellationException e) {
+            // Expected
+        }
     }
 
     @Test

@@ -85,3 +85,6 @@ warning.application.started.event.timeout=CWWKC0264W: Die {0}-Anwendung hat das 
 warning.application.started.event.timeout.explanation=Die Anwendung hat das Startereignis nicht in der erwarteten Zeit ausgegeben. Der Server ist m\u00f6glicherweise \u00fcberlastet oder die Anwendung ist sehr gro\u00df. Wenn die Anwendung als Teil eines Serverstarts startet, wird der Serverstart abgeschlossen, ohne auf den Anwendungsstart zu warten.
 warning.application.started.event.timeout.useraction=Wenn die Anwendung schlie\u00dflich startet, ist keine Aktion erforderlich. Startet die Anwendung nicht, suchen Sie in den Serverprotokollen, ob andere Nachrichten die Ursache f\u00fcr das Problem angeben.
 
+warning.java.version.not.supported=CWWKC0265W: Die aktuelle Java-Version {0} wird von der Spring Boot-Version {1} nicht unterst\u00fctzt. Aktualisieren Sie die Spring Boot-Version der Anwendung auf Version 2.0.x oder h\u00f6her.
+warning.java.version.not.supported.explanation=Java-Versionen, die h\u00f6her sind als Version 1.8 werden von den Spring Boot-Versionen 1.5.x und \u00e4lter nicht unterst\u00fctzt.
+warning.java.version.not.supported.useraction=Aktualisieren Sie die Spring Boot-Version der Anwendung auf Version 2.0.x oder h\u00f6her.

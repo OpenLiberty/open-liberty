@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -30,26 +31,32 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class GenerateWebServerPluginTest extends AbstractSpringTests {
 
+    @After
+    public void stop() throws Exception {
+        //stop after each test to force server reconfigure.
+        stopServer();
+    }
+
     @Test
-    public void testPluginCfgGenerated() throws Exception {
-        HttpUtils.findStringInUrl(server, "/myAppContextPath", "HELLO SPRING BOOT!!");
-        //wait a short time for the plugin generation logic to write out the file
-        String pluginCfgRelativePath = "logs/state/plugin-cfg.xml";
-        long startTime = System.currentTimeMillis();
-        while (!server.fileExistsInLibertyServerRoot(pluginCfgRelativePath)) {
-            if ((startTime + 1000 * 10) < System.currentTimeMillis()) {
-                break;
-            }
-            Thread.sleep(1000);
-        }
-        assertTrue("Expected one matching contextroot entry in plugin cfg",
-                   server.findStringsInFileInLibertyServerRoot("<Uri .* Name=\"/myAppContextPath/\\*\"/>", pluginCfgRelativePath).size() == 1);
+    public void testPluginCfgGeneratedUsingDefaultVirtualHost() throws Exception {
+        exerciseAppOnConfiguredServer();
+    }
+
+    @Test
+    public void testPluginCfgGeneratedUsingSpringBootVirtualHost() throws Exception {
+        exerciseAppOnConfiguredServer();
     }
 
     @Override
     public void modifyServerConfiguration(ServerConfiguration config) {
         config.getSpringBootApplications().get(0).getApplicationArguments().add("--server.servlet.context-path=/myAppContextPath");
-        server.setHttpDefaultPort(DEFAULT_HTTP_PORT);
+        if (testName.getMethodName().contains("UsingDefaultVirtualHost")) {
+            //use port configured in default_host
+            server.setHttpDefaultPort(DEFAULT_HTTP_PORT);
+        } else {
+            //use port from application.properties
+            server.setHttpDefaultPort(EXPECTED_HTTP_PORT);
+        }
     }
 
     @Override
@@ -69,8 +76,24 @@ public class GenerateWebServerPluginTest extends AbstractSpringTests {
 
     @Override
     public boolean useDefaultVirtualHost() {
-        //plugin-generation doesn't get along well with configuring
-        //  the port in Spring Boot application properties
-        return true;
+        if (testName.getMethodName().contains("UsingDefaultVirtualHost"))
+            return true;
+        else
+            return false;
+    }
+
+    public void exerciseAppOnConfiguredServer() throws Exception {
+        HttpUtils.findStringInUrl(server, "/myAppContextPath", "HELLO SPRING BOOT!!");
+        //wait a short time for the plugin generation logic to write out the file
+        String pluginCfgRelativePath = "logs/state/plugin-cfg.xml";
+        long startTime = System.currentTimeMillis();
+        while (!server.fileExistsInLibertyServerRoot(pluginCfgRelativePath)) {
+            if ((startTime + 1000 * 10) < System.currentTimeMillis()) {
+                break;
+            }
+            Thread.sleep(1000);
+        }
+        assertTrue("Expected one matching contextroot entry in plugin cfg",
+                   server.findStringsInFileInLibertyServerRoot("<Uri .* Name=\"/myAppContextPath/\\*\"/>", pluginCfgRelativePath).size() == 1);
     }
 }

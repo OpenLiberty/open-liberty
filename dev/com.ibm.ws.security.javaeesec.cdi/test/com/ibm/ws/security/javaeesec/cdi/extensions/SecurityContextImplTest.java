@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -81,18 +81,65 @@ public class SecurityContextImplTest {
     public void tearDown() throws Exception {}
 
     @Test
-    public void testGetCallerPrincipal_userInCallerSubject() throws Exception {
+    public void testGetCallerPrincipal_userInCallerSubjectFromWsCred() throws Exception {
         final Subject subject = new Subject(false, principals, pubCredentials, privCredentials);
 
         mockery.checking(new Expectations() {
             {
                 one(subjectManagerService).getCallerSubject();
                 will(returnValue(subject));
+                one(wsCred).isUnauthenticated();
+                will(returnValue(false));
+                one(wsCred).get("com.ibm.wsspi.security.cred.jaspi.principal");
+                will(returnValue(null));
+                one(wsCred).getSecurityName();
+                will(returnValue(accessId1));
+            }
+        });
+        Principal callerPrinc = secContext.getCallerPrincipal();
+        assertEquals("Not expected princiapal.", callerPrinc, new WSPrincipal(accessId1, princ.getAccessId(), princ.getAuthenticationMethod()));
+
+    }
+
+    @Test
+    public void testGetCallerPrincipal_userInCallerSubjectFromPrincipal() throws Exception {
+        final Subject subject = new Subject(false, principals, pubCredentials, privCredentials);
+
+        mockery.checking(new Expectations() {
+            {
+                one(subjectManagerService).getCallerSubject();
+                will(returnValue(subject));
+                one(wsCred).isUnauthenticated();
+                will(returnValue(false));
+                one(wsCred).get("com.ibm.wsspi.security.cred.jaspi.principal");
+                will(returnValue(null));
+                one(wsCred).getSecurityName();
+                will(returnValue(null));
             }
         });
         Principal callerPrinc = secContext.getCallerPrincipal();
         assertEquals("Not expected princiapal.", callerPrinc, princ);
 
+    }
+
+    @Test
+    public void testGetCallerPrincipal_userInCallerSubjectFromJaspiPrincipal() throws Exception {
+        final Subject subject = new Subject(false, principals, pubCredentials, privCredentials);
+
+        mockery.checking(new Expectations() {
+            {
+                one(subjectManagerService).getCallerSubject();
+                will(returnValue(subject));
+                one(wsCred).isUnauthenticated();
+                will(returnValue(false));
+                one(wsCred).get("com.ibm.wsspi.security.cred.jaspi.principal");
+                will(returnValue(subject1));
+                one(wsCred).getSecurityName();
+                will(returnValue(subject1));
+            }
+        });
+        Principal callerPrinc = secContext.getCallerPrincipal();
+        assertEquals("Not expected princiapal.", callerPrinc, princ);
     }
 
     @Test

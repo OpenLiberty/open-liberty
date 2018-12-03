@@ -97,7 +97,7 @@ public class URAPIs_IDMapping_Test {
         }
         if (ldapServer != null) {
             try {
-                ldapServer.stopServer();
+                ldapServer.stopService();
             } catch (Exception e) {
                 // Ignore
             }

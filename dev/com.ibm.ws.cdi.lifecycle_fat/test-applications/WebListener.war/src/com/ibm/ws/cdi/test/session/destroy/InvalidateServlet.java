@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.cdi.test.session.destroy;
 
 import java.io.IOException;
@@ -8,18 +18,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/*
- * IBM Confidential
- *
- * OCO Source Materials
- *
- * WLP Copyright IBM Corp. 2017
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- */
-
 @WebServlet("/InvalidateServlet")
 public class InvalidateServlet extends HttpServlet {
 
@@ -27,9 +25,8 @@ public class InvalidateServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        TestHttpSessionListener.setInvalidateSession(request.getSession());
         PrintWriter pw = response.getWriter();
-
-        TestHttpSessionListener.clearResults();
 
         request.getSession().invalidate();
         pw.println("Invalidated the session");

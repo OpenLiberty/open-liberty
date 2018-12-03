@@ -155,9 +155,10 @@ public class EmbeddedContainerTest {
         File thinAppJar = workingArea.newFile("starterThinJar.jar");
         File appLibsDir = workingArea.newFolder("starterAppLibs");
 
-        SpringBootThinUtil util = new TestThinUtil(fatAppJar, thinAppJar, appLibsDir);
-        util.execute(); // Indirectly exercises SpringBootThinUtil.getStarterFilter() and
-                        // StarterFilter.apply()
+        try (SpringBootThinUtil util = new TestThinUtil(fatAppJar, thinAppJar, appLibsDir)) {
+            util.execute(); // Indirectly exercises SpringBootThinUtil.getStarterFilter() and
+                            // StarterFilter.apply()
+        }
 
         verifyJarLacksArtifacts(thinAppJar, springBoot20TomcatStarterJars);
         verifyDirLacksArtifacts(appLibsDir, springBoot20TomcatStarterJars);

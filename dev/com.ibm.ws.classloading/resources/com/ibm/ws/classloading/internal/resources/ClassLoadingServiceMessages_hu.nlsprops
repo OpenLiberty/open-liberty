@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2014 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -155,3 +155,9 @@ cls.classloader.config.typo.useraction=Ellen\u0151rizze a kiszolg\u00e1l\u00f3 k
 cls.classloader.config.typo2=CWWKL0083E: A + vagy - el\u0151tag haszn\u00e1latakor a(z) [{0}] API t\u00edpus nem \u00e9rv\u00e9nyes ebben a(z) [{1}] list\u00e1ban.  Minden API t\u00edpusnak rendelkeznie kell egy + vagy - el\u0151taggal.
 cls.classloader.config.typo2.explanation=M\u00f3dos\u00edtsa az \u00e9rv\u00e9nytelen API t\u00edpust egy \u00e9rv\u00e9nyes API t\u00edpusra a + vagy - el\u0151taggal.
 cls.classloader.config.typo2.useraction=Ellen\u0151rizze a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban az \u00e9rv\u00e9nytelen API t\u00edpust, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az API t\u00edpusok helyesek.
+
+# {0} - class name
+# {1} - suggested feature
+cls.classloader.suggested.feature=CWWKL0084W: A(z) {0} oszt\u00e1ly nem t\u00f6lthet\u0151 be.  Pr\u00f3b\u00e1lja enged\u00e9lyezni a(z) {1} szolg\u00e1ltat\u00e1st vagy a szolg\u00e1ltat\u00e1s egy \u00fajabb v\u00e1ltozat\u00e1t a server.xml f\u00e1jlban.
+cls.classloader.suggested.feature.explanation=Egy oszt\u00e1ly, amelyet jellemz\u0151en n\u00e9h\u00e1ny kiszolg\u00e1l\u00f3 szolg\u00e1ltat\u00e1s biztos\u00edt, nem t\u00f6lthet\u0151 be.
+cls.classloader.suggested.feature.useraction=Pr\u00f3b\u00e1lja enged\u00e9lyezni a szolg\u00e1ltat\u00e1st vagy a szolg\u00e1ltat\u00e1s egy \u00fajabb v\u00e1ltozat\u00e1t a server.xml f\u00e1jlban.

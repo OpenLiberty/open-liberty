@@ -39,3 +39,16 @@ CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID.useraction=Stellen Sie sicher, das
 JAVASCRIPT_REDIRECT_URL_NOT_VALID=CWWKS6106E: Der Sicherheitsservice kann das entsprechende JavaScript f\u00fcr die Browserumleitung nicht erstellen, da die Umleitungs-URL [{0}] nicht g\u00fcltig ist.
 JAVASCRIPT_REDIRECT_URL_NOT_VALID.explanation=Der Browser muss an eine g\u00fcltige URL umgeleitet werden. Die angegebene URL ist jedoch nicht g\u00fcltig. Die URL ist m\u00f6glicherweise null oder leer oder sie enth\u00e4lt m\u00f6glicherweise Zeichen, die gem\u00e4\u00df RFC 3986 nicht zul\u00e4ssig sind.
 JAVASCRIPT_REDIRECT_URL_NOT_VALID.useraction=\u00dcberpr\u00fcfen Sie das Format der URL, um sicherzustellen, dass sie nicht null oder leer ist, und dass nur Zeichen enthalten sind, die in URI-Pfaden gem\u00e4\u00df RFC 3986 zul\u00e4ssig sind.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS6107W: In der OpenId Connect-Clientkonfiguration (Relying Party oder RP) [{2}] sind die Erkennungsendpunkt-URL [{0}] und die anderen Endpunkte angegeben. Es muss jedoch entweder der Erkennungsendpunkt oder die anderen Endpunkte konfiguriert sein. RP verwendet die Informationen aus der Erkennungsanforderung und ignoriert die anderen Endpunkte [{1}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=In der RP-Konfiguration sind sowohl der Erkennungsendpunkt als auch die anderen Endpunkte, wie z. B. Berechtigungs- und Tokenendpunkt, angegeben. Es kann jedoch nur einer von beiden angegeben werden.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.useraction=Konfigurieren Sie entweder den Erkennungsendpunkt oder die anderen Endpunkte, wie z. B. Berechtigungs-, Token- und Benutzerinfoendpunkte, nicht jedoch beide.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER=CWWKS6108W: In der OpenID Connect-Clientkonfiguration (Relying Party, RP) [{2}] sind sowohl die Erkennungsendpunkt-URL [{0}] als auch die Aussteller-ID [{1}] angegeben. Die RP verwendet die Informationen aus der Erkennungsanforderung und ignoriert die konfigurierte Aussteller-ID.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.explanation=In der RP-Konfiguration sind sowohl der Erkennungsendpunkt als auch die Aussteller-ID angegeben. Es kann jedoch nur eine der beiden Angaben gemacht werden.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.useraction=Konfigurieren Sie entweder den Erkennungsendpunkt oder die Aussteller-ID, aber nicht beides.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT=CWWKS6109I: In der OpenID Connect-Clientkonfiguration (Relying Party, RP) oder in der Social Login-Konfiguration [{3}] ist [{0}] angegeben, ein Standardwert f\u00fcr [{1}]. Als Ergebnis dieser Erkennung wird dies in [{2}] ge\u00e4ndert.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.explanation=Wenn der OpenID Connect-Provider (OP) RP-Standardwerte nicht unterst\u00fctzt, k\u00f6nnen die Standardwerte je nach Kapazit\u00e4t der RP an die Werte angepasst werden, die der OP unterst\u00fctzt.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.useraction=Dies ist eine Informationsnachricht. Es ist keine Aktion erforderlich.
+

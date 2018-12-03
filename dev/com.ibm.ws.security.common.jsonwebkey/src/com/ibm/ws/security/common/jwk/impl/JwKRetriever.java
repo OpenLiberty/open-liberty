@@ -128,21 +128,6 @@ public class JwKRetriever {
         this.keyLocation = keyLocation;
     }
 
-    //  public JwKRetriever(JwtConsumerConfig config) {
-    //      configId = config.getId();
-    //      sslConfigurationName = config.getSslRef();
-    //      jwkEndpointUrl = config.getJwkEndpointUrl();
-    //      jwkSet = config.getJwkSet();
-    //      hostNameVerificationEnabled = config.isHostNameVerificationEnabled();
-    //      
-    //  }
-    
-    // temporary to get CL built. remove me. 
-    public PublicKey getPublicKeyFromJwk(String kid, String x5t)
-            throws PrivilegedActionException, IOException, KeyStoreException, InterruptedException{
-        return getPublicKeyFromJwk(kid, x5t, false);
-    }
-
     /**
      * Either kid or x5t will work. But not both
      */

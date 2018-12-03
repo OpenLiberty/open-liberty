@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 public class FutureShell<V> implements Future<V> {
 
     // Do not need to synchronize around these
-    private final CompletableFuture<Future<V>> waitingFuture = new CompletableFuture<Future<V>>();
+    private final CompletableFuture<Future<V>> delegateHolder = new CompletableFuture<Future<V>>();
     private volatile Future<V> delegate = null;
 
     // Must synchronize around these
@@ -55,17 +55,17 @@ public class FutureShell<V> implements Future<V> {
      * @param delegate the delegate future
      */
     public synchronized void setDelegate(Future<V> delegate) {
-        if (waitingFuture.isCancelled()) {
+        if (delegateHolder.isCancelled()) {
             delegate.cancel(mayInterruptWhenCancellingDelegate);
         } else {
             this.delegate = delegate;
-            waitingFuture.complete(delegate);
+            delegateHolder.complete(delegate);
         }
     }
 
     @Override
     public synchronized boolean cancel(boolean mayInterruptIfRunning) {
-        if (waitingFuture.cancel(false)) {
+        if (delegateHolder.cancel(false)) {
             mayInterruptWhenCancellingDelegate = mayInterruptIfRunning;
             if (cancellationCallback != null) {
                 cancellationCallback.accept(mayInterruptIfRunning);
@@ -73,7 +73,7 @@ public class FutureShell<V> implements Future<V> {
             return true;
         }
 
-        if (waitingFuture.isDone() && !waitingFuture.isCancelled()) {
+        if (delegateHolder.isDone() && !delegateHolder.isCancelled()) {
             return delegate.cancel(mayInterruptIfRunning);
         } else {
             return false;
@@ -82,8 +82,8 @@ public class FutureShell<V> implements Future<V> {
 
     @Override
     public boolean isCancelled() {
-        if (waitingFuture.isDone()) {
-            if (waitingFuture.isCancelled()) {
+        if (delegateHolder.isDone()) {
+            if (delegateHolder.isCancelled()) {
                 return true;
             } else {
                 return delegate.isCancelled();
@@ -95,8 +95,8 @@ public class FutureShell<V> implements Future<V> {
 
     @Override
     public boolean isDone() {
-        if (waitingFuture.isDone()) {
-            if (waitingFuture.isCancelled()) {
+        if (delegateHolder.isDone()) {
+            if (delegateHolder.isCancelled()) {
                 return true;
             } else {
                 return delegate.isDone();
@@ -108,7 +108,7 @@ public class FutureShell<V> implements Future<V> {
 
     @Override
     public V get() throws InterruptedException, ExecutionException {
-        return waitingFuture.get().get();
+        return delegateHolder.get().get();
     }
 
     @Override
@@ -116,7 +116,7 @@ public class FutureShell<V> implements Future<V> {
         long timeoutNanos = unit.toNanos(timeout);
         long startTime = System.nanoTime();
 
-        Future<V> delegate = waitingFuture.get(timeoutNanos, TimeUnit.NANOSECONDS);
+        Future<V> delegate = delegateHolder.get(timeoutNanos, TimeUnit.NANOSECONDS);
 
         long elapsedTime = System.nanoTime() - startTime;
         return delegate.get(timeoutNanos - elapsedTime, TimeUnit.NANOSECONDS);
@@ -124,9 +124,9 @@ public class FutureShell<V> implements Future<V> {
 
     @Override
     public String toString() {
-        if (waitingFuture.isCancelled()) {
+        if (delegateHolder.isCancelled()) {
             return "FutureShell cancelled";
-        } else if (waitingFuture.isDone()) {
+        } else if (delegateHolder.isDone()) {
             return "FutureShell delegating to " + delegate;
         } else {
             return "FutureShell incomplete";

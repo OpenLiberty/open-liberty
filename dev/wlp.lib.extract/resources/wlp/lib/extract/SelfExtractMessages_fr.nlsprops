@@ -311,6 +311,7 @@ RUN_IN_CHILD_JVM_DEBUG=WLP_JAR_DEBUG a \u00e9t\u00e9 d\u00e9fini. Le serveur va 
 RUN_IN_CHILD_JVM_JVM_OPTIONS=Le fichier jar contient les fichiers jvm.options. Le serveur va s''ex\u00e9cuter sur une machine virtuelle Java distincte.
 RUN_IN_CHILD_JVM_IBM_AGENT_ISSUE=Un kit de d\u00e9veloppement Java IBM est utilis\u00e9 sans l''option -XX:+EnableHCR. Le serveur va s''ex\u00e9cuter sur une machine virtuelle Java distincte.
 RUN_IN_CHILD_JVM_JRE=Une installation d''environnement d''ex\u00e9cution Java est utilis\u00e9e. Le serveur va s''ex\u00e9cuter sur une machine virtuelle Java distincte.
+RUN_IN_CHILD_JVM_SET_JAVA_HOME=R\u00e9glage de la variable d''environnement JAVA_HOME : {0}
 
 # messages for LicenseSelfEctractor
 LICENSE_invalidInstall=Le r\u00e9pertoire {0} n''est pas celui d''une installation Liberty valide. Sp\u00e9cifiez le r\u00e9pertoire racine de l''installation Liberty que vous voulez mettre \u00e0 niveau.

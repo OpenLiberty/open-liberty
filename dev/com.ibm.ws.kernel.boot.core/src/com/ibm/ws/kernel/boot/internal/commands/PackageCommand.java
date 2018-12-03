@@ -57,6 +57,15 @@ public class PackageCommand {
     final String includeOption;
     final String archiveOption;
     final String rootOption;
+    private final static List<String> SUPPORTED_EXTENSIONS = new ArrayList<>();
+
+    static {
+      SUPPORTED_EXTENSIONS.add(".zip");
+      SUPPORTED_EXTENSIONS.add(".jar");
+      SUPPORTED_EXTENSIONS.add(".pax");
+      SUPPORTED_EXTENSIONS.add(".tar");
+      SUPPORTED_EXTENSIONS.add(".tar.gz");
+    }
 
     public PackageCommand(BootstrapConfig bootProps, LaunchArguments launchArgs) {
         this.serverName = bootProps.getProcessName();
@@ -141,18 +150,38 @@ public class PackageCommand {
      */
     private File getArchive(String archiveBaseName, File outputDir) {
         File archive;
-        String packageTarget = archiveOption;
-        if (packageTarget == null || packageTarget.isEmpty()) {
-            packageTarget = archiveBaseName + "." + getDefaultPackageFormat();
-            archive = new File(outputDir, packageTarget);
+        String packageTarget;
+
+        String defaultExtension = getDefaultPackageExtension();
+
+        if (archiveOption == null || archiveOption.isEmpty()) {
+            packageTarget = archiveBaseName + "." + defaultExtension;
+//            archive = new File(outputDir, packageTarget);
         } else {
-            packageTarget = normalizePackageTargetName(packageTarget);
-            archive = new File(packageTarget);
-            if (!archive.isAbsolute()) {
-                archive = new File(outputDir, packageTarget);
+            int index = archiveOption.lastIndexOf(".");
+            if (index > 0 && isSupportedExtension(archiveOption)) {
+                packageTarget = archiveOption;
+            } else {
+                packageTarget = archiveOption + '.' + defaultExtension;
             }
         }
+
+        archive = new File(packageTarget);
+        if (!archive.isAbsolute()) {
+            archive = new File(outputDir, packageTarget);
+        }
         return archive;
+    }
+
+    public boolean isSupportedExtension(String fileName) {
+        fileName = fileName.toLowerCase();
+        for (String extension : SUPPORTED_EXTENSIONS) {
+            if (fileName.endsWith(extension)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -238,7 +267,13 @@ public class PackageCommand {
                 System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.package.root.invalid"),
                                                         serverName));
             } else {
-                processor.setArchivePrefix(rootOption);
+                if (!PackageProcessor.IncludeOption.RUNNABLE.matches(includeOption)) {
+                    processor.setArchivePrefix(rootOption);
+                } else {
+                    // --server-root and --include=runnable is not a valid combo, thus --server-root will be ignored.
+                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.package.root.invalid.runnable"),
+                                                            serverName));
+                }
             }
         }
 
@@ -274,7 +309,7 @@ public class PackageCommand {
      *
      * @return "pax" on z/OS and "zip" for all others
      */
-    private String getDefaultPackageFormat() {
+    private String getDefaultPackageExtension() {
 
         // Default package format on z/OS is a pax
         if ("z/OS".equalsIgnoreCase(bootProps.get("os.name"))) {
@@ -286,33 +321,6 @@ public class PackageCommand {
         }
 
         return "zip";
-    }
-
-    /**
-     * Normalize the packageTarget ext Name if the user specify a wrong one.
-     *
-     * @param packageTarget
-     * @return
-     */
-    private String normalizePackageTargetName(String packageTarget) {
-
-        String defaultExt = getDefaultPackageFormat();
-        if (packageTarget.contains(".")) {
-            int poz = packageTarget.lastIndexOf(".");
-            String ext = packageTarget.substring(poz);
-            //FIXME we need improve this to print message when we auto modify the extension name as following
-            if (ext.equalsIgnoreCase(".zip") || ext.equalsIgnoreCase(".pax")) {
-                return packageTarget.substring(0, poz) + "." + defaultExt;
-            } else if (ext.equalsIgnoreCase(".jar") &&
-                       ("zip".equals(defaultExt) || "jar".equals(defaultExt))) {
-                //allow jar format packaging for zip defaulting platforms.
-                //this method overall currently prevents creation of zip on non-zip platforms,
-                //prevents pax on non-pax platforms, this may be an error, but if we wish to create
-                //jar on a pax platform, there will be codepage issues to resolve for the scripts
-                return packageTarget;
-            }
-        }
-        return packageTarget + "." + defaultExt;
     }
 
     private static class FailedWithReturnCodeException extends Exception {
