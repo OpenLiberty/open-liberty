@@ -62,7 +62,7 @@ public class BroadcasterTestServlet extends FATServlet {
     public void testClientReceivesBroadcastedEvents(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         final String m = "testClientReceivesBroadcastedEvents";
         if (isZOS()) {
-            timeout = 15;
+            timeout = 35;
         }
         
         Client client = ClientBuilder.newClient();
