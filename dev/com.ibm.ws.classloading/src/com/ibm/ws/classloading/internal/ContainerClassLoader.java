@@ -56,6 +56,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration;
 import com.ibm.ws.classloading.internal.util.ClassRedefiner;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -112,6 +113,8 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
     private final ClassRedefiner redefiner;
 
     protected final ClassLoaderHook hook;
+
+    final String jarProtocol;
 
     /**
      * Util method to totally read an input stream into a byte array.
@@ -287,9 +290,11 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
     private static class ContainerUniversalResource implements UniversalContainer.UniversalResource {
         private final Container container;
+        private String jarProtocol;
 
-        public ContainerUniversalResource(Container c) {
+        public ContainerUniversalResource(Container c, String jarProtocol) {
             container = c;
+            this.jarProtocol = jarProtocol;
         }
 
         @Override
@@ -299,7 +304,16 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
                 return null;
 
             // best we can do is return the first one
-            return urls.iterator().next();
+            URL result = urls.iterator().next();
+            if ("file".equals(result.getProtocol()) && !(result.getPath().endsWith("/"))) {
+                // TODO can this apply to non file: URLs?
+                try {
+                    return new URL(jarProtocol + result.toExternalForm() + "!/");
+                } catch (MalformedURLException e) {
+                    return result;
+                }
+            }
+            return result;
         }
 
         @Override
@@ -320,12 +334,14 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         private final Container container;
         private final boolean isRoot;
         private final ClassLoaderHook hook;
+        private final String jarProtocol;
         private String debugString;
 
-        public ContainerUniversalContainer(Container container, ClassLoaderHook hook) {
+        public ContainerUniversalContainer(Container container, ClassLoaderHook hook, String jarProtocol) {
             this.container = container;
             this.isRoot = container.isRoot();
             this.hook = hook;
+            this.jarProtocol = jarProtocol;
         }
 
         @Override
@@ -346,7 +362,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
             // handle "" and "/" for roots since they refer to the container itself
             if (path.length() == 0 || path.equals("/")) {
-                return new ContainerUniversalResource(this.container);
+                return new ContainerUniversalResource(this.container, jarProtocol);
             }
 
             //try a lookup for the path in the container.
@@ -724,8 +740,10 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
         final Set<Container> containers = Collections.newSetFromMap(new WeakHashMap<Container, Boolean>());
 
-        SmartClassPathImpl(ClassLoaderHook hook) {
+        final String jarProtocol;
+        SmartClassPathImpl(ClassLoaderHook hook, String jarProtocol) {
             this.hook = hook;
+            this.jarProtocol = jarProtocol;
         }
 
         /**
@@ -786,7 +804,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         @Override
         public void addContainer(Container container) {
             containers.add(container);
-            addUniversalContainers(new ContainerUniversalContainer(container, hook));
+            addUniversalContainers(new ContainerUniversalContainer(container, hook, jarProtocol));
         }
 
         @Override
@@ -1025,7 +1043,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         SmartClassPathImpl delegate;
 
         UnreadSmartClassPath() {
-            delegate = new SmartClassPathImpl(hook);
+            delegate = new SmartClassPathImpl(hook, jarProtocol);
         }
 
         @Override
@@ -1321,9 +1339,9 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
      * @param classpath Containers to use as classpath entries.
      * @param parent classloader to act as parent.
      */
-    public ContainerClassLoader(List<Container> classpath, ClassLoader parent, ClassRedefiner redefiner) {
+    public ContainerClassLoader(List<Container> classpath, ClassLoader parent, ClassRedefiner redefiner, GlobalClassloadingConfiguration config) {
         super(parent);
-
+        this.jarProtocol = config.useJarUrls() ? "jar:" : "wsjar:";
         //Temporary, reintroduced until WSJAR is implemented.
         JarCacheDisabler.disableJarCaching();
 
@@ -1522,7 +1540,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
     }
 
     protected void addNativeLibraryContainer(Container container) {
-        nativeLibraryContainers.add(new ContainerUniversalContainer(container, hook));
+        nativeLibraryContainers.add(new ContainerUniversalContainer(container, hook, jarProtocol));
     }
 
     /**

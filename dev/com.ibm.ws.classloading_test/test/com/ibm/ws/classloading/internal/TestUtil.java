@@ -41,6 +41,7 @@ import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.framework.wiring.FrameworkWiring;
 import org.osgi.service.component.ComponentContext;
 
+import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration;
 import com.ibm.ws.classloading.internal.providers.Providers;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.classloading.ClassLoaderConfiguration;
@@ -83,6 +84,8 @@ final class TestUtil {
                                                           final boolean failResolve,
                                                           final ComponentContextExpectationProvider expectations) throws BundleException, InvalidSyntaxException {
         final ClassLoadingServiceImpl cls = new ClassLoadingServiceImpl();
+
+        cls.setGlobalClassloadingConfiguration(new GlobalClassloadingConfiguration());
 
         final Mockery mockery = new Mockery();
         final ComponentContext componentContext = mockery.mock(ComponentContext.class);
@@ -186,7 +189,6 @@ final class TestUtil {
                 will(getLibraries);
                 allowing(myBundleContext).getService(with(any(MockServiceReference.class)));
                 will(getLibraries);
-
             }
         });
         if (expectations != null) {
