@@ -28,8 +28,8 @@ Export-Package: \
    com.ibm.ejs.util.dopriv, \
    com.ibm.jtc.adapter;provide:=true, \
    com.ibm.websphere.csi;-split-package:=merge-last, \
-   com.ibm.ws.container.service.annotations; provide:=true, \
-   com.ibm.ws.container.service.annotations.internal; provide:=true, \
+   com.ibm.ws.container.service.annotations; provide:=true; version="2.0.0", \
+   com.ibm.ws.container.service.annotations.internal; provide:=true; version="2.0", \
    com.ibm.ws.container.service.app.deploy; provide:=true, \
    com.ibm.ws.container.service.app.deploy.extended; provide:=true, \
    com.ibm.ws.container.service.config; provide:=true, \

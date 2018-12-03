@@ -8,6 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/** @version 2.0.0 */
-@org.osgi.annotation.versioning.Version("2.0.0")
+/** @version 2.0 */
+@org.osgi.annotation.versioning.Version("2.0")
 package com.ibm.ws.container.service.annotations;
