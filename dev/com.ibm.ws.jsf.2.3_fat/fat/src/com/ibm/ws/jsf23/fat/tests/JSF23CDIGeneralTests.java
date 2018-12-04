@@ -413,7 +413,6 @@ public class JSF23CDIGeneralTests {
         jsf23CDIServer.setMarkToEndOfLog();
         jsf23CDIServer.saveServerConfiguration();
         ShrinkHelper.defaultApp(jsf23CDIServer, appName, "com.ibm.ws.jsf23.fat.elimplicit.cdi.error.beans");
-        jsf23CDIServer.installApp(appName);
         jsf23CDIServer.setServerConfigurationFile("ELImplicitObjectsViaCDIErrorAppServer.xml");
 
         // Make sure the application doesn't start
@@ -441,7 +440,7 @@ public class JSF23CDIGeneralTests {
         jsf23CDIServer.waitForConfigUpdateInLogUsingMark(null);
 
         // Now uninstall the application and archive the logs.
-        jsf23CDIServer.uninstallApp(appName);
+        jsf23CDIServer.removeInstalledAppForValidation(appName.substring(0, appName.length() - 4));
         jsf23CDIServer.postStopServerArchive();
     }
 

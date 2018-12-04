@@ -16,7 +16,9 @@
     </featureManager>
     
     <logging traceSpecification="*=info:org.apache.myfaces.*=all:com.ibm.ws.jsf*=all" maxFileSize="20" maxFiles="10" traceFormat="BASIC"/> 
+    
+    <applicationManager autoExpand="true"/>
  
     <webApplication contextRoot="FaceletRefreshPeriodProductionProjectStage" 
-        location="${shared.app.dir}/webcontainer/FaceletRefreshPeriodProductionProjectStage.war" />
+        location="FaceletRefreshPeriodProductionProjectStage.war" />
 </server>
