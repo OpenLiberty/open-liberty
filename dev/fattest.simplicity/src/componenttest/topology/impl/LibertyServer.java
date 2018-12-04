@@ -2749,8 +2749,6 @@ public class LibertyServer implements LogMonitorClient {
         return serverToUse;
     }
 
-    //
-
     public void deleteFileFromLibertyInstallRoot(String filePath) throws Exception {
         LibertyFileManager.deleteLibertyFile(machine, (installRoot + "/" + filePath));
     }
@@ -2766,8 +2764,6 @@ public class LibertyServer implements LogMonitorClient {
     public void deleteFileFromLibertyServerRoot(String filePath) throws Exception {
         LibertyFileManager.deleteLibertyFile(machine, (serverRoot + "/" + filePath));
     }
-
-    //
 
     public RemoteFile getServerBootstrapPropertiesFile() throws Exception {
         return new RemoteFile(machine, serverRoot + "/bootstrap.properties");
