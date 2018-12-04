@@ -24,7 +24,7 @@ public class DiscoveryConfigUtils {
 
     private CommonConfigUtils configUtils = new CommonConfigUtils();
 
-    private Object discoveryDocumentHash;
+    private String discoveryDocumentHash;
 
     private long discoveryPollingRate;
     
@@ -67,9 +67,7 @@ public class DiscoveryConfigUtils {
     }
     
     public DiscoveryConfigUtils discoveryDocumentHash(String discoveryHash) {    
-        //this.discoveryjson = json;
         this.discoveryDocumentHash = discoveryHash;
-        //this.discoveryPollingRate = discoveryPollingRate;
         return this;
     }
     
@@ -356,5 +354,8 @@ public class DiscoveryConfigUtils {
         return updated;
     }
     
+    public String getDiscoveryDocumentHash() {
+        return this.discoveryDocumentHash;
+    }
     
 }

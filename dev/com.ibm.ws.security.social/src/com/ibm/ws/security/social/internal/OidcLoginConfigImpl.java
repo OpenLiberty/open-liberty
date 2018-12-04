@@ -239,7 +239,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         try {
         	setNextDiscoveryTime();
         	if (!isValidDiscoveryUrl(discoveryUrl)) {
-                Tr.error(tc,  "OIDC_CLIENT_DISCOVERY_SSL_ERROR", discoveryUrl);
+                Tr.error(tc,  "OIDC_CLIENT_DISCOVERY_SSL_ERROR", getId(), discoveryUrl);
                 return false;
             }
         	
@@ -283,6 +283,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             //adjustSignatureAlgorithm();
         	this.tokenEndpointAuthMethod = discoveryUtil.adjustTokenEndpointAuthMethod();
         	this.scope = discoveryUtil.adjustScopes();
+        	this.discoveryDocumentHash = discoveryUtil.getDiscoveryDocumentHash();
     	}
         
         return true;
