@@ -1015,10 +1015,13 @@ public class RemoteFile {
 
         } else {
             Log.finer(c, method, "The source file is a file. Copying the file.");
-            //Now we ensure the parent directory path exists and create if it doesn't as long as it has a parent
-            if (!destFile.getParentFile().equals(null)) {
-                RemoteFile parentFolder = new RemoteFile(destFile.getMachine(), destFile.getParent());
-                Log.finer(c, method, destFile.getParent()); // info level is inconsistent with other messages in this method, and also very loud for large transfers
+
+            // Now we ensure the parent directory path exists and create if it doesn't as long as it has a parent
+	    File destParent = destFile.getParentFile();
+            if (destParent != null) {
+                // info level is inconsistent with other messages in this method, and also very loud for large transfers
+                Log.finer(c, method, destParent);
+                RemoteFile parentFolder = new RemoteFile(destFile.getMachine(), destParent);
                 parentFolder.mkdirs();
             }
 
