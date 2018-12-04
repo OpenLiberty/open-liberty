@@ -398,16 +398,16 @@ public class LibertyFileManager {
         //       be significant.
         // + " on machine '" + machine + "'";
         String prefix = "File '" + absPath + "'";
-        Log.info(CLASS, method, prefix);
+        Log.finer(CLASS, method, prefix);
 
         RemoteFile remoteFile = createRemoteFile(machine, absPath);
         if ( !remoteFile.exists() ) {
-            Log.info(CLASS, method, prefix + " does not exist");
+            Log.finer(CLASS, method, prefix + " does not exist");
         } else {
             if ( remoteFile.deleteWithRetry() ) { // throws Exception
-                Log.info(CLASS, method, prefix + " was deleted");
+                Log.finer(CLASS, method, prefix + " was deleted");
             } else {
-                Log.info(CLASS, method, prefix + " could not be deleted");
+                Log.finer(CLASS, method, prefix + " could not be deleted");
             }
         }
     }
