@@ -79,7 +79,7 @@ public class ZipFileUtils {
 
                 Tr.debug(tc, entryPrefix + "Name [ " + entry.getName() + " ]");
                 Tr.debug(tc, entryPrefix + "Size [ " + entry.getSize() + " ] compressed [ " + entry.getCompressedSize() + " ]");
-                Tr.debug(tc, entryPrefix + "Created [ " + entry.getCreationTime() + " ] modified [ " + entry.getTime() + " ]");
+                Tr.debug(tc, entryPrefix + "Modified [ " + entry.getTime() + " ]");
 
                 ZipEntry altEntry = zipFile.getEntry( entry.getName() );
                 Tr.debug(tc, entryPrefix + " getEntry [ " + altEntry + " ]");
