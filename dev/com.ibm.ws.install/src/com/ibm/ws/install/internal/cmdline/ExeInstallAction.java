@@ -175,6 +175,10 @@ public class ExeInstallAction implements ActionHandler {
                 logger.log(Level.SEVERE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_DIRECTORY_NOT_EXISTS", localDir.getAbsolutePath()));
                 return ReturnCode.IO_FAILURE;
             }
+            if (!localDir.isDirectory()) {
+                logger.log(Level.SEVERE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_DIRECTORY_NOT_EXISTS", localDir.getAbsolutePath()));
+                return ReturnCode.IO_FAILURE;
+            }
         }
 
         installKernel = InstallKernelFactory.getInstance();
