@@ -24,8 +24,7 @@ public class PreMainUtil {
     public static final String FACTORY_INIT_PROPERTY = "com.ibm.serialization.validators.factory.instance";
     public static final String KEY_SERIALFILTER_AGENT_ENABLE = "com.ibm.websphere.serialfilter.enable";
     public static final String KEY_SERIALFILTER_AGENT_ACTIVE = "com.ibm.websphere.serialfilter.active";
-
-    private static final String DEBUG_PROPERTY = "com.ibm.websphere.kernel.instrument.serialfilter.debug";
+    public static final String DEBUG_PROPERTY = "com.ibm.websphere.kernel.instrument.serialfilter.debug";
     private static final String BETA = "EARLY_ACCESS";
     private static final String PRODUCT_EDITION = "com.ibm.websphere.productEdition";
     private static final String WPI_FILE = "versions/WebSphereApplicationServer.properties";
