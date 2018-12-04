@@ -91,7 +91,7 @@ public class EL30OperatorPrecedenceServlet extends FATServlet {
     @Test
     public void testOperatorPrecedenceTest7() throws Exception {
         String errorMessage = "EL 3.0 Parenthesis Operator with not ! empty operators (Expected:false):";
-        evaluateOperatorPrecedence("empty x && (not false || !false)", "false", errorMessage);
+        evaluateOperatorPrecedence("x=2; empty x && (not false || !false)", "false", errorMessage);
     }
 
     @Test

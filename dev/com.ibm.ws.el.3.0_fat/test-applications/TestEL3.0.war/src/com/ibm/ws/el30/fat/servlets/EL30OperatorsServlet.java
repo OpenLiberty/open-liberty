@@ -114,7 +114,7 @@ public class EL30OperatorsServlet extends FATServlet {
     @Test
     public void testEL30AssignmentOperator_2() throws Exception {
         test = "EL 3.0 Assignment Operator (=) (Expected:8): ";
-        expression = "y=x+5";
+        expression = "x=3; y=x+5";
         expected = "8";
         testExpression(expression, expected, test);
 
