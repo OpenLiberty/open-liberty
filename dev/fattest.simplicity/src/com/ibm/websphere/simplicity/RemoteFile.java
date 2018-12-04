@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.nio.file.Files;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.simplicity.log.Log;
 import componenttest.common.apiservices.cmdline.LocalProvider;
@@ -101,7 +102,7 @@ public class RemoteFile {
      *            The character set the file is encoded in
      */
     public RemoteFile(Machine host, RemoteFile parent, String name, Charset encoding) {
-        if (parent.getAbsolutePath().endsWith("/")
+        if (parent.getAbsolutePath().endsWith("/")ef
             || parent.getAbsolutePath().endsWith("\\")) {
             this.filePath = convertPath(parent.getAbsolutePath() + name);
         } else {
@@ -822,7 +823,7 @@ public class RemoteFile {
      *     ever be {@link InterruptedException}.
      */
     public static void sleep(long ns) throws Exception {
-        Thread.sleep( (long) (ns / 1000), (int) (ns % 1000) ); // throws InterruptedException;
+        TimeUnit.NANOSECONDS.sleep(ns); // throws InterruptedException
     }
 
     //
