@@ -89,7 +89,7 @@ Service-Component:\
     locationAdmin=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
     socialLoginWebappConfig=com.ibm.ws.security.social.SocialLoginWebappConfig; \
     optional:='sslSupport,authFilter,socialLoginConfig,securityService,socialLoginWebappConfig'; \
-    dynamic:='sslSupport,securityService'; \
+    dynamic:='sslSupport,securityService,authFilter,socialLoginConfig,socialLoginWebappConfig'; \
     greedy:='authFilter,socialLoginConfig,socialLoginWebappConfig'; \
     multiple:='authFilter,socialLoginConfig'; \
     properties:="service.vendor=IBM,id=SocialLoginTAI,TAIName=SocialLoginTAI,invokeAfterSSO:Boolean=true", \

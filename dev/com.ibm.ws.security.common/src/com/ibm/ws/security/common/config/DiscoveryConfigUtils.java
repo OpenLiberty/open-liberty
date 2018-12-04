@@ -327,13 +327,13 @@ public class DiscoveryConfigUtils {
     /**
      * @param string
      */
-    public void logDiscoveryMessage(String key, String defaultMessage) {
+    public void logDiscoveryMessage(String key, String bundleName, String defaultMessage) {
         //String defaultMessage = "Error processing discovery request";
 
         String message = defaultMessage;
         if (key != null) {
             message = TraceNLS.getFormattedMessage(getClass(),
-                    "com.ibm.ws.security.common.internal.resources.SSOCommonMessages", key,
+                    bundleName, key,
                     new Object[] { getId(), this.discoveryURL }, defaultMessage);
         }       
         Tr.info(tc, message);
@@ -341,18 +341,17 @@ public class DiscoveryConfigUtils {
 
     public boolean calculateDiscoveryDocumentHash(JSONObject json) {
         String latestDiscoveryHash = HashUtils.digest(json.toString());
-        //TODO
-        String OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG="CWWKS6110I: The client [{" + getId() + "}] configuration has been updated with the new information received from the discovery endpoint URL [{"+ this.discoveryURL + "}].";
+        String OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG="CWWKS6111I: The client [{" + getId() + "}] configuration has been updated with the new information received from the discovery endpoint URL [{"+ this.discoveryURL + "}].";
         boolean updated = false;
         if (this.discoveryDocumentHash == null || !this.discoveryDocumentHash.equals(latestDiscoveryHash)) {
             if (this.discoveryDocumentHash != null) {
-                logDiscoveryMessage(null, OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG);
+                logDiscoveryMessage("OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG", "com.ibm.ws.security.common.internal.resources.SSOCommonMessages", OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG);
             }
             updated = true;
             this.discoveryDocumentHash = latestDiscoveryHash;
         } else if (this.discoveryDocumentHash != null && this.discoveryDocumentHash.equals(latestDiscoveryHash)) {
-            String OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG="CWWKS6110I: The client [{" + getId() + "}] configuration has been updated with the new information received from the discovery endpoint URL [{"+ this.discoveryURL + "}].";
-            logDiscoveryMessage(null, OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG);
+            String OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG="CWWKS6112I: The client [{" + getId() + "}] configuration is consistent with the information from the discovery endpoint URL [{"+ this.discoveryURL + "}], so no configuration updates are needed.";
+            logDiscoveryMessage("OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG", "com.ibm.ws.security.common.internal.resources.SSOCommonMessages", OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG);
         }
         return updated;
     }
