@@ -21,7 +21,7 @@ import com.ibm.websphere.simplicity.config.ConfigElement;
  * <li>ldapRegistry --> groupConfiguration</li>
  * </ul>
  */
-public class GroupConfiguration extends ConfigElement {
+public class GroupProperties extends ConfigElement {
 
     private DynamicMemberAttribute dynamicMemberAttribute;
     private MemberAttribute memberAttribute;

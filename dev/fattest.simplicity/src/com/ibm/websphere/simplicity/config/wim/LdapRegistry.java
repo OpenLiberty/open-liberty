@@ -39,7 +39,7 @@ public class LdapRegistry extends ConfigElement {
     private LdapFilters domino50Filters;
     private LdapFilters edirectoryFilters;
     private ConfigElementList<FailoverServers> failoverServers;
-    private GroupConfiguration groupProperties;
+    private GroupProperties groupProperties;
     private String host;
     private LdapFilters idsFilters;
     private Boolean ignoreCase;
@@ -165,7 +165,7 @@ public class LdapRegistry extends ConfigElement {
     /**
      * @return the groupProperties
      */
-    public GroupConfiguration getGroupProperties() {
+    public GroupProperties getGroupProperties() {
         return groupProperties;
     }
 
@@ -449,7 +449,7 @@ public class LdapRegistry extends ConfigElement {
      * @param groupProperties the groupProperties to set
      */
     @XmlElement(name = "groupProperties")
-    public void setGroupProperties(GroupConfiguration groupProperties) {
+    public void setGroupProperties(GroupProperties groupProperties) {
         this.groupProperties = groupProperties;
     }
 
