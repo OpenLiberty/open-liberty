@@ -83,7 +83,7 @@ public class MetricsMonitorTest {
     @After
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("CWWKS4000E");
+            server.stopServer("CWWKS4000E", "CWWKZ0014W");
             server.removeAllInstalledAppsForValidation();
         }
     }
@@ -231,22 +231,22 @@ public class MetricsMonitorTest {
        		new String[] {});
        	
        	Log.info(c, testName, "------- Remove JAX-WS application ------");
-       	boolean rc1 = server.removeDropinsApplications("testJaxWsApp.war");
+       	boolean rc1 = server.removeAndStopDropinsApplications("testJaxWsApp.war");
        	Log.info(c, testName, "------- " + (rc1 ? "successfully removed" : "failed to remove") + " JAX-WS application ------");
        	server.setMarkToEndOfLog();
        	server.setServerConfigurationFile("server_noJaxWs.xml");
-       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKF0007I"));
+       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKG0017I"));
        	Log.info(c, testName, "------- jax-ws metrics should not be available ------");
       	checkStrings(getHttpsServlet("/metrics/vendor"), 
       		new String[] { "vendor:" }, 
       		new String[] { "vendor:jaxws_client", "vendor:jaxws_server"});
        	
        	Log.info(c, testName, "------- Remove JDBC application ------");
-       	boolean rc2 = server.removeDropinsApplications("testJDBCApp.war");
+       	boolean rc2 = server.removeAndStopDropinsApplications("testJDBCApp.war");
        	Log.info(c, testName, "------- " + (rc2 ? "successfully removed" : "failed to remove") + " JDBC application ------");
        	server.setMarkToEndOfLog();
        	server.setServerConfigurationFile("server_noJDBC.xml");
-       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKF0007I"));
+       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKG0017I"));
        	Log.info(c, testName, "------- connectionpool metrics should not be available ------");
       	checkStrings(getHttpsServlet("/metrics/vendor"), 
       		new String[] { "vendor:" }, 
