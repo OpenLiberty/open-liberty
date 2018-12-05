@@ -52,3 +52,15 @@ OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT=CWWKS6109I: The OpenId Connect client (Re
 OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.explanation=If the OpenID Connect provider (OP) does not support RP defaults, depending on the capacity of the RP, the defaults can be adjusted to what the OP supports.
 OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.useraction=Informational message. No action is required.
 
+OIDC_CLIENT_DISCOVERY_COMPLETE=CWWKS6110I: The OpenID Connect client (Relying Party or RP) [{0}] configuration has been established with the information from the discovery endpoint URL [{1}]. This information enables the client to interact with the OpenID Connect provider to process the requests such as authorization and token.
+OIDC_CLIENT_DISCOVERY_COMPLETE.explanation=The OpenID Connect client contacts the discovery endpoint of the OpenID Connect provider to get the information such as authorizationEndpointUrl, tokenEndpointUrl, userInfoEndpointUrl, jwkEndpointUrl. This information enables the OpenID Connect client to interact with the OpenID Connect provider to send authorization, token, jwk, userinfo requests.
+OIDC_CLIENT_DISCOVERY_COMPLETE.useraction=Informational message. No action is required.
+
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG=CWWKS6111I: The OpenID Connect client [{0}] configuration has been updated with the new information received from the discovery endpoint URL [{1}].
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.explanation=The OpenID Connect client contacts the discovery endpoint of the OpenID Connect provider, 1)if there is a problem contacting the authorization or token endpoints of the OpenID Connect provider 2)if the current time is later than the next discovery time. Next discovery time is calculated by adding the discoveryPollingRate value to the current time after each discovery call.
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.useraction=Informational message. No action is required.
+
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG=CWWKS6112I: The OpenID Connect client [{0}] configuration is consistent with the information from the discovery endpoint URL [{1}], so no configuration updates are needed.
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.explanation=The OpenID Connect client contacts the discovery endpoint of the OpenID Connect provider, 1)if there is a problem contacting the authorization or token endpoints of the OpenID Connect provider 2)if the current time is later than the next discovery time. Next discovery time is calculated by adding the discoveryPollingRate value to the current time after each discovery call. If the latest discovery information matches the previous one, then no configuration update takes place.
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Informational message. No action is required.
+
