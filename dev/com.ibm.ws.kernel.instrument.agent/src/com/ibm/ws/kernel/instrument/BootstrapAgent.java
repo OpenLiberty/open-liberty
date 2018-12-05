@@ -59,53 +59,11 @@ public final class BootstrapAgent {
         String targetAgent = separator < 0 ? arg : arg.substring(0, separator);
         String targetAgentArgs = separator < 0 ? "" : arg.substring(separator + 1);
 
-        // Get the bootstrap agent location
-        CodeSource bootstrapCodeSource = BootstrapAgent.class.getProtectionDomain().getCodeSource();
-        URI bootstrapLocationURI = bootstrapCodeSource.getLocation().toURI();
-        assert ("file".equals(bootstrapLocationURI.getScheme()));
-
-        // Build target agent URI relative to our own
-        URI agentURI = bootstrapLocationURI.resolve(targetAgent);
-
-        // Crack open the agent's jar and read the manifest
-        File agentFile = new File(agentURI);
-        if (!agentFile.isDirectory() && agentFile.exists()) {
-            JarFile jarFile = new JarFile(agentFile);
-
-            Manifest manifest = jarFile.getManifest();
-            jarFile.close();
-            Attributes attrs = manifest.getMainAttributes();
-
-            // Read the agent class name
-            String agentClassName = attrs.getValue("Premain-Class");
-            if (agentClassName == null) {
-                return;
-            }
-
-            // Get the required class path
-            String agentClassPath = attrs.getValue("Class-Path");
-            List<URL> classpath = new ArrayList<URL>();
-            classpath.add(agentURI.toURL());
-            if (agentClassPath != null) {
-                for (String pathEntry : agentClassPath.split("\\s+")) {
-                    URI pathURI = agentURI.resolve(pathEntry.trim());
-                    classpath.add(pathURI.toURL());
-                }
-            }
-
-            // Create the class loader and load the target agent with it
-            ClassLoader loader = URLClassLoader.newInstance(classpath.toArray(new URL[0]));
-            Class<?> clazz = Class.forName(agentClassName, true, loader);
-
-            // Find and invoke the agent's premain method
-            try {
-                Method premain = clazz.getMethod("premain", String.class, Instrumentation.class);
-                premain.invoke(null, targetAgentArgs, inst);
-            } catch (NoSuchMethodException e) {
-                Method premain = clazz.getMethod("premain", String.class);
-                premain.invoke(null, targetAgentArgs);
-            }
-        }
+    	try {
+            loadAgentJar(targetAgent, targetAgentArgs);
+    	} catch (FileNotFoundException e) {
+    	    // if the code cannot find the specified jar file, do nothing. This is the original behavior. 
+    	}
     }
 
     /**
@@ -114,6 +72,10 @@ public final class BootstrapAgent {
      * @param arg argument for the agent.
      */
     public static void loadAgent(String agentJarName, String arg) throws Exception {
+    	loadAgentJar(agentJarName, arg);
+    }
+
+    private static void loadAgentJar(String agentJarName, String arg) throws Exception {
         // Get the bootstrap agent location
         CodeSource bootstrapCodeSource = BootstrapAgent.class.getProtectionDomain().getCodeSource();
         URI bootstrapLocationURI = bootstrapCodeSource.getLocation().toURI();
