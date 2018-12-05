@@ -123,6 +123,10 @@ public class BroadcasterTestServlet extends FATServlet {
             for (ClientListener clientListener : clients) {
                 clientListener.close();
             }
+            while (latch.getCount() > 0) {
+                latch.countDown();
+            }           
+            client.close();
         }
     }
 
