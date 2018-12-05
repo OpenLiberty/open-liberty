@@ -1,22 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
- COPYRIGHT LICENSE: This information contains sample code provided in source code form.
- You may copy, modify, and distribute these sample programs in any form without payment
- to IBM for the purposes of developing, using, marketing or distributing application
- programs conforming to the application programming interface for the operating platform
- for which the sample code is written.
+			Copyright (c) 2012 IBM Corporation and others.
+			All rights reserved. This program and the accompanying materials
+			are made available under the terms of the Eclipse Public License v1.0
+			which accompanies this distribution, and is available at
+			http://www.eclipse.org/legal/epl-v10.html
 
- Notwithstanding anything to the contrary, IBM PROVIDES THE SAMPLE SOURCE CODE ON 
- AN "AS IS" BASIS AND IBM DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING,
- BUT NOT LIMITED TO, ANY IMPLIED WARRANTIES OR CONDITIONS OF MERCHANTABILITY,
- SATISFACTORY QUALITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND ANY WARRANTY OR
- CONDITION OF NON-INFRINGEMENT. IBM SHALL NOT BE LIABLE FOR ANY DIRECT, INDIRECT,
- INCIDENTAL, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR OPERATION OF
- THE SAMPLE SOURCE CODE. IBM HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT,
- UPDATES, ENHANCEMENTS OR MODIFICATIONS TO THE SAMPLE SOURCE CODE.
-
- (C) Copyright IBM Corp. 2012.
- All Rights Reserved. Licensed Materials - Property of IBM.
+			Contributors:
+				IBM Corporation - initial API and implementation
 -->
 
 <application id="derbyRAApp_ID" version="6" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd"> 
