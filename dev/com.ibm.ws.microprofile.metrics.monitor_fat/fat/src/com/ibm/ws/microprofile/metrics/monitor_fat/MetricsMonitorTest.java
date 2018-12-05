@@ -235,7 +235,7 @@ public class MetricsMonitorTest {
        	Log.info(c, testName, "------- " + (rc1 ? "successfully removed" : "failed to remove") + " JAX-WS application ------");
        	server.setMarkToEndOfLog();
        	server.setServerConfigurationFile("server_noJaxWs.xml");
-       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKF0007I"));
+       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKG0017I"));
        	Log.info(c, testName, "------- jax-ws metrics should not be available ------");
       	checkStrings(getHttpsServlet("/metrics/vendor"), 
       		new String[] { "vendor:" }, 
