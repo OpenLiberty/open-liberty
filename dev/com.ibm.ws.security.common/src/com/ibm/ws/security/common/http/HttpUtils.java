@@ -162,7 +162,7 @@ public class HttpUtils {
         String defaultMessage = "Error processing discovery request";
 
         String message = TraceNLS.getFormattedMessage(getClass(),
-                  "com.ibm.ws.security.social.resources.SocialMessages", "OIDC_CLIENT_DISC_RESPONSE_ERROR",
+                  "com.ibm.ws.security.common.internal.resources.SSOCommonMessages", "OIDC_CLIENT_DISC_RESPONSE_ERROR",
                   new Object[] { url, Integer.valueOf(iStatusCode), errMsg }, defaultMessage);
                  ;
         Tr.error(tc, message, new Object[0]);

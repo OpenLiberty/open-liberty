@@ -212,7 +212,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         
         if (discovery) {
         	String OIDC_CLIENT_DISCOVERY_COMPLETE="CWWKS6110I: The client [{" + getId() + "}] configuration has been established with the information from the discovery endpoint URL [{" + this.discoveryEndpointUrl + "}]. This information enables the client to interact with the OpenID Connect provider to process the requests such as authorization and token.";
-        	discoveryUtil.logDiscoveryMessage("OIDC_CLIENT_DISCOVERY_COMPLETE", "com.ibm.ws.security.common.internal.resources.SSOCommonMessages", OIDC_CLIENT_DISCOVERY_COMPLETE);
+        	discoveryUtil.logDiscoveryMessage("OIDC_CLIENT_DISCOVERY_COMPLETE", null, OIDC_CLIENT_DISCOVERY_COMPLETE);
         }
         
     }
