@@ -49,7 +49,8 @@ import componenttest.app.FATServlet;
 @WebServlet(urlPatterns = "/AsyncTestServlet")
 public class AsyncTestServlet extends FATServlet {
     private final static Logger _log = Logger.getLogger(AsyncTestServlet.class.getName());
-    private final static int TIMEOUT = 10; // seconds; note that this is not used for MultiStage test
+    private final static int TIMEOUT = 10;
+    private final static int MULTISTAGE_TIMEOUT = 40;
 
     final static String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/asyncApp/";
 
@@ -119,21 +120,21 @@ public class AsyncTestServlet extends FATServlet {
                 }
             });
             try {
-                timedOut.set(!latch.await(20, TimeUnit.SECONDS));
+                timedOut.set(!latch.await(MULTISTAGE_TIMEOUT, TimeUnit.SECONDS));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         });
         try {
-            List<AccountInfo> accts = cs.toCompletableFuture().get(25, TimeUnit.SECONDS);
+            List<AccountInfo> accts = cs.toCompletableFuture().get(MULTISTAGE_TIMEOUT + 10, TimeUnit.SECONDS);
             accts.forEach(acctInfo -> {_log.info("listAccounts " + acctInfo);});
-            cs2.toCompletableFuture().get(25, TimeUnit.SECONDS);
+            cs2.toCompletableFuture().get(MULTISTAGE_TIMEOUT + 10, TimeUnit.SECONDS);
         } catch (TimeoutException ex) {
             ex.printStackTrace();
             fail("Timed out... this most likely indicates a slow test machine...");
         }
         _log.info("Paid off " + paidInFull.size() + " accounts.  Still owe: " + stillOwe.sum());
-        assertEquals(Boolean.FALSE, timedOut.get());
+        assertEquals("Timed out waiting for response", Boolean.FALSE, timedOut.get());
         assertEquals(5, numOfAccounts.get());
         assertEquals(4, paidInFull.size());
         assertEquals(2287.35, stillOwe.sum(), 0.0);
