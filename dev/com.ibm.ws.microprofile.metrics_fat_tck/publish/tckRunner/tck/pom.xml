@@ -72,12 +72,6 @@
 			<version>1.2</version>
 			<scope>provided</scope>
 		</dependency>
-		<!--<dependency>
-			<groupId>com.ibm.ws.org.jboss.arquillian.container</groupId>
-			<artifactId>arquillian-wlp-managed-8.5</artifactId>
-			<version>1.0.0.Final-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>-->
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed</artifactId>
@@ -137,10 +131,10 @@
                         <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-api-tck</dependency>
                     </dependenciesToScan>
                     <excludes>
-                       <!-- <exclude>**/TimerTest.java</exclude>
+                       <exclude>**/TimerTest.java</exclude>
                        <exclude>**/MpMetricTest.java</exclude>
                        <exclude>**/HistogramTest.java</exclude>
-                       <exclude>**/MeterTest.java</exclude> -->
+                       <exclude>**/MeterTest.java</exclude>
                     </excludes>
                </configuration>
 			</plugin>
