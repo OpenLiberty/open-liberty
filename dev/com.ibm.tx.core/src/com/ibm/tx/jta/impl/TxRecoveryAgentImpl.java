@@ -517,6 +517,9 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     public void stop(boolean immediate) {
+        // Stop lease timeout alarm popping when server is on its way down
+        LeaseTimeoutManager.stopTimeout();
+
         // The entire server is shutting down. All recovery/peer recovery processing must be stopped. Sping
         // through all known failure scope controllers (which includes the local failure scope if we started
         // processing recovery for it) and tell them to shutdown.
