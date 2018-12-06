@@ -2195,10 +2195,28 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      */
     private HeaderElement findHeader(HeaderKeys key, int instance) {
         final int ord = key.getOrdinal();
-        if (!storage.containsKey(ord)) {
+
+        if (!storage.containsKey(ord) && ord <= HttpHeaderKeys.ORD_MAX) {
             return null;
         }
-        HeaderElement elem = storage.get(ord);
+
+        HeaderElement elem = null;
+
+        //If the ordinal created for this key is larger than 1024, the header key
+        //storage has been capped. As such, search the internal header storage
+        //to see if we have a header with this name already added.
+        if (ord > HttpHeaderKeys.ORD_MAX) {
+            for (HeaderElement header : storage.values()) {
+                if (header.getKey().getName().equals(key.getName())) {
+                    elem = header;
+                    break;
+                }
+            }
+
+        } else {
+            elem = storage.get(ord);
+        }
+
         int i = -1;
         while (null != elem) {
             if (!elem.wasRemoved()) {
@@ -2219,10 +2237,28 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      */
     private HeaderElement findHeader(HeaderKeys key) {
         final int ord = key.getOrdinal();
-        if (!storage.containsKey(ord)) {
+
+        if (!storage.containsKey(ord) && ord <= HttpHeaderKeys.ORD_MAX) {
             return null;
         }
-        HeaderElement elem = storage.get(ord);
+
+        HeaderElement elem = null;
+
+        //If the ordinal created for this key is larger than 1024, the header key
+        //storage has been capped. As such, search the internal header storage
+        //to see if we have a header with this name already added.
+        if (ord > HttpHeaderKeys.ORD_MAX) {
+            for (HeaderElement header : storage.values()) {
+                if (header.getKey().getName().equals(key.getName())) {
+                    elem = header;
+                    break;
+                }
+            }
+
+        } else {
+            elem = storage.get(ord);
+        }
+
         while (null != elem && elem.wasRemoved()) {
             elem = elem.nextInstance;
         }
