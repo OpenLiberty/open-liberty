@@ -29,6 +29,7 @@
                         !method.getName().startsWith("testBulkheadMethodAsynchronousRetry55Trip") &&
                         !method.getName().startsWith("bulkheadMetricAsyncTest") &&
                         !method.getName().startsWith("bulkheadMetricHistogramTest") &&
+                        !method.getName().startsWith("testClassLevelRetryMaxDuration") &&
                         !method.getName().startsWith("testTimeoutHistogram")
                     ]]>
                     </script>
