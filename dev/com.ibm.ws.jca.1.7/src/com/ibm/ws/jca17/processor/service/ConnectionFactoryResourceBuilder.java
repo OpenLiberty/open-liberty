@@ -150,7 +150,7 @@ public class ConnectionFactoryResourceBuilder implements ResourceFactoryBuilder 
         for (Map.Entry<String, Object> prop : props.entrySet()) {
             Object value = prop.getValue();
             if (value instanceof String)
-                value = variableRegistry.resolveString((String) value);
+                value = variableRegistry.resolveRawString((String) value);
             annotationProps.put(prop.getKey(), value);
         }
 
