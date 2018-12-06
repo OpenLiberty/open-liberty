@@ -12,8 +12,6 @@ package com.ibm.ws.concurrent.mp.cdi;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -31,16 +29,11 @@ import javax.enterprise.inject.spi.ProcessInjectionPoint;
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.eclipse.microprofile.concurrent.ManagedExecutorConfig;
 import org.eclipse.microprofile.concurrent.NamedInstance;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
@@ -56,11 +49,8 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
 
     private static final TraceComponent tc = Tr.register(ConcurrencyCDIExtension.class);
 
-    private final Map<String, Map<String, ManagedExecutorConfig>> beanMap = new HashMap<>(4);
+    private final Map<String, ManagedExecutorConfig> beanMap = new HashMap<>();
     private final Set<Throwable> deploymentErrors = new LinkedHashSet<>();
-
-    // Cannot use proper DS @Reference here because CDI Extensions are created/used as unmanaged objects
-    private CDIService cdiSvc;
 
     public void processInjectionPoint(@Observes ProcessInjectionPoint<?, ManagedExecutor> event, BeanManager bm) {
         Annotated injectionPoint = event.getInjectionPoint().getAnnotated();
@@ -70,16 +60,7 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
         // Skip if no @ManagedExecutorConfig or module is not CDI enabled
         if (!injectionPoint.isAnnotationPresent(ManagedExecutorConfig.class))
             return;
-        CDIService cdiSvc = getCDIService();
-        if (!cdiSvc.isCurrentModuleCDIEnabled()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Current module is not CDI enabled. Skipping further processing.");
-            return;
-        }
 
-        // Store configs in 3 tier map:  appName -> instanceName -> config
-        String appName = cdiSvc.getCurrentApplicationContextID();
-        Map<String, ManagedExecutorConfig> appBeanMap = beanMap.computeIfAbsent(appName, (e) -> new HashMap<>(8));
         ManagedExecutorConfig config = injectionPoint.getAnnotation(ManagedExecutorConfig.class);
 
         // Instance name is either @NamedInstance.value() or generated from fully-qualified class+field name
@@ -87,10 +68,10 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
         Member member = event.getInjectionPoint().getMember();
         String name = nameAnno == null ? member.getDeclaringClass().getTypeName() + "." + member.getName() : nameAnno.value();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "InjectionPoint " + name + " in app " + appName + " has config " + config);
+            Tr.debug(tc, "InjectionPoint " + name + " has config " + config);
         if (nameAnno == null)
             event.configureInjectionPoint().addQualifiers(createNamedInstance(name));
-        ManagedExecutorConfig prevoiusConfig = appBeanMap.putIfAbsent(name, config);
+        ManagedExecutorConfig prevoiusConfig = beanMap.putIfAbsent(name, config);
 
         // If 2 or more InjectionPoints define @NamedInstance("X") @ManagedExecutorConfig it is an error
         if (prevoiusConfig != null) {
@@ -100,37 +81,14 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
         }
     }
 
-    private CDIService getCDIService() {
-        if (cdiSvc != null)
-            return cdiSvc;
-
-        Bundle bundle = FrameworkUtil.getBundle(CDIService.class);
-        return cdiSvc = AccessController.doPrivileged((PrivilegedAction<CDIService>) () -> {
-            BundleContext bCtx = bundle.getBundleContext();
-            ServiceReference<CDIService> svcRef = bCtx.getServiceReference(CDIService.class);
-            return svcRef == null ? null : bCtx.getService(svcRef);
-        });
-    }
-
     public void registerBeans(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
-        CDIService cdiSvc = getCDIService();
-        if (!cdiSvc.isCurrentModuleCDIEnabled())
-            return;
-
-        String appName = cdiSvc.getCurrentApplicationContextID();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "Register beans for app " + appName);
-
         // TODO: Right now this is coded to give 1 ManagedExecutor instance for all @Default injection points
         // wait to see how discussion on this PR ends up: https://github.com/eclipse/microprofile-concurrency/pull/54
         // Always register bean for default instance(s)
         event.addBean(new ManagedExecutorBean());
 
         // Register 1 bean per un-named config, and 1 bean per unique NamedInstance
-        Map<String, ManagedExecutorConfig> appMap = beanMap.get(appName);
-        if (appMap == null)
-            return;
-        for (Entry<String, ManagedExecutorConfig> e : appMap.entrySet()) {
+        for (Entry<String, ManagedExecutorConfig> e : beanMap.entrySet()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Add bean for name=" + e.getKey());
             event.addBean(new ManagedExecutorBean(e.getKey(), e.getValue()));
@@ -139,6 +97,7 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
 
     public void registerErrors(@Observes AfterDeploymentValidation event) {
         deploymentErrors.forEach(event::addDeploymentProblem);
+        deploymentErrors.clear();
     }
 
     @Deprecated // TODO this can be replaced with a spec-provided Literal soon
