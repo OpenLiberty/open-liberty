@@ -25,7 +25,7 @@ From:
      with the new scan results.  Generate error trace for any differences.
   -- For testing only.
   String WRITE_THREADS_PROPERTY_NAME = "anno.cache.writeThreads"; // Default: [8]
-  -- Control over the number of write threads.  If set to 1, writes are performed
+  -- Controls the number of write threads.  If set to 1, writes are performed
      synchronously.  If set to -1, an unlimited number of write threads is allowed.
      Write thread pooling is per application.
 
@@ -35,11 +35,11 @@ From:
   open-liberty/dev/com.ibm.ws.anno/src/com/ibm/wsspi/anno/classsource/ClassSource_Options.java
 
   String JANDEX_ENABLE_PROPERTY_NAME = "com.ibm.ws.jandex.enable"; // Default: [false]
-  -- Control over whether Jandex indexes are read.
+  -- Controls whether Jandex indexes are read.
   -- An alternate to setting configuration properties.
   -- For testing only.
   String JANDEX_ENABLE_FULL_PROPERTY_NAME = "com.ibm.ws.jandex.enable.full"; // Default: [false]
-  -- Control over whether full Jandex reads are performed.
+  -- Controls whether full Jandex reads are performed.
   -- By default, Jandex reads are custom and retain in memory a sparse subset of
      the entire data of Jandex indexes.
   -- For testing only.
@@ -48,7 +48,7 @@ From:
      archive.
   -- For testing only.
   String ANNO_SCAN_THREADS_PROPERTY_NAME = "com.ibm.ws.anno.scan.threads"; // Default: [8]
-  -- Control over the number of threads used for scanning independent class path components.
+  -- Controls the number of threads used for scanning independent class path components.
   -- If set to 1, scans are performed synchronously.
   -- If set to -1, an unlimited number of write threads is allowed.
   -- Scan threads pooling is per module.
