@@ -25,6 +25,8 @@ import java.util.NoSuchElementException;
 
 import org.osgi.framework.Bundle;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.classloading.ApiType;
@@ -35,6 +37,8 @@ import com.ibm.wsspi.kernel.service.utils.CompositeEnumeration;
  * to discover the special methods:
  */
 public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
+    private final static TraceComponent tc = Tr.register(UnifiedClassLoader.class);
+
     /**
      * Spring to register the given ClassFileTransformer on this ClassLoader
      */
@@ -93,7 +97,7 @@ public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.ClassLoader#loadClass(java.lang.String, boolean)
      */
     @Override
@@ -103,8 +107,16 @@ public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
     }
 
     @Trivial
+    @FFDCIgnore(ClassNotFoundException.class)
     Class<?> loadClass0(String name, boolean resolve) throws ClassNotFoundException {
-        return super.loadClass(name, resolve);
+        try {
+            return super.loadClass(name, resolve);
+        } catch (ClassNotFoundException ex) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "CNFE from super classloader " + super.toString(), ex);
+            }
+            throw ex;
+        }
     }
 
     @Override
@@ -114,6 +126,9 @@ public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
             try {
                 return cl.loadClass(arg0);
             } catch (ClassNotFoundException swallowed) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "CNFE from followOnClassLoader " + cl, swallowed);
+                }
             }
         }
         throw new ClassNotFoundException(arg0);
@@ -190,8 +205,7 @@ public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
         try {
             final ClassLoader thisClassLoader = this;
 
-            parent = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<ClassLoader>()
-            {
+            parent = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<ClassLoader>() {
                 @Override
                 public ClassLoader run() throws Exception {
                     return thisClassLoader.getParent();
@@ -211,8 +225,7 @@ public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
             final String f_name = name;
             final ClassLoader f_parent = parent;
 
-            Enumeration<URL> eURL = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Enumeration<URL>>()
-            {
+            Enumeration<URL> eURL = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Enumeration<URL>>() {
                 @Override
                 public Enumeration<URL> run() throws Exception {
                     return f_parent.getResources(f_name);
