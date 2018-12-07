@@ -402,28 +402,22 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             assertTrue(dumpInfo, lines.contains("  is statistics enabled? true"));
             assertFalse(dumpInfo, lines.contains("  is statistics enabled? false"));
 
-            assertTrue(dumpInfo, lines.parallelStream()
-                            .anyMatch(s -> s
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
                                             .matches("  average put time:    \\d+\\.\\d+ms")));
 
-            assertTrue(dumpInfo, lines.parallelStream()
-                            .anyMatch(s -> s
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
                                             .matches("  cache gets:      \\d+")));
 
-            assertTrue(dumpInfo, lines.parallelStream()
-                            .anyMatch(s -> s
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
                                             .matches("  cache hit percentage:  \\d+\\.\\d+%")));
 
-            assertTrue(dumpInfo, lines.parallelStream()
-                            .anyMatch(s -> s
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
                                             .matches("  cache miss percentage: \\d+\\.\\d+%")));
 
-            assertTrue(dumpInfo, lines.parallelStream()
-                            .anyMatch(s -> s
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
                                             .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2100 \\[testServerDumpWithMonitoring1\\]")));
 
-            assertTrue(dumpInfo, lines.parallelStream()
-                            .anyMatch(s -> s
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
                                             .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2200 \\[testServerDumpWithMonitoring2\\]")));
         } finally {
             run("invalidateSession", session1);
@@ -474,16 +468,13 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
 
             assertFalse(dumpInfo, lines.contains("  is statistics enabled? true"));
 
-            assertFalse(dumpInfo, lines.parallelStream()
-                            .anyMatch(s -> s
+            assertFalse(dumpInfo, lines.parallelStream().anyMatch(s -> s
                                             .matches("  average put time:.*")));
 
-            assertTrue(dumpInfo, lines.parallelStream()
-                            .anyMatch(s -> s
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
                                             .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 1900 \\[testServerDumpWithoutMonitoring1\\]")));
 
-            assertTrue(dumpInfo, lines.parallelStream()
-                            .anyMatch(s -> s
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
                                             .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2000 \\[testServerDumpWithoutMonitoring2\\]")));
         } finally {
             run("invalidateSession", session1);
