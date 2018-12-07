@@ -102,7 +102,7 @@ public class RemoteFile {
      *            The character set the file is encoded in
      */
     public RemoteFile(Machine host, RemoteFile parent, String name, Charset encoding) {
-        if (parent.getAbsolutePath().endsWith("/")ef
+        if (parent.getAbsolutePath().endsWith("/")
             || parent.getAbsolutePath().endsWith("\\")) {
             this.filePath = convertPath(parent.getAbsolutePath() + name);
         } else {
@@ -1016,12 +1016,9 @@ public class RemoteFile {
         } else {
             Log.finer(c, method, "The source file is a file. Copying the file.");
 
-            // Now we ensure the parent directory path exists and create if it doesn't as long as it has a parent
-	    File destParent = destFile.getParentFile();
-            if (destParent != null) {
-                // info level is inconsistent with other messages in this method, and also very loud for large transfers
-                Log.finer(c, method, destParent);
-                RemoteFile parentFolder = new RemoteFile(destFile.getMachine(), destParent);
+            String destParentPath = destFile.getParent();
+            if ( destParentPath != null ) {
+                RemoteFile parentFolder = new RemoteFile(destFile, destParentPath);
                 parentFolder.mkdirs();
             }
 
