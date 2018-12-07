@@ -115,7 +115,6 @@ public class MetricsMonitorTest {
 		getHttpsServlet("/metrics/vendor");
     	
        	Log.info(c, testName, "------- servlet metrics should be available ------");
-       	server.setMarkToEndOfLog(server.getMostRecentTraceFile());
        	Log.info(c, testName, server.waitForStringInTrace("Monitoring MXBean WebSphere:type=ServletStats", 60000));
        	checkStrings(getHttpsServlet("/metrics/vendor"), new String[] {
        		"vendor:threadpool_default_executor_active_threads",
@@ -196,7 +195,6 @@ public class MetricsMonitorTest {
        		new String[] { "vendor:session", "vendor:connectionpool" });
        	
        	Log.info(c, testName, "------- Monitor filter WebContainer and Session ------");
-       	server.setMarkToEndOfLog();
        	server.setServerConfigurationFile("server_monitorFilter2.xml");
        	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKG0017I"));
     	checkStrings(getHttpServlet("/testSessionApp/testSessionServlet"), 
@@ -230,10 +228,10 @@ public class MetricsMonitorTest {
        		new String[] {"vendor:threadpool", "vendor:servlet", "vendor:session", "vendor:connectionpool" }, 
        		new String[] {});
        	
+        server.setMarkToEndOfLog();
        	Log.info(c, testName, "------- Remove JAX-WS application ------");
        	boolean rc1 = server.removeAndStopDropinsApplications("testJaxWsApp.war");
        	Log.info(c, testName, "------- " + (rc1 ? "successfully removed" : "failed to remove") + " JAX-WS application ------");
-       	server.setMarkToEndOfLog();
        	server.setServerConfigurationFile("server_noJaxWs.xml");
        	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKG0017I"));
        	Log.info(c, testName, "------- jax-ws metrics should not be available ------");
@@ -270,7 +268,7 @@ public class MetricsMonitorTest {
     	Log.info(c, testName, "------- Enable mpMetrics-1.1 and monitor-1.0: vendor metrics should be available ------");
     	server.setServerConfigurationFile("server_monitor.xml");
     	server.startServer();
-    	Log.info(c, testName, server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+    	Log.info(c, testName, server.waitForStringInLog("defaultHttpEndpoint-ssl",120000));
     	Log.info(c, testName, "------- server started -----");
       	checkStrings(getHttpsServlet("/metrics"), 
           	new String[] { "base:", "vendor:" }, 
