@@ -46,13 +46,20 @@ public interface TimeoutState {
     /**
      * Start an execution attempt.
      * <p>
+     * If {@link #setTimeoutCallback(Runnable)} is called before {@link #stop()} is called, the timeout callback will be called if the execution times out.
+     */
+    public void start();
+
+    /**
+     * Set the callback to call if the execution attempt times out
+     * <p>
      * If the execution attempt times out before {@link #stop()} is called, {@code timeoutCallback} will be called.
      * <p>
      * {@code timeoutCallback} will not be called after {@link #stop()} has returned.
      *
-     * @param timeoutCallback the callback to call if the execution attempt times out
+     * @param timeoutCallback the callback to call if execution times out
      */
-    public void start(Runnable timeoutCallback);
+    public void setTimeoutCallback(Runnable timeoutCallback);
 
     /**
      * Stop an execution attempt

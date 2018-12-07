@@ -138,6 +138,8 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
             return;
         }
 
+        timeout.start();
+
         ExecutionReference ref = bulkhead.submit(handleExceptions(() -> runExecutionAttempt(attemptContext), attemptContext, executionContext),
                                                  getExceptionHandler(attemptContext));
 
@@ -150,13 +152,13 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
             return;
         }
 
+        timeout.setTimeoutCallback(handleExceptions(() -> timeout(attemptContext, ref), attemptContext, executionContext));
+
         // Update what we should do if the user cancels the execution
         executionContext.setCancelCallback((mayInterrupt) -> {
             ref.abort(mayInterrupt);
             finalizeAttempt(attemptContext, MethodResult.failure(new CancellationException()));
         });
-
-        timeout.start(handleExceptions(() -> timeout(attemptContext, ref), attemptContext, executionContext));
     }
 
     /**
