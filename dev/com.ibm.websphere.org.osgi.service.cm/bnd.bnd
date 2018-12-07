@@ -8,10 +8,10 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.osgi:org.osgi.service.cm;1.5.0}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.osgi:org.osgi.service.cm;1.6.0}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-   @${repo;org.osgi:org.osgi.service.cm;1.5.0}!/!(OSGI-OPT/src|META-INF/maven)/*
+   @${repo;org.osgi:org.osgi.service.cm;1.6.0}!/!(OSGI-OPT/src|META-INF/maven)/*
 
 publish.wlp.jar.suffix: dev/api/spec
 
