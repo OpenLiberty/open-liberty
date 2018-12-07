@@ -67,7 +67,7 @@ public class MvnUtils {
     public static final Class<MvnUtils> c = MvnUtils.class;
 
     private static final String DEFAULT_FAILSAFE_UNDEPLOYMENT = "true";
-    private static final String DEFAULT_APP_DEPLOY_TIMEOUT = "30";
+    private static final String DEFAULT_APP_DEPLOY_TIMEOUT = "180";
     private static final String DEFAULT_APP_UNDEPLOY_TIMEOUT = "20";
     private static final int DEFAULT_MBEAN_TIMEOUT = 60000;
     public static File resultsDir;
@@ -109,7 +109,7 @@ public class MvnUtils {
      * Changes maven reports folder name from default to default value + _ + new suite name
      *
      * @param newName - new suite file
-     * @param server - server that will run this suite
+     * @param server  - server that will run this suite
      * @throws Exception
      */
     public static void setSuiteFileName(String newName, LibertyServer server) throws Exception {
@@ -137,7 +137,7 @@ public class MvnUtils {
      * This enables us to set up things like the Liberty install
      * directory and jar locations once.
      *
-     * @param server Simplicity LibertyServer
+     * @param server          Simplicity LibertyServer
      * @param pomRelativePath relative to "publish/tckRunner" path to pom - usually "tck/pom.xml"
      * @throws Exception
      */
@@ -320,9 +320,9 @@ public class MvnUtils {
     /**
      * runs "mvn clean test" in the tck folder, passing through all the required properties
      *
-     * @param server the liberty server which should be used to run the TCK
+     * @param server     the liberty server which should be used to run the TCK
      * @param bucketName the name of the test project
-     * @param testName the name of the method that's being used to launch the TCK
+     * @param testName   the name of the method that's being used to launch the TCK
      * @param addedProps java properties to set when running the mvn command
      */
     public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName, Map<String, String> addedProps) throws Exception {
@@ -418,9 +418,9 @@ public class MvnUtils {
     /**
      * Copy a list of result files to the target directory, appending the id string to both the file name and to test names inside the result XML.
      *
-     * @param targetDir the target directory
+     * @param targetDir   the target directory
      * @param resultFiles the result files to modify and copy
-     * @param id the id string to append to the file names and test names
+     * @param id          the id string to append to the file names and test names
      * @throws TransformerException
      */
     private static void copyResultsAndAppendId(File targetDir, List<File> resultFiles,
@@ -738,7 +738,7 @@ public class MvnUtils {
     /**
      * Return the result of a XPath query on a file
      *
-     * @param xml file
+     * @param xml   file
      * @param query as a XPath String
      * @return result of query into the xml
      */
