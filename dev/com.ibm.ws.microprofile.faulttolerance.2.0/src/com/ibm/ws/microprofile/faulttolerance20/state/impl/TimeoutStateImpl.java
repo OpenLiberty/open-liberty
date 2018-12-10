@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance20.state.impl;
 
+import static com.ibm.ws.microprofile.faulttolerance20.state.impl.DurationUtils.asClampedNanos;
+
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -22,6 +25,7 @@ public class TimeoutStateImpl implements TimeoutState {
     private final TimeoutPolicy policy;
     private TimeoutResult result = TimeoutResult.NEW;
     private Runnable timeoutCallback;
+    private Future<?> timeoutFuture;
 
     public TimeoutStateImpl(ScheduledExecutorService executorService, TimeoutPolicy policy) {
         super();
@@ -31,15 +35,34 @@ public class TimeoutStateImpl implements TimeoutState {
 
     /** {@inheritDoc} */
     @Override
-    public void start(Runnable timeoutCallback) {
+    public void start() {
         synchronized (this) {
             if (result != TimeoutResult.NEW) {
                 throw new IllegalStateException("Start called twice on the same timeout");
             }
             result = TimeoutResult.STARTED;
-            this.timeoutCallback = timeoutCallback;
             if (!policy.getTimeout().isZero()) {
-                executorService.schedule(this::timeout, policy.getTimeout().toMillis(), TimeUnit.MILLISECONDS);
+                timeoutFuture = executorService.schedule(this::timeout, asClampedNanos(policy.getTimeout()), TimeUnit.NANOSECONDS);
+            }
+        }
+    }
+
+    @Override
+    public void setTimeoutCallback(Runnable timeoutCallback) {
+        synchronized (this) {
+            if (timeoutCallback == null) {
+                throw new NullPointerException("setTimeoutCallback called with null value");
+            }
+
+            if (this.timeoutCallback != null) {
+                throw new IllegalStateException("setTimeoutCallback called more than once");
+            }
+
+            this.timeoutCallback = timeoutCallback;
+
+            // If we've already timed out, run the callback now
+            if (result == TimeoutResult.TIMEDOUT && timeoutCallback != null) {
+                timeoutCallback.run();
             }
         }
     }
@@ -48,12 +71,19 @@ public class TimeoutStateImpl implements TimeoutState {
     @Override
     public void stop() {
         synchronized (this) {
-            if (result == TimeoutResult.NEW) {
-                throw new IllegalStateException("Stop called on a timeout that was never started");
-            }
-
-            if (result == TimeoutResult.STARTED) {
-                result = TimeoutResult.FINISHED;
+            switch (result) {
+                case NEW:
+                    throw new IllegalStateException("Stop called on a timeout that was never started");
+                case STARTED:
+                    result = TimeoutResult.FINISHED;
+                    if (timeoutFuture != null) {
+                        timeoutFuture.cancel(false);
+                    }
+                    break;
+                case FINISHED:
+                    throw new IllegalStateException("Stop called twice on the same timeout");
+                case TIMEDOUT:
+                    // Do nothing
             }
         }
     }
@@ -68,11 +98,19 @@ public class TimeoutStateImpl implements TimeoutState {
 
     private void timeout() {
         synchronized (this) {
-            if (result == TimeoutResult.STARTED) {
-                result = TimeoutResult.TIMEDOUT;
-                if (timeoutCallback != null) {
-                    timeoutCallback.run();
-                }
+            switch (result) {
+                case NEW:
+                    throw new IllegalStateException("Timeout called on a timeout that was never started");
+                case STARTED:
+                    result = TimeoutResult.TIMEDOUT;
+                    if (timeoutCallback != null) {
+                        timeoutCallback.run();
+                    }
+                    break;
+                case FINISHED:
+                    // Do nothing
+                case TIMEDOUT:
+                    throw new IllegalStateException("Timeout called more than once on the same timeout");
             }
         }
     }

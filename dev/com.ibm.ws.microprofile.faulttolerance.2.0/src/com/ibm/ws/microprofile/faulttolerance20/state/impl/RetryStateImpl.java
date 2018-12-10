@@ -10,13 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance20.state.impl;
 
+import static com.ibm.ws.microprofile.faulttolerance20.state.impl.DurationUtils.asClampedNanos;
+
 import java.time.Duration;
 import java.util.PrimitiveIterator;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.LongStream;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance20.impl.MethodResult;
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState;
@@ -108,30 +109,6 @@ public class RetryStateImpl implements RetryState {
             result.delay = 0;
         }
         result.delayUnit = TimeUnit.NANOSECONDS;
-    }
-
-    /**
-     * Convert a duration to nanoseconds, clamping between MIN_VALUE and MAX_LONG
-     * <p>
-     * Needed in case a user specifies something silly like delay = 5 MILLENNIA
-     * <p>
-     * protected only to allow unit testing
-     *
-     * @param duration the duration to convert
-     * @return duration as nanoseconds, clamped if required
-     */
-    @FFDCIgnore(ArithmeticException.class)
-    protected static long asClampedNanos(Duration duration) {
-        try {
-            return duration.toNanos();
-        } catch (ArithmeticException e) {
-            // Treat long overflow as an exceptional case
-            if (duration.isNegative()) {
-                return Long.MIN_VALUE;
-            } else {
-                return Long.MAX_VALUE;
-            }
-        }
     }
 
     /**
