@@ -77,9 +77,11 @@ public class PluginUtilityGenerateTest {
     public static void tearDown() throws Exception {
         try {
             if (localAccessServer.isStarted()) {
+                localAccessServer.dumpServer("localAccessServer");
                 localAccessServer.stopServer();
             }
             if (remoteAccessServer.isStarted()) {
+                remoteAccessServer.dumpServer("remoteAccessServer");
                 remoteAccessServer.stopServer();
             }
         } catch (Exception e) {
