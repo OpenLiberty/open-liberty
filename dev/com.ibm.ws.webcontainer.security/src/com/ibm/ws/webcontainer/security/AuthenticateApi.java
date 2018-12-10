@@ -102,14 +102,6 @@ public class AuthenticateApi {
         }
     }
 
-    public AuthenticateApi(SSOCookieHelper ssoCookieHelper,
-                           AtomicServiceReference<SecurityService> securityServiceRef,
-                           CollaboratorUtils collabUtils,
-                           ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
-                           ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef) {
-        this(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef, null);
-    }
-
     public AuthenticateApi(SSOCookieHelper ssoCookieHelper, AuthenticationService authService) {
         this.securityServiceRef = null;
         this.collabUtils = null;
