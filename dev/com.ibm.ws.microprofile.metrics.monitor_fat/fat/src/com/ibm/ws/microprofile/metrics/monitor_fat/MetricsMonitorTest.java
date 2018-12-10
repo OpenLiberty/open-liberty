@@ -195,6 +195,7 @@ public class MetricsMonitorTest {
        		new String[] { "vendor:session", "vendor:connectionpool" });
        	
        	Log.info(c, testName, "------- Monitor filter WebContainer and Session ------");
+        server.setMarkToEndOfLog();
        	server.setServerConfigurationFile("server_monitorFilter2.xml");
        	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKG0017I"));
     	checkStrings(getHttpServlet("/testSessionApp/testSessionServlet"), 
