@@ -220,6 +220,8 @@ public final class BootstrapConstants {
 
     public static final String JAVA_SPEC_VERSION = "java.specification.version";
 
+    public static final String JAVA_VENDOR = "java.vendor";
+
     public static final String JAVA_2_SECURITY_PROPERTY = "websphere.java.security";
 
     public static final String JAVA_2_SECURITY_NORETHROW = "websphere.java.security.norethrow";
