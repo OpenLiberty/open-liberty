@@ -20,16 +20,18 @@ import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.wsspi.anno.service.AnnotationService_Logging;
 
 public class AnnotationServiceImpl_Logging implements AnnotationService_Logging {
-
     // Loggers ...
 
-    /** <p>Common reference to the annotations logger.</p> */
+    /** <p>The usual annotations logger.</p> */
     public static final Logger ANNO_LOGGER = Logger.getLogger(AnnotationService_Logging.ANNO_LOGGER_NAME);
 
-    /** <p>Common reference to the annotations state logger.</p> */
+    /** <p>Functional logger: Log annotations state at the completion of scans.</p> */
     public static final Logger ANNO_STATE_LOGGER = Logger.getLogger(AnnotationService_Logging.ANNO_LOGGER_STATE_NAME);
-    
-    /** <p>Common reference to the jandex logger.</p> */
+
+    /** <p>Functional logger: Log annotation queries (when caching is enabled). */
+    public static final Logger ANNO_QUERY_LOGGER = Logger.getLogger(AnnotationService_Logging.ANNO_LOGGER_QUERY_NAME);
+
+    /** <p>Functional logger: Log JANDEX activity. */
     public static final Logger ANNO_JANDEX_LOGGER = Logger.getLogger(AnnotationService_Logging.ANNO_LOGGER_JANDEX_NAME);
 
     /**

@@ -114,14 +114,14 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         } else {
             int writeThreads = this.cacheOptions.getWriteThreads();
 
-            if ( writeThreads == 1 ) {
+            if ( (writeThreads == 1) || (writeThreads == 0) ) {
                 this.writePool = null;
 
             } else {
                 int corePoolSize = 0;
 
                 int maxPoolSize;
-                if ( writeThreads == TargetCache_Options.WRITE_THREADS_UNBOUNDED) {
+                if ( writeThreads <= TargetCache_Options.WRITE_THREADS_UNBOUNDED) {
                     maxPoolSize = TargetCache_Options.WRITE_THREADS_MAX;
                 } else if ( writeThreads > TargetCache_Options.WRITE_THREADS_MAX ) {
                     maxPoolSize = TargetCache_Options.WRITE_THREADS_MAX;
@@ -154,9 +154,9 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
     @Override
     public File getDataFile(String relativePath) {
         if ( getIsLightweight() ) {
-                return null;
+            return null;
         } else {
-                return super.getDataFile(relativePath);
+            return super.getDataFile(relativePath);
         }
     }
 

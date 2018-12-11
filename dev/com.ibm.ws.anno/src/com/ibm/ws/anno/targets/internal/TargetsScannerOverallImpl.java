@@ -32,6 +32,7 @@ import com.ibm.wsspi.anno.util.Util_InternMap;
 import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
+import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 import com.ibm.wsspi.anno.targets.cache.TargetCache_Options;
 
 /**
@@ -908,16 +909,21 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         //     the requested count of scan threads
         //     the maximum allowed count of scan threads
         //     the number of child class sources
+        // The number of threads should be always at least two:
+        //     If scan threads option is set to 0 or 1, the non-concurrent
+        //     scan is performed: This code is never reached.
+        //     If the number of containers is 1, the non-concurrent scan
+        //     is performed: This code is never reached.
 
-        int scanThreads = getScanOptions().getScanThreads();
-        if ( scanThreads == TargetCache_Options.WRITE_THREADS_UNBOUNDED) {
-            scanThreads = TargetCache_Options.WRITE_THREADS_MAX;
+        int scanThreads = getScanThreads();
+        if ( scanThreads <= ClassSource_Options.SCAN_THREADS_UNBOUNDED) {
+            scanThreads = ClassSource_Options.SCAN_THREADS_MAX;
         }
         if ( scanThreads > numChildClassSources ) {
             scanThreads = numChildClassSources; 
         }
-        if ( scanThreads > TargetCache_Options.WRITE_THREADS_MAX ) {
-            scanThreads = TargetCache_Options.WRITE_THREADS_MAX;
+        if ( scanThreads > ClassSource_Options.SCAN_THREADS_MAX ) {
+            scanThreads = ClassSource_Options.SCAN_THREADS_MAX;
         }
 
         int corePoolSize = scanThreads;

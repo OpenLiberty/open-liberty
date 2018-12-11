@@ -106,10 +106,10 @@ public abstract class TargetCacheImpl_DataBase {
         return getCacheOptions().getReadOnly();
     }
 
-    @Trivial
-    public boolean isValidating() {
-        return getCacheOptions().getValidate();
-    }
+    // @Trivial
+    // public boolean isValidating() {
+    //     return getCacheOptions().getValidate();
+    // }
 
     @Trivial
     public int getWriteThreads() {

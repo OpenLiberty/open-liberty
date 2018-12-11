@@ -70,11 +70,11 @@ public interface ClassSource_Options {
 
     // Scan threading:
 
-    int ANNO_SCAN_THREADS_UNBOUNDED = -1;
-    int ANNO_SCAN_THREADS_MAX = 64;
+    int SCAN_THREADS_UNBOUNDED = -1;
+    int SCAN_THREADS_MAX = 64;
 
-    int ANNO_SCAN_THREADS_DEFAULT_VALUE = 8;
-    String ANNO_SCAN_THREADS_PROPERTY_NAME = "com.ibm.ws.anno.scan.threads";
+    int SCAN_THREADS_DEFAULT_VALUE = 8;
+    String SCAN_THREADS_PROPERTY_NAME = "com.ibm.ws.anno.scan.threads";
 
     int getScanThreadsDefault();
 

@@ -96,11 +96,14 @@ public interface TargetCache_Options {
     boolean getAlwaysValid();
     void setAlwaysValid(boolean alwaysValidate);
 
-    boolean VALIDATE_DEFAULT = false;
-    String VALIDATE_PROPERTY_NAME = "anno.cache.validate";
+    // Validation (comparison of prior results with current results)
+    // is not currently implemented.
+    //
+    // boolean VALIDATE_DEFAULT = false;
+    // String VALIDATE_PROPERTY_NAME = "anno.cache.validate";
 
-    boolean getValidate();
-    void setValidate(boolean validate);
+    // boolean getValidate();
+    // void setValidate(boolean validate);
 
     int WRITE_THREADS_UNBOUNDED = -1;
     int WRITE_THREADS_MAX = 64;

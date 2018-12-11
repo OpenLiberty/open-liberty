@@ -302,7 +302,8 @@ public class TargetsScannerBaseImpl {
      *     a single thread.
      */
     public boolean isScanSingleThreaded() {
-        return ( getScanThreads() == 1 );
+        int useScanThreads = getScanThreads();
+        return ( (useScanThreads == 0) || (useScanThreads == 1) );
     }
 
     /**

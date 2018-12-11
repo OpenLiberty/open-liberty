@@ -21,9 +21,9 @@ public class TestOptions_Scan {
     public static final boolean DO_USE_JANDEX_FULL = true;
     public static final boolean DO_NOT_USE_JANDEX_FULL = false;
 
-    public static final int SCAN_THREADS_UNBOUNDED = ClassSource_Options.ANNO_SCAN_THREADS_UNBOUNDED;
-    public static final int SCAN_THREADS_MAX = ClassSource_Options.ANNO_SCAN_THREADS_MAX;
-    public static final int SCAN_THREADS_DEFAULT = ClassSource_Options.ANNO_SCAN_THREADS_DEFAULT_VALUE;
+    public static final int SCAN_THREADS_UNBOUNDED = ClassSource_Options.SCAN_THREADS_UNBOUNDED;
+    public static final int SCAN_THREADS_MAX = ClassSource_Options.SCAN_THREADS_MAX;
+    public static final int SCAN_THREADS_DEFAULT = ClassSource_Options.SCAN_THREADS_DEFAULT_VALUE;
 
     public TestOptions_Scan(boolean useJandex, boolean useJandexFull, int scanThreads) {
         this.useJandex = useJandex;

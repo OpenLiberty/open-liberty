@@ -86,7 +86,7 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
     //
 
     private static final boolean HAS_SCAN_THREADS_OVERRIDE =
-        AnnotationServiceImpl_Logging.hasProperty(ANNO_SCAN_THREADS_PROPERTY_NAME);
+        AnnotationServiceImpl_Logging.hasProperty(SCAN_THREADS_PROPERTY_NAME);
 
     @Trivial
     public static boolean getHasScanThreadsOverride() {
@@ -97,7 +97,7 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
         AnnotationServiceImpl_Logging.getProperty(
             AnnotationServiceImpl_Logging.ANNO_LOGGER,
             CLASS_NAME, "<static init>",
-            ANNO_SCAN_THREADS_PROPERTY_NAME, ANNO_SCAN_THREADS_DEFAULT_VALUE);
+            SCAN_THREADS_PROPERTY_NAME, SCAN_THREADS_DEFAULT_VALUE);
 
     @Trivial
     public static int getScanThreadsOverride() {
@@ -137,7 +137,7 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
             this.scanThreads = getScanThreadsOverride();
         } else {
             this.isSetScanThreads = false;
-            this.scanThreads = ANNO_SCAN_THREADS_DEFAULT_VALUE;
+            this.scanThreads = SCAN_THREADS_DEFAULT_VALUE;
         }
         
     }
@@ -266,7 +266,7 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
     @Override
     @Trivial
     public int getScanThreadsDefault() {
-        return ANNO_SCAN_THREADS_DEFAULT_VALUE;
+        return SCAN_THREADS_DEFAULT_VALUE;
     }
 
     private boolean isSetScanThreads;
@@ -293,6 +293,6 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
     @Override
     public void unsetScanThreads() {
         this.isSetScanThreads = false;
-        this.scanThreads = ANNO_SCAN_THREADS_DEFAULT_VALUE;
+        this.scanThreads = SCAN_THREADS_DEFAULT_VALUE;
     }
 }

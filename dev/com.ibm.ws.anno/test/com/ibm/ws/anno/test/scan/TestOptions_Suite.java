@@ -21,7 +21,7 @@ public class TestOptions_Suite {
     public static final boolean USE_JANDEX_FULL = true;
 
     public static final int SCAN_THREADS_ONE = 1;
-    public static final int SCAN_THREADS_DEFAULT = ClassSource_Options.ANNO_SCAN_THREADS_DEFAULT_VALUE;
+    public static final int SCAN_THREADS_DEFAULT = ClassSource_Options.SCAN_THREADS_DEFAULT_VALUE;
 
     public static final int WRITE_THREADS_ONE = 1;
     public static final int WRITE_THREADS_DEFAULT = TargetCache_Options.WRITE_THREADS_DEFAULT;

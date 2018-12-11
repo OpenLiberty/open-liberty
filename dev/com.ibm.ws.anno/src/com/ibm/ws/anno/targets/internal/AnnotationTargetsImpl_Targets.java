@@ -149,6 +149,7 @@ import com.ibm.wsspi.anno.util.Util_InternMap.ValueType;
 public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets {
     protected static final Logger logger = AnnotationServiceImpl_Logging.ANNO_LOGGER;
     protected static final Logger stateLogger = AnnotationServiceImpl_Logging.ANNO_STATE_LOGGER;
+    protected static final Logger queryLogger = AnnotationServiceImpl_Logging.ANNO_QUERY_LOGGER;
 
     public static final String CLASS_NAME = AnnotationTargetsImpl_Targets.class.getSimpleName(); 
             
@@ -2370,7 +2371,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Directory:     [ {0} ]", cacheOptions.getDir());
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Read-Only:     [ {0} ]", Boolean.valueOf(cacheOptions.getReadOnly()));
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Always Valid:  [ {0} ]", Boolean.valueOf(cacheOptions.getAlwaysValid()));
-        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Validate:      [ {0} ]", Boolean.valueOf(cacheOptions.getValidate()));
+        // useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Validate:      [ {0} ]", Boolean.valueOf(cacheOptions.getValidate()));
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Write Threads: [ {0} ]", Integer.valueOf(cacheOptions.getWriteThreads()));
     }
 
@@ -2466,7 +2467,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
             this, initialTargets);
     }
 
-    //
+    // Queries data is only 
 
     protected TargetCacheImpl_DataQueries queriesData;
 
@@ -2475,8 +2476,26 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         return queriesData;
     }
 
+    /**
+     * Put queries data into these targets.
+     * 
+     * Queries data is only created if writes are enabled by the
+     * application data, and only if query logging is enabled.
+     * See {@link {com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging#ANNO_QUERY_LOGGER}.
+     *
+     * @param appData Application data for which to create query data.
+     */
     protected void putQueriesData(TargetCacheImpl_DataApp appData) {
-        this.queriesData = appData.getApps().getQueriesForcing( getAppName(), getModFullName() );
+        if ( !appData.shouldWrite("query data") ) {
+            return;
+        }
+        // else if ( !queryLogger.isLoggable(Level.FINER) ) {
+        //     return;
+        // }
+        else {
+            this.queriesData = appData.getApps().getQueriesForcing( getAppName(), getModFullName() );
+        }
+        
     }
 
     //
@@ -2486,9 +2505,14 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         ScanPolicy scanPolicy, QueryType queryType,
         String annotationClass, Collection<String> resultClasses) {
 
-        getQueriesData().writeQuery(title,
-                                    scanPolicy.getValue(), queryType.getTag(),
-                                    specificClassNames, annotationClass, resultClasses);
+        TargetCacheImpl_DataQueries useQueriesData = getQueriesData();
+        if ( useQueriesData == null ) {
+            return;
+        } else {
+            useQueriesData.writeQuery(title,
+                                      scanPolicy.getValue(), queryType.getTag(),
+                                      specificClassNames, annotationClass, resultClasses);
+        }
     }
 
     protected void writeQuery(
@@ -2496,9 +2520,14 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         int policies, QueryType queryType,
         String annotationClass, Collection<String> resultClasses) {
 
-        getQueriesData().writeQuery(title,
-                                    policies, queryType.getTag(),
-                                    specificClassNames, annotationClass, resultClasses);
+        TargetCacheImpl_DataQueries useQueriesData = getQueriesData();
+        if ( useQueriesData == null ) {
+            return;
+        } else {
+            useQueriesData.writeQuery(title,
+                                      policies, queryType.getTag(),
+                                      specificClassNames, annotationClass, resultClasses);
+        }
     }
 
     protected void writeQuery(
@@ -2506,12 +2535,18 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         String source, QueryType queryType,
         String annotationClass, Collection<String> resultClasses) {
 
-        List<String> sources = new ArrayList<String>(1);
-        sources.add(source);
+        TargetCacheImpl_DataQueries useQueriesData = getQueriesData();
+        if ( useQueriesData == null ) {
+            return;
 
-        getQueriesData().writeQuery(title,
-                                    sources, queryType.getTag(),
-                                    specificClassNames, annotationClass, resultClasses);
+        } else {
+            List<String> sources = new ArrayList<String>(1);
+            sources.add(source);
+
+            useQueriesData.writeQuery(title,
+                                      sources, queryType.getTag(),
+                                      specificClassNames, annotationClass, resultClasses);
+        }
     }
 
     protected void writeQuery(
@@ -2519,12 +2554,18 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         int policies, String source, QueryType queryType,
         String annotationClass, Collection<String> resultClasses) {
 
-        List<String> sources = new ArrayList<String>(1);
-        sources.add(source);
+        TargetCacheImpl_DataQueries useQueriesData = getQueriesData();
+        if ( useQueriesData == null ) {
+            return;
+            
+        } else {    
+            List<String> sources = new ArrayList<String>(1);
+            sources.add(source);
 
-        getQueriesData().writeQuery(title,
-                                    policies, sources, queryType.getTag(),
-                                    specificClassNames, annotationClass, resultClasses);
+            useQueriesData.writeQuery(title,
+                                      policies, sources, queryType.getTag(),
+                                      specificClassNames, annotationClass, resultClasses);
+        }
     }
 
     protected QueryType asQueryType(AnnotationCategory category) {

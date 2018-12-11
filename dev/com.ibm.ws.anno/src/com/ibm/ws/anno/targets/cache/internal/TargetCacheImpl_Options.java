@@ -21,7 +21,7 @@ public class TargetCacheImpl_Options implements TargetCache_Options {
         String dir,
         boolean readOnly,
         boolean alwaysValid,
-        boolean validate,
+        // boolean validate,
         int writeThreads) {
     
         this.disabled = disabled;
@@ -29,7 +29,7 @@ public class TargetCacheImpl_Options implements TargetCache_Options {
         this.dir = dir;
         this.readOnly = readOnly;
         this.alwaysValid = alwaysValid;
-        this.validate = validate;
+        // this.validate = validate;
         this.writeThreads = writeThreads;
     }
 
@@ -95,18 +95,18 @@ public class TargetCacheImpl_Options implements TargetCache_Options {
 
     //
 
-    private boolean validate;
+    // private boolean validate;
 
-    @Override
-    public void setValidate(boolean validate) {
-        this.validate = validate;
-    }
+    // @Override
+    // public void setValidate(boolean validate) {
+    //     this.validate = validate;
+    // }
 
-    @Override
-    @Trivial
-    public boolean getValidate() {
-        return validate;
-    }
+    // @Override
+    // @Trivial
+    // public boolean getValidate() {
+    //     return validate;
+    // }
 
     //
 

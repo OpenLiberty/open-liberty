@@ -17,13 +17,14 @@ From:
      data is available and should be read. 
   String ALWAYS_VALID_PROPERTY_NAME = "anno.cache.alwaysValid"; // Default: [false]
   -- Disables validity checking.  All cached data is assumed to be valid, and
-     is used without any timestamp or size checking.  This includes locations
-     which are usually always considered invalid, such as loose containers and
-     directories.
-  String VALIDATE_PROPERTY_NAME = "anno.cache.validate"; // Default: [false]
-  -- Always rescan, even if cache data is available, and compare the cache data
-     with the new scan results.  Generate error trace for any differences.
-  -- For testing only.
+     is used without any timestamp or size checking.  This setting applies to
+     locations which are usually considered invalid, such as loose containers
+     and directories.
+//  String VALIDATE_PROPERTY_NAME = "anno.cache.validate"; // Default: [false]
+//  -- Always rescan, even if cache data is available, and compare the cache data
+//     with the new scan results.  Generate error trace for any differences.
+//  -- For testing only.
+//  -- VALIDATE is not currently implemented.
   String WRITE_THREADS_PROPERTY_NAME = "anno.cache.writeThreads"; // Default: [8]
   -- Controls the number of write threads.  If set to 1, writes are performed
      synchronously.  If set to -1, an unlimited number of write threads is allowed.

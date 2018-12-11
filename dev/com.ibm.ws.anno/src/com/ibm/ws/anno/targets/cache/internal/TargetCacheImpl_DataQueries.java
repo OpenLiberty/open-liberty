@@ -56,7 +56,7 @@ public class TargetCacheImpl_DataQueries implements TargetCache_ExternalConstant
     private final TargetCacheImpl_Factory factory;
 
     public TargetCacheImpl_Factory getFactory() {
-    	return factory;
+        return factory;
     }
 
     //

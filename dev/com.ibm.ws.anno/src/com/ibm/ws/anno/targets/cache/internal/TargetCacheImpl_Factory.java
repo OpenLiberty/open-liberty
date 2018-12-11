@@ -71,7 +71,7 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
     //
 
     public TargetCacheImpl_Factory(AnnotationServiceImpl_Service annoService) {
-    	this.annoService = annoService;
+        this.annoService = annoService;
     }
 
     //
@@ -79,7 +79,7 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
     protected final AnnotationServiceImpl_Service annoService;
 
     public AnnotationServiceImpl_Service getAnnotationService() {
-    	return annoService;
+        return annoService;
     }
 
     //
@@ -90,24 +90,25 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
         String dir             = getSystemProperty(TargetCache_Options.DIR_PROPERTY_NAME, TargetCache_Options.DIR_DEFAULT);
         boolean readOnly       = getSystemProperty(TargetCache_Options.READ_ONLY_PROPERTY_NAME, TargetCache_Options.READ_ONLY_DEFAULT);
         boolean alwaysValid    = getSystemProperty(TargetCache_Options.ALWAYS_VALID_PROPERTY_NAME, TargetCache_Options.ALWAYS_VALID_DEFAULT);
-        boolean validate       = getSystemProperty(TargetCache_Options.VALIDATE_PROPERTY_NAME, TargetCache_Options.VALIDATE_DEFAULT);
+        // boolean validate       = getSystemProperty(TargetCache_Options.VALIDATE_PROPERTY_NAME, TargetCache_Options.VALIDATE_DEFAULT);
         int writeThreads       = getSystemProperty(TargetCache_Options.WRITE_THREADS_PROPERTY_NAME, TargetCache_Options.WRITE_THREADS_DEFAULT);
 
         return new TargetCacheImpl_Options(
             disabled,
             dir,
-            readOnly, alwaysValid, validate,
+            readOnly, alwaysValid,
+            // validate,
             writeThreads);
     }
 
     public static TargetCacheImpl_Options createOptionsFromDefaults() {
         return new TargetCacheImpl_Options(
-             TargetCache_Options.DISABLED_DEFAULT,
+            TargetCache_Options.DISABLED_DEFAULT,
 
              TargetCache_Options.DIR_DEFAULT,
              TargetCache_Options.READ_ONLY_DEFAULT,
              TargetCache_Options.ALWAYS_VALID_DEFAULT,
-             TargetCache_Options.VALIDATE_DEFAULT,
+             // TargetCache_Options.VALIDATE_DEFAULT,
              TargetCache_Options.WRITE_THREADS_DEFAULT);
     }
 
@@ -124,7 +125,7 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
     @Override
     @Trivial
     public TargetCacheImpl_Options createOptions() {
-    	return createOptionsFromProperties();
+        return createOptionsFromProperties();
     }
 
     @Override
@@ -150,7 +151,7 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
                 finer(methodName, "  Directory       [ {0} ]", options.getDir());
                 finer(methodName, "  AlwaysValid     [ {0} ]", Boolean.valueOf(options.getAlwaysValid()));
                 finer(methodName, "  ReadOnly        [ {0} ]", Boolean.valueOf(options.getReadOnly()));
-                finer(methodName, "  Validate        [ {0} ]", Boolean.valueOf(options.getValidate()));
+                // finer(methodName, "  Validate        [ {0} ]", Boolean.valueOf(options.getValidate()));
                 finer(methodName, "  Write Threads   [ {0} ]", Integer.valueOf(options.getWriteThreads()));
             }
         }
@@ -220,7 +221,10 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
         String appName, String e_appName,
         String modName, String e_modName, File modDir) {
 
-        return new TargetCacheImpl_DataQueries(this, appName, e_appName, modName, e_modName, modDir);
+        return new TargetCacheImpl_DataQueries(
+            this,
+            appName, e_appName,
+            modName, e_modName, modDir);
     }
 
     //

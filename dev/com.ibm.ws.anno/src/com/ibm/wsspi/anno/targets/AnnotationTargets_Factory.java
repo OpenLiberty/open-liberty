@@ -71,7 +71,7 @@ public interface AnnotationTargets_Factory {
     // Utilities for annotation target validation: Annotation targets tables may be
     // compared.  Fault objects are used to record differences.
 
-	AnnotationTargets_Fault createFault(String unresolvedText);
+    AnnotationTargets_Fault createFault(String unresolvedText);
     AnnotationTargets_Fault createFault(String unresolvedText, String parameter);
     AnnotationTargets_Fault createFault(String unresolvedText, String... parameters);
 
