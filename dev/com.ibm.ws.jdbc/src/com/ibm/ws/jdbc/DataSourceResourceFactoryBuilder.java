@@ -145,7 +145,7 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         for (Map.Entry<String, Object> prop : props.entrySet()) {
             Object value = prop.getValue();
             if (value instanceof String)
-                value = variableRegistry.resolveString((String) value);
+                value = variableRegistry.resolveRawString((String) value);
             vendorProps.put(prop.getKey(), value);
         }
 
