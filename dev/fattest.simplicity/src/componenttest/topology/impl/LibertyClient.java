@@ -57,7 +57,6 @@ import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.PortType;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
-import com.ibm.websphere.simplicity.application.ApplicationManager;
 import com.ibm.websphere.simplicity.application.ApplicationType;
 import com.ibm.websphere.simplicity.config.ClientConfiguration;
 import com.ibm.websphere.simplicity.config.ClientConfigurationFactory;
@@ -111,8 +110,6 @@ public class LibertyClient {
     // Increasing this from 50 seconds to 120 seconds to account for poorly performing code;
     // this timeout should only pop in the event of an unexpected failure of apps to start.
     protected static final int LOG_SEARCH_TIMEOUT = FATRunner.FAT_TEST_LOCALRUN ? 12 * 1000 : 120 * 1000;
-
-    protected ApplicationManager appmgr;
 
     protected List<String> installedApplications;
 

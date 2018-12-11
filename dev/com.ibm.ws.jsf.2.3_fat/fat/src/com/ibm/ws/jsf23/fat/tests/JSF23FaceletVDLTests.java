@@ -13,6 +13,7 @@ package com.ibm.ws.jsf23.fat.tests;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.net.URL;
 
 import org.junit.AfterClass;
@@ -52,10 +53,7 @@ public class JSF23FaceletVDLTests {
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(jsf23Server, "ImportConstantsTag.war", "com.ibm.ws.jsf23.fat.constants");
-
-        // Start the server and use the class name so we can find logs easily.
-        // Many tests use the same server
-        jsf23Server.startServer(JSF23FaceletVDLTests.class.getSimpleName() + ".log");
+        jsf23Server.startServer();
     }
 
     @AfterClass
@@ -172,13 +170,12 @@ public class JSF23FaceletVDLTests {
     @Test
     public void testFaceletRefreshPeriodProduction() throws Exception {
         String contextRoot = "FaceletRefreshPeriodProductionProjectStage";
-        String appName = "FaceletRefreshPeriodProductionProjectStage.war";
+        String appName = contextRoot + ".war";
 
         jsf23Server.setMarkToEndOfLog();
         jsf23Server.saveServerConfiguration();
-        ShrinkHelper.defaultApp(jsf23Server, "FaceletRefreshPeriodProductionProjectStage.war");
-        jsf23Server.installApp(appName);
-        jsf23Server.setServerConfigurationFile("FaceletRefreshPeriodProductionProjectStage.xml");
+        ShrinkHelper.defaultApp(jsf23Server, appName);
+        jsf23Server.setServerConfigurationFile(contextRoot + ".xml");
 
         // Ensure the application was installed successfully.
         assertNotNull("The application " + appName + " did not appear to have been installed.",
@@ -206,7 +203,9 @@ public class JSF23FaceletVDLTests {
         assertTrue("The page did not contain the Original Facelet text.", page.asText().contains("Original Facelet"));
 
         // Perform a hot replace and ensure the facelet does not update on the next request;
-        jsf23Server.copyFileToLibertyInstallRoot("/usr/shared/apps/webcontainer/" + appName, "index.xhtml");
+        String appPath = jsf23Server.getServerRoot() + "/apps/expanded/" + appName;
+        new File(appPath).mkdirs();
+        jsf23Server.copyFileToLibertyInstallRoot("/usr/servers/jsf23Server/apps/expanded/" + appName, "index.xhtml");
 
         // Drive another request to ensure the facelet was not refreshed
         page = (HtmlPage) webClient.getPage(url);
@@ -226,9 +225,7 @@ public class JSF23FaceletVDLTests {
         // Ensure that the server configuration has completed before uninstalling the application
         jsf23Server.waitForConfigUpdateInLogUsingMark(null);
 
-        // Now uninstall the application
-        jsf23Server.uninstallApp(appName);
-
+        jsf23Server.removeInstalledAppForValidation(contextRoot);
     }
 
 }

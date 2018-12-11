@@ -19,5 +19,5 @@
     <logging traceSpecification="*=info:org.apache.myfaces.*=all:com.ibm.ws.jsf*=all" maxFileSize="20" maxFiles="10" traceFormat="BASIC"/> 
  
     <webApplication contextRoot="ELImplicitObjectsViaCDIErrorApp" 
-        location="${shared.app.dir}webcontainer/ELImplicitObjectsViaCDIErrorApp.war" />
+        location="ELImplicitObjectsViaCDIErrorApp.war" />
 </server>
