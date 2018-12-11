@@ -15,9 +15,27 @@ Bundle-Name: WebSphere Container Services SPI
 Bundle-Description: WebSphere Container Services SPI, version ${bVersion}
 Bundle-SymbolicName: com.ibm.websphere.appserver.spi.containerServices
 
-Import-Package: com.ibm.ws.container.service.annotations,com.ibm.ws.container.service.app.deploy,com.ibm.ws.container.service.config,com.ibm.ws.container.service.naming,com.ibm.ws.container.service.security,com.ibm.ws.container.service.state,com.ibm.ws.serialization,com.ibm.wsspi.resource
+Import-Package:
+    com.ibm.ws.container.service.annotations;version=2.0, \
+    com.ibm.ws.container.service.annotations.internal;version=2.0, \
+    com.ibm.ws.container.service.app.deploy, \
+    com.ibm.ws.container.service.config, \
+    com.ibm.ws.container.service.naming, \
+    com.ibm.ws.container.service.security, \
+    com.ibm.ws.container.service.state, \
+    com.ibm.ws.serialization, \
+    com.ibm.wsspi.resource
 
-Export-Package: com.ibm.ws.container.service.annotations,com.ibm.ws.container.service.annotations.internal,com.ibm.ws.container.service.app.deploy,com.ibm.ws.container.service.config,com.ibm.ws.container.service.naming,com.ibm.ws.container.service.security,com.ibm.ws.container.service.state,com.ibm.ws.serialization,com.ibm.wsspi.resource
+Export-Package:
+    com.ibm.ws.container.service.annotations;version=2.0, \
+    com.ibm.ws.container.service.annotations.internal;version=2.0, \
+    com.ibm.ws.container.service.app.deploy, \
+    com.ibm.ws.container.service.config, \
+    com.ibm.ws.container.service.naming, \
+    com.ibm.ws.container.service.security, \
+    com.ibm.ws.container.service.state, \
+    com.ibm.ws.serialization, \
+    com.ibm.wsspi.resource
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.containerServices/pom.xml=com.ibm.websphere.appserver.spi.containerServices.pom}
 

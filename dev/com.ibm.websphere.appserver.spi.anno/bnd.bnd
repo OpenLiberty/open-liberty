@@ -15,9 +15,21 @@ Bundle-Name: WebSphere Annotations SPI
 Bundle-Description: WebSphere Annotations SPI, version ${bVersion}
 Bundle-SymbolicName: com.ibm.websphere.appserver.spi.anno
 
-Import-Package: com.ibm.wsspi.anno.classsource,com.ibm.wsspi.anno.info,com.ibm.wsspi.anno.service,com.ibm.wsspi.anno.targets,com.ibm.wsspi.anno.targets.cache,com.ibm.wsspi.anno.util
+Import-Package: \
+    com.ibm.wsspi.anno.classsource;version=2.0, \
+    com.ibm.wsspi.anno.info;version=2.0, \
+    com.ibm.wsspi.anno.service;version=2.0, \
+    com.ibm.wsspi.anno.targets;version=2.0, \
+    com.ibm.wsspi.anno.targets.cache;version=2.0, \
+    com.ibm.wsspi.anno.util;version=2.0
 
-Export-Package: com.ibm.wsspi.anno.classsource,com.ibm.wsspi.anno.info,com.ibm.wsspi.anno.service,com.ibm.wsspi.anno.targets,com.ibm.wsspi.anno.targets.cache,com.ibm.wsspi.anno.util
+Export-Package: \
+    com.ibm.wsspi.anno.classsource;version=2.0, \
+    com.ibm.wsspi.anno.info;version=2.0, \
+    com.ibm.wsspi.anno.service;version=2.0, \
+    com.ibm.wsspi.anno.targets;version=2.0, \
+    com.ibm.wsspi.anno.targets.cache;version=2.0, \
+    com.ibm.wsspi.anno.util;version=2.0
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.anno/pom.xml=com.ibm.websphere.appserver.spi.anno.pom}
 
