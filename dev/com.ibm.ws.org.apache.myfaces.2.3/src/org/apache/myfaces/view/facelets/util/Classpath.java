@@ -83,39 +83,28 @@ public final class Classpath
             conn.setUseCaches(false);
             conn.setDefaultUseCaches(false);
 
-            JarFile jar = null;
-            if (conn instanceof JarURLConnection)
+            try (JarFile jar = (conn instanceof JarURLConnection) ? 
+                ((JarURLConnection) conn).getJarFile() : _getAlternativeJarFile(url))
             {
-                try
+                if (jar != null)
                 {
-                    jar = ((JarURLConnection) conn).getJarFile();
+                    _searchJar(loader, result, jar, prefix, suffix);
                 }
-                
-                catch (Throwable e)
+                else
                 {
-                    // This can happen if the classloader provided us a URL that it thinks exists
-                    // but really doesn't.  In particular, if a JAR contains META-INF/MANIFEST.MF
-                    // but not META-INF/, some classloaders may incorrectly report that META-INF/
-                    // exists and we'll end up here.  Just ignore this case.
-                    
-                    continue;
+                    if (!_searchDir(result, new File(URLDecoder.decode(url.getFile(), "UTF-8")), suffix))
+                    {
+                        _searchFromURL(result, prefix, suffix, url);
+                    }
                 }
             }
-            else
+            catch (Throwable e) 
             {
-                jar = _getAlternativeJarFile(url);
-            }
-
-            if (jar != null)
-            {
-                _searchJar(loader, result, jar, prefix, suffix);
-            }
-            else
-            {
-                if (!_searchDir(result, new File(URLDecoder.decode(url.getFile(), "UTF-8")), suffix))
-                {
-                    _searchFromURL(result, prefix, suffix, url);
-                }
+                // This can happen if the classloader provided us a URL that it thinks exists
+                // but really doesn't.  In particular, if a JAR contains META-INF/MANIFEST.MF
+                // but not META-INF/, some classloaders may incorrectly report that META-INF/
+                // exists and we'll end up here.  Just ignore this case.
+                continue;
             }
         }
     }
