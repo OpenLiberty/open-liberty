@@ -85,7 +85,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     private static final Set<String> classesUsingFATRunner = new HashSet<String>();
 
     static {
-        Log.info(c, "<clinit>", "System property: fat.test.localrun=" + FAT_TEST_LOCALRUN);
+        Log.info(c, "<clinit>", "Is this FAT running locally?  fat.test.localrun=" + FAT_TEST_LOCALRUN);
         Log.info(c, "<clinit>", "Using filters " + Arrays.toString(testFiltersToApply));
     }
 
@@ -739,11 +739,11 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     }
 
     private static void compareDirectorySnapshots(String path, Map<String, Long> before, Map<String, Long> after) {
-        final String method = "compareDirectorySnapshots";
 
         if (!ENABLE_TMP_DIR_CHECKING)
             return;
 
+        final String method = "compareDirectorySnapshots";
         if (before.isEmpty() || after.isEmpty()) {
             Log.info(c, method, "Unable to calculate directories for " + path);
             return;

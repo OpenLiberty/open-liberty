@@ -28,6 +28,7 @@ import com.ibm.websphere.simplicity.config.dsprops.testrules.DataSourcePropertie
 import com.ibm.websphere.simplicity.config.dsprops.testrules.DataSourcePropertiesSkipRule;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.app.FATServlet;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -51,12 +52,12 @@ public class FATServletClient {
 
     @Before
     public void logBeginTest() {
-        Log.info(getClass(), testName.getMethodName(), "BEGIN");
+        Log.info(getClass(), testName.getMethodName(), ">>> BEGIN " + testName.getMethodName());
     }
 
     @After
     public void logEndTest() {
-        Log.info(getClass(), testName.getMethodName(), "END");
+        Log.info(getClass(), testName.getMethodName(), "<<< END   " + testName.getMethodName());
     }
 
     /**
