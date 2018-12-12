@@ -13,7 +13,6 @@ package com.ibm.websphere.ras;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ConcurrentModificationException;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
@@ -77,10 +76,10 @@ public class CapturedOutputHolder extends BaseTraceService {
         PrintStream trSysErr = systemErr.getOriginalStream();
 
         if (sysOut != trSysOut) {
-            throw new ConcurrentModificationException("Someone else has reset or cached System.out");
+            sysOut.println("WARNING: Someone else has reset or cached System.out");
         }
         if (sysErr != trSysErr) {
-            throw new ConcurrentModificationException("Someone else has reset or cached System.err");
+            sysErr.println("WARNING: Someone else has reset or cached System.err");
         }
 
         super.captureSystemStreams();
