@@ -15,7 +15,7 @@ Bundle-Name: WebSphere Container Services SPI
 Bundle-Description: WebSphere Container Services SPI, version ${bVersion}
 Bundle-SymbolicName: com.ibm.websphere.appserver.spi.containerServices
 
-Import-Package:
+Import-Package: \
     com.ibm.ws.container.service.annotations;version=2.0, \
     com.ibm.ws.container.service.annotations.internal;version=2.0, \
     com.ibm.ws.container.service.app.deploy, \
@@ -26,7 +26,7 @@ Import-Package:
     com.ibm.ws.serialization, \
     com.ibm.wsspi.resource
 
-Export-Package:
+Export-Package: \
     com.ibm.ws.container.service.annotations;version=2.0, \
     com.ibm.ws.container.service.annotations.internal;version=2.0, \
     com.ibm.ws.container.service.app.deploy, \
