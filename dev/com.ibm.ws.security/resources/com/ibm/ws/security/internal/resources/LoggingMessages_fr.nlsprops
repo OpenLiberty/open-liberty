@@ -53,3 +53,7 @@ SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.useraction=Ne sp\u00e9cifiez qu'une 
 SEC_TOO_MANY_PRINCIPALS=CWWKS0010E: Lors de l'extraction du principal de l'appelant, plusieurs principaux de type WSPrincipal ont \u00e9t\u00e9 d\u00e9tect\u00e9s pour le sujet de l'appelant. Un seul \u00e9l\u00e9ment WSPrincipal peut exister dans le sujet.  Les noms des \u00e9l\u00e9ments WSPrincipal sont les suivants : {}
 SEC_TOO_MANY_PRINCIPALS.explanation=Le sujet de l'appelant inclut un trop grand nombre de principaux de type WSPrincipal. Seul un principal de ce type est pris en charge.
 SEC_TOO_MANY_PRINCIPALS.useraction=Consultez l'application pour savoir pourquoi le sujet comporte plusieurs \u00e9l\u00e9ments WSPrincipal.
+
+SPNEGO_API_IS_NOT_SUPPORT=CWWKS0011E: L''API SPNEGO {0} n''est pas prise en charge pour la version {0} du runtime Java {1}.
+SPNEGO_API_IS_NOT_SUPPORT.explanation=L'API SPNEGO ne peut pas \u00eatre utilis\u00e9e avec la combinaison de fournisseur et de version du runtime Java.
+SPNEGO_API_IS_NOT_SUPPORT.useraction=Utilisez le fournisseur et la version Java accept\u00e9s par les API SPNEGO.

@@ -88,3 +88,11 @@ warning.application.started.event.timeout.useraction=If the application eventual
 warning.java.version.not.supported=CWWKC0265W: The current Java version {0} is not supported by the Spring Boot version {1}. Upgrade the Spring Boot version of the application to 2.0.x or later.
 warning.java.version.not.supported.explanation=Java versions higher than 1.8 are not supported by the Spring Boot versions 1.5.x and below.
 warning.java.version.not.supported.useraction=Upgrade the Spring Boot version of the application to 2.0.x or later.
+
+error.invalid.packaged.liberty.jar=CWWKC0265E: The application failed to start because the packaged Liberty server JAR file is not valid.
+error.invalid.packaged.liberty.jar.explanation=The packaged Liberty server JAR file is missing a Server-Name manifest header, entries for the server root, or entries for the lib.index.cache directory.
+error.invalid.packaged.liberty.jar.useraction=Configure a valid packaged Liberty server JAR file.
+
+error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: The application failed to start because the Spring Boot application was not found inside the packaged Liberty Server JAR file.
+error.application.not.found.inside.packaged.liberty.jar.explanation=The packaged Liberty Server JAR file must contain a configured Spring Boot application.
+error.application.not.found.inside.packaged.liberty.jar.useraction=Configure a valid packaged Liberty server JAR file.

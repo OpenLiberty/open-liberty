@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.social.internal;
 
-import java.security.KeyStoreException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,7 +22,6 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -50,7 +48,7 @@ import com.ibm.ws.security.social.error.SocialLoginException;
  * . The other is for JwtConsumerConfig. This make oidcLogin does not need to define an additional jJwtConsumerConfig
  * .. So, we can reuse the jwksUri and sslRef defined in the oidcLogin.
  */
-@Component(name = "com.ibm.ws.security.social.oidclogin", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = { SocialLoginConfig.class, JwtConsumerConfig.class }, property = { "service.vendor=IBM", "type=oidcLogin" })
+@Component(name = "com.ibm.ws.security.social.oidclogin", configurationPolicy = ConfigurationPolicy.REQUIRE, service = { SocialLoginConfig.class, JwtConsumerConfig.class }, property = { "service.vendor=IBM", "type=oidcLogin" })
 public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtConsumerConfig, ConvergedClientConfig {
     public static final TraceComponent tc = Tr.register(OidcLoginConfigImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
@@ -153,18 +151,19 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         discoveryjson = null;
     	if (discoveryEndpointUrl != null) {
             discovery = handleDiscoveryEndpoint(discoveryEndpointUrl);
-        }
-		if (!discovery) {
-			this.userInfoEndpoint = configUtils.getConfigAttribute(props, KEY_USERINFO_ENDPOINT);		
+            if (discovery) {
+            	discoveryUtil.logDiscoveryWarning(props);
+            } else {
+            	reConfigEndpointsAfterDiscoveryFailure();
+            }
+        } else {
+        	this.userInfoEndpoint = configUtils.getConfigAttribute(props, KEY_USERINFO_ENDPOINT);		
 			this.authorizationEndpoint = configUtils.getConfigAttribute(props, KEY_authorizationEndpoint);
 			this.tokenEndpoint = configUtils.getConfigAttribute(props, KEY_tokenEndpoint);
 			this.jwksUri = configUtils.getConfigAttribute(props, KEY_jwksUri);
 			this.issuer = configUtils.getConfigAttribute(props, KEY_ISSUER);
-		} else {
-			discoveryUtil.logDiscoveryWarning(props);
-		}
-       
-        
+        }
+		
         this.userNameAttribute = configUtils.getConfigAttribute(props, KEY_userNameAttribute);
         this.mapToUserRegistry = configUtils.getBooleanConfigAttribute(props, KEY_mapToUserRegistry, this.mapToUserRegistry); 
         this.authFilterRef = configUtils.getConfigAttribute(props, KEY_authFilterRef);
@@ -212,12 +211,25 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         }
         
         if (discovery) {
-        	String OIDC_CLIENT_DISCOVERY_COMPLETE="CWWKS6111I: The client [{" + getId() + "}] configuration has been established with the information from the discovery endpoint URL [{" + this.discoveryEndpointUrl + "}]. This information enables the client to interact with the OpenID Connect provider to process the requests such as authorization and token.";
-        	discoveryUtil.logDiscoveryMessage(null, OIDC_CLIENT_DISCOVERY_COMPLETE); //TODO
+        	String OIDC_CLIENT_DISCOVERY_COMPLETE="CWWKS6110I: The client [{" + getId() + "}] configuration has been established with the information from the discovery endpoint URL [{" + this.discoveryEndpointUrl + "}]. This information enables the client to interact with the OpenID Connect provider to process the requests such as authorization and token.";
+        	discoveryUtil.logDiscoveryMessage("OIDC_CLIENT_DISCOVERY_COMPLETE", null, OIDC_CLIENT_DISCOVERY_COMPLETE);
         }
         
     }
     
+	/**
+	 * 
+	 */
+	private void reConfigEndpointsAfterDiscoveryFailure() {
+		authorizationEndpoint = null;
+		tokenEndpoint = null;
+		userInfoEndpoint = null;
+		jwksUri = null;
+		issuer = null;
+		this.discoveryDocumentHash = null;
+		discoveryUtil = discoveryUtil.initialConfig(getId(), this.discoveryEndpointUrl, this.discoveryPollingRate).discoveryDocumentResult(null).discoveryDocumentHash(this.discoveryDocumentHash).discoveredConfig(this.signatureAlgorithm, this.tokenEndpointAuthMethod, this.scope);
+	}
+	@FFDCIgnore({ Exception.class })
     public boolean handleDiscoveryEndpoint(String discoveryUrl) {
 
         String jsonString = null;
@@ -227,7 +239,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         try {
         	setNextDiscoveryTime();
         	if (!isValidDiscoveryUrl(discoveryUrl)) {
-                Tr.error(tc,  "OIDC_CLIENT_DISCOVERY_SSL_ERROR", discoveryUrl);
+                Tr.error(tc,  "OIDC_CLIENT_DISCOVERY_SSL_ERROR", getId(), discoveryUrl);
                 return false;
             }
         	
@@ -271,6 +283,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             //adjustSignatureAlgorithm();
         	this.tokenEndpointAuthMethod = discoveryUtil.adjustTokenEndpointAuthMethod();
         	this.scope = discoveryUtil.adjustScopes();
+        	this.discoveryDocumentHash = discoveryUtil.getDiscoveryDocumentHash();
     	}
         
         return true;
@@ -665,13 +678,6 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     public String getAuthContextClassReference() {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getGrantType() {
-        // TODO Auto-generated method stub
-        return "authorization_code";
     }
 
     /** {@inheritDoc} */

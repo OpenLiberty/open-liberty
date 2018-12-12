@@ -52,18 +52,23 @@ public class SelfExtract {
     protected static String targetString = null;
 
     public static final class VerboseExtractProgress implements ExtractProgress {
+        @Override
         public void extractedFile(String f) {
             System.out.println("\t" + f);
         }
 
+        @Override
         public void downloadingFile(URL sourceUrl, File targetFile) {
             out("downloadingFileNotice", new Object[] { sourceUrl.toString(), targetFile.getAbsolutePath() });
         }
 
+        @Override
         public void dataDownloaded(int numBytes) {}
 
+        @Override
         public void setFilesToExtract(int count) {}
 
+        @Override
         public void commandRun(List args) {
             StringBuffer cmdString = new StringBuffer();
             for (int i = 0; i < args.size(); i++) {
@@ -74,12 +79,15 @@ public class SelfExtract {
             System.out.println(cmdString);
         }
 
+        @Override
         public void commandsToRun(int count) {}
 
+        @Override
         public boolean isCanceled() {
             return false;
         }
 
+        @Override
         public void skippedFile() {}
     }
 
@@ -167,6 +175,18 @@ public class SelfExtract {
             } else {
                 outputDirFromUser = new File(targetString.trim());
             }
+
+            String pathName = outputDirFromUser.getPath();
+            if (pathName.startsWith("~")) {
+                String pathNameToReturn = pathName.substring(1);
+                String home = System.getenv("HOME");
+                if (home == null) {
+                    err("invalidInstall", pathName);
+                    System.exit(ReturnCode.BAD_INPUT);
+                }
+                outputDirFromUser = new File(home, pathNameToReturn);
+            }
+
             outputDirFromUser = outputDirFromUser.getAbsoluteFile();
 
             File outputDir = findValidWlpInstallPath(outputDirFromUser, extractor);

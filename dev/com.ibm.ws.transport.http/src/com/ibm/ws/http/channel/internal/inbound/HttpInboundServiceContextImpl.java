@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2016 IBM Corporation and others.
+ * Copyright (c) 2004, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 package com.ibm.ws.http.channel.internal.inbound;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -82,6 +84,12 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private long startTime = 0;
     /** Remote user of the request, as set by WebContainer */
     private String remoteUser = "";
+
+    private boolean forwardedHeaderInitialized = false;
+    private int forwardedRemotePort = -1;
+    private String forwardedRemoteAddress = null;
+    private String forwardedProto = null;
+    private String forwardedHost = null;
 
     /**
      * Constructor for an HTTP inbound service context object.
@@ -161,6 +169,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         this.bCheckedAcceptEncoding = false;
         this.bContainsLargeMessage = false;
         this.remoteUser = "";
+        this.forwardedHeaderInitialized = false;
+        this.forwardedHost = null;
+        this.forwardedProto = null;
+        this.forwardedRemoteAddress = null;
+        this.forwardedRemotePort = -1;
         if (getHttpConfig().runningOnZOS()) {
             // @311734 - clean the statemap of the final write mark
             getVC().getStateMap().remove(HttpConstants.FINAL_WRITE_MARK);
@@ -2031,6 +2044,121 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
     public String getRemoteUser() {
         return this.remoteUser;
+    }
+
+    public void initForwardedValues() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.entry(tc, "initForwardedValues");
+        }
+        forwardedHeaderInitialized = true;
+        //Obtain the Regular Expression either from the configuration or default
+        Pattern pattern = getHttpConfig().getForwardedProxiesRegex();
+        Matcher matcher = null;
+
+        //First Check if connected endpoint IP addresses matches the regular expression
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Verifying connected endpoint matches proxy regex");
+        }
+        String remoteIp = getTSC().getRemoteAddress().getHostAddress();
+        matcher = pattern.matcher(remoteIp);
+        if (matcher.matches()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Connected endpoint matched, verifying forwarded FOR list addresses");
+            }
+            //if so, fetch the forwardedForList() from the base message
+            String[] forwardedForList = this.getMessageBeingParsed().getForwardedForList();
+            if (forwardedForList == null || forwardedForList.length == 0) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No forwarded FOR addresses provided, forwarded values will not be used");
+                    Tr.exit(tc, "initForwardedValues");
+                }
+                return;
+            }
+            for (int i = forwardedForList.length - 1; i > 0; i--) {
+                matcher = pattern.matcher(forwardedForList[i]);
+                if (!matcher.matches()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Found address not defined in proxy regex, forwarded values will not be used");
+                        Tr.exit(tc, "initForwardedValues");
+                    }
+                    return;
+                }
+            }
+            //if we get to the end, set the forwarded fields with correct values
+
+            //First check that the last node identifier is not an obfuscated address or
+            //unknown token
+            if (forwardedForList[0] == null || "unknown".equals(forwardedForList[0]) || forwardedForList[0].startsWith("_")) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Client address is unknown or obfuscated, forwarded values will not be used");
+                    Tr.exit(tc, "initForwardedValues");
+                }
+                return;
+            }
+
+            //Check if a port was included
+            if (this.getMessageBeingParsed().getForwardedPort() != null) {
+                //If this port does not resolve to an integer, because it is obfuscated,
+                //malformed, or otherwise, then the address cannot be verified as being
+                //the client. If so, exit now.
+                try {
+                    this.forwardedRemotePort = Integer.parseInt(getMessageBeingParsed().getForwardedPort());
+                } catch (NumberFormatException e) {
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Remote port provided was either obfuscated or malformed, forwarded values will not be used.");
+                        Tr.exit(tc, "initForwardedValues");
+                    }
+                    return;
+                }
+
+            }
+
+            this.forwardedRemoteAddress = forwardedForList[0];
+            this.forwardedHost = this.getMessageBeingParsed().getForwardedHost();
+            this.forwardedProto = this.getMessageBeingParsed().getForwardedProto();
+
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.exit(tc, "initForwardedValues");
+        }
+
+    }
+
+    public int getForwardedRemotePort() {
+        if (!forwardedHeaderInitialized)
+            initForwardedValues();
+
+        return this.forwardedRemotePort;
+    }
+
+    public String getForwardedRemoteAddress() {
+        if (!forwardedHeaderInitialized)
+            initForwardedValues();
+
+        return this.forwardedRemoteAddress;
+    }
+
+    public String getForwardedRemoteProto() {
+        if (!forwardedHeaderInitialized)
+            initForwardedValues();
+
+        return this.forwardedProto;
+    }
+
+    public String getForwardedRemoteHost() {
+        if (!forwardedHeaderInitialized)
+            initForwardedValues();
+
+        return this.forwardedHost;
+    }
+
+    public boolean useForwardedHeaders() {
+        return getHttpConfig().useForwardingHeaders();
+    }
+
+    public boolean useForwardedHeadersInAccessLog() {
+        return getHttpConfig().useForwardingHeadersInAccessLog();
     }
 
 }

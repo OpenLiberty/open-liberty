@@ -30,10 +30,9 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.common.web.CommonWebConstants;
-import com.ibm.ws.security.openidconnect.clients.common.HashUtils;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
-import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
-import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
+import com.ibm.ws.security.openidconnect.clients.common.RedirectionEntry;
+import com.ibm.ws.security.openidconnect.clients.common.RedirectionProcessor;
 import com.ibm.ws.security.social.Constants;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
@@ -47,7 +46,6 @@ import com.ibm.ws.security.social.twitter.TwitterConstants;
 import com.ibm.ws.security.social.twitter.TwitterTokenServices;
 import com.ibm.ws.security.social.web.utils.ConfigInfoJsonBuilder;
 import com.ibm.ws.security.social.web.utils.SocialWebUtils;
-import com.ibm.ws.webcontainer.security.CookieHelper;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -212,7 +210,7 @@ public class EndpointServices {
     }
 
     //@FFDCIgnore(SocialLoginException.class)
-    protected void doRedirect(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig config) throws IOException {
+    protected void doRedirect(HttpServletRequest request, final HttpServletResponse response, final SocialLoginConfig config) throws IOException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, dumpMap(request.getParameterMap()));
         }
@@ -232,27 +230,50 @@ public class EndpointServices {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "state is " + state);
         }
-        if (state == null || state.isEmpty()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "The state is null");
-            }
-            Tr.error(tc, "STATE_NULL_OR_MISMATCHED", new Object[] {});
-            ErrorHandlerImpl.getInstance().handleErrorResponse(response);
-            return;
-        }
 
         if (config instanceof OidcLoginConfigImpl) {
             // for oidc, handle redirect consistent with how the rest of oidc does it.
             // Use their cookies, etc.
-            finishOidcRedirect(request, response, config);
+        	RedirectionProcessor redirectionProcessor = new RedirectionProcessor(request, response, tc);
+			redirectionProcessor.processRedirection(new RedirectionEntry() {
+
+				@Override
+				public ConvergedClientConfig getConvergedClientConfig(HttpServletRequest request, String clientId) {
+					return (ConvergedClientConfig) config;
+				}
+
+				@Override
+				public void handleNoState(HttpServletRequest request, HttpServletResponse response) throws IOException {
+					traceAndSetResponseForNoState(response);
+				}
+
+				@Override
+				public void sendError(HttpServletRequest request, HttpServletResponse response) throws IOException {
+					throw new UnsupportedOperationException();
+				}
+			});
         } else {
             finishOAuthRedirect(request, response, config);
         }
 
     }
+    
+    private void traceAndSetResponseForNoState(HttpServletResponse response) {
+    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "The state is null");
+        }
+        Tr.error(tc, "STATE_NULL_OR_MISMATCHED", new Object[] {});
+        ErrorHandlerImpl.getInstance().handleErrorResponse(response);
+    }
 
     private void finishOAuthRedirect(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig config) throws IOException {
         String state = request.getParameter(ClientConstants.STATE);
+        
+        if (state == null || state.isEmpty()) {
+        	traceAndSetResponseForNoState(response);
+            return;
+        }
+        
         String stateCookie = getStateCookieValue(request, response);
         if (!state.equals(stateCookie)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -299,75 +320,6 @@ public class EndpointServices {
         cacheValueInCookie(request, response, ClientConstants.COOKIE_NAME_STATE_KEY, code);
 
         response.sendRedirect(requestUrl); // send back to protected resource
-    }
-
-    private void finishOidcRedirect(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig config) throws IOException {
-        // TODO: oidc code here from redirect servlet.  Once this is working, refactor to common utils class
-        /********* begin oidc insert */
-        String state = request.getParameter(ClientConstants.STATE);
-        String cookieName = com.ibm.ws.security.openidconnect.clients.common.ClientConstants.WAS_REQ_URL_OIDC + HashUtils.getStrHashCode(state);
-        Cookie[] cookies = request.getCookies();
-        String requestUrl = CookieHelper.getCookieValue(cookies, cookieName);
-        // 240540
-        //CookieHelper.clearCookie(request, response, cookieName, cookies); //clear the WAS_REQ_URL_OIDC cookie
-        OidcClientUtil.invalidateReferrerURLCookie(request, response, cookieName);
-        if (tc.isDebugEnabled() && requestUrl != null) {
-            Tr.debug(tc, "requestUrl: " + requestUrl);
-        }
-
-        if (requestUrl == null || requestUrl.isEmpty()) {
-            String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_BAD_REQUEST_NO_COOKIE", request.getRequestURL()); // CWWKS1750E
-            Tr.error(tc, errorMsg);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return;
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "requestURL is not null or empty");
-        }
-
-        String clientId = null;
-        int iPrefix = request.getRequestURI().lastIndexOf("/");
-        if (iPrefix > -1) {
-            clientId = request.getRequestURI().substring(iPrefix + 1);
-        }
-        String oidcClientId = null;
-        if (state.length() > OidcUtil.STATEVALUE_LENGTH) {
-            oidcClientId = state.substring(OidcUtil.STATEVALUE_LENGTH);
-        }
-
-        String code = request.getParameter(com.ibm.ws.security.openidconnect.common.Constants.CODE);
-        String idToken = request.getParameter(com.ibm.ws.security.openidconnect.common.Constants.ID_TOKEN);
-
-        if (code != null || idToken != null) {
-            OidcLoginConfigImpl oc = (OidcLoginConfigImpl) config;
-            sendToRedirectUrl(request, response, requestUrl, state, clientId, oidcClientId, idToken, oc);
-        } else {
-            throw new UnsupportedOperationException();
-            //sendError(request, response);  //TODO
-        }
-
-        /************ end oidc insert ***********/
-    }
-
-    // todo: converge w social in oidcutils class?
-    private void sendToRedirectUrl(HttpServletRequest request, HttpServletResponse response, String requestUrl, String state, String clientId, String oidcClientId, String id_token, ConvergedClientConfig config) throws IOException {
-        String sessionState = request.getParameter(com.ibm.ws.security.openidconnect.common.Constants.SESSION_STATE);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Request info: state: " + state + " session_state: " + sessionState);
-        }
-        boolean isHttpsRequest = requestUrl.toLowerCase().startsWith("https");
-        new OidcClientUtil().setCookieForRequestParameter(request, response, clientId, state, isHttpsRequest, config); //bt: store all req params in digested cookie
-        if ((oidcClientId != null && !oidcClientId.isEmpty()) || id_token != null) {
-            throw new UnsupportedOperationException();
-            //postToWASReqURL(request, response, requestUrl, oidcClientId); // bt: implicit flow???
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "... expect to be redirected by the browser:" + requestUrl);
-            }
-            response.sendRedirect(requestUrl); // bt: back to protected resource
-        }
     }
 
     protected String getStateCookieValue(HttpServletRequest request, HttpServletResponse response) {

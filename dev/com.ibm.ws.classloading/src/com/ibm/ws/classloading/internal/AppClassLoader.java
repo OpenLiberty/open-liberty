@@ -46,6 +46,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.artifact.url.WSJarURLConnection;
 import com.ibm.ws.classloading.ClassGenerator;
+import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration;
 import com.ibm.ws.classloading.internal.providers.Providers;
 import com.ibm.ws.classloading.internal.util.ClassRedefiner;
 import com.ibm.ws.classloading.internal.util.FeatureSuggestion;
@@ -102,8 +103,8 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     private final ConcurrentHashMap<String, ProtectionDomain> protectionDomains = new ConcurrentHashMap<String, ProtectionDomain>();
     protected final ClassLoader parent;
 
-    AppClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> containers, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator) {
-        super(containers, parent, redefiner);
+    AppClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> containers, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig) {
+        super(containers, parent, redefiner, globalConfig);
         this.parent = parent;
         this.config = config;
         this.apiAccess = access;
@@ -293,10 +294,28 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             return findClassCommonLibraryClassLoaders(name);
         }
 
-        byte[] bytes = byteResourceInformation.getBytes();
+        byte[] bytes = transformClassBytes(byteResourceInformation.getBytes(), name);
+        
+
+        return definePackageAndClass(name, byteResourceInformation, bytes);
+    }
+
+    byte[] transformClassBytes(final byte[] originalBytes, String name) throws ClassNotFoundException {
+        byte[] bytes = originalBytes;
         for (ClassFileTransformer transformer : transformers) {
             try {
-                bytes = transformer.transform(this, name, null, config.getProtectionDomain(), bytes);
+                byte[] newBytes = transformer.transform(this, name, null, config.getProtectionDomain(), bytes);
+                if (newBytes != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        if (bytes == newBytes)
+                            Tr.debug(tc, "transformer " + transformer + " was invoked but returned an unaltered byte array");
+                        else
+                            Tr.debug(tc, "transformer " + transformer + " successfully transformed the class bytes");
+                    }
+                    bytes = newBytes;
+                } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "transformer " + transformer + " was invoked but did not alter the loaded bytes");
+                }
             } catch (IllegalClassFormatException ex) {
                 // FFDC
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -305,8 +324,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                 throw new ClassNotFoundException(name, ex);
             }
         }
-
-        return definePackageAndClass(name, byteResourceInformation, bytes);
+        return bytes;
     }
 
     private Class<?> definePackageAndClass(final String name, final ByteResourceInformation byteResourceInformation, byte[] bytes) throws ClassFormatError {

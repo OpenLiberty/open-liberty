@@ -124,6 +124,11 @@ retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W: Die Dauer der jitter-Verz\u
 retry.parameter.invalid.value.CWMFT5019W.explanation=Der Wert f\u00fcr die jitter-Verz\u00f6gerung muss kleiner sein als der Wert f\u00fcr die Verz\u00f6gerung. Der Wert f\u00fcr die Dauer der jitter-Verz\u00f6gerung setzt sich zusammen aus dem Parameter jitter und dem Parameter jitterDelayUnit. Der Wert f\u00fcr die Dauer der Verz\u00f6gerung setzt sich zusammen aus dem Parameter delay und dem Parameter delayUnit.
 retry.parameter.invalid.value.CWMFT5019W.useraction=Korrigieren Sie den Wert f\u00fcr einen oder mehrere der Parameter, sodass der Wert f\u00fcr die Dauer der jitter-Verz\u00f6gerung kleiner ist als der Wert f\u00fcr die Dauer der Verz\u00f6gerung.
 
+# A method does not return Future or CompletionStage
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E=CWMFT5020E: Die asynchrone Methode {0} hat nicht die R\u00fcckgabetypen java.util.concurrent.Future oder java.util.concurrent.CompletionStage.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.explanation=Alle mit org.eclipse.microprofile.faulttolerance.Asynchronous annotierten Methoden m\u00fcssen entweder den R\u00fcckgabetyp java.util.concurrent.Future oder den R\u00fcckgabetyp java.util.concurrent.CompletionStage haben.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=Aktualisieren Sie den R\u00fcckgabetyp.
+
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: Es ist ein interner Fehler aufgetreten. Ausnahme: {0}
 internal.error.CWMFT5997E.explanation=Im Anwendungsserver ist ein interner Fehler aufgetreten.

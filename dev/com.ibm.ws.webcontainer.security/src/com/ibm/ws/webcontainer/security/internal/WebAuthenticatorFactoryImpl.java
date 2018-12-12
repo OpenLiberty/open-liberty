@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,8 +14,10 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.security.SecurityService;
+import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
 import com.ibm.ws.security.authentication.tai.TAIService;
 import com.ibm.ws.security.collaborator.CollaboratorUtils;
 import com.ibm.ws.webcontainer.security.AuthenticateApi;
@@ -39,6 +41,8 @@ import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 @Component(service = WebAuthenticatorFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
 public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
 
+    private UnauthenticatedSubjectService unauthenticatedSubjectService;
+
     @Override
     public WebAppSecurityConfig createWebAppSecurityConfigImpl(Map<String, Object> props,
                                                                AtomicServiceReference<WsLocationAdmin> locationAdminRef,
@@ -51,8 +55,9 @@ public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
                                                  AtomicServiceReference<SecurityService> securityServiceRef,
                                                  CollaboratorUtils collabUtils,
                                                  ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
-                                                 ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef) {
-        return new AuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef);
+                                                 ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef,
+                                                 UnauthenticatedSubjectService unauthenticatedSubjectService) {
+        return new AuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef, unauthenticatedSubjectService);
     }
 
     @Override
@@ -73,5 +78,14 @@ public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
     @Override
     public Boolean needToAuthenticateSubject(WebRequest webRequest) {
         return null;
+    }
+
+    @Reference
+    protected void setUnauthenticatedSubjectService(UnauthenticatedSubjectService unauthenticatedSubjectService) {
+        this.unauthenticatedSubjectService = unauthenticatedSubjectService;
+    }
+
+    protected void unsetUnauthenticatedSubjectService(UnauthenticatedSubjectService unauthenticatedSubjectService) {
+        this.unauthenticatedSubjectService = null;
     }
 }

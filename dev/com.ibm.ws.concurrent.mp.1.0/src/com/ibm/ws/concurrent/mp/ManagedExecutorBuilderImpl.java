@@ -18,7 +18,6 @@ import java.util.LinkedHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
-import org.eclipse.microprofile.concurrent.ManagedExecutorBuilder;
 import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 
@@ -27,8 +26,8 @@ import com.ibm.ws.threading.PolicyExecutor;
 /**
  * Builder that programmatically configures and creates ManagedExecutor instances.
  */
-class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
-    private static final AtomicLong instanceCount = new AtomicLong();
+class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
+    static final AtomicLong instanceCount = new AtomicLong();
 
     private final ConcurrencyProviderImpl concurrencyProvider;
     private final ArrayList<ThreadContextProvider> contextProviders;
@@ -54,7 +53,7 @@ class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
         unknown.addAll(propagated);
 
         if (unknown.size() < cleared.size() + propagated.size())
-            throw new IllegalArgumentException(/* TODO findOverlapping(configured) */);
+            failOnOverlapOfClearedPropagated();
 
         // Determine what to with remaining context types that are not explicitly configured
         ContextOp remaining;
@@ -76,49 +75,75 @@ class ManagedExecutorBuilderImpl implements ManagedExecutorBuilder {
             ContextOp op = propagated.contains(contextType) ? ContextOp.PROPAGATED //
                             : cleared.contains(contextType) ? ContextOp.CLEARED //
                                             : remaining;
-            if (op != ContextOp.UNCHANGED)
-                configPerProvider.put(provider, op);
+            configPerProvider.put(provider, op);
         }
 
         // unknown thread context types
         if (unknown.size() > 0)
-            throw new IllegalArgumentException(unknown.toString());
+            ThreadContextBuilderImpl.failOnUnknownContextTypes(unknown, contextProviders);
 
-        // TODO generate better formated identifier without commas and spaces
-        String name = "ManagedExecutor-" + maxAsync + '-' + maxQueued + '-' + propagated + "#" + instanceCount.incrementAndGet();
+        StringBuilder nameBuilder = new StringBuilder("ManagedExecutor_") //
+                        .append(maxAsync)
+                        .append('_') //
+                        .append(maxQueued)
+                        .append('_');
+
+        for (String propagatedType : propagated)
+            if (propagatedType.matches("\\w*")) // one or more of a-z, A-Z, _, 0-9
+                nameBuilder.append(propagatedType).append('_');
+
+        nameBuilder.append(instanceCount.incrementAndGet());
+
+        String name = nameBuilder.toString();
 
         PolicyExecutor policyExecutor = concurrencyProvider.policyExecutorProvider.create(name) //
                         .maxConcurrency(maxAsync) //
                         .maxQueueSize(maxQueued);
 
-        ThreadContextImpl mpThreadContext = new ThreadContextImpl(configPerProvider);
+        ThreadContextImpl mpThreadContext = new ThreadContextImpl(concurrencyProvider, configPerProvider);
 
         return new ManagedExecutorImpl(name, policyExecutor, mpThreadContext, concurrencyProvider.transactionContextProvider.transactionContextProviderRef);
     }
 
     @Override
-    public ManagedExecutorBuilder cleared(String... types) {
+    public ManagedExecutor.Builder cleared(String... types) {
         cleared.clear();
         Collections.addAll(cleared, types);
         return this;
     }
 
+    /**
+     * Fail with error indentifying the overlap(s) in context types between:
+     * cleared, propagated.
+     *
+     * @throws IllegalStateException identifying the overlap.
+     */
+    private void failOnOverlapOfClearedPropagated() {
+        HashSet<String> overlap = new HashSet<String>(cleared);
+        overlap.retainAll(propagated);
+        if (overlap.isEmpty()) // only possible if builder is concurrently modified during build
+            throw new ConcurrentModificationException();
+        throw new IllegalStateException(overlap.toString()); // TODO NLS translated error message
+    }
+
     @Override
-    public ManagedExecutorBuilder maxAsync(int max) {
-        // TODO validation
+    public ManagedExecutor.Builder maxAsync(int max) {
+        if (max == 0 || max < -1)
+            throw new IllegalArgumentException(Integer.toString(max));
         maxAsync = max;
         return this;
     }
 
     @Override
-    public ManagedExecutorBuilder maxQueued(int max) {
-        // TODO validation
+    public ManagedExecutor.Builder maxQueued(int max) {
+        if (max == 0 || max < -1)
+            throw new IllegalArgumentException(Integer.toString(max));
         maxQueued = max;
         return this;
     }
 
     @Override
-    public ManagedExecutorBuilder propagated(String... types) {
+    public ManagedExecutor.Builder propagated(String... types) {
         propagated.clear();
         Collections.addAll(propagated, types);
         return this;

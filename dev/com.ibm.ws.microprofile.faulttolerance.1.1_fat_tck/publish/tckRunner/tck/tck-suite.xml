@@ -24,11 +24,13 @@
                         !method.getName().startsWith("testClashingName") &&
                         !method.getName().startsWith("testAsyncTimeout") &&
                         !method.getName().startsWith("testBulkheadClassAsynchFutureDoneWithoutGet") &&
+                        !method.getName().startsWith("testBulkheadMethodAsynchFutureDoneWithoutGet") &&
                         !method.getName().startsWith("testBulkheadClassAsynchronousQueueing10") &&
                         !method.getName().startsWith("testBulkheadMethodAsynchronousQueueing10") &&
                         !method.getName().startsWith("testBulkheadMethodAsynchronousRetry55Trip") &&
                         !method.getName().startsWith("bulkheadMetricAsyncTest") &&
                         !method.getName().startsWith("bulkheadMetricHistogramTest") &&
+                        !method.getName().startsWith("testClassLevelRetryMaxDuration") &&
                         !method.getName().startsWith("testTimeoutHistogram")
                     ]]>
                     </script>

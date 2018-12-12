@@ -1,0 +1,26 @@
+
+task copyGeneratedToBuildImageBinTools (type:Copy) {
+    dependsOn publishWLPJars
+    from buildImage.file('wlp/lib')
+    into buildImage.file('wlp/bin/tools')
+    include 'ws-serialfilteragent.jar'
+}
+
+assemble.dependsOn copyGeneratedToBuildImageBinTools
+
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "gradle.plugin.net.ossindex:ossindex-gradle-plugin:0.3.8-beta"
+  }
+}
+
+apply plugin: "net.ossindex.audit"
+
+audit {
+    failOnError = false
+}

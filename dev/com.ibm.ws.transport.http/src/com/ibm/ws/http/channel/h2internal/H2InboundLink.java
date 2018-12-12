@@ -134,6 +134,7 @@ public class H2InboundLink extends HttpInboundLink {
     int hcDebug = 0x0;
 
     private boolean continuationFrameExpected = false;
+    private boolean writeContinuationFrameExpected = false;
 
     private final Object oneTimeEntrySync = new Object() {};
     private boolean oneTimeEntry = false;
@@ -150,6 +151,20 @@ public class H2InboundLink extends HttpInboundLink {
             Tr.debug(tc, "setContinuationExpected: " + expected);
         }
         this.continuationFrameExpected = expected;
+    }
+
+    public boolean isWriteContinuationExpected() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isWriteContinuationExpected: " + writeContinuationFrameExpected);
+        }
+        return writeContinuationFrameExpected;
+    }
+
+    public void setWriteContinuationExpected(boolean expected) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setWriteContinuationExpected: " + expected);
+        }
+        this.writeContinuationFrameExpected = expected;
     }
 
     public H2InboundLink(HttpInboundChannel channel, VirtualConnection vc, TCPConnectionContext tcc) {

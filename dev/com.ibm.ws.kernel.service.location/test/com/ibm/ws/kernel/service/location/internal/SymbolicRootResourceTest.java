@@ -12,6 +12,7 @@ package com.ibm.ws.kernel.service.location.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -123,6 +124,10 @@ public class SymbolicRootResourceTest {
 
             assertTrue("toString contains '${A}/', toString=" + root.toString(), root.toString().contains("${A}/"));
             assertTrue("toString contains normalized path", root.toString().contains(root.getNormalizedPath()));
+            
+            File rootAsFile = root.asFile();
+            assertNotNull("File cannot be null", rootAsFile);
+            assertEquals("File name not equal", file.getAbsolutePath(), rootAsFile.getAbsolutePath());
 
             file.mkdir();
             assertTrue("Root should exist (created)", root.exists());

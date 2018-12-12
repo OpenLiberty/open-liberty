@@ -24,6 +24,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.junit.Test;
+
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.RetryBeanB;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.RetryBeanC;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.RetryBeanD;
@@ -52,6 +54,7 @@ public class RetryServlet extends FATServlet {
     @Inject
     RetryBeanE beanE;
 
+    @Test
     public void testRetry(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //should be retried 3 times as per default
         try {
@@ -66,6 +69,7 @@ public class RetryServlet extends FATServlet {
         }
     }
 
+    @Test
     public void testInheritedAnnotations(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //should be retried 2 times due to class level annotation on beanB
         try {
@@ -94,6 +98,7 @@ public class RetryServlet extends FATServlet {
     /**
      * Test that the abortOn parameter is handled correctly
      */
+    @Test
     public void testRetryAbortOn(HttpServletRequest request, HttpServletResponse response) {
         try {
             beanC.connectC();
@@ -106,6 +111,7 @@ public class RetryServlet extends FATServlet {
     /**
      * Test that the abortOn parameter is handled correctly on an asynchronous call
      */
+    @Test
     public void testRetryAbortOnAsync(HttpServletRequest request, HttpServletResponse response) throws Exception {
         try {
             beanC.connectCAsync().get();
@@ -120,6 +126,7 @@ public class RetryServlet extends FATServlet {
      * <p>
      * Worth testing specifically because it takes an array of Classes
      */
+    @Test
     public void testRetryAbortOnConfig(HttpServletRequest request, HttpServletResponse response) {
         try {
             beanC.connectC2();
@@ -129,24 +136,13 @@ public class RetryServlet extends FATServlet {
         }
     }
 
-    /**
-     * This test should only pass if MP_Fault_Tolerance_NonFallback_Enabled is set to false
-     */
-    public void testRetryDisabled(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            beanB.connectB();
-            fail("Exception not thrown");
-        } catch (ConnectException e) {
-            // If Retry is disabled, then the call should *not* be retried, so there's only one connect attempt
-            assertThat("Exception message", e.getMessage(), is("ConnectException: RetryBeanB Connect: 1"));
-        }
-    }
-
+    @Test
     public void testRetryForever(HttpServletRequest request, HttpServletResponse response) throws Exception {
         beanC.connectCForever();
         assertThat(beanC.getConnectCount(), is(5));
     }
 
+    @Test
     public void testRetryDurationZero(HttpServletRequest request, HttpServletResponse response) throws Exception {
         try {
             beanC.connectCDurationZero();
@@ -167,6 +163,7 @@ public class RetryServlet extends FATServlet {
      * @param response
      * @throws Exception
      */
+    @Test
     public void testRetryMaxRetriesConfig(HttpServletRequest request, HttpServletResponse response) throws Exception {
         try {
             beanC.connectCMaxRetries1();
@@ -187,6 +184,7 @@ public class RetryServlet extends FATServlet {
      * @param response
      * @throws Exception
      */
+    @Test
     public void testRetryMaxRetriesClassScopeConfig(HttpServletRequest request, HttpServletResponse response) throws Exception {
         try {
             beanD.connectDMaxRetries2();
@@ -208,6 +206,7 @@ public class RetryServlet extends FATServlet {
      *
      * Retry/maxRetries is set to 6 for this method in the config
      */
+    @Test
     public void testRetryMaxRetriesClassLevelConfigForMethodAnnotation() {
         try {
             beanE.connect();

@@ -67,3 +67,15 @@ JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=V\u00e9rifiez que tous les m
 JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: Un nom de configuration de connexion en double, {0}, a \u00e9t\u00e9 sp\u00e9cifi\u00e9 dans le fichier de configuration JAAS et dans les fichiers server.xml/client.xml. Le nom de configuration de connexion dans le fichier server.xml/client.xml sera utilis\u00e9.
 JAAS_DUPLICATE_ENTRY_NAME.explanation=Un nom de configuration de connexion en double a \u00e9t\u00e9 sp\u00e9cifi\u00e9 dans le fichier de configuration JAAS et dans le fichier server.xml/client.xml.
 JAAS_DUPLICATE_ENTRY_NAME.useraction=V\u00e9rifiez le fichier de configuration JAAS et le fichier server.xml/client.xml.
+
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR=CWWKS1143E: Le module de connexion {0} n''est pas accept\u00e9 pour la version {1} par le fournisseur Java {2}.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.explanation=Le module Krb5LoginModule sp\u00e9cifi\u00e9 dans le fichier server.xml, le fichier jaas.conf ou les deux n'est pas accept\u00e9 dans la combinaison de fournisseur et de version Java qui a \u00e9t\u00e9 utilis\u00e9e.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.useraction=Utilisez la combinaison correcte de fournisseur et de version Java accept\u00e9e pour le module Krb5LoginModule, ou bien utilisez un module Krb5LoginModule qui soit support\u00e9 par la combinaison actuelle de fournisseur et de version Java.
+
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS=CWWKS1144E: Les options du module de connexion {0} ne sont pas accept\u00e9es avec le fournisseur Java {1} et la version {2}.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.explanation=Les options Krb5LoginModule sp\u00e9cifi\u00e9es dans le fichier server.xml, le fichier jaas.conf ou les deux ne sont pas accept\u00e9es dans la combinaison de fournisseur et de version Java qui a \u00e9t\u00e9 utilis\u00e9e.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=V\u00e9rifiez que toutes les options Krb5LoginModule sp\u00e9cifi\u00e9es dans le fichier server.xml, le fichier jaas.conf ou les deux sont accept\u00e9es par la combinaison de fournisseur et de version Java.
+
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Une entr\u00e9e jaasLoginContext {0} ne peut pas \u00eatre sp\u00e9cifi\u00e9e en tant qu''entr\u00e9e de configuration JAAS dans le fichier server.xml, le fichier jaas.conf ou les deux.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=Le runtime utilise une configuration Krb5LoginModule par d\u00e9faut et la configuration SPNEGO figurant dans le fichier server.xml.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Supprimez l'entr\u00e9e jaasLoginContext du fichier server.xml ou laissez le runtime utiliser l'entr\u00e9e par d\u00e9faut.

@@ -26,9 +26,12 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.audit.AuditEvent;
+import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
+import com.ibm.ws.security.authentication.cache.AuthCacheService;
+import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.tai.TAIService;
 import com.ibm.ws.webcontainer.security.internal.SSOAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.TAIAuthenticator;
@@ -130,8 +133,15 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         List<String> tokenUsage = null;
         if (subject != null) {
             tokenUsage = getTokenUsageFromSSOToken(subject, webAppSecurityConfig.createSSOCookieHelper());
+            // in order to avoid using the cached subject which was created as a result of SSO from non JASPIC LTPAToken,
+            // clear the cached object if LTPAToken is not created by JASPIC.
+            if (!isJaspicSessionOrJsr375Form(tokenUsage)) {
+                // clear the cache.
+                clearCacheData(subject);
+            }
         }
         boolean isNewAuth = jaspiService.isProcessingNewAuthentication(webRequest.getHttpServletRequest());
+
         if (!isJaspicForm(tokenUsage)) {
             if (!isNewAuth && isJaspicSessionOrJsr375Form(tokenUsage)) {
                 Map<String, Object> requestProps = new HashMap<String, Object>();
@@ -143,7 +153,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         AuthResult result = authResult.getStatus();
         if (result != AuthResult.CONTINUE) {
             if (!isNewAuth) {
-                if (authResult.getAuditAuthConfigProviderAuthType() == "BASIC") {
+                if ("BASIC".equals(authResult.getAuditAuthConfigProviderAuthType())) {
                     // check BA header, and if it exists, use denied and set username, otherwise, challenge
                     String authHeader = webRequest.getHttpServletRequest().getHeader("Authorization");
                     if (authHeader != null && authHeader.startsWith("Basic ")) {
@@ -422,6 +432,22 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
             return true;
         }
         return false;
+    }
+
+    private void clearCacheData(Subject subject) {
+        AuthCacheService authCacheService = securityServiceRef.getService().getAuthenticationService().getAuthCacheService();
+        WSCredential credential = subject.getPublicCredentials(WSCredential.class).iterator().next();
+        try {
+            String authUserName = credential.getRealmName() + ":" + credential.getSecurityName();
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Deleting cache entry of user : " + authUserName);
+            }
+            authCacheService.remove(authUserName);
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "A cache entry cannot be deleted. An exception is caught : " + e);
+            }
+        }
     }
 
 }

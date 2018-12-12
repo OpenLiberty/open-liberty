@@ -86,23 +86,40 @@ public class OpenTracingFilterHelper implements OpentracingFilterHelper {
 
                     StringBuilder operationNameSB = new StringBuilder();
 
-                    String classPathValue = "";
+                    String classPathValue = null;
                     if (resourceInfo.getResourceClass().isAnnotationPresent(Path.class)) {
                         classPathValue = resourceInfo.getResourceClass().getAnnotation(Path.class).value();
                     }
-                    String methodPathValue = "";
+                    String methodPathValue = null;
                     if (resourceInfo.getResourceMethod().isAnnotationPresent(Path.class)) {
                         methodPathValue = resourceInfo.getResourceMethod().getAnnotation(Path.class).value();
                     }
-                    operationNameSB.append(incomingRequestContext.getMethod() + ":");
-                    if (!classPathValue.startsWith("/")) {
-                        operationNameSB.append("/");
+
+                    operationNameSB.append(incomingRequestContext.getMethod().toUpperCase());
+
+                    boolean isColonAdded = false;
+
+                    if ((classPathValue != null) && (classPathValue.length() > 0)) {
+                        if (!isColonAdded) {
+                            operationNameSB.append(":");
+                            isColonAdded = true;
+                        }
+                        if (!classPathValue.startsWith("/")) {
+                            operationNameSB.append("/");
+                        }
+                        operationNameSB.append(classPathValue);
                     }
-                    operationNameSB.append(classPathValue);
-                    if (!methodPathValue.startsWith("/")) {
-                        operationNameSB.append("/");
+
+                    if ((methodPathValue != null) && (methodPathValue.length() > 0)) {
+                        if (!isColonAdded) {
+                            operationNameSB.append(":");
+                        }
+                        if (!methodPathValue.startsWith("/")) {
+                            operationNameSB.append("/");
+                        }
+                        operationNameSB.append(methodPathValue);
                     }
-                    operationNameSB.append(methodPathValue);
+
                     operationName = operationNameSB.toString();
                 } else {
                     operationName = incomingRequestContext.getMethod() + ":"

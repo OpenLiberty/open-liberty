@@ -72,23 +72,6 @@ public class OidcClientUtil {
         return commonHeaders;
     }
 
-    // temporary so CL will compile.  Remove me.
-    public HashMap<String, String> getTokensFromAuthzCode(String tokenEnpoint,
-            String clientId,
-            @Sensitive String clientSecret,
-            String redirectUri,
-            String code,
-            String grantType,
-            SSLSocketFactory sslSocketFactory,
-            boolean isHostnameVerification,
-            String authMethod,
-            String resources) throws Exception {
-        return getTokensFromAuthzCode(tokenEnpoint, clientId, clientSecret, redirectUri,
-                code, grantType, sslSocketFactory, isHostnameVerification,
-                authMethod, resources, null, false);
-    }
-    
-    // temporary so CL will compile.  Remove me.
     public HashMap<String, String> getTokensFromAuthzCode(String tokenEnpoint,
             String clientId,
             @Sensitive String clientSecret,
@@ -99,22 +82,6 @@ public class OidcClientUtil {
             boolean isHostnameVerification,
             String authMethod,
             String resources,
-            HashMap<String, String> customParams) throws Exception {
-        return getTokensFromAuthzCode(tokenEnpoint, clientId, clientSecret, redirectUri,
-                code, grantType, sslSocketFactory, isHostnameVerification,
-                authMethod, resources, customParams, false);
-    }
-
-    public HashMap<String, String> getTokensFromAuthzCode(String tokenEnpoint,
-            String clientId,
-            @Sensitive String clientSecret,
-            String redirectUri,
-            String code,
-            String grantType,
-            SSLSocketFactory sslSocketFactory,
-            boolean isHostnameVerification,
-            String authMethod,            
-            String resources, 
             HashMap<String, String> customParams,
             boolean useSystemPropertiesForHttpClientConnections) throws Exception {
 
@@ -134,7 +101,6 @@ public class OidcClientUtil {
 
         handleCustomParams(params, customParams); // custom token ep params
         Map<String, Object> postResponseMap = postToTokenEndpoint(tokenEnpoint, params, clientId, clientSecret, sslSocketFactory, isHostnameVerification, authMethod, useSystemPropertiesForHttpClientConnections);
-
 
         String tokenResponse = oidcHttpUtil.extractTokensFromResponse(postResponseMap);
 
@@ -159,7 +125,6 @@ public class OidcClientUtil {
         return tokens;
     }
 
-
     /**
      * @param params
      * @param customParams
@@ -174,13 +139,6 @@ public class OidcClientUtil {
                 }
             }
         }
-    }
-
-
-    // this is temporary to get CL built. remove me.
-    public Map<String, Object> checkToken(String tokenInfor, String clientId, @Sensitive String clientSecret,
-            String accessToken, boolean isHostnameVerification, String authMethod, SSLSocketFactory sslSocketFactory) throws Exception {
-        return checkToken(tokenInfor, clientId, clientSecret, accessToken, isHostnameVerification, authMethod, sslSocketFactory, false);
     }
 
     public Map<String, Object> checkToken(String tokenInfor, String clientId, @Sensitive String clientSecret,
@@ -201,12 +159,6 @@ public class OidcClientUtil {
 
         // return tokenResponse;
         return postResponseMap;
-    }
-
-    // temporary to get CL built.  Remove me.
-    public Map<String, Object> getUserinfo(String userInfor, String accessToken, SSLSocketFactory sslSocketFactory,
-            boolean isHostnameVerification) throws Exception {
-        return getUserinfo(userInfor, accessToken, sslSocketFactory, isHostnameVerification, false);
     }
 
     public Map<String, Object> getUserinfo(String userInfor, String accessToken, SSLSocketFactory sslSocketFactory,

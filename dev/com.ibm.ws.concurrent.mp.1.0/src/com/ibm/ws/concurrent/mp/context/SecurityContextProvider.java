@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import org.eclipse.microprofile.concurrent.ThreadContext;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.mp.ContextOp;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
@@ -21,6 +22,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * Partial implementation of MicroProfile Security context,
  * backed by Liberty's Security context.
  */
+@Trivial
 public class SecurityContextProvider extends ContainerContextProvider {
     public final AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> securityContextProviderRef = new AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider>("SecurityContextProvider");
     public final AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> threadIdentityContextProviderRef = new AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider>("ThreadIdentityContextProvider");

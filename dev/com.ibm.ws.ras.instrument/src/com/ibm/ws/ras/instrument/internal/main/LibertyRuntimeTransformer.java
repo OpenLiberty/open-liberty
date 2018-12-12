@@ -53,7 +53,8 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
      * Indication that the host is an IBM VM.
      */
     @SuppressWarnings("unused")
-    private final static boolean isIBMVirtualMachine = System.getProperty("java.vm.name", "unknown").contains("IBM J9");
+    private final static boolean isIBMVirtualMachine = System.getProperty("java.vm.name", "unknown").contains("IBM J9") ||
+                                                       System.getProperty("java.vm.name", "unknown").contains("OpenJ9");
 
     /**
      * Indication that the host is a Sun VM.
@@ -197,9 +198,9 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
         //If we have issues here, 1.8 classes will be instead handled by a separate
         //transformer that only does those classes.
         if (isJDK8WithHotReplaceBug)
-        	return classFileVersion <= Opcodes.V1_7;
+            return classFileVersion <= Opcodes.V1_7;
         else
-        	return classFileVersion <= Opcodes.V1_8;
+            return classFileVersion <= Opcodes.V11;
     }
 
     /**

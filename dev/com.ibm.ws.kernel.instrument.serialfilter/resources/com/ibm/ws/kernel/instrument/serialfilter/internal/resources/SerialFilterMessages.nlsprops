@@ -1,0 +1,87 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.kernel.instrument.serialfilter/resources/com/ibm/ws/kernel/instrument/serialfilter/internal/resources/SerialFilterMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR SerialFilter
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS8001 - CWWKS8069
+
+# do not translate a word "serialFilter".
+SF_INFO_NOT_ON_WHITELIST=CWWKS8001I: The following class is not on the serialFilter whitelist. {0}
+SF_INFO_NOT_ON_WHITELIST.explanation=The class is not on the serialFiter whiltelist
+SF_INFO_NOT_ON_WHITELIST.useraction=Make sure that the class is added to the whitelist if it is required.
+
+SF_ERROR_DEFAULT_CONFIGURATION=CWWKS8010E: The serialFilter default configuration cannot be read from {0}. The error message is {1}.
+SF_ERROR_DEFAULT_CONFIGURATION.explanation=The serialFilter default configuration cannot be read due to an error.
+SF_ERROR_DEFAULT_CONFIGURATION.useraction=Refer to the error message for further information.
+SF_ERROR_SYSTEM_CONFIGURATION_NOT_FIND=CWWKS8011E: The specified serialFilter properties file does not exist at {0}.
+SF_ERROR_SYSTEM_CONFIGURATION_NOT_FIND.explanation=The specified serialFilter properties file does not exist.
+SF_ERROR_SYSTEM_CONFIGURATION_NOT_FIND.useraction=Make sure that the location of theserialFilter properties file is set by JVM system property com.ibm.websphere.serialfilter.config.file.
+SF_ERROR_SYSTEM_CONFIGURATION=CWWKS8012E: The specified serialFilter properties file cannot be read from {0}. The error is {1}.
+SF_ERROR_SYSTEM_CONFIGURATION.explanation=The specified serialFilter properties file cannot be read due to an error.
+SF_ERROR_SYSTEM_CONFIGURATION.useraction=Refer to the error message for detail information.
+SF_ERROR_NO_DEFAULT_MODE=CWWKS8013E: The serialFilter configuration does not set the default validation mode.
+SF_ERROR_NO_DEFAULT_MODE.explanation=The serialFilter configuration does not set the default validation mode for all classes.
+SF_ERROR_NO_DEFAULT_MODE.useraction=Make sure that the default validation mode is set. It can be set by using * as a class name.
+SF_ERROR_NOT_PERMIT=CWWKS8014E: Deserialization of class {0} was denied because it was prohibited by the current configuration.
+SF_ERROR_NOT_PERMIT.explanation=Deserialization of class was denied by the serialFilter because it was not permitted by the current configuration.
+SF_ERROR_NOT_PERMIT.useraction=It is potential that the class is malicious. Make sure that the class is known and safe to use. If it is safe to use, change the sefialFilter configuration to permit the access.
+SF_ERROR_NOT_PERMIT_SUPERCLASS=CWWKS8015E: Deserialization of class {0} was denied because its ancestor {1} was not permitted by the current configuration.
+SF_ERROR_NOT_PERMIT_SUPERCLASS.explanation=Deserialization of class was denied by the serialFilter because its ancestor was not permitted by the current configuration.
+SF_ERROR_NOT_PERMIT_SUPERCLASS.useraction=It is potential that the class is malicious. Make sure that the class is known and safe to use. If it is safe to use, change the sefialFilter configuration to permit the access.
+# do not translate prefix
+SF_ERROR_GET_MODE_VALUE_PREFIX=CWWKS8016E: A prefix {0} cannot be specified when querying validation mode setting.
+SF_ERROR_GET_MODE_VALUE_PREFIX.explanation=The specified prefix cannot be used when querying validation mode setting.
+SF_ERROR_GET_MODE_VALUE_PREFIX.useraction=Make sure that the prefix is not specified for querying validation mode setting.
+# do not translate digest
+SF_ERROR_GET_MODE_VALUE_DIGEST=CWWKS8017E: A digest {0} cannot be specified when querying validation mode setting.
+SF_ERROR_GET_MODE_VALUE_DIGEST.explanation=The specified digest cannot be used when querying validation mode setting.
+SF_ERROR_GET_MODE_VALUE_DIGEST.useraction=Make sure that the digest is not specified for querying validation mode setting.
+SF_ERROR_GET_MODE_VALUE_UNKNOWN=CWWKS8018E: A value {0} is not valid when querying validation mode setting.
+SF_ERROR_GET_MODE_VALUE_UNKNOWN.explanation=The specified value is not valid when querying validation mode setting.
+SF_ERROR_GET_MODE_VALUE_UNKNOWN.useraction=Make sure that the value is valid for querying validation mode setting.
+# do not translate digest
+SF_ERROR_SET_MODE_VALUE_DIGEST=CWWKS8019E: A digest {0} cannot be specified for validation mode setting.
+SF_ERROR_SET_MODE_VALUE_DIGEST.explanation=The specified digest cannot be used for validation mode setting.
+SF_ERROR_SET_MODE_VALUE_DIGEST.useraction=Make sure that the digest is not specified for validation mode setting.
+SF_ERROR_SET_MODE_VALUE_UNKNOWN=CWWKS8020E: A value {0} is not valid for validation mode setting.
+SF_ERROR_SET_MODE_VALUE_UNKNOWN.explanation=The specified value is not valid for validation mode setting.
+SF_ERROR_SET_MODE_VALUE_UNKNOWN.useraction=Make sure that the value is valid for validation mode setting.
+SF_ERROR_SET_PERMISSION_VALUE_METHOD=CWWKS8021E: A method {0} cannot be specified for permission setting.
+SF_ERROR_SET_PERMISSION_VALUE_METHOD.explanation=The specified method cannot be used for permission setting.
+SF_ERROR_SET_PERMISSION_VALUE_METHOD.useraction=Make sure that the method is not specified for permission setting.
+SF_ERROR_SET_PERMISSION_VALUE_UNKNOWN=CWWKS8022E: A value {0} is not valid for permission setting.
+SF_ERROR_SET_PERMISSION_VALUE_UNKNOWN.explanation=The specified value is not valid for permission setting.
+SF_ERROR_SET_PERMISSION_VALUE_UNKNOWN.useraction=Make sure that the value is valid for permission setting.
+SF_ERROR_LOAD_PROPERTY_KEY=CWWKS8023E: A property key {0} is not a string. This property entry is ignored.
+SF_ERROR_LOAD_PROPERTY_KEY.explanation=A property key is not a string. This property entry is ignored.
+SF_ERROR_LOAD_PROPERTY_KEY.useraction=Make sure that the property key is a string object.
+SF_ERROR_LOAD_PROPERTY_VALUE=CWWKS8024E: A property value {0} is not a string.  This property entry is ignored.
+SF_ERROR_LOAD_PROPERTY_VALUE.explanation=A property value is not a string.  This property entry is ignored.
+SF_ERROR_LOAD_PROPERTY_VALUE.useraction=Make sure that the property value is a string object.
+SF_ERROR_LOAD_PROPERTY_NOT_MATCH=CWWKS8025E: The specified mode {0} from the property entry {1} is unknown. The property entry is ignored.
+SF_ERROR_LOAD_PROPERTY_NOT_MATCH.explanation=The value of the mode is not valid. The property entry is ignored.
+SF_ERROR_LOAD_PROPERTY_NOT_MATCH.useraction=Make sure that the mode value is set correctly.
+SF_ERROR_NO_SHA_SUPPORT=CWWKS8026E: The current environment does not support SHA-256 message digest algorithm. Hashing cannot be performed. The error is {0}
+SF_ERROR_NO_SHA_SUPPORT.explanation=The current environment does not support SHA-256 message digest algorithm.
+SF_ERROR_NO_SHA_SUPPORT.useraction=Make sure that the Java runtime environment supports SHA-256 message digest algorithm.
+SF_ERROR_NOT_ON_WHITELIST=CWWKS8027E: Deserialization of class {0} was prevented because it was not on the serialFilter whiltelist.
+SF_ERROR_NOT_ON_WHITELIST.explanation=Deserialization of class was prevented by the serialFilter because it was not on the whiltelist.
+SF_ERROR_NOT_ON_WHITELIST.useraction=It is potential that the class is malicious. Verify that the class is known and safe to use. If it is safe to use, change the sefialFilter whitelist to permit the access.
+SF_ERROR_REJECT=CWWKS8028E: Deserialization of class {0} was rejected within this context.
+SF_ERROR_REJECT.explanation=Deserialization of class was rejected within this context.
+SF_ERROR_REJECT.useraction=It is potential that the class is malicious. Verify that the class is known and safe to use. If it is safe to use, change the sefialFilter configuration to permit the access.
+
+

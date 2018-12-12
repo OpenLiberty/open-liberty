@@ -16,7 +16,7 @@
 	<name>MicroProfile Metrics TCK Runner 1.0 TCK Module</name>
 
 	<properties>
-		<microprofile.metrics.version>1.0.1</microprofile.metrics.version>
+		<microprofile.metrics.version>1.0.2-RC2</microprofile.metrics.version>
 		<arquillian.version>1.1.13.Final</arquillian.version>
 
 		<!-- the below is used in arquillian.xml -->
@@ -72,12 +72,12 @@
 			<version>1.2</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.ibm.ws.org.jboss.arquillian.container</groupId>
-			<artifactId>arquillian-wlp-managed-8.5</artifactId>
-			<version>1.0.0.Final-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>io.openliberty.arquillian</groupId>
+            <artifactId>arquillian-liberty-managed</artifactId>
+            <version>1.0.3</version>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
@@ -121,9 +121,10 @@
                 <version>2.17</version>
 				<configuration>
 					<systemPropertyVariables>
+						<argLine>-Dfile.encoding=UTF-8</argLine> <!-- Needed for ZOS becuase arquillian calls string.getBtytes() -->
 						<wlp>${wlp}</wlp>
 						<tck_server>${tck_server}</tck_server>
-                        <tck_port>${tck_port}</tck_port>
+			                        <tck_port>${tck_port}</tck_port>
 					</systemPropertyVariables>
                     <dependenciesToScan>
                         <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-rest-tck</dependency>

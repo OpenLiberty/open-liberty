@@ -22,9 +22,11 @@
                          For information on testBulkheadClassAsynchFutureDoneWithoutGet see OL#3376 -->
                          <![CDATA[
                         !method.getName().startsWith("testBulkheadClassAsynchFutureDoneWithoutGet") &&
+                        !method.getName().startsWith("testBulkheadMethodAsynchFutureDoneWithoutGet") &&
                         !method.getName().startsWith("testBulkheadClassAsynchronousQueueing10") &&
                         !method.getName().startsWith("testBulkheadMethodAsynchronousQueueing10") &&
                         !method.getName().startsWith("testBulkheadMethodAsynchronousRetry55Trip") &&
+                        !method.getName().startsWith("testClassLevelRetryMaxDuration") &&
                         !method.getName().startsWith("testBulkheadQueReplacesDueToClassRetryFailures")
                     ]]>
                     </script>

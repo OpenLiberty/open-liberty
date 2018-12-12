@@ -25,14 +25,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.common.SharedLocationManager;
-import test.common.SharedOutputManager;
-import test.utils.SharedConstants;
-
 import com.ibm.websphere.config.ConfigEvaluatorException;
 import com.ibm.ws.kernel.service.location.internal.VariableRegistryHelper;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
+
+import test.common.SharedLocationManager;
+import test.common.SharedOutputManager;
+import test.utils.SharedConstants;
 
 public class XMLClientConfigParserTest {
     final static String CONFIG_ROOT = "${server.config.dir}/client.xml";
@@ -47,7 +47,7 @@ public class XMLClientConfigParserTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper());
+        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
     }
 
     @AfterClass
@@ -120,8 +120,7 @@ public class XMLClientConfigParserTest {
         changeLocationSettings("default");
 
         // optionally import file that does not exist
-        ServerConfiguration clientConfig = configParser.parseServerConfiguration(new StringReader(
-                        "<client><include optional=\"true\" location=\"doesNotExist.xml\"/><foo bar=\"test\"/></client>"));
+        ServerConfiguration clientConfig = configParser.parseServerConfiguration(new StringReader("<client><include optional=\"true\" location=\"doesNotExist.xml\"/><foo bar=\"test\"/></client>"));
 
         ConfigElement applied = clientConfig.getSingleton("foo", null);
 
@@ -136,8 +135,7 @@ public class XMLClientConfigParserTest {
 
         String description = "My Client";
 
-        ServerConfiguration clientConfig = configParser.parseServerConfiguration(new StringReader(
-                        "<client description=\"" + description + "\"><foo a=\"b\"/></client>"));
+        ServerConfiguration clientConfig = configParser.parseServerConfiguration(new StringReader("<client description=\"" + description + "\"><foo a=\"b\"/></client>"));
 
         assertEquals(description, clientConfig.getDescription());
     }

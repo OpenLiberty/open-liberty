@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,36 +24,50 @@ public interface HttpInboundConnectionExtended extends HttpInboundConnection {
 
     /**
      * This API will return the TCPConnectionContext.
-     * 
+     *
      * @return
      */
     TCPConnectionContext getTCPConnectionContext();
 
     /**
      * This API will return the VirtualConnection.
-     * 
+     *
      * @return
      */
     VirtualConnection getVC();
 
     /**
      * This API will return the device link.
-     * 
+     *
      * @return
      */
     ConnectionLink getHttpInboundDeviceLink();
 
     /**
      * This API will return the application link.
-     * 
+     *
      * @return
      */
     ConnectionLink getHttpInboundLink();
 
     /**
      * This API will return the HttpDispatcherLink.
-     * 
+     *
      * @return
      */
     ConnectionLink getHttpDispatcherLink();
+
+    /**
+     * This API will return the remote protocol as defined by a X-Forwarded-Proto or Forwarded:proto header
+     *
+     * @return
+     */
+    String getRemoteProto();
+
+    /**
+     * This API will return whether the channel is configured to use X-Forwarded-* or Forwarded headers
+     *
+     * @return
+     */
+    boolean useForwardedHeaders();
 }

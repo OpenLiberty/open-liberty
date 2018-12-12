@@ -20,15 +20,18 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.appConfig.classLoaderCache.test.ClassLoaderCacheTestServlet;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig14EE8;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -54,6 +57,10 @@ public class ClassLoaderCacheTest extends FATServletClient {
     public static final String WARB2 = EARB + "2";
     public static final String WARB1_NAME = WARB1 + ".war";
     public static final String WARB2_NAME = WARB2 + ".war";
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests //selected combinations
+                    .with(new RepeatConfig14EE8("ClassLoaderCacheServer"));
 
     @Server("ClassLoaderCacheServer")
     public static LibertyServer server;
@@ -109,7 +116,6 @@ public class ClassLoaderCacheTest extends FATServletClient {
         runConfigTest(WARA1, 0, 2); //initially there are zero configs, the test is expected to load two; one specific to the war and one global one
         runConfigTest(WARA2, 2, 3); //after the previous test there should be two configs, this test is expected to load one new one specific to the war and reuse the global one (total 3)
         server.restartDropinsApplication(EARA_NAME); //restarting the app should clear out all three configs
-        Thread.sleep(1000);
         runConfigTest(WARA1, 0, 2); //so performing the same tests again should yeild the same results
         runConfigTest(WARA2, 2, 3);
     }
@@ -120,8 +126,7 @@ public class ClassLoaderCacheTest extends FATServletClient {
         runConfigTest(WARA2, 2, 3); //after the previous test there should be two configs, this test is expected to load one new one specific to the war and reuse the global one (total 3)
         runConfigTest(WARB1, 3, 4); //after the previous test there should be three configs, this test is expected to load one new one specific to the war and reuse the global one (total 4)
         runConfigTest(WARB2, 4, 5); //after the previous test there should be four configs, this test is expected to load one new one specific to the war and reuse the global one (total 5)
-        server.removeDropinsApplications(EARB_NAME); // removing EARB should clear it's two war specific configs but leave the others (total 3)
-        Thread.sleep(1000);
+        server.removeAndStopDropinsApplications(EARB_NAME); // removing EARB should clear it's two war specific configs but leave the others (total 3)
         runConfigTest(WARA1, 3, 3); //there should be three configs at this point; one for each war and the global one. they should all be reused so the total remains the same
         runConfigTest(WARA2, 3, 3); //there should be three configs at this point; one for each war and the global one. they should all be reused so the total remains the same
     }

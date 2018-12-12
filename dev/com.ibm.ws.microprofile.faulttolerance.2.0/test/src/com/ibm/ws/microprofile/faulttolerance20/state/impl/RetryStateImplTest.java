@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance20.state.impl;
 
-import static java.time.temporal.ChronoUnit.MILLENNIA;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
@@ -219,32 +218,6 @@ public class RetryStateImplTest {
     }
 
     @Test
-    public void testClampedNanos() {
-        Duration tinyDuration = Duration.ofNanos(100);
-        assertEquals(tinyDuration.toNanos(), RetryStateImpl.asClampedNanos(tinyDuration));
-
-        Duration smallDuration = Duration.ofSeconds(5);
-        assertEquals(smallDuration.toNanos(), RetryStateImpl.asClampedNanos(smallDuration));
-
-        Duration mediumDuration = Duration.ofDays(5000);
-        assertEquals(mediumDuration.toNanos(), RetryStateImpl.asClampedNanos(mediumDuration));
-
-        // Note: Duration.of(500, YEARS) is not permitted because years don't have an exact duration
-        // We're happy with an estimated duration, so we're using this alternative construction for our very large durations
-        Duration largeDuration = YEARS.getDuration().multipliedBy(500);
-        assertEquals(Long.MAX_VALUE, RetryStateImpl.asClampedNanos(largeDuration));
-
-        Duration hugeDuration = MILLENNIA.getDuration().multipliedBy(7000);
-        assertEquals(Long.MAX_VALUE, RetryStateImpl.asClampedNanos(hugeDuration));
-
-        Duration negativeDuration = Duration.ofSeconds(-5);
-        assertEquals(negativeDuration.toNanos(), RetryStateImpl.asClampedNanos(negativeDuration));
-
-        Duration largeNegativeDuration = YEARS.getDuration().multipliedBy(-500);
-        assertEquals(Long.MIN_VALUE, RetryStateImpl.asClampedNanos(largeNegativeDuration));
-    }
-
-    @Test
     public void testDelayStream() {
         doDelayStreamTest(Duration.ZERO, Duration.ZERO);
         doDelayStreamTest(Duration.ofMillis(500), Duration.ZERO);
@@ -287,6 +260,39 @@ public class RetryStateImplTest {
         }
         // Assert we get at least 10 unique values
         assertThat(values, hasSize(greaterThan(10)));
+    }
+
+    @Test
+    public void testMaxRetriesForever() {
+        // Test a policy with maxRetries = -1 -> no retry count limit
+        RetryPolicyImpl retryPolicy = new RetryPolicyImpl();
+        retryPolicy.setMaxRetries(-1);
+        retryPolicy.setJitter(Duration.ZERO);
+
+        RetryStateImpl retryState = new RetryStateImpl(retryPolicy);
+        retryState.start();
+
+        // Should retry forever
+        for (int i = 0; i < 100; i++) {
+            assertTrue(retryState.recordResult(MethodResult.failure(new TestExceptionA())).shouldRetry());
+        }
+    }
+
+    @Test
+    public void testMaxDurationForever() throws InterruptedException {
+        // Test a policy with maxDuration = 0 -> no retry time limit
+        RetryPolicyImpl retryPolicy = new RetryPolicyImpl();
+        retryPolicy.setMaxDuration(Duration.ZERO);
+
+        RetryStateImpl retryState = new RetryStateImpl(retryPolicy);
+        retryState.start();
+
+        assertTrue(retryState.recordResult(MethodResult.failure(new TestExceptionA())).shouldRetry());
+
+        // Unfortunately, the default value is 3 minutes, we're not going to wait longer than that in a unit test
+        // Just check that we're not treating zero as "never retry"
+        Thread.sleep(300);
+        assertTrue(retryState.recordResult(MethodResult.failure(new TestExceptionA())).shouldRetry());
     }
 
     private class TestExceptionA extends Exception {}

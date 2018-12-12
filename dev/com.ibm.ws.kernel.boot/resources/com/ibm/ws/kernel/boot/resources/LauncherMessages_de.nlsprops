@@ -679,6 +679,9 @@ warning.server.status.invalid.targets.useraction=Geben Sie f\u00fcr die Zielopti
 warning.package.root.invalid=CWWKE0947W: Eine Option --server-root mit einem leeren Argument ist nicht zul\u00e4ssig, wenn Produkterweiterungen installiert werden. Es wird das Standardargument wlp verwendet.
 warning.package.root.invalid.explanation=Der Benutzer hat eine Paketanforderung mit einer Option --server-root mit einem leeren Argument ausgef\u00fchrt und es wurden Produkterweiterungen erkannt. Es wird das Standardstammverzeichnis f\u00fcr Server, wlp, verwendet.
 warning.package.root.invalid.useraction=Es ist keine Aktion erforderlich. 
+warning.package.root.invalid.runnable=CWWKE0948W: Die Option --server-root zusammen mit --include=runnable ist keine zul\u00e4ssige Kombination. Es wird das wlp-Standardargument f\u00fcr das Serverstammverzeichnis verwendet.
+warning.package.root.invalid.runnable.explanation=Der Benutzer hat eine Paketanforderung mit einer Option --server-root zusammen mit --include=runnable ausgef\u00fchrt. Dies ist keine zul\u00e4ssige Kombination. Es wird das Standardstammverzeichnis f\u00fcr Server, wlp, verwendet.
+warning.package.root.invalid.runnable.useraction=Es ist keine Aktion erforderlich. 
 info.serverStarting=Server {0} wird gestartet.
 info.serverStarted=Der Server {0} wurde gestartet.
 info.serverStartedWithPID=Der Server {0} wurde mit der Prozess-ID {1} gestartet.

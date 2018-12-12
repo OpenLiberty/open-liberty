@@ -83,7 +83,6 @@ public class H2StreamProcessor {
 
     // keep track of the state of this stream's headers
     private boolean headersCompleted = false;
-    private boolean continuationExpected = false;
 
     // the anticipated content length, as passed in from a content-length header
     private int expectedContentLength = -1;
@@ -215,7 +214,7 @@ public class H2StreamProcessor {
         }
         if (isStreamClosed()) {
             // stream is already closed
-            if (direction.equals(Constants.Direction.WRITING_OUT) && !this.continuationExpected) {
+            if (direction.equals(Constants.Direction.WRITING_OUT) && !muxLink.isWriteContinuationExpected()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "processNextFrame: stream is closed - cannot write out anything else on stream-id: " + myID);
                 }
@@ -365,7 +364,7 @@ public class H2StreamProcessor {
                 }
 
                 // Header frames must be received in a contiguous chunk; cannot interleave across streams
-                if (isContinuationFrameExpected() && (frameType != FrameTypes.CONTINUATION || !this.continuationExpected)) {
+                if (muxLink.isContinuationExpected() && (frameType != FrameTypes.CONTINUATION || !muxLink.isContinuationExpected())) {
                     addFrame = ADDITIONAL_FRAME.GOAWAY;
                     addFrameException = new ProtocolException("Did not receive the expected continuation frame");
                     continue;
@@ -949,7 +948,7 @@ public class H2StreamProcessor {
                     processCompleteHeaders(false);
                     setHeadersComplete();
                 } else {
-                    setContinuationFrameExpected(true);
+                    muxLink.setContinuationExpected(true);
                 }
 
                 if (currentFrame.flagEndStreamSet()) {
@@ -988,14 +987,14 @@ public class H2StreamProcessor {
                 // if this is a header frame, it must be trailer data
                 getHeadersFromFrame();
                 if (currentFrame.flagEndHeadersSet()) {
-                    setContinuationFrameExpected(false);
+                    muxLink.setContinuationExpected(false);
                     processCompleteHeaders(false);
                     setHeadersComplete();
                     if (currentFrame.flagEndStreamSet()) {
                         setReadyForRead();
                     }
                 } else {
-                    setContinuationFrameExpected(true);
+                    muxLink.setContinuationExpected(true);
                 }
             }
             if (currentFrame.flagEndStreamSet()) {
@@ -1069,12 +1068,12 @@ public class H2StreamProcessor {
             boolean writeCompleted = writeFrameSync();
             if (frameType == FrameTypes.HEADERS || frameType == FrameTypes.CONTINUATION) {
                 if (currentFrame.flagEndHeadersSet()) {
-                    setContinuationFrameExpected(false);
+                    muxLink.setWriteContinuationExpected(false);
                 } else {
-                    setContinuationFrameExpected(true);
+                    muxLink.setWriteContinuationExpected(true);
                 }
             }
-            if ((currentFrame.getFrameType() == FrameTypes.RST_STREAM || currentFrame.flagEndStreamSet() && !continuationExpected)
+            if ((currentFrame.getFrameType() == FrameTypes.RST_STREAM || currentFrame.flagEndStreamSet() && !muxLink.isWriteContinuationExpected())
                 && writeCompleted) {
                 endStream = true;
                 updateStreamState(StreamState.CLOSED);
@@ -1256,7 +1255,7 @@ public class H2StreamProcessor {
                     throw new ProtocolException("CONTINUATION Frame Received in the wrong state of: " + state);
                 } else if (state == StreamState.CLOSED) {
                     throw new StreamClosedException("CONTINUATION Frame Received in the wrong state of: " + state);
-                } else if (!isContinuationFrameExpected()) {
+                } else if (!muxLink.isContinuationExpected()) {
                     throw new ProtocolException("CONTINUATION Frame Received when not in a Continuation State");
                 } else if (isConnectStream) {
                     ProtocolException pe = new ProtocolException("CONTINUATION frame received on a CONNECT stream");
@@ -1302,7 +1301,7 @@ public class H2StreamProcessor {
             case PRIORITY:
                 // (spec) The PRIORITY frame can be sent on a stream in any state, though it
                 // cannot be sent between consecutive frames that comprise a single header block
-                if (isContinuationFrameExpected()) {
+                if (muxLink.isWriteContinuationExpected()) {
                     // in a continuation state
                     throw new ProtocolException("PRIORITY Frame sent when in a Continuation State of: " + state);
                 }
@@ -1331,7 +1330,7 @@ public class H2StreamProcessor {
                 break;
 
             case CONTINUATION:
-                if (!isContinuationFrameExpected()) {
+                if (!muxLink.isWriteContinuationExpected()) {
                     // not in a continuation state
                     throw new ProtocolException("CONTINUATION Frame sent when not in a Continuation State");
                 }
@@ -1351,16 +1350,7 @@ public class H2StreamProcessor {
             Tr.debug(tc, "completed headers have been received stream " + myID);
         }
         headersCompleted = true;
-        setContinuationFrameExpected(false);
-    }
-
-    public boolean isContinuationFrameExpected() {
-        return muxLink.isContinuationExpected();
-    }
-
-    public void setContinuationFrameExpected(boolean expected) {
-        muxLink.setContinuationExpected(expected);
-        this.continuationExpected = expected;
+        muxLink.setContinuationExpected(false);
     }
 
     /**
@@ -1484,7 +1474,8 @@ public class H2StreamProcessor {
             // only set headers on the link once
             if ((isPush || !processTrailerHeaders) && h2HttpInboundLinkWrap.getHeadersLength() == 0) {
                 if (!isValidH2Request(pseudoHeaders)) {
-                    this.setContinuationFrameExpected(false);
+                    muxLink.setContinuationExpected(false);
+                    muxLink.setWriteContinuationExpected(false);
                     ProtocolException e = new ProtocolException("An invalid request was received on stream-id: " + myID);
                     e.setConnectionError(false); // mark this as a stream error so we'll generate an RST_STREAM
                     throw e;

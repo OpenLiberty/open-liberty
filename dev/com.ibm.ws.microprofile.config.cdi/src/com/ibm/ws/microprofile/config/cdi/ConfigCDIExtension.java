@@ -31,7 +31,6 @@ import javax.inject.Provider;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -42,7 +41,6 @@ import com.ibm.ws.microprofile.config.converters.DefaultConverters;
  * The ConfigCDIExtension observes all the @ConfigProperty qualified InjectionPoints and ensures that a ConfigPropertyBean is created for each type.
  * It also registers the ConfigBean itself.
  */
-@Component(service = WebSphereCDIExtension.class, property = { "api.classes=org.eclipse.microprofile.config.inject.ConfigProperty;org.eclipse.microprofile.config.Config" }, immediate = true)
 public class ConfigCDIExtension implements Extension, WebSphereCDIExtension {
 
     private static final TraceComponent tc = Tr.register(ConfigCDIExtension.class);
@@ -112,15 +110,15 @@ public class ConfigCDIExtension implements Extension, WebSphereCDIExtension {
             Type[] aTypes = pType.getActualTypeArguments();
             //instance must have exactly one type arg
             Type type = aTypes[0];
-            //Check if the Provider provides an optional property. 
+            //Check if the Provider provides an optional property.
             if (type instanceof ParameterizedType) {
                 ParameterizedType maybeOptionalType = (ParameterizedType) type;
-                if  (Optional.class.isAssignableFrom((Class<?>) maybeOptionalType.getRawType())) {
+                if (Optional.class.isAssignableFrom((Class<?>) maybeOptionalType.getRawType())) {
                     configException = processConversionType(injectionPoint, type, classLoader, true);
                 } else {
                     configException = processConversionType(injectionPoint, type, classLoader, false);
                 }
-            } else { 
+            } else {
                 configException = processConversionType(injectionPoint, type, classLoader, false);
             }
         } else if (Optional.class.isAssignableFrom((Class<?>) rType)) {

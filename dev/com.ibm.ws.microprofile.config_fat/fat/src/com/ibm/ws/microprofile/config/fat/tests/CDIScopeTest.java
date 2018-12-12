@@ -11,48 +11,59 @@
 package com.ibm.ws.microprofile.config.fat.tests;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.BuildShrinkWrap;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig14EE8;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
+import componenttest.topology.utils.HttpUtils;
 
 /**
  *
  */
 @RunWith(FATRunner.class)
-public class CDIScopeTest extends LoggingTest {
+public class CDIScopeTest extends FATServletClient {
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("CDIScopeServer");
+    public static RepeatTests r = RepeatTests //selected combinations
+                    .with(new RepeatConfig14EE8("CDIScopeServer"));
 
-    @BuildShrinkWrap
-    public static WebArchive buildApp() {
-        return SharedShrinkWrapApps.cdiConfigServerApps();
+    @Server("CDIScopeServer")
+    public static LibertyServer server;
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        WebArchive war = SharedShrinkWrapApps.cdiConfigServerApps();
+
+        ShrinkHelper.exportDropinAppToServer(server, war);
+
+        server.startServer();
     }
 
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
+    @AfterClass
+    public static void tearDown() throws Exception {
+        server.stopServer();
     }
 
     @Test
     public void testConfigScope() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
         //set a system property
-        getSharedServer().verifyResponse(browser, "/cdiConfig/system?key=SYS_PROP&value=value1", "SYS_PROP=value1");
+        HttpUtils.findStringInReadyUrl(server, "/cdiConfig/system?key=SYS_PROP&value=value1", "SYS_PROP=value1");
         //check it
-        getSharedServer().verifyResponse(browser, "/cdiConfig/system?key=SYS_PROP", "SYS_PROP=value1");
+        HttpUtils.findStringInReadyUrl(server, "/cdiConfig/system?key=SYS_PROP", "SYS_PROP=value1");
         //change it
-        getSharedServer().verifyResponse(browser, "/cdiConfig/system?key=SYS_PROP&value=value2", "SYS_PROP=value2");
+        HttpUtils.findStringInReadyUrl(server, "/cdiConfig/system?key=SYS_PROP&value=value2", "SYS_PROP=value2");
         //check it again ... it shouldn't have changed because the injected property should be Session scoped
-        getSharedServer().verifyResponse(browser, "/cdiConfig/system?key=SYS_PROP", "SYS_PROP=value1");
+        HttpUtils.findStringInReadyUrl(server, "/cdiConfig/system?key=SYS_PROP", "SYS_PROP=value1");
     }
 }

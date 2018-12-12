@@ -1,13 +1,12 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2012, 2014
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  */
 package com.ibm.ws.anno.tests;
 
@@ -28,8 +27,6 @@ import com.ibm.ws.anno.tests.jandex.JandexAppTrueAppMgrTrueTest;
 import com.ibm.ws.fat.util.FatLogHandler;
 
 /**
- * Servlet 4.0 Tests
- *
  * Make sure to add any new test classes to the @SuiteClasses
  * annotation.
  *
@@ -62,10 +59,6 @@ import com.ibm.ws.fat.util.FatLogHandler;
 })
 
 public class FATSuite {
-
-    /**
-     * @see {@link FatLogHandler#generateHelpFile()}
-     */
     @BeforeClass
     public static void generateHelpFile() {
         FatLogHandler.generateHelpFile();

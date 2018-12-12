@@ -24,6 +24,7 @@
 # Messages used by Config 1.1 Impl -  range is 0000-0099, plus 9999 for the emergency message
 # Messages used by Config 1.2 Impl -  range is 0100-0199, plus 9998 for the emergency message
 # Messages used by Config 1.3 Impl -  range is 0200-0299, plus 9997 for the emergency message
+# Messages used by Config 1.4 Impl -  range is 0300-0399, plus 9996 for the emergency message
 #-----------------------------------------------------------------------------------------------------------------------------
 
 # Unable to determine application name.
@@ -48,7 +49,7 @@ server.xml.appproperties.config.source=Server XML Application Properties Config 
 # Emergency Config 1.3 error message
 #-----------------------------------------------------------------------------------------------------------------------------
 
-# A Config API error has occurred: {0}
-temporary.CWMCG9997E=CWMCG9997E: A Config API error has occurred: {0}.
+# The following Config API error has occurred: {0}.
+temporary.CWMCG9997E=CWMCG9997E: The following Config API error has occurred: {0}.
 temporary.CWMCG9997E.explanation=A Config API error has occurred that prevents normal operation.
-temporary.CWMCG9997E.useraction=Review the server message.log and FFDC logs to identify the problem.
+temporary.CWMCG9997E.useraction=Review the server message.log file and FFDC logs to identify the problem.

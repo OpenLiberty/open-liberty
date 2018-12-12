@@ -78,11 +78,9 @@ import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.PortType;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
-import com.ibm.websphere.simplicity.application.ApplicationManager;
 import com.ibm.websphere.simplicity.application.ApplicationType;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
-import com.ibm.websphere.simplicity.exception.ApplicationNotInstalledException;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.websphere.soe_reporting.SOEHttpPostUtil;
 import com.ibm.ws.fat.util.ACEScanner;
@@ -144,8 +142,6 @@ public class LibertyServer implements LogMonitorClient {
     // Allow configuration updates to wait for messages in the log longer than other log
     // searches. Configuration updates may take some time on slow test systems.
     protected static final int LOG_SEARCH_TIMEOUT_CONFIG_UPDATE = FATRunner.FAT_TEST_LOCALRUN ? 18 * 1000 : 180 * 1000;
-
-    protected ApplicationManager appmgr;
 
     protected Set<String> installedApplications;
 
@@ -983,11 +979,11 @@ public class LibertyServer implements LogMonitorClient {
         return args;
     }
 
-    protected ProgramOutput startServerWithArgs(boolean preClean, boolean cleanStart,
-                                                boolean validateApps, boolean expectStartFailure,
-                                                String serverCmd, List<String> args,
-                                                boolean validateTimedExit) throws Exception {
-        final String method = "startServerAndValidate";
+    public ProgramOutput startServerWithArgs(boolean preClean, boolean cleanStart,
+                                             boolean validateApps, boolean expectStartFailure,
+                                             String serverCmd, List<String> args,
+                                             boolean validateTimedExit) throws Exception {
+        final String method = "startServerWithArgs";
         Log.info(c, method, ">>> STARTING SERVER: " + this.getServerName());
         Log.info(c, method, "Starting " + this.getServerName() + "; clean=" + cleanStart + ", validateApps=" + validateApps + ", expectStartFailure=" + expectStartFailure
                             + ", cmd=" + serverCmd + ", args=" + args);
@@ -2996,12 +2992,6 @@ public class LibertyServer implements LogMonitorClient {
         return serverTopologyID;
     }
 
-    protected ApplicationManager getApplicationManager() throws Exception {
-        if (appmgr == null)
-            appmgr = new ApplicationManager(this);
-        return appmgr;
-    }
-
     /**
      * Method used to autoinstall apps in
      * publish/servers/<serverName>/dropins folder found in the FAT project
@@ -3014,30 +3004,6 @@ public class LibertyServer implements LogMonitorClient {
     protected void autoInstallApp(String appName) throws Exception {
         Log.info(c, "InstallApp", "Adding app " + appName + " to startup verification list");
         this.addInstalledAppForValidation(appName);
-    }
-
-    /**
-     * Shortcut for new FATTests to install apps assuming the app is
-     * located in the publish/servers/<serverName>/apps folder of the FAT project
-     *
-     * @param appName The name of the application
-     * @throws Exception
-     */
-    public void installApp(String appName) throws Exception {
-        Log.info(c, "InstallApp", "Installing from: " + pathToAutoFVTNamedServer + "apps/" + appName);
-        finalInstallApp(pathToAutoFVTNamedServer + "apps/" + appName);
-    }
-
-    /**
-     * Shortcut for new FATTests to install apps located anywhere on the file system
-     *
-     * @param path The absolute path to the application
-     * @param appName The name of the application
-     * @throws Exception
-     */
-    public void installApp(String path, String appName) throws Exception {
-        Log.info(c, "InstallApp", "Installing from: " + path + "/" + appName);
-        finalInstallApp(path + "/" + appName);
     }
 
     /**
@@ -3556,70 +3522,8 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    /**
-     * Method used by exposed installApp methods that calls into the ApplicationManager
-     * to actually install the required application
-     *
-     * @param appPath Absoulte path to application (includes app name)
-     * @throws Exception
-     */
-    protected void finalInstallApp(String appPath) throws Exception {
-        ApplicationType type = null;
-        String onlyAppName = appPath; //for getting only the name if appName given is actually a path i.e. autoinstall/acme.zip
-        if (appPath.contains("/")) {
-            String[] s = appPath.split("/");
-            onlyAppName = s[s.length - 1]; //get the last one as this will be the filename only
-        } else if (appPath.contains("\\\\")) {
-            String[] s = appPath.split("\\\\");
-            onlyAppName = s[s.length - 1]; //get the last one as this will be the filename only
-        }
-
-        if (onlyAppName.endsWith(".xml")) {
-            onlyAppName = onlyAppName.substring(0, onlyAppName.length() - 4);
-        }
-        type = getApplictionType(onlyAppName);
-        if (onlyAppName.endsWith(".ear") || onlyAppName.endsWith(".eba") || onlyAppName.endsWith(".war") ||
-            onlyAppName.endsWith(".jar") || onlyAppName.endsWith(".rar") || onlyAppName.endsWith(".zip")) {
-            onlyAppName = onlyAppName.substring(0, onlyAppName.length() - 4);
-        }
-        if (onlyAppName.endsWith(".js")) {
-            onlyAppName = onlyAppName.substring(0, onlyAppName.length() - 3);
-        }
-        if (onlyAppName.endsWith(".jsar")) {
-            onlyAppName = onlyAppName.substring(0, onlyAppName.length() - 5);
-        }
-        Log.finer(c, "InstallApp", "Application name is: " + onlyAppName);
-
-        this.getApplicationManager().installApplication(onlyAppName, new LocalFile(appPath), type);
-    }
-
     public String getHostname() {
         return hostName;
-    }
-
-    /**
-     * Shortcut for new FATTests to uninstall apps
-     *
-     * @param appName The name of the application
-     * @throws Exception
-     */
-    public void uninstallApp(String appName) throws Exception {
-        ApplicationType type = this.getApplictionType(appName);
-        if (type.equals(ApplicationType.ZIP)) {
-            appName = appName.substring(0, (appName.length() - 4));
-        }
-
-        if (type.equals(ApplicationType.EAR) || type.equals(ApplicationType.WAR)) {
-            //do the same thing as above
-            appName = appName.substring(0, (appName.length() - 4));
-        }
-
-        if (!this.getApplicationManager().isInstalled(appName)) {
-            throw new ApplicationNotInstalledException(appName);
-        }
-
-        boolean restartServerAfterUninstall = false;
-        this.getApplicationManager().uninstallApplication(appName, type, restartServerAfterUninstall);
     }
 
     protected ApplicationType getApplictionType(String appName) throws Exception {
@@ -4418,7 +4322,7 @@ public class LibertyServer implements LogMonitorClient {
      * file at the offset where the last mark was set (or the beginning of the file
      * if no mark has been set) and reads until the end of the file.
      *
-     * @param regexp  pattern to search for
+     * @param regexp pattern to search for
      * @param logFile RemoteFile for log file to search
      * @return A list of the lines in the trace files which contain the matching
      *         pattern. No matches result in an empty list.
@@ -5410,6 +5314,8 @@ public class LibertyServer implements LogMonitorClient {
         // by property <code>zip.reaper.slow.pend.max</code>.  The default value
         // is 200 NS.  The retry interval is set at twice that.
 
+        setMarkToEndOfLog();
+
         if (!LibertyFileManager.renameLibertyFileWithRetry(machine, appInDropinsPath, appExcisedPath)) { // throws Exception
             Log.info(c, method, "Unable to move " + appFileName + " out of dropins, failing.");
             return false;
@@ -5418,6 +5324,11 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         String stopMsg = waitForStringInLogUsingMark("CWWKZ0009I:.*" + appName); // throws Exception
+        if (stopMsg == null) {
+            return false;
+        }
+
+        setMarkToEndOfLog();
 
         if (!LibertyFileManager.renameLibertyFile(machine, appExcisedPath, appInDropinsPath)) { // throws Exception
             Log.info(c, method, "Unable to move " + appFileName + " back into dropins, failing.");
@@ -5427,6 +5338,9 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         String startMsg = waitForStringInLogUsingMark("CWWKZ0001I:.*" + appName); // throws Exception
+        if (startMsg == null) {
+            return false;
+        }
 
         return true;
     }
@@ -5454,6 +5368,57 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         return allSucceeded;
+    }
+
+    /**
+     *
+     * Removes one or more applications from dropins and wait for them to stop
+     *
+     * @param fileNames the file name or names of the application, e.g. snoop.war
+     * @return {@code true} if the applications were moved successfully, {@code false} otherwise.
+     * @throws Exception
+     */
+    public boolean removeAndStopDropinsApplications(String... fileNames) throws Exception {
+        boolean allSucceeded = true;
+
+        for (String fileName : fileNames) {
+            allSucceeded = allSucceeded && removeAndStopDropinsApplication(fileName);
+        }
+
+        return allSucceeded;
+    }
+
+    /**
+     *
+     * Removes an application from dropins and waits for it to stop
+     *
+     * @param fileNames the file name or names of the application, e.g. snoop.war
+     * @return {@code true} if the applications were moved successfully, {@code false} otherwise.
+     * @throws Exception
+     */
+    private boolean removeAndStopDropinsApplication(String appFileName) throws Exception {
+        final String method = "removeAndStopDropinsApplication";
+
+        setMarkToEndOfLog();
+
+        String appName = appFileName.substring(0, appFileName.lastIndexOf("."));
+        String appInDropinsPath = serverRoot + "/dropins/" + appFileName;
+        String nonDropinsFilePath = serverRoot + "/" + appFileName;
+
+        if (!LibertyFileManager.renameLibertyFileWithRetry(machine, appInDropinsPath, nonDropinsFilePath)) { // throws Exception
+            Log.info(c, method, "Unable to move " + appFileName + " out of dropins, failing.");
+            return false;
+        } else {
+            Log.info(c, method, appFileName + " successfully moved out of dropins, waiting for message...");
+        }
+
+        String stopMsg = waitForStringInLogUsingMark("CWWKZ0009I:.*" + appName); // throws Exception
+
+        if (stopMsg == null) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

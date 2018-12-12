@@ -640,17 +640,22 @@ public class SimpleServlet extends FATServlet {
     public void testSetTransactionTimeout(HttpServletRequest request, HttpServletResponse response) throws Exception {
         final TransactionManager tm = TransactionManagerFactory.getTransactionManager();
 
+        int tries = 0;
+
         tm.setTransactionTimeout(1);
         tm.begin();
-        Thread.sleep(2000);
+
+        // wait up to 5 seconds
+        while (Status.STATUS_ACTIVE == tm.getStatus() && ++tries < 5) {
+            Thread.sleep(1000);
+        }
 
         try {
             tm.commit();
-            // Should have rolledback
-            throw new Exception();
+            // Should have rolled back
+            throw new Exception("Test failed because 1 second timeout hadn't popped after " + tries + " seconds!");
         } catch (RollbackException e) {
             // As expected
         }
     }
-
 }

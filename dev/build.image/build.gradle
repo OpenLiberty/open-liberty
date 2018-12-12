@@ -396,7 +396,7 @@ task createJSONForPublicArtifacts {
                       tests_log: "${testResultName}",
                       build_log: "${logName}"]
 
-        if (isRelease || isContinuousBuild) {
+        if (isPersonal || isRelease || isContinuousBuild) {
             object.driver_location = "${driverLocationName}"
             object.version = "${project.version}"
         }
@@ -450,7 +450,7 @@ ssh.settings {
 
 task publishPublicArtifactsOnDhe {
     dependsOn createJSONForPublicArtifacts
-    enabled isAutomatedBuild && isPublicPublishing
+    enabled isAutomatedBuild && isPublicPublishing && (isPersonal || isContinuousBuild || isRelease)
 
     doLast {
         // Re-arrange buildLabel, ex: 201708101600 to 2017-08-10_1600
@@ -473,9 +473,7 @@ task publishPublicArtifactsOnDhe {
                             props.getProperty("published.gradle.log"),
                             props.getProperty("junit.report.zip")]
 
-        if (isContinuousBuild || isRelease) {
-            artifactList.add(props.getProperty("zipopenliberty.archivename"))
-        }
+        artifactList.add(props.getProperty("zipopenliberty.archivename"))
 
         mkdir("${buildDir}/${version}")
         artifactList.each { filePath ->
@@ -495,35 +493,33 @@ task publishPublicArtifactsOnDhe {
         delete "${buildDir}/${version}"
         delete "${buildDir}/info.json"
 
-        if (isContinuousBuild || isRelease) {
-            // Update build listing json with the newly uploaded build
-            exec {
-                commandLine "curl", "-o", "${buildDir}/info.json", "${publicDHEUrl}/${packageName}/info.json"
-            }
+        // Update build listing json with the newly uploaded build
+        exec {
+            commandLine "curl", "-o", "${buildDir}/info.json", "${publicDHEUrl}/${packageName}/info.json"
+        }
 
-            File json = new File("${buildDir}/info.json")
-            if (json.getText().contains("404 Not Found")) {
-                json.text = ""
-            }
+        File json = new File("${buildDir}/info.json")
+        if (json.getText().contains("404 Not Found")) {
+            json.text = ""
+        }
 
-            def object = [:]
-            if (json.getText() != "") {
-                object = new JsonSlurper().parseText(json.getText())
-            }
+        def object = [:]
+        if (json.getText() != "") {
+            object = new JsonSlurper().parseText(json.getText())
+        }
 
-            List versionsList = object['versions']
-            if (versionsList != null) {
-                versionsList.add("${version}")
-            } else {
-                versionsList = ["${version}"]
-            }
-            object['versions'] = versionsList
-            json.text = JsonOutput.toJson(object)
+        List versionsList = object['versions']
+        if (versionsList != null) {
+            versionsList.add("${version}")
+        } else {
+            versionsList = ["${version}"]
+        }
+        object['versions'] = versionsList
+        json.text = JsonOutput.toJson(object)
 
-            ssh.run {
-                session(remotes.dhe) {
-                    put from: "${buildDir}/info.json", into: "${dir}/${packageName}/"
-                }
+        ssh.run {
+            session(remotes.dhe) {
+                put from: "${buildDir}/info.json", into: "${dir}/${packageName}/"
             }
         }
     }

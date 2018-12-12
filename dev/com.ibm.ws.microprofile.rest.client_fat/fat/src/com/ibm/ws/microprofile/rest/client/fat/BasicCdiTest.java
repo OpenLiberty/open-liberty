@@ -24,7 +24,7 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import mpRestClient10.basic.BasicClientTestServlet;
+import mpRestClient10.basicCdi.BasicClientTestServlet;
 
 @RunWith(FATRunner.class)
 public class BasicCdiTest extends FATServletClient {

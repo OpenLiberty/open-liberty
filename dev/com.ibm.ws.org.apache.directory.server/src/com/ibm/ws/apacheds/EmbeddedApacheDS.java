@@ -402,7 +402,7 @@ public class EmbeddedApacheDS {
     }
 
     /**
-     * Stop the LdapServer.
+     * Stop the LdapServer. Use stopService for JUnit teardown.
      */
     public void stopServer() {
         this.server.stop();

@@ -1,0 +1,29 @@
+<server>
+    <include location="../fatTestPorts.xml"/>
+    
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>ejbLite-3.2</feature>
+     	<feature>mdb-3.2</feature>
+     	<feature>wasJmsServer-1.0</feature>
+        <feature>wasJmsClient-2.0</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+    
+    <jmsQueueConnectionFactory jndiName="jms/MethodIntfMDBQCF">
+        <properties.wasJms/>
+    </jmsQueueConnectionFactory>
+    
+    <jmsQueue id="jms/MethodIntfMDBQueue" jndiName="jms/MethodIntfMDBQueue">
+        <properties.wasJms queueName="MethodIntfMDBQueue"/>
+    </jmsQueue>
+
+    <messagingEngine>
+        <queue id="MethodIntfMDBQueue"/>
+    </messagingEngine>
+
+    <jmsActivationSpec id="mdb/MethodIntfMDBSpec">
+        <properties.wasJms destinationRef="jms/MethodIntfMDBQueue"/>
+    </jmsActivationSpec>
+
+</server>

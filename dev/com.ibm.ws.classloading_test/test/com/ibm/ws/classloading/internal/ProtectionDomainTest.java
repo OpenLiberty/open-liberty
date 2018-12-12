@@ -38,6 +38,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.classloading.ApiType;
 import com.ibm.wsspi.classloading.ClassLoaderConfiguration;
@@ -85,7 +86,7 @@ public class ProtectionDomainTest {
                 return null;
             }
         };
-        AppClassLoader appClassLoader = new AppClassLoader(BOOTSTRAP_CLASS_LOADER, config, containers, access, null, null);
+        AppClassLoader appClassLoader = new AppClassLoader(BOOTSTRAP_CLASS_LOADER, config, containers, access, null, null, new GlobalClassloadingConfiguration());
 
         Class<?> testJarClass = appClassLoader.loadClass("test.StringReturner");
         String location = testJarClass.getProtectionDomain().getCodeSource().getLocation().toString();
@@ -124,7 +125,7 @@ public class ProtectionDomainTest {
                 return null;
             }
         };
-        AppClassLoader appClassLoader = new AppClassLoader(BOOTSTRAP_CLASS_LOADER, config, containers, access, null, null);
+        AppClassLoader appClassLoader = new AppClassLoader(BOOTSTRAP_CLASS_LOADER, config, containers, access, null, null, new GlobalClassloadingConfiguration());
 
         Class<?> testJarClass = appClassLoader.loadClass("test.StringReturner");
         String location = testJarClass.getProtectionDomain().getCodeSource().getLocation().toString();

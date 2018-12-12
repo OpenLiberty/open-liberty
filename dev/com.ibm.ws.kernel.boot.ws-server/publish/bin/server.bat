@@ -476,7 +476,7 @@ goto:eof
 
   @REM Command-line parsing of -Xshareclasses does not allow "," in cacheDir.
   if "!WLP_OUTPUT_DIR:,=!" == "!WLP_OUTPUT_DIR!" (
-    set SERVER_IBM_JAVA_OPTIONS=-Xshareclasses:name=liberty-%%u,nonfatal,cacheDir="%WLP_OUTPUT_DIR%\.classCache" -XX:ShareClassesEnableBCI -Xscmx60m -Xscmaxaot8m !IBM_JAVA_OPTIONS!
+    set SERVER_IBM_JAVA_OPTIONS=-Xshareclasses:name=liberty-%%u,nonfatal,cacheDir="%WLP_OUTPUT_DIR%\.classCache" -XX:ShareClassesEnableBCI -Xscmx80m !IBM_JAVA_OPTIONS!
   ) else (
     set SERVER_IBM_JAVA_OPTIONS=!IBM_JAVA_OPTIONS!
   )

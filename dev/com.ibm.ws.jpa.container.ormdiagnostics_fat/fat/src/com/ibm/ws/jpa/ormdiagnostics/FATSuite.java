@@ -15,9 +15,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.jpa.ormdiagnostics.tests.TestBasicLibertyDump;
+import com.ibm.ws.jpa.ormdiagnostics.tests.TestEARLibertyDump;
+
 @RunWith(Suite.class)
 @SuiteClasses({
-                TestBasicLibertyDump.class
+                TestBasicLibertyDump.class,
+                TestEARLibertyDump.class
 })
 public class FATSuite {
 

@@ -18,7 +18,7 @@
 #     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
 #
 # The prefix for this component is:
-#     CWNEN (Injection Engine)
+#     CNTR (EJB Container)
 #
 # Message numbers are four digit numbers, from '0000' to '9999', inclusive.
 # Message numbers are filled to the left with '0', to a width of 4.
@@ -129,6 +129,14 @@ NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.useraction=Remove the use of unsup
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E=CNTR4019E: Persistent timers cannot be created or accessed. Persistent EJB timers are not supported by any of the features configured in the server.xml file.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.explanation=Persistent EJB timers are not supported by the ejbLite features.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.useraction=Remove the use of unsupported persistent timers from the application, or add an ejbPersistentTimer feature to the server.xml file. 
+
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E=CNTR4020E: The {0} enterprise bean in the {1} module in the {2} application declares automatically created persistent timers. Automatically created persistent timers cannot be created. The ejbPersistentTimer feature is enabled, but a datasource has not been configured.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.explanation=Automatically created enterprise bean persistent timers declared in either a deployment descriptor or annotation require a datasource configuration for the ejbPersistentTimer feature.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.useraction=Configure a datasource for the ejbPersistentTimer feature or remove the use of automatically created persistent timers from the application.
+
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I=CNTR4021I: Persistent timers cannot be created or accessed. The ejbPersistentTimer feature has been enabled, but a datasource has not been configured.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.explanation=Applications that use persistent timers must enable the ejbPersistentTimer feature and configure a datasource for storing persistent timers.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.useraction=No action is required if persistent timers are not used. If persistent timers are used, then provide a datasource configuration for the ejbPersistentTimer feature. Remove the ejbPersistentTimer feature to remove this message.
 
 DUPLICATE_EJB_CNTR4100E=CNTR4100E: The {0} value for the <ejb-name> element in the ejb-jar.xml file is not unique.
 DUPLICATE_EJB_CNTR4100E.explanation=Multiple enterprise beans were defined with the same name in the ejb-jar.xml file. Each enterprise bean must have a unique name.

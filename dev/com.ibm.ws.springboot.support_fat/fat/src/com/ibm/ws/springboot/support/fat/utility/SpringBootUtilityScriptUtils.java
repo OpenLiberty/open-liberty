@@ -51,13 +51,17 @@ public class SpringBootUtilityScriptUtils {
     }
 
     public static List<String> execute(List<EnvVar> envVars, List<String> args, boolean ignoreError) throws IOException, InterruptedException {
+        return execute("springBootUtility", envVars, args, ignoreError);
+    }
+
+    public static List<String> execute(String commandName, List<EnvVar> envVars, List<String> args, boolean ignoreError) throws IOException, InterruptedException {
         if (envVars == null) {
             envVars = Collections.emptyList();
         }
 
         List<String> command = new ArrayList<String>();
         if (isWindows && WLP_CYGWIN_HOME == null) {
-            command.add(WLP_INSTALL_DIR + "/bin/springBootUtility.bat");
+            command.add(WLP_INSTALL_DIR + "/bin/" + commandName + ".bat");
         } else {
             if (WLP_CYGWIN_HOME == null) {
                 command.add("/bin/sh");
@@ -65,7 +69,7 @@ public class SpringBootUtilityScriptUtils {
                 command.add(WLP_CYGWIN_HOME + "/bin/sh");
             }
             command.add("-x");
-            command.add(WLP_INSTALL_DIR + "/bin/springBootUtility");
+            command.add(WLP_INSTALL_DIR + "/bin/" + commandName);
         }
         command.addAll(args);
 

@@ -49,6 +49,8 @@ import componenttest.app.FATServlet;
 @WebServlet(urlPatterns = "/AsyncTestServlet")
 public class AsyncTestServlet extends FATServlet {
     private final static Logger _log = Logger.getLogger(AsyncTestServlet.class.getName());
+    private final static int TIMEOUT = 10;
+    private final static int MULTISTAGE_TIMEOUT = 40;
 
     final static String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/asyncApp/";
 
@@ -118,21 +120,21 @@ public class AsyncTestServlet extends FATServlet {
                 }
             });
             try {
-                timedOut.set(!latch.await(20, TimeUnit.SECONDS));
+                timedOut.set(!latch.await(MULTISTAGE_TIMEOUT, TimeUnit.SECONDS));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         });
         try {
-            List<AccountInfo> accts = cs.toCompletableFuture().get(25, TimeUnit.SECONDS);
+            List<AccountInfo> accts = cs.toCompletableFuture().get(MULTISTAGE_TIMEOUT + 10, TimeUnit.SECONDS);
             accts.forEach(acctInfo -> {_log.info("listAccounts " + acctInfo);});
-            cs2.toCompletableFuture().get(25, TimeUnit.SECONDS);
+            cs2.toCompletableFuture().get(MULTISTAGE_TIMEOUT + 10, TimeUnit.SECONDS);
         } catch (TimeoutException ex) {
             ex.printStackTrace();
             fail("Timed out... this most likely indicates a slow test machine...");
         }
         _log.info("Paid off " + paidInFull.size() + " accounts.  Still owe: " + stillOwe.sum());
-        assertEquals(Boolean.FALSE, timedOut.get());
+        assertEquals("Timed out waiting for response", Boolean.FALSE, timedOut.get());
         assertEquals(5, numOfAccounts.get());
         assertEquals(4, paidInFull.size());
         assertEquals(2287.35, stillOwe.sum(), 0.0);
@@ -174,15 +176,15 @@ public class AsyncTestServlet extends FATServlet {
             }};
         RestClientAuditLogger._log.addHandler(auditLog);
         
-        acctsPayable.getAllAccounts().toCompletableFuture().get(5, TimeUnit.SECONDS);
+        acctsPayable.getAllAccounts().toCompletableFuture().get(TIMEOUT, TimeUnit.SECONDS);
         assertEquals(1, uris.size());
         assertTrue(uris.get(0).contains("/accountsPayable/accounts"));
         
-        bank.currentBalance().toCompletableFuture().get(5, TimeUnit.SECONDS);
+        bank.currentBalance().toCompletableFuture().get(TIMEOUT, TimeUnit.SECONDS);
         assertEquals(2, uris.size());
         assertTrue(uris.get(1).contains("/bank"));
         
-        acctsPayable.getAllAccounts().toCompletableFuture().get(5, TimeUnit.SECONDS);
+        acctsPayable.getAllAccounts().toCompletableFuture().get(TIMEOUT, TimeUnit.SECONDS);
         assertEquals(3, uris.size());
         assertTrue(uris.get(2).contains("/accountsPayable/accounts"));
         assertTrue("UniqueURIFilter not invoked", !uris.get(0).equals(uris.get(2)));
@@ -204,21 +206,21 @@ public class AsyncTestServlet extends FATServlet {
             exception.set(t);
             latch.countDown();
             return -1.0;
-        }).toCompletableFuture().get(5, TimeUnit.SECONDS);
+        }).toCompletableFuture().get(TIMEOUT, TimeUnit.SECONDS);
 
         try {
             Double responseValue = cs.thenApply(d -> {
                 _log.info("Unexpectedly, this withdrawal worked... " + d);
                 latch.countDown();
                 return d;
-            }).toCompletableFuture().get(5, TimeUnit.SECONDS);
+            }).toCompletableFuture().get(TIMEOUT, TimeUnit.SECONDS);
             fail("Failed to throw expected exception");
         } catch (ExecutionException ex) {
             Throwable t = ex.getCause();
             assertEquals(InsufficientFundsException.class.getName(), t.getClass().getName());
         }
 
-        latch.await(10, TimeUnit.SECONDS);
+        latch.await(TIMEOUT*2, TimeUnit.SECONDS);
         Throwable t = exception.get();
         if (t instanceof CompletionException) {
             t = t.getCause();

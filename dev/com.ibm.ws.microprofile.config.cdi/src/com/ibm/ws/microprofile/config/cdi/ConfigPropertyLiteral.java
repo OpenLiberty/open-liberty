@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.config.cdi;
 
 import java.lang.annotation.Annotation;
+import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.util.AnnotationLiteral;
 
@@ -38,6 +39,21 @@ public class ConfigPropertyLiteral extends AnnotationLiteral<ConfigProperty> imp
     @Override
     public String defaultValue() {
         return "";
+    }
+
+    //introduced in 1.4
+    public boolean evaluateVariables() {
+        return true;
+    }
+
+    //introduced in 1.4
+    public TimeUnit cacheTimeUnit() {
+        return TimeUnit.SECONDS;
+    }
+
+    //introduced in 1.4
+    public long cacheFor() {
+        return 0L;
     }
 
 }

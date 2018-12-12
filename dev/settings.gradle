@@ -49,6 +49,7 @@ pluginManagement {
     // Properties for automated-build relevant tasks. These assignments below are defaults for when building locally
     def isUsingArtifactory = false
     def isAutomatedBuild = false
+    def isPersonal = false
     def isContinuousBuild = false
     def isRelease = false
     def isPublicPublishing = false
@@ -119,6 +120,10 @@ pluginManagement {
 
       isAutomatedBuild = (props.getProperty("buildResultUUID") != null)
 
+      if (props.getProperty('is.personal') != null) {
+        isPersonal = 'on'.equalsIgnoreCase(props.getProperty('is.personal')) || 'true'.equalsIgnoreCase(props.getProperty('is.personal'))
+      }
+
       if (props.getProperty('is.continuous.build') != null) {
         isContinuousBuild = 'on'.equalsIgnoreCase(props.getProperty('is.continuous.build')) || 'true'.equalsIgnoreCase(props.getProperty('is.continuous.build'))
       }
@@ -155,6 +160,7 @@ pluginManagement {
     props.setProperty('fetch.ibm.java.repository',     fetchRepoIBMJava)
     props.setProperty('push.ibm.repository',           pushRepoIBM)
     props.setProperty('is.automated.build',            isAutomatedBuild.toString())
+    props.setProperty('is.personal',                   isPersonal.toString())
     props.setProperty('is.continuous.build',           isContinuousBuild.toString())
     props.setProperty('is.release',                    isRelease.toString())
     props.setProperty('maven.release.name',            "release")
@@ -172,6 +178,7 @@ pluginManagement {
     rootProject.ext.qualifier = gradle.userProps.getProperty("version.qualifier")
     rootProject.ext.matrixParams = gradle.userProps.getProperty("artifactory.matrix.parameters")
     rootProject.ext.isAutomatedBuild =   'on'.equalsIgnoreCase(gradle.userProps.getProperty("is.automated.build"))   || 'true'.equalsIgnoreCase(gradle.userProps.getProperty("is.automated.build"))
+	rootProject.ext.isPersonal = 'on'.equalsIgnoreCase(gradle.userProps.getProperty("is.personal")) || 'true'.equalsIgnoreCase(gradle.userProps.getProperty("is.personal"))
     rootProject.ext.isContinuousBuild =  'on'.equalsIgnoreCase(gradle.userProps.getProperty("is.continuous.build"))  || 'true'.equalsIgnoreCase(gradle.userProps.getProperty("is.continuous.build"))
     rootProject.ext.isRelease =          'on'.equalsIgnoreCase(gradle.userProps.getProperty('is.release'))           || 'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.release'))
     rootProject.ext.isUsingArtifactory = 'on'.equalsIgnoreCase(gradle.userProps.getProperty('is.using.artifactory')) || 'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.using.artifactory'))
@@ -310,11 +317,27 @@ if (addAll) {
   println 'Preparing all bnd projects in the workspace (this can take a while)'
 }
 
+/**
+ *This method is a hardcoded method that assumes if a project is
+ *a multi module project, it will have a module named "module"
+**/
+def includeModuleIfExists(projectName) {
+    File module = new File(rootDir, projectName + '/module')
+    if (module.exists()) {
+        include projectName + ':' + module.getName()
+    }
+}
+
 def allBndProjects = workspace.getAllProjects().collect { project ->
   if (!project.name.startsWith('.')) {
     if (addAll) {
       project.prepare()
       include project.name
+     
+      if (new File(rootDir, project.name + '/springboot.gradle').exists()) {
+          includeModuleIfExists(project.name)
+      }
+
     }
     return project.name
   } else {
@@ -337,11 +360,14 @@ projectNames.each { projectName ->
     include projectName
     workspace.getProject(projectName).getDependson()*.getName().each {
       include it
-    }
-  } else if (new File(rootDir, projectName + '/springboot.gradle').exists()) {
-    include projectName
+     }
+    
+    if (new File(rootDir, projectName + '/springboot.gradle').exists()) {
+          includeModuleIfExists(projectName)
+     }
   }
 }
+ 
 
 /* Pass workspace to root project */
 gradle.projectsLoaded { gradle ->

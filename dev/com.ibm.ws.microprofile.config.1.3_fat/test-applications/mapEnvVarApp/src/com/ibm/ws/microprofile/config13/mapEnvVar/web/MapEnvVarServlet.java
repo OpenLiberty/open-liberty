@@ -88,7 +88,7 @@ public class MapEnvVarServlet extends FATServlet {
     private void getAndCheckEnvVarValue(String key, String expectedValue) {
         String value = config.getOptionalValue(key, String.class).orElse("not there");
         System.out.println("NYTRACE: Seek: " + key + ", Expected: " + expectedValue + ", Found: " + value);
-        assertEquals(value, expectedValue);
+        assertEquals("Incorrect value found", expectedValue, value);
     }
 
 }

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests;
 
-import java.io.File;
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -28,13 +28,14 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.confi
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.configload.RetryTesterServlet;
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.configload.WarRetryCountingBean;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
+import componenttest.topology.utils.HttpUtils;
 
 /**
  * Test configuration works across multiple modules in an EAR
@@ -45,17 +46,18 @@ import componenttest.rules.repeater.RepeatTests;
  * classloader instead. This avoids a situation where one bean in an application library jar would need to have a different config depending on which module called it.
  */
 @RunWith(FATRunner.class)
-public class TestMultiModuleConfigLoad extends LoggingTest {
+public class TestMultiModuleConfigLoad extends FATServletClient {
 
-    // Field is required to declare the shared server as a class rule
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("FaultToleranceMultiModule");
+    private static final String SERVER_NAME = "FaultToleranceMultiModule";
+
+    @Server(SERVER_NAME)
+    public static LibertyServer server;
 
     //run against both EE8 and EE7 features
     @ClassRule
     public static RepeatTests r = RepeatTests
-                    .with(FeatureReplacementAction.EE7_FEATURES().forServers(SHARED_SERVER.getServerName()))
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().forServers(SHARED_SERVER.getServerName()));
+                    .with(FeatureReplacementAction.EE7_FEATURES().forServers(SERVER_NAME))
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().forServers(SERVER_NAME));
 
     @BeforeClass
     public static void appSetup() throws Exception {
@@ -90,22 +92,14 @@ public class TestMultiModuleConfigLoad extends LoggingTest {
                         .addAsLibrary(jar)
                         .setApplicationXML(RetryTesterServlet.class.getResource("multi-module-application.xml"));
 
-        ShrinkHelper.exportToServer(SHARED_SERVER.getLibertyServer(), "dropins", ear);
-        SHARED_SERVER.getLibertyServer().addInstalledAppForValidation("FaultToleranceMultiModule");
-        SHARED_SERVER.startIfNotStarted();
+        ShrinkHelper.exportDropinAppToServer(server, ear, SERVER_ONLY);
+        server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        SHARED_SERVER.getLibertyServer().deleteFileFromLibertyServerRoot("dropins/FaultToleranceMultiModule.ear");
-        new File("publish/servers/" + SHARED_SERVER.getServerName() + "/dropins/FaultToleranceMultiModule.ear").delete();
-        SHARED_SERVER.getLibertyServer().removeInstalledAppForValidation("FaultToleranceMultiModule");
-        SHARED_SERVER.getLibertyServer().stopServer();
-    }
-
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
+        server.stopServer();
+        server.deleteFileFromLibertyServerRoot("dropins/FaultToleranceMultiModule.ear");
     }
 
     /**
@@ -115,10 +109,9 @@ public class TestMultiModuleConfigLoad extends LoggingTest {
      */
     @Test
     public void testRetryCountAppScope() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/war1/retry-tester?scope=app", "4");
-        getSharedServer().verifyResponse(browser, "/war2/retry-tester?scope=app", "4");
-        getSharedServer().verifyResponse(browser, "/war3/retry-tester?scope=app", "4");
+        HttpUtils.findStringInReadyUrl(server, "/war1/retry-tester?scope=app", "4");
+        HttpUtils.findStringInReadyUrl(server, "/war2/retry-tester?scope=app", "4");
+        HttpUtils.findStringInReadyUrl(server, "/war3/retry-tester?scope=app", "4");
     }
 
     /**
@@ -130,10 +123,9 @@ public class TestMultiModuleConfigLoad extends LoggingTest {
      */
     @Test
     public void testRetryCountRequestScope() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/war1/retry-tester?scope=request", "4");
-        getSharedServer().verifyResponse(browser, "/war2/retry-tester?scope=request", "4");
-        getSharedServer().verifyResponse(browser, "/war3/retry-tester?scope=request", "4");
+        HttpUtils.findStringInReadyUrl(server, "/war1/retry-tester?scope=request", "4");
+        HttpUtils.findStringInReadyUrl(server, "/war2/retry-tester?scope=request", "4");
+        HttpUtils.findStringInReadyUrl(server, "/war3/retry-tester?scope=request", "4");
     }
 
     /**
@@ -145,10 +137,9 @@ public class TestMultiModuleConfigLoad extends LoggingTest {
      */
     @Test
     public void testRetryCountWarConfigWarScope() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/war1/retry-tester?scope=war", "4");
-        getSharedServer().verifyResponse(browser, "/war2/retry-tester?scope=war", "2");
-        getSharedServer().verifyResponse(browser, "/war3/retry-tester?scope=war", "1");
+        HttpUtils.findStringInReadyUrl(server, "/war1/retry-tester?scope=war", "4");
+        HttpUtils.findStringInReadyUrl(server, "/war2/retry-tester?scope=war", "2");
+        HttpUtils.findStringInReadyUrl(server, "/war3/retry-tester?scope=war", "1");
     }
 
 }

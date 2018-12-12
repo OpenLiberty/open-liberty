@@ -667,6 +667,14 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
                             }
                         }
                     }
+                    else{
+                        File matchedFile = dru.getMatchedFile();
+                        if (matchedFile != null){
+                            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+                                logger.logp(Level.FINE, CLASS_NAME, "getRealPath", "obtained file [" + matchedFile.getAbsolutePath() +"]"); 
+                            return matchedFile.getAbsolutePath();
+                        }
+                    }
                 }
             }
         } catch(IllegalArgumentException e){

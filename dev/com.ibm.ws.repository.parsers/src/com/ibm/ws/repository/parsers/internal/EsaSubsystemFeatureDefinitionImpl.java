@@ -1,15 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * WLP Copyright IBM Corp. 2014
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- */
-
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.repository.parsers.internal;
 
 import java.io.File;
@@ -32,19 +30,17 @@ import com.ibm.ws.kernel.feature.internal.subsystem.SubsystemFeatureDefinitionIm
  * when requested (although {@link SubsystemFeatureDefinitionImpl} can load
  * features from an ESA it will not show translated messages).
  */
-public class EsaSubsystemFeatureDefinitionImpl extends
-                SubsystemFeatureDefinitionImpl {
+public class EsaSubsystemFeatureDefinitionImpl extends SubsystemFeatureDefinitionImpl {
 
     /**
      * Create a new instance of this class for the supplied ESA file.
-     * 
+     *
      * @param esa The ESA to load
      * @return The {@link EsaSubsystemFeatureDefinitionImpl} for working with the properties of the ESA
      * @throws ZipException
      * @throws IOException
      */
-    public static EsaSubsystemFeatureDefinitionImpl constructInstance(File esa)
-                    throws ZipException, IOException {
+    public static EsaSubsystemFeatureDefinitionImpl constructInstance(File esa) throws ZipException, IOException {
         // Find the manifest - case isn't guaranteed so do a search
         ZipFile zip = new ZipFile(esa);
         Enumeration<? extends ZipEntry> zipEntries = zip.entries();
@@ -55,8 +51,7 @@ public class EsaSubsystemFeatureDefinitionImpl extends
                 subsystemEntry = nextEntry;
             }
         }
-        return new EsaSubsystemFeatureDefinitionImpl(
-                        zip.getInputStream(subsystemEntry), zip);
+        return new EsaSubsystemFeatureDefinitionImpl(zip.getInputStream(subsystemEntry), zip);
     }
 
     private final ZipFile esa;
@@ -78,17 +73,16 @@ public class EsaSubsystemFeatureDefinitionImpl extends
         }
 
         ZipEntry[] entries = new ZipEntry[] {
-                                             this.esa.getEntry(localizationLocation + "_"
-                                                               + locale.toString() + ".properties"),
-                                             this.esa.getEntry(localizationLocation + "_"
-                                                               + locale.getLanguage() + ".properties"),
-                                             this.esa.getEntry(localizationLocation + ".properties") };
+                                              this.esa.getEntry(localizationLocation + "_"
+                                                                + locale.toString() + ".properties"),
+                                              this.esa.getEntry(localizationLocation + "_"
+                                                                + locale.getLanguage() + ".properties"),
+                                              this.esa.getEntry(localizationLocation + ".properties") };
 
         for (ZipEntry entry : entries) {
             if (entry != null) {
                 try {
-                    return new PropertyResourceBundle(new InputStreamReader(
-                                    this.esa.getInputStream(entry)));
+                    return new PropertyResourceBundle(new InputStreamReader(this.esa.getInputStream(entry)));
                 } catch (IOException e) {
                 }
             }

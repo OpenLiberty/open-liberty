@@ -12,10 +12,12 @@ package com.ibm.ws.microprofile.config13.sources;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
@@ -35,6 +37,7 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.application.Application;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * Assorted osgi based utility methods
@@ -60,23 +63,24 @@ public class OSGiConfigUtils {
      */
     public static String getApplicationName(BundleContext bundleContext) {
         String applicationName = null;
-        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        if (FrameworkState.isValid()) {
+            ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
 
-        if (cmd == null) {
-            //if the component metadata is null then we're probably running in the CDI startup sequence so try asking CDI for the application
-            applicationName = getCDIAppName(bundleContext);
-        } else {
-            applicationName = cmd.getJ2EEName().getApplication();
-        }
-
-        if (applicationName == null) {
             if (cmd == null) {
-                throw new ConfigStartException(Tr.formatMessage(tc, "no.application.name.CWMCG0201E"));
+                //if the component metadata is null then we're probably running in the CDI startup sequence so try asking CDI for the application
+                applicationName = getCDIAppName(bundleContext);
             } else {
-                throw new ConfigException(Tr.formatMessage(tc, "no.application.name.CWMCG0201E"));
+                applicationName = cmd.getJ2EEName().getApplication();
+            }
+
+            if (applicationName == null) {
+                if (cmd == null) {
+                    throw new ConfigStartException(Tr.formatMessage(tc, "no.application.name.CWMCG0201E"));
+                } else {
+                    throw new ConfigException(Tr.formatMessage(tc, "no.application.name.CWMCG0201E"));
+                }
             }
         }
-
         return applicationName;
 
     }
@@ -88,7 +92,15 @@ public class OSGiConfigUtils {
      * @return the bundle context
      */
     public static BundleContext getBundleContext(Class<?> clazz) {
-        return FrameworkUtil.getBundle(clazz).getBundleContext();
+        BundleContext context = null; //we'll return null if not running inside an OSGi framework (e.g. unit test)
+        if (FrameworkState.isValid()) {
+            Bundle bundle = FrameworkUtil.getBundle(clazz);
+
+            if (bundle != null) {
+                context = bundle.getBundleContext();
+            }
+        }
+        return context;
     }
 
     /**
@@ -129,12 +141,14 @@ public class OSGiConfigUtils {
      * @return the service instance or null
      */
     public static <T> T getService(BundleContext bundleContext, Class<T> serviceClass) {
-        ServiceReference<T> ref = bundleContext.getServiceReference(serviceClass);
         T service = null;
-        if (ref != null) {
-            service = bundleContext.getService(ref);
-        }
+        if (FrameworkState.isValid()) {
+            ServiceReference<T> ref = bundleContext.getServiceReference(serviceClass);
 
+            if (ref != null) {
+                service = bundleContext.getService(ref);
+            }
+        }
         return service;
     }
 
@@ -146,20 +160,23 @@ public class OSGiConfigUtils {
      * @return A ServiceReference for the given application
      */
     public static ServiceReference<Application> getApplicationServiceRef(BundleContext bundleContext, String applicationName) {
-        Collection<ServiceReference<Application>> appRefs;
-        try {
-            appRefs = bundleContext.getServiceReferences(Application.class,
-                                                         FilterUtils.createPropertyFilter("name", applicationName));
-        } catch (InvalidSyntaxException e) {
-            throw new ConfigException(e);
-        }
-
         ServiceReference<Application> appRef = null;
-        if (appRefs != null && appRefs.size() > 0) {
-            if (appRefs.size() > 1) {
-                throw new ConfigException(Tr.formatMessage(tc, "duplicate.application.name.CWMCG0202E", applicationName));
+
+        if (FrameworkState.isValid()) {
+            Collection<ServiceReference<Application>> appRefs;
+            try {
+                appRefs = bundleContext.getServiceReferences(Application.class,
+                                                             FilterUtils.createPropertyFilter("name", applicationName));
+            } catch (InvalidSyntaxException e) {
+                throw new ConfigException(e);
             }
-            appRef = appRefs.iterator().next();
+
+            if (appRefs != null && appRefs.size() > 0) {
+                if (appRefs.size() > 1) {
+                    throw new ConfigException(Tr.formatMessage(tc, "duplicate.application.name.CWMCG0202E", applicationName));
+                }
+                appRef = appRefs.iterator().next();
+            }
         }
 
         return appRef;
@@ -174,15 +191,18 @@ public class OSGiConfigUtils {
      */
     public static String getApplicationPID(BundleContext bundleContext, String applicationName) {
         String applicationPID = null;
-        ServiceReference<?> appRef = getApplicationServiceRef(bundleContext, applicationName);
-        if (appRef != null) {
-            //not actually sure what the difference is between service.pid and ibm.extends.source.pid but this is the way it is done everywhere else!
-            applicationPID = (String) appRef.getProperty(Constants.SERVICE_PID);
-            String sourcePid = (String) appRef.getProperty("ibm.extends.source.pid");
-            if (sourcePid != null) {
-                applicationPID = sourcePid;
+
+        if (FrameworkState.isValid()) {
+            ServiceReference<?> appRef = getApplicationServiceRef(bundleContext, applicationName);
+            if (appRef != null) {
+                //not actually sure what the difference is between service.pid and ibm.extends.source.pid but this is the way it is done everywhere else!
+                applicationPID = (String) appRef.getProperty(Constants.SERVICE_PID);
+                String sourcePid = (String) appRef.getProperty("ibm.extends.source.pid");
+                if (sourcePid != null) {
+                    applicationPID = sourcePid;
+                }
             }
-        } ;
+        }
         return applicationPID;
 
     }
@@ -195,10 +215,12 @@ public class OSGiConfigUtils {
      */
     public static String getCDIAppName(BundleContext bundleContext) {
         String appName = null;
-        // Get the CDIService
-        CDIService cdiService = getCDIService(bundleContext);
-        if (cdiService != null) {
-            appName = cdiService.getCurrentApplicationContextID();
+        if (FrameworkState.isValid()) {
+            // Get the CDIService
+            CDIService cdiService = getCDIService(bundleContext);
+            if (cdiService != null) {
+                appName = cdiService.getCurrentApplicationContextID();
+            }
         }
         return appName;
     }
@@ -257,33 +279,35 @@ public class OSGiConfigUtils {
         //This ordering is not a defined API but I'm hoping that it won't change
         SortedSet<Configuration> configSet = new TreeSet<>((o1, o2) -> o1.getPid().compareTo(o2.getPid()));
 
-        try {
-            String applicationPID = getApplicationPID(bundleContext, applicationName);
-            String applicationPropertiesPid = null;
-            ConfigurationAdmin admin = getConfigurationAdmin(bundleContext);
-            if (applicationPID != null && admin != null) {
-                String appPropertiesFilter = getApplicationPropertiesConfigFilter(applicationPID);
-                Configuration[] appPropertiesOsgiConfigs = admin.listConfigurations(appPropertiesFilter);
-                if (appPropertiesOsgiConfigs != null) {
-                    for (Configuration cfg : appPropertiesOsgiConfigs) {
-                        applicationPropertiesPid = cfg.getPid();
+        if (FrameworkState.isValid()) {
+            try {
+                String applicationPID = getApplicationPID(bundleContext, applicationName);
+                String applicationPropertiesPid = null;
+                ConfigurationAdmin admin = getConfigurationAdmin(bundleContext);
+                if (applicationPID != null && admin != null) {
+                    String appPropertiesFilter = getApplicationPropertiesConfigFilter(applicationPID);
+                    Configuration[] appPropertiesOsgiConfigs = admin.listConfigurations(appPropertiesFilter);
+                    if (appPropertiesOsgiConfigs != null) {
+                        for (Configuration cfg : appPropertiesOsgiConfigs) {
+                            applicationPropertiesPid = cfg.getPid();
+                        }
                     }
-                }
 
-                if (applicationPropertiesPid != null) {
-                    String appPropertiesPropertyFilter = getApplicationPropertiesPropertyConfigFilter(applicationPropertiesPid);
-                    Configuration[] appPropertiesPropertyOsgiConfigs = admin.listConfigurations(appPropertiesPropertyFilter);
-                    if (appPropertiesPropertyOsgiConfigs != null) {
-                        for (Configuration cfg : appPropertiesPropertyOsgiConfigs) {
-                            configSet.add(cfg);
+                    if (applicationPropertiesPid != null) {
+                        String appPropertiesPropertyFilter = getApplicationPropertiesPropertyConfigFilter(applicationPropertiesPid);
+                        Configuration[] appPropertiesPropertyOsgiConfigs = admin.listConfigurations(appPropertiesPropertyFilter);
+                        if (appPropertiesPropertyOsgiConfigs != null) {
+                            for (Configuration cfg : appPropertiesPropertyOsgiConfigs) {
+                                configSet.add(cfg);
+                            }
                         }
                     }
                 }
-            }
-        } catch (IOException |
+            } catch (IOException |
 
-                        InvalidSyntaxException e) {
-            throw new ConfigException(e);
+                            InvalidSyntaxException e) {
+                throw new ConfigException(e);
+            }
         }
 
         return configSet;
@@ -296,11 +320,13 @@ public class OSGiConfigUtils {
      * @return
      */
     public static Map<String, String> getVariableFromServerXML(BundleContext bundleContext) {
+        Map<String, String> theMap = new HashMap<>();
+        if (FrameworkState.isValid()) {
+            ConfigVariables configVars = getConfigVariables(bundleContext);
 
-        ConfigVariables configVars = getConfigVariables(bundleContext);
-
-        // Retrieve the Map of variables that have been defined in the server.xml
-        Map<String, String> theMap = configVars.getUserDefinedVariables();
+            // Retrieve the Map of variables that have been defined in the server.xml
+            theMap.putAll(configVars.getUserDefinedVariables());
+        }
         return theMap;
     }
 

@@ -48,5 +48,6 @@
     
     <!--Java2 security-->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" /> 
+    <logging traceSpecification="*=info:JCDI=all:com.ibm.ws.webbeans*=all:org.apache.webbeans*=all:org.jboss.weld*=all:com.ibm.ws.cdi*=all"></logging>
       
 </server>
