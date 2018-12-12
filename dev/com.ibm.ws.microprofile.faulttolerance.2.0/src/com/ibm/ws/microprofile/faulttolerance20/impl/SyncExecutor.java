@@ -118,8 +118,10 @@ public class SyncExecutor<R> implements Executor<R> {
 
             // If the circuit breaker gave permission to execute the result hasn't yet been set and we should run the execution
             if (result == null) {
-                timeoutState.start(() -> runningThread.interrupt());
+                timeoutState.setTimeoutCallback(() -> runningThread.interrupt());
+                timeoutState.start();
 
+                // The call to the application code happens here
                 result = bulkhead.run(callable);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {

@@ -38,7 +38,7 @@ public class AsyncCompletionStageExecutor<R> extends AsyncExecutor<CompletionSta
     }
 
     @Override
-    protected CompletionStage<R> createReturnWrapper() {
+    protected CompletionStage<R> createReturnWrapper(AsyncExecutionContextImpl<CompletionStage<R>> executionContext) {
         return new CompletableFuture<R>();
     }
 

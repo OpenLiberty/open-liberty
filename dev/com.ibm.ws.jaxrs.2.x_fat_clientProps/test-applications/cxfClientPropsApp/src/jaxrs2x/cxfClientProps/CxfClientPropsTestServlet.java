@@ -37,6 +37,14 @@ import componenttest.app.FATServlet;
 @WebServlet(urlPatterns = "/CxfClientPropsTestServlet")
 public class CxfClientPropsTestServlet extends FATServlet {
     private final static Logger _log = Logger.getLogger(CxfClientPropsTestServlet.class.getName());
+    
+    private static final boolean isZOS() {
+        String osName = System.getProperty("os.name");
+        if (osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS")) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Not actually testing CXF client properties, but rather testing socket timeouts,
@@ -167,7 +175,7 @@ public class CxfClientPropsTestServlet extends FATServlet {
     public void testIBMReadTimeoutOverridesCXFReadTimeout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         final String m = "testIBMReadTimeoutOverridesCXFReadTimeout";
         long IBM_TIMEOUT = 5000;
-        long MARGIN = 3000;
+        long MARGIN = 4000;
         long CXF_TIMEOUT = 10000;
         Client client = ClientBuilder.newBuilder()
                                      .property("com.ibm.ws.jaxrs.client.receive.timeout", IBM_TIMEOUT)
@@ -264,13 +272,5 @@ public class CxfClientPropsTestServlet extends FATServlet {
                        .post(Entity.text(sb.toString()))
                        .readEntity(String.class);
         assertEquals("30000:30000", result);
-    }
-    
-    static final boolean isZOS() {
-        String osName = System.getProperty("os.name");
-        if (osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS")) {
-            return true;
-        }
-        return false;
     }
 }

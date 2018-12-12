@@ -1,13 +1,3 @@
-package com.ibm.ws.cdi.test.session.destroy;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 /*******************************************************************************
  * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -18,6 +8,15 @@ import javax.servlet.http.HttpServletResponse;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.cdi.test.session.destroy;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/TimeoutServlet")
 public class TimeoutServlet extends HttpServlet {

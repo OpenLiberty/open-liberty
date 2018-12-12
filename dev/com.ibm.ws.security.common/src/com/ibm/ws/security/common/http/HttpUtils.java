@@ -36,6 +36,7 @@ import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 public class HttpUtils {
     public static final TraceComponent tc = Tr.register(HttpUtils.class);
@@ -117,6 +118,7 @@ public class HttpUtils {
         return credentialsProvider;
     }
     
+    @FFDCIgnore({ Exception.class })
     protected String getHTTPRequestAsString(HttpClient httpClient, String url) throws Exception {
 
         String json = null;
@@ -138,7 +140,7 @@ public class HttpUtils {
                     Tr.debug(tc, "Response: ", json);
                 }
                 if (json == null || json.isEmpty()) { // NO json response returned
-                    throw new Exception(logErrorMessage(url, iStatusCode, json));
+                    throw new Exception(logErrorMessage(url, iStatusCode, "empty or null json response"));
                 }
             } else {
                 String errMsg = statusLine.getReasonPhrase();
@@ -160,7 +162,7 @@ public class HttpUtils {
         String defaultMessage = "Error processing discovery request";
 
         String message = TraceNLS.getFormattedMessage(getClass(),
-                  "com.ibm.ws.security.social.resources.SocialMessages", "OIDC_CLIENT_DISC_RESPONSE_ERROR",
+                  "com.ibm.ws.security.common.internal.resources.SSOCommonMessages", "OIDC_CLIENT_DISC_RESPONSE_ERROR",
                   new Object[] { url, Integer.valueOf(iStatusCode), errMsg }, defaultMessage);
                  ;
         Tr.error(tc, message, new Object[0]);

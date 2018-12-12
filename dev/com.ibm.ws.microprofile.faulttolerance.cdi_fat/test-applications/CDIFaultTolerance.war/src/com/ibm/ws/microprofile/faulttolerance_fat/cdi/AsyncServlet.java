@@ -16,7 +16,9 @@ import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -315,6 +317,30 @@ public class AsyncServlet extends FATServlet {
     public void testAsyncGetBeanManagerViaJndi() throws Exception {
         Future<BeanManager> value = threadContextBean.getBeanManagerViaJndi();
         assertThat(value.get(), notNullValue());
+    }
+
+    @Test
+    public void testAsyncCancel() throws Exception {
+        Future<Void> result = bean.waitCheckCancel();
+
+        Thread.sleep(TestConstants.TEST_TIME_UNIT);
+
+        result.cancel(true);
+
+        assertThat("cancel", result.cancel(true), is(true));
+        assertThat("isCancelled", result.isCancelled(), is(true));
+        assertThat("isDone", result.isDone(), is(true));
+
+        try {
+            result.get(0, TimeUnit.SECONDS);
+            fail("get() Did not throw cancellation exception");
+        } catch (CancellationException e) {
+            assertThat("exception from get()", e, instanceOf(CancellationException.class));
+        }
+
+        Thread.sleep(TestConstants.TEST_TWEAK_TIME_UNIT);
+
+        assertThat(bean.wasInterrupted(), is(true));
     }
 
 }

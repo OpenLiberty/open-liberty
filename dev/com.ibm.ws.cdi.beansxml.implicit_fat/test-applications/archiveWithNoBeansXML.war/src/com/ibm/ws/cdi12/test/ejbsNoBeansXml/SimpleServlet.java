@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package com.ibm.ws.cdi12.test.ejbsNoBeansXml;
 
 import java.io.IOException;
@@ -20,9 +21,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- *
- */
 @WebServlet("/SimpleServlet")
 public class SimpleServlet extends HttpServlet {
 

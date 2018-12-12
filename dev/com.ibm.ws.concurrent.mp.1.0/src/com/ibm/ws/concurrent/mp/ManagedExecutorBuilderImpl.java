@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
@@ -54,7 +53,7 @@ class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
         unknown.addAll(propagated);
 
         if (unknown.size() < cleared.size() + propagated.size())
-            throw new IllegalArgumentException(/* TODO findOverlapping(configured) */);
+            failOnOverlapOfClearedPropagated();
 
         // Determine what to with remaining context types that are not explicitly configured
         ContextOp remaining;
@@ -69,13 +68,8 @@ class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
 
         LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider = new LinkedHashMap<ThreadContextProvider, ContextOp>();
 
-        // TODO: Take knownTypes processing off of the main code path, since this is only used on error path
-        Set<String> knownTypes = new HashSet<>();
-        for (String builtin : ThreadContextImpl.BUILT_IN_TYPES)
-            knownTypes.add(builtin);
         for (ThreadContextProvider provider : contextProviders) {
             String contextType = provider.getThreadContextType();
-            knownTypes.add(contextType);
             unknown.remove(contextType);
 
             ContextOp op = propagated.contains(contextType) ? ContextOp.PROPAGATED //
@@ -86,8 +80,7 @@ class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
 
         // unknown thread context types
         if (unknown.size() > 0)
-            throw new IllegalStateException("Unknown thread contexts specified: " + unknown.toString() +
-                                            ". Allowed thread contexts values are: " + knownTypes); // TODO translated error message
+            ThreadContextBuilderImpl.failOnUnknownContextTypes(unknown, contextProviders);
 
         StringBuilder nameBuilder = new StringBuilder("ManagedExecutor_") //
                         .append(maxAsync)
@@ -117,6 +110,20 @@ class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
         cleared.clear();
         Collections.addAll(cleared, types);
         return this;
+    }
+
+    /**
+     * Fail with error indentifying the overlap(s) in context types between:
+     * cleared, propagated.
+     *
+     * @throws IllegalStateException identifying the overlap.
+     */
+    private void failOnOverlapOfClearedPropagated() {
+        HashSet<String> overlap = new HashSet<String>(cleared);
+        overlap.retainAll(propagated);
+        if (overlap.isEmpty()) // only possible if builder is concurrently modified during build
+            throw new ConcurrentModificationException();
+        throw new IllegalStateException(overlap.toString()); // TODO NLS translated error message
     }
 
     @Override

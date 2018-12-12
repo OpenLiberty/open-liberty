@@ -115,7 +115,7 @@ public class Jose4jRsaJWK extends RsaJsonWebKey implements JWK {
     }
 
     // alg, use, publicKey, privateKey
-    public static Jose4jRsaJWK getInstance(String alg, String use, PublicKey publicKey, PrivateKey privateKey) {
+    public static Jose4jRsaJWK getInstance(String alg, String use, PublicKey publicKey, PrivateKey privateKey, String kid) {
 
         //String kid = RandomUtils.getRandomAlphaNumeric(KID_LENGTH);
         RSAPublicKey pubKey = (RSAPublicKey) publicKey;
@@ -124,7 +124,7 @@ public class Jose4jRsaJWK extends RsaJsonWebKey implements JWK {
 
         jwk.setPrivateKey(priKey);
         jwk.setAlgorithm(alg);
-        //jwk.setKeyId(kid);
+        jwk.setKeyId(kid);
         jwk.setUse(use == null ? JwkConstants.sig : use);
 
         return jwk;

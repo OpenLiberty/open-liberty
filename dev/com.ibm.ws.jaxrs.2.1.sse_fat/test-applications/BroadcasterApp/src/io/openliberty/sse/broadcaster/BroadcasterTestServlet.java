@@ -46,12 +46,25 @@ import componenttest.app.FATServlet;
 public class BroadcasterTestServlet extends FATServlet {
     private final static Logger _log = Logger.getLogger(BroadcasterTestServlet.class.getName());
     private final static int NUM_CLIENTS = 5;
+    private long timeout = 5;
+    
+    private static final boolean isZOS() {
+        String osName = System.getProperty("os.name");
+        if (osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS")) {
+            return true;
+        }
+        return false;
+    }
 
     ExecutorService executor = Executors.newFixedThreadPool(NUM_CLIENTS * 2);
 
     @Test
     public void testClientReceivesBroadcastedEvents(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         final String m = "testClientReceivesBroadcastedEvents";
+        if (isZOS()) {
+            timeout = 35;
+        }
+        
         Client client = ClientBuilder.newClient();
         int port = req.getServerPort();
         WebTarget target = client.target("http://localhost:" + port + "/BroadcasterApp/broadcaster");
@@ -68,8 +81,8 @@ public class BroadcasterTestServlet extends FATServlet {
                 executor.submit(clientListener);
             }
 
-            if (!latch.await(4, TimeUnit.SECONDS)) {
-                _log.info(m + " timed out waiting for initial registration welcome");
+            if (!latch.await(timeout, TimeUnit.SECONDS)) {                
+                throw new RuntimeException(m + " timed out waiting for initial registration welcome with timeout of: " + timeout);
             }
 
             latch = new CountDownLatch(NUM_CLIENTS);
@@ -82,12 +95,12 @@ public class BroadcasterTestServlet extends FATServlet {
 
             target.request().put(Entity.text("Event1"));
 
-            if (!latch.await(4, TimeUnit.SECONDS)) {
-                _log.info(m + " timed out waiting for first broadcasted event");
-            }
+            if (!latch.await(timeout, TimeUnit.SECONDS)) {
+                throw new RuntimeException(m + " timed out waiting for first broadcasted event with timeout of: " + timeout);
+            }                    
 
             latch = new CountDownLatch(NUM_CLIENTS);
-            for (ClientListener clientListener : clients) {
+            for (ClientListener clientListener : clients) {                
                 List<String> events = clientListener.getReceivedEvents();
                 assertTrue(events.size() == 1 && events.get(0).equals("Event1"));
                 events.clear();
@@ -96,11 +109,11 @@ public class BroadcasterTestServlet extends FATServlet {
 
             target.request().put(Entity.text("Event2"));
 
-            if (!latch.await(4, TimeUnit.SECONDS)) {
-                _log.info(m + " timed out waiting for second broadcasted event");
-            }
+            if (!latch.await(timeout, TimeUnit.SECONDS)) {                
+                throw new RuntimeException(m + " timed out waiting for second broadcasted event with timeout of: " + timeout);
+            }            
 
-            for (ClientListener clientListener : clients) {
+            for (ClientListener clientListener : clients) {                
                 List<String> events = clientListener.getReceivedEvents();
                 assertTrue(events.size() == 1 && events.get(0).equals("Event2"));
                 events.clear();
@@ -110,6 +123,10 @@ public class BroadcasterTestServlet extends FATServlet {
             for (ClientListener clientListener : clients) {
                 clientListener.close();
             }
+            while (latch.getCount() > 0) {
+                latch.countDown();
+            }           
+            client.close();
         }
     }
 

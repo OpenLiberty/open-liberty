@@ -47,7 +47,8 @@ public class TimeoutStateImplTest {
         policy.setTimeout(Duration.ofMillis(100L));
 
         TimeoutStateImpl state = new TimeoutStateImpl(scheduledExecutorService, policy);
-        state.start(this::setTimeoutFlag);
+        state.start();
+        state.setTimeoutCallback(this::setTimeoutFlag);
         state.stop();
 
         assertFalse(state.isTimedOut());
@@ -66,7 +67,8 @@ public class TimeoutStateImplTest {
         policy.setTimeout(Duration.ofMillis(100L));
 
         TimeoutStateImpl state = new TimeoutStateImpl(scheduledExecutorService, policy);
-        state.start(this::setTimeoutFlag);
+        state.start();
+        state.setTimeoutCallback(this::setTimeoutFlag);
 
         assertFalse(timeoutFlag.get());
 
@@ -85,7 +87,8 @@ public class TimeoutStateImplTest {
         policy.setTimeout(Duration.ZERO);
 
         TimeoutStateImpl state = new TimeoutStateImpl(scheduledExecutorService, policy);
-        state.start(this::setTimeoutFlag);
+        state.start();
+        state.setTimeoutCallback(this::setTimeoutFlag);
 
         assertFalse(timeoutFlag.get());
 
@@ -97,6 +100,56 @@ public class TimeoutStateImplTest {
         assertFalse(state.isTimedOut());
         assertFalse(timeoutFlag.get());
 
+    }
+
+    /**
+     * Test setting the timeoutCallback before calling start()
+     */
+    @Test
+    public void testCallbackSetEarly() throws InterruptedException {
+        TimeoutPolicyImpl policy = new TimeoutPolicyImpl();
+        policy.setTimeout(Duration.ofMillis(100L));
+
+        TimeoutStateImpl state = new TimeoutStateImpl(scheduledExecutorService, policy);
+        state.setTimeoutCallback(this::setTimeoutFlag);
+        state.start();
+
+        assertFalse(timeoutFlag.get());
+
+        // Wait until the timeout should have fired
+        Thread.sleep(150L);
+
+        state.stop();
+
+        assertTrue(state.isTimedOut());
+        assertTrue(timeoutFlag.get());
+    }
+
+    /**
+     * Test setting the timeoutCallback after calling stop()
+     */
+    @Test
+    public void testCallbackSetLate() throws InterruptedException {
+        TimeoutPolicyImpl policy = new TimeoutPolicyImpl();
+        policy.setTimeout(Duration.ofMillis(100L));
+
+        TimeoutStateImpl state = new TimeoutStateImpl(scheduledExecutorService, policy);
+        state.start();
+
+        assertFalse(timeoutFlag.get());
+
+        // Wait until the timeout should have fired
+        Thread.sleep(150L);
+
+        state.stop();
+
+        assertTrue(state.isTimedOut());
+        assertFalse(timeoutFlag.get());
+
+        state.setTimeoutCallback(this::setTimeoutFlag);
+
+        assertTrue(state.isTimedOut());
+        assertTrue(timeoutFlag.get());
     }
 
     private void setTimeoutFlag() {

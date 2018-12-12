@@ -53,9 +53,11 @@ public interface AsyncBulkheadState {
      */
     public interface ExecutionReference {
         /**
-         * Aborts the execution. This is equivalent to calling {@code Future.cancel(true)} on a task submitted to an executor.
+         * Aborts the execution. This is equivalent to calling {@code Future.cancel(mayInterrupt)} on a task submitted to an executor.
+         *
+         * @param mayInterrupt whether the task should be interrupted if it is running
          */
-        public void abort();
+        public void abort(boolean mayInterrupt);
 
         /**
          * Returns whether the runnable was accepted by the bulkhead

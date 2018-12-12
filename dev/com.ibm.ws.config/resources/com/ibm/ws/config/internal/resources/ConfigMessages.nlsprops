@@ -30,10 +30,11 @@
 # -------------------------------------------------------------------------------------------------
 
 copyright=\
-\nLicensed Material - Property of IBM\
-\n(C) COPYRIGHT International Business Machines Corp. 2010 - All Rights Reserved.\
-\nUS Government Users Restricted Rights - Use, duplication or disclosure\
-\nrestricted by GSA ADP Schedule Contract with IBM Corp.
+\nCopyright (c) 2010 IBM Corporation and others.\
+\nAll rights reserved. This program and the accompanying materials\
+\nare made available under the terms of the Eclipse Public License v1.0\
+\nwhich accompanies this distribution, and is available at\
+\nhttp://www.eclipse.org/legal/epl-v10.html
 
 error.parse.server=CWWKG0001E: The configuration parser detected an error while parsing the root of the configuration and the referenced configuration documents. Error: {0}
 error.parse.server.explanation=The server configuration could not be read because there is an error in one of the configuration files.

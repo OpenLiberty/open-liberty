@@ -35,6 +35,7 @@ public class ClientListener implements Runnable, Closeable {
     private final AtomicReference<CountDownLatch> sharedLatch = new AtomicReference<>();
     private CountDownLatch privateLatch;
     private final List<String> receivedEvents = new ArrayList<>();
+    private final Holder<SseEventSource> holder = new Holder<SseEventSource>();
 
     ClientListener(WebTarget target, CountDownLatch latch) {
         this.target = target;
@@ -51,10 +52,12 @@ public class ClientListener implements Runnable, Closeable {
         privateLatch = new CountDownLatch(1);
 
         try (SseEventSource source = SseEventSource.target(target).build()) {
+            holder.value = source;
             source.register(event -> {
                 _log.info("listener id " + id + " received event " + event);
                 String msg = event.readData();
-                receivedEvents.add(msg);
+                receivedEvents.add(msg);                
+                sharedLatch.get().countDown(); 
                 //_log.info("id " + id + " received event " + msg);
             });
             source.open();
@@ -86,5 +89,10 @@ public class ClientListener implements Runnable, Closeable {
     @Override
     public void close() throws IOException {
         privateLatch.countDown();
+        holder.value.close();
+    }
+    
+    private class Holder<T> {
+        public volatile T value;
     }
 }

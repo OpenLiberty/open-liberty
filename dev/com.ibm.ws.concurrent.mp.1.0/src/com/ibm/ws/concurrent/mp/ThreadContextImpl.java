@@ -16,7 +16,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -24,12 +23,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.eclipse.microprofile.concurrent.ThreadContext;
-import org.eclipse.microprofile.concurrent.spi.ConcurrencyProvider;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
@@ -46,15 +43,6 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 class ThreadContextImpl implements ThreadContext, WSContextService {
     private static final TraceComponent tc = Tr.register(ThreadContextImpl.class);
 
-    // TODO: Verify this list when the 1.0 spec is finalized
-    public static final String[] BUILT_IN_TYPES = {
-                                                    ALL_REMAINING,
-                                                    APPLICATION,
-                                                    CDI,
-                                                    SECURITY,
-                                                    TRANSACTION
-    };
-
     /**
      * The concurrency provider.
      */
@@ -66,14 +54,6 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
      * thread UNCHANGED are omitted from this map.
      */
     private final LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider;
-
-    /**
-     * Lazily initialized reference to a cached managed executor instance, which is
-     * backed by the Liberty global thread pool without concurrency constraints,
-     * propagates the type of context configured for this thread context service, and
-     * clears all other types of context.
-     */
-    private final AtomicReference<ManagedExecutorImpl> managedExecutorRef = new AtomicReference<ManagedExecutorImpl>();
 
     /**
      * Construct a new instance to be used directly as a MicroProfile ThreadContext service or by a ManagedExecutor.
@@ -145,54 +125,11 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
         return new ContextualExecutor(contextDescriptor);
     }
 
-    /**
-     * Obtain a ManagedExecutor backed by the Liberty global thread pool, without constraints,
-     * and propagating the same types as this ThreadContext service, clearing those which are
-     * configured to be cleared.
-     * If possible, a cached instance is returned. If it doesn't exist yet, then an instance
-     * is lazily created by this method.
-     *
-     * @return ManagedExecutor instance.
-     */
-    private ManagedExecutorImpl getManagedExecutor() {
-        ManagedExecutorImpl executor = managedExecutorRef.get();
-
-        if (executor == null) {
-            StringBuilder nameBuilder = new StringBuilder("ManagedExecutor_-1_-1_");
-
-            // Identify the propagated context types for the name
-            for (Map.Entry<ThreadContextProvider, ContextOp> entry : configPerProvider.entrySet())
-                if (entry.getValue() == ContextOp.PROPAGATED) {
-                    String contextType = entry.getKey().getThreadContextType();
-                    if (contextType != null && contextType.matches("\\w*")) // one or more of a-z, A-Z, _, 0-9
-                        nameBuilder.append(contextType).append("_");
-                }
-
-            String name = nameBuilder.append(ManagedExecutorBuilderImpl.instanceCount.incrementAndGet()).toString();
-
-            ConcurrencyProviderImpl concurrencyProvider = (ConcurrencyProviderImpl) ConcurrencyProvider.instance();
-            PolicyExecutor policyExecutor = concurrencyProvider.policyExecutorProvider.create(name);
-            policyExecutor.maxConcurrency(-1).maxQueueSize(-1);
-            // TODO these policy executor instances, as well as those created via ManagedExecutorBuilder are never shut down
-            // and removed from PolicyExecutorProvider's list. This is a memory leak and needs to be fixed.
-
-            executor = new ManagedExecutorImpl(name, policyExecutor, this, concurrencyProvider.transactionContextProvider.transactionContextProviderRef);
-
-            if (!managedExecutorRef.compareAndSet(null, executor)) {
-                // Another thread updated the reference first. Discard the instance we created and use the other.
-                policyExecutor.shutdown();
-                executor = managedExecutorRef.get();
-            }
-        }
-
-        return executor;
-    }
-
     @Override
     public <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage) {
         CompletableFuture<T> newCompletableFuture;
 
-        ManagedExecutorImpl executor = getManagedExecutor();
+        SameThreadExecutor executor = new SameThreadExecutor(this);
         if (ManagedCompletableFuture.JAVA8)
             newCompletableFuture = new ManagedCompletableFuture<T>(new CompletableFuture<T>(), executor, null);
         else
@@ -214,7 +151,7 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
     public <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage) {
         ManagedCompletionStage<T> newStage;
 
-        ManagedExecutorImpl executor = getManagedExecutor();
+        SameThreadExecutor executor = new SameThreadExecutor(this);
         if (ManagedCompletableFuture.JAVA8)
             newStage = new ManagedCompletionStage<T>(new CompletableFuture<T>(), executor, null);
         else

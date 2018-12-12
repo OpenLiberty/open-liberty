@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -263,8 +263,10 @@ public class HttpChain implements ChainEventListener {
         Map<String, Object> sslOptions = (isHttps) ? owner.getSslOptions() : null;
         Map<String, Object> httpOptions = owner.getHttpOptions();
         Map<String, Object> endpointOptions = owner.getEndpointOptions();
+        Map<String, Object> remoteIpOptions = owner.getRemoteIpConfig();
 
-        final ActiveConfiguration newConfig = new ActiveConfiguration(isHttps, tcpOptions, sslOptions, httpOptions, endpointOptions, resolvedHostName);
+
+        final ActiveConfiguration newConfig = new ActiveConfiguration(isHttps, tcpOptions, sslOptions, httpOptions, remoteIpOptions, endpointOptions, resolvedHostName);
 
         if (newConfig.configPort < 0 || !newConfig.complete()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -344,6 +346,7 @@ public class HttpChain implements ChainEventListener {
                     if (newConfig.httpChanged(oldConfig))
                         removeChannel(httpName);
 
+
                     if (newConfig.endpointChanged(oldConfig))
                         removeChannel(dispatcherName);
                 }
@@ -392,6 +395,27 @@ public class HttpChain implements ChainEventListener {
                     if (owner.getProtocolVersion() != null) {
                         chanProps.put(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION, owner.getProtocolVersion());
                     }
+                    if(remoteIpOptions.get("id").equals("defaultRemoteIp")){
+                        //Put the internal remoteIp set to false since the element was not configured to be used
+                        chanProps.put(HttpConfigConstants.PROPNAME_REMOTE_IP, "false");
+                        chanProps.put(HttpConfigConstants.PROPNAME_REMOTE_PROXIES, null);
+                        chanProps.put(HttpConfigConstants.PROPNAME_REMOTE_IP_ACCESS_LOG, null);
+                    }
+                    else{
+                        chanProps.put(HttpConfigConstants.PROPNAME_REMOTE_IP, "true");
+                        //Check if the remoteIp is configured to use the remoteIp in the access log or if
+                        //a custom proxy regex was provided
+                        if(remoteIpOptions.containsKey("proxies")){
+                            chanProps.put(HttpConfigConstants.PROPNAME_REMOTE_PROXIES, remoteIpOptions.get("proxies"));
+                        }
+                        if(remoteIpOptions.containsKey("useRemoteIpInAccessLog")){
+                            chanProps.put(HttpConfigConstants.PROPNAME_REMOTE_IP_ACCESS_LOG, remoteIpOptions.get("useRemoteIpInAccessLog"));
+                        }
+                    }
+
+
+
+
                     httpChannel = cfw.addChannel(httpName, cfw.lookupFactory("HTTPInboundChannel"), chanProps);
                 }
 
@@ -652,6 +676,7 @@ public class HttpChain implements ChainEventListener {
         final Map<String, Object> tcpOptions;
         final Map<String, Object> sslOptions;
         final Map<String, Object> httpOptions;
+        final Map<String, Object> remoteIp;
         final Map<String, Object> endpointOptions;
 
         volatile int activePort = -1;
@@ -661,12 +686,14 @@ public class HttpChain implements ChainEventListener {
                             Map<String, Object> tcp,
                             Map<String, Object> ssl,
                             Map<String, Object> http,
+                            Map<String, Object> remoteIp,
                             Map<String, Object> endpoint,
                             String resolvedHostName) {
             this.isHttps = isHttps;
             tcpOptions = tcp;
             sslOptions = ssl;
             httpOptions = http;
+            this.remoteIp = remoteIp;
             endpointOptions = endpoint;
 
             String attribute = isHttps ? "httpsPort" : "httpPort";
@@ -747,12 +774,14 @@ public class HttpChain implements ChainEventListener {
                        tcpOptions == other.tcpOptions &&
                        sslOptions == other.sslOptions &&
                        httpOptions == other.httpOptions &&
+                       remoteIp == other.remoteIp &&
                        !endpointChanged(other);
             } else {
                 return configHost.equals(other.configHost) &&
                        configPort == other.configPort &&
                        tcpOptions == other.tcpOptions &&
                        httpOptions == other.httpOptions &&
+                       remoteIp == other.remoteIp &&
                        !endpointChanged(other);
             }
         }
@@ -777,7 +806,7 @@ public class HttpChain implements ChainEventListener {
             if (other == null)
                 return true;
 
-            return httpOptions != other.httpOptions;
+            return (httpOptions != other.httpOptions) || (remoteIp != other.remoteIp);
         }
 
         protected boolean endpointChanged(ActiveConfiguration other) {
@@ -800,6 +829,7 @@ public class HttpChain implements ChainEventListener {
                    + ",complete=" + complete()
                    + ",tcpOptions=" + System.identityHashCode(tcpOptions)
                    + ",httpOptions=" + System.identityHashCode(httpOptions)
+                   + ",remoteIp=" + System.identityHashCode(remoteIp)
                    + ",sslOptions=" + (isHttps ? System.identityHashCode(sslOptions) : "0")
                    + ",endpointOptions=" + endpointOptions.get(Constants.SERVICE_PID)
                    + "]";

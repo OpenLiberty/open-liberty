@@ -211,8 +211,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         }
         
         if (discovery) {
-        	String OIDC_CLIENT_DISCOVERY_COMPLETE="CWWKS6111I: The client [{" + getId() + "}] configuration has been established with the information from the discovery endpoint URL [{" + this.discoveryEndpointUrl + "}]. This information enables the client to interact with the OpenID Connect provider to process the requests such as authorization and token.";
-        	discoveryUtil.logDiscoveryMessage(null, OIDC_CLIENT_DISCOVERY_COMPLETE); //TODO
+        	String OIDC_CLIENT_DISCOVERY_COMPLETE="CWWKS6110I: The client [{" + getId() + "}] configuration has been established with the information from the discovery endpoint URL [{" + this.discoveryEndpointUrl + "}]. This information enables the client to interact with the OpenID Connect provider to process the requests such as authorization and token.";
+        	discoveryUtil.logDiscoveryMessage("OIDC_CLIENT_DISCOVERY_COMPLETE", null, OIDC_CLIENT_DISCOVERY_COMPLETE);
         }
         
     }
@@ -229,7 +229,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
 		this.discoveryDocumentHash = null;
 		discoveryUtil = discoveryUtil.initialConfig(getId(), this.discoveryEndpointUrl, this.discoveryPollingRate).discoveryDocumentResult(null).discoveryDocumentHash(this.discoveryDocumentHash).discoveredConfig(this.signatureAlgorithm, this.tokenEndpointAuthMethod, this.scope);
 	}
-    
+	@FFDCIgnore({ Exception.class })
     public boolean handleDiscoveryEndpoint(String discoveryUrl) {
 
         String jsonString = null;
@@ -239,7 +239,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         try {
         	setNextDiscoveryTime();
         	if (!isValidDiscoveryUrl(discoveryUrl)) {
-                Tr.error(tc,  "OIDC_CLIENT_DISCOVERY_SSL_ERROR", discoveryUrl);
+                Tr.error(tc,  "OIDC_CLIENT_DISCOVERY_SSL_ERROR", getId(), discoveryUrl);
                 return false;
             }
         	
@@ -283,6 +283,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             //adjustSignatureAlgorithm();
         	this.tokenEndpointAuthMethod = discoveryUtil.adjustTokenEndpointAuthMethod();
         	this.scope = discoveryUtil.adjustScopes();
+        	this.discoveryDocumentHash = discoveryUtil.getDiscoveryDocumentHash();
     	}
         
         return true;
