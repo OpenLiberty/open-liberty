@@ -193,7 +193,7 @@ public class CxfClientPropsTestServlet extends FATServlet {
 
         assertNull(r);
         long elapsed = System.currentTimeMillis() - startTime;
-        System.out.println("Request finished in " + elapsed + "ms");
+        System.out.println(m + " Request finished in " + elapsed + "ms");
         if (elapsed > IBM_TIMEOUT + MARGIN) {
             fail("Did not timeout within the IBM-specific read timeout, waited " + elapsed + "ms");
         }
