@@ -95,9 +95,9 @@ public class MetricsMonitorTest {
     	Log.info(c, testName, "------- No monitor-1.0: no vendor metrics should be available ------");
     	server.setServerConfigurationFile("server_mpMetric11.xml");
     	server.startServer();
-       	Assert.assertNotNull("CWWKO0219I NOT FOUND",server.waitForStringInLogUsingMark("CWWKO0219I"));
-    	Log.info(c, testName, "------- server started -----");
     	Assert.assertNotNull("Web application /metrics not loaded", server.waitForStringInLog("CWWKT0016I: Web application available \\(default_host\\): http:\\/\\/.*:.*\\/metrics\\/"));
+       	Assert.assertNotNull("CWWKO0219I NOT FOUND",server.waitForStringInLogUsingMark("defaultHttpEndpoint-ssl"));
+    	Log.info(c, testName, "------- server started -----");
       	checkStrings(getHttpsServlet("/metrics"), 
           	new String[] { "base:" }, 
           	new String[] { "vendor:" });
@@ -109,19 +109,19 @@ public class MetricsMonitorTest {
     	Log.info(c, testName, logMsg);
 		Assert.assertNotNull("No CWPMI2001I was found.", logMsg);
        	server.setMarkToEndOfLog(server.getMostRecentTraceFile());
-
+       	
        	Log.info(c, testName, "------- threadpool metrics should be available ------");
 		getHttpsServlet("/metrics/vendor");
-    	
+		
        	Log.info(c, testName, "------- servlet metrics should be available ------");
        	server.setMarkToEndOfLog(server.getMostRecentTraceFile());
-       	Log.info(c, testName, server.waitForStringInTrace("Monitoring MXBean WebSphere:type=ServletStats", 60000));
+        Log.info(c, testName, server.waitForStringInTrace("Monitoring MXBean WebSphere:type=ServletStats", 60000));
        	checkStrings(getHttpsServlet("/metrics/vendor"), new String[] {
        		"vendor:threadpool_default_executor_active_threads",
        		"vendor:threadpool_default_executor_size",
        		"vendor:servlet_com_ibm_ws_microprofile_metrics"
        	}, new String[] {});
-       	
+       	       	
        	Log.info(c, testName, "------- Add session application and run session servlet ------");
        	ShrinkHelper.defaultDropinApp(server, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
        	Log.info(c, testName, "------- added testSessionApp to dropins -----");
