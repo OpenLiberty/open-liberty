@@ -713,7 +713,7 @@ public class VirtualHostMapTest {
         HttpEndpointList.unregisterEndpoint(mockEndpoint);
     }
 
-    @Test
+    // Temp while debugging 6025/257655 @Test
     public void testThreadedAddRemoveMultipleVHosts() throws Exception {
         final CountDownLatch start = new CountDownLatch(2);
         final CountDownLatch middle = new CountDownLatch(2);
