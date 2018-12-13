@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Begin Copyright
+      Copyright (c) 2005 IBM Corporation and others.
+      All rights reserved. This program and the accompanying materials
+      are made available under the terms of the Eclipse Public License v1.0
+      which accompanies this distribution, and is available at
+      http://www.eclipse.org/legal/epl-v10.html
 
-  Licensed Materials - Property of IBM
-
-  Virtual Member Manager
-
-  (C) Copyright IBM Corp. 2005 All Rights Reserved.
-
-  US Government Users Restricted Rights - Use, duplication or
-  disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
-
-  %Z% %W% %I% %E% %U%
-
-  End Copyright
+      Contributors:
+        IBM Corporation - initial API and implementation
 -->
 <xsd:schema targetNamespace="http://www.ibm.com/websphere/wim" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns="http://www.ibm.com/websphere/wim" ecore:nsPrefix="wim" ecore:package="com.ibm.websphere.wim.model"  version="1.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" jaxb:extensionBindingPrefixes="xjc" jaxb:version="1.0"  xmlns:xs="http://www.w3.org/2001/XMLSchema">
 <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>

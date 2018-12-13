@@ -1,0 +1,383 @@
+<!--
+    Copyright (c) 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+  <!-- See http://findbugs.sourceforge.net/manual/filter.html for details 
+    of the syntax of this file -->
+
+  <!-- All classes in com.ibm.ws.ras can be assumed to have privilege (at 
+    least for now....) -->
+  <Match>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED, DJV_DO_INSIDE_DO_PRIVILEGED" />
+    <Not>
+      <Class name="~com\.ibm\.ws\.logging\.internal\.osgi\..*" />
+    </Not>
+  </Match>
+
+  <!-- All classes in com.ibm.ejs.ras.Tr ARE the trace calls (and so need 
+    to be unguarded calls etc) -->
+  <Match>
+    <Bug
+      pattern="TR_MISSING_ENTRY_TRACE, TR_MISSING_EXIT_TRACE, TR_MISSING_GUARD" />
+    <Class name="com.ibm.ejs.ras.Tr" />
+  </Match>
+  <!-- Similarly for com.ibm.ws.ras.internal.BaseTraceService -->
+  <Match>
+    <Bug pattern="TR_INCORRECTLY_GUARDED" />
+    <Class name="com.ibm.ws.logging.internal.impl.BaseTraceService" />
+  </Match>
+  <!-- And the logged method of the TrLogServiceImpl -->
+  <Match>
+    <Bug pattern="TR_MISSING_GUARD, TR_INCORRECTLY_GUARDED" />
+    <Class name="com.ibm.ws.logging.internal.osgi.TrLogServiceImpl" />
+  </Match>
+  <Match>
+    <Bug pattern="TR_INCORRECTLY_GUARDED" />
+    <Class name="com.ibm.ws.logging.internal.osgi.TrLogImpl" />
+    <Method name="publishLogEntry" />
+  </Match>
+  <Match>
+    <Bug pattern="TR_INCORRECTLY_GUARDED" />
+    <Class name="com.ibm.ws.logging.internal.osgi.TrLogImpl$LogEntryHandler" />
+    <Method name="run" />
+  </Match>
+  <Match>
+    <Bug pattern="TR_INCORRECTLY_GUARDED" />
+    <Class name="com.ibm.websphere.ras.TrConfigurator" />
+    <Method name="update" />
+  </Match>
+  <!-- Thread obtained via Executor default thread factory: no other/better way to start/schedule this little thing -->
+  <Match>
+    <Bug pattern="THREAD_START_CALLED" />
+    <Class name="com.ibm.ws.logging.internal.osgi.TrManagedService" />
+    <Method name="updateConfigAdmin" />
+  </Match>
+
+  <!-- EJS Ras interfaces intentionally now shadow websphere.ras interfaces -->
+  <Match>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS, NM_SAME_SIMPLE_NAME_AS_INTERFACE" />
+    <Or>
+      <Class name="com.ibm.ejs.ras.TraceComponent" />
+      <Class name="com.ibm.ejs.ras.TraceStateChangeListener" />
+    </Or>
+  </Match>
+  <Match>
+    <Bug pattern="NM_WRONG_PACKAGE" />
+    <Class name="com.ibm.ejs.ras.TraceComponent" />
+  </Match>
+  <!--  TraceSpecification uses a delegate singleton holder to make creation of it's TraceComponent lazy  -->
+  <Match>
+    <Bug pattern="TR_WRONG_CLASS_NAME" />
+    <Class name="com.ibm.ws.logging.internal.TraceSpecification$TraceComponentHolder" />
+  </Match>
+  <Match>
+    <Bug pattern="TR_COMPUTED_KEY" />
+    <Class name="com.ibm.ws.logging.internal.TraceSpecification$TraceSpecificationException" />
+    <Method name="getLocalizedMessage" />
+  </Match>
+
+  <!-- match generated nls classes: return mutable type -->
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP" />
+    <Or>
+      <Class name="~com\.ibm\.ws\.logging\.internal\.osgi\.resources\.OSGiMessages.*" />
+      <Class name="~com\.ibm\.ws\.logging\.internal\.resources\.LoggingMessages.*" />
+      <Class name="~com\.ibm\.ws\.logging\.internal\.resources\.FFDCMessages.*" />
+    </Or>
+    <Method name="getContents" />
+  </Match>
+
+  <!-- EJS RAS API -->
+  <Match>
+    <Bug pattern="MS_MUTABLE_ARRAY" />
+    <Class name="com.ibm.ejs.ras.TrLevelConstants" />
+    <Or>
+      <Field name="levels" />
+      <Field name="traceLevels" />
+    </Or>
+  </Match>
+
+  <!-- Logging config utils uses system err to report problems opening resources
+       used by RAS and FFDC -->
+  <Match>
+    <Bug pattern="SYSTEM_ERR_USED" />
+    <Class name="com.ibm.ws.logging.internal.impl.FileLogSet" />
+  </Match>
+  <Match>
+    <Bug pattern="SYSTEM_ERR_USED" />
+    <Class name="~com\.ibm\.ws\.logging\.internal\.impl\.LoggingFileUtils\$.*" />
+    <Method name="run" />
+  </Match>
+  <Match>
+    <Bug pattern="SYSTEM_ERR_USED" />
+    <Class name="com.ibm.ws.logging.internal.impl.LoggingFileUtils" />
+    <Or>
+      <Method name="createNewFile" />
+      <Method name="deleteFile" />
+      <Method name="deleteFiles" />
+      <Method name="renameFile"/>
+      <Method name="validateDirectory" />
+    </Or>
+  </Match>
+  <!-- LoggingConfigUtils uses system err to report failure to create the delegate -->
+  <Match>
+    <Bug pattern="SYSTEM_ERR_USED" />
+    <Class name="com.ibm.ws.logging.internal.impl.LoggingConfigUtils" />
+    <Method name="getDelegate" />
+  </Match>
+  <!-- TraceSpecificationException traces to system.err if the delegate hasn't been initialized yet -->
+  <Match>
+    <Bug pattern="SYSTEM_ERR_USED" />
+    <Class name="com.ibm.ws.logging.internal.TraceSpecification$TraceSpecificationException" />
+    <Method name="warning" />
+  </Match>
+  <!-- TrConfigurator uses system err to report a warning if instrumentation is not available for enabled trace -->
+  <Match>
+    <Bug pattern="SYSTEM_ERR_USED" />
+    <Class name="com.ibm.websphere.ras.TrConfigurator" />
+    <Method name="update" />
+  </Match>
+  <Match>
+    <Bug pattern="SYSTEM_ERR_USED" />
+    <Class name="com.ibm.ws.logging.internal.SafeTraceLevelIndexFactory" />
+    <Method name="createPackageIndex" />
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.logging.internal.impl.LoggerHandlerManager"/>
+    <Or>
+    <Method name="addSingletonHandler"/>
+    <Method name="removeSingletonHandler"/>
+    </Or>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+  <Match>
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+    <Class name="com.ibm.ws.logging.internal.impl.IncidentImpl" />
+    <Method name="formatSummaryEntry" />
+  </Match>
+  
+  <!-- BootstrapAgent doesn't have access to any other streams, 
+       DiagnosticModule also effectively runs outside of the runtime -->
+  <Match>
+    <Bug pattern="SYSTEM_OUT_USED" />
+    <Or>
+    <Class name="com.ibm.ws.kernel.instrument.BootstrapAgent" />
+    <Class name="com.ibm.ws.ffdc.DiagnosticModule" />
+    </Or>
+  </Match>
+  <Match>
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED" />
+    <Class name="com.ibm.ws.ffdc.DiagnosticModule" />
+  </Match>
+  <Match>
+    <Or>
+    <Bug pattern="SYSTEM_ERR_USED" />
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+    </Or>
+    <Class name="com.ibm.ws.logging.internal.impl.BaseFFDCService" />
+    <Method name="logSummary" />
+  </Match>
+  <!-- Only accepts/returns identical character array when length is 0 -->
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP, EI_EXPOSE_REP2" />
+    <Class name="com.ibm.websphere.ras.ProtectedString" />
+  </Match>
+  
+  <!-- WsLogRecord is an internal-only class, so exposure is acceptable,
+       compared to the cost of copying. (Furthermore, I don't even think
+       the "rawData" field is used anymore.. but I'm not comfortable removing it. -->
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP, EI_EXPOSE_REP2" />
+    <Class name="com.ibm.ws.logging.internal.WsLogRecord" />
+  </Match>
+  
+  <!-- We don't care: we're making an attempt to get a sane last modified time -->
+  <Match>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE" />
+    <Class name="com.ibm.ws.logging.internal.osgi.PersistedMap" />
+    <Method name="store" />
+  </Match>
+
+  <!-- IGNORE INSTRUMENTATION FOR NOW -->
+  <Match>
+    <Class name="~com.ibm.ws.ras.instrument.*" />
+  </Match>
+  
+  <!-- Assume that EnvCheck has privilege and is permitted to make System.out.println and e.printStackTrace-->
+  <Match>
+    <Bug pattern="SYSTEM_OUT_USED, THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+    <Class name="com.ibm.ws.kernel.instrument.EnvCheck" />
+  </Match>
+
+  <!-- TrLogServiceImpl is just passing on the call -->
+  <Match>
+    <Bug pattern="TR_NULL_RESOURCE_BUNDLE"/>
+    <Or>
+    <Class name="com.ibm.ws.logging.internal.osgi.TrLogServiceImpl"/>
+    <Class name="com.ibm.websphere.ras.Tr"/>
+    </Or>
+  </Match>
+
+  <!-- Incident exposes the date to avoid unnecessary copying -->
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP" />
+    <Class name="com.ibm.ws.logging.internal.impl.IncidentImpl" />
+  </Match>
+
+  <!-- We don't care: we're making a best attempt to delete a file -->
+  <Match>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE" />
+    <Class name="com.ibm.ws.logging.internal.impl.IncidentImpl" />
+    <Method name="log" />
+  </Match>
+
+  <!-- Wrapper methods galore in this class, all of which trigger this bug report-->
+  <Match>
+    <Class name="com.ibm.ejs.ras.Tr"/>
+    <Bug pattern="TR_COMPUTED_KEY"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.websphere.ras.Tr"/>
+    <Method name="formatMessage"/>
+    <Bug pattern="TR_COMPUTED_KEY"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.logging.internal.TraceSpecification$TraceSpecificationException"/>
+    <Method name="warning"/>
+    <Bug pattern="TR_COMPUTED_KEY"/>
+  </Match>
+
+  <!-- The system log holder will not ever be serialized -->
+  <Match>
+    <Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED" />
+    <Class name="com.ibm.ws.logging.internal.impl.BaseTraceService$SystemLogHolder" />
+    <Field name="isInfo" />
+  </Match>
+
+  <!-- Reasonable usages of System.currentTimeMillis -->
+  <Match>
+    <Class name="com.ibm.ws.logging.internal.impl.IncidentImpl"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.logging.internal.impl.IncidentImpl"/>
+    <Method name="log"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.logging.internal.osgi.TrLogServiceImpl"/>
+    <Method name="log"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  
+  <!-- Boolean.TRUE and Boolean.FALSE are the only values stored -->
+  <Match>
+    <Bug pattern="RC_REF_COMPARISON_BAD_PRACTICE_BOOLEAN"/>
+    <Class name="com.ibm.ws.kernel.security.thread.ThreadIdentityManager"/>
+    <Method name="checkForRecursionAndSet"/>
+  </Match>
+  
+  <!-- Pre-existing (and probably, in this case, deliberate) usages of the default encoding -->
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.websphere.ras.TruncatableThrowable"/>
+    <Method name="printStackTrace"/>
+  </Match>
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.ws.logging.internal.impl.BaseTraceService$TeePrintStream"/>
+    <Method name="&lt;init&gt;"/>
+  </Match>
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.ws.logging.internal.impl.BaseTraceService$TrOutputStream"/>
+    <Method name="flush"/>
+  </Match>
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.ws.logging.internal.impl.FileLogHolder"/>
+    <Method name="createStream"/>
+  </Match>
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.ws.logging.internal.impl.FileLogHolder$DummyOutputStream"/>
+    <Method name="&lt;clinit&gt;"/>
+  </Match>
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.ws.logging.internal.impl.IncidentStreamImpl"/>
+    <Method name="&lt;init&gt;"/>
+  </Match>
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="~com.ibm.ws.logging.internal.impl.IncidentStreamImpl.*"/>
+    <Method name="run"/>
+  </Match>
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.ws.logging.internal.impl.IncidentSummaryLogger"/>
+    <Method name="logIncidentSummary"/>
+  </Match>
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.ws.logging.internal.SafeTraceLevelIndexFactory"/>
+    <Method name="getLibertyTraceListReader"/>
+  </Match>
+  <!-- Synchronization lock in place to protect this -->
+  <Match>
+    <Bug pattern="AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION"/>
+    <Class name="com.ibm.ws.logging.internal.osgi.TrLogServiceFactory"/>
+    <Method name="getService"/>
+  </Match>
+  <!-- A reasonable write in this case -->
+  <Match>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+    <Class name="com.ibm.ejs.ras.TraceNLS"/>
+    <Method name="getFormattedMessage"/>
+  </Match>
+  <!-- Only exposed for use by testcase -->
+  <Match>
+    <Bug pattern="STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE"/>
+    <Class name="com.ibm.ws.logging.internal.impl.LoggingFileUtils"/>
+    <Field name="FILE_DATE"/>
+  </Match>
+
+  <!-- com.ibm.ejs.ras.Traceable intentionally extends com.ibm.websphere.ras.Traceable
+       for compatibility with tWAS common components -->
+  <Match>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+    <Class name="com.ibm.ejs.ras.Traceable"/>
+  </Match>
+
+  <!-- The SimpleRotatingQueue uses the array passed into it to store its elements.
+       This is a convenience we can take advantage of since SimpleRotatingQueue is
+       managed internally. -->
+  <Match>
+      <Bug pattern="EI_EXPOSE_REP2"/>
+      <Class name="com.ibm.ws.logging.internal.impl.SimpleRotatingQueue"/>
+  </Match>
+  
+  <Match>
+  	  <Bug pattern="EI_EXPOSE_REP"/>
+  	  <Class name="com.ibm.ws.logging.internal.osgi.resources.LoggingMessages"/>
+  </Match>
+
+  <Match>
+    <Bug pattern="TR_BAD_MESSAGE_KEY"/>
+    <Class name="com.ibm.ws.logging.internal.osgi.MessageRouterConfigurator"/>
+  </Match>
+
+</FindBugsFilter>

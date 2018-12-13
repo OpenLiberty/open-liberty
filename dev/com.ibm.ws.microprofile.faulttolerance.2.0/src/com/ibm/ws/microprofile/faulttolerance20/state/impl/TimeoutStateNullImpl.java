@@ -15,7 +15,10 @@ import com.ibm.ws.microprofile.faulttolerance20.state.TimeoutState;
 public class TimeoutStateNullImpl implements TimeoutState {
 
     @Override
-    public void start(Runnable timeoutCallback) {}
+    public void start() {}
+
+    @Override
+    public void setTimeoutCallback(Runnable timeoutCallback) {}
 
     @Override
     public void stop() {}

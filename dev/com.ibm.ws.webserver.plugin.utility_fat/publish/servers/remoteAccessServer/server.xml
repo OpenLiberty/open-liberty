@@ -27,11 +27,12 @@
 
 	<keyStore id="defaultTrustStore" password="Liberty"
 	           location="resources/security/trust.jks"/>  
-
+<!--
     <logging  traceSpecification="com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:GenericBNF=all:HTTPDispatcher=all"
                 traceFileName="trace.log"
                 maxFileSize="20"
                 maxFiles="10"
                 traceFormat="BASIC" />
+-->
 
 </server>

@@ -181,6 +181,8 @@ public abstract class WSJdbcProxyMethod
         // oracle.jdbc.OracleConnection.setAutoClose(boolean)
         // oracle.jdbc.internal.OracleConnection.setAutoClose(boolean)
         unsafeMethods.add("setCurrentUser"); 
+        unsafeMethods.add("setSafelyClosed");
+        //oracle.jdbc.internal.OracleConnection.setSafelyClosed(boolean)
         unsafeMethods.add("setShardingKeyIfValid");
         //  oracle.jdbc.OracleConnection.setShardingKeyIfValid
         //  oracle.jdbc.internal.OracleConnection.setShardingKeyIfValid

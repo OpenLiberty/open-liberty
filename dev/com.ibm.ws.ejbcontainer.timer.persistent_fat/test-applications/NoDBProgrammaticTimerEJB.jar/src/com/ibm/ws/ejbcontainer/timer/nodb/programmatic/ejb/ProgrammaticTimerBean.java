@@ -26,6 +26,8 @@ import javax.ejb.Timeout;
 import javax.ejb.Timer;
 import javax.ejb.TimerService;
 
+import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
+
 /**
  * A simple stateless bean with programmatically created timers and methods
  * to verify the timers run as expected.
@@ -37,6 +39,7 @@ public class ProgrammaticTimerBean {
     private static final Logger logger = Logger.getLogger(ProgrammaticTimerBean.class.getName());
 
     private static final CountDownLatch timerLatch = new CountDownLatch(1);
+    private static long POST_INVOKE_FUDGE_FACTOR = 400; //ms
 
     @Resource
     private TimerService ts;
@@ -92,6 +95,7 @@ public class ProgrammaticTimerBean {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        FATHelper.sleep(POST_INVOKE_FUDGE_FACTOR);
         boolean timedout = timerLatch.getCount() == 0;
         logger.info("< waitForTimer : " + timedout);
         return timedout;

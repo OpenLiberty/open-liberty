@@ -1,0 +1,33 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Private-Package: com.ibm.ws.kernel.instrument.serialfilter.agent.*
+Can-Redefine-Classes: false
+Can-Retransform-Classes: true
+Main-Class: com.ibm.ws.kernel.instrument.serialfilter.agent.PreMain
+Premain-Class: com.ibm.ws.kernel.instrument.serialfilter.agent.PreMain
+Agent-Class: com.ibm.ws.kernel.instrument.serialfilter.agent.PreMain
+# the bootagent could be located underneath wlp/bin/tools or wlp/lib directory, so the class path for asm is set to support either paths.
+Class-Path: com.ibm.ws.kernel.instrument.serialfilter_${bFullVersion}.jar ../../lib/com.ibm.ws.kernel.instrument.serialfilter_${bFullVersion}.jar com.ibm.ws.org.objectweb.asm_${bFullVersion}.jar ../../lib/com.ibm.ws.org.objectweb.asm_${bFullVersion}.jar
+-outputmask: ws-serialfilteragent.jar
+
+instrument.disabled: true
+
+publish.wlp.jar.include: ws-serialfilteragent.jar
+publish.wlp.jar.rename: false
+
+-removeheaders=Bnd-LastModified, Bundle-ManifestVersion, Bundle-Name, Private-Package, Require-Capability, Tool
+
+-buildpath: \
+    com.ibm.ws.org.objectweb.asm;version=latest,\
+    com.ibm.ws.kernel.instrument.serialfilter;version=latest

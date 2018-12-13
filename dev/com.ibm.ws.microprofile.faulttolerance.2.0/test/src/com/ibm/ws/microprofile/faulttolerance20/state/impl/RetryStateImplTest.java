@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance20.state.impl;
 
-import static java.time.temporal.ChronoUnit.MILLENNIA;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
@@ -216,32 +215,6 @@ public class RetryStateImplTest {
 
         // Assert that getDelay didn't always return the same result
         assertThat(delayTimes.size(), greaterThan(1));
-    }
-
-    @Test
-    public void testClampedNanos() {
-        Duration tinyDuration = Duration.ofNanos(100);
-        assertEquals(tinyDuration.toNanos(), RetryStateImpl.asClampedNanos(tinyDuration));
-
-        Duration smallDuration = Duration.ofSeconds(5);
-        assertEquals(smallDuration.toNanos(), RetryStateImpl.asClampedNanos(smallDuration));
-
-        Duration mediumDuration = Duration.ofDays(5000);
-        assertEquals(mediumDuration.toNanos(), RetryStateImpl.asClampedNanos(mediumDuration));
-
-        // Note: Duration.of(500, YEARS) is not permitted because years don't have an exact duration
-        // We're happy with an estimated duration, so we're using this alternative construction for our very large durations
-        Duration largeDuration = YEARS.getDuration().multipliedBy(500);
-        assertEquals(Long.MAX_VALUE, RetryStateImpl.asClampedNanos(largeDuration));
-
-        Duration hugeDuration = MILLENNIA.getDuration().multipliedBy(7000);
-        assertEquals(Long.MAX_VALUE, RetryStateImpl.asClampedNanos(hugeDuration));
-
-        Duration negativeDuration = Duration.ofSeconds(-5);
-        assertEquals(negativeDuration.toNanos(), RetryStateImpl.asClampedNanos(negativeDuration));
-
-        Duration largeNegativeDuration = YEARS.getDuration().multipliedBy(-500);
-        assertEquals(Long.MIN_VALUE, RetryStateImpl.asClampedNanos(largeNegativeDuration));
     }
 
     @Test

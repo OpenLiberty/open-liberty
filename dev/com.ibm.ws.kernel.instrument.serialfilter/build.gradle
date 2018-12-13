@@ -1,0 +1,10 @@
+plugins {
+  id "net.ossindex.audit" version "0.3.8-beta"
+  }
+audit {
+    failOnError = false
+}
+
+test {
+    jvmArgs '-javaagent:' + buildImage.file('wlp/lib/ws-serialfilteragent.jar')
+}

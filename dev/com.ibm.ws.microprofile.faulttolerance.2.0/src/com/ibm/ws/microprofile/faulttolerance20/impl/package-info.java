@@ -11,7 +11,7 @@
 /**
  * The Fault Tolerance 2.0 providers, builders and executors
  */
-@TraceOptions(traceGroup = "FAULTTOLERANCE")
+@TraceOptions(traceGroup = "FAULTTOLERANCE", messageBundle = "com.ibm.ws.microprofile.faulttolerance.resources.FaultTolerance")
 package com.ibm.ws.microprofile.faulttolerance20.impl;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
