@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 International Business Machines Corp.
+ * IBM Confidential OCO Source Material.
  * 
  * See the NOTICE file distributed with this work for additional information
  * regarding copyright ownership. Licensed under the Apache License, 
