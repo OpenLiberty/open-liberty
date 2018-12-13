@@ -165,7 +165,7 @@ public class VMMAPIs_EmbeddedLdapTests {
         ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
         ldap.setLdapType("Custom");
         // The cache time outs are short because we need to timeout within the test. SearchCache needs to be shorter than the AttributesCache for regression testing.
-        ldap.setLdapCache(new LdapCache(new AttributesCache(true, 4444, 2222, "6s"), new SearchResultsCache(true, 5555, 3333, "2s")));
+        ldap.setLdapCache(new LdapCache(new AttributesCache(true, 4444, 2222, "7s"), new SearchResultsCache(true, 5555, 3333, "5s")));
         serverConfig.getLdapRegistries().add(ldap);
         LDAPFatUtils.createFederatedRepository(serverConfig, "LDAPRealmAttr", new String[] { LDAP_BASE_ENTRY });
         updateConfigDynamically(server, serverConfig);
