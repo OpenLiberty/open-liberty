@@ -47,13 +47,6 @@ public class Activator implements BundleActivator {
      */
     @Override
     public void start(BundleContext context) throws Exception {
-
-        // The LogService comes from the framework and is always there;
-        // We also never remove our listener because that will be done automatically when 
-        // we are stopped.
-        LogReaderService logReader = context.getService(context.getServiceReference(ExtendedLogReaderService.class));
-        logReader.addLogListener(new TrOSGiLogForwarder());
-
         // Instrumentation, when available, is registered by the launcher
         // and will never go away.
         ServiceReference<Instrumentation> instReference = context.getServiceReference(Instrumentation.class);
@@ -88,6 +81,13 @@ public class Activator implements BundleActivator {
         traceRouter = new TraceRouterConfigurator(context);
         
         collectorMgrPipeConfigurator = new CollectorManagerPipelineConfigurator(context);
+
+        // The LogService comes from the framework and is always there;
+        // We also never remove our listener because that will be done automatically when 
+        // we are stopped.
+        LogReaderService logReader = context.getService(context.getServiceReference(ExtendedLogReaderService.class));
+        logReader.addLogListener(new TrOSGiLogForwarder());
+
     }
 
     /**

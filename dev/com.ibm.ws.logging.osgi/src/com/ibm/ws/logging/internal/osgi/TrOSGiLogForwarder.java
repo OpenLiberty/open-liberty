@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.logging.internal.osgi;
 
+import static com.ibm.ws.logging.internal.osgi.OsgiLogConstants.*;
+
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.Map;
@@ -31,9 +33,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 
 public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBundleListener {
-    private static final String LOGGER_FRAMEWORK_EVENT = "Events.Framework";
-    private static final String LOGGER_BUNDLE_EVENT = "Events.Bundle";
-    private static final String LOGGER_SERVICE_EVENT = "Events.Service";
+    private static final TraceComponent _tc = Tr.register(TrOSGiLogForwarder.class);
 
     final static class OSGiTraceComponent extends TraceComponent {
         private final String ffdcMe;
@@ -52,7 +52,7 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
 
     private static final Object COULD_NOT_OBTAIN_LOCK_EXCEPTION = "Could not obtain lock";
 
-    Map<Bundle, OSGiTraceComponent> traceComponents = new ConcurrentHashMap<Bundle, OSGiTraceComponent>();
+    private final Map<Bundle, OSGiTraceComponent> traceComponents = new ConcurrentHashMap<Bundle, OSGiTraceComponent>();
 
     OSGiTraceComponent getTraceComponent(Bundle b) {
         OSGiTraceComponent tc = traceComponents.get(b);
@@ -73,22 +73,19 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
                     ffdcMe = bsn + "-" + b.getVersion();
                 }
                 String logName = id + "-" + bsn;
-
-                // TODO: MORE ICK! the metatype bundle trace really is obnoxious...
-                if (bsn.endsWith("org.eclipse.equinox.metatype")) {
-                    tc = new OSGiTraceComponent(logName, this.getClass(), new String[] { bsn }, ffdcMe);
+                String group = b.getHeaders("").get("WS-TraceGroup");
+                String[] groups;
+                if (group == null) {
+                    groups = new String[] { bsn, LOG_SERVICE_GROUP, TRACE_SPEC_OSGI_EVENTS };
                 } else {
-                    String group = b.getHeaders("").get("WS-TraceGroup");
-                    if (group == null) {
-                        tc = new OSGiTraceComponent(logName, this.getClass(),
-                                new String[] { bsn, OsgiLogConstants.LOG_SERVICE_GROUP }, ffdcMe);
-                    } else {
-                        tc = new OSGiTraceComponent(logName, this.getClass(),
-                                new String[] { bsn, group, OsgiLogConstants.LOG_SERVICE_GROUP }, ffdcMe);
-                    }
+                    groups = new String[] { bsn, group, LOG_SERVICE_GROUP, TRACE_SPEC_OSGI_EVENTS };
                 }
+                tc = new OSGiTraceComponent(logName, this.getClass(), groups, ffdcMe);
                 traceComponents.put(b, tc);
                 TrConfigurator.registerTraceComponent(tc);
+                if (TraceComponent.isAnyTracingEnabled() && _tc.isDebugEnabled()) {
+                    Tr.event(_tc, "Created OSGiTraceComponent: " + tc);
+                }
             }
             return tc;
         }
@@ -101,25 +98,13 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
         Bundle b = logEntry.getBundle();
         OSGiTraceComponent tc = getTraceComponent(b);
         try {
-            if (logEntry.getContext() instanceof EventObject) {
-                // for event objects we have to check the logger name to know if we
-                // should log or not
-                String loggerName = logEntry.getLoggerName();
-                switch (loggerName) {
-                    case LOGGER_FRAMEWORK_EVENT:
-                        if (LogLevel.ERROR == le.getLogLevel()) {
-                            // this will be handled as an error below
-                            break;
-                        }
-                    case LOGGER_BUNDLE_EVENT:
-                    case LOGGER_SERVICE_EVENT:
-                        if (isAnyTraceEnabled && tc.isEventEnabled()) {
-                            Tr.event(b, tc, logEntry.getMessage(), getObjects(logEntry, false));
-                        }
-                        // return now to prevent double logging
-                        return;
-                    default:
-                        break;
+            if (logEntry.getLogLevel() != LogLevel.ERROR) {
+                // check for events specifically to log them with Tr.event
+                if (logEntry.getLoggerName() != null && logEntry.getLoggerName().startsWith(LOGGER_EVENTS_PREFIX))  {
+                    if (isAnyTraceEnabled && tc.isEventEnabled()) {
+                        Tr.event(b, tc, logEntry.getMessage(), getObjects(logEntry, false));
+                    }
+                    return;
                 }
             }
             switch (logEntry.getLogLevel()) {
@@ -186,10 +171,11 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
             list.add(logEntry.getMessage());
         }
 
-        Bundle b = logEntry.getBundle();
-        if (translatedMsg && b != null) {
-            String bString = String.format("Bundle:%s(id=%d)", b.getSymbolicName(), b.getBundleId());
-            list.add(bString);
+        if (!translatedMsg) {
+            String loggerName = logEntry.getLoggerName();
+            if (loggerName != null) {
+                list.add(String.format("LoggerName:%s", loggerName));
+            }
         }
 
         ServiceReference<?> sr = logEntry.getServiceReference();
@@ -212,8 +198,8 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
         }
 
         if (translatedMsg) {
-            while (list.size() < 5)
-                // 5 parameters in formatted message
+            while (list.size() < 4)
+                // 4 parameters in formatted message
                 list.add("");
         }
 
