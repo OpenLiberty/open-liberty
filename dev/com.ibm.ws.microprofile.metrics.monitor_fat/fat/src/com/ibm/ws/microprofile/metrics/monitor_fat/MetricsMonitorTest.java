@@ -11,7 +11,6 @@
 package com.ibm.ws.microprofile.metrics.monitor_fat;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -34,8 +33,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -96,9 +95,9 @@ public class MetricsMonitorTest {
     	Log.info(c, testName, "------- No monitor-1.0: no vendor metrics should be available ------");
     	server.setServerConfigurationFile("server_mpMetric11.xml");
     	server.startServer();
-    	Log.info(c, testName, server.waitForStringInLog("defaultHttpEndpoint-ssl",60000)); 
-    	Log.info(c, testName, "------- server started -----");
     	Assert.assertNotNull("Web application /metrics not loaded", server.waitForStringInLog("CWWKT0016I: Web application available \\(default_host\\): http:\\/\\/.*:.*\\/metrics\\/"));
+       	Assert.assertNotNull("CWWKO0219I NOT FOUND",server.waitForStringInLogUsingMark("defaultHttpEndpoint-ssl"));
+    	Log.info(c, testName, "------- server started -----");
       	checkStrings(getHttpsServlet("/metrics"), 
           	new String[] { "base:" }, 
           	new String[] { "vendor:" });
@@ -110,19 +109,19 @@ public class MetricsMonitorTest {
     	Log.info(c, testName, logMsg);
 		Assert.assertNotNull("No CWPMI2001I was found.", logMsg);
        	server.setMarkToEndOfLog(server.getMostRecentTraceFile());
-
+       	
        	Log.info(c, testName, "------- threadpool metrics should be available ------");
 		getHttpsServlet("/metrics/vendor");
-    	
+		
        	Log.info(c, testName, "------- servlet metrics should be available ------");
        	server.setMarkToEndOfLog(server.getMostRecentTraceFile());
-       	Log.info(c, testName, server.waitForStringInTrace("Monitoring MXBean WebSphere:type=ServletStats", 60000));
+        Log.info(c, testName, server.waitForStringInTrace("Monitoring MXBean WebSphere:type=ServletStats", 60000));
        	checkStrings(getHttpsServlet("/metrics/vendor"), new String[] {
        		"vendor:threadpool_default_executor_active_threads",
        		"vendor:threadpool_default_executor_size",
        		"vendor:servlet_com_ibm_ws_microprofile_metrics"
        	}, new String[] {});
-       	
+       	       	
        	Log.info(c, testName, "------- Add session application and run session servlet ------");
        	ShrinkHelper.defaultDropinApp(server, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
        	Log.info(c, testName, "------- added testSessionApp to dropins -----");
@@ -188,7 +187,7 @@ public class MetricsMonitorTest {
        	Log.info(c, testName, "------- Monitor filter ThreadPool and WebContainer  ------");
        	server.setMarkToEndOfLog();
        	server.setServerConfigurationFile("server_monitorFilter1.xml");
-       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKG0017I"));
+       	Assert.assertNotNull("CWWKG0017I NOT FOUND",server.waitForStringInLogUsingMark("CWWKG0017I"));
        	Log.info(c, testName, "------- Only threadpool and servlet metrics should be available ------");
        	getHttpsServlet("/metrics"); // Initialize the metrics endpoint first, to load the mpMetrics servlet metrics.
        	checkStrings(getHttpsServlet("/metrics/vendor"), 
@@ -198,7 +197,7 @@ public class MetricsMonitorTest {
        	Log.info(c, testName, "------- Monitor filter WebContainer and Session ------");
        	server.setMarkToEndOfLog();
        	server.setServerConfigurationFile("server_monitorFilter2.xml");
-       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKG0017I"));
+       	Assert.assertNotNull("CWWKG0017I NOT FOUND",server.waitForStringInLogUsingMark("CWWKG0017I"));
     	checkStrings(getHttpServlet("/testSessionApp/testSessionServlet"), 
     		new String[] { "Session id:" }, new String[] {});
        	Log.info(c, testName, "------- Only servlet and session metrics should be available ------");
@@ -209,7 +208,7 @@ public class MetricsMonitorTest {
        	Log.info(c, testName, "------- Monitor filter Session and ConnectionPool ------");
        	server.setMarkToEndOfLog();
        	server.setServerConfigurationFile("server_monitorFilter3.xml");
-       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKG0017I"));
+       	Assert.assertNotNull("CWWKG0017I NOT FOUND",server.waitForStringInLogUsingMark("CWWKG0017I"));
       	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=select&city=city1&id=id1"), 
           		new String[] { "sql: select" }, new String[] {});
        	Log.info(c, testName, "------- Only session and connectionpool metrics should be available ------");
@@ -220,7 +219,7 @@ public class MetricsMonitorTest {
        	Log.info(c, testName, "------- Monitor filter ThreadPool, WebContainer, Session and ConnectionPool ------");
        	server.setMarkToEndOfLog();
        	server.setServerConfigurationFile("server_monitorFilter4.xml");
-       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKG0017I"));
+       	Assert.assertNotNull("CWWKG0017I NOT FOUND",server.waitForStringInLogUsingMark("CWWKG0017I"));
     	checkStrings(getHttpServlet("/testSessionApp/testSessionServlet"), 
         		new String[] { "Session id:" }, new String[] {});
       	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=select&city=city1&id=id1"), 
@@ -235,7 +234,9 @@ public class MetricsMonitorTest {
        	Log.info(c, testName, "------- " + (rc1 ? "successfully removed" : "failed to remove") + " JAX-WS application ------");
        	server.setMarkToEndOfLog();
        	server.setServerConfigurationFile("server_noJaxWs.xml");
-       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKG0017I"));
+       	Assert.assertNotNull("CWWKG0017I NOT FOUND",server.waitForStringInLogUsingMark("CWWKG0017I"));
+       	Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLogUsingMark("CWWKT0016I"));
+       	Assert.assertNotNull("CWWKZ0009I NOT FOUND",server.waitForStringInLogUsingMark("CWWKZ0009I"));
        	Log.info(c, testName, "------- jax-ws metrics should not be available ------");
       	checkStrings(getHttpsServlet("/metrics/vendor"), 
       		new String[] { "vendor:" }, 
@@ -246,16 +247,20 @@ public class MetricsMonitorTest {
        	Log.info(c, testName, "------- " + (rc2 ? "successfully removed" : "failed to remove") + " JDBC application ------");
        	server.setMarkToEndOfLog();
        	server.setServerConfigurationFile("server_noJDBC.xml");
-       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKG0017I"));
+       	Assert.assertNotNull("CWWKG0017I NOT FOUND",server.waitForStringInLogUsingMark("CWWKG0017I"));
+       	Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLogUsingMark("CWWKT0016I"));
+       	Assert.assertNotNull("CWWKZ0009I NOT FOUND",server.waitForStringInLogUsingMark("CWWKZ0009I"));
        	Log.info(c, testName, "------- connectionpool metrics should not be available ------");
       	checkStrings(getHttpsServlet("/metrics/vendor"), 
       		new String[] { "vendor:" }, 
       		new String[] { "vendor:connectionpool", "vendor:servlet_test_jdbc_app" });
-      	
+      	      	
        	Log.info(c, testName, "------- Remove monitor-1.0 ------");
     	server.setMarkToEndOfLog();
     	server.setServerConfigurationFile("server_noJDBCMonitor.xml");
-       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWPMI2002I"));
+       	Assert.assertNotNull("CWWKG0016I NOT FOUND",server.waitForStringInLogUsingMark("CWWKG0016I"));
+       	Assert.assertNotNull("CWWKZ0003I NOT FOUND",server.waitForStringInLogUsingMark("CWWKF0008I"));
+       	Assert.assertNotNull("CWPMI2002I NOT FOUND",server.waitForStringInLogUsingMark("CWPMI2002I"));
        	Log.info(c, testName, "------- no vendor metrics should be available ------");
       	checkStrings(getHttpsServlet("/metrics"), 
       		new String[] {}, 
