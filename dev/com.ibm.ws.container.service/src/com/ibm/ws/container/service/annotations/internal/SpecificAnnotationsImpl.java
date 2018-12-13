@@ -16,7 +16,7 @@ import com.ibm.ws.container.service.annotations.SpecificAnnotations;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 
 /**
- * Annotations data for a scan of specific classes.
+ * Web container scans of explicitly specified classes.
  */
 public class SpecificAnnotationsImpl implements SpecificAnnotations {
 
@@ -39,7 +39,9 @@ public class SpecificAnnotationsImpl implements SpecificAnnotations {
     public Set<String> selectAnnotatedClasses(Class<?> annotationClass) {
         String annotationClassName = annotationClass.getName();
         Set<String> selectedClassNames =
-            specificTargets.getAnnotatedClasses(annotationClassName);
+            specificTargets.getAnnotatedClasses(
+                annotationClassName,
+                AnnotationTargets_Targets.POLICY_PARTIAL);
         return selectedClassNames;
     }
 }

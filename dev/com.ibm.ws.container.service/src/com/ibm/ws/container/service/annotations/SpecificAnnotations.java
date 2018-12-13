@@ -15,31 +15,45 @@ import java.util.Set;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 
 /**
- * Annotations data from a scan of specific classes.
+ * Web container specific class scanning.
+ * 
+ * Web container scans require a capability to scan explicitly specified
+ * classes in web module deployment descriptors and in non-excluded fragment
+ * deployment descriptors.
+ *
+ * Classes in non-excluded but metadata-complete *are* scanned.
+ *
+ * As classes in non-metadata complete regions are processed by overall
+ * scanning, only {@link AnnotationTargets_Targets#POLICY_PARTIAL} classes
+ * are processed by {@link #selectAnnotatedClasses}.
+ *
+ * See {@link com.ibm.ws.webcontainer.osgi.container.config.WebAppConfiguratorHelper#configureSpecificClass}
+ * for additional details.
  */
 // Used by:
 //
 // com.ibm.ws.webcontainer/src/com/ibm/ws/webcontainer/osgi/container/config/WebAppConfiguratorHelper.java
 // -- used to detect WebServlet, WebListener, WebFilter, and MultipartConfig annotations
 //    on single specified classes
-//
-
 public interface SpecificAnnotations {
     /**
      * Answer the targets table which holds the specific annotation
      * data.
-     * 
+     *
      * @return The underlying targets table.
      */
     AnnotationTargets_Targets getTargets();
 
     /**
-     * Target helper: Select the classes which are recorded as having
-     * the specified annotation as a class annotation.
-     * 
-     * @param annotationClass The class annotation to use for the selection.
-     * 
-     * @return The names of classes having the annotation as a class annotation.
+     * Select annotated classes from the results.  Answer only annotated
+     * classes which are in {@link AnnotationTargets_Targets#POLICY_PARTIAL}
+     * regions.
+     *
+     * @param The annotation class used to select classes.
+     *
+     * @return The names of classes which have the specified annotation
+     *     and which are in {@link AnnotationTargets_Targets#POLICY_PARTIAL}
+     *     regions.
      */
     Set<String> selectAnnotatedClasses(Class<?> annotationClass);
 }

@@ -450,26 +450,31 @@ public interface AnnotationTargets_Targets {
     // Policy driven result selection ...
 
     /** <p>Synonym for {@link ClassSource_Aggregate.ScanPolicy.ALL_EXCEPT_EXTERNAL}.</p> */
-    public static final int POLICY_ALL_EXCEPT_EXTERNAL = ClassSource_Aggregate.ScanPolicy.ALL_EXCEPT_EXTERNAL;
+    public static final int POLICY_ALL_EXCEPT_EXTERNAL =
+        ClassSource_Aggregate.ScanPolicy.ALL_EXCEPT_EXTERNAL;
 
     /**
      * <p>Synonym for {@link ClassSource_Aggregate.ScanPolicy.SEED} OR'ed with {@link ClassSource_Aggregate.ScanPolicy.PARTIAL}.</p>
      */
     public static final int POLICY_SEED_AND_PARTIAL =
-                    ClassSource_Aggregate.ScanPolicy.SEED.getValue() |
-                                    ClassSource_Aggregate.ScanPolicy.PARTIAL.getValue();
+        ClassSource_Aggregate.ScanPolicy.SEED.getValue() |
+        ClassSource_Aggregate.ScanPolicy.PARTIAL.getValue();
 
     /** <p>Synonym for the value of {@link ClassSource_Aggregate.ScanPolicy.SEED}.</p> */
-    public static final int POLICY_SEED = ClassSource_Aggregate.ScanPolicy.SEED.getValue();
+    public static final int POLICY_SEED =
+        ClassSource_Aggregate.ScanPolicy.SEED.getValue();
 
     /** <p>Synonym for the value of {@link ClassSource_Aggregate.ScanPolicy.PARTIAL}.</p> */
-    public static final int POLICY_PARTIAL = ClassSource_Aggregate.ScanPolicy.PARTIAL.getValue();
+    public static final int POLICY_PARTIAL =
+        ClassSource_Aggregate.ScanPolicy.PARTIAL.getValue();
 
     /** <p>Synonym for the value of {@link ClassSource_Aggregate.ScanPolicy.EXCLUDED}.</p> */
-    public static final int POLICY_EXCLUDED = ClassSource_Aggregate.ScanPolicy.EXCLUDED.getValue();
+    public static final int POLICY_EXCLUDED =
+        ClassSource_Aggregate.ScanPolicy.EXCLUDED.getValue();
 
     /** <p>Synonym for the value of {@link ClassSource_Aggregate.ScanPolicy.EXTERNAL}.</p> */
-    public static final int POLICY_EXTERNAL = ClassSource_Aggregate.ScanPolicy.EXTERNAL.getValue();
+    public static final int POLICY_EXTERNAL =
+        ClassSource_Aggregate.ScanPolicy.EXTERNAL.getValue();
 
     /**
      * <p>Enumeration used for the several categories of annotations.</p>
