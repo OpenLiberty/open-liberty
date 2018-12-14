@@ -114,8 +114,7 @@ public class MetricsMonitorTest {
 		getHttpsServlet("/metrics/vendor");
 		
        	Log.info(c, testName, "------- servlet metrics should be available ------");
-       	server.setMarkToEndOfLog(server.getMostRecentTraceFile());
-        Log.info(c, testName, server.waitForStringInTrace("Monitoring MXBean WebSphere:type=ServletStats", 60000));
+       	Assert.assertNotNull("CWWKO0219I NOT FOUND",server.waitForStringInTraceUsingMark("Monitoring MXBean WebSphere:type=ServletStats"));
        	checkStrings(getHttpsServlet("/metrics/vendor"), new String[] {
        		"vendor:threadpool_default_executor_active_threads",
        		"vendor:threadpool_default_executor_size",
