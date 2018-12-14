@@ -88,7 +88,7 @@ public class MetricsMonitorTest {
     }
        
     @Test
-    public void tesgtEnableDisableFeatures() throws Exception {
+    public void testEnableDisableFeatures() throws Exception {
 
     	String testName = "testEnableDisableFeatures";
     	
@@ -111,10 +111,9 @@ public class MetricsMonitorTest {
        	server.setMarkToEndOfLog(server.getMostRecentTraceFile());
        	
        	Log.info(c, testName, "------- threadpool metrics should be available ------");
-		getHttpsServlet("/metrics/vendor"); //this line generates  MXBEAN
+		getHttpsServlet("/metrics/vendor");
 		
        	Log.info(c, testName, "------- servlet metrics should be available ------");
-       	server.getMostRecentTraceFile();
        	Assert.assertNotNull("CWWKO0219I NOT FOUND",server.waitForStringInTraceUsingMark("Monitoring MXBean WebSphere:type=ServletStats"));
        	checkStrings(getHttpsServlet("/metrics/vendor"), new String[] {
        		"vendor:threadpool_default_executor_active_threads",
