@@ -67,7 +67,7 @@ public class MvnUtils {
     public static final Class<MvnUtils> c = MvnUtils.class;
 
     private static final String DEFAULT_FAILSAFE_UNDEPLOYMENT = "true";
-    private static final String DEFAULT_APP_DEPLOY_TIMEOUT = "30";
+    private static final String DEFAULT_APP_DEPLOY_TIMEOUT = "180";
     private static final String DEFAULT_APP_UNDEPLOY_TIMEOUT = "20";
     private static final int DEFAULT_MBEAN_TIMEOUT = 60000;
     public static File resultsDir;
