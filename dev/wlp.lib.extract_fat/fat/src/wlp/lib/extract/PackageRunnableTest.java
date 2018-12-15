@@ -43,30 +43,36 @@ public class PackageRunnableTest {
     private static String serverName = "runnableTestServer";
     private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
     private static final File runnableJar = new File("publish/" + serverName + ".jar");
-    private static final File extractDirectory = new File("publish" + File.separator + "wlpExtract");
+    private static final File extractDirectory1 = new File("publish" + File.separator + "wlpExtract1");
+    private static final File extractDirectory2 = new File("publish" + File.separator + "wlpExtract2");
     private static final File extractAndRunDir = new File("publish" + File.separator + "wlpExtractAndRun");
 
     /*
      * return env as array and add WLP_JAR_EXTRACT_DIR=extractDirectory
      */
-    private static String[] runEnv(String extractDirectory) {
+    private static String[] runEnv(String extractDirectory, boolean useDummyUserDir) {
 
         Map<String, String> envmap = System.getenv();
         Iterator<String> iKeys = envmap.keySet().iterator();
-        List<String> envArray = new ArrayList<String>();
+        List<String> envArrayList = new ArrayList<String>();
 
-        int i = 0;
         while (iKeys.hasNext()) {
             String key = iKeys.next();
             String val = envmap.get(key);
-            envArray.add(key + "=" + val);
+            // Pass along except for this one special case
+            if (key != "WLP_USER_DIR" || !useDummyUserDir) {
+                envArrayList.add(key + "=" + val);
+            }
         }
         if (extractDirectory != null) {
-            // add extract dir to end
             String extDirVar = "WLP_JAR_EXTRACT_DIR=" + extractDirectory;
-            envArray.add(extDirVar);
+            envArrayList.add(extDirVar);
         }
-        return envArray.toArray(new String[0]);
+        if (useDummyUserDir) {
+            String dummyUserDir = extractDirectory + File.separator + "a1a" + File.separator + "b2b" + File.separator + "c3c";
+            envArrayList.add("WLP_USER_DIR" + "=" + dummyUserDir);
+        }
+        return envArrayList.toArray(new String[0]);
 
     }
 
@@ -76,14 +82,12 @@ public class PackageRunnableTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        String[] entries = extractAndRunDir.list();
-        for (String s : entries) {
-            File currentFile = new File(extractAndRunDir.getPath(), s);
-            currentFile.delete();
-        }
+        deleteDir(extractAndRunDir);
+        deleteDir(extractDirectory1);
+        deleteDir(extractDirectory2);
     }
 
-    private void deleteDir(File file) {
+    private static void deleteDir(File file) {
         File[] contents = file.listFiles();
         if (contents != null) {
             for (File f : contents) {
@@ -109,12 +113,46 @@ public class PackageRunnableTest {
             return; // get out
         }
 
-        executeTheJar();
+        executeTheJar(extractDirectory1, false);
 
         extractAndExecuteMain();
     }
 
-    private void executeTheJar() throws IOException, InterruptedException {
+    /**
+     * Set a bogus WLP_USER_DIR env var value and confirm that we can still find the server to launch.
+     *
+     * No need to attempt to execute against the extacted main as in "testRunnableJar". If we can launch the JAR
+     * we'll count this as a success.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testRunnableJarLaunchOnlyWithUserDirSet() throws Exception {
+
+        // Doesn't work on z/OS (because you can't package into a jar on z/OS)
+        assumeTrue(!System.getProperty("os.name").equals("z/OS"));
+
+        String stdout = server.executeServerScript("package",
+                                                   new String[] { "--archive=" + runnableJar.getAbsolutePath(),
+                                                                  "--include=minify,runnable" }).getStdout();
+
+        String searchString = "Server " + serverName + " package complete";
+        if (!stdout.contains(searchString)) {
+            System.out.println("Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
+            return; // get out
+        }
+
+        executeTheJar(extractDirectory2, true);
+    }
+
+    /**
+     * @param useDummyUserDir If 'true', will execute JAR after setting the WLP_USR_DIR env variable with a bogus value (to test that we can ignore it),
+     *            if 'false' we will not set a WLP_USER_DIR value on the java -jar execution
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    private void executeTheJar(File extractDirectory, boolean useDummyUserDir) throws IOException, InterruptedException {
+
         if (!extractDirectory.exists()) {
             extractDirectory.mkdirs();
         }
@@ -122,7 +160,7 @@ public class PackageRunnableTest {
         assertTrue("Extract directory " + extractDirectory.getAbsolutePath() + " does not exist.", extractDirectory.exists());
 
         String cmd = "java -jar " + runnableJar.getAbsolutePath();
-        Process proc = Runtime.getRuntime().exec(cmd, runEnv(extractDirectory.getAbsolutePath()), null); // run server
+        Process proc = Runtime.getRuntime().exec(cmd, runEnv(extractDirectory.getAbsolutePath(), useDummyUserDir), null); // run server
 
         // setup and start reader threads for error and output streams
 //        StreamReader errorReader = new StreamReader(proc.getErrorStream(), "ERROR", null);
@@ -183,7 +221,7 @@ public class PackageRunnableTest {
         }
 
         String cmd = "java -cp " + extractAndRunDir.getAbsolutePath() + " wlp.lib.extract.SelfExtractRun";
-        Process proc = Runtime.getRuntime().exec(cmd, runEnv(null), null); // run server
+        Process proc = Runtime.getRuntime().exec(cmd, runEnv(null, false), null); // run server
 
         // setup and start reader threads for error and output streams
 //        StreamReader errorReader = new StreamReader(proc.getErrorStream(), "ERROR", null);
@@ -210,7 +248,7 @@ public class PackageRunnableTest {
 
         outputReader.setIs(null);
         proc.destroy(); // ensure no process left behind
-        System.out.println("Removing WLP installation directory: " + extractDirectory.getAbsolutePath());
+        System.out.println("Removing WLP installation directory: " + extractAndRunDir.getAbsolutePath());
         if (extractAndRunDir.exists()) {
             deleteDir(extractAndRunDir);
             System.out.println("WLP installation directory was removed.");
