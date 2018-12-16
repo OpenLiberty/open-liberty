@@ -26,7 +26,8 @@ src: \
 	test-bundles/accesslog.source.handler/src, \
 	test-bundles/trace.source.handler/src, \
 	test-bundles/test.configuration.fallalloverthefloor.ibmfeature/src, \
-	test-bundles/test.configuration.fallalloverthefloor.userfeature/src
+	test-bundles/test.configuration.fallalloverthefloor.userfeature/src, \
+	test-bundles/logservice.tester/src
 
 fat.project: true
 
@@ -42,6 +43,7 @@ fat.project: true
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.wsspi.org.osgi.service.log;version=latest,\
 	com.ibm.wsspi.thirdparty.equinox;version=latest, \
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
