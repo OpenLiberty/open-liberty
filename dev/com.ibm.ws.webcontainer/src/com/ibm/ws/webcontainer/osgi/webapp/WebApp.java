@@ -635,7 +635,7 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
                 
                 if (dru != null) {
                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
-                        logger.logp(Level.FINE, CLASS_NAME, "getReadPath", "obtained dru");
+                        logger.logp(Level.FINE, CLASS_NAME, "getRealPath", "obtained dru");
                     
                     dru.handleDocumentRoots(path, WCCustomProperties.CHECK_EDR_IN_GET_REAL_PATH);
                     EntryResource er = dru.getMatchedEntryResource();
