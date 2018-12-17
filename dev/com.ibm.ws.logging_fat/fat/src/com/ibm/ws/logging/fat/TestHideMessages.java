@@ -18,14 +18,18 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
+
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  *
  */
+@RunWith(FATRunner.class)
 public class TestHideMessages {
 
     private static LibertyServer msgServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.hidemessage");
@@ -47,7 +51,8 @@ public class TestHideMessages {
 
         assertTrue("Hidden Message CWWKZ0058I should not be seen in messages.log",
                    msgServer.findStringsInLogs("CWWKZ0058I:", msgServer.getMatchingLogFile("messages.log")).isEmpty());
-        assertTrue("Hidden Message CWWKZ0058I should not be seen in console.log", msgServer.findStringsInLogs("CWWKZ0058I:", msgServer.getMatchingLogFile("console.log")).isEmpty());
+        assertTrue("Hidden Message CWWKZ0058I should not be seen in console.log",
+                   msgServer.findStringsInLogs("CWWKZ0058I:", msgServer.getMatchingLogFile("console.log")).isEmpty());
         assertFalse("Hidden Message CWWKZ0058I should be seen in trace", msgServer.findStringsInTrace("CWWKZ0058I:").isEmpty());
         assertFalse("Info message about redirection to trace file should be logged",
                     msgServer.findStringsInLogs("TRAS3001I:", msgServer.getMatchingLogFile("messages.log")).isEmpty());
@@ -66,7 +71,8 @@ public class TestHideMessages {
 
         assertTrue("Hidden Message CWWKZ0058I should not be seen in messages.log",
                    msgServer.findStringsInLogs("CWWKZ0058I:", msgServer.getMatchingLogFile("messages.log")).isEmpty());
-        assertTrue("Hidden Message CWWKZ0058I should not be seen in console.log", msgServer.findStringsInLogs("CWWKZ0058I:", msgServer.getMatchingLogFile("console.log")).isEmpty());
+        assertTrue("Hidden Message CWWKZ0058I should not be seen in console.log",
+                   msgServer.findStringsInLogs("CWWKZ0058I:", msgServer.getMatchingLogFile("console.log")).isEmpty());
         assertFalse("Hidden Message CWWKZ0058I should be seen in trace", msgServer.findStringsInTrace("CWWKZ0058I:").isEmpty());
 
         //This will wait for feature update completion message since we are adding a new feature. And CWWKF0012I should be seen before that

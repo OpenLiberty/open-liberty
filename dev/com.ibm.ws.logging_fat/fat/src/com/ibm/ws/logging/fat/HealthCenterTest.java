@@ -17,14 +17,17 @@ import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 
+@RunWith(FATRunner.class)
 public class HealthCenterTest {
     private static LibertyServer server;
 

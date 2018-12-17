@@ -13,9 +13,11 @@ package com.ibm.ws.logging.fat;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
@@ -32,6 +34,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  * at com.ibm.ws.webcontainer.servlet.ServletWrapper.service(ServletWrapper.java:1240)
  * at [internal classes]
  */
+@RunWith(FATRunner.class)
 public class StackTraceFilteringForSpecificationClassesExceptionTest extends AbstractStackTraceFilteringTest {
 
     private static final String MAIN_EXCEPTION = "IllegalArgumentException";
