@@ -34,6 +34,7 @@ public class LdapRegistry extends ConfigElement {
     private String certificateFilter;
     private String certificateMapMode;
     private String connectTimeout;
+    private String readTimeout;
     private ContextPool contextPool;
     private LdapFilters customFilters;
     private LdapFilters domino50Filters;
@@ -125,6 +126,13 @@ public class LdapRegistry extends ConfigElement {
      */
     public String getConnectTimeout() {
         return connectTimeout;
+    }
+
+    /**
+     * @return the readTimeout
+     */
+    public String getReadTimeout() {
+        return readTimeout;
     }
 
     /**
@@ -396,6 +404,14 @@ public class LdapRegistry extends ConfigElement {
     }
 
     /**
+     * @param connectTimeout the connectTimeout to set
+     */
+    @XmlAttribute(name = "readTimeout")
+    public void setReadTimeout(String readTimeout) {
+        this.readTimeout = readTimeout;
+    }
+
+    /**
      * @param contextPool the contextPool to set
      */
     @XmlElement(name = "contextPool")
@@ -661,6 +677,9 @@ public class LdapRegistry extends ConfigElement {
         }
         if (connectTimeout != null) {
             sb.append("connectTimeout=\"").append(connectTimeout).append("\" ");;
+        }
+        if (readTimeout != null) {
+            sb.append("readTimeout=\"").append(readTimeout).append("\" ");;
         }
         if (contextPool != null) {
             sb.append("contextPool=\"").append(contextPool).append("\" ");;

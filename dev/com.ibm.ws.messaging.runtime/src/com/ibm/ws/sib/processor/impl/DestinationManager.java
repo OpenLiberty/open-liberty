@@ -117,7 +117,7 @@ import com.ibm.ws.kernel.service.util.CpuInfo;
 
 /**
  * @author millwood
- * 
+ *
  *         <p>The Destination Manager class is responsible for the creation,
  *         updating and deletion of destination objects. It maintains a hash
  *         table of destinations and can be queried to locate a destination
@@ -195,7 +195,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Reference to the MQLinkManager
-     * 
+     *
      */
     private MQLinkManager _mqlinkManager = null;
 
@@ -207,7 +207,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Warm start constructor invoked by the Message Store.
-     * 
+     *
      * @throws MessageStoreException
      */
     public DestinationManager()
@@ -219,7 +219,7 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * Cold start constructor. There should be only one destination
      * manager per ME.
-     * 
+     *
      * @param messageProcessor A reference to the owning MessageProcessor.
      * @param parentItemStream The ItemStream to add this object to.
      */
@@ -282,7 +282,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * This method checks to see if rollback is required.
-     * 
+     *
      * @param transaction The transaction to rollback.
      */
     private void handleRollback(LocalTransaction transaction)
@@ -316,9 +316,9 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * Initialize non-persistent fields. These fields are common to both MS
      * reconstitution of DestinationManagers and initial creation.
-     * 
+     *
      * Feature 174199.2.4
-     * 
+     *
      * @param MessageProcessor
      */
     protected void initializeNonPersistent(MessageProcessor messageProcessor)
@@ -353,7 +353,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * get method for nondurableSharedSubscriptions of DestinationManager.
-     * 
+     *
      * @return nondurableSharedSubscriptions
      */
     public ConcurrentHashMap<String, Object> getNondurableSharedSubscriptions() {
@@ -403,7 +403,7 @@ public final class DestinationManager extends SIMPItemStream
      * If not, we might get moved back to the inDoubt state, arguing
      * that the corrupt WCCM file is stil causing problems,
      * or finally WCCM might now tell us to remove the destination
-     * 
+     *
      * @author tpm
      */
     public void moveAllInDoubtToUnreconciled()
@@ -430,7 +430,7 @@ public final class DestinationManager extends SIMPItemStream
      * to delete that destination, whether the destination should be
      * altered to a new locality set, or whether the destination should be put
      * into a InDoubt state.
-     * 
+     *
      * @author tpm
      */
     public void validateUnreconciled()
@@ -562,7 +562,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Starts a new thread for reconstitution
-     * 
+     *
      * @param runnable
      * @throws InterruptedException
      */
@@ -633,7 +633,7 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * Reconstitute this DestinationManager's Destinations.
      * initializeNonPersistent() has to have already have been called.
-     * 
+     *
      * @throws MessageStoreException if a problem is encountered which cannot be isolated
      *             to a particular destination.
      */
@@ -1092,7 +1092,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Gets the link destination from the set of destinations
-     * 
+     *
      * @param linkName
      * @return
      */
@@ -1106,7 +1106,7 @@ public final class DestinationManager extends SIMPItemStream
      * This method provides lookup of a destination by its address.
      * If the destination is not
      * found, it throws SIDestinationNotFoundException.
-     * 
+     *
      * @param destinationAddr
      * @return Destination
      * @throws SIDestinationNotFoundException
@@ -1127,7 +1127,7 @@ public final class DestinationManager extends SIMPItemStream
      * This method provides lookup of a destination by its address.
      * If the destination is not
      * found, it throws SIDestinationNotFoundException.
-     * 
+     *
      * @param destinationAddr
      * @return Destination
      * @throws SIDestinationNotFoundException
@@ -1147,10 +1147,10 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * Get a destination from its name. This method assumes we wish to look in
      * the local bus.
-     * 
+     *
      * @param destinationName
      * @return
-     * 
+     *
      */
     public DestinationHandler getDestination(String destinationName, boolean includeInvisible)
                     throws SITemporaryDestinationNotFoundException, SIResourceException, SINotPossibleInCurrentConfigurationException
@@ -1162,11 +1162,11 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * Get a destination from its name. This is the full name, which is both
      * the destination name and its bus name.
-     * 
+     *
      * @param destinationName.
      * @param busName. Can be null, in which case the local bus will be assumed.
      * @return Destination
-     * 
+     *
      */
     public DestinationHandler getDestination(String destinationName, String busName, boolean includeInvisible)
                     throws SIResourceException, SITemporaryDestinationNotFoundException, SINotPossibleInCurrentConfigurationException
@@ -1177,11 +1177,11 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * Get a destination from its name. This is the full name, which is both
      * the destination name and its bus name.
-     * 
+     *
      * @param destinationName.
      * @param busName. Can be null, in which case the local bus will be assumed.
      * @return Destination
-     * 
+     *
      */
     public DestinationHandler getDestination(String destinationName,
                                              String busName,
@@ -1244,7 +1244,7 @@ public final class DestinationManager extends SIMPItemStream
      * This internal function has a validator to record destination names which
      * have been seen before in creating an alias chain. This is to facilitate
      * loop protection.
-     * 
+     *
      * @param destinationName
      * @param busName Can be null, in which case the local bus will be assumed.
      * @param validator Should be null when first called.
@@ -1421,11 +1421,11 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * Lookup a destination definition via admin and create the corresponding
      * destination.
-     * 
+     *
      * This internal function has a collector to record destination names which
      * have been seen before in creating an alias chain. This is to facilitate
      * loop protection.
-     * 
+     *
      * @param busName
      * @param destinationIdentifier
      * @param collector Should be null when first called.
@@ -1557,7 +1557,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Get the destination.
-     * 
+     *
      * @param destinationUuid The uuid to find
      * @return DestinationHandler
      */
@@ -1586,7 +1586,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Get the destination.
-     * 
+     *
      * @param destinationUuid The uuid to find
      * @return DestinationHandler
      */
@@ -1631,7 +1631,7 @@ public final class DestinationManager extends SIMPItemStream
      * Link a pseudo destination ID to a real destination handler. This is used to link destination
      * IDs created for remote durable pub/sub to the appropriate Pub/Sub destination handler which
      * hosts a localization of some durable subscription.
-     * 
+     *
      * @param destinationUuid The pseudo destination ID to link.
      * @param handler The pub/sub (well BaseDestinationHandler anyway) which the destination is linked to.
      */
@@ -1646,7 +1646,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Remove a link for a pseudo desintation ID.
-     * 
+     *
      * @param destinationUuid The ID of the pseudo destination to remove.
      */
     public final void removePseudoDestination(SIBUuid12 destinationUuid)
@@ -1660,9 +1660,9 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Reset a destination.
-     * 
+     *
      * @param destName
-     * 
+     *
      * @throws InvalidOperationException if the destination is not one which can
      *             be reset (e.g. it is an alias destination).
      * @throws SIDestinationNotFoundException
@@ -1736,9 +1736,9 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Reset a link.
-     * 
+     *
      * @param linkName
-     * 
+     *
      * @throws InvalidOperationException if the link is not one which can
      *             be reset.
      * @throws SINotPossibleInCurrentConfigurationException
@@ -1808,7 +1808,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Returns the link definition of the link used to connect to the given busname
-     * 
+     *
      * @return VirtualLinkDefinition
      */
     public VirtualLinkDefinition getLinkDefinition(String busName)
@@ -1846,7 +1846,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Returns the topicSpaceName of the foreign topicSpace
-     * 
+     *
      * @param String The busname of the foreign TS
      * @param SIBUuid12 The uuid of the TS on this bus
      * @return String The foreign TS name
@@ -1874,7 +1874,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Method getDurableSubscriptionsTable.
-     * 
+     *
      * @return durableSubHashMap
      */
 
@@ -1885,7 +1885,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Method destinationExists
-     * 
+     *
      * @param addr
      * @return boolean
      * @throws SIMPNullParameterException
@@ -1908,7 +1908,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Method destinationExists
-     * 
+     *
      * @param destinationName
      * @param busName
      * @return boolean
@@ -1953,24 +1953,24 @@ public final class DestinationManager extends SIMPItemStream
      * _T<User prefix>_<MEId>_<TempDestId> for Topicspace Destinations
      * or
      * _Q<User prefix>_<MEId>_<TempDestId> for Queue Destinations
-     * 
+     *
      * Where the User prefix is limited to 12 characters (others are ignored)
      * The MEId is the ME Uuid which will is a SIBUuid8
      * The TempDestId is a count value in hex
-     * 
+     *
      * eg _TSAMPLENAME_702CD771-5262B260_00016AE4
-     * 
+     *
      * @param modelDestinationName The distribution (ONE or ALL)
      * @param destinationPrefix The destination prefic, user specified
-     * 
+     *
      *            When the maximum value for the tempDestCount is reached (Integer.MAX_VALUE),
      *            we FFDC and throw an SIException to indicate that destinations may
      *            no longer be unique.
-     * 
+     *
      *            An SIException is also thrown if the temporary destination name already
      *            exists. The algorithm used should not generate the same named Temporary destination.
      *            (Unless the tempDestCount has wrapped)
-     * 
+     *
      * @return
      */
     protected SIDestinationAddress createTemporaryDestination(Distribution distribution, String destinationPrefix) throws SIResourceException, SIMPDestinationAlreadyExistsException
@@ -2044,7 +2044,7 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * Creates a new name for a temporary destination.
      * Uses the Message Store Tick count to generate the unique suffix for the temporary destination
-     * 
+     *
      * @param destinationPrefix
      * @param meUuid
      * @param distribution
@@ -2192,10 +2192,10 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Remove the given destination from the DestinationManager.
-     * 
+     *
      * This will only be a BaseDestinationHandler removing either a link
      * or a destination.
-     * 
+     *
      * @param dh The DestinationHandler to remove.
      */
     protected void removeDestination(DestinationHandler dh)
@@ -2224,10 +2224,10 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Method createTransmissionDestination.
-     * 
+     *
      * <p>Create a transmission queue destination for the remote ME
      * uuid specified.</p>
-     * 
+     *
      * @param remoteMEUuid
      */
     protected void createTransmissionDestination(SIBUuid8 remoteMEUuid) throws SIResourceException, SIMPDestinationAlreadyExistsException
@@ -2255,7 +2255,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Return the ME of this DestinationManager
-     * 
+     *
      * @return MessageProcessor.
      */
     public MessageProcessor getLocalME()
@@ -2784,16 +2784,16 @@ public final class DestinationManager extends SIMPItemStream
      * destinationDefinition should be null,
      * otherwise destinationDefinition should contain the set of ME's that do
      * still localise the destination.
-     * 
+     *
      * @param destinationUuid Uuid of the destination on which the delete
      *            operation will act.
-     * 
+     *
      * @param destinationDefinition null if the entire destination is to be
      *            deleted.
-     * 
+     *
      * @param queuePointLocalizingMEs Set of MEs which host the queue point.
-     * 
-     * 
+     *
+     *
      * @param isLink delete this link localisation
      */
     public void deleteDestinationLocalization(
@@ -3064,7 +3064,7 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * <p>This method is used to delete an Link destination that is
      * localised on this ME.
-     * 
+     *
      * @param linkUuid
      * @throws SINotPossibleInCurrentConfigurationException
      * @throws SIResourceException
@@ -3170,7 +3170,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * <p>This method is used to alter a link that is localised on this ME.</p>
-     * 
+     *
      * @param vld
      * @param linkUuid
      * @throws SINotPossibleInCurrentConfigurationException
@@ -3263,7 +3263,7 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * <p>This method is used to delete an MQLink destination that is
      * localised on this ME.
-     * 
+     *
      * @param mqLinkUuid
      * @throws SINotPossibleInCurrentConfigurationException
      * @throws SIResourceException
@@ -3357,7 +3357,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * <p>This method is used to alter an MQLink that is localised on this ME.</p>
-     * 
+     *
      * @param vld
      * @param uuid
      * @param ld
@@ -3465,7 +3465,7 @@ public final class DestinationManager extends SIMPItemStream
      * destinationDefinition passed in may also include the uuid's of other ME's which also
      * localise the destination. If this is the case, the infrastructure to be able to send
      * messages to these ME's will also be configured.</p>
-     * 
+     *
      * @param destinationLocalizationDefinition
      * @param destinationDefinition
      * @param destinationLocalizingMEs
@@ -3543,7 +3543,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * <p>This method is used to create a destination that is localised on this ME.</p>
-     * 
+     *
      * @param destinationLocalizationDefinition
      * @param destinationDefinition
      * @param destinationLocalizingMEs
@@ -3564,7 +3564,7 @@ public final class DestinationManager extends SIMPItemStream
 //          destinationDefinition.getName(),
 //          destinationDefinition.getUUID().toString(),
 //          destinationDefinition,
-//          destinationLocalizationDefinition,          
+//          destinationLocalizationDefinition,
 //          destinationLocalizingMEs,
 //          new Boolean(isTemporary),
 //          transaction });
@@ -3590,6 +3590,26 @@ public final class DestinationManager extends SIMPItemStream
             DestinationTypeFilter filter = new DestinationTypeFilter();
             //Venu UUID temp
             DestinationHandler dh = destinationIndex.findByName(destinationDefinition.getName(), messageProcessor.getMessagingEngineBus(), filter);
+
+            // If someone does a delete and add then it is possible the delete
+            // might not have happened yet, so wait up to 5 seconds for the
+            // deletion thread to finish. Then get the DH again and proceed. If
+            // deletion takes more than 5 seconds this still won't work, but
+            // deletion should not take 5 seconds.
+            if (dh != null && dh.isToBeDeleted()) {
+                synchronized (deletionThreadLock) {
+                  try {
+                      if (asynchDeletionThread != null && asynchDeletionThread.isRunning()) {
+                          deletionThreadLock.wait(5000);
+                      }
+                  } catch (InterruptedException ie) {
+                    // Just ignore this, someone told us to wake up so just bail.
+                    Thread.currentThread().interrupt();
+                    SibTr.debug(tc, "Wait for deletion thread to complete interrupted. Continuing without further waiting");
+                  }
+                }
+                dh = destinationIndex.findByName(destinationDefinition.getName(), messageProcessor.getMessagingEngineBus(), filter);
+            }
 
             if (dh == null)
             {
@@ -3821,7 +3841,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Checks if this destination is a queue/service or port
-     * 
+     *
      * @param type
      */
     private boolean isQueue(DestinationType type)
@@ -3838,7 +3858,7 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * <p>This method is used to alter a destination that is localised on this messaging
      * engine.</p>
-     * 
+     *
      * @param destinationLocalizationDefinition
      * @param destinationDefinition
      * @return
@@ -3924,7 +3944,7 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * <p>This method is used to alter a destination that is localised on this messaging
      * engine.</p>
-     * 
+     *
      * @param destinationLocalizationDefinition
      * @param destinationDefinition
      * @param transaction
@@ -4084,13 +4104,13 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * Asserts that a DestinationHandler exists. Throws out the
      * appropriate exception if the condition has failed.
-     * 
+     *
      * @param condition This is the existence check. An expression here should
      *            evaluate to true if the destination exists, false otherwise.
      *            For example, a simple expression here could be (dh != null).
      * @param destName The destination we were looking for.
      * @param engineName The engine name for the destination we were looking for.
-     * 
+     *
      * @throws SITemporaryDestinationNotFoundException
      * @throws SINotPossibleInCurrentConfigurationException
      */
@@ -4153,7 +4173,7 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * Asserts that a Bus exists. Throws out the
      * appropriate exception if the condition has failed.
-     * 
+     *
      * @param condition This is the existence check. An expression here should
      *            evaluate to true if the destination exists, false otherwise.
      *            For example, a simple expression here could be (dh != null).
@@ -4161,7 +4181,7 @@ public final class DestinationManager extends SIMPItemStream
      * @param cause Another exception that was the real cause of the non
      *            existence of a DestinationHandler. Make this null if there is no prior
      *            causing exception.
-     * 
+     *
      * @throws SINotPossibleInCurrentConfigurationException
      */
     private void checkBusExists(boolean condition, String foreignBusName, boolean linkError, Throwable cause)
@@ -4229,12 +4249,12 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * Asserts that an MQLink exists. Throws out the
      * appropriate exception if the condition has failed.
-     * 
+     *
      * @param condition This is the existence check. An expression here should
      *            evaluate to true if the destination exists, false otherwise.
      *            For example, a simple expression here could be (dh != null).
      * @param mqLinkName The name of the link we were looking for.
-     * 
+     *
      * @throws SINotPossibleInCurrentConfigurationException
      */
     private void checkMQLinkExists(boolean condition, String mqlinkName)
@@ -4276,12 +4296,12 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * Asserts that a Foreign bus Link exists. Throws out the
      * appropriate exception if the condition has failed.
-     * 
+     *
      * @param condition This is the existence check. An expression here should
      *            evaluate to true if the destination exists, false otherwise.
      *            For example, a simple expression here could be (dh != null).
      * @param linkName The name of the link we were looking for.
-     * 
+     *
      * @throws SINotPossibleInCurrentConfigurationException
      */
     private void checkLinkExists(boolean condition, String linkName)
@@ -4322,7 +4342,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Checks that the Local ME is in the queue point localizing set
-     * 
+     *
      * @param queuePointLocalizingMEs
      */
     private void checkQueuePointContainsLocalME(Set<String> queuePointLocalizingMEs,
@@ -4372,7 +4392,7 @@ public final class DestinationManager extends SIMPItemStream
      * <p>Public method to create a remote destination when passed a destinationDefinition and
      * a set of localising MEs. The create is performed transactionally and completes when
      * the transaction commits.</p>
-     * 
+     *
      * @param destinationDefinition
      * @param queuePointLocalizingMEs
      */
@@ -4424,7 +4444,7 @@ public final class DestinationManager extends SIMPItemStream
      * a set of localizing MEs and
      * a transaction. The create is performed transactionally and completes when the transaction
      * commits.</p>
-     * 
+     *
      * @param destinationDefinition
      * @param queuePointLocalizingMEs
      */
@@ -4500,7 +4520,7 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * <p>Mark the destinationHandler as requiring
      * cleanup and start the asynchDeletionThread if it is not already running.</p>
-     * 
+     *
      * @param dh
      */
     public void markDestinationAsCleanUpPending(DestinationHandler dh)
@@ -4590,7 +4610,7 @@ public final class DestinationManager extends SIMPItemStream
      * <ul>
      * <li>Stopping the async deletion thread,
      * </ul>
-     * 
+     *
      */
     public void stop(int mode)
     {
@@ -4652,7 +4672,7 @@ public final class DestinationManager extends SIMPItemStream
      * Generic stimulus off which all start-type activity can be driven.
      * <p>
      * Like starting the async deletion thread.
-     * 
+     *
      */
     public void start()
     {
@@ -4750,7 +4770,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Indicates whether the async deletion thread should be startable or not.
-     * 
+     *
      * @param isStartable
      */
     private void setIsAsyncDeletionThreadStartable(boolean isStartable)
@@ -5026,7 +5046,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Add a subscription to the list of subscriptions to be deleted.
-     * 
+     *
      */
     public void addSubscriptionToDelete(SubscriptionItemStream stream)
     {
@@ -5073,10 +5093,10 @@ public final class DestinationManager extends SIMPItemStream
      * We assume that the DestinationDefinitionImpl given is point to point.
      * There is no check as to whether the remove Destination/PtoPMessageItemStream already
      * exists.
-     * 
+     *
      * @param name
      * @param destinationDefinitionImpl
-     * 
+     *
      */
     public void addRemoteDestination(
                                      String name,
@@ -5153,7 +5173,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Method getDestination.
-     * 
+     *
      * @param destinationUuid
      * @return Destination
      * @throws SIDestinationNotFoundException
@@ -5206,11 +5226,11 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Lookup a destination by its uuid.
-     * 
+     *
      * @param mqLinkUuid
      * @param includeInvisible
      * @return MQLinkHandler
-     * 
+     *
      * @throws SIDestinationNotFoundException The link was not found
      * @throws SIMPMQLinkCorruptException
      */
@@ -5259,7 +5279,7 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * Find the mediated destinations and tell them that WAS is now open for
      * e-business.
-     * 
+     *
      * Feature 176658.3.8
      */
     void announceWASOpenForEBusiness()
@@ -5301,7 +5321,7 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * Find the mediated destinations and tell them that WAS is now CLOSED for
      * e-business.
-     * 
+     *
      * Feature 176658.3.8
      */
     void announceWASClosedForEBusiness()
@@ -5383,7 +5403,7 @@ public final class DestinationManager extends SIMPItemStream
      * Find the mediated destinations and tell them that the MP is now ready
      * for mediations to start work. In addition alert the MQLink component
      * that MP has started and set the flag to allow asynch deletion.
-     * 
+     *
      * Feature 176658.3.8
      */
     void announceMPStarted(int startMode)
@@ -5484,7 +5504,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * <p>This method is used to create a link that is localised on this ME.</p>
-     * 
+     *
      * @param destinationLocalizationDefinition
      * @param destinationDefinition
      */
@@ -5695,7 +5715,7 @@ public final class DestinationManager extends SIMPItemStream
      * <p>Private method to create a remote link when passed a virtualLinkDefinition and
      * a transaction. The create is performed transactionally and completes when the transaction
      * commits.</p>
-     * 
+     *
      * @param virtualLinkDefinition
      * @param transaction
      * @return The created linkHandler
@@ -5793,7 +5813,7 @@ public final class DestinationManager extends SIMPItemStream
      * a bus definition and
      * a transaction. The create is performed transactionally and completes when the transaction
      * commits.</p>
-     * 
+     *
      * @param linkName
      * @param stringLinkUuid
      * @param foreignBusDefinition
@@ -5863,7 +5883,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * Method findBus.
-     * 
+     *
      * @param busName
      * @return busHandler
      * @throws SIDestinationNotFoundException
@@ -5901,7 +5921,7 @@ public final class DestinationManager extends SIMPItemStream
      * link to the foreign bus is defined, then create a BusHandler to represent the
      * foreign bus and a link handler to represent the link, if one does not already
      * exist.</p>
-     * 
+     *
      * @param busName
      * @return
      */
@@ -6016,7 +6036,7 @@ public final class DestinationManager extends SIMPItemStream
      * and a valid targetDestinationHandler.
      * <p>
      * Assumes that the destination to create does not already exist.
-     * 
+     *
      * @param destinationDefinition
      * @param destinationLocalizingMEs
      * @param busName
@@ -6218,7 +6238,7 @@ public final class DestinationManager extends SIMPItemStream
      * and a valid targetDestinationHandler.
      * <p>
      * Assumes that the destination to create does not already exist.
-     * 
+     *
      * @param destinationDefinition
      * @param destinationLocalizingMEs
      * @param busName
@@ -6271,7 +6291,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /**
      * <p>This method is used to create a link that is localised on this ME.</p>
-     * 
+     *
      * @param linkLocalizationDefinition
      * @param virtualLinkDefinition
      * @param linkLocalizingMEs
@@ -6799,7 +6819,7 @@ public final class DestinationManager extends SIMPItemStream
      * which includes a destinationNamePattern parameter. It returns a list of
      * destination addresses that match the pattern, the destination availability
      * and the destination type.
-     * 
+     *
      * It is assumed that the addresses returned will be an array of either queue,
      * port or service destinations and not topicspace destinations.
      */
@@ -7105,7 +7125,7 @@ public final class DestinationManager extends SIMPItemStream
     /**
      * Finds all the JsDestinationAddresses that belong to system destinations for the
      * ME that was passed in.
-     * 
+     *
      * @param meUuid
      * @return List of all the system destination addresses for the meUuid passed
      */
@@ -7353,7 +7373,7 @@ public final class DestinationManager extends SIMPItemStream
 
     /*
      * This method is used to alter the alias destination type of liberty profile at runtime.
-     * 
+     *
      * @param destinationAliasDefinition The new updated definition file of Alias destination type
      */
     public void alterDestinationAlias(DestinationAliasDefinition destinationAliasDefinition) throws SIIncorrectCallException, SIResourceException, SINotPossibleInCurrentConfigurationException, SITemporaryDestinationNotFoundException
@@ -7441,7 +7461,7 @@ class DeletePubSubMsgsThread implements Runnable, StoppableThread {
 
     /**
      * Create a new Thread to delete pub/sub messages without any references
-     * 
+     *
      * @param mp The 'owning' MP object
      */
     DeletePubSubMsgsThread(MessageProcessor mp)
