@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-resourceadapters/SimpleRA/src"/>
 	<classpathentry kind="src" path="test-applications/DataSourceApp.ear/DataSourceEJB.jar/src"/>
 	<classpathentry kind="src" path="test-applications/snoop.war/src"/>
 	<classpathentry kind="src" path="test-applications/testWarApplication.war/src"/>
