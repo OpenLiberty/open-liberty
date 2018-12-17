@@ -27,7 +27,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.AccessIdUtil;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.AuthenticationException;
-import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.internal.jaas.modules.ServerCommonLoginModule;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
@@ -60,14 +59,10 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
                                                         AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN,
                                                         AuthenticationConstants.INTERNAL_AUTH_PROVIDER };
 
-    private final String[] userIdOnlyProperties = { AttributeNameConstants.WSCREDENTIAL_USERID,
-                                                    AuthenticationConstants.INTERNAL_ASSERTION_KEY };
-
     private boolean uniquedIdAndSecurityNameLogin = false;
     private boolean useIdAndPasswordLogin = false;
     private boolean userIdNoPasswordLogin = false;
     private Hashtable<String, ?> customProperties = null;
-    private boolean customPropertiesFromSubject = false;
 
     /** {@inheritDoc} */
     @Override
@@ -133,34 +128,6 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Not enough information in Hashtable to continue, abstaining.");
         }
-        return false;
-    }
-
-    /**
-     * @return
-     */
-    private boolean allowLoginWithIdOnly(Hashtable<String, ?> customProperties) {
-        AuthenticationService authService = getAuthenticationService();
-        if (authService != null && authService.isAllowHashTableLoginWithIdOnly())
-            return true;
-
-        Boolean assertion = Boolean.FALSE;
-        if (customPropertiesFromSubject) {
-            Object value = customProperties.get(AuthenticationConstants.INTERNAL_ASSERTION_KEY);
-            assertion = (Boolean) (value != null ? value : Boolean.FALSE);
-            removeInternalAssertionHashtable(customProperties, userIdOnlyProperties);
-        } else {
-            String[] hashtableInternalProperty = { AuthenticationConstants.INTERNAL_ASSERTION_KEY };
-            Hashtable<String, ?> internalProperties = subjectHelper.getHashtableFromSubject(subject, hashtableInternalProperty);
-            if (internalProperties != null && !internalProperties.isEmpty()) {
-                assertion = Boolean.TRUE;
-                removeInternalAssertionHashtable(internalProperties, userIdOnlyProperties);
-            }
-        }
-        if (assertion.booleanValue()) {
-            return true;
-        }
-
         return false;
     }
 
