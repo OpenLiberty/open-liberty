@@ -72,7 +72,6 @@ public class DataFrameTests extends H2FATDriverServlet {
         String testName = "testZeroLengthPadding";
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
-        setupDefaultPreface(h2Client);
 
         List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
         secondHeadersReceived.add(new H2HeaderField(":status", "200"));
@@ -85,6 +84,9 @@ public class DataFrameTests extends H2FATDriverServlet {
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
         h2Client.addExpectedFrame(new FrameData(3, dataString.getBytes(), 0, false, false, false));
+
+        // Initialize connection after adding expected frames
+        setupDefaultPreface(h2Client);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
