@@ -163,11 +163,22 @@ public class HandlerTest {
         }
     }
 
+    private static final List<String> JSON_FIELDS = new ArrayList<String>();
+
+    static {
+        JSON_FIELDS.add("datetime");
+        JSON_FIELDS.add("threadId");
+        JSON_FIELDS.add("module");
+        JSON_FIELDS.add("loglevel");
+        JSON_FIELDS.add("messageId");
+        JSON_FIELDS.add("message");
+    }
+
     @Test
     public void testMessageSource() throws Exception {
         testName = "testMessageSource";
 
-        if (MsgServer != null && !MsgServer.isStarted()) {
+        if ( (MsgServer != null) && !MsgServer.isStarted() ) {
             MsgServer.startServer();
         }
 
@@ -181,158 +192,123 @@ public class HandlerTest {
         Log.info(c, testName, " Starting To Wait Now ------> ");
         MsgServer.waitForStringInTrace("Received message event");
 
-        //Received message event: MessageLogData [datetime=2015-12-09T18:27:30.308+0530, threadId=40,
-        //loggerName=com.ibm.ws.kernel.feature.internal.FeatureManager, logLevel=AUDIT, messageId=CWWKF0012I,
-        //message=CWWKF0012I: The server installed the following features: [jsp-2.2, servlet-3.0, sampleSourceHandler-1.0, timedexit-1.0]., methodName=null, className=com.ibm.ws.kernel.feature.internal.FeatureManager, extensions={}, sequence=10]
-        List<String> json = new ArrayList<String>();
-        json.add("datetime");
-        json.add("threadId");
-        json.add("module");
-        json.add("loglevel");
-        json.add("messageId");
-        json.add("message");
+        // Received message event:
+        // MessageLogData [datetime=2015-12-09T18:27:30.308+0530, threadId=40,
+        //  loggerName=com.ibm.ws.kernel.feature.internal.FeatureManager, logLevel=AUDIT, messageId=CWWKF0012I,
+        //  message=CWWKF0012I: The server installed the following features: [jsp-2.2, servlet-3.0,
+        //  sampleSourceHandler-1.0, timedexit-1.0]., methodName=null,
+        //  className=com.ibm.ws.kernel.feature.internal.FeatureManager, extensions={}, sequence=10]
 
         List<String> lines = MsgServer.findStringsInFileInLibertyServerRoot("Received message event", TRACE_LOG);
-        Log.info(c, testName, "----> Received message events.. : " + lines.size());
+        Log.info(c, testName, "----> Received message events: " + lines.size());
+
+        if ( lines.isEmpty() ) {
+            fail("No message events received!");
+            return;
+        }
+
+        String firstLine = lines.get(0);
+        Log.info(c, testName, "----> Message event: " + firstLine);
+
+        for ( String field : JSON_FIELDS ) {
+            if ( !firstLine.contains(field) ) {
+                fail("Message event is missing field: " + field);
+                return;
+            }
+        }
+
+        //
+        
+        boolean checkMsgID = false;
         boolean sysOut = false;
         boolean sysErr = false;
         boolean utilLogSevere = false;
         boolean utilLogWarn = false;
         boolean utilLogInfo = false;
-        boolean checkMsgID = false;
-        boolean allLevels = false;
-        boolean rawAllLevels = false;
-        if (lines.size() > 0) {
-            String line = lines.get(0);
-            Log.info(c, testName, "----> Message Event : " + line);
-            for (String field : json) {
-                if (!line.contains(field)) {
-                    fail(field + " missing..");
+
+        boolean info = false; // Was "severity=I" detected?
+        boolean rawInfo = true; // Do all "severity=I" have "loglevel=INFO"?
+
+        boolean audit = false; // Was "severity=A" detected?
+        boolean rawAudit = true; // Do all "severity=A" have "loglevel=AUDIT"?
+
+        for ( String line : lines ) {
+            Log.info(c, testName, "----> rec ******** " + line);
+
+            if ( !checkMsgID ) {
+                checkMsgID = true;
+
+                String msgId = line.substring(line.indexOf("messageId="));
+                msgId = msgId.substring(0, msgId.indexOf(","));
+                Log.info(c, testName, "----> MessageID = " + msgId);
+
+                assertFalse("MessageId contains ;", msgId.contains(";"));
+                assertFalse("MessageId contains :", msgId.contains(":"));
+                Log.info(c, testName, "----> MessageID does not contain ; or :");
+            }
+
+            if ( !sysOut && line.contains("loggerName=O") ) {
+                sysOut = true;
+
+                assertTrue("MessageId not null for system out", line.contains("messageId=null"));
+                Log.info(c, testName, "----> MessageID null for sys out");
+                assertTrue("Has complete word for SystemOut", line.contains("loglevel=SystemOut"));
+                
+            } else if ( !sysErr && line.contains("loggerName=R") ) {
+                sysErr = true;
+
+                assertTrue("MessageId not null for system err", line.contains("messageId=null"));
+                Log.info(c, testName, "----> MessageID null for sys err");
+                assertTrue("Has complete word for System error", line.contains("loglevel=SystemErr"));
+
+            } else if ( line.contains("loggerName=ezlogger") ) {
+                if ( !(utilLogSevere && utilLogWarn && utilLogInfo) ) {
+                    if ( line.contains("loglevel=E") ) {
+                        utilLogSevere = true;
+
+                        assertTrue("MessageId not null for util logger severe level", line.contains("messageId=null"));
+                        Log.info(c, testName, "----> MessageID null for util logger severe level");
+                        assertTrue("Has complete word for Error", line.contains("loglevel=ERROR") || line.contains("logLevelRaw=SEVERE"));
+
+                    } else if ( line.contains("loglevel=W") ) {
+                        utilLogWarn = true;
+
+                        assertTrue("MessageId not null for util logger warning level", line.contains("messageId=null"));
+                        Log.info(c, testName, "----> MessageID null for util logger warning level");
+                        assertTrue("Has complete word for WARNING", line.contains("loglevel=WARNING"));
+
+                    } else if ( line.contains("loglevel=I") ) {
+                        utilLogInfo = true;
+
+                        assertTrue("MessageId not null for util logger info level", line.contains("messageId=null"));
+                        Log.info(c, testName, "----> MessageID null for util logger info level");
+                        assertTrue("Has complete word for INFO", line.contains("logevel=INFO"));
+                    }
+                }
+
+            } else {
+                if ( line.contains("severity=I") ) {
+                    info = true;
+                    Log.info(c, testName, "----> Found level 'severity=I'");
+                    assertTrue("Found raw level 'loglevel=INFO'", line.contains("loglevel=INFO"));
+
+                } else if ( line.contains("severity=A") ) {
+                    audit = true;
+                    Log.info(c, testName, "----> Found level 'severity=A'");
+                    assertTrue("Found raw level 'loglevel=AUDIT'", line.contains("loglevel=AUDIT"));
                 }
             }
 
-            List<String> levels = new ArrayList<String>();
-            levels.add("severity=I");
-            levels.add("severity=W");
-            levels.add("severity=A");
-            levels.add("severity=E");
-            levels.add("severity=F");
-
-            List<String> rawLevels = new ArrayList<String>();
-            rawLevels.add("loglevel=INFO");
-            rawLevels.add("loglevel=WARNING");
-            rawLevels.add("loglevel=AUDIT");
-            rawLevels.add("loglevel=ERROR");
-            rawLevels.add("loglevel=FATAL");
-
-            boolean info = false;
-            boolean audit = false;
-
-            boolean raw_info = false;
-            boolean raw_audit = false;
-
-            for (String rec : lines) {
-                Log.info(c, testName, "----> rec ******** " + rec);
-
-                if (!checkMsgID) {
-                    String msgId = rec.substring(rec.indexOf("messageId="));
-                    msgId = msgId.substring(0, msgId.indexOf(","));
-                    Log.info(c, testName, "----> MessageID = " + msgId);
-                    assertFalse("MessageId contains ;", msgId.contains(";"));
-                    assertFalse("MessageId contains :", msgId.contains(":"));
-
-                    Log.info(c, testName, "----> MessageID does not contain ; or :");
-                    checkMsgID = true;
-                }
-
-                if ((!sysOut) && rec.contains("loggerName=O")) {
-
-                    assertTrue("MessageId not null for system out..", rec.contains("messageId=null"));
-                    Log.info(c, testName, "----> MessageID null for sys out");
-                    sysOut = true;
-
-                    assertTrue("whether logLevelRaw has complete word for SystemOut", rec.contains("loglevel=SystemOut"));
-
-                } else if ((!sysErr) && rec.contains("loggerName=R")) {
-
-                    assertTrue("MessageId not null for system err..", rec.contains("messageId=null"));
-                    Log.info(c, testName, "----> MessageID null for sys err");
-                    sysErr = true;
-                    assertTrue("whether logLevelRaw has complete word for System error", rec.contains("loglevel=SystemErr"));
-
-                } else if (rec.contains("loggerName=ezlogger")) {
-                    if (!(utilLogSevere && utilLogWarn && utilLogInfo)) {
-                        if (rec.contains("loglevel=E")) {
-
-                            utilLogSevere = true;
-                            assertTrue("MessageId not null for util logger - severe level", rec.contains("messageId=null"));
-                            Log.info(c, testName, "----> MessageID null for util logger - severe level");
-                            assertTrue("whether logLevelRaw has complete word for Error", rec.contains("loglevel=ERROR") || rec.contains("logLevelRaw=SEVERE"));
-                        } else if (rec.contains("loglevel=W")) {
-
-                            utilLogWarn = true;
-                            assertTrue("MessageId not null for util logger - warning level", rec.contains("messageId=null"));
-                            Log.info(c, testName, "----> MessageID null for util logger - warning level");
-                            assertTrue("whether logLevelRaw has complete word for WARNING", rec.contains("loglevel=WARNING"));
-                        } else if (rec.contains("loglevel=I")) {
-
-                            utilLogInfo = true;
-                            assertTrue("MessageId not null for util logger - info level", rec.contains("messageId=null"));
-                            Log.info(c, testName, "----> MessageID null for util logger - info level");
-                            assertTrue("whether logLevelRaw has complete word for INFO", rec.contains("logevel=INFO"));
-                        }
-                    }
-                } else {
-                    Iterator<String> lvls = levels.iterator();
-                    while (lvls.hasNext()) {
-                        String level = lvls.next();
-                        if (rec.contains(level)) {
-                            Log.info(c, testName, "----> Found level : " + level);
-                            lvls.remove();
-                            if (level.contains("loglevel=I")) {
-                                info = true;
-                            } else if (level.contains("loglevel=A")) {
-                                audit = true;
-                            }
-                        }
-                    }
-
-                    lvls = rawLevels.iterator();
-                    while (lvls.hasNext()) {
-                        String level = lvls.next();
-                        Log.info(c, testName, "----> checking whether raw logger level found or not for the rec(" + rec + ")?: " + level + "::" + rec.contains(level));
-                        if (rec.contains(level)) {
-                            Log.info(c, testName, "----> Found raw loggerlevel : " + level);
-                            lvls.remove();
-                            if (level.contains("loglevel=INFO")) {
-                                raw_info = true;
-                            } else if (level.contains("loglevel=AUDIT")) {
-                                raw_audit = true;
-                            }
-                        }
-                    }
-
-                }
-                allLevels = levels.isEmpty();
-
-                if (!allLevels) {
-                    allLevels = (info && audit);
-                }
-                rawAllLevels = rawLevels.isEmpty();
-                if (!rawAllLevels) {
-                    rawAllLevels = (raw_info && raw_audit);
-                }
-                if (checkMsgID && utilLogInfo && utilLogWarn && utilLogSevere && sysOut && sysErr && allLevels) {
-                    break;
-                }
+            if ( checkMsgID &&
+                 (utilLogInfo && utilLogWarn && utilLogSevere) &&
+                 (sysOut && sysErr) &&
+                 (info && audit )) {
+                break;
             }
-        } else {
-            fail("No message events received!");
         }
 
-        assertTrue("Could not find some of the log levels", allLevels);
-
-        assertTrue("whether all types of loggerName(rawLoggerName) values have been found ?", rawAllLevels);
+        assertTrue("Found level 'severity=I'", info);
+        assertTrue("Found level 'severity=A'", audit);
         Log.info(c, testName, "********** Message Events received as expected ***********");
     }
 
