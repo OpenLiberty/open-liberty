@@ -371,10 +371,11 @@ public class Http2LiteModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
-    public void testZeroLengthPadding() throws Exception {
-        runTest(dataServletPath, testName.getMethodName());
-    }
+    // Moved to trace
+    //@Test
+    //public void testZeroLengthPadding() throws Exception {
+    //    runTest(dataServletPath, testName.getMethodName());
+    //}
 
     /**
      * Test Coverage: Send a DATA frame with a frame length of 5 and a padding length of 6.
@@ -383,11 +384,11 @@ public class Http2LiteModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    // Move to trace bucket for build break diagnosis 257732
-    //@Test
-    //public void testInvalidPaddingValue() throws Exception {
-    //    runTest(dataServletPath, testName.getMethodName());
-    //}
+
+    @Test
+    public void testInvalidPaddingValue() throws Exception {
+        runTest(dataServletPath, testName.getMethodName());
+    }
 
     // Move to trace bucket to debug build break @Test
     //public void testDataFrameExceedingMaxFrameSize() throws Exception {
