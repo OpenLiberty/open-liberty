@@ -159,8 +159,13 @@ public class PackageCommand {
 //            archive = new File(outputDir, packageTarget);
         } else {
             int index = archiveOption.lastIndexOf(".");
-            if (index > 0 && isSupportedExtension(archiveOption)) {
-                packageTarget = archiveOption;
+            String supportedExtension = checkSupportedExtension(archiveOption);
+            if (index > 0 && supportedExtension != null) {
+                if (PackageProcessor.IncludeOption.RUNNABLE.matches(includeOption)) {
+                    packageTarget = archiveOption.substring(0, archiveOption.length() - supportedExtension.length()) + ".jar";
+                } else {
+                    packageTarget = archiveOption;
+                }
             } else {
                 packageTarget = archiveOption + '.' + defaultExtension;
             }
@@ -173,15 +178,15 @@ public class PackageCommand {
         return archive;
     }
 
-    public boolean isSupportedExtension(String fileName) {
+    public String checkSupportedExtension(String fileName) {
         fileName = fileName.toLowerCase();
         for (String extension : SUPPORTED_EXTENSIONS) {
             if (fileName.endsWith(extension)) {
-                return true;
+                return extension;
             }
         }
 
-        return false;
+        return null;
     }
 
     /**
