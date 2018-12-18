@@ -93,7 +93,7 @@ public class ConversionManager {
     /**
      * Convert a String to a Type using registered converters for the Type
      *
-     * @param <T>
+     * @param           <T>
      *
      * @param rawString
      * @param type
@@ -120,13 +120,13 @@ public class ConversionManager {
     /**
      * Convert a String to a Type using registered converters for the Type
      *
-     * @param <T>
+     * @param           <T>
      *
      * @param rawString
      * @param type
      * @return
      */
-    protected Object convert(String rawString, Type type, Class<?> genericSubType) {
+    public Object convert(String rawString, Type type, Class<?> genericSubType) {
         //first box any primitives
         if (type instanceof Class<?>) {
             Class<?> clazz = (Class<?>) type;
@@ -191,7 +191,7 @@ public class ConversionManager {
     }
 
     /**
-     * @param <T>
+     * @param                <T>
      * @param rawString
      * @param requestedClazz
      * @return

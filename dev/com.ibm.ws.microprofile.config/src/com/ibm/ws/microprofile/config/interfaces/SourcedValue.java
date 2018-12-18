@@ -47,4 +47,9 @@ public interface SourcedValue {
      * @return the key
      */
     String getKey();
+
+    /**
+     * @return
+     */
+    public Class<?> getGenericSubType();
 }

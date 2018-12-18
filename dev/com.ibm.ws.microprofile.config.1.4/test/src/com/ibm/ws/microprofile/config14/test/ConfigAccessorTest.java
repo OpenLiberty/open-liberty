@@ -17,6 +17,7 @@ import static org.junit.Assert.fail;
 
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -26,6 +27,7 @@ import org.eclipse.microprofile.config.ConfigAccessor;
 import org.eclipse.microprofile.config.ConfigAccessorBuilder;
 import org.eclipse.microprofile.config.ConfigSnapshot;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
+import org.eclipse.microprofile.config.spi.Converter;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.config14.impl.ConfigAccessorBuilderImpl;
@@ -187,5 +189,120 @@ public class ConfigAccessorTest extends AbstractConfigTest {
 
         String resolvedPropertyName = accessor1.getResolvedPropertyName();
         assertEquals("testLookupSuffix.TWO", resolvedPropertyName);
+    }
+
+    @Test
+    public void testAsList() {
+        System.setProperty("testAsList", "value1,value2,value3");
+        Config config = ConfigProviderResolver.instance().getConfig();
+        ConfigAccessorBuilder<String> builder = config.access("testAsList", String.class);
+        ConfigAccessorBuilder<List<String>> listBuilder = builder.asList();
+        ConfigAccessor<List<String>> accessor = listBuilder.build();
+        List<String> value = accessor.getValue();
+        assertEquals("Value not correct", "value1", value.get(0));
+        assertEquals("Value not correct", "value2", value.get(1));
+        assertEquals("Value not correct", "value3", value.get(2));
+    }
+
+    @Test
+    public void testWithConverter() {
+        System.setProperty("testWithConverter", "value1");
+        Config config = ConfigProviderResolver.instance().getConfig();
+        ConfigAccessorBuilder<MyTestObject> builder = config.access("testWithConverter", MyTestObject.class);
+        builder.withConverter(new MyTestObjectConverter());
+        ConfigAccessor<MyTestObject> accessor = builder.build();
+        MyTestObject value = accessor.getValue();
+        assertEquals("Value not correct", "MyTestObject(value1)", value.toString());
+    }
+
+    @Test
+    public void testAsListWithConverter() {
+        System.setProperty("testAsListWithConverter", "value1,value2,value3");
+        Config config = ConfigProviderResolver.instance().getConfig();
+        ConfigAccessorBuilder<MyTestObject> builder = config.access("testAsListWithConverter", MyTestObject.class);
+        ConfigAccessorBuilder<List<MyTestObject>> listBuilder = builder.asList();
+        listBuilder.withConverter(new MyTestObjectListConverter());
+        ConfigAccessor<List<MyTestObject>> accessor = listBuilder.build();
+        List<MyTestObject> value = accessor.getValue();
+        assertEquals("Value not correct", "MyTestObject(value1)", value.get(0).toString());
+        assertEquals("Value not correct", "MyTestObject(value2)", value.get(1).toString());
+        assertEquals("Value not correct", "MyTestObject(value3)", value.get(2).toString());
+        assertEquals("List is wrong type", LinkedList.class, value.getClass());
+    }
+
+    @Test
+    public void testAsListWithExistingDefaultValue() {
+        Config config = ConfigProviderResolver.instance().getConfig();
+        ConfigAccessorBuilder<MyTestObject> builder = config.access("testAsListWithExistingStuff", MyTestObject.class); //property does not exist, will use default
+
+        MyTestObject defaultValue = new MyTestObject();
+        defaultValue.setRawString("DEFAULT");
+        builder.withDefault(defaultValue);
+
+        ConfigAccessorBuilder<List<MyTestObject>> listBuilder = builder.asList();
+        ConfigAccessor<List<MyTestObject>> accessor = listBuilder.build();
+        List<MyTestObject> value = accessor.getValue();
+
+        assertEquals("List should be a singleton", 1, value.size());
+        assertEquals("Value not correct", "MyTestObject(DEFAULT)", value.get(0).toString());
+    }
+
+    @Test
+    public void testAsListWithExistingDefaultString() {
+        Config config = ConfigProviderResolver.instance().getConfig();
+        ConfigAccessorBuilder<MyTestObject> builder = config.access("testAsListWithExistingDefaultString", MyTestObject.class); //property does not exist, will use default
+
+        builder.withStringDefault("value1,value2,value3");
+        ConfigAccessorBuilder<List<MyTestObject>> listBuilder = builder.asList();
+        listBuilder.withConverter(new MyTestObjectListConverter());
+
+        ConfigAccessor<List<MyTestObject>> accessor = listBuilder.build();
+        List<MyTestObject> value = accessor.getValue();
+
+        assertEquals("Value not correct", "MyTestObject(value1)", value.get(0).toString());
+        assertEquals("Value not correct", "MyTestObject(value2)", value.get(1).toString());
+        assertEquals("Value not correct", "MyTestObject(value3)", value.get(2).toString());
+    }
+
+    public static class MyTestObject {
+        private String rawString;
+
+        public void setRawString(String string) {
+            this.rawString = string;
+        }
+
+        @Override
+        public String toString() {
+            return "MyTestObject(" + rawString + ")";
+        }
+    }
+
+    public static class MyTestObjectConverter implements Converter<MyTestObject> {
+
+        /** {@inheritDoc} */
+        @Override
+        public MyTestObject convert(String value) {
+            MyTestObject obj = new MyTestObject();
+            obj.setRawString(value);
+            return obj;
+        }
+
+    }
+
+    public static class MyTestObjectListConverter implements Converter<List<MyTestObject>> {
+
+        /** {@inheritDoc} */
+        @Override
+        public List<MyTestObject> convert(String value) {
+            List<MyTestObject> list = new LinkedList<>();
+            String[] values = value.split(",");
+            for (String v : values) {
+                MyTestObject obj = new MyTestObject();
+                obj.setRawString(v);
+                list.add(obj);
+            }
+            return list;
+        }
+
     }
 }

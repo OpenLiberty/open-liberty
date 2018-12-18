@@ -28,6 +28,7 @@ public interface WebSphereConfig14 extends WebSphereConfig {
      * @param converter
      * @return
      */
-    SourcedValue getSourcedValue(List<String> keys, Type type, Object defaultValue, String defaultString, boolean evaluateVariables, Converter<?> converter);
+    SourcedValue getSourcedValue(List<String> keys, Type type, Class<?> genericSubType, Object defaultValue, String defaultString, boolean evaluateVariables,
+                                 Converter<?> converter);
 
 }

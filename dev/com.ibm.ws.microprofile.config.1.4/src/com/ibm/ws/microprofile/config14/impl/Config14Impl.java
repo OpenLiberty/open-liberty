@@ -60,14 +60,15 @@ public class Config14Impl extends AbstractConfig implements WebSphereConfig14 {
 
     @Override
     public SourcedValue getSourcedValue(String key, Type type) {
-        SourcedValue sourcedValue = getSourcedValue(Collections.singletonList(key), type, ConfigProperty.UNCONFIGURED_VALUE, ConfigProperty.UNCONFIGURED_VALUE,
+        SourcedValue sourcedValue = getSourcedValue(Collections.singletonList(key), type, null, ConfigProperty.UNCONFIGURED_VALUE, ConfigProperty.UNCONFIGURED_VALUE,
                                                     Config14Constants.EVALUATE_VARIABLES_DEFAULT,
                                                     null);
         return sourcedValue;
     }
 
     @Override
-    public SourcedValue getSourcedValue(List<String> keys, Type type, Object defaultValue, String defaultString, boolean evaluateVariables, Converter<?> converter) {
+    public SourcedValue getSourcedValue(List<String> keys, Type type, Class<?> genericSubType, Object defaultValue, String defaultString, boolean evaluateVariables,
+                                        Converter<?> converter) {
         SourcedValue sourcedValue = null; //sourcedValue is the fully resolved and converted value from the config
         SourcedValue rawProp = null; //rawProp is the unconverted String from the config
         Iterator<String> itr = keys.iterator();
@@ -82,7 +83,7 @@ public class Config14Impl extends AbstractConfig implements WebSphereConfig14 {
 
         if (rawProp == null) { //if rawProp is still null then use the defaults if available
             if (!ConfigProperty.UNCONFIGURED_VALUE.equals(defaultValue)) {
-                sourcedValue = new SourcedValueImpl(key, defaultValue, type, Config14Constants.DEFAULT_VALUE_SOURCE_NAME);
+                sourcedValue = new SourcedValueImpl(key, defaultValue, type, genericSubType, Config14Constants.DEFAULT_VALUE_SOURCE_NAME);
             } else if (!ConfigProperty.UNCONFIGURED_VALUE.equals(defaultString)) {
                 rawProp = new SourcedValueImpl(key, defaultString, String.class, Config14Constants.DEFAULT_STRING_SOURCE_NAME);
             }
@@ -98,7 +99,7 @@ public class Config14Impl extends AbstractConfig implements WebSphereConfig14 {
 
             Object value = null;
             if (converter == null) {
-                value = this.getConversionManager().convert(stringValue, type);
+                value = this.getConversionManager().convert(stringValue, type, genericSubType);
             } else {
                 value = converter.convert(stringValue);
             }

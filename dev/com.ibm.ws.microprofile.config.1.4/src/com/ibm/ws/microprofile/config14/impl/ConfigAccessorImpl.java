@@ -31,7 +31,8 @@ public class ConfigAccessorImpl<T> implements WebSphereConfigAccessor<T> {
 
     private final WebSphereConfig14 config;
     private final List<String> propertyNames;
-    private final Class<T> conversionType;
+    private final Class<T> rawType;
+    private final Class<?> genericSubType;
 
     private final Duration cacheFor;
     private boolean evaluateVariables;
@@ -46,11 +47,12 @@ public class ConfigAccessorImpl<T> implements WebSphereConfigAccessor<T> {
     private String mostRecentPropertyName;
     //*****************
 
-    public ConfigAccessorImpl(WebSphereConfig14 config, List<String> propertyNames, Class<T> conversionType, Duration cacheFor,
+    public ConfigAccessorImpl(WebSphereConfig14 config, List<String> propertyNames, Class<T> rawType, Class<?> genericSubType, Duration cacheFor,
                               boolean evaluateVariables, Object defaultValue, String defaultString, Converter<T> converter) {
         this.config = config;
         this.propertyNames = propertyNames;
-        this.conversionType = conversionType;
+        this.rawType = rawType;
+        this.genericSubType = genericSubType;
         this.evaluateVariables = evaluateVariables;
         this.cacheFor = cacheFor;
         this.evaluateVariables = evaluateVariables;
@@ -110,7 +112,8 @@ public class ConfigAccessorImpl<T> implements WebSphereConfigAccessor<T> {
         if (snapshot == null) {
             synchronized (this) {
                 if (!checkCache()) {
-                    sourcedValue = config.getSourcedValue(this.propertyNames, this.conversionType, this.defaultValue, this.defaultString, this.evaluateVariables, this.converter);
+                    sourcedValue = config.getSourcedValue(this.propertyNames, this.rawType, this.genericSubType, this.defaultValue, this.defaultString, this.evaluateVariables,
+                                                          this.converter);
 
                     //only set the cache to valid if cacheFor is positive
                     if (this.cacheFor != null) {

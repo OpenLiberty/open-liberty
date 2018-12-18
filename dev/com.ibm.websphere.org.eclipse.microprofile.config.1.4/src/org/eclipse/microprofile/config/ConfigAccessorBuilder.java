@@ -30,6 +30,7 @@ package org.eclipse.microprofile.config;
 
 
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 import org.eclipse.microprofile.config.spi.Converter;
  
@@ -49,6 +50,8 @@ import org.eclipse.microprofile.config.spi.Converter;
 public interface ConfigAccessorBuilder<T> {
 
 
+	ConfigAccessorBuilder<List<T>> asList();
+	
     /**
      * Defines a specific {@link Converter} to be used instead of applying the default Converter resolving logic.
      *
