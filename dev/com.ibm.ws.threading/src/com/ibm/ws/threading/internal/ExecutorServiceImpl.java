@@ -185,7 +185,6 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
 
         int coreThreads = Integer.parseInt(String.valueOf(componentConfig.get("coreThreads")));
         int maxThreads = Integer.parseInt(String.valueOf(componentConfig.get("maxThreads")));
-        long keepAliveMillis = Long.parseLong(String.valueOf(componentConfig.get("keepAlive")));
 
         if (maxThreads <= 0) {
             maxThreads = Integer.MAX_VALUE;
@@ -202,7 +201,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
 
         RejectedExecutionHandler rejectedExecutionHandler = new ExpandPolicy(workQueue, this);
 
-        threadPool = new ThreadPoolExecutor(coreThreads, maxThreads, keepAliveMillis, TimeUnit.MILLISECONDS, workQueue, threadFactory != null ? threadFactory : new ThreadFactoryImpl(poolName, threadGroupName), rejectedExecutionHandler);
+        threadPool = new ThreadPoolExecutor(coreThreads, maxThreads, 0, TimeUnit.MILLISECONDS, workQueue, threadFactory != null ? threadFactory : new ThreadFactoryImpl(poolName, threadGroupName), rejectedExecutionHandler);
 
         threadPoolController = new ThreadPoolController(this, threadPool);
 
