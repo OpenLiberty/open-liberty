@@ -13,6 +13,9 @@ package com.ibm.ws.microprofile.config.test;
 import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
 import org.jboss.arquillian.core.spi.LoadableExtension;
 
+import com.ibm.ws.fat.util.tck.HamcrestArchiveProcessor;
+import com.ibm.ws.fat.util.tck.TestObserverArchiveProcessor;
+
 /**
  * We register an extension class with Arquillian that amends the vanilla tck's wars
  * to add any libraries that are not in the default Liberty environment
@@ -20,7 +23,9 @@ import org.jboss.arquillian.core.spi.LoadableExtension;
 public class ArquillianLoadableExtension implements LoadableExtension {
     @Override
     public void register(ExtensionBuilder extensionBuilder) {
-        System.out.println("WLP: Adding Extension com.ibm.ws.microprofile.config.test.ArchiveProcessor");
-        extensionBuilder.service(ApplicationArchiveProcessor.class, ArchiveProcessor.class);
+        System.out.println("WLP: Adding Extension com.ibm.ws.fat.util.tck.HamcrestArchiveProcessor");
+        extensionBuilder.service(ApplicationArchiveProcessor.class, HamcrestArchiveProcessor.class);
+        System.out.println("WLP: Adding Extension com.ibm.ws.fat.util.tck.TestObserverArchiveProcessor");
+        extensionBuilder.service(ApplicationArchiveProcessor.class, TestObserverArchiveProcessor.class);
     }
 }
