@@ -12,6 +12,7 @@ package com.ibm.ws.concurrent.mp.fat.tck;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
@@ -35,8 +36,10 @@ public class MPConcurrencyTCKLauncher {
         server.stopServer();
     }
 
-    // @Test
+    @Test
     public void launchMPConcurrency10Tck() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp_fat_tck", this.getClass() + ":launchMPConcurrency10Tck");
+        // TODO: Run this all the time once the MP Concurrency 1.0 TCK is finalized
+        if (FATRunner.FAT_TEST_LOCALRUN)
+            MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp_fat_tck", this.getClass() + ":launchMPConcurrency10Tck");
     }
 }
