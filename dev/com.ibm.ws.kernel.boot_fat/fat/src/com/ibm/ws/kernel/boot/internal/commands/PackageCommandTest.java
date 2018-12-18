@@ -127,6 +127,62 @@ public class PackageCommandTest {
     }
 
     /**
+     * Packages --include=minify,runnable jar and verifies correct content.
+     * Makes sure that if --archive is set to a zip file name a jar is created.
+     * 
+     * This test is not run if:
+     * 1) platform is z/OS (jar archive not supported)
+     * 2) wlp/lib/extract directory does not exist
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testCreateRunnableJarWithZipArchive() throws Exception {
+        // Pick any server, doesn't matter.
+        String serverName = "com.ibm.ws.kernel.bootstrap.fat";
+        String jarFileName = serverName + ".zip";
+        String mainClass = "wlp.lib.extract.SelfExtractRun";
+
+        // Doesn't work on z/OS (because you can't package into a jar on z/OS)
+        assumeTrue(!System.getProperty("os.name").equals("z/OS"));
+
+        LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
+
+        // Only run the test if the lib/extract directory exists
+        try {
+            server.getFileFromLibertyInstallRoot("lib/extract");
+
+            String stdout = server.executeServerScript("package", new String[] { "--archive=" + jarFileName, "--include=runnable" }).getStdout();
+
+            assertTrue("Could not package server " + serverName, stdout.contains("Server " + serverName + " package complete"));
+
+            JarFile jarFile = new JarFile(server.getFileFromLibertyServerRoot(jarFileName).getAbsolutePath());
+
+            // Check the manifest for headers that should be in there.
+            Manifest mf = jarFile.getManifest();
+            assertNotNull("There should be a manifest in the jar file", mf);
+
+            // make sure it'a a runnable jar
+            assertEquals(mainClass, mf.getMainAttributes().getValue("Main-Class"));
+
+            // Check that the self-extract and the server's entries are in the jar
+            Enumeration<JarEntry> entries = jarFile.entries();
+            assertTrue(entries.hasMoreElements());
+
+            boolean foundSelfExtractRun = false;
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                foundSelfExtractRun |= entry.getName().startsWith("wlp/lib/extract/SelfExtractRun.class");
+            }
+
+            assertTrue(foundSelfExtractRun);
+
+        } catch (FileNotFoundException ex) {
+            assumeTrue(false); // the directory does not exist, so we skip this test.
+        }
+    }
+
+    /**
      * Make sure that when packaging a jar archive using --include=usr,
      * the resulting jar files does NOT contain the self-extract files.
      */
