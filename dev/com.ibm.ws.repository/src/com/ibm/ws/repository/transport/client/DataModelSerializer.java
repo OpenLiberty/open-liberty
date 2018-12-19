@@ -494,21 +494,10 @@ public class DataModelSerializer {
         }
 
         if (verify.equals(Verification.VERIFY) && targetObject instanceof VersionableContent) {
-            try {
-                String version = json.getString(((VersionableContent) targetObject).nameOfVersionAttribute(), null);
-                if (version != null) {
-                    ((VersionableContent) targetObject).validate(version);
-                }
-            } catch (NullPointerException e) {
-                System.out.println("@AGG caught NPE: " + e.getMessage());
-                try {
-                    System.out.println("json=" + json);
-                    System.out.println("targetObject=" + targetObject);
-                    System.out.println("((VersionableContent) targetObject).nameOfVersionAttribute()=" + ((VersionableContent) targetObject).nameOfVersionAttribute());
-                    System.out.println("json.getString(((VersionableContent) targetObject).nameOfVersionAttribute(), null)="
-                                       + json.getString(((VersionableContent) targetObject).nameOfVersionAttribute(), null));
-                } catch (Exception ignore) {
-                }
+            String versionAttr = ((VersionableContent) targetObject).nameOfVersionAttribute();
+            if (!json.isNull(versionAttr)) {
+                String version = json.getString(versionAttr);
+                ((VersionableContent) targetObject).validate(version);
             }
         }
 
