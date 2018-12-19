@@ -10,9 +10,7 @@
     
 ## 2. Run the MP TCK in the OpenLiberty repo as a FAT
 
-1. In `fat/src/com/ibm/ws/concurrent/mp/fat/tck/MPConcurrencyTCKLauncher.java` un-comment the `launchMPConcurrency10Tck` test
-
-2. Run the FAT normally:
+1. Run the FAT normally:
     `./gradlew com.ibm.ws.concurrent.mp_fat_tck:buildandrun`
     
 ## 3. Iterate making changes and running tests (i.e. "Inner dev loop")
