@@ -1,5 +1,8 @@
 package com.ibm.ws.anno.tests.caching;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -398,6 +401,18 @@ public abstract class CachingTest extends LoggingTest {
     } 
     
     /**
+     * Returns a File object for the application file under the "apps" directory under the .../server_root_dir/.
+     * @return
+     */
+    public static File getInstalledAppDir() throws Exception {
+        String installedAppsPath = sharedServer.getLibertyServer().getServerRoot() + "/apps/";
+
+        LOG.info("installedAppsPath [" + installedAppsPath + "]");
+        return new File(installedAppsPath);
+    } 
+    
+    
+    /**
      * Returns the root directory of the Liberty server.
      * @return
      * @throws Exception
@@ -406,6 +421,30 @@ public abstract class CachingTest extends LoggingTest {
         return sharedServer.getLibertyServer().getServerRoot();
     }
     
+    /**
+     * Copy a "jvm.options" from the test server configuration folder to the server directory.
+     * @param sourceJvmOptions  - File to copy to jvm.options in the server directory.
+     * @throws Exception
+     */
+    protected static void installJvmOptions(String sourceJvmOptions) throws Exception {
+        LOG.info("installJvmOptions : " + sourceJvmOptions);
+
+        String serverRootDir = getServerRoot();
+        File jvmOptionsFile = new File(serverRootDir + "/jvm.options");
+
+        if (jvmOptionsFile.exists()) {
+            // Delete jvm.options file
+            assertTrue("Unable to delete jvm.options file", jvmOptionsFile.delete());
+            assertFalse("Unable to delete jvm.options file, still exists", jvmOptionsFile.exists());
+        }
+
+        // if sourceJvmOptions is null, then the assumption is that we just want to delete any existing jvm.options
+        if (sourceJvmOptions != null) {
+            File serverJvmOptionsFile = new File(serverRootDir + "/serverConfigurations/" + sourceJvmOptions);
+            FileUtils.copyFile(serverJvmOptionsFile, jvmOptionsFile); 
+        }
+    }
+
     /**
      * Copy a server.xml from the server configuration to the shared server.
      */
@@ -505,14 +544,14 @@ public abstract class CachingTest extends LoggingTest {
         } 
     }
     
-    public static void renameJarFileInApplication(String fileNameToRename, String newFileName) throws Exception {
+    public static void renameJarFileInApplication(String warName, String fileNameToRename, String newFileName) throws Exception {
         
-        String webInfLibDirName = sharedServer.getLibertyServer().getServerRoot() + "/apps/expanded/" + getEarName() + "/TestServlet40.war/WEB-INF/lib/";
+        String webInfLibDirName = sharedServer.getLibertyServer().getServerRoot() + "/apps/expanded/" + getEarName() + "/" + warName + "/WEB-INF/lib/";
         File fileToRename = new File(webInfLibDirName + fileNameToRename);
         File fileNewName = new File(webInfLibDirName + newFileName);
-        boolean deleteWorked = fileToRename.renameTo(fileNewName);
+        boolean renameWorked = fileToRename.renameTo(fileNewName);
         
-        if ( !deleteWorked ) {
+        if ( !renameWorked ) {
             throw new Exception("File [ " + fileNameToRename + " ] not removed.  File.delete() method returned false");
         } else if (fileToRename.exists()) {
             throw new Exception("File [ " + fileNameToRename + " ] not removed.  Still exists.");
@@ -656,7 +695,7 @@ public abstract class CachingTest extends LoggingTest {
         LOG.info("stopServer : stopped server");
     }
     
-    protected static void waitForAppUpdateToBeNoticed() throws Exception {
+    protected static long waitForAppUpdateToBeNoticed() throws Exception {
         long lStartTime = System.nanoTime();
         libertyServer.waitForStringInLog("CWWKZ0003I:", libertyServer.getConsoleLogFile());
 
@@ -664,6 +703,7 @@ public abstract class CachingTest extends LoggingTest {
         long elapsed = lEndTime - lStartTime;
         LOG.info("Server updated in milliseconds: " + elapsed / 1000000);
         libertyServer.setMarkToEndOfLog(libertyServer.getConsoleLogFile());
+        return elapsed;
     }
     
     public static void zzzzzzunzip(File sourceArchive, String destinationPath) throws IOException {

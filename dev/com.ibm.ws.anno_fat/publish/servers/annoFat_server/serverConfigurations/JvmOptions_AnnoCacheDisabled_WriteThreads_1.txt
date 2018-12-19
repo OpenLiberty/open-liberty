@@ -1,0 +1,2 @@
+-Danno.cache.disabled=true
+-Danno.cache.writeThreads=1

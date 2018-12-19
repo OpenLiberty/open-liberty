@@ -14,7 +14,8 @@
     
 	<javaPermission className="java.util.PropertyPermission" name="org.glassfish.web.rfc2109_cookie_names_enforced" actions="read" codebase="${server.config.dir}dropins/TestServlet40.ear"/>
 	
-    <application  location="TestServlet40.ear"/> <!-- useJandex not set (default is false)  -->
+    <application location="TestServlet40.ear"/> <!-- useJandex not set (default is false)  -->
+    
 	<applicationManager useJandex="true"></applicationManager>
 
 </server>

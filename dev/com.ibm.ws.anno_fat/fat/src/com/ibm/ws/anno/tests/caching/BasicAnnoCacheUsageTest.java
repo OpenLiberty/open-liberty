@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.anno.tests.caching;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -45,10 +47,7 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
     // Test API extensions ...
 
     // Not using ClassRule annotation.  So server does NOT start automatically.
-    public static SharedServer SHARED_SERVER = new SharedServer("annoFat_server", false);
-    // false, false:
-    //   don't wait for security;
-    //   don't start the server during the before step.
+    public static SharedServer SHARED_SERVER = new SharedServer("annoFat_server", false); // false: don't wait for security;
 
     @Override
     protected SharedServer getSharedServer() {
@@ -69,10 +68,13 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
     // LOG.info("App has started, or so we believe");
 
     protected static void startServer() throws Exception {
+        
         LOG.info("startServer : starting server");
-        SHARED_SERVER.startIfNotStarted(false, true, false); 
-        // (false, false, false):
-        //   Do not pre-clean, do clean, do not validate apps.
+        SHARED_SERVER.startIfNotStarted(false,   // Don't preClean 
+                                        true,    // Do clean start
+                                        false);  // Don't validate apps have started
+        
+
         LOG.info("startServer : started server");
     }    
 
@@ -81,6 +83,7 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
     }
 
     protected static void stopServer(String... expectedMessages) throws Exception {
+        
         LOG.info("stopServer : stopping server");
         for ( String message : expectedMessages ) {
             LOG.info("stopServer : expecting [ " + message + " ]");
@@ -102,8 +105,9 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
     }
 
     /**
-     * Copy a server.xml from the server configuration folder to
-     * the shared server.
+     * Copy a "server.xml" from the test server configuration folder to the server directory.
+     * @param sourceServerXml  - File to copy to server.xml in the server directory.
+     * @throws Exception
      */
     protected static void installServerXml(String sourceServerXml) throws Exception {
         LOG.info("installServerXml : " + sourceServerXml);
@@ -118,6 +122,28 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
         File serverConfigurationFile = new File(serverRootDir + "/serverConfigurations/" + sourceServerXml);
         FileUtils.copyFile(serverConfigurationFile, serverXmlFile); 
     }    
+    
+    /**
+     * Copy a "jvm.options" from the test server configuration folder to the server directory.
+     * @param sourceJvmOptions  - File to copy to jvm.options in the server directory.
+     * @throws Exception
+     */
+    protected static void installJvmOptions(String sourceJvmOptions) throws Exception {
+        LOG.info("installJvmOptions : " + sourceJvmOptions);
+
+        String serverRootDir = getServerRoot();
+        File jvmOptionsFile = new File(serverRootDir + "/jvm.options");
+
+        if (jvmOptionsFile.exists()) {
+            jvmOptionsFile.delete();
+        }
+
+        // if sourceJvmOptions is null, then the assumption is that we just want to delete any existing jvm.options
+        if (sourceJvmOptions != null) {
+            File serverJvmOptionsFile = new File(serverRootDir + "/serverConfigurations/" + sourceJvmOptions);
+            FileUtils.copyFile(serverJvmOptionsFile, jvmOptionsFile); 
+        }
+    }
 
     // Test API ...
 
@@ -241,21 +267,12 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
     @Test
     public void testAnnotationCacheCreatedAndIsActuallyUsed() throws Exception {
         installServerXml("jandexDefaultsAutoExpandTrue_server.xml");  // Default Jandex settings.  NOT using Jandex.
+        installJvmOptions(null);  // No server.env -- default properties
 
         startServer();
 
         // Looking for a dir something like this: .../<SERVER_NAME>/workarea/org.eclipse.osgi/42/data/anno
-        File annoCacheDir = getAnnoCacheRoot();
-        assertNotNull("Can't find root 'anno' directory", annoCacheDir);
-
-        // Now find the application directory below the anno cache root
-        // something like:  .../<SERVER_NAME>/workarea/org.eclipse.osgi/42/data/anno/A_TestServlet40
-        File applicationWorkArea = getAnnoCacheAppRoot();
-        assertNotNull("Can't find application directory 'A_TestServlet40'", applicationWorkArea);
-
-        // Test if 'classes' exists.  Assume cache created successfully if exists.
-        File classRefsFile = findFile(applicationWorkArea, "classes");
-        assertNotNull("Can't find classes file 'classes'", classRefsFile);
+        verifyCacheExists();
 
         // The app contains a servlet.  Verify we can access it.
         verifyResponse("/TestServlet40/SimpleTestServlet", "Hello World");
@@ -268,7 +285,7 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
         // This test directly changes the cache data to give the appearance
         // that the servlet is no longer present.
 
-        String annoTargetsFileName = applicationWorkArea.getCanonicalPath() + "/M_%2FTestServlet40.war/seed/targets";
+        String annoTargetsFileName = getAnnoCacheAppRoot().getCanonicalPath() + "/M_%2FTestServlet40.war/seed/targets";
         File annoTargetsFile = new File(annoTargetsFileName);
         String backupFileName =  annoTargetsFileName + ".backup";
         File backupFile = new File(backupFileName);
@@ -295,8 +312,117 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
         // The servlet should again be available.
         verifyResponse("/TestServlet40/SimpleTestServlet", "Hello World");
         stopServer();
+        
+        verifyReadOnlyCacheIsNotWrittenTo();
+        
     }
+    
+    private void verifyCacheExists() {
+        File annoCacheDir = getAnnoCacheRoot();
+        assertNotNull("Can't find root 'anno' directory", annoCacheDir);
+        
+        // Now find the application directory below the anno cache root
+        // something like:  .../<SERVER_NAME>/workarea/org.eclipse.osgi/42/data/anno/A_TestServlet40
+        File annoCacheRootDir = getAnnoCacheAppRoot();
+        assertNotNull("Can't find application directory 'A_TestServlet40'", annoCacheRootDir);
 
+        // Test if 'classes' exists.  Assume cache created successfully if exists.
+        File classRefsFile = findFile(annoCacheRootDir, "classes");
+        assertNotNull("Can't find classes file 'classes'", classRefsFile);
+    }
+    
+    /**
+     * Verify that if you have a read only cache, it should be used, but not written to.
+     * 
+     * This test is not called directly from the framework because it needs some additional set up.
+     * It needs to have a preexisting cache.  So it is called from a test that has already
+     * created the cache.
+     * 
+     * @throws Exception
+     */
+    private void verifyReadOnlyCacheIsNotWrittenTo() throws Exception {
+
+        startServer();
+
+        // Looking for a dir something like this: .../<SERVER_NAME>/workarea/org.eclipse.osgi/42/data/anno
+        verifyCacheExists();
+
+        // The app contains a servlet.  Verify we can access it.
+        verifyResponse("/TestServlet40/SimpleTestServlet", "Hello World");
+
+        stopServer();
+        
+        // Create READ-ONLY settings
+        // Remove the WAR directory from the cache
+        // Restart the server (dirty) - not removing the rest of the cache.
+        installServerXml("jandexDefaultsAutoExpandTrue_server.xml");  // Default Jandex settings.  NOT using Jandex.
+        installJvmOptions("JvmOptions_AnnoCacheReadOnly_True.txt");
+        
+        String warCacheDirName = getAnnoCacheAppRoot().getCanonicalPath() + "/M_%2FTestServlet40.war";
+        File warCacheDir = new File(warCacheDirName);
+        LOG.info("File [ " + warCacheDirName + " ] last modified [ " + convertTime(warCacheDir.lastModified()) + " ]");
+        FileUtils.recursiveDelete(warCacheDir);        
+        if (warCacheDir.exists()) {
+            throw new Exception("Unable to delete WAR cache directory [ " + warCacheDirName + " ] ");
+        }
+        displayJvmOptions();
+        
+        SHARED_SERVER.startIfNotStarted(false, false, false);
+        displayJvmOptions();
+        
+        // The cache should still exist, but a piece should be missing.
+        verifyCacheExists();
+        assertFalse("WAR Container [ " + warCacheDirName + " ] exists, but should not.", warCacheDir.exists());
+        
+        // The War contains a servlet, MyServlet.  Verify we can access it.
+        verifyResponse("/TestServlet40/MyServlet", "Hello World");
+
+        stopServer();
+    } 
+    
+    /**
+     * Display the web.xml file in the logs
+     * @throws Exception
+     */
+    public static void displayJvmOptions() throws Exception {
+        String serverDirName = getServerRoot();
+        File jvmOptionsFile = new File(serverDirName + "/jvm.options");
+        
+        BufferedReader targetsReader = new BufferedReader(new FileReader(jvmOptionsFile)); 
+        try {
+            String line; 
+            LOG.info("jvm.options:\n" + serverDirName + "/jvm.options");
+            while ((line = targetsReader.readLine()) != null) {
+                LOG.info(line);
+            } 
+
+        } catch (IOException ioe) {
+            LOG.info(ioe.getMessage());
+            throw ioe;
+
+        } finally {
+            if (targetsReader != null) {
+                targetsReader.close();
+            } 
+        }
+    }
+    
+    @Test
+    public void testAnnotationCacheNotCreatedWhenDisabled() throws Exception {
+        installServerXml("jandexDefaultsAutoExpandTrue_server.xml");  // Default Jandex settings.  NOT using Jandex.
+        installJvmOptions("JvmOptions_AnnoCacheDisabled_True.txt");
+        startServer();
+
+        // Looking for a dir something like this: .../<SERVER_NAME>/workarea/org.eclipse.osgi/42/data/anno
+        File annoCacheDir = getAnnoCacheRoot();
+        assertNull("Found annotation cache directory 'anno', but caching is disabled.", annoCacheDir);
+        
+        // The app contains a servlet.  Verify we can access it.
+        verifyResponse("/TestServlet40/SimpleTestServlet", "Hello World");
+
+        stopServer();
+    }    
+       
     /**
      * Log the time that the targets file was created under the WAR Module directory. (for debugging)
      */

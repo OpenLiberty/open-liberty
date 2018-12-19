@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.anno.tests.caching.AbsoluteOrderingTest;
 import com.ibm.ws.anno.tests.caching.BasicAnnoCacheUsageTest;
+import com.ibm.ws.anno.tests.caching.BigAppTest;
 import com.ibm.ws.anno.tests.caching.LooseConfigTest;
 import com.ibm.ws.anno.tests.caching.MetadataCompleteTest;
 import com.ibm.ws.anno.tests.caching.MetadataCompleteMissingServletsTest;
@@ -51,7 +52,7 @@ import com.ibm.ws.fat.util.FatLogHandler;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                
+                BigAppTest.class,
               	BasicAnnoCacheUsageTest.class,
             	AbsoluteOrderingTest.class,
              	LooseConfigTest.class,

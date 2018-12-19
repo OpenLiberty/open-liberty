@@ -116,21 +116,22 @@ public class LooseConfigTest extends CachingTest {
      * @throws Exception
      */
     @Test
-    public void testUpdateToLooseXmlGetsNoticed() throws Exception {
+    public void testLooseAppUpdatesGetsNoticed() throws Exception {
         
-        // The first Loose XML has WAR1 commented out.
+        // Verify the initial state.  The first Loose XML has WAR1 commented out.
         verifyBadUrl("/MyLooseWeb1");
         verifyBadUrl("/MyLooseWeb1/Wobbly");
         verifyBadUrl("/MyLooseWeb1/Servlet1"); 
         verifyResponse("/MyLooseWeb2",          "Hi, this is loose web2.");
         verifyResponse("/MyLooseWeb2/Servlet2", "Hello From Servlet 2.");        
-        verifyBadUrl("/MyLooseWeb2/AddedServlet");
+        verifyBadUrl("/MyLooseWeb2/AddedServlet");  // AddedServlet not added at this point.
         
-        // Copy the loose config XML file to server apps directory.
+        // Copy the second loose config XML file to server apps directory.
         copyFile(APP_SOURCE + "LooseConfig2.ear.xml" ,   sharedServer.getLibertyServer().getServerRoot() + "/apps/"  + earFileName);
         waitForAppUpdateToBeNoticed();
        
-        // The second Loose XML un-comments WAR1 and comments WAR2
+        // The second Loose XML un-comments WAR1 and comments WAR2.  Testing removing something
+        // and adding something to the loose xml.
         verifyResponse("/MyLooseWeb1",          "Hi, this is loose web1.");
         verifyResponse("/MyLooseWeb1/Wobbly",   "They call me Wobbly, cause I'm a little loose.");
         verifyResponse("/MyLooseWeb1/Servlet1", "Hello From Servlet 1.");
@@ -138,7 +139,7 @@ public class LooseConfigTest extends CachingTest {
         verifyBadUrl("/MyLooseWeb2/Servlet2");
         verifyBadUrl("/MyLooseWeb2/AddedServlet");
         
-        // Copy the loose config XML file to server apps directory.
+        // Copy the third loose config XML file to server apps directory.
         copyFile(APP_SOURCE + "LooseConfig3.ear.xml" ,   sharedServer.getLibertyServer().getServerRoot() + "/apps/"  + earFileName);
         waitForAppUpdateToBeNoticed();
                
@@ -148,14 +149,16 @@ public class LooseConfigTest extends CachingTest {
         verifyResponse("/MyLooseWeb1/Servlet1", "Hello From Servlet 1.");        
         verifyResponse("/MyLooseWeb2",          "Hi, this is loose web2.");
         verifyResponse("/MyLooseWeb2/Servlet2", "Hello From Servlet 2.");
-        verifyBadUrl("/MyLooseWeb2/AddedServlet");
+        verifyBadUrl("/MyLooseWeb2/AddedServlet");  // AddedServlet still not added at this point.
         
-        // Copy the "AddedServlet" into WAR2
+        // To this point, we have only changed the loose xml.  Now add a servlet to a
+        // location already configured in the loose XML.   Copy the "AddedServlet" into WAR2.
         String looseAppDir = libertyServer.getServerRoot() + "/apps/looseConfig/";
         mkDir(looseAppDir + "LooseWeb2/classes/looseweb2", DELETE_IF_EXISTS);
         copyFolder("build/classes/looseweb2", looseAppDir + "LooseWeb2/classes/looseweb2");
         waitForAppUpdateToBeNoticed();
         
+        // All servlets should be available now.
         verifyResponse("/MyLooseWeb1",          "Hi, this is loose web1.");
         verifyResponse("/MyLooseWeb1/Wobbly",   "They call me Wobbly, cause I'm a little loose.");
         verifyResponse("/MyLooseWeb1/Servlet1", "Hello From Servlet 1.");        

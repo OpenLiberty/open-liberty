@@ -78,7 +78,7 @@ public class AbsoluteOrderingTest extends CachingTest {
      * after each web.xml update.
      * @throws Exception
      */
-    @Test
+    @Test  /*  Expensive test because of the server estarts */
     public void testAbsoluteOrdering() throws Exception {
 
         // Start with a web.xml with absolute-ordering containing Fragments A & B
@@ -101,6 +101,74 @@ public class AbsoluteOrderingTest extends CachingTest {
         tryWebXmlWithAbsoluteOrder_C_D_A_B_Others(ServerStartType.DIRTY, "Test with web.xml with ordering C D A B others");
         
         tryRemovingAndAddingAJar(ServerStartType.DIRTY, "Test removing TestServletD.jar from app.");     
+    }
+    
+    @Test
+    public void testCacheValidate() throws Exception {
+        installJvmOptions("JvmOptions_AnnoCacheValidate_True.txt");
+        startServerClean();
+        
+        // Start with a web.xml with absolute-ordering containing Fragments A & B
+        // Start the server cleanly and verify we get the expected response 
+        // (or expected lack of a response) from the servlets.
+        tryWebXmlWithAbsoluteOrder_A_B(ServerStartType.NONE, "Initial Test with web.xml containing Fragments A & B");       
+  
+        LOG.info("Stopping server");
+        stopServer("CWWKZ0014W", "SRVE0190E");      
+    }
+    
+    @Test
+    public void testReducedScanThreads() throws Exception {
+        installJvmOptions("JvmOptions_ComIbmWsAnnoScanThreads_1.txt");
+        startServerClean();
+        
+        // Start with a web.xml with absolute-ordering containing Fragments A & B
+        // Start the server cleanly and verify we get the expected response 
+        // (or expected lack of a response) from the servlets.
+        tryWebXmlWithAbsoluteOrder_A_B(ServerStartType.NONE, "Test reducing number of scan threads to 1");       
+  
+        LOG.info("Stopping server");
+        stopServer("CWWKZ0014W", "SRVE0190E");      
+        
+        //-----------------------------------------------------------------------------
+        
+        installJvmOptions("JvmOptions_ComIbmWsAnnoScanThreads_-1.txt");
+        startServerClean();
+        
+        // Start with a web.xml with absolute-ordering containing Fragments A & B
+        // Start the server cleanly and verify we get the expected response 
+        // (or expected lack of a response) from the servlets.
+        tryWebXmlWithAbsoluteOrder_A_B(ServerStartType.NONE, "Test reducing number of scan threads to -1");    
+  
+        LOG.info("Stopping server");
+        stopServer("CWWKZ0014W", "SRVE0190E"); 
+    }
+    
+    @Test
+    public void testReducedWriteThreads() throws Exception {
+        installJvmOptions("JvmOptions_AnnoCacheWriteThreads_1.txt");
+        startServerClean();
+        
+        // Start with a web.xml with absolute-ordering containing Fragments A & B
+        // Start the server cleanly and verify we get the expected response 
+        // (or expected lack of a response) from the servlets.
+        tryWebXmlWithAbsoluteOrder_A_B(ServerStartType.NONE, "Test reducing number of write threads to 1");       
+  
+        LOG.info("Stopping server");
+        stopServer("CWWKZ0014W", "SRVE0190E"); 
+        
+        //----------------------------------------------------------------------
+        
+        installJvmOptions("JvmOptions_AnnoCacheWriteThreads_-1.txt");
+        startServerClean();
+        
+        // Start with a web.xml with absolute-ordering containing Fragments A & B
+        // Start the server cleanly and verify we get the expected response 
+        // (or expected lack of a response) from the servlets.
+        tryWebXmlWithAbsoluteOrder_A_B(ServerStartType.NONE, "Test reducing number of write threads to -1");    
+  
+        LOG.info("Stopping server");
+        stopServer("CWWKZ0014W", "SRVE0190E"); 
     }
     
     /**
@@ -454,7 +522,7 @@ public class AbsoluteOrderingTest extends CachingTest {
         
         // Start with an initial web.xml has absolute-ordering that specifies only JARs A & B
 
-        renameJarFileInApplication("TestServletD.jar", "TestServletD.jar_backup");
+        renameJarFileInApplication("TestServlet40.war", "TestServletD.jar", "TestServletD.jar_backup");
         replaceWebXmlInExpandedApp("web-absolute-ordering-a-b-others.xml");
         
         // When the server restarts, it re-expands the .ear file into the expanded app.
@@ -520,7 +588,7 @@ public class AbsoluteOrderingTest extends CachingTest {
         
         // Put things back the way they were, and then rerun the test.  Servlet D should be available this time.
         logBlock("Restoring TestServletD.jar to the application"); 
-        renameJarFileInApplication("TestServletD.jar_backup", "TestServletD.jar");
+        renameJarFileInApplication("TestServlet40.war", "TestServletD.jar_backup", "TestServletD.jar");
         tryWebXmlWithAbsoluteOrder_A_B_Others(serverStartType, "Test with web.xml with ordering A B others");
  
         LOG.info("RETURN");
