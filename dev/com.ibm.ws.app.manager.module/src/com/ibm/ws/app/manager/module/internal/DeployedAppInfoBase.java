@@ -512,8 +512,10 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
 
             ArrayList<Permission> mergedPermissions = permissionManager.getEffectivePermissions(applicationInformation.getLocation());
             int count = mergedPermissions.size();
-            for (int i = 0; i < count; i++)
-                perms.add(mergedPermissions.get(i));
+            if (count > 0) {
+                for (int i = 0; i < count; i++)
+                    perms.add(mergedPermissions.get(i));
+            }
         }
 
         CodeSource codesource;
