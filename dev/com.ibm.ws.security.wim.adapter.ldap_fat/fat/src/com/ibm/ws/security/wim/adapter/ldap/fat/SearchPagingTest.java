@@ -235,7 +235,7 @@ public class SearchPagingTest {
          */
         LDAPFatUtils.resetMarksInLogs(libertyServer);
         assertEquals(MAX_ENTRIES, servlet.getUsers("*", 0).getList().size());
-        List<String> r = libertyServer.findStringsInLogsAndTrace("Search page: 1");
+        List<String> r = libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 1");
         Log.info(c, "searchWithNoPaging", "Result " + r);
         assertTrue("Should not find, Search page: 1, in the logs, found: " + r, r.isEmpty());
 
@@ -244,7 +244,7 @@ public class SearchPagingTest {
          */
         LDAPFatUtils.resetMarksInLogs(libertyServer);
         assertEquals(MAX_ENTRIES, servlet.getGroups("*", 0).getList().size());
-        r = libertyServer.findStringsInLogsAndTrace("Search page: 1");
+        r = libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 1");
         Log.info(c, "searchWithNoPaging", "Result " + r);
         assertTrue("Should not find, Search page: 1, in the logs, found: " + r, r.isEmpty());
     }
@@ -264,31 +264,31 @@ public class SearchPagingTest {
          */
         LDAPFatUtils.resetMarksInLogs(libertyServer);
         assertEquals(MAX_ENTRIES, servlet.getUsers("*", 0).getList().size());
-        assertFalse("Didn't find search for page 1", libertyServer.findStringsInLogsAndTrace("Search page: 1").isEmpty());
-        assertFalse("Didn't find search for page 2", libertyServer.findStringsInLogsAndTrace("Search page: 2").isEmpty());
-        assertFalse("Didn't find search for page 3", libertyServer.findStringsInLogsAndTrace("Search page: 3").isEmpty());
-        assertFalse("Didn't find search for page 4", libertyServer.findStringsInLogsAndTrace("Search page: 4").isEmpty());
-        assertFalse("Didn't find search for page 5", libertyServer.findStringsInLogsAndTrace("Search page: 5").isEmpty());
-        assertFalse("Didn't find search for page 6", libertyServer.findStringsInLogsAndTrace("Search page: 6").isEmpty());
-        assertFalse("Didn't find search for page 7", libertyServer.findStringsInLogsAndTrace("Search page: 7").isEmpty());
-        assertFalse("Didn't find search for page 8", libertyServer.findStringsInLogsAndTrace("Search page: 8").isEmpty());
-        assertFalse("Didn't find search for page 9", libertyServer.findStringsInLogsAndTrace("Search page: 9").isEmpty());
-        assertFalse("Didn't find search for page 10", libertyServer.findStringsInLogsAndTrace("Search page: 10").isEmpty());
+        assertFalse("Didn't find search for page 1", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 1").isEmpty());
+        assertFalse("Didn't find search for page 2", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 2").isEmpty());
+        assertFalse("Didn't find search for page 3", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 3").isEmpty());
+        assertFalse("Didn't find search for page 4", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 4").isEmpty());
+        assertFalse("Didn't find search for page 5", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 5").isEmpty());
+        assertFalse("Didn't find search for page 6", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 6").isEmpty());
+        assertFalse("Didn't find search for page 7", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 7").isEmpty());
+        assertFalse("Didn't find search for page 8", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 8").isEmpty());
+        assertFalse("Didn't find search for page 9", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 9").isEmpty());
+        assertFalse("Didn't find search for page 10", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 10").isEmpty());
 
         /*
          * Check a group search.
          */
         LDAPFatUtils.resetMarksInLogs(libertyServer);
         assertEquals(MAX_ENTRIES, servlet.getGroups("*", 0).getList().size());
-        assertFalse("Didn't find search for page 1", libertyServer.findStringsInLogsAndTrace("Search page: 1").isEmpty());
-        assertFalse("Didn't find search for page 2", libertyServer.findStringsInLogsAndTrace("Search page: 2").isEmpty());
-        assertFalse("Didn't find search for page 3", libertyServer.findStringsInLogsAndTrace("Search page: 3").isEmpty());
-        assertFalse("Didn't find search for page 4", libertyServer.findStringsInLogsAndTrace("Search page: 4").isEmpty());
-        assertFalse("Didn't find search for page 5", libertyServer.findStringsInLogsAndTrace("Search page: 5").isEmpty());
-        assertFalse("Didn't find search for page 6", libertyServer.findStringsInLogsAndTrace("Search page: 6").isEmpty());
-        assertFalse("Didn't find search for page 7", libertyServer.findStringsInLogsAndTrace("Search page: 7").isEmpty());
-        assertFalse("Didn't find search for page 8", libertyServer.findStringsInLogsAndTrace("Search page: 8").isEmpty());
-        assertFalse("Didn't find search for page 9", libertyServer.findStringsInLogsAndTrace("Search page: 9").isEmpty());
-        assertFalse("Didn't find search for page 10", libertyServer.findStringsInLogsAndTrace("Search page: 10").isEmpty());
+        assertFalse("Didn't find search for page 1", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 1").isEmpty());
+        assertFalse("Didn't find search for page 2", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 2").isEmpty());
+        assertFalse("Didn't find search for page 3", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 3").isEmpty());
+        assertFalse("Didn't find search for page 4", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 4").isEmpty());
+        assertFalse("Didn't find search for page 5", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 5").isEmpty());
+        assertFalse("Didn't find search for page 6", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 6").isEmpty());
+        assertFalse("Didn't find search for page 7", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 7").isEmpty());
+        assertFalse("Didn't find search for page 8", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 8").isEmpty());
+        assertFalse("Didn't find search for page 9", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 9").isEmpty());
+        assertFalse("Didn't find search for page 10", libertyServer.findStringsInLogsAndTraceUsingMark("Search page: 10").isEmpty());
     }
 }
