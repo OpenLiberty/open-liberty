@@ -15,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -36,6 +37,7 @@ public class MPConcurrencyTCKLauncher {
         server.stopServer();
     }
 
+    @AllowedFFDC("java.lang.NegativeArraySizeException") // intentionally raised by test case to simulate failure during completion stage action
     @Test
     public void launchMPConcurrency10Tck() throws Exception {
         // TODO: Run this all the time once the MP Concurrency 1.0 TCK is finalized
