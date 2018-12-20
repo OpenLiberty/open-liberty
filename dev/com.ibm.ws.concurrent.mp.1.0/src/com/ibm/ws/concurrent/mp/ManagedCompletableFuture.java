@@ -204,7 +204,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Trivial
     public static <U> CompletableFuture<U> completedFuture(U value) {
-        throw new UnsupportedOperationException("Use ManagedExecutor.completedFuture instead"); // TODO NLS
+        throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1156.not.supported", "ManagedExecutor.completedFuture"));
     }
 
     /**
@@ -235,7 +235,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Trivial
     public static <U> CompletionStage<U> completedStage(U value) {
-        throw new UnsupportedOperationException("Use ManagedExecutor.completedStage instead"); // TODO NLS
+        throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1156.not.supported", "ManagedExecutor.completedStage"));
     }
 
     /**
@@ -286,7 +286,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Trivial
     public static <U> CompletableFuture<U> failedFuture(Throwable x) {
-        throw new UnsupportedOperationException("Use ManagedExecutor.failedFuture instead"); // TODO NLS
+        throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1156.not.supported", "ManagedExecutor.failedFuture"));
     }
 
     /**
@@ -319,7 +319,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Trivial
     public static <U> CompletionStage<U> failedStage(Throwable x) {
-        throw new UnsupportedOperationException("Use ManagedExecutor.failedStage instead"); // TODO NLS
+        throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1156.not.supported", "ManagedExecutor.failedStage"));
     }
 
     /**
@@ -370,7 +370,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Trivial
     public static CompletableFuture<Void> runAsync(Runnable action) {
-        throw new UnsupportedOperationException("Use ManagedExecutor.runAsync instead"); // TODO NLS
+        throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1156.not.supported", "ManagedExecutor.runAsync"));
     }
 
     /**
@@ -412,7 +412,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Trivial
     public static <U> CompletableFuture<U> supplyAsync(Supplier<U> action) {
-        throw new UnsupportedOperationException("Use ManagedExecutor.supplyAsync instead"); // TODO NLS
+        throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1156.not.supported", "ManagedExecutor.supplyAsync"));
     }
 
     /**
