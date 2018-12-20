@@ -20,18 +20,31 @@ import com.ibm.websphere.simplicity.log.Log;
  */
 public class TestNameFilter extends Filter {
 
+    private static final String FAT_TEST_QNAME;
     private static final String FAT_TEST_CLASS;
     private static final String FAT_TEST_METHOD;
 
     static {
-        //these properties allow shortcutting to a single test class and/or method
-        FAT_TEST_CLASS = System.getProperty("fat.test.class.name");
-        FAT_TEST_METHOD = System.getProperty("fat.test.method.name");
 
-        if (FAT_TEST_CLASS != null)
+        // QName has precedence over class or class+method names
+        FAT_TEST_QNAME = System.getProperty("fat.test.qualified.name");
+        if (FAT_TEST_QNAME != null) {
+            Log.info(TestNameFilter.class, "<clinit>", "Running only test method with qualified name: " + FAT_TEST_QNAME);
+            int indx = FAT_TEST_QNAME.lastIndexOf('.');
+            FAT_TEST_CLASS = FAT_TEST_QNAME.substring(0, indx);
+            FAT_TEST_METHOD = FAT_TEST_QNAME.substring(indx + 1);
+        } else {
+            //these properties allow shortcutting to a single test class and/or method
+            FAT_TEST_CLASS = System.getProperty("fat.test.class.name");
+            FAT_TEST_METHOD = System.getProperty("fat.test.method.name");
+        }
+
+        if (FAT_TEST_CLASS != null) {
             Log.info(TestNameFilter.class, "<clinit>", "Running only test class with name: " + FAT_TEST_CLASS);
-        if (FAT_TEST_METHOD != null)
+        }
+        if (FAT_TEST_METHOD != null) {
             Log.info(TestNameFilter.class, "<clinit>", "Running only test with method name: " + FAT_TEST_METHOD);
+        }
     }
 
     @Override

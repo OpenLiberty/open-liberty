@@ -148,6 +148,17 @@ public abstract class PortDetectionUtil {
                     if (cmdOutput.startsWith("p")) {
                         cmdOutput = cmdOutput.substring(1);
                     }
+                    int newLineIdx = cmdOutput.indexOf("\n");
+                    if (newLineIdx > 0) {
+                        // in some cases, the output will contain a second line like so:
+                        //
+                        // $ lsof -F p -i tcp:8010
+                        // p65655
+                        // f53
+                        //
+                        // this second line needs to be removed
+                        cmdOutput = cmdOutput.substring(0, newLineIdx).trim();
+                    }
                 }
                 // Output should contain only the PID
                 int pid = Integer.parseInt(cmdOutput);
