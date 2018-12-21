@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,20 +19,17 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-
 import org.junit.AfterClass;
-import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.websphere.simplicity.config.wim.AttributesCache;
-import com.ibm.websphere.simplicity.config.wim.LdapCache;
 import com.ibm.websphere.simplicity.config.wim.LdapFilters;
-import com.ibm.websphere.simplicity.config.wim.SearchResultsCache;
+import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.apacheds.EmbeddedApacheDS;
+import com.ibm.ws.apacheds.PopulateDefaultLdapConfig;
 import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
@@ -55,6 +52,8 @@ public class FATTestAD {
 
     private static ServerConfiguration serverConfiguration = null;
 
+    private static EmbeddedApacheDS ldapServer = null;
+
     /**
      * Updates the sample, which is expected to be at the hard-coded path.
      * If this test is failing, check this path is correct.
@@ -75,6 +74,11 @@ public class FATTestAD {
         assertNotNull("Security service did not report it was ready",
                       server.waitForStringInLog("CWWKS0008I"));
 
+        serverConfiguration = server.getServerConfiguration();
+        ldapServer = PopulateDefaultLdapConfig.setupLdapServerAD(ldapServer, c.getSimpleName());
+        assertNotNull("Failed to setup EmbeddedApacheDS server", ldapServer);
+        updateLibertyServer();
+
         Log.info(c, "setUp", "Creating servlet connection the server");
         servlet = new UserRegistryServletConnection(server.getHostname(), server.getHttpDefaultPort());
 
@@ -87,6 +91,50 @@ public class FATTestAD {
          * The original server configuration has no registry or Federated Repository configuration.
          */
         serverConfiguration = server.getServerConfiguration();
+
+    }
+
+    /**
+     * Update the Liberty server with the correct LDAP info for an embedded ApacheDS
+     *
+     * @throws Exception If the update failed for some reason.
+     */
+    private static void updateLibertyServer() throws Exception {
+        final String methodName = "updateLibertyServer";
+        Log.info(c, methodName, "Starting Liberty server update to embedded ApacheDS");
+
+        ServerConfiguration serverConfig = serverConfiguration.clone();
+
+        boolean foundLdapToUpdate = false;
+
+        String ldapID = "LDAP";
+
+        for (LdapRegistry ldap : serverConfig.getLdapRegistries()) {
+            if (ldap.getId().equals(ldapID)) { // from "com.ibm.ws.security.registry.ldap.fat.ad"
+                ldap.setLdapType("Custom");
+                ldap.setHost("localhost");
+                ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+                ldap.setBindDN(EmbeddedApacheDS.getBindDN());
+                ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+
+                LdapFilters filter = serverConfig.getActivedLdapFilterProperties().get(0);
+
+                assertNotNull("Should have a filter to convert", filter);
+
+                ldap.setCustomFilters(new LdapFilters(filter.getUserFilter(), filter.getGroupFilter(), filter.getUserIdMap(), filter.getGroupIdMap(), filter
+                                .getGroupMemberIdMap()));
+
+                serverConfig.getActivedLdapFilterProperties().clear();
+
+                foundLdapToUpdate = true;
+            }
+        }
+
+        assertTrue("Did not find an LDAP id to match " + ldapID, foundLdapToUpdate);
+
+        updateConfigDynamically(server, serverConfig);
+
+        Log.info(c, methodName, "Finished Liberty server update");
     }
 
     @AfterClass
@@ -96,8 +144,14 @@ public class FATTestAD {
         try {
             server.stopServer("CWIML4529E");
         } finally {
+
+            if (ldapServer != null) {
+                ldapServer.stopService();
+            }
             server.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");
+
         }
+
     }
 
     /**
@@ -110,25 +164,6 @@ public class FATTestAD {
 
         Log.info(c, "getRealm", "Checking expected realm");
         assertEquals("SampleLdapADRealm", servlet.getRealm());
-    }
-
-    /**
-     * Hit the test servlet to see if checkPassword works when passed in a valid user
-     * This verifies the various required bundles got installed and are working.
-     */
-    @Test
-    public void checkPasswordWithGoodCredentials() throws Exception {
-        // This test will only be executed when using physical LDAP server as these type of filters are not supported on ApacheDS
-        Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
-        updateConfigDynamically(server, serverConfiguration);
-
-        String user = "vmmtestuser";
-        String password = "vmmtestuserpwd";
-        Log.info(c, "checkPasswordWithGoodCredentials", "Checking good credentials");
-        assertDNsEqual("Authentication should succeed.",
-                       "CN=vmmtestuser,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com", servlet.checkPassword(user, password));
-
-        passwordChecker.checkForPasswordInAnyFormat(password);
     }
 
     /**
@@ -147,22 +182,6 @@ public class FATTestAD {
     }
 
     /**
-     * Hit the test servlet to see if isValidUser works with a valid user
-     * This verifies the various required bundles got installed and are working.
-     */
-    @Test
-    public void isValidUserWithValidUser() throws Exception {
-        // This test will only be executed when using physical LDAP server as these type of filters are not supported on ApacheDS
-        Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
-        updateConfigDynamically(server, serverConfiguration);
-
-        String user = "vmmtestuser";
-        Log.info(c, "isValidUserWithValidUser", "Checking with a valid user");
-        assertTrue("User validation should succeed.",
-                   servlet.isValidUser(user));
-    }
-
-    /**
      * Hit the test servlet to see if isValidUser works with an invalid user
      * This verifies the various required bundles got installed and are working.
      */
@@ -174,40 +193,6 @@ public class FATTestAD {
         Log.info(c, "isValidUserWithInvalidUser", "Checking with an invalid user");
         assertFalse("User validation should fail.",
                     servlet.isValidUser(user));
-    }
-
-    /**
-     * Hit the test servlet to see if getUsers works when passed in a valid user pattern
-     * and a limit of 2; should only expect to find one entry
-     * This verifies the various required bundles got installed and are working.
-     */
-    @Test
-    public void getUsersWithValidPatternReturnsOnlyOneEntry() throws Exception {
-        // This test will only be executed when using physical LDAP server as these type of filters are not supported on ApacheDS
-        Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
-        updateConfigDynamically(server, serverConfiguration);
-
-        String user = "vmmtestuser";
-        Log.info(c, "getUsersWithValidPatternReturnsOnlyOneEntry", "Checking with a valid pattern and limit of 2.");
-        SearchResult result = servlet.getUsers(user, 2);
-        assertEquals("There should only be one entry", 1, result.getList().size());
-    }
-
-    /**
-     * Hit the test servlet to see if getUsers works when supplied with a wildcard for
-     * the user pattern and a limit of 2; should expect to find 2 entries
-     * This verifies the various required bundles got installed and are working.
-     */
-    @Test
-    public void getUsersWithWildcardPatternReturnsTwoEntries() throws Exception {
-        // This test will only be executed when using physical LDAP server as these type of filters are not supported on ApacheDS
-        Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
-        updateConfigDynamically(server, serverConfiguration);
-
-        String user = "*";
-        Log.info(c, "getUsersWithWildcardPatternReturnsTwoEntries", "Checking with a valid pattern and limit of 2.");
-        SearchResult result = servlet.getUsers(user, 2);
-        assertEquals("There should only be two entries", 2, result.getList().size());
     }
 
     /**
@@ -268,23 +253,6 @@ public class FATTestAD {
     }
 
     /**
-     * Hit the test servlet to see if getUniqueUserId works when supplied with a valid user
-     * This verifies the various required bundles got installed and are working.
-     */
-    @Test
-    public void getUniqueUserIdWithValidUser() throws Exception {
-        // This test will only be executed when using physical LDAP server as these type of filters are not supported on ApacheDS
-        Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
-        updateConfigDynamically(server, serverConfiguration);
-
-        String user = "vmmtestuser";
-        String uniqueUserId = "CN=vmmtestuser,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com";
-
-        Log.info(c, "getUniqueUserIdWithValidUser", "Checking with a valid user.");
-        assertDNsEqual("", uniqueUserId, servlet.getUniqueUserId(user));
-    }
-
-    /**
      * Hit the test servlet to see if getUniqueUserId works when supplied with an invalid user
      * This verifies the various required bundles got installed and are working.
      */
@@ -295,23 +263,6 @@ public class FATTestAD {
         String user = "invalidUser";
         Log.info(c, "getUniqueUserIdWithInvalidUser", "Checking with an invalid user.");
         servlet.getUniqueUserId(user);
-    }
-
-    /**
-     * Hit the test servlet to see if getUserSecurityName works when supplied with a valid user
-     * This verifies the various required bundles got installed and are working.
-     */
-    @Test
-    public void getUserSecurityNameWithValidUser() throws Exception {
-        // This test will only be executed when using physical LDAP server as these type of filters are not supported on ApacheDS
-        Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
-        updateConfigDynamically(server, serverConfiguration);
-
-        String uniqueUserId = "vmmtestuser";
-        String userSecurityName = "CN=vmmtestuser,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com";
-
-        Log.info(c, "getUserSecurityNameWithValidUser", "Checking with a valid user.");
-        assertEquals(userSecurityName, servlet.getUserSecurityName(uniqueUserId));
     }
 
     /**
@@ -498,22 +449,6 @@ public class FATTestAD {
     }
 
     /**
-     * Hit the test servlet to see if getGroupsForUser works when supplied with a valid user.
-     * This verifies the various required bundles got installed and are working.
-     */
-    @Test
-    public void getGroupsForUserWithValidUser() throws Exception {
-        // This test will only be executed when using physical LDAP server as these type of filters are not supported on ApacheDS
-        Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
-        updateConfigDynamically(server, serverConfiguration);
-
-        String user = "vmmuser1";
-        Log.info(c, "getGroupsForUserWithValidUser", "Checking with a valid user.");
-        List<String> list = servlet.getGroupsForUser(user);
-        assertTrue(!list.isEmpty());
-    }
-
-    /**
      * Hit the test servlet to see if getGroupsForUser works when supplied with a invalid user.
      * This verifies the various required bundles got installed and are working.
      */
@@ -526,91 +461,4 @@ public class FATTestAD {
         servlet.getGroupsForUser(user);
     }
 
-    /**
-     * Test Active Directory's LDAP_MATCHING_RULE_IN_CHAIN matching rule OID for memberof in the user filter.
-     */
-    @Test
-    public void ldapMatchingRuleInChain_MemberOf() throws Exception {
-        // This test will only be executed when using physical LDAP server as these type of filters are not supported on ApacheDS
-        Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
-        Log.info(c, "ldapMatchingRuleInChain_MemberOf", "Checking memberof LDAP_MATCHING_RULE_IN_CHAIN rule OID.");
-
-        /*
-         * First test WITHOUT the matching rule in the filter. We expect to find all of the users.
-         */
-        ServerConfiguration clone = serverConfiguration.clone();
-        clone.getLdapRegistries().get(0).setLdapCache(new LdapCache(new AttributesCache(false, null, null, null), new SearchResultsCache(false, null, null, null)));
-        LdapFilters filters = clone.getActivedLdapFilterProperties().get(0);
-        filters.setUserFilter("(&(sAMAccountName=%v)(objectclass=user))");
-        updateConfigDynamically(server, clone);
-
-        assertEquals("Expected to find user 'vmmuser1'.", 1, servlet.getUsers("vmmuser1", 0).getList().size());
-        assertEquals("Expected to find user 'vmmuser2'.", 1, servlet.getUsers("vmmuser2", 0).getList().size());
-        assertEquals("Expected to find user 'vmmuser3'.", 1, servlet.getUsers("vmmuser3", 0).getList().size());
-        assertEquals("Expected to find user 'vmmuser4'.", 1, servlet.getUsers("vmmuser4", 0).getList().size());
-
-        /*
-         * Test the login path.
-         */
-        assertNotNull("Authentication should succeed.", servlet.checkPassword("vmmtestuser", "vmmtestuserpwd"));
-
-        /*
-         * Update the filter to include the memberof matching rule in the filter. We should find
-         * 'vmmuser4' as that user is a direct member of 'vmmgroup4'. User 'vmmuser3' is a nested
-         * group member since 'vmmgroup3' is a member of 'vmmgroup4' and 'vmmuser3' is a member of
-         * 'vmmgroup3'.
-         */
-        filters.setUserFilter("(&(sAMAccountName=%v)(objectclass=user)(memberof:1.2.840.113556.1.4.1941:=CN=vmmgroup4,CN=Users,DC=secfvt2,DC=austin,DC=ibm,DC=com))");
-        clone.getLdapRegistries().get(0).setCertificateFilter(""); // TODO Remove when https://github.com/OpenLiberty/open-liberty/issues/657 is complete
-        updateConfigDynamically(server, clone);
-
-        assertEquals("Expected to not find user 'vmmuser1'.", 0, servlet.getUsers("vmmuser1", 0).getList().size());
-        assertEquals("Expected to not find user 'vmmuser2'.", 0, servlet.getUsers("vmmuser2", 0).getList().size());
-        assertEquals("Expected to find user 'vmmuser3'.", 1, servlet.getUsers("vmmuser3", 0).getList().size());
-        assertEquals("Expected to find user 'vmmuser4'.", 1, servlet.getUsers("vmmuser4", 0).getList().size());
-
-        /*
-         * Test the login path.
-         */
-        assertNotNull("Authentication should succeed.", servlet.checkPassword("vmmtestuser", "vmmtestuserpwd"));
-    }
-
-    @Test
-    public void userAccountControlFlag() throws Exception {
-        // This test will only be executed when using physical LDAP server as these type of filters are not supported on ApacheDS
-        Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
-        Log.info(c, "userAccountControlFlag", "Checking memberof LDAP_MATCHING_RULE_IN_CHAIN rule OID.");
-
-        /*
-         * Test WITHOUT the userAccountControl attribute in the filter. The disabled 'guest'
-         * account will be returned.
-         */
-        ServerConfiguration clone = serverConfiguration.clone();
-        clone.getLdapRegistries().get(0).setLdapCache(new LdapCache(new AttributesCache(false, null, null, null), new SearchResultsCache(false, null, null, null)));
-        LdapFilters filters = clone.getActivedLdapFilterProperties().get(0);
-        filters.setUserFilter("(&(sAMAccountName=%v)(objectclass=user))");
-        updateConfigDynamically(server, clone);
-
-        assertEquals("Expected to find user 'guest'.", 1, servlet.getUsers("guest", 0).getList().size());
-
-        /*
-         * Test the login path.
-         */
-        assertNotNull("Authentication should succeed.", servlet.checkPassword("vmmtestuser", "vmmtestuserpwd"));
-
-        /*
-         * Test WITH the userAccountControl attribute in the filter. The disabled 'guest'
-         * account will NOT be returned.
-         */
-        filters.setUserFilter("(&(sAMAccountName=%v)(objectclass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))");
-        clone.getLdapRegistries().get(0).setCertificateFilter(""); // TODO Remove when https://github.com/OpenLiberty/open-liberty/issues/657 is complete
-        updateConfigDynamically(server, clone);
-
-        assertEquals("Expected to not find user 'guest'.", 0, servlet.getUsers("guest", 0).getList().size());
-
-        /*
-         * Test the login path.
-         */
-        assertNotNull("Authentication should succeed.", servlet.checkPassword("vmmtestuser", "vmmtestuserpwd"));
-    }
 }

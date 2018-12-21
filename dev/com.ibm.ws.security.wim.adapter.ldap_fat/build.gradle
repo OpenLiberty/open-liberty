@@ -20,7 +20,7 @@ dependencies {
     'commons-codec:commons-codec:1.4',
     'org.apache.httpcomponents:httpclient:4.1.2',
     'org.apache.httpcomponents:httpcore:4.1.2',
-    'org.apache.directory.server:apacheds-service:2.0.0-M15',
+    'org.apache.directory.server:apacheds-service:2.0.0.AM25',
     project(':fattest.simplicity'),
     project(':com.ibm.ws.org.apache.directory.server'),
     project(':com.ibm.websphere.security.wim.base'),
@@ -38,7 +38,7 @@ autoFVT.doLast {
   copy {
     from project(':com.ibm.ws.org.apache.directory.server').projectDir
     into autoFvtDir
-    include 'apacheds-2.0.0-M15/**'
+    include 'apacheds-2.0.0.AM25/**'
   }
 
   /*

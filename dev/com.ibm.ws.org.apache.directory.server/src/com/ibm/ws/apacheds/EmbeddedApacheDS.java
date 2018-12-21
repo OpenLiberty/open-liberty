@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.directory.api.ldap.codec.controls.search.pagedSearch.PagedResultsFactory;
 import org.apache.directory.api.ldap.codec.standalone.StandaloneLdapApiService;
 import org.apache.directory.api.ldap.model.entry.Entry;
@@ -26,10 +25,11 @@ import org.apache.directory.api.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.api.ldap.model.schema.SchemaManager;
 import org.apache.directory.api.ldap.model.schema.registries.SchemaLoader;
-import org.apache.directory.api.ldap.schemaextractor.SchemaLdifExtractor;
-import org.apache.directory.api.ldap.schemaextractor.impl.DefaultSchemaLdifExtractor;
-import org.apache.directory.api.ldap.schemaloader.LdifSchemaLoader;
-import org.apache.directory.api.ldap.schemamanager.impl.DefaultSchemaManager;
+import org.apache.directory.api.ldap.schema.extractor.SchemaLdifExtractor;
+import org.apache.directory.api.ldap.schema.extractor.impl.DefaultSchemaLdifExtractor;
+import org.apache.directory.api.ldap.schema.loader.LdifSchemaLoader;
+import org.apache.directory.api.ldap.schema.manager.impl.DefaultSchemaManager;
+import org.apache.directory.api.util.FileUtils;
 import org.apache.directory.api.util.exception.Exceptions;
 import org.apache.directory.server.constants.ServerDNConstants;
 import org.apache.directory.server.core.DefaultDirectoryService;
@@ -41,6 +41,7 @@ import org.apache.directory.server.core.api.partition.Partition;
 import org.apache.directory.server.core.api.schema.SchemaPartition;
 import org.apache.directory.server.core.partition.impl.btree.jdbm.JdbmPartition;
 import org.apache.directory.server.core.partition.ldif.LdifPartition;
+import org.apache.directory.server.core.shared.DefaultDnFactory;
 import org.apache.directory.server.i18n.I18n;
 import org.apache.directory.server.ldap.LdapServer;
 import org.apache.directory.server.protocol.shared.transport.TcpTransport;
@@ -171,7 +172,7 @@ public class EmbeddedApacheDS {
      */
     public Partition addPartition(String partitionId, String partitionDn) throws Exception {
         Log.info(c, "addPartition", "entry " + partitionId + " " + partitionDn);
-        JdbmPartition partition = new JdbmPartition(this.service.getSchemaManager());
+        JdbmPartition partition = new JdbmPartition(this.service.getSchemaManager(), new DefaultDnFactory(this.service.getSchemaManager(), null));
         partition.setId(partitionId);
         partition.setPartitionPath(new File(this.service.getInstanceLayout().getPartitionsDirectory(), partitionId).toURI());
         partition.setSuffixDn(new Dn(partitionDn));
@@ -241,7 +242,7 @@ public class EmbeddedApacheDS {
          * DO NOT add this via addPartition() method, trunk code complains about
          * duplicate partition while initializing.
          */
-        final JdbmPartition systemPartition = new JdbmPartition(this.service.getSchemaManager());
+        final JdbmPartition systemPartition = new JdbmPartition(this.service.getSchemaManager(), new DefaultDnFactory(this.service.getSchemaManager(), null));
         systemPartition.setId("system");
         systemPartition.setPartitionPath(new File(this.service.getInstanceLayout().getPartitionsDirectory(), systemPartition.getId()).toURI());
         systemPartition.setSuffixDn(new Dn(ServerDNConstants.SYSTEM_DN));
@@ -347,7 +348,7 @@ public class EmbeddedApacheDS {
          * Extract the schema on disk (a brand new one) and load the registries
          */
         if (schemaPartitionDirectory.exists()) {
-            System.out.println("schema partition already exists, skipping schema extraction");
+            Log.info(c, "initSchemaPartition", "schema partition already exists, skipping schema extraction");
         } else {
             final SchemaLdifExtractor extractor = new DefaultSchemaLdifExtractor(instanceLayout.getPartitionsDirectory());
             extractor.extractOrCopy();
@@ -375,7 +376,7 @@ public class EmbeddedApacheDS {
         /*
          * Init the LdifPartition with schema
          */
-        final LdifPartition schemaLdifPartition = new LdifPartition(schemaManager);
+        final LdifPartition schemaLdifPartition = new LdifPartition(schemaManager, new DefaultDnFactory(this.service.getSchemaManager(), null));
         schemaLdifPartition.setPartitionPath(schemaPartitionDirectory.toURI());
 
         /*
@@ -409,6 +410,10 @@ public class EmbeddedApacheDS {
         return this.service.newEntry(new Dn(dn));
     }
 
+    public Entry newEntry(Dn dn) throws LdapException {
+        return this.service.newEntry(dn);
+    }
+
     /**
      * Starts the LdapServer
      *
@@ -419,7 +424,7 @@ public class EmbeddedApacheDS {
     }
 
     public void startServer(int port) throws Exception {
-        Log.info(c, "startServer", "Create ldapserver.");
+        Log.info(c, "startServer", "Starting ldapserver.");
         this.server = new LdapServer();
         Log.info(c, "startServer", "SetTransports ldapserver.");
         this.server.setTransports(new TcpTransport(port));
@@ -427,7 +432,7 @@ public class EmbeddedApacheDS {
         this.server.setDirectoryService(this.service);
         Log.info(c, "startServer", "Start ldapserver.");
         this.server.start();
-        Log.info(c, "startServer", "The server '" + this.name + "' is running on TCP port: " + server.getPort());
+        Log.info(c, "startServer", "The ldap server '" + this.name + "' is running on TCP port: " + server.getPort());
     }
 
     /**
@@ -848,5 +853,178 @@ public class EmbeddedApacheDS {
         add(entry);
 
         Log.info(c, "initWimObjectClasses", "exit");
+    }
+
+    /**
+     * Added the assorted objectClasses and attributes defined in TDS.ldif, AD.ldif from our standalone/remote
+     * LDAP config.
+     */
+    public void addPresetLdapAttributes() throws LdapException {
+        Log.info(c, "addPresetLdapAttributes", "Entry");
+        Entry entry = newEntry("m-oid=2.16.840.1.113730.3.1.198, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "2.16.840.1.113730.3.1.198");
+        entry.add("m-name", "memberURL");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.26"); // IA5String
+        entry.add("m-singleValue", "FALSE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.18.0.2.4.1780, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.18.0.2.4.1780");
+        entry.add("m-name", "ibm-entryUuid");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        //  entry.add("m-usage:", "directoryOperation");
+        add(entry);
+
+        entry = newEntry("m-oid=1.2.840.113556.1.4.2, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.2.840.113556.1.4.2");
+        entry.add("m-name", "objectGUID");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.40");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.2.840.113556.1.4.656, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.2.840.113556.1.4.656");
+        entry.add("m-name", "userPrincipalName");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.2.840.113556.1.4.782, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.2.840.113556.1.4.656");
+        entry.add("m-name", "objectCategory");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=2.5.4.3.5, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "2.5.4.3.5");
+        entry.add("m-name", "password");
+        entry.add("m-equality", "octetStringMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.40");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        // groupOfURLs has a pre-defined oid
+        entry = newEntry("m-oid=2.16.840.1.113730.3.2.33, ou=objectclasses, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaObjectClass");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "2.16.840.1.113730.3.2.33");
+        entry.add("m-name", "groupOfURLs");
+        entry.add("m-supObjectClass", "top");
+        entry.add("m-typeObjectClass", "STRUCTURAL");
+        entry.add("m-must", "cn");
+        entry.add("m-may", "memberURL");
+        add(entry);
+
+        // groupforapache uses the next oid after wimGroupOfNames
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.1.3, ou=objectclasses, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaObjectClass");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.1.3");
+        entry.add("m-name", "groupforapache");
+        entry.add("m-supObjectClass", "top");
+        entry.add("m-typeObjectClass", "AUXILIARY");
+        entry.add("m-must", "cn");
+        entry.add("m-may", "memberURL");
+        add(entry);
+
+        // n: m-oid=1.3.18.0.2.6.73, ou=objectclasses, cn=customschema, ou=schema
+        entry = newEntry("m-oid=1.3.18.0.2.6.73, ou=objectclasses, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaObjectClass");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.18.0.2.6.73");
+        entry.add("m-name", "ePerson");
+        entry.add("m-supObjectClass", "top");
+        entry.add("m-typeObjectClass", "AUXILIARY");
+        entry.add("m-may", "ibm-entryUuid");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.18.0.2.6.448, ou=objectclasses, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaObjectClass");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.18.0.2.6.448");
+        entry.add("m-name", "ibm-nestedGroup");
+        entry.add("m-supObjectClass", "top");
+        entry.add("m-typeObjectClass", "AUXILIARY");
+        entry.add("m-may", "ibm-entryUuid");
+        add(entry);
+
+        entry = newEntry("m-oid=1.2.840.113556.1.3.23, ou=objectclasses, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaObjectClass");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.2.840.113556.1.3.23");
+        entry.add("m-name", "container");
+        entry.add("m-supObjectClass", "top");
+        entry.add("m-must", "cn");
+        add(entry);
+
+        entry = newEntry("m-oid=1.2.840.113556.1.5.9, ou=objectclasses, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaObjectClass");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.2.840.113556.1.5.9");
+        entry.add("m-name", "user");
+        entry.add("m-supObjectClass", "organizationalPerson");
+        entry.add("m-must", "cn");
+        entry.add("m-may", "objectCategory");
+        entry.add("m-may", "password");
+        entry.add("m-may", "sAMAccountName");
+        entry.add("m-may", "userPrincipalName");
+        entry.add("m-may", "displayName");
+        entry.add("m-may", "distinguishedName");
+        entry.add("m-may", "name");
+        entry.add("m-may", "givenName");
+        entry.add("m-may", "objectGUID");
+        entry.add("m-may", "memberOf");
+        add(entry);
+
+        entry = newEntry("m-oid=1.2.840.113556.1.5.8, ou=objectclasses, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaObjectClass");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.2.840.113556.1.5.8");
+        entry.add("m-name", "group");
+        entry.add("m-supObjectClass", "top");
+        entry.add("m-must", "cn");
+        entry.add("m-may", "member");
+        entry.add("m-may", "name");
+        entry.add("m-may", "sAMAccountName");
+        entry.add("m-may", "objectCategory");
+        entry.add("m-may", "distinguishedName");
+        entry.add("m-may", "objectGUID");
+        entry.add("m-may", "description");
+        entry.add("m-may", "memberOf");
+        add(entry);
+
+        Log.info(c, "addPresetLdapAttributes", "Exit");
     }
 }

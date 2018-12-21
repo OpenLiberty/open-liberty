@@ -228,12 +228,15 @@ public class ContextManagerTest {
 
         try {
             /*
-             * Try to create on an invalid DN.
+             * Try to create on a DN. When upgrading the apachds service from M15 to AM25, it appears
+             * that they match the parent first before checking permission. Previously this test
+             * created a bad DN, changed it to a valid DN and get the permission exception.
              */
+            String subcontextDN = "ou=subcontext," + BASE_ENTRY;
             Attributes attrs = new BasicAttributes();
             attrs.put(new BasicAttribute("objectclass", "organizationalunit"));
             attrs.put(new BasicAttribute("ou", "subcontext"));
-            cm.createSubcontext(NON_EXISTENT_DN, attrs);
+            cm.createSubcontext(subcontextDN, attrs);
 
             fail("Expected WIMSystemException.");
         } catch (WIMSystemException e) {
