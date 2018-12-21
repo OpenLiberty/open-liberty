@@ -52,8 +52,6 @@ fat.project: true
 -buildpath: \
 	org.apache.httpcomponents:httpclient;strategy=exact;version=4.1.2,\
 	org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2,\
-	fattest.simplicity;version=latest,\
-	com.ibm.ws.componenttest:public.api;version=1.0.0,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.websphere.javaee.el.3.0;version=latest,\

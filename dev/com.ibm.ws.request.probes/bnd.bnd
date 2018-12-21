@@ -46,7 +46,7 @@ Service-Component:\
      com.ibm.ws.request.probe.RequestProbeIntrospector; \
         provide:=com.ibm.wsspi.logging.IntrospectableService; \
         implementation:=com.ibm.ws.request.probe.RequestProbeIntrospector; \
-        properties:="service.vendor=IBM", \
+        properties:="service.vendor=IBM"
 
 instrument.disabled: true
 

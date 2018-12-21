@@ -37,7 +37,6 @@ Private-Package: \
     com.ibm.ejs.cm.logger, \
     com.ibm.websphere.ce.cm, \
     com.ibm.ws.jdbc.internal, \
-    com.ibm.ws.jdbc.internal.resources, \
     com.ibm.ws.jdbc.*, \
     com.ibm.ws.rsadapter.exceptions, \
     com.ibm.ws.rsadapter.resources

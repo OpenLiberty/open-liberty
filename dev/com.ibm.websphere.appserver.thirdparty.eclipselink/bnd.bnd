@@ -26,7 +26,6 @@ Export-Package: \
             org.eclipse.persistence.javax.persistence.osgi;version="1.0.16", \
             org.eclipse.persistence.jpa.config;version="1.0.16", \
             org.eclipse.persistence.sessions.serializers.kryo;version="1.0.16", \
-            org.eclipse.persistence.javax.*;version="1.0.16", \
             org.eclipse.persistence.internal.jpa.config.*;version="1.0.16", \
             org.eclipse.persistence.internal.jpa.metadata.graphs;version="1.0.16", \
             org.eclipse.persistence.internal.jpa.metadata.sop;version="1.0.16", \

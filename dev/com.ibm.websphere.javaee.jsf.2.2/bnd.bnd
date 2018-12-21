@@ -34,8 +34,7 @@ Export-Package: \
     javax.faces.validator;version="1.0.16", \
     javax.faces.view;version="1.0.16", \
     javax.faces.view.facelets;version="1.0.16", \
-    javax.faces.webapp;version="1.0.16", \
-    javax.faces.*
+    javax.faces.webapp;version="1.0.16"
 
 Include-Resource: \
     javax/faces=resources/javax/faces, \

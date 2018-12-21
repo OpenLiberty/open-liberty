@@ -51,4 +51,4 @@ instrument.classesExcludes: com/ibm/ws/security/quickstart/internal/resources/*.
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
 	cglib:cglib-nodep;version=3.2.7, \
 	com.ibm.ws.kernel.boot;version=latest, \
-	com.ibm.ws.crypto.passwordutil;version=latest, \
+	com.ibm.ws.crypto.passwordutil;version=latest

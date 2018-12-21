@@ -27,7 +27,6 @@ Private-Package: \
   com.ibm.ws.rest.handler.internal.servlet, \
   com.ibm.ws.rest.handler.internal.helper, \
   com.ibm.ws.rest.handler.internal.service, \
-  com.ibm.ws.rest.handler.internal.cors, \
   com.ibm.ws.rest.handler.internal.resources.*
   
 Export-Package: \

@@ -30,9 +30,7 @@ Import-Package: \
   javax.validation.executable.*;resolution:=optional;version="[1.1,2.1)", \
   javax.validation.*;version="[1.0,2.1)", \
   com.ibm.ws.jaxrs20.api, \
-  com.ibm.ws.jaxrs20.api.*, \
   com.ibm.ws.ffdc, \
-  com.ibm.ws.ffdc.*, \
   com.ibm.ws.beanvalidation.service, \
   com.ibm.ejs.util, \
   com.ibm.ws.runtime.metadata, \

@@ -31,8 +31,7 @@ Import-Package: \
  
 Private-Package: \
     com.ibm.ws.common.internal.encoder.*, \
-    com.ibm.ws.security.common.internal.*, \
-    com.ibm.ws.security.common.jwk.internal.*
+    com.ibm.ws.security.common.internal.*
 
 -dsannotations: com.ibm.ws.security.common.token.propagation.TokenPropagationHelper
 -dsannotations-inherit = true

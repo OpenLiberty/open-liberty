@@ -23,7 +23,6 @@ Export-Package: com.ibm.ws.repository.connections.liberty
 instrument.disabled: true
 
 -buildpath: \
-	${javac.bootclasspath.java6}, \
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.repository;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

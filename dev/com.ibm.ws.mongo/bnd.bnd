@@ -44,7 +44,7 @@ Service-Component: \
     greedy:='ssl,keyStoreService,mongoSslHelper';\
     properties:='\
       library.target=(id=unbound),\
-      ssl.target=(id=unbound)',\
+      ssl.target=(id=unbound)'
     
 -dsannotations=com.ibm.ws.mongo.internal.MongoDBService
 
