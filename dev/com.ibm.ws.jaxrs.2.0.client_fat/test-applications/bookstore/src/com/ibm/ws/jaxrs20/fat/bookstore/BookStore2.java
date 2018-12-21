@@ -13,9 +13,11 @@ package com.ibm.ws.jaxrs20.fat.bookstore;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Response;
@@ -119,5 +121,27 @@ public class BookStore2 {
     public List<Book> postBookList(Book newBook) {
         books.add(newBook);
         return books;
+    }
+
+    @GET
+    @Path("/{sleepTime}")
+    public Response getSleep(@PathParam("sleepTime") @DefaultValue("30000") long sleepTime) {
+        try {
+            Thread.sleep(sleepTime);
+            return Response.ok("Slept " + sleepTime + "ms").build();
+        } catch (InterruptedException ex) {
+            return Response.serverError().entity(ex).build();
+        }
+    }
+
+    @POST
+    @Path("/post/{postSleepTime}")
+    public Response postSleep(@PathParam("postSleepTime") @DefaultValue("30000") long sleepTime) {
+        try {
+            Thread.sleep(sleepTime);
+            return Response.ok("Slept " + sleepTime + "ms").build();
+        } catch (InterruptedException ex) {
+            return Response.serverError().entity(ex).build();
+        }
     }
 }
