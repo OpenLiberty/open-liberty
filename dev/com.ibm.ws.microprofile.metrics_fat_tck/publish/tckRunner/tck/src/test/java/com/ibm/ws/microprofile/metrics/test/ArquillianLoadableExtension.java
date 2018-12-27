@@ -10,18 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.metrics.test;
 
-import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
-import org.jboss.arquillian.core.spi.LoadableExtension;
+import java.util.EnumSet;
+import java.util.Set;
 
-import com.ibm.ws.fat.util.tck.HamcrestArchiveProcessor;
-import com.ibm.ws.fat.util.tck.TestObserverArchiveProcessor;
+import com.ibm.ws.fat.util.tck.AbstractArquillianLoadableExtension;
+import com.ibm.ws.fat.util.tck.TCKArchiveModifications;
 
-public class ArquillianLoadableExtension implements LoadableExtension {
-	@Override
-	public void register(ExtensionBuilder extensionBuilder) {
-		System.out.println("WLP: Adding Extension com.ibm.ws.fat.util.tck.HamcrestArchiveProcessor");
-		extensionBuilder.service(ApplicationArchiveProcessor.class, HamcrestArchiveProcessor.class);
-		System.out.println("WLP: Adding Extension com.ibm.ws.fat.util.tck.TestObserverArchiveProcessor");
-		extensionBuilder.service(ApplicationArchiveProcessor.class, TestObserverArchiveProcessor.class);
-	}
+public class ArquillianLoadableExtension extends AbstractArquillianLoadableExtension {
+    @Override
+    public Set<TCKArchiveModifications> getModifications() {
+        return EnumSet.of(TCKArchiveModifications.TEST_LOGGER, TCKArchiveModifications.HAMCREST);
+    }
 }

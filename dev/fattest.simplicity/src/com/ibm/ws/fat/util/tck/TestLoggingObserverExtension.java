@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.fat.util.tck;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
 import org.jboss.arquillian.container.test.spi.RemoteLoadableExtension;
 
@@ -18,10 +21,13 @@ import org.jboss.arquillian.container.test.spi.RemoteLoadableExtension;
  * to add any libraries that are not in the default Liberty environment as well as 
  * logs the start and stop time for tests. 
  */
-public class TestObserverExtension implements RemoteLoadableExtension {
+public class TestLoggingObserverExtension implements RemoteLoadableExtension {
+
+    private static final Logger LOG = Logger.getLogger(TestLoggingObserverExtension.class.getName());
+
     @Override
     public void register(ExtensionBuilder extensionBuilder) {
-        System.out.println("WLP: Registering TestObserver");
-        extensionBuilder.observer(TestObserver.class);
+        LOG.log(Level.INFO, "WLP: Registering TestLoggingObserver");
+        extensionBuilder.observer(TestLoggingObserver.class);
     }
 }

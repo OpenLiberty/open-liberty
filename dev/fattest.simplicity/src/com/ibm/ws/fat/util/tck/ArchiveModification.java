@@ -10,17 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.fat.util.tck;
 
-import org.jboss.arquillian.core.api.annotation.Observes;
-import org.jboss.arquillian.core.spi.EventContext;
-import org.jboss.arquillian.test.spi.event.suite.TestEvent;
+import org.jboss.arquillian.core.spi.LoadableExtension.ExtensionBuilder;
 
-public class TestObserver {  
-      
-    void observeTestStart(@Observes(precedence = 0) EventContext<TestEvent> testEventContext) {
-        String testName = testEventContext.getEvent().getTestMethod().getName();
-
-        System.out.println("Starting test: " + testName);
-        testEventContext.proceed();
-        System.out.println("Test Complete: " + testName);
-    }  
-}  
+public interface ArchiveModification {
+    public void applyModification(ExtensionBuilder extensionBuilder);
+}
