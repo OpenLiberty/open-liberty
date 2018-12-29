@@ -1238,6 +1238,13 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
+    public PolicyTaskFuture<Void> submit(AtomicReference<Future<?>> completableFutureRef, Runnable task) {
+        PolicyTaskFutureImpl<Void> policyTaskFuture = new PolicyTaskFutureImpl<Void>(this, task, completableFutureRef, startTimeout);
+        enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
+        return policyTaskFuture;
+    }
+
+    @Override
     public <T> Future<T> submit(Callable<T> task) {
         PolicyTaskFutureImpl<T> policyTaskFuture = new PolicyTaskFutureImpl<T>(this, task, null, startTimeout);
         enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
@@ -1416,5 +1423,4 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         }
         out.println();
     }
-
 }
