@@ -21,7 +21,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.HttpEndpoint;
 import com.ibm.websphere.simplicity.config.KeyStore;
-import com.ibm.websphere.simplicity.config.SSLConfig;
+import com.ibm.websphere.simplicity.config.SSL;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
 import com.ibm.websphere.simplicity.config.VirtualHost;
@@ -102,7 +102,7 @@ public class ConfigActuatorXMLOverrideTests20 extends AbstractSpringTests {
         virtualHosts.clear();
         List<HttpEndpoint> endpoints = config.getHttpEndpoints();
         endpoints.clear();
-        List<SSLConfig> ssls = config.getSsls();
+        List<SSL> ssls = config.getSsls();
         ssls.clear();
         List<KeyStore> keystores = config.getKeyStores();
         keystores.clear();

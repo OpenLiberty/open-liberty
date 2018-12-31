@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,6 +34,8 @@ import com.ibm.websphere.simplicity.log.Log;
 public class LocalProvider {
 
     private static final String WLP_CYGWIN_HOME = System.getenv("WLP_CYGWIN_HOME");
+
+    protected static final String EBCDIC_CHARSET_NAME = "IBM1047";
 
     @SuppressWarnings("unchecked")
     private static final Class c = LocalProvider.class;
@@ -211,7 +214,16 @@ public class LocalProvider {
         pb.redirectErrorStream(true);
         Process proc = pb.start(); // Runtime.getRuntime().exec(cmd, envVars,
         // dir);
-        StreamGobbler outputGobbler = new StreamGobbler(proc.getInputStream(), stdOutStream, async);
+
+        StreamGobbler outputGobbler = null;
+
+        // Is this a good place to encode the assumption that on z/OS the console.log is going to be
+        // produced in EBCDIC even if the default charset is an ASCII one?
+        if (async && machine.getOperatingSystem() == OperatingSystem.ZOS) {
+            outputGobbler = new StreamGobbler(proc.getInputStream(), stdOutStream, true, Charset.forName(EBCDIC_CHARSET_NAME));
+        } else {
+            outputGobbler = new StreamGobbler(proc.getInputStream(), stdOutStream, async);
+        }
 
         // listen to subprocess output
         outputGobbler.start();
@@ -242,7 +254,6 @@ public class LocalProvider {
             returned += cmd[i] + " ";
         }
         returned = returned.substring(0, (returned.length() - 1)); //should remove the space at the end;
-        Log.info(c, "shArrayTransform", "Transformed Command now is: " + returned);
         return returned;
     }
 

@@ -32,7 +32,9 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.nio.charset.Charset;
+import java.security.AccessController;
 import java.security.KeyStore;
+import java.security.PrivilegedAction;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -88,7 +90,6 @@ import com.ibm.ws.logging.utils.FileLogHolder;
 
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.LocalMachine;
-import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.LogPolice;
 import componenttest.depchain.FeatureDependencyProcessor;
 import componenttest.exception.TopologyException;
@@ -110,6 +111,86 @@ public class LibertyServer implements LogMonitorClient {
 
     boolean runAsAWindowService = false;
 
+    protected class ServerDebugInfo {
+
+        protected static final String SERVER_DEBUG_PREFIX = "debug.server.";
+        protected static final String DEBUGGING_PORT_PROP = "debugging.port";
+
+        boolean startInDebugMode = false;
+        protected String debugPort = null;
+
+        protected ServerDebugInfo() {
+            calculateDebugInfo();
+        }
+
+        /**
+         * We only start in debug mode if:
+         * debugging is allowed
+         * AND
+         * the environment sets a system property with a valid port.
+         */
+
+        private void calculateDebugInfo() {
+
+            if (debuggingAllowed) {
+                debugPort = getDebugPortForServer();
+                if (debugPort == null) {
+                    debugPort = getGenericDebuggingPort();
+                }
+                if (debugPort != null) {
+                    startInDebugMode = true;
+                    Log.info(c, "calculateDebugInfo", "Debug enabled for server = " + serverToUse + ", at port = " + debugPort);
+                    return;
+                }
+                Log.info(c, "calculateDebugInfo", "debugging allowed for server = " + serverToUse + ", but didn't find valid port, so debug not enabled");
+            } else {
+                Log.info(c, "calculateDebugInfo", "debugging not allowed for server = " + serverToUse);
+            }
+        }
+
+        String getDebugPortForServer() {
+            return getValidPortPropertyVal(SERVER_DEBUG_PREFIX + serverToUse);
+        }
+
+        String getGenericDebuggingPort() {
+            return getValidPortPropertyVal(DEBUGGING_PORT_PROP);
+        }
+
+        /**
+         * For system property with key = "key", return the value of this system property
+         * if and only if the value can be parsed into a non-negative integer.
+         *
+         * If not, returns <null>.
+         *
+         * @param key
+         * @return value of sys property or <null>
+         */
+        String getValidPortPropertyVal(final String key) {
+            int portVal;
+            String sysPropVal = AccessController.doPrivileged(new PrivilegedAction<String>() {
+                @Override
+                public String run() {
+                    return System.getProperty(key);
+                }
+            });
+
+            if (sysPropVal != null && sysPropVal != "false") {
+                try {
+                    portVal = Integer.parseInt(sysPropVal);
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+                if (portVal < 0) {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+            Log.info(c, "getValidPortPropertyVal", "Return valid port val, key = " + key + ", val = " + sysPropVal);
+            return sysPropVal;
+        }
+    }
+
     protected static final String MAC_RUN = PrivHelper.getProperty("fat.on.mac");
     protected static final String DEBUGGING_PORT = PrivHelper.getProperty("debugging.port");
     protected static final boolean DEFAULT_PRE_CLEAN = true;
@@ -121,8 +202,9 @@ public class LibertyServer implements LogMonitorClient {
 
     protected static final JavaInfo javaInfo = JavaInfo.forCurrentVM();
 
+    protected static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
     protected static final boolean GLOBAL_JAVA2SECURITY = Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "false"));
-    protected static final boolean GLOBAL_DEBUG_JAVA2SECURITY = FATRunner.FAT_TEST_LOCALRUN //
+    protected static final boolean GLOBAL_DEBUG_JAVA2SECURITY = FAT_TEST_LOCALRUN //
                     ? Boolean.parseBoolean(PrivHelper.getProperty("global.debug.java2.sec", "true")) //
                     : Boolean.parseBoolean(PrivHelper.getProperty("global.debug.java2.sec", "false"));
 
@@ -132,16 +214,19 @@ public class LibertyServer implements LogMonitorClient {
     protected static final boolean DO_COVERAGE = PrivHelper.getBoolean("test.coverage");
     protected static final String JAVA_AGENT_FOR_JACOCO = PrivHelper.getProperty("javaagent.for.jacoco");
 
-    protected static final int SERVER_START_TIMEOUT = FATRunner.FAT_TEST_LOCALRUN ? 15 * 1000 : 30 * 1000;
+    protected static final int SERVER_START_TIMEOUT = (FAT_TEST_LOCALRUN ? 15 : 30) * 1000;
     protected static final int SERVER_STOP_TIMEOUT = SERVER_START_TIMEOUT;
+
+    // How long to wait for an app to start before failing out
+    protected int APP_START_TIMEOUT = (FAT_TEST_LOCALRUN ? 12 : 120) * 1000;
 
     // Increasing this from 50 seconds to 120 seconds to account for poorly performing code;
     // this timeout should only pop in the event of an unexpected failure of apps to start.
-    protected static final int LOG_SEARCH_TIMEOUT = FATRunner.FAT_TEST_LOCALRUN ? 12 * 1000 : 120 * 1000;
+    protected static final int LOG_SEARCH_TIMEOUT = (FAT_TEST_LOCALRUN ? 12 : 120) * 1000;
 
     // Allow configuration updates to wait for messages in the log longer than other log
     // searches. Configuration updates may take some time on slow test systems.
-    protected static final int LOG_SEARCH_TIMEOUT_CONFIG_UPDATE = FATRunner.FAT_TEST_LOCALRUN ? 18 * 1000 : 180 * 1000;
+    protected static final int LOG_SEARCH_TIMEOUT_CONFIG_UPDATE = (FAT_TEST_LOCALRUN ? 12 : 180) * 1000;
 
     protected Set<String> installedApplications;
 
@@ -203,6 +288,30 @@ public class LibertyServer implements LogMonitorClient {
     private boolean isTidy = false;
 
     private boolean needsPostTestRecover = true;
+
+    protected boolean debuggingAllowed = true;
+
+    /**
+     * This returns whether or not debugging is "programatically" allowed
+     * for this server. It must still be combined with a port supplied by
+     * the environment for debug to actually be enabled.
+     *
+     * @return {@code true} if debugging is potentially allowed for this server.
+     */
+    public boolean isDebuggingAllowed() {
+        return debuggingAllowed;
+    }
+
+    /**
+     * This sets whether or not debugging is "programatically" allowed
+     * for this server. It must still be combined with a port supplied by
+     * the environment for debug to actually be enabled.
+     *
+     * @param debuggingAllowed whether debugging is potentially allowed for this server.
+     */
+    public void setDebuggingAllowed(boolean debuggingAllowed) {
+        this.debuggingAllowed = debuggingAllowed;
+    }
 
     /**
      * @return the installRoot
@@ -350,6 +459,7 @@ public class LibertyServer implements LogMonitorClient {
      * @param b The bootstrap properties for this server
      * @param deleteServerDirIfExist If true and if the specified server name already exists on the file system, it will be deleted
      * @param usePreviouslyConfigured If true do not tidy existing server
+     * @param winServiceOption
      * @throws Exception
      */
     LibertyServer(String serverName, Bootstrap b, boolean deleteServerDirIfExist, boolean usePreviouslyConfigured,
@@ -372,7 +482,6 @@ public class LibertyServer implements LogMonitorClient {
 
         if (winServiceOption == LibertyServerFactory.WinServiceOption.ON) {
             runAsAWindowService = true;
-            Log.info(c, method, "runAsAWindowService: " + runAsAWindowService);
         } else {
             runAsAWindowService = false;
         }
@@ -449,7 +558,6 @@ public class LibertyServer implements LogMonitorClient {
         // property "checkIfLocalHost" just in case someone doesn't want this behavior.
         String checkIfLocalHost = b.getValue("checkIfLocalHost");
         if (checkIfLocalHost != null && hostName.equals(InetAddress.getLocalHost().getHostName())) {
-            Log.info(c, method, "returning local machine for " + hostName);
             machine = Machine.getLocalMachine();
             // Do not update hostName because Machine will say localhost!
         } else {
@@ -1022,11 +1130,13 @@ public class LibertyServer implements LogMonitorClient {
         final String cmd = installRoot + "/bin/server";
         ArrayList<String> parametersList = new ArrayList<String>();
         boolean executeAsync = false;
-        if ("start".equals(serverCmd) && DEBUGGING_PORT != null && !!!DEBUGGING_PORT.equalsIgnoreCase(Boolean.toString(false))) {
-            Log.info(c, method, "Setting up commands for debug");
+        ServerDebugInfo debugInfo = new ServerDebugInfo();
+        if ("start".equals(serverCmd) && debugInfo.startInDebugMode) {
+            Log.info(c, method, "Setting up commands for debug for server = " + serverToUse + ".  Using port = " + debugInfo.debugPort);
             parametersList.add("debug");
             parametersList.add(serverToUse);
-            envVars.setProperty("DEBUG_PORT", DEBUGGING_PORT);
+            envVars.setProperty("DEBUG_PORT", debugInfo.debugPort); // Not sure what this does.  It's not read by the FAT framework, for example. Was it meant to be usable for trace/debug?
+            envVars.setProperty("WLP_DEBUG_ADDRESS", debugInfo.debugPort);
             // set server time out to 15 minutes to give time to connect. Timed exit likely kicks in after that, so
             // a larger value is worthless (and, since we multiply it by two later, will wrap if you use MAX_VALUE)
             serverStartTimeout = 15 * 60 * 60 * 1000;
@@ -1076,7 +1186,7 @@ public class LibertyServer implements LogMonitorClient {
         // Debug for a highly intermittent problem on IBM JVMs.
         // Unfortunately, this problem does not seem to happen when we enable this dump trace. We also can't proceed without getting
         // a system dump, so our only option is to enable this and hope the timing eventually works out.
-        if (info.VENDOR == Vendor.IBM) {
+        if (info.VENDOR == Vendor.IBM && info.majorVersion() == 8) {
             JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#ServiceFactoryUse.<init>*\"";
             JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#org/eclipse/osgi/internal/serviceregistry/ServiceFactoryUse.<init>*\"";
         }
@@ -1225,7 +1335,6 @@ public class LibertyServer implements LogMonitorClient {
                     final ArrayList<String> startServiceParmList = makeParmList(parametersList, 1);
 
                     execServerCmd = new Runnable() {
-
                         @Override
                         public void run() {
                             try {
@@ -1439,7 +1548,6 @@ public class LibertyServer implements LogMonitorClient {
 
         String path = pathToAutoFVTOutputFolder + getServerName() + ".mrk";
         LocalFile serverRunningFile = new LocalFile(path);
-        Log.finer(c, "createServerMarkerFile", "Server marker file: " + serverRunningFile.getAbsolutePath());
         File createFile = new File(serverRunningFile.getAbsolutePath());
         createFile.createNewFile();
         OutputStream os = serverRunningFile.openForWriting(true);
@@ -1457,15 +1565,22 @@ public class LibertyServer implements LogMonitorClient {
 
         String path = pathToAutoFVTOutputFolder + getServerName() + ".mrk";
         LocalFile serverRunningFile = new LocalFile(path);
-        Log.finer(c, "deleteServerMarkerFile", "Server marker file: " + serverRunningFile.getAbsolutePath());
         File deleteFile = new File(serverRunningFile.getAbsolutePath());
         if (deleteFile.exists()) {
             deleteFile.delete();
         }
     }
 
+    public void setAppStartTimeout(int timeout) {
+        APP_START_TIMEOUT = timeout;
+    }
+
+    public int getAppStartTimeout() {
+        return APP_START_TIMEOUT;
+    }
+
     public void validateAppLoaded(String appName) throws Exception {
-        String exceptionText = validateAppsLoaded(Collections.singleton(appName), LOG_SEARCH_TIMEOUT, getDefaultLogFile());
+        String exceptionText = validateAppsLoaded(Collections.singleton(appName), APP_START_TIMEOUT, getDefaultLogFile());
         if (exceptionText != null) {
             throw new TopologyException(exceptionText);
         }
@@ -1479,7 +1594,7 @@ public class LibertyServer implements LogMonitorClient {
             return;
         }
 
-        String exceptionText = validateAppsLoaded(installedApplications, LOG_SEARCH_TIMEOUT, outputFile);
+        String exceptionText = validateAppsLoaded(installedApplications, APP_START_TIMEOUT, outputFile);
         if (exceptionText != null) {
             throw new TopologyException(exceptionText);
         }
@@ -1487,7 +1602,7 @@ public class LibertyServer implements LogMonitorClient {
 
     protected String validateAppsLoaded(Set<String> appList, int timeout, RemoteFile outputFile) throws Exception {
         // At time of writing, timeout argument was being ignored. Preserve that for now...
-        timeout = LOG_SEARCH_TIMEOUT;
+        timeout = APP_START_TIMEOUT;
         return validateAppsLoaded(appList, timeout, 2 * timeout, outputFile);
     }
 
@@ -1587,6 +1702,14 @@ public class LibertyServer implements LogMonitorClient {
             Log.error(c, method, e, "Exception thrown confirming apps are loaded when validating that "
                                     + outputFile.getAbsolutePath() + " contains application install messages.");
             throw e;
+        } finally {
+            long endTime = System.currentTimeMillis();
+            DateFormat formatter = DateFormat.getTimeInstance(DateFormat.LONG);
+            Log.info(c, method,
+                     "Started searching for app manager messages at " +
+                                formatter.format(new Date(startTime)) +
+                                " and finished at " +
+                                formatter.format(new Date(endTime)));
         }
     }
 
@@ -1913,7 +2036,12 @@ public class LibertyServer implements LogMonitorClient {
             assertNotNull("Security service did not report it was ready", waitForStringInLogUsingMark("CWWKS0008I"));
 
             //backup the key file
-            copyFileToTempDir("resources/security/key.jks", "key.jks");
+
+            try {
+                copyFileToTempDir("resources/security/key.jks", "key.jks");
+            } catch (Exception e) {
+                copyFileToTempDir("resources/security/key.p12", "key.p12");
+            }
         }
 
         Log.info(c, method, "Waiting up to " + (serverStartTimeout / 1000)
@@ -1986,13 +2114,13 @@ public class LibertyServer implements LogMonitorClient {
             throw serverStartException;
         }
 
+        // App validation needs the info messages in messages.log
         if (!messagesLog.exists()) {
             // NOTE: The HPEL FAT bucket has a strange mechanism to create messages.log for test purposes, which may get messed up
             Log.info(c, method, "WARNING: messages.log does not exist-- trying app verification step with console.log");
             messagesLog = consoleLog;
         }
 
-        // App validation needs the info messages in messages.log
         if (validateTimedExit) {
             validateTimedExitEnabled(messagesLog);
         }
@@ -2014,7 +2142,7 @@ public class LibertyServer implements LogMonitorClient {
             // It's fairly unusual, but it's technically possible that timed exit is enabled and the message hasn't been issued yet.
             // We use this backup rather than replacing the above findStringsInLogs because it's possible for the mark to be set to a location
             // after the timed exit message
-            String takeTwo = waitForStringInLog("Timed Exit Enabled", TIMEOUT, messagesLog);
+            String takeTwo = waitForStringInLog(TIMED_EXIT_ENABLED, TIMEOUT, messagesLog);
             if (takeTwo != null) {
                 // Everything is OK now, log a message indicating that we got here
                 Log.info(c, method, "Found the timed exit string (late arrival)");
@@ -2181,9 +2309,7 @@ public class LibertyServer implements LogMonitorClient {
                 String[] stopServiceParameters = stopServiceParmList.toArray(new String[] {});
                 String[] removeServiceParameters = removeServiceParmList.toArray(new String[] {});
 
-                Log.info(c, method, "runAsAWindowService StopService   parms: " + stopServiceParmList.toString());
                 output = machine.execute(cmd, stopServiceParameters, envVars);
-                Log.info(c, method, "runAsAWindowService RemoveService parms: " + removeServiceParmList.toString());
                 output = machine.execute(cmd, removeServiceParameters, envVars);
 
             }
@@ -2207,6 +2333,13 @@ public class LibertyServer implements LogMonitorClient {
             // Actually waits for the stop message
             waitForStringInLog("CWWKE0036I:", SERVER_STOP_TIMEOUT, log);
 
+            int serverStopRC = output.getReturnCode();
+            if (serverStopRC != 0) {
+                throw new RuntimeException("Server stop failed with RC " + serverStopRC +
+                                           ".\nStdout:\n" + output.getStdout() +
+                                           "\nStderr:\n" + output.getStderr());
+            }
+
             // Now verify that the server is truly stopped by checking server status from the command line.
             // This checks to see if the server lock file (<server>/workarea/.sLock) is unlocked.
             ProgramOutput serverStatusOutput = executeServerScript("status", null);
@@ -2215,7 +2348,7 @@ public class LibertyServer implements LogMonitorClient {
                     Log.warning(c, method + " Server is still running - or server lock file is still locked.");
                     break;
                 case 1:
-                    Log.info(c, method, "Server stopped successfully");
+                    Log.info(c, method, "Server " + getServerName() + "stopped successfully");
                     break;
                 case 2:
                     Log.warning(c, method + " Unknown server - directory deleted? " + serverToUse);
@@ -2435,7 +2568,6 @@ public class LibertyServer implements LogMonitorClient {
         final String method = "postStopServerArchive";
         Log.entering(c, method);
 
-        Log.info(c, method, "Moving logs to the output folder");
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
         Date d = new Date(System.currentTimeMillis());
 
@@ -2633,6 +2765,16 @@ public class LibertyServer implements LogMonitorClient {
         return serverRoot + "/../../shared/";
     }
 
+    /**
+     * Get the collective dir under the server resources dir. For instance,
+     * this is where the collective trust stores are located.
+     *
+     * @return the path
+     */
+    public String getCollectiveResourcesPath() {
+        return serverRoot + "/resources/collective/";
+    }
+
     public void setServerRoot(String serverRoot) {
         this.serverRoot = serverRoot;
     }
@@ -2657,7 +2799,7 @@ public class LibertyServer implements LogMonitorClient {
         LibertyFileManager.copyFileIntoLiberty(machine, installRoot + "/" + extendedPath, (pathToAutoFVTTestFiles + "/" + fileName));
     }
 
-    protected void copyFileToLibertyServerRootUsingTmp(String path, String relPathTolocalFile) throws Exception {
+    public void copyFileToLibertyServerRootUsingTmp(String path, String relPathTolocalFile) throws Exception {
         LocalFile localFileToCopy = new LocalFile(LibertyServerUtils.makeJavaCompatible(relPathTolocalFile, machine));
         LibertyFileManager.copyFileIntoLiberty(machine, path, localFileToCopy.getName(), relPathTolocalFile, false, serverRoot);
     }
@@ -3872,6 +4014,7 @@ public class LibertyServer implements LogMonitorClient {
      */
     public void setServerConfigurationFile(String fileName) throws Exception {
         replaceServerConfiguration(pathToAutoFVTTestFiles + "/" + fileName);
+        Thread.sleep(200); // Sleep for 200ms to ensure we do not process the file "too quickly" by a subsequent call
     }
 
     /**
@@ -4466,7 +4609,6 @@ public class LibertyServer implements LogMonitorClient {
             logOffsets.put(logFile, 0L);
         }
 
-        Log.finer(LibertyServer.class, "getLogOffset", "log offset=" + logOffsets.get(logFile));
         return logOffsets.get(logFile);
     }
 
@@ -4480,7 +4622,6 @@ public class LibertyServer implements LogMonitorClient {
     @Deprecated
     public void updateLogOffset(String logFile, Long newLogOffset) {
         Long oldLogOffset = logOffsets.put(logFile, newLogOffset);
-        Log.finer(LibertyServer.class, "updateLogOffset", "old log offset=" + oldLogOffset + ", new log offset=" + newLogOffset);
     }
 
     /**
@@ -5590,6 +5731,11 @@ public class LibertyServer implements LogMonitorClient {
         LocalFile keyFile = new LocalFile(pathToAutoFVTTestFiles + "/tmp/key.jks");
         if (keyFile.exists())
             keyFile.copyToDest(new RemoteFile(getMachine(), getServerRoot() + "/resources/security/key.jks"));
+        else {
+            keyFile = new LocalFile(pathToAutoFVTTestFiles + "/tmp/key.p12");
+            if (keyFile.exists())
+                keyFile.copyToDest(new RemoteFile(getMachine(), getServerRoot() + "/resources/security/key.p12"));
+        }
 
         // Set up the trust store
         //System.setProperty("javax.net.ssl.trustStore", getServerRoot() + "/resources/security/key.jks");
@@ -5608,11 +5754,24 @@ public class LibertyServer implements LogMonitorClient {
      * @throws Exception If anything goes wrong!
      */
     public JMXConnector getJMXRestConnector() throws Exception {
+        return getJMXRestConnector(getHttpDefaultSecurePort());
+    }
+
+    /**
+     * Creates a JMX rest connection to the server using the following user name, password and keystore password:
+     * "theUser", "thePassword", "Liberty".
+     *
+     * If you need to connect with different values, use {@link #getJMXRestConnector(String, String, String)}.
+     *
+     * @return JMXConnector connected to the server
+     * @throws Exception If anything goes wrong!
+     */
+    public JMXConnector getJMXRestConnector(int port) throws Exception {
         final String userName = "theUser";
         final String password = "thePassword";
         final String keystorePassword = "Liberty";
 
-        return getJMXRestConnector(userName, password, keystorePassword);
+        return getJMXRestConnector(userName, password, keystorePassword, port);
     }
 
     /**
@@ -5625,6 +5784,10 @@ public class LibertyServer implements LogMonitorClient {
      * @throws Exception If anything goes wrong!
      */
     public JMXConnector getJMXRestConnector(String userName, String password, String keystorePassword) throws Exception {
+        return getJMXRestConnector(userName, password, keystorePassword, getHttpDefaultSecurePort());
+    }
+
+    private JMXConnector getJMXRestConnector(String userName, String password, String keystorePassword, int port) throws Exception {
         String METHOD_NAME = "getJMXRestConnector";
         Map<String, Object> environment = new HashMap<String, Object>();
         environment.put("jmx.remote.protocol.provider.pkgs", "com.ibm.ws.jmx.connector.client");
@@ -5636,6 +5799,11 @@ public class LibertyServer implements LogMonitorClient {
         KeyStore keyStore = KeyStore.getInstance("JKS");
         String path = getServerRoot() + "/resources/security/key.jks";
         File keyFile = new File(path);
+        if (!keyFile.exists()) {
+            path = getServerRoot() + "/resources/security/key.p12";
+            keyFile = new File(path);
+        }
+
         FileInputStream is = new FileInputStream(keyFile);
         byte[] fileBytes = new byte[(int) keyFile.length()];
         is.read(fileBytes);
@@ -5661,7 +5829,7 @@ public class LibertyServer implements LogMonitorClient {
         sslContext.init(null, trustManagerFactory.getTrustManagers(), null);
         environment.put("com.ibm.ws.jmx.connector.client.CUSTOM_SSLSOCKETFACTORY", sslContext.getSocketFactory());
 
-        JMXServiceURL url = new JMXServiceURL("REST", getHostname(), getHttpDefaultSecurePort(), "/IBMJMXConnectorREST");
+        JMXServiceURL url = new JMXServiceURL("REST", getHostname(), port, "/IBMJMXConnectorREST");
 
         JMXConnector jmxConnector = JMXConnectorFactory.connect(url, environment);
         Log.info(c, METHOD_NAME, "Created JMX connector to server with URL: " + url + " Connector: " + jmxConnector);
@@ -5957,4 +6125,10 @@ public class LibertyServer implements LogMonitorClient {
             return getHttpDefaultSecurePort();
         }
     }
+
+    @Override
+    public String toString() {
+        return serverToUse + " : " + super.toString();
+    }
+
 }

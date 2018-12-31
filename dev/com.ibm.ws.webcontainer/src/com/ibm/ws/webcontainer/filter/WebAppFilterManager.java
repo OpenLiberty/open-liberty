@@ -1271,7 +1271,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
             dispatchContext.pushException(ser);
             if (!dispatchContext.isInclude() && !dispatchContext.isForward() && (request instanceof HttpServletRequest)) {
                 if (isTraceOn && logger.isLoggable(Level.FINE)) {
-                    logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "Servletrror report caught, call send error with security context");
+                    logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "Servlet error report caught, call send error with security context");
                 }
                 WebApp app = (WebApp) dispatchContext.getWebApp();
                 app.sendError((HttpServletRequest) request, (HttpServletResponse) response, ser);

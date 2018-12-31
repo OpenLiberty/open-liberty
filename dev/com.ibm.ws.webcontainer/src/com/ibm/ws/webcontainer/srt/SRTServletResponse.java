@@ -1013,7 +1013,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
         if(value.equalsIgnoreCase("NoValue")){
             return;
         }
-        //what if application has already set it programatically
+        //what if application has already set it programmatically
         if(this.getHeader("Strict-Transport-Security") == null ){
             this.setHeader("Strict-Transport-Security", value); 
         }

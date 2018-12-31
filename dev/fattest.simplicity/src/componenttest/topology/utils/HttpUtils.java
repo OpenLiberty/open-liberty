@@ -29,6 +29,7 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.SecureRandom;
+import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -45,6 +46,7 @@ import javax.net.ssl.X509TrustManager;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 /**

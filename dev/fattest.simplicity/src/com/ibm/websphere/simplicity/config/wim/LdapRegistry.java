@@ -64,6 +64,7 @@ public class LdapRegistry extends ConfigElement {
     private String sslRef;
     private Integer searchPageSize; // PRIVATE
     private String certificateMapperId;
+    private String timestampFormat;
 
     /**
      * @return the activedFilters
@@ -329,6 +330,13 @@ public class LdapRegistry extends ConfigElement {
      */
     public String getSslRef() {
         return sslRef;
+    }
+
+    /**
+     * @return the timestampFormat
+     */
+    public String getTimestampFormat() {
+        return timestampFormat;
     }
 
     /**
@@ -645,6 +653,14 @@ public class LdapRegistry extends ConfigElement {
         this.sslRef = sslRef;
     }
 
+    /**
+     * @param timestampFormat the timestampFormat to set
+     */
+    @XmlAttribute(name = "timestampFormat")
+    public void setTimestampFormat(String timestampFormat) {
+        this.timestampFormat = timestampFormat;
+    }
+
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
@@ -761,6 +777,9 @@ public class LdapRegistry extends ConfigElement {
         }
         if (sslRef != null) {
             sb.append("sslRef=\"").append(sslRef).append("\" ");;
+        }
+        if (timestampFormat != null) {
+            sb.append("timestampFormat=\"").append(timestampFormat).append("\" ");;
         }
 
         sb.append("}");

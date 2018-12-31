@@ -20,7 +20,6 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.websphere.soe_reporting.SOEHttpPostUtil;
 
-import componenttest.custom.junit.runner.FATRunner;
 import componenttest.exception.NoStringFoundInLogException;
 import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
 
@@ -36,8 +35,10 @@ public class LogMonitor {
     /** How frequently we poll the logs when waiting for something to happen */
     protected static final int WAIT_INCREMENT = 300; //milliseconds
 
+    protected static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
+
     /** Default wait period for log search requests **/
-    protected static final long LOG_SEARCH_TIMEOUT = FATRunner.FAT_TEST_LOCALRUN ? 12 * 1000 : 120 * 1000;
+    protected static final long LOG_SEARCH_TIMEOUT = FAT_TEST_LOCALRUN ? 12 * 1000 : 120 * 1000;
 
     //Used for keeping track of mark positions of log files
     protected HashMap<String, Long> logMarks = new HashMap<String, Long>();
@@ -247,12 +248,15 @@ public class LogMonitor {
      * and verify that the regex does not show up in the logs during the
      * specfied duration.
      *
-     * @param timeout Timeout (in milliseconds)
+     * @param regexp a regular expression to search for
+     * @param intendedTimeout a timeout, in milliseconds, within which the wait should complete. Exceeding this is a soft fail.
+     * @param extendedTimeout a timeout, in milliseconds, within which the wait must complete. Exceeding this is a hard fail.
+     * @param outputFile file to check
      * @return line that matched the regexp
      */
-    public String verifyStringNotInLogUsingMark(String regexToSearchFor, long timeout) {
+    public String verifyStringNotInLogUsingMark(String regexp, long timeout) {
         try {
-            return verifyStringNotInLogUsingMark(regexToSearchFor, timeout, client.lmcGetDefaultLogFile());
+            return waitForStringInLogUsingMarkWithException(regexp, timeout, timeout * 2, client.lmcGetDefaultLogFile());
         } catch (Exception ex) {
             if (ex instanceof NoStringFoundInLogException) {
                 return null;

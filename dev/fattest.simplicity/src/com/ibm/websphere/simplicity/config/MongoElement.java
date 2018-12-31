@@ -48,7 +48,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 //<AD id="w"                              ibmui:group="MongoOptions" type="Integer" required="false" min="0" name="%w" description="%w.desc"/>
 //</OCD>
 public class MongoElement extends ConfigElement {
-    private String hostNames, libraryRef, password, user, description, readPreference, writeConcern, sslRef;
+    private String hostNames, libraryRef, password, user, description, readPreference, writeConcern, sslRef, certificateSubject;
     private Boolean alwaysUserMBeans, autoConnectRetry, cursorFinalizerEnabled, socketKeepAlive, sslEnabled;
     private Integer connectionsPerHost, threadsAllowedToBlockForConnectionMultiplier, connectTimeout, maxWaitTime, socketTimeout;
     private Long maxAutoConnectRetryTime;
@@ -389,10 +389,32 @@ public class MongoElement extends ConfigElement {
     }
 
     /**
+     * @return the certificateSubject
+     */
+    public String getCertificateSubject() {
+        return certificateSubject;
+    }
+
+    /**
+     * @param sslRef the sslRef to set
+     */
+    @XmlAttribute
+    public void setCertificateSubject(String certificateSubject) {
+        this.certificateSubject = certificateSubject;
+    }
+
+    /**
      * @param ports the ports to set
      */
     public void setPorts(Integer[] ports) {
         this.ports = ports;
+    }
+
+    /**
+     * @param ports the ports to set
+     */
+    public Integer[] getPortList() {
+        return this.ports;
     }
 
     /**
@@ -431,6 +453,6 @@ public class MongoElement extends ConfigElement {
                + ", cursorFinalizerEnabled=" + cursorFinalizerEnabled + ", socketKeepAlive=" + socketKeepAlive + ", connectionsPerHost=" + connectionsPerHost
                + ", threadsAllowedToBlockForConnectionMultiplier=" + threadsAllowedToBlockForConnectionMultiplier + ", connectTimeout=" + connectTimeout + ", maxWaitTime="
                + maxWaitTime + ", socketTimeout=" + socketTimeout + ", maxAutoConnectRetryTime=" + maxAutoConnectRetryTime + ", sslEnabled=" + sslEnabled + ", sslRef=" + sslRef
-               + ", ports=" + Arrays.toString(ports) + "]";
+               + ", certificateSubject=" + certificateSubject + ", ports=" + Arrays.toString(ports) + "]";
     }
 }

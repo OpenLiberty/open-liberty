@@ -494,7 +494,12 @@ public class DataModelSerializer {
         }
 
         if (verify.equals(Verification.VERIFY) && targetObject instanceof VersionableContent) {
-            String version = json.getString(((VersionableContent) targetObject).nameOfVersionAttribute(), null);
+            String version = null;
+            try {
+                version = json.getString(((VersionableContent) targetObject).nameOfVersionAttribute(), null);
+            } catch (NullPointerException e) {
+                // Ignore
+            }
             if (version != null) {
                 ((VersionableContent) targetObject).validate(version);
             }

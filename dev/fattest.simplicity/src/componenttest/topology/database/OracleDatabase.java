@@ -273,6 +273,9 @@ public class OracleDatabase extends Database {
         addOrUpdate(varList, "jdbc.URL", "jdbc:oracle:thin:@//" + dbhostname + ':' + dbport + '/' + dbname);
         addOrUpdate(varList, "jdbc.user", bootstrap.getValue("database.user1"));
         addOrUpdate(varList, "jdbc.password", bootstrap.getValue("database.password1"));
+        addOrUpdate(varList, "jdbc.serverName", dbhostname);
+        addOrUpdate(varList, "jdbc.portNumber", dbport);
+        addOrUpdate(varList, "jdbc.databaseName", dbname);
 
         server.updateServerConfiguration(config);
     }

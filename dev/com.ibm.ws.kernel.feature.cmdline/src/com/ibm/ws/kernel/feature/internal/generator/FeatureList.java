@@ -11,7 +11,15 @@
 package com.ibm.ws.kernel.feature.internal.generator;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -71,6 +80,9 @@ public class FeatureList {
     private static final List<Map<String, Object>> possibleJavaVersions = new ArrayList<Map<String, Object>>();
     private static final Map<String, Collection<GenericMetadata>> eeToCapability = new HashMap<String, Collection<GenericMetadata>>();
 
+    private static File installDir;
+    private static boolean gaBuild = true;
+
     static {
         if (writingJavaVersion) {
             addJVM(possibleJavaVersions, "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
@@ -88,6 +100,8 @@ public class FeatureList {
             eeToCapability.put("JavaSE-1.8", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=1.8))\""));
             eeToCapability.put("JavaSE-9", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=9))\""));
         }
+
+        gaBuild = isGABuild();
     }
 
     /**
@@ -283,9 +297,12 @@ public class FeatureList {
                             if (ocds.getExtensionUris().contains(XMLConfigConstants.METATYPE_EXTENSION_URI)) {
                                 Map<String, String> attribs = ocds.getExtensionAttributes(XMLConfigConstants.METATYPE_EXTENSION_URI);
                                 if (attribs != null) {
-                                    String alias = attribs.get("alias");
-                                    if (alias != null && !attribs.containsKey("childAlias")) {
-                                        elements.add(alias);
+                                    String isBeta = attribs.get("beta");
+                                    if ( ! (gaBuild && "true".equals(isBeta))) {
+                                        String alias = attribs.get("alias");
+                                        if (alias != null && !attribs.containsKey("childAlias")) {
+                                            elements.add(alias);
+                                        }
                                     }
                                 }
                             }
@@ -553,5 +570,78 @@ public class FeatureList {
                 }
             }
         }
+    }
+
+    /**
+     * Work out whether we should generate the schema for a GA build or not.
+     *
+     * @return true if ga schema, false otherwise.
+     */
+    private static boolean isGABuild() {
+        boolean result = true;
+
+        final Properties props = new Properties();
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+            @Override
+            public Object run() {
+                try {
+                    final File version = new File(getInstallDir(), "lib/versions/WebSphereApplicationServer.properties");
+                    Reader r = new InputStreamReader(new FileInputStream(version), "UTF-8");
+                    props.load(r);
+                    r.close();
+                } catch (IOException e) {
+                    // ignore because we fail safe. Returning true will result in a GA suitable schema
+                }
+                return null;
+            }
+        });
+        String v = props.getProperty("com.ibm.websphere.productVersion");
+
+        if (v != null) {
+            int index = v.indexOf('.');
+            if (index != -1) {
+                try {
+                    int major = Integer.parseInt(v.substring(0, index));
+                    if (major > 2012) {
+                        result = false;
+                    }
+                } catch (NumberFormatException nfe) {
+                    // ignore because we fail safe. True for this hides stuff
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private static File getInstallDir() {
+        if (installDir == null) {
+            String installDirProp = System.getProperty("wlp.install.dir");
+            if (installDirProp == null) {
+                URL url = FeatureList.class.getProtectionDomain().getCodeSource().getLocation();
+
+                if (url.getProtocol().equals("file")) {
+                    // Got the file for the command line launcher, this lives in lib
+                    try {
+                        if (url.getAuthority() != null) {
+                            url = new URL("file://" + url.toString().substring("file:".length()));
+                        }
+
+                        File f = new File(url.toURI());
+                        // The parent of the jar is lib, so the parent of the parent is the install.
+                        installDir = f.getParentFile();
+                    } catch (MalformedURLException e) {
+                        // Not sure we can get here so ignore.
+                    } catch (URISyntaxException e) {
+                        // Not sure we can get here so ignore.
+                    }
+                }
+            } else {
+                installDir = new File(installDirProp);
+            }
+        }
+
+        return installDir;
     }
 }

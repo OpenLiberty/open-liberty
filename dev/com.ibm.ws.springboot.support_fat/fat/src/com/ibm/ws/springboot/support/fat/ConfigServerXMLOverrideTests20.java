@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.HttpEndpoint;
 import com.ibm.websphere.simplicity.config.KeyStore;
-import com.ibm.websphere.simplicity.config.SSLConfig;
+import com.ibm.websphere.simplicity.config.SSL;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
 import com.ibm.websphere.simplicity.config.VirtualHost;
@@ -87,7 +87,7 @@ public class ConfigServerXMLOverrideTests20 extends AbstractSpringTests {
         virtualHosts.clear();
         List<HttpEndpoint> endpoints = config.getHttpEndpoints();
         endpoints.clear();
-        List<SSLConfig> ssls = config.getSsls();
+        List<SSL> ssls = config.getSsls();
         ssls.clear();
         List<KeyStore> keystores = config.getKeyStores();
         keystores.clear();
@@ -114,7 +114,7 @@ public class ConfigServerXMLOverrideTests20 extends AbstractSpringTests {
             endpoint.setHttpsPort(Integer.toString(REQUESTED_PORT));
             endpoint.getSslOptions().setSslRef("ssl-test");
 
-            SSLConfig ssl = new SSLConfig();
+            SSL ssl = new SSL();
             ssls.add(ssl);
             ssl.setId("ssl-test");
             ssl.setKeyStoreRef("keystore-test");
@@ -134,7 +134,7 @@ public class ConfigServerXMLOverrideTests20 extends AbstractSpringTests {
         }
 
         else if (methodName.endsWith(OVERRIDE_SSL)) {
-            SSLConfig ssl = new SSLConfig();
+            SSL ssl = new SSL();
             ssls.add(ssl);
             ssl.setId(ID_SSL + REQUESTED_PORT);
             ssl.setKeyStoreRef("keystore-test");

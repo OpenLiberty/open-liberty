@@ -19,6 +19,8 @@ public class OpenAPIElement extends ConfigElement {
     private String publicURL;
     private String customization;
     private Boolean enablePrivateURL;
+    private Boolean validation;
+    private Boolean disableFileMonitor;
 
     @XmlElement(name = "webModuleDoc")
     private ConfigElementList<WebModuleDocElement> webModuleDocs;
@@ -50,6 +52,24 @@ public class OpenAPIElement extends ConfigElement {
         this.enablePrivateURL = enablePrivateURL;
     }
 
+    public Boolean getValidation() {
+        return validation;
+    }
+
+    @XmlAttribute(name = "validation")
+    public void setValidation(Boolean validation) {
+        this.validation = validation;
+    }
+
+    public Boolean getDisableFileMonitor() {
+        return disableFileMonitor;
+    }
+
+    @XmlAttribute(name = "disableFileMonitor")
+    public void setDisableFileMonitor(Boolean disableFileMonitor) {
+        this.disableFileMonitor = disableFileMonitor;
+    }
+
     public ConfigElementList<WebModuleDocElement> getWebModuleDocs() {
         if (this.webModuleDocs == null) {
             this.webModuleDocs = new ConfigElementList<WebModuleDocElement>();
@@ -63,6 +83,8 @@ public class OpenAPIElement extends ConfigElement {
         sb.append("publicURL=").append(publicURL);
         sb.append(", customization=").append(customization);
         sb.append(", enablePrivateURL=").append(enablePrivateURL);
+        sb.append(", validation=").append(validation);
+        sb.append(", disableFileMonitor=").append(disableFileMonitor);
         sb.append(", webModuleDocs=[");
         if (webModuleDocs != null) {
             for (WebModuleDocElement webModuleDoc : webModuleDocs) {
