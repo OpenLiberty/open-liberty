@@ -36,6 +36,7 @@ public class JMSActivationSpec extends ActivationSpec {
     public Object clone() throws CloneNotSupportedException {
         JMSActivationSpec clone = (JMSActivationSpec) super.clone();
         if (wasJmsProperties != null) {
+            clone.wasJmsProperties = new ConfigElementList<WasJmsProperties>();
             for (WasJmsProperties props : wasJmsProperties) {
                 clone.getWasJmsProperties().add((WasJmsProperties) props.clone());
             }

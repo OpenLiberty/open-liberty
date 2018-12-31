@@ -62,6 +62,10 @@ public class FeatureDependencyProcessor {
         // Make sure that any features installed in the server are known to the test dependency graph
         File featureListFile = FeatureList.get(server);
         Set<String> testedFeatures = getTestedFeatures(testedFeaturesFile, featureListFile);
+
+        if (testedFeatures.contains("ALL_FEATURES"))
+            return;
+
         Set<String> untestedFeatures = new HashSet<String>();
         for (String installedFeature : installedFeatures) {
             if (installedFeature.startsWith("usr:") || installedFeature.contains("test"))
@@ -69,23 +73,22 @@ public class FeatureDependencyProcessor {
             if (!testedFeatures.contains(installedFeature))
                 untestedFeatures.add(installedFeature);
         }
-        if (!untestedFeatures.isEmpty()) {
-            Log.info(c, m, "Installed features are: " + installedFeatures);
-            Log.info(c, m, "Computed Tested features are: " + testedFeatures);
+
+        if (untestedFeatures.isEmpty() || testedFeatures.contains("all_features")) {
+            Log.info(c, m, "Validated that all installed features were present in test dependencies JSON file.");
+        } else {
             if (hasRetry) {
                 prepForRetry(featureListFile);
                 validateTestedFeatures(server, serverLog);
             } else {
                 Exception e = new Exception("Installed feature(s) " + untestedFeatures +
-                                            " were not defined in the autoFVT/fat-feature-deps.json file! " +
+                                            " were not defined in the autoFVT/fat-metadata.json file! " +
                                             "To correct this, add " + untestedFeatures + " to the 'tested.features' " +
-                                            "property in the bnd.bnd file for this FAT so that an accurate test depdendency " +
+                                            "property in the bnd.bnd or build-test.xml file for this FAT so that an accurate test depdendency " +
                                             "graph can be generated in the future.");
                 Log.error(c, m, e);
                 throw e;
             }
-        } else {
-            Log.info(c, m, "Validated that all installed features were present in test dependencies JSON file.");
         }
     }
 

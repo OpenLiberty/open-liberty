@@ -19,6 +19,8 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  */
 public class LogPolice {
 
+    private static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
+
     private static final long MB = 1024000L;
     // TODO: Start out with 4GB cap on trace in LITE mode, incrementally constrict this down to ~300MB trace allowed per bucket
     private static final long MAX_ALLOWED_TRACE = MB * Integer.getInteger("fat.test.max.allowed.trace.mb", 4000); // 4GB max (for now), override w/ system prop
@@ -61,7 +63,7 @@ public class LogPolice {
 
     private static long effectiveMaxTrace(long maxAllowedTrace) {
         long effectiveMaxTrace = maxAllowedTrace;
-        if (FATRunner.FAT_TEST_LOCALRUN)
+        if (FAT_TEST_LOCALRUN)
             effectiveMaxTrace *= 0.85;
         if (TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.FULL)
             effectiveMaxTrace *= 3;

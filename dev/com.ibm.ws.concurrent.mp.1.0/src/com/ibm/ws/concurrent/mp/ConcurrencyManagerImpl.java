@@ -75,9 +75,41 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
             if (available.add(type))
                 contextProviders.add(provider);
             else
-                // TODO message: "Duplicate type of thread context, " + type + ", is provided by " + provider + " and " + getProvider(type));
-                throw new IllegalStateException();
+                throw new IllegalStateException(Tr.formatMessage(tc, "CWWKC1150.duplicate.context",
+                                                                 type, provider, findConflictingProvider(provider, classloader)));
         }
+    }
+
+    /**
+     * Finds and returns the first thread context provider that provides the same
+     * thread context type as the specified provider.
+     *
+     * @param provider provider that is found to provide a conflicting thread context type with another provider.
+     * @param classloader class loader from which to load thread context providers.
+     * @return thread context provider with which the specified provider conflicts.
+     */
+    private ThreadContextProvider findConflictingProvider(ThreadContextProvider provider, ClassLoader classloader) {
+        String conflictingType = provider.getThreadContextType();
+        for (ThreadContextProvider p : ServiceLoader.load(ThreadContextProvider.class, classloader)) {
+            if (conflictingType.equals(p.getThreadContextType()) && !provider.equals(p))
+                return p;
+        }
+
+        // Not found: probably a conflict with a built-in type
+        if (ThreadContext.APPLICATION.equals(conflictingType))
+            return concurrencyProvider.applicationContextProvider;
+
+        if (ThreadContext.SECURITY.equals(conflictingType))
+            return concurrencyProvider.securityContextProvider;
+
+        if (ThreadContext.TRANSACTION.equals(conflictingType))
+            return concurrencyProvider.transactionContextProvider;
+
+        if (WLMContextProvider.WORKLOAD.equals(conflictingType))
+            return concurrencyProvider.wlmContextProvider;
+
+        // should be unreachable
+        throw new IllegalStateException(conflictingType);
     }
 
     @Override

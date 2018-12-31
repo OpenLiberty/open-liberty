@@ -39,6 +39,7 @@ public class JMSQueue extends AdminObject {
     public Object clone() throws CloneNotSupportedException {
         JMSQueue clone = (JMSQueue) super.clone();
         if (wasJmsProperties != null) {
+            clone.wasJmsProperties = new ConfigElementList<WasJmsProperties>();
             for (WasJmsProperties props : wasJmsProperties) {
                 clone.getWasJmsProperties().add((WasJmsProperties) props.clone());
             }
@@ -55,8 +56,7 @@ public class JMSQueue extends AdminObject {
 
         List<?> nestedElementsList = Arrays.asList(
                                                    getProperties_FAT1(),
-                                                   getWasJmsProperties()
-                        );
+                                                   getWasJmsProperties());
         for (ConfigElementList<?> nestedElements : (List<ConfigElementList<?>>) nestedElementsList)
             if (nestedElements != null && nestedElements.size() > 0)
                 for (Object o : nestedElements)

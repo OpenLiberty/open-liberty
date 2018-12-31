@@ -46,6 +46,7 @@ import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.token.TokenManager;
 import com.ibm.wsspi.security.auth.callback.Constants;
+import com.ibm.wsspi.security.token.AttributeNameConstants;
 import com.ibm.wsspi.security.token.SingleSignonToken;
 
 /**
@@ -54,14 +55,13 @@ import com.ibm.wsspi.security.token.SingleSignonToken;
 public abstract class ServerCommonLoginModule extends CommonLoginModule implements LoginModule {
     private static final TraceComponent tc = Tr.register(ServerCommonLoginModule.class);
     private static final String[] jsonWebTokenProperties = { AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN };
-//    private static final String[] jsonWebTokenProperties = { AttributeNameConstants.WSCREDENTIAL_CACHE_KEY,
-//                                                             AttributeNameConstants.WSCREDENTIAL_UNIQUEID,
-//                                                             AttributeNameConstants.WSCREDENTIAL_REALM,
-//                                                             AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN,
-//                                                             AuthenticationConstants.INTERNAL_ASSERTION_KEY,
-//                                                             AttributeNameConstants.WSCREDENTIAL_SECURITYNAME };
 
     protected SubjectHelper subjectHelper = new SubjectHelper();
+
+    protected final String[] userIdOnlyProperties = { AttributeNameConstants.WSCREDENTIAL_USERID,
+                                                      AuthenticationConstants.INTERNAL_ASSERTION_KEY };
+
+    protected boolean customPropertiesFromSubject = false;
 
     protected CollectiveAuthenticationPlugin getCollectiveAuthenticationPlugin() throws RegistryException {
         return JAASServiceImpl.getCollectiveAuthenticationPlugin();
@@ -364,4 +364,33 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
             // For jwtSSO feature, create the jwtSSOToken using WSCredential from the subject and add the jwtSSOTtoken to the subject.
             JwtSSOTokenHelper.createJwtSSOToken(subject);
     }
+
+    /**
+     * @return
+     */
+    protected boolean allowLoginWithIdOnly(Hashtable<String, ?> customProperties) {
+        AuthenticationService authService = getAuthenticationService();
+        if (authService != null && authService.isAllowHashTableLoginWithIdOnly())
+            return true;
+
+        Boolean assertion = Boolean.FALSE;
+        if (customPropertiesFromSubject) {
+            Object value = customProperties.get(AuthenticationConstants.INTERNAL_ASSERTION_KEY);
+            assertion = (Boolean) (value != null ? value : Boolean.FALSE);
+            removeInternalAssertionHashtable(customProperties, userIdOnlyProperties);
+        } else {
+            String[] hashtableInternalProperty = { AuthenticationConstants.INTERNAL_ASSERTION_KEY };
+            Hashtable<String, ?> internalProperties = subjectHelper.getHashtableFromSubject(subject, hashtableInternalProperty);
+            if (internalProperties != null && !internalProperties.isEmpty()) {
+                assertion = Boolean.TRUE;
+                removeInternalAssertionHashtable(internalProperties, userIdOnlyProperties);
+            }
+        }
+        if (assertion.booleanValue()) {
+            return true;
+        }
+
+        return false;
+    }
+
 }

@@ -1932,7 +1932,7 @@ public class MPConcurrentTestServlet extends FATServlet {
         try {
             builder.build();
         } catch (IllegalStateException x) {
-            if (x.getMessage() == null || !x.getMessage().contains(ThreadContext.APPLICATION))
+            if (x.getMessage() == null || !x.getMessage().startsWith("CWWKC1151E") || !x.getMessage().contains(ThreadContext.APPLICATION))
                 throw x;
         }
 
@@ -1941,7 +1941,8 @@ public class MPConcurrentTestServlet extends FATServlet {
         try {
             builder.build();
         } catch (IllegalStateException x) {
-            if (x.getMessage() == null || !x.getMessage().contains(TestContextTypes.CITY) || !x.getMessage().contains(TestContextTypes.STATE))
+            if (x.getMessage() == null || !x.getMessage().startsWith("CWWKC1151E") || !x.getMessage().contains(TestContextTypes.CITY)
+                || !x.getMessage().contains(TestContextTypes.STATE))
                 throw x;
         }
 
@@ -1950,7 +1951,7 @@ public class MPConcurrentTestServlet extends FATServlet {
         try {
             builder.build();
         } catch (IllegalStateException x) {
-            if (x.getMessage() == null || !x.getMessage().contains(ThreadContext.ALL_REMAINING))
+            if (x.getMessage() == null || !x.getMessage().startsWith("CWWKC1151E") || !x.getMessage().contains(ThreadContext.ALL_REMAINING))
                 throw x;
         }
 
@@ -1994,7 +1995,7 @@ public class MPConcurrentTestServlet extends FATServlet {
         try {
             builder.build();
         } catch (IllegalStateException x) {
-            if (x.getMessage() == null || !x.getMessage().contains("Country") || !x.getMessage().contains("Planet"))
+            if (x.getMessage() == null || !x.getMessage().startsWith("CWWKC1155E") || !x.getMessage().contains("Country") || !x.getMessage().contains("Planet"))
                 throw x;
         }
 
@@ -2004,7 +2005,7 @@ public class MPConcurrentTestServlet extends FATServlet {
         try {
             builder.build();
         } catch (IllegalStateException x) {
-            if (x.getMessage() == null || !x.getMessage().contains("Galaxy"))
+            if (x.getMessage() == null || !x.getMessage().startsWith("CWWKC1155E") || !x.getMessage().contains("Galaxy"))
                 throw x;
         }
 
@@ -2565,12 +2566,16 @@ public class MPConcurrentTestServlet extends FATServlet {
                 fail("Should not be able to build when type to propagate does not exist: " +
                      builder.propagated("ContextType1ThatDoesNotExist").build());
             } catch (IllegalStateException x) {
+                if (x.getMessage() == null || !x.getMessage().startsWith("CWWKC1155E") || !x.getMessage().contains("ContextType1ThatDoesNotExist"))
+                    throw x;
             }
 
             try {
                 fail("Should not be able to build when type to clear does not exist: " +
                      builder.propagated(ThreadContext.SECURITY).cleared("ContextType2ThatDoesNotExist").build());
             } catch (IllegalStateException x) {
+                if (x.getMessage() == null || !x.getMessage().startsWith("CWWKC1155E") || !x.getMessage().contains("ContextType2ThatDoesNotExist"))
+                    throw x;
             }
 
             // builder is still usable
@@ -4173,7 +4178,7 @@ public class MPConcurrentTestServlet extends FATServlet {
         try {
             builder.build();
         } catch (IllegalStateException x) {
-            if (x.getMessage() == null || !x.getMessage().contains(TestContextTypes.CITY))
+            if (x.getMessage() == null || !x.getMessage().startsWith("CWWKC1152E") || !x.getMessage().contains(TestContextTypes.CITY))
                 throw x;
         }
 
@@ -4183,7 +4188,7 @@ public class MPConcurrentTestServlet extends FATServlet {
         try {
             builder.build();
         } catch (IllegalStateException x) {
-            if (x.getMessage() == null || !x.getMessage().contains(ThreadContext.ALL_REMAINING))
+            if (x.getMessage() == null || !x.getMessage().startsWith("CWWKC1152E") || !x.getMessage().contains(ThreadContext.ALL_REMAINING))
                 throw x;
         }
     }
@@ -4203,7 +4208,8 @@ public class MPConcurrentTestServlet extends FATServlet {
         try {
             builder.build();
         } catch (IllegalStateException x) {
-            if (x.getMessage() == null || !x.getMessage().contains("Township") || !x.getMessage().contains("Ward") || x.getMessage().contains("Precinct"))
+            if (x.getMessage() == null || !x.getMessage().startsWith("CWWKC1155E")
+                || !x.getMessage().contains("Township") || !x.getMessage().contains("Ward") || x.getMessage().contains("Precinct"))
                 throw x;
         }
 

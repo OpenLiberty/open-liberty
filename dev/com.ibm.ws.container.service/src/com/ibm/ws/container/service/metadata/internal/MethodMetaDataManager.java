@@ -15,7 +15,7 @@ import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.container.service.metadata.MethodMetaDataListener;
 import com.ibm.ws.runtime.metadata.MethodMetaData;
 
-class MethodMetaDataManager extends MetaDataManager<MethodMetaData, MethodMetaDataListener> {
+public class MethodMetaDataManager extends MetaDataManager<MethodMetaData, MethodMetaDataListener> {
     MethodMetaDataManager(String listenerRefName) {
         super(listenerRefName);
     }

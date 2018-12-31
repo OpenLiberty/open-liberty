@@ -21,12 +21,16 @@ import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.threading.PolicyExecutor;
 
 /**
  * Builder that programmatically configures and creates ManagedExecutor instances.
  */
 class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
+    private static final TraceComponent tc = Tr.register(ManagedExecutorBuilderImpl.class);
+
     static final AtomicLong instanceCount = new AtomicLong();
 
     private final ConcurrencyProviderImpl concurrencyProvider;
@@ -123,7 +127,7 @@ class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
         overlap.retainAll(propagated);
         if (overlap.isEmpty()) // only possible if builder is concurrently modified during build
             throw new ConcurrentModificationException();
-        throw new IllegalStateException(overlap.toString()); // TODO NLS translated error message
+        throw new IllegalStateException(Tr.formatMessage(tc, "CWWKC1151.context.lists.overlap", overlap));
     }
 
     @Override

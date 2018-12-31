@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -34,6 +36,7 @@ public class StreamGobbler extends Thread {
     protected final InputStream input;
     protected final OutputStream redirect;
     protected final boolean async;
+    protected final Charset charset;
 
     private boolean joined;
     private boolean terminated;
@@ -61,8 +64,12 @@ public class StreamGobbler extends Thread {
      *            OutputStream is initialized to a new ByteArrayOutputStream,
      *            and events occurring on the input stream will be printed to
      *            trace but otherwise ignored.
+     * @param async
+     *            Whether the Process whose output we're gobbling is invoked async or not.
+     * @param charset
+     *            The character set to use when redirecting output.
      */
-    public StreamGobbler(final InputStream input, final OutputStream redirect, boolean async) {
+    public StreamGobbler(final InputStream input, final OutputStream redirect, boolean async, Charset charset) {
         this.input = input;
         if (redirect == null) {
             this.redirect = new ByteArrayOutputStream();
@@ -73,6 +80,17 @@ public class StreamGobbler extends Thread {
         if (!async) {
             setDaemon(true);
         }
+        this.charset = charset;
+    }
+
+    /**
+     * Construct StreamGobbler with output stream redirected using default char encoding.
+     *
+     * @see #StreamGobbler(InputStream, OutputStream, boolean, Charset)
+     */
+    public StreamGobbler(final InputStream input, final OutputStream redirect, boolean async) {
+        // See comment below, yes we chose 'null' over Charset.defaultCharset()
+        this(input, redirect, async, null);
     }
 
     /*
@@ -82,9 +100,19 @@ public class StreamGobbler extends Thread {
      */
     @Override
     public void run() {
-        PrintWriter writer = new PrintWriter(this.redirect, true);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(
-                        this.input));
+
+        PrintWriter writer = null;
+        BufferedReader reader = null;
+
+        // Different than defaultCharset() on z/OS?
+        if (charset != null) {
+            writer = new PrintWriter(new OutputStreamWriter(this.redirect, charset), true);
+            reader = new BufferedReader(new InputStreamReader(this.input, charset));
+        } else {
+            writer = new PrintWriter(new OutputStreamWriter(this.redirect), true);
+            reader = new BufferedReader(new InputStreamReader(this.input));
+        }
+
         try {
             for (String line; (line = reader.readLine()) != null;) {
                 synchronized (this) {
