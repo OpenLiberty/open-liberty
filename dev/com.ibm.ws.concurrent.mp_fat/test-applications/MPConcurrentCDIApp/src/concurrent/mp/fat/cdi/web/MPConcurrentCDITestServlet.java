@@ -206,9 +206,9 @@ public class MPConcurrentCDITestServlet extends FATServlet {
                     String message = x.getCause().getMessage();
                     if (message == null
                         || !message.contains("CWWKE1201E")
-                        || !message.contains("PolicyExecutorProvider-ManagedExecutor")
+                        || !message.matches("MPConcurrentCDIApp_ManagedExecutor_.+_2_2_Remaining") // TODO would be better to use NamedInstance name
                         || !message.contains("maxQueueSize")
-                        || !message.contains(" 2 ")) // the maximum queue size
+                        || !message.contains(" 2")) // the maximum queue size
                         throw x;
                 } else
                     throw x;

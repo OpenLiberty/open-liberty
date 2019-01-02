@@ -97,12 +97,11 @@ class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
                         .append('_') //
                         .append(maxAsync == -1 ? "max" : maxAsync)
                         .append('_') //
-                        .append(maxQueued == -1 ? "max" : maxAsync)
-                        .append('_');
+                        .append(maxQueued == -1 ? "max" : maxAsync);
 
         for (String propagatedType : propagated)
             if (propagatedType.matches("\\w*")) // one or more of a-z, A-Z, _, 0-9
-                nameBuilder.append(propagatedType).append('_');
+                nameBuilder.append('_').append(propagatedType);
 
         String name = nameBuilder.toString();
 
