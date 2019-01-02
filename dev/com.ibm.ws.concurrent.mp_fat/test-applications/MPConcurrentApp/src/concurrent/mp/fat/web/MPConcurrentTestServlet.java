@@ -3429,7 +3429,8 @@ public class MPConcurrentTestServlet extends FATServlet {
                 fail("second task from executor 2 should be canceled/interrupted due to shutdown. Instead result is: " + cf2b.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
             } catch (CancellationException x) {
             } catch (ExecutionException x) {
-                if (!(x.getCause() instanceof InterruptedException))
+                if (!(x.getCause() instanceof InterruptedException) &&
+                    !(x.getCause() instanceof CancellationException)) // behavior of java.util.concurrent.CompletableFuture
                     throw x;
             }
 

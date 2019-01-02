@@ -16,8 +16,10 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
@@ -281,6 +283,20 @@ public interface PolicyExecutor extends ExecutorService {
      * @throws IllegalStateException if the executor has been shut down.
      */
     PolicyExecutor startTimeout(long ms);
+
+    /**
+     * Submit a Runnable task that performs a CompletableFuture action.
+     * The CompletableFuture might be unavailable when this method is invoked and can be
+     * supplied at a later time by setting the value of the AtomicReference.
+     * The PolicyExecutor automatically cancels the CompeletableFuture if it is
+     * available at the time when the PolicyTaskFuture is canceled.
+     *
+     * @param completableFutureRef reference to a CompletableFuture that the PolicyExecutor should
+     *            automatically cancel upon cancellation of the returned future.
+     * @param task the task to run
+     * @return future for the task.
+     */
+    PolicyTaskFuture<Void> submit(AtomicReference<Future<?>> completableFutureRef, Runnable task);
 
     /**
      * Submit a Callable task with a callback to be invoked at various points in the task's life cycle.
