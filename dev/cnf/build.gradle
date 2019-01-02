@@ -437,6 +437,32 @@ task checkForUpdates() {
   }
 }
 
+task updateArtifact() {
+  doLast {
+    String mavenCoords = System.getProperty('mavenCoords');
+    String toVersion = System.getProperty('toVersion');
+     if (mavenCoords == null || System.getProperty('toVersion') == null) {
+       throw new InvalidUserDataException('Missing required arguments.\nExample usage:\n' +
+         './gradlew cnf:updateArtifact -DmavenCoords=org.apache.commons:commons-lang3:1.0 -DtoVersion=2.0');
+     }
+     def (group, artifact, version) = mavenCoords.split(':').collect { it.trim() }
+     println 'Updating GROUP=' + group + '  ARTIFACT=' + artifact + '  VERSION=' + version + ' --> ' + toVersion
+     // Update maven, gradle, and bnd files
+     String regex = '((' + group + '[\\.:]' + artifact + '):?;?(version=)?)(' + version + ')'
+     println 'Using regex: ' + regex
+     rootProject.fileTree(dir: '.', includes: ['**/*.maven', '**/*.gradle', '**/*.bnd', '**/bnd.*']).each{file ->
+       ant.replaceregexp(match: regex,
+                         replace: '\\1' + toVersion, 
+                         file: file, flags: 'g', byline: true)
+     }
+     // Update BND files
+     //rootProject.fileTree(dir: '.', includes: []).each{file ->
+     //  ant.replaceregexp(match: group + ':' + artifact + ';' + version, replace: group + ':' + artifact + ';' + toVersion, file: file, flags: 'g', byline: true)
+     //  ant.replaceregexp(match: group + ':' + artifact + ';version=' + version, replace: group + ':' + artifact + ';version=' + toVersion, file: file, flags: 'g', byline: true)
+    // }
+  }
+}
+
 class VersionString {
 
   String raw
