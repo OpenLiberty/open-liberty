@@ -83,7 +83,3 @@ org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:2.7.3-4be
 org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.3-4be1041
 com.ibm.ws.lars:larsServer-memoryBackend:war:1.0.1
 com.ibm.ws.org.apache.commons:commons-compress:1.16.1
-org.jboss.arquillian.container:arquillian-container-test-spi:1.3.0.Final
-org.jboss.arquillian.core:arquillian-core-spi:1.3.0.Final
-org.jboss.arquillian.core:arquillian-core-api:1.3.0.Final
-org.jboss.arquillian.test:arquillian-test-spi:1.3.0.Final

@@ -343,3 +343,7 @@ com.sun.xml.bind:jaxb-core:2.3.0.1
 com.sun.xml.bind:jaxb-impl:2.3.0.1
 com.sun.xml.bind:jaxb-jxc:2.3.0.1
 com.sun.xml.bind:jaxb-xjc:2.3.0.1
+org.jboss.arquillian.container:arquillian-container-test-spi:1.3.0.Final
+org.jboss.arquillian.core:arquillian-core-spi:1.3.0.Final
+org.jboss.arquillian.core:arquillian-core-api:1.3.0.Final
+org.jboss.arquillian.test:arquillian-test-spi:1.3.0.Final
