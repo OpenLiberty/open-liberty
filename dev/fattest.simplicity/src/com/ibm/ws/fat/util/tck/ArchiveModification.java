@@ -8,17 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config13.test;
+package com.ibm.ws.fat.util.tck;
 
-import java.util.EnumSet;
-import java.util.Set;
+import org.jboss.arquillian.core.spi.LoadableExtension.ExtensionBuilder;
 
-import com.ibm.ws.fat.util.tck.AbstractArquillianLoadableExtension;
-import com.ibm.ws.fat.util.tck.TCKArchiveModifications;
-
-public class ArquillianLoadableExtension extends AbstractArquillianLoadableExtension {
-    @Override
-    public Set<TCKArchiveModifications> getModifications() {
-        return EnumSet.of(TCKArchiveModifications.TEST_LOGGER, TCKArchiveModifications.HAMCREST);
-    }
+public interface ArchiveModification {
+    public void applyModification(ExtensionBuilder extensionBuilder);
 }

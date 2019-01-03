@@ -8,8 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.rest.client.test;
+package com.ibm.ws.fat.util.tck;
 
+import java.util.EnumSet;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.io.File;
 import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
 import org.jboss.arquillian.test.spi.TestClass;
@@ -17,27 +21,24 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 /**
- * We may need to  weave in the TCK jar for some tests that do not package the correct interface classes
+ * We weave in the hamcrest jar that is used by some of the microprofile config tck tests.
+ * The build.gradle file pull the hamcrest jar from maven and puts it in the lib directory
  */
-public class ArchiveProcessor implements ApplicationArchiveProcessor {
+public class HamcrestArchiveProcessor implements ApplicationArchiveProcessor {
 
-    private final static String WLP_DIR = System.getProperty("wlp");
+    private static final Logger LOG = Logger.getLogger(HamcrestArchiveProcessor.class.getName());
 
     /* (non-Javadoc)
      * @see org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor#process(org.jboss.shrinkwrap.api.Archive, org.jboss.arquillian.test.spi.TestClass)
      */
     @Override
     public void process(Archive<?> applicationArchive, TestClass testClass) {
-        System.out.println("WLP: ArchiveProcessor.process(...) - no-op");
-//        if (applicationArchive instanceof WebArchive) {
-//            File file = new File(WLP_DIR, "/usr/servers/FATServer/microprofile-rest-client-tck-1.0.1.jar");
-//            System.out.println("WLP: Adding Jar:" + file.getAbsolutePath() + " to " + applicationArchive.getName());
-//            ((WebArchive) applicationArchive).addAsLibraries(file);
-//        }
         if (applicationArchive instanceof WebArchive) {
-          File file = new File(WLP_DIR, "/usr/servers/FATServer/wiremock-standalone-2.14.0.jar");
-          System.out.println("WLP: Adding Jar:" + file.getAbsolutePath() + " to " + applicationArchive.getName());
-          ((WebArchive) applicationArchive).addAsLibraries(file);
-      }
+            File hamcrest = new File("../../../lib/hamcrest-all-1.3.jar");
+            LOG.log(Level.INFO, "WLP: Adding Jar: {0} to {1}", new String[] {hamcrest.getAbsolutePath(), applicationArchive.getName()});
+            ((WebArchive) applicationArchive).addAsLibraries(hamcrest);
+        } else {
+            LOG.log(Level.INFO, "Attempted to add hamcrest jar but {0} was not a WebArchive", applicationArchive);
+        }
     }
 }

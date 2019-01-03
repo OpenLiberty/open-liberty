@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.test;
+package com.ibm.ws.microprofile.faulttolerance.test;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -19,6 +19,6 @@ import com.ibm.ws.fat.util.tck.TCKArchiveModifications;
 public class ArquillianLoadableExtension extends AbstractArquillianLoadableExtension {
     @Override
     public Set<TCKArchiveModifications> getModifications() {
-        return EnumSet.of(TCKArchiveModifications.HAMCREST, TCKArchiveModifications.TEST_LOGGER);
+        return EnumSet.of(TCKArchiveModifications.TEST_LOGGER);
     }
 }
