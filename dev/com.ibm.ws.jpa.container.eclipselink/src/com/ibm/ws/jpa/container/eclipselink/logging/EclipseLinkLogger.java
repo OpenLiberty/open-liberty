@@ -29,22 +29,19 @@ import com.ibm.ws.jpa.management.JPAConstants;
  * Commented out till we break EclipseLink / OpenJPA dependencies out of the container.
  */
 public class EclipseLinkLogger extends ServerLog {
-
     private final static String ECLIPSELINK_STRING = "eclipselink";
     private final static String EMPTY_CHANNEL = ECLIPSELINK_STRING;
-    private final static LogChannel EMPTY_LOG_CHANNEL = new LogChannel(EMPTY_CHANNEL);
 
     private static final TraceComponent _tc = Tr.register(EclipseLinkLogger.class, JPAConstants.JPA_TRACE_GROUP, JPAConstants.JPA_RESOURCE_BUNDLE_NAME);
-
     private static final Map<String, LogChannel> _channels = new HashMap<String, LogChannel>();
 
     static {
-
         // Register each category with eclipselink prefix as a WebSphere log channel
         for (String category : SessionLog.loggerCatagories) {
-            _channels.put(category, new LogChannel(ECLIPSELINK_STRING + "." + category));
+            String channel = ECLIPSELINK_STRING + "." + category;
+            _channels.put(channel, new LogChannel(channel));
         }
-        _channels.put(EMPTY_CHANNEL, EMPTY_LOG_CHANNEL);
+        _channels.put(EMPTY_CHANNEL, new LogChannel(EMPTY_CHANNEL));
     }
 
     public EclipseLinkLogger() {
@@ -72,7 +69,9 @@ public class EclipseLinkLogger extends ServerLog {
     @Trivial
     private LogChannel getLogChannel(String category) {
         if (category == null) {
-            return EMPTY_LOG_CHANNEL;
+            category = EMPTY_CHANNEL;
+        } else {
+            category = ECLIPSELINK_STRING + "." + category;
         }
         LogChannel channel = _channels.get(category);
         if (channel == null) {
@@ -80,7 +79,7 @@ public class EclipseLinkLogger extends ServerLog {
                 Tr.debug(_tc, "Found an unmapped logging channel (" + category
                               + ") in log(...). Possibly something wrong in EclipseLink, remapping to base channel.");
             }
-            channel = EMPTY_LOG_CHANNEL;
+            channel = new LogChannel(EMPTY_CHANNEL);
         }
         return channel;
     }
