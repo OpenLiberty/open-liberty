@@ -22,11 +22,9 @@ import java.io.IOException;
 import java.net.URL;
 
 import javax.el.ELContext;
-import javax.el.ELException;
 import javax.el.ExpressionFactory;
 import javax.el.FunctionMapper;
 import javax.el.VariableMapper;
-import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
@@ -83,8 +81,7 @@ public abstract class FaceletContext extends ELContext
      * @throws FacesException
      * @throws ELException
      */
-    public abstract void includeFacelet(UIComponent parent, String relativePath) throws IOException, FaceletException,
-            FacesException, ELException;
+    public abstract void includeFacelet(UIComponent parent, String relativePath) throws IOException;
 
     /**
      * Include another Facelet defined at some path, absolute to this ClassLoader/OS
@@ -96,8 +93,7 @@ public abstract class FaceletContext extends ELContext
      * @throws FacesException
      * @throws ELException
      */
-    public abstract void includeFacelet(UIComponent parent, URL absolutePath) throws IOException, FaceletException,
-            FacesException, ELException;
+    public abstract void includeFacelet(UIComponent parent, URL absolutePath) throws IOException;
 
     /**
      * Support method which is backed by the current VariableMapper

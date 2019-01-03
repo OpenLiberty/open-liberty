@@ -60,6 +60,18 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
     }
 
     @Override
+    public boolean isRendered() 
+    {
+        return (Boolean) getStateHelper().eval(PropertyKeys.renderedAttr, true);
+    }
+
+    @Override
+    public void setRendered(final boolean condition) 
+    {
+        getStateHelper().put(PropertyKeys.renderedAttr, condition);
+    }
+
+    @Override
     public void broadcast(FacesEvent event) throws AbortProcessingException
     {
         super.broadcast(event);
@@ -322,6 +334,24 @@ public class UIViewAction extends UIComponentBase implements ActionSource2
         , actionListener
         , phase
         , onPostback
+        , renderedAttr("if");
+
+        private String name;
+
+        PropertyKeys() 
+        {
+        }
+
+        PropertyKeys(final String name) 
+        {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() 
+        {
+            return name != null ? name : super.toString();
+        }
     }
 
     @Override

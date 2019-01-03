@@ -30,7 +30,6 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     public static final String RENDER_ALL_MARKER = "javax.faces.ViewRoot";
     public static final String VIEW_STATE_MARKER = "javax.faces.ViewState";
 
-    private ResponseWriter _wrapped;
     private boolean hasChanges;
     private String insertType;
 
@@ -40,16 +39,16 @@ public class PartialResponseWriter extends ResponseWriterWrapper
      */
     public PartialResponseWriter(ResponseWriter writer)
     {
-        _wrapped = writer;
+        super(writer);
     }
 
     public void delete(String targetId) throws IOException
     {
         startChanges();
         
-        _wrapped.startElement ("delete", null);
-        _wrapped.writeAttribute ("id", targetId, null);
-        _wrapped.endElement ("delete");
+        startElement ("delete", null);
+        writeAttribute ("id", targetId, null);
+        endElement ("delete");
     }
 
     /**
@@ -64,34 +63,34 @@ public class PartialResponseWriter extends ResponseWriterWrapper
             //error close the last op if any
             endInsert();
             
-            _wrapped.endElement ("changes");
+            endElement ("changes");
             
             hasChanges = false;
         }
         
-        _wrapped.endElement ("partial-response");
+        endElement ("partial-response");
     }
 
     public void endError() throws IOException
     {
         // Close open <error-message> element.
         
-        _wrapped.endCDATA();
-        _wrapped.endElement ("error-message");
-        _wrapped.endElement ("error");
+        endCDATA();
+        endElement ("error-message");
+        endElement ("error");
     }
 
     public void endEval() throws IOException
     {
         // Close open <eval> element.
         
-        _wrapped.endCDATA();
-        _wrapped.endElement ("eval");
+        endCDATA();
+        endElement ("eval");
     }
 
     public void endExtension() throws IOException
     {
-        _wrapped.endElement ("extension");
+        endElement ("extension");
     }
 
     public void endInsert() throws IOException
@@ -105,33 +104,24 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         
         // Close open <insert> element.
         
-        _wrapped.endCDATA();
-        _wrapped.endElement (insertType);
-        _wrapped.endElement ("insert");
+        endCDATA();
+        endElement (insertType);
+        endElement ("insert");
         
         insertType = null;
     }
 
     public void endUpdate() throws IOException
     {
-        _wrapped.endCDATA();
-        _wrapped.endElement ("update");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseWriter getWrapped()
-    {
-        return _wrapped;
+        endCDATA();
+        endElement ("update");
     }
 
     public void redirect(String url) throws IOException
     {
-        _wrapped.startElement ("redirect", null);
-        _wrapped.writeAttribute ("url", url, null);
-        _wrapped.endElement ("redirect");
+        startElement ("redirect", null);
+        writeAttribute ("url", url, null);
+        endElement ("redirect");
     }
 
     /**
@@ -144,7 +134,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         // use writePreamble(...)
         //_wrapped.write ("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
         
-        _wrapped.startElement ("partial-response", null);
+        startElement ("partial-response", null);
         
         // If by some reason the response has been reset, and the same
         // PartialResponseWriter is used, it is necessary to ensure any 
@@ -156,35 +146,23 @@ public class PartialResponseWriter extends ResponseWriterWrapper
 
     public void startError(String errorName) throws IOException
     {
-        _wrapped.startElement ("error", null);
+        startElement ("error", null);
         
-        _wrapped.startElement ("error-name", null);
-        _wrapped.write (errorName);
-        _wrapped.endElement ("error-name");
+        startElement ("error-name", null);
+        write (errorName);
+        endElement ("error-name");
         
-        _wrapped.startElement ("error-message", null);
+        startElement ("error-message", null);
         startCDATA();
         
         // Leave open; caller will write message.
-    }
-
-    @Override
-    public void startCDATA() throws IOException
-    {
-        _wrapped.startCDATA();
-    }
-
-    @Override
-    public void endCDATA() throws IOException
-    {
-        _wrapped.endCDATA();    
     }
 
     public void startEval() throws IOException
     {
         startChanges();
         
-        _wrapped.startElement ("eval", null);
+        startElement ("eval", null);
         startCDATA();
         
         // Leave open; caller will write statements.
@@ -196,7 +174,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         
         startChanges();
         
-        _wrapped.startElement ("extension", null);
+        startElement ("extension", null);
         
         // Write out extension attributes.
         // TODO: schema mentions "id" attribute; not used?
@@ -207,7 +185,7 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         {
             String attrName = attrNames.next();
             
-            _wrapped.writeAttribute (attrName, attributes.get (attrName), null);
+            writeAttribute (attrName, attributes.get (attrName), null);
         }
         
         // Leave open; caller will write extension elements.
@@ -227,8 +205,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper
     {
         startChanges();
         
-        _wrapped.startElement ("update", null);
-        _wrapped.writeAttribute ("id", targetId, null);
+        startElement ("update", null);
+        writeAttribute ("id", targetId, null);
         startCDATA();
         
         // Leave open; caller will write content.
@@ -240,8 +218,8 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         
         startChanges();
         
-        _wrapped.startElement ("attributes", null);
-        _wrapped.writeAttribute ("id", targetId, null);
+        startElement ("attributes", null);
+        writeAttribute ("id", targetId, null);
         
         attrNames = attributes.keySet().iterator();
         
@@ -249,20 +227,20 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         {
             String attrName = attrNames.next();
             
-            _wrapped.startElement ("attribute", null);
-            _wrapped.writeAttribute ("name", attrName, null);
-            _wrapped.writeAttribute ("value", attributes.get (attrName), null);
-            _wrapped.endElement ("attribute");
+            startElement ("attribute", null);
+            writeAttribute ("name", attrName, null);
+            writeAttribute ("value", attributes.get (attrName), null);
+            endElement ("attribute");
         }
         
-        _wrapped.endElement ("attributes");
+        endElement ("attributes");
     }
     
     private void startChanges () throws IOException
     {
         if (!hasChanges)
         {
-            _wrapped.startElement ("changes", null);
+            startElement ("changes", null);
             
             hasChanges = true;
         }
@@ -281,9 +259,9 @@ public class PartialResponseWriter extends ResponseWriterWrapper
         
         startChanges();
         
-        _wrapped.startElement ("insert", null);
-        _wrapped.startElement (insertType, null);
-        _wrapped.writeAttribute ("id", targetId, null);
+        startElement ("insert", null);
+        startElement (insertType, null);
+        writeAttribute ("id", targetId, null);
         startCDATA();
         
         // Leave open; caller will write content.

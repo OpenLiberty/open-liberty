@@ -87,6 +87,16 @@ public class AttributeTag extends TagSupport
      * @deprecated
      */
     @Override
+    public int doEndTag() throws JspException 
+    {
+        this.release();
+        return Tag.EVAL_PAGE;
+    }
+
+    /**
+     * @deprecated
+     */
+    @Override
     public void release()
     {
         super.release();

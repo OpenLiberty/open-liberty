@@ -24,5 +24,5 @@ package javax.faces.event;
  */
 public interface ComponentSystemEventListener extends FacesListener
 {
-    public void processEvent(ComponentSystemEvent event);
+    public void processEvent(ComponentSystemEvent event) throws AbortProcessingException;
 }

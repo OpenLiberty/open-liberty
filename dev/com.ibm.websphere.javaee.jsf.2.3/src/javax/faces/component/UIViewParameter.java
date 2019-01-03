@@ -240,7 +240,7 @@ public class UIViewParameter extends UIInput
     }
 
     @Override
-    protected Object getConvertedValue(FacesContext context, Object submittedValue)
+    protected Object getConvertedValue(FacesContext context, Object submittedValue) throws ConverterException
     {
         return getDelegateRenderer(context).getConvertedValue(context, this, submittedValue);
     }

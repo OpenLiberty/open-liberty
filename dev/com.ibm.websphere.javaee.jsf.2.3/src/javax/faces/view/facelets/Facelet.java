@@ -19,9 +19,6 @@
 package javax.faces.view.facelets;
 
 import java.io.IOException;
-
-import javax.el.ELException;
-import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
@@ -45,6 +42,5 @@ public abstract class Facelet
      * @throws FaceletException
      * @throws ELException
      */
-    public abstract void apply(FacesContext facesContext, UIComponent parent) throws IOException, FacesException,
-            FaceletException, ELException;
+    public abstract void apply(FacesContext facesContext, UIComponent parent) throws IOException;
 }

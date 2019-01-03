@@ -817,7 +817,7 @@ public abstract class Application
      * @throws NullPointerException
      *             if ctx == null || name == null
      */
-    public ResourceBundle getResourceBundle(FacesContext ctx, String name) throws FacesException, NullPointerException
+    public ResourceBundle getResourceBundle(FacesContext ctx, String name)
     {
         Application application = getMyfacesApplicationInstance(ctx);
         if (application != null)

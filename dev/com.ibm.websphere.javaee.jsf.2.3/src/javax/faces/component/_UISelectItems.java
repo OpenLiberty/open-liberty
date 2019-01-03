@@ -56,6 +56,7 @@ abstract class _UISelectItems extends UIComponentBase
    * does not support setting it. Yes, this is broken OO design: direct
    * all complaints to the JSF spec group.
    */
+  @JSFExclude
   @JSFProperty(tagExcluded=true)
   @Override
   public void setRendered(boolean state)

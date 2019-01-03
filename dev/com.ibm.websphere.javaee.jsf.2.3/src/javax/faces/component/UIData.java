@@ -39,6 +39,7 @@ import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitHint;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.FacesContext;
+import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.FacesEvent;
 import javax.faces.event.FacesListener;
@@ -1608,6 +1609,27 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
                 return values;
             }
         }
+    }
+
+    /**
+     * @deprecated This has been replaced by {@link #setValueExpression(java.lang.String, javax.el.ValueExpression)}.
+     */
+    @Override
+    public void setValueBinding(String name, ValueBinding binding) 
+    {
+        if (name == null) 
+        {
+            throw new NullPointerException("name");
+        }
+        else if (name.equals("value"))
+        {
+            _dataModelMap.clear();
+        }
+        else if (name.equals("rowIndex"))
+        {
+            throw new IllegalArgumentException("name " + name);
+        }
+        super.setValueBinding(name, binding);
     }
 
     @Override

@@ -25,6 +25,7 @@ import java.util.List;
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.StateHolder;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AbortProcessingException;
 import javax.faces.event.BehaviorEvent;
 import javax.faces.event.BehaviorListener;
 
@@ -50,7 +51,7 @@ public class BehaviorBase implements Behavior, PartialStateHolder
     /**
      * {@inheritDoc}
      */
-    public void broadcast(BehaviorEvent event)
+    public void broadcast(BehaviorEvent event) throws AbortProcessingException
     {
         if (event == null)
         {

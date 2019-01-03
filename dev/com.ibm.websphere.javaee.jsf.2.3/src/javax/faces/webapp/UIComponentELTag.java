@@ -18,6 +18,7 @@
  */
 package javax.faces.webapp;
 
+import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.component.UIComponent;
@@ -46,6 +47,18 @@ public abstract class UIComponentELTag extends UIComponentClassicTagBase
     public UIComponentELTag()
     {
 
+    }
+
+    @Override
+    protected ELContext getELContext()
+    {
+        FacesContext facesContext = getFacesContext();
+        ELContext elContext = null;
+        if (facesContext != null) 
+        {
+            elContext = facesContext.getELContext();
+        }
+        return elContext;
     }
 
     @Override

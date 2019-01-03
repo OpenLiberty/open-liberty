@@ -19,6 +19,7 @@
 package javax.faces.component;
 
 import javax.el.ValueExpression;
+import javax.faces.el.ValueBinding;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
@@ -65,6 +66,38 @@ public class UIGraphic extends UIComponentBase
     public void setUrl(String url)
     {
         setValue(url);
+    }
+
+    /**
+     * @deprecated Use getValueExpression instead
+     */
+    @Override
+    public ValueBinding getValueBinding(String name) 
+    {
+        if (URL_PROPERTY.equals(name)) 
+        {
+            return super.getValueBinding(VALUE_PROPERTY);
+        } 
+        else 
+        {
+            return super.getValueBinding(name);
+        }
+    }
+
+    /**
+     * @deprecated Use setValueExpression instead
+     */
+    @Override
+    public void setValueBinding(String name, ValueBinding binding) 
+    {
+        if (URL_PROPERTY.equals(name)) 
+        {
+            super.setValueBinding(VALUE_PROPERTY, binding);
+        } 
+        else 
+        {
+            super.setValueBinding(name, binding);
+        }
     }
 
     @Override

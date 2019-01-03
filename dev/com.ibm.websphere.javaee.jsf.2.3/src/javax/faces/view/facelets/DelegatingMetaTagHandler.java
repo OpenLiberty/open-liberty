@@ -19,7 +19,8 @@
 package javax.faces.view.facelets;
 
 import java.io.IOException;
-
+import javax.el.ELException;
+import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.component.UIComponent;
 
@@ -50,7 +51,7 @@ public abstract class DelegatingMetaTagHandler extends MetaTagHandler
         getTagHandlerDelegate().apply(ctx, parent);
     }
 
-    public void applyNextHandler(FaceletContext ctx, UIComponent c) throws IOException
+    public void applyNextHandler(FaceletContext ctx, UIComponent c) throws IOException, FacesException, ELException
     {
         nextHandler.apply (ctx, c);
     }

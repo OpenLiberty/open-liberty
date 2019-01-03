@@ -20,6 +20,7 @@ package javax.faces.component;
 
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFExclude;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
 /**
@@ -47,6 +48,7 @@ abstract class _UISelectItem extends UIComponentBase
      * spec group.
      */
     @Override
+    @JSFExclude
     @JSFProperty(tagExcluded = true)
     public void setRendered(boolean state)
     {

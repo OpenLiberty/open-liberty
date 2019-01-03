@@ -41,5 +41,6 @@ public abstract class NavigationHandler
                                  String outcome,
                                  String toFlowDocumentId)
     {
+        this.handleNavigation(context, fromAction, outcome);
     }
 }

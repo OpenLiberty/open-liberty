@@ -18,6 +18,8 @@
  */
 package javax.faces.component;
 
+import javax.el.ValueExpression;
+
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
@@ -65,6 +67,17 @@ public class UIImportConstants extends UIComponentBase
     public void setVar(String var)
     {
         getStateHelper().put(PropertyKeys.var, var ); 
+    }
+
+    @Override
+    public void setValueExpression(String name, ValueExpression binding) 
+    {
+        if (PropertyKeys.var.toString().equals(name)) 
+        {
+            throw new IllegalArgumentException(name);
+        }
+
+        super.setValueExpression(name, binding);
     }
 
     enum PropertyKeys

@@ -25,5 +25,5 @@ public interface SystemEventListener extends FacesListener
 {
     public boolean isListenerForSource(Object source);
 
-    public void processEvent(SystemEvent event);
+    public void processEvent(SystemEvent event) throws AbortProcessingException;
 }

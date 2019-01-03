@@ -141,7 +141,6 @@ public class BeanValidator implements Validator, PartialStateHolder
      */
     @Override
     public void validate(final FacesContext context, final UIComponent component, final Object value)
-            throws ValidatorException
     {
         if (context == null)
         {

@@ -66,7 +66,6 @@ public class EnumConverter implements Converter, PartialStateHolder
     }
 
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value)
-        throws ConverterException
     {
         if (facesContext == null)
         {
@@ -104,7 +103,6 @@ public class EnumConverter implements Converter, PartialStateHolder
     }
 
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value)
-        throws ConverterException
     {
         if (facesContext == null)
         {
