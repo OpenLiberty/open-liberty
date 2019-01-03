@@ -338,3 +338,8 @@ commons-collections:commons-collections:3.2.2
 org.mock-server:mockserver-client-java:3.10.7
 org.mock-server:mockserver-core:3.10.7
 org.mock-server:mockserver-netty:3.10.7
+javax.xml.bind:jaxb-api:2.3.0
+com.sun.xml.bind:jaxb-core:2.3.0.1
+com.sun.xml.bind:jaxb-impl:2.3.0.1
+com.sun.xml.bind:jaxb-jxc:2.3.0.1
+com.sun.xml.bind:jaxb-xjc:2.3.0.1

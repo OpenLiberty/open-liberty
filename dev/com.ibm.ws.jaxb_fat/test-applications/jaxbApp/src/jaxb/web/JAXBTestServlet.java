@@ -37,9 +37,9 @@ public class JAXBTestServlet extends FATServlet {
         System.out.println("Got JAX-B API from loader=  " + apiLoader);
         System.out.println("Got JAX-B API from location=" + apiLocation);
         assertTrue("Expected JAX-B API to come from Liberty bundle, but it came from: " + apiLoader,
-                   apiLoader != null && apiLoader.toString().contains("com.ibm.websphere.javaee.jaxb.2.2"));
+                   apiLoader != null && apiLoader.toString().contains("com.ibm.websphere.javaee.jaxb.2."));
         assertTrue("Expected JAX-B API to come from Liberty, but it came from: " + apiLocation,
-                   apiLocation != null && apiLocation.contains("com.ibm.websphere.javaee.jaxb.2.2"));
+                   apiLocation != null && apiLocation.contains("com.ibm.websphere.javaee.jaxb.2."));
     }
 
     @Test
