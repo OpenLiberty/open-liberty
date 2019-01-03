@@ -3512,6 +3512,57 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
+     * Intentionally leave a couple of ManagedExecutors around when the application stops.
+     * They should be shut down automatically.
+     */
+    // @Test is omitted so that MPConcurrentTest can invoke this method right before server stop.
+    public void testShutDownUponApplicationStop() throws Exception {
+        ManagedExecutor.Builder builder = ManagedExecutor.builder();
+        builder
+                        .propagated(ThreadContext.ALL_REMAINING)
+                        .cleared(ThreadContext.TRANSACTION)
+                        .build();
+
+        ManagedExecutor executor2 = builder
+                        .maxAsync(2)
+                        .maxQueued(20)
+                        .propagated(ThreadContext.APPLICATION, ThreadContext.SECURITY)
+                        .cleared(ThreadContext.ALL_REMAINING)
+                        .build();
+
+        ManagedExecutor executor3 = builder
+                        .maxAsync(1)
+                        .maxQueued(3)
+                        .propagated()
+                        .build();
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        executor2.runAsync(() -> {
+            try {
+                blocker.await();
+            } catch (InterruptedException x) {
+                System.out.println("Task 1 interrupted.");
+            }
+        });
+        executor2.supplyAsync(() -> {
+            try {
+                blocker.await();
+            } catch (InterruptedException x) {
+                System.out.println("Task 2 interrupted.");
+            }
+            return "should not complete";
+        });
+        executor3.runAsync(() -> {
+            try {
+                blocker.await();
+            } catch (InterruptedException x) {
+                System.out.println("Task 3 interrupted.");
+            }
+        });
+        executor2.submit(() -> System.out.println("Task 4 should not run. It should have been canceled from the queue upon shutdownNow."));
+    }
+
+    /**
      * Verify thenAccept and both forms of thenAcceptAsync by checking that the parameter is correctly supplied,
      * that thread context is captured from the code that adds the dependent stage, not the thread that runs the action for the prior stage,
      * and that async operations run on threads from the Liberty global thread pool.

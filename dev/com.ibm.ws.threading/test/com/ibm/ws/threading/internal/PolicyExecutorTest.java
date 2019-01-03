@@ -84,8 +84,8 @@ public class PolicyExecutorTest {
 
         ConcurrentHashMap<String, PolicyExecutorImpl> policyExecutors = new ConcurrentHashMap<String, PolicyExecutorImpl>();
 
-        PolicyExecutor executor0 = new PolicyExecutorImpl(globalExecutor, "testExpedite-0", policyExecutors).expedite(0).maxConcurrency(4).maxQueueSize(3);
-        PolicyExecutor executor2 = new PolicyExecutorImpl(globalExecutor, "testExpedite-2", policyExecutors).expedite(2).maxConcurrency(4).maxQueueSize(4);
+        PolicyExecutor executor0 = new PolicyExecutorImpl(globalExecutor, "testExpedite-0", null, policyExecutors).expedite(0).maxConcurrency(4).maxQueueSize(3);
+        PolicyExecutor executor2 = new PolicyExecutorImpl(globalExecutor, "testExpedite-2", "myApp", policyExecutors).expedite(2).maxConcurrency(4).maxQueueSize(4);
 
         // Share a counter between all tasks to record the order in which they run
         AtomicInteger sharedCounter = new AtomicInteger(0);

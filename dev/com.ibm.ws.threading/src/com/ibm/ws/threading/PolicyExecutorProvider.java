@@ -64,7 +64,7 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
      * @throws NullPointerException if the specified identifier is null
      */
     public PolicyExecutor create(Map<String, Object> props) {
-        PolicyExecutor executor = new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, (String) props.get("config.displayId"), policyExecutors);
+        PolicyExecutor executor = new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, (String) props.get("config.displayId"), null, policyExecutors);
         executor.updateConfig(props);
         return executor;
     }
@@ -79,7 +79,21 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
      * @throws NullPointerException if the specified identifier is null
      */
     public PolicyExecutor create(String identifier) {
-        return new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, "PolicyExecutorProvider-" + identifier, policyExecutors);
+        return new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, "PolicyExecutorProvider-" + identifier, null, policyExecutors);
+    }
+
+    /**
+     * Creates a new policy executor instance for use by a single application.
+     * Policy executors owned by this application can be shut down via the shutdownNow method of this class.
+     *
+     * @param fullIdentifier unique identifier for the new instance, to be used for monitoring and problem determination.
+     * @param owner name of application that the policy executor is created for.
+     * @return a new policy executor instance.
+     * @throws IllegalStateException if an instance with the specified unique identifier already exists and has not been shut down.
+     * @throws NullPointerException if the specified identifier is null
+     */
+    public PolicyExecutor create(String fullIdentifier, String owner) {
+        return new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, fullIdentifier, owner, policyExecutors);
     }
 
     public void introspectPolicyExecutors(PrintWriter out) {
@@ -88,9 +102,7 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
+    /**
      * @see com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener#serverStopping()
      */
     @Override
@@ -103,5 +115,16 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
             pe.shutdown();
         }
 
+    }
+
+    /**
+     * Shuts down (via shutdownNow) all policy executors with the specified owner.
+     *
+     * @param owner name of the application for which a policy executor was created.
+     */
+    public void shutdownNow(String owner) {
+        for (PolicyExecutorImpl executor : policyExecutors.values())
+            if (owner.equals(executor.owner))
+                executor.shutdownNow();
     }
 }
