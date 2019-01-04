@@ -22,6 +22,7 @@ src: \
 	test-applications/jpa10/callback/src,\
 	test-applications/jpa10/relationships/manyXmany/src,\
 	test-applications/jpa10/relationships/manyXone/src,\
+	test-applications/jpa10/relationships/oneXmany/src,\
 	test-applications/jpa22/bval/src,\
 	test-applications/jpa22/cdi/src,\
 	test-applications/jpa22/jpa22injection/src,\

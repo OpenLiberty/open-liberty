@@ -44,8 +44,6 @@ import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 /**
  * Helper tool for processing TextExecutionContexts on the Application Server side.
  *
- * @author jgrassel@us.ibm.com
- *
  */
 public class JEEExecutionContextHelper {
     /**

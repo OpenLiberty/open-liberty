@@ -26,6 +26,9 @@ import org.junit.runners.Suite.SuiteClasses;
                 Relationships_ManyXMany_EJB.class,
                 Relationships_ManyXOne_Web.class,
                 Relationships_ManyXOne_EJB.class,
+                Relationships_OneXMany_Web.class,
+                Relationships_OneXMany_EJB.class,
+
 })
 public class JPA10FATSuite {
 

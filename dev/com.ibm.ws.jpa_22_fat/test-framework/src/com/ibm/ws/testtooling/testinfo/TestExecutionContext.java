@@ -15,8 +15,6 @@ import java.util.HashMap;
 /**
  * Context object that directs generic test execution components.
  *
- * @author jgrassel@us.ibm.com
- *
  */
 public class TestExecutionContext implements java.io.Serializable {
     private static final long serialVersionUID = 9199074786089584538L;
