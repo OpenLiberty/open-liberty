@@ -25,6 +25,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.appConfig.test.utils.TestUtils;
+import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 
 import componenttest.app.FATServlet;
 
@@ -196,7 +197,7 @@ public class DynamicSourcesTestServlet extends FATServlet {
             long lastRefresh = s1.lastRefresh;
 
             // Remember that the mimimum refresh is currently 500 ... so wait longer than that
-            Thread.sleep(1500);
+            Thread.sleep(ConfigConstants.MINIMUM_DYNAMIC_REFRESH_INTERVAL + 1000);
 
             // Check that config source is currently being refreshed
             assertThat(s1.lastRefresh, not(equalTo(lastRefresh)));
