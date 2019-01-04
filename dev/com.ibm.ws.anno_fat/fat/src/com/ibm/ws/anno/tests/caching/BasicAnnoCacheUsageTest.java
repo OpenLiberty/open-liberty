@@ -285,7 +285,7 @@ public class BasicAnnoCacheUsageTest extends LoggingTest {
         // This test directly changes the cache data to give the appearance
         // that the servlet is no longer present.
 
-        String annoTargetsFileName = getAnnoCacheAppRoot().getCanonicalPath() + "/M_%2FTestServlet40.war/seed/targets";
+        String annoTargetsFileName = getAnnoCacheAppRoot().getCanonicalPath() + "/M_%2FTestServlet40.war/C_seed/targets";
         File annoTargetsFile = new File(annoTargetsFileName);
         String backupFileName =  annoTargetsFileName + ".backup";
         File backupFile = new File(backupFileName);

@@ -551,12 +551,27 @@ public abstract class CachingTest extends LoggingTest {
         File fileNewName = new File(webInfLibDirName + newFileName);
         boolean renameWorked = fileToRename.renameTo(fileNewName);
         
-        if ( !renameWorked ) {
+        if (renameWorked && fileToRename.exists()) {
+            renameWorked = false;
+        }
+
+        // Maybe, the rename failed because the server still had the file
+        // locked.  Give the server time to unlock the file, then try again.
+
+        if (!renameWorked) {
+            try {
+                Thread.currentThread().sleep(400);
+            } catch (InterruptedException e) {
+                // Ignore
+            }
+            renameWorked = fileToRename.renameTo(fileNewName);
+        }
+
+        if (!renameWorked) {
             throw new Exception("File [ " + fileNameToRename + " ] not removed.  File.delete() method returned false");
         } else if (fileToRename.exists()) {
             throw new Exception("File [ " + fileNameToRename + " ] not removed.  Still exists.");
         }
-
     }
 
     /**
