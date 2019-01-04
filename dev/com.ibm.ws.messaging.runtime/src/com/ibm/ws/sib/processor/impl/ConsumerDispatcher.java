@@ -1664,21 +1664,31 @@ public class ConsumerDispatcher
 
             }
 
-            if (_baseDestHandler.isOrdered() && consumerPoints.size() > 0)
-            {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                    SibTr.exit(tc, "attachConsumerPoint", "SIDestinationLockedException");
-                // NOTE: this is a bit of an abuse of the locked exception since
-                // we'd rather throw an ordered message specific exception.
-                // We only allow one consumer to attach when ordered messaging is
-                // specified.b
-                throw new SIDestinationLockedException(
-                                nls.getFormattedMessage(
-                                                        "ORDERED_DESTINATION_IN_USE_CWSIP0116",
-                                                        new Object[] { _baseDestHandler.getName(),
-                                                                      _messageProcessor.getMessagingEngineName() },
-                                                        null));
+            if (_baseDestHandler.isOrdered())  {
+            	
+                if (consumerPoints.size() > 0) {
+            
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                        SibTr.exit(tc, "attachConsumerPoint", new Object[]{"SIDestinationLockedException", consumerPoints.size()});
+                    // NOTE: this is a bit of an abuse of the locked exception since
+                    // we'd rather throw an ordered message specific exception.
+                    // We only allow one consumer to attach when ordered messaging is
+                    // specified.b
+                    throw new SIDestinationLockedException(nls.getFormattedMessage(
+                                                           "ORDERED_DESTINATION_IN_USE_CWSIP0116",
+                                                           new Object[] { _baseDestHandler.getName(),
+                                                                          _messageProcessor.getMessagingEngineName() },
+                                                           null));
+                    
+                } else if (!isNewTransactionAllowed(null)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                        SibTr.exit(tc, "attachConsumerPoint", new Object[]{"SIDestinationLockedException", "!isTransactionAllowed(null)"});
+                    throw new SIDestinationLockedException(nls.getFormattedMessage(
+                            "ORDERED_MESSAGING_ERROR_CWSIP0194",
+                            new Object[] { _baseDestHandler.getName(), _messageProcessor.getMessagingEngineName() },
+                            null));
 
+                }
             }
 
             //create a new ConsumerKey object and add it in to the list of
