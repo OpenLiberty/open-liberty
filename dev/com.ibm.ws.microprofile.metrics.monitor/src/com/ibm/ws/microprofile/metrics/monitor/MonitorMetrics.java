@@ -116,6 +116,7 @@ public class MonitorMetrics {
 		String mbeanName = nameStr.split("=")[1];
 		mbeanName = mbeanName.replaceAll(" ", "_"); 
 		mbeanName = mbeanName.replaceAll("/", "_");
+		mbeanName = mbeanName.replaceAll("[^a-zA-Z0-9_]", "_");
     	return mbeanName;
 	}
 	
