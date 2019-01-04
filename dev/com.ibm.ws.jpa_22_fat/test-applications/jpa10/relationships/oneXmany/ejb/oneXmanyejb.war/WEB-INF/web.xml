@@ -1,0 +1,34 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    version="2.5">
+  
+    <!-- EJB References -->
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/OneXManySFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.relationships.oneXmany.ejblocal.OneXManySFEJBLocal</local>
+        <ejb-link>OneXManyTestSFEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/OneXManySFExEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.relationships.oneXmany.ejblocal.OneXManySFEXEJBLocal</local>
+        <ejb-link>OneXManyTestSFEXEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/OneXManySLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.relationships.oneXmany.ejblocal.OneXManySLEJBLocal</local>
+        <ejb-link>OneXManyTestSLEJB</ejb-link>
+    </ejb-local-ref>
+</web-app>

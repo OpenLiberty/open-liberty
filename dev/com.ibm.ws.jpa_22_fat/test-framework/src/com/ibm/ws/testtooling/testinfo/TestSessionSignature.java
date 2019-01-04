@@ -13,8 +13,6 @@ package com.ibm.ws.testtooling.testinfo;
 /**
  * Unique signature to identify a specific test invocation.
  *
- * @author jgrassel@us.ibm.com
- *
  */
 public class TestSessionSignature implements java.io.Serializable {
     private static final long serialVersionUID = 3038481768116554202L;

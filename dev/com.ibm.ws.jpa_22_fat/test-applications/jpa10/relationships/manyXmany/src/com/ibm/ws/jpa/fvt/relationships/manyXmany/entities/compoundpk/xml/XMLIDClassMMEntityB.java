@@ -18,8 +18,6 @@ import com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.ICompoundPKManyXManyE
  *
  * Annotations are declared on the entity fields.
  *
- * @author Jody Grassel (jgrassel@us.ibm.com)
- *
  */
 public class XMLIDClassMMEntityB implements ICompoundPKManyXManyEntityB {
     private int id;

@@ -33,8 +33,6 @@ import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
  *
  * If you define a SFSB, remember to define the release() method as the bean's Release method.
  *
- * @author jgrassel@us.ibm.com
- *
  */
 public class CMTEJBTestVehicle implements EJBTestVehicle {
     @Resource

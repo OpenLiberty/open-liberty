@@ -31,8 +31,6 @@ import com.ibm.ws.testtooling.msgcli.MessagingException;
 /**
  * Warning: Not thread safe. Not intended to be used by multiple threads at the same time.
  *
- * @author jgrassel
- *
  */
 public class JMSQueueClient extends AbstractJMSClient {
     private QueueConnectionFactory qcf = null;
