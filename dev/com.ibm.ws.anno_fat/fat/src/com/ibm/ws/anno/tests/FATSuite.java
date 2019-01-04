@@ -15,9 +15,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.anno.tests.caching.AbsoluteOrderingTest;
 import com.ibm.ws.anno.tests.caching.BasicAnnoCacheUsageTest;
+import com.ibm.ws.anno.tests.caching.BigAppTest;
+import com.ibm.ws.anno.tests.caching.LooseConfigTest;
 import com.ibm.ws.anno.tests.caching.MetadataCompleteTest;
-import com.ibm.ws.anno.tests.caching.MetadataCompleteTestMissingServlets;
+import com.ibm.ws.anno.tests.caching.MetadataCompleteMissingServletsTest;
 import com.ibm.ws.anno.tests.jandex.JandexAppDefaultAppMgrDefaultTest;
 import com.ibm.ws.anno.tests.jandex.JandexAppDefaultAppMgrTrueTest;
 import com.ibm.ws.anno.tests.jandex.JandexAppFalseAppMgrFalseTest;
@@ -45,11 +48,17 @@ import com.ibm.ws.fat.util.FatLogHandler;
  * Alternatively, for a command line launch, add "-Dfat.test.mode=full".
  */
 @RunWith(Suite.class)
-@SuiteClasses( {
-    BasicAnnoCacheUsageTest.class,
-    MetadataCompleteTest.class,
-    MetadataCompleteTestMissingServlets.class,
+@SuiteClasses({
+    // BigAppTest.class, // This test can take 10 min and is disabled for regular builds.
 
+    //  Annotation caching tests ...
+    BasicAnnoCacheUsageTest.class,
+    AbsoluteOrderingTest.class,
+    LooseConfigTest.class,
+    MetadataCompleteTest.class,
+    MetadataCompleteMissingServletsTest.class,
+
+    // Jandex tests ...
     JandexAppDefaultAppMgrDefaultTest.class,
     JandexAppDefaultAppMgrTrueTest.class,
     JandexAppFalseAppMgrFalseTest.class,

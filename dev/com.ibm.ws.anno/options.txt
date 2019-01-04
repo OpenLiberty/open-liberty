@@ -8,7 +8,7 @@ From:
      files are present, don't use them.  Always do fresh scans.
   -- Used when writes are not allowed.
   String DIR_PROPERTY_NAME = "anno.cache.dir"; // Default: ["anno"]
-  -- Optional directory for the annotations cache.
+  -- Optional directory override for the annotations cache.
   -- For testing only.
   String READ_ONLY_PROPERTY_NAME = "anno.cache.readOnly"; // Default: [false]
   -- Disable writes to the annotations cache.  Existing cache data will
@@ -45,8 +45,7 @@ From:
      the entire data of Jandex indexes.
   -- For testing only.
   String JANDEX_PATH_PROPERTY_NAME = "com.ibm.ws.jandex.path"; // Default: ["META-INF/jandex.idx"]
-  -- The path to Jandex index files.  This is relative to the root of the
-     archive.
+  -- The path to Jandex index files.  This is relative to the root of the archive.
   -- For testing only.
   String ANNO_SCAN_THREADS_PROPERTY_NAME = "com.ibm.ws.anno.scan.threads"; // Default: [8]
   -- Controls the number of threads used for scanning independent class path components.

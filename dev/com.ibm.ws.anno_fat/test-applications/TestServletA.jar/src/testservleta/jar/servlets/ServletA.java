@@ -12,6 +12,7 @@ package testservleta.jar.servlets;
 
 import java.io.IOException;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
@@ -30,10 +31,24 @@ public class ServletA extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ServletOutputStream sos = response.getOutputStream();
-
-        sos.println("Hello From Servlet A");
-
+        ServletOutputStream sos = response.getOutputStream();      
+        ServletContext sc = request.getServletContext();
+        
+        String servletName = "A";
+        
+        // SCI
+        String sciRanMsg = (String)(sc.getAttribute("Sci_" + servletName + "_RanMsg"));    
+        String sciOrder = (String)(sc.getAttribute("sciOrder"));  
+        
+        // Listener
+        String listenerRanMsg = (String)(sc.getAttribute("Listener_" + servletName + "_Ran_Msg"));    
+        String listenerOrder = (String)(sc.getAttribute("listenerOrder")); 
+        
+        sos.println("Hello From Servlet " + servletName + ". \n"  
+                     + sciRanMsg 
+                     + "\nSCI Order [ " + sciOrder + " ]\n" 
+                     + listenerRanMsg 
+                     + "\nListener order [ " + listenerOrder + " ]");
     }
 
     @Override

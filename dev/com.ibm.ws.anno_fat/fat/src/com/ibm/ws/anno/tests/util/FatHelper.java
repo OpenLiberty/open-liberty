@@ -98,7 +98,7 @@ public class FatHelper {
     	}
 
     	String earName = ear.getName();
-
+    	
     	// If server is already started and app exists no need to add it.
     	if (server.isStarted()) {
     		boolean allAppsInstalled = true;  // assume all installed
@@ -106,81 +106,81 @@ public class FatHelper {
     			String warName = war.getName();
     			String appName = warName.substring(0, warName.indexOf(".war"));
     			Set<String> appInstalled = server.getInstalledAppNames(appName);
-    			LOG.info("addEarToServer : " + appName + " already installed : " + !appInstalled.isEmpty());
+    			LOG.info(appName + " already installed : " + !appInstalled.isEmpty());
     			if (appInstalled.isEmpty()) {
     				allAppsInstalled = false;
     				break;  // found a WAR that isn't installed
     			}
     		}
     		if (allAppsInstalled) {
-    			LOG.info("addEarToServer : RETURN all apps already installed");
+    			LOG.info("RETURN all apps already installed");
     			return;
     		}
     	} else {
-    		LOG.info("addEarToServer : server is not already started.");
+    		LOG.info("Server is not already started.");
     	}
     	
-    	LOG.info("addEarToServer : create ear " + earName);
+    	LOG.info("Create ear [ " + earName + " ]");
     	EnterpriseArchive enterpriseArchive = ShrinkWrap.create(EnterpriseArchive.class, earName);
     	
     	for (War war : ear.getWars()) {
     		String warName = war.getName();
     		
-    		LOG.info("addEarToServer : create war " + warName);
+    		LOG.info("Create war [ " + warName + " ]");
     		WebArchive webArchive = ShrinkWrap.create(WebArchive.class, warName);
     		
     		for (String packageName : war.getPackageNames()) {
-    			LOG.info("addEarToServer : WAR adding package " + packageName);
+    			LOG.info("Adding package [ " + packageName + " ] to WAR");
     			webArchive.addPackage(packageName);
     		}
 
     		for (Jar jar : war.getJars()) {
     			String jarName = jar.getName();
-    			LOG.info("addEarToServer : jarName [" + jarName + "]");
+    			LOG.info("jarName [ " + jarName + " ]");
     			JavaArchive javaArchive = null;
 
     			if (jarName != null) {
 
-    				LOG.info("addEarToServer : create jar " + jarName);
+    				LOG.info("Create jar [ " + jarName + " ]");
 
     				javaArchive = ShrinkWrap.create(JavaArchive.class, jarName);
 
     				for (String packageName : jar.getPackageNames()) {
     					if (packageName.contains(".jar.")) {
-    						LOG.info("addEarToServer : JAR adding package " + packageName);
+    						LOG.info("Adding package [ " + packageName + " ] to JAR");
     						javaArchive.addPackage(packageName);
     					}
     				}
 
     				// addJarResources
     				String jarResourcesDir = "test-applications/" + jarName + "/resources";
-    				LOG.info("addEarToServer : JAR adding resources " + jarName);
+    				LOG.info("Adding resources to JAR [ " + jarName + " ]");
     		        ShrinkHelper.addDirectory(javaArchive, jarResourcesDir);
 
     			} else {
-    				LOG.info("addEarToServer : unexpectedly jarName is null");
+    				LOG.info("Unexpectedly jarName is null");
     			}
     			
         		if (javaArchive != null) {
-        			LOG.info("addEarToServer : WAR adding JAR " + jarName);
+        			LOG.info("Adding JAR [ " + jarName +" ] to WAR");
         			webArchive.addAsLibrary(javaArchive);
         		} else {
-        			LOG.info("addEarToServer : Strange - javaArchive is null " + jarName);
+        			LOG.info("Strange - javaArchive is null [ " + jarName + " ]");
         		}
     		}
 
     		// add War Resources
     		String warResourcesDir = "test-applications/" + warName + "/resources";
-			LOG.info("addEarToServer : WAR adding resources " + warName);
+			LOG.info("Adding resources to WAR [ " + warName + " ]");
     		ShrinkHelper.addDirectory(webArchive, warResourcesDir);
     		
-    		LOG.info("addEarToServer : EAR adding WAR " + warName);
+    		LOG.info("Adding WAR [ " + warName + " ] to EAR");
     		enterpriseArchive.addAsModule(webArchive);
     	}
 	
     	// Add Ear Resources
     	String earResources = "test-applications/" + earName + "/resources/META-INF/application.xml";
-		LOG.info("addEarToServer : Adding resource to EAR " + earName);
+		LOG.info("Adding resource to EAR [ " + earName + " ]");
     	enterpriseArchive.addAsManifestResource(new File(earResources));
 
     	//Liberty does not use was.policy but permissions.xml
@@ -189,7 +189,7 @@ public class FatHelper {
     		enterpriseArchive.addAsManifestResource(permissionsXML);
     	}
     	
-    	 ShrinkHelper.exportToServer(server, dir, enterpriseArchive);
+    	 ShrinkHelper.exportToServer(server, dir, enterpriseArchive, ShrinkHelper.DeployOptions.OVERWRITE);
     }
 
     /*
