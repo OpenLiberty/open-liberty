@@ -15,9 +15,12 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServerFactory;
 
+@RunWith(FATRunner.class)
 public class StackTraceFilteringForIBMFeatureExceptionTest extends AbstractStackTraceFilteringTest {
 
     private static final String MAIN_EXCEPTION = "ConfigurationReceivedException";

@@ -13,11 +13,14 @@ package com.ibm.ws.logging.fat;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServerFactory;
 
+@RunWith(FATRunner.class)
 public class StackTraceFilteringForBadlyWrittenThrowableTest extends AbstractStackTraceFilteringTest {
 
     private static final String EXPECTED_EXCEPTION = "BadlyWrittenException";

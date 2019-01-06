@@ -43,6 +43,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 instrument.disabled: true
 
 -buildpath: \
+	org.eclipse.osgi;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
 	com.ibm.wsspi.org.osgi.service.event;version=latest,\

@@ -5,8 +5,8 @@
 # catch all exceptions from this script to avoid it aborting startup
 try {
 
-  # ensure equinox commands are found first
-  SCOPE = equinox:*
+  # ensure gogo commands are found first
+  SCOPE = 'gogo:*'
 
   # add methods on BundleContext object as commands
   #addcommand context ${.context} (${.context} class)
@@ -30,8 +30,8 @@ try {
   # set prompt
   prompt = 'osgi> '
 
-  # print welcome message
-  # cat ($0 resolve motd)
+  # print welcome message, unless we're explicitly told not to...
+  # if { $.gosh_quiet } { } { cat ($0 resolve motd) }
 } {
     echo "$0: ERROR: $exception"
 }
