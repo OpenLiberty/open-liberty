@@ -31,11 +31,11 @@
 
 # OSGI Log Message
 OSGI_MSG001=CWWKE0703I: {0} {1} {2} {3}
-OSGI_MSG001.explanation=An informational message was logged using the OSGi log service
+OSGI_MSG001.explanation=An informational message was logged using the OSGi log service.
 OSGI_MSG001.useraction=No action is required.
 
 OSGI_AUDIT_MSG=CWWKE0704A: {0} {1} {2} {3}
-OSGI_AUDIT_MSG.explanation=An audit message was logged using the OSGi log service
+OSGI_AUDIT_MSG.explanation=An audit message was logged using the OSGi log service.
 OSGI_AUDIT_MSG.useraction=No action is required.
 
 OSGI_WARNING_MSG=CWWKE0700W: {0} {1} {2} {3}
