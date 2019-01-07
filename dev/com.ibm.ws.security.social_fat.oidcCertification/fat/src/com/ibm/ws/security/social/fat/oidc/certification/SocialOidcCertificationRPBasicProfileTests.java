@@ -27,7 +27,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class SocialOidcCertificationRPBasicProfileTests extends com.ibm.ws.security.fat.common.social.oidc.certification.OidcCertificationRPBasicProfileTests {
 
