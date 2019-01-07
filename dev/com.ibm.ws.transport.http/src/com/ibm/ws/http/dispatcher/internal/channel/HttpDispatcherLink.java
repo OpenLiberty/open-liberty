@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -110,6 +112,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
     private volatile boolean linkIsReady = false;
     private volatile UsePrivateHeaders usePrivateHeaders = UsePrivateHeaders.unknown;
+    private volatile UsePrivateHeaders useSensitivePrivateHeaders = UsePrivateHeaders.unknown;
+
     private volatile int configUpdate = 0;
 
     private final Object WebConnCanCloseSync = new Object();
@@ -695,7 +699,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     public String getRequestedHost() {
         // Get the requested host: this takes into consideration whether or not we should trust the
         // contents of Host and $WS* headers..
-        if (useTrustedHeaders()) {
+        if (useTrustedHeaders(HttpHeaderKeys.HDR_$WSSN.getName())) {
             // If the plugin provided a header, prefer that..
             String pluginHost = request.getHeader(HttpHeaderKeys.HDR_$WSSN.getName());
             if (pluginHost != null)
@@ -727,7 +731,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     public int getRequestedPort() {
         // Get the requested port: this takes into consideration whether or not we should trust the
         // contents of Host and $WS* headers..
-        if (useTrustedHeaders()) {
+        if (useTrustedHeaders(HttpHeaderKeys.HDR_$WSSP.getName())) {
             String pluginPort = request.getHeader(HttpHeaderKeys.HDR_$WSSP.getName());
             if (pluginPort != null)
                 return Integer.parseInt(pluginPort);
@@ -765,9 +769,38 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         return useHeaders.asBoolean();
     }
 
+    public boolean useTrustedHeaders(String headerName) {
+        System.out.println("useTrustedHeaders: entry");
+
+        UsePrivateHeaders useHeaders = usePrivateHeaders;
+        UsePrivateHeaders useSensitiveHeaders = useSensitivePrivateHeaders;
+
+        if (isSensitivePrivateHeader(headerName)) {
+            // We want to avoid re-processing whether or not to trust private headers
+            // from the other end of this connection (i.e. the proxy itself).
+            // We can avoid reprocessing as long as the HttpDispatcher (or WebContainer) configuration
+            // hasn't been updated, in which case, we should try again.
+            int lastUpdate = HttpDispatcher.getConfigUpdate();
+            if (useSensitiveHeaders == UsePrivateHeaders.unknown || configUpdate != lastUpdate) {
+                useSensitiveHeaders = useSensitivePrivateHeaders = UsePrivateHeaders.set(HttpDispatcher.usePrivateHeaders(contextRemoteHostAddress(), headerName));
+                configUpdate = lastUpdate;
+            }
+            return useSensitiveHeaders.asBoolean();
+        } 
+        else {
+            // same logic as above
+            int lastUpdate = HttpDispatcher.getConfigUpdate();
+            if (useHeaders == UsePrivateHeaders.unknown || configUpdate != lastUpdate) {
+                useHeaders = usePrivateHeaders = UsePrivateHeaders.set(HttpDispatcher.usePrivateHeaders(contextRemoteHostAddress(), headerName));
+                configUpdate = lastUpdate;
+            }
+            return useHeaders.asBoolean();
+        }
+    }
+
     @Override
     public String getTrustedHeader(String headerName) {
-        if (useTrustedHeaders() && request != null) {
+        if (useTrustedHeaders(headerName) && request != null) {
             return request.getHeader(headerName);
         }
         return null;
@@ -1202,4 +1235,15 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         return false;
     }
 
+    /** private headers defined as sensitive */
+    private final HashSet<String> sensitiveHeaderList = 
+        new HashSet<String>(Arrays.asList("$WSCC", "$WSRA", "$WSRH", "$WSAT", "$WSRU"));
+
+    /**
+     * @param headerName
+     * @return true if headerName is considered a sensitive WAS private header
+     */
+    private boolean isSensitivePrivateHeader(String headerName) {
+        return sensitiveHeaderList.contains(headerName);
+    }
 }
