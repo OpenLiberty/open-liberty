@@ -173,14 +173,14 @@ public abstract class CachingTest extends LoggingTest {
             source = new File(sourcePath);
             destination = new File(destinationPath);
 
-            if (!!!source.exists()) {
+            if (!source.exists()) {
                 throw new IOException("sourcePath [" + sourcePath + "] does not exist.");
             }
-            
-            if (!!!source.isDirectory()) {
+            if (!source.isDirectory() ) {
                 throw new IOException("sourcePath [" + sourcePath + "] is not a directory");
             }
-            if (!!!destination.isDirectory()) {
+
+            if (destination.exists() && !destination.isDirectory() ) {
                 throw new IOException("destinationPath [" + destinationPath + "] is not a directory");
             }
         } catch (Exception ioe) {

@@ -51,8 +51,8 @@ public class LooseConfigTest extends CachingTest {
      *                         SOURCE LOCATION (Build tree)
      *                         ============================
      *        test-applications/looseConfig/earContent              -- META-INF/application.xml for EAR
-     *        test-applications/looseConfig/looseWeb1/WebContent    -- META-INF and index.jsp for LooseWeb1.war
-     *        test-applications/looseConfig/looseWeb2/WebContent    -- META-INF and index.jsp for LooseWeb2.war
+     *        test-applications/looseConfig/LooseWeb1/WebContent    -- META-INF and index.jsp for LooseWeb1.war
+     *        test-applications/looseConfig/LooseWeb2/WebContent    -- META-INF and index.jsp for LooseWeb2.war
      *        build/classes/java/main/looseweb1                     -- classes for WEB-INF/classes for LooseWeb1.war
      *        build/classes/java/main/looseweb2 (dynamically added) -- classes for WEB-INF/classes for LooseWeb2.war
      *        build/classes/java/main/looseservlet1                 -- classes for LooseServlet1.jar
@@ -93,11 +93,10 @@ public class LooseConfigTest extends CachingTest {
         mkDir(looseAppDir + "LooseServlet2.jar/looseservlet2", DELETE_IF_EXISTS);
         mkDir(looseAppDir + "earContent", DELETE_IF_EXISTS);
         
-
         copyFolder(APP_SOURCE + "earContent", looseAppDir + "earContent");                          // application.xml
-        copyFolder(APP_SOURCE + "LooseWeb1.war/WebContent", looseAppDir + "looseWeb1/WebContent");  // LooseWeb1.war META-INF and index.jsp
-        copyFolder("build/classes/looseweb1", looseAppDir + "LooseWeb1/classes/looseweb1");                          // LooseWeb1.war WEB-INF/classes
-        copyFolder(APP_SOURCE + "LooseWeb2.war/WebContent", looseAppDir + "looseWeb2/WebContent");  // LooseWeb2.war META-INF and index.jsp
+        copyFolder(APP_SOURCE + "LooseWeb1.war/WebContent", looseAppDir + "LooseWeb1/WebContent");  // LooseWeb1.war META-INF and index.jsp
+        copyFolder("build/classes/looseweb1", looseAppDir + "LooseWeb1/classes/looseweb1");         // LooseWeb1.war WEB-INF/classes
+        copyFolder(APP_SOURCE + "LooseWeb2.war/WebContent", looseAppDir + "LooseWeb2/WebContent");  // LooseWeb2.war META-INF and index.jsp
 
         copyFolder("build/classes/looseservlet1", looseAppDir + "LooseServlet1.jar/looseservlet1");  // classes for LooseServlet1.jar
         copyFolder("build/classes/looseservlet2", looseAppDir + "LooseServlet2.jar/looseservlet2");  // classes for LooseServlet2.jar
