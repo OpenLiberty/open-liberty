@@ -23,10 +23,7 @@ ext {
 
 subprojects {
   plugins.apply 'java'
-  // Disable the test report for the individual test task
-    test {
-        reports.html.enabled = false
-    }
+  
   def bndProject = bndWorkspace.getProject(name)
 
   if (bndProject != null) {
@@ -79,6 +76,7 @@ subprojects {
   release.dependsOn assemble
   release.dependsOn publish
 }
+
 task testReport(type: TestReport) {
     // make sure this task is run after all subproject test tasks
     mustRunAfter subprojects.test
@@ -86,6 +84,13 @@ task testReport(type: TestReport) {
     destinationDir = cnf.file('generated/testReports/allUnitTests')
     // Include the results from the `test` task in all subprojects
     reportOn subprojects.test
+}
+
+task zipTestReport(type: Zip) {
+  dependsOn testReport
+    baseName 'openliberty_test_report'
+    from cnf.file('generated/testReports/allUnitTests')
+    destinationDir cnf.file('generated/testReports')
 }
     
 
@@ -100,7 +105,7 @@ task testResults {
     userProps.store(propsFile.newWriter(), null)
   }
 }
-testResults.dependsOn testReport
+testResults.dependsOn zipTestReport
 
 task wrapper(type: Wrapper) {
   jarFile = rootProject.file('.gradle-wrapper/gradle-wrapper.jar')
