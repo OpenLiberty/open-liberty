@@ -24,7 +24,7 @@ public class ConcurrencyConfigBean {
     @ApplicationScoped
     @NamedInstance("applicationProducedExecutor")
     ManagedExecutor createExecutor(@ConfigProperty(name = "AppProducedExecutor.maxAsync", defaultValue = "1") Integer a,
-                                   @ConfigProperty(name = "AppProducedExecutor.maxQueued", defaultValue = "4") Integer q) {
+                                   @ConfigProperty(name = "AppProducedExecutor.maxQueued", defaultValue = "4") Integer q) { // MP Config sets maxQueued=2
         return ManagedExecutor.builder().maxAsync(a).maxQueued(q).build();
     }
 
