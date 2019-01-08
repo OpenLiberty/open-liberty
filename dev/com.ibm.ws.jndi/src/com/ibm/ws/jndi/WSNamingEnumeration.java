@@ -13,8 +13,6 @@ package com.ibm.ws.jndi;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class WSNamingEnumeration<T> implements NamingEnumeration<T> {
     private interface Enumerator<T> {
@@ -22,9 +20,11 @@ public class WSNamingEnumeration<T> implements NamingEnumeration<T> {
         T next() throws NamingException;
     }
 
-    public static <K, V, T> WSNamingEnumeration<T> getEnumeration(Map<K, V> entries, final Adapter<Entry<K, V>, T> adapter) {
-        final Iterator<Entry<K, V>> iter = entries.entrySet().iterator();
-        return new WSNamingEnumeration<T>(new Enumerator<T>() {
+    private final Enumerator<T> enumerator;
+
+    public<F> WSNamingEnumeration(Iterable<F> from, final Adapter<F, T> adapter){
+        final Iterator<F> iter = from.iterator();
+        this.enumerator = new Enumerator<T>() {
             public boolean hasMoreElements() {
                 return iter.hasNext();
             }
@@ -32,13 +32,7 @@ public class WSNamingEnumeration<T> implements NamingEnumeration<T> {
             public T next() throws NamingException {
                 return adapter.adapt(iter.next());
             }
-        });
-    }
-
-    private final Enumerator<T> enumerator;
-
-    private WSNamingEnumeration(Enumerator<T> enumerator) {
-        this.enumerator = enumerator;
+        };
     }
 
     @Override
