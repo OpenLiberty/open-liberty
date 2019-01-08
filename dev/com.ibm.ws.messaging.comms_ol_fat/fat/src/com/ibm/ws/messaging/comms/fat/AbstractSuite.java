@@ -3,7 +3,6 @@ package com.ibm.ws.messaging.comms.fat;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.topology.impl.LibertyServer;
-import org.hamcrest.CoreMatchers;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;

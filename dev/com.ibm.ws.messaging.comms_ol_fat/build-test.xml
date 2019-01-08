@@ -10,7 +10,6 @@
 		<echo message="create apps" />
 		<copy file="${basedir}/publish/files/CommsLP.zip" tofile="${basedir}/publish/servers/com.ibm.ws.messaging.comms.client/dropins/CommsLP.war"/>
 		<copy file="${basedir}/publish/files/CommsLP.zip" tofile="${basedir}/publish/servers/com.ibm.ws.messaging.comms.WJO.Client/dropins/CommsLP.war"/>
-						
 	</target>
 
 </project>

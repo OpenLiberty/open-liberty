@@ -29,7 +29,7 @@ public class FeatureUpdate extends AbstractSuite {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        setupShrinkWrap(servletServer, jmsServer);
+        setupShrinkWrap(servletServer);
         copyFiles(jmsServer, "resources/security",
                 "serverLTPAKeys/certnew.der", "serverLTPAKeys/ltpa.keys", "serverLTPAKeys/mykeynew.jks");
         copyFiles(servletServer,"resources/security", "clientLTPAKeys/mykeynew.jks");
@@ -49,7 +49,7 @@ public class FeatureUpdate extends AbstractSuite {
     }
 
 
-    //@Test
+    @Test
     public void testSendReceive2LP() throws Exception {
         setMarkUpdateConfigs(servletServer, "server1.xml");
         setMarkUpdateConfigs(jmsServer, "server2.xml");
