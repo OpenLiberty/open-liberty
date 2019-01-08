@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp.cdi;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,6 +36,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
@@ -56,6 +56,7 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
     private final Set<Throwable> deploymentErrors = new LinkedHashSet<>();
     private final Set<String> appDefinedProducers = new HashSet<>();
 
+    @Trivial
     public void processProducer(@Observes ProcessProducer<?, ManagedExecutor> event, BeanManager bm) {
         // Save off app-defined @NamedInstance producers so we know *not* to create a bean for them
         NamedInstance producerName = event.getAnnotatedMember().getAnnotation(NamedInstance.class);
@@ -66,6 +67,7 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
         }
     }
 
+    @Trivial
     public void processInjectionPoint(@Observes ProcessInjectionPoint<?, ManagedExecutor> event, BeanManager bm) {
         Annotated injectionPoint = event.getInjectionPoint().getAnnotated();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -74,17 +76,17 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
         ManagedExecutorConfig config = injectionPoint.getAnnotation(ManagedExecutorConfig.class);
         boolean configAnnoPresent = config != null;
         if (config == null)
-            config = MEC_LITERAL;
+            config = ManagedExecutorConfig.Literal.DEFAULT_INSTANCE;
 
         // Instance name is either @NamedInstance.value() or generated from fully-qualified field name
         NamedInstance nameAnno = injectionPoint.getAnnotation(NamedInstance.class);
         Member member = event.getInjectionPoint().getMember();
         String name = nameAnno == null ? member.getDeclaringClass().getTypeName() + "." + member.getName() : nameAnno.value();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "InjectionPoint " + name + " has config " + config);
+            Tr.debug(tc, "InjectionPoint " + name + " has config " + (configAnnoPresent ? config : "DEFAULT_INSTNACE"));
         // Automatically insert @NamedInstance("<generated name>") qualifier for @Default injection points
         if (nameAnno == null && event.getInjectionPoint().getQualifiers().contains(Default.Literal.INSTANCE))
-            event.configureInjectionPoint().addQualifiers(createNamedInstance(name));
+            event.configureInjectionPoint().addQualifiers(NamedInstance.Literal.of(name));
 
         // The container MUST register a bean if @MEC is present
         // The container MUST register a bean for every @Default injection point
@@ -121,48 +123,4 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
         deploymentErrors.forEach(event::addDeploymentProblem);
         deploymentErrors.clear();
     }
-
-    @Deprecated // TODO this can be replaced with a spec-provided Literal soon
-    public static NamedInstance createNamedInstance(final String name) {
-        return new NamedInstance() {
-            @Override
-            public Class<? extends Annotation> annotationType() {
-                return NamedInstance.class;
-            }
-
-            @Override
-            public String value() {
-                return name;
-            }
-        };
-    }
-
-    @Deprecated // TODO this can be replaced with a spec-provided Literal soon
-    public static final ManagedExecutorConfig MEC_LITERAL = new ManagedExecutorConfig() {
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return ManagedExecutorConfig.class;
-        }
-
-        @Override
-        public String[] propagated() {
-            return new String[] { "Remaining" };
-        }
-
-        @Override
-        public int maxQueued() {
-            return -1;
-        }
-
-        @Override
-        public int maxAsync() {
-            return -1;
-        }
-
-        @Override
-        public String[] cleared() {
-            return new String[] { "Transaction" };
-        }
-    };
-
 }

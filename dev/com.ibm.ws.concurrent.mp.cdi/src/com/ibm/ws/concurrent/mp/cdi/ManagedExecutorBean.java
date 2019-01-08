@@ -31,6 +31,7 @@ import javax.enterprise.inject.spi.PassivationCapable;
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.eclipse.microprofile.concurrent.ManagedExecutor.Builder;
 import org.eclipse.microprofile.concurrent.ManagedExecutorConfig;
+import org.eclipse.microprofile.concurrent.NamedInstance;
 
 public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCapable {
 
@@ -56,7 +57,7 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
         this.config = config;
         Set<Annotation> qualifiers = new HashSet<>(2);
         qualifiers.add(Any.Literal.INSTANCE);
-        qualifiers.add(ConcurrencyCDIExtension.createNamedInstance(this.name));
+        qualifiers.add(NamedInstance.Literal.of(this.name));
         this.qualifiers = Collections.unmodifiableSet(qualifiers);
     }
 

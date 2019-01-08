@@ -160,6 +160,8 @@ public class MPConcurrentCDITestServlet extends FATServlet {
 
         ManagedExecutor exec2 = CDI.current().select(ManagedExecutor.class, Default.Literal.INSTANCE).get();
         assertNotNull(exec2);
+
+        assertEquals(exec, exec2);
     }
 
     @Test
