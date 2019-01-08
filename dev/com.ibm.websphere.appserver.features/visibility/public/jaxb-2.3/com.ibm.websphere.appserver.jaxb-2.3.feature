@@ -5,6 +5,7 @@ singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
 IBM-API-Package: \
+  javax.activation; type="spec", \
   javax.xml.bind;  type="spec", \
   javax.xml.bind.annotation;  type="spec", \
   javax.xml.bind.annotation.adapters;  type="spec", \
