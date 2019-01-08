@@ -18,14 +18,14 @@ Bundle-Description: WebSphere Mail Third-Party API, version ${bVersion}
 Export-Package:\
   com.sun.mail;version="1.5.12", \
   com.sun.mail.auth;version="1.5.12", \
-  com.sun.mail.imap;version="1.5.0", \
-  com.sun.mail.imap.protocol;version="1.5.0", \
-  com.sun.mail.iap;version="1.5.0", \
-  com.sun.mail.pop3;version="1.5.0", \
-  com.sun.mail.smtp;version="1.5.0", \
-  com.sun.mail.util;version="1.5.0", \
-  com.sun.mail.util.logging;version="1.5.0", \
-  com.sun.mail.handlers;version="1.5.0"
+  com.sun.mail.imap;version="1.5.6", \
+  com.sun.mail.imap.protocol;version="1.5.6", \
+  com.sun.mail.iap;version="1.5.6", \
+  com.sun.mail.pop3;version="1.5.6", \
+  com.sun.mail.smtp;version="1.5.6", \
+  com.sun.mail.util;version="1.5.6", \
+  com.sun.mail.util.logging;version="1.5.6", \
+  com.sun.mail.handlers;version="1.5.6"
 
 Import-Package: \
   javax.activation, \
