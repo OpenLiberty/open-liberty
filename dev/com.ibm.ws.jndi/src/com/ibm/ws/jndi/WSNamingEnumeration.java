@@ -14,36 +14,24 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import java.util.Iterator;
 
-public class WSNamingEnumeration<T> implements NamingEnumeration<T> {
-    private interface Enumerator<T> {
-        boolean hasMoreElements();
-        T next() throws NamingException;
-    }
+public final class WSNamingEnumeration<T> implements NamingEnumeration<T> {
+    private final Iterator<?> iterator;
+    private final Adapter<Object, T> adapter;
 
-    private final Enumerator<T> enumerator;
-
-    public<F> WSNamingEnumeration(Iterable<F> from, final Adapter<F, T> adapter){
-        final Iterator<F> iter = from.iterator();
-        this.enumerator = new Enumerator<T>() {
-            public boolean hasMoreElements() {
-                return iter.hasNext();
-            }
-
-            public T next() throws NamingException {
-                return adapter.adapt(iter.next());
-            }
-        };
+    public<F> WSNamingEnumeration(Iterable<F> from, Adapter<F, T> adapter){
+        this.iterator = from.iterator();
+        this.adapter = (Adapter<Object, T>)adapter; // ugly cast lets us avoid making F a type param on the class
     }
 
     @Override
     public boolean hasMoreElements() {
-        return enumerator.hasMoreElements();
+        return iterator.hasNext();
     }
 
     @Override
     public T nextElement() {
         try {
-            return enumerator.next();
+            return next();
         } catch (NamingException e) {
             return null;
         }
@@ -51,12 +39,12 @@ public class WSNamingEnumeration<T> implements NamingEnumeration<T> {
 
     @Override
     public T next() throws NamingException {
-        return enumerator.next();
+        return adapter.adapt(iterator.next());
     }
 
     @Override
     public boolean hasMore() {
-        return enumerator.hasMoreElements();
+        return iterator.hasNext();
     }
 
     @Override
