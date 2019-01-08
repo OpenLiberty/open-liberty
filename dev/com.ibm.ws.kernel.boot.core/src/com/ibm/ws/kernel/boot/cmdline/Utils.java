@@ -18,40 +18,24 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.AccessController;
 import java.util.ResourceBundle;
-import java.util.concurrent.Callable;
 import java.util.zip.ZipFile;
 
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
-import com.ibm.ws.staticvalue.StaticValue;
 
 public class Utils {
-    private static StaticValue<File> installDir = StaticValue.createStaticValue(null);
-    private static StaticValue<File> userDir = StaticValue.createStaticValue(null);
-    private static StaticValue<File> outputDir = StaticValue.createStaticValue(null);
-    private static StaticValue<File> logDir = StaticValue.createStaticValue(null);
+    private static File installDir;
+    private static File userDir;
+    private static File outputDir;
+    private static File logDir;
     private static ResourceBundle cmdlineResourceBundle;
 
-    public static class FileInitializer implements Callable<File> {
-        final File file;
-
-        public FileInitializer(File file) {
-            this.file = file;
-        }
-
-        @Override
-        public File call() throws Exception {
-            return file;
-        }
-    }
-
     public static File getInstallDir() {
-        if (installDir.get() == null) {
+        if (installDir == null) {
             URL url = UtilityMain.class.getProtectionDomain().getCodeSource().getLocation();
-            File file = getFile(url).getParentFile().getParentFile();
-            installDir = StaticValue.mutateStaticValue(installDir, new FileInitializer(file));
+            installDir = getFile(url).getParentFile().getParentFile();
         }
 
-        return installDir.get();
+        return installDir;
     }
 
     public static File getUserDir() {
@@ -60,7 +44,7 @@ public class Utils {
 
         // 1st check in environment variable is set.  This is the normal case
         // when the server is started from the command line.
-        if (userDir.get() == null) {
+        if (userDir == null) {
             File resultDir = null;
 
             // If this property is set we want to ignore the WLP_USER_DIR env var and use the <install>/usr dir
@@ -82,9 +66,9 @@ public class Utils {
                     }
                 }
             }
-            userDir = StaticValue.mutateStaticValue(userDir, new FileInitializer(resultDir));
+            userDir = resultDir;
         }
-        return userDir.get();
+        return userDir;
     }
 
     private static File getDefaultInstallBasedUserDir() {
@@ -119,7 +103,7 @@ public class Utils {
 
         // 1st check in environment variable is set.  This is the normal case
         // when the server is started from the command line.
-        if (logDir.get() == null) {
+        if (logDir == null) {
             File resultDir = null;
             try {
                 logDirLoc = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<String>() {
@@ -142,10 +126,10 @@ public class Utils {
                     resultDir = new File(logDirLoc);
                 }
             }
-            logDir = StaticValue.mutateStaticValue(logDir, new FileInitializer(resultDir));
+            logDir = resultDir;
         }
 
-        return logDir.get();
+        return logDir;
     }
 
     /**
@@ -161,7 +145,7 @@ public class Utils {
 
         // 1st check in environment variable is set.  This is the normal case
         // when the server is started from the command line.
-        if (outputDir.get() == null) {
+        if (outputDir == null) {
 
             try {
                 outputDirLoc = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<String>() {
@@ -194,9 +178,9 @@ public class Utils {
                     }
                 }
             }
-            outputDir = StaticValue.mutateStaticValue(outputDir, new FileInitializer(resultDir));
+            outputDir = resultDir;
         }
-        return outputDir.get();
+        return outputDir;
     }
 
     /**
@@ -349,7 +333,7 @@ public class Utils {
      * @param installDir
      */
     public static void setInstallDir(File installDir) {
-        Utils.installDir = StaticValue.mutateStaticValue(Utils.installDir, new FileInitializer(installDir));
+        Utils.installDir = installDir;
     }
 
     /**
@@ -358,7 +342,7 @@ public class Utils {
      * @param userDir
      */
     public static void setUserDir(File userDir) {
-        Utils.userDir = StaticValue.mutateStaticValue(Utils.userDir, new FileInitializer(userDir));
+        Utils.userDir = userDir;
     }
 
     /**
