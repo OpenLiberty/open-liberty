@@ -161,7 +161,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
             }
 
         } finally {
-            currentDeployment.set(null);
+            currentDeployment.remove();
         }
 
     }
@@ -173,7 +173,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                 currentDeployment.set(webSphereCDIDeployment);
                 weldBootstrap.endInitialization();
             } finally {
-                currentDeployment.set(null);
+                currentDeployment.remove();
             }
         }
     }

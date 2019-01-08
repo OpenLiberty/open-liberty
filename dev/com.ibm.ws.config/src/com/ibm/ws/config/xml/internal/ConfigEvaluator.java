@@ -293,9 +293,11 @@ class ConfigEvaluator {
         context.setAttributeName(attributeName);
         context.addProcessed(attributeName);
 
+        final String prefixedAttributeName = flatPrefix.length() == 0 ? attributeName : flatPrefix + attributeName;
+
         Object rawValue = null;
         if (attributeDef.getCopyOf() != null) {
-            AttributeValueCopy copy = new AttributeValueCopy(flatPrefix + attributeName, attributeDef.getCopyOf());
+            AttributeValueCopy copy = new AttributeValueCopy(prefixedAttributeName, attributeDef.getCopyOf());
             context.addAttributeValueCopy(copy);
         }
 
@@ -415,7 +417,7 @@ class ConfigEvaluator {
                     actualValue = pids;
                 }
                 if (actualValue != null) {
-                    context.setProperty(flatPrefix + attributeName, actualValue);
+                    context.setProperty(prefixedAttributeName, actualValue);
                 }
                 evaluateFinish(context);
                 return actualValue;
@@ -444,7 +446,7 @@ class ConfigEvaluator {
                     actualValue = pids;
                 }
                 if (actualValue != null) {
-                    context.setProperty(flatPrefix + attributeName, actualValue);
+                    context.setProperty(prefixedAttributeName, actualValue);
                 }
                 evaluateFinish(context);
                 return actualValue;
@@ -501,7 +503,7 @@ class ConfigEvaluator {
             }
 
             if (actualValue != null) {
-                context.setProperty(flatPrefix + attributeName, actualValue);
+                context.setProperty(prefixedAttributeName, actualValue);
             }
             evaluateFinish(context);
         }
@@ -1328,36 +1330,51 @@ class ConfigEvaluator {
             }
         }
 
+        boolean optionFound = false;
         // Convert option value to correct case.
         String[] optionValues = attrDef.getOptionValues();
         if (optionValues != null) {
-            String[] optionLabels = attrDef.getOptionLabels();
             for (int i = 0; i < optionValues.length; i++) {
-                if (strValue.equalsIgnoreCase(optionValues[i]) || strValue.equalsIgnoreCase(optionLabels[i])) {
+                if (strValue.equalsIgnoreCase(optionValues[i])) {
                     strValue = optionValues[i];
+                    optionFound = true;
                     break;
+                }
+            }
+            // only get the labels if it isn't found in the values.  Usually it will be a value.
+            if (!optionFound) {
+                String[] optionLabels = attrDef.getOptionLabels();
+                for (int i = 0; i < optionValues.length; i++) {
+                    if (strValue.equalsIgnoreCase(optionLabels[i])) {
+                        strValue = optionValues[i];
+                        optionFound = true;
+                        break;
+                    }
                 }
             }
         }
 
-        // Special case for Boolean, since we want to validate "true" or "false" and anything is fail to validate (rather than being treated as false)
-        if (attrDef.getType() == AttributeDefinition.BOOLEAN) {
-            if (!!!("true".equalsIgnoreCase(strValue))
-                && !!!("false".equalsIgnoreCase(strValue))) {
-                Object[] inserts = new Object[] { strValue, attrDef.getID(), "false" }; // "false" is the default default
-                if (attrDef.getDefaultValue() != null && attrDef.getDefaultValue().length > 0)
-                    inserts[2] = attrDef.getDefaultValue()[0];
-                throw new AttributeValidationException(attrDef, strValue, Tr.formatMessage(tc, "error.invalid.boolean.attribute", inserts));
-            }
-        } else if (attrDef.getType() != MetaTypeFactory.PID_TYPE) {
-            // The validate method treats whitespace, commas, and
-            // backslashes specially, but we've already done all that
-            // processing and just want to validate a single value, so
-            // escape all the special characters.  (It might be less effort
-            // to just reimplement the validate method entirely.)
-            String validateResult = attrDef.validate(MetaTypeHelper.escapeValue(strValue));
-            if (validateResult != null && validateResult.length() > 0) {
-                throw new AttributeValidationException(attrDef, strValue, validateResult);
+        // If it is an option and it was found then skip the validate since it isn't needed.
+        if (!optionFound) {
+            // Special case for Boolean, since we want to validate "true" or "false" and anything is fail to validate (rather than being treated as false)
+            if (attrDef.getType() == AttributeDefinition.BOOLEAN) {
+                if (!!!("true".equalsIgnoreCase(strValue))
+                    && !!!("false".equalsIgnoreCase(strValue))) {
+                    Object[] inserts = new Object[] { strValue, attrDef.getID(), "false" }; // "false" is the default default
+                    if (attrDef.getDefaultValue() != null && attrDef.getDefaultValue().length > 0)
+                        inserts[2] = attrDef.getDefaultValue()[0];
+                    throw new AttributeValidationException(attrDef, strValue, Tr.formatMessage(tc, "error.invalid.boolean.attribute", inserts));
+                }
+            } else if (attrDef.getType() != MetaTypeFactory.PID_TYPE) {
+                // The validate method treats whitespace, commas, and
+                // backslashes specially, but we've already done all that
+                // processing and just want to validate a single value, so
+                // escape all the special characters.  (It might be less effort
+                // to just reimplement the validate method entirely.)
+                String validateResult = attrDef.validate(MetaTypeHelper.escapeValue(strValue));
+                if (validateResult != null && validateResult.length() > 0) {
+                    throw new AttributeValidationException(attrDef, strValue, validateResult);
+                }
             }
         }
 

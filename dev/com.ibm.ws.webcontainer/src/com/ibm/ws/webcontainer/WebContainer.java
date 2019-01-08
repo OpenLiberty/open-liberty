@@ -60,7 +60,6 @@ import com.ibm.ws.container.Container;
 import com.ibm.ws.container.DeployedModule;
 import com.ibm.ws.javaee.dd.webext.WebExt;
 import com.ibm.websphere.security.audit.context.AuditManager;
-import com.ibm.websphere.security.audit.context.AuditThreadContext;
 import com.ibm.ws.util.WSThreadLocal;
 import com.ibm.ws.webcontainer.async.AsyncContextFactory;
 import com.ibm.ws.webcontainer.async.AsyncContextImpl;
@@ -164,9 +163,6 @@ public abstract class WebContainer extends BaseContainer {
     private static ServiceLoader<ServletContainerInitializer> servletContainerInitializers;
     
     protected AuditManager auditManager;
-
-    private static ThreadLocal<AuditThreadContext> threadLocal = new ThreadLocal<AuditThreadContext>();
-
 
     private static int invocationCacheSize = 500;
     static {

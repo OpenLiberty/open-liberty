@@ -922,8 +922,8 @@ final class MetaTypeRegistry {
             }
             if (referencingPids == null) {
                 referencingPids = new CopyOnWriteArrayList<PidReference>();
-            }
-            if (!referencingPids.contains(ref)) {
+                referencingPids.add(ref);
+            } else if (!referencingPids.contains(ref)) {
                 referencingPids.add(ref);
             }
         }

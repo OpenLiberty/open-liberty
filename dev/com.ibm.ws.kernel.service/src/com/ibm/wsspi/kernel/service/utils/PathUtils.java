@@ -82,29 +82,30 @@ public class PathUtils {
     private static String FILE_NAME_RESTRICTED_CHARS = "<>:\"/\\|?*";
 
     /**
-     * 
-     * @deprecated  -  Instead use !isOsCaseSensitive()
+     *
+     * @deprecated - Instead use !isOsCaseSensitive()
      */
+    @Deprecated
     static boolean isPossiblyCaseInsensitive() {
-    	return !isOsCaseSensitive();
+        return !isOsCaseSensitive();
     }
-    
+
     /**
      * Test whether the active file system is case <em>sensitive</em>. A true result means
      * that the active file system is case sensitive. A false result means
-     * that the active file system is not case sensitive.  
+     * that the active file system is not case sensitive.
      *
      * The test accesses the bundle context of this class, and creates and removes files in the
-     * persistent data storage area of that bundle context. If the bundle or bundle context are 
+     * persistent data storage area of that bundle context. If the bundle or bundle context are
      * not available, or if the persistent data storage area cannot be accessed, then we test the
-     * file system directly (using the canonical name) by writing a file to the file system and 
+     * file system directly (using the canonical name) by writing a file to the file system and
      * comparing the File to a File that differs only by case.
      *
-     * The result is used when testing for file existence. See {@link #checkCase(File, String)}. 
+     * The result is used when testing for file existence. See {@link #checkCase(File, String)}.
      *
      * @return True if the active file system is case sensitive, otherwise false.
      */
-    static boolean isOsCaseSensitive() { 
+    static boolean isOsCaseSensitive() {
         File caseSensitiveFile = null;
         Bundle bundle = FrameworkUtil.getBundle(PathUtils.class);
         if (bundle != null) {
@@ -121,7 +122,7 @@ public class PathUtils {
                             //
                             // Note that OS/400 only considers two files equal if they have both
                             // been canonicalized...
-                            return !getCanonicalFile(caseSensitiveFile).equals(getCanonicalFile(new File(caseSensitiveFile.getParentFile(), "CASEsENSITIVE"))); 
+                            return !getCanonicalFile(caseSensitiveFile).equals(getCanonicalFile(new File(caseSensitiveFile.getParentFile(), "CASEsENSITIVE")));
                         }
                     } catch (PrivilegedActionException pae) {
                         // auto FFDC
@@ -290,6 +291,8 @@ public class PathUtils {
             return path;
         }
         boolean slash_change = false;
+        final String origFullPath = path;
+        boolean pathChanged = false;
 
         String prefix = "";
 
@@ -301,6 +304,7 @@ public class PathUtils {
             prefix = "file://";
             path = path.substring(7); // skip "file://", new path will start with //
             slash_change = true;
+            pathChanged = true;
         }
         if (path.length() >= 9 && path.startsWith("file:///")) {
             prefix = "file:///";
@@ -319,51 +323,59 @@ public class PathUtils {
         boolean dotSegment = false;
         boolean backslash = false;
 
-        for (; i < origLength; i++) {
-            if (i == 0 && path.charAt(i) == '.') // potential dot segment
+        if (origLength != 0) {
+            if (path.charAt(0) == '.') // potential dot segment
                 dotSegment = true;
 
-            if (path.charAt(i) == '/' || path.charAt(i) == '\\') {
-                if (path.charAt(i) == '\\') // need to slashify
-                    backslash = true;
+            for (; i < origLength; i++) {
+                char c = path.charAt(i);
 
-                if (i == 0) // catch leading slash(es) (whee! UNC paths: \\remote\location)
-                {
-                    num_segments++;
-                    while (i + 1 < path.length() && (path.charAt(i + 1) == '/' || path.charAt(i + 1) == '\\'))
-                        i++;
+                if (c == '/' || c == '\\') {
+                    if (c == '\\') // need to slashify
+                        backslash = true;
 
-                    if (i > 0) // if there are extra leading slashes, note it
+                    if (i == 0) // catch leading slash(es) (whee! UNC paths: \\remote\location)
+                    {
+                        num_segments++;
+                        while (i + 1 < origLength && (path.charAt(i + 1) == '/' || path.charAt(i + 1) == '\\'))
+                            i++;
+
+                        if (i > 0) // if there are extra leading slashes, note it
+                            slash_change = true;
+                    } else if (i == lastSlash) // catch repeated//slash in the middle of path
                         slash_change = true;
-                } else if (i == lastSlash) // catch repeated//slash in the middle of path
-                    slash_change = true;
-                else if (i != lastSlash) // at least one character since the last slash:
-                    // another path segment
-                    num_segments++;
+                    else if (i != lastSlash) // at least one character since the last slash:
+                        // another path segment
+                        num_segments++;
 
-                // leading dot in next segment could be a '.' or '..' segment
-                if (!dotSegment && i + 1 < path.length() && path.charAt(i + 1) == '.')
-                    dotSegment = true;
+                    // leading dot in next segment could be a '.' or '..' segment
+                    if (!dotSegment && i + 1 < origLength && path.charAt(i + 1) == '.')
+                        dotSegment = true;
 
-                lastSlash = i + 1; // increment beyond the slash character
+                    lastSlash = i + 1; // increment beyond the slash character
+                }
+            }
+
+            if (i > lastSlash)
+                num_segments++;
+
+            if (backslash) {
+                path = slashify(path);
+                pathChanged = true;
+            }
+
+            // Remove leading slash: /c:/windows/path... have to adjust "original" length
+            if (path.length() > 3 && path.charAt(0) == '/' && path.charAt(2) == ':') {
+                path = path.substring(1);
+                pathChanged = true;
             }
         }
 
-        if (i > lastSlash)
-            num_segments++;
-
-        if (backslash)
-            path = slashify(path);
-
-        // Remove leading slash: /c:/windows/path... have to adjust "original" length
-        if (path.length() > 3 && path.charAt(0) == '/' && path.charAt(2) == ':')
-            path = path.substring(1);
-
         // if there are no segment-sensitive/collapsing elements, just return
         if (!slash_change && !dotSegment)
-            return prefix + path;
+            return pathChanged ? prefix + path : origFullPath;
 
-        boolean pathChanged = false;
+        pathChanged = false;
         origLength = path.length();
 
         ArrayList<String> segments = new ArrayList<String>(num_segments);
@@ -372,7 +384,7 @@ public class PathUtils {
                 if (i == 0) // catch leading slash(es) (whee! UNC paths: //remote/location/)
                 {
                     // Guard against a case where we have multiple slashes for a unix root
-                    while ((i + 1) < path.length() && path.charAt(i + 1) == '/')
+                    while ((i + 1) < origLength && path.charAt(i + 1) == '/')
                         i++;
 
                     segments.add(path.substring(0, i + 1));
@@ -417,12 +429,13 @@ public class PathUtils {
         }
 
         if (pathChanged) {
-            StringBuilder sb = new StringBuilder(path.length());
+            StringBuilder sb = new StringBuilder(origFullPath.length());
+            sb.append(prefix);
 
             for (String s : segments)
                 sb.append(s);
 
-            return prefix + sb.toString();
+            return sb.toString();
         }
 
         return prefix + path;
@@ -1205,33 +1218,33 @@ public class PathUtils {
 
     /**
      * The artifact API is case sensitive even on a file system that is not case sensitive.
-     * 
+     *
      * This method will test that the case of the supplied <em>existing</em> file matches the case
      * in the pathToTest. It is assumed that you already tested that the file exists using
-     * the pathToTest.  Therefore, on a case sensitive files system, the case must match and
-     * true is returned without doing any further testing.  In other words, the check for file
+     * the pathToTest. Therefore, on a case sensitive files system, the case must match and
+     * true is returned without doing any further testing. In other words, the check for file
      * existence is sufficient on a case sensitive file system, and there is no reason to call
      * this checkCase method.
-     * 
+     *
      * If the file system is not case sensitive, then a test for file existence will pass
-     * even when the case does not match.  So this method will do further testing to ensure
+     * even when the case does not match. So this method will do further testing to ensure
      * the case matches.
-     * 
+     *
      * It assumes that the final part of the file's path will be equal to
-     * the whole of the pathToTest. 
-     * 
-     * The path to test should be a unix style path with "/" as the separator character, 
+     * the whole of the pathToTest.
+     *
+     * The path to test should be a unix style path with "/" as the separator character,
      * regardless of the operating system. If the file is a directory then a trailing slash
      * or the absence thereof will not affect whether the case matches since the trailing
      * slash on a directory is optional.
-     * 
+     *
      * If you call checkCase(...) with a file that does NOT exist:
-     *   On case sensitive file system:  Always returns true
-     *   On case insensitive file system: It compares the pathToTest to the file path of the 
-     *      java.io.File that you passed in rather than the file on disk (since it doesn't exist).
-     *      file.getCanonicalFile() returns the path using the case of the file on disk, if it exists.
-     *      If the file doesn't exist then it returns the path using the case of the java.io.File itself.
-     * 
+     * On case sensitive file system: Always returns true
+     * On case insensitive file system: It compares the pathToTest to the file path of the
+     * java.io.File that you passed in rather than the file on disk (since it doesn't exist).
+     * file.getCanonicalFile() returns the path using the case of the file on disk, if it exists.
+     * If the file doesn't exist then it returns the path using the case of the java.io.File itself.
+     *
      * @param file The existing file to compare against
      * @param pathToTest The path to test if it is the same
      * @return <code>true</code> if the case is the same in the file and the pathToTest
@@ -1248,7 +1261,7 @@ public class PathUtils {
         }
 
         try {
-            // This will handle the case where the file system is not case sensitive, but 
+            // This will handle the case where the file system is not case sensitive, but
             // doesn't support symbolic links.  A canonical file path will handle this case.
             if (checkCaseCanonical(file, pathToTest)) {
                 return true;
@@ -1371,7 +1384,7 @@ public class PathUtils {
      * A symbolic link elsewhere in the path to the file is not detected.
      *
      * Gets the canonical form of the parent directory and appends the file name.
-     * Then compares that canonical form of the file to the "Absolute" file.  If 
+     * Then compares that canonical form of the file to the "Absolute" file. If
      * it doesn't match, then it is a symbolic link.
      *
      * @param candidateChildFile The file to test as a symbolic link.

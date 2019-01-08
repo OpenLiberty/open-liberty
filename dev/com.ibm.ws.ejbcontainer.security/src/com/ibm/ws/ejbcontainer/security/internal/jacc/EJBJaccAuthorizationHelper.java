@@ -24,7 +24,6 @@ import com.ibm.websphere.security.audit.AuditAuthResult;
 import com.ibm.websphere.security.audit.AuditAuthenticationResult;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.websphere.security.audit.context.AuditManager;
-import com.ibm.websphere.security.audit.context.AuditThreadContext;
 import com.ibm.ws.ejbcontainer.EJBComponentMetaData;
 import com.ibm.ws.ejbcontainer.EJBMethodMetaData;
 import com.ibm.ws.ejbcontainer.EJBRequestData;
@@ -51,8 +50,6 @@ public class EJBJaccAuthorizationHelper implements EJBAuthorizationHelper {
     public HashMap<String, Object> ejbAuditHashMap = new HashMap<String, Object>();
 
     protected AuditManager auditManager;
-
-    private static ThreadLocal<AuditThreadContext> threadLocal = new ThreadLocal<AuditThreadContext>();
 
     public void populateAuditEJBHashMap(EJBRequestData request) {
         EJBMethodMetaData methodMetaData = request.getEJBMethodMetaData();
