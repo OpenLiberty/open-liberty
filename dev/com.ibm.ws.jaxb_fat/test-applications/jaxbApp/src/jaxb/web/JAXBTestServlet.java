@@ -20,6 +20,7 @@ import javax.xml.bind.JAXBContext;
 
 import org.junit.Test;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -58,7 +59,8 @@ public class JAXBTestServlet extends FATServlet {
     }
 
     @Test
-    public void testActivationLoaded() throws Exception {
+    @SkipForRepeat("JAXB-2.3")
+    public void testActivationLoaded_jaxb22() throws Exception {
         // Verify Activation API came from the JDK
         ClassLoader apiLoader = javax.activation.DataHandler.class.getClassLoader();
         CodeSource apiSrc = javax.activation.DataHandler.class.getProtectionDomain().getCodeSource();
@@ -76,5 +78,21 @@ public class JAXBTestServlet extends FATServlet {
             assertTrue("Expected javax.activation to come from Liberty, but it came from: " + apiLocation,
                        apiLocation != null && apiLocation.contains("com.ibm.websphere.javaee.activation.1.1"));
         }
+    }
+
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testActivationLoaded_jaxb23() throws Exception {
+        // Verify Activation API came from the JDK
+        ClassLoader apiLoader = javax.activation.DataHandler.class.getClassLoader();
+        CodeSource apiSrc = javax.activation.DataHandler.class.getProtectionDomain().getCodeSource();
+        String apiLocation = apiSrc == null ? null : apiSrc.getLocation().toString();
+        System.out.println("Got javax.activation from loader=  " + apiLoader);
+        System.out.println("Got javax.activation from location=" + apiLocation);
+
+        assertTrue("Expected javax.activation to come from Liberty JDK classloader, but it came from: " + apiLoader,
+                   apiLoader != null && apiLoader.toString().contains("com.ibm.websphere.javaee.activation.1.1"));
+        assertTrue("Expected javax.activation to come from Liberty, but it came from: " + apiLocation,
+                   apiLocation != null && apiLocation.contains("com.ibm.websphere.javaee.activation.1.1"));
     }
 }
