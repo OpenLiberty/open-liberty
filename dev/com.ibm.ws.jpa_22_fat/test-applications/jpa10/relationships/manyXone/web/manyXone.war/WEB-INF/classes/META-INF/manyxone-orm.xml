@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+    xmlns="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+    version="1.0">
+    
+    <!--  Unidirectional ManyXOne Entities -->
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.uni.xml.XMLMOUniEntityA">
+        <attributes>
+            <id name="id"/>
+            <basic name="name"/>
+            <many-to-one name="defaultRelationship"></many-to-one>
+            <many-to-one name="overrideColumnNameRelationship">
+                <join-column name="MANYTOONE_ENTB"/>
+            </many-to-one>
+            <many-to-one name="lazy" fetch="LAZY"></many-to-one>
+            <many-to-one name="cascadeAll">
+                <cascade>
+                    <cascade-all />
+                </cascade>
+            </many-to-one>
+            <many-to-one name="cascadeMerge">
+                <cascade>
+                    <cascade-merge />
+                </cascade>
+            </many-to-one>
+            <many-to-one name="cascadePersist">
+                <cascade>
+                    <cascade-persist />
+                </cascade>
+            </many-to-one>
+            <many-to-one name="cascadeRefresh">
+                <cascade>
+                    <cascade-refresh />
+                </cascade>
+            </many-to-one>
+            <many-to-one name="cascadeRemove">
+                <cascade>
+                    <cascade-remove />
+                </cascade>
+            </many-to-one>
+        </attributes>
+    </entity>
+    
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.uni.xml.XMLMOUniEntityB">
+        <attributes>
+            <id name="id"/>
+            <basic name="name"/>
+        </attributes>
+    </entity>
+    
+    <!--  Bidirectional ManyXOne Entities -->
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.xml.XMLMOBiEntA">
+        <attributes>
+            <id name="id"/>
+            <basic name="name"/>
+            <many-to-one name="defaultRelationship"></many-to-one>
+            <many-to-one name="overrideColumnNameRelationship">
+                <join-column name="MANYTOONE_ENTB"/>
+            </many-to-one>
+            <many-to-one name="lazy" fetch="LAZY"></many-to-one>
+            <many-to-one name="cascadeAll">
+                <cascade>
+                    <cascade-all />
+                </cascade>
+            </many-to-one>
+            <many-to-one name="cascadeMerge">
+                <cascade>
+                    <cascade-merge />
+                </cascade>
+            </many-to-one>
+            <many-to-one name="cascadePersist">
+                <cascade>
+                    <cascade-persist />
+                </cascade>
+            </many-to-one>
+            <many-to-one name="cascadeRefresh">
+                <cascade>
+                    <cascade-refresh />
+                </cascade>
+            </many-to-one>
+            <many-to-one name="cascadeRemove">
+                <cascade>
+                    <cascade-remove />
+                </cascade>
+            </many-to-one>
+        </attributes>
+    </entity>
+    
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.xml.XMLMOBiEntB_CA">
+        <attributes>
+            <id name="id"/>
+            <basic name="name"></basic>
+            <one-to-many name="entityA" mapped-by="cascadeAll"></one-to-many>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.xml.XMLMOBiEntB_CM">
+        <attributes>
+            <id name="id"/>
+            <basic name="name"></basic>
+            <one-to-many name="entityA" mapped-by="cascadeMerge"></one-to-many>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.xml.XMLMOBiEntB_CP">
+        <attributes>
+            <id name="id"/>
+            <basic name="name"></basic>
+            <one-to-many name="entityA" mapped-by="cascadePersist"></one-to-many>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.xml.XMLMOBiEntB_CRF">
+        <attributes>
+            <id name="id"/>
+            <basic name="name"></basic>
+            <one-to-many name="entityA" mapped-by="cascadeRefresh"></one-to-many>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.xml.XMLMOBiEntB_CRM">
+        <attributes>
+            <id name="id"/>
+            <basic name="name"></basic>
+            <one-to-many name="entityA" mapped-by="cascadeRemove"></one-to-many>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.xml.XMLMOBiEntB_DR">
+        <attributes>
+            <id name="id"/>
+            <basic name="name"></basic>
+            <one-to-many name="entityA" mapped-by="defaultRelationship"></one-to-many>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.xml.XMLMOBiEntB_JC">
+        <attributes>
+            <id name="id"/>
+            <basic name="name"></basic>
+            <one-to-many name="entityA" mapped-by="overrideColumnNameRelationship"></one-to-many>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.bi.xml.XMLMOBiEntB_LZ">
+        <attributes>
+            <id name="id"/>
+            <basic name="name"></basic>
+            <one-to-many name="entityA" mapped-by="lazy"></one-to-many>
+        </attributes>
+    </entity>
+    
+    <!--  Unidirectional Optional ManyXOne Entities -->
+        <entity
+        class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.nooptional.xml.XMLMONoOptEntityA">
+        <attributes>
+            <id name="id"/>
+            <basic name="name"/>
+            <many-to-one name="noOptional" optional="false"/>
+        </attributes>
+    </entity>
+    
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.nooptional.xml.XMLMONoOptEntityB">
+        <attributes>
+            <id name="id"/>
+            <basic name="name"/>
+        </attributes>
+    </entity>
+    
+    <!--  Bidirectional Optional ManyXOne Entities -->
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.nooptional.xml.XMLMONoOptBiEntityA">
+        <attributes>
+            <id name="id"/>
+            <basic name="name"/>
+            <many-to-one name="noOptional" optional="false"/>
+        </attributes>
+    </entity>
+    
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.nooptional.xml.XMLMONoOptBiEntityB">
+        <attributes>
+            <id name="id"/>
+            <basic name="name"/>
+            <one-to-many name="entityA" mapped-by="noOptional"></one-to-many>
+        </attributes>
+    </entity>
+    
+    <!-- Compound Primary Key Entities -->
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.xml.XMLEmbedIDMOEntityA">
+        <attributes>
+            <id name="id"></id>
+            <basic name="userName"></basic>
+            <basic name="password"></basic>
+            <many-to-one name="identity">
+                <join-column name="identity_id" referenced-column-name="id" />
+                <join-column name="identity_country" referenced-column-name="country" />
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.xml.XMLEmbedIDMOEntityB">
+        <attributes>
+            <embedded-id name="id"></embedded-id>
+            <basic name="name"></basic>
+            <basic name="salary"></basic>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.xml.XMLIDClassMOEntityA">
+        <attributes>
+            <id name="id"></id>
+            <basic name="userName"></basic>
+            <basic name="password"></basic>
+            <many-to-one name="identity">
+                <join-column name="identity_id" referenced-column-name="id" />
+                <join-column name="identity_country" referenced-column-name="country" />
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.xml.XMLIDClassMOEntityB">
+        <id-class class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.CompoundPK" />
+        <attributes>
+            <id name="id"></id>
+            <id name="country"></id>
+            <basic name="name"></basic>
+            <basic name="salary"></basic>
+        </attributes>
+    </entity>
+    
+    <!--  Embeddable Declarations -->
+    <embeddable class="com.ibm.ws.jpa.fvt.relationships.manyXone.entities.compoundpk.xml.XMLEmbeddableID"></embeddable>
+    
+</entity-mappings>

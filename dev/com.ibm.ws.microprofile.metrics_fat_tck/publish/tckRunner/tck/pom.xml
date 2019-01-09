@@ -16,7 +16,7 @@
 	<name>MicroProfile Metrics TCK Runner 1.0 TCK Module</name>
 
 	<properties>
-		<microprofile.metrics.version>1.0.1</microprofile.metrics.version>
+		<microprofile.metrics.version>1.0.2-RC2</microprofile.metrics.version>
 		<arquillian.version>1.1.13.Final</arquillian.version>
 
 		<!-- the below is used in arquillian.xml -->
@@ -45,6 +45,13 @@
     	
     <dependencies>
 		<dependency>
+			<groupId>com.ibm.ws</groupId>
+			<artifactId>fattest.simplicity</artifactId>
+			<version>1</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/../../../lib/fattest.simplicity.jar</systemPath> <!-- This will point to build/libs/autoFVT/lib/fattest.simplicity.jar -->
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse.microprofile.metrics</groupId>
 			<artifactId>microprofile-metrics-api</artifactId>
 			<version>${microprofile.metrics.version}</version>
@@ -72,12 +79,12 @@
 			<version>1.2</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.ibm.ws.org.jboss.arquillian.container</groupId>
-			<artifactId>arquillian-wlp-managed-8.5</artifactId>
-			<version>1.0.0.Final-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>io.openliberty.arquillian</groupId>
+            <artifactId>arquillian-liberty-managed</artifactId>
+            <version>1.0.3</version>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>

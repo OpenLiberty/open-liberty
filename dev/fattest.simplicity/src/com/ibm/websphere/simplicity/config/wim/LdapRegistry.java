@@ -34,6 +34,7 @@ public class LdapRegistry extends ConfigElement {
     private String certificateFilter;
     private String certificateMapMode;
     private String connectTimeout;
+    private String readTimeout;
     private ContextPool contextPool;
     private LdapFilters customFilters;
     private LdapFilters domino50Filters;
@@ -63,6 +64,7 @@ public class LdapRegistry extends ConfigElement {
     private String sslRef;
     private Integer searchPageSize; // PRIVATE
     private String certificateMapperId;
+    private String timestampFormat;
 
     /**
      * @return the activedFilters
@@ -125,6 +127,13 @@ public class LdapRegistry extends ConfigElement {
      */
     public String getConnectTimeout() {
         return connectTimeout;
+    }
+
+    /**
+     * @return the readTimeout
+     */
+    public String getReadTimeout() {
+        return readTimeout;
     }
 
     /**
@@ -324,6 +333,13 @@ public class LdapRegistry extends ConfigElement {
     }
 
     /**
+     * @return the timestampFormat
+     */
+    public String getTimestampFormat() {
+        return timestampFormat;
+    }
+
+    /**
      * @param activedFilters the activedFilters to set
      */
     @XmlElement(name = "activedFilters")
@@ -393,6 +409,14 @@ public class LdapRegistry extends ConfigElement {
     @XmlAttribute(name = "")
     public void setConnectTimeout(String connectTimeout) {
         this.connectTimeout = connectTimeout;
+    }
+
+    /**
+     * @param connectTimeout the connectTimeout to set
+     */
+    @XmlAttribute(name = "readTimeout")
+    public void setReadTimeout(String readTimeout) {
+        this.readTimeout = readTimeout;
     }
 
     /**
@@ -629,6 +653,14 @@ public class LdapRegistry extends ConfigElement {
         this.sslRef = sslRef;
     }
 
+    /**
+     * @param timestampFormat the timestampFormat to set
+     */
+    @XmlAttribute(name = "timestampFormat")
+    public void setTimestampFormat(String timestampFormat) {
+        this.timestampFormat = timestampFormat;
+    }
+
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
@@ -661,6 +693,9 @@ public class LdapRegistry extends ConfigElement {
         }
         if (connectTimeout != null) {
             sb.append("connectTimeout=\"").append(connectTimeout).append("\" ");;
+        }
+        if (readTimeout != null) {
+            sb.append("readTimeout=\"").append(readTimeout).append("\" ");;
         }
         if (contextPool != null) {
             sb.append("contextPool=\"").append(contextPool).append("\" ");;
@@ -742,6 +777,9 @@ public class LdapRegistry extends ConfigElement {
         }
         if (sslRef != null) {
             sb.append("sslRef=\"").append(sslRef).append("\" ");;
+        }
+        if (timestampFormat != null) {
+            sb.append("timestampFormat=\"").append(timestampFormat).append("\" ");;
         }
 
         sb.append("}");

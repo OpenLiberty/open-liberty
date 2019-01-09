@@ -19,11 +19,10 @@
 	<classpathentry kind="src" path="test-applications/types.war/src"/>
 	<classpathentry kind="src" path="test-applications/converterApp/src"/>
 	<classpathentry kind="src" path="test-applications/converterApp/resources"/>
-	<classpathentry kind="src" path="test-applications/cdiConfig.war/src"/>
-	<classpathentry kind="src" path="test-applications/defaultSources.war/src"/>
-	<classpathentry kind="src" path="test-applications/earlib.jar/src"/>
-	<classpathentry kind="src" path="test-applications/warVisibility.war/src"/>
-	<classpathentry kind="src" path="test-applications/sharedLibUser.war/src"/>
+	<classpathentry kind="src" path="test-applications/defaultSources.war/resources"/>
+	<classpathentry kind="src" path="test-applications/earlib.jar/resources"/>
+	<classpathentry kind="src" path="test-applications/warVisibility.war/resources"/>
+	<classpathentry kind="src" path="test-applications/sharedLibUser.war/resources"/>
 	<classpathentry kind="src" path="test-applications/simultaneousRequests.war/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>

@@ -15,7 +15,7 @@ Bundle-Name: WebSphere Schema Generator
 Bundle-SymbolicName: com.ibm.ws.config.schemagen.schemagen
 
 Require-Bundle: com.ibm.ws.config; version="[1,1.0.100)", \
-  org.eclipse.osgi; version="[3.10, 3.13)", \
+  org.eclipse.osgi; version="[3.10, 3.14)", \
   com.ibm.ws.logging; version="[1, 1.0.100)", \
   com.ibm.ws.org.eclipse.equinox.metatype; version="[1.0.0, 1.0.100)", \
   com.ibm.ws.kernel.feature; version="[1,1.0.100)", \

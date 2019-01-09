@@ -10,9 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.jaxb.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -20,4 +24,10 @@ import org.junit.runners.Suite.SuiteClasses;
                 ThirdPartyJAXBTest.class,
                 JAXBToolsTest.class
 })
-public class FATSuite {}
+public class FATSuite {
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new FeatureReplacementAction("jaxb-2.2", "jaxb-2.3")
+                                    .forceAddFeatures(false)
+                                    .withID("JAXB-2.3"));
+}

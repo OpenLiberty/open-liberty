@@ -17,14 +17,20 @@ import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 /**
  * Builder that programmatically configures and creates ThreadContext instances.
  */
 class ThreadContextBuilderImpl implements ThreadContext.Builder {
+    private static final TraceComponent tc = Tr.register(ThreadContextBuilderImpl.class);
+
     private final ConcurrencyProviderImpl concurrencyProvider;
     private final ArrayList<ThreadContextProvider> contextProviders;
 
@@ -106,7 +112,7 @@ class ThreadContextBuilderImpl implements ThreadContext.Builder {
         overlap.addAll(s);
         if (overlap.isEmpty()) // only possible if builder is concurrently modified during build
             throw new ConcurrentModificationException();
-        throw new IllegalStateException(overlap.toString()); // TODO NLS translated error message
+        throw new IllegalStateException(Tr.formatMessage(tc, "CWWKC1152.context.lists.overlap", overlap));
     }
 
     /**
@@ -116,15 +122,14 @@ class ThreadContextBuilderImpl implements ThreadContext.Builder {
      * @param contextProviders
      */
     static void failOnUnknownContextTypes(HashSet<String> unknown, ArrayList<ThreadContextProvider> contextProviders) {
-        Set<String> known = new HashSet<>();
+        Set<String> known = new TreeSet<>(); // alphabetize for readability of message
         known.addAll(Arrays.asList(ThreadContext.ALL_REMAINING, ThreadContext.APPLICATION, ThreadContext.CDI, ThreadContext.SECURITY, ThreadContext.TRANSACTION));
         for (ThreadContextProvider provider : contextProviders) {
             String contextType = provider.getThreadContextType();
             known.add(contextType);
         }
 
-        throw new IllegalStateException("Unknown thread contexts specified: " + unknown.toString() +
-                                        ". Allowed thread contexts values are: " + known); // TODO NLS translated error message
+        throw new IllegalStateException(Tr.formatMessage(tc, "CWWKC1155.unknown.context", new TreeSet<String>(unknown), known));
     }
 
     @Override

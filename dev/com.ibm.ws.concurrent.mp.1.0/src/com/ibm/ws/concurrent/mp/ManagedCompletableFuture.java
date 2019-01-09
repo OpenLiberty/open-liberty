@@ -43,6 +43,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.kernel.service.util.JavaInfo;
+import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
@@ -118,7 +119,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     /**
      * Stores a futureRef value to use during construction of a ManagedCompletableFuture.
      */
-    private static final ThreadLocal<AtomicReference<Future<?>>> futureRefLocal = new ThreadLocal<AtomicReference<Future<?>>>();
+    private static final ThreadLocal<FutureRefExecutor> futureRefLocal = new ThreadLocal<FutureRefExecutor>();
 
     /**
      * Redirects the CompletableFuture implementation to use ExecutorService.submit rather than Executor.execute,
@@ -127,8 +128,21 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Instances of this class are intended for one-time use, as each instance tracks a single Future.
      */
     @Trivial
-    private static class FutureRefExecutor extends AtomicReference<Future<?>> implements Executor {
+    static class FutureRefExecutor extends AtomicReference<Future<?>> implements Executor {
         private static final long serialVersionUID = 1L;
+
+        /**
+         * The reference back to the completable future allows the PolicyExecutor to complete
+         * the completable future upon cancel/abort of the PolicyTaskFuture.
+         * With the implementation for Java 8, this is a best-effort attempt because there is
+         * a timing window where the cancel/abort could happen before completableFutureRef is
+         * populated.
+         * However, with the implementation for Java 9+ the timing window is eliminated,
+         * such that completableFutureRef is always populated first (meaning direct reference
+         * could be used instead of AtomicReference). If Java 8 support is ever dropped, this
+         * can be updated.
+         */
+        private final AtomicReference<Future<?>> completableFutureRef = new AtomicReference<Future<?>>();
 
         private final ExecutorService executor;
 
@@ -142,7 +156,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
 
         @Override
         public void execute(Runnable command) {
-            set(executor.submit(command));
+            Future<?> future;
+            if (executor instanceof PolicyExecutor)
+                future = ((PolicyExecutor) executor).submit(completableFutureRef, command);
+            else
+                future = executor.submit(command);
+
+            set(future);
         }
 
         @Override
@@ -161,7 +181,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @param managedExecutor managed executor service
      * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
      */
-    ManagedCompletableFuture(CompletableFuture<T> completableFuture, Executor managedExecutor, AtomicReference<Future<?>> futureRef) {
+    ManagedCompletableFuture(CompletableFuture<T> completableFuture, Executor managedExecutor, FutureRefExecutor futureRef) {
         super();
 
         this.completableFuture = completableFuture;
@@ -177,6 +197,9 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             else
                 super.completeExceptionally(failure);
         });
+
+        if (futureRef != null)
+            futureRef.completableFutureRef.set(this);
     }
 
     /**
@@ -185,12 +208,15 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @param managedExecutor managed executor service
      * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
      */
-    ManagedCompletableFuture(Executor managedExecutor, AtomicReference<Future<?>> futureRef) {
+    ManagedCompletableFuture(Executor managedExecutor, FutureRefExecutor futureRef) {
         super();
 
         this.completableFuture = null;
         this.defaultExecutor = managedExecutor;
         this.futureRef = futureRef;
+
+        if (futureRef != null)
+            futureRef.completableFutureRef.set(this);
     }
 
     // static method equivalents for CompletableFuture, plus other static methods for ManagedExecutorImpl to use
@@ -204,7 +230,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Trivial
     public static <U> CompletableFuture<U> completedFuture(U value) {
-        throw new UnsupportedOperationException("Use ManagedExecutor.completedFuture instead"); // TODO NLS
+        throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1156.not.supported", "ManagedExecutor.completedFuture"));
     }
 
     /**
@@ -235,7 +261,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Trivial
     public static <U> CompletionStage<U> completedStage(U value) {
-        throw new UnsupportedOperationException("Use ManagedExecutor.completedStage instead"); // TODO NLS
+        throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1156.not.supported", "ManagedExecutor.completedStage"));
     }
 
     /**
@@ -286,7 +312,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Trivial
     public static <U> CompletableFuture<U> failedFuture(Throwable x) {
-        throw new UnsupportedOperationException("Use ManagedExecutor.failedFuture instead"); // TODO NLS
+        throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1156.not.supported", "ManagedExecutor.failedFuture"));
     }
 
     /**
@@ -319,7 +345,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Trivial
     public static <U> CompletionStage<U> failedStage(Throwable x) {
-        throw new UnsupportedOperationException("Use ManagedExecutor.failedStage instead"); // TODO NLS
+        throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1156.not.supported", "ManagedExecutor.failedStage"));
     }
 
     /**
@@ -370,7 +396,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Trivial
     public static CompletableFuture<Void> runAsync(Runnable action) {
-        throw new UnsupportedOperationException("Use ManagedExecutor.runAsync instead"); // TODO NLS
+        throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1156.not.supported", "ManagedExecutor.runAsync"));
     }
 
     /**
@@ -412,7 +438,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Trivial
     public static <U> CompletableFuture<U> supplyAsync(Supplier<U> action) {
-        throw new UnsupportedOperationException("Use ManagedExecutor.supplyAsync instead"); // TODO NLS
+        throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1156.not.supported", "ManagedExecutor.supplyAsync"));
     }
 
     /**
@@ -915,7 +941,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @return a new instance of this class.
      */
     @Trivial
-    <R> CompletableFuture<R> newInstance(CompletableFuture<R> completableFuture, Executor managedExecutor, AtomicReference<Future<?>> futureRef) {
+    <R> CompletableFuture<R> newInstance(CompletableFuture<R> completableFuture, Executor managedExecutor, FutureRefExecutor futureRef) {
         return new ManagedCompletableFuture<R>(completableFuture, managedExecutor, futureRef);
     }
 

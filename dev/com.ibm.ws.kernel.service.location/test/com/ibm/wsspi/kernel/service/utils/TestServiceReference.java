@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.wsspi.kernel.service.utils;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.osgi.framework.Bundle;
@@ -105,5 +107,10 @@ class TestServiceReference implements ServiceReference<String> {
         } else if (!name.equals(other.name))
             return false;
         return true;
+    }
+
+    @Override
+    public Dictionary<String, Object> getProperties() {
+        return new Hashtable<>();
     }
 }

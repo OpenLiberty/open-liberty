@@ -11,7 +11,9 @@
 package com.ibm.ws.jmx.internal;
 
 import java.util.Collections;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
@@ -69,6 +71,16 @@ public class MockServiceReference<S> implements ServiceReference<S> {
     @Override
     public boolean isAssignableTo(Bundle bundle, String className) {
         throw new UnsupportedOperationException();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.osgi.framework.ServiceReference#getProperties()
+     */
+    @Override
+    public Dictionary<String, Object> getProperties() {
+        return new Hashtable<>(properties);
     }
 
 }

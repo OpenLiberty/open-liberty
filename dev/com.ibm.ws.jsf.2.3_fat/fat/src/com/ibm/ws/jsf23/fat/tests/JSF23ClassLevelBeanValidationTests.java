@@ -324,7 +324,7 @@ public class JSF23ClassLevelBeanValidationTests {
          */
 
         String illegalAccessException = jsf23CDIBVServer
-                        .waitForStringInTraceUsingLastOffset("java.lang.IllegalAccessException: Class .*WholeBeanValidator.*TestPasswordBeanIllegalAccess.*");
+                        .waitForStringInTraceUsingLastOffset("java.lang.IllegalAccessException:.*WholeBeanValidator.*TestPasswordBeanIllegalAccess.*");
         assertTrue("The IllegalAccessException was not logged in the trace file.", illegalAccessException != null);
     }
 

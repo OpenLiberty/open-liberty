@@ -6,7 +6,6 @@
 	<classpathentry kind="src" path="test-applications/afterTypeDiscoveryApp.war/src"/>
 	<classpathentry kind="src" path="test-applications/aroundConstructApp.war/src"/>
 	<classpathentry kind="src" path="test-applications/utilLib.jar/src"/>
-	<classpathentry kind="src" path="test-applications/ejbConstructorInjection.war/src"/>
 	<classpathentry kind="src" path="test-applications/beanDiscoveryModeNone.war/src"/>
 	<classpathentry kind="src" path="test-applications/multipleEJBsSingleClass.war/src"/>
 	<classpathentry kind="src" path="test-applications/multipleWarEmbeddedJar.jar/src"/>

@@ -21,12 +21,18 @@ import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.threading.PolicyExecutor;
 
 /**
  * Builder that programmatically configures and creates ManagedExecutor instances.
  */
 class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
+    private static final TraceComponent tc = Tr.register(ManagedExecutorBuilderImpl.class);
+
     static final AtomicLong instanceCount = new AtomicLong();
 
     private final ConcurrencyProviderImpl concurrencyProvider;
@@ -82,21 +88,24 @@ class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
         if (unknown.size() > 0)
             ThreadContextBuilderImpl.failOnUnknownContextTypes(unknown, contextProviders);
 
-        StringBuilder nameBuilder = new StringBuilder("ManagedExecutor_") //
-                        .append(maxAsync)
+        ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        String appName = cData == null ? null : cData.getJ2EEName().getApplication();
+        StringBuilder nameBuilder = appName == null ? new StringBuilder() : new StringBuilder(appName).append('_');
+
+        nameBuilder.append("ManagedExecutor_") //
+                        .append(instanceCount.incrementAndGet())
                         .append('_') //
-                        .append(maxQueued)
-                        .append('_');
+                        .append(maxAsync == -1 ? "max" : maxAsync)
+                        .append('_') //
+                        .append(maxQueued == -1 ? "max" : maxAsync);
 
         for (String propagatedType : propagated)
             if (propagatedType.matches("\\w*")) // one or more of a-z, A-Z, _, 0-9
-                nameBuilder.append(propagatedType).append('_');
-
-        nameBuilder.append(instanceCount.incrementAndGet());
+                nameBuilder.append('_').append(propagatedType);
 
         String name = nameBuilder.toString();
 
-        PolicyExecutor policyExecutor = concurrencyProvider.policyExecutorProvider.create(name) //
+        PolicyExecutor policyExecutor = concurrencyProvider.policyExecutorProvider.create(name, appName) //
                         .maxConcurrency(maxAsync) //
                         .maxQueueSize(maxQueued);
 
@@ -123,7 +132,7 @@ class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
         overlap.retainAll(propagated);
         if (overlap.isEmpty()) // only possible if builder is concurrently modified during build
             throw new ConcurrentModificationException();
-        throw new IllegalStateException(overlap.toString()); // TODO NLS translated error message
+        throw new IllegalStateException(Tr.formatMessage(tc, "CWWKC1151.context.lists.overlap", overlap));
     }
 
     @Override

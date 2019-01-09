@@ -1,4 +1,4 @@
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
 
-Bundle-SymbolicName: com.ibm.ws.org.apache.felix.gogo.shell.0.12.0
+Bundle-SymbolicName: com.ibm.ws.org.apache.felix.gogo.shell

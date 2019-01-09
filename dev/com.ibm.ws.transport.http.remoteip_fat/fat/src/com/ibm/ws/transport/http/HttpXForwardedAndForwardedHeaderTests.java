@@ -26,6 +26,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
@@ -79,7 +80,7 @@ public class HttpXForwardedAndForwardedHeaderTests {
     @Before
     public void setup() throws Exception {
         RequestConfig requestConfig = RequestConfig.custom().setLocalAddress(InetAddress.getByName("127.0.0.1")).build();
-        client = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+        client = HttpClientBuilder.create().setRetryHandler(new DefaultHttpRequestRetryHandler()).setDefaultRequestConfig(requestConfig).build();
     }
 
     @After
@@ -1726,7 +1727,7 @@ public class HttpXForwardedAndForwardedHeaderTests {
                       server.waitForStringInLog(stringToSearchFor, SERVER_LOG_SEARCH_TIMEOUT, accessLog));
 
         // Update the server configuration on the fly (without restart) to use the IPv4IPv6RemoteIP configuration
-        server.reconfigureServer("remoteIPConfig/" + variation2 + "-server.xml");
+        server.reconfigureServer("remoteIPConfig/" + variation2 + "-server.xml", "CWWKT0016I:.*EndpointInformation.*");
 
         // Second request
         List<BasicHeader> secondRequestHeaderList = new ArrayList<BasicHeader>();
@@ -1793,7 +1794,7 @@ public class HttpXForwardedAndForwardedHeaderTests {
         assertTrue("First response does not contain expected isSecure", response.contains("isSecure: true"));
 
         // Update the server configuration on the fly (without restart) to use the defaultRemoteIP configuration
-        server.reconfigureServer("remoteIPConfig/" + variation2 + "-server.xml");
+        server.reconfigureServer("remoteIPConfig/" + variation2 + "-server.xml", "CWWKT0016I:.*EndpointInformation.*");
 
         // Second request
         List<BasicHeader> secondRequestHeaderList = new ArrayList<BasicHeader>();

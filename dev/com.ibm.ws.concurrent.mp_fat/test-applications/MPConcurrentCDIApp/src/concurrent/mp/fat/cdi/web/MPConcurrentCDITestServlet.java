@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -30,6 +31,7 @@ import javax.servlet.annotation.WebServlet;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.eclipse.microprofile.concurrent.ManagedExecutorConfig;
+import org.eclipse.microprofile.concurrent.NamedInstance;
 import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.junit.Test;
 
@@ -48,6 +50,10 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     ManagedExecutor noAnno;
 
     @Inject
+    ManagedExecutor noAnno2;
+
+    @Inject
+    @NamedInstance("defaultAnno")
     @ManagedExecutorConfig
     ManagedExecutor defaultAnno;
 
@@ -56,10 +62,16 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     ManagedExecutor defaultAnnoVerbose;
 
     @Inject
+    @NamedInstance("maxAsync5")
     @ManagedExecutorConfig(maxAsync = 5)
     ManagedExecutor maxAsync5;
 
     @Inject
+    @NamedInstance("maxAsync5")
+    ManagedExecutor maxAsync5Ref;
+
+    @Inject
+    @NamedInstance("max2")
     @ManagedExecutorConfig(maxAsync = 2, maxQueued = 2)
     ManagedExecutor max2;
 
@@ -75,29 +87,54 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     @ManagedExecutorConfig(propagated = { ThreadContext.TRANSACTION, ThreadContext.APPLICATION }, cleared = {})
     ManagedExecutor propagatedBA;
 
+    ManagedExecutor methodInjectedNoAnno;
+
+    ManagedExecutor methodInjectedMax5;
+
+    ManagedExecutor methodInjectedAnonymous;
+
+    @Inject
+    @NamedInstance("producerDefined")
+    ManagedExecutor producerDefined;
+
+    @Inject
+    public void setMethodInjectedNoAnno(ManagedExecutor me) {
+        this.methodInjectedNoAnno = me;
+    }
+
+    @Inject
+    public void setMethodInjectedMax5(@NamedInstance("maxAsync5") ManagedExecutor me) {
+        this.methodInjectedMax5 = me;
+    }
+
+    @Inject
+    public void setMethodInjectedAnonymous(@ManagedExecutorConfig(maxAsync = 5) ManagedExecutor me) {
+        this.methodInjectedAnonymous = me;
+    }
+
     @Test
     public void testMEDefaultsEqual() {
-        assertEquals(noAnno, defaultAnno);
+        assertEquals(noAnno, noAnno2);
         assertEquals(noAnno, bean.getNoAnno());
-        assertEquals(noAnno, defaultAnno);
-        assertEquals(noAnno, bean.getDefaultAnno());
-        assertEquals(noAnno, defaultAnnoVerbose);
     }
 
     @Test
     public void testMEConfiguredEqual() {
+        // for @NamedInstance("maxAsnyc5")
         assertEquals(maxAsync5, bean.getMaxAsync5());
+        assertEquals(maxAsync5, maxAsync5Ref);
+        assertEquals(maxAsync5, methodInjectedMax5);
+
+        // for @NamedInstance("defaultAnno")
+        assertEquals(defaultAnno, bean.getDefaultAnno());
+
+        // for @NamedInstance("producerDefined")
+        assertEquals(producerDefined, bean.getProducerDefined());
     }
 
     @Test
     public void testMEDifferent() {
-        assertNotSame(noAnno, maxAsync5);
-        assertNotSame(noAnno, propagatedAB);
-    }
-
-    @Test
-    public void testMEPropogationEqual() {
-        assertEquals(propagatedAB, propagatedBA);
+        assertUnique(defaultAnno, defaultAnnoVerbose, max2, maxAsync5, methodInjectedAnonymous, noAnno, noAppCtx, producerDefined, propagatedAB, propagatedBA);
     }
 
     @Test
@@ -169,9 +206,9 @@ public class MPConcurrentCDITestServlet extends FATServlet {
                     String message = x.getCause().getMessage();
                     if (message == null
                         || !message.contains("CWWKE1201E")
-                        || !message.contains("PolicyExecutorProvider-ManagedExecutor")
+                        || !message.matches(".*MPConcurrentCDIApp_ManagedExecutor_.+_2_2_Remaining.*") // TODO would be better to use NamedInstance name
                         || !message.contains("maxQueueSize")
-                        || !message.contains(" 2 ")) // the maximum queue size
+                        || !message.contains(" 2")) // the maximum queue size
                         throw x;
                 } else
                     throw x;
@@ -217,6 +254,13 @@ public class MPConcurrentCDITestServlet extends FATServlet {
         assertFalse(cf3.isCompletedExceptionally());
         assertFalse(cf4.isCompletedExceptionally());
         assertFalse(cf6.isCompletedExceptionally());
+    }
+
+    private void assertUnique(ManagedExecutor... executors) {
+        for (int i = 0; i < executors.length; i++)
+            for (int j = i + 1; j < executors.length; j++)
+                assertNotSame("Expected all instances to be unique, but index " + i + " and " + j + " were the same: " + Arrays.toString(executors),
+                              executors[i], executors[j]);
     }
 
 }

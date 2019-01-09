@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -171,6 +171,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
     }
 
     private void setUpTemporaryUserSubjectForJsonWebToken(String jwtToken) throws Exception {
+        String securityName = null;
         Subject jwtPartialSubject = new Subject();
         jwtPartialSubject = JwtSSOTokenHelper.handleJwtSSOToken(jwtToken);
         Set<Principal> jwtPrincipals = jwtPartialSubject.getPrincipals();
@@ -179,10 +180,19 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
 
         SubjectHelper subjectHelper = new SubjectHelper();
         Hashtable<String, ?> customProperties = subjectHelper.getHashtableFromSubject(jwtPartialSubject, hashtableLoginProperties);
-        accessId = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
-        String securityName = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
-        customRealm = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_REALM);
-        authProvider = (String) customProperties.get(AuthenticationConstants.INTERNAL_AUTH_PROVIDER);
+        customPropertiesFromSubject = true;
+        String userId = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_USERID);
+        if (userId != null && allowLoginWithIdOnly(customProperties)) {
+            securityName = userId;
+            UserRegistry userRegistry = getUserRegistry();
+            String uniqueUserId = userRegistry.getUniqueUserId(securityName);
+            accessId = AccessIdUtil.createAccessId(AccessIdUtil.TYPE_USER, userRegistry.getRealm(), uniqueUserId);
+        } else {
+            accessId = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
+            securityName = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
+            customRealm = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_REALM);
+            authProvider = (String) customProperties.get(AuthenticationConstants.INTERNAL_AUTH_PROVIDER);
+        }
 
         setWSPrincipal(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_JWT_SSO_TOKEN);
         setCredentials(temporarySubject, securityName, securityName);

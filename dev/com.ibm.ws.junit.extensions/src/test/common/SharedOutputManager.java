@@ -604,6 +604,12 @@ public class SharedOutputManager implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
+                // dump and restore streams here to print out and reset stdout and stderr.  This is
+                // done to avoid intermittent ConcurrentModificationException we have seen in the 
+                // captureStreams() call below.
+                dumpStreams();
+                restoreStreams();
+
                 // capture stdout and stderr before every test
                 // Do not set any options here: allow a separate declaration 
                 // of the SharedOutputManager (such that logTo or traceTo can be driven)

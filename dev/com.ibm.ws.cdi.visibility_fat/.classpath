@@ -8,7 +8,6 @@
 	<classpathentry kind="src" path="test-applications/visTestEjbAsEjbLib.jar/src"/>
 	<classpathentry kind="src" path="test-applications/visTestEjbWarLib.jar/src"/>
 	<classpathentry kind="src" path="test-applications/visTestWarLib.jar/src"/>
-	<classpathentry kind="src" path="test-applications/maskedClass.ear/src"/>
 	<classpathentry kind="src" path="test-applications/jarInRar.jar/src"/>
 	<classpathentry kind="src" path="test-applications/visTestFramework.jar/src"/>
 	<classpathentry kind="src" path="test-applications/multiModuleAppLib2.jar/src"/>
@@ -17,7 +16,6 @@
 	<classpathentry kind="src" path="test-applications/warLibAccessBeansInWarJar.jar/src"/>
 	<classpathentry kind="src" path="test-applications/TestValidatorInJar.jar/src"/>
 	<classpathentry kind="src" path="test-applications/TestValidatorInJar.war/src"/>
-	<classpathentry kind="src" path="test-applications/jarInRar.rar/src"/>
 	<classpathentry kind="src" path="test-applications/visTestAppClientAsEjbLib.jar/src"/>
 	<classpathentry kind="src" path="test-applications/packagePrivateAccessApp.war/src"/>
 	<classpathentry kind="src" path="test-applications/visTestAppClientAsWarLib.jar/src"/>
@@ -26,7 +24,6 @@
 	<classpathentry kind="src" path="test-applications/maskedClassLib.jar/src"/>
 	<classpathentry kind="src" path="test-applications/visTestNonLib.jar/src"/>
 	<classpathentry kind="src" path="test-applications/sharedLibrary.jar/src"/>
-	<classpathentry kind="src" path="test-applications/TestValidatorInJar.ear/src"/>
 	<classpathentry kind="src" path="test-applications/visTestWar2.war/src"/>
 	<classpathentry kind="src" path="test-applications/rootClassLoaderExtension.jar/src"/>
 	<classpathentry kind="src" path="test-applications/multiModuleAppWeb2.war/src"/>
@@ -43,7 +40,6 @@
 	<classpathentry kind="src" path="test-applications/visTestEjbLib.jar/src"/>
 	<classpathentry kind="src" path="test-applications/maskedClassEjb.jar/src"/>
 	<classpathentry kind="src" path="test-applications/sharedLibraryNoInjectionApp.war/src"/>
-	<classpathentry kind="src" path="test-applications/warLibAccessBeansInWar.ear/src"/>
 	<classpathentry kind="src" path="test-applications/TestClassLoadPrereqLogger.war/src"/>
 	<classpathentry kind="src" path="test-applications/multiModuleAppWeb1.war/src"/>
 	<classpathentry kind="src" path="test-applications/warLibAccessBeansInWar.war/src"/>

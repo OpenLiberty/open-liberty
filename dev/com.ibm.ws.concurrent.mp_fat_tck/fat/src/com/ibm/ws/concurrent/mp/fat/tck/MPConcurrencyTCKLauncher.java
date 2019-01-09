@@ -12,8 +12,10 @@ package com.ibm.ws.concurrent.mp.fat.tck;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -35,8 +37,11 @@ public class MPConcurrencyTCKLauncher {
         server.stopServer();
     }
 
-    // @Test
+    @AllowedFFDC("java.lang.NegativeArraySizeException") // intentionally raised by test case to simulate failure during completion stage action
+    @Test
     public void launchMPConcurrency10Tck() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp_fat_tck", this.getClass() + ":launchMPConcurrency10Tck");
+        // TODO: Run this all the time once the MP Concurrency 1.0 TCK is finalized
+        if (FATRunner.FAT_TEST_LOCALRUN)
+            MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp_fat_tck", this.getClass() + ":launchMPConcurrency10Tck");
     }
 }

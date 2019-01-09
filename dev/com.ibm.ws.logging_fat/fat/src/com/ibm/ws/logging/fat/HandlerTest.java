@@ -38,11 +38,13 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -51,6 +53,7 @@ import junit.framework.Assert;
 /**
  *
  */
+@RunWith(FATRunner.class)
 public class HandlerTest {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("SampleSourceHandlerServer");
     private static LibertyServer MsgServer = LibertyServerFactory.getLibertyServer("MsgServer");
@@ -653,7 +656,7 @@ public class HandlerTest {
     /**
      * Asserts the field names and values provided in expectedFieldAndValues matches to toString output.
      *
-     * @param line The line which the toString() output of AccessLogData will be parsed
+     * @param line                   The line which the toString() output of AccessLogData will be parsed
      * @param expectedFieldAndValues Matches the fieldname and values, if no value is provided, only fieldname will be matched.
      */
     private void assertAccessLogDataIsValid(String line, Map<String, String> expectedFieldsAndValues) {

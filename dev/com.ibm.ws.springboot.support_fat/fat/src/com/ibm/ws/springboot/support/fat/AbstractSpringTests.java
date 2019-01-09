@@ -34,7 +34,7 @@ import org.junit.rules.TestName;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.HttpEndpoint;
 import com.ibm.websphere.simplicity.config.KeyStore;
-import com.ibm.websphere.simplicity.config.SSLConfig;
+import com.ibm.websphere.simplicity.config.SSL;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
 import com.ibm.websphere.simplicity.config.VirtualHost;
@@ -297,7 +297,7 @@ public abstract class AbstractSpringTests {
         virtualHosts.clear();
         List<HttpEndpoint> endpoints = config.getHttpEndpoints();
         endpoints.clear();
-        List<SSLConfig> ssls = config.getSsls();
+        List<SSL> ssls = config.getSsls();
         ssls.clear();
         List<KeyStore> keystores = config.getKeyStores();
         keystores.clear();

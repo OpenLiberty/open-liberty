@@ -29,7 +29,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 InvalidTraceSpecificationTest.class,
                 HealthCenterTest.class, TestHideMessages.class, TestHideMsgDefinedBootstrap.class, IsoDateFormatTest.class,
                 HandlerTest.class,
-                HeaderFormatTest.class
+                HeaderFormatTest.class,
+                LogServiceTest.class
 })
 
 public class FATSuite {

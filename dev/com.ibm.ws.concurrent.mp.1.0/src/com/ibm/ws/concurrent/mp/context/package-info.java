@@ -12,7 +12,7 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "concurrent")
+@TraceOptions(traceGroup = "concurrent", messageBundle = "com.ibm.ws.concurrent.mp.resources.CWWKCMessages")
 package com.ibm.ws.concurrent.mp.context;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

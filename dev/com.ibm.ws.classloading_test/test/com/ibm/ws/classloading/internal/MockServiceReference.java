@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.classloading.internal;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.osgi.framework.Bundle;
@@ -66,6 +68,16 @@ public class MockServiceReference<S> implements ServiceReference<S> {
     @Override
     public int compareTo(Object reference) {
         throw new UnsupportedOperationException();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.osgi.framework.ServiceReference#getProperties()
+     */
+    @Override
+    public Dictionary<String, Object> getProperties() {
+        return new Hashtable<>();
     }
 
 }

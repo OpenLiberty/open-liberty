@@ -18,6 +18,7 @@
 package com.ibm.ws.microprofile.config.archaius.composite;
 
 import java.io.Closeable;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -123,27 +124,9 @@ public class PollingDynamicConfig implements Closeable {
 
         //if there was an initial startup failure, don't start the polling thread
         if (!startUpFailure && future == null && interval > 0) {
-            future = executor.scheduleWithFixedDelay(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "start: Scheduled Update starting: {0}", this);
-                        }
-
-                        update();
-
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "start", "Scheduled Update completed: {0}", this);
-                        }
-                    } catch (Exception e) {
-                        //                    LOG.warn("Failed to load properties", e);
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "start", "Scheduled Update failed: {0}. Exception: {1}", this, e);
-                        }
-                    }
-                }
-            }, interval, interval, units);
+            Refresher refresher = new Refresher(this);
+            future = executor.scheduleWithFixedDelay(refresher, interval, interval, units);
+            refresher.future = future;
         }
         return future;
     }
@@ -268,6 +251,49 @@ public class PollingDynamicConfig implements Closeable {
     @Trivial
     public String getSourceID() {
         return this.id;
+    }
+
+    /**
+     * Runnable which calls {@link PollingDynamicConfig#update()}
+     * <p>
+     * This class only holds a weak reference to the PollingDynamicConfig to ensure that it won't keep it alive after the ConfigImpl that uses it has been garbage collected
+     */
+    private static class Refresher implements Runnable {
+        private final WeakReference<PollingDynamicConfig> configRef;
+        private volatile Future<?> future;
+
+        private Refresher(PollingDynamicConfig config) {
+            configRef = new WeakReference<>(config);
+        }
+
+        @Override
+        public void run() {
+            PollingDynamicConfig config = configRef.get();
+            if (config == null) {
+                // Our pollingDynamicConfig has been GC'd, we can't update it any more, cancel ourselves
+                if (future != null) {
+                    future.cancel(false);
+                }
+                return;
+            }
+
+            try {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "start: Scheduled Update starting: {0}", this);
+                }
+
+                config.update();
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "start", "Scheduled Update completed: {0}", this);
+                }
+            } catch (Exception e) {
+                //                    LOG.warn("Failed to load properties", e);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "start", "Scheduled Update failed: {0}. Exception: {1}", this, e);
+                }
+            }
+        }
     }
 
 }

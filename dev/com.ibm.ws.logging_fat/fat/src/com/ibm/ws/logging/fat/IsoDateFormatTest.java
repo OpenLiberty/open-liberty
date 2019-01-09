@@ -31,12 +31,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Logging;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -44,6 +46,7 @@ import componenttest.topology.utils.HttpUtils;
 /**
  *
  */
+@RunWith(FATRunner.class)
 public class IsoDateFormatTest {
     private static final String MESSAGE_LOG = "logs/messages.log";
     private static final String TRACE_LOG = "logs/trace.log";

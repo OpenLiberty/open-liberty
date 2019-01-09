@@ -297,12 +297,37 @@ task zipGradleBootstrap(type: Zip) {
     }
 }
 
+task libertyReleaseVersions {
+  inputs.file('resources/bnd/liberty-release.props')
+  outputs.file('build/liberty-versions.props')
+  doLast {
+    def libertyVersionsProps = new Properties()
+    libertyVersionsProps.setProperty('libertyBaseVersion', bnd('libertyBaseVersion'))
+    libertyVersionsProps.setProperty('libertyFixpackVersion', bnd('libertyFixpackVersion'))
+    libertyVersionsProps.setProperty('libertyServiceVersion', bnd('libertyServiceVersion'))
+    libertyVersionsProps.setProperty('libertyBetaVersion', bnd('libertyBetaVersion'))
+    libertyVersionsProps.setProperty('libertyRelease', bnd('libertyRelease'))
+    libertyVersionsProps.setProperty('libertyBundleMicroVersion', bnd('libertyBundleMicroVersion'))
+    File libertyVersionsPropsFile = file('build/liberty-versions.props')
+    libertyVersionsProps.store(libertyVersionsPropsFile.newWriter(), null)
+  }
+}
+
+publish {
+  dependsOn libertyReleaseVersions
+}
+
 publishing {
   publications {
     gradle(MavenPublication) {
         artifactId 'gradle-bootstrap'
         version project.version
         artifact zipGradleBootstrap
+    }
+    libertyVersions(MavenPublication) {
+        artifactId 'liberty-versions'
+        version project.version
+        artifact project.file('build/liberty-versions.props')
     }
   }
 }
@@ -374,6 +399,107 @@ task printProjectDependencies() {
             }
         }
     }
+}
+
+task checkForUpdates() {
+  doLast {
+    def xmlParser = new XmlSlurper()
+    int totalArtifacts = 0
+    int possibleUpdates = 0
+    file('oss_dependencies.maven').eachLine { line ->
+      line = line.trim()
+      if (line.startsWith('#'))
+        return;
+      totalArtifacts++
+      def (g,a,v) = line.split(':').collect { it.trim() }
+      g = g.replace('.','/')
+      println '### g=' + g + '   a=' + a + '  v=' + v
+      println '  checking http://central.maven.org/maven2/' + g + '/' + a + '/maven-metadata.xml'
+      def response = new URL('http://central.maven.org/maven2/' + g + '/' + a + '/maven-metadata.xml').text
+      def mavenMetadata = xmlParser.parseText(response)
+      VersionString currentVersion = new VersionString(v)
+      VersionString possibleUpdate = currentVersion;
+      // Look for a MINOR or MICRO version update (within current MAJOR version)
+      mavenMetadata.versioning.versions.version.each { rawVersion ->
+         VersionString version = new VersionString(rawVersion.text())
+         if (currentVersion.major == version.major && version.isNewerThan(possibleUpdate)) {
+           possibleUpdate = version;
+         }
+      }
+      if (!possibleUpdate.raw.equals(currentVersion.raw)) {
+        println '  current version: ' + v
+        println '  latest released: ' + mavenMetadata.versioning.release
+        println '  found possible update at version=' + possibleUpdate.raw
+        possibleUpdates++;
+      }
+    }
+    println 'Found ' + possibleUpdates + ' possible MINOR/MICRO version updates out of ' + totalArtifacts + ' total artifacts.'
+  }
+}
+
+task updateArtifact() {
+  doLast {
+    String mavenCoords = System.getProperty('mavenCoords');
+    String toVersion = System.getProperty('toVersion');
+     if (mavenCoords == null || System.getProperty('toVersion') == null) {
+       throw new InvalidUserDataException('Missing required arguments.\nExample usage:\n' +
+         './gradlew cnf:updateArtifact -DmavenCoords=org.apache.commons:commons-lang3:1.0 -DtoVersion=2.0');
+     }
+     def (group, artifact, version) = mavenCoords.split(':').collect { it.trim() }
+     println 'Updating GROUP=' + group + '  ARTIFACT=' + artifact + '  VERSION=' + version + ' --> ' + toVersion
+     // Update maven, gradle, and bnd files
+     String regex = '((' + group + '[\\.:]' + artifact + '):?;?(version=)?)(' + version + ')'
+     println 'Using regex: ' + regex
+     rootProject.fileTree(dir: '.', includes: ['**/*.maven', '**/*.gradle', '**/*.bnd', '**/bnd.*']).each{file ->
+       ant.replaceregexp(match: regex,
+                         replace: '\\1' + toVersion, 
+                         file: file, flags: 'g', byline: true)
+     }
+     // Update BND files
+     //rootProject.fileTree(dir: '.', includes: []).each{file ->
+     //  ant.replaceregexp(match: group + ':' + artifact + ';' + version, replace: group + ':' + artifact + ';' + toVersion, file: file, flags: 'g', byline: true)
+     //  ant.replaceregexp(match: group + ':' + artifact + ';version=' + version, replace: group + ':' + artifact + ';version=' + toVersion, file: file, flags: 'g', byline: true)
+    // }
+  }
+}
+
+class VersionString {
+
+  String raw
+  Integer major = 0
+  Integer minor = 0
+  Integer micro = 0
+  String qualifier = ''
+
+  VersionString(String version) {
+    raw = version
+    def versionParts = version.split('\\.')
+    major = parseVersion(versionParts[0])
+    if (versionParts.length > 1)
+      minor = parseVersion(versionParts[1])
+    if (versionParts.length > 2)
+      micro = parseVersion(versionParts[2])
+    if (versionParts.length > 3)
+      qualifier = versionParts[3]
+  }
+
+  Integer parseVersion(String versionPart) {
+    try {
+      return Integer.valueOf(versionPart)
+    } catch (NumberFormatException e) {
+      return 0;
+    }
+  }
+
+  boolean isNewerThan(VersionString other) {
+    if (major > other.major)
+      return true;
+    if (major == other.major && minor > other.minor)
+      return true;
+    if (major == other.major && minor == other.minor && micro > other.micro)
+      return true;
+    return false;
+  }
 }
 
 List nextPivot(Map dependencyMap, Set seenProjects) {

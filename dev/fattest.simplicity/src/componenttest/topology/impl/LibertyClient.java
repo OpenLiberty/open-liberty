@@ -57,7 +57,6 @@ import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.PortType;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
-import com.ibm.websphere.simplicity.application.ApplicationManager;
 import com.ibm.websphere.simplicity.application.ApplicationType;
 import com.ibm.websphere.simplicity.config.ClientConfiguration;
 import com.ibm.websphere.simplicity.config.ClientConfigurationFactory;
@@ -66,7 +65,6 @@ import com.ibm.websphere.soe_reporting.SOEHttpPostUtil;
 
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.LocalMachine;
-import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.LogPolice;
 import componenttest.exception.TopologyException;
 import componenttest.topology.impl.JavaInfo.Vendor;
@@ -94,9 +92,10 @@ public class LibertyClient {
     protected static final boolean J9_JVM_RUN = javaInfo.vendor() == Vendor.IBM;
     protected static final boolean HOTSPOT_JVM_RUN = javaInfo.vendor() == Vendor.SUN_ORACLE;
 
+    protected static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
     protected static final String MAC_RUN = PrivHelper.getProperty("fat.on.mac");
     protected static final String GLOBAL_TRACE = PrivHelper.getProperty("global.trace.spec", "").trim();
-    protected static final boolean GLOBAL_JAVA2SECURITY = FATRunner.FAT_TEST_LOCALRUN //
+    protected static final boolean GLOBAL_JAVA2SECURITY = FAT_TEST_LOCALRUN //
                     ? Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "true")) //
                     : Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "false"));
     protected static final String GLOBAL_JVM_ARGS = PrivHelper.getProperty("global.jvm.args", "").trim();
@@ -105,14 +104,12 @@ public class LibertyClient {
     protected static final String JAVA_AGENT_FOR_JACOCO = PrivHelper.getProperty("javaagent.for.jacoco");
     protected static final String RELEASE_MICRO_VERSION = PrivHelper.getProperty("micro.version");
 
-    protected static final int CLIENT_START_TIMEOUT = FATRunner.FAT_TEST_LOCALRUN ? 15 * 1000 : 30 * 1000;
+    protected static final int CLIENT_START_TIMEOUT = FAT_TEST_LOCALRUN ? 15 * 1000 : 30 * 1000;
     protected static final int CLIENT_STOP_TIMEOUT = CLIENT_START_TIMEOUT;
 
     // Increasing this from 50 seconds to 120 seconds to account for poorly performing code;
     // this timeout should only pop in the event of an unexpected failure of apps to start.
-    protected static final int LOG_SEARCH_TIMEOUT = FATRunner.FAT_TEST_LOCALRUN ? 12 * 1000 : 120 * 1000;
-
-    protected ApplicationManager appmgr;
+    protected static final int LOG_SEARCH_TIMEOUT = FAT_TEST_LOCALRUN ? 12 * 1000 : 120 * 1000;
 
     protected List<String> installedApplications;
 
@@ -1241,7 +1238,11 @@ public class LibertyClient {
             assertNotNull("Security service did not report it was ready", waitForStringInLogUsingMark("CWWKS0008I"));
 
             //backup the key file
-            copyFileToTempDir("resources/security/key.jks", "key.jks");
+            try {
+                copyFileToTempDir("resources/security/key.jks", "key.jks");
+            } catch (Exception e) {
+                copyFileToTempDir("resources/security/key.p12", "key.p12");
+            }
         }
 
         Log.info(c, method, "Waiting up to " + (clientStartTimeout / 1000)
@@ -1301,7 +1302,11 @@ public class LibertyClient {
             assertNotNull("Security service did not report it was ready", waitForStringInLogUsingMark("CWWKS0008I"));
 
             //backup the key file
-            copyFileToTempDir("resources/security/key.jks", "key.jks");
+            try {
+                copyFileToTempDir("resources/security/key.jks", "key.jks");
+            } catch (Exception e) {
+                copyFileToTempDir("resources/security/key.p12", "key.p12");
+            }
         }
 
         Log.info(c, method, "Waiting up to " + (clientStopTimeout / 1000)
@@ -1621,6 +1626,16 @@ public class LibertyClient {
 
     public String getClientSharedPath() {
         return clientRoot + "/../../shared/";
+    }
+
+    /**
+     * Get the collective dir under the client resources dir. For instance,
+     * this is where the collective trust stores are located.
+     *
+     * @return the path
+     */
+    public String getCollectiveResourcesPath() {
+        return clientRoot + "/resources/collective/";
     }
 
     public void setClientRoot(String clientRoot) {

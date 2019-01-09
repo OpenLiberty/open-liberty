@@ -67,7 +67,7 @@
         <AD id="connectTimeout" name="%connectTimeout" description="%connectTimeout.desc"
             required="false" type="String" ibm:type="duration" default="1m"/>
         <AD id="readTimeout" name="%readTimeout" description="%readTimeout.desc"
-            required="false" type="String" ibm:type="duration" default="0m"/>
+            required="false" type="String" ibm:type="duration" default="1m"/>
         <AD id="failoverServers" name="%ldap.failoverServers" description="%ldap.failoverServers.desc"
             ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.registry.ldap.config.failoverServers"
             required="false" type="String" cardinality="2147483647" />
@@ -162,7 +162,7 @@
 			required="false" type="Integer" default="15"/>
 		<AD id="returnToPrimaryServer" name="%returnToPrimaryServer" description="%returnToPrimaryServer.desc"
 			required="false" type="Boolean" default="true"/>	
-		<AD id="timestampFormat" name="internal" description="internal use only" required="false" type="String" />
+		<AD id="timestampFormat" name="%timestampFormat" description="%timestampFormat.desc" required="false" type="String" />
 		<!-- End VMM ported Entries -->	
 
     </OCD>

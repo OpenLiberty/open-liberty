@@ -47,21 +47,23 @@ public class MicroProfileClearedContextSnapshot implements com.ibm.wsspi.threadc
     ));
 
     private final ArrayList<ThreadContextController> contextRestorers = new ArrayList<ThreadContextController>();
-    private final ArrayList<ThreadContextSnapshot> contextSnapshots = new ArrayList<ThreadContextSnapshot>();
+    private final ArrayList<ThreadContextSnapshot> contextSnapshots;
 
     MicroProfileClearedContextSnapshot(ConcurrencyManagerImpl concurrencyMgr) {
+        contextSnapshots = new ArrayList<ThreadContextSnapshot>();
         for (ThreadContextProvider provider : concurrencyMgr.contextProviders)
             if (!DO_NOT_CLEAR.contains(provider.getThreadContextType()))
                 contextSnapshots.add(provider.clearedContext(Collections.emptyMap()));
     }
 
+    // constructor for clone method
+    private MicroProfileClearedContextSnapshot(ArrayList<ThreadContextSnapshot> contextSnapshots) {
+        this.contextSnapshots = contextSnapshots; // shallow copy is okay here
+    }
+
     @Override
     public com.ibm.wsspi.threadcontext.ThreadContext clone() {
-        try {
-            return (com.ibm.wsspi.threadcontext.ThreadContext) super.clone();
-        } catch (CloneNotSupportedException x) {
-            throw new Error(x); // should be impossible
-        }
+        return new MicroProfileClearedContextSnapshot(contextSnapshots);
     }
 
     @Override

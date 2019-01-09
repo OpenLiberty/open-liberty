@@ -102,14 +102,6 @@ public class AuthenticateApi {
         }
     }
 
-    public AuthenticateApi(SSOCookieHelper ssoCookieHelper,
-                           AtomicServiceReference<SecurityService> securityServiceRef,
-                           CollaboratorUtils collabUtils,
-                           ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
-                           ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef) {
-        this(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef, null);
-    }
-
     public AuthenticateApi(SSOCookieHelper ssoCookieHelper, AuthenticationService authService) {
         this.securityServiceRef = null;
         this.collabUtils = null;
@@ -302,6 +294,7 @@ public class AuthenticateApi {
         authResult.setAuditOutcome(AuditEvent.OUTCOME_SUCCESS);
         Audit.audit(Audit.EventID.SECURITY_API_AUTHN_TERMINATE_01, req, authResult, Integer.valueOf(res.getStatus()));
 
+	removeEntryFromAuthCacheForUser(req, res);
         invalidateSession(req);
         ssoCookieHelper.removeSSOCookieFromResponse(res);
         ssoCookieHelper.createLogoutCookies(req, res);

@@ -35,6 +35,7 @@ import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
+import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -198,6 +199,19 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
     }
 
     /**
+     * Close a given config, if it's a WebSphereConfig
+     */
+    private void closeConfig(Config config) {
+        if (config instanceof WebSphereConfig) {
+            try {
+                ((WebSphereConfig) config).close();
+            } catch (IOException e) {
+                throw new ConfigException(Tr.formatMessage(tc, "could.not.close.CWMCG0004E", e));
+            }
+        }
+    }
+
+    /**
      * @return the scheduledExecutorServiceRef service
      */
     public ScheduledExecutorService getScheduledExecutorService() {
@@ -307,19 +321,29 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
     @Override
     public void releaseConfig(Config config) {
         synchronized (configCache) {
+            ClassLoader classloader = findClassloaderForRegisteredConfig(config);
+            if (classloader != null) {
+                close(classloader);
+            } else {
+                closeConfig(config);
+            }
+        }
+    }
+
+    private ClassLoader findClassloaderForRegisteredConfig(Config config) {
+        synchronized (configCache) {
             //look through the cache and find the classloader which corresponds to the specified config
-            //use that classloader to close the config properly
             for (Map.Entry<ClassLoader, ConfigWrapper> entry : configCache.entrySet()) {
                 ClassLoader classLoader = entry.getKey();
                 ConfigWrapper configWrapper = entry.getValue();
                 if (configWrapper != null) {
                     Config cachedConfig = configWrapper.getConfig();
                     if (cachedConfig != null && config == cachedConfig) {
-                        close(classLoader);
-                        break;
+                        return classLoader;
                     }
                 }
             }
+            return null;
         }
     }
 

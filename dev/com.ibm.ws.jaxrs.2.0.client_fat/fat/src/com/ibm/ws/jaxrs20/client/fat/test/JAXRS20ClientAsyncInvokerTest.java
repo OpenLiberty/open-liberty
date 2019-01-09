@@ -113,4 +113,52 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_post4", p, "Test book4");
     }
+
+    @Test
+    public void testAsyncInvoker_getReceiveTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_getReceiveTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    public void testAsyncInvoker_getConnectionTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_getConnectionTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    public void testAsyncInvoker_postReceiveTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_postReceiveTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    public void testAsyncInvoker_postConnectionTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_postConnectionTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    public void testAsyncInvoker_getReceiveTimeoutwithInvocationCallback() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_getReceiveTimeoutwithInvocationCallback", p, "Timeout as expected");
+    }
+
+    @Test
+    public void testAsyncInvoker_getConnectionTimeoutwithInvocationCallback() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_getConnectionTimeoutwithInvocationCallback", p, "Timeout as expected");
+    }
+
+    @Test
+    public void testAsyncInvoker_postReceiveTimeoutwithInvocationCallback() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_postReceiveTimeoutwithInvocationCallback", p, "Timeout as expected");
+    }
+
+    @Test
+    public void testAsyncInvoker_postConnectionTimeoutwithInvocationCallback() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_postConnectionTimeoutwithInvocationCallback", p, "Timeout as expected");
+    }
 }

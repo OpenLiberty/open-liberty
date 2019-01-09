@@ -42,6 +42,8 @@ import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseUrlExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
+import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
+import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
@@ -65,6 +67,11 @@ public class ReplayCookieTests extends CommonSecurityFat {
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
 
+    private static final ServerBootstrapUtils bootstrapUtils = new ServerBootstrapUtils();
+
+    public static final String BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME = "fat.server.hostname";
+    public static final String BOOTSTRAP_PROP_FAT_SERVER_HOSTIP = "fat.server.hostip";
+
     private final JwtFatActions actions = new JwtFatActions();
     private final TestValidationUtils validationUtils = new TestValidationUtils();
 
@@ -79,6 +86,9 @@ public class ReplayCookieTests extends CommonSecurityFat {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        bootstrapUtils.writeBootstrapProperty(server, BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
+        bootstrapUtils.writeBootstrapProperty(server, BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
+
         CommonFatApplications.buildAndDeployApp(server, APP_NAME_JWT_BUILDER, "com.ibm.ws.security.fat.common.apps.jwtbuilder.*");
         server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
         serverTracker.addServer(server);
@@ -354,6 +364,40 @@ public class ReplayCookieTests extends CommonSecurityFat {
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
 
         Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, jwtCookie);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+        server.addInstalledAppForValidation(APP_NAME_JWT_BUILDER);
+    }
+
+    /**
+     * Tests:
+     * - Configure mpJwt element with mapToUserRegistry=true
+     * - Invoke a protected resource and log in, obtaining a JWT cookie
+     * - Re-access the protected resource with the JWT cookie value that was just obtained, but include the JWT in the Authorization header
+     * Expects:
+     * - Should successfully obtain a JWT cookie
+     * - Should successfully reach the protected resource on the second invocation
+     */
+    @Test
+    public void test_obtainJwt_reaccessResourceWithJwtInHeader() throws Exception {
+        server.removeInstalledAppForValidation(APP_NAME_JWT_BUILDER);
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_mpJwt_mapToUserRegistry_true.xml");
+
+        Cookie jwtCookie = actions.logInAndObtainJwtCookie(_testName, protectedUrl, defaultUser, defaultPassword);
+
+        // Access the protected again using a new conversation with the JWT SSO cookie value included in the header
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(currentAction, protectedUrl));
+        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.LTPA_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.JWT_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.responseTextIncludesExpectedRemoteUser(currentAction, defaultUser));
+        expectations.addExpectations(CommonExpectations.responseTextIncludesJwtPrincipal(currentAction));
+        expectations.addExpectations(CommonExpectations.responseTextIncludesExpectedAccessId(currentAction, JwtFatConstants.BASIC_REALM, defaultUser));
+        expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(currentAction, defaultUser, JwtFatConstants.DEFAULT_ISS_REGEX));
+
+        Page response = actions.invokeUrlWithBearerToken(_testName, actions.createWebClient(), protectedUrl, jwtCookie.getValue());
         validationUtils.validateResult(response, currentAction, expectations);
 
         server.addInstalledAppForValidation(APP_NAME_JWT_BUILDER);

@@ -147,7 +147,7 @@ public class EL30OperatorsServlet extends FATServlet {
     }
 
     @Test
-    public void testEL30SemoColonOperator() throws Exception {
+    public void testEL30SemiColonOperator() throws Exception {
         test = "EL 3.0 Semi-colon Operator (Expected:8): ";
         expression = "x = 5; y = 3; z = x + y";
         expected = "8";
