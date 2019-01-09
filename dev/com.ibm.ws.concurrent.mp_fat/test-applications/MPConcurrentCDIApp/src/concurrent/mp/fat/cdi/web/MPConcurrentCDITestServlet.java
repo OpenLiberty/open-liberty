@@ -12,6 +12,7 @@ package concurrent.mp.fat.cdi.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -24,6 +25,8 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javax.enterprise.inject.Default;
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -84,6 +87,14 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     ManagedExecutor propagatedAB;
 
     @Inject
+    @ManagedExecutorConfig
+    ManagedExecutor defaultAnno1;
+
+    @Inject
+    @ManagedExecutorConfig
+    ManagedExecutor defaultAnno2;
+
+    @Inject
     @ManagedExecutorConfig(propagated = { ThreadContext.TRANSACTION, ThreadContext.APPLICATION }, cleared = {})
     ManagedExecutor propagatedBA;
 
@@ -113,9 +124,8 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     }
 
     @Test
-    public void testMEDefaultsEqual() {
-        assertEquals(noAnno, noAnno2);
-        assertEquals(noAnno, bean.getNoAnno());
+    public void testMEDefaultsNotEqual() {
+        assertUnique(noAnno, noAnno2, bean.getNoAnno());
     }
 
     @Test
@@ -134,7 +144,24 @@ public class MPConcurrentCDITestServlet extends FATServlet {
 
     @Test
     public void testMEDifferent() {
-        assertUnique(defaultAnno, defaultAnnoVerbose, max2, maxAsync5, methodInjectedAnonymous, noAnno, noAppCtx, producerDefined, propagatedAB, propagatedBA);
+        assertUnique(defaultAnno, defaultAnnoVerbose, max2, maxAsync5, methodInjectedAnonymous,
+                     noAnno, noAppCtx, producerDefined, propagatedAB, propagatedBA, bean.getMyQualifier());
+    }
+
+    @Test
+    public void testAppDefinedQualifier() {
+        assertNotNull(bean.getMyQualifier());
+    }
+
+    @Test
+    public void testProgrammaticCDILookup() {
+        ManagedExecutor exec = CDI.current().select(ManagedExecutor.class).get();
+        assertNotNull(exec);
+
+        ManagedExecutor exec2 = CDI.current().select(ManagedExecutor.class, Default.Literal.INSTANCE).get();
+        assertNotNull(exec2);
+
+        assertEquals(exec, exec2);
     }
 
     @Test

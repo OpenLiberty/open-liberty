@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2018,2019 IBM Corporation and others.
+
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +36,10 @@ public class ConcurrencyBean {
     @NamedInstance("producerDefined")
     ManagedExecutor producerDefined;
 
+    @Inject
+    @MyQualifier
+    ManagedExecutor myQualifier;
+
     public ManagedExecutor getNoAnno() {
         return noAnno;
     }
@@ -51,12 +56,25 @@ public class ConcurrencyBean {
         return producerDefined;
     }
 
+    public ManagedExecutor getMyQualifier() {
+        return myQualifier;
+    }
+
     @Produces
     @ApplicationScoped
     @NamedInstance("producerDefined")
     public ManagedExecutor createExec() {
         ManagedExecutor exec = ManagedExecutor.builder().maxAsync(5).build();
         System.out.println("Application produced ManagedExecutor: " + exec);
+        return exec;
+    }
+
+    @Produces
+    @ApplicationScoped
+    @MyQualifier
+    public ManagedExecutor appDefinedQualifier() {
+        ManagedExecutor exec = ManagedExecutor.builder().maxAsync(5).build();
+        System.out.println("Application produced ManagedExecutor with @MyQualifier qualifier: " + exec);
         return exec;
     }
 

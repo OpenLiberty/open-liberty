@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.microprofile.concurrent.spi.ConcurrencyManager;
-import org.eclipse.microprofile.concurrent.spi.ConcurrencyManagerBuilder;
 import org.eclipse.microprofile.concurrent.spi.ConcurrencyProvider;
 import org.eclipse.microprofile.concurrent.spi.ConcurrencyProviderRegistration;
 import org.osgi.framework.ServiceReference;
@@ -129,7 +128,7 @@ public class ConcurrencyProviderImpl implements ApplicationStateListener, Concur
     }
 
     @Override
-    public ConcurrencyManagerBuilder getConcurrencyManagerBuilder() {
+    public ConcurrencyManager.Builder getConcurrencyManagerBuilder() {
         throw new UnsupportedOperationException(); // TODO
     }
 
