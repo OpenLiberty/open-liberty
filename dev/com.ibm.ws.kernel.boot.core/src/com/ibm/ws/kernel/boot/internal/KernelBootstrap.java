@@ -39,6 +39,7 @@ import com.ibm.ws.kernel.boot.LaunchException;
 import com.ibm.ws.kernel.boot.Launcher;
 import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.security.WLPDynamicPolicy;
+import com.ibm.ws.kernel.boot.utils.SequenceNumber;
 import com.ibm.ws.kernel.internal.classloader.BootstrapChildFirstJarClassloader;
 import com.ibm.ws.kernel.internal.classloader.BootstrapChildFirstURLClassloader;
 import com.ibm.ws.kernel.productinfo.DuplicateProductInfoException;
@@ -48,7 +49,6 @@ import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 import com.ibm.ws.kernel.provisioning.NameBasedLocalBundleRepository;
 import com.ibm.ws.kernel.provisioning.ServiceFingerprint;
 import com.ibm.ws.kernel.provisioning.VersionUtility;
-import com.ibm.ws.logging.utils.SequenceNumber;
 
 /**
  * Bootstrap the runtime: Resolve the few jar files required to construct the nested
@@ -76,7 +76,7 @@ public class KernelBootstrap {
 
     /**
      * @param bootProps BootstrapProperties carry forward all of the parameters and
-     *                      options used to launch the kernel.
+     *            options used to launch the kernel.
      */
     public KernelBootstrap(BootstrapConfig bootProps) {
         this.bootProps = bootProps;
