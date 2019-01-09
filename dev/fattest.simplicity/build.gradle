@@ -36,6 +36,7 @@ task assembleBinaryDependencies() {
     }
 }
 
+
 jar {
     dependsOn assembleBootstrap
     dependsOn assembleBinaryDependencies
