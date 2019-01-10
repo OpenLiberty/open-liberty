@@ -11,6 +11,8 @@
 package com.ibm.ws.concurrent.mp.cdi;
 
 import java.lang.reflect.Member;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -31,6 +33,9 @@ import javax.enterprise.inject.spi.ProcessProducer;
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.eclipse.microprofile.concurrent.ManagedExecutorConfig;
 import org.eclipse.microprofile.concurrent.NamedInstance;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
@@ -40,7 +45,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
-           immediate = true,
            property = { "api.classes=" +
                         "org.eclipse.microprofile.concurrent.ManagedExecutor;" +
                         "org.eclipse.microprofile.concurrent.ManagedExecutorConfig;" +
@@ -55,6 +59,12 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
     private final Map<String, ManagedExecutorConfig> beanMap = new HashMap<>();
     private final Set<Throwable> deploymentErrors = new LinkedHashSet<>();
     private final Set<String> appDefinedProducers = new HashSet<>();
+
+    private final MPConfigAccessor mpConfig = AccessController.doPrivileged((PrivilegedAction<MPConfigAccessor>) () -> {
+        BundleContext bundleContext = FrameworkUtil.getBundle(ManagedExecutorBean.class).getBundleContext();
+        ServiceReference<MPConfigAccessor> mpConfigAccessorRef = bundleContext.getServiceReference(MPConfigAccessor.class);
+        return mpConfigAccessorRef == null ? null : bundleContext.getService(mpConfigAccessorRef);
+    });
 
     @Trivial
     public void processProducer(@Observes ProcessProducer<?, ManagedExecutor> event, BeanManager bm) {
@@ -91,10 +101,10 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
         // The container MUST register a bean if @MEC is present
         // The container MUST register a bean for every @Default injection point
         if (configAnnoPresent || event.getInjectionPoint().getQualifiers().contains(Default.Literal.INSTANCE)) {
-            ManagedExecutorConfig prevoiusConfig = beanMap.putIfAbsent(name, config);
+            ManagedExecutorConfig previousConfig = beanMap.putIfAbsent(name, config);
 
             // If 2 or more InjectionPoints define @NamedInstance("X") @ManagedExecutorConfig it is an error
-            if (prevoiusConfig != null) {
+            if (previousConfig != null) {
                 String msg = "ERROR: Found existing bean with name=" + name; // TODO NLS message
                 Tr.error(tc, msg);
                 deploymentErrors.add(new Throwable(msg));
@@ -104,7 +114,7 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
 
     public void registerBeans(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
         // Always register a bean for @Default programmatic CDI lookups
-        event.addBean(new ManagedExecutorBean());
+        event.addBean(new ManagedExecutorBean(mpConfig));
 
         // Don't register beans for app-defined @NamedInstance producers
         for (String appDefinedProducer : appDefinedProducers) {
@@ -115,7 +125,7 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
         for (Entry<String, ManagedExecutorConfig> e : beanMap.entrySet()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Add bean for name=" + e.getKey());
-            event.addBean(new ManagedExecutorBean(e.getKey(), e.getValue()));
+            event.addBean(new ManagedExecutorBean(e.getKey(), e.getValue(), mpConfig));
         }
     }
 

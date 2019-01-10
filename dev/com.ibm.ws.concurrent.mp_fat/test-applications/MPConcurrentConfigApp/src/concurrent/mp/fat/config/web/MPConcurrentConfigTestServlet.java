@@ -11,6 +11,7 @@
 package concurrent.mp.fat.config.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
+import org.eclipse.microprofile.concurrent.ManagedExecutorConfig;
 import org.eclipse.microprofile.concurrent.NamedInstance;
 import org.junit.Test;
 
@@ -40,6 +42,10 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
     @Inject
     @NamedInstance("applicationProducedExecutor")
     ManagedExecutor appProducedExecutor;
+
+    @Inject
+    @ManagedExecutorConfig(maxAsync = 1)
+    ManagedExecutor annotatedExecutorWithMPConfigOverride; // MP Config sets maxAsync=2, maxQueued=3
 
     /**
      * Demonstrates that MicroProfile Config can be used by the application to override config properties.
@@ -73,5 +79,53 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
         assertEquals(cf0.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Boolean.TRUE);
         assertEquals(cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Integer.valueOf(1));
         assertEquals(cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Integer.valueOf(2));
+    }
+
+    /**
+     * Use MicroProfile Config to override config properties of a ManagedExecutor injection point
+     * that is annotated with ManagedExecutorConfig and does not have any qualifiers.
+     */
+    @Test
+    public void testMPConfigOverridesAnnotatedManagedExecutor() throws Exception {
+        assertNotNull(annotatedExecutorWithMPConfigOverride);
+
+        CountDownLatch started = new CountDownLatch(2);
+        CountDownLatch blocker = new CountDownLatch(1);
+        CompletableFuture<Boolean> cf0 = annotatedExecutorWithMPConfigOverride.supplyAsync(() -> {
+            try {
+                started.countDown();
+                return blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            } catch (InterruptedException x) {
+                throw new RuntimeException(x);
+            }
+        });
+        CompletableFuture<Boolean> cf1 = annotatedExecutorWithMPConfigOverride.supplyAsync(() -> {
+            try {
+                started.countDown();
+                return blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            } catch (InterruptedException x) {
+                throw new RuntimeException(x);
+            }
+        });
+        assertTrue(started.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        CompletableFuture<Integer> cf2 = annotatedExecutorWithMPConfigOverride.supplyAsync(() -> 20);
+        CompletableFuture<Integer> cf3 = annotatedExecutorWithMPConfigOverride.supplyAsync(() -> 30);
+        CompletableFuture<Integer> cf4 = annotatedExecutorWithMPConfigOverride.supplyAsync(() -> 40);
+
+        try {
+            Future<?> future = annotatedExecutorWithMPConfigOverride.submit(() -> System.out.println("This should not run!"));
+            fail("Should not be able to run more than 2 tasks or have more then 3 queued. " + future);
+        } catch (RejectedExecutionException x) {
+            // Pass - intentionally exceeded queue capacity in order to test maxQueued constraint
+        }
+
+        blocker.countDown();
+
+        assertEquals(cf0.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Boolean.TRUE);
+        assertEquals(cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Boolean.TRUE);
+        assertEquals(cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Integer.valueOf(20));
+        assertEquals(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Integer.valueOf(30));
+        assertEquals(cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Integer.valueOf(40));
     }
 }
