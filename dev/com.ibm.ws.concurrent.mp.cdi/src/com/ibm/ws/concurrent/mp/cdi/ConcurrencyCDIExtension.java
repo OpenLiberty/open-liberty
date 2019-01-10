@@ -25,6 +25,7 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
@@ -88,10 +89,18 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
         if (config == null)
             config = ManagedExecutorConfig.Literal.DEFAULT_INSTANCE;
 
-        // Instance name is either @NamedInstance.value() or generated from fully-qualified field name
+        // Instance name is either @NamedInstance.value() or generated from fully-qualified field name or method parameter index
         NamedInstance nameAnno = injectionPoint.getAnnotation(NamedInstance.class);
         Member member = event.getInjectionPoint().getMember();
-        String name = nameAnno == null ? member.getDeclaringClass().getTypeName() + "." + member.getName() : nameAnno.value();
+        String name;
+        if (nameAnno == null) {
+            StringBuilder n = new StringBuilder(member.getDeclaringClass().getTypeName()).append('.').append(member.getName());
+            if (injectionPoint instanceof AnnotatedParameter)
+                n.append('.').append(((AnnotatedParameter<?>) injectionPoint).getPosition() + 1); // switch from 0-based to 1-based
+            name = n.toString();
+        } else
+            name = nameAnno.value();
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "InjectionPoint " + name + " has config " + (configAnnoPresent ? config : "DEFAULT_INSTNACE"));
         // Automatically insert @NamedInstance("<generated name>") qualifier for @Default injection points
