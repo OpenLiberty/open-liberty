@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,8 +72,7 @@ public class TimeoutStateImpl implements TimeoutState {
     public void stop() {
         synchronized (this) {
             switch (result) {
-                case NEW:
-                    throw new IllegalStateException("Stop called on a timeout that was never started");
+                case NEW: // If an attempt is aborted before it runs, stop() may be called without start()
                 case STARTED:
                     result = TimeoutResult.FINISHED;
                     if (timeoutFuture != null) {
