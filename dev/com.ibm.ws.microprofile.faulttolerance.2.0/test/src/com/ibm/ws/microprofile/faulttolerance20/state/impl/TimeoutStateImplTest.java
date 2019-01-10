@@ -24,11 +24,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.faulttolerance.impl.policy.TimeoutPolicyImpl;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
+import com.ibm.ws.microprofile.faulttolerance.utils.DummyMetricRecorder;
 
 public class TimeoutStateImplTest {
 
     private ScheduledExecutorService scheduledExecutorService;
     private final AtomicBoolean timeoutFlag = new AtomicBoolean(false);
+    private static MetricRecorder dummyMetrics = DummyMetricRecorder.get();
 
     @Before
     public void setup() {
@@ -46,7 +49,7 @@ public class TimeoutStateImplTest {
         TimeoutPolicyImpl policy = new TimeoutPolicyImpl();
         policy.setTimeout(Duration.ofMillis(100L));
 
-        TimeoutStateImpl state = new TimeoutStateImpl(scheduledExecutorService, policy);
+        TimeoutStateImpl state = new TimeoutStateImpl(scheduledExecutorService, policy, dummyMetrics);
         state.start();
         state.setTimeoutCallback(this::setTimeoutFlag);
         state.stop();
@@ -66,7 +69,7 @@ public class TimeoutStateImplTest {
         TimeoutPolicyImpl policy = new TimeoutPolicyImpl();
         policy.setTimeout(Duration.ofMillis(100L));
 
-        TimeoutStateImpl state = new TimeoutStateImpl(scheduledExecutorService, policy);
+        TimeoutStateImpl state = new TimeoutStateImpl(scheduledExecutorService, policy, dummyMetrics);
         state.start();
         state.setTimeoutCallback(this::setTimeoutFlag);
 
@@ -86,7 +89,7 @@ public class TimeoutStateImplTest {
         TimeoutPolicyImpl policy = new TimeoutPolicyImpl();
         policy.setTimeout(Duration.ZERO);
 
-        TimeoutStateImpl state = new TimeoutStateImpl(scheduledExecutorService, policy);
+        TimeoutStateImpl state = new TimeoutStateImpl(scheduledExecutorService, policy, dummyMetrics);
         state.start();
         state.setTimeoutCallback(this::setTimeoutFlag);
 
@@ -110,7 +113,7 @@ public class TimeoutStateImplTest {
         TimeoutPolicyImpl policy = new TimeoutPolicyImpl();
         policy.setTimeout(Duration.ofMillis(100L));
 
-        TimeoutStateImpl state = new TimeoutStateImpl(scheduledExecutorService, policy);
+        TimeoutStateImpl state = new TimeoutStateImpl(scheduledExecutorService, policy, dummyMetrics);
         state.setTimeoutCallback(this::setTimeoutFlag);
         state.start();
 
@@ -133,7 +136,7 @@ public class TimeoutStateImplTest {
         TimeoutPolicyImpl policy = new TimeoutPolicyImpl();
         policy.setTimeout(Duration.ofMillis(100L));
 
-        TimeoutStateImpl state = new TimeoutStateImpl(scheduledExecutorService, policy);
+        TimeoutStateImpl state = new TimeoutStateImpl(scheduledExecutorService, policy, dummyMetrics);
         state.start();
 
         assertFalse(timeoutFlag.get());

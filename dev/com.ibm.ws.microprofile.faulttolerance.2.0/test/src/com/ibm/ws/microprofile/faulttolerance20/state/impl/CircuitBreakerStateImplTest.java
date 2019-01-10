@@ -18,9 +18,13 @@ import java.time.Duration;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.faulttolerance.impl.policy.CircuitBreakerPolicyImpl;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
+import com.ibm.ws.microprofile.faulttolerance.utils.DummyMetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance20.impl.MethodResult;
 
 public class CircuitBreakerStateImplTest {
+
+    private static MetricRecorder dummyMetrics = DummyMetricRecorder.get();
 
     @Test
     public void testCircuitBreaker() throws InterruptedException {
@@ -36,7 +40,7 @@ public class CircuitBreakerStateImplTest {
         // circuit fully closes after 1 successful request
 
         // Run 100% failures, results in circuit open
-        CircuitBreakerStateImpl state = new CircuitBreakerStateImpl(policy);
+        CircuitBreakerStateImpl state = new CircuitBreakerStateImpl(policy, dummyMetrics);
         runFailures(state, 4);
         assertFalse(state.requestPermissionToExecute());
 
@@ -87,7 +91,7 @@ public class CircuitBreakerStateImplTest {
         // circuit fully closes after 1 successful request
 
         // 4x TestExceptionA -> 100% failure rate -> circuit open
-        CircuitBreakerStateImpl state = new CircuitBreakerStateImpl(policy);
+        CircuitBreakerStateImpl state = new CircuitBreakerStateImpl(policy, dummyMetrics);
         runFailures(state, 4, TestExceptionA.class);
         assertFalse(state.requestPermissionToExecute());
 
@@ -109,35 +113,35 @@ public class CircuitBreakerStateImplTest {
         policy.setFailureRatio(0.75);
         policy.setRequestVolumeThreshold(4);
         policy.setSuccessThreshold(3);
-    
+
         // Summary:
         // circuit opens if 75% of last 4 requests failed
         // circuit half-closes after 100ms
         // circuit fully closes after 1 successful request
-    
+
         // Run 100% failures, results in circuit open
-        CircuitBreakerStateImpl state = new CircuitBreakerStateImpl(policy);
+        CircuitBreakerStateImpl state = new CircuitBreakerStateImpl(policy, dummyMetrics);
         runFailures(state, 4);
         assertFalse(state.requestPermissionToExecute());
-    
+
         // Wait >100ms, results in circuit half-open
         Thread.sleep(150);
         // Run 1 failure, results in circuit open
         runFailures(state, 1);
         assertFalse(state.requestPermissionToExecute());
-    
+
         // Wait >100ms, results in circuit half-open
         Thread.sleep(150);
         // Run 3 successes, results in circuit closed
         runSuccesses(state, 3);
-    
+
         // Test circuit really closed by running another success
         runSuccesses(state, 1);
-    
+
         // Run 3 failures -> 75% failure rate -> circuit open
         runFailures(state, 3);
         assertFalse(state.requestPermissionToExecute());
-    
+
         // Wait >100ms, results in circuit half-open
         Thread.sleep(150);
         // Run 1 success, then 1 failure -> results in circuit open
@@ -169,8 +173,10 @@ public class CircuitBreakerStateImplTest {
     }
 
     // Needs to be package-private to allow runFailures() to reflectively construct it
-    static class TestExceptionA extends Exception {}
+    static class TestExceptionA extends Exception {
+    }
 
-    static class TestExceptionB extends Exception {}
+    static class TestExceptionB extends Exception {
+    }
 
 }
