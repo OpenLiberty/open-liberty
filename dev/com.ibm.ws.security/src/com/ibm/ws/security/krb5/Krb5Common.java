@@ -41,14 +41,13 @@ public class Krb5Common {
     static public boolean isIBMJdk18OrLower = (JavaInfo.vendor() == Vendor.IBM && JavaInfo.majorVersion() <= 8);
 
     // Is Oracle JDK 1.8 or higher
-    // static public boolean isOracleJdk18OrHigher = (JavaInfo.vendor() == Vendor.ORACLE && JavaInfo.majorVersion() >= 8);
+    static public boolean isOracleJdk18OrHigher = (JavaInfo.vendor() == Vendor.ORACLE && JavaInfo.majorVersion() >= 8);
 
     // Is IBM, Oracle and Open JDK 11 or higher
     static private boolean isJdk11OrUp = JavaInfo.majorVersion() >= 11;
 
     // SPNEGO support IBM JDK 8 and lower and JDK 11 and higher
-    //static public boolean isOtherSupportJDKs = isOracleJdk18OrHigher || isJdk11OrUp;
-    static public boolean isOtherSupportJDKs = isJdk11OrUp;
+    static public boolean isOtherSupportJDKs = isOracleJdk18OrHigher || isJdk11OrUp;
 
     // Kerberos KDC host name
     static public final String KRB5_KDC = "java.security.krb5.kdc";

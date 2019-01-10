@@ -30,7 +30,7 @@ import com.ibm.ws.kernel.provisioning.VersionUtility;
  * into the framework by the FrameworkManager, and gives requestors access to
  * the original command line parameters (those arguments following -- on the
  * command line,
- * 
+ *
  * @see {@link com.ibm.ws.kernel.boot.Launcher} <p>
  *      This also provides a hook for driving framework shutdown from outside of
  *      the framework.
@@ -42,7 +42,7 @@ public class LibertyProcessImpl implements LibertyProcess {
     /**
      * Construct a new command line implementation with the provided argument
      * list
-     * 
+     *
      * @param args
      *            Array of String command line arguments
      * @param frameworkMgr
@@ -75,19 +75,21 @@ public class LibertyProcessImpl implements LibertyProcess {
 
     /**
      * Used
-     * 
+     *
      * @returns a dictionary containing the original command line arguments
      */
     public Dictionary<String, ?> getServiceProps() {
         Hashtable<String, Object> d = new Hashtable<String, Object>();
         d.put(BootstrapConstants.INTERNAL_COMMAND_LINE_ARG_LIST, getArgs());
         String version = System.getProperty(BootstrapConstants.JAVA_SPEC_VERSION);
-        if (version != null) {
-            try {
+        String vendor = System.getProperty(BootstrapConstants.JAVA_VENDOR);
+        try {
+            if (version != null)
                 d.put(BootstrapConstants.JAVA_SPEC_VERSION, VersionUtility.stringToVersion(version));
-            } catch (IllegalArgumentException iae) {
+            if (vendor != null)
+                d.put(BootstrapConstants.JAVA_VENDOR, vendor.toLowerCase());
+        } catch (IllegalArgumentException iae) {
 
-            }
         }
 
         // wlp.process.type
@@ -123,8 +125,7 @@ public class LibertyProcessImpl implements LibertyProcess {
         sdp.cleanupDumpDirectory();
         if (rc == ReturnCode.OK) {
             return sdp.getDumpFile().getAbsolutePath();
-        }
-        else {
+        } else {
             return null;
         }
     }
