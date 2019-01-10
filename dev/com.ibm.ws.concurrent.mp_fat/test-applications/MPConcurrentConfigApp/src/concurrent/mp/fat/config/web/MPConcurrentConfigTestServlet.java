@@ -28,6 +28,7 @@ import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.eclipse.microprofile.concurrent.ManagedExecutorConfig;
 import org.eclipse.microprofile.concurrent.NamedInstance;
 import org.junit.Test;
+import org.test.context.location.CurrentLocation;
 
 import componenttest.app.FATServlet;
 
@@ -46,6 +47,9 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
     @Inject
     @ManagedExecutorConfig(maxAsync = 1)
     ManagedExecutor annotatedExecutorWithMPConfigOverride; // MP Config sets maxAsync=2, maxQueued=3
+
+    @Inject
+    ManagedExecutor executorWithMPConfigOverride; // MP Config sets cleared=City, propagated=Application,State
 
     /**
      * Demonstrates that MicroProfile Config can be used by the application to override config properties.
@@ -127,5 +131,35 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
         assertEquals(cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Integer.valueOf(20));
         assertEquals(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Integer.valueOf(30));
         assertEquals(cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Integer.valueOf(40));
+    }
+
+    /**
+     * Use MicroProfile Config to override config properties of a ManagedExecutor injection point
+     * that is not annotated with ManagedExecutorConfig and does not have any qualifiers.
+     */
+    @Test
+    public void testMPConfigOverridesInjectedManagedExecutor() throws Exception {
+        assertNotNull(executorWithMPConfigOverride);
+
+        CurrentLocation.setLocation("Rochester", "Minnesota");
+        try {
+            // Run on another thread to confirm propagated context
+            CompletableFuture<Void> cf1 = executorWithMPConfigOverride.runAsync(() -> {
+                assertEquals("Context type not propagated.", "Minnesota", CurrentLocation.getState());
+            });
+            cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            // Run on same thread to confirm cleared context
+            CompletableFuture<Void> cf2 = cf1.thenRun(() -> {
+                assertEquals("Context type not cleared.", "", CurrentLocation.getCity());
+                CurrentLocation.setLocation("Madison", "Wisconsin");
+            });
+            cf2.join();
+
+            assertEquals("Context type not restored.", "Rochester", CurrentLocation.getCity());
+            assertEquals("Context type not restored.", "Minnesota", CurrentLocation.getState());
+        } finally {
+            CurrentLocation.clear();
+        }
     }
 }
