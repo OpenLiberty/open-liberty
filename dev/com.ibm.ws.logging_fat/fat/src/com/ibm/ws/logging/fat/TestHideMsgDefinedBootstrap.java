@@ -18,13 +18,16 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  *
  */
+@RunWith(FATRunner.class)
 public class TestHideMsgDefinedBootstrap {
 
     private static LibertyServer msgServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.hidemsg.bootstrap");
@@ -42,7 +45,8 @@ public class TestHideMsgDefinedBootstrap {
     public void testHiddenMsgIds() throws Exception {
         assertTrue("Hidden Message CWWKZ0058I should not be seen in messages.log",
                    msgServer.findStringsInLogs("CWWKZ0058I:", msgServer.getMatchingLogFile("messages.log")).isEmpty());
-        assertTrue("Hidden Message CWWKZ0058I should not be seen in console.log", msgServer.findStringsInLogs("CWWKZ0058I:", msgServer.getMatchingLogFile("console.log")).isEmpty());
+        assertTrue("Hidden Message CWWKZ0058I should not be seen in console.log",
+                   msgServer.findStringsInLogs("CWWKZ0058I:", msgServer.getMatchingLogFile("console.log")).isEmpty());
         assertFalse("Hidden Message CWWKZ0058I should be seen in trace", msgServer.findStringsInTrace("CWWKZ0058I:").isEmpty());
     }
 

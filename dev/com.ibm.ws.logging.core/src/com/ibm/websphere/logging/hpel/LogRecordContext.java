@@ -156,12 +156,7 @@ public class LogRecordContext {
         String getValue();
     }
 
-    private final static ThreadLocal<HashMap<String, String>> extensions = new ThreadLocal<HashMap<String, String>>() {
-        @Override
-        protected HashMap<String, String> initialValue() {
-            return new HashMap<String, String>();
-        }
-    };
+    private final static ThreadLocal<HashMap<String, String>> extensions = new ThreadLocal<HashMap<String, String>>();
 
     /* Map of registered extension */
     private final static Map<String, WeakReference<Extension>> extensionMap = new HashMap<String, WeakReference<Extension>>();
@@ -169,12 +164,7 @@ public class LogRecordContext {
     private final static Lock r = rwl.readLock();
     private final static Lock w = rwl.writeLock();
     public static final String PTHREADID = "thread";
-    private final static ThreadLocal<Boolean> recursion = new ThreadLocal<Boolean>() {
-        @Override
-        protected Boolean initialValue() {
-            return Boolean.FALSE;
-        }
-    };
+    private final static ThreadLocal<Boolean> recursion = new ThreadLocal<Boolean>();
 
     private final static Extension THREAD_NAME_EXTENSION = new Extension() {
         @Override
@@ -207,7 +197,12 @@ public class LogRecordContext {
                                             + " Extension Value="
                                             + extensionValue);
         }
-        extensions.get().put(extensionName, extensionValue);
+        HashMap<String, String> ext = extensions.get();
+        if (ext == null) {
+            ext = new HashMap<>();
+            extensions.set(ext);
+        }
+        ext.put(extensionName, extensionValue);
     }
 
     /**
@@ -223,7 +218,8 @@ public class LogRecordContext {
             throw new IllegalArgumentException(
                             "Parameter 'extensionName' can not be null");
         }
-        return extensions.get().remove(extensionName) != null;
+        HashMap<String, String> ext = extensions.get();
+        return ext == null ? false : ext.remove(extensionName) != null;
     }
 
     /**
@@ -296,7 +292,7 @@ public class LogRecordContext {
             throw new IllegalArgumentException(
                             "Parameter 'map' can not be null.");
         }
-        if (recursion.get()) {
+        if (recursion.get() == Boolean.TRUE) {
             return;
         }
         recursion.set(Boolean.TRUE);
@@ -317,7 +313,7 @@ public class LogRecordContext {
             }
         } finally {
             r.unlock();
-            recursion.set(Boolean.FALSE);
+            recursion.remove();
         }
         if (cleanup.size() > 0) {
             w.lock();

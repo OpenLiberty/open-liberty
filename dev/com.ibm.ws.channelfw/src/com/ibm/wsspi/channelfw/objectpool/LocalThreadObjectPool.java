@@ -38,7 +38,7 @@ public class LocalThreadObjectPool implements ObjectPool {
     private int underflowCount = 0;
     private int overflowCount = 0;
     private int minElements = 0;
-    private final int adjustThreshold = 1000;
+    private static final int adjustThreshold = 1000;
     private int minPoolSize;
     private int batchSize;
     private int adjustSize;

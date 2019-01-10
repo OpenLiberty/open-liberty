@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.microprofile.concurrent.spi.ConcurrencyManager;
-import org.eclipse.microprofile.concurrent.spi.ConcurrencyManagerBuilder;
 import org.eclipse.microprofile.concurrent.spi.ConcurrencyProvider;
 import org.eclipse.microprofile.concurrent.spi.ConcurrencyProviderRegistration;
 import org.osgi.framework.ServiceReference;
@@ -35,7 +34,10 @@ import com.ibm.ws.concurrent.mp.context.ApplicationContextProvider;
 import com.ibm.ws.concurrent.mp.context.SecurityContextProvider;
 import com.ibm.ws.concurrent.mp.context.TransactionContextProvider;
 import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
+import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
+import com.ibm.ws.container.service.state.ApplicationStateListener;
+import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.threading.PolicyExecutorProvider;
 
@@ -43,7 +45,7 @@ import com.ibm.ws.threading.PolicyExecutorProvider;
  * Registers this implementation as the provider of MicroProfile Concurrency.
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
-public class ConcurrencyProviderImpl implements ConcurrencyProvider {
+public class ConcurrencyProviderImpl implements ApplicationStateListener, ConcurrencyProvider {
     final ApplicationContextProvider applicationContextProvider = new ApplicationContextProvider();
     final SecurityContextProvider securityContextProvider = new SecurityContextProvider();
     final TransactionContextProvider transactionContextProvider = new TransactionContextProvider();
@@ -78,6 +80,23 @@ public class ConcurrencyProviderImpl implements ConcurrencyProvider {
         registration = ConcurrencyProvider.register(this);
     }
 
+    @Override
+    @Trivial
+    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {}
+
+    @Override
+    @Trivial
+    public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {}
+
+    @Override
+    @Trivial
+    public void applicationStopped(ApplicationInfo appInfo) {}
+
+    @Override
+    public void applicationStopping(ApplicationInfo appInfo) {
+        policyExecutorProvider.shutdownNow(appInfo.getName());
+    }
+
     @Deactivate
     protected void deactivate(ComponentContext osgiComponentContext) {
         registration.unregister();
@@ -109,7 +128,7 @@ public class ConcurrencyProviderImpl implements ConcurrencyProvider {
     }
 
     @Override
-    public ConcurrencyManagerBuilder getConcurrencyManagerBuilder() {
+    public ConcurrencyManager.Builder getConcurrencyManagerBuilder() {
         throw new UnsupportedOperationException(); // TODO
     }
 

@@ -96,6 +96,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
     private final AtomicLong maxWaitForEnqueueNS = new AtomicLong();
 
+    public final String owner;
+
     /**
      * This list is supplied to each instance that is programmatically created by PolicyExecutorProvider
      * so that each instance can manage its own membership per its life cycle.
@@ -243,14 +245,17 @@ public class PolicyExecutorImpl implements PolicyExecutor {
      *
      * @param globalExecutor the Liberty global executor, which was obtained by the PolicyExecutorProvider via declarative services.
      * @param identifier unique identifier for this instance, to be used for monitoring and problem determination.
+     * @param owner application that owns the policy executor instance. Null if not owned by a single application.
      * @param policyExecutors list of policy executor instances created by the PolicyExecutorProvider.
      *            Each instance is responsible for adding and removing itself from the list per its life cycle.
      * @throws IllegalStateException if an instance with the specified unique identifier already exists and has not been shut down.
      * @throws NullPointerException if the specified identifier is null
      */
-    public PolicyExecutorImpl(ExecutorServiceImpl globalExecutor, String identifier, ConcurrentHashMap<String, PolicyExecutorImpl> policyExecutors) {
+    public PolicyExecutorImpl(ExecutorServiceImpl globalExecutor, String identifier, String owner,
+                              ConcurrentHashMap<String, PolicyExecutorImpl> policyExecutors) {
         this.globalExecutor = globalExecutor;
         this.identifier = identifier;
+        this.owner = owner;
         this.policyExecutors = policyExecutors;
 
         maxConcurrencyConstraint.release(maxConcurrency = Integer.MAX_VALUE);
@@ -1238,6 +1243,13 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
+    public PolicyTaskFuture<Void> submit(AtomicReference<Future<?>> completableFutureRef, Runnable task) {
+        PolicyTaskFutureImpl<Void> policyTaskFuture = new PolicyTaskFutureImpl<Void>(this, task, completableFutureRef, startTimeout);
+        enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
+        return policyTaskFuture;
+    }
+
+    @Override
     public <T> Future<T> submit(Callable<T> task) {
         PolicyTaskFutureImpl<T> policyTaskFuture = new PolicyTaskFutureImpl<T>(this, task, null, startTimeout);
         enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
@@ -1416,5 +1428,4 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         }
         out.println();
     }
-
 }

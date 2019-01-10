@@ -13,15 +13,12 @@ package com.ibm.ws.kernel.internal.classloader;
 import java.io.IOException;
 import java.net.URL;
 import java.security.cert.Certificate;
-import java.util.jar.Manifest;
 
 /**
  */
 public interface ResourceEntry {
 
     ResourceHandler getResourceHandler();
-
-    Manifest getManifest() throws IOException;
 
     Certificate[] getCertificates();
 

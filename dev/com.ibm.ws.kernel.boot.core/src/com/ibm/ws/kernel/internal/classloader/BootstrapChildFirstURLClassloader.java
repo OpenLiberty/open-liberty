@@ -57,9 +57,10 @@ public final class BootstrapChildFirstURLClassloader extends URLClassLoader {
 
             result = findLoadedClass(name);
             if (result == null) {
-                if (name.startsWith(BootstrapChildFirstJarClassloader.KERNEL_BOOT_CLASS_PREFIX))
+                if (name.regionMatches(0, BootstrapChildFirstJarClassloader.KERNEL_BOOT_CLASS_PREFIX, 0,
+                                       BootstrapChildFirstJarClassloader.KERNEL_BOOT_PREFIX_LENGTH)) {
                     result = super.loadClass(name, resolve);
-                else {
+                } else {
                     try {
                         // Try to load the class from this classpath
                         result = findClass(name);
@@ -79,7 +80,8 @@ public final class BootstrapChildFirstURLClassloader extends URLClassLoader {
             return null;
 
         URL result = null;
-        if (name.startsWith(BootstrapChildFirstJarClassloader.KERNEL_BOOT_RESOURCE_PREFIX)) {
+        if (name.regionMatches(0, BootstrapChildFirstJarClassloader.KERNEL_BOOT_RESOURCE_PREFIX, 0,
+                               BootstrapChildFirstJarClassloader.KERNEL_BOOT_PREFIX_LENGTH)) {
             result = super.getResource(name);
         } else {
             // Try to get the resource from this classpath

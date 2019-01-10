@@ -18,6 +18,7 @@ Bundle-SymbolicName: com.ibm.websphere.org.eclipse.microprofile.concurrency.1.0;
 
 Import-Package: \
   javax.inject;resolution:=optional,\
+  javax.enterprise.util;resolution:=optional,\
   *
 
 Export-Package: \
@@ -25,7 +26,7 @@ Export-Package: \
   org.eclipse.microprofile.concurrent.spi;version=1.0
 
 Include-Resource: \
-  @${repo;com.ibm.ws.org.eclipse.microprofile.concurrency:microprofile-concurrency-api;0.20181204.144440;EXACT}
+  @${repo;com.ibm.ws.org.eclipse.microprofile.concurrency:microprofile-concurrency-api;0.20190104.144443.35;EXACT}
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 

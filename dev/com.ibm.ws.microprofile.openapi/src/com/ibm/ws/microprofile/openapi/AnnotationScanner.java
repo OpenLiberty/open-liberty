@@ -43,6 +43,7 @@ public class AnnotationScanner {
     private static final String JAX_RS_APP_PATH_ANNOTATION_CLASS_NAME = "javax.ws.rs.ApplicationPath";
     private static final String JAX_RS_PATH_ANNOTATION_CLASS_NAME = "javax.ws.rs.Path";
     private static final String OPENAPI_SCHEMA_ANNOTATION_CLASS_NAME = "org.eclipse.microprofile.openapi.annotations.media.Schema";
+    private static final String MP_REGISTER_REST_CLIENT = "org.eclipse.microprofile.rest.client.inject.RegisterRestClient";
 
     private static final List<String> ANNOTATION_CLASS_NAMES = Arrays.asList(JAX_RS_PATH_ANNOTATION_CLASS_NAME,
                                                                              JAX_RS_APP_PATH_ANNOTATION_CLASS_NAME,
@@ -181,12 +182,28 @@ public class AnnotationScanner {
         return getUrlMappingFromApp(appClassName);
     }
 
+
+    @FFDCIgnore(UnableToAdaptException.class)
     public synchronized Set<String> getAnnotatedClassesNames() {
-        AnnotationTargets_Targets annotationTargets = webAnnotations.getAnnotationTargets();
+        AnnotationTargets_Targets annotationTargets;
+        Set<String> restAPIClasses = null;
 
-        Set<String> restAPIClasses =
-            ANNOTATION_CLASS_NAMES.stream().flatMap(anno -> annotationTargets.getAnnotatedClasses(anno, AnnotationTargets_Targets.POLICY_SEED).stream()).collect(Collectors.toSet());
+        try {
+            annotationTargets = webAnnotations.getAnnotationTargets();
 
+            // 'getAnnotatedClasses' with no policy selects SEED classes.
+            restAPIClasses = ANNOTATION_CLASS_NAMES.stream()
+                .flatMap(anno -> annotationTargets.getAnnotatedClasses(anno).stream())
+                .collect(Collectors.toSet());
+
+            // Remove any MP Rest Client interfaces from the OpenAPI view
+            Set<String> mpRestClientClasses = annotationTargets.getAnnotatedClasses(MP_REGISTER_REST_CLIENT);
+            restAPIClasses.removeAll(mpRestClientClasses);
+        } catch (UnableToAdaptException e) {
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Unable to get annotated class names");
+            }
+        }
         return Collections.unmodifiableSet(restAPIClasses);
     }
 

@@ -22,7 +22,8 @@ fat.project: true
 tested.features: \
   jaxrs-2.0,\
   jpa-2.1,\
-  ldapregistry-3.0
+  ldapregistry-3.0,\
+  jaxb-2.3
 
 -buildpath: \
     com.ibm.websphere.javaee.jaxb.2.2;version=latest,\

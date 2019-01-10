@@ -45,6 +45,13 @@
     	
     <dependencies>
 		<dependency>
+			<groupId>com.ibm.ws</groupId>
+ 			<artifactId>fattest.simplicity</artifactId>
+			<version>1</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/../../../lib/fattest.simplicity.jar</systemPath> <!-- This will point to build/libs/autoFVT/lib/fattest.simplicity.jar -->
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse.microprofile.metrics</groupId>
 			<artifactId>microprofile-metrics-api</artifactId>
 			<version>${microprofile.metrics.version}</version>

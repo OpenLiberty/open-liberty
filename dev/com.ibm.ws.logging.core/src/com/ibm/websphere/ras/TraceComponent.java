@@ -197,7 +197,7 @@ public class TraceComponent implements FFDCSelfIntrospectable {
                 logger = Logger.getLogger(name, bundle);
                 logger.setLevel(getLoggerLevel());
             } finally {
-                WsLogger.loggerRegistrationComponent.set(null); // clear when done.
+                WsLogger.loggerRegistrationComponent.remove(); // clear when done.
             }
         }
 

@@ -3429,7 +3429,8 @@ public class MPConcurrentTestServlet extends FATServlet {
                 fail("second task from executor 2 should be canceled/interrupted due to shutdown. Instead result is: " + cf2b.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
             } catch (CancellationException x) {
             } catch (ExecutionException x) {
-                if (!(x.getCause() instanceof InterruptedException))
+                if (!(x.getCause() instanceof InterruptedException) &&
+                    !(x.getCause() instanceof CancellationException)) // behavior of java.util.concurrent.CompletableFuture
                     throw x;
             }
 
@@ -3508,6 +3509,57 @@ public class MPConcurrentTestServlet extends FATServlet {
         } catch (IllegalStateException x) {
             // expected
         }
+    }
+
+    /**
+     * Intentionally leave a couple of ManagedExecutors around when the application stops.
+     * They should be shut down automatically.
+     */
+    // @Test is omitted so that MPConcurrentTest can invoke this method right before server stop.
+    public void testShutDownUponApplicationStop() throws Exception {
+        ManagedExecutor.Builder builder = ManagedExecutor.builder();
+        builder
+                        .propagated(ThreadContext.ALL_REMAINING)
+                        .cleared(ThreadContext.TRANSACTION)
+                        .build();
+
+        ManagedExecutor executor2 = builder
+                        .maxAsync(2)
+                        .maxQueued(20)
+                        .propagated(ThreadContext.APPLICATION, ThreadContext.SECURITY)
+                        .cleared(ThreadContext.ALL_REMAINING)
+                        .build();
+
+        ManagedExecutor executor3 = builder
+                        .maxAsync(1)
+                        .maxQueued(3)
+                        .propagated()
+                        .build();
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        executor2.runAsync(() -> {
+            try {
+                blocker.await();
+            } catch (InterruptedException x) {
+                System.out.println("Task 1 interrupted.");
+            }
+        });
+        executor2.supplyAsync(() -> {
+            try {
+                blocker.await();
+            } catch (InterruptedException x) {
+                System.out.println("Task 2 interrupted.");
+            }
+            return "should not complete";
+        });
+        executor3.runAsync(() -> {
+            try {
+                blocker.await();
+            } catch (InterruptedException x) {
+                System.out.println("Task 3 interrupted.");
+            }
+        });
+        executor2.submit(() -> System.out.println("Task 4 should not run. It should have been canceled from the queue upon shutdownNow."));
     }
 
     /**

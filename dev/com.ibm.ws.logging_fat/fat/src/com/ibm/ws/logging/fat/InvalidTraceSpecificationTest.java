@@ -19,15 +19,19 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.Logging;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  *
  */
+@RunWith(FATRunner.class)
 public class InvalidTraceSpecificationTest {
 
     protected static final String MESSAGE_LOG = "logs/messages.log";
@@ -39,8 +43,7 @@ public class InvalidTraceSpecificationTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory
-                        .getLibertyServer("com.ibm.ws.logging.tracespec");
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.tracespec");
         System.out.println("Starting server)");
         server.startServer();
         System.out.println("Stared server)");
