@@ -100,6 +100,11 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
     private ClassLoader raClassLoader = null;
 
     /**
+     * Whether the Liberty connection pool has been disabled
+     */
+    private boolean disableLibertyConnectionPool;
+
+    /**
      * Default constructor for declarative services to use before activating the service.
      */
     public ConnectionManagerServiceImpl() {}
@@ -447,32 +452,56 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
     private J2CGlobalConfigProperties processServerPoolManagerProperties(AbstractConnectionFactoryService svc, Map<String, Object> properties) throws ResourceException {
         @SuppressWarnings("unchecked")
         Map<String, Object> map = properties == null ? Collections.EMPTY_MAP : new HashMap<String, Object>(properties);
+        int agedTimeout, connectionTimeout, maxIdleTime, maxNumberOfMCsAllowableInThread, maxPoolSize, minPoolSize, numConnectionsPerThreadLocal, reapTime;
+        PurgePolicy purgePolicy;
 
-        int agedTimeout = validateProperty(map, J2CConstants.POOL_AgedTimeout, -1, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, true, connectorSvc);
-        int connectionTimeout = validateProperty(map, J2CConstants.POOL_ConnectionTimeout, 30, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, true, connectorSvc);
-        int maxIdleTime = validateProperty(map, MAX_IDLE_TIME, ConnectionPoolProperties.DEFAULT_UNUSED_TIMEOUT, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, false, connectorSvc);
-        int maxNumberOfMCsAllowableInThread = validateProperty(map, MAX_CONNECTIONS_PER_THREAD, 0, null, 0, Integer.MAX_VALUE, true, connectorSvc);
-        int maxPoolSize = validateProperty(map, MAX_POOL_SIZE, 50, null, 0, Integer.MAX_VALUE, true, connectorSvc);
-        int minPoolSize = 0;
-        if (maxPoolSize == 0)
-            minPoolSize = validateProperty(map, MIN_POOL_SIZE, 0, null, 0, Integer.MAX_VALUE, true, connectorSvc);
-        else
-            minPoolSize = validateProperty(map, MIN_POOL_SIZE, 0, null, 0, maxPoolSize, true, connectorSvc);
+        if (svc != null) {
+            //Cache the value of svc.isLibertyConnectionPoolingDisabled() for the Connection Manager modified code path
+            disableLibertyConnectionPool = svc.isLibertyConnectionPoolingDisabled();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "Setting disableLibertyConnectionManager to " + disableLibertyConnectionPool);
+        }
 
-        int numConnectionsPerThreadLocal = validateProperty(map, NUM_CONNECTIONS_PER_THREAD_LOCAL, ConnectionPoolProperties.DEFAULT_numConnectionsPerThreadLocal,
+        if (disableLibertyConnectionPool) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "Overriding config with values for a disabled connection pool.");
+            agedTimeout = 0; //0 discards every connection disabling Liberty connection pooling
+            connectionTimeout = -1;
+            maxIdleTime = -1;
+            maxPoolSize = 0;
+            minPoolSize = 0;
+            purgePolicy = PurgePolicy.FailingConnectionOnly;
+            reapTime = -1;
+            maxNumberOfMCsAllowableInThread = 0;
+            numConnectionsPerThreadLocal = 0;
+        } else {
+            agedTimeout = validateProperty(map, J2CConstants.POOL_AgedTimeout, -1, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, true, connectorSvc);
+            connectionTimeout = validateProperty(map, J2CConstants.POOL_ConnectionTimeout, 30, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, true, connectorSvc);
+            maxIdleTime = validateProperty(map, MAX_IDLE_TIME, ConnectionPoolProperties.DEFAULT_UNUSED_TIMEOUT, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, false, connectorSvc);
+            maxNumberOfMCsAllowableInThread = validateProperty(map, MAX_CONNECTIONS_PER_THREAD, 0, null, 0, Integer.MAX_VALUE, true, connectorSvc);
+            maxPoolSize = validateProperty(map, MAX_POOL_SIZE, 50, null, 0, Integer.MAX_VALUE, true, connectorSvc);
+            minPoolSize = 0;
+            if (maxPoolSize == 0)
+                minPoolSize = validateProperty(map, MIN_POOL_SIZE, 0, null, 0, Integer.MAX_VALUE, true, connectorSvc);
+            else
+                minPoolSize = validateProperty(map, MIN_POOL_SIZE, 0, null, 0, maxPoolSize, true, connectorSvc);
+
+            numConnectionsPerThreadLocal = validateProperty(map, NUM_CONNECTIONS_PER_THREAD_LOCAL, ConnectionPoolProperties.DEFAULT_numConnectionsPerThreadLocal,
                                                             null, 0, Integer.MAX_VALUE, true, connectorSvc);
-        int reapTime = validateProperty(map, J2CConstants.POOL_ReapTime, ConnectionPoolProperties.DEFAULT_REAP_TIME, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, false, connectorSvc);
+            reapTime = validateProperty(map, J2CConstants.POOL_ReapTime, ConnectionPoolProperties.DEFAULT_REAP_TIME, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, false,
+                                        connectorSvc);
+
+            /*
+             * The purge policy has three property values in Liberty. The three same combinations
+             * can be set in twas, but two properties need to be used.
+             * EntirePool --> EntirePool
+             * FailingConnectionOnly --> FailingConnectionOnly with defaultPretestOptimizationOverride = false
+             * ValidateAllConnections --> FailingConnectionOnly with defaultPretestOptimizationOverride = true
+             */
+            purgePolicy = validateProperty(map, J2CConstants.POOL_PurgePolicy, PurgePolicy.EntirePool, PurgePolicy.class, connectorSvc);
+        }
 
         boolean throwExceptionOnMCThreadCheck = false;
-
-        /*
-         * The purge policy has three property values in Liberty. The three same combinations
-         * can be set in twas, but two properties need to be used.
-         * EntirePool --> EntirePool
-         * FailingConnectionOnly --> FailingConnectionOnly with defaultPretestOptimizationOverride = false
-         * ValidateAllConnections --> FailingConnectionOnly with defaultPretestOptimizationOverride = true
-         */
-        PurgePolicy purgePolicy = validateProperty(map, J2CConstants.POOL_PurgePolicy, PurgePolicy.EntirePool, PurgePolicy.class, connectorSvc);
 
         // Identify unrecognized properties - TODO: enable when we have a stricter variant of onError
         //map.remove(ID);

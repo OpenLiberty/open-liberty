@@ -504,4 +504,9 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
         }
 
     }
+
+    @Override
+    public boolean isLibertyConnectionPoolingDisabled() {
+        return false;
+    }
 }
