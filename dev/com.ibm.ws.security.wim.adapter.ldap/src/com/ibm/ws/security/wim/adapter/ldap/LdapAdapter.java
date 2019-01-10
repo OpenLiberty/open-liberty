@@ -1168,7 +1168,8 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
             throw new WIMSystemException(WIMMessageKey.SYSTEM_EXCEPTION, Tr.formatMessage(
                                                                                           tc,
                                                                                           WIMMessageKey.SYSTEM_EXCEPTION,
-                                                                                          WIMMessageHelper.generateMsgParms(e.toString())));
+                                                                                          WIMMessageHelper.generateMsgParms(e.toString() + ".  Timestamp received from Ldap: "
+                                                                                                                            + ldapValue)));
         }
 
         if (getCalendar)
