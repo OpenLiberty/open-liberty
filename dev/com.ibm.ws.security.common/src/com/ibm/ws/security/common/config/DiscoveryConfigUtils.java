@@ -272,8 +272,11 @@ public class DiscoveryConfigUtils {
      * @return
      */
     public String discoverOPConfigSingleValue(Object object) {
-       
-        return jsonValue(object).get(0);
+        String str = null;
+        if (object != null) {
+            return jsonValue(object).get(0);
+        }
+        return str;
     }
 
     /**
@@ -309,7 +312,7 @@ public class DiscoveryConfigUtils {
      */
     private void logWarning(String key, String endpoints) {
            
-        Tr.warning(tc, key, KEY_DISCOVERY_ENDPOINT, endpoints, getId());
+        Tr.warning(tc, key, this.discoveryURL, endpoints, getId());
         
     }
 
