@@ -15,6 +15,7 @@ import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
+import org.eclipse.microprofile.concurrent.ManagedExecutorConfig;
 import org.eclipse.microprofile.concurrent.NamedInstance;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -30,8 +31,15 @@ public class ConcurrencyConfigBean {
 
     // MicroProfile Concurrency automatically shuts down ManagedExecutors when the application stops.
     // But even if the application writes its own disposer, it shouldn't get an error.
-    void shutdownExecutor(@Disposes @NamedInstance("applicationProducedExecutor") ManagedExecutor exec) {
+    void disposeExecutor(@Disposes @NamedInstance("applicationProducedExecutor") ManagedExecutor exec) {
         System.out.println("### disposer");
         exec.shutdownNow();
+    }
+
+    @Produces
+    @ApplicationScoped
+    @NamedInstance("containerExecutorReturnedByAppProducer")
+    ManagedExecutor getExecutor(@ManagedExecutorConfig(maxAsync = 1, maxQueued = 1) ManagedExecutor exec) { // MP Config sets maxQueued=3
+        return exec;
     }
 }

@@ -17,6 +17,7 @@ import static org.junit.Assert.fail;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Exchanger;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -47,6 +48,10 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
     @Inject
     @ManagedExecutorConfig(maxAsync = 1)
     ManagedExecutor annotatedExecutorWithMPConfigOverride; // MP Config sets maxAsync=2, maxQueued=3
+
+    @Inject
+    @NamedInstance("containerExecutorReturnedByAppProducer")
+    ManagedExecutor containerExecutorReturnedByAppProducer;
 
     @Inject
     ManagedExecutor executorWithMPConfigOverride; // MP Config sets cleared=City, propagated=Application,State
@@ -160,6 +165,45 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
             assertEquals("Context type not restored.", "Minnesota", CurrentLocation.getState());
         } finally {
             CurrentLocation.clear();
+        }
+    }
+
+    /**
+     * Use MicroProfile Config to override config properties of a ManagedExecutor injection point
+     * that is a parameter of a Producer method. This is verified by confirming that maxQueued=3
+     * from microprofile-config.properties is enforced.
+     */
+    @Test
+    public void testMPConfigOverridesManagedExecutorConfigOnParameter() throws Exception {
+        assertNotNull(containerExecutorReturnedByAppProducer);
+
+        // schedule task to block and wait for it to start
+        Exchanger<String> status = new Exchanger<String>();
+        Future<String> future0 = containerExecutorReturnedByAppProducer.submit(() -> status.exchange(status.exchange("READY")));
+        try {
+            status.exchange("WAITING", TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            CompletableFuture<Integer> cf1 = containerExecutorReturnedByAppProducer.supplyAsync(() -> 111);
+            CompletableFuture<Integer> cf2 = containerExecutorReturnedByAppProducer.supplyAsync(() -> 222);
+            CompletableFuture<Integer> cf3 = containerExecutorReturnedByAppProducer.supplyAsync(() -> 333);
+
+            try {
+                Future<?> future = containerExecutorReturnedByAppProducer.submit(() -> System.out.println("This shouldn't be running!"));
+                fail("Should not be able to run more than 1 task or have more then 3 queued. " + future);
+            } catch (RejectedExecutionException x) {
+                // Pass - intentionally exceeded queue capacity in order to test maxQueued constraint
+            }
+
+            // unblock the running task
+            status.exchange("CONTINUE");
+
+            assertEquals(future0.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), "CONTINUE");
+            assertEquals(cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Integer.valueOf(111));
+            assertEquals(cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Integer.valueOf(222));
+            assertEquals(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Integer.valueOf(333));
+        } finally {
+            if (future0.isDone())
+                future0.cancel(true);
         }
     }
 }
