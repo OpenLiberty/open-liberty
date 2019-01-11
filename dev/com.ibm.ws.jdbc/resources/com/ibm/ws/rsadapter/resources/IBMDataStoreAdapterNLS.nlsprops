@@ -271,6 +271,10 @@ DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: The JDBC driver does not su
 DSRA4011.tran.none.iso.switch.unsupported.explanation=The JDBC specification does not support switching to an isolation level of TRANSACTION_NONE.
 DSRA4011.tran.none.iso.switch.unsupported.useraction=Avoid switching to an isolation level of TRANSACTION_NONE.
 
+DSRA4014.URL.for.Driver.missing=DSRA4014E: The type java.sql.Driver was specified for data source {0} but no URL attribute was specified.
+DSRA4014.URL.for.Driver.missing.explanation=A connection URL must be specified for a data source that is a java.sql.Driver type.
+DSRA4014.URL.for.Driver.missing.useraction=Add a valid URL to the data source.
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
