@@ -33,8 +33,6 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 Export-Package: \
     com.ibm.wsspi.genericbnf*;provide:=true, \
     com.ibm.wsspi.http*;provide:=true, \
-    com.ibm.wsspi.http.ee7*;provide:=true, \
-    com.ibm.wsspi.http.ee8*;provide:=true, \
     com.ibm.ws.transport.access*;provide:=true, \
     com.ibm.ws.genericbnf, \
     com.ibm.ws.http.dispatcher.classify, \
@@ -45,11 +43,7 @@ Export-Package: \
 
 Private-Package: \
 	com.ibm.ws.http.*, \
-	com.ibm.ws.http.dispatcher*, \
-	com.ibm.ws.http.channel*, \
-	com.ibm.ws.http.logging.internal, \
-	com.ibm.ws.genericbnf.internal, \
-	com.ibm.ws.http.dispatcher.classify
+	com.ibm.ws.genericbnf.internal
 
 -dsannotations: com.ibm.ws.http.channel.internal.inbound.HttpPipelineEventHandler,\
   com.ibm.ws.http.dispatcher.internal.HttpDispatcher,\

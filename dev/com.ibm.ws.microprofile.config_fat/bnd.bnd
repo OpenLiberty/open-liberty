@@ -57,6 +57,5 @@ tested.features: mpConfig-1.1,\
         com.ibm.ws.microprofile.config;version=latest,\
         com.ibm.ws.microprofile.config.cdi;version=latest,\
         com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.ws.microprofile.config_repeat_tests;version=latest

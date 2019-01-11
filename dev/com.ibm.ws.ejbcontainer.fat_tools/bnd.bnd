@@ -51,7 +51,6 @@ generate.replacement: true
 	com.ibm.ws.ejbcontainer.core; version=latest, \
 	com.ibm.ws.logging; version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations; version=latest, \
-	com.ibm.ws.ejbcontainer.core; version=latest, \
 	com.ibm.websphere.javaee.transaction.1.1; version=latest, \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.websphere.security; version=latest, \

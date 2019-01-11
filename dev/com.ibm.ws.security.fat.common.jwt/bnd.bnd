@@ -61,6 +61,5 @@ javac.target: 1.8
 	com.ibm.json4j;version=latest,\
 	com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
 	com.ibm.ws.org.glassfish.json.1.1, \
-	com.ibm.ws.org.jose4j.0.5.1;version=latest, \
-	com.ibm.json4j;version=latest
+	com.ibm.ws.org.jose4j.0.5.1;version=latest
     

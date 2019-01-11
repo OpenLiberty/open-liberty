@@ -27,7 +27,6 @@ javac.target: 1.8
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.core.3.2,\
   com.ibm.ws.jaxrs.2.0.common;version=latest,\
   com.ibm.ws.jaxrs.2.0.client;version=latest,\
   com.ibm.ws.logging.core;version=latest

@@ -31,7 +31,6 @@ src: \
     test-applications/JSF23SelectOneRadioGroup.war/src,\
     test-applications/JSF23ViewParameters.war/src,\
     test-applications/StartupShutdownExternalContext.war/src,\
-    test-applications/ImportConstantsTag.war/src,\
     test-applications/PostRenderViewEvent.war/src,\
     test-applications/CDIManagedProperty.war/src,\
     test-applications/ELImplicitObjectsViaCDI.war/src,\
@@ -47,7 +46,7 @@ src: \
     test-applications/CDIInjectionTests.war/src,\
     test-applications/CDICommon/src,\
     test-applications/CDIConfigByACP.war/src,\
-    test-applications/CDIConfigByACP.jar/src,\
+    test-applications/CDIConfigByACP.jar/src
 
 fat.project: true
 
@@ -61,4 +60,4 @@ javac.target: 1.8
     com.ibm.websphere.javaee.jsf.2.3;version=latest,\
     com.ibm.websphere.javaee.validation.2.0;version=latest,\
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-    com.ibm.websphere.javaee.el.3.0;version=latest,\
+    com.ibm.websphere.javaee.el.3.0;version=latest
