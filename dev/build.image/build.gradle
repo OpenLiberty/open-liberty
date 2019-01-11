@@ -276,14 +276,14 @@ task packageOpenLibertyMicroProfile2(type: PackageLibertyWithFeatures) {
 }
 
 // Includes only kind=ga features.
-task zipOpenLibertyRuntime(type: Zip) {
+task zipOpenLiberty(type: Zip) {
     dependsOn packageOpenLiberty
-    baseName 'openliberty-runtime'
+    baseName 'openliberty'
     from packageDir
     destinationDir distsDir
     version releaseVersion
 }
-publish.dependsOn zipOpenLibertyRuntime
+publish.dependsOn zipOpenLiberty
 
 // Includes only kind=ga features.
 task zipOpenLibertyKernel(type: Zip) {
@@ -358,7 +358,7 @@ publishing {
             groupId 'io.openliberty'
             artifactId 'openliberty-runtime'
             version project.version
-            artifact zipOpenLibertyRuntime
+            artifact zipOpenLiberty
         }
         openLibertyKernel(MavenPublication) {
             groupId 'io.openliberty'
@@ -405,6 +405,13 @@ task createOLRuntimePoms {
                 url 'git@github.com:OpenLiberty/open-liberty.git'
                 tag 'HEAD'
             }
+            developers {
+                developer {
+                    id 'cbridgha'
+                    name 'Chuck Bridgham'
+                    email 'cbridgha@us.ibm.com'
+                }
+            }
         }
     }.writeTo("${mavenDir}/openliberty-runtime-${bnd.libertyRelease}.pom")
     pom {
@@ -428,6 +435,13 @@ task createOLRuntimePoms {
                 developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
                 url 'git@github.com:OpenLiberty/open-liberty.git'
                 tag 'HEAD'
+            }
+            developers {
+                developer {
+                    id 'cbridgha'
+                    name 'Chuck Bridgham'
+                    email 'cbridgha@us.ibm.com'
+                }
             }
         }
     }.writeTo("${mavenDir}/openliberty-webProfile8-${bnd.libertyRelease}.pom")
@@ -453,6 +467,13 @@ task createOLRuntimePoms {
                 url 'git@github.com:OpenLiberty/open-liberty.git'
                 tag 'HEAD'
             }
+            developers {
+                developer {
+                    id 'cbridgha'
+                    name 'Chuck Bridgham'
+                    email 'cbridgha@us.ibm.com'
+                }
+            }
         }
     }.writeTo("${mavenDir}/openliberty-kernel-${bnd.libertyRelease}.pom")
     pom {
@@ -476,6 +497,13 @@ task createOLRuntimePoms {
                 developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
                 url 'git@github.com:OpenLiberty/open-liberty.git'
                 tag 'HEAD'
+            }
+            developers {
+                developer {
+                    id 'cbridgha'
+                    name 'Chuck Bridgham'
+                    email 'cbridgha@us.ibm.com'
+                }
             }
         }
     }.writeTo("${mavenDir}/openliberty-javaee8-${bnd.libertyRelease}.pom")
