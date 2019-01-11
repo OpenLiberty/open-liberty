@@ -3093,6 +3093,10 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     // No FFDC code needed; this is a normal case.
                     // Continue with the rollback if an exception is thrown on end. 
                 }
+                
+                if (aborted) {
+                    break;
+                }
 
                 try {
                     ((WSRdbXaResourceImpl) xares).rollback();

@@ -180,12 +180,6 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
         if (("rollback".equals(methodName))
             && instance instanceof XAResource
             && connectionHandler != null && connectionHandler.isAborted) {
-//            try {
-//                method.invoke(instance, args);
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-
             return null;
         }
         if ("setShardingKey".equals(methodName)) {

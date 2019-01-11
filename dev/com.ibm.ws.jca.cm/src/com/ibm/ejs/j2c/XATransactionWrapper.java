@@ -850,6 +850,11 @@ public class XATransactionWrapper implements XAResource, Synchronization, TranWr
         if (isTracingEnabled && tc.isEntryEnabled())
             Tr.entry(this, tc, "rollback");
 
+        if (getMcWrapper().isMCAborted()) {
+            Tr.exit(tc, "Connection was aborted. Exiting rollback.");
+            return;
+        }
+
         this.hasRollbackOccured = true;
 
         try {

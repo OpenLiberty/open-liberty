@@ -37,7 +37,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
-import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.j2c.TranWrapper;
 import com.ibm.ws.jca.adapter.WSManagedConnection;
@@ -1556,9 +1555,10 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             }
 
         } catch (Exception e) {
+            if (!isMCAborted()) {
+                com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ejs.j2c.MCWrapper.cleanup", "712", this);
+            }
 
-            com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ejs.j2c.MCWrapper.cleanup", "712", this);
-            ResourceException re = null;
             if (!stale && !do_not_reuse_mcw) {
                 Object[] parms = new Object[] { "cleanup", "cleanup", mc, e, gConfigProps.cfName };
                 Tr.error(tc, "MCERROR_J2CA0081", parms);
@@ -1567,9 +1567,13 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
                     Tr.debug(this, tc, "got a SCE when doing cleanup on the mc, { mc, e, pmiName}; is:", new Object[] { mc, e, gConfigProps.cfName });
                 }
             }
-            re = new ResourceException("cleanup: Exception caught");
-            re.initCause(e);
-            throw re;
+
+            if (!isMCAborted()) {
+                ResourceException re = null;
+                re = new ResourceException("cleanup: Exception caught");
+                re.initCause(e);
+                throw re;
+            }
 
         } finally {
             if (mcConnectionCount != 0) {
@@ -2230,23 +2234,16 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
                         Tr.debug(this, tc, "Connection is aborted, removing MCWrapper from the pool.");
                     }
 
-                    try {
-                        getCurrentTranWrapper().delist();
-                    } catch (ResourceException e) {
-                        //TODO: need to review this error handling
-
-                        // Can't delist, something went wrong.
-                        // Destroy the connection(s) so it can't cause any future problems.
-                        FFDCFilter.processException(e, "com.ibm.ejs.j2c.MCWrapper.connectionErrorOccurred", "2240", this);
-                        // add datasource name to message
-                        Tr.error(tc, "DELIST_FAILED_J2CA0073", "connectionErrorOccurred", e, gConfigProps.cfName);
-                        // Moved connectionEvent.getSource() inside of catch block for performance reasons
-                        ManagedConnection mc = null;
+                    if (involvedInTransaction()) {
                         try {
-                            mc = (ManagedConnection) connectionEvent.getSource();
-                        } catch (ClassCastException cce) {
-                            Tr.error(tc, "GET_SOURCE_CLASS_CAST_EXCP_J2CA0098", cce);
-                            throw new IllegalStateException("ClassCastException occurred attempting to cast event.getSource to ManagedConnection");
+                            TranWrapper tranWrapper = getCurrentTranWrapper();
+                            if (tranWrapper instanceof LocalTransactionWrapper &&
+                                ((LocalTransactionWrapper) tranWrapper).isEnlisted()) {
+                                tranWrapper.delist();
+                            }
+                        } catch (ResourceException e) {
+                            // Can't delist, assuming the connection was already destroyed since it was aborted.
+                            Tr.error(tc, "DELIST_FAILED_J2CA0073", "connectionErrorOccurred", e, gConfigProps.cfName);
                         }
                     }
                     releaseToPoolManagerHelper();
