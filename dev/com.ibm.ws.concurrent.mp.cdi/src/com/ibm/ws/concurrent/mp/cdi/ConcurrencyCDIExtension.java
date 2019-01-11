@@ -61,11 +61,13 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
     private final Set<Throwable> deploymentErrors = new LinkedHashSet<>();
     private final Set<String> appDefinedProducers = new HashSet<>();
 
-    private final MPConfigAccessor mpConfig = AccessController.doPrivileged((PrivilegedAction<MPConfigAccessor>) () -> {
+    final MPConfigAccessor mpConfigAccessor = AccessController.doPrivileged((PrivilegedAction<MPConfigAccessor>) () -> {
         BundleContext bundleContext = FrameworkUtil.getBundle(ManagedExecutorBean.class).getBundleContext();
         ServiceReference<MPConfigAccessor> mpConfigAccessorRef = bundleContext.getServiceReference(MPConfigAccessor.class);
         return mpConfigAccessorRef == null ? null : bundleContext.getService(mpConfigAccessorRef);
     });
+
+    Object mpConfig;
 
     @Trivial
     public void processProducer(@Observes ProcessProducer<?, ManagedExecutor> event, BeanManager bm) {
@@ -122,8 +124,10 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
     }
 
     public void registerBeans(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
+        mpConfig = mpConfigAccessor == null ? null : mpConfigAccessor.getConfig();
+
         // Always register a bean for @Default programmatic CDI lookups
-        event.addBean(new ManagedExecutorBean(mpConfig));
+        event.addBean(new ManagedExecutorBean(this));
 
         // Don't register beans for app-defined @NamedInstance producers
         for (String appDefinedProducer : appDefinedProducers) {
@@ -134,7 +138,7 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
         for (Entry<String, ManagedExecutorConfig> e : beanMap.entrySet()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Add bean for name=" + e.getKey());
-            event.addBean(new ManagedExecutorBean(e.getKey(), e.getValue(), mpConfig));
+            event.addBean(new ManagedExecutorBean(e.getKey(), e.getValue(), this));
         }
     }
 
