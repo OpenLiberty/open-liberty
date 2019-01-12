@@ -31,6 +31,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.microprofile.faulttolerance.spi.FTExecutionContext;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState;
@@ -61,13 +62,14 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
     private static final TraceComponent tc = Tr.register(AsyncExecutor.class);
 
     public AsyncExecutor(RetryPolicy retry, CircuitBreakerPolicy cbPolicy, TimeoutPolicy timeoutPolicy, FallbackPolicy fallbackPolicy, BulkheadPolicy bulkheadPolicy,
-                         ScheduledExecutorService executorService, PolicyExecutorProvider policyExecutorProvider) {
+                         ScheduledExecutorService executorService, PolicyExecutorProvider policyExecutorProvider, MetricRecorder metricRecorder) {
         retryPolicy = retry;
-        circuitBreaker = FaultToleranceStateFactory.INSTANCE.createCircuitBreakerState(cbPolicy);
+        circuitBreaker = FaultToleranceStateFactory.INSTANCE.createCircuitBreakerState(cbPolicy, metricRecorder);
         this.timeoutPolicy = timeoutPolicy;
         this.executorService = executorService;
         this.fallbackPolicy = fallbackPolicy;
-        bulkhead = FaultToleranceStateFactory.INSTANCE.createAsyncBulkheadState(policyExecutorProvider, executorService, bulkheadPolicy);
+        bulkhead = FaultToleranceStateFactory.INSTANCE.createAsyncBulkheadState(policyExecutorProvider, executorService, bulkheadPolicy, metricRecorder);
+        this.metricRecorder = metricRecorder;
     }
 
     private final RetryPolicy retryPolicy;
@@ -76,6 +78,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
     private final TimeoutPolicy timeoutPolicy;
     private final FallbackPolicy fallbackPolicy;
     private final AsyncBulkheadState bulkhead;
+    private final MetricRecorder metricRecorder;
 
     @Override
     public W execute(Callable<W> callable, ExecutionContext context) {
@@ -91,7 +94,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         W returnWrapper = createReturnWrapper(executionContext);
         executionContext.setReturnWrapper(returnWrapper);
 
-        RetryState retryState = FaultToleranceStateFactory.INSTANCE.createRetryState(retryPolicy);
+        RetryState retryState = FaultToleranceStateFactory.INSTANCE.createRetryState(retryPolicy, metricRecorder);
         executionContext.setRetryState(retryState);
         retryState.start();
 
@@ -125,7 +128,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
 
         AsyncAttemptContextImpl<W> attemptContext = new AsyncAttemptContextImpl<>(executionContext);
 
-        TimeoutState timeout = FaultToleranceStateFactory.INSTANCE.createTimeoutState(executorService, timeoutPolicy);
+        TimeoutState timeout = FaultToleranceStateFactory.INSTANCE.createTimeoutState(executorService, timeoutPolicy, metricRecorder);
         attemptContext.setTimeoutState(timeout);
 
         if (!circuitBreaker.requestPermissionToExecute()) {
@@ -267,6 +270,11 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 result = runFallback(result, executionContext);
             }
 
+            metricRecorder.incrementInvocationCount();
+            if (result.isFailure()) {
+                metricRecorder.incrementInvocationFailedCount();
+            }
+
             commitResult(executionContext, result);
 
         } catch (Throwable t) {
@@ -288,6 +296,8 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Method {0} calling fallback", executionContext.getMethod());
         }
+
+        metricRecorder.incrementFallbackCalls();
 
         executionContext.setFailure(result.getFailure());
         try {

@@ -27,16 +27,16 @@ public class ExecutorBuilderImpl20<T, R> extends ExecutorBuilderImpl<T, R> {
 
     @Override
     public Executor<R> build() {
-        return new SyncExecutor<>(retryPolicy, circuitBreakerPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, scheduledExecutorService);
+        return new SyncExecutor<>(retryPolicy, circuitBreakerPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, scheduledExecutorService, metricRecorder);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <W> Executor<W> buildAsync(Class<?> asyncResultWrapperType) {
         if (asyncResultWrapperType == Future.class) {
-            return (Executor<W>) new AsyncFutureExecutor<Object>(retryPolicy, circuitBreakerPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, scheduledExecutorService, policyExecutorProvider);
+            return (Executor<W>) new AsyncFutureExecutor<Object>(retryPolicy, circuitBreakerPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, scheduledExecutorService, policyExecutorProvider, metricRecorder);
         } else if (asyncResultWrapperType == CompletionStage.class) {
-            return (Executor<W>) new AsyncCompletionStageExecutor<Object>(retryPolicy, circuitBreakerPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, scheduledExecutorService, policyExecutorProvider);
+            return (Executor<W>) new AsyncCompletionStageExecutor<Object>(retryPolicy, circuitBreakerPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, scheduledExecutorService, policyExecutorProvider, metricRecorder);
         } else {
             throw new IllegalArgumentException("Invalid return type for async execution: " + asyncResultWrapperType);
         }
