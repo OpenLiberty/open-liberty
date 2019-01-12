@@ -31,16 +31,26 @@ public class MPConfigAccessorImpl implements MPConfigAccessor {
     /**
      * Reads a String[] or Integer property value from MicroProfile Config.
      *
+     * @param config instance of org.eclipse.microprofile.config.Config.
      * @param name config property name.
      * @param defaultValue value to use if a config property with the specified name is not found.
      * @return value from MicroProfile Config. Otherwise the default value.
      */
     @Override
-    public <T> T get(String name, T defaultValue) {
-        Config config = configProviderResolver.getConfig();
+    public <T> T get(Object config, String name, T defaultValue) {
         Class<?> cl = defaultValue == null ? String[].class : defaultValue.getClass();
         @SuppressWarnings("unchecked")
-        Optional<T> configuredValue = (Optional<T>) config.getOptionalValue(name, cl);
+        Optional<T> configuredValue = (Optional<T>) ((Config) config).getOptionalValue(name, cl);
         return configuredValue.orElse(defaultValue);
+    }
+
+    /**
+     * Resolve instance of org.eclipse.microprofile.config.Config.
+     *
+     * @return instance of org.eclipse.microprofile.config.Config.
+     */
+    @Override
+    public Object getConfig() {
+        return configProviderResolver.getConfig();
     }
 }

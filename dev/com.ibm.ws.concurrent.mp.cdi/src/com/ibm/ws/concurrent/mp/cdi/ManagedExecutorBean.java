@@ -44,23 +44,23 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
     private final String name;
     private final Set<Annotation> qualifiers;
     private final ManagedExecutorConfig config;
-    private final MPConfigAccessor mpConfig;
+    private final ConcurrencyCDIExtension cdiExtension;
 
-    public ManagedExecutorBean(MPConfigAccessor mpConfig) {
+    public ManagedExecutorBean(ConcurrencyCDIExtension cdiExtension) {
         this.name = getClass().getCanonicalName();
         this.config = null;
-        this.mpConfig = mpConfig;
+        this.cdiExtension = cdiExtension;
         Set<Annotation> qualifiers = new HashSet<>(2);
         qualifiers.add(Any.Literal.INSTANCE);
         qualifiers.add(Default.Literal.INSTANCE);
         this.qualifiers = Collections.unmodifiableSet(qualifiers);
     }
 
-    public ManagedExecutorBean(String name, ManagedExecutorConfig config, MPConfigAccessor mpConfig) {
+    public ManagedExecutorBean(String name, ManagedExecutorConfig config, ConcurrencyCDIExtension cdiExtension) {
         Objects.requireNonNull(name);
         this.name = name;
         this.config = config;
-        this.mpConfig = mpConfig;
+        this.cdiExtension = cdiExtension;
         Set<Annotation> qualifiers = new HashSet<>(2);
         qualifiers.add(Any.Literal.INSTANCE);
         qualifiers.add(NamedInstance.Literal.of(this.name));
@@ -70,7 +70,8 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
     @Override
     public ManagedExecutor create(CreationalContext<ManagedExecutor> cc) {
         Builder b = ManagedExecutor.builder();
-        if (mpConfig == null) {
+        MPConfigAccessor configAccessor = cdiExtension.mpConfigAccessor;
+        if (configAccessor == null) {
             if (config != null) {
                 b.maxAsync(config.maxAsync());
                 b.maxQueued(config.maxQueued());
@@ -78,6 +79,8 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
                 b.cleared(config.cleared());
             }
         } else {
+            Object mpConfig = cdiExtension.mpConfig;
+
             int start = name.length() + 1;
             int len = start + 10;
             StringBuilder propName = new StringBuilder(len).append(name).append('.');
@@ -85,22 +88,22 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
             // In order to efficiently reuse StringBuilder, properties are added in the order of the length of their names,
 
             propName.append("cleared");
-            String[] c = mpConfig.get(propName.toString(), config == null ? UNSPECIFIED_ARRAY : config.cleared());
+            String[] c = configAccessor.get(mpConfig, propName.toString(), config == null ? UNSPECIFIED_ARRAY : config.cleared());
             if (c != UNSPECIFIED_ARRAY)
                 b.cleared(c);
 
             propName.replace(start, len, "maxAsync");
-            Integer a = mpConfig.get(propName.toString(), config == null ? null : config.maxAsync());
+            Integer a = configAccessor.get(mpConfig, propName.toString(), config == null ? null : config.maxAsync());
             if (a != null)
                 b.maxAsync(a);
 
             propName.replace(start, len, "maxQueued");
-            Integer q = mpConfig.get(propName.toString(), config == null ? null : config.maxQueued());
+            Integer q = configAccessor.get(mpConfig, propName.toString(), config == null ? null : config.maxQueued());
             if (q != null)
                 b.maxQueued(q);
 
             propName.replace(start, len, "propagated");
-            String[] p = mpConfig.get(propName.toString(), config == null ? UNSPECIFIED_ARRAY : config.propagated());
+            String[] p = configAccessor.get(mpConfig, propName.toString(), config == null ? UNSPECIFIED_ARRAY : config.propagated());
             if (p != UNSPECIFIED_ARRAY)
                 b.propagated(p);
         }
