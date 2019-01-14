@@ -1016,8 +1016,6 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
                 i_result.addAll(i_external);
             }
 
-            i_result.trimStorage();
-
             return i_result;
         }
     }
@@ -1617,8 +1615,6 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
                 i_result.addAll(i_selectedExcluded);
             }
 
-            i_result.trimStorage();
-
             return i_result;
         }
     }
@@ -1761,8 +1757,6 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
                 i_result.addAll(i_selectedExcluded);
             }
 
-            i_result.trimStorage();
-
             return i_result;
         }
     }
@@ -1889,8 +1883,6 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
             if ( i_selectedExcluded != null ) {
                 i_result.addAll(i_selectedExcluded);
             }
-
-            i_result.trimStorage();
 
             return i_result;
         }

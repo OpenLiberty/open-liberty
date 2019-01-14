@@ -96,12 +96,12 @@ public class UtilImpl_Factory implements Util_Factory {
 
     @Override
     public Set<String> createIdentityStringSet(int size) {
-        return new UtilImpl_IdentityStringSet( size, UtilImpl_IdentityStringSet.DOUBLING_FACTOR );
+        return new UtilImpl_IdentityStringSet(size);
     }
 
     @Override
     public Set<String> createIdentityStringSet(Set<String> initialElements) {
-        Set<String> result = new UtilImpl_IdentityStringSet( initialElements.size(), UtilImpl_IdentityStringSet.DOUBLING_FACTOR );
+        Set<String> result = new UtilImpl_IdentityStringSet( initialElements.size() );
         result.addAll(initialElements);
         return result;
     }
