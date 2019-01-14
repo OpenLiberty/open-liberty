@@ -21,22 +21,22 @@ import javax.sql.DataSource;
 
 @DataSourceDefinition(name = "java:module/ann_BasicModLevelDS",
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
-                      databaseName = "repeatableDsdAnnTest",
+                      databaseName = "memory:repeatableDsdAnnTest",
                       loginTimeout = 1814,
                       properties = { "createDatabase=create" })
 @DataSourceDefinition(name = "java:app/ann_BasicAppLevelDS",
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
-                      databaseName = "repeatableDsdAnnTest",
+                      databaseName = "memory:repeatableDsdAnnTest",
                       loginTimeout = 1819,
                       properties = { "createDatabase=create" })
 @DataSourceDefinition(name = "java:global/ann_BasicGlobalLevelDS", // change to java:global per RTC86337
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
-                      databaseName = "repeatableDsdAnnTest",
+                      databaseName = "memory:repeatableDsdAnnTest",
                       loginTimeout = 1806,
                       properties = { "createDatabase=create" })
 @DataSourceDefinition(name = "ann_BasicCompLevelDS",
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
-                      databaseName = "repeatableDsdAnnTest",
+                      databaseName = "memory:repeatableDsdAnnTest",
                       loginTimeout = 1815,
                       properties = { "createDatabase=create" })
 @Stateful
