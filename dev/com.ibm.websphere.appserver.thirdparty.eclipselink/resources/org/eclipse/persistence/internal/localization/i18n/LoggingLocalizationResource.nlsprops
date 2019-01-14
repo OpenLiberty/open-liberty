@@ -481,6 +481,10 @@ jar_entry_not_migratable.MSGID=TOP-50095
 
 jar_file_url_exception=Exception while parsing persistence.xml.  Jar file location could not be found: {0}
 
+javase_version_ex_method_call=Exception when calling method {0}: {1}
+
+javase_version_ex_method_not_found=Method {0} was not found in {1}
+
 jaxb_metadata_warning_ignoring_java_attribute=Ignoring attribute [{0}] on class [{1}] as no Property was generated for it.
 
 jaxb_metadata_warning_ignoring_java_attribute.MSGID=TOP-50235
@@ -512,6 +516,8 @@ jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter.MSGID=TOP-50241
 jaxb_metadata_warning_no_classes_to_process=There are no classes to process for package [{0}].
 
 jaxb_metadata_warning_no_classes_to_process.MSGID=TOP-50237
+
+jaxp_sec_prop_not_supported=Property {0} is not supported by used JAXP implementation.
 
 jmx_mbean_runtime_services_failed_toget_initial_context=Failed to get InitialContext for MBean registration: {0}
 
