@@ -158,6 +158,7 @@ public class MetricRegistryImpl extends MetricRegistry {
 
     @Override
     public <T extends Metric> T register(String name, T metric, Metadata metadata) throws IllegalArgumentException {
+
         final Metric existing = metrics.putIfAbsent(name, metric);
         //Create Copy of Metadata object so it can't be changed after its registered
         Metadata metadataCopy = newMetadata(metadata);
