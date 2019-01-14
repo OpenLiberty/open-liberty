@@ -1,0 +1,30 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Metrics CDI Impl -  range is 3000-4999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#Cannot resolve forwarding gauge.
+cannot.resolve.metric.warning.CWMMC3000W=CWMMC3000W: Nu a putut fi rezolvat\u0103 valoarea pentru indicele de m\u0103surare {0}.
+cannot.resolve.metric.warning.CWMMC3000W.explanation=Nu a putut fi rezolvat\u0103 metoda subiacent\u0103 pentru indicele de m\u0103surare. \u00cen mod obi\u015fnuit, acest lucru este determinat de accesarea unui indice de m\u0103surare unde a fost \u00eenc\u0103rcat\u0103 aplica\u0163ia.
+cannot.resolve.metric.warning.CWMMC3000W.useraction=Nu e necesar\u0103 nicio ac\u0163iune. Indicelui de m\u0103surare \u00eei va fi anulat\u0103 automat \u00eenregistrarea.
