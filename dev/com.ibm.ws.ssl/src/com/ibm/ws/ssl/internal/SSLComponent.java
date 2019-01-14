@@ -103,8 +103,8 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
 
         // TODO: In order to make progress with Java 11 investigation, we will disable TLSv1.3
         // by default. This if/else block _must_ be removed once we support TLSv1.3
-        if (JavaInfo.majorVersion() >= 11)
-            disableTLSv13();
+        //if (JavaInfo.majorVersion() >= 11)
+        //    disableTLSv13();
 
         Set<String> installedFeatures = provisionerService.getInstalledFeatures();
         if (installedFeatures.contains("transportSecurity-1.0")) {
