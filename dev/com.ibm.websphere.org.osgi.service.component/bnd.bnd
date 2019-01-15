@@ -8,6 +8,9 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
+
+bVersion=1.1
+
 -include= jar:${fileuri;${repo;org.osgi:org.osgi.service.component;1.4.0}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
