@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,60 +12,38 @@ package com.ibm.ws.concurrent.mp.cdi;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
 
-import org.eclipse.microprofile.concurrent.ManagedExecutor;
-import org.eclipse.microprofile.concurrent.ManagedExecutor.Builder;
-import org.eclipse.microprofile.concurrent.ManagedExecutorConfig;
 import org.eclipse.microprofile.concurrent.NamedInstance;
+import org.eclipse.microprofile.concurrent.ThreadContext;
+import org.eclipse.microprofile.concurrent.ThreadContext.Builder;
+import org.eclipse.microprofile.concurrent.ThreadContextConfig;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
-public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCapable {
+public class ThreadContextBean implements Bean<ThreadContext>, PassivationCapable {
 
-    private static final Type[] TYPE_ARR = { ManagedExecutor.class, ExecutorService.class, Executor.class };
-    private static final Set<Type> TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(TYPE_ARR)));
+    private static final Set<Type> TYPES = Collections.singleton(ThreadContext.class);
 
     // This instance is used as a marker for when no configured is specified for a String[]. The reference is compared; its content does not matter.
     private static final String[] UNSPECIFIED_ARRAY = new String[] {};
 
     private final String injectionPointName;
-    private final String instanceName;
     private final Set<Annotation> qualifiers;
-    private final ManagedExecutorConfig config;
+    private final ThreadContextConfig config;
     private final ConcurrencyCDIExtension cdiExtension;
 
-    // TODO remove this constructor given the decision not to supply unqualified instance for programmatic lookup
-    public ManagedExecutorBean(ConcurrencyCDIExtension cdiExtension) {
-        this.injectionPointName = getClass().getCanonicalName();
-        this.instanceName = getClass().getCanonicalName();
-        this.config = null;
-        this.cdiExtension = cdiExtension;
-        Set<Annotation> qualifiers = new HashSet<>(2);
-        qualifiers.add(Any.Literal.INSTANCE);
-        qualifiers.add(Default.Literal.INSTANCE);
-        this.qualifiers = Collections.unmodifiableSet(qualifiers);
-    }
-
-    public ManagedExecutorBean(String injectionPointName, String instanceName, ManagedExecutorConfig config, ConcurrencyCDIExtension cdiExtension) {
-        Objects.requireNonNull(injectionPointName);
-        Objects.requireNonNull(instanceName);
+    public ThreadContextBean(String injectionPointName, String instanceName, ThreadContextConfig config, ConcurrencyCDIExtension cdiExtension) {
         this.injectionPointName = injectionPointName;
-        this.instanceName = instanceName;
         this.config = config;
         this.cdiExtension = cdiExtension;
         Set<Annotation> qualifiers = new HashSet<>(2);
@@ -75,15 +53,14 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
     }
 
     @Override
-    public ManagedExecutor create(CreationalContext<ManagedExecutor> cc) {
-        Builder b = ManagedExecutor.builder();
+    public ThreadContext create(CreationalContext<ThreadContext> cc) {
+        Builder b = ThreadContext.builder();
         MPConfigAccessor configAccessor = cdiExtension.mpConfigAccessor;
         if (configAccessor == null) {
             if (config != null) {
-                b.maxAsync(config.maxAsync());
-                b.maxQueued(config.maxQueued());
-                b.propagated(config.propagated());
                 b.cleared(config.cleared());
+                b.propagated(config.propagated());
+                b.unchanged(config.unchanged());
             }
         } else {
             Object mpConfig = cdiExtension.mpConfig;
@@ -99,15 +76,10 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
             if (c != UNSPECIFIED_ARRAY)
                 b.cleared(c);
 
-            propName.replace(start, len, "maxAsync");
-            Integer a = configAccessor.get(mpConfig, propName.toString(), config == null ? null : config.maxAsync());
-            if (a != null)
-                b.maxAsync(a);
-
-            propName.replace(start, len, "maxQueued");
-            Integer q = configAccessor.get(mpConfig, propName.toString(), config == null ? null : config.maxQueued());
-            if (q != null)
-                b.maxQueued(q);
+            propName.replace(start, len, "unchanged");
+            String[] u = configAccessor.get(mpConfig, propName.toString(), config == null ? UNSPECIFIED_ARRAY : config.unchanged());
+            if (u != UNSPECIFIED_ARRAY)
+                b.cleared(u);
 
             propName.replace(start, len, "propagated");
             String[] p = configAccessor.get(mpConfig, propName.toString(), config == null ? UNSPECIFIED_ARRAY : config.propagated());
@@ -119,14 +91,13 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
     }
 
     @Override
-    public void destroy(ManagedExecutor me, CreationalContext<ManagedExecutor> cc) {
-        me.shutdown();
-    }
+    @Trivial
+    public void destroy(ThreadContext threadContext, CreationalContext<ThreadContext> cc) {}
 
     @Override
     @Trivial
     public String getName() {
-        return instanceName; // TODO should change this to null because @Named qualifier is not present ?
+        return null; // because @Named qualifier is not present
     }
 
     @Override
@@ -168,7 +139,7 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
     @Override
     @Trivial
     public Class<?> getBeanClass() {
-        return ManagedExecutor.class;
+        return ThreadContext.class;
     }
 
     @Override
@@ -186,7 +157,6 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
     @Override
     @Trivial
     public String toString() {
-        return this.getClass().getSimpleName() + '-' + getName();
+        return getClass().getSimpleName() + '-' + getId();
     }
-
 }
