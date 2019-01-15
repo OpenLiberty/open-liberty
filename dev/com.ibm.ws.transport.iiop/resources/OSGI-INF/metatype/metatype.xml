@@ -38,9 +38,6 @@
         <AD name="%orbWrapper.nameService" description="%orbWrapper.nameService.desc"
             id="nameService" required="false" type="String" default="corbaname::localhost:2809" />
             
-        <AD name="%orbWrapper.orbSSLInitTimeout" description="%orbWrapper.orbSSLInitTimeout.desc"
-            id="orbSSLInitTimeout" required="false" type="String" default="10" />
-            
         <AD id="iiopEndpoint" name="%orbWrapper.iiopEndpoint" description="%orbWrapper.iiopEndpoint.desc" cardinality="100"
             required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.transport.iiop.internal.IIOPEndpointImpl" default="defaultIiopEndpoint"/>
             
