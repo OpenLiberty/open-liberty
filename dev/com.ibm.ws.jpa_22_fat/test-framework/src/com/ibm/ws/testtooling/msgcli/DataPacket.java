@@ -19,8 +19,6 @@ import com.ibm.ws.testtooling.testinfo.TestSessionSignature;
 /**
  * Messaging Payload carrier for use by tests.
  *
- * @author jgrassel
- *
  */
 public class DataPacket implements Serializable {
     private static final long serialVersionUID = 3560329086534240176L;
