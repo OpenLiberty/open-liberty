@@ -182,28 +182,20 @@ public class AnnotationScanner {
         return getUrlMappingFromApp(appClassName);
     }
 
+    public Set<String> getAnnotatedClassesNames() {
+        AnnotationTargets_Targets annotationTargets = webAnnotations.getAnnotationTargets();
 
-    @FFDCIgnore(UnableToAdaptException.class)
-    public synchronized Set<String> getAnnotatedClassesNames() {
-        AnnotationTargets_Targets annotationTargets;
-        Set<String> restAPIClasses = null;
+        // 'getAnnotatedClasses' with no policy selects SEED classes.
+        Set<String> restAPIClasses = ANNOTATION_CLASS_NAMES.stream()
+            .flatMap( annoClassName -> annotationTargets.getAnnotatedClasses(annoClassName).stream() )
+            .collect( Collectors.toSet() );
 
-        try {
-            annotationTargets = webAnnotations.getAnnotationTargets();
+        // Remove any MP Rest Client interfaces from the OpenAPI view
+        Set<String> mpRestClientClasses =
+            annotationTargets.getAnnotatedClasses(MP_REGISTER_REST_CLIENT);
 
-            // 'getAnnotatedClasses' with no policy selects SEED classes.
-            restAPIClasses = ANNOTATION_CLASS_NAMES.stream()
-                .flatMap(anno -> annotationTargets.getAnnotatedClasses(anno).stream())
-                .collect(Collectors.toSet());
+        restAPIClasses.removeAll(mpRestClientClasses);
 
-            // Remove any MP Rest Client interfaces from the OpenAPI view
-            Set<String> mpRestClientClasses = annotationTargets.getAnnotatedClasses(MP_REGISTER_REST_CLIENT);
-            restAPIClasses.removeAll(mpRestClientClasses);
-        } catch (UnableToAdaptException e) {
-            if (OpenAPIUtils.isEventEnabled(tc)) {
-                Tr.event(tc, "Unable to get annotated class names");
-            }
-        }
         return Collections.unmodifiableSet(restAPIClasses);
     }
 
