@@ -24,7 +24,7 @@ app-resources= \
   META-INF/services/org.iso_relax.verifier.VerifierFactoryLoader
 
 Import-Package: \
-    javax.xml.bind.*; version="[2.2,3)", \
+    javax.xml.bind.*; version="[2.2,2.2]", \
     com.ibm.wsspi.classloading, \
     org.apache.xml.*; resolution:=optional, \
     !org.apache.tools*, \

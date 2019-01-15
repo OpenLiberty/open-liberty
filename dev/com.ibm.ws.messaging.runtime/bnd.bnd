@@ -38,12 +38,10 @@ Private-Package: com.ibm.ws.sib.admin.internal,\
  com.ibm.ws.sib.processor.impl.store.filters,\
  com.ibm.ws.sib.processor.impl.store.items,\
  com.ibm.ws.sib.processor.impl.store.itemstreams,\
- com.ibm.ws.sib.processor.impl.store.xarecovery,\
  com.ibm.ws.sib.processor.gd,\
  com.ibm.ws.sib.processor.gd.statestream,\
  com.ibm.ws.sib.processor.io,\
  com.ibm.ws.sib.processor.matching,\
- com.ibm.ws.sib.processor.messagecontrol,\
  com.ibm.ws.sib.processor.proxyhandler,\
  com.ibm.ws.sib.processor.runtime.anycast,\
  com.ibm.ws.sib.processor.utils,\
@@ -51,7 +49,6 @@ Private-Package: com.ibm.ws.sib.admin.internal,\
  com.ibm.ws.sib.processor.utils.index,\
  com.ibm.ws.sib.processor.utils.linkedlist,\
  com.ibm.ws.sib.processor.utils.linkedlist2,\
- com.ibm.ws.sib.core.selector,\
  com.ibm.ws.sib.matchspace.impl,\
  com.ibm.ws.sib.matchspace.selector.impl,\
  com.ibm.ws.sib.matchspace.tools

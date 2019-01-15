@@ -38,7 +38,7 @@ Service-Component: \
   com.ibm.ws.jaxws.web.jaxwsServletEndpointConfigurator; \
      implementation:=com.ibm.ws.jaxws.web.JaxWsServletEndpointConfigurator; \
      provide:='com.ibm.ws.jaxws.endpoint.JaxWsEndpointConfigurator'; \
-     properties:="service.vendor=IBM", \
+     properties:="service.vendor=IBM"
 
 Export-Package: \
     com.ibm.ws.jaxws.web
@@ -47,7 +47,6 @@ Import-Package: \
    com.ibm.wsspi.adaptable.module.adapters, \
    com.ibm.wsspi.webcontainer.collaborator, \
    com.ibm.ws.container.service.metadata, \
-   javax.xml.bind.*;version="[2.2,3)", \
    javax.xml.ws.*;version="[2.2,3)", \
    org.apache.cxf.*;version="[2.6.2,2.6.3)", \
    *

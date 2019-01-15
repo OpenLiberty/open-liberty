@@ -14,6 +14,7 @@
  * Depends on bnd_* values from gradle.properties.
  */
 
+
 ext {
   cnf = rootProject.project(bnd_cnf)
   buildImage = project(':build.image')
@@ -22,6 +23,7 @@ ext {
 
 subprojects {
   plugins.apply 'java'
+  
   def bndProject = bndWorkspace.getProject(name)
 
   if (bndProject != null) {
@@ -75,6 +77,26 @@ subprojects {
   release.dependsOn publish
 }
 
+task testReport(type: TestReport) {
+    // make sure this task is run after all subproject test tasks
+    mustRunAfter subprojects.test
+
+    destinationDir = cnf.file('generated/testReports/allUnitTests')
+    // Include the results from the `test` task in all subprojects
+    reportOn subprojects.test
+}
+
+task zipTestReport(type: Zip) {
+  dependsOn testReport
+    baseName 'openliberty_test_report'
+    from cnf.file('generated/testReports/allUnitTests')
+    destinationDir cnf.file('generated/testReports')
+    userProps.setProperty('gradle.test.report.zip', archivePath.toString())
+        File propsFile = rootProject.file('generated.properties')
+        userProps.store(propsFile.newWriter(), null)
+}
+    
+
 task testResults {
   dependsOn subprojects.test
 
@@ -86,8 +108,10 @@ task testResults {
     userProps.store(propsFile.newWriter(), null)
   }
 }
+testResults.dependsOn zipTestReport
 
 task wrapper(type: Wrapper) {
   jarFile = rootProject.file('.gradle-wrapper/gradle-wrapper.jar')
 }
+
 

@@ -2,17 +2,17 @@
 bVersion=1.0
 
 Bundle-Name: google.concurrent
-Bundle-Description: google.concurrent; version=14.0.1
-Bundle-SymbolicName: com.ibm.ws.com.google.guava.14.0.1
+Bundle-Description: google.concurrent; version=27.0.1
+Bundle-SymbolicName: com.ibm.ws.com.google.guava
 
 WS-TraceGroup: OPENIDCONNECT
 
 Export-Package: \
-  com.google.common.base;version="14.0.1", \
-  com.google.common.cache;version="14.0.1", \
-  com.google.common.collect;version="14.0.1", \
-  com.google.common.primitives;version="14.0.1", \
-  com.google.common.util.concurrent;version="14.0.1"
+  com.google.common.base;version="27.0.1", \
+  com.google.common.cache;version="27.0.1", \
+  com.google.common.collect;version="27.0.1", \
+  com.google.common.primitives;version="27.0.1", \
+  com.google.common.util.concurrent;version="27.0.1"
 
 Private-Package: com.google.common.*
 

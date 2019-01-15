@@ -31,7 +31,7 @@ import javax.sql.DataSource;
                       isolationLevel = TRANSACTION_SERIALIZABLE)
 @DataSourceDefinition(name = "java:module/AnnotationOnlyToBeIgnored",
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
-                      databaseName = "repeatableDsdXMLTestMDCAnnOnly",
+                      databaseName = "memory:repeatableDsdXMLTestMDCAnnOnly",
                       loginTimeout = 1886,
                       isolationLevel = TRANSACTION_SERIALIZABLE,
                       properties = { "createDatabase=create" })

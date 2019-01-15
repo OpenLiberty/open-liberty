@@ -23,8 +23,6 @@ Bundle-Description:Opentracing mock Tracer, version ${bVersion}
 Import-Package: *
 
 Export-Package: com.ibm.ws.opentracing.mock;uses:="com.ibm.ws.opentracing.tracer,io.opentracing,io.opentracing.propagation"
-                
-Private-Package: com.ibm.ws.opentracing.mock.resources
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 

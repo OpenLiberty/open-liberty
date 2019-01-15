@@ -71,12 +71,37 @@ public class ConfigCacheTest extends AbstractConfigTest {
             ConfigProviderResolver.instance().releaseConfig(configA);
             configB = ConfigProviderResolver.instance().getConfig();
             assertNotSame(configA, configB);
+            try {
+                configA.getPropertyNames();
+                fail("Released config not closed");
+            } catch (IllegalStateException e) {
+                // Expected
+            }
         } finally {
             if (configA != null) {
                 ConfigProviderResolver.instance().releaseConfig(configA);
             }
             if (configB != null && configB != configA) {
                 ConfigProviderResolver.instance().releaseConfig(configB);
+            }
+        }
+    }
+
+    @Test
+    public void testReleaseUnregisteredConfig() {
+        Config configA = null;
+        try {
+            configA = ConfigProviderResolver.instance().getBuilder().build();
+            ConfigProviderResolver.instance().releaseConfig(configA);
+            try {
+                configA.getPropertyNames();
+                fail("Released config not closed");
+            } catch (IllegalStateException e) {
+                // Expected
+            }
+        } finally {
+            if (configA != null) {
+                ConfigProviderResolver.instance().releaseConfig(configA);
             }
         }
     }

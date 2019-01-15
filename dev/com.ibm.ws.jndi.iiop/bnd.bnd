@@ -30,8 +30,6 @@ Import-Package: \
  javax.rmi.*;version="[2.4,3.0)", \
  *
 
-Private-Package: com.ibm.ws.jndi.iiop.internal.*
-
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.jndi.iiop.*UrlContextFactory
 

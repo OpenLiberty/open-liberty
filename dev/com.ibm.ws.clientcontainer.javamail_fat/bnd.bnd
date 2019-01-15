@@ -19,6 +19,6 @@ fat.project: true
 
 -buildpath: \
   com.ibm.websphere.javaee.mail.1.5;version=latest, \
-  com.icegreen:greenmail;version=1.5.5, \
+  com.icegreen:greenmail;version=1.5.9, \
   org.slf4j:slf4j-api;version=1.7.7, \
   org.slf4j:slf4j-jdk14;version=1.7.7

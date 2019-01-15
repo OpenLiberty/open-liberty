@@ -28,7 +28,6 @@ Export-Package: !*.internal.*, \
     com.ibm.ws.webcontainer40.osgi.webapp*, \
     com.ibm.ws.webcontainer40.servlet*, \
     com.ibm.ws.webcontainer40.srt*, \
-    com.ibm.ws.webcontainer40.srt.http*, \
     com.ibm.wsspi.webcontainer40.util*
 
 Private-Package: \

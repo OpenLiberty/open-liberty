@@ -165,7 +165,7 @@ public class VMMAPIs_EmbeddedLdapTests {
         ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
         ldap.setLdapType("Custom");
         // The cache time outs are short because we need to timeout within the test. SearchCache needs to be shorter than the AttributesCache for regression testing.
-        ldap.setLdapCache(new LdapCache(new AttributesCache(true, 4444, 2222, "7s"), new SearchResultsCache(true, 5555, 3333, "5s")));
+        ldap.setLdapCache(new LdapCache(new AttributesCache(true, 4444, 2222, "20s"), new SearchResultsCache(true, 5555, 3333, "10s")));
         serverConfig.getLdapRegistries().add(ldap);
         LDAPFatUtils.createFederatedRepository(serverConfig, "LDAPRealmAttr", new String[] { LDAP_BASE_ENTRY });
         updateConfigDynamically(server, serverConfig);
@@ -182,7 +182,7 @@ public class VMMAPIs_EmbeddedLdapTests {
         assertEquals("The uid did not match", userName, resultMap.get("uid"));
         assertEquals("The mail attribute did not match", mailaddr, resultMap.get("mail"));
 
-        Thread.sleep(2100); // sleep to timeout searchCache
+        Thread.sleep(9100); // sleep to timeout searchCache
         Log.info(c, methodName, "Get User, refresh searchCache");
         servlet.login(userName, password);
         resultMap = servlet.getUser(userDn);
@@ -201,7 +201,7 @@ public class VMMAPIs_EmbeddedLdapTests {
         assertEquals("The uid did not match", userName, resultMap.get("uid"));
         assertEquals("The mail attribute did not match", mailaddr, resultMap.get("mail"));
 
-        Thread.sleep(4100); // now sleep to time out the attributesCache, mail should be gone
+        Thread.sleep(18100); // now sleep to time out the attributesCache, mail should be gone
         Log.info(c, methodName, "Get user after sleep.");
         resultMap = servlet.getUser(userDn);
         System.out.println("Result from getUser : " + result.toString());

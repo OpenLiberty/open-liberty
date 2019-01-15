@@ -25,6 +25,8 @@ import org.junit.runner.RunWith;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.log.LoggerFactory;
+import org.osgi.service.log.admin.LoggerAdmin;
 
 import test.LoggingTestUtils;
 
@@ -101,6 +103,8 @@ public class LoggingConfigurationTest {
             {
                 allowing(mockService).register(with(any(TraceComponent.class)));
                 allowing(mockBundleContext).registerService(with(any(Class.class)), with(any(Object.class)), with(any(Dictionary.class)));
+                allowing(mockBundleContext).getServiceReference(LoggerAdmin.class);
+                will(returnValue(null));
 
                 allowing(mockConfig).update(newProps);
                 allowing(mockConfig).getTraceString();

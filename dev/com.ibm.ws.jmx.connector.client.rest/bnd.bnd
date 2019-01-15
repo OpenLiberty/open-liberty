@@ -27,8 +27,6 @@ Export-Package: \
 Import-Package: \
   javax.management.*, \
   com.ibm.json.java.*, \
-  com.ibm.ws.ffdc.*, \
-  com.ibm.websphere.ras.*, \
   com.ibm.ws.ssl.protocol, \
   javax.net.ssl
   

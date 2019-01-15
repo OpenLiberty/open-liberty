@@ -62,14 +62,9 @@ public class BurstDateFormat {
     private final FieldPosition position = new FieldPosition(Field.MILLISECOND);
 
     /**
-     * Forces a re-format
-     */
-    private boolean reset = false;
-
-    /**
      * Tracks whether the format is not valid. If true, the underlying SimpleDateFormat is used
      */
-    protected boolean invalidFormat = false;
+    boolean invalidFormat = false;
 
     /**
      * Constructs a BurstDateFormat
@@ -78,27 +73,10 @@ public class BurstDateFormat {
      */
     public BurstDateFormat(SimpleDateFormat formatter) {
         this.formatter = formatter;
-        setup();
-    }
 
-    /**
-     * Apply a pattern to the formatter (only new formats are applied)
-     *
-     * @param pattern
-     */
-    public void applyPattern(String pattern) {
-        if (!formatter.toPattern().equals(pattern)) {
-            formatter.applyPattern(pattern);
-            reset = true;
-            invalidFormat = false;
-            setup();
-        }
-    }
-
-    /**
-     * Setup the date formatter, determine if the format is valid
-     */
-    protected void setup() {
+        /**
+         * Setup the date formatter, determine if the format is valid
+         */
         try {
             StringBuffer refTime = new StringBuffer();
 
@@ -117,7 +95,8 @@ public class BurstDateFormat {
             String str = refTime.substring(position.getBeginIndex(), position.getEndIndex());
 
             // Make sure we are using ascii digits (The loop could be unwrapped)
-            for (char a : str.toCharArray()) {
+            for (int i = str.length() - 1; i >= 0; --i) {
+                char a = str.charAt(i);
                 if (a < 48 || a > 57) {
                     invalidFormat = true;
                     break;
@@ -145,8 +124,7 @@ public class BurstDateFormat {
             long delta = timestamp - refTimestamp;
 
             // If we need to reformat
-            if (delta >= pdiff || delta < ndiff || reset) {
-                reset = false;
+            if (delta >= pdiff || delta < ndiff) {
                 StringBuffer refTime = new StringBuffer();
                 refTimestamp = timestamp;
                 formatter.format(timestamp, refTime, position);

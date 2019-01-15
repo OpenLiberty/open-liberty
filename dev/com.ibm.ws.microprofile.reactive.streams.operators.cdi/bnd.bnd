@@ -57,7 +57,6 @@ testsrc: test/src
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.ws.com.lightbend.microprofile.reactive.streams.zerodep;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0;version=latest, \
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.microprofile.reactive.streams.operators

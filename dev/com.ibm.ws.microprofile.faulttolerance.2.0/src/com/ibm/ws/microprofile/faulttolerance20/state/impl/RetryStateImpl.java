@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.LongStream;
 
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance20.impl.MethodResult;
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState;
@@ -29,9 +30,12 @@ public class RetryStateImpl implements RetryState {
     private int attempts = 0;
     private long startNanos;
 
-    public RetryStateImpl(RetryPolicy policy) {
+    private final MetricRecorder metricRecorder;
+
+    public RetryStateImpl(RetryPolicy policy, MetricRecorder metricRecorder) {
         this.policy = policy;
         delayStream = createDelayStream(policy.getDelay(), policy.getJitter());
+        this.metricRecorder = metricRecorder;
     }
 
     /** {@inheritDoc} */
@@ -62,6 +66,9 @@ public class RetryStateImpl implements RetryState {
             result.shouldRetry = false;
         }
 
+        // Capture whether this result was considered a failure by the Retry
+        boolean resultWasFailure = result.shouldRetry;
+
         // If we want to retry based on the methodResult, check if there's some other reason we shouldn't
         if (result.shouldRetry) {
             int maxAttempts = policy.getMaxRetries() + 1;
@@ -74,6 +81,18 @@ public class RetryStateImpl implements RetryState {
 
         if (result.shouldRetry) {
             populateDelay(result);
+            metricRecorder.incrementRetriesCount();
+        } else {
+            // Finished execution, record metrics
+            if (resultWasFailure) {
+                metricRecorder.incrementRetryCallsFailureCount();
+            } else {
+                if (attempts > 1) {
+                    metricRecorder.incrementRetryCallsSuccessRetriesCount();
+                } else {
+                    metricRecorder.incrementRetryCallsSuccessImmediateCount();
+                }
+            }
         }
 
         return result;
@@ -116,7 +135,7 @@ public class RetryStateImpl implements RetryState {
      * <p>
      * protected only to allow unit testing
      *
-     * @param delay the delay duration
+     * @param delay  the delay duration
      * @param jitter the jitter duration
      * @return stream of times in nanoseconds within delay +/- jitter
      */

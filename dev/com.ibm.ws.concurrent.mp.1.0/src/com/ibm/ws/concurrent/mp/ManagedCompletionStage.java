@@ -13,10 +13,8 @@ package com.ibm.ws.concurrent.mp;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import com.ibm.websphere.ras.Tr;
@@ -53,7 +51,7 @@ class ManagedCompletionStage<T> extends ManagedCompletableFuture<T> {
      * @param executor default asynchronous execution facility for this stage
      * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
      */
-    ManagedCompletionStage(CompletableFuture<T> completableFuture, Executor executor, AtomicReference<Future<?>> futureRef) {
+    ManagedCompletionStage(CompletableFuture<T> completableFuture, Executor executor, FutureRefExecutor futureRef) {
         super(completableFuture, executor, futureRef);
     }
 
@@ -152,7 +150,7 @@ class ManagedCompletionStage<T> extends ManagedCompletableFuture<T> {
     @Override
     @SuppressWarnings("hiding")
     @Trivial
-    <T> CompletableFuture<T> newInstance(CompletableFuture<T> completableFuture, Executor managedExecutor, AtomicReference<Future<?>> futureRef) {
+    <T> CompletableFuture<T> newInstance(CompletableFuture<T> completableFuture, Executor managedExecutor, FutureRefExecutor futureRef) {
         return new ManagedCompletionStage<T>(completableFuture, managedExecutor, futureRef);
     }
 

@@ -18,7 +18,7 @@ src: \
 	test-applications/CallbackHandlerNoDefaultConstructor.jar/src,\
 	test-applications/InAppClientContainer.jar/src,\
 	test-applications/SystemExitClient.jar/src,\
-	test-applications/SystemExitClientNoDD.jar/src,\
+	test-applications/SystemExitClientNoDD.jar/src
 
 javac.source: 1.8
 javac.target: 1.8

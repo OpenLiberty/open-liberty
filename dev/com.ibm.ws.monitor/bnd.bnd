@@ -17,8 +17,7 @@ Bundle-Description: Monitoring framework; version=${bVersion}
 Export-Package: com.ibm.websphere.monitor.*;version=1.1.0, \
 	com.ibm.wsspi.pmi.*;version=1.1.0, \
 	com.ibm.websphere.pmi.*;version=1.1.0, \
-	com.ibm.ws.pmi.*;version=1.1.0, \
-	com.ibm.ws.pmi.factory.*;version=1.1.0 \
+	com.ibm.ws.pmi.*;version=1.1.0
 
 	
 Private-Package: com.ibm.ws.monitor.internal*, \
@@ -78,4 +77,4 @@ instrument.classesExcludes: \
 	com.ibm.ws.junit.extensions;version=latest, \
 	org.hamcrest:hamcrest-all;version=1.3, \
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
-	org.jmock:jmock;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1

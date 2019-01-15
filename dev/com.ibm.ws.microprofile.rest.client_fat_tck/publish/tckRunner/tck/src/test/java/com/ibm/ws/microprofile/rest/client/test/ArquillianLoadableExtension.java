@@ -10,17 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.rest.client.test;
 
-import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
-import org.jboss.arquillian.core.spi.LoadableExtension;
+import java.util.EnumSet;
+import java.util.Set;
 
-/**
- * We register an extension class with Arquillian that amends the vanilla tck's wars
- * to add any libraries that are not in the default Liberty environment
- */
-public class ArquillianLoadableExtension implements LoadableExtension {
+import com.ibm.ws.fat.util.tck.AbstractArquillianLoadableExtension;
+import com.ibm.ws.fat.util.tck.TCKArchiveModifications;
+
+public class ArquillianLoadableExtension extends AbstractArquillianLoadableExtension {
     @Override
-    public void register(ExtensionBuilder extensionBuilder) {
-        System.out.println("WLP: Adding Extension com.ibm.ws.microprofile.rest.client.test.ArchiveProcessor");
-        extensionBuilder.service(ApplicationArchiveProcessor.class, ArchiveProcessor.class);
+    public Set<TCKArchiveModifications> getModifications() {
+        return EnumSet.of(TCKArchiveModifications.TEST_LOGGER, TCKArchiveModifications.WIREMOCK);
     }
 }

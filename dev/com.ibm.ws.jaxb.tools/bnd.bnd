@@ -26,7 +26,7 @@ app-resources= \
 
 Import-Package: \
     !javax.activation,\
-    javax.xml.bind.*; version="[2.2,3)", \
+    javax.xml.bind.*; version="[2.2,2.2]", \
     com.ibm.wsspi.classloading, \
     org.apache.xml.*; resolution:=optional, \
     !org.apache.tools*, \
@@ -51,10 +51,10 @@ Export-Package: \
 
 
 Include-Resource: \
-  @${repo;com.sun.xml.bind:jaxb-core;2.2.10}!/!META-INF/maven/*, \
-  @${repo;com.sun.xml.bind:jaxb-impl;2.2.10}!/!META-INF/maven/*, \
-  @${repo;com.sun.xml.bind:jaxb-xjc;2.2.10}!/!META-INF/maven/*, \
-  @${repo;com.sun.xml.bind:jaxb-jxc;2.2.10}!/!META-INF/maven/*
+  @${repo;com.sun.xml.bind:jaxb-core;2.2.10;EXACT}!/!META-INF/maven/*, \
+  @${repo;com.sun.xml.bind:jaxb-impl;2.2.10;EXACT}!/!META-INF/maven/*, \
+  @${repo;com.sun.xml.bind:jaxb-xjc;2.2.10;EXACT}!/!META-INF/maven/*, \
+  @${repo;com.sun.xml.bind:jaxb-jxc;2.2.10;EXACT}!/!META-INF/maven/*
 
 Private-Package:\
    com.ibm.ws.jaxb.tools.*
@@ -62,8 +62,8 @@ Private-Package:\
 instrument.disabled: true
 
 -buildpath: \
-	com.sun.xml.bind:jaxb-core;version=2.2.10,\
-	com.sun.xml.bind:jaxb-impl;version=2.2.10,\
-	com.sun.xml.bind:jaxb-xjc;version=2.2.10,\
-	com.sun.xml.bind:jaxb-jxc;version=2.2.10,\
-	com.ibm.ws.org.apache.ant;version=latest
+	com.sun.xml.bind:jaxb-core;strategy=exact;version=2.2.10,\
+	com.sun.xml.bind:jaxb-impl;strategy=exact;version=2.2.10,\
+	com.sun.xml.bind:jaxb-xjc;strategy=exact;version=2.2.10,\
+	com.sun.xml.bind:jaxb-jxc;strategy=exact;version=2.2.10,\
+	com.ibm.ws.org.apache.ant;strategy=exact;version=latest

@@ -10,6 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.appConfig.dynamicSources.test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.fail;
+
 import javax.servlet.annotation.WebServlet;
 
 import org.eclipse.microprofile.config.Config;
@@ -20,6 +25,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.appConfig.test.utils.TestUtils;
+import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 
 import componenttest.app.FATServlet;
 
@@ -167,6 +173,50 @@ public class DynamicSourcesTestServlet extends FATServlet {
             TestUtils.assertContains(config, "server_env_property", "server.env.value");
         } finally {
             ConfigProviderResolver.instance().releaseConfig(config);
+        }
+    }
+
+    @Test
+    public void testClosedConfigStopsRefreshing() throws Exception {
+        // Remember that the mimimum refresh is currently 500
+        System.setProperty(DYNAMIC_REFRESH_INTERVAL_PROP_NAME, "" + 1);
+        ConfigBuilder b = ConfigProviderResolver.instance().getBuilder();
+
+        MySource s1 = new MySource("MySource S1");
+        s1.setOrdinal(600);
+        s1.put("1", "1");
+
+        b.withSources(s1);
+        b.addDefaultSources();
+        Config config = b.build();
+
+        try {
+            TestUtils.assertContains(config, "1", "1");
+            TestUtils.assertContains(config, "server_env_property", "server.env.value");
+
+            long lastRefresh = s1.lastRefresh;
+
+            // Remember that the mimimum refresh is currently 500 ... so wait longer than that
+            Thread.sleep(ConfigConstants.MINIMUM_DYNAMIC_REFRESH_INTERVAL + 1000);
+
+            // Check that config source is currently being refreshed
+            assertThat(s1.lastRefresh, not(equalTo(lastRefresh)));
+
+        } finally {
+            ConfigProviderResolver.instance().releaseConfig(config);
+        }
+
+        // Check that now that config has been closed, the config source is no longer being refreshed
+        long lastRefresh = s1.lastRefresh;
+        Thread.sleep(1500);
+        assertThat(s1.lastRefresh, equalTo(lastRefresh));
+
+        // Check that the config itself is actually closed
+        try {
+            config.getValue("1", String.class);
+            fail("get() on a released config should fail");
+        } catch (IllegalStateException e) {
+            // Expected
         }
     }
 

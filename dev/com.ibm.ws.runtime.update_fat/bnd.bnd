@@ -25,8 +25,6 @@ fat.project: true
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
     com.ibm.websphere.org.osgi.service.component;version=latest, \
-	com.ibm.ws.junit.extensions;version=latest,\
-	fattest.simplicity;version=latest,\
 	com.ibm.ws.runtime.update;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.threading;version=latest

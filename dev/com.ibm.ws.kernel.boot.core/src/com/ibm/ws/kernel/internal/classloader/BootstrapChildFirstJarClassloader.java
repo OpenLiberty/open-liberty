@@ -29,6 +29,7 @@ public final class BootstrapChildFirstJarClassloader extends JarFileClassLoader 
     }
     static final String KERNEL_BOOT_CLASS_PREFIX = "com.ibm.ws.kernel.boot.";
     static final String KERNEL_BOOT_RESOURCE_PREFIX = "com/ibm/ws/kernel/boot/";
+    static final int KERNEL_BOOT_PREFIX_LENGTH = KERNEL_BOOT_CLASS_PREFIX.length();
 
     static <E> Enumeration<E> compoundEnumerations(Enumeration<E> e1, Enumeration<E> e2) {
         if (e2 == null || !e2.hasMoreElements())
@@ -76,13 +77,12 @@ public final class BootstrapChildFirstJarClassloader extends JarFileClassLoader 
 
             result = findLoadedClass(name);
             if (result == null) {
-                if (name.startsWith(BootstrapChildFirstJarClassloader.KERNEL_BOOT_CLASS_PREFIX))
+                if (name.regionMatches(0, KERNEL_BOOT_CLASS_PREFIX, 0, KERNEL_BOOT_PREFIX_LENGTH)) {
                     result = super.loadClass(name, resolve);
-                else {
-                    try {
-                        // Try to load the class from this classpath
-                        result = findClass(name);
-                    } catch (ClassNotFoundException cnfe) {
+                } else {
+                    // Try to load the class from this classpath
+                    result = findClass(name, true);
+                    if (result == null) {
                         result = super.loadClass(name, resolve);
                     }
                 }
@@ -98,7 +98,7 @@ public final class BootstrapChildFirstJarClassloader extends JarFileClassLoader 
             return null;
 
         URL result = null;
-        if (name.startsWith(BootstrapChildFirstJarClassloader.KERNEL_BOOT_RESOURCE_PREFIX)) {
+        if (name.regionMatches(0, KERNEL_BOOT_RESOURCE_PREFIX, 0, KERNEL_BOOT_PREFIX_LENGTH)) {
             result = super.getResource(name);
         } else {
             // Try to get the resource from this classpath
@@ -116,10 +116,10 @@ public final class BootstrapChildFirstJarClassloader extends JarFileClassLoader 
             return Collections.<URL> enumeration(Collections.<URL> emptyList());
         Enumeration<URL> parentResources = super.getResources(name);
         Enumeration<URL> localResources = super.findResources(name);
-        if (name.startsWith(BootstrapChildFirstJarClassloader.KERNEL_BOOT_RESOURCE_PREFIX)) {
-            return BootstrapChildFirstJarClassloader.compoundEnumerations(parentResources, localResources);
+        if (name.regionMatches(0, KERNEL_BOOT_RESOURCE_PREFIX, 0, KERNEL_BOOT_PREFIX_LENGTH)) {
+            return compoundEnumerations(parentResources, localResources);
         } else {
-            return BootstrapChildFirstJarClassloader.compoundEnumerations(localResources, parentResources);
+            return compoundEnumerations(localResources, parentResources);
         }
     }
 

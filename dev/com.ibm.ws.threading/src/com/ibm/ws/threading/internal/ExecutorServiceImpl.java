@@ -73,6 +73,12 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
     String poolName = null;
 
     /**
+     * The smallest size for the pool - smaller coreThreads and/or maxThreads config values
+     * are replaced with this value.
+     */
+    final static int MINIMUM_POOL_SIZE = 4;
+
+    /**
      * The most recently provided component config for the executor.
      */
     Map<String, Object> componentConfig = null;
@@ -194,8 +200,10 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
             coreThreads = 2 * CpuInfo.getAvailableProcessors();
         }
 
-        // If coreThreads is greater than maxThreads, automatically lower it and proceed
-        coreThreads = Math.min(coreThreads, maxThreads);
+        // Make sure coreThreads is not bigger than maxThreads, subject to MINIMUM_POOL_SIZE limit
+        coreThreads = Math.max(MINIMUM_POOL_SIZE, Math.min(coreThreads, maxThreads));
+        // ... and then make sure maxThreads is not smaller than coreThreads ...
+        maxThreads = Math.max(coreThreads, maxThreads);
 
         BlockingQueue<Runnable> workQueue = new BoundedBuffer<Runnable>(java.lang.Runnable.class, 1000, 1000);
 

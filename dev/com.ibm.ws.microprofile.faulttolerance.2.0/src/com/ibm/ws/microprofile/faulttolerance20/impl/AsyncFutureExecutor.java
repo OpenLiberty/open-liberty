@@ -19,6 +19,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import com.ibm.ws.threading.PolicyExecutorProvider;
@@ -33,8 +34,8 @@ public class AsyncFutureExecutor<R> extends AsyncExecutor<Future<R>> {
     private static final TraceComponent tc = Tr.register(AsyncFutureExecutor.class);
 
     public AsyncFutureExecutor(RetryPolicy retry, CircuitBreakerPolicy cbPolicy, TimeoutPolicy timeoutPolicy, FallbackPolicy fallbackPolicy, BulkheadPolicy bulkheadPolicy,
-                               ScheduledExecutorService executorService, PolicyExecutorProvider policyExecutorProvider) {
-        super(retry, cbPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, executorService, policyExecutorProvider);
+                               ScheduledExecutorService executorService, PolicyExecutorProvider policyExecutorProvider, MetricRecorder metricRecorder) {
+        super(retry, cbPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, executorService, policyExecutorProvider, metricRecorder);
     }
 
     @Override

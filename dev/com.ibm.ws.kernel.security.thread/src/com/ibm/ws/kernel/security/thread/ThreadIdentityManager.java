@@ -20,7 +20,6 @@ import javax.security.auth.Subject;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.kernel.security.thread.ThreadIdentityService;
 
 /**
@@ -35,13 +34,7 @@ public class ThreadIdentityManager {
      * ThreadLocal used to detect potential infinite recursion in the
      * tracing code.
      */
-    private static final ThreadLocal<Boolean> recursionMarker = new ThreadLocal<Boolean>() {
-        @Override
-        @Trivial
-        protected synchronized Boolean initialValue() {
-            return Boolean.FALSE;
-        }
-    };
+    private static final ThreadLocal<Boolean> recursionMarker = new ThreadLocal<Boolean>();
 
     /**
      * The ThreadIdentityService references. The references are set by the
@@ -193,16 +186,24 @@ public class ThreadIdentityManager {
      * @throws ThreadIdentityException
      */
     public static Object setJ2CThreadIdentity(Subject subject) throws ThreadIdentityException {
-        LinkedHashMap<J2CIdentityService, Object> token = new LinkedHashMap<J2CIdentityService, Object>();
+        LinkedHashMap<J2CIdentityService, Object> token = null;
         for (J2CIdentityService j2cIdentityService : j2cIdentityServices) {
             if (j2cIdentityService.isJ2CThreadIdentityEnabled()) {
-                tryToSetJ2CIdentity(token, j2cIdentityService, subject);
+                try {
+                    Object tokenReturnedFromSet = j2cIdentityService.set(subject);
+                    if (tokenReturnedFromSet != null) {
+                        if (token == null) {
+                            token = new LinkedHashMap<J2CIdentityService, Object>();
+                        }
+                        token.put(j2cIdentityService, tokenReturnedFromSet);
+                    }
+                } catch (Exception e) {
+                    com.ibm.ws.ffdc.FFDCFilter.processException(e, thisClass, "272");
+                    resetCheckedInternal(token, e);
+                }
             }
         }
-        if (token.isEmpty() == false) {
-            return token;
-        }
-        return null;
+        return token;
     }
 
     /**
@@ -218,56 +219,24 @@ public class ThreadIdentityManager {
      * @throws ThreadIdentityException
      */
     public static Object setAppThreadIdentity(Subject subject) throws ThreadIdentityException {
-        LinkedHashMap<ThreadIdentityService, Object> token = new LinkedHashMap<ThreadIdentityService, Object>();
+        LinkedHashMap<ThreadIdentityService, Object> token = null;
         for (ThreadIdentityService tis : threadIdentityServices) {
             if (tis.isAppThreadIdentityEnabled()) {
-                tryToSetIdentity(token, tis, subject);
+                try {
+                    Object tokenReturnedFromSet = tis.set(subject);
+                    if (tokenReturnedFromSet != null) {
+                        if (token == null) {
+                            token = new LinkedHashMap<ThreadIdentityService, Object>();
+                        }
+                        token.put(tis, tokenReturnedFromSet);
+                    }
+                } catch (Exception e) {
+                    com.ibm.ws.ffdc.FFDCFilter.processException(e, thisClass, "251");
+                    resetCheckedInternal(token, e);
+                }
             }
         }
-        if (token.isEmpty() == false) {
-            return token;
-        }
-        return null;
-    }
-
-    /**
-     * Try to set the subject's identity as the thread identity.
-     * 
-     * If an identity is returned from the identity service,
-     * then it will be saved in the token map to be returned to the caller.
-     * 
-     * @throws ThreadIdentityException
-     */
-    private static void tryToSetIdentity(LinkedHashMap<ThreadIdentityService, Object> token, ThreadIdentityService tis, Subject subject) throws ThreadIdentityException {
-        try {
-            Object tokenReturnedFromSet = tis.set(subject);
-            if (tokenReturnedFromSet != null) {
-                token.put(tis, tokenReturnedFromSet);
-            }
-        } catch (Exception e) {
-            com.ibm.ws.ffdc.FFDCFilter.processException(e, thisClass, "251");
-            resetCheckedInternal(token, e);
-        }
-    }
-
-    /**
-     * Try to set the subject's identity as the J2C thread identity.
-     * 
-     * If an identity is returned from the identity service,
-     * then it will be saved in the token map to be returned to the caller.
-     * 
-     * @throws ThreadIdentityException
-     */
-    private static void tryToSetJ2CIdentity(LinkedHashMap<J2CIdentityService, Object> token, J2CIdentityService j2cIdentityService, Subject subject) throws ThreadIdentityException {
-        try {
-            Object tokenReturnedFromSet = j2cIdentityService.set(subject);
-            if (tokenReturnedFromSet != null) {
-                token.put(j2cIdentityService, tokenReturnedFromSet);
-            }
-        } catch (Exception e) {
-            com.ibm.ws.ffdc.FFDCFilter.processException(e, thisClass, "272");
-            resetCheckedInternal(token, e);
-        }
+        return token;
     }
 
     /**
@@ -311,7 +280,7 @@ public class ThreadIdentityManager {
      *         true, if we have recursed.
      */
     private static boolean checkForRecursionAndSet() {
-        if (recursionMarker.get() == Boolean.FALSE) {
+        if (recursionMarker.get() == null) {
             recursionMarker.set(Boolean.TRUE);
             return false;
         } else {
@@ -323,7 +292,7 @@ public class ThreadIdentityManager {
      * Reset the recursionMarker.
      */
     private static void resetRecursionCheck() {
-        recursionMarker.set(Boolean.FALSE);
+        recursionMarker.remove();
     }
 
     /**
@@ -333,12 +302,16 @@ public class ThreadIdentityManager {
      *         This token must be passed to the subsequent reset call.
      */
     public static Object runAsServer() {
-        LinkedHashMap<ThreadIdentityService, Object> token = new LinkedHashMap<ThreadIdentityService, Object>();
+        LinkedHashMap<ThreadIdentityService, Object> token = null;
 
         if (!checkForRecursionAndSet()) {
             try {
-                for (ThreadIdentityService tis : threadIdentityServices) {
+                for (int i = 0, size = threadIdentityServices.size(); i < size; ++i) {
+                    ThreadIdentityService tis = threadIdentityServices.get(i);
                     if (tis.isAppThreadIdentityEnabled()) {
+                        if (token == null) {
+                            token = new LinkedHashMap<ThreadIdentityService, Object>();
+                        }
                         token.put(tis, tis.runAsServer());
                     }
                 }
@@ -346,7 +319,7 @@ public class ThreadIdentityManager {
                 resetRecursionCheck();
             }
         }
-        return token;
+        return token == null ? Collections.EMPTY_MAP : token;
     }
 
     /**
@@ -374,25 +347,30 @@ public class ThreadIdentityManager {
         if (threadIdentityServices.isEmpty() == false || j2cIdentityServices.isEmpty() == false) {
             if (!checkForRecursionAndSet()) {
                 try {
-                    @SuppressWarnings("unchecked")
-                    List<Map.Entry> identityServicesToTokensMap = new ArrayList<Map.Entry>(((LinkedHashMap) token).entrySet());
+                    if (token != null) {
+                        Map tokenMap = (Map) token;
+                        int size = tokenMap.size();
+                        if (size > 0) {
+                            @SuppressWarnings("unchecked")
+                            List<Map.Entry> identityServicesToTokensMap = new ArrayList<Map.Entry>(tokenMap.entrySet());
 
-                    int lastIdx = identityServicesToTokensMap.size() - 1;
-                    for (int idx = lastIdx; idx >= 0; idx--) {
-                        Map.Entry entry = identityServicesToTokensMap.get(idx);
-                        Object identityService = entry.getKey();
-                        Object identityServiceToken = entry.getValue();
-                        try {
-                            if (identityService instanceof ThreadIdentityService) {
-                                ((ThreadIdentityService) identityService).reset(identityServiceToken);
-                            } else if (identityService instanceof J2CIdentityService) {
-                                ((J2CIdentityService) identityService).reset(identityServiceToken);
-                            }
-                        } catch (Exception e) {
-                            com.ibm.ws.ffdc.FFDCFilter.processException(e, thisClass, "385");
-                            if (cachedException == null)
-                            {
-                                cachedException = e;
+                            for (int idx = size - 1; idx >= 0; idx--) {
+                                Map.Entry entry = identityServicesToTokensMap.get(idx);
+                                Object identityService = entry.getKey();
+                                Object identityServiceToken = entry.getValue();
+                                try {
+                                    if (identityService instanceof ThreadIdentityService) {
+                                        ((ThreadIdentityService) identityService).reset(identityServiceToken);
+                                    } else if (identityService instanceof J2CIdentityService) {
+                                        ((J2CIdentityService) identityService).reset(identityServiceToken);
+                                    }
+                                } catch (Exception e) {
+                                    com.ibm.ws.ffdc.FFDCFilter.processException(e, thisClass, "385");
+                                    if (cachedException == null)
+                                    {
+                                        cachedException = e;
+                                    }
+                                }
                             }
                         }
                     }

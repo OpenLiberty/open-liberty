@@ -24,6 +24,7 @@ public class MySource implements org.eclipse.microprofile.config.spi.ConfigSourc
     public ConcurrentMap<String, String> props;
     public int ordinal = 700;
     public String id = "mySource";
+    public long lastRefresh = 0L;
 
     public ConcurrentMap<String, String> getProps() {
         return props;
@@ -54,6 +55,7 @@ public class MySource implements org.eclipse.microprofile.config.spi.ConfigSourc
     /** {@inheritDoc} */
     @Override
     public ConcurrentMap<String, String> getProperties() {
+        lastRefresh = System.nanoTime();
         return props;
     }
 

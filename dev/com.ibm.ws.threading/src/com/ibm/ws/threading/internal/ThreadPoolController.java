@@ -1402,6 +1402,10 @@ public final class ThreadPoolController {
         sb.append(String.format(" poolDecrement = %2d", Integer.valueOf(poolDecrement)));
         sb.append(String.format(" compareRange = %2d", Integer.valueOf(compareRange)));
 
+        sb.append("\nConfig:");
+        sb.append(String.format(" coreThreads = %2d", Integer.valueOf(coreThreads)));
+        sb.append(String.format(" maxThreads = %2d", Integer.valueOf(maxThreads)));
+
         sb.append("\nStatistics:\n");
 
         Integer[] poolSizes = new Integer[2 * RANGE + 1];

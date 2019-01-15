@@ -24,8 +24,7 @@ Export-Package: com.ibm.ws.threading;provide:=true, \
                 com.ibm.ws.threading.listeners
 
 Private-Package: com.ibm.ws.threading.internal, \
-    com.ibm.ws.threading.internal.resources, \
-    com.ibm.ws.threading.statistics
+    com.ibm.ws.threading.internal.resources
 
 Service-Component=com.ibm.ws.threading.internal.DeferrableScheduledExecutorImpl; \
         implementation:=com.ibm.ws.threading.internal.DeferrableScheduledExecutorImpl; \

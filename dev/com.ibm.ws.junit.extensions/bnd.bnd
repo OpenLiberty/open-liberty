@@ -28,5 +28,5 @@ instrument.disabled: true
 	org.apache.ant:ant;version=1.9.6,\
 	org.apache.ant:ant-junit;version=1.9.6,\
 	org.jmock:jmock;version=2.5.1,\
-	org.osgi:org.osgi.core;version=6.0.0,\
+        org.osgi:osgi.core;version=7.0.0,\
 	org.osgi:org.osgi.service.component;version=1.3.0

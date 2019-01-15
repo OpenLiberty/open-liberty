@@ -118,7 +118,7 @@ public class EndpointInfo extends AbstractDescriptionElement implements NamedIte
     
     //When finished the threadlocal must be cleared. //Liberty #3669
     public void resetAddress() {
-        threadLocal.set(null); //Liberty #3669
+        threadLocal.remove(); //Liberty #3669
     }
     
     @Override

@@ -6,6 +6,7 @@
 	<classpathentry kind="src" path="test-applications/jpa10/callback/src"/>
 	<classpathentry kind="src" path="test-applications/jpa10/relationships/manyXmany/src"/>
 	<classpathentry kind="src" path="test-applications/jpa10/relationships/manyXone/src"/>
+	<classpathentry kind="src" path="test-applications/jpa10/relationships/oneXmany/src"/>
 	<classpathentry kind="src" path="test-applications/jpa22/bval/src"/>
 	<classpathentry kind="src" path="test-applications/jpa22/cdi/src"/>
 	<classpathentry kind="src" path="test-applications/jpa22/jpa22query/src"/>

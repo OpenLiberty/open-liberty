@@ -372,11 +372,16 @@ task createJSONForPublicArtifacts {
         }
 
         String junitPath = props.getProperty("junit.report.zip")
+        String testReportPath = props.getProperty("gradle.test.report.zip");
         String logPath = props.getProperty("published.gradle.log")
         String driverLocation = props.getProperty("zipopenliberty.archivename")
 
         if (junitPath == null) {
             raise InvalidUserDataException("Could not find property named 'junit.report.zip'")
+        }
+
+        if (isPersonal && (testReportPath == null)) {
+            raise InvalidUserDataException("Could not find property named 'gradle.test.report.zip'")
         }
 
         if (logPath == null) {
@@ -387,7 +392,12 @@ task createJSONForPublicArtifacts {
             raise InvalidUserDataException("Could not find property named 'zipopenliberty.archivename'")
         }
 
-        String testResultName = new File(junitPath).getName()
+        String testResultName = null
+        if (isPersonal) {
+            testResultName = new File(testReportPath).getName()
+        } else {
+            testResultName = new File(junitPath).getName()
+        }
         String logName = new File(logPath).getName()
         String driverLocationName = new File(driverLocation).getName()
 
@@ -470,10 +480,15 @@ task publishPublicArtifactsOnDhe {
         String dest = userAtHost + ":" + dir
 
         def artifactList = [props.getProperty("published.json"),
-                            props.getProperty("published.gradle.log"),
-                            props.getProperty("junit.report.zip")]
+                            props.getProperty("published.gradle.log")]
 
         artifactList.add(props.getProperty("zipopenliberty.archivename"))
+
+        if (isPersonal) {
+            artifactList.add(props.getProperty("gradle.test.report.zip"))
+        } else {
+            artifactList.add(props.getProperty("junit.report.zip"))
+        }
 
         mkdir("${buildDir}/${version}")
         artifactList.each { filePath ->

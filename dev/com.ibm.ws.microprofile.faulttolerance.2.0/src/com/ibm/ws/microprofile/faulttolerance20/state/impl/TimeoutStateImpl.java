@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import com.ibm.ws.microprofile.faulttolerance20.state.TimeoutState;
 
@@ -26,11 +27,15 @@ public class TimeoutStateImpl implements TimeoutState {
     private TimeoutResult result = TimeoutResult.NEW;
     private Runnable timeoutCallback;
     private Future<?> timeoutFuture;
+    private long startTime;
 
-    public TimeoutStateImpl(ScheduledExecutorService executorService, TimeoutPolicy policy) {
+    private final MetricRecorder metrics;
+
+    public TimeoutStateImpl(ScheduledExecutorService executorService, TimeoutPolicy policy, MetricRecorder metrics) {
         super();
         this.executorService = executorService;
         this.policy = policy;
+        this.metrics = metrics;
     }
 
     /** {@inheritDoc} */
@@ -40,6 +45,7 @@ public class TimeoutStateImpl implements TimeoutState {
             if (result != TimeoutResult.NEW) {
                 throw new IllegalStateException("Start called twice on the same timeout");
             }
+            startTime = System.nanoTime();
             result = TimeoutResult.STARTED;
             if (!policy.getTimeout().isZero()) {
                 timeoutFuture = executorService.schedule(this::timeout, asClampedNanos(policy.getTimeout()), TimeUnit.NANOSECONDS);
@@ -72,10 +78,11 @@ public class TimeoutStateImpl implements TimeoutState {
     public void stop() {
         synchronized (this) {
             switch (result) {
-                case NEW:
-                    throw new IllegalStateException("Stop called on a timeout that was never started");
+                case NEW: // If an attempt is aborted before it runs, stop() may be called without start()
                 case STARTED:
                     result = TimeoutResult.FINISHED;
+                    metrics.incrementTimeoutFalseCount();
+                    recordExecutionTime();
                     if (timeoutFuture != null) {
                         timeoutFuture.cancel(false);
                     }
@@ -96,6 +103,11 @@ public class TimeoutStateImpl implements TimeoutState {
         }
     }
 
+    private void recordExecutionTime() {
+        long endTime = System.nanoTime();
+        metrics.recordTimeoutExecutionTime(endTime - startTime);
+    }
+
     private void timeout() {
         synchronized (this) {
             switch (result) {
@@ -103,6 +115,8 @@ public class TimeoutStateImpl implements TimeoutState {
                     throw new IllegalStateException("Timeout called on a timeout that was never started");
                 case STARTED:
                     result = TimeoutResult.TIMEDOUT;
+                    metrics.incrementTimeoutTrueCount();
+                    recordExecutionTime();
                     if (timeoutCallback != null) {
                         timeoutCallback.run();
                     }
