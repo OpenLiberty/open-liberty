@@ -25,6 +25,7 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
@@ -60,11 +61,13 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
     private final Set<Throwable> deploymentErrors = new LinkedHashSet<>();
     private final Set<String> appDefinedProducers = new HashSet<>();
 
-    private final MPConfigAccessor mpConfig = AccessController.doPrivileged((PrivilegedAction<MPConfigAccessor>) () -> {
+    final MPConfigAccessor mpConfigAccessor = AccessController.doPrivileged((PrivilegedAction<MPConfigAccessor>) () -> {
         BundleContext bundleContext = FrameworkUtil.getBundle(ManagedExecutorBean.class).getBundleContext();
         ServiceReference<MPConfigAccessor> mpConfigAccessorRef = bundleContext.getServiceReference(MPConfigAccessor.class);
         return mpConfigAccessorRef == null ? null : bundleContext.getService(mpConfigAccessorRef);
     });
+
+    Object mpConfig;
 
     @Trivial
     public void processProducer(@Observes ProcessProducer<?, ManagedExecutor> event, BeanManager bm) {
@@ -88,10 +91,18 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
         if (config == null)
             config = ManagedExecutorConfig.Literal.DEFAULT_INSTANCE;
 
-        // Instance name is either @NamedInstance.value() or generated from fully-qualified field name
+        // Instance name is either @NamedInstance.value() or generated from fully-qualified field name or method parameter index
         NamedInstance nameAnno = injectionPoint.getAnnotation(NamedInstance.class);
         Member member = event.getInjectionPoint().getMember();
-        String name = nameAnno == null ? member.getDeclaringClass().getTypeName() + "." + member.getName() : nameAnno.value();
+        String name;
+        if (nameAnno == null) {
+            StringBuilder n = new StringBuilder(member.getDeclaringClass().getTypeName()).append('.').append(member.getName());
+            if (injectionPoint instanceof AnnotatedParameter)
+                n.append('.').append(((AnnotatedParameter<?>) injectionPoint).getPosition() + 1); // switch from 0-based to 1-based
+            name = n.toString();
+        } else
+            name = nameAnno.value();
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "InjectionPoint " + name + " has config " + (configAnnoPresent ? config : "DEFAULT_INSTNACE"));
         // Automatically insert @NamedInstance("<generated name>") qualifier for @Default injection points
@@ -113,8 +124,10 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
     }
 
     public void registerBeans(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
+        mpConfig = mpConfigAccessor == null ? null : mpConfigAccessor.getConfig();
+
         // Always register a bean for @Default programmatic CDI lookups
-        event.addBean(new ManagedExecutorBean(mpConfig));
+        event.addBean(new ManagedExecutorBean(this));
 
         // Don't register beans for app-defined @NamedInstance producers
         for (String appDefinedProducer : appDefinedProducers) {
@@ -125,7 +138,7 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
         for (Entry<String, ManagedExecutorConfig> e : beanMap.entrySet()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Add bean for name=" + e.getKey());
-            event.addBean(new ManagedExecutorBean(e.getKey(), e.getValue(), mpConfig));
+            event.addBean(new ManagedExecutorBean(e.getKey(), e.getValue(), this));
         }
     }
 

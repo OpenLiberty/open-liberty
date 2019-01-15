@@ -33,6 +33,5 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	${javac.bootclasspath.java6}, \
 	com.ibm.ws.javax.j2ee:servlet.jsp.resources;version=2.3, \
     javax.servlet.jsp-api;version=2.3.2.b01

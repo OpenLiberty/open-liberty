@@ -15,8 +15,6 @@ import com.ibm.ws.testtooling.testinfo.TestSessionSignature;
 /**
  * Uni- or Bi-Directional messaging client interface.
  *
- * @author jgrassel
- *
  */
 public interface MessagingClient {
     /**

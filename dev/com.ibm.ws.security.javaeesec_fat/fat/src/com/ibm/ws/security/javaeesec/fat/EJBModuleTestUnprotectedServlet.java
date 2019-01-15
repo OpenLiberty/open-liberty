@@ -58,6 +58,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
     protected static String EJB_WAR2_PATH = "/AnnotatedEjbinWarServletLdap/";
     protected static String EJB_EAR_NAME = "securityejbinwar.ear";
     protected static String EJB_APP_NAME = EJB_EAR_NAME;
+    protected static String DB_APP_NAME = "DefaultQueryDatabaseServlet2";
     protected static String XML_NAME = "ejbunprotectedserver.xml";
     protected static String JASPIC_RUN_AS_XML_NAME = "ejbunprotectedCustomISRunAsserver.xml";
     protected static String JAR_NAME = "JavaEESecBase.jar";
@@ -99,7 +100,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
         WCApplicationHelper.addWarToServerApps(myServer, "dbfat2.war", true, JAR_NAME, false, "web.jar.base", "web.war.db2");
         Log.info(logClass, "setUp()", "-----EAR app created");
 
-        startServer(XML_NAME, EJB_APP_NAME);
+        startServer(XML_NAME, EJB_APP_NAME, DB_APP_NAME);
 
     }
 
@@ -127,10 +128,14 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
         return name.getMethodName();
     }
 
-    protected static void startServer(String config, String appName) throws Exception {
+    protected static void startServer(String config, String... appNames) throws Exception {
         myServer.setServerConfigurationFile(config);
         myServer.startServer(true);
-        myServer.addInstalledAppForValidation(appName);
+        if (appNames != null) {
+            for (String appName : appNames) {
+                myServer.addInstalledAppForValidation(appName);
+            }
+        }
         urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
     }
 

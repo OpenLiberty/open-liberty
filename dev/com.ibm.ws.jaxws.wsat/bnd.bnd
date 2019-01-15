@@ -28,7 +28,6 @@ Import-Package: \
    javax.xml,\
    javax.xml.namespace,\
    org.osgi.framework;version="1.5.0",\
-   javax.xml.bind.*;version="[2.2,3)", \
    javax.xml.ws.*;version="[2.2,3)", \
    org.apache.cxf.*;version="[2.6.2,2.6.3)", \
    com.ibm.websphere.ras, \

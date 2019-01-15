@@ -30,12 +30,9 @@ Import-Package: \
 
 Private-Package: \
     com.ibm.ejs.cm.logger, \
-	com.ibm.ejs.cm.pool, \
-	com.ibm.ejs.cm.portability, \
     com.ibm.ejs.j2c, \
 	com.ibm.websphere.ce.j2c, \
 	com.ibm.websphere.j2c, \
-	com.ibm.websphere.pmi.reqmetrics, \
 	com.ibm.ws.j2c, \
 	com.ibm.ws.j2c.poolmanager, \
 	com.ibm.ws.j2c.resources, \

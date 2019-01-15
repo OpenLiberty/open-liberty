@@ -34,5 +34,4 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	${javac.bootclasspath.java6}, \
 	 javax.json.bind:javax.json.bind-api;version=1.0

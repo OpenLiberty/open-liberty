@@ -276,9 +276,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.17</version>
                 <configuration>
+                    <argLine>-Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
                     <!-- <argLine>-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=7777</argLine> -->
                     <systemPropertyVariables>
-                        <argLine>-Dfile.encoding=UTF-8</argLine> <!-- Needed for ZOS becuase arquillian calls string.getBtytes() -->
                         <wlp>${wlp}</wlp>
                         <!-- <wlp>/home/andymc/mpRestClientTCK/open-liberty/dev/build.image/wlp</wlp> -->
                         <!-- <tck_server>${tck_server}</tck_server> -->
@@ -296,9 +296,9 @@
                 </configuration>
             </plugin>
             <plugin>
-               <groupId>uk.co.deliverymind</groupId>
+               <groupId>uk.co.automatictester</groupId>
                <artifactId>wiremock-maven-plugin</artifactId>
-               <version>2.11.0</version>
+               <version>4.1.0</version>
                <executions>
                    <execution>
                        <phase>generate-test-sources</phase>

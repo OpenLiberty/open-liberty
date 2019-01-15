@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+	version="1.0">
+
+	<entity
+		class="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.uni.xml.XMLOMEntA">
+		<attributes>
+			<id name="id" />
+			<basic name="name" />
+			<one-to-many name="defaultRelationship">
+			</one-to-many>
+			<one-to-many name="cascadeAll">
+				<cascade>
+					<cascade-all />
+				</cascade>
+			</one-to-many>
+			<one-to-many name="cascadeMerge">
+				<cascade>
+					<cascade-merge />
+				</cascade>
+			</one-to-many>
+			<one-to-many name="cascadePersist">
+				<cascade>
+					<cascade-persist />
+				</cascade>
+			</one-to-many>
+			<one-to-many name="cascadeRefresh">
+				<cascade>
+					<cascade-refresh />
+				</cascade>
+			</one-to-many>
+			<one-to-many name="cascadeRemove">
+				<cascade>
+					<cascade-remove />
+				</cascade>
+			</one-to-many>
+		</attributes>
+	</entity>
+	<entity
+		class="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.uni.xml.XMLOMEntB_CA">
+		<attributes>
+			<id name="id" />
+			<basic name="name" />
+		</attributes>
+	</entity>
+	<entity
+		class="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.uni.xml.XMLOMEntB_CP">
+		<attributes>
+			<id name="id" />
+			<basic name="name" />
+		</attributes>
+	</entity>
+	<entity
+		class="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.uni.xml.XMLOMEntB_CRF">
+		<attributes>
+			<id name="id" />
+			<basic name="name" />
+		</attributes>
+	</entity>
+	<entity
+		class="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.uni.xml.XMLOMEntB_CRM">
+		<attributes>
+			<id name="id" />
+			<basic name="name" />
+		</attributes>
+	</entity>
+	<entity
+		class="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.uni.xml.XMLOMEntB_DR">
+		<attributes>
+			<id name="id" />
+			<basic name="name" />
+		</attributes>
+	</entity>
+	<entity
+		class="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.uni.xml.XMLOMEntB_CM">
+		<attributes>
+			<id name="id" />
+			<basic name="name" />
+		</attributes>
+	</entity>
+
+	<!-- Compound Primary Key Entities -->
+	<entity
+		class="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.compoundpk.xml.XMLEmbedIDOMEntityA">
+		<attributes>
+			<id name="id" />
+			<basic name="userName" />
+			<basic name="password" />
+			<one-to-many name="identity">
+				<join-table name="XMLRELOM_EIDOMENTA">
+					<join-column name="ENT_A" referenced-column-name="id" />
+					<inverse-join-column name="ENT_B_ID"
+						referenced-column-name="id" />
+					<inverse-join-column name="ENT_B_CTRY"
+						referenced-column-name="country" />
+				</join-table>
+			</one-to-many>
+		</attributes>
+	</entity>
+	<entity
+		class="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.compoundpk.xml.XMLEmbedIDOMEntityB">
+		<attributes>
+			<embedded-id name="id" />
+			<basic name="name" />
+			<basic name="salary" />
+		</attributes>
+	</entity>
+	<entity
+		class="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.compoundpk.xml.XMLIDClassOMEntityA">
+		<attributes>
+			<id name="id" />
+			<basic name="userName" />
+			<basic name="password" />
+			<one-to-many name="identity">
+				<join-table name="XMLRELOM_IDCOMENTA">
+					<join-column name="ENT_A" referenced-column-name="id" />
+					<inverse-join-column name="ENT_B_ID"
+						referenced-column-name="id" />
+					<inverse-join-column name="ENT_B_CTRY"
+						referenced-column-name="country" />
+				</join-table>
+			</one-to-many>
+		</attributes>
+	</entity>
+	<entity
+		class="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.compoundpk.xml.XMLIDClassOMEntityB">
+		<id-class
+			class="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.compoundpk.CompoundPK" />
+		<attributes>
+			<id name="id" />
+			<id name="country" />
+			<basic name="name" />
+			<basic name="salary" />
+		</attributes>
+	</entity>
+
+	<!-- Collection Type Entities -->
+	<entity
+		class="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.containertype.xml.XMLOMContainerTypeEntityA">
+		<attributes>
+			<id name="id" />
+			<basic name="name" />
+
+			<one-to-many name="genericizedCollectionType">
+				<join-table name="XMLOMCTEA_GCT" />
+			</one-to-many>
+			<one-to-many name="ungenericizedCollectionType"
+				target-entity="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.containertype.xml.XMLOMContainerTypeEntityB">
+				<join-table name="XMLOMCTEA_UGCT" />
+			</one-to-many>
+
+			<one-to-many name="genericizedSetType">
+				<join-table name="XMLOMCTEA_GST" />
+			</one-to-many>
+			<one-to-many name="ungenericizedSetType"
+				target-entity="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.containertype.xml.XMLOMContainerTypeEntityB">
+				<join-table name="XMLOMCTEA_UGST" />
+			</one-to-many>
+
+			<one-to-many name="genericizedListType">
+				<join-table name="XMLOMCTEA_GLT" />
+			</one-to-many>
+
+			<one-to-many name="ungenericizedListType"
+				target-entity="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.containertype.xml.XMLOMContainerTypeEntityB">
+				<join-table name="XMLOMCTEA_UGLT" />
+			</one-to-many>
+			<one-to-many name="orderedListType">
+				<order-by>name ASC</order-by>
+				<join-table name="XMLOMCTEA_OLT" />
+			</one-to-many>
+
+			<one-to-many name="genericizedMapType">
+				<join-table name="XMLOMCTEA_GMT" />
+			</one-to-many>
+			<!--
+			<one-to-many name="ungenericizedMapType"
+				target-entity="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.containertype.xml.XMLOMContainerTypeEntityB">
+				<join-table name="XMLOMCTEA_UGMT" />
+			</one-to-many>
+			-->
+
+			<one-to-many name="genericizedMapWithKeyType">
+				<map-key name="name" />
+				<join-table name="XMLOMCTEA_GMKT" />
+			</one-to-many>
+			<one-to-many name="ungenericizedMapWithKeyType"
+				target-entity="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.containertype.xml.XMLOMContainerTypeEntityB">
+				<map-key name="name" />
+				<join-table name="XMLOMCTEA_UGKMT" />
+			</one-to-many>
+		</attributes>
+	</entity>
+
+	<entity
+		class="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.containertype.xml.XMLOMContainerTypeEntityB">
+		<attributes>
+			<id name="id" />
+			<basic name="name" />
+		</attributes>
+	</entity>
+
+	<!-- Embeddable Declarations -->
+	<embeddable
+		class="com.ibm.ws.jpa.fvt.relationships.oneXmany.entities.compoundpk.xml.XMLEmbeddableID" />
+
+</entity-mappings>

@@ -24,8 +24,6 @@ import com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.compoundpk.CompoundPK
  *
  * Annotations are declared on the entity fields.
  *
- * @author Jody Grassel (jgrassel@us.ibm.com)
- *
  */
 @Entity
 @IdClass(CompoundPK.class)

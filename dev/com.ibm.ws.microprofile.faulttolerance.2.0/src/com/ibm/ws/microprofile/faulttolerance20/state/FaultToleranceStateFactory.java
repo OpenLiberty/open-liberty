@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import com.ibm.ws.microprofile.faulttolerance20.state.impl.AsyncBulkheadStateImpl;
@@ -49,11 +50,11 @@ public class FaultToleranceStateFactory {
      * @param policy the RetryPolicy, may be {@code null}
      * @return a new RetryState
      */
-    public RetryState createRetryState(RetryPolicy policy) {
+    public RetryState createRetryState(RetryPolicy policy, MetricRecorder metricRecorder) {
         if (policy == null) {
             return new RetryStateNullImpl();
         } else {
-            return new RetryStateImpl(policy);
+            return new RetryStateImpl(policy, metricRecorder);
         }
     }
 
@@ -63,11 +64,11 @@ public class FaultToleranceStateFactory {
      * @param policy the BulkheadPolicy, may be {@code null}
      * @return a new SyncBulkheadState
      */
-    public SyncBulkheadState createSyncBulkheadState(BulkheadPolicy policy) {
+    public SyncBulkheadState createSyncBulkheadState(BulkheadPolicy policy, MetricRecorder metricRecorder) {
         if (policy == null) {
             return new SyncBulkheadStateNullImpl();
         } else {
-            return new SyncBulkheadStateImpl(policy);
+            return new SyncBulkheadStateImpl(policy, metricRecorder);
         }
     }
 
@@ -75,14 +76,14 @@ public class FaultToleranceStateFactory {
      * Create an object implementing Timeout
      *
      * @param executorService the executor to use to schedule the timeout callback
-     * @param policy the TimeoutPolicy, may be {@code null}
+     * @param policy          the TimeoutPolicy, may be {@code null}
      * @return a new TimeoutState
      */
-    public TimeoutState createTimeoutState(ScheduledExecutorService executorService, TimeoutPolicy policy) {
+    public TimeoutState createTimeoutState(ScheduledExecutorService executorService, TimeoutPolicy policy, MetricRecorder metricRecorder) {
         if (policy == null) {
             return new TimeoutStateNullImpl();
         } else {
-            return new TimeoutStateImpl(executorService, policy);
+            return new TimeoutStateImpl(executorService, policy, metricRecorder);
         }
     }
 
@@ -92,11 +93,11 @@ public class FaultToleranceStateFactory {
      * @param policy the CircuitBreakerPolicy, may be {@code null}
      * @return a new CircuitBreakerState
      */
-    public CircuitBreakerState createCircuitBreakerState(CircuitBreakerPolicy policy) {
+    public CircuitBreakerState createCircuitBreakerState(CircuitBreakerPolicy policy, MetricRecorder metricRecorder) {
         if (policy == null) {
             return new CircuitBreakerStateNullImpl();
         } else {
-            return new CircuitBreakerStateImpl(policy);
+            return new CircuitBreakerStateImpl(policy, metricRecorder);
         }
     }
 
@@ -106,15 +107,16 @@ public class FaultToleranceStateFactory {
      * If {@code null} is passed for the policy, the returned object will still run submitted tasks asynchronously, but will not apply any bulkhead logic.
      *
      * @param executorProvider the policy executor provider
-     * @param executorService the executor to use to asynchronously run tasks
-     * @param policy the BulkheadPolicy, may be {@code null}
+     * @param executorService  the executor to use to asynchronously run tasks
+     * @param policy           the BulkheadPolicy, may be {@code null}
      * @return a new AsyncBulkheadState
      */
-    public AsyncBulkheadState createAsyncBulkheadState(PolicyExecutorProvider executorProvider, ScheduledExecutorService executorService, BulkheadPolicy policy) {
+    public AsyncBulkheadState createAsyncBulkheadState(PolicyExecutorProvider executorProvider, ScheduledExecutorService executorService, BulkheadPolicy policy,
+                                                       MetricRecorder metricRecorder) {
         if (policy == null) {
             return new AsyncBulkheadStateNullImpl(executorService);
         } else {
-            return new AsyncBulkheadStateImpl(executorProvider, policy);
+            return new AsyncBulkheadStateImpl(executorProvider, policy, metricRecorder);
         }
     }
 

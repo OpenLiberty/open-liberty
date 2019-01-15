@@ -81,7 +81,7 @@ testsrc: test/src
         com.ibm.ws.threading;version=latest,\
         com.ibm.ws.webcontainer;version=latest,\
         com.ibm.ws.org.apache.commons.lang3;version=latest,\
-        org.eclipse.osgi;version=latest,\
+        org.eclipse.osgi;version=latest
 
 -testpath: \
         ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

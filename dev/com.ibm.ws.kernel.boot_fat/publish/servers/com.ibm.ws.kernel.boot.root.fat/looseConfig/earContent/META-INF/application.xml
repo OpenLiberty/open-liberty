@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:application="http://java.sun.com/xml/ns/javaee/application_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd" version="6">
+  <display-name>TestMyEAR</display-name>
+  <module>
+    <web>
+      <web-uri>TestWeb1.war</web-uri>
+      <context-root>TestMyWeb1</context-root>
+    </web>
+  </module>
+  <module>
+    <web>
+      <web-uri>TestWeb0.war</web-uri>
+      <context-root>TestMyWeb0</context-root>
+    </web>
+  </module>
+</application>

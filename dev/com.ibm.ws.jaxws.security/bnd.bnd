@@ -35,7 +35,7 @@ Service-Component: \
   com.ibm.ws.jaxws.security.internal.JaxWsWebAppSecurityConfigurator; \
      implementation:=com.ibm.ws.jaxws.security.internal.JaxWsWebAppSecurityConfigurator; \
      provide:='com.ibm.ws.jaxws.webcontainer.JaxWsWebAppConfigurator'; \
-     properties:="service.vendor=IBM", \
+     properties:="service.vendor=IBM"
 
 Private-Package: com.ibm.ws.jaxws.security.internal, \
  com.ibm.ws.jaxws.security.internal.resources

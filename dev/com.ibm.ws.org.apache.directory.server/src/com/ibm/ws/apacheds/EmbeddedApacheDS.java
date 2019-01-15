@@ -45,11 +45,15 @@ import org.apache.directory.server.i18n.I18n;
 import org.apache.directory.server.ldap.LdapServer;
 import org.apache.directory.server.protocol.shared.transport.TcpTransport;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 /**
  * An embedded ApacheDS LDAP server. This implementation is stateless between
  * initializations.
  */
 public class EmbeddedApacheDS {
+
+    private static final Class<?> c = EmbeddedApacheDS.class;
 
     /** The LDAP server */
     private LdapServer server;
@@ -125,9 +129,13 @@ public class EmbeddedApacheDS {
      * @throws IOException If a free port could not be found.
      */
     private static int getOpenPort() throws IOException {
+        Log.info(c, "getOpenPort", "Entry.");
         ServerSocket s = new ServerSocket(0);
+        Log.info(c, "getOpenPort", "Got socket.");
         int port = s.getLocalPort();
+        Log.info(c, "getOpenPort", "Got port " + s);
         s.close();
+        Log.info(c, "getOpenPort", "Close socket");
         return port;
     }
 
@@ -394,11 +402,15 @@ public class EmbeddedApacheDS {
     }
 
     public void startServer(int port) throws Exception {
+        Log.info(c, "startServer", "Create ldapserver.");
         this.server = new LdapServer();
+        Log.info(c, "startServer", "SetTransports ldapserver.");
         this.server.setTransports(new TcpTransport(port));
+        Log.info(c, "startServer", "SetDirectoryService ldapserver.");
         this.server.setDirectoryService(this.service);
+        Log.info(c, "startServer", "Start ldapserver.");
         this.server.start();
-        System.out.println("The server '" + this.name + "' is running on TCP port: " + server.getPort());
+        Log.info(c, "startServer", "The server '" + this.name + "' is running on TCP port: " + server.getPort());
     }
 
     /**

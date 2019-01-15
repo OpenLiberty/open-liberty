@@ -1,5 +1,5 @@
 /*******************************************************************************
-fa * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.ExecutionException;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.microprofile.faulttolerance.spi.FTExecutionContext;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import com.ibm.ws.microprofile.faulttolerance20.state.CircuitBreakerState;
@@ -52,15 +53,17 @@ public class SyncExecutor<R> implements Executor<R> {
     private final TimeoutPolicy timeoutPolicy;
     private final FallbackPolicy fallbackPolicy;
     private final SyncBulkheadState bulkhead;
+    private final MetricRecorder metricRecorder;
 
     public SyncExecutor(RetryPolicy retry, CircuitBreakerPolicy cbPolicy, TimeoutPolicy timeoutPolicy, FallbackPolicy fallbackPolicy, BulkheadPolicy bulkheadPolicy,
-                        ScheduledExecutorService executorService) {
+                        ScheduledExecutorService executorService, MetricRecorder metricRecorder) {
         retryPolicy = retry;
-        circuitBreaker = FaultToleranceStateFactory.INSTANCE.createCircuitBreakerState(cbPolicy);
+        circuitBreaker = FaultToleranceStateFactory.INSTANCE.createCircuitBreakerState(cbPolicy, metricRecorder);
         this.timeoutPolicy = timeoutPolicy;
         this.executorService = executorService;
         this.fallbackPolicy = fallbackPolicy;
-        bulkhead = FaultToleranceStateFactory.INSTANCE.createSyncBulkheadState(bulkheadPolicy);
+        bulkhead = FaultToleranceStateFactory.INSTANCE.createSyncBulkheadState(bulkheadPolicy, metricRecorder);
+        this.metricRecorder = metricRecorder;
     }
 
     /** {@inheritDoc} */
@@ -98,7 +101,7 @@ public class SyncExecutor<R> implements Executor<R> {
 
         MethodResult<R> result = null;
         boolean done = false;
-        RetryState retryContext = FaultToleranceStateFactory.INSTANCE.createRetryState(retryPolicy);
+        RetryState retryContext = FaultToleranceStateFactory.INSTANCE.createRetryState(retryPolicy, metricRecorder);
 
         retryContext.start();
 
@@ -106,7 +109,7 @@ public class SyncExecutor<R> implements Executor<R> {
         while (!done) {
             result = null;
 
-            TimeoutState timeoutState = FaultToleranceStateFactory.INSTANCE.createTimeoutState(executorService, timeoutPolicy);
+            TimeoutState timeoutState = FaultToleranceStateFactory.INSTANCE.createTimeoutState(executorService, timeoutPolicy, metricRecorder);
 
             if (!circuitBreaker.requestPermissionToExecute()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -170,6 +173,11 @@ public class SyncExecutor<R> implements Executor<R> {
             Tr.event(tc, "Method {0} final fault tolerance result: {1}", context.getMethod(), result);
         }
 
+        metricRecorder.incrementInvocationCount();
+        if (result.isFailure()) {
+            metricRecorder.incrementInvocationFailedCount();
+        }
+
         return result;
     }
 
@@ -178,6 +186,8 @@ public class SyncExecutor<R> implements Executor<R> {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Method {0} calling fallback", executionContext.getMethod());
         }
+
+        metricRecorder.incrementFallbackCalls();
 
         executionContext.setFailure(result.getFailure());
         try {

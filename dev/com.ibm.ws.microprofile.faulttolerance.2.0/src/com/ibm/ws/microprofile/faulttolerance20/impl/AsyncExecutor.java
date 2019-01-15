@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.microprofile.faulttolerance.spi.FTExecutionContext;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState;
@@ -61,13 +62,14 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
     private static final TraceComponent tc = Tr.register(AsyncExecutor.class);
 
     public AsyncExecutor(RetryPolicy retry, CircuitBreakerPolicy cbPolicy, TimeoutPolicy timeoutPolicy, FallbackPolicy fallbackPolicy, BulkheadPolicy bulkheadPolicy,
-                         ScheduledExecutorService executorService, PolicyExecutorProvider policyExecutorProvider) {
+                         ScheduledExecutorService executorService, PolicyExecutorProvider policyExecutorProvider, MetricRecorder metricRecorder) {
         retryPolicy = retry;
-        circuitBreaker = FaultToleranceStateFactory.INSTANCE.createCircuitBreakerState(cbPolicy);
+        circuitBreaker = FaultToleranceStateFactory.INSTANCE.createCircuitBreakerState(cbPolicy, metricRecorder);
         this.timeoutPolicy = timeoutPolicy;
         this.executorService = executorService;
         this.fallbackPolicy = fallbackPolicy;
-        bulkhead = FaultToleranceStateFactory.INSTANCE.createAsyncBulkheadState(policyExecutorProvider, executorService, bulkheadPolicy);
+        bulkhead = FaultToleranceStateFactory.INSTANCE.createAsyncBulkheadState(policyExecutorProvider, executorService, bulkheadPolicy, metricRecorder);
+        this.metricRecorder = metricRecorder;
     }
 
     private final RetryPolicy retryPolicy;
@@ -76,6 +78,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
     private final TimeoutPolicy timeoutPolicy;
     private final FallbackPolicy fallbackPolicy;
     private final AsyncBulkheadState bulkhead;
+    private final MetricRecorder metricRecorder;
 
     @Override
     public W execute(Callable<W> callable, ExecutionContext context) {
@@ -91,7 +94,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         W returnWrapper = createReturnWrapper(executionContext);
         executionContext.setReturnWrapper(returnWrapper);
 
-        RetryState retryState = FaultToleranceStateFactory.INSTANCE.createRetryState(retryPolicy);
+        RetryState retryState = FaultToleranceStateFactory.INSTANCE.createRetryState(retryPolicy, metricRecorder);
         executionContext.setRetryState(retryState);
         retryState.start();
 
@@ -111,7 +114,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
      * Stores the result of the execution inside the wrapper instance
      *
      * @param executionContext the execution context
-     * @param result the method result
+     * @param result           the method result
      */
     abstract protected void commitResult(AsyncExecutionContextImpl<W> executionContext, MethodResult<W> result);
 
@@ -125,7 +128,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
 
         AsyncAttemptContextImpl<W> attemptContext = new AsyncAttemptContextImpl<>(executionContext);
 
-        TimeoutState timeout = FaultToleranceStateFactory.INSTANCE.createTimeoutState(executorService, timeoutPolicy);
+        TimeoutState timeout = FaultToleranceStateFactory.INSTANCE.createTimeoutState(executorService, timeoutPolicy, metricRecorder);
         attemptContext.setTimeoutState(timeout);
 
         if (!circuitBreaker.requestPermissionToExecute()) {
@@ -179,22 +182,21 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         } catch (Throwable e) {
             methodResult = MethodResult.failure(e);
         }
-        attemptContext.getTimeoutState().stop();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Method {0} attempt execution reuslt: {1}", executionContext.getMethod(), methodResult);
         }
 
+        finalizeAttempt(attemptContext, methodResult);
+
         if (attemptContext.getTimeoutState().isTimedOut()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Method {0} attempt finished but has timed out. Result discarded.", executionContext.getMethod());
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Method {0} timed out, clearing interrupted flag", executionContext.getMethod());
             }
 
             Thread.interrupted(); // Clear interrupted thread
-            return; // Exit here, the timeout callback will call finalizeAttempt
         }
 
-        finalizeAttempt(attemptContext, methodResult);
     }
 
     /**
@@ -224,7 +226,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
      * <p>
      * In the case of an internal exception, this method will commit the result directly, skipping any fallback or retry logic.
      */
-    private void finalizeAttempt(AsyncAttemptContextImpl<W> attemptContext, MethodResult<W> result) {
+    protected void finalizeAttempt(AsyncAttemptContextImpl<W> attemptContext, MethodResult<W> result) {
         AsyncExecutionContextImpl<W> executionContext = attemptContext.getExecutionContext();
 
         try {
@@ -238,6 +240,8 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Method {0} processing end of attempt execution. Result: {1}", executionContext.getMethod(), result);
             }
+
+            attemptContext.getTimeoutState().stop();
 
             circuitBreaker.recordResult(result);
 
@@ -266,6 +270,11 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 result = runFallback(result, executionContext);
             }
 
+            metricRecorder.incrementInvocationCount();
+            if (result.isFailure()) {
+                metricRecorder.incrementInvocationFailedCount();
+            }
+
             commitResult(executionContext, result);
 
         } catch (Throwable t) {
@@ -287,6 +296,8 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Method {0} calling fallback", executionContext.getMethod());
         }
+
+        metricRecorder.incrementFallbackCalls();
 
         executionContext.setFailure(result.getFailure());
         try {
@@ -324,8 +335,8 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
      * <li>If an attemptContext was not passed, call commitResult, reporting the exception as the result
      * </ul>
      *
-     * @param runnable the runnable to wrap
-     * @param attemptContext the attempt context associated with the runnable, may be {@code null}
+     * @param runnable         the runnable to wrap
+     * @param attemptContext   the attempt context associated with the runnable, may be {@code null}
      * @param executionContext the execution context associated with the runnable
      * @return a new runnable that calls {@code runnable} and logs any exceptions thrown
      */

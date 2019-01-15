@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jndi.internal;
 
-import static com.ibm.ws.jndi.WSNamingEnumeration.getEnumeration;
 import static com.ibm.ws.jndi.internal.JNDIServiceBinder.createServiceProperties;
 
 import java.security.AccessController;
@@ -36,6 +35,7 @@ import javax.naming.Reference;
 import javax.naming.Referenceable;
 import javax.naming.spi.NamingManager;
 
+import com.ibm.ws.jndi.WSNamingEnumeration;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
@@ -277,25 +277,23 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
 
     @Override
     protected NamingEnumeration<NameClassPair> list(final WSName subname) throws NamingException {
-        Adapter<Entry<String, Object>, NameClassPair> adapter = new Adapter<Entry<String, Object>, NameClassPair>() {
-            @Override
-            public NameClassPair adapt(Entry<String, Object> entry) throws NamingException {
-                String className = resolveObjectClassName(entry.getValue());
-                return new NameClassPair(entry.getKey(), className);
-            }
-        };
-        return getEnumeration(myNode.getChildren(subname), adapter);
+        return new WSNamingEnumeration<NameClassPair>(myNode.getChildren(subname).entrySet(),
+                new Adapter<Entry<String, Object>, NameClassPair>() {
+                    public NameClassPair adapt(Entry<String, Object> entry) {
+                        String className = resolveObjectClassName(entry.getValue());
+                        return new NameClassPair(entry.getKey(), className);
+                    }
+                });
     }
 
     @Override
     protected NamingEnumeration<Binding> listBindings(final WSName subname) throws NamingException {
-        Adapter<Entry<String, Object>, Binding> adapter = new Adapter<Entry<String, Object>, Binding>() {
-            @Override
-            public Binding adapt(Entry<String, Object> entry) throws NamingException {
-                return new Binding(entry.getKey(), resolveObject(entry.getValue(), subname.plus(entry.getKey())));
-            }
-        };
-        return getEnumeration(myNode.getChildren(subname), adapter);
+        return new WSNamingEnumeration<Binding>(myNode.getChildren(subname).entrySet(),
+                new Adapter<Entry<String, Object>, Binding>() {
+                    public Binding adapt(Entry<String, Object> entry) throws NamingException {
+                        return new Binding(entry.getKey(), resolveObject(entry.getValue(), subname.plus(entry.getKey())));
+                    }
+                });
     }
 
     @Override

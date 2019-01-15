@@ -13,8 +13,6 @@ package com.ibm.ws.testtooling.msgcli;
 /**
  * Declaration of common properties involved with messaging.
  *
- * @author jgrassel
- *
  */
 public final class MessagingProperties {
     public final static String PROP_REPLY_QCF = "reply.qcf";

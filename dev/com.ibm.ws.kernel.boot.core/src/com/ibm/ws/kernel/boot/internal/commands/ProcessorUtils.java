@@ -186,12 +186,18 @@ public class ProcessorUtils {
      * @throws IOException
      */
     public static ArchiveEntryConfig createLooseArchiveEntryConfig(LooseConfig looseConfig, File looseFile, BootstrapConfig bootProps,
-                                                                   String archiveEntryPrefix) throws IOException {
+                                                                   String archiveEntryPrefix, boolean isUsr) throws IOException {
         File usrRoot = bootProps.getUserRoot();
         int len = usrRoot.getAbsolutePath().length();
 
-        String entryPath = archiveEntryPrefix + "usr" + looseFile.getAbsolutePath().substring(len);
+        String entryPath = null;
+        if (archiveEntryPrefix.equalsIgnoreCase(PackageProcessor.PACKAGE_ARCHIVE_PREFIX) || !isUsr) {
+            entryPath = archiveEntryPrefix + BootstrapConstants.LOC_AREA_NAME_USR + looseFile.getAbsolutePath().substring(len);
+        } else {
+            entryPath = archiveEntryPrefix + looseFile.getAbsolutePath().substring(len);
+        }
         entryPath = entryPath.replace("\\", "/");
+        entryPath = entryPath.replace("//", "/");
         entryPath = entryPath.substring(0, entryPath.length() - 4); // trim the .xml
 
         File archiveFile = processArchive(looseFile.getName(), looseConfig, true, bootProps);

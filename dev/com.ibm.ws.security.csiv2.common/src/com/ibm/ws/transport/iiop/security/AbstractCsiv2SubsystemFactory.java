@@ -10,6 +10,25 @@
  *******************************************************************************/
 package com.ibm.ws.transport.iiop.security;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.csiv2.config.ssl.SSLConfig;
+import com.ibm.ws.security.csiv2.util.SecurityServices;
+import com.ibm.ws.ssl.optional.SSLSupportOptional;
+import com.ibm.ws.transport.iiop.security.config.ssl.yoko.SocketFactory;
+import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
+import com.ibm.ws.transport.iiop.spi.ReadyListener;
+import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
+import com.ibm.wsspi.ssl.SSLSupport;
+import org.apache.yoko.osgi.locator.LocalFactory;
+import org.apache.yoko.osgi.locator.Register;
+import org.apache.yoko.osgi.locator.ServiceProvider;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,31 +41,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.yoko.osgi.locator.LocalFactory;
-import org.apache.yoko.osgi.locator.Register;
-import org.apache.yoko.osgi.locator.ServiceProvider;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.security.csiv2.config.ssl.SSLConfig;
-import com.ibm.ws.security.csiv2.util.SecurityServices;
-import com.ibm.ws.ssl.optional.SSLSupportOptional;
-import com.ibm.ws.transport.iiop.security.config.ssl.yoko.SocketFactory;
-import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
-import com.ibm.ws.transport.iiop.spi.ReadyListener;
-import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
-import com.ibm.wsspi.ssl.SSLSupport;
-
 /**
  *
  */
 public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
     private static final TraceComponent tc = Tr.register(AbstractCsiv2SubsystemFactory.class);
-    protected static long TIMEOUT_SECONDS;
+    protected static final long TIMEOUT_SECONDS = 10;
 
     private enum MyLocalFactory implements LocalFactory {
         INSTANCE;
@@ -132,13 +132,6 @@ public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
     @Override
     public void register(ReadyListener listener, Map<String, Object> properties, List<IIOPEndpoint> endpoints) {
         ReadyRegistration rr = new ReadyRegistration(extractSslRefs(properties, endpoints), listener);
-        String timeoutValue = (String) properties.get("orbSSLInitTimeout");
-        if (timeoutValue != null & timeoutValue.length() > 0) {
-            TIMEOUT_SECONDS = Long.valueOf(timeoutValue);
-            Tr.debug(tc, "orbSSLInitTimeout=" + timeoutValue);
-        } else {
-            Tr.debug(tc, "orbSSLInitTimeout is invalid. orbSSLInitTimeout=" + timeoutValue);
-        }
         regs.add(rr);
         rr.check();
     }
