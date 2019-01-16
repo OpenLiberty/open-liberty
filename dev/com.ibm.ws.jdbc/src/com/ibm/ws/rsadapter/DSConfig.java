@@ -285,7 +285,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
         isolationLevel = remove(DataSourceDef.isolationLevel.name(), -1, -1, null, -1, 0, 1, 2, 4, 8, 16, 4096);
         onConnect = remove(ON_CONNECT, (String[]) null);
         queryTimeout = remove(QUERY_TIMEOUT, (Integer) null, 0, TimeUnit.SECONDS);
-        statementCacheSize = remove(STATEMENT_CACHE_SIZE, 10, 0, null); // If UCP support is ever added to Liberty, can document how to disable statement caching
+        statementCacheSize = remove(STATEMENT_CACHE_SIZE, 10, 0, null);
         supplementalJDBCTrace = remove(SUPPLEMENTAL_JDBC_TRACE, (Boolean) null);
         syncQueryTimeoutWithTransactionTimeout = remove(SYNC_QUERY_TIMEOUT_WITH_TRAN_TIMEOUT, false);
         transactional = remove(DataSourceDef.transactional.name(), true);

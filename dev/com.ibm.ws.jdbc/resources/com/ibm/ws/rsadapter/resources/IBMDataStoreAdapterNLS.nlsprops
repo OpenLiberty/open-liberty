@@ -271,6 +271,14 @@ DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: The JDBC driver does not su
 DSRA4011.tran.none.iso.switch.unsupported.explanation=The JDBC specification does not support switching to an isolation level of TRANSACTION_NONE.
 DSRA4011.tran.none.iso.switch.unsupported.useraction=Avoid switching to an isolation level of TRANSACTION_NONE.
 
+DSRA4012.ignored.datasource.config.used=DSRA4012I: When using Oracle UCP the following data source properties are ignored: statementCacheSize and validationTimeout. Use the equivalent Oracle UCP functionality.
+DSRA4012.ignored.datasource.config.used.explanation=The statementCacheSize and validationTimeout data source properties are not valid when using Oracle UCP.
+DSRA4012.ignored.datasource.config.used.useraction=Remove the data source properties and instead use the equivalent Oracle UCP functionality.
+
+DSRA4013.ignored.connection.manager.config.used=DSRA4013I: When using Oracle UCP the following connection manager properties are ignored: agedTimeout, connectionTimeout, maxIdleTime, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxConnectionsPerThread, maxConnectionsPerThreadLocal. Use the equivalent Oracle UCP functionality.
+DSRA4013.ignored.connection.manager.config.used.explanation=The listed connection manager properties are not valid when using Oracle UCP.
+DSRA4013.ignored.connection.manager.config.used.useraction=Remove the connection manager properties and instead use the equivalent Oracle UCP functionality.
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
