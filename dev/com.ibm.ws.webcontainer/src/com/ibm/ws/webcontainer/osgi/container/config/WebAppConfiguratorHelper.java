@@ -800,47 +800,42 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
         configureFilterMappings(webFragment, webFragment.getFilterMappings());
     }
 
+    private void logAnnotations(String methodName, String title, WebFragmentInfo webFragmentItem, Set<String> annotationClassNames) {
+        if ( annotationClassNames.isEmpty() ) {
+            return;
+        }
+
+        String prefix = CLASS_NAME + "." + methodName + ": ";
+        Tr.info(tc, prefix + "[ " + webFragmentItem + " ]: " + title + ": [ " + annotationClassNames.size() + " ]");
+        for ( String className : annotationClassNames ) {
+            Tr.info(tc, prefix + "  [ " + className + " ]");
+        }
+    }
+
     @Override
     public void configureFromAnnotations(WebFragmentInfo webFragmentItem) throws UnableToAdaptException {
         String methodName = "configureFromAnnotations";
-        String prefix = CLASS_NAME + "." + methodName + ": ";
-        System.out.println(prefix + "Fragment [ " + webFragmentItem + " ]");
 
         FragmentAnnotations fragmentAnnotations = configurator.getWebAnnotations().getFragmentAnnotations(webFragmentItem);
 
         Set<String> webServletClassNames = fragmentAnnotations.selectAnnotatedClasses(WebServlet.class);
-        System.out.println(prefix + "WebServlet class names:");
-        for ( String className : webServletClassNames ) {
-            System.out.println(prefix + "  [ " + className + " ]");
-        }
+        logAnnotations(methodName, "WebServlet class names", webFragmentItem, webServletClassNames);
         configureServletAnnotation(webServletClassNames);
 
         Set<String> webListenerClassNames = fragmentAnnotations.selectAnnotatedClasses(WebListener.class);
-        System.out.println(prefix + "WebListener class names:");
-        for ( String className : webListenerClassNames ) {
-            System.out.println(prefix + "  [ " + className + " ]");
-        }
+        logAnnotations(methodName, "WebListener class names", webFragmentItem, webListenerClassNames);
         configureListenerAnnotation(webListenerClassNames);
 
         Set<String> mpcClassNames = fragmentAnnotations.selectAnnotatedClasses(javax.servlet.annotation.MultipartConfig.class);
-        System.out.println(prefix + "MultipartConfig class names:");
-        for ( String className : mpcClassNames ) {
-            System.out.println(prefix + "  [ " + className + " ]");
-        }
+        logAnnotations(methodName, "MultipartConfig class names", webFragmentItem, mpcClassNames);
         configureMultipartConfigAnnotation(mpcClassNames);
 
         Set<String> runAsClassNames = fragmentAnnotations.selectAnnotatedClasses(RunAs.class);
-        System.out.println(prefix + "RunAs class names:");
-        for ( String className : runAsClassNames ) {
-            System.out.println(prefix + "  [ " + className + " ]");
-        }
+        logAnnotations(methodName, "RunAs class names", webFragmentItem, runAsClassNames);
         configureRunAsAnnotation(runAsClassNames);
 
         Set<String> webFilterClassNames = fragmentAnnotations.selectAnnotatedClasses(WebFilter.class);
-        System.out.println(prefix + "WebFilter class names:");
-        for ( String className : webFilterClassNames ) {
-            System.out.println(prefix + "  [ " + className + " ]");
-        }
+        logAnnotations(methodName, "WebFilter class names", webFragmentItem, webFilterClassNames);
         configureFilterAnnotation(webFilterClassNames);
     }
 

@@ -91,11 +91,10 @@ public abstract class AnnotationsImpl implements Annotations {
             pathCase = "non-root-of-roots (full path)";
         }
 
-        // TODO: Temporary for annotation caching testing.
         String message = getClass().getSimpleName() + ".getContainerPath:" +
             " Container [ " + container + " ]" +
             " Path [ " + containerPath + " ]: " + pathCase;
-        Tr.info(tc, message);
+        Tr.debug(tc, message);
 
         return containerPath;
     }
