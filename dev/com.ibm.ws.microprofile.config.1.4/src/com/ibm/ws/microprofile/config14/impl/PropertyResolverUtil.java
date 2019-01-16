@@ -19,6 +19,21 @@ import com.ibm.ws.microprofile.config14.interfaces.Config14Constants;
 
 public class PropertyResolverUtil {
 
+    /**
+     * This method takes a raw value which may contain nested properties and resolves those properties into their actual values.
+     *
+     * e.g. given the following properties in the config
+     *
+     * greeting = hello
+     * text = my name is ${name}
+     * name = bob
+     *
+     * if the raw string was "${greeting}, ${text}" then the resulting string would be "hello, my name is bob"
+     *
+     * @param config the config instance to be used to look up nested properties
+     * @param raw    the raw string to be resolved
+     * @return the fully resolved string
+     */
     public static String resolve(Config config, String raw) {
         String resolved = raw;
         StringCharacterIterator itr = new StringCharacterIterator(resolved);

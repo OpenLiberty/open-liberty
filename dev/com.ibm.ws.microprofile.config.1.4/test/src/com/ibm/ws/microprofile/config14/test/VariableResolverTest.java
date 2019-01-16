@@ -35,7 +35,7 @@ public class VariableResolverTest extends AbstractConfigTest {
         System.setProperty("layer3", "${layer5}");
         System.setProperty("layer4", "two${");
         System.setProperty("layer5", "one");
-        //System.setProperty("", "nothing"); //can't be done in java so this is in the microprofile-config.properties file
+        System.getProperties().put("", "nothing");
     }
 
     @Test

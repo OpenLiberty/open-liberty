@@ -58,18 +58,6 @@ public interface WebSphereConfig extends Config, Closeable {
     public Object getValue(String propertyName, Type type, String defaultString);
 
     /**
-     * The same as {@link #getValue(String, Type)} except that the defaultString is passed to the converter
-     * rather than throwing a NoSuchElementException.
-     *
-     * @param propertyName  The name of the property
-     * @param type          The type to convert to
-     * @param defaultString the default string to pass to the converter if the requested property does not exist
-     * @return The converted value
-     * @throws IllegalArgumentException thrown if the raw String property value was not compatible with the converter for the specified type
-     */
-    public Object getValue(String propertyName, Type type, boolean optional, String defaultString);
-
-    /**
      * Convert the given rawValue into the specified type
      *
      * @param rawValue The raw String value to convert

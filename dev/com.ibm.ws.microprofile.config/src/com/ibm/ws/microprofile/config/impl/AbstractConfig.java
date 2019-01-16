@@ -149,9 +149,19 @@ public abstract class AbstractConfig implements WebSphereConfig {
         return value;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Object getValue(String propertyName, Type propertyType, boolean optional, String defaultString) {
+    /**
+     * Get the converted value of the given property.
+     * If the property is not found and optional is true then use the default string to create a value to return.
+     * If the property is not found and optional is false then throw an exception.
+     *
+     * @param propertyName  the property to get
+     * @param propertyType  the type to convert to
+     * @param optional      is the property optional
+     * @param defaultString the default string to use if the property was not found and optional is true
+     * @return the converted value
+     * @throws NoSuchElementException thrown if the property was not found and optional was false
+     */
+    protected Object getValue(String propertyName, Type propertyType, boolean optional, String defaultString) {
         Object value = null;
         assertNotClosed();
 
