@@ -79,7 +79,7 @@ public class ThreadContextBean implements Bean<ThreadContext>, PassivationCapabl
             propName.replace(start, len, "unchanged");
             String[] u = configAccessor.get(mpConfig, propName.toString(), config == null ? UNSPECIFIED_ARRAY : config.unchanged());
             if (u != UNSPECIFIED_ARRAY)
-                b.cleared(u);
+                b.unchanged(u);
 
             propName.replace(start, len, "propagated");
             String[] p = configAccessor.get(mpConfig, propName.toString(), config == null ? UNSPECIFIED_ARRAY : config.propagated());
