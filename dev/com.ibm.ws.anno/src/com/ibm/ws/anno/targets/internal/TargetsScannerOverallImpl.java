@@ -1146,6 +1146,16 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             this.i_resolvedClassNames = i_newResolved;
             this.i_unresolvedClassNames = i_newUnresolved;
 
+            // These writes must tolerate subsequent updates to
+            // i_resolvedClassNames and i_unresolvedClassNames,
+            // which will be made by a subsequent call to
+            // validExternal.
+            //
+            // That is, when asynchronous writes are enabled,
+            // 'writeResolvedRefs' and 'writeUnresolvedRefs' must
+            // copy the class names collection before proceeding
+            // with the write.
+
             if ( modData.shouldWrite("Resolved refs") ) {
                 modData.writeResolvedRefs(i_resolvedClassNames);
             }

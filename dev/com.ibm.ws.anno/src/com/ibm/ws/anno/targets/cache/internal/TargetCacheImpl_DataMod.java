@@ -14,6 +14,8 @@ package com.ibm.ws.anno.targets.cache.internal;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -414,6 +416,25 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
             writeDescription = null;
         }
 
+        // The unresolved class names are written from TargetsScannerOverallImpl.validInternalUnresolved,
+        // with the unresolved class names obtained from internal class sources.
+        //
+        // The unresolved class names will be modified by TargetsScannerOverallImpl.validExternal, which
+        // is performed as a following step.
+        //
+        // To prevent a ConcurrentModificationException, when asynchronous writes are enabled, the
+        // unresolved class names collection must be copied before handing it off to the writer.
+        //
+        // When asynchronous writes are not enabled, the unresolved class names may be used as is,
+        // since the write is synchronous and is completed before the call to validExternal.
+
+        final Collection<String> useClassNames;
+        if ( getWritePool() == null ) {
+            useClassNames = unresolvedClassNames;
+        } else {
+            useClassNames = new ArrayList<String>(unresolvedClassNames);
+        }
+
         ScheduleCallback writer = new ScheduleCallback() {
             @Override
             public void execute() {
@@ -425,7 +446,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
                 long writeStart = System.nanoTime();
 
                 try {
-                    createWriter( getUnresolvedRefsFile() ).writeUnresolvedRefs(unresolvedClassNames); // throws IOException
+                    createWriter( getUnresolvedRefsFile() ).writeUnresolvedRefs(useClassNames); // throws IOException
                 } catch ( IOException e ) {
                     // CWWKC00??W
                     logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_CACHE_EXCEPTION [ {0} ]", e);
@@ -486,7 +507,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         return didRead;
     }
 
-    public void writeResolvedRefs(final Set<String> resolvedClassNames) {
+    public void writeResolvedRefs(Set<String> resolvedClassNames) {
         if ( !shouldWrite("Resolved class references") ) {
             return;
         }
@@ -496,6 +517,25 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
             writeDescription = "Container [ " + getName() + " ] Targets [ " + getResolvedRefsFile().getPath() + " ]";
         } else {
             writeDescription = null;
+        }
+
+        // The resolved class names are written from TargetsScannerOverallImpl.validInternalUnresolved,
+        // with the resolved class names obtained from internal class sources.
+        //
+        // The resolved class names will be modified by TargetsScannerOverallImpl.validExternal, which
+        // is performed as a following step.
+        //
+        // To prevent a ConcurrentModificationException, when asynchronous writes are enabled, the
+        // resolved class names collection must be copied before handing it off to the writer.
+        //
+        // When asynchronous writes are not enabled, the resolved class names may be used as is,
+        // since the write is synchronous and is completed before the call to validExternal.
+
+        final Collection<String> useClassNames;
+        if ( getWritePool() == null ) {
+            useClassNames = resolvedClassNames;
+        } else {
+            useClassNames = new ArrayList<String>(resolvedClassNames);
         }
 
         ScheduleCallback writer = new ScheduleCallback() {
@@ -509,7 +549,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
                 long writeStart = System.nanoTime();
 
                 try {
-                    createWriter( getResolvedRefsFile() ).writeResolvedRefs(resolvedClassNames); // throws IOException
+                    createWriter( getResolvedRefsFile() ).writeResolvedRefs(useClassNames); // throws IOException
                 } catch ( IOException e ) {
                     // CWWKC00??W
                     logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_CACHE_EXCEPTION [ {0} ]", e);

@@ -142,7 +142,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         writeTrailer();
     }
 
-    public void writeResolvedRefs(Set<String> resolvedClassNames) throws IOException {
+    public void writeResolvedRefs(Collection<String> resolvedClassNames) throws IOException {
         writeHeader(RESOLVED_REFS_TAG, RESOLVED_REFS_VERSION);
 
         writeComment(DELIMITER_TAG);
@@ -155,7 +155,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         writeTrailer();
     }
 
-    public void writeUnresolvedRefs(Set<String> unresolvedClassNames) throws IOException {
+    public void writeUnresolvedRefs(Collection<String> unresolvedClassNames) throws IOException {
         writeHeader(UNRESOLVED_REFS_TAG, UNRESOLVED_REFS_VERSION);
 
         writeComment(DELIMITER_TAG);
