@@ -639,7 +639,7 @@ public class LibertyServer implements LogMonitorClient {
         // Now it sets all OS specific stuff
         this.machineJava = LibertyServerUtils.makeJavaCompatible(machineJava, machine);
 
-        Log.info(c, "setup", "Machine operating System is: " + machineOS.name());
+        Log.info(c, "setup", "Successfully obtained machine. Operating System is: " + machineOS.name());
         // Continues with setup, we now validate the Java used is a JDK by looking for java and jar files
         String jar = "jar";
         String java = "java";
@@ -656,6 +656,8 @@ public class LibertyServer implements LogMonitorClient {
             machineJarPath = testJar.getAbsolutePath();
             if (!!!testJar.exists()) {
                 throw new TopologyException("cannot find a " + jar + " file in " + machineJava + "/bin. Please ensure you have set the machine javaHome to point to a JDK");
+            } else {
+                Log.info(c, "setup", "Jar Home now set to: " + machineJarPath);
             }
         }
         if (!!!testJava.exists())

@@ -13,16 +13,19 @@ package com.ibm.websphere.simplicity;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
-import java.nio.file.Files;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import com.ibm.websphere.simplicity.log.Log;
+//open-liberty uses 'LocalProvider', where-as WS-CD-Open uses 'RXAProvider'.
 import componenttest.common.apiservices.cmdline.LocalProvider;
 
 /**
@@ -32,9 +35,52 @@ import componenttest.common.apiservices.cmdline.LocalProvider;
  * /dir/dir2/file.
  */
 public class RemoteFile {
-
     @SuppressWarnings("rawtypes")
     private static final Class c = RemoteFile.class;
+
+    // Retry utility ...
+
+    /**
+     * Sleep a specified interval, measured in nanoseconds.
+     * See {@link TimeUnit#NANOSECONDS}.
+     *
+     * @param ns The interval, in nanoseconds.
+     *
+     * @throws InterruptedException Thrown if if the sleep is
+     *     interrupted.
+     */
+    public static void sleep(long ns) throws InterruptedException {
+        TimeUnit.NANOSECONDS.sleep(ns); // throws InterruptedException
+    }
+
+    /**
+     * The standard retry interval for delete and rename operations.
+     *
+     * This is based on the artifact file system minimum
+     * retry interval of 200 milliseconds, per
+     * <code>
+     *   open-liberty/dev/com.ibm.ws.artifact.zip/src/
+     *   com/ibm/ws/artifact/zip/cache/
+     *   ZipCachingProperties.java
+     * </code>
+     *
+     * The default largest pending close time is specified
+     * by property <code>zip.reaper.slow.pend.max</code>.
+     * 
+     * The current largest pend time is 200 milliseconds.  For
+     * extra safety, the retry interval is set to twice this value.
+     * 
+     * Note: This does not handle when the server is prevented
+     * from running.  In a typical case, where application files
+     * are updated after accessing the server files, if the server
+     * is prevented from running while an application file has a
+     * pending close, the usual pend time may be exceeded without
+     * the file being closed.
+     */
+    public static final long STANDARD_RETRY_INTERVAL_NS =
+        TimeUnit.MILLISECONDS.toNanos(200 * 2);
+    
+    //
 
     private final Machine host;
     private String filePath;
@@ -147,7 +193,7 @@ public class RemoteFile {
      * @return The {@link Machine}
      */
     public Machine getMachine() {
-        return this.host;
+        return host;
     }
 
     /**
@@ -177,7 +223,7 @@ public class RemoteFile {
         if (path == null) {
             return null;
         }
-        return new RemoteFile(this.host, path);
+        return new RemoteFile(host, path);
     }
 
     /**
@@ -187,7 +233,7 @@ public class RemoteFile {
      * @return The absolute pathname of this RemoteFile
      */
     public String getAbsolutePath() {
-        return this.filePath;
+        return filePath;
     }
 
     /**
@@ -218,7 +264,7 @@ public class RemoteFile {
      *             or if the file cannot be created
      */
     public RemoteFile getOrderedChild(String prefix, int digits, String suffix) throws Exception {
-        RemoteFile[] children = this.list(false);
+        RemoteFile[] children = list(false);
         if (children == null) {
             throw new IllegalArgumentException("Does not denote a directory: " + this);
         }
@@ -268,7 +314,7 @@ public class RemoteFile {
             newName.append("-");
             newName.append(suffix);
         }
-        return new RemoteFile(this.getMachine(), this, newName.toString());
+        return new RemoteFile(getMachine(), this, newName.toString());
     }
 
     /**
@@ -452,28 +498,9 @@ public class RemoteFile {
     // Delete ...
 
     /**
-     * The standard retry interval for delete operations.
-     * This is based on the artifact file system minimum
-     * retry interval of 200 nano-seconds, per
-     * <code>
-     *   open-liberty/dev/com.ibm.ws.artifact.zip/src/
-     *   com/ibm/ws/artifact/zip/cache/
-     *   ZipCachingProperties.java
-     * </code>
-     *
-     * The default largest pending close time is specified
-     * by property <code>zip.reaper.slow.pend.max</code>.
-     */
-    public static final long STANDARD_DELETE_INTERVAL = 2 * 200 * 1000 * 1000; // 2 * 200 nano-seconds.
-
-    /**
      * Deletes this file or directory.
      *
-     * Delegate to an implementation according to the type of this file.
-     *
-     * @return True or false telling if this file or directory was deleted.
-     * 
-     * @throws Exception Thrown if the delete attempt encountered an error.
+     * @return True or false telling if this file was deleted.
      */
     public boolean delete() throws Exception {
         if ( host.isLocal() ) {
@@ -483,7 +510,7 @@ public class RemoteFile {
                 return deleteLocalFile(localFile);
             }
         } else {
-            return deleteRemoteFile(); // throws Exception
+            return deleteRemoteFile();
         }
     }
 
@@ -498,7 +525,7 @@ public class RemoteFile {
      *     Only possible for remote files.
      */
     public boolean deleteWithRetry() throws Exception {
-        return deleteWithRetry(STANDARD_DELETE_INTERVAL); // throws Exception
+        return deleteWithRetry(STANDARD_RETRY_INTERVAL_NS); // throws Exception
     }
 
     /**
@@ -512,7 +539,7 @@ public class RemoteFile {
      */
 
     public boolean deleteWithRetry(long retryNs) throws Exception {
-        if ( host.isLocal() ) {
+        if ( host.isLocal() ) { // TODO: This is 'localFile != null' in open-liberty.
             if ( localFile.isDirectory() ) {
                 return deleteLocalDirectory(localFile, retryNs);
             } else {
@@ -534,7 +561,7 @@ public class RemoteFile {
      *     contents were deleted.
      */
     public boolean deleteLocalDirectory(File localDir) {
-        String method = "deleteLocalDirectory";
+        String methodName = "deleteLocalDirectory";
 
         if ( !localDir.exists() ) {
             return true;
@@ -548,7 +575,7 @@ public class RemoteFile {
 
             } else {
                 if ( !deleteLocalFile(file) ) {
-                    Log.info(c, method, "Failed to delete: " + file);
+                    Log.info(c, methodName, "Failed to delete: " + file);
                 }
             }
         }
@@ -572,7 +599,7 @@ public class RemoteFile {
      *     contents were deleted.
      */
     public boolean deleteLocalDirectory(File localDir, long retryNs) {
-        String method = "deleteLocalDirectory";
+        String methodName = "deleteLocalDirectory";
 
         if ( !localDir.exists() ) {
             return true;
@@ -586,7 +613,7 @@ public class RemoteFile {
 
             } else {
                 if ( !deleteLocalFile(childFile, retryNs) ) {
-                    Log.info(c, method, "Failed to delete: " + childFile);
+                    Log.info(c, methodName, "Failed to delete: " + childFile);
                 }
             }
         }
@@ -596,7 +623,7 @@ public class RemoteFile {
     }
 
     /**
-     * Attempt to delete a local file using {@link Files#delete(java.nio.file.Path)}.
+     * Attempt to delete a local file using {@link Files#delete(Path)}.
      *
      * The file is any simple local file or any empty local directory.  An attempt to delete
      * a non-empty directory will fail.
@@ -610,39 +637,43 @@ public class RemoteFile {
      *
      * @return True or false telling if the file was deleted.
      */
-    private boolean deleteLocalFile(File file) {
-        String method = "deleteLocalFile";
+    private boolean deleteLocalFile(File useLocalFile) {
+        String methodName = "deleteLocalFile";
+
+        Path localPath = useLocalFile.toPath();
         try {
-            java.nio.file.Files.delete(file.toPath());
+            Files.delete(localPath);
             return true;
-        } catch ( Exception e ) {
-            Log.info(c, method, "Failed to delete [" + file + "]:\n" + e.getMessage());
+        } catch ( IOException e ) {
+            Log.info(c, methodName, "Failed to delete '" + localPath + "': " + e.getMessage());
             return false;
         }
     }
     
-    private boolean deleteLocalFile(File file, long retryNs) {
-        String method = "deleteLocalFile";
+    private boolean deleteLocalFile(File useLocalFile, long retryNs) {
+        String methodName = "deleteLocalFile";
+
+        Path localPath = useLocalFile.toPath();
 
         try {
-            java.nio.file.Files.delete(file.toPath());
+            Files.delete(localPath);
             return true;
-        } catch ( Exception e ) {
-            Log.info(c, method, "Failed to delete (first try) [" + file + "]:\n" + e.getMessage());
+        } catch ( IOException e ) {
+            Log.info(c, methodName, "Failed to delete (first try) '" + localPath + "': " + e.getMessage());
         }
 
         try {
             sleep(retryNs);
-        } catch ( Exception e ) {
-            Log.info(c, method, "Interrupted while deleting [" + file + "]:\n" + e.getMessage());
+        } catch ( InterruptedException e ) {
+            Log.info(c, methodName, "Interrupted while deleting '" + localPath + "': " + e.getMessage());
             return false;
-		}
+        }
 
         try {
-            java.nio.file.Files.delete(file.toPath());
+            Files.delete(localPath);
             return true;
-        } catch ( Exception e ) {
-            Log.info(c, method, "Failed to delete (second try) [" + file + "]:\n" + e.getMessage());
+        } catch ( IOException e ) {
+            Log.info(c, methodName, "Failed to delete (second try) '" + localPath + "': " + e.getMessage());
             return false;
         }
     }
@@ -656,7 +687,7 @@ public class RemoteFile {
      *     this file as a remote file.
      */
     private boolean deleteRemoteFile() throws Exception {
-        return LocalProvider.delete(this); // throws Exception
+        return providerDelete(); // throws Exception
     }
 
     /**
@@ -677,7 +708,7 @@ public class RemoteFile {
         if ( firstResult ) {
             return firstResult;
         }
-        sleep(retryNs); // throws Exception
+        sleep(retryNs); // throws InterruptedException
         boolean secondResult = deleteRemoteFile(); // throws Exception
         return secondResult;
     }
@@ -691,13 +722,13 @@ public class RemoteFile {
      *         exists and is a directory; false otherwise
      */
     public boolean isDirectory() throws Exception {
-        if (!this.exists()) {
+        if (!exists()) {
             return false;
         }
         if (host.isLocal())
-            return this.localFile.isDirectory();
+            return localFile.isDirectory();
         else
-            return LocalProvider.isDirectory(this);
+            return providerIsDirectory();
     }
 
     /**
@@ -710,13 +741,13 @@ public class RemoteFile {
      *         exists and is a normal file; false otherwise
      */
     public boolean isFile() throws Exception {
-        if (!this.exists()) {
+        if (!exists()) {
             return false;
         }
         if (host.isLocal())
-            return this.localFile.isFile();
+            return localFile.isFile();
         else
-            return LocalProvider.isFile(this);
+            return providerIsFile();
     }
 
     /**
@@ -727,9 +758,9 @@ public class RemoteFile {
      */
     public boolean exists() throws Exception {
         if (host.isLocal())
-            return this.localFile.exists();
+            return localFile.exists();
         else
-            return LocalProvider.exists(this);
+            return providerExists();
     }
 
     /**
@@ -748,7 +779,7 @@ public class RemoteFile {
     public RemoteFile[] list(boolean recursive) throws Exception {
         final String method = "list";
         Log.entering(c, method, recursive);
-        if (!this.isDirectory()) {
+        if (!isDirectory()) {
             Log.finer(c, method, "This is not a directory.");
             Log.exiting(c, method, null);
             return null;
@@ -757,9 +788,9 @@ public class RemoteFile {
         RemoteFile[] remoteFiles = null;
         List<RemoteFile> remoteFilesList = new ArrayList<RemoteFile>();
         if (host.isLocal()) {
-            File[] list = this.localFile.listFiles();
+            File[] list = localFile.listFiles();
             for (int i = 0; i < list.length; ++i) {
-                RemoteFile remoteFile = new RemoteFile(this.host, list[i]
+                RemoteFile remoteFile = new RemoteFile(host, list[i]
                                 .getCanonicalPath());
                 remoteFilesList.add(remoteFile);
 
@@ -773,10 +804,10 @@ public class RemoteFile {
             }
             remoteFiles = remoteFilesList.toArray(new RemoteFile[0]);
         } else {
-            String[] fileList = LocalProvider.list(this, recursive);
+            String[] fileList = providerList(recursive);
             remoteFiles = new RemoteFile[fileList.length];
             for (int i = 0; i < fileList.length; ++i) {
-                remoteFiles[i] = new RemoteFile(this.host, fileList[i]);
+                remoteFiles[i] = new RemoteFile(host, fileList[i]);
             }
         }
         Log.exiting(c, method, remoteFiles);
@@ -790,12 +821,10 @@ public class RemoteFile {
      */
     public boolean mkdir() throws Exception {
         if (host.isLocal())
-            return this.localFile.mkdir();
+            return localFile.mkdir();
         else
-            return LocalProvider.mkdir(this);
+            return providerMkdir();
     }
-
-    //
 
     /**
      * Creates the directory named by this RemoteFile, including any necessary
@@ -807,29 +836,15 @@ public class RemoteFile {
      */
     public boolean mkdirs() throws Exception {
         if (host.isLocal())
-            return this.localFile.mkdirs();
+            return localFile.mkdirs();
         else
-            return LocalProvider.mkdirs(this);
+            return providerMkdirs();
     }
 
     //
 
     /**
-     * Sleep a specified interval, measured in nano-seconds.
-     *
-     * @param ns The interval, in nano-seconds.
-     *
-     * @throws Exception Thrown if an error occurs.  This should only
-     *     ever be {@link InterruptedException}.
-     */
-    public static void sleep(long ns) throws Exception {
-        TimeUnit.NANOSECONDS.sleep(ns); // throws InterruptedException
-    }
-
-    //
-
-    /**
-     * Attempt to rename this file.  The file may be non-local.
+     * Attempt to rename this file.
      *
      * @param newFile The target file.
      *
@@ -837,30 +852,15 @@ public class RemoteFile {
      */
     public boolean rename(RemoteFile newFile) throws Exception {
         if ( host.isLocal() ) {
-            return this.localFile.renameTo(new File(newFile.getAbsolutePath()));
+            return localFile.renameTo(new File(newFile.getAbsolutePath()));
         } else {
-            return LocalProvider.rename(this, newFile);
+            return providerRename(newFile);
         }
     }
 
     /**
-     * The standard retry interval for rename operations.
-     * This is based on the artifact file system minimum
-     * retry interval of 200 nano-seconds, per
-     * <code>
-     *   open-liberty/dev/com.ibm.ws.artifact.zip/src/
-     *   com/ibm/ws/artifact/zip/cache/
-     *   ZipCachingProperties.java
-     * </code>
-     *
-     * The default largest pending close time is specified
-     * by property <code>zip.reaper.slow.pend.max</code>.
-     */
-    public static final long STANDARD_RENAME_INTERVAL = 2 * 200 * 1000 * 1000; // 2 * 200 nano-seconds.
-
-    /**
      * Attempt to rename a file including a retry interval.  Use the standard
-     * retry interval, {@link #STANDARD_RENAME_INTERVAL}.
+     * retry interval, {@link #STANDARD_RETRY_INTERVAL_NS}.
      *
      * If the initial rename fails, sleep for the specified interval, then try again.
      *
@@ -875,7 +875,7 @@ public class RemoteFile {
      * @return True or false telling if the retry was successful.
      */
     public boolean renameWithRetry(RemoteFile newFile) throws Exception {
-        return renameWithRetry(newFile, STANDARD_RENAME_INTERVAL);
+        return renameWithRetry(newFile, STANDARD_RETRY_INTERVAL_NS);
     }
 
     /**
@@ -888,7 +888,7 @@ public class RemoteFile {
      * occur because of zip file caching.
      *
      * @param newFile The new file.
-     * @param retryNs The retry interval, in nano-seconds.
+     * @param retryNs The retry interval, in nanoseconds.
      *
      * @return True or false telling if the retry was successful.
      */
@@ -897,7 +897,7 @@ public class RemoteFile {
         if ( firstResult ) {
             return firstResult;
         }
-        sleep(retryNs); // throws Exception
+        sleep(retryNs); // throws InterruptedException
         boolean secondResult = rename(newFile); // throws Exception
         return secondResult;
     }
@@ -911,28 +911,28 @@ public class RemoteFile {
      * @throws Exception
      */
     public String getName() throws Exception {
-        if (this.name == null) {
-            name = this.getAbsolutePath();
+        if (name == null) {
+            name = getAbsolutePath();
             int startIndex = name.lastIndexOf("/");
             if (startIndex != -1) {
                 name = name.substring(startIndex + 1);
             }
         }
-        return this.name;
+        return name;
     }
 
     public InputStream openForReading() throws Exception {
         if (host.isLocal())
-            return new FileInputStream(this.localFile);
+            return new FileInputStream(localFile);
         else
-            return LocalProvider.openFileForReading(this);
+            return providerOpenFileForReading();
     }
 
     public OutputStream openForWriting(boolean append) throws Exception {
         if (host.isLocal())
-            return new FileOutputStream(this.localFile, append);
+            return new FileOutputStream(localFile, append);
         else
-            return LocalProvider.openFileForWriting(this, append);
+            return providerOpenFileForWriting(append);
     }
 
     /**
@@ -940,7 +940,7 @@ public class RemoteFile {
      */
     @Override
     public String toString() {
-        return this.getAbsolutePath();
+        return getAbsolutePath();
     }
 
     /**
@@ -963,20 +963,15 @@ public class RemoteFile {
         final String method = "copy";
         Log.entering(c, method, new Object[] { srcFile, destFile, recursive, overwrite });
 
-        if (srcFile == null) {
-            throw new Exception("srcFile cannot be null.");
-        }
         if (!srcFile.exists()) {
             throw new Exception("Cannot copy a file or directory that does not exist: "
                                 + srcFile.getAbsolutePath() + ": "
                                 + srcFile.getMachine().getHostname());
         }
 
-        if (destFile == null) {
-            throw new Exception("destFile cannot be null.");
-        }
         boolean destExists = destFile.exists();
         boolean destIsDir = destFile.isDirectory();
+
         if (!overwrite && destExists && !destIsDir) {
             throw new Exception("Destination " + destFile.getAbsolutePath()
                                 + " on machine " + destFile.getMachine().getHostname()
@@ -1015,15 +1010,13 @@ public class RemoteFile {
 
         } else {
             Log.finer(c, method, "The source file is a file. Copying the file.");
-
-            String destParentPath = destFile.getParent();
-            if ( destParentPath != null ) {
-                RemoteFile parentFolder = new RemoteFile(destFile, destParentPath);
+            if ( !destFile.getParentFile().equals(null) ) {
+                RemoteFile parentFolder = new RemoteFile(destFile.getMachine(), destFile.getParent());
+                Log.finer(c, method, destFile.getParent());
                 parentFolder.mkdirs();
             }
 
-            boolean result = LocalProvider.copy(srcFile, destFile, binary);
-
+            boolean result = providerCopy(srcFile, destFile, binary);
             Log.exiting(c, method, result);
             return result;
         }
@@ -1063,8 +1056,8 @@ public class RemoteFile {
     }
 
     private void init() {
-        if (this.host.isLocal())
-            this.localFile = new File(this.filePath);
+        if (host.isLocal())
+            localFile = new File(filePath);
     }
 
     /**
@@ -1073,8 +1066,8 @@ public class RemoteFile {
      * @return the size of the file
      */
     public long length() {
-        if (this.localFile != null)
-            return this.localFile.length();
+        if (localFile != null)
+            return localFile.length();
         else
             return 0;
     }
@@ -1086,7 +1079,7 @@ public class RemoteFile {
      * @return the last modified timestamp
      */
     public long lastModified() {
-        return this.localFile.lastModified();
+        return localFile.lastModified();
     }
 
     /**
@@ -1095,6 +1088,55 @@ public class RemoteFile {
      * @return the character set the file is encoded in
      */
     public Charset getEncoding() {
-        return this.encoding;
+        return encoding;
+    }
+
+    // Provider implemented operations ...
+
+    // Isolate these changes to keep the open-liberty and WS-CD-Open
+    // copies of this source as close as possible.
+
+    private boolean providerDelete() throws Exception{
+        return LocalProvider.delete(this);
+    }
+    
+    private boolean providerIsDirectory() throws Exception {
+        return LocalProvider.isDirectory(this);
+    }
+
+    private boolean providerIsFile() throws Exception {
+        return LocalProvider.isFile(this);
+    }
+
+    private boolean providerExists() throws Exception {
+        return LocalProvider.exists(this);
+    }
+    
+    private String[] providerList(boolean recursive) throws Exception {
+        return LocalProvider.list(this, recursive);
+    }
+
+    private boolean providerMkdir() throws Exception {
+        return LocalProvider.mkdir(this);
+    }
+
+    private boolean providerMkdirs() throws Exception {
+        return LocalProvider.mkdirs(this);
+    }
+
+    private boolean providerRename(RemoteFile newFile) throws Exception {
+        return LocalProvider.rename(this, newFile);
+    }
+
+    private InputStream providerOpenFileForReading() throws Exception {
+        return LocalProvider.openFileForReading(this);
+    }
+
+    private OutputStream providerOpenFileForWriting(boolean append) throws Exception {
+        return LocalProvider.openFileForWriting(this, append);
+    }
+
+    private static boolean providerCopy(RemoteFile srcFile, RemoteFile destFile, boolean binary) throws Exception {
+        return LocalProvider.copy(srcFile, destFile, binary);
     }
 }
