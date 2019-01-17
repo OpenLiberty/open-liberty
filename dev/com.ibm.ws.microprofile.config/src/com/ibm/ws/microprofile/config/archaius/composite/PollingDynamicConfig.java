@@ -268,9 +268,11 @@ public class PollingDynamicConfig implements Closeable {
 
         @Override
         public void run() {
+
             PollingDynamicConfig config = configRef.get();
-            if (config == null) {
+            if (config == null || com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping()) {
                 // Our pollingDynamicConfig has been GC'd, we can't update it any more, cancel ourselves
+                // OR the OSGi Framework is being shutdown (i.e. the server is being shutdown)
                 if (future != null) {
                     future.cancel(false);
                 }
