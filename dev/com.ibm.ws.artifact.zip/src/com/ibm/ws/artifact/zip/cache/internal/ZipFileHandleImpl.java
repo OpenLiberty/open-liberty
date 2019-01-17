@@ -182,6 +182,12 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
                 openCount = openCount - 1;
 
+                // Closing the handle does NOT cause the entry cache to
+                // be invalidated.  Entries are invalidated when their
+                // CRC changes, regardless of the handle having been
+                // closed then re-opened, and regardless of a change
+                // to the zip file last modified time.
+
                 if ( openCount == 0 ) {
                     if ( zipFileReaper == null ) {
                         ZipFile useZipFile = zipFile;
@@ -295,42 +301,57 @@ public class ZipFileHandleImpl implements ZipFileHandle {
     @Trivial
     public InputStream getInputStream(ZipFile useZipFile, ZipEntry zipEntry) throws IOException {
         String methodName = "getInputStream";
+        boolean doDebug = tc.isDebugEnabled();
+
         String entryName = zipEntry.getName();
 
         if ( zipEntry.isDirectory() ) {
-            if ( tc.isDebugEnabled() ) {
-                debug(methodName, "Entry [ " + entryName + " ] [ null ] (Not using cache: Directory entry)");
+            if ( doDebug ) {
+                debug(methodName, "ZipEntry [ " + entryName + " ] [ null ] (Not using cache: Directory entry)");
             }
             return null;
         }
 
         long entrySize = zipEntry.getSize();
         if ( entrySize == 0 ) {
-            if ( tc.isDebugEnabled() ) {
-                debug(methodName, "Entry [ " + entryName + " ] [ empty stream ] (Not using cache: Empty entry)");
+            if ( doDebug ) {
+                debug(methodName, "ZipEntry [ " + entryName + " ] [ empty stream ] (Not using cache: Empty entry)");
             }
             return EMPTY_STREAM;
         }
 
+        long entryCrc = zipEntry.getCrc();
+        if ( doDebug ) {
+            debug(methodName, "ZipEntry [ " + entryName + " ] Size [ " + entrySize + " ] CRC [ " + entryCrc + " ]");
+        }
+
         boolean doNotCache;
         String doNotCacheReason;
+
         if ( zipEntries == null ) { // No entry cache.
             doNotCache = true;
             doNotCacheReason = "Do not cache: Entry cache disabled";
+
         } else if ( entrySize > ZipCachingProperties.ZIP_CACHE_ENTRY_LIMIT) { // Too big for the cache
             doNotCache = true;
             doNotCacheReason = "Do not cache: Too big";
-        } else if ( entryName.equals("META-INF/MANIFEST.MF") ) {
+        } else if ( entryCrc == -1 ) {
+            doNotCache = true;
+            doNotCacheReason = "Do not cache: CRC is unknown";
+
+        } else if ( entryName.equalsIgnoreCase("META-INF/MANIFEST.MF") ) {
             doNotCache = false;
             doNotCacheReason = "Cache META-INF/MANIFEST.MF";
         } else if ( entryName.endsWith(".class") ) {
             doNotCache = false;
             doNotCacheReason = "Cache .class resources";
+
         } else {
             doNotCache = true;
             doNotCacheReason = "Do not cache: Not manifest or class resource";
         }
-        if ( tc.isDebugEnabled() ) {
+
+        if ( doDebug ) {
             debug(methodName, "Entry [ " + entryName + " ] [ non-null ] [ " + doNotCacheReason + " ]");
         }
 
@@ -338,15 +359,16 @@ public class ZipFileHandleImpl implements ZipFileHandle {
             return useZipFile.getInputStream(zipEntry); // throws IOException
         }
 
-        // The addition of ":::" *seems* to allow for non-unique cache keys.  Duplicate
-        // keys *are not* possible because the CRC and last-modified values are numeric.
-        // Duplicate keys would be possible of the CRC or last-modified values, when
-        // converted to strings, could contain ":::" character sequences.
+        // No longer use the last modified time to invalidate entries.
+        //
+        // Firstly, because we don't test and refresh the zip file based on the last
+        // modified time.
+        //
+        // Secondly, fetching the last modified time every time an input stream is
+        // obtained is very expensive -- accounting for 2-4 percent of startup time
+        // when annotation scans are enabled.
 
-        String entryCacheKey =
-               entryName +
-               ":::" + Long.toString( zipEntry.getCrc() ) +
-               ":::" + Long.toString( getLastModified() );
+        String entryCacheKey = entryName + ":::" + Long.toString(entryCrc);
 
         // Note that only the individual gets and puts are protected.
         //
