@@ -17,6 +17,7 @@ public class ConverterA<T extends ClassA> implements Converter<T> {
     private int conversionCount = 0;
 
     /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
     @Override
     public T convert(String value) {
         conversionCount++;

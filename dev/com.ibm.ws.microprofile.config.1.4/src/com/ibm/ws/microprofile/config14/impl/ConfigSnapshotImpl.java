@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,42 +12,40 @@ package com.ibm.ws.microprofile.config14.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.eclipse.microprofile.config.ConfigAccessor;
-import org.eclipse.microprofile.config.ConfigSnapshot;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.microprofile.config.impl.AbstractConfig;
+import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
+import com.ibm.ws.microprofile.config14.interfaces.WebSphereConfigAccessor;
+import com.ibm.ws.microprofile.config14.interfaces.WebSphereConfigSnapshot;
 
-public class ConfigSnapshotImpl implements ConfigSnapshot {
+public class ConfigSnapshotImpl implements WebSphereConfigSnapshot {
 
-    private static final TraceComponent tc = Tr.register(AbstractConfig.class);
-
-    private final Map<String, String> resolvedValues = new HashMap<>();
+    private final Map<String, SourcedValue> resolvedValues = new HashMap<>();
 
     /**
-     * @param config14Impl
      * @param configValues
      */
     public ConfigSnapshotImpl(ConfigAccessor<?>... configValues) {
         for (ConfigAccessor<?> accessor : configValues) {
-            ConfigAccessorImpl<?> accessorImpl = (ConfigAccessorImpl<?>) accessor;
-            String resolvedValue = accessorImpl.getResolved(true);
-            if (resolvedValue != null) {
-                String name = accessorImpl.getPropertyName();
-                resolvedValues.put(name, resolvedValue);
-            }
+            WebSphereConfigAccessor<?> wAccessor = (WebSphereConfigAccessor<?>) accessor;
+            SourcedValue sourcedValue = wAccessor.getSourcedValue();
+            String name = accessor.getPropertyName();
+            resolvedValues.put(name, sourcedValue);
         }
     }
 
-    public String getResolvedValue(String propertyName, boolean optional) {
-        String resolved = resolvedValues.get(propertyName);
-        if (!optional && resolved == null) { //TODO not sure if this is handling null values properly
-            throw new NoSuchElementException(Tr.formatMessage(tc, "no.such.element.CWMCG0015E", propertyName));
+    @Override
+    public SourcedValue getSourcedValue(String propertyName) {
+        SourcedValue resolved = null;
+
+        if (resolvedValues.containsKey(propertyName)) {
+            resolved = resolvedValues.get(propertyName);
+        } else {
+            //TODO NLS
+            throw new IllegalArgumentException("Property not found in this snapshot: " + propertyName);
         }
+
         return resolved;
     }
-
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,7 @@ import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.After;
 import org.junit.Before;
 
-import com.ibm.ws.microprofile.config14.archaius.Config14ProviderResolverImpl;
+import com.ibm.ws.microprofile.config14.impl.Config14ProviderResolverImpl;
 
 /**
  *
