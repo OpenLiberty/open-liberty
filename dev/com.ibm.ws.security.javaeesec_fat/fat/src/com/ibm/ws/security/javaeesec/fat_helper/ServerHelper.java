@@ -33,12 +33,14 @@ public class ServerHelper {
     }
 
     public static void commonStopServer(LibertyServer myServer, boolean stopLdapServer) throws Exception {
-
-        if (stopLdapServer) {
-            stopldapServer();
+        try {
+            myServer.stopServer();
+        } finally {
+            if (stopLdapServer) {
+                stopldapServer();
+            }
+            myServer.setServerConfigurationFile("server.xml");
         }
-        myServer.stopServer();
-        myServer.setServerConfigurationFile("server.xml");
     }
 
     public static void setupldapServer() throws Exception {

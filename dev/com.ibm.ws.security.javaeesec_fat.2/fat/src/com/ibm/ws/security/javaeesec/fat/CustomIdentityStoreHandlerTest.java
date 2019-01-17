@@ -78,9 +78,12 @@ public class CustomIdentityStoreHandlerTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer();
-        if (ldapServer != null) {
-            ldapServer.stop();
+        try {
+            myServer.stopServer();
+        } finally {
+            if (ldapServer != null) {
+                ldapServer.stop();
+            }
         }
 
     }
@@ -118,7 +121,7 @@ public class CustomIdentityStoreHandlerTest extends JavaEESecTestBase {
     @Test
     public void testCustomIDSHandlerBAWith1stIS_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        myServer.setMarkToEndOfLog();
+        myServer.resetLogMarks();
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
                                                           LocalLdapServer.PASSWORD,
                                                           HttpServletResponse.SC_OK);

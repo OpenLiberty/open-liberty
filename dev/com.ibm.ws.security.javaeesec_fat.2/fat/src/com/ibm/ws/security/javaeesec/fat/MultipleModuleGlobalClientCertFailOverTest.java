@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat;
 
-import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -142,18 +141,23 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         WCApplicationHelper.addWarToServerApps(myServer, GLOBAL_LOGIN_WAR, true, null, false);
 
         // create legacy form login application
-        WCApplicationHelper.addWarToServerApps(myServer, NOJAVAEESEC_WAR_NAME_FORM, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.nojavaeesec", "web.war.servlets.nojavaeesec.form");
+        WCApplicationHelper.addWarToServerApps(myServer, NOJAVAEESEC_WAR_NAME_FORM, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.nojavaeesec",
+                                               "web.war.servlets.nojavaeesec.form");
         // create legacy basic auth login application
-        WCApplicationHelper.addWarToServerApps(myServer, NOJAVAEESEC_WAR_NAME_BASIC, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.nojavaeesec", "web.war.servlets.nojavaeesec.basic");
+        WCApplicationHelper.addWarToServerApps(myServer, NOJAVAEESEC_WAR_NAME_BASIC, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.nojavaeesec",
+                                               "web.war.servlets.nojavaeesec.basic");
 
         startServer(XML_CLIENT_CERT_FAILOVER_TO_BA_NAME, APP_NAME, NOJAVAEESEC_APP_FORM, NOJAVAEESEC_APP_BASIC);
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer("CWWKO0801E");
-        if (ldapServer != null) {
-            ldapServer.stop();
+        try {
+            myServer.stopServer("CWWKO0801E");
+        } finally {
+            if (ldapServer != null) {
+                ldapServer.stop();
+            }
         }
     }
 
@@ -311,7 +315,8 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         // ------------- accessing module1 ---------------
         // since the certificate won't be sent, fallback to the specified BasicAuth.
         setupClient(CERTUSER4_KEYFILE);
-        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + NOJAVAEESEC_SERVLET_FORM, LocalLdapServer.USER3, LocalLdapServer.PASSWORD, HttpServletResponse.SC_OK);
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + NOJAVAEESEC_SERVLET_FORM, LocalLdapServer.USER3, LocalLdapServer.PASSWORD,
+                                                          HttpServletResponse.SC_OK);
         verifyResponse(response, LocalLdapServer.USER3, LDAP_UR_REALM_NAME, IS2_GROUP_REALM_NAME, LDAP_UR_GROUPS);
         httpclient.getConnectionManager().shutdown();
         // ------------- accessing module2 ---------------
@@ -323,7 +328,6 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         verifyResponse(response, LocalLdapServer.USER3, LDAP_UR_REALM_NAME, IS1_GROUP_REALM_NAME, LDAP_UR_GROUPS);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
-
 
     /**
      * Verify the following:
@@ -479,7 +483,6 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
-
     /**
      * Verify the following:
      * <OL>
@@ -628,7 +631,6 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         verifyResponse(response, LocalLdapServer.USER3, LDAP_UR_REALM_NAME, IS1_GROUP_REALM_NAME, LDAP_UR_GROUPS);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
-
 
 /* ------------------------ support methods ---------------------- */
     protected String getViewState(String form) {

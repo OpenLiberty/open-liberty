@@ -60,7 +60,6 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
     protected static String EJB_REALM_APP_NAME = EJB_EAR_REALM_NAME;
     protected static String EJB_EAR_REALM2_NAME = "securityejbinwarrealm2.ear";
     protected static String EJB_REALM2_APP_NAME = EJB_EAR_REALM2_NAME;
-    protected static String XML_NAME = "ejbprotectedserver.xml";
     protected static String XML_REALM_NAME = "ejbprotectedrealmserver.xml";
     protected static String XML_INCORRECT_REALM = "ejbprotectedrealmserverincorrectrealm.xml";
     protected static String JAR_NAME = "JavaEESecBase.jar";
@@ -87,12 +86,13 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer();
-
-        if (ldapServer != null) {
-            ldapServer.stop();
+        try {
+            myServer.stopServer();
+        } finally {
+            if (ldapServer != null) {
+                ldapServer.stop();
+            }
         }
-        myServer.setServerConfigurationFile("server.xml");
     }
 
     @Before

@@ -132,9 +132,12 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer();
-        if (ldapServer != null) {
-            ldapServer.stop();
+        try {
+            myServer.stopServer();
+        } finally {
+            if (ldapServer != null) {
+                ldapServer.stop();
+            }
         }
     }
 
@@ -384,7 +387,6 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
         myServer.removeInstalledAppForValidation(APP_NAME);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
-
 
     /**
      * Verify the following:
