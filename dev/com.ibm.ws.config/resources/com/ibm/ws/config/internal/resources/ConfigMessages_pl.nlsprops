@@ -30,10 +30,11 @@
 # -------------------------------------------------------------------------------------------------
 
 copyright=\n\
-Licensed Material - Property of IBM\n\
-(C) COPYRIGHT International Business Machines Corp. 2010 - Wszelkie prawa zastrze\u017cone.\n\
-U\u017cytkownik\u00f3w z instytucji rz\u0105dowych USA obowi\u0105zuj\u0105 warunki\n\
-umowy GSA ADP Schedule Contract z IBM Corp.
+Copyright (c) 2010 IBM Corporation and others.\n\
+Wszelkie prawa zastrze\u017cone. Program ten oraz do\u0142\u0105czone do niego materia\u0142y\n\
+s\u0105 udost\u0119pniane na warunkach licencji Eclipse Public License v1.0\n\
+do\u0142\u0105czonej do tego programu; licencja EPL jest dost\u0119pna pod adresem\n\
+http://www.eclipse.org/legal/epl-v10.html
 
 error.parse.server=CWWKG0001E: Analizator sk\u0142adni konfiguracji \
 wykry\u0142 b\u0142\u0105d podczas analizowania elementu g\u0142\u00f3wnego konfiguracji i przywo\u0142ywanych \

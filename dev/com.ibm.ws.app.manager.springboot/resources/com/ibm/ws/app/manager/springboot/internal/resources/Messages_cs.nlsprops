@@ -88,3 +88,11 @@ warning.application.started.event.timeout.useraction=Pokud se aplikace nakonec s
 warning.java.version.not.supported=CWWKC0265W: Aktu\u00e1ln\u00ed verze Java {0} nen\u00ed podporov\u00e1na aplikac\u00ed Spring Boot verze {1}. Upgradujte verzi Spring Boot aplikace na 2.0.x nebo nov\u011bj\u0161\u00ed.
 warning.java.version.not.supported.explanation=Verze Java vy\u0161\u0161\u00ed ne\u017e 1.8 nejsou podporov\u00e1ny verzemi Spring Boot 1.5.x a ni\u017e\u0161\u00edmi.
 warning.java.version.not.supported.useraction=Upgradujte verzi Spring Boot aplikace na 2.0.x nebo nov\u011bj\u0161\u00ed.
+
+error.invalid.packaged.liberty.jar=CWWKC0265E: Aplikaci se nezda\u0159ilo spustit, proto\u017ee zabalen\u00fd soubor JAR serveru Liberty je neplatn\u00fd.
+error.invalid.packaged.liberty.jar.explanation=V zabalen\u00e9m souboru JAR serveru Liberty chyb\u00ed z\u00e1hlav\u00ed souboru typu manifest Server-Name, polo\u017eky pro ko\u0159en serveru nebo polo\u017eky pro adres\u00e1\u0159 lib.index.cache.
+error.invalid.packaged.liberty.jar.useraction=Nakonfigurujte platn\u00fd zabalen\u00fd soubor JAR serveru Liberty.
+
+error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: Aplikaci se nezda\u0159ilo spustit, proto\u017ee aplikace Spring Boot nebyla nalezena uvnit\u0159 zabalen\u00e9ho souboru JAR serveru Liberty.
+error.application.not.found.inside.packaged.liberty.jar.explanation=Zabalen\u00fd soubor JAR serveru Liberty mus\u00ed obsahovat nakonfigurovanou aplikaci Spring Boot.
+error.application.not.found.inside.packaged.liberty.jar.useraction=Nakonfigurujte platn\u00fd zabalen\u00fd soubor JAR serveru Liberty.

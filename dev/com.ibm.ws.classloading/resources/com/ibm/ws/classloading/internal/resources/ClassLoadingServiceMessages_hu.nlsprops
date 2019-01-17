@@ -140,6 +140,9 @@ slf.failed.delete=CWWKL0072W: A(z) [{0}] gyors\u00edt\u00f3t\u00e1r f\u00e1jlja 
 slf.failed.delete.explanation=A rendszer nem tudta t\u00f6r\u00f6lni a gyors\u00edt\u00f3t\u00e1r f\u00e1jlj\u00e1t. Mivel a f\u00e1jl tov\u00e1bbra is l\u00e9tezik a rendszeren, ez a be\u00e1gyazott arch\u00edvumok s\u00e9r\u00fcl\u00e9s\u00e9t okozhatja.
 slf.failed.delete.useraction=Ellen\u0151rizze, hogy a gyors\u00edt\u00f3t\u00e1r f\u00e1jlja nincs-e z\u00e1rolt \u00e1llapotban, ami a f\u00e1jl t\u00f6rl\u00e9s\u00e9nek meghi\u00fasul\u00e1s\u00e1t okozhatja.
 
+####################### API TYPE MESSAGES 0080-0089 ###############################################
+###################################################################################################
+
 cls.classloader.config.duplicate=CWWKL0080E: A(z) [{0}] API t\u00edpus m\u00e1r haszn\u00e1latban van ebben a(z) [{1}] list\u00e1ban.  T\u00e1vol\u00edtsa el a t\u00f6bbsz\u00f6r szerepl\u0151 API-t.
 cls.classloader.config.duplicate.explanation=Minden API t\u00edpus legfeljebb egyszer adhat\u00f3 meg.
 cls.classloader.config.duplicate.useraction=Ellen\u0151rizze a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban a t\u00f6bbsz\u00f6r szerepl\u0151 API t\u00edpust, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az API t\u00edpusok helyesek.
@@ -161,3 +164,6 @@ cls.classloader.config.typo2.useraction=Ellen\u0151rizze a kiszolg\u00e1l\u00f3 
 cls.classloader.suggested.feature=CWWKL0084W: A(z) {0} oszt\u00e1ly nem t\u00f6lthet\u0151 be.  Pr\u00f3b\u00e1lja enged\u00e9lyezni a(z) {1} szolg\u00e1ltat\u00e1st vagy a szolg\u00e1ltat\u00e1s egy \u00fajabb v\u00e1ltozat\u00e1t a server.xml f\u00e1jlban.
 cls.classloader.suggested.feature.explanation=Egy oszt\u00e1ly, amelyet jellemz\u0151en n\u00e9h\u00e1ny kiszolg\u00e1l\u00f3 szolg\u00e1ltat\u00e1s biztos\u00edt, nem t\u00f6lthet\u0151 be.
 cls.classloader.suggested.feature.useraction=Pr\u00f3b\u00e1lja enged\u00e9lyezni a szolg\u00e1ltat\u00e1st vagy a szolg\u00e1ltat\u00e1s egy \u00fajabb v\u00e1ltozat\u00e1t a server.xml f\u00e1jlban.
+
+####################### com.ibm.ws.classloader.context bundle messages 0090-0099 ###################
+####################################################################################################

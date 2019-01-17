@@ -22,4 +22,4 @@
 
 error.parameter.target.missed=CWWKW0700E: No se ha especificado el par\u00e1metro de destino obligatorio.
 error.parameter.target.missed.explanation=Si se especifica el par\u00e1metro de destino, las aplicaciones existentes pueden volver a generarse sin cambiar su comportamiento cuando el nivel de especificaci\u00f3n JAXB que soporta Liberty Profile se actualiza.
-error.parameter.target.missed.useraction=Especifique el nivel de especificaci\u00f3n JAXB al que se ajusta el c\u00f3digo generado. El valor v\u00e1lido es 2.0, 2.1, 2.2, o 2.3.
+error.parameter.target.missed.useraction=Especifique el nivel de especificaci\u00f3n JAXB al que se ajusta el c\u00f3digo generado. El valor v\u00e1lido es 2.0, 2.1, 2.2 o 2.3.

@@ -30,10 +30,12 @@
 # -------------------------------------------------------------------------------------------------
 
 copyright=\n\
-Licenc hat\u00e1lya al\u00e1 tartoz\u00f3 anyagok - Az IBM tulajdona\n\
-(C) COPYRIGHT International Business Machines Corp. 2010 - Minden jog fenntartva.\n\
-Az USA korm\u00e1nyzati felhaszn\u00e1l\u00f3inak jogkorl\u00e1toz\u00e1sa - A haszn\u00e1latot, a m\u00e1sol\u00e1st \u00e9s a nyilv\u00e1noss\u00e1gra hozatalt\n\
-az IBM Corporation v\u00e1llalattal k\u00f6t\u00f6tt GSA ADP Schedule Contract korl\u00e1tozza.
+Copyright (c) 2010 IBM Corporation \u00e9s m\u00e1sok. \n\
+Minden jog fenntartva. \
+Ez a program \u00e9s a kapcsol\u00f3d\u00f3 anyagok \n\
+az Eclipse Public License v1.0 alapj\u00e1n \u00e1llnak rendelkez\u00e9sre,\n\
+amely a jelen k\u00f6zz\u00e9t\u00e9telt k\u00eds\u00e9ri, \u00e9s a k\u00f6vetkez\u0151 helyen \u00e9rhet\u0151 el:\n\
+http://www.eclipse.org/legal/epl-v10.html
 
 error.parse.server=CWWKG0001E: A konfigur\u00e1ci\u00f3\u00e9rtelmez\u0151 hib\u00e1t \u00e9szlelt a konfigur\u00e1ci\u00f3 gy\u00f6k\u00e9r \u00e9s a hivatkozott konfigur\u00e1ci\u00f3s dokumentumok \u00e9rtelmez\u00e9se sor\u00e1n. Hiba: {0}
 error.parse.server.explanation=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 nem olvashat\u00f3 be, mert hiba tal\u00e1lhat\u00f3 az egyik konfigur\u00e1ci\u00f3s f\u00e1jlban.

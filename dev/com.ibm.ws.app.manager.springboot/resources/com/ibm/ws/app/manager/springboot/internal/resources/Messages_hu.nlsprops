@@ -88,3 +88,11 @@ warning.application.started.event.timeout.useraction=Ha az alkalmaz\u00e1s v\u00
 warning.java.version.not.supported=CWWKC0265W: A jelenlegi Java v\u00e1ltozatot ({0}) a Spring Boot {1} v\u00e1ltozat nem t\u00e1mogatja. Friss\u00edtse az alkalmaz\u00e1s Spring Boot v\u00e1ltozat\u00e1t 2.0.x vagy \u00fajabb v\u00e1ltozatra.
 warning.java.version.not.supported.explanation=Az 1.8 v\u00e1ltozatn\u00e1l \u00fajabb v\u00e1ltozatokat a Spring Boot 1.5.x \u00e9s r\u00e9gebbi v\u00e1ltozatok nem t\u00e1mogatj\u00e1k.
 warning.java.version.not.supported.useraction=Friss\u00edtse az alkalmaz\u00e1s Spring Boot v\u00e1ltozat\u00e1t 2.0.x vagy \u00fajabb v\u00e1ltozatra.
+
+error.invalid.packaged.liberty.jar=CWWKC0265E: Az alkalmaz\u00e1s nem tudott elindulni, mert a becsomagolt Liberty kiszolg\u00e1l\u00f3 JAR f\u00e1jl nem \u00e9rv\u00e9nyes.
+error.invalid.packaged.liberty.jar.explanation=A becsomagolt Liberty kiszolg\u00e1l\u00f3 JAR f\u00e1jlb\u00f3l hi\u00e1nyzik egy kiszolg\u00e1l\u00f3n\u00e9v le\u00edr\u00f3f\u00e1jlfejl\u00e9c, a kiszolg\u00e1l\u00f3gy\u00f6k\u00e9r bejegyz\u00e9sek vagy lib.index.cache k\u00f6nyvt\u00e1r bejegyz\u00e9sei.
+error.invalid.packaged.liberty.jar.useraction=\u00c1ll\u00edtson be \u00e9rv\u00e9nyes csomagolt Liberty kiszolg\u00e1l\u00f3 JAR f\u00e1jlt.
+
+error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: Az alkalmaz\u00e1s nem tudott elindulni, mert a Spring Boot alkalmaz\u00e1s nem tal\u00e1lhat\u00f3 meg a csomagolt Liberty kiszolg\u00e1l\u00f3 JAR f\u00e1jlban.
+error.application.not.found.inside.packaged.liberty.jar.explanation=A csomagolt Liberty Server JAR f\u00e1jlnak tartalmaznia kell egy be\u00e1ll\u00edtott Spring Boot rendszerbet\u00f6lt\u00e9si alkalmaz\u00e1st.
+error.application.not.found.inside.packaged.liberty.jar.useraction=\u00c1ll\u00edtson be \u00e9rv\u00e9nyes csomagolt Liberty kiszolg\u00e1l\u00f3 JAR f\u00e1jlt.

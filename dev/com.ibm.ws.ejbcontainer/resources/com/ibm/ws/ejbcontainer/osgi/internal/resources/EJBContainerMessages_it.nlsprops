@@ -18,7 +18,7 @@
 #     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
 #
 # The prefix for this component is:
-#     CWNEN (Injection Engine)
+#     CNTR (EJB Container)
 #
 # Message numbers are four digit numbers, from '0000' to '9999', inclusive.
 # Message numbers are filled to the left with '0', to a width of 4.
@@ -129,6 +129,14 @@ NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.useraction=Rimuovere l'utilizzo de
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E=CNTR4019E: Impossibile creare i timer persistenti o accedervi. I timer persistenti non sono supportati da nessuna delle funzioni configurate nel file server.xml.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.explanation=I timer persistenti non sono supportati dalle funzioni ejbLite.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.useraction=Rimuovere l'utilizzo dei timer persistenti non supportati dall'applicazione o aggiungere al file server.xml una funzione ejbPersistentTimer.
+
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E=CNTR4020E: Il bean enterprise {0} nel modulo {1} nell''applicazione {2} dichiara timer persistenti creati automaticamente. I timer persistenti creati automaticamente non possono essere creati. La funzione ejbPersistentTimer \u00e8 abilitata, ma non \u00e8 stata configurata un''origine dati.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.explanation=I timer persistenti del bean enterprise creati automaticamente dichiarati in un descrittore di distribuzione oppure in una annotazione richiedono la configurazione di un'origine dati per la funzione ejbPersistentTimer.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.useraction=Configurare un'origine dati per la funzione ejbPersistentTimer o eliminare l'utilizzo di timer persistenti creati automaticamente dall'applicazione.
+
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I=CNTR4021I: Impossibile creare i timer persistenti o accedervi. La funzione ejbPersistentTimer \u00e8 stata abilitata, ma non \u00e8 stata configurata un'origine dati.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.explanation=Le applicazioni che utilizzano i timer persistenti devono abilitare la funzione ejbPersistentTimer e configurare un'origine dati per la memorizzazione di timer persistenti.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.useraction=Non \u00e8 richiesta alcuna azione se i timer persistenti non vengono utilizzati. Se i timer persistenti vengono utilizzati, fornire la configurazione di un'origine dati per la funzione ejbPersistentTimer. Rimuovere la funzione ejbPersistentTimer per eliminare questo messaggio.
 
 DUPLICATE_EJB_CNTR4100E=CNTR4100E: Il valore {0} per l''elemento <ejb-name> nel file ejb-jar.xml non \u00e8 univoco.
 DUPLICATE_EJB_CNTR4100E.explanation=Pi\u00f9 bean enterprise sono stati definiti con lo stesso nome nel file ejb-jar.xml. Ciascun bean enterprise deve avere un nome univoco.

@@ -24,6 +24,7 @@
 # Messages used by Config 1.1 Impl -  range is 0000-0099, plus 9999 for the emergency message
 # Messages used by Config 1.2 Impl -  range is 0100-0199, plus 9998 for the emergency message
 # Messages used by Config 1.3 Impl -  range is 0200-0299, plus 9997 for the emergency message
+# Messages used by Config 1.4 Impl -  range is 0300-0399, plus 9996 for the emergency message
 #-----------------------------------------------------------------------------------------------------------------------------
 
 # There aren't yet any 1.2 specific messages, except for the emergency one below
@@ -32,7 +33,7 @@
 # Emergency Config 1.2 error message
 #-----------------------------------------------------------------------------------------------------------------------------
 
-# A Config API error has occurred: {0}
-temporary.CWMCG9998E=CWMCG9998E: Se ha producido un error de API de configuraci\u00f3n: {0}.
+# The following Config API error has occurred: {0}.
+temporary.CWMCG9998E=CWMCG9998E: Se ha producido el siguiente error de API de configuraci\u00f3n: {0}.
 temporary.CWMCG9998E.explanation=Se ha producido un error de API de configuraci\u00f3n que impide el funcionamiento normal.
-temporary.CWMCG9998E.useraction=Revise los registros FFDC y el archivo message.log del servidor para identificar el problema.
+temporary.CWMCG9998E.useraction=Revise el archivo message.log del servidor y los registros FFDC para identificar el problema.

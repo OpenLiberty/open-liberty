@@ -140,6 +140,9 @@ slf.failed.delete=CWWKL0072W: No se puede suprimir el archivo de cach\u00e9 [{0}
 slf.failed.delete.explanation=El sistema no ha podido suprimir el archivo de cach\u00e9. Puesto que el archivo a\u00fan existe en el sistema, esto podr\u00eda provocar una corrupci\u00f3n de los archivos anidados.
 slf.failed.delete.useraction=Compruebe que el archivo de cach\u00e9 no se encuentre en estado bloqueado, lo que podr\u00eda provocar que la supresi\u00f3n del archivo fallara.
 
+####################### API TYPE MESSAGES 0080-0089 ###############################################
+###################################################################################################
+
 cls.classloader.config.duplicate=CWWKL0080E: El tipo de API [{0}] ya se ha utilizado en esta lista [{1}].  Elimine el tipo de API duplicado.
 cls.classloader.config.duplicate.explanation=Cada tipo de API se puede especificar como m\u00e1ximo una vez.
 cls.classloader.config.duplicate.useraction=Para asegurarse de que el tipo de API es correcto, compruebe en la configuraci\u00f3n del servidor que no haya tipos de API duplicados.
@@ -161,3 +164,6 @@ cls.classloader.config.typo2.useraction=Para asegurarse de que el tipo de API es
 cls.classloader.suggested.feature=CWWKL0084W: No se ha podido cargar la clase {0}. Intente habilitar la caracter\u00edstica {1} o una versi\u00f3n m\u00e1s reciente de la caracter\u00edstica en el archivo server.xml.
 cls.classloader.suggested.feature.explanation=No se ha podido cargar una clase t\u00edpicamente proporcionada por una o m\u00e1s caracter\u00edsticas del servidor.
 cls.classloader.suggested.feature.useraction=Intente habilitar la caracter\u00edstica especificada o una versi\u00f3n m\u00e1s reciente de la caracter\u00edstica en el archivo server.xml.
+
+####################### com.ibm.ws.classloader.context bundle messages 0090-0099 ###################
+####################################################################################################

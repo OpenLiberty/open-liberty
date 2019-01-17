@@ -88,3 +88,11 @@ warning.application.started.event.timeout.useraction=Wenn die Anwendung schlie\u
 warning.java.version.not.supported=CWWKC0265W: Die aktuelle Java-Version {0} wird von der Spring Boot-Version {1} nicht unterst\u00fctzt. Aktualisieren Sie die Spring Boot-Version der Anwendung auf Version 2.0.x oder h\u00f6her.
 warning.java.version.not.supported.explanation=Java-Versionen, die h\u00f6her sind als Version 1.8 werden von den Spring Boot-Versionen 1.5.x und \u00e4lter nicht unterst\u00fctzt.
 warning.java.version.not.supported.useraction=Aktualisieren Sie die Spring Boot-Version der Anwendung auf Version 2.0.x oder h\u00f6her.
+
+error.invalid.packaged.liberty.jar=CWWKC0265E: Die Anwendung konnte nicht gestartet werden, weil die gepackte Liberty-Server-JAR-Datei nicht g\u00fcltig ist.
+error.invalid.packaged.liberty.jar.explanation=Der gepackten Liberty-Server-JAR-Datei fehlt ein Server-Name-Manifest-Header, Eintr\u00e4ge f\u00fcr das Serverstammverzeichnis oder Eintr\u00e4ge f\u00fcr das lib.index.cache-Verzeichnis.
+error.invalid.packaged.liberty.jar.useraction=Konfigurieren Sie eine g\u00fcltige gepackte Liberty-Server-JAR-Datei.
+
+error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: Die Anwendung konnte nicht gestartet werden, weil die Spring Boot-Anwendung nicht in der gepackten Liberty-Server-JAR-Datei gefunden wurde.
+error.application.not.found.inside.packaged.liberty.jar.explanation=Die gepackte Liberty-Server-JAR-Datei muss eine konfigurierte Spring Boot-Anwendung enthalten.
+error.application.not.found.inside.packaged.liberty.jar.useraction=Konfigurieren Sie eine g\u00fcltige gepackte Liberty-Server-JAR-Datei.

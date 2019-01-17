@@ -129,6 +129,11 @@ asynchronous.method.not.returning.future.completionstage.CWMFT5020E=CWMFT5020E: 
 asynchronous.method.not.returning.future.completionstage.CWMFT5020E.explanation=Tutti i metodi annotati con org.eclipse.microprofile.faulttolerance.Asynchronous devono avere un tipo di restituzione java.util.concurrent.Future o java.util.concurrent.CompletionStage.
 asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=Aggiornare il tipo di restituzione.
 
+# A fallback method could not be found
+fallback.method.not.found.CWMFT5021E=CWMFT5021E: Il metodo fallback {0} con i tipi di parametri corrispondenti al metodo {1} non \u00e8 stato trovato nella gerarchia della classe {2}.
+fallback.method.not.found.CWMFT5021E.explanation=\u00c8 stato dichiarato un metodo fallback ma non esiste nella classe di dichiarazione, nelle sue superclassi o nelle interfacce che implementa.
+fallback.method.not.found.CWMFT5021E.useraction=Rimuovere l'annotazione fallback o aggiungere il metodo mancante. Se il metodo fallback esiste ma non \u00e8 stato trovato, verificare che i tipi di parametro e il tipo di restituzione dei due metodi corrispondano e che il metodo fallback sia visibile alla classe che dichiara il metodo annotato.
+
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: Si \u00e8 verificato un errore interno. L'eccezione \u00e8 {0}.
 internal.error.CWMFT5997E.explanation=Il server delle applicazioni ha rilevato un errore interno.
