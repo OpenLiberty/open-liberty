@@ -19,7 +19,6 @@ import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -95,7 +94,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
     protected static String BASIC_USER1_PASSWORD = "s3cur1ty";
     protected static String BASIC_RUNASUSER1 = "basicrunasuser1";
     protected static String BASIC_RUNASUSER1_PASSWORD = "s3cur1ty";
-    
+
     protected static String IS1_REALM_NAME = "127.0.0.1:10389";
     protected static String IS2_REALM_NAME = "localhost:10389";
     protected static String REALM1_REALM_NAME = "Realm1";
@@ -134,10 +133,14 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer("CWWKS0005E");
-        if (ldapServer != null) {
-            ldapServer.stop();
+        try {
+            myServer.stopServer("CWWKS0005E");
+        } finally {
+            if (ldapServer != null) {
+                ldapServer.stop();
+            }
         }
+
     }
 
     @Before
@@ -363,7 +366,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
         // make sure that runas subject is set as caller subject.
-        verifyResponse(response, REALM2_USER, REALM2_REALM_NAME,  IS2_GROUP_REALM_NAME, REALM2_GROUPS, REALM2_USER);
+        verifyResponse(response, REALM2_USER, REALM2_REALM_NAME, IS2_GROUP_REALM_NAME, REALM2_GROUPS, REALM2_USER);
         httpclient.getConnectionManager().shutdown();
 
         myServer.setMarkToEndOfLog();
@@ -400,7 +403,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform",
                                       "web.war.servlets.customform.get.forwardrunas", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly",
                                       "web.war.identitystores.custom.realm2");
-    
+
         // create module3, non JSR375 form login
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR3_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.nojavaeesec", "web.war.servlets.nojavaeesec.runas");
 
@@ -481,7 +484,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
         // Execute Basic login for Non JavaEESec servlet.
         response = executeGetRequestBasicAuthCreds(httpclient, urlBase + APP3_SERVLET, BASIC_USER1, BASIC_USER1_PASSWORD, HttpServletResponse.SC_OK);
 
-        verifyResponse(response, BASIC_USER1,  BASIC_REALM_NAME, IS1_GROUP_REALM_NAME, BASIC_GROUPS, BASIC_RUNASUSER1);
+        verifyResponse(response, BASIC_USER1, BASIC_REALM_NAME, IS1_GROUP_REALM_NAME, BASIC_GROUPS, BASIC_RUNASUSER1);
         httpclient.getConnectionManager().shutdown();
 
         myServer.setMarkToEndOfLog();
@@ -495,7 +498,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
      * <OL>
      * <LI> An ear file which contains three war files. two war files contain one LdapIdentityStoreDefinision, one custom identity store.
      * and one FormHttpAuthenticationMechanismDefinision which points to different form, the one war file does not contain any JSR375
-     * code. 
+     * code.
      * <LI> RunAs user is configured for all war files.
      * <LI> UserRegistry is configured for non JSR375 war file.
      * <LI> ibm-application-bnd.xml file is packaged with ear file.
@@ -519,7 +522,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform",
                                       "web.war.servlets.customform.get.forwardrunas", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly",
                                       "web.war.identitystores.custom.realm2");
-    
+
         // create module3, non JSR375 form login
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR3_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.nojavaeesec", "web.war.servlets.nojavaeesec.runas");
 
@@ -600,7 +603,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
         // Execute Basic login for Non JavaEESec servlet.
         response = executeGetRequestBasicAuthCreds(httpclient, urlBase + APP3_SERVLET, BASIC_USER1, BASIC_USER1_PASSWORD, HttpServletResponse.SC_OK);
 
-        verifyResponse(response, BASIC_USER1,  BASIC_REALM_NAME, IS1_GROUP_REALM_NAME, BASIC_GROUPS, BASIC_RUNASUSER1);
+        verifyResponse(response, BASIC_USER1, BASIC_REALM_NAME, IS1_GROUP_REALM_NAME, BASIC_GROUPS, BASIC_RUNASUSER1);
         httpclient.getConnectionManager().shutdown();
 
         myServer.setMarkToEndOfLog();

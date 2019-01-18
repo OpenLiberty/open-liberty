@@ -19,7 +19,6 @@ import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -35,7 +34,6 @@ import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -80,7 +78,7 @@ public class MultipleModuleDBRunAsTest extends JavaEESecTestBase {
     protected static String REALM1_PASSWORD = "s3cur1ty";
     protected static String REALM2_USER = "realm2user";
     protected static String REALM2_PASSWORD = "s3cur1ty";
-    
+
     protected static String IS1_REALM_NAME = "127.0.0.1:10389";
     protected static String IS2_REALM_NAME = "localhost:10389";
     protected static String REALM1_REALM_NAME = "Realm1";
@@ -117,9 +115,12 @@ public class MultipleModuleDBRunAsTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer("CWWKS0005E");
-        if (ldapServer != null) {
-            ldapServer.stop();
+        try {
+            myServer.stopServer("CWWKS0005E");
+        } finally {
+            if (ldapServer != null) {
+                ldapServer.stop();
+            }
         }
     }
 
@@ -162,7 +163,8 @@ public class MultipleModuleDBRunAsTest extends JavaEESecTestBase {
 
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirectrunas",
-                                      "web.war.identitystores.ldap.ldap1", "web.war.identitystores.custom.grouponly", "web.war.identitystores.custom.realm1", "web.war.identitystores.db.db1");
+                                      "web.war.identitystores.ldap.ldap1", "web.war.identitystores.custom.grouponly", "web.war.identitystores.custom.realm1",
+                                      "web.war.identitystores.db.db1");
         // create module2, custom form login, forward, ldap2. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform",
                                       "web.war.servlets.customform.get.forwardrunas", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly",

@@ -10,9 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat;
 
-import java.io.File;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import static org.junit.Assert.fail;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +27,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
-import static org.junit.Assert.fail;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.javaeesec.fat_helper.Constants;
@@ -109,9 +106,12 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer("CWWKO0801E");
-        if (ldapServer != null) {
-            ldapServer.stop();
+        try {
+            myServer.stopServer("CWWKO0801E");
+        } finally {
+            if (ldapServer != null) {
+                ldapServer.stop();
+            }
         }
     }
 
