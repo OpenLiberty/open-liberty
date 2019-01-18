@@ -33,6 +33,7 @@ import com.ibm.ws.security.registry.CertificateMapFailedException;
 import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.UserRegistry;
+import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 /**
  *
@@ -40,7 +41,7 @@ import com.ibm.ws.security.registry.UserRegistry;
 public class QuickStartSecurityRegistryTest {
     private static final String DEFAULT_ADMIN_USER = "bob";
     private static final String DEFAULT_ADMIN_PASSWORD = "bobpwd";
-    private static final ProtectedString DEFAULT_ADMIN_PASSWORD_PROTECTED = new ProtectedString(DEFAULT_ADMIN_PASSWORD.toCharArray());
+    private static final Password DEFAULT_ADMIN_PASSWORD_PROTECTED = createPassword(DEFAULT_ADMIN_PASSWORD);
     private final Mockery mock = new JUnit4Mockery() {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -90,7 +91,7 @@ public class QuickStartSecurityRegistryTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void ctor_passwordCanNotBeEmpty() throws Exception {
-        new QuickStartSecurityRegistry(DEFAULT_ADMIN_USER, new ProtectedString("".toCharArray()));
+        new QuickStartSecurityRegistry(DEFAULT_ADMIN_USER,  createPassword(""));
     }
 
     /**
@@ -98,7 +99,7 @@ public class QuickStartSecurityRegistryTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void ctor_passwordCanNotBeOnlyWhiteSpace() throws Exception {
-        new QuickStartSecurityRegistry(DEFAULT_ADMIN_USER, new ProtectedString("  ".toCharArray()));
+        new QuickStartSecurityRegistry(DEFAULT_ADMIN_USER, createPassword("  "));
     }
 
     /**
@@ -605,4 +606,7 @@ public class QuickStartSecurityRegistryTest {
         assertEquals(0, groups.size());
     }
 
+    private static Password createPassword(String pwd) {
+        return Password.create(new SerializableProtectedString(pwd.toCharArray()));
+    }
 }
