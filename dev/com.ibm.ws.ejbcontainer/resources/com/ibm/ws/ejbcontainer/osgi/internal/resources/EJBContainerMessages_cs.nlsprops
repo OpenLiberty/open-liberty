@@ -18,7 +18,7 @@
 #     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
 #
 # The prefix for this component is:
-#     CWNEN (Injection Engine)
+#     CNTR (EJB Container)
 #
 # Message numbers are four digit numbers, from '0000' to '9999', inclusive.
 # Message numbers are filled to the left with '0', to a width of 4.
@@ -129,6 +129,14 @@ NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.useraction=Odeberte pou\u017eit\u0
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E=CNTR4019E: Trval\u00e9 \u010dasova\u010de nelze vytvo\u0159it, ani k nim p\u0159istoupit. Trval\u00e9 \u010dasova\u010de objekt\u016f EJB nepodporuje \u017e\u00e1dn\u00e1 z funkc\u00ed nakonfigurovan\u00fdch v souboru server.xml.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.explanation=Trval\u00e9 \u010dasova\u010de objekt\u016f EJB funkce ejbLite nepodporuje.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.useraction=Odeberte pou\u017eit\u00ed nepodporovan\u00fdch trval\u00fdch \u010dasova\u010d\u016f z aplikace, nebo p\u0159idejte do souboru server.xml takovou verzi funkce ejbLite, kter\u00e1 tyto trval\u00e9 \u010dasova\u010de podporuje. 
+
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E=CNTR4020E: Objekt enterprise bean {0} v modulu {1} v aplikaci {2} deklaruje automaticky vytvo\u0159en\u00e9 trval\u00e9 \u010dasova\u010de. Automaticky vytvo\u0159en\u00e9 trval\u00e9 \u010dasova\u010de nelze vytvo\u0159it. Funkce ejbPersistentTimer je povolena, ale zdroj dat nebyl nakonfigurov\u00e1n.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.explanation=Automaticky vytvo\u0159en\u00e9 objekty enterprise bean deklarovan\u00e9 v deskriptoru implementace nebo v anotaci vy\u017eaduj\u00ed konfiguraci zdroje dat pro funkci ejbPersistentTimer.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.useraction=Nakonfigurujte zdroj dat pro funkci ejbPersistentTimer nebo odeberte pou\u017eit\u00ed automaticky vytvo\u0159en\u00fdch trval\u00fdch \u010dasova\u010d\u016f z aplikace.
+
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I=CNTR4021I: Trval\u00e9 \u010dasova\u010de nelze vytvo\u0159it, ani k nim p\u0159istoupit. Funkce ejbPersistentTimer byla povolena, ale zdroj dat nebyl nakonfigurov\u00e1n.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.explanation=Aplikace, kter\u00e9 pou\u017e\u00edvaj\u00ed trval\u00e9 \u010dasova\u010de, mus\u00ed povolit funkci ejbPersistentTimer a nakonfigurovat zdroj dat pro ukl\u00e1d\u00e1n\u00ed trval\u00fdch \u010dasova\u010d\u016f.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.useraction=Nejsou-li pou\u017eity trval\u00e9 \u010dasova\u010de, nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Jsou-li pou\u017eity trval\u00e9 \u010dasova\u010de, poskytn\u011bte konfiguraci zdroje dat pro funkci ejbPersistentTimer. Odeberte tuto zpr\u00e1vu odebr\u00e1n\u00edm funkce ejbPersistentTimer.
 
 DUPLICATE_EJB_CNTR4100E=CNTR4100E: Hodnota {0} pro prvek <ejb-name> v souboru ejb-jar.xml nen\u00ed jedine\u010dn\u00e1.
 DUPLICATE_EJB_CNTR4100E.explanation=V souboru ejb-jar.xml bylo definov\u00e1no v\u00edce objekt\u016f enterprise bean se stejn\u00fdm n\u00e1zvem. Ka\u017ed\u00fd enterprise bean mus\u00ed m\u00edt jedine\u010dn\u00fd n\u00e1zev.

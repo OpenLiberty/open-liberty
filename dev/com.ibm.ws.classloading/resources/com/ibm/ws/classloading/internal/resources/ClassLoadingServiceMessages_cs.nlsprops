@@ -140,6 +140,9 @@ slf.failed.delete=CWWKL0072W: Soubor mezipam\u011bti [{0}] nelze odstranit. Tent
 slf.failed.delete.explanation=Syst\u00e9mu se nezda\u0159ilo odstranit soubor mezipam\u011bti. Jeliko\u017e tento soubor v syst\u00e9mu i nad\u00e1le existuje, mohl by zp\u016fsobit po\u0161kozen\u00ed ve vno\u0159en\u00fdch archivech.
 slf.failed.delete.useraction=Ov\u011b\u0159te, zda nen\u00ed soubor mezipam\u011bti v uzam\u010den\u00e9m stavu, kter\u00fd by mohl zp\u016fsobit selh\u00e1n\u00ed odstran\u011bn\u00ed tohoto souboru.
 
+####################### API TYPE MESSAGES 0080-0089 ###############################################
+###################################################################################################
+
 cls.classloader.config.duplicate=CWWKL0080E: Typ rozhran\u00ed API [{0}] byl ji\u017e pou\u017eit v tomto seznamu [{1}]. Odeberte duplicitn\u00ed typ rozhran\u00ed API.
 cls.classloader.config.duplicate.explanation=Ka\u017ed\u00e9 rozhran\u00ed API lze zadat nejv\u00fd\u0161e jednou.
 cls.classloader.config.duplicate.useraction=Zkontrolujte konfiguraci serveru pro duplicitn\u00ed typ rozhran\u00ed API, abyste se ujistili, \u017ee tento typ rozhran\u00ed API je spr\u00e1vn\u00fd.
@@ -161,3 +164,6 @@ cls.classloader.config.typo2.useraction=Zkontrolujte konfiguraci serveru pro nep
 cls.classloader.suggested.feature=CWWKL0084W: T\u0159\u00eddu {0} nelze na\u010d\u00edst. Zkuste povolit funkci {1} nebo novou verzi funkce v souboru server.xml.
 cls.classloader.suggested.feature.explanation=T\u0159\u00edda, kter\u00e1 je zpravidla poskytov\u00e1na jednou nebo v\u00edce funkcemi serveru, nelze na\u010d\u00edst.
 cls.classloader.suggested.feature.useraction=Zkuste povolit ur\u010denou funkci nebo novou verzi funkce v souboru server.xml.
+
+####################### com.ibm.ws.classloader.context bundle messages 0090-0099 ###################
+####################################################################################################

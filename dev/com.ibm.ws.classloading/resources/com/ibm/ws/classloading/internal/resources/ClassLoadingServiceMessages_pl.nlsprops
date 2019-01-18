@@ -140,6 +140,9 @@ slf.failed.delete=CWWKL0072W: Nie mo\u017cna usun\u0105\u0107 pliku pami\u0119ci
 slf.failed.delete.explanation=System nie usun\u0105\u0142 pliku pami\u0119ci podr\u0119cznej. Poniewa\u017c plik istnieje wci\u0105\u017c w systemie, mo\u017ce to doprowadzi\u0107 do uszkodzenia w zagnie\u017cd\u017conych archiwach.
 slf.failed.delete.useraction=Sprawd\u017a, czy plik pami\u0119ci podr\u0119cznej nie jest zablokowany, co mo\u017ce by\u0107 przyczyn\u0105 niepowodzenia jego usuni\u0119cia.
 
+####################### API TYPE MESSAGES 0080-0089 ###############################################
+###################################################################################################
+
 cls.classloader.config.duplicate=CWWKL0080E: Typ interfejsu API [{0}] zosta\u0142 ju\u017c u\u017cyty na li\u015bcie [{1}]. Usu\u0144 zduplikowany typ interfejsu API.
 cls.classloader.config.duplicate.explanation=Ka\u017cdy typ API mo\u017cna poda\u0107 maksymalnie jeden raz.
 cls.classloader.config.duplicate.useraction=Sprawd\u017a konfiguracj\u0119 serwera pod k\u0105tem zduplikowanego typu interfejsu API, aby upewni\u0107 si\u0119, \u017ce typ interfejsu API jest poprawny.
@@ -161,3 +164,6 @@ cls.classloader.config.typo2.useraction=Sprawd\u017a konfiguracj\u0119 serwera p
 cls.classloader.suggested.feature=CWWKL0084W: Nie mo\u017cna za\u0142adowa\u0107 klasy {0}. Spr\u00f3buj w\u0142\u0105czy\u0107 sk\u0142adnik {1} lub jego nowsz\u0105 wersj\u0119 w pliku server.xml.
 cls.classloader.suggested.feature.explanation=Nie mo\u017cna za\u0142adowa\u0107 klasy, kt\u00f3ra jest zazwyczaj dostarczana przez jeden lub wi\u0119cej sk\u0142adnik\u00f3w serwera.
 cls.classloader.suggested.feature.useraction=Spr\u00f3buj w\u0142\u0105czy\u0107 okre\u015blony sk\u0142adnik lub jego nowsz\u0105 wersj\u0119 w pliku server.xml.
+
+####################### com.ibm.ws.classloader.context bundle messages 0090-0099 ###################
+####################################################################################################

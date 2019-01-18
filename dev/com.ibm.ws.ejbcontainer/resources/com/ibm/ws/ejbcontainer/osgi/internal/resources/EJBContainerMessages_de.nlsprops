@@ -18,7 +18,7 @@
 #     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
 #
 # The prefix for this component is:
-#     CWNEN (Injection Engine)
+#     CNTR (EJB Container)
 #
 # Message numbers are four digit numbers, from '0000' to '9999', inclusive.
 # Message numbers are filled to the left with '0', to a width of 4.
@@ -128,6 +128,14 @@ NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.useraction=Entfernen Sie die Dekla
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E=CNTR4019E: Die Erstellung persistenter Zeitgeber und der Zugriff auf diese Zeitgeber ist nicht m\u00f6glich. Persistente EJB-Zeitgeber werden von keinem der Features, die in der Datei server.xml konfiguriert sind, nicht unterst\u00fctzt.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.explanation=Persistente EJB-Zeitgeber werden von den ejbLite-Features nicht unterst\u00fctzt.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.useraction=Entfernen Sie die Verwendung nicht unterst\u00fctzter persistenter Zeitgeber aus der Anwendung oder f\u00fcgen Sie der Datei server.xml ein ejbPersistentTimer-Feature hinzu. 
+
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E=CNTR4020E: Die Enterprise-Bean {0} im Modul {1} in der Anwendung {2} deklariert automatisch erstellte persistente Zeitgeber. Automatisch erstellte persistente Zeitgebern k\u00f6nnen nicht erstellt werden. Das ejbPersistentTimer-Feature ist aktiviert, es wurde jedoch keine Datenquelle konfiguriert.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.explanation=F\u00fcr automatisch erstellte persistente Enterprise-Bean-Zeitgeber, die in einem Implementierungsdeskriptor oder einer Annotation deklariert sind, muss eine Datenquellenkonfiguration f\u00fcr die ejbPersistentTimer-Feature erstellt werden.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.useraction=Konfigurieren Sie eine Datenquelle f\u00fcr das ejbPersistentTimer-Feature oder entfernen Sie die Verwendung automatisch erstellter persistenter Zeitgeber aus der Anwendung.
+
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I=CNTR4021I: Die Erstellung persistenter Zeitgeber und der Zugriff auf diese Zeitgeber ist nicht m\u00f6glich. Das ejbPersistentTimer-Feature wurde aktiviert, es wurde jedoch keine Datenquelle konfiguriert.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.explanation=Anwendungen, die persistente Zeitgeber verwenden, m\u00fcssen das ejbPersistentTimer-Feature aktivieren und eine Datenquelle zum Speichern persistenter Zeitgeber konfigurieren.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.useraction=Es ist keine Aktion erforderlich, wenn keine persistenten Zeitgeber verwendet werden. Wenn persistente Zeitgeber verwendet werden, geben Sie eine Datenquellenkonfiguration f\u00fcr das ejbPersistentTimer-Feature an. Entfernen Sie das ejbPersistentTimer-Feature, damit diese Nachricht nicht mehr angezeigt wird.
 
 DUPLICATE_EJB_CNTR4100E=CNTR4100E: Der Wert {0} f\u00fcr das Element <ejb-name> in der Datei ejb-jar.xml ist nicht eindeutig.
 DUPLICATE_EJB_CNTR4100E.explanation=Es sind mehrere Enterprise-Beans mit demselben Namen in der Datei ejb-jar.xml definiert. Jede Enterprise-Bean muss einen eindeutigen Namen haben.

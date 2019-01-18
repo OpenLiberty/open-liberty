@@ -18,7 +18,7 @@
 #     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
 #
 # The prefix for this component is:
-#     CWNEN (Injection Engine)
+#     CNTR (EJB Container)
 #
 # Message numbers are four digit numbers, from '0000' to '9999', inclusive.
 # Message numbers are filled to the left with '0', to a width of 4.
@@ -129,6 +129,14 @@ NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.useraction=Remova o uso de cron\u0
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E=CNTR4019E: N\u00e3o \u00e9 poss\u00edvel criar ou acessar cron\u00f4metros persistentes. Cron\u00f4metros persistentes do EJB n\u00e3o s\u00e3o suportados por nenhum dos recursos configurados no arquivo server.xml.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.explanation=Os cron\u00f4metros persistentes do EJB n\u00e3o s\u00e3o suportados pelos recursos ejbLite.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.useraction=Remova o uso de cron\u00f4metros persistentes n\u00e3o suportados do aplicativo ou inclua um recurso ejbPersistentTimer no arquivo server.xml. 
+
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E=CNTR4020E: O enterprise bean {0} no m\u00f3dulo {1} no aplicativo {2} declara cron\u00f4metros persistentes criados automaticamente. Cron\u00f4metros persistentes criados automaticamente n\u00e3o podem ser criados. O recurso ejbPersistentTimer est\u00e1 ativado, mas uma origem de dados n\u00e3o foi configurada.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.explanation=Cron\u00f4metros persistentes de enterprise bean criados automaticamente declarados em um descritor de implementa\u00e7\u00e3o ou anota\u00e7\u00e3o requerem uma configura\u00e7\u00e3o de origem de dados para o recurso ejbPersistentTimer.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.useraction=Configure uma origem de dados para o recurso ejbPersistentTimer ou remova o uso de cron\u00f4metros persistentes criados automaticamente do aplicativo.
+
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I=CNTR4021I: N\u00e3o \u00e9 poss\u00edvel criar ou acessar cron\u00f4metros persistentes. O recurso ejbPersistentTimer foi ativado, mas uma origem de dados n\u00e3o foi configurada.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.explanation=Os aplicativos que usam cron\u00f4metros persistentes devem ativar o recurso ejbPersistentTimer e configurar uma origem de dados para armazenar cron\u00f4metros persistentes.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.useraction=Nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria se os cron\u00f4metros persistentes n\u00e3o forem usados. Se os cron\u00f4metros persistentes forem usados, forne\u00e7a uma configura\u00e7\u00e3o de origem de dados para o recurso ejbPersistentTimer. Remova o recurso ejbPersistentTimer para remover essa mensagem.
 
 DUPLICATE_EJB_CNTR4100E=CNTR4100E: O valor {0} do elemento <ejb-name> no arquivo ejb-jar.xml n\u00e3o \u00e9 exclusivo.
 DUPLICATE_EJB_CNTR4100E.explanation=V\u00e1rios enterprise beans foram definidos com o mesmo nome no arquivo ejb-jar.xml. Cada enterprise bean deve ter um nome exclusivo.

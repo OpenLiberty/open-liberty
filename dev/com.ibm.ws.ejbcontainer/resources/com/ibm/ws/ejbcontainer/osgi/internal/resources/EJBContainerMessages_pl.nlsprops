@@ -18,7 +18,7 @@
 #     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
 #
 # The prefix for this component is:
-#     CWNEN (Injection Engine)
+#     CNTR (EJB Container)
 #
 # Message numbers are four digit numbers, from '0000' to '9999', inclusive.
 # Message numbers are filled to the left with '0', to a width of 4.
@@ -129,6 +129,14 @@ NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.useraction=Usu\u0144 u\u017cycie n
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E=CNTR4019E: Nie mo\u017cna tworzy\u0107 trwa\u0142ych licznik\u00f3w czasu ani uzyskiwa\u0107 do nich dost\u0119pu. Trwa\u0142e liczniki czasu komponent\u00f3w EJB nie s\u0105 obs\u0142ugiwane przez \u017caden ze sk\u0142adnik\u00f3w skonfigurowanych w pliku server.xml.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.explanation=Trwa\u0142e liczniki czasu komponent\u00f3w EJB nie s\u0105 obs\u0142ugiwane przez sk\u0142adniki ejbLite.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.useraction=Usu\u0144 u\u017cycie nieobs\u0142ugiwanych trwa\u0142ych licznik\u00f3w czasu z aplikacji lub dodaj do pliku server.xml sk\u0142adnik ejbPersistentTimer. 
+
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E=CNTR4020E: Komponent EJB {0} w module {1} aplikacji {2} deklaruje automatycznie tworzone trwa\u0142e liczniki czasu. Nie mo\u017cna utworzy\u0107 automatycznie tworzonych trwa\u0142ych licznik\u00f3w czasu. Sk\u0142adnik ejbPersistentTimer jest w\u0142\u0105czony, ale \u017ar\u00f3d\u0142o danych nie zosta\u0142o skonfigurowane.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.explanation=Automatycznie tworzone trwa\u0142e liczniki czasu komponent\u00f3w EJB zadeklarowane w deskryptorze wdra\u017cania albo w adnotacji wymagaj\u0105 konfiguracji \u017ar\u00f3d\u0142a danych dla sk\u0142adnika ejbPersistentTimer.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.useraction=Skonfiguruj \u017ar\u00f3d\u0142o danych dla sk\u0142adnika ejbPersistentTimer lub usu\u0144 u\u017cycie automatycznie tworzonych trwa\u0142ych licznik\u00f3w czasu z aplikacji.
+
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I=CNTR4021I: Nie mo\u017cna tworzy\u0107 trwa\u0142ych licznik\u00f3w czasu ani uzyskiwa\u0107 do nich dost\u0119pu. Sk\u0142adnik ejbPersistentTimer zosta\u0142 w\u0142\u0105czony, ale \u017ar\u00f3d\u0142o danych nie zosta\u0142o skonfigurowane.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.explanation=Aplikacje, kt\u00f3re u\u017cywaj\u0105 trwa\u0142ych licznik\u00f3w czasu, musz\u0105 w\u0142\u0105czy\u0107 sk\u0142adnik ejbPersistentTimer i skonfigurowa\u0107 \u017ar\u00f3d\u0142o danych do przechowywania trwa\u0142ych licznik\u00f3w czasu.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107, je\u015bli trwa\u0142e liczniki czasu nie s\u0105 u\u017cywane. Je\u015bli trwa\u0142e liczniki czasu s\u0105 u\u017cywane, udost\u0119pnij konfiguracj\u0119 \u017ar\u00f3d\u0142a danych dla sk\u0142adnika ejbPersistentTimer. Usu\u0144 sk\u0142adnik ejbPersistentTimer, aby usun\u0105\u0107 ten komunikat.
 
 DUPLICATE_EJB_CNTR4100E=CNTR4100E: Warto\u015b\u0107 {0} elementu <ejb-name> w pliku ejb-jar.xml nie jest unikalna.
 DUPLICATE_EJB_CNTR4100E.explanation=W pliku ejb-jar.xml zdefiniowano wiele komponent\u00f3w EJB o tej samej nazwie. Ka\u017cdy komponent EJB musi mie\u0107 unikaln\u0105 nazw\u0119.

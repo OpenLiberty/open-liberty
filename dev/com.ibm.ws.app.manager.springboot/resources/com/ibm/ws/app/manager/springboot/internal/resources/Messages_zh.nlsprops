@@ -86,3 +86,11 @@ warning.application.started.event.timeout.useraction=\u5982\u679c\u5e94\u7528\u7
 warning.java.version.not.supported=CWWKC0265W: Spring Boot V{1} \u4e0d\u652f\u6301\u5f53\u524d Java \u7248\u672c {0}\u3002\u8bf7\u5c06\u5e94\u7528\u7a0b\u5e8f\u7684 Spring Boot \u7248\u672c\u5347\u7ea7\u5230 2.0.x \u6216\u66f4\u9ad8\u7248\u672c\u3002
 warning.java.version.not.supported.explanation=Spring Boot V1.5.x \u548c\u66f4\u4f4e\u7248\u672c\u4e0d\u652f\u6301\u9ad8\u4e8e 1.8 \u7684 Java \u7248\u672c\u3002
 warning.java.version.not.supported.useraction=\u8bf7\u5c06\u5e94\u7528\u7a0b\u5e8f\u7684 Spring Boot \u7248\u672c\u5347\u7ea7\u5230 2.0.x \u6216\u66f4\u9ad8\u7248\u672c\u3002
+
+error.invalid.packaged.liberty.jar=CWWKC0265E: \u5e94\u7528\u7a0b\u5e8f\u672a\u80fd\u542f\u52a8\uff0c\u56e0\u4e3a\u6253\u5305\u7684 Liberty \u670d\u52a1\u5668 JAR \u6587\u4ef6\u65e0\u6548\u3002
+error.invalid.packaged.liberty.jar.explanation=\u6253\u5305\u7684 Liberty \u670d\u52a1\u5668 JAR \u6587\u4ef6\u7f3a\u5c11 Server-Name \u6e05\u5355\u5934\u3001\u670d\u52a1\u5668\u6839\u7684\u6761\u76ee\u6216 lib.index.cache \u76ee\u5f55\u7684\u6761\u76ee\u3002
+error.invalid.packaged.liberty.jar.useraction=\u8bf7\u914d\u7f6e\u6709\u6548\u7684\u6253\u5305 Liberty \u670d\u52a1\u5668 JAR \u6587\u4ef6\u3002
+
+error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: \u5e94\u7528\u7a0b\u5e8f\u672a\u80fd\u542f\u52a8\uff0c\u56e0\u4e3a\u5728\u6253\u5305\u7684 Liberty \u670d\u52a1\u5668 JAR \u6587\u4ef6\u4e2d\u627e\u4e0d\u5230 Spring Boot \u5e94\u7528\u7a0b\u5e8f\u3002
+error.application.not.found.inside.packaged.liberty.jar.explanation=\u6253\u5305\u7684 Liberty \u670d\u52a1\u5668 JAR \u6587\u4ef6\u5fc5\u987b\u5305\u542b\u5df2\u914d\u7f6e\u7684 Spring Boot \u5e94\u7528\u7a0b\u5e8f\u3002
+error.application.not.found.inside.packaged.liberty.jar.useraction=\u8bf7\u914d\u7f6e\u6709\u6548\u7684\u6253\u5305 Liberty \u670d\u52a1\u5668 JAR \u6587\u4ef6\u3002

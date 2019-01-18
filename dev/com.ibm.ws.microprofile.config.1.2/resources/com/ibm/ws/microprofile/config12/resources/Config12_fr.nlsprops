@@ -24,6 +24,7 @@
 # Messages used by Config 1.1 Impl -  range is 0000-0099, plus 9999 for the emergency message
 # Messages used by Config 1.2 Impl -  range is 0100-0199, plus 9998 for the emergency message
 # Messages used by Config 1.3 Impl -  range is 0200-0299, plus 9997 for the emergency message
+# Messages used by Config 1.4 Impl -  range is 0300-0399, plus 9996 for the emergency message
 #-----------------------------------------------------------------------------------------------------------------------------
 
 # There aren't yet any 1.2 specific messages, except for the emergency one below
@@ -32,7 +33,7 @@
 # Emergency Config 1.2 error message
 #-----------------------------------------------------------------------------------------------------------------------------
 
-# A Config API error has occurred: {0}
-temporary.CWMCG9998E=CWMCG9998E: Une erreur li\u00e9e \u00e0 l'API Config s'est produite : {0}.
+# The following Config API error has occurred: {0}.
+temporary.CWMCG9998E=CWMCG9998E: L'erreur de l'API Config suivante est survenue : {0}.
 temporary.CWMCG9998E.explanation=Une erreur li\u00e9e \u00e0 l'API Config, qui emp\u00eache tout fonctionnement normal, s'est produite.
-temporary.CWMCG9998E.useraction=Consultez le journal message.log du serveur et les journaux FFDC pour identifier le probl\u00e8me.
+temporary.CWMCG9998E.useraction=Consultez le fichier message.log du serveur et les journaux de l'outil de diagnostic de premier niveau pour identifier le probl\u00e8me.

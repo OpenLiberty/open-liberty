@@ -692,6 +692,10 @@ warning.package.root.invalid.runnable=CWWKE0948W: Una opci\u00f3n --server-root 
 warning.package.root.invalid.runnable.explanation=El usuario ha realizado una solicitud de paquete con una opci\u00f3n --server-root e --include=runnable, pero no es una combinaci\u00f3n permitida. Se utilizar\u00e1 la ra\u00edz del servidor predeterminado wlp.
 warning.package.root.invalid.runnable.useraction=No se requiere ninguna acci\u00f3n.
 
+error.no.serialfilteragent=CWWKE0949E: El archivo jar de agente de filtro serie especificado {0} no existe.
+error.no.serialfilteragent.explanation=El archivo jar de agente de filtro serie especificado no existe o no se puede leer.
+error.no.serialfilteragent.useraction= Aseg\u00farese de que el archivo exista y que el usuario actual lo pueda leer.
+
 info.serverStarting=Se est\u00e1 iniciando el servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=Servidor {0} iniciado con ID de proceso {1}.
@@ -771,3 +775,4 @@ info.initlogs=Redirigiendo stdout y stderr al archivo {0}
 info.no.servers.defined=No se han definido servidores en el directorio de usuario {0}.
 info.list.of.defined.servers=Los servidores siguientes se definen en relaci\u00f3n con el directorio de usuario {0}.
 info.communicate.server=Se ha producido un error de comunicaciones entre el mandato {0} y el servidor {1}.
+
