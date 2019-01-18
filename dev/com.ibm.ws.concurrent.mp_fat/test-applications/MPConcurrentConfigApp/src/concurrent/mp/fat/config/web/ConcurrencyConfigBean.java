@@ -32,7 +32,6 @@ public class ConcurrencyConfigBean {
     // MicroProfile Concurrency automatically shuts down ManagedExecutors when the application stops.
     // But even if the application writes its own disposer, it shouldn't get an error.
     void disposeExecutor(@Disposes @NamedInstance("applicationProducedExecutor") ManagedExecutor exec) {
-        System.out.println("### disposer");
         exec.shutdownNow();
     }
 
