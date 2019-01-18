@@ -67,7 +67,7 @@ public class FaultToleranceInterceptor {
     }
 
     @AroundInvoke
-    public Object executeFT(InvocationContext context) throws Throwable {
+    public Object executeFT(InvocationContext context) throws Exception {
 
         AggregatedFTPolicy policy = getFTPolicies(context);
 
@@ -208,7 +208,7 @@ public class FaultToleranceInterceptor {
     }
 
     @FFDCIgnore({ ExecutionException.class })
-    private Object execute(InvocationContext invocationContext, AggregatedFTPolicy aggregatedFTPolicy) throws Throwable {
+    private Object execute(InvocationContext invocationContext, AggregatedFTPolicy aggregatedFTPolicy) throws Exception {
         Object result = null;
         //if there is a set of FaultTolerance policies then run it, otherwise just call proceed
         if (aggregatedFTPolicy != null) {
@@ -226,7 +226,14 @@ public class FaultToleranceInterceptor {
             try {
                 result = executor.execute(callable, executionContext);
             } catch (ExecutionException e) {
-                throw e.getCause();
+                Throwable cause = e.getCause();
+                if (cause instanceof Exception) {
+                    throw (Exception) cause;
+                } else if (cause instanceof Error) {
+                    throw (Error) cause;
+                } else {
+                    throw e;
+                }
             }
 
         } else {

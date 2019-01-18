@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 package com.ibm.ws.microprofile.config.cdi;
 
 import java.lang.annotation.Annotation;
-import java.util.concurrent.TimeUnit;
+import java.time.temporal.ChronoUnit;
 
 import javax.enterprise.util.AnnotationLiteral;
 
@@ -47,8 +47,8 @@ public class ConfigPropertyLiteral extends AnnotationLiteral<ConfigProperty> imp
     }
 
     //introduced in 1.4
-    public TimeUnit cacheTimeUnit() {
-        return TimeUnit.SECONDS;
+    public ChronoUnit cacheForTimeUnit() {
+        return ChronoUnit.SECONDS;
     }
 
     //introduced in 1.4

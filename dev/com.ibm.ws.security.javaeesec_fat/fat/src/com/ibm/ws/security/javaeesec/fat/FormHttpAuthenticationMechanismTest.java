@@ -11,15 +11,8 @@
 
 package com.ibm.ws.security.javaeesec.fat;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
@@ -95,9 +88,12 @@ public class FormHttpAuthenticationMechanismTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        myServer.stopServer();
-        if (ldapServer != null) {
-            ldapServer.stop();
+        try {
+            myServer.stopServer();
+        } finally {
+            if (ldapServer != null) {
+                ldapServer.stop();
+            }
         }
     }
 

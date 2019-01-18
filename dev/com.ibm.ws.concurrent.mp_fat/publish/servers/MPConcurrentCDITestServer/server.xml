@@ -21,7 +21,13 @@
     
     <jndiEntry jndiName="foo" value="bar"/>
     
-    <application location="MPConcurrentCDIApp.war"/>
+    <application location="MPConcurrentCDIApp.war">
+        <classloader commonLibraryRef="customContextProviderLib"/>
+    </application>
+
+    <library id="customContextProviderLib">
+        <file name="${server.config.dir}/lib/customContextProviders.jar"/>
+    </library>
 
     <!-- Needed for application to use a ForkJoinPool, access the thread context class loader, and shut down an unmanaged ExecutorService that the test application creates -->
     <javaPermission codebase="${server.config.dir}/apps/MPConcurrentCDIApp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>

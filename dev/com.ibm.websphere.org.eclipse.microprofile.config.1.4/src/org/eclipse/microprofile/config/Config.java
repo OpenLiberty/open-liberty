@@ -1,6 +1,6 @@
 /*
  *******************************************************************************
- * Copyright (c) 2011-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2011-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -47,11 +47,8 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
  * <p>If multiple {@link ConfigSource ConfigSources} are specified with
  * the same ordinal, the {@link ConfigSource#getName()} will be used for sorting.
  * <p>
- * The config objects produced via the injection model {@code @Inject Config} are guaranteed to be serializable, while
+ * The config objects produced via the injection model <pre>@Inject Config</pre> are guaranteed to be serializable, while
  * the programmatically created ones are not required to be serializable.
- * <p>
- * If one or more converters are registered for a class of a requested value then the registered {@link org.eclipse.microprofile.config.spi.Converter}
- * which has the highest {@code @javax.annotation.Priority} is used to convert the string value retrieved from the config sources.
  *
  * <h3>Usage</h3>
  *
@@ -64,7 +61,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
  *   Integer archivePort = cfg.getValue("my.project.archive.port", Integer.class);
  * </pre>
  *
- * <p>For accessing a configuration in a dynamic way you can also use {@link #access(String)}.
+ * <p>For accessing a configuration in a dynamic way you can also use {@link #access(String, Class)}.
  * This method returns a builder-style {@link ConfigAccessor} instance for the given key.
  * You can further specify a Type of the underlying configuration, a cache time, lookup paths and
  * many more.
@@ -78,7 +75,8 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
  * }
  * </pre>
  *
- * <p>See {@link #getValue(String, Class)} and {@link #getOptionalValue(String, Class)} and {@link #access(String)} for accessing a configured value.
+ * <p>See {@link #getValue(String, Class)} and {@link #getOptionalValue(String, Class)} and 
+ * {@link #access(String, Class)} for accessing a configured value.
  *
  * <p>Configured values can also be accessed via injection.
  * See {@link org.eclipse.microprofile.config.inject.ConfigProperty} for more information.
@@ -89,10 +87,9 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
  * @author <a href="mailto:emijiang@uk.ibm.com">Emily Jiang</a>
  * @author <a href="mailto:gunnar@hibernate.org">Gunnar Morling</a>
  * @author <a href="mailto:manfred.huber@downdrown.at">Manfred Huber</a>
- * @author <a href="mailto:elexx@apache.org">Alex Falb</a>
+ * @author <a href="mailto:alexander.falb@rise-world.com">Alex Falb</a>
  *
  */
-@org.osgi.annotation.versioning.ProviderType
 public interface Config {
 
     /**
@@ -101,15 +98,15 @@ public interface Config {
      *
      * If this method gets used very often then consider to locally store the configured value.
      *
-     * <p>Note that no variable replacement like in {@link ConfigAccessor#evaluateVariables(boolean)} will be performed!
+     * <p>Note that no variable replacement like in {@link ConfigAccessorBuilder#evaluateVariables(boolean)} will be performed!
      *
-     * @param <T>  The property type
+     * @param <T>  the property type
      * @param propertyName
      *             The configuration propertyName.
      * @param propertyType
      *             The type into which the resolve property value should get converted
      * @return the resolved property value as an object of the requested type.
-     * @throws java.lang.IllegalArgumentException if the property cannot be converted to the specified type.
+     * @throws IllegalArgumentException if the property cannot be converted to the specified type.
      * @throws java.util.NoSuchElementException if the property isn't present in the configuration.
      */
     <T> T getValue(String propertyName, Class<T> propertyType);
@@ -120,16 +117,16 @@ public interface Config {
      *
      * If this method is used very often then consider to locally store the configured value.
      *
-     * <p>Note that no variable replacement like in {@link ConfigAccessor#evaluateVariables(boolean)} will be performed!
+     * <p>Note that no variable replacement like in {@link ConfigAccessorBuilder#evaluateVariables(boolean)} will be performed!
      *
-     * @param <T>  The property type
+     * @param <T>  the property type
      * @param propertyName
      *             The configuration propertyName.
      * @param propertyType
      *             The type into which the resolve property value should be converted
-     * @return The resolved property value as an Optional of the requested type.
+     * @return the resolved property value as an Optional of the requested type.
      *
-     * @throws java.lang.IllegalArgumentException if the property cannot be converted to the specified type.
+     * @throws IllegalArgumentException if the property cannot be converted to the specified type.
      */
     <T> Optional<T> getOptionalValue(String propertyName, Class<T> propertyType);
 
@@ -137,9 +134,11 @@ public interface Config {
      * Create a {@link ConfigAccessor} to access the underlying configuration.
      *
      * @param propertyName the property key
+     * @param type type into which the resolve property value should get converted
+     * @param <T> the property type 
      * @return a {@code ConfigAccessor} to access the given propertyName
      */
-    ConfigAccessor<String> access(String propertyName);
+    <T> ConfigAccessorBuilder<T> access(String propertyName, Class<T> type);
 
     /**
      * <p>This method can be used to access multiple
@@ -193,7 +192,8 @@ public interface Config {
     Iterable<String> getPropertyNames();
 
     /**
-     * @return all currently registered {@link ConfigSource configsources} sorted with descending ordinal and ConfigSource name
+     * @return all currently registered {@link ConfigSource ConfigSources} sorted by descending ordinal and ConfigSource name
      */
     Iterable<ConfigSource> getConfigSources();
+
 }

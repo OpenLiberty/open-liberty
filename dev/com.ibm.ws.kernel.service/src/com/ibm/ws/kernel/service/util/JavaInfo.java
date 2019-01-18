@@ -29,6 +29,7 @@ public class JavaInfo {
 
     private final int MAJOR;
     private final int MINOR;
+    private final int MICRO;
     private final int SERVICE_RELEASE;
     private final int FIXPACK;
     private final Vendor VENDOR;
@@ -43,9 +44,14 @@ public class JavaInfo {
         MAJOR = Integer.valueOf(versionElements[i++]);
 
         if (i < versionElements.length)
-            MINOR = Integer.valueOf(versionElements[i]);
+            MINOR = Integer.valueOf(versionElements[i++]);
         else
             MINOR = 0;
+
+	if (i < versionElements.length) 
+	    MICRO = Integer.valueOf(versionElements[i]);
+	else
+	    MICRO = 0;
 
         String vendor = getSystemProperty("java.vendor").toLowerCase();
         if (vendor.contains("ibm"))
@@ -115,6 +121,10 @@ public class JavaInfo {
 
     public static int minorVersion() {
         return instance().MINOR;
+    }
+
+    public static int microVersion() {
+	return instance().MICRO;
     }
 
     public static Vendor vendor() {

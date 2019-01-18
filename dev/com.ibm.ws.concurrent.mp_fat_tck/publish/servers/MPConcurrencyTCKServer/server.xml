@@ -5,6 +5,7 @@
         <feature>localConnector-1.0</feature>
         <feature>cdi-2.0</feature>
         <feature>mpConcurrency-1.0</feature>
+        <feature>mpConfig-1.3</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml" />

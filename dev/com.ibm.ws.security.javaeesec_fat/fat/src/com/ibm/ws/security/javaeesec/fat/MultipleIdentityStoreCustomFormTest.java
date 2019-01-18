@@ -82,9 +82,11 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
         ldapServer = new LocalLdapServer();
         ldapServer.start();
 
-        WCApplicationHelper.addWarToServerApps(myServer, WAR_REDIRECT_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform", "web.war.servlets.customform.get.redirect",
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_REDIRECT_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform",
+                                               "web.war.servlets.customform.get.redirect",
                                                "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
-        WCApplicationHelper.addWarToServerApps(myServer, WAR_FORWARD_NAME, true, WAR_RESOURCE_LOCATION,JAR_NAME, false, "web.jar.base", "web.war.servlets.customform", "web.war.servlets.customform.get.forward",
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_FORWARD_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform",
+                                               "web.war.servlets.customform.get.forward",
                                                "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
         myServer.setServerConfigurationFile(XML_NAME);
         myServer.startServer(true);
@@ -97,11 +99,13 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer();
-        if (ldapServer != null) {
-            ldapServer.stop();
+        try {
+            myServer.stopServer();
+        } finally {
+            if (ldapServer != null) {
+                ldapServer.stop();
+            }
         }
-
     }
 
     @Before
@@ -146,11 +150,11 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
         String response = getFormLoginPage(httpclient, urlBase + redirectQueryString, REDIRECT, urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String [] sessionCookie = {"LtpaToken2"};
+        String[] sessionCookie = { "LtpaToken2" };
         String location = executeCustomFormLogin(httpclient, urlBase + redirectLoginUri, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, getViewState(response), sessionCookie);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
-        String [] wasReqURLCookie = {"WASReqURL"};
+        String[] wasReqURLCookie = { "WASReqURL" };
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + redirectQueryString, wasReqURLCookie);
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
         verifyRealm(response, "127.0.0.1:10389");

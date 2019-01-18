@@ -33,6 +33,8 @@ import org.eclipse.microprofile.concurrent.ManagedExecutor.Builder;
 import org.eclipse.microprofile.concurrent.ManagedExecutorConfig;
 import org.eclipse.microprofile.concurrent.NamedInstance;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCapable {
 
     private static final Type[] TYPE_ARR = { ManagedExecutor.class, ExecutorService.class, Executor.class };
@@ -41,13 +43,16 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
     // This instance is used as a marker for when no configured is specified for a String[]. The reference is compared; its content does not matter.
     private static final String[] UNSPECIFIED_ARRAY = new String[] {};
 
-    private final String name;
+    private final String injectionPointName;
+    private final String instanceName;
     private final Set<Annotation> qualifiers;
     private final ManagedExecutorConfig config;
     private final ConcurrencyCDIExtension cdiExtension;
 
+    // TODO remove this constructor given the decision not to supply unqualified instance for programmatic lookup
     public ManagedExecutorBean(ConcurrencyCDIExtension cdiExtension) {
-        this.name = getClass().getCanonicalName();
+        this.injectionPointName = getClass().getCanonicalName();
+        this.instanceName = getClass().getCanonicalName();
         this.config = null;
         this.cdiExtension = cdiExtension;
         Set<Annotation> qualifiers = new HashSet<>(2);
@@ -56,14 +61,16 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
         this.qualifiers = Collections.unmodifiableSet(qualifiers);
     }
 
-    public ManagedExecutorBean(String name, ManagedExecutorConfig config, ConcurrencyCDIExtension cdiExtension) {
-        Objects.requireNonNull(name);
-        this.name = name;
+    public ManagedExecutorBean(String injectionPointName, String instanceName, ManagedExecutorConfig config, ConcurrencyCDIExtension cdiExtension) {
+        Objects.requireNonNull(injectionPointName);
+        Objects.requireNonNull(instanceName);
+        this.injectionPointName = injectionPointName;
+        this.instanceName = instanceName;
         this.config = config;
         this.cdiExtension = cdiExtension;
         Set<Annotation> qualifiers = new HashSet<>(2);
         qualifiers.add(Any.Literal.INSTANCE);
-        qualifiers.add(NamedInstance.Literal.of(this.name));
+        qualifiers.add(NamedInstance.Literal.of(instanceName));
         this.qualifiers = Collections.unmodifiableSet(qualifiers);
     }
 
@@ -81,9 +88,9 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
         } else {
             Object mpConfig = cdiExtension.mpConfig;
 
-            int start = name.length() + 1;
+            int start = injectionPointName.length() + 1;
             int len = start + 10;
-            StringBuilder propName = new StringBuilder(len).append(name).append('.');
+            StringBuilder propName = new StringBuilder(len).append(injectionPointName).append('.');
 
             // In order to efficiently reuse StringBuilder, properties are added in the order of the length of their names,
 
@@ -117,56 +124,67 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
     }
 
     @Override
+    @Trivial
     public String getName() {
-        return name;
+        return instanceName; // TODO should change this to null because @Named qualifier is not present ?
     }
 
     @Override
+    @Trivial
     public Set<Annotation> getQualifiers() {
         return qualifiers;
     }
 
     @Override
+    @Trivial
     public Class<? extends Annotation> getScope() {
         return ApplicationScoped.class;
     }
 
     @Override
+    @Trivial
     public Set<Class<? extends Annotation>> getStereotypes() {
         return Collections.emptySet();
     }
 
     @Override
+    @Trivial
     public Set<Type> getTypes() {
         return TYPES;
     }
 
     @Override
+    @Trivial
     public boolean isAlternative() {
         return false;
     }
 
     @Override
+    @Trivial
     public String getId() {
-        return name;
+        return injectionPointName;
     }
 
     @Override
+    @Trivial
     public Class<?> getBeanClass() {
         return ManagedExecutor.class;
     }
 
     @Override
+    @Trivial
     public Set<InjectionPoint> getInjectionPoints() {
         return Collections.emptySet();
     }
 
     @Override
+    @Trivial
     public boolean isNullable() {
         return false;
     }
 
     @Override
+    @Trivial
     public String toString() {
         return this.getClass().getSimpleName() + '-' + getName();
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,9 +26,9 @@ public interface WebSphereConfig extends Config, Closeable {
      * This allows for generics such as List<MyObject>
      *
      * @param propertyName The name of the property
-     * @param type The type to convert to
+     * @param type         The type to convert to
      * @return The converted value
-     * @throws NoSuchElementException thrown if the requested property does not exist
+     * @throws NoSuchElementException   thrown if the requested property does not exist
      * @throws IllegalArgumentException thrown if the raw String property value was not compatible with the converter for the specified type
      */
     public Object getValue(String propertyName, Type type);
@@ -38,9 +38,9 @@ public interface WebSphereConfig extends Config, Closeable {
      * rather than throwing a NoSuchElementException.
      *
      * @param propertyName The name of the property
-     * @param type The type to convert to
+     * @param type         The type to convert to
      * @return The converted value
-     * @throws NoSuchElementException thrown if optional is false and the requested property does not exist
+     * @throws NoSuchElementException   thrown if optional is false and the requested property does not exist
      * @throws IllegalArgumentException thrown if the raw String property value was not compatible with the converter for the specified type
      */
     public Object getValue(String propertyName, Type type, boolean optional);
@@ -49,8 +49,8 @@ public interface WebSphereConfig extends Config, Closeable {
      * The same as {@link #getValue(String, Type)} except that the defaultString is passed to the converter
      * rather than throwing a NoSuchElementException.
      *
-     * @param propertyName The name of the property
-     * @param type The type to convert to
+     * @param propertyName  The name of the property
+     * @param type          The type to convert to
      * @param defaultString the default string to pass to the converter if the requested property does not exist
      * @return The converted value
      * @throws IllegalArgumentException thrown if the raw String property value was not compatible with the converter for the specified type
@@ -61,7 +61,7 @@ public interface WebSphereConfig extends Config, Closeable {
      * Convert the given rawValue into the specified type
      *
      * @param rawValue The raw String value to convert
-     * @param type The type to convert to
+     * @param type     The type to convert to
      * @return The converted value
      * @throws IllegalArgumentException thrown if the raw String value was not compatible with the converter for the specified type
      */
@@ -69,11 +69,11 @@ public interface WebSphereConfig extends Config, Closeable {
 
     /**
      * Convert the given rawValue into the specified type
-     * 
-     * @param <T>
+     *
+     * @param          <T>
      *
      * @param rawValue The raw String value to convert
-     * @param type The type to convert to
+     * @param type     The type to convert to
      * @return The converted value
      * @throws IllegalArgumentException thrown if the raw String value was not compatible with the converter for the specified type
      */
@@ -84,9 +84,9 @@ public interface WebSphereConfig extends Config, Closeable {
      * if the ConfigSource that the property came from.
      *
      * @param propertyName The name of the property
-     * @param type The type to convert to
+     * @param type         The type to convert to
      * @return A SourcedPropertyValue containing the converted value and the source id
-     * @throws NoSuchElementException thrown if the requested property does not exist
+     * @throws NoSuchElementException   thrown if the requested property does not exist
      * @throws IllegalArgumentException thrown if the raw String property value was not compatible with the converter for the specified type
      */
     public SourcedValue getSourcedValue(String propertyName, Type type);

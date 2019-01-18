@@ -11,6 +11,8 @@
 
 import org.apache.tools.ant.filters.ReplaceTokens
 
+apply plugin: 'maven'
+
 task copyPropertiesToBuildImage (type:Copy) {
     dependsOn jar
     from project.file('publish')
@@ -61,6 +63,7 @@ import org.gradle.internal.os.OperatingSystem
 
 
 File packageDir = new File(project.buildDir, 'openliberty')
+File mavenDir = new File(project.buildDir, 'maven')
 def props = new Properties()
 rootProject.file('generated.properties').withInputStream { props.load(it) }
 
@@ -336,6 +339,8 @@ task zipOpenLibertyAll(type: Zip) {
         props.store(propsFile.newWriter(), null)
     }
 }
+publish.dependsOn zipOpenLibertyAll
+
 
 clean.doLast {
     file('wlp').deleteDir()
@@ -349,8 +354,175 @@ publishing {
             version project.version
             artifact zipOpenLibertyAll
         }
+        openLiberty(MavenPublication) {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-runtime'
+            version project.version
+            artifact zipOpenLiberty
+        }
+        openLibertyKernel(MavenPublication) {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-kernel'
+            version project.version
+            artifact zipOpenLibertyKernel
+        }
+        openLibertyWebProfile8(MavenPublication) {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-webProfile8'
+            version project.version
+            artifact zipOpenLibertyWebProfile8
+        }
+        openLibertyJavaee8(MavenPublication) {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-javaee8'
+            version project.version
+            artifact zipOpenLibertyJavaee8
+        }
     }
 }
+
+task createOLRuntimePoms {
+    dependsOn packageOpenLiberty
+    pom {
+        project {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-runtime'
+            version bnd.libertyRelease
+            packaging 'zip'
+            name 'Open Liberty Runtime Package'
+            description 'Open Liberty Runtime Package'
+            url 'https://openliberty.io/'
+            licenses {
+                license {
+                    name 'Eclipse Public License v1.0'
+                    url 'http://www.eclipse.org/legal/epl-v10.html'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                url 'git@github.com:OpenLiberty/open-liberty.git'
+                tag 'HEAD'
+            }
+            developers {
+                developer {
+                    id 'cbridgha'
+                    name 'Chuck Bridgham'
+                    email 'cbridgha@us.ibm.com'
+                }
+            }
+        }
+    }.writeTo("${mavenDir}/openliberty-runtime-${bnd.libertyRelease}.pom")
+    pom {
+        project {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-webProfile8'
+            version bnd.libertyRelease
+            packaging 'zip'
+            name 'Open Liberty JavaEE 8 Web Profile Package'
+            description 'Open Liberty JavaEE 8 Web Profile Package'
+            url 'https://openliberty.io/'
+            licenses {
+                license {
+                    name 'Eclipse Public License v1.0'
+                    url 'http://www.eclipse.org/legal/epl-v10.html'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                url 'git@github.com:OpenLiberty/open-liberty.git'
+                tag 'HEAD'
+            }
+            developers {
+                developer {
+                    id 'cbridgha'
+                    name 'Chuck Bridgham'
+                    email 'cbridgha@us.ibm.com'
+                }
+            }
+        }
+    }.writeTo("${mavenDir}/openliberty-webProfile8-${bnd.libertyRelease}.pom")
+    pom {
+        project {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-kernel'
+            version bnd.libertyRelease
+            packaging 'zip'
+            name 'Open Liberty Kernel Package'
+            description 'Open Liberty Kernel Package'
+            url 'https://openliberty.io/'
+            licenses {
+                license {
+                    name 'Eclipse Public License v1.0'
+                    url 'http://www.eclipse.org/legal/epl-v10.html'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                url 'git@github.com:OpenLiberty/open-liberty.git'
+                tag 'HEAD'
+            }
+            developers {
+                developer {
+                    id 'cbridgha'
+                    name 'Chuck Bridgham'
+                    email 'cbridgha@us.ibm.com'
+                }
+            }
+        }
+    }.writeTo("${mavenDir}/openliberty-kernel-${bnd.libertyRelease}.pom")
+    pom {
+        project {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-javaee8'
+            version bnd.libertyRelease
+            packaging 'zip'
+            name 'Open Liberty JavaEE8 Package'
+            description 'Open Liberty JavaEE8 Package'
+            url 'https://openliberty.io/'
+            licenses {
+                license {
+                    name 'Eclipse Public License v1.0'
+                    url 'http://www.eclipse.org/legal/epl-v10.html'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                url 'git@github.com:OpenLiberty/open-liberty.git'
+                tag 'HEAD'
+            }
+            developers {
+                developer {
+                    id 'cbridgha'
+                    name 'Chuck Bridgham'
+                    email 'cbridgha@us.ibm.com'
+                }
+            }
+        }
+    }.writeTo("${mavenDir}/openliberty-javaee8-${bnd.libertyRelease}.pom")
+}
+
+
+task zipOpenLibertyMaven(type: Zip) {
+    dependsOn createOLRuntimePoms
+    archiveName 'openliberty-runtimes-maven-${releaseVersion}.zip'
+    from mavenDir
+    from distsDir
+    include '*.zip'
+    include '*.pom'
+    destinationDir project.file('build/temp/mavenArtifact')
+}
+publish.dependsOn zipOpenLibertyMaven
+
+
+
 
 task createJSONForPublicArtifacts {
     enabled isAutomatedBuild
