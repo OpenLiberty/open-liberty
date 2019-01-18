@@ -414,7 +414,12 @@ public class TraceComponent implements FFDCSelfIntrospectable {
                         newFineLevelsEnabled &= ~(1 << level);
                     }
                 }
-
+                
+                if (newFineLevel == TrLevelConstants.TRACE_LEVEL_OFF) {
+                    if (setValue) {
+                        newFineLevelsEnabled = 0;
+                    }
+                }
                 // Indicate that the trace spec matched something
                 spec.setMatched(true);
             }
