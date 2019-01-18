@@ -183,6 +183,15 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
      * Indicates if the JDBC driver is Derby Embedded.
      */
     private boolean isDerbyEmbedded;
+    
+    /**
+     * Indicates if the JDBC driver is Oracle UCP.
+     */
+    private boolean isUCP;
+    
+    //TODO move so we only output messages once
+    private boolean sentUCPConnMgrPropsIgnoredInfoMessage;
+    private boolean sentUCPDataSourcePropsIgnoredInfoMessage;
 
     /**
      * JDBC driver service
@@ -560,6 +569,8 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             // Get the connection manager service for this data source. If none is configured, then use defaults.
             conMgrSvc = (ConnectionManagerService) priv.locateService(componentContext,CONNECTION_MANAGER);
 
+            boolean createdDefaultConnectionManager = false;
+            
             if (conMgrSvc == null) {
                 if (wProps.containsKey(DSConfig.CONNECTION_MANAGER_REF)) {
                     SQLNonTransientException failure = connectorSvc.ignoreWarnOrFail(tc, null, SQLNonTransientException.class, "MISSING_RESOURCE_J2CA8030",
@@ -568,6 +579,8 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                         throw failure;
                 }
                 conMgrSvc = ConnectionManagerService.createDefaultService(id);
+                createdDefaultConnectionManager = true;
+
             }
             conMgrSvc.addObserver(this);
 
@@ -639,6 +652,16 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "ref count for database shutdown", dbName, embDerbyRefCount);
                 }
+            }
+
+            //TODO remove noship guard before GA
+            isUCP = vendorImplClassName.startsWith("oracle.ucp.jdbc.") && vProps.containsKey("internal.dev.nonship.function.do.not.use.production");
+            if (isUCP) {
+                if (!createdDefaultConnectionManager && !sentUCPConnMgrPropsIgnoredInfoMessage) {
+                    Tr.info(tc, "DSRA4013.ignored.connection.manager.config.used");
+                    sentUCPConnMgrPropsIgnoredInfoMessage = true;
+                }
+                updateConfigForUCP(wProps);
             }
 
             dsConfigRef.set(new DSConfig(id, jndiName, wProps, vProps, connectorSvc));
@@ -736,6 +759,10 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                     destroyConnectionFactories(isDerbyEmbedded);
                 } else {
                     parseIsolationLevel(wProps, vendorImplClassName);
+                    
+                    if(isUCP) {
+                        updateConfigForUCP(wProps);
+                    }
                     
                     // Swap the reference to the configuration - the WAS data source will start honoring it
                     dsConfigRef.set(new DSConfig(config, wProps));
@@ -998,5 +1025,56 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
     @Override
     public void setMQQueueManager(Serializable xaresinfo) throws Exception {
         // no-op, not implemented for data sources        
+    }
+    
+    /**
+     * This method contains the common config related tasks that need to be done when the DataSourceService is 
+     * initialized or modified. It outputs an informational message for connection manager and datasource properties
+     * that will be ignored and sets the proper values for the ignored DataSource properties: statementCacheSize 
+     * and ValidationTimeout.
+     * @param wProps 
+     */
+    private void updateConfigForUCP(NavigableMap<String, Object> wProps) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "Updating config for UCP");
+        
+        if (wProps.remove(DSConfig.VALIDATION_TIMEOUT) != null) {
+            if(!sentUCPDataSourcePropsIgnoredInfoMessage) {
+                Tr.info(tc, "DSRA4012.ignored.datasource.config.used");
+                sentUCPDataSourcePropsIgnoredInfoMessage = true;
+            }
+        }
+        Object statementCacheSize = wProps.get(DSConfig.STATEMENT_CACHE_SIZE);
+        if(statementCacheSize != null) {
+            long numericVal = -1;
+            if (statementCacheSize instanceof Number)
+                numericVal = ((Number) statementCacheSize).longValue();
+            else
+                try {
+                    numericVal = Integer.parseInt((String) statementCacheSize);
+                } catch (Exception x) {
+                    //don't need to surface this exception since we are ignoring the config anyway
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "Caught the following exception parsing statement cache size: " + x);
+                }
+            if(numericVal != 0) {
+                wProps.put(DSConfig.STATEMENT_CACHE_SIZE, 0);
+                //To avoid always sending ignored ds config message, don't send it for a value of 10 since that's the default
+                if(numericVal != 10) {
+                    if(!sentUCPDataSourcePropsIgnoredInfoMessage) {
+                        Tr.info(tc, "DSRA4012.ignored.datasource.config.used");
+                        sentUCPDataSourcePropsIgnoredInfoMessage = true;
+                    }
+                }
+            }
+        } else {
+            //this shouldn't be possible since statementCacheSize has a default of 10
+            wProps.put(DSConfig.STATEMENT_CACHE_SIZE, 0);
+        }
+    }
+    
+    @Override
+    public boolean isLibertyConnectionPoolingDisabled() {
+        return isUCP;
     }
 }

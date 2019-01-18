@@ -3,6 +3,9 @@ symbolicName=com.ibm.websphere.appserver.jwtSso-1.0
 visibility=public
 singleton=true
 IBM-ShortName: jwtSso-1.0
+IBM-API-Package: \
+  org.eclipse.microprofile.jwt; type="stable", \
+  org.eclipse.microprofile.auth; type="stable"
 # we don't need servlet 4.0, but we specify it to suppress
 # a CWWKF0001E from jwt's use of servlet 3.0
 Subsystem-Name: JSON Web Token Single Sign-On 1.0

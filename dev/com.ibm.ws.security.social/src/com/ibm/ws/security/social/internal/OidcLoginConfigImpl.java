@@ -158,7 +158,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             }
         } else {
         	this.userInfoEndpoint = configUtils.getConfigAttribute(props, KEY_USERINFO_ENDPOINT);		
-			this.authorizationEndpoint = configUtils.getConfigAttribute(props, KEY_authorizationEndpoint);
+			this.authorizationEndpoint = getRequiredConfigAttribute(props, KEY_authorizationEndpoint);
 			this.tokenEndpoint = configUtils.getConfigAttribute(props, KEY_tokenEndpoint);
 			this.jwksUri = configUtils.getConfigAttribute(props, KEY_jwksUri);
 			this.issuer = configUtils.getConfigAttribute(props, KEY_ISSUER);

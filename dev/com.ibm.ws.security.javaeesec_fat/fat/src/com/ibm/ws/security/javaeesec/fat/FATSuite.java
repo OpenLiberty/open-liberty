@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,24 +45,11 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 ProgrammaticTest.class,
                 MultipleModuleNoExpandTest.class,
                 MultipleModuleExpandTest.class,
-                SecurityContextTest.class,
-                SecurityContextJaxRSTest.class,
-                SecurityContextEJBTest.class,
                 DatabaseIdentityStoreDeferredSettingsTest.class,
                 DatabaseIdentityStoreImmediateSettingsTest.class,
                 EJBModuleTestProtectedServlet.class,
                 EJBModuleTestUnprotectedServlet.class,
-                MultipleModuleGlobalLoginTest.class,
-                MultipleModuleDBRunAsTest.class,
-                ScopedTest.class,
-                MultipleModuleRunAsTest.class,
-                FeatureTest.class,
-                EJBModuleRealmTest.class,
-                CustomIdentityStoreHandlerTest.class,
-                MultipleModuleGlobalClientCertTest.class,
-                MultipleModuleGlobalClientCertFailOverTest.class,
-                NoIdentityStoreTest.class,
-                SSOTest.class
+                FeatureTest.class
 })
 
 /**

@@ -10,9 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp.fat;
 
+import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.test.context.location.CityContextProvider;
+import org.test.context.location.StateContextProvider;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -35,6 +40,12 @@ public class MPConcurrentCDITest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "concurrent.mp.fat.cdi.web");
+
+        JavaArchive customContextProviders = ShrinkWrap.create(JavaArchive.class, "customContextProviders.jar")
+                        .addPackage("org.test.context.location")
+                        .addAsServiceProvider(ThreadContextProvider.class, CityContextProvider.class, StateContextProvider.class);
+        ShrinkHelper.exportToServer(server, "lib", customContextProviders);
+
         server.startServer();
     }
 

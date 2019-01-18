@@ -5,12 +5,7 @@
 	version="7">
 	<permission>
 		<class-name>java.util.PropertyPermission</class-name>
-		<name>microprofile.config.refresh.rate</name>
-		<actions>write</actions>
+		<name>*</name>
+		<actions>read, write</actions>
 	</permission>
-	<permission>
-                <class-name>java.util.PropertyPermission</class-name>
-                <name>SYS_PROP</name>
-                <actions>write</actions>
-        </permission>
 </permissions>
