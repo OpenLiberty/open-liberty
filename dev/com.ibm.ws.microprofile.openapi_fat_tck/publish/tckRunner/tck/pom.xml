@@ -54,6 +54,13 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>fattest.simplicity</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../../../lib/fattest.simplicity.jar</systemPath> <!-- This will point to build/libs/autoFVT/lib/fattest.simplicity.jar -->
+        </dependency>
+        <dependency>
             <groupId>org.eclipse.microprofile.openapi</groupId>
             <artifactId>microprofile-openapi-api</artifactId>
             <version>${microprofile.openapi.version}</version>
@@ -69,20 +76,17 @@
             <version>${testng.version}</version>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
             <artifactId>arquillian-testng-container</artifactId>
             <version>${arquillian.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed</artifactId>
             <version>1.0.3</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 </project>
