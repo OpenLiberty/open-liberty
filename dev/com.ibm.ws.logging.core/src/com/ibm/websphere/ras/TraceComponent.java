@@ -419,6 +419,8 @@ public class TraceComponent implements FFDCSelfIntrospectable {
                 
                 if (newFineLevel == TrLevelConstants.TRACE_LEVEL_OFF) {
                 	isTraceOff = true;
+                } else {
+                	isTraceOff = false;
                 }
                 // Indicate that the trace spec matched something
                 spec.setMatched(true);
