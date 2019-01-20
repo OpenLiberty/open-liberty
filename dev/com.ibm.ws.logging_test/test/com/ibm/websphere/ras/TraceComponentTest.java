@@ -591,7 +591,7 @@ public class TraceComponentTest {
             test.setTraceSpec(ts);
             TraceComponent.setAnyTracingEnabled(ts.isAnyTraceEnabled());
             assertTrue("Info for com.ibm.websphere should be enabled", ibm.isInfoEnabled());
-            assertTrue("Config for com.ibm.websphere should be disabled", !ibm.isConfigEnabled());
+            assertTrue("Config for com.ibm.websphere should be enabled", ibm.isConfigEnabled());
             assertTrue("debug for test should be disabled", !test.isDebugEnabled());
         } catch (Throwable t) {
             outputMgr.failWithThrowable(m, t);
