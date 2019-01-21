@@ -23,6 +23,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,10 +38,10 @@ import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.jose4j.lang.JoseException;
 
+import org.apache.commons.codec.binary.Base64;
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
@@ -136,7 +137,10 @@ public class JwtUtils {
 	}
 
 	public static boolean isJwtSsoValidationExpiredTokenCodePath() {
-		return isJwtSsoValidationPathExpiredToken.get() != null ? isJwtSsoValidationPathExpiredToken.get() : null;
+		boolean result = isJwtSsoValidationPathExpiredToken.get() != null ? isJwtSsoValidationPathExpiredToken.get()
+				: false;
+
+		return result;
 	}
 
 	public static String convertToBase64(String source) {

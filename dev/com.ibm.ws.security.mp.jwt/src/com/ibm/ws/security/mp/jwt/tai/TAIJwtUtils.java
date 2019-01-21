@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jose4j.lang.JoseException;
-
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -34,6 +34,7 @@ public class TAIJwtUtils {
     public TAIJwtUtils() {
     }
 
+    @FFDCIgnore(Exception.class)
     public JwtToken createJwt(@Sensitive String idToken, String jwtConfigId) throws MpJwtProcessingException {
         String methodName = "createJwt";
         if (tc.isDebugEnabled()) {
@@ -48,9 +49,9 @@ public class TAIJwtUtils {
         } catch (Exception e) {
             String msg = Tr.formatMessage(tc, "ERROR_CREATING_JWT", new Object[] { jwtConfigId, e.getLocalizedMessage() }); //CWWKS5524E
             if (JwtUtils.isJwtSsoValidationExpiredTokenCodePath()) {
-               Tr.debug(tc, msg) ;               
+                Tr.debug(tc, msg);
             } else {
-               Tr.error(tc,msg);
+                Tr.error(tc, msg);
             }
             throw new MpJwtProcessingException(msg, e);
         }

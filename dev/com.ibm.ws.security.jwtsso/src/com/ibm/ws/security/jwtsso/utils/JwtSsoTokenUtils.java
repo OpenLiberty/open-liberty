@@ -178,7 +178,7 @@ public class JwtSsoTokenUtils {
 	}
 
 	public Subject handleJwtSsoTokenValidationWithSubject(Subject subject, String tokenstr) throws Exception {
-
+		JwtUtils.setJwtSsoValidationPath(); // set a flag to suppress certain error messages.
 		JwtToken jwttoken = recreateJwt(tokenstr);
 		if (jwttoken != null) {
 			TokenBuilder tb = new TokenBuilder();
