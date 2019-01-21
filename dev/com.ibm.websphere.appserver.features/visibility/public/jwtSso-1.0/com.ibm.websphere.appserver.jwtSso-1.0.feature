@@ -17,6 +17,7 @@ Subsystem-Name: JSON Web Token Single Sign-On 1.0
   com.ibm.websphere.appserver.httpcommons-1.0
 -bundles= com.ibm.ws.security.jwtsso, \
   com.ibm.ws.security.common, \
+  com.ibm.ws.security.jwt, \
   com.ibm.websphere.org.eclipse.microprofile.jwt.1.0; location:="dev/api/stable/,lib/"; mavenCoordinates="org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:1.0",\
   com.ibm.ws.security.mp.jwt
 kind=ga

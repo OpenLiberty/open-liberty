@@ -494,6 +494,7 @@ public class ConsumerUtil {
         // Check that expiration claim is in the future, accounting for the
         // clock skew
         if (expirationClaim == null || (!expirationClaim.isAfter(currentTimeMinusSkew))) {
+        	JwtUtils.setJwtSsoValidationPathExiredToken();
             String msg = Tr.formatMessage(tc, "JWT_TOKEN_EXPIRED", new Object[] { createDateString(expirationClaim), createDateString(currentTimeMinusSkew), (clockSkewInMilliseconds / 1000) });
             throw new InvalidClaimException(msg);
         }
@@ -519,7 +520,7 @@ public class ConsumerUtil {
         NumericDate currentTimePlusSkew = NumericDate.fromMilliseconds(now + clockSkewInMilliseconds);
 
         // Check that nbf claim is in the past, accounting for the clock skew
-        if (nbfClaim != null && (nbfClaim.isOnOrAfter(currentTimePlusSkew))) {
+        if (nbfClaim != null && (nbfClaim.isOnOrAfter(currentTimePlusSkew))) {        	
             String msg = Tr.formatMessage(tc, "JWT_TOKEN_BEFORE_NBF", new Object[] { createDateString(nbfClaim), createDateString(currentTimePlusSkew), (clockSkewInMilliseconds / 1000) });
             throw new InvalidClaimException(msg);
         }
