@@ -359,9 +359,7 @@ position_param_not_found=There was no parameter at position: {0}.
 
 pu_configured_for_resource_local=Unable to create an EntityManager with SynchronizationType because PersistenceUnit is configured with resource-local transactions.
 
-# START NON-TRANSLATABLE
 remove_deletion_failed=Remove deletion failed:
-# END NON-TRANSLATABLE
 
 rollback_because_of_rollback_only=Transaction "rolled back" because transaction was set to RollbackOnly.
 
@@ -432,6 +430,8 @@ unexpect_argument=Unexpected input argument {0}
 unknown_bean_class=Unknown Entity bean class: {0}, please verify that this class has been marked with the @Entity annotation.
 
 unknown_entitybean_name=Unknown Entity Bean name: {0}
+
+unsupported_classfile_version=The {0} class was compiled with an unsupported JDK. Report this error to the EclipseLink open source project.
 
 wrap_convert_exception=An exception occurred while calling {0} on converter class {1} with value {2}
 
