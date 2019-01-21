@@ -31,11 +31,11 @@
 
 # OSGI Log Message
 OSGI_MSG001=CWWKE0703I: {0} {1} {2} {3}
-OSGI_MSG001.explanation=Un messaggio informativo \u00e8 stato registrato utilizzando il servizio di log OSGi
+OSGI_MSG001.explanation=Un messaggio informativo \u00e8 stato registrato utilizzando il servizio di log OSGi.
 OSGI_MSG001.useraction=Non sono richieste azioni.
 
 OSGI_AUDIT_MSG=CWWKE0704A: {0} {1} {2} {3}
-OSGI_AUDIT_MSG.explanation=Un messaggio di verifica \u00e8 stato registrato utilizzando il servizio di log OSGi
+OSGI_AUDIT_MSG.explanation=Un messaggio di verifica \u00e8 stato registrato utilizzando il servizio di log OSGi.
 OSGI_AUDIT_MSG.useraction=Non sono richieste azioni.
 
 OSGI_WARNING_MSG=CWWKE0700W: {0} {1} {2} {3}

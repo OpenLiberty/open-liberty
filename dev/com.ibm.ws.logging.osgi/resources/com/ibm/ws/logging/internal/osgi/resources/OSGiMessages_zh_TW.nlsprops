@@ -31,10 +31,10 @@
 
 # OSGI Log Message
 OSGI_MSG001=CWWKE0703I: {0} {1} {2} {3}
-OSGI_MSG001.explanation=\u4f7f\u7528 OSGi \u65e5\u8a8c\u670d\u52d9\u8a18\u8f09\u7684\u53c3\u8003\u8a0a\u606f
+OSGI_MSG001.explanation=\u4f7f\u7528 OSGi \u65e5\u8a8c\u670d\u52d9\u8a18\u8f09\u4e86\u53c3\u8003\u8a0a\u606f\u3002
 OSGI_MSG001.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
 OSGI_AUDIT_MSG=CWWKE0704A: {0} {1} {2} {3}
-OSGI_AUDIT_MSG.explanation=\u5df2\u4f7f\u7528 OSGi \u65e5\u8a8c\u670d\u52d9\u8a18\u8f09\u5be9\u6838\u8a0a\u606f
+OSGI_AUDIT_MSG.explanation=\u4f7f\u7528 OSGi \u65e5\u8a8c\u670d\u52d9\u8a18\u8f09\u4e86\u5be9\u6838\u8a0a\u606f\u3002
 OSGI_AUDIT_MSG.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002
 OSGI_WARNING_MSG=CWWKE0700W: {0} {1} {2} {3}
 OSGI_WARNING_MSG.explanation=\u4f7f\u7528 OSGi \u65e5\u8a8c\u670d\u52d9\u8a18\u8f09\u7684\u8b66\u544a\u8a0a\u606f

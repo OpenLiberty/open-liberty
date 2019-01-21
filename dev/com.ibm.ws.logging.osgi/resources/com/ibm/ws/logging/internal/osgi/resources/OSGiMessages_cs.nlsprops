@@ -35,7 +35,7 @@ OSGI_MSG001.explanation=Do\u0161lo k zaprotokolov\u00e1n\u00ed informa\u010dn\u0
 OSGI_MSG001.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 OSGI_AUDIT_MSG=CWWKE0704A: {0} {1} {2} {3}
-OSGI_AUDIT_MSG.explanation=Zpr\u00e1va auditu byla zaprotokolov\u00e1na pomoc\u00ed slu\u017eby protokolu OSGi
+OSGI_AUDIT_MSG.explanation=Zpr\u00e1va auditu byla zaprotokolov\u00e1na pomoc\u00ed slu\u017eby protokolu OSGi.
 OSGI_AUDIT_MSG.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 OSGI_WARNING_MSG=CWWKE0700W: {0} {1} {2} {3}
