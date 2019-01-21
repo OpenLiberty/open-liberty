@@ -61,20 +61,113 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
 
     private static final TraceComponent tc = Tr.register(ConcurrencyCDIExtension.class);
 
+    // This instance is used as a marker for when no configured is specified for a String[]. The reference is compared; its content does not matter.
+    private static final String[] UNSPECIFIED_ARRAY = new String[] {};
+
     // insertion order of the following two data structures must match
     private final ArrayList<String> injectionPointNames = new ArrayList<>();
-    private final Map<String, Annotation> instanceNameToConfig = new LinkedHashMap<>();
+    private final Map<String, Object> instances = new LinkedHashMap<>();
 
     private final Set<Throwable> deploymentErrors = new LinkedHashSet<>();
     private final Set<String> appDefinedProducers = new HashSet<>();
 
-    final MPConfigAccessor mpConfigAccessor = AccessController.doPrivileged((PrivilegedAction<MPConfigAccessor>) () -> {
+    private final MPConfigAccessor mpConfigAccessor = AccessController.doPrivileged((PrivilegedAction<MPConfigAccessor>) () -> {
         BundleContext bundleContext = FrameworkUtil.getBundle(getClass()).getBundleContext();
         ServiceReference<MPConfigAccessor> mpConfigAccessorRef = bundleContext.getServiceReference(MPConfigAccessor.class);
         return mpConfigAccessorRef == null ? null : bundleContext.getService(mpConfigAccessorRef);
     });
 
-    Object mpConfig;
+    private Object mpConfig;
+
+    /**
+     * Construct an instance of ManagedExecutor to be injected into the specified injection point.
+     *
+     * @param injectionPointName identifier for the injection point.
+     * @param config configuration attributes for the new instance.
+     * @return new instance of ManagedExecutor.
+     */
+    private ManagedExecutor createManagedExecutor(String injectionPointName, ManagedExecutorConfig config) {
+        ManagedExecutor.Builder b = ManagedExecutor.builder();
+        mpConfig = mpConfigAccessor == null ? null : mpConfigAccessor.getConfig();
+        if (mpConfig == null) {
+            if (config != null) {
+                b.cleared(config.cleared());
+                b.maxAsync(config.maxAsync());
+                b.maxQueued(config.maxQueued());
+                b.propagated(config.propagated());
+            }
+        } else {
+            int start = injectionPointName.length() + 1;
+            int len = start + 10;
+            StringBuilder propName = new StringBuilder(len).append(injectionPointName).append('.');
+
+            // In order to efficiently reuse StringBuilder, properties are added in the order of the length of their names,
+
+            propName.append("cleared");
+            String[] c = mpConfigAccessor.get(mpConfig, propName.toString(), config == null ? UNSPECIFIED_ARRAY : config.cleared());
+            if (c != UNSPECIFIED_ARRAY)
+                b.cleared(c);
+
+            propName.replace(start, len, "maxAsync");
+            Integer a = mpConfigAccessor.get(mpConfig, propName.toString(), config == null ? null : config.maxAsync());
+            if (a != null)
+                b.maxAsync(a);
+
+            propName.replace(start, len, "maxQueued");
+            Integer q = mpConfigAccessor.get(mpConfig, propName.toString(), config == null ? null : config.maxQueued());
+            if (q != null)
+                b.maxQueued(q);
+
+            propName.replace(start, len, "propagated");
+            String[] p = mpConfigAccessor.get(mpConfig, propName.toString(), config == null ? UNSPECIFIED_ARRAY : config.propagated());
+            if (p != UNSPECIFIED_ARRAY)
+                b.propagated(p);
+        }
+
+        return b.build();
+    }
+
+    /**
+     * Construct an instance of ThreadContext to be injected into the specified injection point.
+     *
+     * @param injectionPointName identifier for the injection point.
+     * @param config configuration attributes for the new instance.
+     * @return new instance of ThreadContext.
+     */
+    private ThreadContext createThreadContext(String injectionPointName, ThreadContextConfig config) {
+        ThreadContext.Builder b = ThreadContext.builder();
+        mpConfig = mpConfigAccessor == null ? null : mpConfigAccessor.getConfig();
+        if (mpConfig == null) {
+            if (config != null) {
+                b.cleared(config.cleared());
+                b.unchanged(config.unchanged());
+                b.propagated(config.propagated());
+            }
+        } else {
+            int start = injectionPointName.length() + 1;
+            int len = start + 10;
+            StringBuilder propName = new StringBuilder(len).append(injectionPointName).append('.');
+
+            // In order to efficiently reuse StringBuilder, properties are added in the order of the length of their names,
+
+            propName.append("cleared");
+            String[] c = mpConfigAccessor.get(mpConfig, propName.toString(), config == null ? UNSPECIFIED_ARRAY : config.cleared());
+            if (c != UNSPECIFIED_ARRAY)
+                b.cleared(c);
+
+            propName.replace(start, len, "unchanged");
+            String[] u = mpConfigAccessor.get(mpConfig, propName.toString(), config == null ? UNSPECIFIED_ARRAY : config.unchanged());
+            if (u != UNSPECIFIED_ARRAY)
+                b.unchanged(u);
+
+            propName.replace(start, len, "propagated");
+            String[] p = mpConfigAccessor.get(mpConfig, propName.toString(), config == null ? UNSPECIFIED_ARRAY : config.propagated());
+            if (p != UNSPECIFIED_ARRAY)
+                b.propagated(p);
+        }
+
+        return b.build();
+    }
 
     @Trivial
     public void processManagedExecutorInjectionPoint(@Observes ProcessInjectionPoint<?, ManagedExecutor> event, BeanManager bm) {
@@ -140,37 +233,55 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
         // The container MUST register a bean if @ManagedExecutorConfig/ThreadContextConfig is present
         // The container MUST register a bean for every @Default injection point
         if (configAnnoPresent || event.getInjectionPoint().getQualifiers().contains(Default.Literal.INSTANCE)) {
-            Annotation previousConfig = instanceNameToConfig.putIfAbsent(instanceName, config);
-            if (previousConfig == null) {
-                injectionPointNames.add(injectionPointName);
-            } else { // It is an error if 2 or more InjectionPoints define @NamedInstance("X") @ManagedExecutorConfig/ThreadContextConfig
-                String msg = "ERROR: Found existing bean with name=" + instanceName; // TODO NLS message
-                Tr.error(tc, msg);
-                deploymentErrors.add(new Throwable(msg)); // TODO proper exception class
+            Object instance = null;
+            try {
+                if (config instanceof ManagedExecutorConfig)
+                    instance = createManagedExecutor(injectionPointName, (ManagedExecutorConfig) config);
+                else // config instanceof ThreadContextConfig
+                    instance = createThreadContext(injectionPointName, (ThreadContextConfig) config);
+            } catch (IllegalArgumentException x) {
+                event.addDefinitionError(x);
+            } catch (IllegalStateException x) {
+                String message = x.getMessage();
+                if (message != null && message.startsWith("CWWKC") && !message.startsWith("CWWKC1150E"))
+                    event.addDefinitionError(x);
+                else
+                    deploymentErrors.add(x);
+            }
+
+            if (instance != null) {
+                Object previous = instances.putIfAbsent(instanceName, instance);
+                if (previous == null) {
+                    injectionPointNames.add(injectionPointName);
+                } else { // It is an error if 2 or more InjectionPoints define @NamedInstance("X") @ManagedExecutorConfig/ThreadContextConfig
+                    if (instance instanceof ManagedExecutor)
+                        ((ManagedExecutor) instance).shutdownNow();
+                    String msg = "ERROR: Found existing bean with name=" + instanceName; // TODO NLS message
+                    Tr.error(tc, msg);
+                    deploymentErrors.add(new Throwable(msg)); // TODO proper exception class
+                }
             }
         }
     }
 
     public void registerBeans(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
-        mpConfig = mpConfigAccessor == null ? null : mpConfigAccessor.getConfig();
-
         // Always register a bean for @Default programmatic CDI lookups
-        event.addBean(new ManagedExecutorBean(this));
+        event.addBean(new ManagedExecutorBean());
 
         // Don't register beans for app-defined @NamedInstance producers
         for (String appDefinedProducer : appDefinedProducers) {
-            instanceNameToConfig.remove(appDefinedProducer);
+            instances.remove(appDefinedProducer);
         }
 
         // Register 1 bean per un-named config, and 1 bean per unique NamedInstance
         int i = 0;
-        for (Entry<String, Annotation> e : instanceNameToConfig.entrySet()) {
+        for (Entry<String, ?> e : instances.entrySet()) {
             String injectionPointName = injectionPointNames.get(i++);
-            Annotation configAnno = e.getValue();
-            if (configAnno instanceof ManagedExecutorConfig)
-                event.addBean(new ManagedExecutorBean(injectionPointName, e.getKey(), (ManagedExecutorConfig) configAnno, this));
-            else // configAnno instanceof ThreadContextConfig
-                event.addBean(new ThreadContextBean(injectionPointName, e.getKey(), (ThreadContextConfig) configAnno, this));
+            Object instance = e.getValue();
+            if (instance instanceof ManagedExecutor) {
+                event.addBean(new ManagedExecutorBean(injectionPointName, e.getKey(), (ManagedExecutor) instance));
+            } else // instance instanceof ThreadContext
+                event.addBean(new ThreadContextBean(injectionPointName, e.getKey(), (ThreadContext) instance));
         }
     }
 
