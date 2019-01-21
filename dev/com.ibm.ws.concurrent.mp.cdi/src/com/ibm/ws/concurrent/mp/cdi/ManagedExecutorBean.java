@@ -23,7 +23,6 @@ import java.util.concurrent.ExecutorService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
@@ -42,17 +41,6 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
     private final String instanceName;
     private final Set<Annotation> qualifiers;
     private final ManagedExecutor executor;
-
-    // TODO remove this constructor given the decision not to supply unqualified instance for programmatic lookup
-    public ManagedExecutorBean() {
-        this.injectionPointName = getClass().getCanonicalName();
-        this.instanceName = getClass().getCanonicalName();
-        this.executor = null;
-        Set<Annotation> qualifiers = new HashSet<>(2);
-        qualifiers.add(Any.Literal.INSTANCE);
-        qualifiers.add(Default.Literal.INSTANCE);
-        this.qualifiers = Collections.unmodifiableSet(qualifiers);
-    }
 
     public ManagedExecutorBean(String injectionPointName, String instanceName, ManagedExecutor executor) {
         Objects.requireNonNull(injectionPointName);

@@ -128,6 +128,19 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
     }
 
     /**
+     * Destroy all instances that were previously created.
+     */
+    private void destroy() {
+        appDefinedProducers.clear();
+        injectionPointNames.clear();
+        for (Object instance : instances.values()) {
+            if (instance instanceof ManagedExecutor)
+                ((ManagedExecutor) instance).shutdownNow();
+        }
+        instances.clear();
+    }
+
+    /**
      * Construct an instance of ThreadContext to be injected into the specified injection point.
      *
      * @param injectionPointName identifier for the injection point.
@@ -241,12 +254,14 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
                     instance = createThreadContext(injectionPointName, (ThreadContextConfig) config);
             } catch (IllegalArgumentException x) {
                 event.addDefinitionError(x);
+                destroy();
             } catch (IllegalStateException x) {
                 String message = x.getMessage();
                 if (message != null && message.startsWith("CWWKC") && !message.startsWith("CWWKC1150E"))
                     event.addDefinitionError(x);
                 else
                     deploymentErrors.add(x);
+                destroy();
             }
 
             if (instance != null) {
@@ -259,15 +274,13 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
                     String msg = "ERROR: Found existing bean with name=" + instanceName; // TODO NLS message
                     Tr.error(tc, msg);
                     deploymentErrors.add(new Throwable(msg)); // TODO proper exception class
+                    destroy();
                 }
             }
         }
     }
 
     public void registerBeans(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
-        // Always register a bean for @Default programmatic CDI lookups
-        event.addBean(new ManagedExecutorBean());
-
         // Don't register beans for app-defined @NamedInstance producers
         for (String appDefinedProducer : appDefinedProducers) {
             instances.remove(appDefinedProducer);
@@ -283,6 +296,10 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
             } else // instance instanceof ThreadContext
                 event.addBean(new ThreadContextBean(injectionPointName, e.getKey(), (ThreadContext) instance));
         }
+
+        appDefinedProducers.clear();
+        injectionPointNames.clear();
+        instances.clear();
     }
 
     public void registerErrors(@Observes AfterDeploymentValidation event) {
