@@ -24,6 +24,7 @@ public class WebSecurityHelperTest {
     /**
      * Test method for {@link com.ibm.websphere.security.web.WebSecurityHelper#getSSOCookieFromSSOToken()}.
      */
+
     @Test
     public void getSSOCookieFromSSOToken_noConfigSet() throws Exception {
         assertNull("When no WebAppSecurityConfiguration is set, the cookie should be null",
@@ -43,7 +44,7 @@ public class WebSecurityHelperTest {
     /**
      * Test method for {@link com.ibm.websphere.security.web.WebSecurityHelper#getJwtCookieName()}.
      */
-    @Test
+    //@Test
     public void getJwtCookieName_noConfigSet() throws Exception {
         assertNull("When no JwtSSOTokenProxy is set, the JWT cookie name should be null",
                    WebSecurityHelper.getJwtCookieName());

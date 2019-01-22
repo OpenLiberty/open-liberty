@@ -15,8 +15,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import javax.security.auth.Subject;
-import javax.servlet.http.Cookie;
 
+import org.apache.http.cookie.Cookie;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -24,8 +24,6 @@ import org.junit.Test;
 
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.web.WebSecurityHelper;
-import com.ibm.ws.kernel.service.util.JavaInfo;
-import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelperTestHelper;
 import com.ibm.ws.security.token.internal.SingleSignonTokenImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
@@ -110,20 +108,6 @@ public class WebSecurityHelperImplTest {
     public void getJwtCookieName_noConfigSet() throws Exception {
         assertNull("When no configuration is set, the cookie name should be null",
                    WebSecurityHelperImpl.getJwtCookieName());
-    }
-
-    /**
-     * Test method for {@link com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl#getJwtCookieName()}.
-     * Run test only if running with Java 8 or greater.
-     */
-    @Test
-    public void getJwtCookieName_configSet() throws Exception {
-        if (JavaInfo.majorVersion() < 8) {
-            return;
-        }
-        JwtSSOTokenHelperTestHelper jwtSSOTokenHelperTestHelper = new JwtSSOTokenHelperTestHelper(mock);
-        jwtSSOTokenHelperTestHelper.setJwtSSOTokenProxyWithCookieName("jwtCookieName");
-        assertEquals("The cookie name should be set.", "jwtCookieName", WebSecurityHelperImpl.getJwtCookieName());
     }
 
 }
