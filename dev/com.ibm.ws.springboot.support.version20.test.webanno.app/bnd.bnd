@@ -15,6 +15,7 @@ src: \
     src/main/java, \
     src/main/resources
 
+test.project: true
 instrument.disabled: true
 publish.wlp.jar.disabled: true
 
