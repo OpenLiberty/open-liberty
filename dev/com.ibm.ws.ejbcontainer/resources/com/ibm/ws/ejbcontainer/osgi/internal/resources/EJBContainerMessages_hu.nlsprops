@@ -18,7 +18,7 @@
 #     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
 #
 # The prefix for this component is:
-#     CWNEN (Injection Engine)
+#     CNTR (EJB Container)
 #
 # Message numbers are four digit numbers, from '0000' to '9999', inclusive.
 # Message numbers are filled to the left with '0', to a width of 4.
@@ -129,6 +129,14 @@ NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.useraction=T\u00e1vol\u00edtsa el 
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E=CNTR4019E: \u00c1lland\u00f3 id\u0151m\u00e9r\u0151ket nem lehet l\u00e9trehozni \u00e9s el\u00e9rni. Az \u00e1lland\u00f3 EJB id\u0151m\u00e9r\u0151ket a server.xml f\u00e1jlban be\u00e1ll\u00edtott egyik szolg\u00e1ltat\u00e1s sem t\u00e1mogatja.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.explanation=Az ejbLite szolg\u00e1ltat\u00e1sok az \u00e1lland\u00f3 EJB id\u0151m\u00e9r\u0151ket nem t\u00e1mogatj\u00e1k.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.useraction=T\u00e1vol\u00edtsa el a nem t\u00e1mogatott \u00e1lland\u00f3 id\u0151m\u00e9r\u0151ket az alkalmaz\u00e1sb\u00f3l, vagy adja hozz\u00e1 az ejbPersistentTimer szolg\u00e1ltat\u00e1st a server.xml f\u00e1jlhoz. 
+
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E=CNTR4020E: A(z) {2} alkalmaz\u00e1s {1} modulj\u00e1nak {0} EJB-komponense automatikusan l\u00e9trehozott \u00e1lland\u00f3 id\u0151m\u00e9r\u0151ket deklar\u00e1l. Nem hozhat\u00f3k l\u00e9tre automatikusan el\u0151\u00e1ll\u00edtott \u00e1lland\u00f3 id\u0151m\u00e9r\u0151k. Az ejbPersistentTimer szolg\u00e1ltat\u00e1s enged\u00e9lyezett, de egy adatforr\u00e1s nem ker\u00fclt be\u00e1ll\u00edt\u00e1sra.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.explanation=A telep\u00edt\u00e9si le\u00edr\u00f3ban vagy annot\u00e1ci\u00f3ban deklar\u00e1lt automatikusan l\u00e9trehozott EJB-komponens \u00e1lland\u00f3 id\u0151m\u00e9r\u0151k adatforr\u00e1s be\u00e1ll\u00edt\u00e1st ig\u00e9nyelnek az ejbPersistentTimer szolg\u00e1ltat\u00e1sra vonatkoz\u00f3an.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.useraction=\u00c1ll\u00edtson be egy adatforr\u00e1st az ejbPersistentTimer szolg\u00e1ltat\u00e1shoz, vagy t\u00e1vol\u00edtsa el az automatikusan l\u00e9trehozott \u00e1lland\u00f3 id\u0151m\u00e9r\u0151ket az alkalmaz\u00e1sb\u00f3l.
+
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I=CNTR4021I: \u00c1lland\u00f3 id\u0151m\u00e9r\u0151ket nem lehet l\u00e9trehozni \u00e9s el\u00e9rni. Az ejbPersistentTimer szolg\u00e1ltat\u00e1s enged\u00e9lyez\u00e9sre ker\u00fclt, de egy adatforr\u00e1s nem ker\u00fclt be\u00e1ll\u00edt\u00e1sra.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.explanation=\u00c1lland\u00f3 id\u0151m\u00e9r\u0151ket haszn\u00e1l\u00f3 alkalmaz\u00e1sok eset\u00e9n enged\u00e9lyezni kell az ejbPersistentTimer szolg\u00e1ltat\u00e1st, \u00e9s az \u00e1lland\u00f3 id\u0151 id\u0151m\u00e9r\u0151k t\u00e1rol\u00e1s\u00e1ra be kell \u00e1ll\u00edtani egy adatforr\u00e1st.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.useraction=Ha nincsenek haszn\u00e1latban \u00e1lland\u00f3 id\u0151m\u00e9r\u0151k, akkor nincs teend\u0151. Ha az \u00e1lland\u00f3 id\u0151m\u00e9r\u0151k haszn\u00e1latban vannak, akkor adjon meg egy adatforr\u00e1s-konfigur\u00e1ci\u00f3t az ejbPersistentTimer szolg\u00e1ltat\u00e1sban. Az \u00fczenet elt\u00e1vol\u00edt\u00e1s\u00e1hoz t\u00e1vol\u00edtsa el az ejbPersistentTimer szolg\u00e1ltat\u00e1st.
 
 DUPLICATE_EJB_CNTR4100E=CNTR4100E: Az <ejb-name> elem {0} \u00e9rt\u00e9ke az ejb-jar.xml f\u00e1jlban nem egyedi.
 DUPLICATE_EJB_CNTR4100E.explanation=T\u00f6bb EJB-komponens van meghat\u00e1rozva ugyanazzal a n\u00e9vvel az ejb-jar.xml f\u00e1jlban. Minden EJB-komponensnek egyedi n\u00e9vvel kell rendelkeznie.

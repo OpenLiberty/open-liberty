@@ -18,7 +18,7 @@
 #     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
 #
 # The prefix for this component is:
-#     CWNEN (Injection Engine)
+#     CNTR (EJB Container)
 #
 # Message numbers are four digit numbers, from '0000' to '9999', inclusive.
 # Message numbers are filled to the left with '0', to a width of 4.
@@ -129,6 +129,14 @@ NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.useraction=Elimine el uso de tempo
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E=CNTR4019E: No se pueden crear los temporizadores persistentes, ni acceder a los mismos. Ninguna de las caracter\u00edsticas configuradas en el archivo server.xml da soporte a los temporizadores EJB persistentes.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.explanation=Las caracter\u00edsticas ejbLite no dan soporte a los temporizadores EJB persistentes.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.useraction=Elimine el uso de temporizadores persistentes no soportados de la aplicaci\u00f3n, o a\u00f1ada en el archivo server.xml una caracter\u00edstica ejbPersistentTimer. 
+
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E=CNTR4020E: El enterprise bean {0} del m\u00f3dulo {1} de la aplicaci\u00f3n {2} declara temporizadores persistentes creados autom\u00e1ticamente. No se pueden crear temporizadores persistentes creados autom\u00e1ticamente. La caracter\u00edstica ejbPersistentTimer est\u00e1 habilitada, pero no se ha configurado un origen de datos.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.explanation=Los temporizadores persistentes de enterprise bean creados autom\u00e1ticamente declarados en un descriptor de despliegue o en una anotaci\u00f3n requieren una configuraci\u00f3n de origen de datos para la caracter\u00edstica ejbPersistentTimer.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.useraction=Configure un origen de datos para la caracter\u00edstica ejbPersistentTimer o elimine el uso de temporizadores persistentes creados autom\u00e1ticamente de la aplicaci\u00f3n.
+
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I=CNTR4021I: No se pueden crear los temporizadores persistentes, ni acceder a los mismos. Se ha habilitado la caracter\u00edstica ejbPersistentTimer, pero no se ha configurado ning\u00fan origen de datos.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.explanation=Las aplicaciones que utilizan temporizadores persistentes deben habilitar la caracter\u00edstica ejbPersistentTimer y configurar un origen de datos para almacenar los temporizadores persistentes.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.useraction=No es necesaria ninguna acci\u00f3n si los temporizadores persistentes no se utilizan. Si se utilizan temporizadores persistentes, proporcione una configuraci\u00f3n de origen de datos para la caracter\u00edstica ejbPersistentTimer. Elimine la caracter\u00edstica ejbPersistentTimer para eliminar este mensaje.
 
 DUPLICATE_EJB_CNTR4100E=CNTR4100E: El valor {0} para el elemento <ejb-name> en el archivo ejb-jar.xml no es exclusivo.
 DUPLICATE_EJB_CNTR4100E.explanation=Se han definido varios EJB con el mismo nombre en el archivo ejb-jar.xml. Cada EJB debe tener un nombre exclusivo.

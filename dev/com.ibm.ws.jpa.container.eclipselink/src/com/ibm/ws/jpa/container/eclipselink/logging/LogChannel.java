@@ -23,9 +23,10 @@ import com.ibm.ws.jpa.management.JPAConstants;
 @Trivial
 class LogChannel {
     private final TraceComponent _tc;
-    private String channel;
+    private final String channel;
 
     LogChannel(String channel) {
+        this.channel = channel;
         _tc = Tr.register(channel, LogChannel.class, JPAConstants.JPA_TRACE_GROUP, JPAConstants.JPA_RESOURCE_BUNDLE_NAME);
     }
 

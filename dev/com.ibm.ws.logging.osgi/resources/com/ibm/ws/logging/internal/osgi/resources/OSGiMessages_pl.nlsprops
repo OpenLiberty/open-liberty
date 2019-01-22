@@ -30,15 +30,19 @@
 # -------------------------------------------------------------------------------------------------
 
 # OSGI Log Message
-OSGI_MSG001={0} {1} {2} {3} {4}
-OSGI_MSG001.explanation=Komunikat informacyjny zosta\u0142 zarejestrowany za pomoc\u0105 us\u0142ugi rejestrowania OSGi
+OSGI_MSG001=CWWKE0703I: {0} {1} {2} {3}
+OSGI_MSG001.explanation=Komunikat informacyjny zosta\u0142 zarejestrowany za pomoc\u0105 us\u0142ugi rejestrowania OSGi.
 OSGI_MSG001.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
-OSGI_WARNING_MSG=CWWKE0700W: {0} {1} {2} {3} {4}
+OSGI_AUDIT_MSG=CWWKE0704A: {0} {1} {2} {3}
+OSGI_AUDIT_MSG.explanation=Komunikat kontroli zosta\u0142 zarejestrowany za pomoc\u0105 us\u0142ugi rejestrowania OSGi.
+OSGI_AUDIT_MSG.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+OSGI_WARNING_MSG=CWWKE0700W: {0} {1} {2} {3}
 OSGI_WARNING_MSG.explanation=Komunikat ostrzegawczy zosta\u0142 zarejestrowany za pomoc\u0105 us\u0142ugi rejestrowania OSGi
 OSGI_WARNING_MSG.useraction=Wi\u0119cej informacji znajduje si\u0119 w komunikacie ostrzegawczym.
 
-OSGI_ERROR_MSG=CWWKE0701E: {0} {1} {2} {3} {4}
+OSGI_ERROR_MSG=CWWKE0701E: {0} {1} {2} {3}
 OSGI_ERROR_MSG.explanation=Komunikat o b\u0142\u0119dzie zosta\u0142 zarejestrowany za pomoc\u0105 us\u0142ugi rejestrowania OSGi
 OSGI_ERROR_MSG.useraction=Wi\u0119cej informacji znajduje si\u0119 w komunikacie o b\u0142\u0119dzie.
 

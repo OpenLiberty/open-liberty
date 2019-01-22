@@ -18,7 +18,7 @@
 #     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
 #
 # The prefix for this component is:
-#     CWNEN (Injection Engine)
+#     CNTR (EJB Container)
 #
 # Message numbers are four digit numbers, from '0000' to '9999', inclusive.
 # Message numbers are filled to the left with '0', to a width of 4.
@@ -129,6 +129,14 @@ NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.useraction=Retirez l'utilisation d
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E=CNTR4019E: Les temporisateurs permanents ne peuvent pas \u00eatre cr\u00e9\u00e9s ou sont inaccessibles. Les temporisateurs EJB permanents ne sont pris en charge par aucune des fonctions configur\u00e9es dans le fichier server.xml.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.explanation=Les temporisateurs EJB permanents ne sont pas pas pris en charge par la fonction ejbLite.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.useraction=Retirez l'utilisation des temporisateurs permanents non pris en charge des applications, ou ajoutez une fonction ejbPersistentTimer dans le fichier server.xml. 
+
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E=CNTR4020E: Le bean enterprise {0} du module {1} dans l''application {2} d\u00e9clare des temporisateurs persistants cr\u00e9\u00e9s automatiquement. Ces derniers ne peuvent pas \u00eatre cr\u00e9\u00e9s. La fonction ejbPersistentTimer est activ\u00e9e, mais aucune source de donn\u00e9es n''a \u00e9t\u00e9 configur\u00e9e.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.explanation=Les temporisateurs persistants de bean enterprise cr\u00e9\u00e9s automatiquement d\u00e9clar\u00e9s dans un descripteur de d\u00e9ploiement ou dans une annotation requi\u00e8rent la configuration d'une source de donn\u00e9es pour la fonction ejbPersistentTimer.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.useraction=Configurez une source de donn\u00e9es pour la fonction ejbPersistentTimer ou retirez de l'application la possibilit\u00e9 d'utiliser des temporisateurs persistants cr\u00e9\u00e9s automatiquement.
+
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I=CNTR4021I: Les temporisateurs persistants ne peuvent pas \u00eatre cr\u00e9\u00e9s ou sont inaccessibles. La fonction ejbPersistentTimer a \u00e9t\u00e9 activ\u00e9e, mais aucune source de donn\u00e9es n'a \u00e9t\u00e9 configur\u00e9e.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.explanation=Les applications qui utilisent des temporisateurs persistants doivent activer la fonction ejbPersistentTimer et configurer une source de donn\u00e9es pour le stockage des temporisateurs persistants.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.useraction=Aucune action n'est requise si des temporisateurs persistants ne sont pas utilis\u00e9s. Par contre, si des temporisateurs persistants sont utilis\u00e9s, fournissez une configuration de source de donn\u00e9es pour la fonction ejbPersistentTimer. Retirez la fonction ejbPersistentTimer pour \u00e9liminer ce message.
 
 DUPLICATE_EJB_CNTR4100E=CNTR4100E: La valeur {0} de l''\u00e9l\u00e9ment <ejb-name> dans le fichier ejb-jar.xml n''est pas unique.
 DUPLICATE_EJB_CNTR4100E.explanation=Plusieurs beans enterprise ont \u00e9t\u00e9 d\u00e9finis sous le m\u00eame nom dans le fichier ejb-jar.xml. Chaque bean enterprise doit avoir un nom unique.

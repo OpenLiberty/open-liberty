@@ -30,15 +30,19 @@
 # -------------------------------------------------------------------------------------------------
 
 # OSGI Log Message
-OSGI_MSG001={0} {1} {2} {3} {4}
-OSGI_MSG001.explanation=Un mesaj informa\u0163ional a fost \u00eenregistrat \u00een istoric folosind serviciul de istoric OSGi.
+OSGI_MSG001=CWWKE0703I: {0} {1} {2} {3}
+OSGI_MSG001.explanation=Un mesaj informativ a fost \u00eenregistrat \u00een istoric cu serviciul de jurnalizare OSGi.
 OSGI_MSG001.useraction=Nici o ac\u0163iune nu este necesar\u0103.
 
-OSGI_WARNING_MSG=CWWKE0700W: {0} {1} {2} {3} {4}
+OSGI_AUDIT_MSG=CWWKE0704A: {0} {1} {2} {3}
+OSGI_AUDIT_MSG.explanation=Un mesaj de auditare a fost \u00eenregistrat \u00een istoric cu serviciul de jurnalizare OSGi.
+OSGI_AUDIT_MSG.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+OSGI_WARNING_MSG=CWWKE0700W: {0} {1} {2} {3}
 OSGI_WARNING_MSG.explanation=Un mesaj de avertisment a fost \u00eenregistrat \u00een istoric folosind serviciul de istoric OSGi.
 OSGI_WARNING_MSG.useraction=Consulta\u0163i mesajul de avertisment pentru informa\u0163ii.
 
-OSGI_ERROR_MSG=CWWKE0701E: {0} {1} {2} {3} {4}
+OSGI_ERROR_MSG=CWWKE0701E: {0} {1} {2} {3}
 OSGI_ERROR_MSG.explanation=Un mesaj de eroare a fost \u00eenregistrat \u00een istoric folosind serviciul de istoric OSGi.
 OSGI_ERROR_MSG.useraction=Consulta\u0163i mesajul de eroare pentru informa\u0163ii.
 

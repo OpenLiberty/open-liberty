@@ -30,10 +30,11 @@
 # -------------------------------------------------------------------------------------------------
 
 copyright=\n\
-Material cu licen\u0163\u0103 - Proprietatea IBM\n\
-(C) COPYRIGHT International Business Machines Corp. 2010 - Toate drepturile rezervate.\n\
-Drepturi restric\u0163ionate pentru utilizatorii guvernamentali SUA - Utilizarea, duplicarea \u015fi publicarea\n\
-sunt restric\u0163ionate de Contractul GSA ADP Schedule cu IBM Corp.
+Copyright (c) 2010 IBM Corporation \u015fi al\u0163ii.\n\
+Toate drepturile rezervate. Acest program \u015fi materialele \u00eenso\u0163itoare\n\
+sunt f\u0103cute disponibile \u00een baza termenilor din Eclipse Public License v1.0,\n\
+care \u00eenso\u0163e\u015fte aceast\u0103 distribu\u0163ie \u015fi este disponibil\u0103 la\n\
+http://www.eclipse.org/legal/epl-v10.html
 
 error.parse.server=CWWKG0001E: Parser-ul de configurare a detectat o eroare la parsarea r\u0103d\u0103cinii configura\u0163iei \u015fi a documentelor de configurare cu referire. Eroare: {0}
 error.parse.server.explanation=Configura\u0163ia serverului nu a putut fi citit\u0103 pentru c\u0103 este o eroare \u00eentr-unul din fi\u015fierele de configurare.

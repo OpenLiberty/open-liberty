@@ -1,0 +1,53 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent/resources/com/ibm/ws/concurrent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC MicroProfile Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1150 to CWWCK1199 except those specifically identified as moved
+
+CWWKC1150.duplicate.context=CWWKC1150E: Derselbe Threadkontexttyp {0} wird von mehreren Threadkontextprovidern bereitgestellt, die der Anwendung zur Verf\u00fcgung stehen. Zu den Threadkontextprovidern geh\u00f6ren: {1}, {2}.
+CWWKC1150.duplicate.context.explanation=Die MicroProfile Concurrency-Spezifikation l\u00e4sst nicht mehr als einen ThreadContextProvider pro Kontexttyp zu.
+CWWKC1150.duplicate.context.useraction=Aktualisieren Sie die verf\u00fcgbare Anwendung, die Bibliotheken oder beides, sodass nur ein einziger ThreadContextProvider des angegebenen Typs vorhanden ist.
+
+CWWKC1151.context.lists.overlap=CWWKC1151E: Die folgenden Threadkontexttypen wurden zum L\u00f6schen und Weitergeben konfiguriert: {0}.
+CWWKC1151.context.lists.overlap.explanation=Ein Threadkontexttyp kann nur in einer einzigen Kategorie zum Erstellen oder Einf\u00fcgen eines ManagedExecutor konfiguriert werden.
+CWWKC1151.context.lists.overlap.useraction=\u00dcberpr\u00fcfen und korrigieren Sie die Kategorisierung der Threadkontexttypen in Ihrem ManagedExecutor-Builder bzw. in der ManagedExecutorConfig-Annotation.
+
+CWWKC1152.context.lists.overlap=CWWKC1152E: Die folgenden Threadkontexttypen wurden in mehr als einer Kategorie (cleared, propagated, unchanged) konfiguriert: {0}.
+CWWKC1152.context.lists.overlap.explanation=Ein Threadkontexttyp kann nur in einer einzigen Kategorie zum Erstellen oder Einf\u00fcgen einer ThreadContext-Instanz konfiguriert werden.
+CWWKC1152.context.lists.overlap.useraction=\u00dcberpr\u00fcfen und korrigieren Sie die Kategorisierung der Threadkontexttypen in Ihrem ThreadContext-Builder bzw. in der ThreadContextConfig-Annotation.
+
+CWWKC1153.invalid.name=CWWKC1153E: Der Name {0} ist f\u00fcr einen ManagedExecutor oder ThreadContext nicht zul\u00e4ssig. Die Namen m\u00fcssen auf die folgenden Zeichen beschr\u00e4nkt sein: {1}.
+CWWKC1153.invalid.name.explanation=Die Namen f\u00fcr ManagedExecutor- und ThreadContext-Instanzen m\u00fcssen sich aus Zeichen innerhalb des angegebenen Bereichs zusammensetzen.
+CWWKC1153.invalid.name.useraction=Aktualisieren Sie die Anwendung, um einen Namen anzugeben, der nur Zeichen innerhalb des angegebenen Bereichs enth\u00e4lt.
+
+CWWKC1154.duplicate.name=CWWKC1154E: Der Name {0} wird von einem anderen ManagedExecutor oder ThreadContext verwendet.
+CWWKC1154.duplicate.name.explanation=Namen f\u00fcr ManagedExecutor- und ThreadContext-Instanzen m\u00fcssen eindeutig sein.
+CWWKC1154.duplicate.name.useraction=Aktualisieren Sie die Anwendung, um einen eindeutigen Namen f\u00fcr alle erstellten ManagedExecutor- und ThreadContext-Instanzen anzugeben.
+
+CWWKC1155.unknown.context=CWWKC1155E: Die Threadkontexttypen {0} wurden zum L\u00f6schen oder f\u00fcr die Weitergabe konfiguriert. Der Anwendung stehen jedoch keine Threadkontextprovider f\u00fcr diese Typen bereit. Zu den verf\u00fcgbaren Threadkontexttypen geh\u00f6ren: {1}.
+CWWKC1155.unknown.context.explanation=F\u00fcr jeden konfigurierten Threadkontexttyp, der nicht vom Server bereitgestellt wird, muss ein Threadkontextprovider im Klassenladeprogramm der Anwendung verf\u00fcgbar sein. Zu den Threadkontexttypen, die vom Server bereitgestellt werden, geh\u00f6ren Application, CDI, Security, Transaction.
+CWWKC1155.unknown.context.useraction=Aktualisieren Sie die Anwendung oder Bibliothek oder beides, um einen Threadkontextprovider f\u00fcr jeden konfigurierten Threadkontexttyp einzuschlie\u00dfen, der nicht vom Server bereitgestellt wird. Aktualisieren Sie alternativ die Anwendung, um nur die Kontexttypen zu verwenden, die verf\u00fcgbar sind.
+
+CWWKC1156.not.supported=CWWKC1156E: Die angeforderte Operation ist nicht als statische Methode in der ManagedExecutor-Implementierung von CompletableFuture verf\u00fcgbar. Verwenden Sie stattdessen die folgende Operation: {0}.
+CWWKC1156.not.supported.explanation=Die ManagedExecutor-Implementierung CompletableFuture bietet keine statischen Methoden\u00e4quivalente zu den statischen Methoden von CompletableFuture.
+CWWKC1156.not.supported.useraction=Aktualisieren Sie die Anwendung, um die Methode zu verwenden, die in der Nachricht anstelle der angeforderten Operation empfohlen wird.

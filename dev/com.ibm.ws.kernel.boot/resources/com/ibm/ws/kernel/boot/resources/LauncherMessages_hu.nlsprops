@@ -691,6 +691,10 @@ warning.package.root.invalid.runnable=CWWKE0948W: A --server-root param\u00e9ter
 warning.package.root.invalid.runnable.explanation=A felhaszn\u00e1l\u00f3 csomag k\u00e9r\u00e9st hajtott v\u00e9gre --server-root \u00e9s --include=runnable param\u00e9terrel, ami nem megengedett kombin\u00e1ci\u00f3. A wlp alap\u00e9rtelmezett kiszolg\u00e1l\u00f3gy\u00f6kere ker\u00fcl alkalmaz\u00e1sra.
 warning.package.root.invalid.runnable.useraction=Nincs teend\u0151.
 
+error.no.serialfilteragent=CWWKE0949E: A megadott {0} soros\u00edt\u00e1si sz\u0171r\u0151 \u00fcgyn\u00f6k jar f\u00e1jl nem l\u00e9tezik.
+error.no.serialfilteragent.explanation=A megadott soros\u00edt\u00e1si sz\u0171r\u0151 \u00fcgyn\u00f6k jar f\u00e1jl nem l\u00e9tezik vagy nem olvashat\u00f3.
+error.no.serialfilteragent.useraction= Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a f\u00e1jl l\u00e9tezik \u00e9s az aktu\u00e1lis felhaszn\u00e1l\u00f3 \u00e1ltal olvashat\u00f3.
+
 info.serverStarting=A(z) {0} kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa.
 info.serverStarted=A(z) {0} kiszolg\u00e1l\u00f3 elindult.
 info.serverStartedWithPID=A(z) {0} kiszolg\u00e1l\u00f3 {1} folyamatazonos\u00edt\u00f3val elindult.
@@ -770,3 +774,4 @@ info.initlogs=Az stdout \u00e9s stderr \u00e1tir\u00e1ny\u00edt\u00e1sa a(z) {0}
 info.no.servers.defined=Nincs meghat\u00e1rozva kiszolg\u00e1l\u00f3 a(z) {0} felhaszn\u00e1l\u00f3i k\u00f6nyvt\u00e1rban.
 info.list.of.defined.servers=A k\u00f6vetkez\u0151 kiszolg\u00e1l\u00f3k vannak meghat\u00e1rozva a(z) {0} felhaszn\u00e1l\u00f3i k\u00f6nyvt\u00e1rhoz viszony\u00edtva.
 info.communicate.server=Kommunik\u00e1ci\u00f3s hiba t\u00f6rt\u00e9nt a(z) {0} parancs \u00e9s a(z) {1} kiszolg\u00e1l\u00f3 k\u00f6z\u00f6tt.
+
