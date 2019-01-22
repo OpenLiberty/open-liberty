@@ -13,21 +13,18 @@
  *
  * Depends on bnd_* values from gradle.properties.
  */
-
-
 ext {
   cnf = rootProject.project(bnd_cnf)
   buildImage = project(':build.image')
 }
 
-
 subprojects {
-  plugins.apply 'java'
+  apply plugin: 'java'
   
   def bndProject = bndWorkspace.getProject(name)
 
   if (bndProject != null) {
-    plugins.apply 'biz.aQute.bnd'
+    apply plugin: 'biz.aQute.bnd'
   } else {
     task publish { }
     task release { }
@@ -67,6 +64,12 @@ subprojects {
 
     if (bndis('fat.project')) {
       apply from: cnf.file('gradle/scripts/fat.gradle')
+    } else if (!bndis('test.project')) {
+      // Automatically apply OSS Audit plugin to all non-test projects
+      apply plugin: 'net.ossindex.audit'
+      audit {
+        failOnError = true
+      }
     }
 
   }
