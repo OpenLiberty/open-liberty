@@ -8,15 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
-plugins {
-  id "net.ossindex.audit" version "0.3.8-beta"
-}
-
-audit {
-    failOnError = true
-}
-
 // This task no longer runs as part of the build, since rmic -iiop was removed in JDK 11 we now check in the generate java stubs
 task rmic(type: Exec, dependsOn: compileJava) {
     String rmicClasspath = sourceSets.main.runtimeClasspath.asPath
