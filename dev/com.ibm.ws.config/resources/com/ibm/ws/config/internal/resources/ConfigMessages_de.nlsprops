@@ -30,10 +30,11 @@
 # -------------------------------------------------------------------------------------------------
 
 copyright=\n\
-Licensed Material - Property of IBM\n\
-(C) COPYRIGHT International Business Machines Corp. 2010 - All Rights Reserved.\n\
-US Government Users Restricted Rights - Use, duplication or disclosure\n\
-restricted by GSA ADP Schedule Contract with IBM Corp.
+Copyright (c) 2010 IBM Corporation and others.\n\
+All rights reserved. This program and the accompanying materials\n\
+are made available under the terms of the Eclipse Public License v1.0\n\
+which accompanies this distribution, and is available at\n\
+http://www.eclipse.org/legal/epl-v10.html
 
 error.parse.server=CWWKG0001E: Der Konfigurationsparser hat beim Parsen des Konfigurationsstammverzeichnisses und der referenzierten Konfigurationsdokumente einen Fehler festgestellt. Fehler: {0}
 error.parse.server.explanation=Die Serverkonfiguration konnte nicht gelesen werden, weil in einer der Konfigurationsdateien ein Fehler gefunden wurde.
@@ -162,7 +163,6 @@ schemagen.bad.reference.extension.useraction=Bearbeiten Sie die Datei metatype.x
 schemagen.bad.reference.pid=CWWKG0030E: Die in der Erweiterung ibm:reference aufgelistete Pid-Referenz {0} ist nicht vorhanden.
 schemagen.bad.reference.pid.explanation=Die angegebene pid-Referenz in der Erweiterung ibm:reference ist nicht vorhanden oder ung\u00fcltig.
 schemagen.bad.reference.pid.useraction=Bearbeiten Sie die entsprechende Datei metatype.xml und korrigieren Sie den pid-Namen in der Erweiterung ibm:reference.
-
 error.unique.value.conflict=CWWKG0031E: Der Wert {1}, der f\u00fcr das eindeutige Attribut {0} angegeben wurde, wird bereits verwendet.
 error.unique.value.conflict.explanation=Der Wert f\u00fcr das angegebene Attribut muss eindeutig sein, es wird jedoch bereits verwendet.
 error.unique.value.conflict.useraction=\u00c4ndern Sie den Attributwert in einen eindeutigen Wert.

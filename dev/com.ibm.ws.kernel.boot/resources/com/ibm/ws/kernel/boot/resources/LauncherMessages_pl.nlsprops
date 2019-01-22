@@ -944,6 +944,10 @@ warning.package.root.invalid.runnable=CWWKE0948W: Opcja --server-root z opcj\u01
 warning.package.root.invalid.runnable.explanation=U\u017cytkownik wykona\u0142 \u017c\u0105danie utworzenia pakietu z opcj\u0105 --server-root i opcj\u0105 --include=runnable, co nie jest dozwolon\u0105 kombinacj\u0105. Zostanie u\u017cyty domy\u015blny katalog g\u0142\u00f3wny serwera - wlp.
 warning.package.root.invalid.runnable.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
+error.no.serialfilteragent=CWWKE0949E: Podany plik JAR agenta filtru szeregowego {0} nie istnieje.
+error.no.serialfilteragent.explanation=Podany plik JAR agenta filtru szeregowego nie istnieje lub nie mo\u017cna go odczyta\u0107.
+error.no.serialfilteragent.useraction= Sprawd\u017a, czy plik istnieje oraz czy bie\u017c\u0105cy u\u017cytkownik mo\u017ce go odczyta\u0107.
+
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.
 info.serverStartedWithPID=Serwer {0} zosta\u0142 \
@@ -1039,3 +1043,4 @@ info.no.servers.defined=Brak serwer\u00f3w zdefiniowanych wzgl\u0119dem katalogu
 info.list.of.defined.servers=Nast\u0119puj\u0105ce serwery zosta\u0142y zdefiniowane wzgl\u0119dem katalogu u\u017cytkownika {0}.
 info.communicate.server=Wyst\u0105pi\u0142 b\u0142\u0105d komunikacji \
 mi\u0119dzy komend\u0105 {0} i serwerem {1}.
+

@@ -140,6 +140,9 @@ slf.failed.delete=CWWKL0072W: Die Cachedatei [{0}] kann nicht gel\u00f6scht werd
 slf.failed.delete.explanation=Das System konnte die Cachedatei nicht l\u00f6schen. Weil die Datei immer noch im System vorhanden ist, kann dies zu einer Besch\u00e4digung der verschachtelten Archive f\u00fchren.
 slf.failed.delete.useraction=Vergewissern Sie sich, dass die Cachedatei nicht gesperrt ist, weil dies dazu f\u00fchrt, dass das L\u00f6schen der Datei fehlschl\u00e4gt. 
 
+####################### API TYPE MESSAGES 0080-0089 ###############################################
+###################################################################################################
+
 cls.classloader.config.duplicate=CWWKL0080E: Der API-Typ [{0}] wird bereits in der Liste [{1}] verwendet. Entfernen Sie den doppelten API-Typ.
 cls.classloader.config.duplicate.explanation=Jeder API-Typ kann nur ein einziges Mal angegeben werden.
 cls.classloader.config.duplicate.useraction=Suchen Sie in der Serverkonfiguration nach dem doppelten API-Typ und stellen Sie sicher, dass der richtige API-Typ verwendet wird.
@@ -161,3 +164,6 @@ cls.classloader.config.typo2.useraction=Suchen Sie in der Serverkonfiguration na
 cls.classloader.suggested.feature=CWWKL0084W: Die Klasse {0} konnte nicht geladen werden. Versuchen Sie, das Feature {1} oder eine neuere Version des Features in der Datei server.xml zu aktivieren.
 cls.classloader.suggested.feature.explanation=Eine Klasse, die normalerweise von einem oder mehreren Serverfeatures bereitgestellt wird, konnte nicht geladen werden.
 cls.classloader.suggested.feature.useraction=Versuchen Sie das angegebene Feature oder eine neuere Version des Features in der Datei server.xml zu aktivieren.
+
+####################### com.ibm.ws.classloader.context bundle messages 0090-0099 ###################
+####################################################################################################

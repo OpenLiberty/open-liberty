@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.classloader.context/resources/com/ibm/ws/classloader/context/internal/resources/ClassLoaderContextMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKL
+#COMPONENTNAMEFOR CWWKL Class Loader Context
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+
+####################################################################################
+# NOTE: This message bundle has only reserved CWWKL0090-CWWKL0099 if more messages #
+#       are needed, reserve a new block of messages in the classloading bundle     #
+####################################################################################
+cannot.apply.classloader.context=CWWKL0090E: Nie mo\u017cna zastosowa\u0107 kontekstu programu \u0142aduj\u0105cego klasy do niezarz\u0105dzanego w\u0105tku {0}. Upewnij si\u0119, \u017ce praca jest wykonywana w w\u0105tku, kt\u00f3ry jest zarz\u0105dzany przez serwer lub kt\u00f3ry umo\u017cliwia wykonanie operacji setContextClassLoader.
+cannot.apply.classloader.context.explanation=Praca zosta\u0142a przes\u0142ana do w\u0105tku niezarz\u0105dzanego, kt\u00f3ry nie obs\u0142uguje ustawiania programu \u0142aduj\u0105cego klasy.
+cannot.apply.classloader.context.useraction=Upewnij si\u0119, \u017ce praca jest wykonywana w w\u0105tku, kt\u00f3ry jest zarz\u0105dzany przez serwer lub kt\u00f3ry umo\u017cliwia wykonanie operacji setContextClassLoader.

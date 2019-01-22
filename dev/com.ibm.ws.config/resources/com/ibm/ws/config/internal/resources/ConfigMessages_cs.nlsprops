@@ -30,10 +30,11 @@
 # -------------------------------------------------------------------------------------------------
 
 copyright=\n\
-Licencovan\u00e9 materi\u00e1ly - vlastnictv\u00ed IBM. \n\
-(C) COPYRIGHT International Business Machines Corp. 2010 - V\u0161echna pr\u00e1va vyhrazena.\n\
-US Government Users Restricted Rights - Use, duplication or disclosure\n\
-restricted by GSA ADP Schedule Contract with IBM Corp.
+Copyright (c) 2010 IBM Corporation a dal\u0161\u00ed.\n\
+V\u0161echna pr\u00e1va vyhrazena. Tento program a doprovodn\u00e9 materi\u00e1ly\n\
+jsou povoleny za podm\u00ednek licence Eclipse Public License v1.0,\n\
+kter\u00e1 je sou\u010d\u00e1st\u00ed t\u00e9to distribuce a je k dispozici na adrese \n\
+http://www.eclipse.org/legal/epl-v10.html
 
 error.parse.server=CWWKG0001E: Syntaktick\u00fd analyz\u00e1tor konfigurace zjistil chybu p\u0159i syntaktick\u00e9 anal\u00fdze ko\u0159ene konfigurace a v odkazovan\u00fdch dokumentech typu Konfigurace. Chyba: {0}
 error.parse.server.explanation=Konfiguraci serveru nelze p\u0159e\u010d\u00edst, proto\u017ee v jednom z konfigura\u010dn\u00edch soubor\u016f je chyba.

@@ -24,6 +24,7 @@
 # Messages used by Config 1.1 Impl -  range is 0000-0099, plus 9999 for the emergency message
 # Messages used by Config 1.2 Impl -  range is 0100-0199, plus 9998 for the emergency message
 # Messages used by Config 1.3 Impl -  range is 0200-0299, plus 9997 for the emergency message
+# Messages used by Config 1.4 Impl -  range is 0300-0399, plus 9996 for the emergency message
 #-----------------------------------------------------------------------------------------------------------------------------
 
 # There aren't yet any 1.2 specific messages, except for the emergency one below
@@ -32,7 +33,7 @@
 # Emergency Config 1.2 error message
 #-----------------------------------------------------------------------------------------------------------------------------
 
-# A Config API error has occurred: {0}
-temporary.CWMCG9998E=CWMCG9998E: \u767c\u751f\u914d\u7f6e API \u932f\u8aa4\uff1a{0}\u3002
+# The following Config API error has occurred: {0}.
+temporary.CWMCG9998E=CWMCG9998E: \u767c\u751f\u4e0b\u5217\u914d\u7f6e API \u932f\u8aa4\uff1a{0}\u3002
 temporary.CWMCG9998E.explanation=\u767c\u751f\u963b\u6b62\u6b63\u5e38\u4f5c\u696d\u9032\u884c\u7684\u914d\u7f6e API \u932f\u8aa4\u3002
-temporary.CWMCG9998E.useraction=\u8acb\u6aa2\u95b1\u4f3a\u670d\u5668 message.log \u548c FFDC \u65e5\u8a8c\u4ee5\u8b58\u5225\u554f\u984c\u3002
+temporary.CWMCG9998E.useraction=\u8acb\u6aa2\u95b1\u4f3a\u670d\u5668 message.log \u6a94\u548c FFDC \u65e5\u8a8c\uff0c\u4ee5\u8b58\u5225\u554f\u984c\u3002

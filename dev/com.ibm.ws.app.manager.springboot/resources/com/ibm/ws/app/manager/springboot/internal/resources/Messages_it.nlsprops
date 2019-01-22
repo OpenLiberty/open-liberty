@@ -88,3 +88,11 @@ warning.application.started.event.timeout.useraction=Se infine l'applicazione vi
 warning.java.version.not.supported=CWWKC0265W: La versione Java corrente {0} non \u00e8 supportata dalla versione Spring Boot {1}. Eseguire l''aggiornamento della versione Spring Boot dell''applicazione a 2.0.x o successive.
 warning.java.version.not.supported.explanation=Le versioni Java superiori a 1.8 non sono supportate dalle versioni Spring Boot 1.5.x e inferiori.
 warning.java.version.not.supported.useraction=Eseguire l'aggiornamento della versione Spring Boot dell'applicazione a 2.0.x o successive.
+
+error.invalid.packaged.liberty.jar=CWWKC0265E: L'avvio dell'applicazione non \u00e8 riuscito perch\u00e9 il file JAR di Liberty Server compresso non \u00e8 valido.
+error.invalid.packaged.liberty.jar.explanation=Nel file JAR di Liberty Server compresso mancano un'intestazione manifest Server-Name, le voci per la root del server o le voci per la directory lib.index.cache.
+error.invalid.packaged.liberty.jar.useraction=Configurare un file JAR Liberty Server compresso valido.
+
+error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: L'avvio dell'applicazione non \u00e8 riuscito perch\u00e9 l'applicazione Spring Boot non \u00e8 stata trovata all'interno del file JAR di Liberty Server compresso.
+error.application.not.found.inside.packaged.liberty.jar.explanation=Il file JAR di Liberty Server compresso deve contenere un'applicazione Spring Boot configurata.
+error.application.not.found.inside.packaged.liberty.jar.useraction=Configurare un file JAR Liberty Server compresso valido.

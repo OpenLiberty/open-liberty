@@ -30,15 +30,19 @@
 # -------------------------------------------------------------------------------------------------
 
 # OSGI Log Message
-OSGI_MSG001={0} {1} {2} {3} {4}
-OSGI_MSG001.explanation=Inform\u00e1ci\u00f3s \u00fczenet ker\u00fclt napl\u00f3z\u00e1sra az OSGi napl\u00f3szolg\u00e1ltat\u00e1s \u00e1ltal
+OSGI_MSG001=CWWKE0703I: {0} {1} {2} {3}
+OSGI_MSG001.explanation=Inform\u00e1ci\u00f3s \u00fczenet ker\u00fclt napl\u00f3z\u00e1sra az OSGi napl\u00f3szolg\u00e1ltat\u00e1s \u00e1ltal.
 OSGI_MSG001.useraction=Nincs teend\u0151.
 
-OSGI_WARNING_MSG=CWWKE0700W: {0} {1} {2} {3} {4}
+OSGI_AUDIT_MSG=CWWKE0704A: {0} {1} {2} {3}
+OSGI_AUDIT_MSG.explanation=Fel\u00fclvizsg\u00e1lati \u00fczenet ker\u00fclt napl\u00f3z\u00e1sra az OSGi napl\u00f3szolg\u00e1ltat\u00e1s haszn\u00e1lat\u00e1val.
+OSGI_AUDIT_MSG.useraction=Nincs teend\u0151.
+
+OSGI_WARNING_MSG=CWWKE0700W: {0} {1} {2} {3}
 OSGI_WARNING_MSG.explanation=Figyelmeztet\u0151 \u00fczenet ker\u00fclt napl\u00f3z\u00e1sra az OSGi napl\u00f3szolg\u00e1ltat\u00e1s \u00e1ltal.
 OSGI_WARNING_MSG.useraction=Inform\u00e1ci\u00f3k\u00e9rt tekintse meg a figyelmeztet\u0151 \u00fczenetet.
 
-OSGI_ERROR_MSG=CWWKE0701E: {0} {1} {2} {3} {4}
+OSGI_ERROR_MSG=CWWKE0701E: {0} {1} {2} {3}
 OSGI_ERROR_MSG.explanation=Hiba\u00fczenet ker\u00fclt napl\u00f3z\u00e1sra az OSGi napl\u00f3szolg\u00e1ltat\u00e1s \u00e1ltal.
 OSGI_ERROR_MSG.useraction=Inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hiba\u00fczenetet.
 
