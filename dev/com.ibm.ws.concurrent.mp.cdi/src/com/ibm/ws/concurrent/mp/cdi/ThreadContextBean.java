@@ -25,8 +25,6 @@ import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.eclipse.microprofile.concurrent.NamedInstance;
 import org.eclipse.microprofile.concurrent.ThreadContext;
-import org.eclipse.microprofile.concurrent.ThreadContext.Builder;
-import org.eclipse.microprofile.concurrent.ThreadContextConfig;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
@@ -34,18 +32,13 @@ public class ThreadContextBean implements Bean<ThreadContext>, PassivationCapabl
 
     private static final Set<Type> TYPES = Collections.singleton(ThreadContext.class);
 
-    // This instance is used as a marker for when no configured is specified for a String[]. The reference is compared; its content does not matter.
-    private static final String[] UNSPECIFIED_ARRAY = new String[] {};
-
     private final String injectionPointName;
     private final Set<Annotation> qualifiers;
-    private final ThreadContextConfig config;
-    private final ConcurrencyCDIExtension cdiExtension;
+    private final ThreadContext threadContext;
 
-    public ThreadContextBean(String injectionPointName, String instanceName, ThreadContextConfig config, ConcurrencyCDIExtension cdiExtension) {
+    public ThreadContextBean(String injectionPointName, String instanceName, ThreadContext threadContext) {
         this.injectionPointName = injectionPointName;
-        this.config = config;
-        this.cdiExtension = cdiExtension;
+        this.threadContext = threadContext;
         Set<Annotation> qualifiers = new HashSet<>(2);
         qualifiers.add(Any.Literal.INSTANCE);
         qualifiers.add(NamedInstance.Literal.of(instanceName));
@@ -54,40 +47,7 @@ public class ThreadContextBean implements Bean<ThreadContext>, PassivationCapabl
 
     @Override
     public ThreadContext create(CreationalContext<ThreadContext> cc) {
-        Builder b = ThreadContext.builder();
-        MPConfigAccessor configAccessor = cdiExtension.mpConfigAccessor;
-        if (configAccessor == null) {
-            if (config != null) {
-                b.cleared(config.cleared());
-                b.propagated(config.propagated());
-                b.unchanged(config.unchanged());
-            }
-        } else {
-            Object mpConfig = cdiExtension.mpConfig;
-
-            int start = injectionPointName.length() + 1;
-            int len = start + 10;
-            StringBuilder propName = new StringBuilder(len).append(injectionPointName).append('.');
-
-            // In order to efficiently reuse StringBuilder, properties are added in the order of the length of their names,
-
-            propName.append("cleared");
-            String[] c = configAccessor.get(mpConfig, propName.toString(), config == null ? UNSPECIFIED_ARRAY : config.cleared());
-            if (c != UNSPECIFIED_ARRAY)
-                b.cleared(c);
-
-            propName.replace(start, len, "unchanged");
-            String[] u = configAccessor.get(mpConfig, propName.toString(), config == null ? UNSPECIFIED_ARRAY : config.unchanged());
-            if (u != UNSPECIFIED_ARRAY)
-                b.unchanged(u);
-
-            propName.replace(start, len, "propagated");
-            String[] p = configAccessor.get(mpConfig, propName.toString(), config == null ? UNSPECIFIED_ARRAY : config.propagated());
-            if (p != UNSPECIFIED_ARRAY)
-                b.propagated(p);
-        }
-
-        return b.build();
+        return threadContext;
     }
 
     @Override
