@@ -94,4 +94,9 @@ public class ClientContextInjectionTest extends AbstractTest {
     public void CTSTestClientContextInjection_application() throws Exception {
         this.runTestOnServer(target, "testClientContextInjection_application", null, "11111111");
     }
+
+    @Test
+    public void TestClientContextInjection_stillWorksAfterClientInResourceHasBeenInvoked() throws Exception {
+        this.runTestOnServer(target, "testClientContextInjection_worksAfterClientInvocation", null, "PASS");
+    }
 }

@@ -36,7 +36,7 @@ public class ClientTestServlet extends HttpServlet {
 
     private static final long serialVersionUID = 7188707949976646396L;
 
-    private static final String moduleName = "clientcontextinjection";
+    public static final String moduleName = "clientcontextinjection";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -150,6 +150,19 @@ public class ClientTestServlet extends HttpServlet {
         c.register(StringBeanEntityProviderWithInjectables.class);
         WebTarget t1 = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/resource");
         String res = t1.path("application").request().get(String.class);
+        c.close();
+        ret.append(res);
+    }
+
+    public void testClientContextInjection_worksAfterClientInvocation(Map<String, String> param, StringBuilder ret) {
+        String serverIP = param.get("serverIP");
+        String serverPort = param.get("serverPort");
+
+        ClientBuilder cb = ClientBuilder.newBuilder();
+
+        Client c = cb.build();
+        WebTarget t1 = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/resource/invokeClient");
+        String res = t1.request().get(String.class);
         c.close();
         ret.append(res);
     }
