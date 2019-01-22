@@ -42,6 +42,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -107,8 +108,8 @@ public class InvalidTokenTest extends FATServletClient {
         server1.stopServer("CWWKS5523E", "CWWKS5524E");
     }
 
-    @ExpectedFFDC(value = { "com.ibm.websphere.security.jwt.InvalidClaimException",
-                            "com.ibm.websphere.security.jwt.InvalidTokenException" })
+    @AllowedFFDC(value = { "com.ibm.websphere.security.jwt.InvalidClaimException",
+                           "com.ibm.websphere.security.jwt.InvalidTokenException" })
     @Test //@Test(groups = TEST_GROUP_JAXRS,         description = "Validate a request with expired token fails with HTTP_UNAUTHORIZED")
     public void callEchoExpiredToken() throws Exception {
         HashSet<TokenUtils.InvalidClaims> invalidFields = new HashSet<>();
@@ -126,8 +127,8 @@ public class InvalidTokenTest extends FATServletClient {
         System.out.printf("Reply: %s\n", reply);
     }
 
-    @ExpectedFFDC(value = { "com.ibm.websphere.security.jwt.InvalidClaimException",
-                            "com.ibm.websphere.security.jwt.InvalidTokenException" })
+    @AllowedFFDC(value = { "com.ibm.websphere.security.jwt.InvalidClaimException",
+                           "com.ibm.websphere.security.jwt.InvalidTokenException" })
     @Test //@Test(groups = TEST_GROUP_JAXRS,         description = "Validate a request with an non-matching issuer fails with HTTP_UNAUTHORIZED")
     public void callEchoBadIssuer() throws Exception {
         HashSet<TokenUtils.InvalidClaims> invalidFields = new HashSet<>();
@@ -145,8 +146,8 @@ public class InvalidTokenTest extends FATServletClient {
         System.out.printf("Reply: %s\n", reply);
     }
 
-    @ExpectedFFDC(value = { "com.ibm.websphere.security.jwt.InvalidTokenException",
-                            "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @ExpectedFFDC(value = { "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @AllowedFFDC(value = { "com.ibm.websphere.security.jwt.InvalidTokenException" })
     @Test //@Test(groups = TEST_GROUP_JAXRS,         description = "Validate a request with an incorrect signer fails with HTTP_UNAUTHORIZED")
     public void callEchoBadSigner() throws Exception {
         HashSet<TokenUtils.InvalidClaims> invalidFields = new HashSet<>();
@@ -164,7 +165,7 @@ public class InvalidTokenTest extends FATServletClient {
         System.out.printf("Reply: %s\n", reply);
     }
 
-    @ExpectedFFDC(value = { "com.ibm.websphere.security.jwt.InvalidTokenException" })
+    @AllowedFFDC(value = { "com.ibm.websphere.security.jwt.InvalidTokenException" })
     @Test //@Test(groups = TEST_GROUP_JAXRS,         description = "Validate a request with an incorrect signature algorithm fails with HTTP_UNAUTHORIZED")
     public void callEchoBadSignerAlg() throws Exception {
         HashSet<TokenUtils.InvalidClaims> invalidFields = new HashSet<>();
