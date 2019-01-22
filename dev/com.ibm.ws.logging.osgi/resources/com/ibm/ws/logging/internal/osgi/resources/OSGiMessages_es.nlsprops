@@ -31,11 +31,11 @@
 
 # OSGI Log Message
 OSGI_MSG001=CWWKE0703I: {0} {1} {2} {3}
-OSGI_MSG001.explanation=Se ha registrado un mensaje informativo utilizando el servicio de registro OSGi
+OSGI_MSG001.explanation=Se ha registrado un mensaje informativo utilizando el servicio de registro OSGi.
 OSGI_MSG001.useraction=No se requiere ninguna acci\u00f3n.
 
 OSGI_AUDIT_MSG=CWWKE0704A: {0} {1} {2} {3}
-OSGI_AUDIT_MSG.explanation=Se ha registrado un mensaje de auditor\u00eda utilizando el servicio de registro OSGi
+OSGI_AUDIT_MSG.explanation=Se ha registrado un mensaje de auditor\u00eda utilizando el servicio de registro OSGi.
 OSGI_AUDIT_MSG.useraction=No se requiere ninguna acci\u00f3n.
 
 OSGI_WARNING_MSG=CWWKE0700W: {0} {1} {2} {3}

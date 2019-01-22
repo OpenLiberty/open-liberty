@@ -31,7 +31,7 @@
 
 # OSGI Log Message
 OSGI_MSG001=CWWKE0703I: {0} {1} {2} {3}
-OSGI_MSG001.explanation=Un mesaj informa\u0163ional a fost \u00eenregistrat \u00een istoric folosind serviciul de istoric OSGi.
+OSGI_MSG001.explanation=Un mesaj informativ a fost \u00eenregistrat \u00een istoric cu serviciul de jurnalizare OSGi.
 OSGI_MSG001.useraction=Nici o ac\u0163iune nu este necesar\u0103.
 
 OSGI_AUDIT_MSG=CWWKE0704A: {0} {1} {2} {3}
