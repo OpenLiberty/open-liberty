@@ -19,6 +19,7 @@ import com.ibm.ws.jaxrs20.cdi12.fat.test.Basic12Test;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.BeanValidation12Test;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.Complex12Test;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.DisableTest;
+import com.ibm.ws.jaxrs20.cdi12.fat.test.InterceptorTest;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.LifeCycle12Test;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.LifeCycleMismatch12Test;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.LoadOnStartup12Test;
@@ -34,6 +35,7 @@ import componenttest.rules.repeater.RepeatTests;
                DisableTest.class,
                Basic12Test.class,
                BeanValidation12Test.class,
+               InterceptorTest.class,
                LifeCycle12Test.class,
                LifeCycleMismatch12Test.class,
                LoadOnStartup12Test.class,
