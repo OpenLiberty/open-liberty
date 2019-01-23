@@ -68,6 +68,7 @@ subprojects {
       // Automatically apply OSS Audit plugin to all non-test projects
       apply plugin: 'net.ossindex.audit'
       audit {
+        group = "verification"
         failOnError = true
       }
     }
@@ -115,6 +116,11 @@ testResults.dependsOn zipTestReport
 
 task wrapper(type: Wrapper) {
   jarFile = rootProject.file('.gradle-wrapper/gradle-wrapper.jar')
+}
+
+// Ensure the root project has the 'audit' task so it shows up in the output of `./gradlew tasks`
+task audit {
+  group = "verification"
 }
 
 
