@@ -32,8 +32,8 @@ Export-Package: \
     com.ibm.wsspi.jaxws
    
 Import-Package: \
-   javax.xml.bind.*;version="[2.2,3)", \
-   javax.xml.ws.*;version="[2.2,3)", \
+   javax.xml.bind.*;version="[2.2,2.2]", \
+   javax.xml.ws.*;version="[2.2,2.2]", \
    com.ibm.ws.javaee.ddmodel.wsbnd, \
    org.apache.cxf.*;version="[2.6.2,2.6.3)", \
    *
