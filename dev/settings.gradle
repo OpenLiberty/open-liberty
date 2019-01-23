@@ -239,7 +239,6 @@ buildscript {
 
   dependencies {
     classpath bnd_plugin
-    classpath 'net.ossindex.audit:net.ossindex.audit.gradle.plugin:0.3.8-beta'
   }
 
   /* Since the files in the repository change with each build, we need to recheck for changes */

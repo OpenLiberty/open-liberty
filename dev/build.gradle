@@ -13,18 +13,21 @@
  *
  * Depends on bnd_* values from gradle.properties.
  */
+
+
 ext {
   cnf = rootProject.project(bnd_cnf)
   buildImage = project(':build.image')
 }
 
+
 subprojects {
-  apply plugin: 'java'
+  plugins.apply 'java'
   
   def bndProject = bndWorkspace.getProject(name)
 
   if (bndProject != null) {
-    apply plugin: 'biz.aQute.bnd'
+    plugins.apply 'biz.aQute.bnd'
   } else {
     task publish { }
     task release { }
@@ -64,13 +67,6 @@ subprojects {
 
     if (bndis('fat.project')) {
       apply from: cnf.file('gradle/scripts/fat.gradle')
-    } else if (!bndis('test.project')) {
-      // Automatically apply OSS Audit plugin to all non-test projects
-      apply plugin: 'net.ossindex.audit'
-      audit {
-        group = "verification"
-        failOnError = true
-      }
     }
 
   }
@@ -116,11 +112,6 @@ testResults.dependsOn zipTestReport
 
 task wrapper(type: Wrapper) {
   jarFile = rootProject.file('.gradle-wrapper/gradle-wrapper.jar')
-}
-
-// Ensure the root project has the 'audit' task so it shows up in the output of `./gradlew tasks`
-task audit {
-  group = "verification"
 }
 
 
