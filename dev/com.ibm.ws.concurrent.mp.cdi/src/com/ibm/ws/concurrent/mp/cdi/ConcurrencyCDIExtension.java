@@ -29,6 +29,7 @@ import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.DefinitionException;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
 import javax.enterprise.inject.spi.ProcessProducer;
@@ -271,9 +272,23 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
                 } else { // It is an error if 2 or more InjectionPoints define @NamedInstance("X") @ManagedExecutorConfig/ThreadContextConfig
                     if (instance instanceof ManagedExecutor)
                         ((ManagedExecutor) instance).shutdownNow();
-                    String msg = "ERROR: Found existing bean with name=" + instanceName; // TODO NLS message
-                    Tr.error(tc, msg);
-                    deploymentErrors.add(new Throwable(msg)); // TODO proper exception class
+
+                    ArrayList<String> conflicting = new ArrayList<String>();
+                    conflicting.add(injectionPointName);
+                    int index = 0;
+                    for (String name : instances.keySet()) {
+                        if (instanceName.equals(name)) {
+                            conflicting.add(injectionPointNames.get(index));
+                            break; // key can only appear once in set
+                        }
+                        index++;
+                    }
+
+                    String msg = Tr.formatMessage(tc, "CWWKC1190.duplicate.namedinstance",
+                                                  instance instanceof ManagedExecutor ? "ManagedExecutor" : "ThreadContext",
+                                                  instanceName,
+                                                  conflicting);
+                    event.addDefinitionError(new DefinitionException(msg));
                     destroy();
                 }
             }
