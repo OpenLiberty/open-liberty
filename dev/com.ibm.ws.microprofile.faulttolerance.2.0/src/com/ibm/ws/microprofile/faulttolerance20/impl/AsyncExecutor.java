@@ -247,7 +247,13 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
     protected void processMethodResult(AsyncAttemptContextImpl<W> attemptContext, MethodResult<W> methodResult, BulkheadReservation reservation) {
         // Release bulkhead permit
         reservation.release();
-        finalizeAttempt(attemptContext, methodResult);
+
+        TimeoutState timeoutState = attemptContext.getTimeoutState();
+        timeoutState.stop();
+        // Make sure that if we timed out, the timeout callback calls finalizeAttempt rather than us
+        if (!timeoutState.isTimedOut()) {
+            finalizeAttempt(attemptContext, methodResult);
+        }
     }
 
     /**
@@ -291,8 +297,6 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Method {0} processing end of attempt execution. Result: {1}", executionContext.getMethod(), result);
             }
-
-            attemptContext.getTimeoutState().stop();
 
             circuitBreaker.recordResult(result);
 
