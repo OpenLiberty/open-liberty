@@ -22,7 +22,7 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1150 to CWWCK1199 except those specifically identified as moved
+# All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
 
 CWWKC1150.duplicate.context=CWWKC1150E: The same thread context type, {0}, is provided by multiple thread context providers which are available to the application. Thread context providers are: {1}, {2}.
 CWWKC1150.duplicate.context.explanation=The MicroProfile Concurrency specification permits no more than one ThreadContextProvider for each context type.
@@ -51,3 +51,7 @@ CWWKC1155.unknown.context.useraction=Update the application, libraries or both t
 CWWKC1156.not.supported=CWWKC1156E: The requested operation is not available as a static method on the managed executor implementation of CompletableFuture. Use the following operation instead: {0}.
 CWWKC1156.not.supported.explanation=The managed executor implementation of CompletableFuture does not provide static method equivalents to the static methods of CompletableFuture. 
 CWWKC1156.not.supported.useraction=Update the application to use the method that is recommended in the message in place of the requested operation.
+
+CWWKC1157.cannot.propagate.tx=CWWKC1157E: Propagation of transactions to contextual actions and tasks is not supported.
+CWWKC1157.cannot.propagate.tx.explanation=A ManagedExecutor or ThreadContext that is configured to propagate transaction context is limited to propagating empty transaction context. Therefore, it is not supported to create contextual actions and tasks within a transaction. 
+CWWKC1157.cannot.propagate.tx.useraction=Create the contextual action or task outside of a transaction. Alternatively, configure the ManagedExecutor or ThreadContext to not propagate transaction context.
