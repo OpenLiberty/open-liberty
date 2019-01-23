@@ -9,6 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+plugins {
+  id "net.ossindex.audit" version "0.3.8-beta"
+}
+
 task publishManifest(type: Copy) {
     dependsOn jar
     from(zipTree(new File(buildDir, project.name + '.jar')))
@@ -26,4 +30,8 @@ task publishExtract(type: Copy) {
 
 assemble {
     dependsOn publishExtract
+}
+
+audit {
+    failOnError = true
 }
