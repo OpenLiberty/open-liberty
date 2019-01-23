@@ -4,6 +4,7 @@
 	<classpathentry kind="src" path="test-applications/appclient/src"/>
 	<classpathentry kind="src" path="test-applications/jpabootstrap/src"/>
 	<classpathentry kind="src" path="test-applications/jpa10/callback/src"/>
+	<classpathentry kind="src" path="test-applications/jpa10/inheritance/src"/>
 	<classpathentry kind="src" path="test-applications/jpa10/relationships/manyXmany/src"/>
 	<classpathentry kind="src" path="test-applications/jpa10/relationships/manyXone/src"/>
 	<classpathentry kind="src" path="test-applications/jpa10/relationships/oneXmany/src"/>
