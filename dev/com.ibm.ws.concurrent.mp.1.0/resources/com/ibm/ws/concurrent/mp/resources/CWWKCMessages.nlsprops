@@ -28,21 +28,15 @@ CWWKC1150.duplicate.context=CWWKC1150E: The same thread context type, {0}, is pr
 CWWKC1150.duplicate.context.explanation=The MicroProfile Concurrency specification permits no more than one ThreadContextProvider for each context type.
 CWWKC1150.duplicate.context.useraction=Update the available application, libraries, or both so that no more than one ThreadContextProvider of the specified type exists.
 
-CWWKC1151.context.lists.overlap=CWWKC1151E: The following thread context types are configured to be both cleared and propagated: {0}.
+# do not translate: cleared, propagated
+CWWKC1151.context.lists.overlap=CWWKC1151E: The ManagedExecutor configuration includes the following thread context types are configured to be both cleared and propagated: {0}.
 CWWKC1151.context.lists.overlap.explanation=A thread context type can be configured in no more than one category when building or injecting a ManagedExecutor.
 CWWKC1151.context.lists.overlap.useraction=Review and correct the categorization of thread context types in your ManagedExecutor builder or ManagedExecutorConfig annotation.
 
+# do not translate: cleared, propagated, unchanged
 CWWKC1152.context.lists.overlap=CWWKC1152E: The following thread context types are configured in more than one category of (cleared, propagated, unchanged): {0}.
 CWWKC1152.context.lists.overlap.explanation=A thread context type can be configured in no more than one category when building or injecting a ThreadContext instance.
 CWWKC1152.context.lists.overlap.useraction=Review and correct the categorization of thread context types in your ThreadContext builder or ThreadContextConfig annotation.
-
-CWWKC1153.invalid.name=CWWKC1153E: The {0} name is not valid for a ManagedExecutor or ThreadContext. Names must be limited to the following characters: {1}.
-CWWKC1153.invalid.name.explanation=Names for instances of ManagedExecutor and ThreadContext must consist of characters within the specified range.
-CWWKC1153.invalid.name.useraction=Update the application to specify a name that only uses characters within the specified range.
-
-CWWKC1154.duplicate.name=CWWKC1154E: The {0} name is used by another ManagedExecutor or ThreadContext.
-CWWKC1154.duplicate.name.explanation=Names for instances of ManagedExecutor and ThreadContext must be unique.
-CWWKC1154.duplicate.name.useraction=Update the application to specify a unique name for all created instances of ManagedExecutor and ThreadContext.
 
 CWWKC1155.unknown.context=CWWKC1155E: Thread context types {0} are configured to be cleared or propagated, but no thread context providers for these types are available to the application. Available thread context types are: {1}.
 CWWKC1155.unknown.context.explanation=For each configured thread context type that is not provided by the server, a thread context provider must be available on the application's thread context class loader. Thread context types provided by the server include: Application, CDI, Security, Transaction.
