@@ -413,7 +413,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
         ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
 
@@ -455,7 +455,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
         ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
 
@@ -514,7 +514,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
         ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
         if (contextDescriptor != null)
@@ -576,7 +576,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
         ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
         if (contextDescriptor != null)
@@ -630,7 +630,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         }
 
         if (contextSvc == null)
-            return null;
+            return null; // TODO should we capture context based on the default executor when unmanaged executor is supplied???
 
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
@@ -845,7 +845,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
         ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
         if (contextDescriptor != null)
@@ -1044,7 +1044,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
         ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
         if (contextDescriptor != null)
@@ -1106,7 +1106,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
         ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
         if (contextDescriptor != null)
@@ -1154,6 +1154,24 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
+     * Convenience method to validate that an executor supports running asynchronously
+     * and to wrap the executor, if an ExecutorService, with FutureRefExecutor.
+     * This method is named supportsAsync to make failure stacks more meaningful to users.
+     *
+     * @param executor executor instance supplied to *Async methods.
+     * @return FutureRefExecutor if an ExecutorService is supplied. Null if a valid executor is supplied.
+     * @throws UnsupportedOperation if the executor is incapable of running tasks.
+     */
+    @Trivial
+    private final static FutureRefExecutor supportsAsync(Executor executor) {
+        if (executor instanceof ExecutorService)
+            return new FutureRefExecutor((ExecutorService) executor); // valid
+        if (executor instanceof UnusableExecutor)
+            throw new UnsupportedOperationException(); // not valid for executing tasks
+        return null; // valid
+    }
+
+    /**
      * @see java.util.concurrent.CompletionStage#thenAccept(java.util.function.Consumer)
      */
     @Override
@@ -1192,7 +1210,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
         ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
         if (contextDescriptor != null)
@@ -1252,7 +1270,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
         ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
         if (contextDescriptor != null)
@@ -1312,7 +1330,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
         ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
         if (contextDescriptor != null)
@@ -1372,7 +1390,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
         ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
         if (contextDescriptor != null)
@@ -1432,7 +1450,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
         ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
         if (contextDescriptor != null)
@@ -1490,7 +1508,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
         ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
         if (contextDescriptor != null)
@@ -1595,7 +1613,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
         ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
         if (contextDescriptor != null)

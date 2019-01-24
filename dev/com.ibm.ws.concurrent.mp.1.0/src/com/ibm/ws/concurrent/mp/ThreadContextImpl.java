@@ -129,7 +129,7 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
     public <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage) {
         CompletableFuture<T> newCompletableFuture;
 
-        SameThreadExecutor executor = new SameThreadExecutor(this);
+        UnusableExecutor executor = new UnusableExecutor(this);
         if (ManagedCompletableFuture.JAVA8)
             newCompletableFuture = new ManagedCompletableFuture<T>(new CompletableFuture<T>(), executor, null);
         else
@@ -151,7 +151,7 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
     public <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage) {
         ManagedCompletionStage<T> newStage;
 
-        SameThreadExecutor executor = new SameThreadExecutor(this);
+        UnusableExecutor executor = new UnusableExecutor(this);
         if (ManagedCompletableFuture.JAVA8)
             newStage = new ManagedCompletionStage<T>(new CompletableFuture<T>(), executor, null);
         else

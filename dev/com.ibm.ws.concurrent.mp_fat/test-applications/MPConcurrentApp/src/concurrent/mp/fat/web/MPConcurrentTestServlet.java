@@ -4635,8 +4635,8 @@ public class MPConcurrentTestServlet extends FATServlet {
     /**
      * Use ThreadContext.testWithContextCapture to create a contextualized CompletableFuture
      * based on one that isn't context aware. Verify that its dependent actions run with the
-     * configured context of the ThreadContext instance and that Async operations run on the
-     * servlet thread rather than a different thread from the Liberty global thread pool,
+     * configured context of the ThreadContext instance and that Async operations requested
+     * without an executor parameter raise UnsupportedOperationException,
      * as required by the spec for CompletionStage that is backed by a ThreadContext rather
      * than a managed executor.
      */
@@ -4663,10 +4663,10 @@ public class MPConcurrentTestServlet extends FATServlet {
                 }
                 String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity());
-                assertEquals("Minnesota", CurrentLocation.getState()); // runs on servlet thread
-                assertEquals(servletThreadName, threadName);
+                assertEquals("", CurrentLocation.getState());
+                assertNotSame(servletThreadName, threadName);
                 return i + 1;
-            });
+            }, defaultManagedExecutor);
 
             assertEquals(Integer.valueOf(116), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
@@ -4676,13 +4676,18 @@ public class MPConcurrentTestServlet extends FATServlet {
                 } catch (NamingException x) {
                     throw new RuntimeException(x);
                 }
-                String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity()); // context of servlet thread is cleared
                 assertEquals("Minnesota", CurrentLocation.getState()); // context of servlet thread not cleared
-                assertEquals(servletThreadName, threadName); // runs on servlet thread
                 CurrentLocation.setLocation("La Crosse", "Wisconsin");
                 return i + 1;
             });
+
+            try {
+                CompletableFuture<Integer> cf5 = cf4.whenCompleteAsync((i, x) -> System.out.println("This task should not have run."));
+                fail("whenCompleteAsync should be rejected when completion stage is not backed by an executor. " + cf5);
+            } catch (UnsupportedOperationException x) {
+                // expected
+            }
 
             assertEquals(Integer.valueOf(117), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
@@ -4709,8 +4714,8 @@ public class MPConcurrentTestServlet extends FATServlet {
      * Use testWithContextCapture on a ContextService configured in server.xml
      * to create a contextualized CompletableFuture based on one that isn't context aware.
      * Verify that its dependent actions run with the configured context of the ContextService
-     * instance and that Async operations run on the servlet thread rather than a different
-     * thread from the Liberty global thread pool, as required by the spec for
+     * instance and that Async operations requested without an executor parameter raise
+     * UnsupportedOperationException, as required by the spec for
      * CompletionStage that is backed by a ThreadContext rather than a managed executor.
      */
     @Test
@@ -4732,9 +4737,9 @@ public class MPConcurrentTestServlet extends FATServlet {
                 String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity());
                 assertEquals("", CurrentLocation.getState());
-                assertEquals(servletThreadName, threadName);
+                assertNotSame(servletThreadName, threadName);
                 return i + 1;
-            });
+            }, defaultManagedExecutor);
 
             assertEquals(Integer.valueOf(123), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
@@ -4744,15 +4749,20 @@ public class MPConcurrentTestServlet extends FATServlet {
                 } catch (NamingException x) {
                     throw new RuntimeException(x);
                 }
-                String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity()); // context of servlet thread is cleared
                 assertEquals("", CurrentLocation.getState()); // context of servlet thread is cleared
-                assertEquals(servletThreadName, threadName);
                 CurrentLocation.setLocation("Onalaska", "Wisconsin");
                 return i + 1;
             });
 
             assertEquals(Integer.valueOf(124), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            try {
+                CompletableFuture<Integer> cf5 = cf4.thenCombineAsync(cf3, (i, j) -> j - i);
+                fail("thenCombineAsync should be rejected when completion stage is not backed by an executor. " + cf5);
+            } catch (UnsupportedOperationException x) {
+                // expected
+            }
 
             // context restored on current thread
             assertEquals("Mankato", CurrentLocation.getCity());
@@ -4762,9 +4772,11 @@ public class MPConcurrentTestServlet extends FATServlet {
                 Executor executor = defaultExecutor.apply(cf4);
                 assertFalse(executor instanceof ExecutorService); // no way for the user to shut it down
 
-                AtomicReference<String> threadNameRef = new AtomicReference<String>();
-                executor.execute(() -> threadNameRef.set(Thread.currentThread().getName()));
-                assertEquals(servletThreadName, threadNameRef.get());
+                try {
+                    executor.execute(() -> System.out.println("Should not be able to submit this task."));
+                } catch (UnsupportedOperationException x) {
+                    // pass - completable futures from withContextCapture are not backed by a usable executor
+                }
             }
         } finally {
             CurrentLocation.clear();
@@ -4774,8 +4786,8 @@ public class MPConcurrentTestServlet extends FATServlet {
     /**
      * Use ThreadContext.testWithContextCapture to create a contextualized CompletionStage
      * based on one that isn't context aware. Verify that its dependent actions run with the
-     * configured context of the ThreadContext instance and that Async operations run on the
-     * current thread rather than a different thread from the Liberty global thread pool,
+     * configured context of the ThreadContext instance and that Async operations
+     * requested without an executor parameter raise UnsupportedOperationException,
      * as required by the spec for CompletionStage that is backed by a ThreadContext rather
      * than a managed executor.
      */
@@ -4815,10 +4827,10 @@ public class MPConcurrentTestServlet extends FATServlet {
                 }
                 String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity());
-                assertEquals("", CurrentLocation.getState()); // thread from prior stage used instead of thread from Liberty global thread pool
-                assertTrue(threadName, !threadName.startsWith("Default Executor-thread-"));
+                assertEquals("", CurrentLocation.getState());
+                assertNotSame(threadName, servletThreadName);
                 return i + 1;
-            });
+            }, defaultManagedExecutor);
 
             // verify that cs3 is a CompletionStage or limited to CompletionStage methods
             if (cs3 instanceof CompletableFuture)
@@ -4840,13 +4852,18 @@ public class MPConcurrentTestServlet extends FATServlet {
                 } catch (NamingException x) {
                     throw new RuntimeException(x);
                 }
-                String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity()); // context of servlet thread is cleared
                 assertEquals("Minnesota", CurrentLocation.getState()); // context of servlet thread not cleared
-                assertEquals(servletThreadName, threadName);
                 CurrentLocation.setLocation("Clear Lake", "Iowa");
                 return i + 1;
             });
+
+            try {
+                CompletionStage<Void> cs5 = cs4.thenAcceptBothAsync(cs3, (i, j) -> System.out.println(i * j));
+                fail("thenAcceptBothAsync should be rejected when completion stage is not backed by an executor. " + cs5);
+            } catch (UnsupportedOperationException x) {
+                // expected
+            }
 
             // verify that cs4 is a CompletionStage or limited to CompletionStage methods
             if (cs4 instanceof CompletableFuture)
@@ -4873,8 +4890,8 @@ public class MPConcurrentTestServlet extends FATServlet {
      * Use ThreadContext.testWithContextCapture on a ContextService configured in server.xml
      * to create a contextualized CompletionStage based on one that isn't context aware.
      * Verify that its dependent actions run with the configured context of the ContextService
-     * instance and that Async operations run on the current thread rather than a different
-     * thread from the Liberty global thread pool, as required by the spec for
+     * instance and that Async operations requested without an executor parameter
+     * raise UnsupportedOperationException, as required by the spec for
      * CompletionStage that is backed by a ThreadContext rather than a managed executor.
      */
     @Test
@@ -4909,9 +4926,9 @@ public class MPConcurrentTestServlet extends FATServlet {
                 String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity());
                 assertEquals("", CurrentLocation.getState());
-                assertTrue(threadName, !threadName.startsWith("Default Executor-thread-"));
+                assertNotSame(servletThreadName, threadName);
                 return i + 1;
-            });
+            }, defaultManagedExecutor);
 
             // verify that cs3 is a CompletionStage or limited to CompletionStage methods
             if (cs3 instanceof CompletableFuture)
@@ -4933,13 +4950,18 @@ public class MPConcurrentTestServlet extends FATServlet {
                 } catch (NamingException x) {
                     throw new RuntimeException(x);
                 }
-                String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity()); // context of servlet thread is cleared
                 assertEquals("", CurrentLocation.getState()); // context of servlet thread is cleared
-                assertEquals(servletThreadName, threadName);
                 CurrentLocation.setLocation("Superior", "Wisconsin");
                 return i + 1;
             });
+
+            try {
+                CompletionStage<Integer> cs5 = cs4.handleAsync((i, x) -> i);
+                fail("handleAsync should be rejected when completion stage is not backed by an executor. " + cs5);
+            } catch (UnsupportedOperationException x) {
+                // expected
+            }
 
             // verify that cs4 is a CompletionStage or limited to CompletionStage methods
             if (cs4 instanceof CompletableFuture)
