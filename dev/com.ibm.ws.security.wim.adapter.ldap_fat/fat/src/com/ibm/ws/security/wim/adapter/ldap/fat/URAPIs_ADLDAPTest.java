@@ -17,6 +17,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -340,12 +341,11 @@ public class URAPIs_ADLDAPTest {
         Log.info(c, "getUsersForMaxSearchResultException", "Checking with a valid pattern and limit of 850.");
         try {
             servlet.getUsers(user, 850);
+            fail("Expected RegistryException.");
         } catch (RegistryException e) {
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            e.printStackTrace();
+            String msg = e.getMessage();
+            assertTrue("Message did not contain expected message 'CWIML1018E': " + msg, msg.contains("CWIML1018E"));
         }
-        server.waitForStringInLog("CWIML1018E");
-        assertTrue("Results more than maxSearchResults should throw exception", true);
     }
 
     /**

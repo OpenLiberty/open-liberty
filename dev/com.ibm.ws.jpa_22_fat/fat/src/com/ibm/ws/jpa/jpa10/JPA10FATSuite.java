@@ -22,6 +22,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 CallbackTest.class,
+                Inheritance_EJB.class,
+                Inheritance_Web.class,
                 Relationships_ManyXMany_Web.class,
                 Relationships_ManyXMany_EJB.class,
                 Relationships_ManyXOne_Web.class,
