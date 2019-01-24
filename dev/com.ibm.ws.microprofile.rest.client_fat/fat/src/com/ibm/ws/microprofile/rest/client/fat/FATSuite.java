@@ -16,14 +16,15 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                AsyncMethodTest.class,
                 BasicTest.class,
                 BasicCdiTest.class,
                 BasicCdiInEE8Test.class,
+                CdiPropsAndProvidersTest.class,
+                HandleResponsesTest.class,
                 HeaderPropagationTest.class,
                 MultiClientCdiTest.class,
-                AsyncMethodTest.class,
                 ProduceConsumeTest.class,
-                PropsTest.class,
-                CdiPropsAndProvidersTest.class
+                PropsTest.class
 })
 public class FATSuite {}
