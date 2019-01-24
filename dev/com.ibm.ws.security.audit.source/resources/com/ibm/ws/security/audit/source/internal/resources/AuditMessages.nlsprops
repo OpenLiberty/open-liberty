@@ -1,0 +1,45 @@
+/*******************************************************************************
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.source/resources/com/ibm/ws/security/audit/source/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+AUDIT_SERVICE_STARTING=CWWKS5850I: The audit service is starting.
+AUDIT_SERVICE_STARTING.explanation=The audit service is in the process of starting. This might take several minutes if one-time initialization needs to occur.
+AUDIT_SERVICE_STARTING.useraction=No action is required.
+
+AUDIT_SERVICE_READY=CWWKS5851I: The audit service is ready.
+AUDIT_SERVICE_READY.explanation=This message is for informational purposes only.
+AUDIT_SERVICE_READY.useraction=No action is required.
+
+AUDIT_SERVICE_STOPPED=CWWKS5852I: The audit service has stopped.
+AUDIT_SERVICE_STOPPED.explanation=This message is for informational purposes only.
+AUDIT_SERVICE_STOPPED.useraction=No action is required.
+
+INCORRECT_AUDIT_EVENT_CONFIGURATION=CWWKS5853E: The audit event name {0} specified in the audit handler events configuration is not supported so the audit service has been stopped.  Correct the event name in the audit handler {2} configuration to specify one of the following event names: {3}
+INCORRECT_AUDIT_EVENT_CONFIGURATION.explanation=The audit event name provided in the event configuration is incorrect and the audit service will be stopped. Analyze the exception mentioned in the message and specify a valid audit event name.
+INCORRECT_AUDIT_EVENT_CONFIGURATION.useraction=Ensure that the audit event name provided as part of the event configuration is correct.
+
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION=CWWKS5854E: The audit outcome name {0} specified in the audit handler events configuration is not supported so the audit service has been stopped.  Correct the outcome name in the audit handler {2} configuration to specify one of the following outcome names: {3}
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.explanation=The audit outcome name provided in the event configuration is incorrect and the audit service will be stopped. Analyze the exception mentioned in the message and specify a valid audit outcome name.
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.useraction=Ensure that the audit outcome name provided as part of the event configuration is correct.
+
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME=CWWKS5855E: The audit handler events configuration is not complete so the audit service has been stopped. The configuration must specify an event name for outcome {0}.   Correct the audit handler {1} configuration to specify one of the following event names: {2}
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.explanation=The audit event name that is specified in the event configuration is incorrect or missing, and the audit service will be stopped.  Analyze the exception mentioned in the message and specify a valid audit event name.
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.useraction=Ensure that a valid event name is specified along with the valid outcome type.
