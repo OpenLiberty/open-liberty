@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+    version="1.0">
+
+    <persistence-unit name="Cleanup" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <properties>
+            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="OneXOne_JTA">
+        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <properties>
+            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="OneXOne_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <properties>
+            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="OneXOne_Bi_JTA">
+        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <mapping-file>META-INF/onexone-bi-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.AbstractOneXOneBiEntityB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiEntA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiEntB_B1</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiEntB_B2</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiEntB_B4</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiEntB_B5CA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiEntB_B5CM</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiEntB_B5CP</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiEntB_B5RF</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiEntB_B5RM</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiCardEntA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiCardEntB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.nooptional.annotation.OONoOptBiEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.nooptional.annotation.OONoOptBiEntityB</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="OneXOne_Bi_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <mapping-file>META-INF/onexone-bi-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.AbstractOneXOneBiEntityB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiEntA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiEntB_B1</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiEntB_B2</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiEntB_B4</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiEntB_B5CA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiEntB_B5CM</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiEntB_B5CP</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiEntB_B5RF</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiEntB_B5RM</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiCardEntA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.annotation.OOBiCardEntB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.nooptional.annotation.OONoOptBiEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.nooptional.annotation.OONoOptBiEntityB</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="OneXOne_Uni_JTA">
+        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <mapping-file>META-INF/onexone-uni-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.uni.annotation.OOUniEntA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.uni.annotation.OOUniEntB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.uni.annotation.OOCardEntA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.uni.annotation.OOCardEntB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.nooptional.annotation.OONoOptEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.nooptional.annotation.OONoOptEntityB</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="OneXOne_Uni_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <mapping-file>META-INF/onexone-uni-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.uni.annotation.OOUniEntA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.uni.annotation.OOUniEntB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.uni.annotation.OOCardEntA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.uni.annotation.OOCardEntB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.nooptional.annotation.OONoOptEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.nooptional.annotation.OONoOptEntityB</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="OneXOne_CompoundPK_JTA">
+        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <mapping-file>META-INF/onexone-compoundpk-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.complexpk.annotation.EmbedIDOOEntA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.complexpk.annotation.EmbedIDOOEntB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.complexpk.annotation.IDClassOOEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.complexpk.annotation.IDClassOOEntityB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.complexpk.annotation.EmbeddableID</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="OneXOne_CompoundPK_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <mapping-file>META-INF/onexone-compoundpk-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.complexpk.annotation.EmbedIDOOEntA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.complexpk.annotation.EmbedIDOOEntB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.complexpk.annotation.IDClassOOEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.complexpk.annotation.IDClassOOEntityB</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.complexpk.annotation.EmbeddableID</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="OneXOne_PKJoinColumn_JTA">
+        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <mapping-file>META-INF/onexone-pkjoin-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.pkjoincolumn.annotation.PKJoinOOEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.pkjoincolumn.annotation.PKJoinOOEntityB</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="OneXOne_PKJoinColumn_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <mapping-file>META-INF/onexone-pkjoin-orm.xml</mapping-file>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.pkjoincolumn.annotation.PKJoinOOEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.relationships.oneXone.entities.pkjoincolumn.annotation.PKJoinOOEntityB</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+</persistence>

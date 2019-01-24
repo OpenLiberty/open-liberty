@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+    version="1.0">
+
+    <!-- Bidirectional OneXOne Relationship Entities -->
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.xml.XMLOOBiEntA">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <one-to-one name="b1">
+                <join-column name="XMLBIENT_B1" />
+            </one-to-one>
+            <one-to-one name="b2"></one-to-one>
+            <one-to-one name="b4" fetch="LAZY"></one-to-one>
+            <one-to-one name="b5ca">
+                <cascade>
+                    <cascade-all />
+                </cascade>
+            </one-to-one>
+            <one-to-one name="b5cm">
+                <cascade>
+                    <cascade-merge />
+                </cascade>
+            </one-to-one>
+            <one-to-one name="b5cp">
+                <cascade>
+                    <cascade-persist />
+                </cascade>
+            </one-to-one>
+            <one-to-one name="b5rf">
+                <cascade>
+                    <cascade-refresh />
+                </cascade>
+            </one-to-one>
+            <one-to-one name="b5rm">
+                <cascade>
+                    <cascade-remove />
+                </cascade>
+            </one-to-one>
+        </attributes>
+    </entity>
+
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.xml.XMLAbstractOneXOneBiEntityB">
+        <inheritance strategy="TABLE_PER_CLASS" />
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+        </attributes>
+    </entity>
+
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.xml.XMLOOBiEntB_B1">
+        <attributes>
+            <one-to-one name="entityA" mapped-by="b1"></one-to-one>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.xml.XMLOOBiEntB_B2">
+        <attributes>
+            <one-to-one name="entityA" mapped-by="b2"></one-to-one>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.xml.XMLOOBiEntB_B4">
+        <attributes>
+            <one-to-one name="entityA" mapped-by="b4"></one-to-one>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.xml.XMLOOBiEntB_B5CA">
+        <attributes>
+            <one-to-one name="entityA" mapped-by="b5ca"></one-to-one>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.xml.XMLOOBiEntB_B5CM">
+        <attributes>
+            <one-to-one name="entityA" mapped-by="b5cm"></one-to-one>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.xml.XMLOOBiEntB_B5CP">
+        <attributes>
+            <one-to-one name="entityA" mapped-by="b5cp"></one-to-one>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.xml.XMLOOBiEntB_B5RF">
+        <attributes>
+            <one-to-one name="entityA" mapped-by="b5rf"></one-to-one>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.xml.XMLOOBiEntB_B5RM">
+        <attributes>
+            <one-to-one name="entityA" mapped-by="b5rm"></one-to-one>
+        </attributes>
+    </entity>
+
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.xml.XMLOOBiCardEntA">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <one-to-one name="b" />
+        </attributes>
+    </entity>
+
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.bi.xml.XMLOOBiCardEntB">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <one-to-one name="a" mapped-by="b"></one-to-one>
+        </attributes>
+    </entity>
+
+    <!-- Non-Optional OneXOne Relationship Entities -->
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.nooptional.xml.XMLOONoOptBiEntityA">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <one-to-one name="b" optional="false"></one-to-one>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.nooptional.xml.XMLOONoOptBiEntityB">
+        <attributes>
+            <id name="id"></id>
+            <basic name="name"></basic>
+            <one-to-one name="a" mapped-by="b"></one-to-one>
+        </attributes>
+    </entity>
+</entity-mappings>
