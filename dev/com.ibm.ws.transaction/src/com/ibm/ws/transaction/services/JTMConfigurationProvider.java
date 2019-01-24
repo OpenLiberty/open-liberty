@@ -43,6 +43,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     ComponentContext _cc;
     private static String logDir = null;
     private static final String defaultLogDir = "$(server.output.dir)/tranlog";
+    private boolean activateHasBeenCalled = false; // Used for eyecatcher in trace for startup ordering.
 
     private final ConcurrentServiceReferenceSet<TransactionSettingsProvider> _transactionSettingsProviders = new ConcurrentServiceReferenceSet<TransactionSettingsProvider>("transactionSettingsProvider");
     /**
@@ -69,6 +70,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      */
     protected void activate(ComponentContext cc) {
         _runtimeMetaDataProvider = new LibertyRuntimeMetaDataProvider(this);
+        activateHasBeenCalled = true;
         _transactionSettingsProviders.activate(cc);
         _cc = cc;
         // Irrespective of the logtype we need to get the properties
@@ -90,6 +92,13 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
                 Tr.debug(tc, "activate  working with Tran Log in an RDBMS");
 
             ServiceReference<ResourceFactory> serviceRef = dataSourceFactoryRef.getReference();
+
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "pre-activate  datasourceFactory ref " + dataSourceFactoryRef +
+                             ", underlying reference: " + serviceRef);
+            dataSourceFactoryRef.activate(_cc);
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "post-activate  datasourceFactory ref " + dataSourceFactoryRef);
 
             //  If we already have a dataSourceFactory then we can startup (and drive recovery) now.
             if (tc.isDebugEnabled())
@@ -152,11 +161,15 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * Called by DS to inject DataSourceFactory reference from the com.ibm.ws.jdbc component
      */
     protected void setDataSourceFactory(ServiceReference<ResourceFactory> ref) {
-
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "pre-setReference  datasourceFactory ref " + dataSourceFactoryRef);
         dataSourceFactoryRef.setReference(ref);
-        if (tc.isEntryEnabled())
-            Tr.debug(tc, "setDataSourceFactory, service ref " + ref + ", activate the dataSourceFactoryRef");
-        dataSourceFactoryRef.activate(_cc);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "post-setReference  datasourceFactory ref " + dataSourceFactoryRef);
+
+        if (!activateHasBeenCalled)
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "setDataSourceFactory has been called before activate");
 
         // If the JTMConfigurationProvider has been activated, we can proceed to set
         // the DataSourceFactory and initiate recovery
@@ -328,7 +341,13 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     public ResourceFactory getResourceFactory() {
 
-        _theDataSourceFactory = dataSourceFactoryRef.getService();
+//WAS THIS        _theDataSourceFactory = dataSourceFactoryRef.getService();
+        try {
+            _theDataSourceFactory = dataSourceFactoryRef.getServiceWithException();
+        } catch (Exception ex) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "getResourceFactory returned exc - " + ex);
+        }
 
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getResourceFactory has factory " + _theDataSourceFactory);
@@ -359,24 +378,45 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         return _recoveryGroup;
     }
 
+    /**
+     * The setTMS method call is used to alert the JTMConfigurationProvider to the presence of a
+     * TransactionManagerService.
+     *
+     * @param tms
+     */
     public void setTMS(TransactionManagerService tms) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "setTMS " + tms);
         tmsRef = tms;
-        if (!_isSQLRecoveryLog) {
-            if (_cc != null) {
-                tmsRef.doStartup(this, _isSQLRecoveryLog);
+    }
+
+    /**
+     * The setTMRecoveryService method call is used to alert the JTMConfigurationProvider to the presence of a
+     * TMRecoveryService. This Service was introduced under issue #5119 to break a potential circular reference in
+     * DS as the TransactionManagerService and jdbc's DataSourceService are mutually dependent.
+     *
+     * @param tmrec
+     */
+    public void setTMRecoveryService(TMRecoveryService tmrec) {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setTMRecoveryService " + tmrec);
+        if (tmsRef != null) {
+            if (!_isSQLRecoveryLog) {
+                if (_cc != null) {
+                    tmsRef.doStartup(this, _isSQLRecoveryLog);
+                }
+            } else {
+                // If the JTMConfigurationProvider has been activated, and if the DataSourceFactory
+                // has been provided, we can initiate recovery
+                ServiceReference<ResourceFactory> serviceRef = dataSourceFactoryRef.getReference();
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "retrieved datasourceFactory service ref " + serviceRef);
+                if (_cc != null && serviceRef != null) {
+                    tmsRef.doStartup(this, _isSQLRecoveryLog);
+                }
             }
-        } else {
-            // If the JTMConfigurationProvider has been activated, and if the DataSourceFactory
-            // has been provided, we can initiate recovery
-            ServiceReference<ResourceFactory> serviceRef = dataSourceFactoryRef.getReference();
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "retrieved datasourceFactory service ref " + serviceRef);
-            if (_cc != null && serviceRef != null) {
-                tmsRef.doStartup(this, _isSQLRecoveryLog);
-            }
-        }
+        } else if (tc.isDebugEnabled())
+            Tr.debug(tc, "tmsref is null");
 
     }
 

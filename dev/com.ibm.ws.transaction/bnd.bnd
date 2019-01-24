@@ -35,6 +35,11 @@ Service-Component: com.ibm.ws.transaction; \
       uOWEventListener=com.ibm.wsspi.tx.UOWEventListener ;\
       optional:='uOWEventListener' ;\
       dynamic:='uOWEventListener', \
+   TMRecoveryService; \
+      implementation:=com.ibm.ws.transaction.services.TMRecoveryService; \
+      provide:='com.ibm.ws.transaction.services.TMRecoveryService'; \
+      immediate:=true; \
+      transactionManager=com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager, \
    LocalTransactionCurrent; \
       implementation:=com.ibm.ws.transaction.services.LocalTransactionCurrentService; \
       provide:='com.ibm.ws.LocalTransaction.LocalTransactionCurrent'; \
