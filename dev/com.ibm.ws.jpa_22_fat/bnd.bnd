@@ -20,6 +20,7 @@ src: \
 	test-applications/appclient/src,\
 	test-applications/jpabootstrap/src,\
 	test-applications/jpa10/callback/src,\
+	test-applications/jpa10/inheritance/src,\
 	test-applications/jpa10/relationships/manyXmany/src,\
 	test-applications/jpa10/relationships/manyXone/src,\
 	test-applications/jpa10/relationships/oneXmany/src,\

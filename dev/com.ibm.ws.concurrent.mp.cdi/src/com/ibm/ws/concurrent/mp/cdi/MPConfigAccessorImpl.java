@@ -41,7 +41,21 @@ public class MPConfigAccessorImpl implements MPConfigAccessor {
         Class<?> cl = defaultValue == null ? String[].class : defaultValue.getClass();
         @SuppressWarnings("unchecked")
         Optional<T> configuredValue = (Optional<T>) ((Config) config).getOptionalValue(name, cl);
-        return configuredValue.orElse(defaultValue);
+        T value = configuredValue.orElse(defaultValue);
+
+        // MicroProfile Config is unclear about whether empty value for String[] results in
+        // an empty String array or a size 1 String array where the element is the empty string.
+        // Allow for both possibilities,
+        if (value instanceof String[]) {
+            String[] arr = ((String[]) value);
+            if (arr.length == 1 && arr[0].length() == 0) {
+                @SuppressWarnings("unchecked")
+                T emptyArray = (T) new String[0];
+                value = emptyArray;
+            }
+        }
+
+        return value;
     }
 
     /**
