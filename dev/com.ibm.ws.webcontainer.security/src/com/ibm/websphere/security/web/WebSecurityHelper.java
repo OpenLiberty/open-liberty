@@ -19,7 +19,6 @@ import com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;
  * Provides methods to perform security functions for web applications.
  *
  * @author International Business Machines Corp.
- * @version WAS 8.5
  * @since WAS 8.0
  * @ibm-api
  */
