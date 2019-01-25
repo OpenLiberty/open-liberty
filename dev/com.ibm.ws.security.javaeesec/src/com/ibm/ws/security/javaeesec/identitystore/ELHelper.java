@@ -403,16 +403,36 @@ class ELHelper {
              */
             Object obj = evaluateElExpression(useForExpression);
             if (obj instanceof ValidationType[]) {
+                Tr.debug(tc, "processUseFor (validationtype): " + obj);
                 ValidationType[] types = (ValidationType[]) obj;
                 result = EnumSet.copyOf(Arrays.asList(types));
                 immediate = isImmediateExpression(useForExpression);
+
+            } else if (obj instanceof String) {
+                Tr.debug(tc, "processUseFor (String): " + (String) obj);
+                ValidationType[] types = new ValidationType[2];
+                String validation = ((String) obj).toLowerCase();
+                if (validation.contains("validate")) {
+                    types[0] = ValidationType.VALIDATE;
+                }
+                if (validation.contains("provide_groups")) {
+                    types[1] = ValidationType.PROVIDE_GROUPS;
+                }
+                result = EnumSet.copyOf(Arrays.asList(types));
+                immediate = isImmediateExpression(useForExpression);
+
             } else {
+                Tr.debug(tc, "processUseFor obj was not an instance of string or ValidationType[]");
                 throw new IllegalArgumentException("Expected 'useForExpression' to evaluate to an array of ValidationType.");
             }
         }
 
         if (result == null || result.isEmpty()) {
+            Tr.debug(tc, "processUseFor result is empty or null");
             throw new IllegalArgumentException("The identity store must be configured with at least one ValidationType.");
+        }
+        for (ValidationType v : result) {
+            Tr.debug(tc, "processUseFor result: " + v);
         }
         return (immediateOnly && !immediate) ? null : Collections.unmodifiableSet(result);
     }
