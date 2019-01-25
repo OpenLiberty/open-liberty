@@ -43,7 +43,7 @@ fetch.oss.ibm.repository: \
     aQute.bnd.repository.maven.provider.MavenBndRepository; \
         name = RemoteIBM; \
         local = ~/.ibmdhe/repository; \
-        releaseUrl = http://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/wasliberty-open-liberty/; \
+        releaseUrl = http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/; \
         index = ${build}/oss_ibm.maven
 
 fetch.ibm.java.repository:
