@@ -8,4 +8,6 @@
     
    <application id="beanvalidation" name="beanvalidation" type="ear" location="beanvalidation.ear"/>
    
+      <!-- Doubling the default start timeout because this bucket tends to have issues on slow hardware -->
+   <applicationManager startTimeout="60s"/>
 </client>
