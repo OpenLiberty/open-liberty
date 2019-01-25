@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,8 @@ import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 /**
  * Concurrency manager, which includes the collection of ThreadContextProviders
@@ -29,6 +31,11 @@ import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
  */
 public class ConcurrencyManagerImpl implements ConcurrencyManager {
     private static final TraceComponent tc = Tr.register(ConcurrencyManagerImpl.class);
+
+    /**
+     * Application for which this concurrency manager was created, if any can be determined.
+     */
+    final String appName;
 
     final ConcurrencyProviderImpl concurrencyProvider;
 
@@ -51,6 +58,9 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         this.concurrencyProvider = concurrencyProvider;
+
+        ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        appName = cData == null ? null : cData.getJ2EEName().getApplication();
 
         // Thread context types for which providers are available
         HashSet<String> available = new HashSet<String>();

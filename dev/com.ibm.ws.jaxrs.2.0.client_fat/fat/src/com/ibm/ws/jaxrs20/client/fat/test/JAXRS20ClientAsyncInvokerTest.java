@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -121,6 +122,7 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
     }
 
     @Test
+    @AllowedFFDC("javax.ws.rs.ProcessingException")
     public void testAsyncInvoker_getConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_getConnectionTimeout", p, "Timeout as expected");
@@ -133,6 +135,7 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
     }
 
     @Test
+    @AllowedFFDC("javax.ws.rs.ProcessingException")
     public void testAsyncInvoker_postConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_postConnectionTimeout", p, "Timeout as expected");
@@ -145,6 +148,7 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
     }
 
     @Test
+    @AllowedFFDC("javax.ws.rs.ProcessingException")
     public void testAsyncInvoker_getConnectionTimeoutwithInvocationCallback() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_getConnectionTimeoutwithInvocationCallback", p, "Timeout as expected");
@@ -157,6 +161,7 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
     }
 
     @Test
+    @AllowedFFDC("javax.ws.rs.ProcessingException")
     public void testAsyncInvoker_postConnectionTimeoutwithInvocationCallback() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_postConnectionTimeoutwithInvocationCallback", p, "Timeout as expected");

@@ -37,6 +37,7 @@ import componenttest.app.FATServlet;
 @WebServlet(urlPatterns = "/CxfClientPropsTestServlet")
 public class CxfClientPropsTestServlet extends FATServlet {
     private final static Logger _log = Logger.getLogger(CxfClientPropsTestServlet.class.getName());
+    private static final long defaultMargin = 6000;
     
     private static final boolean isZOS() {
         String osName = System.getProperty("os.name");
@@ -80,7 +81,7 @@ public class CxfClientPropsTestServlet extends FATServlet {
         final String m = "testCXFConnectTimeout";
         String target = null;
         long CXF_TIMEOUT = 5000;
-        long MARGIN = 6000;
+        long MARGIN = defaultMargin;
         
         Client client = ClientBuilder.newBuilder()
                                      .property("client.ConnectionTimeout", CXF_TIMEOUT)
@@ -113,7 +114,7 @@ public class CxfClientPropsTestServlet extends FATServlet {
     public void testCXFReadTimeout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         final String m = "testCXFReadTimeout";
         long CXF_TIMEOUT = 5000;
-        long MARGIN = 5000;
+        long MARGIN = defaultMargin;
         
         Client client = ClientBuilder.newBuilder()
                                      .property("client.ReceiveTimeout", CXF_TIMEOUT)
@@ -141,7 +142,7 @@ public class CxfClientPropsTestServlet extends FATServlet {
         final String m = "testIBMConnectTimeoutOverridesCXFConnectTimeout";
         String target = null;
         long IBM_TIMEOUT = 5000;
-        long MARGIN = 6000;
+        long MARGIN = defaultMargin;
         long CXF_TIMEOUT = 20000;
         Client client = ClientBuilder.newBuilder()
                                      .property("com.ibm.ws.jaxrs.client.connection.timeout", IBM_TIMEOUT)
@@ -175,7 +176,7 @@ public class CxfClientPropsTestServlet extends FATServlet {
     public void testIBMReadTimeoutOverridesCXFReadTimeout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         final String m = "testIBMReadTimeoutOverridesCXFReadTimeout";
         long IBM_TIMEOUT = 5000;
-        long MARGIN = 6000;
+        long MARGIN = defaultMargin;
         long CXF_TIMEOUT = 20000;
         Client client = ClientBuilder.newBuilder()
                                      .property("com.ibm.ws.jaxrs.client.receive.timeout", IBM_TIMEOUT)

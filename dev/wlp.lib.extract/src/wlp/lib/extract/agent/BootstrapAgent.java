@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2018 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.kernel.instrument;
+package wlp.lib.extract.agent;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,14 +33,18 @@ import java.util.jar.Manifest;
  * -javaagent:boot-agent.jar=delegate-agent.jar=parms
  *
  * <p>In general this class is not used to bootstrap another agent, it is merely used
- *  to store the Instrumentation class so it can be obtained later on by the Liberty
- *  server instance.
+ * to store the Instrumentation class so it can be obtained later on by the Liberty
+ * server instance.
  */
 public final class BootstrapAgent {
 
     static Instrumentation instrumentation;
     static String arg;
-    
+
+    public static void agentmain(String arg, Instrumentation inst) throws Exception {
+        premain(arg, inst);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -59,20 +63,21 @@ public final class BootstrapAgent {
         String targetAgent = separator < 0 ? arg : arg.substring(0, separator);
         String targetAgentArgs = separator < 0 ? "" : arg.substring(separator + 1);
 
-    	try {
+        try {
             loadAgentJar(targetAgent, targetAgentArgs);
-    	} catch (FileNotFoundException e) {
-    	    // if the code cannot find the specified jar file, do nothing. This is the original behavior. 
-    	}
+        } catch (FileNotFoundException e) {
+            // if the code cannot find the specified jar file, do nothing. This is the original behavior.
+        }
     }
 
     /**
      * Loads an agent. Assuming that premain had called before calling this method in order to set Instrumentation object.
+     *
      * @param agentJarName an relative path name from the location of bootstrap agent of jar name which is loaded.
      * @param arg argument for the agent.
      */
     public static void loadAgent(String agentJarName, String arg) throws Exception {
-    	loadAgentJar(agentJarName, arg);
+        loadAgentJar(agentJarName, arg);
     }
 
     private static void loadAgentJar(String agentJarName, String arg) throws Exception {
@@ -135,8 +140,8 @@ public final class BootstrapAgent {
         // agent wasn't used for some reason.
 
         String loggingManager = System.getProperty("java.util.logging.manager");
-        if (loggingManager == null)
-            System.setProperty("java.util.logging.manager", "com.ibm.ws.kernel.boot.logging.WsLogManager");
+        //if (loggingManager == null)
+        //    System.setProperty("java.util.logging.manager", "com.ibm.ws.kernel.boot.logging.WsLogManager");
 
         String managementBuilderInitial = System.getProperty("javax.management.builder.initial");
         if (managementBuilderInitial == null)

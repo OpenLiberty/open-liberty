@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2456,7 +2456,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
         ResourceException dsae = null;
 
-        if (inRequest)
+        if (inRequest || isAborted())
             try {
                 inRequest = false;
                 mcf.jdbcRuntime.endRequest(sqlConn);
@@ -2465,6 +2465,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     FFDCFilter.processException(x, getClass().getName(), "2447", this);
                     dsae = new DataStoreAdapterException("DSA_ERROR", x, getClass());
                 }
+                Tr.debug(tc, "Error during end request in destroy.", x);
             }
 
         if(isAborted()){
@@ -2695,7 +2696,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         // rolled back, even if something fails early on in the cleanup processing.
         ResourceException firstX = null;
 
-        if (inRequest)
+        if (inRequest && !isAborted())
             try {
                 inRequest = false;
                 mcf.jdbcRuntime.endRequest(sqlConn);
@@ -2704,13 +2705,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     FFDCFilter.processException(x, getClass().getName(), "2682", this);
                     firstX = new DataStoreAdapterException("DSA_ERROR", x, getClass());
                 }
+                Tr.debug(tc, "Error during end request in cleanup.", x);
             }
-
-        if(isAborted()){
-            if(isTraceOn && tc.isEntryEnabled())
-                Tr.exit(this, tc, "cleanup", "ManagedConnection is aborted -- skipping cleanup");
-            return;
-        }
 
         // According to the JCA 1.5 spec, all remaining handles must be invalidated on
         // cleanup.  This is achieved by closing the handles.  Dissociating the handles would
@@ -3097,6 +3093,10 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     // No FFDC code needed; this is a normal case.
                     // Continue with the rollback if an exception is thrown on end. 
                 }
+                
+                if (aborted) {
+                    break;
+                }
 
                 try {
                     ((WSRdbXaResourceImpl) xares).rollback();
@@ -3112,7 +3112,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     throw new DataStoreAdapterException("DSA_ERROR", xae, getClass());
                 }
 
-                if (inCleanup) 
+                if (inCleanup && !aborted) 
                 {
                     String message =
                                     "Cannot call 'cleanup' on a ManagedConnection while it is still in a " +
@@ -3137,6 +3137,10 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 // be on.  In this case, just no-op, since some drivers like ConnectJDBC 3.1
                 // don't allow commit/rollback when autoCommit is on.  
 
+                if (aborted) {
+                    break;
+                }
+                
                 if (!currentAutoCommit)
                     try { // autoCommit is off
                         sqlConn.rollback();
