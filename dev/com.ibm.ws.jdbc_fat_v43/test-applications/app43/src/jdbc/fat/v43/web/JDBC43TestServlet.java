@@ -837,7 +837,7 @@ public class JDBC43TestServlet extends FATServlet {
      * Abort a sharable connection from a thread other than the thread that is using it.
      * Verify that endRequest is invoked on the JDBC driver.
      */
-    //@AllowedFFDC("javax.transaction.xa.XAException") // seen by transaction manager for aborted connection
+    @AllowedFFDC("javax.transaction.xa.XAException") // seen by transaction manager for aborted connection
     @Test
     public void testOtherThreadAbortSharable() throws Exception {
         AtomicInteger[] requests;
@@ -850,7 +850,7 @@ public class JDBC43TestServlet extends FATServlet {
             ends = requests[END].get();
             assertEquals(ends + 1, begins);
 
-            //con1.setAutoCommit(false); // TODO enable once abort path is fixed
+            con1.setAutoCommit(false);
             PreparedStatement ps = con1.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
             ps.setString(1, "Overland Drive NW");
             ps.setString(2, "Rochester");
@@ -888,9 +888,9 @@ public class JDBC43TestServlet extends FATServlet {
             }).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         }
 
+        assertEquals(ends + 1, requests[END].get());
         tx.begin();
         try {
-            assertEquals(ends + 1, requests[END].get());
 
             Connection con3 = sharableXADataSource.getConnection();
             requests = (AtomicInteger[]) con3.unwrap(Supplier.class).get();
@@ -901,23 +901,22 @@ public class JDBC43TestServlet extends FATServlet {
             PreparedStatement ps3 = con3.prepareStatement("SELECT CITY, STATE FROM STREETS WHERE NAME = ?");
             ps3.setString(1, "Overland Drive NW");
             ResultSet result = ps3.executeQuery();
-            //assertFalse(result.next()); // TODO enable once prior TODOs are removed
+            assertFalse(result.next());
             ps3.close();
 
             Connection con4 = sharableXADataSource.getConnection();
             PreparedStatement ps4 = con4.prepareStatement("SELECT CITY, STATE FROM STREETS WHERE NAME = ?");
             ps4.setString(1, "Essex Parkway NW");
             result = ps4.executeQuery();
-            //assertFalse(result.next()); // TODO enable once prior TODOs are removed
+            assertFalse(result.next());
 
-            //con4.close(); // TODO replace with the following once the abort path is fixed to invoke ManagedConnection.destroy when the transaction ends.
-            //singleThreadExecutor.submit(new Callable<Void>() {
-            //    @Override
-            //    public Void call() throws SQLException {
-            //        con4.abort(singleThreadExecutor);
-            //        return null;
-            //    }
-            //}).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            singleThreadExecutor.submit(new Callable<Void>() {
+                @Override
+                public Void call() throws SQLException {
+                    con4.abort(singleThreadExecutor);
+                    return null;
+                }
+            }).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         } finally {
             tx.rollback();
         }
@@ -929,7 +928,7 @@ public class JDBC43TestServlet extends FATServlet {
      * Abort an unsharable connection from a thread other than the thread that is using it.
      * Verify that endRequest is invoked on the JDBC driver in response to the abort.
      */
-    //@AllowedFFDC("javax.transaction.xa.XAException") // seen by transaction manager for aborted connection
+    @AllowedFFDC("javax.transaction.xa.XAException") // seen by transaction manager for aborted connection
     @Test
     public void testOtherThreadAbortUnsharable() throws Exception {
         AtomicInteger[] requests;
@@ -942,7 +941,7 @@ public class JDBC43TestServlet extends FATServlet {
             ends = requests[END].get();
             assertEquals(ends + 1, begins);
 
-            //con1.setAutoCommit(false); //TODO enable once abort path is fixed
+            con1.setAutoCommit(false);
             PreparedStatement ps = con1.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
             ps.setString(1, "Badger Hills Drive NW");
             ps.setString(2, "Rochester");
@@ -958,10 +957,9 @@ public class JDBC43TestServlet extends FATServlet {
             }).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         }
 
-        // TODO Why is crossing the LTC boundary needed for ManagedConnection.destroy/Connection.endRequest to be invoked after abort?
+        assertEquals(ends + 1, requests[END].get());
         tx.begin();
         try {
-            assertEquals(ends + 1, requests[END].get()); // TODO move the assert before tx.begin once abort path is fixed
 
             final Connection con2 = unsharableXADataSource.getConnection();
             try {
@@ -973,18 +971,15 @@ public class JDBC43TestServlet extends FATServlet {
                 PreparedStatement ps2 = con2.prepareStatement("SELECT CITY, STATE FROM STREETS WHERE NAME = ?");
                 ps2.setString(1, "Badger Hills Drive NW");
                 ResultSet result = ps2.executeQuery();
-                // assertFalse(result.next()); //TODO enable once prior TODOs are removed
+                assertFalse(result.next());
             } finally {
-                con2.close(); // TODO replace with the following once the abort path is fixed such that
-                // ManagedConnection.destroy is invoked either upon abort or when the transaction ends.
-                // Currently, destroy is not invoked until server shutdown!
-                //singleThreadExecutor.submit(new Callable<Void>() {
-                //    @Override
-                //    public Void call() throws SQLException {
-                //        con2.abort(singleThreadExecutor);
-                //        return null;
-                //    }
-                //}).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                singleThreadExecutor.submit(new Callable<Void>() {
+                    @Override
+                    public Void call() throws SQLException {
+                        con2.abort(singleThreadExecutor);
+                        return null;
+                    }
+                }).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             }
         } finally {
             tx.rollback();
@@ -1206,7 +1201,7 @@ public class JDBC43TestServlet extends FATServlet {
             ends = requests[END].get();
             assertEquals(ends + 1, begins);
 
-            // con1.setAutoCommit(false); // TODO enable once abort path is fixed
+            con1.setAutoCommit(false);
             PreparedStatement ps = con1.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
             ps.setString(1, "Superior Drive NW");
             ps.setString(2, "Rochester");
@@ -1246,14 +1241,14 @@ public class JDBC43TestServlet extends FATServlet {
             PreparedStatement ps3 = con3.prepareStatement("SELECT CITY, STATE FROM STREETS WHERE NAME = ?");
             ps3.setString(1, "Superior Drive NW");
             ResultSet result = ps3.executeQuery();
-            // assertFalse(result.next()); // TODO enable once prior TODOs are removed
+            assertFalse(result.next());
             ps3.close();
 
             Connection con4 = defaultDataSource.getConnection();
             PreparedStatement ps4 = con4.prepareStatement("SELECT CITY, STATE FROM STREETS WHERE NAME = ?");
             ps4.setString(1, "Technology Drive NW");
             result = ps4.executeQuery();
-            // assertFalse(result.next()); // TODO enable once prior TODOs are removed
+            assertFalse(result.next());
 
             con4.abort(singleThreadExecutor);
         } finally {
@@ -1280,7 +1275,7 @@ public class JDBC43TestServlet extends FATServlet {
             ends = requests[END].get();
             assertEquals(ends + 1, begins);
 
-            // con1.setAutoCommit(false); TODO enable once abort path is fixed
+            con1.setAutoCommit(false);
             PreparedStatement ps = con1.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
             ps.setString(1, "Commerce Drive NW");
             ps.setString(2, "Rochester");
@@ -1290,11 +1285,9 @@ public class JDBC43TestServlet extends FATServlet {
             con1.abort(singleThreadExecutor);
         }
 
-        // TODO Why is crossing the LTC boundary needed for ManagedConnection.destroy/Connection.endRequest to be invoked after abort?
+        assertEquals(ends + 1, requests[END].get());
         tx.begin();
         try {
-            assertEquals(ends + 1, requests[END].get()); // TODO move the assert before tx.begin once abort path is fixed
-
             Connection con2 = unsharablePool1DataSource.getConnection();
             try {
                 requests = (AtomicInteger[]) con2.unwrap(Supplier.class).get();
@@ -1305,7 +1298,7 @@ public class JDBC43TestServlet extends FATServlet {
                 PreparedStatement ps2 = con2.prepareStatement("SELECT CITY, STATE FROM STREETS WHERE NAME = ?");
                 ps2.setString(1, "Commerce Drive NW");
                 ResultSet result = ps2.executeQuery();
-                // assertFalse(result.next()); TODO enable once prior TODOs are removed
+                assertFalse(result.next());
             } finally {
                 con2.abort(singleThreadExecutor);
             }

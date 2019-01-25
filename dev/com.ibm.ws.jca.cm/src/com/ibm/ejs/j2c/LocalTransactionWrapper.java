@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2015 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -213,6 +213,12 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
          * throw e;
          * }
          */
+		 
+        if (getMcWrapper().isMCAborted()) {
+            Tr.exit(tc, "Connection was aborted. Exiting rollback.");
+            return;
+        }
+
         this.hasRollbackOccured = true;
         boolean exceptionCaught = false;
         try {
@@ -898,6 +904,11 @@ class LocalTransactionWrapper implements OnePhaseXAResource, Synchronization, Tr
             Tr.debug(
                      tc,
                      "Using transaction wrapper@" + Integer.toHexString(this.hashCode()));
+        }
+
+        if (mcWrapper.isMCAborted()) {
+            Tr.exit(tc, "Connection was aborted. Exiting afterCompletion.");
+            return;
         }
 
         // When afterCompletionCode is called we need to reset the registeredForSync flag.
