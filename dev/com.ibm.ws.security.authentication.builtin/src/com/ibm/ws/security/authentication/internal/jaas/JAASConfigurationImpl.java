@@ -157,9 +157,13 @@ public class JAASConfigurationImpl implements JAASConfiguration {
 
         List<AppConfigurationEntry> loginModuleEntries;
         if (Krb5Common.isIBMJdk18OrLower) {
-            loginModuleEntries = createIBMJdk8Krb5loginModuleAppConfigurationEntry();
+            loginModuleEntries = createIBMJdk8Krb5loginModuleAppConfigurationEntry(false);
             jaasConfigurationEntries.put(JaasLoginConfigConstants.JAASClient, loginModuleEntries);
             jaasConfigurationEntries.put(JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE, loginModuleEntries);
+
+            loginModuleEntries = createIBMJdk8Krb5loginModuleAppConfigurationEntry(true);
+            jaasConfigurationEntries.put(JaasLoginConfigConstants.COM_IBM_SECURITY_JGSS_KRB5_ACCEPT, loginModuleEntries);
+
         } else if (Krb5Common.isOtherSupportJDKs) {
             loginModuleEntries = createJdk11Krb5loginModuleAppConfigurationEntry(false, "true");
             jaasConfigurationEntries.put(JaasLoginConfigConstants.JAASClient, loginModuleEntries);
@@ -172,16 +176,24 @@ public class JAASConfigurationImpl implements JAASConfiguration {
         }
     }
 
-    private List<AppConfigurationEntry> createIBMJdk8Krb5loginModuleAppConfigurationEntry() {
+    private List<AppConfigurationEntry> createIBMJdk8Krb5loginModuleAppConfigurationEntry(boolean isAccept) {
         List<AppConfigurationEntry> loginModuleEntries = new ArrayList<AppConfigurationEntry>();
-        String loginModuleClassName = JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
-        LoginModuleControlFlag controlFlag = LoginModuleControlFlag.REQUIRED;
         Map<String, Object> options = new HashMap<String, Object>();
+        String loginModuleClassName = JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
+
+        LoginModuleControlFlag controlFlag = LoginModuleControlFlag.REQUIRED;
         options.put("credsType", "both");
         options.put("forwardable", "true");
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             options.put("debug", "true");
             Tr.debug(tc, "loginModuleClassName: " + loginModuleClassName + " options: " + options.toString() + " controlFlag: " + controlFlag.toString());
+        }
+
+        if (isAccept) {
+            loginModuleClassName = JAASLoginModuleConfig.LOGIN_MODULE_PROXY;
+            options.put(LoginModuleProxy.KERNEL_DELEGATE, getClassForName(JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE_WRAPPER));
+            options.put("principal", Krb5Common.getSystemProperty(Krb5Common.KRB5_PRINCIPAL));
+            options.put("useKeytab", Krb5Common.getSystemProperty(Krb5Common.KRB5_KTNAME));
         }
 
         AppConfigurationEntry loginModuleEntry = new AppConfigurationEntry(loginModuleClassName, controlFlag, options);
