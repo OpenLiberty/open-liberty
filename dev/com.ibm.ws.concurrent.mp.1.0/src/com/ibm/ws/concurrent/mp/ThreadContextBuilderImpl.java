@@ -24,17 +24,20 @@ import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 /**
  * Builder that programmatically configures and creates ThreadContext instances.
  */
-class ThreadContextBuilderImpl implements ThreadContext.Builder {
+public class ThreadContextBuilderImpl implements ThreadContext.Builder {
     private static final TraceComponent tc = Tr.register(ThreadContextBuilderImpl.class);
 
     private final ConcurrencyProviderImpl concurrencyProvider;
     private final ArrayList<ThreadContextProvider> contextProviders;
 
     private final HashSet<String> cleared = new HashSet<String>();
+    private String name;
     private final HashSet<String> propagated = new HashSet<String>();
     private final HashSet<String> unchanged = new HashSet<String>();
 
@@ -85,7 +88,28 @@ class ThreadContextBuilderImpl implements ThreadContext.Builder {
         if (unknown.size() > 0)
             failOnUnknownContextTypes(unknown, contextProviders);
 
-        return new ThreadContextImpl(concurrencyProvider, configPerProvider);
+        // Generate name for CDI injected instance,
+        //  ThreadContext@INSTANCEID_AppName_org.test.MyBean.threadContextA(propagated=[CDI, Security],cleared=[Remaining],unchanged=[Transaction])
+        // or for instance created via the builder,
+        //  ThreadContext@INSTANCEID_AppName(propagated=[Security],cleared=[Application, CDI, Transaction],unchanged=[Remaining])
+
+        int hash = ConcurrencyManagerImpl.instanceCount.incrementAndGet();
+        StringBuilder nameBuilder = new StringBuilder("ThreadContext@").append(Integer.toHexString(hash));
+        ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        String appName = cData == null ? null : cData.getJ2EEName().getApplication();
+        if (appName != null)
+            nameBuilder.append('_').append(appName);
+        if (name != null)
+            nameBuilder.append('_').append(name);
+
+        nameBuilder.append("(propagated=").append(propagated);
+        nameBuilder.append(",cleared=").append(cleared);
+        nameBuilder.append(",unchanged=").append(unchanged);
+        nameBuilder.append(')');
+
+        String threadContextName = nameBuilder.toString();
+
+        return new ThreadContextImpl(threadContextName, hash, concurrencyProvider, configPerProvider);
     }
 
     @Override
@@ -130,6 +154,17 @@ class ThreadContextBuilderImpl implements ThreadContext.Builder {
         }
 
         throw new IllegalStateException(Tr.formatMessage(tc, "CWWKC1155.unknown.context", new TreeSet<String>(unknown), known));
+    }
+
+    /**
+     * Sets the name of the CDI injection point for which the container is producing an instance.
+     *
+     * @param name fully qualified injection point name.
+     * @return the same builder instance.
+     */
+    public ThreadContext.Builder name(String name) {
+        this.name = name;
+        return this;
     }
 
     @Override

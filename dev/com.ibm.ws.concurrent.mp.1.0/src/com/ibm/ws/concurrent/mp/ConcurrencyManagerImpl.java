@@ -13,6 +13,7 @@ package com.ibm.ws.concurrent.mp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.ServiceLoader;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.eclipse.microprofile.concurrent.ThreadContext;
@@ -31,6 +32,9 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
  */
 public class ConcurrencyManagerImpl implements ConcurrencyManager {
     private static final TraceComponent tc = Tr.register(ConcurrencyManagerImpl.class);
+
+    // Counter of managed executor & thread context instances created
+    static final AtomicInteger instanceCount = new AtomicInteger();
 
     /**
      * Application for which this concurrency manager was created, if any can be determined.
