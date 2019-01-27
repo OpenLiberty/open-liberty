@@ -176,24 +176,25 @@ public class JAASConfigurationImpl implements JAASConfiguration {
         }
     }
 
-    private List<AppConfigurationEntry> createIBMJdk8Krb5loginModuleAppConfigurationEntry(boolean isAccept) {
+    private List<AppConfigurationEntry> createIBMJdk8Krb5loginModuleAppConfigurationEntry(boolean proxy) {
         List<AppConfigurationEntry> loginModuleEntries = new ArrayList<AppConfigurationEntry>();
         Map<String, Object> options = new HashMap<String, Object>();
-        String loginModuleClassName = JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
 
         LoginModuleControlFlag controlFlag = LoginModuleControlFlag.REQUIRED;
         options.put("credsType", "both");
         options.put("forwardable", "true");
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            options.put("debug", "true");
-            Tr.debug(tc, "loginModuleClassName: " + loginModuleClassName + " options: " + options.toString() + " controlFlag: " + controlFlag.toString());
-        }
 
-        if (isAccept) {
+        String loginModuleClassName = JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
+        if (proxy) {
             loginModuleClassName = JAASLoginModuleConfig.LOGIN_MODULE_PROXY;
             options.put(LoginModuleProxy.KERNEL_DELEGATE, getClassForName(JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE_WRAPPER));
             options.put("principal", Krb5Common.getSystemProperty(Krb5Common.KRB5_PRINCIPAL));
             options.put("useKeytab", Krb5Common.getSystemProperty(Krb5Common.KRB5_KTNAME));
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            options.put("debug", "true");
+            Tr.debug(tc, "loginModuleClassName: " + loginModuleClassName + " options: " + options.toString() + " controlFlag: " + controlFlag.toString());
         }
 
         AppConfigurationEntry loginModuleEntry = new AppConfigurationEntry(loginModuleClassName, controlFlag, options);
