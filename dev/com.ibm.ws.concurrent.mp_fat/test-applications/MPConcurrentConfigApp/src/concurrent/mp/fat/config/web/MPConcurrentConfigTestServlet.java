@@ -12,18 +12,27 @@ package concurrent.mp.fat.config.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.security.Principal;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Exchanger;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.eclipse.microprofile.concurrent.ManagedExecutorConfig;
@@ -47,7 +56,7 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
     ManagedExecutor appProducedExecutor;
 
     @Inject
-    @ManagedExecutorConfig(maxAsync = 1)
+    @ManagedExecutorConfig(maxAsync = 1, cleared = { ThreadContext.TRANSACTION, ThreadContext.SECURITY })
     ManagedExecutor annotatedExecutorWithMPConfigOverride; // MP Config sets maxAsync=2, maxQueued=3
 
     @Inject
@@ -61,6 +70,10 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
 
     @Inject
     ManagedExecutor executorWithMPConfigOverride; // MP Config sets cleared=City, propagated=Application,State
+
+    @Inject
+    @NamedInstance("incompleteStageForSecurityContextTests")
+    CompletionStage<LinkedBlockingQueue<String>> incompleteStageForSecurityContextTests;
 
     /**
      * Demonstrates that MicroProfile Config can be used by the application to override config properties.
@@ -94,6 +107,49 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
         assertEquals(cf0.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Boolean.TRUE);
         assertEquals(cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Integer.valueOf(1));
         assertEquals(cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Integer.valueOf(2));
+    }
+
+    /**
+     * Verify that previously chained CompletionStage actions are able to access the UserPrincipal
+     * using the security context that was captured when the CompletionStage action was created.
+     */
+    public void testCompletionStageAccessesUserPrincipal(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Principal principal = req.getUserPrincipal();
+        assertEquals(principal == null ? null : principal.getName(), "user1");
+
+        LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<String>();
+        incompleteStageForSecurityContextTests.toCompletableFuture().complete(queue);
+
+        Set<String> users = new TreeSet<String>();
+        String userA = queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertNotNull(userA);
+        users.add(userA);
+
+        String userB = queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertNotNull(userB);
+        users.add(userB);
+
+        String userC = queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertNotNull(userC);
+        users.add(userC);
+
+        assertEquals(new TreeSet<String>(Arrays.asList("user2", "user3", "unauthenticated")), users);
+
+        // verify that security context is restored on current thread,
+        principal = req.getUserPrincipal();
+        assertEquals(principal == null ? null : principal.getName(), "user1");
+    }
+
+    /**
+     * Chain a completion stage action that obtains the UserPrincipal from the servlet request.
+     */
+    public void testCreateCompletionStageThatRequiresUserPrincipal(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        incompleteStageForSecurityContextTests.thenAccept(q -> {
+            Principal principal = req.getUserPrincipal();
+            String user = principal == null ? "unauthenticated" : principal.getName();
+            System.out.println("Completion stage found the following user: " + user);
+            q.add(user);
+        });
     }
 
     /**
@@ -273,5 +329,45 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
             if (future0.isDone())
                 future0.cancel(true);
         }
+    }
+
+    /**
+     * Verifies that a managed executor configured with cleared=SECURITY clears security context for async actions/tasks.
+     */
+    public void testSecurityContextCleared(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Future<String> getUserName = annotatedExecutorWithMPConfigOverride.submit(() -> {
+            Principal principal = req.getUserPrincipal();
+            return principal == null ? null : principal.getName();
+        });
+
+        String user = getUserName.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertNull(user);
+    }
+
+    /**
+     * Verifies that a managed executor configured with cleared=ALL_REMAINING clears security context for async actions/tasks.
+     */
+    public void testSecurityContextClearedWhenAllRemaining(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        CompletableFuture<String> getUserName = containerExecutorWithNameAndConfig.completedFuture(20).thenApplyAsync(unused -> {
+            Principal principal = req.getUserPrincipal();
+            return principal == null ? null : principal.getName();
+        });
+
+        String user = getUserName.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertNull(user);
+    }
+
+    /**
+     * Verifies that a managed executor configured with propagated=ALL_REMAINING propagates security context to async actions/tasks.
+     * Prerequisite: must invoke this test method as "user1"
+     */
+    public void testSecurityContextPropagatedWhenAllRemaining(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        CompletableFuture<String> getUserName = containerExecutorReturnedByAppProducer.supplyAsync(() -> {
+            Principal principal = req.getUserPrincipal();
+            return principal == null ? null : principal.getName();
+        });
+
+        String user = getUserName.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("user1", user);
     }
 }

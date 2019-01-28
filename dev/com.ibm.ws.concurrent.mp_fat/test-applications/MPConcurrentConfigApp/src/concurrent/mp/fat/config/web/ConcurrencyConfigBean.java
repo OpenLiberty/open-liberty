@@ -10,6 +10,9 @@
  *******************************************************************************/
 package concurrent.mp.fat.config.web;
 
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
@@ -17,6 +20,7 @@ import javax.enterprise.inject.Produces;
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.eclipse.microprofile.concurrent.ManagedExecutorConfig;
 import org.eclipse.microprofile.concurrent.NamedInstance;
+import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @ApplicationScoped
@@ -26,7 +30,7 @@ public class ConcurrencyConfigBean {
     @NamedInstance("applicationProducedExecutor")
     ManagedExecutor createExecutor(@ConfigProperty(name = "AppProducedExecutor.maxAsync", defaultValue = "1") Integer a,
                                    @ConfigProperty(name = "AppProducedExecutor.maxQueued", defaultValue = "4") Integer q) { // MP Config sets maxQueued=2
-        return ManagedExecutor.builder().maxAsync(a).maxQueued(q).build();
+        return ManagedExecutor.builder().maxAsync(a).maxQueued(q).propagated(ThreadContext.SECURITY).build();
     }
 
     // MicroProfile Concurrency automatically shuts down ManagedExecutors when the application stops.
@@ -40,5 +44,12 @@ public class ConcurrencyConfigBean {
     @NamedInstance("containerExecutorReturnedByAppProducer")
     ManagedExecutor getExecutor(@ManagedExecutorConfig(maxAsync = 1, maxQueued = 1) ManagedExecutor exec) { // MP Config sets maxQueued=3
         return exec;
+    }
+
+    @Produces
+    @ApplicationScoped
+    @NamedInstance("incompleteStageForSecurityContextTests")
+    CompletionStage<LinkedBlockingQueue<String>> getIncompleteFuture(@NamedInstance("containerExecutorReturnedByAppProducer") ManagedExecutor exec) {
+        return exec.newIncompleteFuture();
     }
 }
