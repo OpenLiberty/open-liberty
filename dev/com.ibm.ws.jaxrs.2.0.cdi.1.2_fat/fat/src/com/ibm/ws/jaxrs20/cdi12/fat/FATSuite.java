@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.Basic12Test;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.BeanValidation12Test;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.Complex12Test;
+import com.ibm.ws.jaxrs20.cdi12.fat.test.ContextAndClientTest;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.DisableTest;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.InterceptorTest;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.LifeCycle12Test;
@@ -32,14 +33,15 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
                AlwaysPassesTest.class,
-               DisableTest.class,
                Basic12Test.class,
                BeanValidation12Test.class,
+               Complex12Test.class,
+               ContextAndClientTest.class,
+               DisableTest.class,
                InterceptorTest.class,
                LifeCycle12Test.class,
                LifeCycleMismatch12Test.class,
                LoadOnStartup12Test.class,
-               Complex12Test.class,
                ResourceInfoAtStartupTest.class
 })
 public class FATSuite {
