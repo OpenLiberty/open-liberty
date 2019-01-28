@@ -27,7 +27,6 @@ import com.ibm.ws.microprofile.faulttolerance20.state.impl.SyncBulkheadStateImpl
 import com.ibm.ws.microprofile.faulttolerance20.state.impl.SyncBulkheadStateNullImpl;
 import com.ibm.ws.microprofile.faulttolerance20.state.impl.TimeoutStateImpl;
 import com.ibm.ws.microprofile.faulttolerance20.state.impl.TimeoutStateNullImpl;
-import com.ibm.ws.threading.PolicyExecutorProvider;
 
 /**
  * Factory for creating Fault Tolerance State objects, which implement one of the fault tolerance policies.
@@ -42,7 +41,8 @@ public class FaultToleranceStateFactory {
     public static final FaultToleranceStateFactory INSTANCE = new FaultToleranceStateFactory();
 
     // Singleton: no public constructor
-    private FaultToleranceStateFactory() {}
+    private FaultToleranceStateFactory() {
+    }
 
     /**
      * Create an object implementing Retry
@@ -111,12 +111,11 @@ public class FaultToleranceStateFactory {
      * @param policy           the BulkheadPolicy, may be {@code null}
      * @return a new AsyncBulkheadState
      */
-    public AsyncBulkheadState createAsyncBulkheadState(PolicyExecutorProvider executorProvider, ScheduledExecutorService executorService, BulkheadPolicy policy,
-                                                       MetricRecorder metricRecorder) {
+    public AsyncBulkheadState createAsyncBulkheadState(ScheduledExecutorService executorService, BulkheadPolicy policy, MetricRecorder metricRecorder) {
         if (policy == null) {
             return new AsyncBulkheadStateNullImpl(executorService);
         } else {
-            return new AsyncBulkheadStateImpl(executorProvider, policy, metricRecorder);
+            return new AsyncBulkheadStateImpl(executorService, policy, metricRecorder);
         }
     }
 
