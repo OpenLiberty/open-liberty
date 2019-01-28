@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp;
 
-import java.security.AccessController;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,6 +28,8 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.mp.context.ApplicationContextProvider;
 import com.ibm.ws.concurrent.mp.context.SecurityContextProvider;
@@ -38,7 +39,6 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
-import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.threading.PolicyExecutorProvider;
 
 /**
@@ -46,6 +46,8 @@ import com.ibm.ws.threading.PolicyExecutorProvider;
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class ConcurrencyProviderImpl implements ApplicationStateListener, ConcurrencyProvider {
+    private static final TraceComponent tc = Tr.register(ConcurrencyProviderImpl.class);
+
     final ApplicationContextProvider applicationContextProvider = new ApplicationContextProvider();
     final SecurityContextProvider securityContextProvider = new SecurityContextProvider();
     final TransactionContextProvider transactionContextProvider = new TransactionContextProvider();
@@ -57,15 +59,13 @@ public class ConcurrencyProviderImpl implements ApplicationStateListener, Concur
      */
     private static final String NO_CONTEXT_CLASSLOADER = "NO_CONTEXT_CLASSLOADER";
 
-    private static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
-
     @Reference
     protected MetaDataIdentifierService metadataIdentifierService;
 
     @Reference
     protected PolicyExecutorProvider policyExecutorProvider;
 
-    private final ConcurrentHashMap<Object, ConcurrencyManager> providersPerClassLoader = new ConcurrentHashMap<Object, ConcurrencyManager>();
+    private final ConcurrentHashMap<Object, ConcurrencyManagerImpl> providersPerClassLoader = new ConcurrentHashMap<Object, ConcurrencyManagerImpl>();
 
     private ConcurrencyProviderRegistration registration;
 
@@ -89,8 +89,19 @@ public class ConcurrencyProviderImpl implements ApplicationStateListener, Concur
     public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {}
 
     @Override
-    @Trivial
-    public void applicationStopped(ApplicationInfo appInfo) {}
+    public void applicationStopped(ApplicationInfo appInfo) {
+        String appName = appInfo.getName();
+        for (Iterator<Map.Entry<Object, ConcurrencyManagerImpl>> it = providersPerClassLoader.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<Object, ConcurrencyManagerImpl> entry = it.next();
+            Object cl = entry.getKey();
+            ConcurrencyManagerImpl cm = entry.getValue();
+            if (!NO_CONTEXT_CLASSLOADER.equals(cl) && appName.equals(cm.appName)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "remove", cl, cm);
+                it.remove();
+            }
+        }
+    }
 
     @Override
     public void applicationStopping(ApplicationInfo appInfo) {
@@ -109,44 +120,16 @@ public class ConcurrencyProviderImpl implements ApplicationStateListener, Concur
     }
 
     @Override
-    @Trivial
-    public ConcurrencyManager getConcurrencyManager() {
-        return getConcurrencyManager(priv.getContextClassLoader());
-    }
-
-    @Override
     public ConcurrencyManager getConcurrencyManager(ClassLoader classLoader) {
         Object key = classLoader == null ? NO_CONTEXT_CLASSLOADER : classLoader;
-        ConcurrencyManager ccmgr = providersPerClassLoader.get(key);
+        ConcurrencyManagerImpl ccmgr = providersPerClassLoader.get(key);
         if (ccmgr == null) {
-            ConcurrencyManager ccmgrNew = new ConcurrencyManagerImpl(this, classLoader);
+            ConcurrencyManagerImpl ccmgrNew = new ConcurrencyManagerImpl(this, classLoader);
             ccmgr = providersPerClassLoader.putIfAbsent(key, ccmgrNew);
             if (ccmgr == null)
                 ccmgr = ccmgrNew;
         }
         return ccmgr;
-    }
-
-    @Override
-    public ConcurrencyManager.Builder getConcurrencyManagerBuilder() {
-        throw new UnsupportedOperationException(); // TODO
-    }
-
-    @Override
-    public void registerConcurrencyManager(ConcurrencyManager manager, ClassLoader classLoader) {
-        throw new UnsupportedOperationException(); // TODO
-    }
-
-    @Override
-    public void releaseConcurrencyManager(ConcurrencyManager manager) {
-        // This is inefficient. Does the spec need to require it?
-        // The container, which already knows the class loader,
-        // can instead directly remove the entry based on the key.
-        for (Iterator<Map.Entry<Object, ConcurrencyManager>> entries = providersPerClassLoader.entrySet().iterator(); entries.hasNext();) {
-            Map.Entry<Object, ConcurrencyManager> entry = entries.next();
-            if (manager.equals(entry.getValue()))
-                entries.remove();
-        }
     }
 
     @Reference(service = com.ibm.wsspi.threadcontext.ThreadContextProvider.class,

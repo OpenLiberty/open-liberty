@@ -4049,8 +4049,7 @@ public class MPConcurrentTestServlet extends FATServlet {
                         });
         String result;
         assertNotNull(result = cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertTrue(result, result.startsWith("100,"));
-        assertTrue(result, result.indexOf("ManagedExecutorImpl@") > 0);
+        assertTrue(result, result.startsWith("100,ManagedExecutor@"));
     }
 
     /**
@@ -4312,6 +4311,83 @@ public class MPConcurrentTestServlet extends FATServlet {
         // possible for this to run during small timing window before policy task future transitions from RUNNING to SUCCESSFUL
         assertTrue(s, s.contains("SUCCESSFUL") || s.contains("RUNNING"));
         assertTrue(s, s.contains("on managedScheduledExecutorService[noContextExecutor]/concurrencyPolicy[default-0]"));
+    }
+
+    /**
+     * Validate that toString of a managed CompletableFuture includes information about the state of the completable future,
+     * as well as indicating which PolicyExecutor Future it runs on and which managed executor.
+     */
+    @Test
+    public void testToStringManagedExecutor() throws Exception {
+        ManagedExecutor executor = ManagedExecutor.builder()
+                        .maxAsync(4)
+                        .propagated(ThreadContext.APPLICATION, ThreadContext.SECURITY)
+                        .build();
+
+        String execString = executor.toString();
+        assertTrue(execString, execString.startsWith("ManagedExecutor@"));
+        assertTrue(execString, execString.contains("_MPConcurrentApp(maxAsync=4,maxQueued=max,propagated=["));
+        assertTrue(execString, execString.contains("Application"));
+        assertTrue(execString, execString.contains("Security"));
+
+        CountDownLatch runningLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+
+        CompletableFuture<Boolean> cf = executor.supplyAsync(() -> {
+            System.out.println("> supply from testToString");
+            runningLatch.countDown();
+            try {
+                boolean result = continueLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                System.out.println("< supply " + result);
+                return result;
+            } catch (InterruptedException x) {
+                System.out.println("< supply " + x);
+                throw new CompletionException(x);
+            }
+        });
+
+        assertTrue(runningLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        String s = cf.toString();
+        assertTrue(s, s.contains("ManagedCompletableFuture@"));
+        assertTrue(s, s.contains("Not completed"));
+        assertTrue(s, s.contains("PolicyTaskFuture@"));
+        assertTrue(s, s.contains("RUNNING on " + execString));
+
+        continueLatch.countDown();
+
+        assertTrue(cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        s = cf.toString();
+        assertTrue(s, s.contains("ManagedCompletableFuture@"));
+        assertTrue(s, s.contains("Completed normally"));
+        assertTrue(s, s.contains("PolicyTaskFuture@"));
+        // possible for this to run during small timing window before policy task future transitions from RUNNING to SUCCESSFUL
+        assertTrue(s, s.contains("SUCCESSFUL") || s.contains("RUNNING"));
+        assertTrue(s, s.contains("on " + execString));
+
+        executor.shutdownNow();
+    }
+
+    /**
+     * Verify toString output for our MicroProfile Concurrency ThreadContext implementation.
+     */
+    @Test
+    public void testToStringThreadContext() throws Exception {
+        ThreadContext threadContext = ThreadContext.builder()
+                        .propagated(ThreadContext.APPLICATION)
+                        .cleared(ThreadContext.SECURITY, ThreadContext.TRANSACTION)
+                        .unchanged(ThreadContext.CDI)
+                        .build();
+
+        String s = threadContext.toString();
+        assertTrue(s, s.startsWith("ThreadContext@"));
+        assertTrue(s, s.contains("_MPConcurrentApp("));
+        assertTrue(s, s.contains("propagated=[Application]"));
+        assertTrue(s, s.contains("cleared=["));
+        assertTrue(s, s.contains("Security"));
+        assertTrue(s, s.contains("Transaction"));
+        assertTrue(s, s.contains("unchanged=[CDI]"));
     }
 
     /**

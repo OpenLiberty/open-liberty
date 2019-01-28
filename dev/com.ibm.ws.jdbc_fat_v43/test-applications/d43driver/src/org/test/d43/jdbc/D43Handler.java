@@ -21,7 +21,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 import javax.sql.PooledConnection;
-import javax.transaction.Status;
 import javax.transaction.TransactionManager;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
@@ -123,15 +122,29 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
         if (("commit".equals(methodName) || "end".equals(methodName) || "prepare".equals(methodName))
             && instance instanceof XAResource
             && connectionHandler != null && connectionHandler.isAborted) {
-            XAException xax = new XAException("Connection aborted");
-            xax.errorCode = XAException.XA_RBOTHER;
-            throw xax;
+
+            try {
+                return method.invoke(instance, args);
+            } catch (Exception ex) {
+                if (ex instanceof InvocationTargetException) {
+                    Throwable cause = ex.getCause();
+                    if (cause instanceof IndexOutOfBoundsException) {
+                        XAException xax = new XAException("Connection aborted");
+                        xax.errorCode = XAException.XA_RBOTHER;
+                        throw xax;
+                    } else {
+                        throw cause;
+                    }
+                } else {
+                    throw ex;
+                }
+            }
         }
+
         if ("endRequest".equals(methodName)) {
             if (isClosed && !isAborted)
                 throw new ClosedException(method.getDeclaringClass());
-            if (tm.getStatus() == Status.STATUS_ACTIVE ||
-                ((org.apache.derby.iapi.jdbc.EngineConnection) instance).isInGlobalTransaction())
+            if (((org.apache.derby.iapi.jdbc.EngineConnection) instance).isInGlobalTransaction())
                 throw new SQLException("Transaction is still active");
             ((Connection) instance).endRequest();
             endRequests.incrementAndGet();

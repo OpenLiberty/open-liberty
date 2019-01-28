@@ -17,6 +17,7 @@ src: \
 	test-applications/bookstore/src,\
 	test-applications/clientcontextinjection/src,\
 	test-applications/complexclient/src,\
+	test-applications/handleresponses/src,\
 	test-applications/ibmjson4j/src,\
 	test-applications/jackson/src,\
 	test-applications/jaxrs20clientcallback/src,\

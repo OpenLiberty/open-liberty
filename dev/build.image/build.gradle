@@ -512,14 +512,17 @@ task createOLRuntimePoms {
 
 task zipOpenLibertyMaven(type: Zip) {
     dependsOn createOLRuntimePoms
-    archiveName 'openliberty-runtimes-maven-${releaseVersion}.zip'
+    archiveName "openliberty-runtimes-maven-${releaseVersion}.zip"
     from mavenDir
     from distsDir
     include '*.zip'
     include '*.pom'
+    exclude 'openliberty-all*.zip'
     destinationDir project.file('build/temp/mavenArtifact')
 }
-publish.dependsOn zipOpenLibertyMaven
+if (isRelease) {
+    publish.dependsOn zipOpenLibertyMaven
+}
 
 
 

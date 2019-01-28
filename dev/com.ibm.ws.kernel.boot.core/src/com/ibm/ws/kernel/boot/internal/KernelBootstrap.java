@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
-import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -76,7 +76,7 @@ public class KernelBootstrap {
 
     /**
      * @param bootProps BootstrapProperties carry forward all of the parameters and
-     *                      options used to launch the kernel.
+     *            options used to launch the kernel.
      */
     public KernelBootstrap(BootstrapConfig bootProps) {
         this.bootProps = bootProps;
@@ -672,17 +672,21 @@ public class KernelBootstrap {
      * Fetch the BootstrapAgent instrumentation instance from the BootstrapAgent
      * in the system classloader.
      *
-     * @return Instrumentation instance initialized by the Launcher, may be
-     *         null.
+     * @return Instrumentation instance initialized by the Launcher, may be null.
      */
     protected Instrumentation getInstrumentation() {
         ClassLoader cl = ClassLoader.getSystemClassLoader();
-        Class<?> agentClass;
+        Instrumentation i = findInstrumentation(cl, "com.ibm.ws.kernel.instrument.BootstrapAgent");
+        if (i == null)
+            i = findInstrumentation(cl, "wlp.lib.extract.agent.BootstrapAgent");
+        return i;
+    }
+
+    private Instrumentation findInstrumentation(ClassLoader cl, String clazz) {
         try {
-            agentClass = cl.loadClass("com.ibm.ws.kernel.instrument.BootstrapAgent");
-            Field instField = agentClass.getDeclaredField("instrumentation");
-            instField.setAccessible(true);
-            return (Instrumentation) instField.get(null);
+            Class<?> agentClass = cl.loadClass(clazz);
+            Method getInstrumentation = agentClass.getMethod("getInstrumentation");
+            return (Instrumentation) getInstrumentation.invoke(null);
         } catch (Exception t) { /* Eat the issue and rely on users to report */
         }
         return null;

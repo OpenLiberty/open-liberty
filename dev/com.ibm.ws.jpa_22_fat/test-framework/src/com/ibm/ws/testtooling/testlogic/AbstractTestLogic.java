@@ -270,6 +270,10 @@ public abstract class AbstractTestLogic {
                         return true;
                     }
 
+                    if (expectedThrowableClass.isAssignableFrom(t.getClass())) {
+                        return true;
+                    }
+
                     t = t.getCause();
                 }
 

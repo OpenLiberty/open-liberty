@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import javax.security.auth.Subject;
-import javax.servlet.http.Cookie;
 
+import javax.servlet.http.Cookie;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -99,6 +99,15 @@ public class WebSecurityHelperImplTest {
                      cookieName, c.getName());
         assertNotNull("Cookie must have some value",
                       c.getValue());
+    }
+
+    /**
+     * Test method for {@link com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl#getJwtCookieName()}.
+     */
+    @Test
+    public void getJwtCookieName_noConfigSet() throws Exception {
+        assertNull("When no configuration is set, the cookie name should be null",
+                   WebSecurityHelperImpl.getJwtCookieName());
     }
 
 }

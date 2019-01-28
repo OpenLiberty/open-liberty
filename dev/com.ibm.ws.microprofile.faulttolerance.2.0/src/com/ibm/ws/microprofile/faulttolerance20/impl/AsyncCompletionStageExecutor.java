@@ -22,7 +22,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
-import com.ibm.ws.threading.PolicyExecutorProvider;
+import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState.BulkheadReservation;
 
 /**
  * Executor for asynchronous methods which return a {@link CompletionStage}{@code<R>}
@@ -34,8 +34,8 @@ public class AsyncCompletionStageExecutor<R> extends AsyncExecutor<CompletionSta
     private static final TraceComponent tc = Tr.register(AsyncCompletionStageExecutor.class);
 
     public AsyncCompletionStageExecutor(RetryPolicy retry, CircuitBreakerPolicy cbPolicy, TimeoutPolicy timeoutPolicy, FallbackPolicy fallbackPolicy, BulkheadPolicy bulkheadPolicy,
-                                        ScheduledExecutorService executorService, PolicyExecutorProvider policyExecutorProvider, MetricRecorder metricRecorder) {
-        super(retry, cbPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, executorService, policyExecutorProvider, metricRecorder);
+                                        ScheduledExecutorService executorService, MetricRecorder metricRecorder) {
+        super(retry, cbPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, executorService, metricRecorder);
     }
 
     @Override
@@ -63,16 +63,16 @@ public class AsyncCompletionStageExecutor<R> extends AsyncExecutor<CompletionSta
     }
 
     @Override
-    protected void finalizeAttempt(AsyncAttemptContextImpl<CompletionStage<R>> attemptContext, MethodResult<CompletionStage<R>> result) {
-        // finalizeAttempt is called after the user's method returns.
+    protected void processMethodResult(AsyncAttemptContextImpl<CompletionStage<R>> attemptContext, MethodResult<CompletionStage<R>> result, BulkheadReservation reservation) {
+        // processMethodResult is called after the user's method returns.
         // However, for methods which return CompletionStage, if an exception was not thrown, we want to delay the rest of the fault tolerance processing
         // until the returned CompletionStage completes, and then if it completes exceptionally, we want to use that exception as the result
         if (result.isFailure()) {
-            super.finalizeAttempt(attemptContext, result);
+            super.processMethodResult(attemptContext, result, reservation);
         } else {
-            result.getResult().thenRun(() -> super.finalizeAttempt(attemptContext, result));
+            result.getResult().thenRun(() -> super.processMethodResult(attemptContext, result, reservation));
             result.getResult().exceptionally((t) -> {
-                super.finalizeAttempt(attemptContext, MethodResult.failure(t));
+                super.processMethodResult(attemptContext, MethodResult.failure(t), reservation);
                 return null;
             });
         }

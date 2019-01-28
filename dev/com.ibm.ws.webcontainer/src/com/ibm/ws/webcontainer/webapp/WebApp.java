@@ -2291,7 +2291,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             }
         } catch (Throwable th) {
             // pk435011
-            logger.logp(Level.SEVERE, CLASS_NAME, "loadLifecycleListeners", "error.processing.global.listeners.for.webapp", th);
+            logger.logp(Level.SEVERE, CLASS_NAME, "loadLifecycleListeners", "error.processing.global.listeners.for.webapp", new Object[] { getApplicationName(), th });
 			if (WCCustomProperties.STOP_APP_STARTUP_ON_LISTENER_EXCEPTION) { //PI58875
                 throw th;
             }

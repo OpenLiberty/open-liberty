@@ -25,6 +25,7 @@ import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
@@ -35,6 +36,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState;
+import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState.BulkheadReservation;
 import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState.ExceptionHandler;
 import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState.ExecutionReference;
 import com.ibm.ws.microprofile.faulttolerance20.state.CircuitBreakerState;
@@ -42,7 +44,6 @@ import com.ibm.ws.microprofile.faulttolerance20.state.FaultToleranceStateFactory
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState;
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState.RetryResult;
 import com.ibm.ws.microprofile.faulttolerance20.state.TimeoutState;
-import com.ibm.ws.threading.PolicyExecutorProvider;
 
 /**
  * Abstract executor for asynchronous calls.
@@ -54,6 +55,35 @@ import com.ibm.ws.threading.PolicyExecutorProvider;
  * <p>
  * If an internal exception occurs, this may be thrown directly from the {@link #execute(Callable, ExecutionContext)} method, or logged and propagated back to the user via the
  * result wrapper.
+ * <p>
+ * Flow through this class:
+ * <p>
+ * On the calling thread:
+ * <ul>
+ * <li>start at {@code execute()} (called by the fault tolerance interceptor)</li>
+ * <li>create a return wrapper and store it in the execution context (see createReturnWrapper)</li>
+ * <li>enqueue the first execution attempt to run on another thread (by submitting a task to the AsyncBulkheadState, see enqueueAttempt)</li>
+ * <li>return the return wrapper to the interceptor</li>
+ * </ul>
+ * <p>
+ * Each execution attempt runs on another thread:
+ * <ul>
+ * <li>entry point is {@code runExecutionAttempt}</li>
+ * <li>the user's method is run and the result is stored in a MethodResult</li>
+ * <li>fault tolerance policies are applied based on the MethodResult (see processMethodResult and finalizeAttempt)</li>
+ * <li>if it's determined that a retry should be run, a new execution attempt is enqueued to run on another thread (see enqueueAttempt)</li>
+ * <li>otherwise, the MethodResult is set into the return wrapper and the execution is complete (see commitResult)</li>
+ * </ul>
+ * <p>
+ * There are also some complications that can disrupt the normal flow:
+ * <ul>
+ * <li>If a timeout occurs, the {@code timeout()} method is called where we try to abort the attempt (interrupting it if it's running) and do the fault tolerance handling (by
+ * calling finalizeAttempt)</li>
+ * <li>If the user cancels the execution, we try to abort the current attempt and do the fault tolerance handling (calling finalizeAttempt). We'll never retry if the user has tried
+ * to cancel.</li>
+ * <li>If an unexpected exception is caught, we call {@code handleException()} which will log an FFDC, return the exception as the result to the user and call finalizeAttempt to
+ * record a failure and ensure any reserved resources are released.</li>
+ * </ul>
  *
  * @param <W> the return type of the code being executed, which is also the type of the return wrapper (e.g. {@code Future<String>})
  */
@@ -62,13 +92,13 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
     private static final TraceComponent tc = Tr.register(AsyncExecutor.class);
 
     public AsyncExecutor(RetryPolicy retry, CircuitBreakerPolicy cbPolicy, TimeoutPolicy timeoutPolicy, FallbackPolicy fallbackPolicy, BulkheadPolicy bulkheadPolicy,
-                         ScheduledExecutorService executorService, PolicyExecutorProvider policyExecutorProvider, MetricRecorder metricRecorder) {
+                         ScheduledExecutorService executorService, MetricRecorder metricRecorder) {
         retryPolicy = retry;
         circuitBreaker = FaultToleranceStateFactory.INSTANCE.createCircuitBreakerState(cbPolicy, metricRecorder);
         this.timeoutPolicy = timeoutPolicy;
         this.executorService = executorService;
         this.fallbackPolicy = fallbackPolicy;
-        bulkhead = FaultToleranceStateFactory.INSTANCE.createAsyncBulkheadState(policyExecutorProvider, executorService, bulkheadPolicy, metricRecorder);
+        bulkhead = FaultToleranceStateFactory.INSTANCE.createAsyncBulkheadState(executorService, bulkheadPolicy, metricRecorder);
         this.metricRecorder = metricRecorder;
     }
 
@@ -143,8 +173,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
 
         timeout.start();
 
-        ExecutionReference ref = bulkhead.submit(handleExceptions(() -> runExecutionAttempt(attemptContext), attemptContext, executionContext),
-                                                 getExceptionHandler(attemptContext));
+        ExecutionReference ref = bulkhead.submit((reservation) -> runExecutionAttempt(attemptContext, reservation), getExceptionHandler(attemptContext));
 
         if (!ref.wasAccepted()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -168,35 +197,63 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
      * Run one attempt at the execution {@link #execute(Callable, ExecutionContext)}
      */
     @FFDCIgnore(Throwable.class)
-    private void runExecutionAttempt(AsyncAttemptContextImpl<W> attemptContext) {
+    private void runExecutionAttempt(AsyncAttemptContextImpl<W> attemptContext, BulkheadReservation reservation) {
         AsyncExecutionContextImpl<W> executionContext = attemptContext.getExecutionContext();
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Method {0} running execution attempt", executionContext.getMethod());
-        }
-
-        MethodResult<W> methodResult;
         try {
-            W result = executionContext.getCallable().call();
-            methodResult = MethodResult.success(result);
-        } catch (Throwable e) {
-            methodResult = MethodResult.failure(e);
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Method {0} attempt execution reuslt: {1}", executionContext.getMethod(), methodResult);
-        }
-
-        finalizeAttempt(attemptContext, methodResult);
-
-        if (attemptContext.getTimeoutState().isTimedOut()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Method {0} timed out, clearing interrupted flag", executionContext.getMethod());
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Method {0} running execution attempt", executionContext.getMethod());
             }
 
-            Thread.interrupted(); // Clear interrupted thread
-        }
+            MethodResult<W> methodResult;
+            try {
+                W result = executionContext.getCallable().call();
+                methodResult = MethodResult.success(result);
+            } catch (Throwable e) {
+                methodResult = MethodResult.failure(e);
+            }
 
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Method {0} attempt execution reuslt: {1}", executionContext.getMethod(), methodResult);
+            }
+
+            processMethodResult(attemptContext, methodResult, reservation);
+
+            if (attemptContext.getTimeoutState().isTimedOut()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Method {0} timed out, clearing interrupted flag", executionContext.getMethod());
+                }
+
+                Thread.interrupted(); // Clear interrupted thread
+            }
+        } catch (Throwable t) {
+            // Handle any Unexpected exceptions
+            // Manual FFDC since we've ignored it for the catch above
+            String sourceId = AsyncExecutor.class.getName() + "runExecutionAttempt";
+            FFDCFilter.processException(t, sourceId, "errorBarrier", this);
+
+            // Release bulkhead before handling exception so we don't leak permits
+            reservation.release();
+            handleException(t, attemptContext, executionContext);
+        }
+    }
+
+    /**
+     * Called to process the result of a call to the user's method
+     * <p>
+     * If a timeout or cancellation occurs prevents the user's method from being called, this method will not be called.
+     * <p>
+     * If a timeout or cancellation occurs while the user's method is running, this method will only be called when the user's method actually returns
+     */
+    protected void processMethodResult(AsyncAttemptContextImpl<W> attemptContext, MethodResult<W> methodResult, BulkheadReservation reservation) {
+        // Release bulkhead permit
+        reservation.release();
+
+        TimeoutState timeoutState = attemptContext.getTimeoutState();
+        timeoutState.stop();
+        // Make sure that if we timed out, the timeout callback calls finalizeAttempt rather than us
+        if (!timeoutState.isTimedOut()) {
+            finalizeAttempt(attemptContext, methodResult);
+        }
     }
 
     /**
@@ -240,8 +297,6 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Method {0} processing end of attempt execution. Result: {1}", executionContext.getMethod(), result);
             }
-
-            attemptContext.getTimeoutState().stop();
 
             circuitBreaker.recordResult(result);
 

@@ -1,5 +1,4 @@
--include= ~../cnf/resources/bnd/rejar.props, \
-          ~../cnf/resources/bnd/app-resources.bnd
+-include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
 bSymbolicName=com.ibm.ws.org.apache.bval.1.1.0
 
@@ -14,6 +13,13 @@ app-resources= \
   META-INF/validation-configuration-1.0.xsd | \
   META-INF/validation-mapping-1.1.xsd | \
   META-INF/validation-configuration-1.1.xsd
+
+Service-Component: \
+  com.ibm.ws.org.apache.bval_1_1_0_${replace;${bVersion};\\.;_}.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=ignore; \
+    properties:= "resources=${app-resources}"
 
 Export-Package: \
   org.apache.bval.*;version=1.1;thread-context=true
@@ -33,13 +39,13 @@ Import-Package: \
 # with persistence because the open source optionally uses jpa if it is there for a customized
 # TraversableRevolver implementation.
 DynamicImport-Package: \
- javax.persistence, \
- javax.xml.bind, \
- javax.xml.bind.annotation, \
- javax.xml.bind.annotation.adapters, \
- javax.xml.bind.attachment, \
- javax.xml.bind.helpers, \
- javax.xml.bind.util
+  javax.persistence, \
+  javax.xml.bind, \
+  javax.xml.bind.annotation, \
+  javax.xml.bind.annotation.adapters, \
+  javax.xml.bind.attachment, \
+  javax.xml.bind.helpers, \
+  javax.xml.bind.util
  
 Include-Resource: \
   @${repo;com.ibm.ws.org.apache.bval:org.apache.bval.bundle;1.1.2}!/META-INF/LICENSE, \

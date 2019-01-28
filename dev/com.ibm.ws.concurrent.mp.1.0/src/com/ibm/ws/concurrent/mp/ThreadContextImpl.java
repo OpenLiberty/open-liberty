@@ -27,6 +27,7 @@ import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
@@ -56,14 +57,28 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
     private final LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider;
 
     /**
+     * Hash code for this instance.
+     */
+    private final int hash;
+
+    /**
+     * Unique name for this instance.
+     */
+    private final String name;
+
+    /**
      * Construct a new instance to be used directly as a MicroProfile ThreadContext service or by a ManagedExecutor.
      *
+     * @param name unique name for this instance.
+     * @param int hash hash code for this instance.
      * @param concurrencyProvider
      * @param configPerProvider
      */
-    ThreadContextImpl(ConcurrencyProviderImpl concurrencyProvider, LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
+    ThreadContextImpl(String name, int hash, ConcurrencyProviderImpl concurrencyProvider, LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
         this.concurrencyProvider = concurrencyProvider;
         this.configPerProvider = configPerProvider;
+        this.name = name;
+        this.hash = hash;
     }
 
     @Override
@@ -123,6 +138,18 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
     public Executor currentContextExecutor() {
         ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
         return new ContextualExecutor(contextDescriptor);
+    }
+
+    @Override
+    @Trivial
+    public int hashCode() {
+        return hash;
+    }
+
+    @Override
+    @Trivial
+    public String toString() {
+        return name;
     }
 
     @Override

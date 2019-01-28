@@ -21,14 +21,19 @@ app-resources= \
   META-INF/services/javax.websocket.server.ServerEndpointConfig$Configurator | \
   META-INF/services/javax.websocket.ContainerProvider
   
-Export-Package:  com.ibm.ws.wsoc.external,\
-                 com.ibm.ws.wsoc.outbound, \
-                 com.ibm.ws.wsoc.injection, \
-                 com.ibm.ws.wsoc,\
-                 com.ibm.websphere.wsoc, \
-                 com.ibm.ws.wsoc.configurator.*;thread-context=true
+Export-Package: \
+  com.ibm.ws.wsoc.external, \
+  com.ibm.ws.wsoc.outbound, \
+  com.ibm.ws.wsoc.injection, \
+  com.ibm.ws.wsoc, \
+  com.ibm.websphere.wsoc, \
+  com.ibm.ws.wsoc.configurator.*;thread-context=true
 
-Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+Import-Package: \
+  com.ibm.ws.common.internal.encoder, \
+  !*.internal.*, \
+  !com.ibm.ws.kernel.boot.cmdline, \
+  *
    
 Private-Package: \
   com.ibm.ws.wsoc, \
@@ -38,10 +43,10 @@ Private-Package: \
     
 Service-Component: \
   com.ibm.ws.wsock.initializer; \
-     implementation:=com.ibm.ws.wsoc.WebSocketServletContainerInitializer; \
-     provide:=javax.servlet.ServletContainerInitializer; \
-     immediate:=true; \
-     properties:="service.vendor=IBM,service.ranking:Integer=150", \
+    implementation:=com.ibm.ws.wsoc.WebSocketServletContainerInitializer; \
+    provide:=javax.servlet.ServletContainerInitializer; \
+    immediate:=true; \
+    properties:="service.vendor=IBM,service.ranking:Integer=150", \
   com.ibm.ws.wsoc.manager;\
     implementation:=com.ibm.ws.wsoc.ServiceManager; \
     chfwBundle=com.ibm.websphere.channelfw.osgi.CHFWBundle; \
@@ -55,7 +60,7 @@ Service-Component: \
     optional:='injectionEngine,injectionService,injectionService12'; \
     dynamic:='injectionEngine,injectionService,injectionService12'; \
     properties:="service.vendor=IBM", \
-   com.ibm.ws.wsoc.version;\
+  com.ibm.ws.wsoc.version;\
     implementation:=com.ibm.ws.wsoc.WebSocketVersionServiceManager; \
     configuration-policy:=ignore;\
     immediate:=true;\
@@ -64,30 +69,32 @@ Service-Component: \
     optional:='websocketFactoryService'; \
     properties:="service.vendor=IBM", \
   com.ibm.ws.wsoc.outbound.wsocOutbound;\
-     implementation:=com.ibm.ws.wsoc.outbound.WsocOutboundChain;\
-     chfwBundle=com.ibm.websphere.channelfw.osgi.CHFWBundle; \
-     tcpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
-     httpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
-     sslOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
-     configuration-policy:=require;\
-     dynamic:='tcpOptions,httpOptions,sslOptions';\
-     modified:='modified'; \
-     optional:='sslOptions,sslSupport';\
-     greedy:='tcpOptions,httpOptions,sslOptions'; \
-     properties:='service.vendor=IBM', \
-  ${bSymbolicName}_${bVersion}.ResourceProvider; \
-  implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
-  provide:=com.ibm.wsspi.classloading.ResourceProvider; \
-  configuration-policy:=ignore; \
-  properties:= "resources=${app-resources}"
-    
+    implementation:=com.ibm.ws.wsoc.outbound.WsocOutboundChain;\
+    chfwBundle=com.ibm.websphere.channelfw.osgi.CHFWBundle; \
+    tcpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
+    httpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
+    sslOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
+    configuration-policy:=require;\
+    dynamic:='tcpOptions,httpOptions,sslOptions';\
+    modified:='modified'; \
+    optional:='sslOptions,sslSupport';\
+    greedy:='tcpOptions,httpOptions,sslOptions'; \
+    properties:='service.vendor=IBM', \
+  ${bSymbolicName}_${replace;${bVersion};\\.;_}.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=ignore; \
+    properties:= "resources=${app-resources}"
+
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF, \
   META-INF=resources/META-INF
   
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
-instrument.classesExcludes: com.ibm.ws.wsoc.Utils.class,com/ibm/ws/wsoc/internal/resources/*.class
+instrument.classesExcludes: \
+  com.ibm.ws.wsoc.Utils.class, \
+  com/ibm/ws/wsoc/internal/resources/*.class
 
 -buildpath: \
 	com.ibm.websphere.javaee.websocket.1.0;version=latest,\
