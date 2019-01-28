@@ -17,7 +17,7 @@
   <!-- IBM-API required properties. -->
   <property name="bundleName" value="WebSphere WebContainer Application Security API"/>
   <property name="api.ibm.symbolic.suffix" value="webcontainer.security.app"/>
-  <property name="api.ibm.version" value="1.1"/>  
+  <property name="api.ibm.version" value="1.3"/>  
   <property name="feature.name" value="com.ibm.websphere.appserver.webAppSecurity-1.0"/>
 
   <!-- Include WebContainer Security in the API. -->    
