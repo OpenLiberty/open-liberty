@@ -23,7 +23,21 @@ Export-Package: \
   com.ibm.websphere.logging.hpel.writer.*;provide:=true, \
   com.ibm.ws.logging.hpel.config.*
 
-Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+Import-Package: \
+  !*.internal.*, \
+  !com.ibm.ws.kernel.boot.cmdline, \
+  com.ibm.ejs.ras, \
+  com.ibm.websphere.logging, \
+  com.ibm.websphere.logging.hpel, \
+  com.ibm.websphere.logging.hpel.reader.filters, \
+  com.ibm.websphere.ras, \
+  com.ibm.ws.ffdc, \
+  com.ibm.ws.kernel.boot.logging, \
+  com.ibm.ws.logging, \
+  com.ibm.ws.logging.source, \
+  com.ibm.ws.logging.utils, \
+  com.ibm.wsspi.logging, \
+  com.ibm.wsspi.logprovider
 
 Private-Package: \
   com.ibm.ejs.ras.hpel.*, \
