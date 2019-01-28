@@ -5,6 +5,7 @@
 	<classpathentry kind="src" path="test-applications/bookstore/src"/>
 	<classpathentry kind="src" path="test-applications/clientcontextinjection/src"/>
 	<classpathentry kind="src" path="test-applications/complexclient/src"/>
+	<classpathentry kind="src" path="test-applications/handleresponses/src"/>
 	<classpathentry kind="src" path="test-applications/ibmjson4j/src"/>
 	<classpathentry kind="src" path="test-applications/jackson/src"/>
 	<classpathentry kind="src" path="test-applications/jaxrs20clientcallback/src"/>

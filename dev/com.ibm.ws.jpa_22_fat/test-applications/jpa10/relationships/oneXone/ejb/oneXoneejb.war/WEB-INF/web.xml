@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    version="2.5">
+    
+    <!-- EJB References -->
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/OneXOneSFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.relationships.oneXone.ejblocal.OneXOneSFEJBLocal</local>
+        <ejb-link>OneXOneTestSFEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/OneXOneSFExEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.relationships.oneXone.ejblocal.OneXOneSFEXEJBLocal</local>
+        <ejb-link>OneXOneTestSFEXEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/OneXOneSLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.relationships.oneXone.ejblocal.OneXOneSLEJBLocal</local>
+        <ejb-link>OneXOneTestSLEJB</ejb-link>
+    </ejb-local-ref>
+</web-app>

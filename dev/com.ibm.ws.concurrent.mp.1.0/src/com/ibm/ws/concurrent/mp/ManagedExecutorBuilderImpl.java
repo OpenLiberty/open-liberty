@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.eclipse.microprofile.concurrent.ThreadContext;
@@ -30,10 +29,8 @@ import com.ibm.ws.threading.PolicyExecutor;
 /**
  * Builder that programmatically configures and creates ManagedExecutor instances.
  */
-class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
+public class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
     private static final TraceComponent tc = Tr.register(ManagedExecutorBuilderImpl.class);
-
-    static final AtomicLong instanceCount = new AtomicLong();
 
     private final ConcurrencyProviderImpl concurrencyProvider;
     private final ArrayList<ThreadContextProvider> contextProviders;
@@ -41,6 +38,7 @@ class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
     private final HashSet<String> cleared = new HashSet<String>();
     private int maxAsync = -1; // unlimited
     private int maxQueued = -1; // unlimited
+    private String name;
     private final HashSet<String> propagated = new HashSet<String>();
 
     ManagedExecutorBuilderImpl(ConcurrencyProviderImpl concurrencyProvider, ArrayList<ThreadContextProvider> contextProviders) {
@@ -88,30 +86,42 @@ class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
         if (unknown.size() > 0)
             ThreadContextBuilderImpl.failOnUnknownContextTypes(unknown, contextProviders);
 
+        // Generate name for CDI injected instance,
+        //  ManagedExecutor@INSTANCEID_AppName_org.test.MyBean.execA(maxAsync=5,maxQueued=max,propagated=[CDI,Security])
+        // or for instance created via the builder,
+        //  ManagedExecutor@INSTANCEID_AppName(maxAsync=5,maxQueued=max,propagated=[CDI,Security])
+
+        int hash = ConcurrencyManagerImpl.instanceCount.incrementAndGet();
+        StringBuilder nameBuilder = new StringBuilder("ManagedExecutor@").append(Integer.toHexString(hash));
         ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         String appName = cData == null ? null : cData.getJ2EEName().getApplication();
-        StringBuilder nameBuilder = appName == null ? new StringBuilder() : new StringBuilder(appName).append('_');
+        if (appName != null)
+            nameBuilder.append('_').append(appName);
+        if (name != null)
+            nameBuilder.append('_').append(name);
 
-        nameBuilder.append("ManagedExecutor_") //
-                        .append(instanceCount.incrementAndGet())
-                        .append('_') //
+        nameBuilder.append("(maxAsync=")
                         .append(maxAsync == -1 ? "max" : maxAsync)
-                        .append('_') //
-                        .append(maxQueued == -1 ? "max" : maxAsync);
+                        .append(",maxQueued=")
+                        .append(maxQueued == -1 ? "max" : maxQueued);
 
-        for (String propagatedType : propagated)
-            if (propagatedType.matches("\\w*")) // one or more of a-z, A-Z, _, 0-9
-                nameBuilder.append('_').append(propagatedType);
+        if (propagated.contains(ThreadContext.ALL_REMAINING))
+            nameBuilder.append(",cleared=").append(cleared);
+        else
+            nameBuilder.append(",propagated=").append(propagated);
 
-        String name = nameBuilder.toString();
+        nameBuilder.append(')');
 
-        PolicyExecutor policyExecutor = concurrencyProvider.policyExecutorProvider.create(name, appName) //
+        String executorName = nameBuilder.toString();
+        String threadContextName = nameBuilder.replace(2, 15, "ThreadContext").substring(2);
+
+        PolicyExecutor policyExecutor = concurrencyProvider.policyExecutorProvider.create(executorName, appName) //
                         .maxConcurrency(maxAsync) //
                         .maxQueueSize(maxQueued);
 
-        ThreadContextImpl mpThreadContext = new ThreadContextImpl(concurrencyProvider, configPerProvider);
+        ThreadContextImpl mpThreadContext = new ThreadContextImpl(threadContextName, hash, concurrencyProvider, configPerProvider);
 
-        return new ManagedExecutorImpl(name, policyExecutor, mpThreadContext, concurrencyProvider.transactionContextProvider.transactionContextProviderRef);
+        return new ManagedExecutorImpl(executorName, hash, policyExecutor, mpThreadContext, concurrencyProvider.transactionContextProvider.transactionContextProviderRef);
     }
 
     @Override
@@ -148,6 +158,17 @@ class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
         if (max == 0 || max < -1)
             throw new IllegalArgumentException(Integer.toString(max));
         maxQueued = max;
+        return this;
+    }
+
+    /**
+     * Sets the name of the CDI injection point for which the container is producing an instance.
+     *
+     * @param name fully qualified injection point name.
+     * @return the same builder instance.
+     */
+    public ManagedExecutor.Builder name(String name) {
+        this.name = name;
         return this;
     }
 

@@ -1397,7 +1397,12 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     }
     
     public static CacheManager getCacheManager() {
-        return instance.get().getCacheManagerService();      
+        WebContainer thisService = instance.get();
+        CacheManager cacheManager = null;
+        if (thisService != null) {
+            cacheManager = thisService.getCacheManagerService();
+        }
+        return cacheManager;
     }
     
     private CacheManager getCacheManagerService() {

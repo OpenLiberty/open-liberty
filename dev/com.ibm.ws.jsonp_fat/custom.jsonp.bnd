@@ -22,7 +22,7 @@ Include-Resource: \
   META-INF/services=test-bundles/custom.jsonp/resources/META-INF/services
   
 Service-Component: \
-  com.ibm.ws.jsonp.feature.provide_${bVersion}.ResourceProvider; \
+  com.ibm.ws.jsonp.feature.provide_${replace;${bVersion};\\.;_}.ResourceProvider; \
   implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
   provide:=com.ibm.wsspi.classloading.ResourceProvider; \
   configuration-policy:=ignore; \

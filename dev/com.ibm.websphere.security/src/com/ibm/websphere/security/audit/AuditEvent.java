@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -113,6 +113,15 @@ public class AuditEvent {
     public static final String TARGET_EJB_METHOD_SIGNATURE = "target.ejb.method.signature";
     public static final String TARGET_EJB_BEAN_NAME = "target.ejb.beanname";
     public static final String TARGET_EJB_METHOD_PARAMETERS = "target.ejb.method.parameters";
+
+    public static final String TARGET_SAF_RETURN_CODE = "target.saf.return.code";
+    public static final String TARGET_RACF_RETURN_CODE = "target.racf.return.code";
+    public static final String TARGET_RACF_REASON_CODE = "target.racf.reason.code";
+    public static final String TARGET_USER_SECURITY_NAME = "target.user.security.name";
+    public static final String TARGET_APPLID = "target.applid";
+    public static final String TARGET_SAF_PROFILE = "target.saf.profile";
+    public static final String TARGET_SAF_CLASS = "target.saf.class";
+    public static final String TARGET_AUTHORIZATION_DECISION = "target.authorization.decision";
 
     public final static String INITIATOR = "initiator";
     public final static String INITIATOR_ID = "initiator.id";

@@ -354,6 +354,12 @@ public class SelfExtractRun extends SelfExtract {
 
     private static void attachJavaAgent(String extractDir) {
 
+        if (!System.getProperty("java.specification.version").startsWith("1.")) {
+            // On Java 9+ we use a newer, more proper, mechanism for self-attach which does not require
+            // the following reflection hacks
+            return;
+        }
+
         File javaAgent = new File(extractDir, "wlp/bin/tools/ws-javaagent.jar");
         if (javaAgent.exists()) {
             String javaHome = System.getProperty("java.home");
@@ -367,7 +373,7 @@ public class SelfExtractRun extends SelfExtract {
                 try {
                     URL toolsJar = new URL("file:" + f.getCanonicalPath());
                     URLClassLoader cl = new URLClassLoader(new URL[] { thisJar, toolsJar }, null);
-                    Class clazz = cl.loadClass("wlp.lib.extract.AgentAttach");
+                    Class<?> clazz = cl.loadClass("wlp.lib.extract.AgentAttach");
                     Method m = clazz.getDeclaredMethod("attach", new Class[] { String.class });
                     Object result = m.invoke(null, new String[] { javaAgent.getAbsolutePath() });
                     if (result != null) {
@@ -437,15 +443,7 @@ public class SelfExtractRun extends SelfExtract {
 
         // Only run in 1 JVM if running on a Java SDK
         if (result) {
-            String javaHome = System.getProperty("java.home");
-            File f = new File(javaHome, "lib/tools.jar");
-            boolean foundToolsJar = f.exists();
-            if (!foundToolsJar) {
-                f = new File(javaHome, "../lib/tools.jar");
-                foundToolsJar = f.exists();
-            }
-
-            result &= foundToolsJar;
+            result &= isAttachAvailable();
         } else if (outputMessage) {
             out("RUN_IN_CHILD_JVM_IBM_AGENT_ISSUE");
             outputMessage = false;
@@ -456,5 +454,26 @@ public class SelfExtractRun extends SelfExtract {
         }
 
         return result;
+    }
+
+    private static boolean isAttachAvailable() {
+        // For JDK 8 look for $JAVA_HOME/tools.jar
+        if (System.getProperty("java.specification.version").startsWith("1.")) {
+            String javaHome = System.getProperty("java.home");
+            if (new File(javaHome, "lib/tools.jar").exists())
+                return true;
+            if (new File(javaHome, "../lib/tools.jar").exists())
+                return true;
+            return false;
+        }
+        // For JDK 9+ we just check if we can load one of the attach classes
+        else {
+            try {
+                Class.forName("com.sun.tools.attach.VirtualMachine");
+                return true;
+            } catch (ClassNotFoundException e) {
+                return false;
+            }
+        }
     }
 }

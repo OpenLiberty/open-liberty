@@ -44,20 +44,20 @@ public class HttpServletRequestInjectionProxy extends HttpServletRequestWrapper 
                                                               public Object invoke(Object proxy,
                                                                                    Method method,
                                                                                    Object[] args) throws Throwable {
-                                                                  if (tc.isEntryEnabled()) {
-                                                                      Tr.entry(tc, "invoke");
-                                                                  }
                                                                   Object result;
                                                                   if ("toString".equals(method.getName()) && (method.getParameterTypes().length == 0)) {
                                                                       result = "Injection Proxy for " + contextClass.getName();
-                                                                      if (tc.isEntryEnabled()) {
-                                                                          Tr.exit(tc, "invoke", result);
+                                                                      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                                                          Tr.debug(tc, "invoke - toString " + result);
                                                                       }
                                                                       return result;
                                                                   }
+                                                                  if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                                                                      Tr.entry(tc, "invoke " + method + " ", args);
+                                                                  }
                                                                   result = method.invoke(getHttpServletRequest(), args);
-                                                                  if (tc.isEntryEnabled()) {
-                                                                      Tr.exit(tc, "invoke", result);
+                                                                  if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                                                                      Tr.exit(tc, "invoke " + result);
                                                                   }
                                                                   return result;
                                                               }
@@ -66,13 +66,16 @@ public class HttpServletRequestInjectionProxy extends HttpServletRequestWrapper 
 
     private static HttpServletRequest getHttpServletRequest() {
         final String methodName = "getHttpServletRequest";
-        if (tc.isEntryEnabled()) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, methodName);
         }
         // use runtimeContext from TLS
         InjectionRuntimeContext runtimeContext = InjectionRuntimeContextHelper.getRuntimeContext();
         // get the real context from the RuntimeContext
         Object context = runtimeContext.getRuntimeCtxObject(contextClass.getName());
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, methodName, context);
+        }
         return (HttpServletRequest) context;
     }
 

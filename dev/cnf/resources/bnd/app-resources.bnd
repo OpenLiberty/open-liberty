@@ -40,9 +40,9 @@
 # +--------------------------------------------------------------------------+
 #
 
-# NOTE: Bundle-SymbolicName cannot contains "-"
+# NOTE: Bundle-SymbolicName cannot contain "-" or a number after "."
 Service-Component: \
-  ${bSymbolicName}_${bVersion}.ResourceProvider; \
+  ${bSymbolicName}_${replace;${bVersion};\\.;_}.ResourceProvider; \
   implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
   provide:=com.ibm.wsspi.classloading.ResourceProvider; \
   configuration-policy:=ignore; \

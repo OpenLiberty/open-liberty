@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.security.token.SingleSignonToken;
 
@@ -47,7 +48,7 @@ public class WebSecurityHelperImpl {
 
     /**
      * Gets the LTPA cookie from the given subject
-     * 
+     *
      * @param subject
      * @return
      * @throws Exception
@@ -78,7 +79,7 @@ public class WebSecurityHelperImpl {
      * and builds a ltpa cookie out of it for use on downstream web invocations.
      * The caller must check for null return value only when not null
      * that getName and getValue can be invoked on the returned Cookie object
-     * 
+     *
      * @return an object of type javax.servlet.http.Cookie. When the returned value is not
      *         null use Cookie methods getName() and getValue() to set the Cookie header
      *         on an http request with header value of Cookie.getName()=Cookie.getValue()
@@ -116,6 +117,16 @@ public class WebSecurityHelperImpl {
      */
     public static WebAppSecurityConfig getWebAppSecurityConfig() {
         return webAppSecConfig;
+    }
+
+    /**
+     * Extracts the JWT cookie name for use on downstream web invocations.
+     * Return null when the service is not started or activated.
+     *
+     * @return a String.
+     */
+    public static String getJwtCookieName() {
+        return JwtSSOTokenHelper.getJwtCookieName();
     }
 
 }

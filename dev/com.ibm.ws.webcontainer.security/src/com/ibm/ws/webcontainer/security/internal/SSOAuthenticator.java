@@ -257,9 +257,7 @@ public class SSOAuthenticator implements WebAuthenticator {
      */
     private String getJwtBearerToken(HttpServletRequest req) {
         String token = getBearerTokenFromHeader(req);
-        if (token == null) {
-            token = getBearerTokenFromParameter(req);
-        }
+      
         return token;
     }
 

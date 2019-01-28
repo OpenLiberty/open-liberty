@@ -58,21 +58,35 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
     private final boolean allowLifeCycleMethods;
 
     /**
+     * Hash code for this instance.
+     */
+    private final int hash;
+
+    /**
+     * Unique name for this instance.
+     */
+    private final String name;
+
+    /**
      * Constructor for OSGi code path.
      */
     @Trivial
     public ManagedExecutorImpl() {
         super();
         allowLifeCycleMethods = false;
+        hash = super.hashCode();
+        name = "ManagedExecutor@" + Integer.toHexString(hash);
     }
 
     /**
      * Constructor for MicroProfile Concurrency (ManagedExecutorBuilder and CDI injected ManagedExecutor).
      */
-    public ManagedExecutorImpl(String name, PolicyExecutor policyExecutor, WSContextService mpThreadContext,
+    public ManagedExecutorImpl(String name, int hash, PolicyExecutor policyExecutor, WSContextService mpThreadContext,
                                AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> tranContextProviderRef) {
         super(name, policyExecutor, mpThreadContext, tranContextProviderRef);
         allowLifeCycleMethods = true;
+        this.hash = hash;
+        this.name = name;
     }
 
     @Activate
@@ -114,6 +128,12 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
     @Override
     public <U> CompletionStage<U> failedStage(Throwable ex) {
         return ManagedCompletableFuture.failedStage(ex, this);
+    }
+
+    @Override
+    @Trivial
+    public int hashCode() {
+        return hash;
     }
 
     @Override
@@ -200,6 +220,12 @@ public class ManagedExecutorImpl extends AbstractManagedExecutorService implemen
     @Override
     public <U> CompletableFuture<U> supplyAsync(Supplier<U> supplier) {
         return ManagedCompletableFuture.supplyAsync(supplier, this);
+    }
+
+    @Override
+    @Trivial
+    public String toString() {
+        return name;
     }
 
     @Override

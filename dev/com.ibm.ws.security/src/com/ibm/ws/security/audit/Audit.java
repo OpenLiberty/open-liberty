@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ public class Audit {
         SECURITY_JMS_AUTHZ_01,
         SECURITY_JMS_AUTHN_TERMINATE_01,
         SECURITY_JMS_CLOSED_CONNECTION_01,
+	SECURITY_SAF_AUTHZ_DETAILS,
         JMX_NOTIFICATION_01,
         JMX_MBEAN_01,
         JMX_MBEAN_ATTRIBUTES_01,

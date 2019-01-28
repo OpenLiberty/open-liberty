@@ -22,6 +22,9 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: concurrent
 
+Export-Package:\
+  com.ibm.ws.concurrent.mp.service.*
+
 Import-Package:\
   javax.inject;resolution:=optional,\
   *
