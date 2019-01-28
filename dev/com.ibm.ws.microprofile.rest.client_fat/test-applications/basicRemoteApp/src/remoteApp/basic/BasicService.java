@@ -27,6 +27,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -75,5 +76,18 @@ public class BasicService extends Application {
             throw new NotFoundException();
         }
         return widgets.remove(name);
+    }
+
+    @POST
+    @Path("/batch")
+    public Response batch(Widget widget) {
+        createNewWidget(widget);
+        return Response.accepted().build();
+    }
+
+    @DELETE
+    @Path("/batch")
+    public Response unbatch(Widget widget) {
+        return Response.accepted( delete(widget.getName()) ).build();
     }
 }
