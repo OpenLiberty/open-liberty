@@ -24,6 +24,6 @@
 
 # All messages must use the range CWWCK1190 to CWWCK1199 except those specifically identified as moved
 
-CWWKC1190.duplicate.namedinstance=CWWKC1190E: Multiple injections points produce a {0} that is qualified by @NamedInstance("{1}"). The conflicting injection points are: {2}.
-CWWKC1190.duplicate.namedinstance.explanation=For any given NamedInstance value N, the combination of @NamedInstance("N") with @ManagedExecutorConfig or @ThreadContextConfig is permitted on at most one injection point.
-CWWKC1190.duplicate.namedinstance.useraction=Remove the @ManagedExecutorConfig or @ThreadContextConfig annotation from one of the injection points so that it shares the instance produced by the other injection point. Alternatively, choose a different NamedInstance value for one of the injection points such that separate instances are produced for each.
+CWWKC1190.duplicate.namedinstance=CWWKC1190E: Multiple injections points produce a {0} that is qualified by @NamedInstance("{1}"). The conflicting injection points are: {2}
+CWWKC1190.duplicate.namedinstance.explanation=For any given NamedInstance value N, the combination of @NamedInstance("N") with @ManagedExecutorConfig or @ThreadContextConfig is allowed for one injection point only.
+CWWKC1190.duplicate.namedinstance.useraction=Remove the @ManagedExecutorConfig or @ThreadContextConfig annotation from one of the injection points so that it shares the instance produced by the other injection point. Alternatively, choose a different NamedInstance value for one of the injection points so that separate instances are produced for each.
