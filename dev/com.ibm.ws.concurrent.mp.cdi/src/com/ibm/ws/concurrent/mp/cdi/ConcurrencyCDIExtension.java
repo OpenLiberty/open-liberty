@@ -48,6 +48,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.ws.concurrent.mp.service.ConcurrencyCDIHelper;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            property = { "api.classes=" +
@@ -88,6 +89,8 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
      */
     private ManagedExecutor createManagedExecutor(String injectionPointName, ManagedExecutorConfig config) {
         ManagedExecutor.Builder b = ManagedExecutor.builder();
+        ConcurrencyCDIHelper.setName(b, injectionPointName);
+
         mpConfig = mpConfigAccessor == null ? null : mpConfigAccessor.getConfig();
         if (mpConfig == null) {
             if (config != null) {
@@ -149,6 +152,8 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
      */
     private ThreadContext createThreadContext(String injectionPointName, ThreadContextConfig config) {
         ThreadContext.Builder b = ThreadContext.builder();
+        ConcurrencyCDIHelper.setName(b, injectionPointName);
+
         mpConfig = mpConfigAccessor == null ? null : mpConfigAccessor.getConfig();
         if (mpConfig == null) {
             if (config != null) {
