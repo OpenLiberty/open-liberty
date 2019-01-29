@@ -920,6 +920,28 @@ public class FATTest extends AbstractAppManagerTest {
         server.stopServer("CWWKZ0014W");
     }
 
+    @Test
+    public void testConfigureInvalidApplication() throws Exception {
+        final String method = testName.getMethodName();
+
+        try {
+            //load a new server xml
+            server.setServerConfigurationFile("/appsConfigured/server.xml");
+
+            server.copyFileToLibertyServerRoot("apps",
+                                               "/bootstrap.properties");
+            server.renameLibertyServerRootFile("apps/bootstrap.properties", "apps/snoop.war");
+            server.startServer(method + ".log");
+
+            // Because the required location attribute is missing, config will issue an error
+            assertNotNull("Invalid archive message not found", server.waitForStringInLog("CWWKM0101E.*"));
+            assertNotNull("Invalid resource message not found", server.waitForStringInLog("CWWKZ0021E.*"));
+        } finally {
+            pathsToCleanup.add(server.getServerRoot() + "/apps");
+            server.stopServer("CWWKZ0021E", "CWWKM0101E");
+        }
+    }
+
     /**
      * This is a test for defect 48922 to make sure that when application monitor is enabled on a directory and the directory changes in the server.xml then the application is
      * removed
