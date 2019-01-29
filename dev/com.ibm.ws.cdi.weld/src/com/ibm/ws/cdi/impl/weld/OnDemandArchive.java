@@ -22,6 +22,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
 import com.ibm.websphere.csi.J2EEName;
+import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.internal.archive.AbstractCDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.Application;
@@ -72,9 +73,9 @@ public class OnDemandArchive extends AbstractCDIArchive implements CDIArchive {
             } else {
 
                 StringBuilder sb = new StringBuilder();
-                sb.append(CDIUtils.getSymbolicNameWithoutMinorOrMicroVersionPart(bundle.getSymbolicName()));
+                sb.append(CDIServiceUtils.getSymbolicNameWithoutMinorOrMicroVersionPart(bundle.getSymbolicName()));
                 sb.append("_");
-                sb.append(CDIUtils.getOSGIVersionForBndName(bundle.getVersion()));
+                sb.append(CDIServiceUtils.getOSGIVersionForBndName(bundle.getVersion()));
 
                 toReturn = sb.toString();
                 bdaNameCache.put(mapKey, toReturn);

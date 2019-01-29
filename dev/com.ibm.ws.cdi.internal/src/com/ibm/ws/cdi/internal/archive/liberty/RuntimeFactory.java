@@ -18,10 +18,10 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.BundleWiring;
 
 import com.ibm.ws.cdi.CDIException;
+import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.cdi.internal.interfaces.Application;
 import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
-import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
@@ -117,9 +117,9 @@ public class RuntimeFactory {
             BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
             ClassLoader loader = bundleWiring.getClassLoader();
             if (container != null) {
-                ExtensionContainerInfo containerInfo = new ExtensionContainerInfo(container, loader, CDIUtils.getSymbolicNameWithoutMinorOrMicroVersionPart(bundle.getSymbolicName())
+                ExtensionContainerInfo containerInfo = new ExtensionContainerInfo(container, loader, CDIServiceUtils.getSymbolicNameWithoutMinorOrMicroVersionPart(bundle.getSymbolicName())
                                                                                                      + "_"
-                                                                                                     + CDIUtils.getOSGIVersionForBndName(bundle.getVersion()), extraClasses, extraAnnotations, applicationBDAsVisible, extClassesOnly);
+                                                                                                     + CDIServiceUtils.getOSGIVersionForBndName(bundle.getVersion()), extraClasses, extraAnnotations, applicationBDAsVisible, extClassesOnly);
 
                 extensionArchive = new ExtensionArchiveImpl(containerInfo, this);
                 ExtensionArchive oldExtensionArchive = extensionArchives.putIfAbsent(bundle, extensionArchive);
