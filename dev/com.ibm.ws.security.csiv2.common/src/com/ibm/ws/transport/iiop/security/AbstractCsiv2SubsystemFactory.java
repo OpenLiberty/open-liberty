@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,25 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.transport.iiop.security;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.security.csiv2.config.ssl.SSLConfig;
-import com.ibm.ws.security.csiv2.util.SecurityServices;
-import com.ibm.ws.ssl.optional.SSLSupportOptional;
-import com.ibm.ws.transport.iiop.security.config.ssl.yoko.SocketFactory;
-import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
-import com.ibm.ws.transport.iiop.spi.ReadyListener;
-import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
-import com.ibm.wsspi.ssl.SSLSupport;
-import org.apache.yoko.osgi.locator.LocalFactory;
-import org.apache.yoko.osgi.locator.Register;
-import org.apache.yoko.osgi.locator.ServiceProvider;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,12 +22,31 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.yoko.osgi.locator.LocalFactory;
+import org.apache.yoko.osgi.locator.Register;
+import org.apache.yoko.osgi.locator.ServiceProvider;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.csiv2.config.ssl.SSLConfig;
+import com.ibm.ws.security.csiv2.util.SecurityServices;
+import com.ibm.ws.ssl.optional.SSLSupportOptional;
+import com.ibm.ws.transport.iiop.security.config.ssl.yoko.SocketFactory;
+import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
+import com.ibm.ws.transport.iiop.spi.ReadyListener;
+import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
+import com.ibm.wsspi.ssl.SSLSupport;
+
 /**
  *
  */
 public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
     private static final TraceComponent tc = Tr.register(AbstractCsiv2SubsystemFactory.class);
-    protected static final long TIMEOUT_SECONDS = 10;
+    protected static long TIMEOUT_SECONDS = 10;
 
     private enum MyLocalFactory implements LocalFactory {
         INSTANCE;
@@ -131,6 +131,13 @@ public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
     /** {@inheritDoc} */
     @Override
     public void register(ReadyListener listener, Map<String, Object> properties, List<IIOPEndpoint> endpoints) {
+        String timeoutValue = (String) properties.get("orbSSLInitTimeout");
+        if (timeoutValue != null & timeoutValue.length() > 0) {
+            TIMEOUT_SECONDS = Long.valueOf(timeoutValue);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "TIMEOUT_SECONDS = " + TIMEOUT_SECONDS);
+            }
+        }
         ReadyRegistration rr = new ReadyRegistration(extractSslRefs(properties, endpoints), listener);
         regs.add(rr);
         rr.check();
