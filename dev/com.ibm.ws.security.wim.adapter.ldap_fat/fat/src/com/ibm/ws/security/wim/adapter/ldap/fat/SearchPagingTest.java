@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,7 +61,7 @@ public class SearchPagingTest {
     private static EmbeddedApacheDS ldapServer = null;
     private static final String LDAP_BASE_ENTRY = "o=ibm,c=us";
 
-    private static final int MAX_ENTRIES = 100;
+    private static final int MAX_ENTRIES = 20;
 
     /**
      * Setup the test case.
@@ -160,6 +160,8 @@ public class SearchPagingTest {
         entry.add("objectclass", "organization");
         entry.add("o", "ibm");
         ldapServer.add(entry);
+
+        Log.info(c, methodName, "Added " + LDAP_BASE_ENTRY + ". Adding " + MAX_ENTRIES + " users and groups.");
 
         /*
          * Create the users and groups.
