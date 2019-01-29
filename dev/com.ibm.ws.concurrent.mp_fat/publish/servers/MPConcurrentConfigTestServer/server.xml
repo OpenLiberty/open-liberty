@@ -10,6 +10,7 @@
  -->
 <server>
     <featureManager>
+        <feature>appSecurity-2.0</feature>
         <feature>componenttest-1.0</feature>
         <feature>mpConfig-1.3</feature>
         <feature>mpConcurrency-1.0</feature>
@@ -21,8 +22,26 @@
     <include location="../fatTestPorts.xml"/>
     
     <application location="MPConcurrentConfigApp.war">
+        <application-bnd>
+            <security-role name="users">
+                <user name="user1"/>
+                <user name="user2"/>
+                <user name="user3"/>
+            </security-role>
+        </application-bnd>
         <classloader commonLibraryRef="customContextProviderLib"/>
     </application>
+
+    <basicRegistry id="basic" realm="TestRealm">
+        <user name="user1" password="pwd1"/>
+        <user name="user2" password="pwd2"/>
+        <user name="user3" password="pwd3"/>
+        <group name="users">
+            <member name="user1"/>
+            <member name="user2"/>
+            <member name="user3"/>
+        </group>
+    </basicRegistry>
 
     <library id="customContextProviderLib">
         <file name="${server.config.dir}/lib/customContextProviders.jar"/>
