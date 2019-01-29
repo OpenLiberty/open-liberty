@@ -2,7 +2,7 @@
 ###############################################################################
 # WebSphere Application Server liberty launch script
 #
-# Copyright IBM Corp. 2011, 2017
+# Copyright IBM Corp. 2011, 2019
 # The source code for this program is not published or other-
 # wise divested of its trade secrets, irrespective of what has
 # been deposited with the U.S. Copyright Office.
@@ -788,10 +788,26 @@ javaCmd()
 {
   JAVA_CMD_LOG=$1
   shift
+  
+  # Filter all of the -D and -X arguments off of the argument line and add them to $JVM_OPTIONS_QUOTED
+  REMAINING_ARGS=""
+  for option in "$@"; do
+    if [ -n "${option}" ]; then
+      if [ -z "${option##-D*}" ] || [ -z "${option##-X*}" ]; then
+        JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED '$option'"
+      elif [ -z "$REMAINING_ARGS" ] ; then
+        REMAINING_ARGS="$option"
+      else
+        REMAINING_ARGS="$REMAINING_ARGS $option"
+      fi
+    else
+      REMAINING_ARGS="$REMAINING_ARGS $option"
+    fi
+  done
 
   # Set all the parameters for the java command.  We use eval so that each line
   # in jvm.options is treated as a distinct argument.
-  eval "set -- ${JAVA_AGENT_QUOTED} ${JVM_OPTIONS_QUOTED} ${JAVA_DEBUG} ${JVM_ARGS} -jar ${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-server.jar "'"$@"'
+  eval "set -- ${JAVA_AGENT_QUOTED} ${JVM_OPTIONS_QUOTED} ${JAVA_DEBUG} ${JVM_ARGS} -jar ${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-server.jar ""$REMAINING_ARGS"
   ARGS="$@"
 
   # Do not add extra logic after the commands without preserving $?

@@ -1,7 +1,7 @@
 @echo off
 @REM WebSphere Application Server liberty launch script
 @REM
-@REM Copyright IBM Corp. 2011, 2017
+@REM Copyright IBM Corp. 2011, 2019
 @REM The source code for this program is not published or other-
 @REM wise divested of its trade secrets, irrespective of what has
 @REM been deposited with the U.S. Copyright Office.
@@ -546,7 +546,29 @@ goto:eof
   if exist "%JAVA_HOME%\lib\modules" (
     call:mergeJVMOptions "%WLP_INSTALL_DIR%\lib\platform\java\java9.options"
   )
-  
+
+  @REM Filter off all of the -D and -X arguments off of !PARAMS_QUOTED! and
+  @REM add them onto !JVM_OPTIONS!
+  set REMAINING_ARGS=
+  set INCLUDE_NEXT_ARG=F
+  for %%a in (%PARAMS_QUOTED%) do (
+    set CUR_ARG=%%a
+    if "!INCLUDE_NEXT_ARG!"=="T" (
+      set JVM_TEMP_OPTIONS=!JVM_TEMP_OPTIONS!=!CUR_ARG!
+      set INCLUDE_NEXT_ARG=F
+    ) else if "!CUR_ARG:~0,2!"=="-D" (
+      @REM key=value arguments get parsed as two separate tokens, so when we see
+      @REM a -Dkey=value option we need to set a flag to include the next arg
+	  set JVM_TEMP_OPTIONS=!JVM_TEMP_OPTIONS! !CUR_ARG!
+	  set INCLUDE_NEXT_ARG=T
+    ) else if "!CUR_ARG:~0,2!"=="-X" (
+      set JVM_TEMP_OPTIONS=!JVM_TEMP_OPTIONS! !CUR_ARG!
+    ) else (
+      set REMAINING_ARGS=!REMAINING_ARGS! !CUR_ARG!
+    )
+  )
+  set PARAMS_QUOTED=!REMAINING_ARGS!
+
   set JVM_OPTIONS=!JVM_OPTIONS!%JVM_TEMP_OPTIONS%
 goto:eof
 
