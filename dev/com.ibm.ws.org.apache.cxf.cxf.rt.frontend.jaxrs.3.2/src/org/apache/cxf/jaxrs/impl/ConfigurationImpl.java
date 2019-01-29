@@ -42,7 +42,7 @@ public class ConfigurationImpl implements Configuration {
     private Map<String, Object> props = new HashMap<>();
     private RuntimeType runtimeType;
     private Map<Object, Map<Class<?>, Integer>> providers =
-        new LinkedHashMap<Object, Map<Class<?>, Integer>>();
+        new LinkedHashMap<>();
     private Map<Feature, Boolean> features = new LinkedHashMap<Feature, Boolean>();
 
     public ConfigurationImpl(RuntimeType rt) {
@@ -54,7 +54,7 @@ public class ConfigurationImpl implements Configuration {
             this.props.putAll(parent.getProperties());
             this.runtimeType = parent.getRuntimeType();
 
-            Set<Class<?>> providerClasses = new HashSet<Class<?>>(parent.getClasses());
+            Set<Class<?>> providerClasses = new HashSet<>(parent.getClasses());
             for (Object o : parent.getInstances()) {
                 if (!(o instanceof Feature)) {
                     registerParentProvider(o, parent);
@@ -89,7 +89,7 @@ public class ConfigurationImpl implements Configuration {
 
     @Override
     public Set<Class<?>> getClasses() {
-        Set<Class<?>> classes = new HashSet<Class<?>>();
+        Set<Class<?>> classes = new HashSet<>();
         for (Object o : getInstances()) {
             classes.add(o.getClass());
         }

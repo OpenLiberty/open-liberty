@@ -15,12 +15,15 @@ Import-Package: \
   !org.osgi.service.blueprint.*,\
   !org.apache.cxf.configuration.blueprint,\
   !org.apache.cxf.configuration.spring,\
+  !org.apache.cxf.interceptor.security,\
+  !org.apache.cxf.rt.security.claims,\
+  !org.apache.cxf.rt.security.claims.interceptor,\
   javax.tools;resolution:=optional,\
   javax.validation;resolution:=optional,\
   com.ibm.json.java;resolution:=optional,\
   *
 
-exportVer=3.2.4
+exportVer=3.3.0
 
 Export-Package: com.ibm.ws.jaxrs20.cache,\
   org.apache.cxf.jaxrs;version=${exportVer},\

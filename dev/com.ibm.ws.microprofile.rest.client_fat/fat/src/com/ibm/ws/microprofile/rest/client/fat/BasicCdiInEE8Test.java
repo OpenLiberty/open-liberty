@@ -31,7 +31,19 @@ public class BasicCdiInEE8Test extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-        .andWith(new FeatureReplacementAction("mpRestClient-1.0", "mpRestClient-1.1").forServers("mpRestClient10.tolerateEE8"));
+         .andWith(new FeatureReplacementAction("mpRestClient-1.0", "mpRestClient-1.1")
+             .removeFeature("mpRestClient-1.2")
+             .addFeature("mpConfig-1.1")
+             .withID("mpRestClient-1.1")
+             .forServers("mpRestClient10.tolerateEE8"))
+         .andWith(FeatureReplacementAction.EE8_FEATURES()
+             .removeFeature("mpRestClient-1.1")
+             .removeFeature("mpRestClient-1.0")
+             .removeFeature("mpConfig-1.1")
+             .addFeature("mpRestClient-1.2")
+             .withID("mpRestClient-1.2")
+             .forServers("mpRestClient10.tolerateEE8"));
+
 
     private static final String appName = "basicCdiClientApp";
 

@@ -217,7 +217,7 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
             Tr.debug(tc, "shouldFind = " + shouldFind);
         }
         if (shouldFind == true) {
-            matchedValues = new MetadataMap<String, String>(); // Liberty change
+            matchedValues = new MetadataMap<>(); // Liberty change
 
             Map<ClassResourceInfo, MultivaluedMap<String, String>> matchedResources = JAXRSUtils.selectResourceClass(resources, rawPath, message);
 
@@ -318,11 +318,6 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
             //cri.isSingleton is not guaranteed to indicate we have a 'pure' singleton
             exchange.put(Message.SERVICE_OBJECT, rp.getInstance(message));
         }
-    }
-
-    @Override
-    public void handleFault(Message message) {
-        super.handleFault(message);
     }
 
     private Message createOutMessage(Message inMessage, Response r) {
