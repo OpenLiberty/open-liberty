@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.embeddable.impl;
 
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -160,7 +160,7 @@ public final class WSATRecoveryCoordinator implements RecoveryCoordinator, Seria
         if (tc.isEntryEnabled())
             Tr.entry(tc, "lookupRecoveryCoordinatorFactory", filter);
 
-        final BundleContext bundleContext = TxBundleTools.getBundleContext();
+        final BundleContext bundleContext = EmbeddableTxBundleTools.getBundleContext();
 
         if (bundleContext == null)
         {

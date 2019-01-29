@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.util;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2011 IBM Corporation and others.
+ * Copyright (c) 2002, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,9 @@ import java.security.PrivilegedExceptionAction;
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProvider;
@@ -39,8 +42,10 @@ import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.recoverylog.spi.RecLogServiceImpl;
 import com.ibm.ws.recoverylog.spi.RecoveryDirector;
 import com.ibm.ws.recoverylog.spi.RecoveryDirectorFactory;
+import com.ibm.ws.recoverylog.spi.RecoveryLogFactory;
 import com.ibm.ws.uow.UOWScopeCallback;
 import com.ibm.ws.uow.UOWScopeCallbackAgent;
+import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.tx.UOWEventListener;
 
 public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
@@ -65,6 +70,17 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
     protected String _recoveryIdentity = null;
     protected String _recoveryGroup = null;
 
+    private static boolean _xaResourceFactoryReady = false;
+    private boolean _waitForRecovery = false;
+    private boolean _tmsReady = false;
+    private static boolean _requireRecoveryLogFactory = false;
+    private static boolean _recoveryLogFactoryReady = false;
+    private static RecoveryLogFactory _recoveryLogFactory = null;
+    private static boolean _recoveryLogServiceReady = false;
+    private static boolean _requireDataSourceActive = false;
+
+    protected static BundleContext _bc = null;
+
     static public TMService.TMStates getState() {
         return _state;
     }
@@ -85,7 +101,11 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
         TMHelper.setTMService(this);
     }
 
-    // methods to handle dependency injection in osgi environment
+    /**
+     * Called by DS to inject reference to Config Provider
+     *
+     * @param p
+     */
     protected void setConfigurationProvider(ConfigurationProvider p) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "setConfigurationProvider", p);
@@ -111,9 +131,9 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "unsetConfigurationProvider", p);
         if (p != null) {
-            // Used to test whether we are logging to an RDBMS - if so a ResourceFactory will have been
+            // Used to test whether we are logging to an RDBMS
             // configured
-            if (p.getResourceFactory() == null) {
+            if (!p.isSQLRecoveryLog()) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Logging to a filesytem, shutdown now");
                 // Where transactions are logged to an RDBMS, shutdown is driven at the point where
@@ -127,6 +147,91 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
         }
         if (tc.isEntryEnabled())
             Tr.exit(tc, "unsetConfigurationProvider");
+    }
+
+    /**
+     * Called by DS to inject reference to XaResource Factory
+     *
+     * @param ref
+     */
+    protected void setXaResourceFactory(ServiceReference<ResourceFactory> ref) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "setXaResourceFactory, ref " + ref);
+
+        _xaResourceFactoryReady = true;
+
+        if (ableToStartRecoveryNow()) {
+            // Can start recovery now
+            try {
+                startRecovery();
+            } catch (Exception e) {
+                FFDCFilter.processException(e, "com.ibm.tx.jta.util.impl.TxTMHelper.setXaResourceFactory", "148", this);
+            }
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "setXaResourceFactory");
+    }
+
+    protected void unsetXaResourceFactory(ServiceReference<ResourceFactory> ref) {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "unsetXaResourceFactory, ref " + ref);
+    }
+
+    /**
+     * Called by DS to inject reference to RecoveryLog Factory
+     *
+     * @param ref
+     */
+    public void setRecoveryLogFactory(RecoveryLogFactory fac) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "setRecoveryLogFactory, factory: " + fac, this);
+        _recoveryLogFactory = fac;
+        _recoveryLogFactoryReady = true;
+
+        if (ableToStartRecoveryNow()) {
+            // Can start recovery now
+            try {
+                startRecovery();
+            } catch (Exception e) {
+                FFDCFilter.processException(e, "com.ibm.tx.jta.util.impl.TxTMHelper.setRecoveryLogFactory", "206", this);
+            }
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "setRecoveryLogFactory");
+    }
+
+    public void unsetRecoveryLogFactory(RecoveryLogFactory fac) {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "unsetRecoveryLogFactory, factory: " + fac, this);
+    }
+
+    /**
+     * Called by DS to inject reference to RecoveryLog Service
+     *
+     * @param ref
+     */
+    public void setRecoveryLogService(ServiceReference<RecLogServiceImpl> ref) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "setRecoveryLogService", ref);
+
+        _recoveryLogServiceReady = true;
+
+        if (ableToStartRecoveryNow()) {
+            // Can start recovery now
+            try {
+                startRecovery();
+            } catch (Exception e) {
+                FFDCFilter.processException(e, "com.ibm.tx.jta.util.impl.TxTMHelper.setRecoveryLogService", "148", this);
+            }
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "setRecoveryLogService");
+    }
+
+    public void unsetRecoveryLogService(ServiceReference<RecLogServiceImpl> ref) {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "unsetRecoveryLogService", ref);
     }
 
     @Override
@@ -162,15 +267,37 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             Tr.debug(tc, "asynchRecoveryProcessingComplete", t);
     }
 
+    @Override
+    public void start(boolean waitForRecovery) throws Exception {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "start", waitForRecovery);
+
+        // Get bundle context, for use by recovery in DS Service lookup.
+        retrieveBundleContext();
+
+        _tmsReady = true;
+        _waitForRecovery = waitForRecovery;
+
+        if (ableToStartRecoveryNow()) {
+            // Can start recovery now
+            try {
+                startRecovery();
+            } catch (Exception e) {
+                FFDCFilter.processException(e, "com.ibm.tx.jta.util.impl.TxTMHelper.start", "148", this);
+            }
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "start");
+    }
+
     /**
      * Non-WAS version.
      * Initialize the configuration and the recovery service.
      *
      */
-    @Override
-    public void start(boolean waitForRecovery) throws Exception {
+    public void startRecovery() throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "start", waitForRecovery);
+            Tr.entry(tc, "startRecovery");
 
         // Note that _recoverDBLogStarted is always false if we are logging to a filesystem.
         // If we are logging to an RDBMS, then we will start the TM which will spin off a thread
@@ -180,14 +307,13 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
         if (!_recoverDBLogStarted) {
             synchronized (this) {
                 TMHelper.setTMService(this);
-                ConfigurationProviderManager.start();
 
-                // Now that the config is loaded, initalize trace
+                // Initalize trace
                 Tr.reinitializeTracer();
 
-                // Test whether we are logging to an RDBMS - if so a ResourceFactory will have been configured
+                // Test whether we are logging to an RDBMS
                 final ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
-                if (cp != null && cp.getResourceFactory() != null) {
+                if (cp != null && cp.isSQLRecoveryLog()) {
                     _recoverDBLogStarted = true;
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Tran Logging to an RDBMS set recoverDBLogStarted flag");
@@ -277,16 +403,16 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                 setRecoveryAgent(txAgent);
 
                 // Fake recovery only mode if we're to wait
-                RecoveryManager._waitForRecovery = waitForRecovery;
+                RecoveryManager._waitForRecovery = _waitForRecovery;
 
                 // Kick off recovery
-                _recLogService.start();
+                _recLogService.startRecovery(_recoveryLogFactory);
 
                 // Defect RTC 99071. Don't make the STATE transition until recovery has been fully
                 // initialised, after replay completion but before resync completion.
                 setState(TMService.TMStates.RECOVERING);
 
-                if (waitForRecovery) {
+                if (_waitForRecovery) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Waiting for completion of asynchronous recovery");
                     _asyncRecoverySemaphore.waitEvent();
@@ -312,7 +438,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             Tr.debug(tc, "Tran Logging to an RDBMS and START processing is in progress");
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "start");
+            Tr.exit(tc, "startRecovery");
     }
 
     private synchronized void shutdown(boolean explicit, int timeout) {
@@ -409,6 +535,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
     public void start() throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "start");
+
         if (tc.isDebugEnabled()) {
             for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
                 Tr.debug(tc, " " + ste);
@@ -546,5 +673,77 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             Tr.exit(tc, "createRecoveryAgent", txAgent);
 
         return txAgent;
+    }
+
+    /**
+     * This method retrieves bundle context. There is a requirement to lookup the DS Services Registry during recovery.
+     * Any bundle context will do for the lookup - this method is overridden in the ws.tx.embeddable bundle so that if that
+     * bundle has started before the tx.jta bundle, then we are still able to access the Service Registry.
+     *
+     * @return
+     */
+    protected void retrieveBundleContext() {
+
+        BundleContext bc = TxBundleTools.getBundleContext();
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "retrieveBundleContext, bc " + bc);
+        _bc = bc;
+    }
+
+    public static BundleContext getBundleContext() {
+
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getBundleContext, bc " + _bc);
+        return _bc;
+    }
+
+    private boolean ableToStartRecoveryNow() {
+        if (tc.isEntryEnabled())
+            Tr.debug(tc, "ableToStartRecoveryNow");
+
+        boolean recoverNow = false;
+
+        // If we are logging to a Database then additional services need to be in place before we
+        // can recover.
+        ConfigurationProviderManager.start();
+        final ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Working with config provider: " + cp);
+        if (cp != null) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Need to coordinate: " + cp.needToCoordinateServices());
+        }
+
+        // If the ConfigurationProvider is a DefaultConfigurationProvider, then we are operating in a UT environment.
+        if (cp != null && !cp.needToCoordinateServices()) {
+            recoverNow = true;
+        } else {
+            if (cp != null && cp.isSQLRecoveryLog())
+                _requireDataSourceActive = true;
+
+            // Trace the set of flags that determine whether we can start recovery now.
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "_requireRecoveryLogFactory: " + _requireDataSourceActive +
+                             ", _waitForRecovery: " + _waitForRecovery +
+                             ", _tmsReady: " + _tmsReady +
+                             ", _recoveryLogServiceReady: " + _recoveryLogServiceReady +
+                             //                        ", _dataSourceFactoryReady: " + _dataSourceFactoryReady +
+                             ", _recoveryLogFactoryReady: " + _recoveryLogFactoryReady);
+
+            if (!_requireDataSourceActive) {
+                if (_waitForRecovery)
+                    // If the waitForRecovery flag has been specified then we need the full set of services in place before we can start recovery
+                    recoverNow = _tmsReady && _xaResourceFactoryReady && _recoveryLogServiceReady && _recoveryLogFactoryReady; // FOR NOW && _dataSourceFactoryReady;
+                else
+                    recoverNow = _tmsReady && _recoveryLogServiceReady;
+            } else {
+                // If logging to a database then we need the full set of services in place before we can start recovery
+                recoverNow = _tmsReady && _xaResourceFactoryReady && _recoveryLogServiceReady && _recoveryLogFactoryReady; // FOR NOW && _dataSourceFactoryReady;
+            }
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "ableToStartRecoveryNow", recoverNow);
+        return recoverNow;
     }
 }

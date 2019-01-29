@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 IBM Corporation and others.
+ * Copyright (c) 2013, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,15 +16,14 @@ import java.util.logging.Level;
 import com.ibm.tx.util.alarm.AlarmManager;
 import com.ibm.wsspi.resource.ResourceFactory;
 
-public interface ConfigurationProvider
-{
+public interface ConfigurationProvider {
     /**
      * <p>
      * The maximum period, in seconds, that a transaction may be active. If completion
      * processing for a transaction has not begun within the timeout period that
      * transaction will be marked rollback only.
      * </p>
-     * 
+     *
      * @return The maximum period, in seconds, that a transaction may be active.
      */
     public int getTotalTransactionLifetimeTimeout();
@@ -33,7 +32,7 @@ public interface ConfigurationProvider
      * <p>
      * The maximum period, in seconds, of a transaction's lifetime for which a client
      * may be inactive before the transaction will be marked rollback only.
-     * 
+     *
      * @return The client inactivity timeout period, in seconds.
      */
     public int getClientInactivityTimeout();
@@ -44,7 +43,7 @@ public interface ConfigurationProvider
      * begun programatically or imported into the transaction manager. Should a timeout
      * be greater than the maximum it will be capped to this maximum.
      * </p>
-     * 
+     *
      * @return The maximum allowed timeout value, in seconds, for imported or
      *         programatically begun transactions.
      */
@@ -57,7 +56,7 @@ public interface ConfigurationProvider
      * outcome of a transaction (i.e. commit or rollback) to a resource manager before
      * the transaction manager makes a heuristic decision.
      * </p>
-     * 
+     *
      * @return The maximum number of attempts to be made to deliver a transaction's
      *         outcome to a resource manager. A value of zero indicates that the outcome
      *         delivery should be retried for ever.
@@ -72,7 +71,7 @@ public interface ConfigurationProvider
      * outcome to a resource manager in the event of a transient failure. A value
      * of zero or less results in a transaction manager default being used.
      * </p>
-     * 
+     *
      * @return The period, in seconds, to wait between retry attempts.
      */
     public int getHeuristicRetryInterval();
@@ -111,9 +110,9 @@ public interface ConfigurationProvider
      * Returns the completion direction, i.e. commit, rollback, or manual, for
      * transactions that complete heuristically.
      * </p>
-     * 
+     *
      * @return The completion direction for heuristic transactions
-     * 
+     *
      * @see #HEURISTIC_COMPLETION_DIRECTION_COMMIT
      * @see #HEURISTIC_COMPLETION_DIRECTION_ROLLBACK
      * @see #HUERISTIC_COMPLETION_DIRECTION_MANUAL
@@ -125,7 +124,7 @@ public interface ConfigurationProvider
      * Returns the completion direction, i.e. commit, rollback, or manual, for
      * transactions that complete heuristically as a human-readable String.
      * </p>
-     * 
+     *
      * @return The completion direction for heuristic transactions
      */
     public String getHeuristicCompletionDirectionAsString();
@@ -136,7 +135,7 @@ public interface ConfigurationProvider
      * service's log files. The directoy name may be relative or absolute
      * and will be created if it does not already exist.
      * </p>
-     * 
+     *
      * @return The name of the directory in which the transaction logs will be stored.
      */
     public String getTransactionLogDirectory();
@@ -148,13 +147,13 @@ public interface ConfigurationProvider
      * Returns the size of the transaction log in kilobytes (KB). The minimum value
      * is 64KB; any value less than that will be rounded up to this minimum.
      * </p>
-     * 
+     *
      * @return The transaction log size in KB.
      */
     // TODO Do we want to allow the configuration of two log sizes? One for the transaction log and one for the partner log?
     public int getTransactionLogSize();
 
-    // TODO WAS-specific LPS setting? Do we want to support LPS in the componentised TM?    
+    // TODO WAS-specific LPS setting? Do we want to support LPS in the componentised TM?
     public boolean isLoggingForHeuristicReportingEnabled();
 
     public boolean isAcceptHeuristicHazard();
@@ -164,7 +163,7 @@ public interface ConfigurationProvider
      * to be used by the transaction manager. <code>null</code> may be
      * returned and indicates that the transaction manager should use its default
      * implementation.
-     * 
+     *
      * @return The AlarmManager implementation to be used by the transaction manager
      */
     public AlarmManager getAlarmManager();
@@ -178,10 +177,10 @@ public interface ConfigurationProvider
     /**
      * The Maximum Shutdown Delay configuration is an integer number of seconds
      * with the following semantics:<br>
-     * 
+     *
      * >=0 shutdown() will wait a maximum of this long for transactions to complete<br>
      * <0 shutdown() will wait indefinitely for transactions to complete
-     * 
+     *
      * @return The configured delay
      */
     public int getDefaultMaximumShutdownDelay();
@@ -219,7 +218,7 @@ public interface ConfigurationProvider
 
     /**
      * Sets the applId of the server.
-     * 
+     *
      * @param name The applId. Non-recoverable servers may have an applId but no name.
      */
     public void setApplId(byte[] name);
@@ -228,9 +227,22 @@ public interface ConfigurationProvider
      * Returns the applId of the server.
      * <p>
      * Non-recoverable servers may have an applid but not a name.
-     * 
+     *
      * @return The applId of the server.
      */
     public byte[] getApplId();
 
+    /**
+     * Return true if the Tran recovery logs are to be stored in a database.
+     * 
+     * @return
+     */
+    public boolean isSQLRecoveryLog();
+
+    /**
+     * Return true if this ConfigurationProvider has dependencies on other Declarative Services.
+     * 
+     * @return
+     */
+    public boolean needToCoordinateServices();
 }
