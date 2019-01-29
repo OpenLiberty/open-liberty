@@ -241,7 +241,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
+    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
     @Test
     public void MPJwtConfigUsingBuilderTests_Issuer_Invalid() throws Exception {
 
@@ -603,7 +603,8 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      */
     @Mode(TestMode.LITE)
     @Test
-    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
+    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException"})
+    @AllowedFFDC({"com.ibm.websphere.security.jwt.InvalidTokenException" })
     public void MPJwtConfigUsingBuilderTests_hs256_mismatchSharedKey() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_audience_hs256.xml");
