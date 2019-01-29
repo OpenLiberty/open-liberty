@@ -8,13 +8,13 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;com.ibm.ws.org.apache.felix:org.apache.felix.scr;2.1.15.ibm20181127-1;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;com.ibm.ws.org.apache.felix:org.apache.felix.scr;2.1.15.ibm20190207-2;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
    OSGI-INF=resources/OSGI-INF, \
-   @${repo;com.ibm.ws.org.apache.felix:org.apache.felix.scr;2.1.15.ibm20181127-1;EXACT}!/!META-INF/maven/*
+   @${repo;com.ibm.ws.org.apache.felix:org.apache.felix.scr;2.1.15.ibm20190207-2;EXACT}!/!META-INF/maven/*
 
 -buildpath: \
-	com.ibm.ws.org.apache.felix:org.apache.felix.scr;strategy=exact;version=2.1.15.ibm20181127-1
+	com.ibm.ws.org.apache.felix:org.apache.felix.scr;strategy=exact;version=2.1.15.ibm20190207-2
 	
 	
