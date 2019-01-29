@@ -52,7 +52,7 @@ public abstract class AbstractServiceFactoryBean {
     private Bus bus;
     private DataBinding dataBinding;
     private Service service;
-    private final List<FactoryBeanListener> listeners = new ModCountCopyOnWriteArrayList<FactoryBeanListener>();
+    private final List<FactoryBeanListener> listeners = new ModCountCopyOnWriteArrayList<>();
     private final Map<String, Object> sessionState = new HashMap<>();
 
     public abstract Service create();
