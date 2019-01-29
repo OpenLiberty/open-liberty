@@ -13,10 +13,10 @@ package com.ibm.ws.microprofile.reactive.streams.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.ServiceLoader;
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
@@ -33,8 +33,6 @@ import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsEn
 import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
 import org.eclipse.microprofile.reactive.streams.operators.spi.ToGraphable;
 import org.junit.Test;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import componenttest.app.FATServlet;
 
@@ -72,38 +70,23 @@ public class ReactiveStreamsTestServlet extends FATServlet {
     public void helloReactiveWorld() throws InterruptedException, ExecutionException {
 
         PublisherBuilder<Integer> data = ReactiveStreams.of(1, 2, 3, 4, 5);
-        ProcessorBuilder<Integer, Integer> filter = ReactiveStreams.<Integer> builder().dropWhile(n -> n == 3);
+        ProcessorBuilder<Integer, Integer> filter = ReactiveStreams.<Integer> builder().dropWhile(t -> t < 3);
 
-        Subscriber<Integer> console = new Subscriber<Integer>() {
+        IntegerSubscriber integerSubscriber = new IntegerSubscriber();
 
-            private Subscription sub;
+        data.via(filter).to(integerSubscriber).run();
+        integerSubscriber.startConsuming();
 
-            @Override
-            public void onComplete() {
-                System.out.println("onComplete");
-            }
+        while (!integerSubscriber.isComplete()) {
+            Thread.sleep(100);
+        }
 
-            @Override
-            public void onError(Throwable arg0) {
-                System.out.println("onError");
-            }
-
-            @Override
-            public void onNext(Integer arg0) {
-                System.out.println("Number received: " + arg0);
-                sub.request(1);
-            }
-
-            @Override
-            public void onSubscribe(Subscription arg0) {
-                sub = arg0;
-                sub.request(1L);
-                System.out.println("onSubscribe" + sub);
-            }
-        };
-
-        CompletionStage<Void> cs = data.via(filter).to(console).run();
-        cs.toCompletableFuture().get();
+        ArrayList<Integer> results = integerSubscriber.getResults();
+        assertEquals(3, results.size());
+        for (int i = 0; i < 3; i++) {
+            int res = results.get(i);
+            assertEquals(i + 3, res);
+        }
     }
 
     /**
