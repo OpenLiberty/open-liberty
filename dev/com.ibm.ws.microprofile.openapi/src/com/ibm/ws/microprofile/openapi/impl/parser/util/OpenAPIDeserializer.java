@@ -704,6 +704,13 @@ public class OpenAPIDeserializer {
                 pathItem.setOPTIONS(operation);
             }
         }
+        node = getObject("trace", obj, false, location, result);
+        if (node != null) {
+            Operation operation = getOperation(node, location + "(options)", result);
+            if (operation != null) {
+                pathItem.setTRACE(operation);
+            }
+        }
 
         Map<String, Object> extensions = getExtensions(obj);
         if (extensions != null && extensions.size() > 0) {
