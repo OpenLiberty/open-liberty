@@ -23,6 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -511,5 +512,43 @@ public class MPConcurrentCDITestServlet extends FATServlet {
             CurrentLocation.clear();
             tx.commit();
         }
+    }
+
+    /**
+     * Verify that we disallow propagating global transactions, but do allow propagating the absence of any transaction.
+     */
+    @Test
+    public void testTransactionContextPropagation() throws Exception {
+        ManagedExecutor executor = propagatedAB; // propagates ThreadContext.TRANSACTION
+
+        // valid to propagate empty transaction context
+        CompletableFuture<Integer> cf1 = executor.newIncompleteFuture();
+        CompletableFuture<Integer> cf2 = cf1.thenApply(i -> {
+            try {
+                return tx.getStatus();
+            } catch (SystemException x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        tx.begin();
+        try {
+            cf1.complete(50);
+            assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), cf2.get());
+
+            assertEquals(Status.STATUS_ACTIVE, tx.getStatus());
+
+            Future<?> f = executor.submit(() -> System.out.println("Should not be able to submit this task."));
+            fail("Submitted task from within a transaction when transaction context propagation is enabled: " + f);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null || !x.getMessage().startsWith("CWWKC1157E"))
+                throw x;
+        } finally {
+            tx.commit();
+        }
+
+        // valid to propagate empty transaction context
+        CompletableFuture<String> cf3 = cf2.thenApplyAsync(i -> "done");
+        assertEquals("done", cf3.get(TIMEOUT_MIN, TimeUnit.MINUTES));
     }
 }

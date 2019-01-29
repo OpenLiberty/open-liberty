@@ -175,7 +175,7 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
     public <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage) {
         CompletableFuture<T> newCompletableFuture;
 
-        SameThreadExecutor executor = new SameThreadExecutor(this);
+        UnusableExecutor executor = new UnusableExecutor(this);
         if (ManagedCompletableFuture.JAVA8)
             newCompletableFuture = new ManagedCompletableFuture<T>(new CompletableFuture<T>(), executor, null);
         else
@@ -197,7 +197,7 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
     public <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage) {
         ManagedCompletionStage<T> newStage;
 
-        SameThreadExecutor executor = new SameThreadExecutor(this);
+        UnusableExecutor executor = new UnusableExecutor(this);
         if (ManagedCompletableFuture.JAVA8)
             newStage = new ManagedCompletionStage<T>(new CompletableFuture<T>(), executor, null);
         else
