@@ -1,0 +1,9 @@
+<server>
+    <include location="../fatTestPorts.xml"/>
+    <featureManager>
+        <feature>jaxrs-2.0</feature>
+    </featureManager>
+
+    <application type="war" id="servicescope" name="servicescope" location="${server.config.dir}/apps/servicescope.war" />
+
+</server>
