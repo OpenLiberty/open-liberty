@@ -133,7 +133,7 @@ public class WASReactiveStreamsEngineImpl extends Engine implements ReactiveStre
     /** {@inheritDoc} */
     @Override
     public <T, R> SubscriberWithCompletionStage<T, R> buildSubscriber(Graph graph) throws UnsupportedStageException {
-        return buildSubscriber(graph);
+        return super.buildSubscriber(graph);
     }
 
 }
