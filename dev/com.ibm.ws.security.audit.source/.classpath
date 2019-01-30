@@ -2,34 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="resources"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.logging"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.service.component"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wsspi.org.osgi.service.component.annotations"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.org.osgi.annotation.versioning"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.collector"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.collector.manager"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.service"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.crypto.passwordutil"/>
-	<classpathentry kind="src" path="/com.ibm.websphere.javaee.servlet.3.0"/>
-	<classpathentry kind="src" path="/com.ibm.json4j"/>
-	<classpathentry kind="src" path="/com.ibm.ws.request.probes"/>
-	<classpathentry kind="src" path="/com.ibm.websphere.security"/>
-	<classpathentry kind="src" path="/com.ibm.ws.security"/>
-	<classpathentry kind="src" path="/com.ibm.ws.session"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.webcontainer.security"/>
-	<classpathentry kind="src" path="/com.ibm.ws.webcontainer"/>
-	<classpathentry kind="src" path="/com.ibm.ws.container.service"/>
-	<classpathentry kind="src" path="/com.ibm.ws.security.audit.utils"/>
-	<classpathentry kind="src" path="/com.ibm.websphere.security.wim.base"/>
-	<classpathentry kind="src" path="/com.ibm.websphere.rest.handler"/>
-	<classpathentry kind="src" path="/com.ibm.ws.messaging.comms.client"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.ssl"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wsspi.org.osgi.service.event"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.event"/>
-	<classpathentry kind="src" path="/com.ibm.ws.jmx"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.security.registry"/>
-	<classpathentry kind="src" path="/com.ibm.websphere.appserver.api.servlet"/>
-	<classpathentry kind="output" path="build/classes"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
