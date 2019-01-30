@@ -57,7 +57,7 @@ public class ThreadContextBean implements Bean<ThreadContext>, PassivationCapabl
     @Override
     @Trivial
     public String getName() {
-        return null; // because @Named qualifier is not present
+        return null; // because @Named qualifier is not present. See section 2.6.3, "Beans with no name", of CDI 2.0 spec.
     }
 
     @Override

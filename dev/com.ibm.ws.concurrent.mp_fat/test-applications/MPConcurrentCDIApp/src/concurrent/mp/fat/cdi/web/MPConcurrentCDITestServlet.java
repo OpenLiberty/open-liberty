@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.annotation.Annotation;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -30,6 +35,9 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
 import javax.annotation.Resource;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
@@ -57,6 +65,9 @@ public class MPConcurrentCDITestServlet extends FATServlet {
 
     @Inject
     ConcurrencyBean bean;
+
+    @Inject
+    BeanManager beanManager;
 
     @Inject
     ManagedExecutor noAnno;
@@ -153,6 +164,50 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     @Inject
     public void setMethodInjectedAnonymous(@ManagedExecutorConfig(maxAsync = 5) ManagedExecutor me) {
         this.methodInjectedAnonymous = me;
+    }
+
+    /**
+     * Use the BeanManager to find the bean for a ManagedExecutor produced by the container.
+     * Verify that it has no EL name and that NamedInstance is listed as a qualifier, but not ManagedExecutorConfig.
+     */
+    @Test
+    public void testBeanManagerLookupManagedExecutor() {
+        NamedInstance.Literal namedInstance_max2 = AccessController
+                        .doPrivileged((PrivilegedAction<NamedInstance.Literal>) () -> NamedInstance.Literal.of("max2"));
+        Set<Bean<?>> beans = beanManager.getBeans(ManagedExecutor.class, namedInstance_max2);
+        assertEquals(1, beans.size());
+        Bean<?> b = beans.iterator().next();
+        assertNull(b.getName()); // No EL name when @Named not present, per CDI spec 2.6.3 "Beans with no name"
+        Set<Annotation> qualifiers = b.getQualifiers();
+        NamedInstance namedInstance = null;
+        for (Annotation anno : qualifiers)
+            if (anno instanceof NamedInstance)
+                namedInstance = (NamedInstance) anno;
+            else if (!(anno instanceof Any))
+                fail("Unexpected qualifier " + anno);
+        assertEquals("max2", namedInstance.value());
+    }
+
+    /**
+     * Use the BeanManager to find the bean for a ThreadContext produced by the container.
+     * Verify that it has no EL name and that NamedInstance is listed as a qualifier, but not ThreadContextConfig.
+     */
+    @Test
+    public void testBeanManagerLookupThreadContext() {
+        NamedInstance.Literal namedInstance_namedThreadContext = AccessController
+                        .doPrivileged((PrivilegedAction<NamedInstance.Literal>) () -> NamedInstance.Literal.of("namedThreadContext"));
+        Set<Bean<?>> beans = beanManager.getBeans(ThreadContext.class, namedInstance_namedThreadContext);
+        assertEquals(1, beans.size());
+        Bean<?> b = beans.iterator().next();
+        assertNull(b.getName()); // No EL name when @Named not present, per CDI spec 2.6.3 "Beans with no name"
+        Set<Annotation> qualifiers = b.getQualifiers();
+        NamedInstance namedInstance = null;
+        for (Annotation anno : qualifiers)
+            if (anno instanceof NamedInstance)
+                namedInstance = (NamedInstance) anno;
+            else if (!(anno instanceof Any))
+                fail("Unexpected qualifier " + anno);
+        assertEquals("namedThreadContext", namedInstance.value());
     }
 
     @Test
