@@ -96,6 +96,12 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
         boolean isAnyTraceEnabled = TraceComponent.isAnyTracingEnabled();
         ExtendedLogEntry logEntry = (ExtendedLogEntry) le;
         Bundle b = logEntry.getBundle();
+        if (b == null) {
+            // This is possible in rare conditions;
+            // For example log entries for service events when the service is unregistered
+            // before we could get the bundle
+            return;
+        }
         OSGiTraceComponent tc = getTraceComponent(b);
         try {
             if (logEntry.getLogLevel() != LogLevel.ERROR) {
