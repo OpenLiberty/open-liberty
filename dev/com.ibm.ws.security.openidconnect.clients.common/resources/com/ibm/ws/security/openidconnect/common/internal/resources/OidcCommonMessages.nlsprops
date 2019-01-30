@@ -19,7 +19,7 @@
 
 #do not translate issuerIdentifier, iss
 #
-OIDC_IDTOKEN_VERIFY_ISSUER_ERR=CWWKS1751E: Validation failed for the ID token requested by [{0}] because the (iss) issuer [{1}] specified in the token does not match the [issuerIdentifier] attribute [{2}] for the provider specified in the OpenID Connect client or social login client configuration. Check the issuerIdentifier attribute on the client configuration.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR=CWWKS1751E: Validation failed for the ID token requested by [{0}] because the (iss) issuer [{1}] specified in the token does not match the [issuerIdentifier] attribute [{2}] for the provider specified in the OpenID Connect client configuration. Check the issuerIdentifier attribute on the client configuration.
 OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=ID token validation failed because the issuer specified in the OpenID Connect client (relying party or RP) or social login client configuration and the issuer in the token do not match.
 OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Make sure that the [issuerIdentifier] attribute specified in the OpenID Connect client (RP) or social login client configuration matches with the issuer for the OpenID Connect provider (OP) being used.
 
