@@ -24,7 +24,7 @@ Private-Package: \
   com.ibm.ws.security.audit.reader.*
 
 Include-Resource: \
-  OSGI-OPT/websphere/libs/ws-auditreader.jar=../com.ibm.ws.security.audit.reader.auditreader/build/libs/ws-auditreader.jar
+  OSGI-OPT/websphere/libs/ws-auditreader.jar=${repo;com.ibm.ws.security.audit.reader.auditreader}
 
 instrument.disabled: true
 
