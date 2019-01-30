@@ -264,8 +264,8 @@ public class MicroProfileJwtTaiRequest {
                 mpjwtConfiguration = mpJwtConfig;
             }
         }
-        if (jwtsso < 1 && mpjwt == 1) {
-            this.microProfileJwtConfig = mpjwtConfiguration;
+        if (jwtsso <= 1 && mpjwt == 1) {
+            this.microProfileJwtConfig = mpjwtConfiguration; 
         }
         return jwtsso <= 1 && mpjwt <= 1;
     }
