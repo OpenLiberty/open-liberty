@@ -1,0 +1,57 @@
+For a look "under the hood", cache data is written to an OSGi workares under folder "anno".  The exact location varies per configuration; typically, the bundle number of the annotation bundle is 41-43:
+
+That is:
+
+    wlp/usr/servers/<serverName>/
+        workarea/org.eclipse.osgi/<bundleNumber>/data/
+            anno/
+
+For example:
+
+    wlp/usr/servers/annoFat_server/
+        workarea/org.eclipse.osgi/43/data/
+            anno/
+
+Cache data is written to text files beneath this directory, with one folder per application, then, beneath each application, one folder per module and one folder per class path component.  Types of folders are distinguished by a prefix: "A_" for applications, "M_" for modules, and "C_" for module class path components.
+
+For one of my test applications, this directory structure is generated:
+
+  wlp/usr/servers/annoFat_server/workarea/org.eclipse.osgi/43/data/anno/
+    A_TestServlet40\
+      C_%2FTestServlet40.war\
+        classes
+        stamp
+        targets
+      C_%2FTestServlet40.war%2FWEB-INF%2Flib%2FTestServlet40.jar\
+      C_%2FTestServlet40.war%2FWEB-INF%2Flib%2FTestServletA.jar\
+      C_%2FTestServlet40.war%2FWEB-INF%2Flib%2FTestServletB.jar\
+      C_%2FTestServlet40.war%2FWEB-INF%2Flib%2FTestServletC.jar\
+      C_%2FTestServlet40.war%2FWEB-INF%2Flib%2FTestServletD.jar\
+      M_%2FTestServlet40.war\
+        C_excluded\
+        C_partial\
+        C_seed\
+        classes
+        containers
+        queries
+        resolved
+        unresolved
+
+The several text files may be reviewed to tell what classes and annotation targets have been discovered within an application.
+
+The file "queries" is a log of queries which were made against the annotation data.  In the above data, the results of one query are shown by this output to "queries":
+
+# ============================================================
+Query: AnnotationTargetsImpl_Targets.getAnnotatedClasses
+Timestamp: Mon, 28-Jan-2019 13:38:49 -0500
+Policies: SEED
+Type: Class
+Annotation: javax.servlet.annotation.WebServlet
+  Result: testservletc.jar.servlets.ServletC
+  Result: testservletd.jar.servlets.ServletD
+  Result: testservletb.jar.servlets.ServletB
+  Result: testservlet40.war.servlets.MyServlet
+  Result: testservleta.jar.servlets.ServletA
+  Result: testservlet40.jar.servlets.SimpleTestServlet
+# ============================================================
+

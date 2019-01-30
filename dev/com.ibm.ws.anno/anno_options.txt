@@ -1,0 +1,59 @@
+Annotation Scanning Options:
+  -- These options apply regardless of the options set for annotation caching.
+  -- These options control how annotation scanning is performed, regardless of
+     whether or how the results are cached.
+
+  JANDEX_ENABLE_PROPERTY_NAME = "com.ibm.ws.jandex.enable"
+  -- Values: [ true | false ]
+  -- Default: [ false ]
+  -- Controls whether Jandex indexes are read.
+  -- An alternate to setting configuration properties.
+
+  ANNO_SCAN_THREADS_PROPERTY_NAME = "com.ibm.ws.anno.scan.threads"
+  -- Values: [ -1 | 0 | 1..64 ]
+  -- Default: [ 8 ]
+  -- Controls the number of threads used for scanning independent class path components.
+  -- If set to 1, scans are performed synchronously.
+  -- If set to -1, the maximum write threads (up to 64) is allowed.
+  -- Scan thread pooling is per module.
+
+Annotation Caching Options:
+  -- These options are independent of the annotation scanning options.
+  -- These options control how the annotation scan data is managed, regardless
+     of how the scan data was initially obtained.
+
+  DISABLED_PROPERTY_NAME = "anno.cache.disabled"
+  -- Values: [ true | false ]
+  -- Default: [ false ]
+  -- Disable use of the annotations cache.  Regardless if whether any cache
+     files are present, don't use them.  Always do fresh scans.
+  -- Does not disable multi-threaded scans.
+
+  DIR_PROPERTY_NAME = "anno.cache.dir";
+  -- Values: Valid absolute or relative path
+  -- Default: [ "anno" ]
+  -- Optional directory override for the annotations cache.
+
+  READ_ONLY_PROPERTY_NAME = "anno.cache.readOnly"
+  -- Values: [ true | false ]
+  -- Default: [ false ]
+  -- Disable writes to the annotations cache.  Existing cache data will
+     be read, but new or invalidated data will not be overwritten.
+  -- Used when *new* writes are not allowed, but pre-cached
+     data is available and should be read. 
+
+  ALWAYS_VALID_PROPERTY_NAME = "anno.cache.alwaysValid"
+  -- Values: [ true | false ]
+  -- Default: [ false ]
+  -- Disables validity checking.  All cached data is assumed to be valid, and
+     is used without any timestamp or size checking.  This setting applies to
+     locations which are usually considered invalid, such as loose containers
+     and directories.
+
+  WRITE_THREADS_PROPERTY_NAME = "anno.cache.writeThreads";
+  -- Values: [ -1 | 0 | 1..64 ]
+  -- Default: [ 8 ]
+  -- Controls the number of write threads.  If set to 1, writes are performed
+     synchronously.  If set to -1, an unlimited number of write threads is allowed.
+     Write thread pooling is per application.
+
