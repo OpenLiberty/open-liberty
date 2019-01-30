@@ -2007,7 +2007,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         //PM59297 ...in case this servlet is a default servlet AND contains a ;jsessionid= which needs to be stripped off
 
         //Starting 18.0.0.4, use SERVLET_PATH_FOR_DEFAULT_MAPPING instead.
-        if (SERVLET_PATH_FOR_DEFAULT_MAPPING || WCCustomProperties.REMOVE_TRAILING_SERVLET_PATH_SLASH) {
+        if (path != null && (SERVLET_PATH_FOR_DEFAULT_MAPPING || WCCustomProperties.REMOVE_TRAILING_SERVLET_PATH_SLASH)) {
             if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //306998.15
                 logger.logp(Level.FINE, CLASS_NAME, "getServletPath", "stripping path -> " + path);
             }
