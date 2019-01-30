@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<web-app id="JacksonJsonIgnoreServlet" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  <display-name>JAX-RS JacksonPOJO Test</display-name>
+  <description>This is for servlet to test JacksonPOJO in JAX-RS.</description>
+  
+  <!-- SERVLET DEFINITIONS -->
+  <servlet>
+		<servlet-name>javax.ws.rs.core.Application</servlet-name>
+		<init-param>
+        	<param-name>javax.ws.rs.Application</param-name>
+        	<param-value>com.ibm.ws.jaxrs.fat.jacksonJsonIgnore.TestApplication</param-value>
+    	</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>javax.ws.rs.core.Application</servlet-name>
+		<url-pattern>/pojo/*</url-pattern>
+	</servlet-mapping>
+
+</web-app>
