@@ -1,0 +1,36 @@
+<server>
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+    	<feature>jaxb-2.2</feature>
+		<feature>jaxrs-2.0</feature>
+		<feature>servlet-3.1</feature>
+    </featureManager>
+ 
+    <include location="../fatTestPorts.xml"/>
+  	
+  	<!-- we'll use the arbitrary propname(n) names to help us see which target caused which property name to be set.  -->
+ 
+    <!-- next 5 test merging and overriding --> 
+    <webTarget uri="http://localhost:56789/resource"   propname1="resource"  mergeme1="mergeme_resource" /> 
+    <webTarget uri="http://localhost:56789/res*"       propname2="res*" mergeme1="mergeme_res*" /> 
+    <webTarget uri="http://localhost:56789"            propname3="nada"  mergeme1="mergeme_nada"/> 
+     <webTarget uri="http://localhost:56789/resource"  propname4="resource"  mergeme1="mergeme_resource" /> 
+    <webTarget uri="http://localhost:56789/resource/f*"  propname5="resource/f*" mergeme1="mergeme_resourceref*" /> 
+    
+    <!-- test authnToken param --> 
+    <webTarget uri="http://localhost:56789/saml*"       authnToken="saml" /> 
+    <webTarget uri="http://localhost:56789/oauth*"       authnToken="oauth" /> 
+    <webTarget uri="http://localhost:56789/ltpa*"       authnToken="ltpa" /> 
+    <webTarget uri="http://localhost:56789/bogus*"       authnToken="bogus" /> 
+    
+    <!-- test assorted proxy params --> 
+    <webTarget uri="http://localhost:56789/proxy*"       proxyHost="myProxyHost"  proxyPort="55555" proxyType="HTTP"/> 
+    
+    <!-- test that timeouts can be set --> 
+    <webTarget uri="http://localhost:56789/timeouts*"    connectionTimeout="5000" receiveTimeout="5000"  /> 
+    
+    <!-- test misc properties --> 
+    <webTarget uri="http://localhost:56789/misc*"   sslconfig="mysslRef"  disablecncheck="true"/>
+    
+    <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+</server>

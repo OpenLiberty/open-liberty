@@ -1,7 +1,5 @@
-package com.ibm.ws.transaction.test;
-
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +8,8 @@ package com.ibm.ws.transaction.test;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.transaction.test;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -31,7 +31,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.web.SimpleFS2PCCloudServlet;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -187,8 +186,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
 
     @Mode(TestMode.LITE)
     @Test
-    @ExpectedFFDC(value = { "java.lang.IllegalStateException" })
-    @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "java.lang.IllegalStateException" })
     // defect 227411, if FScloud002 starts slowly, then access to FScloud001's indoubt tx
     // XAResources may need to be retried (tx recovery is, in such cases, working as designed.
     public void testFSRecoveryCompeteForLog() throws Exception {

@@ -1,0 +1,63 @@
+/*******************************************************************************
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+#CMVCPATHNAME com.ibm.ws.security.audit.reader/resources/com/ibm/ws/security/audit/reader/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKS
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Error: {0}
+error.inputConsoleNotAvailable=Input console is not available.
+error.missingIO=Error, missing I/O device: {0}.
+
+usage=Usage: {0}
+task.unknown=Unknown task: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=Too many arguments exist.
+insufficientArgs=Insufficient arguments.
+invalidArg=The {0} argument is invalid.
+invalidValue=The {0} value is invalid for the {1} argument.
+missingArg=The {0} argument is missing.
+missingValue=A value is missing for the {0} argument.
+missingArg2=Either the {0} argument or the {1} argument must be provided.
+exclusiveArg=The {0} argument or the {1} argument must be specified, but not both.
+serverNotFound=The {0} specified server was not be found at the {1} location.
+missingArgs= The following arguments are missing: {0} and {1}.
+missingArgs3=The following arguments are missing: {0}, {1} and {2}.
+invalidFileLocations=The {0} fully qualified path, specified for the argument --auditFileLocation is the same as the {1} fully qualified path specified for the argument --outputFileLocation.  Both paths must be unique.
+invalidURLFormat=The {0} value specified for the {1} argument is not in fully-qualified file URL format.
+
+password.enterText=Enter password:
+password.reenterText=Re-enter password:
+password.readError=Error reading in password.
+password.entriesDidNotMatch=Passwords did not match.
+
+audit.NonWriteableOuputFile=The {0} value specified for --outputFileLocation is a non-writable file.  Ensure that the location specified for the output file is writable.
+audit.NoKeyStorePasswordValue=No keystore password was specified for the audit key store {0}.
+audit.MismatchingEncrypt=The audit log, {0}, is encrypted but the --encrypted argument was either not specified or was specified and set to false.
+audit.MismatchingSign=The audit log, {0}, is signed but the --signed argument was either not specified or was specifed and set to false.
+audit.MismatchingEncryptSign=The audit log, {0}, is encrypted and signed, but either the --signed or --encrypted argument was either not specified or was specified and set to false.
+security.audit.UnsupportedKeyStoreType=The {0} keystore type value for the {1} argument is not supported.
+security.audit.UnknownHost=Failed to get the host name of the machine on which the Audit Reader Utility is running. 
+security.audit.KeyStoreException=Exception was raised while trying to get an instance of the keystore with the specified keystore type and provider type.
+security.audit.NoSuchProviderException=Exception was raised while trying to get an instance of the keystore with the specified provider.  No such provider exists.
+security.audit.MalformedURLException=Exception was raised while trying to open the keystore.  The keystore location is malformed. 
+security.audit.CertificateException=A certificate exception was raised while trying to load the keystore.
+security.audit.NoSuchAlgorithmException=Exception was raised while loading the keystore.  A particular crypto algorithm was requested by is not available.
+security.audit.FileNotFound=The named file {0} does not exist. 
+security.audit.ErrorLoadingKeystore=Error loading the keystore {0}. The password may have been incorrectly specified. 
+security.audit.MismatchingEncKeystores=The input value, {0}, for the keystore specified to contain the certificate used to decrypt audit records does not match the keystore, {1}, specified in the audit log.
+security.audit.MismatchingSigningKeystores=The input value, {0}, for the keystore specified to contain the certificate used to unsign audit records does not match the keystore, {1}, specified in the audit log.
+security.audit.CannotFindCertificate=The {0} certificate alias does not exist in the {1} keystore.

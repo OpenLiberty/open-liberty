@@ -26,15 +26,17 @@ dependencies {
   ejbTools 'test:com.ibm.ws.ejbcontainer.fat_tools:1.+'
 }
 
-task addEJBTools << {
-  copy {
-    from configurations.ejbTools
-  	into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.kernel.instrument.serialfilter.fat.SerialFilterEnabled/lib/global"
-  }
+task addEJBTools {
+  doLast {
+    copy {
+      from configurations.ejbTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.kernel.instrument.serialfilter.fat.SerialFilterEnabled/lib/global"
+    }
 
-  copy {
-    from configurations.ejbTools
-  	into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.kernel.instrument.serialfilter.fat.SerialFilterDisabled/lib/global"
+    copy {
+      from configurations.ejbTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.kernel.instrument.serialfilter.fat.SerialFilterDisabled/lib/global"
+    }
   }
 }
 

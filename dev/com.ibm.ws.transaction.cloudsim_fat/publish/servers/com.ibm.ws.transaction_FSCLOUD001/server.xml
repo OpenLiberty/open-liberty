@@ -20,7 +20,7 @@
       <feature>osgiconsole-1.0</feature>
       <feature>cdi-1.2</feature>
     </featureManager>
-    
+      
     <transaction
         recoverOnStartup="true"
         waitForRecovery="false"

@@ -1,0 +1,21 @@
+<server>
+    <featureManager>
+        <feature>jaxrs-2.0</feature>
+    </featureManager>
+    
+    <application type="war" id="thirdpartyjerseypf" name="thirdpartyjerseypf" location="thirdpartyjerseypf.war">        
+    <classloader delegation="parentFirst"></classloader>
+    </application>
+
+	<application type="war" id="thirdpartyjerseypl" name="thirdpartyjerseypl" location="thirdpartyjerseypl.war">        
+    <classloader delegation="parentLast"></classloader>
+    </application>
+    
+  	<include location="../fatTestPorts.xml"/>
+  	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
+    <javaPermission className="java.util.PropertyPermission" name="org.jvnet.hk2.properties.bind.tracing.pattern" actions="read"/>
+    <javaPermission className="java.util.PropertyPermission" name="org.jvnet.hk2.properties.bind.tracing.stacks" actions="read"/>
+</server>

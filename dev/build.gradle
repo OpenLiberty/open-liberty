@@ -110,7 +110,7 @@ task testResults {
 }
 testResults.dependsOn zipTestReport
 
-task wrapper(type: Wrapper) {
+wrapper {
   jarFile = rootProject.file('.gradle-wrapper/gradle-wrapper.jar')
 }
 

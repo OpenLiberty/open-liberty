@@ -18,7 +18,7 @@ briefUsage=\
 Usage: java [JVM options] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
 \t-jar bin/tools/ws-server.jar serverName {0} [options]  
 scriptUsage=\
-Usage: {0} {1} serverName [options]
+Usage: {0} {1} serverName [options] [JVM options]
 
 use.actions=Actions:
 use.options=Options:

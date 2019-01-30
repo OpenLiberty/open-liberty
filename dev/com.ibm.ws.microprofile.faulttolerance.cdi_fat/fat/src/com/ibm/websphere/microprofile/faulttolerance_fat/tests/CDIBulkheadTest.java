@@ -57,7 +57,7 @@ public class CDIBulkheadTest extends FATServletClient {
 
     public static final long TEST_TWEAK_TIME_UNIT = 100;
     public static final long TIMEOUT = 5000;
-    public static final long FUTURE_THRESHOLD = 2000;
+    public static final long FUTURE_THRESHOLD = 6000;
 
     @BeforeClass
     public static void setup() throws Exception {

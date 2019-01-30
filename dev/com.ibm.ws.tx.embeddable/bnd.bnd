@@ -34,11 +34,18 @@ Export-Package: \
 
 WS-TraceGroup: Transaction
 
+Bundle-Activator: com.ibm.tx.jta.embeddable.impl.EmbeddableTxBundleTools
+
 Service-Component: \
   TMService; \
     implementation:=com.ibm.tx.jta.embeddable.impl.EmbeddableTMHelper; \
     provide:='com.ibm.tx.util.TMService,com.ibm.ws.uow.UOWScopeCallbackAgent'; \
-    configurationProvider//shutdown=com.ibm.tx.config.ConfigurationProvider
+    xaResourceFactory=com.ibm.tx.jta.XAResourceFactory; \
+    recoveryLogService=com.ibm.ws.recoverylog.spi.RecLogServiceImpl; \
+    recoveryLogFactory=com.ibm.ws.recoverylog.spi.RecoveryLogFactory; \
+    optional:='xaResourceFactory,RecoveryLogFactory';\
+    dynamic:='xaResourceFactory,RecoveryLogFactory';\
+    configurationProvider//shutdown=com.ibm.tx.config.ConfigurationProvider  
 
 instrument.disabled: true
 
@@ -48,6 +55,7 @@ instrument.disabled: true
 	com.ibm.tx.util;version=latest,\
 	com.ibm.ws.resource;version=latest,\
 	com.ibm.ws.logging.core,\
+	com.ibm.ws.kernel.service,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.ws.recoverylog;version=latest,\
 	com.ibm.websphere.org.osgi.core,\
