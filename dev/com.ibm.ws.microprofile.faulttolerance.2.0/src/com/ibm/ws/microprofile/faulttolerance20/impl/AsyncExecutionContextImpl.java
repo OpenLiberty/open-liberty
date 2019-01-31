@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState;
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
 /**
  * Stores context for one asynchronous method execution
@@ -30,6 +31,7 @@ public class AsyncExecutionContextImpl<W> extends SyncExecutionContextImpl {
     private final AtomicBoolean isCancelled = new AtomicBoolean(false);
     private boolean interruptOnCancellation;
     private Consumer<Boolean> cancelCallback;
+    private ThreadContextDescriptor threadContextDescriptor;
 
     public AsyncExecutionContextImpl(Method method, Object[] parameters) {
         super(method, parameters);
@@ -57,6 +59,14 @@ public class AsyncExecutionContextImpl<W> extends SyncExecutionContextImpl {
 
     public void setRetryState(RetryState retryState) {
         this.retryState = retryState;
+    }
+
+    public ThreadContextDescriptor getThreadContextDescriptor() {
+        return threadContextDescriptor;
+    }
+
+    public void setThreadContextDescriptor(ThreadContextDescriptor threadContextDescriptor) {
+        this.threadContextDescriptor = threadContextDescriptor;
     }
 
     public void setCancelCallback(Consumer<Boolean> cancelCallback) {

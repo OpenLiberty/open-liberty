@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance20.impl;
 
+import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ScheduledExecutorService;
@@ -23,6 +24,9 @@ import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState.BulkheadReservation;
+import com.ibm.wsspi.threadcontext.ThreadContext;
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
+import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
  * Executor for asynchronous methods which return a {@link CompletionStage}{@code<R>}
@@ -34,8 +38,8 @@ public class AsyncCompletionStageExecutor<R> extends AsyncExecutor<CompletionSta
     private static final TraceComponent tc = Tr.register(AsyncCompletionStageExecutor.class);
 
     public AsyncCompletionStageExecutor(RetryPolicy retry, CircuitBreakerPolicy cbPolicy, TimeoutPolicy timeoutPolicy, FallbackPolicy fallbackPolicy, BulkheadPolicy bulkheadPolicy,
-                                        ScheduledExecutorService executorService, MetricRecorder metricRecorder) {
-        super(retry, cbPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, executorService, metricRecorder);
+                                        ScheduledExecutorService executorService, WSContextService contextService, MetricRecorder metricRecorder) {
+        super(retry, cbPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, executorService, contextService, metricRecorder);
     }
 
     @Override
@@ -51,14 +55,22 @@ public class AsyncCompletionStageExecutor<R> extends AsyncExecutor<CompletionSta
             Tr.event(tc, "Method {0} final fault tolerance result: {1}", executionContext.getMethod(), result);
         }
 
-        if (result.isFailure()) {
-            returnWrapper.completeExceptionally(result.getFailure());
-        } else {
-            result.getResult().thenAccept(returnWrapper::complete);
-            result.getResult().exceptionally((ex) -> {
-                returnWrapper.completeExceptionally(ex);
-                return null;
-            });
+        // Completing the return wrapper may cause user code to run, so set the thread context first as we may be on an async thread
+        ThreadContextDescriptor threadContext = executionContext.getThreadContextDescriptor();
+        ArrayList<ThreadContext> contexts = threadContext.taskStarting();
+
+        try {
+            if (result.isFailure()) {
+                returnWrapper.completeExceptionally(result.getFailure());
+            } else {
+                result.getResult().thenAccept(returnWrapper::complete);
+                result.getResult().exceptionally((ex) -> {
+                    returnWrapper.completeExceptionally(ex);
+                    return null;
+                });
+            }
+        } finally {
+            threadContext.taskStopping(contexts);
         }
     }
 
