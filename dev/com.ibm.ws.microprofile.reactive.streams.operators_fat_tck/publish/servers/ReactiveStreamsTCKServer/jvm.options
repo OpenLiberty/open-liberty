@@ -1,1 +1,1 @@
--Xtrace:iprint=mt,methods={org/apache/maven/surefire/booter/ForkedBooter.main},trigger=method{org/apache/maven/surefire/booter/ForkedBooter.main,jstacktrace},stackdepth=1
+-Dcom.ibm.tools.attach.enable=yes

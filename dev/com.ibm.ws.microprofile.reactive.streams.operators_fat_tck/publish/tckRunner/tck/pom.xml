@@ -18,7 +18,7 @@
     <name>MicroProfile Reactive Streams TCK Runner TCK Module</name>
 
     <properties>
-        <microprofile.reactive.streams.version>1.0-M1</microprofile.reactive.streams.version>
+        <microprofile.reactive.streams.version>1.0</microprofile.reactive.streams.version>
         <arquillian.version>1.3.0.Final</arquillian.version>
 
         <!-- the below is used in arquillian.xml -->
@@ -56,22 +56,23 @@
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.microprofile.reactive.streams</groupId>
+            <groupId>org.eclipse.microprofile.reactive-streams-operators</groupId>
             <artifactId>microprofile-reactive-streams-operators-tck</artifactId>
             <version>${microprofile.reactive.streams.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.microprofile.reactive.streams</groupId>
-            <artifactId>microprofile-reactive-streams-operators</artifactId>
+            <groupId>org.eclipse.microprofile.reactive-streams-operators</groupId>
+            <artifactId>microprofile-reactive-streams-operators-api</artifactId>
             <version>${microprofile.reactive.streams.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.microprofile.reactive.streams</groupId>
-            <artifactId>microprofile-reactive-streams-operators-tck-arquillian</artifactId>
+            <groupId>org.eclipse.microprofile.reactive-streams-operators</groupId>
+            <artifactId>microprofile-reactive-streams-operators-core</artifactId>
             <version>${microprofile.reactive.streams.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
