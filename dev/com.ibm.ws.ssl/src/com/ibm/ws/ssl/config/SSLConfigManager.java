@@ -615,6 +615,11 @@ public class SSLConfigManager {
             globalConfigProperties.setProperty(prop.getKey(), (String) prop.getValue());
         }
 
+        // Check for dynamic outbound and default config conflicts
+        String outboundDefaultAlias = getGlobalProperty(LibertyConstants.SSLPROP_OUTBOUND_DEFAULT_ALIAS);
+        if (outboundDefaultAlias != null && isTransportSecurityEnabled())
+            outboundSSL.checkDefaultConflict();
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "loadGlobalProperties");
     }
