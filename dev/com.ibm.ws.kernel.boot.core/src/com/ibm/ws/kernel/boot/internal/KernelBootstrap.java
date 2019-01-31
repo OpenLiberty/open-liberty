@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 IBM Corporation and others.
+ * Copyright (c) 2013, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ import com.ibm.ws.kernel.boot.LaunchException;
 import com.ibm.ws.kernel.boot.Launcher;
 import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.security.WLPDynamicPolicy;
+import com.ibm.ws.kernel.boot.utils.SequenceNumber;
 import com.ibm.ws.kernel.internal.classloader.BootstrapChildFirstJarClassloader;
 import com.ibm.ws.kernel.internal.classloader.BootstrapChildFirstURLClassloader;
 import com.ibm.ws.kernel.productinfo.DuplicateProductInfoException;
@@ -48,7 +49,6 @@ import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 import com.ibm.ws.kernel.provisioning.NameBasedLocalBundleRepository;
 import com.ibm.ws.kernel.provisioning.ServiceFingerprint;
 import com.ibm.ws.kernel.provisioning.VersionUtility;
-import com.ibm.ws.logging.utils.SequenceNumber;
 
 /**
  * Bootstrap the runtime: Resolve the few jar files required to construct the nested
