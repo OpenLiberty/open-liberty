@@ -15,7 +15,7 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.org.eclipse.microprofile.reactive.streams.operators-1.0
 -bundles=\
   com.ibm.ws.microprofile.reactive.streams.operators, \
-  com.ibm.ws.smallrye.reactive.streams.operators.1.0, \
+  com.ibm.ws.io.smallrye.reactive.streams.operators.1.0, \
   com.ibm.ws.io.reactivex.rxjava.2.2
 kind=noship
 edition=full
