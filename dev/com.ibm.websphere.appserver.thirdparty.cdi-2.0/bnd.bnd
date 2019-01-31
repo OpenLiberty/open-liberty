@@ -24,4 +24,4 @@ Import-Package:*
 publish.wlp.jar.suffix: dev/api/third-party
 
 -buildpath: \
-	com.ibm.ws.org.jboss.weld.3.0.5;version=latest
+	com.ibm.ws.org.jboss.weld3;version=latest
