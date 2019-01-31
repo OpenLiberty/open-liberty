@@ -334,7 +334,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * 
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
+    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
     @Test
     public void MPJwtConfigUsingBuilderTests_Audience_NotSpecifiedInRS() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_orig.xml");
@@ -356,7 +356,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * 
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
+    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
     @Test
     public void MPJwtConfigUsingBuilderTests_Audience_NotSpecifiedInJwt() throws Exception {
         super.restoreTestServers();
@@ -380,7 +380,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * @throws Exception
      */
     @Test
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
+    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
     public void MPJwtConfigUsingBuilderTests_Audience_Mismatch() throws Exception {
 
         super.restoreTestServers();
@@ -457,7 +457,8 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * 
      * @throws Exception
      */
-    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
+    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException"})
+    @AllowedFFDC({"com.ibm.websphere.security.jwt.InvalidTokenException" })
     @Test
     public void MPJwtConfigUsingBuilderTests_buildUsingJWK_mpJWTusingX509() throws Exception {
 
@@ -481,7 +482,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * 
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "com.ibm.websphere.security.jwt.InvalidClaimException" })
+    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "com.ibm.websphere.security.jwt.InvalidClaimException" })
     @Test
     public void MPJwtConfigUsingBuilderTests_buildUsingX509_mpJWTusingJWK() throws Exception {
 
@@ -551,7 +552,8 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * 
      * @throws Exception
      */
-    @ExpectedFFDC({ "java.security.cert.CertificateException", "com.ibm.websphere.security.jwt.KeyException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
+    @ExpectedFFDC({ "java.security.cert.CertificateException", "com.ibm.websphere.security.jwt.KeyException"})
+    @AllowedFFDC({"com.ibm.websphere.security.jwt.InvalidTokenException" })
     @Test
     public void MPJwtConfigUsingBuilderTests_KeyName_invalidKeyName() throws Exception {
 
@@ -651,8 +653,8 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * 
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException" })
-    @AllowedFFDC({ "com.ibm.websphere.security.jwt.KeyException", "java.security.cert.CertificateException", "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @AllowedFFDC({"com.ibm.websphere.security.jwt.InvalidTokenException"})
+    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.KeyException", "java.security.cert.CertificateException", "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
     @Test
     public void MPJwtConfigUsingBuilderTests_SSLRef_invalid_usingX509() throws Exception {
 
@@ -711,7 +713,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * 
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException" })
+    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException" })
     @Test
     public void MPJwtConfigUsingBuilderTests_TokenReuse_False() throws Exception {
 
@@ -961,7 +963,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * 
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
+    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
     @Test
     public void MPJwtConfigUsingBuilderTests_clockSkew_useTokenOutsideClockSkew() throws Exception {
 
