@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+// /I/ /W/ /G/ /U/    CMVC Keywords, replace / with %
+// 1.1 REGR/ws/code/jpa.test/jpafat10-Callback/src/main/resources/web/ibm-web-bnd.xml, WAS.jpa.fvt, WASX.REGR, rr1311.03 12/14/11 16:33:24
+//
+// IBM Confidential OCO Source Material
+// 5724-I63, 5724-H88 (C) COPYRIGHT International Business Machines Corp. 2011
+//
+// The source code for this program is not published or otherwise divested
+//  of its trade secrets, irrespective of what has been deposited with the
+//  U.S. Copyright Office.
+//
+// Module  :  ibm-web-bnd.xml
+//
+// Source File Description:
+//
+// FVT Test Suite Bucket Source File.
+//
+// Change Activity:
+//
+// Reason          Version   Date       Userid     Change Description
+// +++++++++++++++ +++++++++ ++++++++++ +++++++++  +++++++++++++++++++++++++++++++++++++++++
+// 724744          WASX      2011-12-14 jgrassel : Initial Release
+// +++++++++++++++ +++++++++ ++++++++++ +++++++++  +++++++++++++++++++++++++++++++++++++++++
+-->
+<web-bnd xmlns="http://websphere.ibm.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd"
+	version="1.0">
+
+	<virtual-host name="default_host" />
+	<resource-ref name="jdbc/JPA_DS"     binding-name="jdbc/JPA_DS" />
+	<resource-ref name="jdbc/JPA_NJTADS" binding-name="jdbc/JPA_NJTADS" />
+
+</web-bnd>
