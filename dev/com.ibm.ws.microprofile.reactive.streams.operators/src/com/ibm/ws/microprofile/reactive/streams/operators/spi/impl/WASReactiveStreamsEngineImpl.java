@@ -57,7 +57,6 @@ public class WASReactiveStreamsEngineImpl extends Engine implements ReactiveStre
     public void activate(ComponentContext cc) {
         executorServiceRef.activate(cc);
         ReactiveStreamsFactoryResolver.setInstance(new ReactiveStreamsFactoryImpl());
-        System.out.println("WASReactiveStreamsEngineImpl: factory set");
         singleton = this;
     }
 
