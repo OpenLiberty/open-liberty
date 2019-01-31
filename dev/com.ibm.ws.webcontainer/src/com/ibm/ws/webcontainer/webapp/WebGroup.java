@@ -360,25 +360,28 @@ protected final static Logger logger = LoggerFactory.getInstance().getLogger("co
 	 */
 	public static String stripURL(String url,boolean checkQuestionMark)
 	{
-		int index1 = url.indexOf(sessUrlRewritePrefix);
-		if (checkQuestionMark){
-			int index2 = url.indexOf("?");
-	
-			if (index2 != -1)
-			{
-				if ( index1 > index2 )
-					throw new IllegalArgumentException( "'jsessionid' Must occur before '?' in URL." );
-				url = url.substring(0, index2);
-			}
-		}
+	    if (url == null)
+	        return null;
 
-		if (index1 != -1)
-		{
-			// No query string so just remove the jsessionid
-			url = url.substring(0, index1);
-		}
+	    int index1 = url.indexOf(sessUrlRewritePrefix);
+	    if (checkQuestionMark){
+	        int index2 = url.indexOf("?");
 
-		return url;     
+	        if (index2 != -1)
+	        {
+	            if ( index1 > index2 )
+	                throw new IllegalArgumentException( "'jsessionid' Must occur before '?' in URL." );
+	            url = url.substring(0, index2);
+	        }
+	    }
+
+	    if (index1 != -1)
+	    {
+	        // No query string so just remove the jsessionid
+	        url = url.substring(0, index1);
+	    }
+
+	    return url;     
 	}
 	//End 293696    ServletRequest.getPathInfo() fails    WASCC.web.webcontainer
 	
