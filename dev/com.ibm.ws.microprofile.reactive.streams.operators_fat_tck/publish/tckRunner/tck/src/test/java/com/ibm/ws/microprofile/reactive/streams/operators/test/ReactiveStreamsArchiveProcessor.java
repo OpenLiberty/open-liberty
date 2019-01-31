@@ -22,8 +22,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import com.beust.jcommander.Parameters;
 
 /**
- * We weave in the hamcrest jar that is used by some of the microprofile tck tests.
- * The build.gradle file pull the hamcrest jar from maven and puts it in the lib directory
+ * We weave in the org.reactivestreams.example package. See issue https://github.com/eclipse/microprofile-reactive-streams-operators/issues/101
  */
 public class ReactiveStreamsArchiveProcessor implements ApplicationArchiveProcessor {
 
