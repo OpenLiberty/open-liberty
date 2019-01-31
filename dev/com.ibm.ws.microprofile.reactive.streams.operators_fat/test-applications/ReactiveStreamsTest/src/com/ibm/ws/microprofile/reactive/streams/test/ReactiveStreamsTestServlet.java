@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,21 +13,25 @@ package com.ibm.ws.microprofile.reactive.streams.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.ServiceLoader;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
-import org.eclipse.microprofile.reactive.streams.GraphAccessor;
-import org.eclipse.microprofile.reactive.streams.ProcessorBuilder;
-import org.eclipse.microprofile.reactive.streams.PublisherBuilder;
-import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.SubscriberBuilder;
-import org.eclipse.microprofile.reactive.streams.spi.Graph;
-import org.eclipse.microprofile.reactive.streams.spi.ReactiveStreamsEngine;
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
+import org.eclipse.microprofile.reactive.streams.operators.CompletionRunner;
+import org.eclipse.microprofile.reactive.streams.operators.ProcessorBuilder;
+import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.SubscriberBuilder;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Graph;
+import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsEngine;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+import org.eclipse.microprofile.reactive.streams.operators.spi.ToGraphable;
 import org.junit.Test;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -56,16 +60,16 @@ public class ReactiveStreamsTestServlet extends FATServlet {
         ProcessorBuilder<Integer, Integer> mapped = builder.map(Function.identity());
         ProcessorBuilder<Integer, Integer> distinct = builder.distinct();
         SubscriberBuilder<Integer, Void> cancelled = builder.cancel();
-        getAddedStage(Stage.Map.class, GraphAccessor.buildGraphFor(mapped));
-        getAddedStage(Stage.Distinct.class, GraphAccessor.buildGraphFor(distinct));
-        getAddedStage(Stage.Cancel.class, GraphAccessor.buildGraphFor(cancelled));
+        getAddedStage(Stage.Map.class, graphFor(mapped));
+        getAddedStage(Stage.Distinct.class, graphFor(distinct));
+        getAddedStage(Stage.Cancel.class, graphFor(cancelled));
     }
 
     /*
      * Another simple test that plumbs a list to Subscriber
      */
     @Test
-    public void helloReactiveWorld() {
+    public void helloReactiveWorld() throws InterruptedException, ExecutionException {
 
         PublisherBuilder<Integer> data = ReactiveStreams.of(1, 2, 3, 4, 5);
         ProcessorBuilder<Integer, Integer> filter = ReactiveStreams.<Integer> builder().dropWhile(n -> n == 3);
@@ -93,12 +97,13 @@ public class ReactiveStreamsTestServlet extends FATServlet {
             @Override
             public void onSubscribe(Subscription arg0) {
                 sub = arg0;
+                sub.request(1L);
                 System.out.println("onSubscribe" + sub);
             }
         };
 
-        data.via(filter).to(console).run();
-
+        CompletionStage<Void> cs = data.via(filter).to(console).run();
+        cs.toCompletableFuture().get();
     }
 
     /**
@@ -126,7 +131,6 @@ public class ReactiveStreamsTestServlet extends FATServlet {
     }
 
     private <S extends Stage> S getAddedStage(Class<S> clazz, Graph graph) {
-        assertTrue("Graph doesn't have inlet but should because it's meant to be a processor: " + graph, graph.hasInlet());
         assertEquals("Graph does not have two stages", graph.getStages().size(), 2);
         Iterator<Stage> stages = graph.getStages().iterator();
         Stage first = stages.next();
@@ -134,5 +138,30 @@ public class ReactiveStreamsTestServlet extends FATServlet {
         Stage second = stages.next();
         assertTrue("Second stage " + second + " is not a " + clazz, clazz.isInstance(second));
         return clazz.cast(second);
+    }
+
+    protected Graph graphFor(PublisherBuilder<?> pb) {
+        return objGraphFor(pb);
+    }
+
+    protected Graph graphFor(SubscriberBuilder<?, ?> sb) {
+        return objGraphFor(sb);
+    }
+
+    protected Graph graphFor(ProcessorBuilder<?, ?> pb) {
+        return objGraphFor(pb);
+    }
+
+    protected Graph graphFor(CompletionRunner<?> cr) {
+        return objGraphFor(cr);
+    }
+
+    private Graph objGraphFor(Object o) {
+        return ((ToGraphable) o).toGraph();
+    }
+
+    protected void assertEmptyStage(Stage stage) {
+        assertTrue(stage instanceof Stage.Of);
+        assertEquals(((Stage.Of) stage).getElements(), Collections.emptyList());
     }
 }

@@ -6,8 +6,7 @@
 # http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
-#    IBM Corporation 
-# This wraps the external JAR.
+#  IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -15,22 +14,22 @@ bVersion=1.0
 javac.source: 1.8
 javac.target: 1.8
 
-Bundle-SymbolicName: com.ibm.websphere.org.reactivestreams.reactive-streams.1.0; singleton:=true
-
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Bundle-SymbolicName: com.ibm.ws.io.reactivex.rxjava.2.2; singleton:=true
 
 Import-Package: \
+  org.reactivestreams; version="[1.0,1.1)", \
   *
 
 Export-Package: \
-  org.reactivestreams; version=1.0.2
-
+  io.reactivex; version=2.2.4, \
+  io.reactivex.*; version=2.2.4, \
+  !io.reactivex.internal.*
+  
 Include-Resource: \
-  @${repo;org.reactivestreams:reactive-streams;1.0.2;EXACT}
+  @${repo;io.reactivex.rxjava2:rxjava;2.2.4;EXACT}
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: REACTIVESTREAMS
 
 instrument.disabled: true
-
-publish.wlp.jar.suffix: dev/api/stable
-
