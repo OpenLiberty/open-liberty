@@ -20,7 +20,6 @@ com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.4.1
 com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.4.1
 com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.4.1
 com.google.code.gson:gson:2.2.4
-com.google.guava:guava:26.0-jre
 com.google.guava:guava:27.0.1-android
 com.google.inject:guice:2.0
 com.ibm.ws.componenttest:com.ibm.componenttest.common:1.0.0
