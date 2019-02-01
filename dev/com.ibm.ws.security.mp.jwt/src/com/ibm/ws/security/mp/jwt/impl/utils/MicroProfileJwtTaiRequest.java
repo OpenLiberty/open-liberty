@@ -42,6 +42,7 @@ public class MicroProfileJwtTaiRequest {
     protected List<MicroProfileJwtConfig> filteredConfigs = null;
     protected List<MicroProfileJwtConfig> genericConfigs = null;
     MicroProfileJwtConfig microProfileJwtConfig = null;
+    MicroProfileJwtConfig jwtssoConfig = null;
     MpJwtProcessingException taiException = null;
 
     TAIRequestHelper taiRequestHelper = new TAIRequestHelper();
@@ -259,6 +260,7 @@ public class MicroProfileJwtTaiRequest {
             if (taiRequestHelper.isJwtSsoFeatureActive(mpJwtConfig)) {
                 jwtsso ++;
                 this.microProfileJwtConfig = mpJwtConfig;
+                this.jwtssoConfig = mpJwtConfig;
             } else if (!taiRequestHelper.isMpJwtDefaultConfig(mpJwtConfig)) {
                 mpjwt ++;
                 mpjwtConfiguration = mpJwtConfig;
@@ -268,6 +270,10 @@ public class MicroProfileJwtTaiRequest {
             this.microProfileJwtConfig = mpjwtConfiguration; 
         }
         return jwtsso <= 1 && mpjwt <= 1;
+    }
+    
+    public MicroProfileJwtConfig getJwtSsoConfig() {
+        return this.jwtssoConfig;
     }
     
 
