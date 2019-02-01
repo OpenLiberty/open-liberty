@@ -47,3 +47,4 @@ java.desktop/java.awt.image=ALL-UNNAMED
 # for com.ibm.ws.transport.iiop_fat:testResolvable/testResolvableThatThrows (yoko accessible calls)
 --add-opens
 java.base/java.security=ALL-UNNAMED
+-Djdk.nativeDigest=false
