@@ -77,6 +77,7 @@ public class JavaInfo {
      */
     public static enum Vendor {
         IBM,
+        OPENJ9,
         SUN_ORACLE,
         UNKNOWN
     }
@@ -114,7 +115,9 @@ public class JavaInfo {
 
         // Parse vendor
         String vendorInfo = System.getProperty("java.vendor").toLowerCase();
-        if (vendorInfo.contains("ibm")) {
+        if (vendorInfo.contains("openj9")) {
+            VENDOR = Vendor.OPENJ9;
+        } else if (vendorInfo.contains("ibm") || vendorInfo.contains("j9")) {
             VENDOR = Vendor.IBM;
         } else if (vendorInfo.contains("oracle") || vendorInfo.contains("sun")) {
             VENDOR = Vendor.SUN_ORACLE;
@@ -219,7 +222,9 @@ public class JavaInfo {
 
         // Parse vendor
         Vendor v;
-        if (vendorInfo.contains("ibm") || vendorInfo.contains("j9")) {
+        if (vendorInfo.contains("openj9")) {
+            v = Vendor.OPENJ9;
+        } else if (vendorInfo.contains("ibm") || vendorInfo.contains("j9")) {
             v = Vendor.IBM;
         } else if (vendorInfo.contains("oracle") || vendorInfo.contains("hotspot")) {
             v = Vendor.SUN_ORACLE;
