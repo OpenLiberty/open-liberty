@@ -8,59 +8,51 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.streams.test;
-
-import static org.junit.Assert.assertTrue;
+package com.ibm.ws.microprofile.reactive.streams.test.jaxrs;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-/**
- *
- */
-public class IntegerSubscriber implements Subscriber<Integer> {
+public class SimpleSubscriber implements Subscriber<String> {
 
-    private Subscription sub;
-    private final ArrayList<Integer> results = new ArrayList<Integer>();
-    private boolean complete = false;
+    private Subscription subscription;
 
+    private final List<String> messages = new ArrayList<>();
+
+    /** {@inheritDoc} */
     @Override
     public void onComplete() {
         System.out.println("onComplete");
-        this.complete = true;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onError(Throwable arg0) {
-        System.out.println("onError");
+        System.out.println("onError: " + arg0);
+        arg0.printStackTrace();
     }
 
+    /** {@inheritDoc} */
     @Override
-    public void onNext(Integer arg0) {
-        System.out.println("Number received: " + arg0);
-        assertTrue(arg0 >= 3);
-        results.add(arg0);
-        sub.request(1);
+    public void onNext(String arg0) {
+        System.out.println("MESSAGE: " + arg0);
+        messages.add(arg0);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onSubscribe(Subscription arg0) {
-        sub = arg0;
-        System.out.println("onSubscribe" + sub);
+        this.subscription = arg0;
     }
 
-    public void startConsuming() {
-        sub.request(1);
+    public List<String> getMessages(int count) throws InterruptedException {
+        this.subscription.request(count);
+        while (messages.size() < count) {
+            Thread.sleep(100);
+        }
+        return messages;
     }
-
-    public boolean isComplete() {
-        return this.complete;
-    }
-
-    public ArrayList<Integer> getResults() {
-        return results;
-    }
-
 }

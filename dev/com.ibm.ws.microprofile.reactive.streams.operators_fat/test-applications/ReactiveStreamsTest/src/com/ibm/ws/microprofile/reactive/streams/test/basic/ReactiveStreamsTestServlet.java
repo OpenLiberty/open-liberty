@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.streams.test;
+package com.ibm.ws.microprofile.reactive.streams.test.basic;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -46,6 +46,9 @@ public class ReactiveStreamsTestServlet extends FATServlet {
     @Inject
     ReactiveStreamsEngine engine1;
 
+    @Inject
+    IntegerSubscriber integerSubscriber;
+
     String value = "v";
     String expectedValue = "v";
 
@@ -71,8 +74,6 @@ public class ReactiveStreamsTestServlet extends FATServlet {
 
         PublisherBuilder<Integer> data = ReactiveStreams.of(1, 2, 3, 4, 5);
         ProcessorBuilder<Integer, Integer> filter = ReactiveStreams.<Integer> builder().dropWhile(t -> t < 3);
-
-        IntegerSubscriber integerSubscriber = new IntegerSubscriber();
 
         data.via(filter).to(integerSubscriber).run();
         integerSubscriber.startConsuming();

@@ -8,16 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.streams.operators.test;
+package com.ibm.ws.microprofile.reactive.streams.test.jaxrs;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                ReactiveStreamsTest.class
-})
-public class FATSuite {
-    // this page intentionally left blank
+@ApplicationPath("/")
+public class ReactiveApplication extends Application {
+
 }
