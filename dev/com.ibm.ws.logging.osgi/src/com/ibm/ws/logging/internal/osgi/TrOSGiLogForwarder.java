@@ -51,6 +51,8 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
     public static final int LOG_EVENT = -5;
 
     private static final Object COULD_NOT_OBTAIN_LOCK_EXCEPTION = "Could not obtain lock";
+	private static final String COULD_NOT_GET_SERVICE_FROM_REF = "could not get service from ref";
+	private static final String COULD_NOT_OBTAIN_ALL_REQ_DEPS = "could not obtain all required dependencies";
 
     private final Map<Bundle, OSGiTraceComponent> traceComponents = new ConcurrentHashMap<Bundle, OSGiTraceComponent>();
 
@@ -97,6 +99,7 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
         ExtendedLogEntry logEntry = (ExtendedLogEntry) le;
         Bundle b = logEntry.getBundle();
         OSGiTraceComponent tc = getTraceComponent(b);
+        
         try {
             if (logEntry.getLogLevel() != LogLevel.ERROR) {
                 // check for events specifically to log them with Tr.event
@@ -121,13 +124,17 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
                     break;
     
                 case INFO:
-                    if (tc.isInfoEnabled()) {
-                        Tr.info(tc, "OSGI_MSG001", getObjects(logEntry, true));
+                	if (tc.isInfoEnabled()) {
+                    	if(shouldBeLogged(logEntry.getMessage(), tc)) {
+                    		Tr.info(tc, "OSGI_MSG001", getObjects(logEntry, true));
+                    	}
                     }
                     break;
     
                 case WARN:
-                    Tr.warning(tc, "OSGI_WARNING_MSG", getObjects(logEntry, true));
+                	if(shouldBeLogged(logEntry.getMessage(), tc)) {
+                			Tr.warning(tc, "OSGI_WARNING_MSG", getObjects(logEntry, true));
+                	}
                     break;
     
                 case ERROR:
@@ -228,5 +235,23 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
         if (e.getType() == BundleEvent.UNINSTALLED) {
             traceComponents.remove(e.getBundle());
         }
+    }
+    
+    /*
+     * Squelch info / warnings related to circular references
+     */
+    private boolean shouldBeLogged(String message, OSGiTraceComponent tc) {
+    	if(message.toLowerCase().contains(COULD_NOT_GET_SERVICE_FROM_REF)) {
+    		if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Could not get service from ref.", message);
+            }
+    		return false;
+    	} else if (message.toLowerCase().contains(COULD_NOT_OBTAIN_ALL_REQ_DEPS)) {
+    		if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Could not obtain all required dependencies.", message);
+            }
+    		return false;
+    	} else
+    		return true;
     }
 }
