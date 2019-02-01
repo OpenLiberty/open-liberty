@@ -21,7 +21,8 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                JPA10FATSuite.class
+                JPA10FATSuite.class,
+                componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {
     public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",

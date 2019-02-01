@@ -53,10 +53,13 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class Callback_EJB extends JPAFATServletClient {
     private final static String RESOURCE_ROOT = "test-applications/jpa10/callback/";
 
