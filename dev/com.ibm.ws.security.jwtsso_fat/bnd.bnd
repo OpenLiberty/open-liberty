@@ -13,7 +13,8 @@ bVersion=1.0
 
 src: \
     fat/src, \
-    test-applications/jwtbuilder/src
+    test-applications/jwtbuilder/src, \
+    test-applications/formlogin.jwtsso/src
 
 test.project: true
 
@@ -33,5 +34,7 @@ javac.target: 1.8
     com.ibm.websphere.security;version=latest, \
     com.ibm.ws.security.token;version=latest, \
     com.ibm.ws.security.jwt;version=latest, \
-    com.ibm.ws.common.encoder;version=latest
-    
+    com.ibm.ws.common.encoder;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	org.eclipse.microprofile.jwt;version=latest, \
+	com.ibm.websphere.appserver.api.webcontainer.security.app;version=latest    
