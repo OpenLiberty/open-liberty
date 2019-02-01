@@ -653,8 +653,8 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * 
      * @throws Exception
      */
-    @AllowedFFDC({"com.ibm.websphere.security.jwt.InvalidTokenException"})
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.KeyException", "java.security.cert.CertificateException", "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @AllowedFFDC({"com.ibm.websphere.security.jwt.InvalidTokenException" , "org.jose4j.jwt.consumer.InvalidJwtSignatureException"})
+    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.KeyException", "java.security.cert.CertificateException" })
     @Test
     public void MPJwtConfigUsingBuilderTests_SSLRef_invalid_usingX509() throws Exception {
 
