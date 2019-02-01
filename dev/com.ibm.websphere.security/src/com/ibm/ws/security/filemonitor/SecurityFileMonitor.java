@@ -64,6 +64,8 @@ public class SecurityFileMonitor implements FileMonitor {
         BundleContext bundleContext = actionable.getBundleContext();
         final Hashtable<String, Object> fileMonitorProps = new Hashtable<String, Object>();
         fileMonitorProps.put(FileMonitor.MONITOR_FILES, paths);
+        //Adding INTERNAL parameter MONITOR_IDENTIFICATION_NAME to identify this monitor.
+        fileMonitorProps.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, "com.ibm.ws.security.monitor.keystore");
         if (!(trigger.equalsIgnoreCase("disabled"))) {
             if (trigger.equals("mbean")) {
                 fileMonitorProps.put(FileMonitor.MONITOR_TYPE, FileMonitor.MONITOR_TYPE_EXTERNAL);

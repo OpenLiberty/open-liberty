@@ -34,6 +34,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.filemonitor.FileBasedActionable;
 import com.ibm.ws.security.filemonitor.SecurityFileMonitor;
+import com.ibm.ws.ssl.KeyringMonitor;
 import com.ibm.ws.ssl.config.KeyStoreManager;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -62,7 +63,9 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
     private final AtomicServiceReference<WsLocationAdmin> locSvc = new AtomicServiceReference<WsLocationAdmin>("LocMgr");
     private final ConcurrentHashMap<String, KeystoreConfig> keyConfigs = new ConcurrentHashMap<String, KeystoreConfig>();
     private ServiceRegistration<FileMonitor> keyStoreFileMonitorRegistration;
+    private ServiceRegistration<KeyringMonitor> keyringMonitorRegistration;
     private SecurityFileMonitor keyStoreFileMonitor;
+    private SAFKeyringMonitor SafKeyringMonitor;
 
     private BundleContext bContext = null;
     private volatile ComponentContext cc = null;
@@ -103,8 +106,12 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
                 //if needed set the file monitor
                 String trigger = svc.getKeyStore().getTrigger();
                 Boolean fileBased = svc.getKeyStore().getFileBased();
-                if (!(trigger.equalsIgnoreCase("disabled")) && fileBased.booleanValue()) {
-                    createFileMonitor(svc.getKeyStore().getLocation(), trigger, svc.getKeyStore().getPollingRate());
+                if (!(trigger.equalsIgnoreCase("disabled"))) {
+                    if (fileBased.booleanValue()) {
+                        createFileMonitor(svc.getKeyStore().getLocation(), trigger, svc.getKeyStore().getPollingRate());
+                    } else if (svc.getKeyStore().getLocation().contains(KeyringMonitor.SAF_PREFIX)) {
+                        createKeyringMonitor(svc.getKeyStore().getName(), trigger);
+                    }
                 }
             } else {
                 svc.unregister();
@@ -151,6 +158,7 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
         }
         locSvc.deactivate(ctx);
         unsetFileMonitorRegistration();
+        unsetKeyringMonitorRegistration();
     }
 
     /**
@@ -278,6 +286,50 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "createFileMonitor");
+    }
+
+    /**
+     * Remove the reference to the keyRing monitor.
+     */
+    protected void unsetKeyringMonitorRegistration() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "unsetKeyringMonitorRegistration");
+        }
+        if (keyringMonitorRegistration != null) {
+            keyringMonitorRegistration.unregister();
+            keyringMonitorRegistration = null;
+        }
+    }
+
+    /**
+     * Sets the keyring monitor registration.
+     *
+     * @param keyringMonitorRegistration
+     */
+    protected void setKeyringMonitorRegistration(ServiceRegistration<KeyringMonitor> keyringMonitorRegistration) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "setKeyringMonitorRegistration");
+        }
+        this.keyringMonitorRegistration = keyringMonitorRegistration;
+    }
+
+    /**
+     * Handles the creation of the SAF keyring monitor.
+     */
+    private void createKeyringMonitor(String name, String trigger) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "createKeyringMonitor", new Object[] { name, trigger });
+        try {
+            SafKeyringMonitor = new SAFKeyringMonitor(this);
+            setKeyringMonitorRegistration(SafKeyringMonitor.monitorKeyRings(name, trigger));
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Exception creating the keyring monitor.", e);
+            }
+            FFDCFilter.processException(e, getClass().getName(), "createKeyringMonitor", this, new Object[] { name });
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "createKeyringMonitor");
     }
 
 }
