@@ -1302,6 +1302,57 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
+     * When an already-contextualized Supplier is supplied to stage.completeAsync(supplier), it must run with the
+     * context that was previously captured rather than with context captured according to the managed executor's configuration.
+     */
+    @Test
+    public void testCompleteAsyncWithPreContextualizedAction() throws Exception {
+        CompletableFuture<String> cf1 = oneContextExecutor.newIncompleteFuture(); // this executor propagates Application context
+
+        CurrentLocation.setLocation("Lanesboro", "Minnesota");
+        try {
+            Supplier<String> action = stateContextPropagator.contextualSupplier(() -> {
+                try {
+                    Object result = InitialContext.doLookup("java:comp/env/executorRef");
+                    fail("noContextExecutor should be used as default asynchronous execution facility, and therefore, " +
+                         "Application context should not be available in order to perform a java:comp lookup. " + result);
+                } catch (NamingException x) {
+                    // test passes
+                }
+
+                return CurrentLocation.getState();
+            });
+
+            CurrentLocation.clear();
+
+            try {
+                @SuppressWarnings("unchecked")
+                CompletableFuture<String> cf2 = (CompletableFuture<String>) completeAsync.apply(cf1, action);
+
+                assertSame(cf1, cf2); // JavaDoc requires completeAsync to return same instance
+            } catch (UnsupportedOperationException x) {
+                if (AT_LEAST_JAVA_9)
+                    throw x;
+                else
+                    return; // expected for Java SE 8
+            }
+
+            CompletableFuture<String> cf2 = cf1.thenApplyAsync(result -> {
+                try {
+                    assertNotNull(InitialContext.doLookup("java:comp/env/executorRef"));
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+                return result;
+            });
+
+            assertEquals("Minnesota", cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            CurrentLocation.clear();
+        }
+    }
+
+    /**
      * Verify that completedStage returns an instance that is completed with the specified value,
      * is only accessible as a CompletionStage such that methods like obtrude are disallowed,
      * and that creates dependent stages with the default managed executor and with the same stipulations
@@ -3314,6 +3365,36 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
+     * When an already-contextualized Runnable is supplied to managedExecutor.runAsync(runnable), it must run with the
+     * context that was previously captured rather than with context captured according to the managed executor's configuration.
+     */
+    @Test
+    public void testRunAsyncWithPreContextualizedAction() throws Exception {
+        Runnable action = defaultThreadContext.contextualRunnable(() -> {
+            try {
+                assertNotNull(InitialContext.doLookup("java:comp/env/executorRef")); // requires Application context
+            } catch (NamingException x) {
+                throw new RuntimeException(x);
+            }
+        });
+
+        CompletableFuture<Void> cf = noContextExecutor
+                        .runAsync(action)
+                        .thenRun(() -> {
+                            try {
+                                Object result = InitialContext.doLookup("java:comp/env/executorRef");
+                                fail("noContextExecutor should be used as default asynchronous execution facility, and therefore, " +
+                                     "Application context should not be available in order to perform a java:comp lookup. " + result);
+                            } catch (NamingException x) {
+                                // test passes
+                            }
+                        });
+
+        // force assertion error to be raised, if any
+        cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+    }
+
+    /**
      * Complete an incomplete stage and verify that dependent actions of the stage run on the same thread
      * that performs the completion.
      */
@@ -3559,6 +3640,41 @@ public class MPConcurrentTestServlet extends FATServlet {
             }
         });
         executor2.submit(() -> System.out.println("Task 4 should not run. It should have been canceled from the queue upon shutdownNow."));
+    }
+
+    /**
+     * When an already-contextualized Supplier is supplied to managedExecutor.supplyAsync(supplier), it must run with the
+     * context that was previously captured rather than with context captured according to the managed executor's configuration.
+     */
+    @Test
+    public void testSupplyAsyncWithPreContextualizedAction() throws Exception {
+        ManagedExecutor executor = ManagedExecutor.builder()
+                        .propagated(TestContextTypes.CITY, TestContextTypes.STATE)
+                        .build();
+
+        CurrentLocation.setLocation("Lake City", "Minnesota");
+        try {
+            Supplier<String> action = stateContextPropagator.contextualSupplier(() -> {
+                assertEquals("", CurrentLocation.getCity()); // not propagated
+                return CurrentLocation.getState();
+            });
+
+            CurrentLocation.setLocation("Pepin", "Wisconsin");
+
+            CompletableFuture<Void> cf = executor
+                            .supplyAsync(action)
+                            .thenAcceptAsync(s -> {
+                                assertEquals("Minnesota", s); // result of prior stage reflects previously captured context
+                                assertEquals("Pepin", CurrentLocation.getCity());
+                                assertEquals("Wisconsin", CurrentLocation.getState());
+                            });
+
+            // force assertion error to be raised, if any
+            cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        } finally {
+            CurrentLocation.clear();
+            executor.shutdownNow();
+        }
     }
 
     /**
@@ -3821,6 +3937,39 @@ public class MPConcurrentTestServlet extends FATServlet {
 
         // result after 4 increments (the 5th increment is on a subsequent stage, and so would not be reflected in cf's result)
         assertEquals(Integer.valueOf(4), cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * When an already-contextualized Function is supplied to stage.thenApplyAsync(function), it must run with the
+     * context that was previously captured rather than with context captured according to the managed executor's configuration.
+     */
+    @Test
+    public void testThenApplyWithPreContextualizedAction() throws Exception {
+        ThreadContext cityContextPropagator = ThreadContext.builder()
+                        .propagated(TestContextTypes.CITY)
+                        .build();
+
+        ManagedExecutor executor = ManagedExecutor.builder()
+                        .propagated(TestContextTypes.CITY)
+                        .build();
+        try {
+            CurrentLocation.setLocation("Stewartville", "Minnesota");
+
+            Function<String, String> addCity = s -> s + ',' + CurrentLocation.getCity();
+            Function<String, String> preContextualizedAddCity = cityContextPropagator.contextualFunction(addCity);
+
+            CurrentLocation.setLocation("Eyota", "Minnesota");
+
+            CompletableFuture<String> cf = executor
+                            .supplyAsync(CurrentLocation::getCity)
+                            .thenApplyAsync(preContextualizedAddCity)
+                            .thenApplyAsync(addCity);
+
+            assertEquals("Eyota,Stewartville,Eyota", cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            CurrentLocation.clear();
+            executor.shutdownNow();
+        }
     }
 
     /**
