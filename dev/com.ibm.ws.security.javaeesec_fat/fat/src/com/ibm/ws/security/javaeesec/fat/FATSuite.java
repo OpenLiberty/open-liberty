@@ -47,7 +47,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 MultipleModuleExpandTest.class,
                 DatabaseIdentityStoreDeferredSettingsTest.class,
                 DatabaseIdentityStoreImmediateSettingsTest.class,
-                EJBModuleTestProtectedServlet.class,
+                //EJBModuleTestProtectedServlet.class,
                 EJBModuleTestUnprotectedServlet.class,
                 FeatureTest.class
 })
