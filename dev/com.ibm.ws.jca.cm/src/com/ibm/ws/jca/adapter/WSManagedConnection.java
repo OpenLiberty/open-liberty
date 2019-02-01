@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jca.adapter;
 
-import java.sql.SQLFeatureNotSupportedException;
 import java.util.concurrent.Executor;
 
 import javax.resource.spi.ConnectionRequestInfo;
@@ -24,9 +23,9 @@ public abstract class WSManagedConnection implements ManagedConnection {
      * Invoke to abort a connection that may be stuck waiting for a net work response or
      * the database to respond.
      *
-     * @throws SQLFeatureNotSupportedException
+     * @throws Exception
      */
-    public void abort(Executor e) throws SQLFeatureNotSupportedException {}
+    public void abort(Executor e) throws Exception {}
 
     /**
      * isAborted will return true if the connection was aborted.
