@@ -62,6 +62,7 @@ import com.ibm.ws.security.audit.event.JMXMBeanEvent;
 import com.ibm.ws.security.audit.event.JMXMBeanRegisterEvent;
 import com.ibm.ws.security.audit.event.JMXNotificationEvent;
 import com.ibm.ws.security.audit.event.MemberManagementEvent;
+import com.ibm.ws.security.audit.event.SAFAuthorizationDetailsEvent;
 //import com.ibm.ws.security.audit.utils.AuditConstants;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
 import com.ibm.ws.webcontainer.security.WebRequest;
@@ -232,6 +233,9 @@ public class AuditPE implements ProbeExtension {
 				case SECURITY_JMS_AUTHN_TERMINATE_01:
 					auditEventJMSAuthnTerm01(methodParams);
 					break;
+                case SECURITY_SAF_AUTHZ_DETAILS:
+                    auditEventSafAuthDetails(methodParams);
+                    break;
 				default:
 					// TODO: emit error message
 					break;
@@ -652,6 +656,38 @@ public class AuditPE implements ProbeExtension {
 			JMXMBeanEvent je = new JMXMBeanEvent(name, className, loader, operationName, params, signature, query,
 					action, outcome, outcomeReason);
 			auditServiceRef.getService().sendEvent(je);
+		}
+	}
+
+    /**
+	 * Handles audit event for SECURITY_SAF_AUTH_DETAILS
+	 *
+	 * @param methodParams
+	 */
+	private void auditEventSafAuthDetails(Object[] methodParams) {
+
+		// Getting object array which have audit fields
+		Object[] varargs = (Object[]) methodParams[1];
+
+		// Get audit fields and convert them to respective type
+		int safReturnCode = (Integer) varargs[0];
+		int racfReturnCode = (Integer) varargs[1];
+		int racfReasonCode = (Integer) varargs[2];
+		String userSecurityName = (String) varargs[3];
+		String safProfile = (String) varargs[4];
+		String safClass = (String) varargs[5];
+		Boolean authDecision = (Boolean) varargs[6];
+		String principalName = (String) varargs[7];
+		String applid = (String) varargs[8];
+
+		if (auditServiceRef.getService() != null
+				&& auditServiceRef.getService().isAuditRequired(AuditConstants.SECURITY_SAF_AUTHZ_DETAILS,
+						AuditConstants.SUCCESS)) {
+			// Create audit event
+			SAFAuthorizationDetailsEvent safAuthDetails = new SAFAuthorizationDetailsEvent(safReturnCode,
+					racfReturnCode, racfReasonCode, userSecurityName, applid, safProfile, safClass, authDecision,
+					principalName);
+			auditServiceRef.getService().sendEvent(safAuthDetails);
 		}
 	}
 }
