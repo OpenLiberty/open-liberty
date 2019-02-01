@@ -34,6 +34,11 @@ public interface WebAuthenticatorFactory {
                                                         AtomicServiceReference<SecurityService> securityServiceRef);
 
     /**
+     * @return
+     */
+    WebAppSecurityConfig getWebAppSecurityConfigImpl();
+
+    /**
      * @param ssoCookieHelper
      * @param securityServiceRef
      * @param collabUtils
@@ -64,6 +69,11 @@ public interface WebAuthenticatorFactory {
                                                                       ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef);
 
     /**
+     * @return
+     */
+    WebProviderAuthenticatorProxy getWebProviderAuthenticatorProxy();
+
+    /**
      * @param webAppSecConfig
      * @param postParameterHelper
      * @param securityServiceRef
@@ -74,6 +84,11 @@ public interface WebAuthenticatorFactory {
                                                       PostParameterHelper postParameterHelper,
                                                       AtomicServiceReference<SecurityService> securityServiceRef,
                                                       WebProviderAuthenticatorProxy providerAuthenticatorProxy);
+
+    /**
+     * @return
+     */
+    WebAuthenticatorProxy getWebAuthenticatorProxy();
 
     /**
      * @param webRequest

@@ -42,12 +42,16 @@ import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
 
     private UnauthenticatedSubjectService unauthenticatedSubjectService;
+    protected WebAppSecurityConfig globalConfig = null;
+    protected WebProviderAuthenticatorProxy providerAuthenticatorProxy = null;
+    protected WebAuthenticatorProxy authenticatorProxy = null;
 
     @Override
     public WebAppSecurityConfig createWebAppSecurityConfigImpl(Map<String, Object> props,
                                                                AtomicServiceReference<WsLocationAdmin> locationAdminRef,
                                                                AtomicServiceReference<SecurityService> securityServiceRef) {
-        return new WebAppSecurityConfigImpl(props, locationAdminRef, securityServiceRef);
+        globalConfig = new WebAppSecurityConfigImpl(props, locationAdminRef, securityServiceRef);
+        return globalConfig;
     }
 
     @Override
@@ -66,13 +70,15 @@ public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
                                                                              ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
                                                                              WebAppSecurityConfig webAppSecConfig,
                                                                              ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef) {
-        return new WebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig, webAuthenticatorRef);
+        providerAuthenticatorProxy = new WebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig, webAuthenticatorRef);
+        return providerAuthenticatorProxy;
     }
 
     @Override
     public WebAuthenticatorProxy createWebAuthenticatorProxy(WebAppSecurityConfig webAppSecConfig, PostParameterHelper postParameterHelper,
                                                              AtomicServiceReference<SecurityService> securityServiceRef, WebProviderAuthenticatorProxy providerAuthenticatorProxy) {
-        return new WebAuthenticatorProxy(webAppSecConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy);
+        authenticatorProxy = new WebAuthenticatorProxy(webAppSecConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy);
+        return authenticatorProxy;
     }
 
     @Override
@@ -87,5 +93,19 @@ public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
 
     protected void unsetUnauthenticatedSubjectService(UnauthenticatedSubjectService unauthenticatedSubjectService) {
         this.unauthenticatedSubjectService = null;
+
+    @Override
+    public WebAppSecurityConfig getWebAppSecurityConfigImpl() {
+        return globalConfig;
+    }
+
+    @Override
+    public WebProviderAuthenticatorProxy getWebProviderAuthenticatorProxy() {
+        return providerAuthenticatorProxy;
+    }
+
+    @Override
+    public WebAuthenticatorProxy getWebAuthenticatorProxy() {
+        return authenticatorProxy;
     }
 }
