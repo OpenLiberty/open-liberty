@@ -322,7 +322,6 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
     }
 
     /**
-     * @param taiAuthenticator
      * @param webRequest
      * @param beforeSSO
      * @return
@@ -352,7 +351,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
 
     /**
      * @param req
-     * @param propagationTokenAuthenticated
+     * @param key
      * @return
      */
     protected boolean isNotNullAndTrue(HttpServletRequest req, String key) {
@@ -382,6 +381,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
      * Create an instance of SSOAuthenticator.
      *
      * @param webRequest
+     * @param ssoCookieName
      * @return The SSOAuthenticator, or {@code null} if it could not be created.
      */
     public WebAuthenticator getSSOAuthenticator(WebRequest webRequest, String ssoCookieName) {
