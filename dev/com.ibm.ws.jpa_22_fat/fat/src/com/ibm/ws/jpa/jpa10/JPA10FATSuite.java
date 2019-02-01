@@ -9,24 +9,30 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa;
+package com.ibm.ws.jpa.jpa10;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.jpa.jpa10.JPA10FATSuite;
-import com.ibm.ws.jpa.jpa22.JPA22FATSuite;
-
+/**
+ * Test cases for functionality introduced with JPA 2.2.
+ *
+ */
 @RunWith(Suite.class)
 @SuiteClasses({
-                JPABootstrapTest.class,
-                JPA10FATSuite.class,
-                JPA22FATSuite.class,
-                JPAAppClientTest.class
+                CallbackTest.class,
+                Inheritance_EJB.class,
+                Inheritance_Web.class,
+                Relationships_ManyXMany_Web.class,
+                Relationships_ManyXMany_EJB.class,
+                Relationships_ManyXOne_Web.class,
+                Relationships_ManyXOne_EJB.class,
+                Relationships_OneXMany_Web.class,
+                Relationships_OneXMany_EJB.class,
+                Relationships_OneXOne_EJB.class,
+                Relationships_OneXOne_Web.class,
 })
-public class FATSuite {
-    public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",
-                                                "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind\";" };
+public class JPA10FATSuite {
 
 }
