@@ -3380,7 +3380,7 @@ public class MPConcurrentTestServlet extends FATServlet {
 
         CompletableFuture<Void> cf = noContextExecutor
                         .runAsync(action)
-                        .thenRun(() -> {
+                        .thenRunAsync(() -> {
                             try {
                                 Object result = InitialContext.doLookup("java:comp/env/executorRef");
                                 fail("noContextExecutor should be used as default asynchronous execution facility, and therefore, " +
