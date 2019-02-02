@@ -38,7 +38,6 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
     private static final Set<Type> TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(TYPE_ARR)));
 
     private final String injectionPointName;
-    private final String instanceName;
     private final Set<Annotation> qualifiers;
     private final ManagedExecutor executor;
 
@@ -46,7 +45,6 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
         Objects.requireNonNull(injectionPointName);
         Objects.requireNonNull(instanceName);
         this.injectionPointName = injectionPointName;
-        this.instanceName = instanceName;
         this.executor = executor;
         Set<Annotation> qualifiers = new HashSet<>(2);
         qualifiers.add(Any.Literal.INSTANCE);
@@ -67,7 +65,7 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
     @Override
     @Trivial
     public String getName() {
-        return instanceName; // TODO should change this to null because @Named qualifier is not present ?
+        return null; // because @Named qualifier is not present. See section 2.6.3, "Beans with no name", of CDI 2.0 spec.
     }
 
     @Override
@@ -127,7 +125,7 @@ public class ManagedExecutorBean implements Bean<ManagedExecutor>, PassivationCa
     @Override
     @Trivial
     public String toString() {
-        return this.getClass().getSimpleName() + '-' + getName();
+        return this.getClass().getSimpleName() + '-' + getId();
     }
 
 }
