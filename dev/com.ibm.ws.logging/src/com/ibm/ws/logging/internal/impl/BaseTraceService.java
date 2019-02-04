@@ -233,7 +233,7 @@ public class BaseTraceService implements TrService {
         systemOut = new SystemLogHolder(LoggingConstants.SYSTEM_OUT, System.out);
         systemErr = new SystemLogHolder(LoggingConstants.SYSTEM_ERR, System.err);
 
-        earlyMessageTraceKiller_Timer.schedule(new EarlyMessageTraceCleaner(), 5 * MINUTE); // 5 minutes wait time
+        earlyMessageTraceKiller_Timer.schedule(new EarlyMessageTraceCleaner(), 1 * MINUTE); // 5 minutes wait time
     }
 
     /**
@@ -244,7 +244,7 @@ public class BaseTraceService implements TrService {
      * of system properties we expect (for FFDC and logging).
      *
      * @param config a {@link LogProviderConfigImpl} containing TrService configuration
-     *            from bootstrap properties
+     *                   from bootstrap properties
      */
     @Override
     public void init(LogProviderConfig config) {
@@ -290,7 +290,7 @@ public class BaseTraceService implements TrService {
      * so values set there are not unset by metatype defaults.
      *
      * @param config a {@link LogProviderConfigImpl} containing dynamic updates from
-     *            the OSGi managed service.
+     *                   the OSGi managed service.
      */
     @Override
     public synchronized void update(LogProviderConfig config) {
@@ -847,10 +847,10 @@ public class BaseTraceService implements TrService {
     /**
      * Publish a trace log record.
      *
-     * @param detailLog the trace writer
+     * @param detailLog           the trace writer
      * @param logRecord
-     * @param id the trace object id
-     * @param formattedMsg the result of {@link BaseTraceFormatter#formatMessage}
+     * @param id                  the trace object id
+     * @param formattedMsg        the result of {@link BaseTraceFormatter#formatMessage}
      * @param formattedVerboseMsg the result of {@link BaseTraceFormatter#formatVerboseMessage}
      */
     protected void publishTraceLogRecord(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
@@ -997,7 +997,7 @@ public class BaseTraceService implements TrService {
      * the trace file.
      *
      * @param config a {@link LogProviderConfigImpl} containing TrService configuration
-     *            from bootstrap properties
+     *                   from bootstrap properties
      */
     protected void initializeWriters(LogProviderConfigImpl config) {
         // createFileLog may or may not return the original log holder..
@@ -1122,7 +1122,7 @@ public class BaseTraceService implements TrService {
      * Escape \b, \f, \n, \r, \t, ", \, / characters and appends to a string builder
      *
      * @param sb String builder to append to
-     * @param s String to escape
+     * @param s  String to escape
      */
     private void jsonEscape(StringBuilder sb, String s) {
         if (s == null) {
@@ -1205,6 +1205,68 @@ public class BaseTraceService implements TrService {
             super(trStream, autoFlush);
             this.trStream = trStream;
         }
+
+        public void realFlush() {
+            try {
+                trStream.realFlush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void print(String s) {
+            super.print(s);
+            realFlush();
+        }
+
+        @Override
+        public void print(boolean b) {
+            super.print(b);
+            realFlush();
+        }
+
+        @Override
+        public void print(char c) {
+            super.print(c);
+            realFlush();
+        }
+
+        @Override
+        public void print(int i) {
+            super.print(i);
+            realFlush();
+        }
+
+        @Override
+        public void print(long l) {
+            super.print(l);
+            realFlush();
+        }
+
+        @Override
+        public void print(float f) {
+            super.print(f);
+            realFlush();
+        }
+
+        @Override
+        public void print(double d) {
+            super.print(d);
+            realFlush();
+        }
+
+        @Override
+        public void print(char s[]) {
+            super.print(s);
+            realFlush();
+        }
+
+        @Override
+        public void print(Object obj) {
+            super.print(obj);
+            realFlush();
+        }
     }
 
     /**
@@ -1223,7 +1285,9 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public synchronized void flush() throws IOException {
+        public synchronized void flush() {}
+
+        public synchronized void realFlush() throws IOException {
             super.flush();
 
             if (!holder.isEnabled()) {
@@ -1276,8 +1340,8 @@ public class BaseTraceService implements TrService {
      * Write the text to the associated original stream.
      * This is preserved as a subroutine for extension by other delegates (test, JSR47 logging)
      *
-     * @param tc StreamTraceComponent associated with original stream
-     * @param txt pre-formatted or raw message
+     * @param tc        StreamTraceComponent associated with original stream
+     * @param txt       pre-formatted or raw message
      * @param rawStream if true, this is from direct invocation of System.out or System.err
      */
     protected synchronized void writeStreamOutput(SystemLogHolder holder, String txt, boolean rawStream) {
@@ -1403,6 +1467,14 @@ public class BaseTraceService implements TrService {
                     BaseTraceService.this.setWsMessageRouter(internalMessageRouter.get());
                 if (internalTraceRouter.get() != null)
                     BaseTraceService.this.setTraceRouter(internalTraceRouter.get());
+
+                String starter = "";
+                String string = "R";
+                for (int i = 0; i < 9000; i++) {
+                    starter = starter + string;
+                }
+
+                System.out.println(starter);
             }
         }
     }
