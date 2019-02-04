@@ -367,9 +367,9 @@ public final class FreePool implements JCAPMIHelper {
      * - If removeFromFreePool is false, the mcWrapper do not exist in the free pool
      *
      * @param Managed connection wrapper
-     * @param Remove from free pool
-     * @param Are we already synchronized on the freeLockObject
-     * @param Skip waiter notify
+     * @param Remove  from free pool
+     * @param Are     we already synchronized on the freeLockObject
+     * @param Skip    waiter notify
      * @param Cleanup and Destroy MCWrapper
      * @pre mcWrapper != null
      * @throws ClassCastException
@@ -1182,7 +1182,9 @@ public final class FreePool implements JCAPMIHelper {
                                      tc,
                                      "POOL_MANAGER_EXCP_CCF2_0001_J2CA0045",
                                      new Object[] { "createOrWaitForConnection", gConfigProps.cfName });
-                            ConnectionWaitTimeoutException cwte = new ConnectionWaitTimeoutException("Connection not available, Timed out waiting for " + totalTimeWaited);
+                            ConnectionWaitTimeoutException cwte = new ConnectionWaitTimeoutException("Connection not available, Timed out waiting for " + totalTimeWaited +
+                                                                                                     " with current waiting requests " + pm.waiterCount +
+                                                                                                     " and current total connections used " + pm.totalConnectionCount.get());
                             /*
                              * The new ffdc prossException has a dependency on the DiagnosticModuleForJ2C and should not
                              * be changed without making the same changes in the Dia...J2C.

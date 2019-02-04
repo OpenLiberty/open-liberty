@@ -431,7 +431,7 @@
             ibm:final="true" type="String" default="socialLoginWebapp" />
         <AD id="socialMediaSelectionPageUrl" name="%socialMediaSelectionPageUrl" description="%socialMediaSelectionPageUrl.desc"
             required="false" type="String" ibm:type="token" /> <!-- trim the beginning and ending spaces-->
-         <AD id="enableLocalAuthentication" name="internal" description="internal use only" type="Boolean" default="false" />
+         <AD id="enableLocalAuthentication" name="%enableLocalAuthentication" description="%enableLocalAuthentication.desc" type="Boolean" default="false" />
     </OCD>    
     <Designate pid="com.ibm.ws.security.social.webapp"> <!--  needs to match pid in WabConfiguration impl -->        
         <Object ocdref="com.ibm.ws.security.social.webapp"/> <!--  just needs to ref the id in the OCD element. -->

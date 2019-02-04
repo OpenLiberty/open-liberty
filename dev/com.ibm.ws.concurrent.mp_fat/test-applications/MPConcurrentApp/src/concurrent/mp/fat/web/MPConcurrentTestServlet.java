@@ -46,7 +46,6 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -4777,9 +4776,11 @@ public class MPConcurrentTestServlet extends FATServlet {
                 Executor executor = defaultExecutor.apply(cf4);
                 assertFalse(executor instanceof ExecutorService); // no way for the user to shut it down
 
-                AtomicReference<String> threadNameRef = new AtomicReference<String>();
-                executor.execute(() -> threadNameRef.set(Thread.currentThread().getName()));
-                assertEquals(servletThreadName, threadNameRef.get());
+                try {
+                    executor.execute(() -> System.out.println("Executor should not be usable."));
+                } catch (UnsupportedOperationException x) {
+                    // pass - completable futures from withContextCapture are not backed by a usable executor
+                }
             }
         } finally {
             CurrentLocation.clear();

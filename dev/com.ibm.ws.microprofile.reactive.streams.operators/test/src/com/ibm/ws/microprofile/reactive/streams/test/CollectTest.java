@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,9 @@
 
 package com.ibm.ws.microprofile.reactive.streams.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,31 +26,54 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.SubscriberBuilder;
+import org.eclipse.microprofile.reactive.streams.operators.CompletionRunner;
+import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.SubscriberBuilder;
+import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsEngine;
 import org.junit.Test;
 
 public class CollectTest extends WASReactiveUT {
 
     @Test
     public void toListStageShouldReturnAList() {
-        assertEquals(await(
-                ReactiveStreams.of(1, 2, 3).toList().run(getEngine())),
-                Arrays.asList(1, 2, 3));
+
+        // This test is broken down so it can be used
+        // to investigate which stage is causing problems
+        // when there is a basic plumbing issue
+        List<Integer> list = Arrays.asList(1, 2, 3);
+        assertNotNull("list is null", list);
+
+        ReactiveStreamsEngine engine = getEngine();
+        assertNotNull("Engine is null", engine);
+
+        PublisherBuilder<Integer> streamOf = ReactiveStreams.of(1, 2, 3);
+        assertNotNull("streamOf is null", streamOf);
+
+        CompletionRunner<List<Integer>> listOfStream = streamOf.toList();
+        assertNotNull("listOfStream is null", listOfStream);
+
+        CompletionStage<List<Integer>> composed = listOfStream.run(engine);
+        assertNotNull("composed is null", composed);
+
+        List<Integer> awaitedComposed = await(
+                composed);
+        assertNotNull("awaitedComposed is null", awaitedComposed);
+
+        assertEquals(awaitedComposed,
+                list);
     }
 
     @Test
     public void toListStageShouldReturnEmpty() {
         assertEquals(await(
-                ReactiveStreams.of().toList().run(getEngine())),
-                Collections.emptyList());
+                ReactiveStreams.of().toList().run(getEngine())), Collections.emptyList());
     }
 
     @Test
     public void collectShouldAccumulateResult() {
         assertEquals(await(
-                ReactiveStreams.of(1, 2, 3).collect(
-                        () -> new AtomicInteger(0),
+                ReactiveStreams.of(1, 2, 3).collect(() -> new AtomicInteger(0),
                         AtomicInteger::addAndGet).run(getEngine())).get(),
                 6);
     }
@@ -57,19 +81,15 @@ public class CollectTest extends WASReactiveUT {
     @Test
     public void collectShouldSupportEmptyStreams() {
         assertEquals(await(
-                ReactiveStreams.<Integer>empty().collect(
-                        () -> new AtomicInteger(42),
+                ReactiveStreams.<Integer>empty().collect(() -> new AtomicInteger(42),
                         AtomicInteger::addAndGet).run(getEngine())).get(),
                 42);
     }
 
     @Test(expected = RuntimeException.class)
     public void collectShouldPropagateErrors() {
-        await(ReactiveStreams.<Integer>failed(
-                new RuntimeException("failed")).collect(
-                        () -> new AtomicInteger(0),
-                        AtomicInteger::addAndGet)
-                .run(getEngine()));
+        await(ReactiveStreams.<Integer>failed(new RuntimeException("failed")).collect(() -> new AtomicInteger(0),
+                AtomicInteger::addAndGet).run(getEngine()));
     }
 
     @Test
@@ -87,8 +107,7 @@ public class CollectTest extends WASReactiveUT {
 
     @Test(expected = QuietRuntimeException.class)
     public void collectShouldPropagateUpstreamErrors2() {
-        await(ReactiveStreams.<Integer>failed(new QuietRuntimeException("failed")).collect(
-                () -> new AtomicInteger(0),
+        await(ReactiveStreams.<Integer>failed(new QuietRuntimeException("failed")).collect(() -> new AtomicInteger(0),
                 AtomicInteger::addAndGet).run(getEngine()));
     }
 
@@ -106,7 +125,9 @@ public class CollectTest extends WASReactiveUT {
                     .collect(Collector.<Integer, Integer, Integer>of(() -> {
                         throw new QuietRuntimeException("failed");
                     }, (a, b) -> {
-                    }, (a, b) -> a + b, Function.identity())).run(getEngine());
+                    }, (a, b) -> a + b,
+                            Function.identity()))
+                    .run(getEngine());
         } catch (Exception e) {
             assertNull(
                     "Exception thrown directly from stream, it should have been captured by the returned CompletionStage",
@@ -122,7 +143,9 @@ public class CollectTest extends WASReactiveUT {
         CompletionStage<String> result = infiniteStream().onTerminate(() -> cancelled.complete(null))
                 .collect(Collector.of(() -> "", (a, b) -> {
                     throw new QuietRuntimeException("failed");
-                }, (a, b) -> a + b, Function.identity())).run(getEngine());
+                }, (a, b) -> a + b,
+                        Function.identity()))
+                .run(getEngine());
         await(cancelled);
         await(result);
     }
@@ -131,12 +154,9 @@ public class CollectTest extends WASReactiveUT {
     public void collectStageShouldPropagateErrorsFromFinisher() {
         CompletionStage<Integer> result = ReactiveStreams.of(1, 2, 3)
                 .collect(Collector.<Integer, Integer, Integer>of(() -> 0, (a, b) -> {
-                },
-                        (a, b) -> a + b,
-                        r -> {
-                            throw new QuietRuntimeException("failed");
-                        }))
-                .run(getEngine());
+                }, (a, b) -> a + b, r -> {
+                    throw new QuietRuntimeException("failed");
+                })).run(getEngine());
         await(result);
     }
 
@@ -144,9 +164,11 @@ public class CollectTest extends WASReactiveUT {
     public void collectStageBuilderShouldBeReusable() {
         SubscriberBuilder<Integer, List<Integer>> toList = ReactiveStreams.<Integer>builder().toList();
         assertEquals(await(
-                ReactiveStreams.of(1, 2, 3).to(toList).run(getEngine())), Arrays.asList(1, 2, 3));
-        assertEquals(await(
-                ReactiveStreams.of(4, 5, 6).to(toList).run(getEngine())), Arrays.asList(4, 5, 6));
+                ReactiveStreams.of(1, 2, 3).to(toList).run(getEngine())),
+                Arrays.asList(1, 2,
+                        3));
+        assertEquals(await(ReactiveStreams.of(4, 5,
+                6).to(toList).run(getEngine())), Arrays.asList(4, 5, 6));
     }
 
 }
