@@ -12,6 +12,8 @@ package com.ibm.ws.concurrent.mp;
 
 import java.util.ArrayList;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.concurrent.ContextualAction;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
@@ -19,13 +21,14 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
  * Proxy for Runnable that applies thread context before running and removes it afterward.
  * If a CompletableFuture is supplied, triggers its completion upon completion of the Runnable.
  */
-class ContextualRunnable implements Runnable {
-    final Runnable action;
-    private ManagedCompletableFuture<Void> completableFuture;
-    final ThreadContextDescriptor threadContextDescriptor;
+class ContextualRunnable implements Runnable, ContextualAction<Runnable> {
+    private final Runnable action;
+    private final ManagedCompletableFuture<Void> completableFuture;
+    private final ThreadContextDescriptor threadContextDescriptor;
 
     ContextualRunnable(ThreadContextDescriptor threadContextDescriptor, Runnable action) {
         this.action = action;
+        this.completableFuture = null;
         this.threadContextDescriptor = threadContextDescriptor;
     }
 
@@ -33,6 +36,18 @@ class ContextualRunnable implements Runnable {
         this.action = action;
         this.completableFuture = completableFuture;
         this.threadContextDescriptor = threadContextDescriptor;
+    }
+
+    @Override
+    @Trivial
+    public Runnable getAction() {
+        return action;
+    }
+
+    @Override
+    @Trivial
+    public ThreadContextDescriptor getContextDescriptor() {
+        return threadContextDescriptor;
     }
 
     @Override

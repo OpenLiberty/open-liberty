@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@ package com.ibm.ws.concurrent.mp;
 import java.util.ArrayList;
 import java.util.function.Function;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.concurrent.ContextualAction;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
@@ -22,7 +24,7 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
  * @param <T> type of the function's parameter
  * @param <R> type of the function's result
  */
-class ContextualFunction<T, R> implements Function<T, R> {
+class ContextualFunction<T, R> implements Function<T, R>, ContextualAction<Function<T, R>> {
     private final Function<T, R> action;
     private final ThreadContextDescriptor threadContextDescriptor;
 
@@ -39,5 +41,17 @@ class ContextualFunction<T, R> implements Function<T, R> {
         } finally {
             threadContextDescriptor.taskStopping(contextApplied);
         }
+    }
+
+    @Override
+    @Trivial
+    public Function<T, R> getAction() {
+        return action;
+    }
+
+    @Override
+    @Trivial
+    public ThreadContextDescriptor getContextDescriptor() {
+        return threadContextDescriptor;
     }
 }

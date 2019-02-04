@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,12 +12,16 @@ package com.ibm.ws.concurrent.internal;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
@@ -48,6 +52,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
+import com.ibm.ws.concurrent.ContextualAction;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -59,6 +64,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.resource.ResourceInfo;
 import com.ibm.wsspi.threadcontext.ThreadContext;
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
@@ -81,6 +87,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      * Name of reference to the ApplicationRecycleCoordinator
      */
     static final String APP_RECYCLE_SERVICE = "ApplicationRecycleCoordinator";
+
+    /**
+     * Execution properties that specify to suspend the current transaction.
+     */
+    private static final Map<String, String> XPROPS_SUSPEND_TRAN = Collections.singletonMap(ManagedTask.TRANSACTION, ManagedTask.SUSPEND);
 
     /**
      * Names of applications using this ResourceFactory
@@ -257,33 +268,55 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
 
     /**
      * Capture context for a list of tasks and create callbacks that apply context and notify the ManagedTaskListener, if any.
+     * Context is not re-captured for any tasks that implement the ContextualAction marker interface.
      *
      * @param tasks collection of tasks.
-     * @return list of callbacks.
+     * @return entry consisting of a possibly modified copy of the task list (the key) and the list of callbacks (the value).
      */
     @SuppressWarnings("unchecked")
-    private <T> TaskLifeCycleCallback[] createCallbacks(Collection<? extends Callable<T>> tasks) {
-        WSContextService contextSvc = getContextService();
-
+    private <T> Entry<Collection<? extends Callable<T>>, TaskLifeCycleCallback[]> createCallbacks(Collection<? extends Callable<T>> tasks) {
         int numTasks = tasks.size();
         TaskLifeCycleCallback[] callbacks = new TaskLifeCycleCallback[numTasks];
+        List<Callable<T>> taskUpdates = null;
 
-        if (numTasks == 1)
-            callbacks[0] = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(getExecutionProperties(tasks.iterator().next())));
-        else {
+        if (numTasks == 1) {
+            Callable<T> task = tasks.iterator().next();
+
+            ThreadContextDescriptor contextDescriptor;
+            if (task instanceof ContextualAction) {
+                ContextualAction<Callable<T>> a = (ContextualAction<Callable<T>>) task;
+                contextDescriptor = a.getContextDescriptor();
+                task = a.getAction();
+                taskUpdates = Arrays.asList(task);
+            } else {
+                contextDescriptor = getContextService().captureThreadContext(getExecutionProperties(task));
+            }
+
+            callbacks[0] = new TaskLifeCycleCallback(this, contextDescriptor);
+        } else {
             // Thread context capture is expensive, so reuse callbacks when execution properties match
             Map<Map<String, String>, TaskLifeCycleCallback> execPropsToCallback = new HashMap<Map<String, String>, TaskLifeCycleCallback>();
+            WSContextService contextSvc = null;
             int t = 0;
             for (Callable<T> task : tasks) {
-                Map<String, String> execProps = getExecutionProperties(task);
-                TaskLifeCycleCallback callback = execPropsToCallback.get(execProps);
-                if (callback == null)
-                    execPropsToCallback.put(execProps, callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps)));
-                callbacks[t++] = callback;
+                if (task instanceof ContextualAction) {
+                    ContextualAction<Callable<T>> a = (ContextualAction<Callable<T>>) task;
+                    taskUpdates = taskUpdates == null ? new ArrayList<Callable<T>>(tasks) : taskUpdates;
+                    taskUpdates.set(t, a.getAction());
+                    callbacks[t++] = new TaskLifeCycleCallback(this, a.getContextDescriptor());
+                } else {
+                    Map<String, String> execProps = getExecutionProperties(task);
+                    TaskLifeCycleCallback callback = execPropsToCallback.get(execProps);
+                    if (callback == null) {
+                        contextSvc = contextSvc == null ? getContextService() : contextSvc;
+                        execPropsToCallback.put(execProps, callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps)));
+                    }
+                    callbacks[t++] = callback;
+                }
             }
         }
 
-        return callbacks;
+        return new SimpleEntry<Collection<? extends Callable<T>>, TaskLifeCycleCallback[]>(taskUpdates == null ? tasks : taskUpdates, callbacks);
     }
 
     /** {@inheritDoc} */
@@ -371,7 +404,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
-        TaskLifeCycleCallback[] callbacks = createCallbacks(tasks);
+        Entry<Collection<? extends Callable<T>>, TaskLifeCycleCallback[]> entry = createCallbacks(tasks);
+        tasks = entry.getKey();
+        TaskLifeCycleCallback[] callbacks = entry.getValue();
+
         // Policy executor can optimize the last task in the list to run on the current thread if we submit under the same executor,
         PolicyExecutor executor = callbacks.length > 0 ? callbacks[callbacks.length - 1].policyExecutor : policyExecutor;
         return (List) executor.invokeAll(tasks, callbacks);
@@ -381,7 +417,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
-        TaskLifeCycleCallback[] callbacks = createCallbacks(tasks);
+        Entry<Collection<? extends Callable<T>>, TaskLifeCycleCallback[]> entry = createCallbacks(tasks);
+        tasks = entry.getKey();
+        TaskLifeCycleCallback[] callbacks = entry.getValue();
+
         PolicyExecutor executor = callbacks.length > 0 ? callbacks[0].policyExecutor : policyExecutor;
         return (List) executor.invokeAll(tasks, callbacks, timeout, unit);
     }
@@ -389,7 +428,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     /** {@inheritDoc} */
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
-        TaskLifeCycleCallback[] callbacks = createCallbacks(tasks);
+        Entry<Collection<? extends Callable<T>>, TaskLifeCycleCallback[]> entry = createCallbacks(tasks);
+        tasks = entry.getKey();
+        TaskLifeCycleCallback[] callbacks = entry.getValue();
+
         PolicyExecutor executor = callbacks.length > 0 ? callbacks[0].policyExecutor : policyExecutor;
         return executor.invokeAny(tasks, callbacks);
     }
@@ -397,7 +439,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     /** {@inheritDoc} */
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        TaskLifeCycleCallback[] callbacks = createCallbacks(tasks);
+        Entry<Collection<? extends Callable<T>>, TaskLifeCycleCallback[]> entry = createCallbacks(tasks);
+        tasks = entry.getKey();
+        TaskLifeCycleCallback[] callbacks = entry.getValue();
+
         PolicyExecutor executor = callbacks.length > 0 ? callbacks[0].policyExecutor : policyExecutor;
         return executor.invokeAny(tasks, callbacks, timeout, unit);
     }
@@ -476,25 +521,41 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
 
     /** {@inheritDoc} */
     @Override
+    @SuppressWarnings("unchecked")
     public <T> Future<T> submit(Callable<T> task) {
         Map<String, String> execProps = getExecutionProperties(task);
 
-        WSContextService contextSvc = getContextService();
+        ThreadContextDescriptor contextDescriptor;
+        if (task instanceof ContextualAction) {
+            ContextualAction<Callable<T>> a = (ContextualAction<Callable<T>>) task;
+            contextDescriptor = a.getContextDescriptor();
+            task = a.getAction();
+        } else {
+            WSContextService contextSvc = getContextService();
+            contextDescriptor = contextSvc.captureThreadContext(execProps);
+        }
 
-        @SuppressWarnings("unchecked")
-        TaskLifeCycleCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
+        TaskLifeCycleCallback callback = new TaskLifeCycleCallback(this, contextDescriptor);
         return callback.policyExecutor.submit(task, callback);
     }
 
     /** {@inheritDoc} */
     @Override
+    @SuppressWarnings("unchecked")
     public <T> Future<T> submit(Runnable task, T result) {
         Map<String, String> execProps = getExecutionProperties(task);
 
-        WSContextService contextSvc = getContextService();
+        ThreadContextDescriptor contextDescriptor;
+        if (task instanceof ContextualAction) {
+            ContextualAction<Runnable> a = (ContextualAction<Runnable>) task;
+            contextDescriptor = a.getContextDescriptor();
+            task = a.getAction();
+        } else {
+            WSContextService contextSvc = getContextService();
+            contextDescriptor = contextSvc.captureThreadContext(execProps);
+        }
 
-        @SuppressWarnings("unchecked")
-        TaskLifeCycleCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
+        TaskLifeCycleCallback callback = new TaskLifeCycleCallback(this, contextDescriptor);
         return callback.policyExecutor.submit(task, result, callback);
     }
 
@@ -512,7 +573,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      */
     ThreadContext suspendTransaction() {
         ThreadContextProvider tranContextProvider = AccessController.doPrivileged(tranContextProviderAccessor);
-        ThreadContext suspendedTranSnapshot = tranContextProvider == null ? null : tranContextProvider.captureThreadContext(AbstractTask.XPROPS_SUSPEND_TRAN, null);
+        ThreadContext suspendedTranSnapshot = tranContextProvider == null ? null : tranContextProvider.captureThreadContext(XPROPS_SUSPEND_TRAN, null);
         if (suspendedTranSnapshot != null)
             suspendedTranSnapshot.taskStarting();
         return suspendedTranSnapshot;
