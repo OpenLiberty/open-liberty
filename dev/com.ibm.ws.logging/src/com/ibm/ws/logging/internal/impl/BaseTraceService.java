@@ -1207,7 +1207,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void print(boolean b) {
+        public synchronized void print(boolean b) {
             TrOutputStream.isPrinting.set(true);
             super.print(b);
             TrOutputStream.isPrinting.set(false);
@@ -1215,7 +1215,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void print(char c) {
+        public synchronized void print(char c) {
             TrOutputStream.isPrinting.set(true);
             super.print(c);
             TrOutputStream.isPrinting.set(false);
@@ -1223,7 +1223,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void print(int i) {
+        public synchronized void print(int i) {
             TrOutputStream.isPrinting.set(true);
             super.print(i);
             TrOutputStream.isPrinting.set(false);
@@ -1231,7 +1231,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void print(long l) {
+        public synchronized void print(long l) {
             TrOutputStream.isPrinting.set(true);
             super.print(l);
             TrOutputStream.isPrinting.set(false);
@@ -1239,7 +1239,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void print(float f) {
+        public synchronized void print(float f) {
             TrOutputStream.isPrinting.set(true);
             super.print(f);
             TrOutputStream.isPrinting.set(false);
@@ -1247,7 +1247,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void print(double d) {
+        public synchronized void print(double d) {
             TrOutputStream.isPrinting.set(true);
             super.print(d);
             TrOutputStream.isPrinting.set(false);
@@ -1255,7 +1255,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void print(char c[]) {
+        public synchronized void print(char c[]) {
             TrOutputStream.isPrinting.set(true);
             super.print(c);
             TrOutputStream.isPrinting.set(false);
@@ -1263,7 +1263,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void print(String s) {
+        public synchronized void print(String s) {
             TrOutputStream.isPrinting.set(true);
             super.print(s);
             TrOutputStream.isPrinting.set(false);
@@ -1271,7 +1271,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void print(Object obj) {
+        public synchronized void print(Object obj) {
             TrOutputStream.isPrinting.set(true);
             super.print(obj);
             TrOutputStream.isPrinting.set(false);
@@ -1279,7 +1279,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void println() {
+        public synchronized void println() {
             TrOutputStream.isPrinting.set(true);
             super.println();
             TrOutputStream.isPrinting.set(false);
@@ -1287,7 +1287,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void println(boolean b) {
+        public synchronized void println(boolean b) {
             TrOutputStream.isPrinting.set(true);
             super.print(b);
             TrOutputStream.isPrinting.set(false);
@@ -1295,7 +1295,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void println(char c) {
+        public synchronized void println(char c) {
             TrOutputStream.isPrinting.set(true);
             super.print(c);
             TrOutputStream.isPrinting.set(false);
@@ -1303,7 +1303,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void println(int i) {
+        public synchronized void println(int i) {
             TrOutputStream.isPrinting.set(true);
             super.print(i);
             TrOutputStream.isPrinting.set(false);
@@ -1311,7 +1311,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void println(long l) {
+        public synchronized void println(long l) {
             TrOutputStream.isPrinting.set(true);
             super.print(l);
             TrOutputStream.isPrinting.set(false);
@@ -1319,7 +1319,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void println(float f) {
+        public synchronized void println(float f) {
             TrOutputStream.isPrinting.set(true);
             super.print(f);
             TrOutputStream.isPrinting.set(false);
@@ -1327,7 +1327,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void println(double d) {
+        public synchronized void println(double d) {
             TrOutputStream.isPrinting.set(true);
             super.print(d);
             TrOutputStream.isPrinting.set(false);
@@ -1335,7 +1335,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void println(char c[]) {
+        public synchronized void println(char c[]) {
             TrOutputStream.isPrinting.set(true);
             super.print(c);
             TrOutputStream.isPrinting.set(false);
@@ -1343,7 +1343,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void println(String s) {
+        public synchronized void println(String s) {
             TrOutputStream.isPrinting.set(true);
             super.print(s);
             TrOutputStream.isPrinting.set(false);
@@ -1351,7 +1351,7 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public void println(Object obj) {
+        public synchronized void println(Object obj) {
             TrOutputStream.isPrinting.set(true);
             super.print(obj);
             TrOutputStream.isPrinting.set(false);
