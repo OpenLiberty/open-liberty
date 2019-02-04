@@ -62,6 +62,6 @@ public class BasicTest extends FATServletClient {
     @AfterClass
     public static void afterClass() throws Exception {
         server.stopServer();
-        remoteAppServer.stopServer();
+        remoteAppServer.stopServer("CWWKO0801E");
     }
 }
