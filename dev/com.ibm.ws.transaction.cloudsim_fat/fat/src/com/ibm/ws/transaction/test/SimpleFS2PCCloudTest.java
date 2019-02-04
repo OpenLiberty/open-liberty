@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.cloudtx.ut.util.LastingXAResourceImpl;
 import com.ibm.ws.transaction.web.SimpleFS2PCCloudServlet;
 
 import componenttest.annotation.AllowedFFDC;
@@ -119,7 +120,8 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         server1.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
 
         // Lastly, clean up XA resource file
-        server1.deleteFileFromLibertyServerRoot("XAResourceData.dat");
+        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
+
     }
 
     /**
@@ -167,8 +169,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         server2.stopServer();
 
         // Lastly, clean up XA resource files
-        server1.deleteFileFromLibertyServerRoot("XAResourceData.dat");
-        server2.deleteFileFromLibertyServerRoot("XAResourceData.dat");
+        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
 
     }
 
@@ -250,8 +251,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         server2.stopServer();
 
         // Lastly, clean up XA resource files
-        server1.deleteFileFromLibertyServerRoot("XAResourceData.dat");
-        server2.deleteFileFromLibertyServerRoot("XAResourceData.dat");
+        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
     }
 
     private boolean lockServerLease(String recoveryId) throws Exception {
