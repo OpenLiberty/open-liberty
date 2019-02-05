@@ -255,10 +255,10 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 Thread.interrupted(); // Clear interrupted thread
             }
         } catch (Throwable t) {
-            // Handle any Unexpected exceptions
+            // Handle any unexpected exceptions
             // Manual FFDC since we've ignored it for the catch above
-            String sourceId = AsyncExecutor.class.getName() + "runExecutionAttempt";
-            FFDCFilter.processException(t, sourceId, "errorBarrier", this);
+            String sourceId = AsyncExecutor.class.getName();
+            FFDCFilter.processException(t, sourceId, "runExecutionAttempt.errorBarrier", this);
 
             // Release bulkhead before handling exception so we don't leak permits
             reservation.release();
@@ -351,15 +351,13 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                     }
                 }
 
-                result = runFallback(result, executionContext);
+                if (result.isFailure() && fallbackPolicy != null) {
+                    scheduleFallback(result, executionContext);
+                    return;
+                }
             }
 
-            metricRecorder.incrementInvocationCount();
-            if (result.isFailure()) {
-                metricRecorder.incrementInvocationFailedCount();
-            }
-
-            commitResult(executionContext, result);
+            finalizeExecution(executionContext, result);
 
         } catch (Throwable t) {
             // This method is used as a general error handler, so we need some special logic in case something goes wrong while handling the error
@@ -369,32 +367,66 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         }
     }
 
+    private void finalizeExecution(AsyncExecutionContextImpl<W> executionContext, MethodResult<W> result) {
+        metricRecorder.incrementInvocationCount();
+        if (result.isFailure()) {
+            metricRecorder.incrementInvocationFailedCount();
+        }
+
+        commitResult(executionContext, result);
+    }
+
+    /**
+     * @param result
+     * @param executionContext
+     */
+    private void scheduleFallback(MethodResult<W> result, AsyncExecutionContextImpl<W> executionContext) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(tc, "Method {0} fallback is required", executionContext.getMethod());
+        }
+
+        executorService.submit(() -> runFallback(result, executionContext));
+    }
+
+    @FFDCIgnore(Throwable.class)
     @SuppressWarnings("unchecked")
-    private MethodResult<W> runFallback(MethodResult<W> result, AsyncExecutionContextImpl<W> executionContext) {
-        // TODO: we need to make sure we're on the right thread and have the right context when we run fallback
-        // I.e. on BulkheadException, we're still on calling thread, on TimeoutException we're on timer thread without context
-        if (result.getFailure() == null || fallbackPolicy == null) {
-            return result;
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Method {0} calling fallback", executionContext.getMethod());
-        }
-
-        metricRecorder.incrementFallbackCalls();
-
-        executionContext.setFailure(result.getFailure());
+    private void runFallback(MethodResult<W> failedResult, AsyncExecutionContextImpl<W> executionContext) {
         try {
-            result = MethodResult.success((W) fallbackPolicy.getFallbackFunction().execute(executionContext));
-        } catch (Throwable ex) {
-            result = MethodResult.failure(ex);
-        }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Method {0} fallback result: {1}", executionContext.getMethod(), result);
-        }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Method {0} calling fallback", executionContext.getMethod());
+            }
 
-        return result;
+            metricRecorder.incrementFallbackCalls();
+
+            executionContext.setFailure(failedResult.getFailure());
+
+            ThreadContextDescriptor contextDescriptor = executionContext.getThreadContextDescriptor();
+            ArrayList<ThreadContext> context = contextDescriptor.taskStarting();
+
+            MethodResult<W> fallbackResult;
+            try {
+                fallbackResult = MethodResult.success((W) fallbackPolicy.getFallbackFunction().execute(executionContext));
+            } catch (Throwable ex) {
+                fallbackResult = MethodResult.failure(ex);
+            } finally {
+                contextDescriptor.taskStopping(context);
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Method {0} fallback result: {1}", executionContext.getMethod(), fallbackResult);
+            }
+
+            finalizeExecution(executionContext, fallbackResult);
+
+        } catch (Throwable t) {
+            // Handle any unexpected exceptions
+            // Manual FFDC since we've ignored it for the catch above
+            String sourceId = AsyncExecutor.class.getName();
+            FFDCFilter.processException(t, sourceId, "runFallback.errorBarrier", this);
+
+            handleException(t, null, executionContext);
+        }
     }
 
     @Override
