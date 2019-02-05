@@ -25,6 +25,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 Import-Package: \
   org.apache.cxf.*;version="[3.0.2,4)", \
   com.ibm.websphere.ras.*, \
+  com.ibm.ws.cxf.client, \
   com.ibm.ws.jaxrs20.client, \
   com.ibm.ws.ffdc, \
   com.ibm.ws.concurrent, \
@@ -33,13 +34,12 @@ Import-Package: \
   org.osgi.framework, \
   org.osgi.service.component
 
-  
 # If you need use MESSAGE, you must enable this Private-Package, or message will translate wrong
 Private-Package:\
    com.ibm.ws.jaxrs2x.concurrent.*
 
--dsannotations: com.ibm.ws.jaxrs2x.concurrent.component.*    
- 
+-dsannotations: com.ibm.ws.jaxrs2x.concurrent.component.*
+
 -buildpath: \
 	org.apache.cxf.cxf-core;strategy=exact;version=3.1.16,\
 	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version=3.1.16,\

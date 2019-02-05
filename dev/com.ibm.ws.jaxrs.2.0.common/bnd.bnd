@@ -28,6 +28,8 @@ WS-TraceGroup: JAXRS
    org.apache.cxf.*;version=3.1.16, \
 
 Export-Package: \
+	com.ibm.ws.cxf.client,\
+	com.ibm.ws.cxf.client.component,\
 	com.ibm.ws.jaxrs20,\
 	com.ibm.ws.jaxrs20.api;provide=true,\
 	com.ibm.ws.jaxrs20.bus,\
@@ -149,7 +151,8 @@ Include-Resource: \
   org/apache/cxf=${bin}/org/apache/cxf, \
   org/codehaus/jackson=${bin}/org/codehaus/jackson
 
--dsannotations: com.ibm.ws.jaxrs20.component.*, \
+-dsannotations: com.ibm.ws.cxf.client.component.*, \
+	com.ibm.ws.jaxrs20.component.*, \
  	com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfigImpl, \
  	com.ibm.ws.jaxrs20.providers.customexceptionmapper.CustomExceptionMapperRegister, \
  	com.ibm.ws.jaxrs20.providers.security.SecurityAnnoProviderRegister

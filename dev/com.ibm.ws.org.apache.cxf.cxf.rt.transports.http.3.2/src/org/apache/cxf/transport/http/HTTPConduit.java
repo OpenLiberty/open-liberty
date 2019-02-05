@@ -94,7 +94,7 @@ import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.jaxrs20.client.component.AsyncClientRunnableWrapperManager;
+import com.ibm.ws.cxf.client.component.AsyncClientRunnableWrapperManager;
 
 /*
  * HTTP Conduit implementation.

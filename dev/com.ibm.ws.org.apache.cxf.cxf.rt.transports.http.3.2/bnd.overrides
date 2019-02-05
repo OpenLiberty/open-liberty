@@ -8,6 +8,8 @@ Bundle-Activator: com.ibm.ws.jaxrs21.transports.http.NoOpActivator
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Export-Package: \
+  com.ibm.ws.cxf.client,\
+  com.ibm.ws.cxf.client.component,\
   com.ibm.ws.jaxrs21.transports.http,\
   org.apache.cxf.transport.http,\
   org.apache.cxf.transport.http.auth,\
