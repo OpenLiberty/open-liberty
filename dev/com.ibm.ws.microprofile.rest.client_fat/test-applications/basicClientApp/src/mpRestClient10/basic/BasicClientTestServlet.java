@@ -118,23 +118,27 @@ public class BasicClientTestServlet extends FATServlet {
 
     @Test
     public void testReadTimeout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        builder.property("com.ibm.ws.jaxrs.client.receive.timeout", "5");
-        long startTime = System.nanoTime();
-        WaitServiceClient client = builder.build(WaitServiceClient.class);
-        Response r = null;
         try {
-            r = client.waitFor(20);
-            fail("Did not throw expected ProcessingException");
-        } catch (ProcessingException expected) {
-            LOG.info("Caught expected ProcessingException");
-        } catch (Throwable t) {
-            LOG.log(Level.SEVERE, "Caught unexpected exception", t);
-            fail("Caught unexpected exception: " + t);
+            builder.property("com.ibm.ws.jaxrs.client.receive.timeout", "5");
+            long startTime = System.nanoTime();
+            WaitServiceClient client = builder.build(WaitServiceClient.class);
+            Response r = null;
+            try {
+                r = client.waitFor(20);
+                fail("Did not throw expected ProcessingException");
+            } catch (ProcessingException expected) {
+                LOG.info("Caught expected ProcessingException");
+            } catch (Throwable t) {
+                LOG.log(Level.SEVERE, "Caught unexpected exception", t);
+                fail("Caught unexpected exception: " + t);
+            }
+            long elapsedTime = System.nanoTime() - startTime;
+            long elapsedTimeSecs = TimeUnit.SECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);
+            LOG.info("waited >=" + elapsedTimeSecs + " seconds");
+            assertTrue("Did not time out when expected (5 secs) - instead waited at least 20 seconds.",
+                       elapsedTimeSecs < 20);
+        } finally {
+            builder.property("com.ibm.ws.jaxrs.client.receive.timeout", "120000");
         }
-        long elapsedTime = System.nanoTime() - startTime;
-        long elapsedTimeSecs = TimeUnit.SECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);
-        LOG.info("waited >=" + elapsedTimeSecs + " seconds");
-        assertTrue("Did not time out when expected (5 secs) - instead waited at least 20 seconds.",
-                   elapsedTimeSecs < 20);
     }
 }
