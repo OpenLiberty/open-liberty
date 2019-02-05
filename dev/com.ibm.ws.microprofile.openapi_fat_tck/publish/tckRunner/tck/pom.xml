@@ -13,7 +13,7 @@
 
     <properties>
         <microprofile.openapi.version>1.0.1</microprofile.openapi.version>
-        <surefire.version>2.19.1</surefire.version>
+        <surefire.version>2.17</surefire.version> <!-- Any changes to the surefire version must be tested against ZOS -->
         <arquillian.version>1.1.13.Final</arquillian.version>
         <arquillian-wlp.version>1.0.0.Final-SNAPSHOT</arquillian-wlp.version>
         
