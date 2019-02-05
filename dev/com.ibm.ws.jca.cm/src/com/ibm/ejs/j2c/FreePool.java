@@ -160,14 +160,26 @@ public final class FreePool implements JCAPMIHelper {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(this, tc, "queueRequest", waitTimeout);
         }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "Current connection pool", pm.toString());
         if (waitTimeout == 0) {
             --pm.waiterCount;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(
+                         tc,
+                         "Timeout.  Decremented waiterCount, which is now "
+                             + pm.waiterCount
+                             + " on datasource "
+                             + gConfigProps.cfName);
+            }
+            Object[] connWaitTimeoutparms = new Object[] { "createOrWaitForConnection", gConfigProps.cfName, 0, pm.waiterCount,
+                                                           pm.totalConnectionCount.get() };
             Tr.error(
                      tc,
                      "POOL_MANAGER_EXCP_CCF2_0001_J2CA0045",
-                     new Object[] { "queueRequest", gConfigProps.cfName });
-
-            ConnectionWaitTimeoutException cwte = new ConnectionWaitTimeoutException("Connection not available, Timed out waiting. Zero used for wait timeout");
+                     connWaitTimeoutparms);
+            String connWaitTimeoutMessage = Tr.formatMessage(tc, "POOL_MANAGER_EXCP_CCF2_0001_J2CA0045", connWaitTimeoutparms);
+            ConnectionWaitTimeoutException cwte = new ConnectionWaitTimeoutException(connWaitTimeoutMessage);
             com.ibm.ws.ffdc.FFDCFilter.processException(cwte, J2CConstants.DMSID_MAX_CONNECTIONS_REACHED, "192", this.pm);
             pm.activeRequest.decrementAndGet();
 
@@ -1178,13 +1190,14 @@ public final class FreePool implements JCAPMIHelper {
                                              + " on datasource "
                                              + gConfigProps.cfName);
                             }
+                            Object[] connWaitTimeoutparms = new Object[] { "createOrWaitForConnection", gConfigProps.cfName, totalTimeWaited, pm.waiterCount,
+                                                                           pm.totalConnectionCount.get() };
                             Tr.error(
                                      tc,
                                      "POOL_MANAGER_EXCP_CCF2_0001_J2CA0045",
-                                     new Object[] { "createOrWaitForConnection", gConfigProps.cfName });
-                            ConnectionWaitTimeoutException cwte = new ConnectionWaitTimeoutException("Connection not available, Timed out waiting for " + totalTimeWaited +
-                                                                                                     " with current waiting requests " + pm.waiterCount +
-                                                                                                     " and current total connections used " + pm.totalConnectionCount.get());
+                                     connWaitTimeoutparms);
+                            String connWaitTimeoutMessage = Tr.formatMessage(tc, "POOL_MANAGER_EXCP_CCF2_0001_J2CA0045", connWaitTimeoutparms);
+                            ConnectionWaitTimeoutException cwte = new ConnectionWaitTimeoutException(connWaitTimeoutMessage);
                             /*
                              * The new ffdc prossException has a dependency on the DiagnosticModuleForJ2C and should not
                              * be changed without making the same changes in the Dia...J2C.
