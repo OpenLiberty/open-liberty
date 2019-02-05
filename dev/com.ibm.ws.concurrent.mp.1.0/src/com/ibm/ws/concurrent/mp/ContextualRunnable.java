@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,9 +20,9 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
  * If a CompletableFuture is supplied, triggers its completion upon completion of the Runnable.
  */
 class ContextualRunnable implements Runnable {
-    private final Runnable action;
+    final Runnable action;
     private ManagedCompletableFuture<Void> completableFuture;
-    private final ThreadContextDescriptor threadContextDescriptor;
+    final ThreadContextDescriptor threadContextDescriptor;
 
     ContextualRunnable(ThreadContextDescriptor threadContextDescriptor, Runnable action) {
         this.action = action;
