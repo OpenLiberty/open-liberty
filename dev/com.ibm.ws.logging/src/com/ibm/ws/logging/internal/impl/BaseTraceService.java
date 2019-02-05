@@ -1200,72 +1200,42 @@ public class BaseTraceService implements TrService {
 
     public final static class TeePrintStream extends PrintStream {
         protected final TrOutputStream trStream;
+        protected final boolean autoFlush;
 
         public TeePrintStream(TrOutputStream trStream, boolean autoFlush) {
             super(trStream, autoFlush);
+            this.autoFlush = autoFlush;
             this.trStream = trStream;
         }
 
-        public void realFlush() {
-            try {
-                trStream.realFlush();
-            } catch (IOException e) {
-                e.printStackTrace();
+        public void realFlush(String s) {
+            if (autoFlush) {
+                try {
+                    trStream.realFlush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+            if (autoFlush && (s.indexOf('\n') >= 0)) {
+                try {
+                    trStream.realFlush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+        @Override
+        public void println(String s) {
+            super.print(s);
+            realFlush(s);
         }
 
         @Override
         public void print(String s) {
             super.print(s);
-            realFlush();
-        }
-
-        @Override
-        public void print(boolean b) {
-            super.print(b);
-            realFlush();
-        }
-
-        @Override
-        public void print(char c) {
-            super.print(c);
-            realFlush();
-        }
-
-        @Override
-        public void print(int i) {
-            super.print(i);
-            realFlush();
-        }
-
-        @Override
-        public void print(long l) {
-            super.print(l);
-            realFlush();
-        }
-
-        @Override
-        public void print(float f) {
-            super.print(f);
-            realFlush();
-        }
-
-        @Override
-        public void print(double d) {
-            super.print(d);
-            realFlush();
-        }
-
-        @Override
-        public void print(char s[]) {
-            super.print(s);
-            realFlush();
-        }
-
-        @Override
-        public void print(Object obj) {
-            super.print(obj);
-            realFlush();
+            realFlush(s);
         }
     }
 
@@ -1475,6 +1445,8 @@ public class BaseTraceService implements TrService {
                 }
 
                 System.out.println(starter);
+                System.out.println("jjjj\njjjj");
+                System.out.println("Done");
             }
         }
     }
