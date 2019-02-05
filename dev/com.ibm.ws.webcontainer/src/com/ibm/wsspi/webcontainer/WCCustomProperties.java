@@ -309,6 +309,9 @@ public class WCCustomProperties {
 	
     //18.0.0.3
     public static String SERVLET_PATH_FOR_DEFAULT_MAPPING;
+    
+    //PMDINH-DEBUG_Feature_checker
+    public static boolean WCC_FEATURE_CHECKER_TEST;
 
     static {
         setCustomPropertyVariables(); //initilizes all the variables
@@ -782,6 +785,9 @@ public class WCCustomProperties {
 
 	//18.0.0.3
 	SERVLET_PATH_FOR_DEFAULT_MAPPING = customProps.getProperty("com.ibm.ws.webcontainer.servletpathfordefaultmapping"); //4666
+	
+	WCC_FEATURE_CHECKER_TEST = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.wccfeaturecheckertest")).booleanValue(); //PMDINH_DEBUG_FEATURE_CHECKER
+
 
     }
 
