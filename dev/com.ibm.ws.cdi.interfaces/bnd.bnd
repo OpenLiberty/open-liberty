@@ -42,4 +42,5 @@ WS-TraceGroup: JCDI
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	org.eclipse.osgi
