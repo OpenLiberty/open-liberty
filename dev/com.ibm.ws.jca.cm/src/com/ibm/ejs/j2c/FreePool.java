@@ -172,7 +172,7 @@ public final class FreePool implements JCAPMIHelper {
                              + " on datasource "
                              + gConfigProps.cfName);
             }
-            Object[] connWaitTimeoutparms = new Object[] { "createOrWaitForConnection", gConfigProps.cfName, 0, pm.waiterCount,
+            Object[] connWaitTimeoutparms = new Object[] { "queueRequest", gConfigProps.cfName, 0, pm.waiterCount,
                                                            pm.totalConnectionCount.get() };
             Tr.error(
                      tc,
