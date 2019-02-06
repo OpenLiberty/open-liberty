@@ -65,10 +65,12 @@
             required="false" type="Integer" default="300000" />
         <AD id="signatureAlgorithm" name="%signatureAlgorithm"  description="%signatureAlgorithm.desc"
             required="false" type="String" default="RS256" /> 
-        <AD id="responseType" name="internal" description="internal use only" required="false" type="String" default="code">
+        <AD id="responseType" name="%responsetype" description="%responsetype.desc" required="false" type="String" default="code">
             <Option label="%responseType.code" value="code" />
             <Option label="%responseType.idTokenToken" value="id_token token" />
-            <Option label="%responseType.token" value="token" />
+            <!-- future
+            <Option label="%responseType.idToken" value="id_token" />
+            -->
         </AD>
         <AD id="responseMode" name="internal" description="internal use only" required="false" type="String">
             <Option label="%responseMode.formPost" value="form_post" />
@@ -119,6 +121,12 @@
         <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" default="https://twitter.com" />
         <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
         <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
+        <AD id="responseType" name="%responsetype" description="%responsetype.desc" required="false" type="String" default="code">
+                <Option label="%responseType.code" value="code" />
+             <!-- future
+            	<Option label="%responseType.token" value="token" />
+			-->
+		</AD>
     </OCD>
 
     <Designate pid="com.ibm.ws.security.social.twitter">
@@ -163,6 +171,12 @@
         </AD>        
         <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
         <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>                     
+        <AD id="responseType" name="%responsetype" description="%responsetype.desc" required="false" type="String" default="code">
+                <Option label="%responseType.code" value="code" />
+            <!-- future
+            	<Option label="%responseType.token" value="token" />
+			-->
+		</AD>
     </OCD>
 
     <Designate pid="com.ibm.ws.security.social.facebook">
@@ -207,6 +221,12 @@
         </AD>        
         <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
         <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>                                                                  
+        <AD id="responseType" name="%responsetype" description="internal use only" required="false" type="String" default="code">
+                <Option label="%responseType.code" value="code" />
+            <!-- future
+            	<Option label="%responseType.token" value="token" />
+			-->
+		</AD>
     </OCD>
 
     <Designate pid="com.ibm.ws.security.social.github">
@@ -253,6 +273,12 @@
              type="Boolean" default="true" />
         <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
         <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>                                     
+        <AD id="responseType" name="%responsetype" description="%responsetype.desc" required="false" type="String" default="code">
+                <Option label="%responseType.code" value="code" />
+            <!-- future
+            	<Option label="%responseType.token" value="token" />
+			-->
+		</AD>
     </OCD>
 
     <Designate pid="com.ibm.ws.security.social.linkedin">
@@ -271,15 +297,12 @@
             required="false" type="String" ibm:type="token" /> <!-- trim the beginning and ending spaces-->
         <AD id="jwksUri" name="internal" description="internal use only"
             required="false" type="String" ibm:type="token" /> <!-- trim the beginning and ending spaces-->
-        <AD id="responseType" name="internal" description="internal use only"
-            required="false" type="String" default="code"  />
-               <!-- future
+        <AD id="responseType" name="%responsetype" description="%responsetype.desc" required="false" type="String" default="code">
                 <Option label="%responseType.code" value="code" />
-            	<Option label="%responseType.idToken" value="id_token" />
-            	<Option label="%responseType.idTokenToken" value="id_token token" />
-            	<Option label="%responseType.Token" value="token" />
-            	 </AD>
-            	-->
+            <!-- future
+            	<Option label="%responseType.token" value="token" />
+           	-->
+		</AD>
        
         <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
              type="String" default="client_secret_post" >
@@ -383,10 +406,12 @@
          </AD>
         <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
         <AD id="hostNameVerificationEnabled" name="%hostNameVerificationEnabled" description="%hostNameVerificationEnabled.desc" required="false" type="Boolean" default="true"/>
-        <AD id="responseType" name="internal" description="internal use only" required="false" type="String" default="code">
+        <AD id="responseType" name="%responsetype" description="%responsetype.desc" required="false" type="String" default="code">
             <Option label="%responseType.code" value="code" />
             <Option label="%responseType.idTokenToken" value="id_token token" />
-            <Option label="%responseType.token" value="token" />
+            <!-- future
+            <Option label="%responseType.idToken" value="id_token" />
+			-->
         </AD>
         <AD id="responseMode" name="internal" description="internal use only" required="false" type="String">
             <Option label="%responseMode.formPost" value="form_post" />
