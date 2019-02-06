@@ -77,6 +77,7 @@ public class JavaInfo {
      */
     public static enum Vendor {
         IBM,
+        OPENJ9,
         SUN_ORACLE,
         UNKNOWN
     }
@@ -114,12 +115,25 @@ public class JavaInfo {
 
         // Parse vendor
         String vendorInfo = System.getProperty("java.vendor").toLowerCase();
-        if (vendorInfo.contains("ibm")) {
+        if (vendorInfo.contains("openj9")) {
+            VENDOR = Vendor.OPENJ9;
+        } else if (vendorInfo.contains("ibm") || vendorInfo.contains("j9")) {
             VENDOR = Vendor.IBM;
         } else if (vendorInfo.contains("oracle") || vendorInfo.contains("sun")) {
             VENDOR = Vendor.SUN_ORACLE;
         } else {
-            VENDOR = Vendor.UNKNOWN;
+            // If we don't find anything in 'java.vendor', check the VM vendor
+            vendorInfo = System.getProperty("java.vm.vendor", "unknown").toLowerCase();
+            if (vendorInfo.contains("openj9")) {
+                VENDOR = Vendor.OPENJ9;
+            } else if (vendorInfo.contains("ibm") || vendorInfo.contains("j9")) {
+                VENDOR = Vendor.IBM;
+            } else if (vendorInfo.contains("oracle") || vendorInfo.contains("sun") || vendorInfo.contains("openjdk")) {
+                VENDOR = Vendor.SUN_ORACLE;
+            } else {
+                Log.info(c, "<init>", "WARNING: Found unknown java vendor: " + vendorInfo);
+                VENDOR = Vendor.UNKNOWN;
+            }
         }
 
         // Parse service release
