@@ -418,8 +418,8 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         ThreadContextDescriptor contextDescriptor;
         if (action instanceof ContextualSupplier) {
             ContextualRunnable r = (ContextualRunnable) action;
-            contextDescriptor = r.threadContextDescriptor;
-            action = r.action;
+            contextDescriptor = r.getContextDescriptor();
+            action = r.getAction();
         } else {
             contextDescriptor = captureThreadContext(executor);
         }
@@ -467,8 +467,8 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         ThreadContextDescriptor contextDescriptor;
         if (action instanceof ContextualSupplier) {
             ContextualSupplier<U> s = (ContextualSupplier<U>) action;
-            contextDescriptor = s.threadContextDescriptor;
-            action = s.action;
+            contextDescriptor = s.getContextDescriptor();
+            action = s.getAction();
         } else {
             contextDescriptor = captureThreadContext(executor);
         }
@@ -701,8 +701,8 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             ThreadContextDescriptor contextDescriptor;
             if (action instanceof ContextualSupplier) {
                 ContextualSupplier<? extends T> s = (ContextualSupplier<? extends T>) action;
-                contextDescriptor = s.threadContextDescriptor;
-                action = s.action;
+                contextDescriptor = s.getContextDescriptor();
+                action = s.getAction();
             } else {
                 contextDescriptor = captureThreadContext(executor);
             }

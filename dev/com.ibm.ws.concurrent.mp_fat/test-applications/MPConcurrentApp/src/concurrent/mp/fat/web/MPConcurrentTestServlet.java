@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2018 IBM Corporation and others.
+ * Copyright (c) 2017,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -55,8 +56,10 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ContextService;
+import javax.enterprise.concurrent.LastExecution;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedScheduledExecutorService;
+import javax.enterprise.concurrent.Trigger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
@@ -1899,6 +1902,62 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
+     * When an already-contextualized Callable is supplied to managedExecutor.invokeAll, it must run with the
+     * context that was previously captured rather than with context captured according to the managed executor's configuration.
+     */
+    @Test
+    public void testInvokeAllWithPreContextualizedAction() throws Exception {
+        Callable<String> getStateMN, getStateIA, getStateWI;
+
+        try {
+            CurrentLocation.setLocation("Kasson", "Minnesota");
+            getStateMN = stateContextPropagator.contextualCallable(CurrentLocation::getState);
+
+            CurrentLocation.setLocation("Ottumwa", "Iowa");
+            getStateIA = stateContextPropagator.contextualCallable(CurrentLocation::getState);
+
+            List<Future<String>> futures = oneContextExecutor.invokeAll(Collections.singleton(getStateMN));
+            assertEquals("Minnesota", futures.get(0).get());
+
+            CurrentLocation.setLocation("Green Bay", "Wisconsin");
+            getStateWI = stateContextPropagator.contextualCallable(CurrentLocation::getState);
+        } finally {
+            CurrentLocation.clear();
+        }
+
+        List<Future<String>> futures = oneContextExecutor.invokeAll(Arrays.asList(() -> InitialContext.doLookup("java:comp/env/executorRef").toString(),
+                                                                                  getStateMN,
+                                                                                  CurrentLocation::getState,
+                                                                                  getStateIA,
+                                                                                  getStateWI));
+        assertEquals(5, futures.size());
+        assertNotNull(futures.get(0).get());
+        assertEquals("Minnesota", futures.get(1).get());
+        assertEquals("", futures.get(2).get());
+        assertEquals("Iowa", futures.get(3).get());
+        assertEquals("Wisconsin", futures.get(4).get());
+
+        // current thread's context should be clean even if invokeAll runs any of the tasks on the current thread
+        assertEquals("", CurrentLocation.getState());
+    }
+
+    /**
+     * When an already-contextualized Callable is supplied to managedExecutor.invokeAny, it must run with the
+     * context that was previously captured rather than with context captured according to the managed executor's configuration.
+     */
+    @Test
+    public void testInvokeAnyWithPreContextualizedAction() throws Exception {
+        CurrentLocation.setLocation("Oronoco", "Minnesota");
+        try {
+            Callable<String> getState = stateContextPropagator.contextualCallable(CurrentLocation::getState);
+            CurrentLocation.setLocation("Dubuque", "Iowa");
+            assertEquals("Minnesota", oneContextExecutor.invokeAny(Collections.singleton(getState)));
+        } finally {
+            CurrentLocation.clear();
+        }
+    }
+
+    /**
      * Basic test of ManagedExecutorBuilder, including one built-in container context type (APPLICATION)
      * and one custom context provider type (TestContextTypes.STATE). Build a MicroProfile ManagedExecutor
      * instance and use it to create several completion stages based on current context of the servlet thread.
@@ -3640,6 +3699,71 @@ public class MPConcurrentTestServlet extends FATServlet {
             }
         });
         executor2.submit(() -> System.out.println("Task 4 should not run. It should have been canceled from the queue upon shutdownNow."));
+    }
+
+    /**
+     * When an already-contextualized task is supplied to managedScheduledExecutorService.schedule(trigger, task), it must run with the
+     * context that was previously captured rather than with context captured according to the managed executor's configuration.
+     */
+    @Test
+    public void testScheduleViaTriggerWithPreContextualizedTask() throws Exception {
+        ManagedScheduledExecutorService executor = InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
+
+        CurrentLocation.setLocation("Dodge Center", "Minnesota");
+        try {
+            Callable<String> task = stateContextPropagator.contextualCallable(CurrentLocation::getState);
+            CurrentLocation.setLocation("Mason City", "Iowa");
+            Future<String> future = executor.schedule(task, new Trigger() {
+                @Override
+                public Date getNextRunTime(LastExecution lastExecution, Date taskScheduledTime) {
+                    // runs once, no sooner than 5ms after the time scheduled
+                    return lastExecution == null ? new Date(taskScheduledTime.getTime() + 5) : null;
+                }
+
+                @Override
+                public boolean skipRun(LastExecution lastExecution, Date scheduledRunTime) {
+                    return false;
+                }
+            });
+            assertEquals("Minnesota", future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            CurrentLocation.clear();
+        }
+    }
+
+    /**
+     * When an already-contextualized task is supplied to managedScheduledExecutorService.schedule, it must run with the
+     * context that was previously captured rather than with context captured according to the managed executor's configuration.
+     */
+    @Test
+    public void testScheduleWithPreContextualizedTask() throws Exception {
+        ManagedScheduledExecutorService executor = InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
+
+        CurrentLocation.setLocation("Mazeppa", "Minnesota");
+        try {
+            Callable<String> task = stateContextPropagator.contextualCallable(CurrentLocation::getState);
+            CurrentLocation.setLocation("Marshalltown", "Iowa");
+            Future<String> future = executor.schedule(task, 2, TimeUnit.NANOSECONDS);
+            assertEquals("Minnesota", future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            CurrentLocation.clear();
+        }
+    }
+
+    /**
+     * When an already-contextualized Runnable is supplied to managedExecutor.submit, it must run with the
+     * context that was previously captured rather than with context captured according to the managed executor's configuration.
+     */
+    @Test
+    public void testSubmitWithPreContextualizedRunnable() throws Exception {
+        CurrentLocation.setLocation("Zumbrota", "Minnesota");
+        try {
+            Runnable task = stateContextPropagator.contextualRunnable(() -> assertEquals("Minnesota", CurrentLocation.getState()));
+            CurrentLocation.setLocation("Iowa City", "Iowa");
+            oneContextExecutor.submit(task).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        } finally {
+            CurrentLocation.clear();
+        }
     }
 
     /**
