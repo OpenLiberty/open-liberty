@@ -28,6 +28,8 @@ public class MetatypeProviderTest extends ServletRunner {
     private static final String CONTEXT_ROOT = "metatypeprovider";
     private static final String NO_METATYPE_SERVER = "metatype/noMetatypeServer.xml";
     private static final String ORIGINAL_SERVER = "metatype/server.xml";
+    private static final String PLANT_PID = "test.metatype.provider.plant";
+    private static final String ANIMAL_PID = "test.metatype.provider.animal";
 
     @Override
     protected String getContextRoot() {
@@ -84,6 +86,11 @@ public class MetatypeProviderTest extends ServletRunner {
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile(NO_METATYPE_SERVER);
         testServer.waitForConfigUpdateInLogUsingMark(null);
+        // NOTE: We are currently waiting for these strings in trace because metatype provider removed events are not
+        // hooked into the main runtime update framework. If we ever add official support for metatype providers this
+        // should go away.
+        testServer.waitForStringInTrace("Removed metatype for PID " + PLANT_PID);
+        testServer.waitForStringInTrace("Removed metatype for PID " + ANIMAL_PID);
 
         test(testServer);
 
