@@ -1126,6 +1126,8 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         boolean selected;;
         String selectionCase;
 
+        String modulePath = moduleContainer.getPath();
+
         ContainerAnnotations containerAnnotations;
         UnableToAdaptException boundException;
 
@@ -1139,8 +1141,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
         if ( boundException != null ) {
             // CWWKZ0121E: Application {0}: Failed to access annotations for module {1} of type {2}: {3}
-            Tr.error(_tc, "error.module.class.source",
-                           getName(), moduleContainer.getPath(), "EJB", boundException);
+            Tr.error(_tc, "error.module.class.source", getName(), modulePath, "EJB", boundException);
             selected = false;
             selectionCase = "REJECT: No EJB descriptor and error obtaining annotations";
 
@@ -1149,17 +1150,46 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             selectionCase = "REJECT: No EJB descriptor and unexpected null annotations";
 
         } else {
-            String appName = getName();
+            String appName;
+            String appNameCase;
+
+            // TODO: This is an approximate unification with 'ModuleAnnotationsImpl':
+            //
+            //       The unification works exactly when the module annotations has module info
+            //       which is extended module info and when the test for annotations is performed
+            //       after application info is set.
+            //
+            //       A failure of either condition likely means different application names
+            //       will be used.
+
+            if ( appInfo != null ) {
+                appName = appInfo.getMetaData().getJ2EEName().getApplication();
+                appNameCase = "use metadata";
+            } else {
+                appName = getName();
+                appNameCase = "use server configuration";
+            }
+
+            Tr.info(_tc, "Module [ " + modulePath + " ]: AppName [ " + appName + " ]: " + appNameCase);
 
             String modName = getPath(moduleContainer);
+            String modNameCase;
+
             if ( modName == null ) {
+                modNameCase = null; // unused
+
                 selected = false;
                 selectionCase = "REJECT: Unexpected failure to obtain module path";
 
             } else {
                 if ( modName.isEmpty() ) {
                     modName = appName; 
+                    modNameCase = "Using app name";
+                } else {
+                    modNameCase = "Using module full path";
                 }
+
+                Tr.info(_tc, "Module [ " + modulePath + " ]: ModName [ " + modName + " ]: " + modNameCase);
 
                 containerAnnotations.setAppName(appName);
                 containerAnnotations.setModName(modName);
@@ -1178,8 +1208,10 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             }
         }
 
+        Tr.info(_tc, "Module [ " + modulePath + " ]: " + selectionCase);
+
         if (_tc.isDebugEnabled()) {
-            Tr.debug(_tc, "Module [ " + moduleContainer.getPath() + " ]: " + selectionCase);
+            Tr.debug(_tc, "Module [ " + modulePath + " ]: " + selectionCase);
         }
         return selected;
     }

@@ -17,6 +17,9 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
+import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
+import com.ibm.ws.runtime.metadata.ModuleMetaData;
+import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -101,13 +104,52 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnnotations {
     private static final String CLASS_NAME = ModuleAnnotationsImpl.class.getSimpleName();
 
+    // TODO: This is an approximate unification with 'EARDeployedAppInfo.hasAnnotations'.
+    //
+    //       The unification works exactly when the module info is extended module info
+    //       and when the EAR deployment information has set its application info.
+    //
+    //       A failure of either condition likely means different application names
+    //       will be used.
+
+    public static String getAppName(ModuleInfo moduleInfo) {
+        String appName;
+        String appNameCase;
+
+        ModuleMetaData moduleData;
+        if ( !(moduleInfo instanceof ExtendedModuleInfo) ) {
+            moduleData = null;
+            appNameCase = "Using name from ApplicationInfo: ModuleInfo is not ExtendedModuleInfo";
+        } else {
+            moduleData = ((ExtendedModuleInfo) moduleInfo).getMetaData();
+            appNameCase = "Using name from ApplicationInfo: ModuleInfo is ExtendedModuleInfo but has null module metadata";
+        }
+
+        if ( moduleData == null ) {
+            appName = moduleInfo.getApplicationInfo().getName();
+
+        } else {
+            ApplicationMetaData appData = moduleData.getApplicationMetaData();
+            if ( appData == null ) {
+                appName = moduleData.getJ2EEName().getApplication();
+                appNameCase = "Using module metadata based application name: ModuleInfo is ExtendedModuleInfo but has null application metadata";
+            } else {
+                appName = appData.getJ2EEName().getApplication();
+                appNameCase = "Using application metadata based application name: ModuleInfo is ExtendedModuleInfo and has application metadata";
+            }
+        }
+
+        Tr.info(tc, "Generated application name [ " + appName + " ]: " + appNameCase);
+        return appName;
+    }
+
     public ModuleAnnotationsImpl(
         AnnotationsAdapterImpl annotationsAdapter,
         Container rootContainer, OverlayContainer rootOverlayContainer,
         ArtifactContainer rootArtifactContainer, Container rootAdaptableContainer,
         ModuleInfo moduleInfo) throws UnableToAdaptException {
 
-    	this( annotationsAdapter,
+        this( annotationsAdapter,
               rootContainer, rootOverlayContainer,
               rootArtifactContainer, rootAdaptableContainer,
               moduleInfo, ClassSource_Factory.UNSET_CATEGORY_NAME );
@@ -122,7 +164,7 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
         super( annotationsAdapter,
                rootContainer, rootOverlayContainer,
                rootArtifactContainer, rootAdaptableContainer,
-               moduleInfo.getApplicationInfo().getName(),
+               ModuleAnnotationsImpl.getAppName(moduleInfo),
                AnnotationsImpl.getPath( moduleInfo.getContainer() ), // 'getPath' throws UnableToAdaptException
                modCatName );
 
