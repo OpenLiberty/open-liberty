@@ -241,6 +241,9 @@ public class MetricsMonitorTest {
       		new String[] { "vendor:" }, 
       		new String[] { "vendor:jaxws_client", "vendor:jaxws_server"});
        	
+      	Thread.sleep(5000);
+      	System.out.println("START ********************************************************************");
+      	
        	Log.info(c, testName, "------- Remove JDBC application ------");
        	boolean rc2 = server.removeAndStopDropinsApplications("testJDBCApp.war");
        	Log.info(c, testName, "------- " + (rc2 ? "successfully removed" : "failed to remove") + " JDBC application ------");
@@ -249,10 +252,14 @@ public class MetricsMonitorTest {
        	Assert.assertNotNull("CWWKG0017I NOT FOUND",server.waitForStringInLogUsingMark("CWWKG0017I"));
        	Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLogUsingMark("CWWKT0016I"));
        	Assert.assertNotNull("CWWKZ0009I NOT FOUND",server.waitForStringInLogUsingMark("CWWKZ0009I"));
+       	Assert.assertNotNull("SRVE9103I NOT FOUND",server.waitForStringInLogUsingMark("SRVE9103I"));
        	Log.info(c, testName, "------- connectionpool metrics should not be available ------");
       	checkStrings(getHttpsServlet("/metrics/vendor"), 
-      		new String[] { "vendor:" }, 
+      		new String[] { "vendor:" },       	
       		new String[] { "vendor:connectionpool", "vendor:servlet_test_jdbc_app" });
+      	
+      	System.out.println("FINISH ********************************************************************");
+      	Thread.sleep(5000);
       	      	
        	Log.info(c, testName, "------- Remove monitor-1.0 ------");
     	server.setMarkToEndOfLog();
