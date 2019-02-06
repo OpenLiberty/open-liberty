@@ -112,7 +112,7 @@ NO_VALID_TRANSACTION_CONTEXT_J2CA0040.explanation=There was an internal error in
 NO_VALID_TRANSACTION_CONTEXT_J2CA0040.useraction=CMSG0002
 
 # --------------------------------
-POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: Connection not available while invoking method {0} for resource {1}.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: Connection not available while invoking method {0} for resource {1}. Timed out waiting for {2} millisecond(s) with {3} remaining waiting requests and {4} current total connections used.
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.explanation=A connection wait timeout has occurred. A ConnectionWaitTimeoutException was created.
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.useraction=Reconfigure the connection pool. Increase the maximum number of connections or increase the connection wait time to avoid this error.
 
