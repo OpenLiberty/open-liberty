@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -153,11 +153,6 @@ public class WSJdbc41Connection extends WSJdbcConnection implements Connection {
     public void abort(Executor executor) throws SQLException {
         if (!isClosed()) {
             /*
-             * Mark this connection as aborted and mark the managed connection.
-             */
-            setAborted(true);
-            managedConn.setAborted(true);
-            /*
              * Call abort with the provided exceutor to abort the connection.
              */
             try {
@@ -166,6 +161,12 @@ public class WSJdbc41Connection extends WSJdbcConnection implements Connection {
                 // If the JDBC driver was compiled with java 6
                 throw new SQLFeatureNotSupportedException();
             }
+
+            /*
+             * Mark this connection as aborted and mark the managed connection.
+             */
+            setAborted(true);
+            managedConn.setAborted(true);
 
             fireConnectionErrorEvent(null, false);
         }

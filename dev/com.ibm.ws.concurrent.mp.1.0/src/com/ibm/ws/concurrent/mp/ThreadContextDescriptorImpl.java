@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,8 +31,9 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
 /**
- * Programmatically built ThreadContext instance - either via ThreadContextBuilder
- * or injected by CDI and possibly annotated by <code>@ThreadContextConfig</code>
+ * This class represents a collection across thread context types of captured and cleared thread context
+ * that can be applied to threads at future points in time, along with the ability to restore the previous
+ * context after the task or action completes.
  */
 class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
     private static final TraceComponent tc = Tr.register(ThreadContextDescriptorImpl.class);
@@ -47,7 +48,7 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
     /**
      * List of thread context snapshots (either captured from the requesting thread or cleared/empty)
      */
-    private ArrayList<com.ibm.wsspi.threadcontext.ThreadContext> contextSnapshots = new ArrayList<com.ibm.wsspi.threadcontext.ThreadContext>();
+    private final ArrayList<com.ibm.wsspi.threadcontext.ThreadContext> contextSnapshots = new ArrayList<com.ibm.wsspi.threadcontext.ThreadContext>();
 
     /**
      * Metadata identifier for the application component. Can be null if not associated with an application component.
@@ -79,9 +80,7 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
     @Trivial
     public ThreadContextDescriptor clone() {
         try {
-            ThreadContextDescriptorImpl clone = (ThreadContextDescriptorImpl) super.clone();
-            clone.contextSnapshots = new ArrayList<com.ibm.wsspi.threadcontext.ThreadContext>(contextSnapshots);
-            return clone;
+            return (ThreadContextDescriptorImpl) super.clone();
         } catch (CloneNotSupportedException x) {
             throw new RuntimeException(x); // should never occur
         }

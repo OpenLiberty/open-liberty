@@ -34,4 +34,5 @@ tested.features: \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.ws.logging.core;version=latest,\
   com.ibm.ws.resource;version=latest,\
+  com.ibm.ws.serialization;version=latest,\
   com.ibm.ws.tx.embeddable;version=latest

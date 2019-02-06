@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2018 IBM Corporation and others.
+ * Copyright (c) 2001, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -4420,17 +4420,12 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
 
     @Override
-    public void abort(Executor ex) throws SQLFeatureNotSupportedException {
+    public void abort(Executor ex) throws Exception {
         if (mcf.beforeJDBCVersion(JDBCRuntimeVersion.VERSION_4_1))
           throw new SQLFeatureNotSupportedException();
-        try {
-            setAborted(true);
-            mcf.jdbcRuntime.doAbort(sqlConn, ex);
-        } catch (SQLException e) {
-            // avoid raising an error so connection management code can continue its own abort processing
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc, "abort failure", e);
-        }
+        
+        mcf.jdbcRuntime.doAbort(sqlConn, ex);
+        setAborted(true);
     }
     
     @Override

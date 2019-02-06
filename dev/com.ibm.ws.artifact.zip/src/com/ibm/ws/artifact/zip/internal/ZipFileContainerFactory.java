@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.osgi.framework.BundleContext;
@@ -348,8 +349,12 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
 
             ZipInputStream zipInputStream = new ZipInputStream(entryInputStream);
             try {
-                zipInputStream.getNextEntry();
-                validZip = true;
+                ZipEntry entry = zipInputStream.getNextEntry();
+                if ( entry == null ) {
+                    Tr.error(tc, "bad.zip.data", getPhysicalPath(artifactEntry));
+                } else {
+                    validZip = true;
+                }
             } catch ( IOException e ) {
                 String entryPath = getPhysicalPath(artifactEntry);
                 Tr.error(tc, "bad.zip.data", entryPath);
@@ -440,7 +445,11 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
             ZipInputStream zipInputStream = new ZipInputStream(inputStream);
 
             try {
-                zipInputStream.getNextEntry(); // throws IOException
+                ZipEntry entry = zipInputStream.getNextEntry(); // throws IOException
+                if ( entry == null ) {
+                    Tr.error(tc, "bad.zip.data", file.getAbsolutePath());
+                    return false;
+                }
                 return true;
             } catch ( IOException e ) {
                 Tr.error(tc, "bad.zip.data", file.getAbsolutePath());

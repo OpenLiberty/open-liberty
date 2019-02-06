@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -3246,10 +3246,10 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
         } catch (SQLFeatureNotSupportedException e) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(tc, "JDBC feature or driver does not support aborting connections.");
-        } catch (ResourceException e) {
+        } catch (Exception e) {
             com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ejs.j2c.MCWrapper.abortMC", "3765", this);
             if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, "Caught exception releasing aborted connection to the pool manager.");
+                Tr.debug(this, tc, "Caught exception aborting connection or releasing aborted connection to the pool manager.");
         }
 
         if (trace && tc.isEntryEnabled())

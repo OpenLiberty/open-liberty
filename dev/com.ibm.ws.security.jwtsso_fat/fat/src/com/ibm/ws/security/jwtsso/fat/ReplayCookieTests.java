@@ -51,6 +51,7 @@ import com.ibm.ws.security.jwtsso.fat.utils.JwtFatActions;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
 import com.ibm.ws.security.jwtsso.fat.utils.MessageConstants;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -205,7 +206,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
      * - Upon re-access, should receive the login page because the JWT cookie is not valid
      * - FFDCs should be emitted because the JWT signature is not valid
      */
-    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtException", "com.ibm.websphere.security.jwt.InvalidTokenException",
+    @AllowedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtException", "com.ibm.websphere.security.jwt.InvalidTokenException",
                     "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_reaccessResource_jwtCookieWithEmptySignature() throws Exception {
@@ -243,7 +244,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
      * - Upon re-access, should receive the login page because the JWT cookie is not valid
      * - FFDCs should be emitted because the JWT is not formatted correctly
      */
-    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtException", "com.ibm.websphere.security.jwt.InvalidTokenException",
+    @AllowedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtException", "com.ibm.websphere.security.jwt.InvalidTokenException",
                     "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_reaccessResource_signatureRemovedFromJwtCookie() throws Exception {
@@ -461,7 +462,8 @@ public class ReplayCookieTests extends CommonSecurityFat {
      * Expects:
      * - Should receive the login page because the token does not contain all of the required claims
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException", "com.ibm.ws.security.authentication.AuthenticationException" })
+    @ExpectedFFDC({ "com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException"})
+    @AllowedFFDC({"com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_buildJwt_missingClaims_accessProtectedResource() throws Exception {
 
@@ -490,7 +492,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
      * Expects:
      * - Should receive the login page because the issuer in the token is not trusted
      */
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException",
+    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException",
                     "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_buildJwt_accessProtectedResource_defaultMpJwtConsumer() throws Exception {
@@ -547,7 +549,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
      * Expects:
      * - Should receive the login page because the token signature cannot be validated
      */
-    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException", "com.ibm.websphere.security.jwt.InvalidTokenException",
+    @AllowedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException", "com.ibm.websphere.security.jwt.InvalidTokenException",
                     "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_buildJwt_signedWithNonDefaultKey_accessProtectedResource() throws Exception {

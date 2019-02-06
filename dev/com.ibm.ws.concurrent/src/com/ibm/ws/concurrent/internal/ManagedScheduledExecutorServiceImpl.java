@@ -129,9 +129,7 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
      */
     @Override
     public <V> ScheduledFuture<V> schedule(Callable<V> task, long delay, TimeUnit unit) {
-        @SuppressWarnings("unchecked")
-        Class<? extends Callable<V>> callableType = task == null ? null : (Class<? extends Callable<V>>) task.getClass();
-        ScheduledTask<V> scheduledTask = new ScheduledTask<V>(this, task, callableType, delay, null, null, unit);
+        ScheduledTask<V> scheduledTask = new ScheduledTask<V>(this, task, true, delay, null, null, unit);
         if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
             purgeFutures();
         return scheduledTask.future;
@@ -145,9 +143,7 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
         if (trigger == null)
             throw new NullPointerException(Trigger.class.getName());
 
-        @SuppressWarnings("unchecked")
-        Class<? extends Callable<V>> callableType = task == null ? null : (Class<? extends Callable<V>>) task.getClass();
-        ScheduledTask<V> scheduledTask = new ScheduledTask<V>(this, task, callableType, trigger);
+        ScheduledTask<V> scheduledTask = new ScheduledTask<V>(this, task, true, trigger);
         if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
             purgeFutures();
         return scheduledTask.future;
@@ -158,7 +154,7 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
      */
     @Override
     public ScheduledFuture<?> schedule(Runnable task, long delay, TimeUnit unit) {
-        ScheduledTask<Void> scheduledTask = new ScheduledTask<Void>(this, task, null, delay, null, null, unit);
+        ScheduledTask<Void> scheduledTask = new ScheduledTask<Void>(this, task, false, delay, null, null, unit);
         if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
             purgeFutures();
         return scheduledTask.future;
@@ -172,7 +168,7 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
         if (trigger == null)
             throw new NullPointerException(Trigger.class.getName());
 
-        ScheduledTask<?> scheduledTask = new ScheduledTask<Void>(this, task, null, trigger);
+        ScheduledTask<?> scheduledTask = new ScheduledTask<Void>(this, task, false, trigger);
         if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
             purgeFutures();
         return scheduledTask.future;
@@ -186,7 +182,7 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
         if (period <= 0)
             throw new IllegalArgumentException(Long.toString(period));
 
-        ScheduledTask<Void> scheduledTask = new ScheduledTask<Void>(this, task, null, initialDelay < 0 ? 0 : initialDelay, null, period, unit);
+        ScheduledTask<Void> scheduledTask = new ScheduledTask<Void>(this, task, false, initialDelay < 0 ? 0 : initialDelay, null, period, unit);
         if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
             purgeFutures();
         return scheduledTask.future;
@@ -200,7 +196,7 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
         if (delay <= 0)
             throw new IllegalArgumentException(Long.toString(delay));
 
-        ScheduledTask<Void> scheduledTask = new ScheduledTask<Void>(this, task, null, initialDelay < 0 ? 0 : initialDelay, delay, null, unit);
+        ScheduledTask<Void> scheduledTask = new ScheduledTask<Void>(this, task, false, initialDelay < 0 ? 0 : initialDelay, delay, null, unit);
         if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
             purgeFutures();
         return scheduledTask.future;
