@@ -244,7 +244,7 @@ public class JaxRsFactoryBeanEJBCustomizer implements JaxRsFactoryBeanCustomizer
     }
 
     @Override
-    @FFDCIgnore(Exception.class)
+    @FFDCIgnore({ NamingException.class, Exception.class, Exception.class })
     public Object serviceInvoke(Object serviceObject, Method m,
                                 Object[] params, boolean isSingleton, Object context, Message inMessage) throws Exception {
 
