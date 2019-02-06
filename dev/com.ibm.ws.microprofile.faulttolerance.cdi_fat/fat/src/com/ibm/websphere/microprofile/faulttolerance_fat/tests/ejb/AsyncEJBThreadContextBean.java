@@ -18,6 +18,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
+import org.eclipse.microprofile.faulttolerance.Fallback;
 
 @ApplicationScoped
 @Asynchronous
@@ -33,6 +34,16 @@ public class AsyncEJBThreadContextBean {
 
     public Future<Principal> getEjbPrincipal() {
         Principal result = securedEjb.getPrincipal();
+        return CompletableFuture.completedFuture(result);
+    }
+
+    @Fallback(fallbackMethod = "securedEjbFallback")
+    public Future<String> fallbackToSecuredEjb() {
+        throw new RuntimeException("Test Exception");
+    }
+
+    public Future<String> securedEjbFallback() {
+        String result = securedEjb.securedCall();
         return CompletableFuture.completedFuture(result);
     }
 
