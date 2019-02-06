@@ -121,12 +121,6 @@
         <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" default="https://twitter.com" />
         <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
         <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
-        <AD id="responseType" name="%responsetype" description="%responsetype.desc" required="false" type="String" default="code">
-                <Option label="%responseType.code" value="code" />
-             <!-- future
-            	<Option label="%responseType.token" value="token" />
-			-->
-		</AD>
     </OCD>
 
     <Designate pid="com.ibm.ws.security.social.twitter">
