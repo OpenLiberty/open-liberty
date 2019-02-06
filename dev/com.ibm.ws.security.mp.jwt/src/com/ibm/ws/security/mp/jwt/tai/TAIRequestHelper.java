@@ -86,7 +86,7 @@ public class TAIRequestHelper {
 
         }
         if (mpJwtConfig != null) {
-            if (shouldDeferToJwtSso(request, mpJwtConfig)) {
+            if (shouldDeferToJwtSso(request, mpJwtConfig, mpJwtTaiRequest.getJwtSsoConfig())) {
                 return false;
             }
             ignoreAppAuthMethod = mpJwtConfig.ignoreApplicationAuthMethod(); // true by default
@@ -104,8 +104,8 @@ public class TAIRequestHelper {
     }
 
     // if we don't have a valid bearer header, and jwtsso is active, we should defer.
-    private boolean shouldDeferToJwtSso(HttpServletRequest req, MicroProfileJwtConfig config) {
-        if (!isJwtSsoFeatureActive(config)) {
+    private boolean shouldDeferToJwtSso(HttpServletRequest req, MicroProfileJwtConfig config, MicroProfileJwtConfig jwtssoConfig) {
+        if ((!isJwtSsoFeatureActive(config)) && (jwtssoConfig == null)) {
             return false;
         }
 
