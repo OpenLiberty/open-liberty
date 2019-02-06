@@ -33,6 +33,7 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.DeployedModuleInfo;
+import com.ibm.ws.app.manager.module.internal.ModuleClassLoaderFactory;
 import com.ibm.ws.app.manager.module.internal.ModuleInfoUtils;
 import com.ibm.ws.app.manager.module.internal.SimpleDeployedAppInfoBase;
 import com.ibm.ws.app.manager.springboot.container.config.SpringConfiguration;
@@ -41,6 +42,7 @@ import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory.Instan
 import com.ibm.ws.app.manager.springboot.support.SpringBootApplication;
 import com.ibm.ws.container.ErrorPage;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
+import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleClassesInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.extended.TagLibContainerInfo;
@@ -60,26 +62,33 @@ import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 public class WebInstance implements Instance {
     private static final String APP_NAME_KEY = "com.ibm.websphere.servlet.enterprise.application.name";
 
-    final class InstanceDeployedAppInfo extends SimpleDeployedAppInfoBase implements ServletContainerInitializer {
+    final class InstanceDeployedAppInfo extends SimpleDeployedAppInfoBase implements ServletContainerInitializer, ModuleClassLoaderFactory {
         private final WebInitializer initializer;
         private final AtomicReference<ServiceRegistration<ServletContainerInitializer>> sciRegistration = new AtomicReference<>();
         private final AtomicReference<String> appName = new AtomicReference<>();
+        private final ClassLoader appClassLoader;
 
         InstanceDeployedAppInfo(WebInitializer initializer, DeployedAppServices deployedAppServices,
-                                ExtendedApplicationInfo appInfo) throws UnableToAdaptException {
+                                ExtendedApplicationInfo appInfo, ClassLoader appClassLoader) throws UnableToAdaptException {
             super(deployedAppServices);
             super.appInfo = appInfo;
             this.initializer = initializer;
+            this.appClassLoader = appClassLoader;
+        }
+
+        @Override
+        public ClassLoader createModuleClassLoader(ModuleInfo moduleInfo, List<ContainerInfo> moduleClassesContainers) {
+            return appClassLoader;
         }
 
         DeployedModuleInfo createDeployedModule(Container appContainer, String id,
-                                                SpringBootApplication app, SpringConfiguration additionalConfig) throws UnableToAdaptException, MetaDataException {
+                                                SpringConfiguration additionalConfig) throws UnableToAdaptException, MetaDataException {
             String moduleURI = ModuleInfoUtils.getModuleURIFromLocation(id);
             WebModuleContainerInfo mci = new WebModuleContainerInfo(//
                             instanceFactory.getModuleHandler(), //
                             instanceFactory.getDeployedAppServices().getModuleMetaDataExtenders("web"), //
                             instanceFactory.getDeployedAppServices().getNestedModuleMetaDataFactories("web"), //
-                            appContainer, null, moduleURI, (m, c) -> app.getClassLoader(), moduleClassesInfo, initializer.getContextPath());
+                            appContainer, null, moduleURI, this, moduleClassesInfo, initializer.getContextPath());
             moduleContainerInfos.add(mci);
             WebModuleMetaData mmd = (WebModuleMetaData) mci.createModuleMetaData(appInfo, this);
             addSpringConfigToModuleMetadata(mmd, additionalConfig);
@@ -129,12 +138,10 @@ public class WebInstance implements Instance {
         }
 
         public void unregisterServletContainerListener() {
-            sciRegistration.getAndUpdate((r) -> {
-                if (r != null) {
-                    r.unregister();
-                }
-                return null;
-            });
+            ServiceRegistration<ServletContainerInitializer> r = sciRegistration.getAndSet(null);
+            if (r != null) {
+                r.unregister();
+            }
         }
     }
 
@@ -188,8 +195,8 @@ public class WebInstance implements Instance {
         npc.addToCache(TagLibContainerInfo.class, tagLibInfo);
 
         ExtendedApplicationInfo appInfo = app.createApplicationInfo(id, appContainer);
-        InstanceDeployedAppInfo deployedApp = new InstanceDeployedAppInfo(initializer, instanceFactory.getDeployedAppServices(), appInfo);
-        DeployedModuleInfo deployedModule = deployedApp.createDeployedModule(appContainer, id, app, cfg);
+        InstanceDeployedAppInfo deployedApp = new InstanceDeployedAppInfo(initializer, instanceFactory.getDeployedAppServices(), appInfo, app.getClassLoader());
+        DeployedModuleInfo deployedModule = deployedApp.createDeployedModule(appContainer, id, cfg);
         deployed.set(deployedModule);
 
         deployedApp.registerServletContainerListener(instanceFactory.getContext());

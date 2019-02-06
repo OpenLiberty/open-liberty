@@ -13,9 +13,10 @@ package com.ibm.ws.app.manager.springboot.container.config;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class SpringConfiguration {
+public class SpringConfiguration implements Function<SpringErrorPageData, String> {
 
     // below '*_in-spring_app' booleans used to WARN when a currently non-supported configuration is detected.
     private boolean compression_configured_in_spring_app = false;
@@ -73,10 +74,15 @@ public class SpringConfiguration {
     }
 
     @Override
+    public String apply(SpringErrorPageData d) {
+        return d == null ? "null" : d.toString();
+    }
+
+    @Override
     public String toString() {
         return String.join("",
                            "Error pages = [",
-                           errorPages.stream().map(Object::toString).collect(Collectors.joining(", ")),
+                           errorPages.stream().map(this).collect(Collectors.joining(", ")),
                            "]; Mime mappings = [",
                            mimeMappings.toString(),
                            "]; session_configured_in_spring = ",

@@ -12,8 +12,6 @@ package com.ibm.ws.app.manager.springboot.internal;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.List;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -49,14 +47,14 @@ public class ServerConfigurationWriter {
      * Expresses a server configuration in an XML document.
      *
      * @param sourceConfig
-     *                         the configuration you want to marshal
+     *            the configuration you want to marshal
      * @param outputStream
-     *                         the stream where you want to marshal state information. the
-     *                         stream will be closed before this method returns.
+     *            the stream where you want to marshal state information. the
+     *            stream will be closed before this method returns.
      * @throws XMLStreamException
-     *                                on StAX failure
+     *             on StAX failure
      * @throws IOException
-     *                                on IO failure
+     *             on IO failure
      *
      */
 
@@ -114,7 +112,7 @@ public class ServerConfigurationWriter {
 
     String getLineSeparator() {
         if (null == LINE_SEPARATOR) {
-            String ls = (String) AccessController.doPrivileged((PrivilegedAction<Object>) (() -> System.getProperty("line.separator")));
+            String ls = System.getProperty("line.separator");
             LINE_SEPARATOR = null != ls && (ls.equals("\n") || ls.equals("\r") || ls.equals("\r\n")) ? ls : "\n";
         }
         return LINE_SEPARATOR;

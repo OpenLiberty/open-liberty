@@ -11,8 +11,6 @@
 package com.ibm.ws.app.manager.springboot.util;
 
 import static com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil.getArtifactId;
-import static com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil.getStarterFilter;
-import static com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil.stringStream;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -112,36 +110,52 @@ public class EmbeddedContainerTest {
 
     @Test
     public void testStarterFilterGetAndApply() throws Exception {
+        File thinAppJar = workingArea.newFile("starterThinJar.jar");
+        File appLibsDir = workingArea.newFolder("starterAppLibs");
+
+        File sourceFatFile;
         JarFile sourceFatJar;
         StarterFilter filter;
         String starterJarName;
 
-        sourceFatJar = new JarFile(getUndertowStarter20AppJar());
+        sourceFatFile = getUndertowStarter20AppJar();
+        sourceFatJar = new JarFile(sourceFatFile);
         starterJarName = springBoot20UndertowStarterJars.get(random0max(springBoot20UndertowStarterJars.size() - 1));
-        filter = getStarterFilter(sourceFatJar);
+        SpringBootThinUtil util = new TestThinUtil(sourceFatFile, thinAppJar, appLibsDir);
+        filter = util.getStarterFilter(sourceFatJar);
         assertTrue("JarName " + starterJarName + " is a SB 2.0 UNDERTOW starter artifact, apply() is true", filter.apply(starterJarName));
         sourceFatJar.close();
+        util.close();
 
-        sourceFatJar = new JarFile(getJettyStarter20AppJar());
+        sourceFatFile = getJettyStarter20AppJar();
+        sourceFatJar = new JarFile(sourceFatFile);
         starterJarName = springBoot20JettyStarterJars.get(random0max(springBoot20JettyStarterJars.size() - 1));
-        filter = getStarterFilter(sourceFatJar);
+        util = new TestThinUtil(sourceFatFile, thinAppJar, appLibsDir);
+        filter = util.getStarterFilter(sourceFatJar);
         assertTrue("JarName " + starterJarName + " is a SB 2.0 JETTY starter artifact, apply() is true", filter.apply(starterJarName));
         sourceFatJar.close();
+        util.close();
 
-        sourceFatJar = new JarFile(getWebStarter20AppJar());
+        sourceFatFile = getWebStarter20AppJar();
+        sourceFatJar = new JarFile(sourceFatFile);
         starterJarName = springBoot20TomcatStarterJars.get(random0max(springBoot20TomcatStarterJars.size() - 1));
-        filter = getStarterFilter(sourceFatJar);
+        util = new TestThinUtil(sourceFatFile, thinAppJar, appLibsDir);
+        filter = util.getStarterFilter(sourceFatJar);
         assertTrue("JarName " + starterJarName + " is a SB 2.0 TOMCAT starter artifact, apply() is true", filter.apply(starterJarName));
         sourceFatJar.close();
+        util.close();
 
-        sourceFatJar = new JarFile(getNettyStarter20AppJar());
+        sourceFatFile = getNettyStarter20AppJar();
+        sourceFatJar = new JarFile(sourceFatFile);
         starterJarName = springBoot20NettyStarterJars.get(random0max(springBoot20NettyStarterJars.size() - 1));
-        filter = getStarterFilter(sourceFatJar);
+        util = new TestThinUtil(sourceFatFile, thinAppJar, appLibsDir);
+        filter = util.getStarterFilter(sourceFatJar);
         assertTrue("JarName " + starterJarName + " is a SB 2.0 NETTY starter artifact, apply() is true", filter.apply(starterJarName));
         sourceFatJar.close();
 
         starterJarName = springBoot20JettyStarterJars.get(0); // item 0 is always the root starter jar
         assertFalse("JarName " + starterJarName + "is NOT a TOMCAT 2.0 starter artifact, apply() is false", filter.apply(starterJarName));
+        util.close();
     }
 
     int random0max(int max) {
@@ -155,18 +169,17 @@ public class EmbeddedContainerTest {
         File thinAppJar = workingArea.newFile("starterThinJar.jar");
         File appLibsDir = workingArea.newFolder("starterAppLibs");
 
-        try (SpringBootThinUtil util = new TestThinUtil(fatAppJar, thinAppJar, appLibsDir)) {
-            util.execute(); // Indirectly exercises SpringBootThinUtil.getStarterFilter() and
-                            // StarterFilter.apply()
-        }
+        SpringBootThinUtil util = new TestThinUtil(fatAppJar, thinAppJar, appLibsDir);
+        util.execute(); // Indirectly exercises SpringBootThinUtil.getStarterFilter() and
+                        // StarterFilter.apply()
 
-        verifyJarLacksArtifacts(thinAppJar, springBoot20TomcatStarterJars);
+        verifyJarLacksArtifacts(util, thinAppJar, springBoot20TomcatStarterJars);
         verifyDirLacksArtifacts(appLibsDir, springBoot20TomcatStarterJars);
     }
 
-    public void verifyJarLacksArtifacts(File jarFile, List<String> artifacts) throws IOException {
+    public void verifyJarLacksArtifacts(SpringBootThinUtil util, File jarFile, List<String> artifacts) throws IOException {
         final JarFile jf;
-        Stream<String> entries = stringStream((jf = new JarFile(jarFile)));
+        Stream<String> entries = util.stringStream((jf = new JarFile(jarFile)));
         entries.forEach(entry -> {
             for (String artifact : artifacts) {
                 assertFalse("Unexpected artifact in jar: " + entry, entry.contains(artifact));

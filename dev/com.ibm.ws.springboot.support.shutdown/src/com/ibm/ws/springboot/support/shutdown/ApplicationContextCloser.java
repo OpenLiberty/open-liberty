@@ -13,6 +13,10 @@ package com.ibm.ws.springboot.support.shutdown;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.env.EnvironmentPostProcessor;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.env.ConfigurableEnvironment;
 
@@ -23,18 +27,31 @@ public class ApplicationContextCloser implements EnvironmentPostProcessor {
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment env, SpringApplication app) {
+        app.addInitializers(new AppContextInitializer());
+    }
+
+    private static class AppContextInitializer implements ApplicationContextInitializer, ApplicationListener {
+
         final SpringBootConfigFactory factory = SpringBootConfigFactory.findFactory(token);
-        app.addInitializers((c) -> {
-            factory.addShutdownHook(() -> {
-                c.close();
-            });
-            c.addApplicationListener((e) -> {
-                if (e instanceof ContextClosedEvent) {
-                    factory.rootContextClosed();
-                } else if (e instanceof ApplicationReadyEvent) {
-                    factory.getApplicationReadyLatch().countDown();
+
+        @Override
+        public void initialize(ConfigurableApplicationContext c) {
+            factory.addShutdownHook(new Runnable() {
+                @Override
+                public void run() {
+                    c.close();
                 }
             });
-        });
+            c.addApplicationListener(this);
+        }
+
+        @Override
+        public void onApplicationEvent(ApplicationEvent e) {
+            if (e instanceof ContextClosedEvent) {
+                factory.rootContextClosed();
+            } else if (e instanceof ApplicationReadyEvent) {
+                factory.getApplicationReadyLatch().countDown();
+            }
+        }
     }
 }

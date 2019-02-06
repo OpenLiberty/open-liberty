@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.web.server.version20.container;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
 import org.springframework.beans.BeansException;
@@ -36,12 +38,15 @@ public class LibertyReactiveWebServerFactory extends AbstractReactiveWebServerFa
         if (springVersion != null) {
             ServerConfigurationFactory.checkSpringBootVersion("2.0.1", "3.0", springVersion);
         }
-        ServletContextInitializer[] initializers = { (c) -> {
-            ServletHttpHandlerAdapter servlet = new ServletHttpHandlerAdapter(httpHandler);
-            ServletRegistration.Dynamic registration = c.addServlet("http-handler-adapter", servlet);
-            registration.setLoadOnStartup(1);
-            registration.addMapping("/");
-            registration.setAsyncSupported(true);
+        ServletContextInitializer[] initializers = { new ServletContextInitializer() {
+            @Override
+            public void onStartup(ServletContext c) throws ServletException {
+                ServletHttpHandlerAdapter servlet = new ServletHttpHandlerAdapter(httpHandler);
+                ServletRegistration.Dynamic registration = c.addServlet("http-handler-adapter", servlet);
+                registration.setLoadOnStartup(1);
+                registration.addMapping("/");
+                registration.setAsyncSupported(true);
+            }
         } };
         return new LibertyWebServer(this, this, initializers);
     }

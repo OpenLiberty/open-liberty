@@ -24,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -55,7 +57,7 @@ import com.ibm.ws.app.manager.springboot.container.ApplicationTr.Type;
  * A utility class for thinning an uber jar by separating application code in a separate jar
  * and libraries(dependencies) in a zip or a directory.
  */
-public class SpringBootThinUtil implements Closeable {
+public class SpringBootThinUtil implements Closeable, Function<JarEntry, String> {
     public static final String SPRING_LIB_INDEX_FILE = "META-INF/spring.lib.index";
     private static final String SPRING_BOOT_LOADER_CLASSPATH = "org/springframework/boot/loader/";
     private static final String LIBERTY_EXEC_JAR_BSN = "wlp.lib.extract";
@@ -378,24 +380,31 @@ public class SpringBootThinUtil implements Closeable {
         }
     }
 
-    public static StarterFilter getStarterFilter(JarFile jarFile) {
+    public StarterFilter getStarterFilter(JarFile jarFile) {
         return getStarterFilter(stringStream(jarFile));
     }
 
-    public static Stream<String> stringStream(JarFile jarFile) {
-        Stream<String> stream = StreamSupport.stream(jarFile.stream().spliterator(), false).map(entry -> entry.getName());
-        return stream;
+    @Override
+    public String apply(JarEntry entry) {
+        return entry.getName();
+    }
+
+    public Stream<String> stringStream(JarFile jarFile) {
+        return StreamSupport.stream(jarFile.stream().spliterator(), false).map(this);
     }
 
     public static StarterFilter getStarterFilter(Stream<String> entries) {
         final AtomicReference<String> starterRef = new AtomicReference<String>();
-        entries.forEach(entry -> {
-            if (starterRef.get() == null) {
-                String path = entry;
-                for (String starterJarNamePrefix : EmbeddedContainer.getSupportedStarters()) {
-                    if (path.contains(starterJarNamePrefix)) {
-                        starterRef.set(starterJarNamePrefix);
-                        break;
+        entries.forEach(new Consumer<String>() {
+            @Override
+            public void accept(String entry) {
+                if (starterRef.get() == null) {
+                    String path = entry;
+                    for (String starterJarNamePrefix : EmbeddedContainer.getSupportedStarters()) {
+                        if (path.contains(starterJarNamePrefix)) {
+                            starterRef.set(starterJarNamePrefix);
+                            break;
+                        }
                     }
                 }
             }
@@ -405,7 +414,7 @@ public class SpringBootThinUtil implements Closeable {
         return new StarterFilter(springBootStarter, starterArtifactIds);
     }
 
-    static class PreThinnedApp {
+    static class PreThinnedApp implements Comparator<JarEntry> {
         private final String libCachePath;
         private final String serverPath;
         private final JarFile jarFile;
@@ -452,7 +461,18 @@ public class SpringBootThinUtil implements Closeable {
                 throw new ApplicationError(Type.ERROR_APP_NOT_FOUND_INSIDE_PACKAGED_LIBERTY_JAR);
             }
 
-            applicationEntries.forEach((k1, m) -> m.forEach((k2, l) -> l.sort((e1, e2) -> e1.getName().compareTo(e2.getName()))));
+            for (Map<String, List<JarEntry>> appEntry : applicationEntries.values()) {
+                for (List<JarEntry> jarEntries : appEntry.values()) {
+                    if (jarEntries.size() > 1) {
+                        jarEntries.sort(this);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public int compare(JarEntry e1, JarEntry e2) {
+            return e1.getName().compareTo(e2.getName());
         }
 
         private void parseServerXML(JarFile jarFile, JarEntry entry) throws IOException {
@@ -478,8 +498,29 @@ public class SpringBootThinUtil implements Closeable {
                     if (slash >= 0) {
                         appName.substring(0, slash);
                     }
-                    Map<String, List<JarEntry>> apps = applicationEntries.computeIfAbsent(appsRoot, (k) -> new LinkedHashMap<>());
-                    apps.computeIfAbsent(appName, (k) -> new ArrayList<>()).add(entry);
+                    Map<String, List<JarEntry>> apps = applicationEntries.get(appsRoot);
+                    List<JarEntry> entries = null;
+                    if (appsRoot == null) {
+                        apps = new LinkedHashMap<>();
+                        entries = new ArrayList<>();
+                        apps.put(appName, entries);
+                        Map<String, List<JarEntry>> ret = applicationEntries.putIfAbsent(appsRoot, apps);
+                        if (ret != null) {
+                            apps = ret;
+                            entries = null;
+                        }
+                    }
+                    if (entries == null) {
+                        entries = apps.get(appName);
+                        if (entries == null) {
+                            entries = new ArrayList<>();
+                            List<JarEntry> ret = apps.putIfAbsent(appName, entries);
+                            if (ret != null) {
+                                entries = ret;
+                            }
+                        }
+                    }
+                    entries.add(entry);
                 }
                 return true;
             }
@@ -812,7 +853,9 @@ public class SpringBootThinUtil implements Closeable {
         public static Set<String> loadStarterMvnDeps(List<String> mvnStarterDeps) {
             // mvnDep :: groupId:artifactId:version:scope
             Set<String> starterArtifactIds = new HashSet<String>();
-            mvnStarterDeps.forEach(mvnDep -> starterArtifactIds.add(mvnDep.split(":")[1].toLowerCase()));
+            for (String mvnDep : mvnStarterDeps) {
+                starterArtifactIds.add(mvnDep.split(":")[1].toLowerCase());
+            }
             return Collections.unmodifiableSet(starterArtifactIds);
         }
 

@@ -32,12 +32,17 @@ import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigu
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.WANT;
 
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
+
+import javax.servlet.ServletContext;
 
 import org.springframework.boot.context.embedded.EmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerException;
@@ -59,7 +64,7 @@ import com.ibm.ws.springboot.support.web.server.initializer.WebInitializer;
 /**
  *
  */
-public class LibertyWebServer implements EmbeddedServletContainer {
+public class LibertyWebServer implements EmbeddedServletContainer, Function<String, URL> {
     private static final Object token = new Object() {
     };
     private final SpringBootConfig springBootConfig;
@@ -80,20 +85,23 @@ public class LibertyWebServer implements EmbeddedServletContainer {
         SpringConfiguration additionalConfig = collectAdditionalConfig(factory);
         final CountDownLatch initDone = new CountDownLatch(1);
         final AtomicReference<Throwable> exception = new AtomicReference<>();
-        springBootConfig.configure(serverConfig, new WebInitializer(factory.getContextPath(), (sc) -> {
-            try {
-                for (ServletContextInitializer servletContextInitializer : initializers) {
-                    try {
-                        servletContextInitializer.onStartup(sc);
-                    } catch (Throwable t) {
-                        exception.set(t);
-                        break;
+        springBootConfig.configure(serverConfig, new WebInitializer(factory.getContextPath(), new UnaryOperator<ServletContext>() {
+            @Override
+            public ServletContext apply(ServletContext sc) {
+                try {
+                    for (ServletContextInitializer servletContextInitializer : initializers) {
+                        try {
+                            servletContextInitializer.onStartup(sc);
+                        } catch (Throwable t) {
+                            exception.set(t);
+                            break;
+                        }
                     }
+                } finally {
+                    initDone.countDown();
                 }
-            } finally {
-                initDone.countDown();
+                return sc;
             }
-            return sc;
         }), WebInitializer.class, additionalConfig);
 
         try {
@@ -157,15 +165,18 @@ public class LibertyWebServer implements EmbeddedServletContainer {
         }
     }
 
-    private static ServerConfiguration getServerConfiguration(LibertyServletWebServerFactory factory, SpringBootConfigFactory configFactory, LibertyWebServer container) {
+    private ServerConfiguration getServerConfiguration(LibertyServletWebServerFactory factory, SpringBootConfigFactory configFactory, LibertyWebServer container) {
         Map<String, Object> serverProperties = getServerProperties(factory, container);
-        return ServerConfigurationFactory.createServerConfiguration(serverProperties, configFactory, (s) -> {
-            try {
-                return ResourceUtils.getURL(s);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException("Could not find the key store \"" + s + "\"", e);
-            }
-        });
+        return ServerConfigurationFactory.createServerConfiguration(serverProperties, configFactory, this);
+    }
+
+    @Override
+    public URL apply(String s) {
+        try {
+            return ResourceUtils.getURL(s);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Could not find the key store \"" + s + "\"", e);
+        }
     }
 
     private static Map<String, Object> getServerProperties(LibertyServletWebServerFactory factory, LibertyWebServer container) {

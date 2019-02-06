@@ -99,11 +99,7 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
         final SpringBootApplicationImpl springBootApplication = springBootModuleInfo.getSpringBootApplication();
         final Method main;
         ClassLoader newTccl = springBootModuleInfo.getThreadContextClassLoader();
-        ClassLoader previousTccl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
-        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-            Thread.currentThread().setContextClassLoader(newTccl);
-            return null;
-        });
+        ClassLoader previousTccl = setContextClassLoader(newTccl, true);
         try {
             springBootApplication.registerSpringConfigFactory();
             Class<?> springApplicationClass = springBootModuleInfo.getClassLoader().loadClass(springBootApplication.getSpringBootManifest().getSpringStartClass());
@@ -114,46 +110,55 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
             futureMonitor.setResult(mainInvokeResult, e);
             return;
         } finally {
-            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-                Thread.currentThread().setContextClassLoader(previousTccl);
-                return null;
-            });
+            if (previousTccl != newTccl) {
+                setContextClassLoader(previousTccl, false);
+            }
         }
 
         // Execute the main method asynchronously.
         // The mainInvokeResult is tracked to monitor completion
-        executor.execute(() -> {
-            ClassLoader execPreviousTccl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
-            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-                Thread.currentThread().setContextClassLoader(newTccl);
-                return null;
-            });
-            try {
-                // get the application args to pass from the springBootApplication
-                String[] appArgs = libertyProcess.getArgs();
-                if (appArgs.length == 0) {
-                    appArgs = springBootApplication.getAppArgs().toArray(new String[0]);
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                ClassLoader execPreviousTccl = setContextClassLoader(newTccl, true);
+                try {
+                    // get the application args to pass from the springBootApplication
+                    String[] appArgs = libertyProcess.getArgs();
+                    if (appArgs.length == 0) {
+                        appArgs = springBootApplication.getAppArgs().toArray(new String[0]);
+                    }
+                    main.invoke(null, new Object[] { appArgs });
+                    futureMonitor.setResult(mainInvokeResult, true);
+                } catch (InvocationTargetException e) {
+                    Throwable target = e.getTargetException();
+                    String msgKey = null;
+                    if (target instanceof ApplicationError) {
+                        msgKey = ((ApplicationError) target).getType().getMessageKey();
+                        Tr.error(tc, msgKey);
+                        futureMonitor.setResult(mainInvokeResult, target);
+                    } else {
+                        futureMonitor.setResult(mainInvokeResult, e.getTargetException());
+                    }
+                } catch (IllegalAccessException | IllegalArgumentException e) {
+                    // Auto FFDC here this should not happen
+                    futureMonitor.setResult(mainInvokeResult, e);
+                } finally {
+                    if (execPreviousTccl != newTccl) {
+                        setContextClassLoader(execPreviousTccl, false);
+                    }
                 }
-                main.invoke(null, new Object[] { appArgs });
-                futureMonitor.setResult(mainInvokeResult, true);
-            } catch (InvocationTargetException e) {
-                Throwable target = e.getTargetException();
-                String msgKey = null;
-                if (target instanceof ApplicationError) {
-                    msgKey = ((ApplicationError) target).getType().getMessageKey();
-                    Tr.error(tc, msgKey);
-                    futureMonitor.setResult(mainInvokeResult, target);
-                } else {
-                    futureMonitor.setResult(mainInvokeResult, e.getTargetException());
-                }
-            } catch (IllegalAccessException | IllegalArgumentException e) {
-                // Auto FFDC here this should not happen
-                futureMonitor.setResult(mainInvokeResult, e);
-            } finally {
-                AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-                    Thread.currentThread().setContextClassLoader(execPreviousTccl);
-                    return null;
-                });
+            }
+        });
+    }
+
+    private static ClassLoader setContextClassLoader(final ClassLoader newTCCL, final boolean returnPreviousTCCL) {
+        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            @Override
+            public ClassLoader run() {
+                Thread thisThread = Thread.currentThread();
+                ClassLoader prevTCCL = returnPreviousTCCL ? thisThread.getContextClassLoader() : null;
+                thisThread.setContextClassLoader(newTCCL);
+                return prevTCCL;
             }
         });
     }

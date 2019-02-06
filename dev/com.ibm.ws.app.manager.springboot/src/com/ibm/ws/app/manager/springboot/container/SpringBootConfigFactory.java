@@ -76,44 +76,54 @@ public interface SpringBootConfigFactory {
      * on the class loader of a given token object.
      *
      * @param token an object with a class that is loaded by the class loader of
-     *                  the Spring Boot application
+     *            the Spring Boot application
      * @return The Spring Boot configuration factory for a Spring Boot application.
      */
     static SpringBootConfigFactory findFactory(Object token) {
         // A SpringBootConfigFactory is registered with the gateway bundle for the application
         // here we find the gateway bundle by looking for a BundleReference in the class
         // loader hierarchy.
-        ClassLoader cl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> token.getClass().getClassLoader());
-        while (cl != null && (!(cl instanceof BundleReference))) {
-            cl = cl.getParent();
-        }
-        if (cl == null) {
-            throw new IllegalStateException("Did not find a BundleReference class loader.");
-        }
+        return AccessController.doPrivileged(new PrivilegedAction<SpringBootConfigFactory>() {
 
-        final Bundle b = ((BundleReference) cl).getBundle();
-        SpringBootConfigFactory result = AccessController.doPrivileged((PrivilegedAction<SpringBootConfigFactory>) () -> {
-            ServiceReference<?>[] services = b.getRegisteredServices();
-            if (services != null) {
-                for (ServiceReference<?> service : services) {
-                    String[] objectClass = (String[]) service.getProperty(Constants.OBJECTCLASS);
-                    for (String name : objectClass) {
-                        if (SpringBootConfigFactory.class.getName().equals(name)) {
-                            BundleContext context = b.getBundleContext();
-                            try {
-                                return (SpringBootConfigFactory) context.getService(service);
-                            } finally {
-                                context.ungetService(service);
+            @Override
+            public SpringBootConfigFactory run() {
+                ClassLoader cl = token.getClass().getClassLoader();
+                while (cl != null && (!(cl instanceof BundleReference))) {
+                    cl = cl.getParent();
+                }
+                if (cl == null) {
+                    throw new IllegalStateException("Did not find a BundleReference class loader.");
+                }
+
+                final Bundle b = ((BundleReference) cl).getBundle();
+                ServiceReference<?>[] services = b.getRegisteredServices();
+                SpringBootConfigFactory retVal = null;
+                if (services != null) {
+                    boolean found = false;
+                    for (ServiceReference<?> service : services) {
+                        String[] objectClass = (String[]) service.getProperty(Constants.OBJECTCLASS);
+                        for (String name : objectClass) {
+                            if (SpringBootConfigFactory.class.getName().equals(name)) {
+                                BundleContext context = b.getBundleContext();
+                                try {
+                                    retVal = (SpringBootConfigFactory) context.getService(service);
+                                    found = true;
+                                } finally {
+                                    context.ungetService(service);
+                                }
+                                break;
                             }
+                        }
+                        if (found) {
+                            break;
                         }
                     }
                 }
+                if (retVal == null) {
+                    throw new IllegalStateException("No SpringBootConfigFactory service found for: " + b);
+                }
+                return retVal;
             }
-            return null;
         });
-        if (result == null) {
-            throw new IllegalStateException("No SpringBootConfigFactory service found for: " + b);
-        }
-        return result;
     }
 }

@@ -86,13 +86,13 @@ public class SpringBootHandler implements ApplicationHandler<DeployedAppInfo> {
 
         // We uninstall left over configs from previous shutdown to give config admin a
         // chance to clear out the configurations now before we start any applications.
-        configs.forEach((c) -> {
+        for (BundleCapability c : configs) {
             try {
                 c.getRevision().getBundle().uninstall();
             } catch (BundleException e) {
                 // AUTO FFDC here
             }
-        });
+        }
     }
 
     @Override
@@ -106,12 +106,13 @@ public class SpringBootHandler implements ApplicationHandler<DeployedAppInfo> {
             return futureMonitor.createFutureWithResult(Boolean.class, springBootApplication.getError());
         }
         Future<Boolean> result = futureMonitor.createFuture(Boolean.class);
-        String current = applicationActivated.getAndUpdate((s) -> {
-            if (s == null) {
-                return applicationInformation.getName();
-            }
-            return s;
-        });
+        String current;
+        String updated;
+        do {
+            current = applicationActivated.get();
+            updated = (current != null) ? current : applicationInformation.getName();;
+        } while (!applicationActivated.compareAndSet(current, updated));
+
         if (current != null) {
             IllegalStateException error = new IllegalStateException(Tr.formatMessage(tc, "error.multiple.applications.not.allowed", applicationInformation.getName(), current));
             return futureMonitor.createFutureWithResult(Boolean.class, error);

@@ -49,6 +49,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.stream.Stream;
@@ -123,7 +124,7 @@ import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
-public class SpringBootApplicationImpl extends DeployedAppInfoBase implements SpringBootConfigFactory, SpringBootApplication {
+public class SpringBootApplicationImpl extends DeployedAppInfoBase implements SpringBootConfigFactory, SpringBootApplication, Function<Entry, String> {
     private static final TraceComponent tc = Tr.register(SpringBootApplicationImpl.class);
     final CountDownLatch applicationReadyLatch = new CountDownLatch(1);
 
@@ -282,54 +283,54 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             if (config.getVirtualHosts().isEmpty()) {
                 if (!instance.isEndpointConfigured()) {
                     //use app configured port with default_host
-                    virtualHostConfig.updateAndGet((b) -> installVirtualHostBundle(b, config));
+                    virtualHostConfig.updateAndGet((b) -> installVirtualHostBundle(config));
                 }
             } else {
                 //use app configured port with custom virtual host
-                virtualHostConfig.updateAndGet((b) -> installVirtualHostBundle(b, config));
+                Bundle next = installVirtualHostBundle(config);
+                do {
+                    Bundle previous = virtualHostConfig.getAndSet(null);
+                    if (previous != null) {
+                        try {
+                            previous.uninstall();
+                        } catch (BundleException e) {
+                            // auto FFDC here
+                        }
+                    }
+                } while (!virtualHostConfig.compareAndSet(null, next));
             }
             instance.start();
         }
 
         @Override
         public void stop() {
-            virtualHostConfig.getAndUpdate((b) -> {
-                if (b != null) {
-                    try {
-                        // If the framework is stopping then we avoid uninstalling the bundle.
-                        // This is necessary because config admin will no process the
-                        // config bundle deletion while the framework is shutting down.
-                        // Here we leave the bundle installed and we will clean it up
-                        // on restart when the Spring Boot app handler is activated.
-                        // This way the configurations can be removed before re-starting
-                        // the spring boot applications
-                        if (!FrameworkState.isStopping()) {
-                            b.uninstall();
-                        }
-                    } catch (IllegalStateException e) {
-                        // auto FFDC here
-                    } catch (BundleException e) {
-                        // auto FFDC here
-                    }
-                }
-                return null;
-            });
-            configInstance.getAndUpdate((i) -> {
-                if (i != null) {
-                    i.stop();
-                }
-                return null;
-            });
-        }
-
-        private Bundle installVirtualHostBundle(Bundle previous, ServerConfiguration libertyConfig) {
-            if (previous != null) {
+            Bundle b = virtualHostConfig.getAndSet(null);
+            if (b != null) {
                 try {
-                    previous.uninstall();
+                    // If the framework is stopping then we avoid uninstalling the bundle.
+                    // This is necessary because config admin will not process the
+                    // config bundle deletion while the framework is shutting down.
+                    // Here we leave the bundle installed and we will clean it up
+                    // on restart when the Spring Boot app handler is activated.
+                    // This way the configurations can be removed before re-starting
+                    // the spring boot applications
+                    if (!FrameworkState.isStopping()) {
+                        b.uninstall();
+                    }
+                } catch (IllegalStateException e) {
+                    // auto FFDC here
                 } catch (BundleException e) {
                     // auto FFDC here
                 }
             }
+
+            Instance i = configInstance.getAndSet(null);
+            if (i != null) {
+                i.stop();
+            }
+        }
+
+        private Bundle installVirtualHostBundle(ServerConfiguration libertyConfig) {
             BundleContext context = SpringBootApplicationImpl.this.factory.getBundleContext();
             BundleFactory factory = new BundleFactory();
             String name = "com.ibm.ws.app.manager.springboot." + id;
@@ -728,7 +729,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         return builder.toString();
     }
 
-    private static List<ContainerInfo> getContainerInfos(Container container, SpringBootApplicationFactory factory, SpringBootManifest manifest) throws UnableToAdaptException {
+    private List<ContainerInfo> getContainerInfos(Container container, SpringBootApplicationFactory factory, SpringBootManifest manifest) throws UnableToAdaptException {
         List<ContainerInfo> containerInfos = new ArrayList<>();
         Entry classesEntry = container.getEntry(manifest.getSpringBootClasses());
         if (classesEntry != null) {
@@ -752,7 +753,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         return Collections.unmodifiableList(containerInfos);
     }
 
-    private static List<ContainerInfo> getSpringBootLibs(Container moduleContainer, SpringBootManifest manifest, ArrayList<String> resolved) throws UnableToAdaptException {
+    private List<ContainerInfo> getSpringBootLibs(Container moduleContainer, SpringBootManifest manifest, ArrayList<String> resolved) throws UnableToAdaptException {
         List<ContainerInfo> result = new ArrayList<>();
         Entry libEntry = moduleContainer.getEntry(manifest.getSpringBootLib());
         if (libEntry != null) {
@@ -775,9 +776,13 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         return result;
     }
 
-    public static Stream<String> stringStream(Container container) {
-        Stream<String> stream = StreamSupport.stream(container.spliterator(), false).map(entry -> entry.getName());
-        return stream;
+    public Stream<String> stringStream(Container container) {
+        return StreamSupport.stream(container.spliterator(), false).map(this);
+    }
+
+    @Override
+    public String apply(Entry e) {
+        return e.getName();
     }
 
     private static List<ContainerInfo> getStoredIndexClassesInfos(Entry indexFile, LibIndexCache libIndexCache) throws UnableToAdaptException {
@@ -877,7 +882,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     void registerSpringConfigFactory() {
         // Register the SpringContainer service with the context
         // of the gateway bundle for the application.
-        // Find the gateway bunlde by searching the hierarchy of the
+        // Find the gateway bundle by searching the hierarchy of the
         // the application classloader until a BundleReference is found.
         ClassLoader cl = springContainerModuleInfo.getClassLoader();
         while (cl != null && !(cl instanceof BundleReference)) {
@@ -888,24 +893,22 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         }
         Bundle b = ((BundleReference) cl).getBundle();
         BundleContext context = b.getBundleContext();
-
-        springBootConfigReg.updateAndGet((r) -> {
+        ServiceRegistration<SpringBootConfigFactory> next = context.registerService(SpringBootConfigFactory.class, this, null);
+        do {
+            ServiceRegistration<SpringBootConfigFactory> r = springBootConfigReg.getAndSet(null);
             if (r != null) {
                 r.unregister();
             }
-            return context.registerService(SpringBootConfigFactory.class, this, null);
-        });
+        } while (!springBootConfigReg.compareAndSet(null, next));
     }
 
     @FFDCIgnore(IllegalStateException.class)
     void unregisterSpringConfigFactory() {
         try {
-            springBootConfigReg.updateAndGet((r) -> {
-                if (r != null) {
-                    r.unregister();
-                }
-                return null;
-            });
+            ServiceRegistration<SpringBootConfigFactory> r = springBootConfigReg.getAndSet(null);
+            if (r != null) {
+                r.unregister();
+            }
         } catch (IllegalStateException e) {
             // can happen if our bundle stopped first; just ignore
         }
