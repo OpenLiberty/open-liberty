@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,16 +31,16 @@ public class CookieHelper {
     /**
      * Retrieve the value of the first instance of the specified Cookie name
      * from the array of Cookies. Note name matching ignores case.
-     * 
+     *
      * @param cookies array of Cookie objects, may be {@code null}.
      * @param cookieName the name of the cookie
      * @return String value associated with the specified cookieName, {@code null} if no match could not be found.
      */
     @Sensitive
     public static String getCookieValue(Cookie[] cookies, String cookieName) {
-
-        if (cookies == null)
+        if (cookies == null) {
             return null;
+        }
 
         String retVal = null;
         for (int i = 0; i < cookies.length; ++i) {
@@ -56,15 +56,15 @@ public class CookieHelper {
     /**
      * Retrieve the value of the all instances of the specified Cookie name
      * from the array of Cookies. Note name matching ignores case.
-     * 
+     *
      * @param cookies array of Cookie objects, may be {@code null}.
      * @param cookieName the name of the cookie
      * @return String[] of the values associated with the specified cookieName, {@code null} if no match could not be found.
      */
     public static String[] getCookieValues(Cookie[] cookies, String cookieName) {
-
-        if (cookies == null)
+        if (cookies == null) {
             return null;
+        }
 
         Vector<String> retValues = new Vector<String>();
         for (int i = 0; i < cookies.length; ++i) {
@@ -83,12 +83,11 @@ public class CookieHelper {
     /**
      * Given a list of Cookie objects, set them into the HttpServletResponse.
      * This method does not alter the cookies in any way.
-     * 
+     *
      * @param cookieList A List of Cookie objects
      * @param resp HttpServletResponse into which to set the cookie
      */
     public static void addCookiesToResponse(List<Cookie> cookieList, HttpServletResponse resp) {
-
         Iterator<Cookie> iterator = cookieList.listIterator();
         while (iterator.hasNext()) {
             Cookie cookie = iterator.next();
@@ -101,7 +100,7 @@ public class CookieHelper {
     /**
      * Invalidate (clear) the cookie in the HttpServletResponse.
      * Setting age to 0 to invalidate it.
-     * 
+     *
      * @param res
      */
     @Sensitive
@@ -127,9 +126,9 @@ public class CookieHelper {
 
     @Sensitive
     public static Cookie getCookie(Cookie[] cookies, String cookieName) {
-
-        if (cookies == null)
+        if (cookies == null) {
             return null;
+        }
 
         Cookie retVal = null;
         for (int i = 0; i < cookies.length; ++i) {
@@ -140,6 +139,21 @@ public class CookieHelper {
         }
 
         return retVal;
+    }
+
+    public static boolean hasCookie(@Sensitive Cookie[] cookies, String cookieName) {
+        boolean found = false;
+        if (cookies == null || cookieName == null) {
+            return false;
+        }
+
+        for (int i = 0; i < cookies.length; ++i) {
+            if (cookieName.equalsIgnoreCase(cookies[i].getName())) {
+                found = true;
+                break;
+            }
+        }
+        return found;
     }
 
 }

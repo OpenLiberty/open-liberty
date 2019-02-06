@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,9 @@
 package com.ibm.ws.webcontainer.security.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +39,7 @@ public class CookieHelperTest {
     @Test
     public void getCookieValue_nullCookies() {
         assertNull(CookieHelper.getCookieValue(null, null));
+        assertFalse(CookieHelper.hasCookie(null, null));
     }
 
     /**
@@ -47,6 +50,7 @@ public class CookieHelperTest {
     public void getCookieValue_emptyCookies() {
         Cookie[] cookies = new Cookie[] {};
         assertNull(CookieHelper.getCookieValue(cookies, null));
+        assertFalse(CookieHelper.hasCookie(cookies, null));
     }
 
     /**
@@ -58,6 +62,7 @@ public class CookieHelperTest {
         Cookie[] cookies = new Cookie[] { new Cookie("cookieName", "cookieValue") };
         String name = "IDontExist";
         assertNull(CookieHelper.getCookieValue(cookies, name));
+        assertFalse(CookieHelper.hasCookie(cookies, name));
     }
 
     /**
@@ -70,6 +75,7 @@ public class CookieHelperTest {
         String value = "";
         Cookie[] cookies = new Cookie[] { new Cookie(name, value) };
         assertEquals(value, CookieHelper.getCookieValue(cookies, name));
+        assertTrue(CookieHelper.hasCookie(cookies, name));
     }
 
     /**
@@ -82,6 +88,7 @@ public class CookieHelperTest {
         String value = "cookieValue";
         Cookie[] cookies = new Cookie[] { new Cookie(name, value) };
         assertEquals(value, CookieHelper.getCookieValue(cookies, name));
+        assertTrue(CookieHelper.hasCookie(cookies, name));
     }
 
     /**
@@ -94,6 +101,7 @@ public class CookieHelperTest {
         String value = "cookieValue";
         Cookie[] cookies = new Cookie[] { new Cookie(name, value) };
         assertEquals(value, CookieHelper.getCookieValue(cookies, "COOKIENAME"));
+        assertTrue(CookieHelper.hasCookie(cookies, "COOKIENAME"));
     }
 
     /**
@@ -105,10 +113,11 @@ public class CookieHelperTest {
         String name = "cookieName";
         String value = "cookieValue";
         Cookie[] cookies = new Cookie[] {
-                                         new Cookie("name1", "value1"),
-                                         new Cookie(name, value)
+                                          new Cookie("name1", "value1"),
+                                          new Cookie(name, value)
         };
         assertEquals(value, CookieHelper.getCookieValue(cookies, name));
+        assertTrue(CookieHelper.hasCookie(cookies, name));
     }
 
     /**
@@ -121,12 +130,13 @@ public class CookieHelperTest {
         String value1 = "cookieValue1";
         String value2 = "cookieValue2";
         Cookie[] cookies = new Cookie[] {
-                                         new Cookie("name1", "value1"),
-                                         new Cookie(name, value1),
-                                         new Cookie("name2", "value2"),
-                                         new Cookie(name, value2)
+                                          new Cookie("name1", "value1"),
+                                          new Cookie(name, value1),
+                                          new Cookie("name2", "value2"),
+                                          new Cookie(name, value2)
         };
         assertEquals(value1, CookieHelper.getCookieValue(cookies, name));
+        assertTrue(CookieHelper.hasCookie(cookies, name));
     }
 
     /**
@@ -196,8 +206,8 @@ public class CookieHelperTest {
         String name = "cookieName";
         String value = "cookieValue";
         Cookie[] cookies = new Cookie[] {
-                                         new Cookie("name1", "value1"),
-                                         new Cookie(name, value)
+                                          new Cookie("name1", "value1"),
+                                          new Cookie(name, value)
         };
         String[] result = CookieHelper.getCookieValues(cookies, name);
         assertEquals(1, result.length);
@@ -214,10 +224,10 @@ public class CookieHelperTest {
         String value1 = "cookieValue1";
         String value2 = "cookieValue2";
         Cookie[] cookies = new Cookie[] {
-                                         new Cookie("name1", "value1"),
-                                         new Cookie(name, value1),
-                                         new Cookie("name2", "value2"),
-                                         new Cookie(name, value2)
+                                          new Cookie("name1", "value1"),
+                                          new Cookie(name, value1),
+                                          new Cookie("name2", "value2"),
+                                          new Cookie(name, value2)
         };
         String[] result = CookieHelper.getCookieValues(cookies, name);
         assertEquals(2, result.length);
@@ -258,4 +268,5 @@ public class CookieHelperTest {
         CookieHelper.addCookiesToResponse(cookieList, resp);
         mock.assertIsSatisfied();
     }
+
 }
