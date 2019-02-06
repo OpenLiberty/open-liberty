@@ -240,9 +240,6 @@ public class MetricsMonitorTest {
       	checkStrings(getHttpsServlet("/metrics/vendor"), 
       		new String[] { "vendor:" }, 
       		new String[] { "vendor:jaxws_client", "vendor:jaxws_server"});
-       	
-      	Thread.sleep(5000);
-      	System.out.println("START ********************************************************************");
       	
        	Log.info(c, testName, "------- Remove JDBC application ------");
        	boolean rc2 = server.removeAndStopDropinsApplications("testJDBCApp.war");
@@ -257,9 +254,6 @@ public class MetricsMonitorTest {
       	checkStrings(getHttpsServlet("/metrics/vendor"), 
       		new String[] { "vendor:" },       	
       		new String[] { "vendor:connectionpool", "vendor:servlet_test_jdbc_app" });
-      	
-      	System.out.println("FINISH ********************************************************************");
-      	Thread.sleep(5000);
       	      	
        	Log.info(c, testName, "------- Remove monitor-1.0 ------");
     	server.setMarkToEndOfLog();
