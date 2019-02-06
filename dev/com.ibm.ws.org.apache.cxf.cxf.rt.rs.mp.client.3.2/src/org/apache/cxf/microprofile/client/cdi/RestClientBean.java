@@ -195,16 +195,18 @@ public class RestClientBean implements Bean<Object>, PassivationCapable {
     @FFDCIgnore(ClassNotFoundException.class)
     private List<Class<?>> getConfiguredProviders() {
         String property = String.format(REST_PROVIDERS_FORMAT, clientInterface.getName());
-        String providersList = ConfigFacade.getOptionalValue(property, String.class).orElse("");
-        String[] providerClassNames = providersList.split(",");
+        String providersList = ConfigFacade.getOptionalValue(property, String.class).orElse(null);
         List<Class<?>> providers = new ArrayList<>();
-        for (int i=0; i<providerClassNames.length; i++) {
-            try {
-                providers.add(ClassLoaderUtils.loadClass(providerClassNames[i], RestClientBean.class));
-            } catch (ClassNotFoundException e) {
-                LOG.log(Level.WARNING,
-                        "Could not load provider, {0}, configured for Rest Client interface, {1} ",
-                        new Object[]{providerClassNames[i], clientInterface.getName()});
+        if (providersList != null) {
+            String[] providerClassNames = providersList.split(",");
+            for (int i=0; i<providerClassNames.length; i++) {
+                try {
+                    providers.add(ClassLoaderUtils.loadClass(providerClassNames[i], RestClientBean.class));
+                } catch (ClassNotFoundException e) {
+                    LOG.log(Level.WARNING,
+                            "Could not load provider, {0}, configured for Rest Client interface, {1} ",
+                            new Object[]{providerClassNames[i], clientInterface.getName()});
+                }
             }
         }
         return providers;
