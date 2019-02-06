@@ -10,6 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.streams.test;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -41,6 +45,13 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
         publisher.publish("one");
         publisher.publish("two");
         publisher.publish("three");
+
+        subscriber.request(3);
+
+        List<String> messages = subscriber.getMessages();
+        assertTrue(messages.contains("one"));
+        assertTrue(messages.contains("two"));
+        assertTrue(messages.contains("three"));
     }
 
     private static class MyPublisher<T> implements Publisher<T> {
@@ -108,6 +119,9 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
 
     private static class MySubscriber<T> implements Subscriber<T> {
 
+        private final List<T> messages = new ArrayList<T>();
+        private Subscription subscription;
+
         /** {@inheritDoc} */
         @Override
         public void onComplete() {
@@ -125,13 +139,22 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
         @Override
         public void onNext(T arg0) {
             System.out.println("onNext: " + arg0);
+            this.messages.add(arg0);
         }
 
         /** {@inheritDoc} */
         @Override
         public void onSubscribe(Subscription arg0) {
             System.out.println("onSubscribe: " + arg0);
+            this.subscription = arg0;
         }
 
+        public List<T> getMessages() {
+            return this.messages;
+        }
+
+        public void request(int count) {
+            this.subscription.request(count);
+        }
     }
 }
