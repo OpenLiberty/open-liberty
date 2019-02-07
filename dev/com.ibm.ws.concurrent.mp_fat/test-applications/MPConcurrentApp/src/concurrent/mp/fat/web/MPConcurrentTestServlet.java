@@ -107,6 +107,7 @@ public class MPConcurrentTestServlet extends FATServlet {
 
     // Internal methods for creating a ManagedCompletableFuture for any executor
     private Function<Executor, CompletableFuture<?>> ManagedCompletableFuture_newIncompleteFuture;
+    private BiFunction<Supplier<?>, Executor, CompletableFuture<?>> ManagedCompletableFuture_supplyAsync;
 
     @FunctionalInterface
     interface TriFunction<T, U, V, R> {
@@ -235,6 +236,15 @@ public class MPConcurrentTestServlet extends FATServlet {
                 try {
                     return (CompletableFuture<?>) cl.getMethod("newIncompleteFuture", Executor.class)
                                     .invoke(null, executor);
+                } catch (Exception x) {
+                    throw convertToRuntimeException(x);
+                }
+            };
+
+            ManagedCompletableFuture_supplyAsync = (supplier, executor) -> {
+                try {
+                    return (CompletableFuture<?>) cl.getMethod("supplyAsync", Supplier.class, Executor.class)
+                                    .invoke(null, supplier, executor);
                 } catch (Exception x) {
                     throw convertToRuntimeException(x);
                 }
@@ -4694,6 +4704,25 @@ public class MPConcurrentTestServlet extends FATServlet {
         } finally {
             CurrentLocation.clear();
         }
+    }
+
+    /**
+     * Verify that ManagedCompletableFuture can be used without a managed executor.
+     * For example, JAX-RS reactive client might leverage this to create completion stages that are
+     * backed by the Liberty thread pool, even in the absence of a managed executor.
+     */
+    @Test
+    public void testUnmanagedExecutorBacksCompletionStage() throws Exception {
+        @SuppressWarnings("unchecked")
+        CompletableFuture<Integer> cf1 = (CompletableFuture<Integer>) ManagedCompletableFuture_supplyAsync.apply(() -> 137, sameThreadExecutor);
+        CompletableFuture<Void> cf2 = cf1
+                        .thenApplyAsync(i -> i + 100)
+                        .thenApply(i -> i / 3)
+                        .thenAcceptAsync(i -> {
+                            assertEquals(Integer.valueOf(79), i);
+                            // TODO also test thread context propagation based on managed executor parameter or absence thereof?
+                        }, oneContextExecutor);
+        assertNull(cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
     /**

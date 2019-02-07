@@ -474,7 +474,8 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         }
 
         if (JAVA8) {
-            action = new ContextualSupplier<U>(contextDescriptor, action);
+            if (contextDescriptor != null)
+                action = new ContextualSupplier<U>(contextDescriptor, action);
             CompletableFuture<U> completableFuture = CompletableFuture.supplyAsync(action, futureExecutor == null ? executor : futureExecutor);
             return new ManagedCompletableFuture<U>(completableFuture, executor, futureExecutor);
         } else {
