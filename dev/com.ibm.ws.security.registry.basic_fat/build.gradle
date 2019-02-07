@@ -24,7 +24,8 @@ dependencies {
     project(':com.ibm.ws.webcontainer.security_test.servlets'),
     project(':com.ibm.ws.security.registry_test.servlet')
 }
-
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:war'
+autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:war'
 autoFVT.doLast {
   /*
    * Copy the clientcert.zip into test servers.

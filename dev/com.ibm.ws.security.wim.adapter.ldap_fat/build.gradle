@@ -30,7 +30,9 @@ dependencies {
     project(':com.ibm.ws.security.wim_test.servlet'),
     project(':com.ibm.ws.webcontainer.security_test.servlets')
 }
-
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:war'
+autoFVT.dependsOn ':com.ibm.ws.security.wim_test.servlet:war'
+autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:war'
 autoFVT.doLast {
   /*
    * Copy the local ApacheDS LDAP instances. 
