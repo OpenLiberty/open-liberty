@@ -22,8 +22,9 @@ public class TargetCacheImpl_Options implements TargetCache_Options {
         boolean readOnly,
         boolean alwaysValid,
         // boolean validate,
-        int writeThreads) {
-    
+        int writeThreads,
+        int writeLimit) {
+
         this.disabled = disabled;
 
         this.dir = dir;
@@ -31,6 +32,7 @@ public class TargetCacheImpl_Options implements TargetCache_Options {
         this.alwaysValid = alwaysValid;
         // this.validate = validate;
         this.writeThreads = writeThreads;
+        this.writeLimit = writeLimit;
     }
 
     //
@@ -121,5 +123,20 @@ public class TargetCacheImpl_Options implements TargetCache_Options {
     @Override
     public void setWriteThreads(int writeThreads) {
         this.writeThreads = writeThreads;
+    }
+    
+    //
+    
+    private int writeLimit;
+
+    @Override
+    @Trivial
+    public int getWriteLimit() {
+        return writeLimit;
+    }
+
+    @Override
+    public void setWriteLimit(int writeLimit) {
+        this.writeLimit = writeLimit;
     }
 }

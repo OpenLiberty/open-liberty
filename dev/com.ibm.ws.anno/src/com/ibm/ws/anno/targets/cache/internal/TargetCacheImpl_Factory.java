@@ -92,13 +92,15 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
         boolean alwaysValid    = getSystemProperty(TargetCache_Options.ALWAYS_VALID_PROPERTY_NAME, TargetCache_Options.ALWAYS_VALID_DEFAULT);
         // boolean validate       = getSystemProperty(TargetCache_Options.VALIDATE_PROPERTY_NAME, TargetCache_Options.VALIDATE_DEFAULT);
         int writeThreads       = getSystemProperty(TargetCache_Options.WRITE_THREADS_PROPERTY_NAME, TargetCache_Options.WRITE_THREADS_DEFAULT);
+        int writeLimit         = getSystemProperty(TargetCache_Options.WRITE_LIMIT_PROPERTY_NAME, TargetCache_Options.WRITE_LIMIT_DEFAULT);        
 
         return new TargetCacheImpl_Options(
             disabled,
             dir,
             readOnly, alwaysValid,
             // validate,
-            writeThreads);
+            writeThreads,
+            writeLimit);
     }
 
     public static TargetCacheImpl_Options createOptionsFromDefaults() {
@@ -109,7 +111,8 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
              TargetCache_Options.READ_ONLY_DEFAULT,
              TargetCache_Options.ALWAYS_VALID_DEFAULT,
              // TargetCache_Options.VALIDATE_DEFAULT,
-             TargetCache_Options.WRITE_THREADS_DEFAULT);
+             TargetCache_Options.WRITE_THREADS_DEFAULT,
+             TargetCache_Options.WRITE_LIMIT_DEFAULT);
     }
 
     //

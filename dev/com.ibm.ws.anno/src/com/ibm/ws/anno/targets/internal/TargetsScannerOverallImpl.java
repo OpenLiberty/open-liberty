@@ -33,7 +33,6 @@ import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.classsource.ClassSource_Options;
-import com.ibm.wsspi.anno.targets.cache.TargetCache_Options;
 
 /**
  * Data dependencies:
@@ -376,6 +375,10 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     @Trivial
     public TargetCacheImpl_DataMod getModData() {
         return modData;
+    }
+
+    public int getWriteLimit() {
+        return getModData().getCacheOptions().getWriteLimit();
     }
 
     public long getCacheReadTime() {
@@ -736,8 +739,19 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
         if ( isChangedAll ) {
             if ( conData.shouldWrite("Container data") ) {
-                conData.write(modData, useTargetsTable);
+                int useWriteLimit = getWriteLimit();
+                int numClasses = useTargetsTable.getClassNames().size();
+                if ( numClasses < useWriteLimit ) {
+                    if ( logger.isLoggable(Level.FINER) ) {
+                        logger.logp(Level.FINER, CLASS_NAME, methodName,
+                            "Skipping container write [ {0} ]: Count of classes [ {1} ] is less than the write limit [ {2} ]",
+                            new Object[] { classSourceName, Integer.valueOf(numClasses), Integer.valueOf(useWriteLimit) });
+                    }
+                } else {
+                    conData.write(modData, useTargetsTable);
+                }
             }
+
         } else if ( isChangedJustStamp ) {
             if ( conData.shouldWrite("Time stamp") ) {
                 conData.writeStamp(modData, useTargetsTable);

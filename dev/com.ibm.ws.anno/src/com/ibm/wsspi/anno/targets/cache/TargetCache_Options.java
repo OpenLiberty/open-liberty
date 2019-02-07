@@ -113,4 +113,11 @@ public interface TargetCache_Options {
 
     int getWriteThreads();
     void setWriteThreads(int writeThreads);
+
+    int WRITE_LIMIT_DEFAULT = 16;
+
+    String WRITE_LIMIT_PROPERTY_NAME = "anno.cache.writeLimit";
+
+    int getWriteLimit();
+    void setWriteLimit(int writeLimit);
 }
