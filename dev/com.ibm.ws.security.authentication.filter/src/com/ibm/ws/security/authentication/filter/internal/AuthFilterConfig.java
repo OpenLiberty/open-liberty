@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package com.ibm.ws.security.authentication.filter.internal;
 
 import java.util.ArrayList;
@@ -34,8 +35,12 @@ public class AuthFilterConfig {
     static final String KEY_REMOTE_ADDRESS = "remoteAddress";
     public static final String KEY_IP = "ip";
 
+    public static final String KEY_COOKIE = "cookie";
+    public static final String KEY_REQUEST_HEADER = "requestHeader";
+
     static final String KEY_HOST = "host";
     public static final String KEY_NAME = "name";
+    public static final String KEY_VALUE = "value";
 
     static final String KEY_USER_AGENT = "userAgent";
     public static final String KEY_AGENT = "agent";
@@ -54,6 +59,8 @@ public class AuthFilterConfig {
     private List<Properties> hosts = null;
     private List<Properties> userAgents = null;
     private boolean hasFilter = false;
+    private List<Properties> cookies = null;
+    private List<Properties> requestHeaders = null;
 
     /**
      * @param props
@@ -75,7 +82,8 @@ public class AuthFilterConfig {
         }
 
         //get all nested elements for authFilter
-        Map<String, List<Map<String, Object>>> authFilterNestedElements = Nester.nest(props, KEY_WEB_APP, KEY_REQUEST_URL, KEY_REMOTE_ADDRESS, KEY_HOST, KEY_USER_AGENT);
+        Map<String, List<Map<String, Object>>> authFilterNestedElements = Nester.nest(props, KEY_WEB_APP, KEY_REQUEST_URL, KEY_REMOTE_ADDRESS, KEY_HOST, KEY_USER_AGENT, KEY_COOKIE,
+                                                                                      KEY_REQUEST_HEADER);
 
         if (!authFilterNestedElements.isEmpty()) {
             webApps = processElementProps(authFilterNestedElements, KEY_WEB_APP, KEY_NAME, KEY_MATCH_TYPE);
@@ -83,6 +91,9 @@ public class AuthFilterConfig {
             remoteAddresses = processElementProps(authFilterNestedElements, KEY_REMOTE_ADDRESS, KEY_IP, KEY_MATCH_TYPE);
             hosts = processElementProps(authFilterNestedElements, KEY_HOST, KEY_NAME, KEY_MATCH_TYPE);
             userAgents = processElementProps(authFilterNestedElements, KEY_USER_AGENT, KEY_AGENT, KEY_MATCH_TYPE);
+            cookies = processElementProps(authFilterNestedElements, KEY_COOKIE, KEY_NAME, KEY_MATCH_TYPE);
+            requestHeaders = processElementProps(authFilterNestedElements, KEY_REQUEST_HEADER, KEY_NAME, KEY_VALUE, KEY_MATCH_TYPE);
+
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -92,6 +103,8 @@ public class AuthFilterConfig {
             Tr.debug(tc, "remoteAddresses: " + remoteAddresses);
             Tr.debug(tc, "hosts: " + hosts);
             Tr.debug(tc, "userAgents: " + userAgents);
+            Tr.debug(tc, "cookies: " + cookies);
+            Tr.debug(tc, "requestHeader: " + requestHeaders);
         }
         hasFilter = hasAnyFilterConfig();
     }
@@ -113,7 +126,7 @@ public class AuthFilterConfig {
     /**
      * Get properties from the given element and/or it's subElements.
      * Ignore system generated props, add the user props to the given Properties object
-     * 
+     *
      * @param configProps props from the config
      * @param elementName the element being processed
      */
@@ -129,7 +142,7 @@ public class AuthFilterConfig {
 
         if (properties.isEmpty() || properties.size() != attrKeys.length) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                //TODO: NLS warning msg 
+                //TODO: NLS warning msg
                 Tr.debug(tc, "The authFilter element " + elementName + " specified in the server.xml file is missing one or more of these attributes "
                              + printAttrKeys(attrKeys));
             }
@@ -168,7 +181,9 @@ public class AuthFilterConfig {
             (requestUrls != null && !requestUrls.isEmpty()) ||
             (remoteAddresses != null && !remoteAddresses.isEmpty()) ||
             (hosts != null && !hosts.isEmpty()) ||
-            (userAgents != null && !userAgents.isEmpty())) {
+            (userAgents != null && !userAgents.isEmpty()) ||
+            (cookies != null && !cookies.isEmpty()) ||
+            (requestHeaders != null && !requestHeaders.isEmpty())) {
             result = true;
         } else {
             Tr.info(tc, "AUTH_FILTER_NOT_CONFIG");
@@ -198,6 +213,14 @@ public class AuthFilterConfig {
 
     public List<Properties> getUserAgents() {
         return userAgents;
+    }
+
+    public List<Properties> getCookies() {
+        return cookies;
+    }
+
+    public List<Properties> getRequestHeaders() {
+        return requestHeaders;
     }
 
     public boolean hasFilterConfig() {

@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package com.ibm.ws.security.authentication.filter.internal;
 
 public class ValueAddressRange implements IValue {

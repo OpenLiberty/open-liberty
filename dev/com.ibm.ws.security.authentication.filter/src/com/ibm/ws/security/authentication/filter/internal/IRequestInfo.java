@@ -8,12 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package com.ibm.ws.security.authentication.filter.internal;
 
 public interface IRequestInfo {
 
     /**
-     * 
+     *
      */
     public String getHeader(String name);
 
@@ -22,5 +23,7 @@ public interface IRequestInfo {
     public String getRemoteAddr();
 
     public String getApplicationName();
+
+    public String getCookieName(String name);
 
 }

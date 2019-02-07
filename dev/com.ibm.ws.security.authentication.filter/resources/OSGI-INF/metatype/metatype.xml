@@ -9,6 +9,8 @@
         <AD id="remoteAddress" ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter.remoteAddress" required="false" type="String" ibm:flat="true" cardinality="2147483647" />
         <AD id="host" ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter.host" required="false" type="String" ibm:flat="true" cardinality="2147483647" />
         <AD id="userAgent" ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter.userAgent" required="false" type="String" ibm:flat="true" cardinality="2147483647" />
+        <AD id="requestHeader" ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter.requestHeader" required="false" type="String" ibm:flat="true" cardinality="2147483647" />
+        <AD id="cookie" ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter.cookie" required="false" type="String" ibm:flat="true" cardinality="2147483647" />
     </OCD>
     <Designate factoryPid="com.ibm.ws.security.authentication.filter">
         <Object ocdref="com.ibm.ws.security.authentication.filter.metatype" />
@@ -65,15 +67,40 @@
     </Designate>
 
     <OCD id="com.ibm.ws.security.authentication.filter.userAgent.metatype" name="%userAgent" description="%userAgent.desc">
-       <AD id="agent" name="%agent" description="%agent.desc" required="true" type="String"  />
+        <AD id="agent" name="%agent" description="%agent.desc" required="true" type="String"  />
         <AD id="matchType" name="%matchType" description="%matchType.desc" required="false" type="String" default="contains">
             	<Option label="%equals.desc" value="equals"/>
             	<Option label="%contains.desc" value="contains"/>
             	<Option label="%notContain.desc" value="notContain"/>
-          </AD>
+        </AD>
     </OCD>
     <Designate factoryPid="com.ibm.ws.security.authentication.filter.userAgent">
          <Object ocdref="com.ibm.ws.security.authentication.filter.userAgent.metatype" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.authentication.filter.requestHeader.metatype" name="%requestHeader" description="%requestHeader.desc">
+        <AD id="name" name="%name" description="%name.desc" required="true" type="String"  />
+        <AD id="value" name="%value" description="%value.desc" required="true" type="String"  />
+        <AD id="matchType" name="%matchType" description="%matchType.desc" required="false" type="String" default="contains">
+            	<Option label="%equals.desc" value="equals"/>
+            	<Option label="%contains.desc" value="contains"/>
+            	<Option label="%notContain.desc" value="notContain"/>
+         </AD>
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.security.authentication.filter.requestHeader">
+         <Object ocdref="com.ibm.ws.security.authentication.filter.requestHeader.metatype" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.authentication.filter.cookie.metatype" name="%cookie" description="%cookie.desc">
+        <AD id="name" name="%name" description="%name.desc" required="true" type="String"  />
+        <AD id="matchType" name="%matchType" description="%matchType.desc" required="false" type="String" default="contains">
+            	<Option label="%equals.desc" value="equals"/>
+            	<Option label="%contains.desc" value="contains"/>
+            	<Option label="%notContain.desc" value="notContain"/>
+        </AD>
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.security.authentication.filter.cookie">
+         <Object ocdref="com.ibm.ws.security.authentication.filter.cookie.metatype" />
     </Designate>
 
 </metatype:MetaData>

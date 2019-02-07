@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package com.ibm.ws.security.authentication.filter.internal;
 
 import java.util.Iterator;
@@ -29,18 +30,18 @@ import com.ibm.websphere.ras.TraceComponent;
  * - Note: we do not support symbol and word in the same configuration.
  * - the input required element (generally an HTTP header name, but request-url & remote-address are special)
  * - the comparison value (generally a string, but IP address ranges are allowed)
- * 
+ *
  * Here are a few examples:
  * remote-address==192.168.*.*
  * remote-address==192.168.[7-13].*
  * request-url!=noSPNEGO;remote-address==192.168.*.*
  * user-agent%=IE6
- * 
+ *
  * Often the value being compared is just a string. However, notice that some examples using IP addresses with
  * wildcarding. These are referred to as the ValueAddressRange type. Possible values are an exact IP address,
  * an IP address ending in wildcards (e.g., '*') or a range specified with []. Ranges are then compared against
  * the input to determine if the comparison holds.
- * 
+ *
  * Conditions are represented as an object of type ICondition. The possible conditions are:
  * %= ContainsCondition - the input contains the comparison value
  * > GreaterCondition - the input is greater than the comparison value
@@ -48,12 +49,12 @@ import com.ibm.websphere.ras.TraceComponent;
  * != NotContainsCondition - the input does not contain the comparison value
  * ^= OrCondition - the input contains one of the comparison values
  * == EqualCondition - the input is equal to the comparison value
- * 
+ *
  * Values are of type IValue, thus conditions compare IValues. Inputs are converted to IValues. The types are
  * ValueString
  * ValueIPAddress
  * ValueAddressRange
- * 
+ *
  * ValueStrings are compared using the usual string comparison functions in java. IP Address range comparisons
  * are interpreted as follows:
  * %=
@@ -62,7 +63,7 @@ import com.ibm.websphere.ras.TraceComponent;
  * != the input IP address is not *in* specified IP address range (notice we don't mean not equal)
  * ^= the input IP address is in one of the specified IP address ranges
  * == the input IP address is *in* the specified IP address range (notice we don't mean equal)
- * 
+ *
  */
 
 public class CommonFilter {
@@ -90,7 +91,7 @@ public class CommonFilter {
     /**
      * Pass the filter string so the implementation can read any of the
      * properties
-     * 
+     *
      * @param filterString -
      *            set of rules to be used by the filter
      * @return true if no problem occured during parsing of filterString false
@@ -151,24 +152,37 @@ public class CommonFilter {
     }
 
     protected void initialize(AuthFilterConfig filterConfig) {
-        buildICondition(filterConfig.getWebApps(), AuthFilterConfig.KEY_WEB_APP, AuthFilterConfig.KEY_NAME, false);
-        buildICondition(filterConfig.getRequestUrls(), REQUEST_URL, AuthFilterConfig.KEY_URL_PATTERN, false);
-        buildICondition(filterConfig.getRemoteAddresses(), REMOTE_ADDRESS, AuthFilterConfig.KEY_IP, true);
-        buildICondition(filterConfig.getHosts(), KEY_HOST, AuthFilterConfig.KEY_NAME, false);
-        buildICondition(filterConfig.getUserAgents(), KEY_USER_AGENT, AuthFilterConfig.KEY_AGENT, false);
+        buildICondition(filterConfig.getWebApps(), AuthFilterConfig.KEY_WEB_APP, AuthFilterConfig.KEY_NAME, null, false);
+        buildICondition(filterConfig.getRequestUrls(), REQUEST_URL, AuthFilterConfig.KEY_URL_PATTERN, null, false);
+        buildICondition(filterConfig.getRemoteAddresses(), REMOTE_ADDRESS, AuthFilterConfig.KEY_IP, null, true);
+        buildICondition(filterConfig.getHosts(), KEY_HOST, AuthFilterConfig.KEY_NAME, null, false);
+        buildICondition(filterConfig.getUserAgents(), KEY_USER_AGENT, AuthFilterConfig.KEY_AGENT, null, false);
+        buildICondition(filterConfig.getCookies(), AuthFilterConfig.KEY_COOKIE, AuthFilterConfig.KEY_NAME, null, false);
+        buildICondition(filterConfig.getRequestHeaders(), AuthFilterConfig.KEY_REQUEST_HEADER, AuthFilterConfig.KEY_NAME, AuthFilterConfig.KEY_VALUE, false);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "combine filter conditions: " + filterCondition.toString());
         }
     }
 
-    protected void buildICondition(List<Properties> filterElements, String elementName, String attrName, boolean ipAddress) {
+    protected void buildICondition(List<Properties> filterElements, String elementName, String attrName, String attrValue, boolean ipAddress) {
         if (filterElements != null && !filterElements.isEmpty()) {
             Iterator<Properties> iter = filterElements.iterator();
             while (iter.hasNext()) {
                 try {
+                    String key = null;
+                    String value = null;
+
                     Properties props = iter.next();
-                    ICondition condition = makeConditionWithMatchType(elementName, props.getProperty(AuthFilterConfig.KEY_MATCH_TYPE),
-                                                                      props.getProperty(attrName), ipAddress);
+                    if (attrValue != null) {
+                        key = props.getProperty(attrName);
+                        value = props.getProperty(attrValue);
+                    } else {
+                        key = elementName;
+                        value = props.getProperty(attrName);
+                    }
+
+                    ICondition condition = makeConditionWithMatchType(key, props.getProperty(AuthFilterConfig.KEY_MATCH_TYPE), value, ipAddress);
+
                     filterCondition.add(condition);
                 } catch (FilterException e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -183,10 +197,10 @@ public class CommonFilter {
      * Given the three parts (key, operand, value) make a proper condition object. Notice that I need to know
      * if the value should be interpreted as an IP address. There some service that use symbol and others use word
      * for operand/matchType.
-     * 
+     *
      * Basically just look at the operator string and create the correct condition. Only the OR involved any
      * complicated processing since there are multiple values for OR.
-     * 
+     *
      * Note: the old configuration use symbols ==, !=, ^=, %=, <, >
      * On Liberty: only OAUTH support the symbols configuration but currently do not call this code
      */
@@ -222,10 +236,10 @@ public class CommonFilter {
      * Given the three parts (key, operand, value) make a proper condition object. Notice that I need to know
      * if the value should be interpreted as an IP address. There some service that use symbol and others use word
      * for operand/matchType.
-     * 
+     *
      * Basically just look at the operator string and create the correct condition. Only the OR involved any
      * complicated processing since there are multiple values for OR.
-     * 
+     *
      * Note: the new configuration use words such as equals, notContain, contains, greaterThan or lessThan
      */
     private ICondition makeConditionWithMatchType(String key, String operand, String valueString,
@@ -272,14 +286,13 @@ public class CommonFilter {
     /**
      * Helper to make the value for the condition. It's either a IP address (ValueAddressRange) or a
      * string (ValueString).
-     * 
+     *
      * @param value
      * @param ipAddress
      * @return
      * @throws FilterException
      */
-    private IValue makeValue(String value, boolean ipAddress)
-                    throws FilterException {
+    private IValue makeValue(String value, boolean ipAddress) throws FilterException {
         if (ipAddress)
             return new ValueAddressRange(value);
         return new ValueString(value);
@@ -288,7 +301,7 @@ public class CommonFilter {
     /**
      * Indicates if TAI should intercept request, based on pre-defined rules. Basically just execute
      * the conditions created earlier.
-     * 
+     *
      * @param IRequestInfo
      * @return true if the request passes the filter criteria otherwise false
      */
@@ -306,15 +319,15 @@ public class CommonFilter {
         Iterator<ICondition> iter = filterCondition.iterator();
         while (iter.hasNext()) {
             ICondition cond = iter.next();
-            HTTPheader = req.getHeader(cond.getKey());
+            String key = cond.getKey();
+
+            // Start with request header attribute name
+            HTTPheader = req.getHeader(key);
 
             boolean ipAddress = false;
 
-            // First, if the header argument is a null, then extract either the
-            // "remote-address" or the "request-url" values from the request
-            // object if the key uses either of these "tags"
+            // The header argument is a null, so go through other tags.
             if (HTTPheader == null) {
-                String key = cond.getKey();
                 if (key.equals(REMOTE_ADDRESS)) {
                     HTTPheader = req.getRemoteAddr();
                     ipAddress = true;
@@ -322,14 +335,22 @@ public class CommonFilter {
                     HTTPheader = req.getRequestURL();
                 } else if (key.equals(AuthFilterConfig.KEY_WEB_APP) || key.equals(APPLICATION_NAMES)) {
                     HTTPheader = req.getApplicationName();
+                } else if (key.equals(AuthFilterConfig.KEY_COOKIE)) {
+                    HTTPheader = req.getCookieName(key);
                 } else if (cond instanceof NotContainsCondition) {
                     continue;
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "No HTTPheader found, and no 'remote-address' or 'request-url' or 'requestApp' rule used - do not Intercept.");
+                        Tr.debug(tc, "No HTTPheader found, and no remote-address, request-url, webApp, applicationNames, cookie, or requestHeader rule used - do not Intercept.");
                     }
                     return false; // if no header found, the condition fails
                 }
+            }
+            if (HTTPheader == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No HTTPheader found - do not Intercept.");
+                }
+                return false; // if no header found, the condition fails
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -357,9 +378,9 @@ public class CommonFilter {
     /**
      * Optionally use this method to indicate that all requests to this filter
      * will be processed.
-     * 
+     *
      * @param -
-     *        true will cause all calls to isAccepted() to return true
+     *            true will cause all calls to isAccepted() to return true
      */
     public void setProcessAll(boolean b) {
         processAll = b;
