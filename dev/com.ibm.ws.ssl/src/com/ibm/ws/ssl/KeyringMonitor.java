@@ -26,7 +26,7 @@ public interface KeyringMonitor {
      * The value should be a String, indicating the name of
      * keyring that should be monitored.
      */
-    String KEYRING_NAME = "keyring.name";
+    String MONITOR_IDENTIFICATION_CONFIG_NAME = "monitor.config.name";
 
     String SAF_PREFIX = "safkeyring://";
 

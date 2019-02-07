@@ -108,7 +108,7 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
                 Boolean fileBased = svc.getKeyStore().getFileBased();
                 if (!(trigger.equalsIgnoreCase("disabled"))) {
                     if (fileBased.booleanValue()) {
-                        createFileMonitor(svc.getKeyStore().getLocation(), trigger, svc.getKeyStore().getPollingRate());
+                        createFileMonitor(svc.getKeyStore().getName(), svc.getKeyStore().getLocation(), trigger, svc.getKeyStore().getPollingRate());
                     } else if (svc.getKeyStore().getLocation().contains(KeyringMonitor.SAF_PREFIX)) {
                         createKeyringMonitor(svc.getKeyStore().getName(), trigger);
                     }
@@ -272,12 +272,12 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
     /**
      * Handles the creation of the keystore file monitor.
      */
-    private void createFileMonitor(String keyStoreLocation, String trigger, long interval) {
+    private void createFileMonitor(String name, String keyStoreLocation, String trigger, long interval) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "createFileMonitor", new Object[] { keyStoreLocation, trigger, interval });
+            Tr.entry(tc, "createFileMonitor", new Object[] { name, keyStoreLocation, trigger, interval });
         try {
             keyStoreFileMonitor = new SecurityFileMonitor(this);
-            setFileMonitorRegistration(keyStoreFileMonitor.monitorFiles(Arrays.asList(keyStoreLocation), interval, trigger));
+            setFileMonitorRegistration(keyStoreFileMonitor.monitorFiles(name, Arrays.asList(keyStoreLocation), interval, trigger));
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception creating the keystore file monitor.", e);

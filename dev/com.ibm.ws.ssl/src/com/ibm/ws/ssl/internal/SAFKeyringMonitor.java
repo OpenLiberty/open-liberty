@@ -49,7 +49,7 @@ public class SAFKeyringMonitor implements KeyringMonitor {
         }
         BundleContext bundleContext = actionable.getBundleContext();
         final Hashtable<String, Object> keyRingMonitorProps = new Hashtable<String, Object>();
-        keyRingMonitorProps.put(KeyringMonitor.KEYRING_NAME, name);
+        keyRingMonitorProps.put(KeyringMonitor.MONITOR_IDENTIFICATION_CONFIG_NAME, name);
         if (!(trigger.equalsIgnoreCase("disabled")) && trigger.equals("polled")) {
             Tr.warning(tc, "Cannot have polled trigger for keyRing name", name);
         }
