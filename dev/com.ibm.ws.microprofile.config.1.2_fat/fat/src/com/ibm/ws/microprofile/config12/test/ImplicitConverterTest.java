@@ -16,9 +16,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig12EE7;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig13EE8;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig14EE8;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
 import com.ibm.ws.microprofile.config12.converter.implicit.web.ImplicitConverterServlet;
 
 import componenttest.annotation.Server;
@@ -52,10 +50,7 @@ public class ImplicitConverterTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests
-                    .with(new RepeatConfig12EE7(SERVER_NAME))
-                    .andWith(new RepeatConfig13EE8(SERVER_NAME))
-                    .andWith(new RepeatConfig14EE8(SERVER_NAME));
+    public static RepeatTests r = RepeatConfigActions.repeatConfig12(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {

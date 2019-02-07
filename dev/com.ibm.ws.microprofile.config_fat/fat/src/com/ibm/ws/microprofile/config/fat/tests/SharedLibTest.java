@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.archaius.impl.fat.tests.SharedLibUserTestServlet;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig14EE8;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
@@ -41,8 +41,7 @@ public class SharedLibTest extends FATServletClient {
     public static final String APP_NAME = "sharedLibUser";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests //selected combinations
-                    .with(new RepeatConfig14EE8("SharedLibUserServer"));
+    public static RepeatTests r = RepeatConfigActions.repeatConfig11("SharedLibUserServer");
 
     @Server("SharedLibUserServer")
     @TestServlet(servlet = SharedLibUserTestServlet.class, contextRoot = APP_NAME)

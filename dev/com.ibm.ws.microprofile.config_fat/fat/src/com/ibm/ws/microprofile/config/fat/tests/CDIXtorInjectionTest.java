@@ -18,9 +18,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.appConfig.cdi.web.XtorTestServletNamed;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig11EE7;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig12EE8;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig14EE8;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
@@ -57,9 +55,6 @@ public class CDIXtorInjectionTest extends FATServletClient {
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests
-                    .with(new RepeatConfig11EE7("CDIConfigServer"))
-                    .andWith(new RepeatConfig12EE8("CDIConfigServer"))
-                    .andWith(new RepeatConfig14EE8("CDIConfigServer"));
+    public static RepeatTests r = RepeatConfigActions.repeatConfig11("CDIConfigServer");
 
 }
