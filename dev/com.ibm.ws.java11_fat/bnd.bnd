@@ -17,7 +17,6 @@ src: \
 
 fat.project: true
 
-fat.minimum.java.level: 11
-
 -buildpath: \
-    com.ibm.websphere.javaee.servlet.4.0;version=latest
+    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+    com.ibm.ws.kernel.service;version=latest
