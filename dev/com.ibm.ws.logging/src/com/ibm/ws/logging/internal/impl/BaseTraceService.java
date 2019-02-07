@@ -1223,7 +1223,6 @@ public class BaseTraceService implements TrService {
                     e.printStackTrace();
                 }
             }
-
         }
 
         @Override
@@ -1237,6 +1236,56 @@ public class BaseTraceService implements TrService {
             super.print(s);
             realFlush(s);
         }
+
+        @Override
+        public void print(boolean b) {
+            super.print(b);
+            String str = b ? "true" : "false";
+            realFlush(str);
+        }
+
+        @Override
+        public void print(char c) {
+            super.print(c);
+            realFlush(String.valueOf(c));
+        }
+
+        @Override
+        public void print(int i) {
+            super.print(i);
+            realFlush(String.valueOf(i));
+        }
+
+        @Override
+        public void print(long l) {
+            super.print(l);
+            realFlush(String.valueOf(l));
+        }
+
+        @Override
+        public void print(float f) {
+            super.print(f);
+            realFlush(String.valueOf(f));
+        }
+
+        @Override
+        public void print(double d) {
+            super.print(d);
+            realFlush(String.valueOf(d));
+        }
+
+        @Override
+        public void print(char s[]) {
+            super.print(s);
+            realFlush(String.valueOf(s));
+        }
+
+        @Override
+        public void print(Object obj) {
+            super.print(obj);
+            realFlush(String.valueOf(obj));
+        }
+
     }
 
     /**
