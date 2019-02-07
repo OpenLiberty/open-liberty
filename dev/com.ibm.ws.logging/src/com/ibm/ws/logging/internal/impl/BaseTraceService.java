@@ -1200,15 +1200,12 @@ public class BaseTraceService implements TrService {
 
     public final static class TeePrintStream extends PrintStream {
         protected final TrOutputStream trStream;
-        protected final boolean autoFlush;
 
         public TeePrintStream(TrOutputStream trStream, boolean autoFlush) {
             super(trStream, autoFlush);
-            this.autoFlush = autoFlush;
             this.trStream = trStream;
         }
 
-<<<<<<< HEAD
         @Override
         public synchronized void print(boolean b) {
             TrOutputStream.isPrinting.set(true);
@@ -1359,36 +1356,6 @@ public class BaseTraceService implements TrService {
             super.print(obj);
             TrOutputStream.isPrinting.set(false);
             super.flush();
-=======
-        public void realFlush(String s) {
-            if (autoFlush) {
-                try {
-                    trStream.realFlush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (autoFlush && (s.indexOf('\n') >= 0)) {
-                try {
-                    trStream.realFlush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-
-        @Override
-        public void println(String s) {
-            super.print(s);
-            realFlush(s);
-        }
-
-        @Override
-        public void print(String s) {
-            super.print(s);
-            realFlush(s);
->>>>>>> more test changes
         }
 
     }
@@ -1599,19 +1566,6 @@ public class BaseTraceService implements TrService {
                     BaseTraceService.this.setWsMessageRouter(internalMessageRouter.get());
                 if (internalTraceRouter.get() != null)
                     BaseTraceService.this.setTraceRouter(internalTraceRouter.get());
-<<<<<<< HEAD
-=======
-
-                String starter = "";
-                String string = "R";
-                for (int i = 0; i < 9000; i++) {
-                    starter = starter + string;
-                }
-
-                System.out.println(starter);
-                System.out.println("jjjj\njjjj");
-                System.out.println("Done");
->>>>>>> more test changes
             }
         }
     }
