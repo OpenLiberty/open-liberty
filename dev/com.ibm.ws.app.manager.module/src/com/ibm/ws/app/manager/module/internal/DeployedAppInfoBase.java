@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -502,45 +503,73 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
     protected ProtectionDomain getProtectionDomain() {
         PermissionCollection perms = new Permissions();
 
-        if (!java2SecurityEnabled()) {
-            perms.add(new AllPermission());
-        } else {
-            if (permissionsConfig != null) {
-                List<com.ibm.ws.javaee.dd.permissions.Permission> configuredPermissions = permissionsConfig.getPermissions();
-                addPermissions(configuredPermissions);
-            }
-
-            ArrayList<Permission> mergedPermissions = permissionManager.getEffectivePermissions(applicationInformation.getLocation());
-            int count = mergedPermissions.size();
-            for (int i = 0; i < count; i++)
-                perms.add(mergedPermissions.get(i));
-        }
-
-        CodeSource codesource;
+        CodeSource codeSource;
         try {
-            // codesource must start file:///
-            // assume loc starts with 0 or 1 /
-            String loc = applicationInformation.getLocation();
-            codesource = new CodeSource(new URL("file://" + (loc.startsWith("/") ? "" : "/") + loc), (java.security.cert.Certificate[]) null);
+            codeSource = getCodeSource();
         } catch (MalformedURLException e) {
-
-            codesource = null;
+            // Raise exception
+            codeSource = null;
             if (_tc.isDebugEnabled()) {
-
                 Tr.debug(_tc, "Code Source could not be set. Setting it to null.", e);
             }
         }
-        ProtectionDomain protectionDomain = new ProtectionDomain(codesource, perms);
-        return protectionDomain;
+
+        if (!java2SecurityEnabled()) {
+            perms.add(new AllPermission());
+        } else {
+            if (permissionsConfig != null && codeSource != null) {
+                List<com.ibm.ws.javaee.dd.permissions.Permission> configuredPermissions = permissionsConfig.getPermissions();
+                addPermissions(codeSource, configuredPermissions);
+            }
+
+            List<Permission> mergedPermissions = Collections.emptyList();
+            if (codeSource != null) {
+                mergedPermissions = permissionManager.getEffectivePermissions(codeSource.getLocation().getPath());
+            }
+
+            int count = mergedPermissions.size();
+            for (int i = 0; i < count; i++) {
+                perms.add(mergedPermissions.get(i));
+            }
+        }
+
+        return new ProtectionDomain(codeSource, perms);
+    }
+
+    private CodeSource getCodeSource() throws MalformedURLException {
+        CodeSource codeSource = getContainerCodeSource();
+
+        if (codeSource == null) {
+            codeSource = getLocationCodeSource();
+        }
+        return codeSource;
+    }
+
+    private CodeSource getContainerCodeSource() {
+        CodeSource containerCodeSource = null;
+        Container container = applicationInformation.getContainer();
+
+        if (container != null) {
+            Iterator<URL> urlsIterator = container.getURLs().iterator();
+            if (urlsIterator.hasNext()) {
+                containerCodeSource = new CodeSource(urlsIterator.next(), (java.security.cert.Certificate[]) null);
+            }
+        }
+
+        return containerCodeSource;
+    }
+
+    private CodeSource getLocationCodeSource() throws MalformedURLException {
+        String loc = applicationInformation.getLocation();
+        return new CodeSource(new URL("file://" + (loc.startsWith("/") ? "" : "/") + loc), (java.security.cert.Certificate[]) null);
     }
 
     /**
+     * @param codeSource
      * @param configuredPermissions
      */
-    private void addPermissions(List<com.ibm.ws.javaee.dd.permissions.Permission> configuredPermissions) {
+    private void addPermissions(CodeSource codeSource, List<com.ibm.ws.javaee.dd.permissions.Permission> configuredPermissions) {
         Permission[] permissions = new Permission[configuredPermissions.size()];
-
-        String codeBase = applicationInformation.getLocation();
 
         int count = 0;
         for (com.ibm.ws.javaee.dd.permissions.Permission permission : configuredPermissions) {
@@ -550,7 +579,7 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
 
             if (perm != null) {
                 permissions[count++] = perm;
-                permissionManager.addPermissionsXMLPermission(codeBase, perm);
+                permissionManager.addPermissionsXMLPermission(codeSource, perm);
             }
         }
     }
