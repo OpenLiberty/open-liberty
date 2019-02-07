@@ -65,7 +65,7 @@
             required="false" type="Integer" default="300000" />
         <AD id="signatureAlgorithm" name="%signatureAlgorithm"  description="%signatureAlgorithm.desc"
             required="false" type="String" default="RS256" /> 
-        <AD id="responseType" name="%responsetype" description="%responsetype.desc" required="false" type="String" default="code">
+        <AD id="responseType" name="%responsetype" description="%responseType.desc" required="false" type="String" default="code">
             <Option label="%responseType.code" value="code" />
             <Option label="%responseType.idTokenToken" value="id_token token" />
             <!-- future
@@ -165,7 +165,7 @@
         </AD>        
         <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
         <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>                     
-        <AD id="responseType" name="%responsetype" description="%responsetype.desc" required="false" type="String" default="code">
+        <AD id="responseType" name="%responsetype" description="%responseType.desc" required="false" type="String" default="code">
                 <Option label="%responseType.code" value="code" />
             <!-- future
             	<Option label="%responseType.token" value="token" />
@@ -267,7 +267,7 @@
              type="Boolean" default="true" />
         <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
         <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>                                     
-        <AD id="responseType" name="%responsetype" description="%responsetype.desc" required="false" type="String" default="code">
+        <AD id="responseType" name="%responsetype" description="%responseType.desc" required="false" type="String" default="code">
                 <Option label="%responseType.code" value="code" />
             <!-- future
             	<Option label="%responseType.token" value="token" />
@@ -291,7 +291,7 @@
             required="false" type="String" ibm:type="token" /> <!-- trim the beginning and ending spaces-->
         <AD id="jwksUri" name="internal" description="internal use only"
             required="false" type="String" ibm:type="token" /> <!-- trim the beginning and ending spaces-->
-        <AD id="responseType" name="%responsetype" description="%responsetype.desc" required="false" type="String" default="code">
+        <AD id="responseType" name="%responsetype" description="%responseType.desc" required="false" type="String" default="code">
                 <Option label="%responseType.code" value="code" />
             <!-- future
             	<Option label="%responseType.token" value="token" />
@@ -400,7 +400,7 @@
          </AD>
         <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
         <AD id="hostNameVerificationEnabled" name="%hostNameVerificationEnabled" description="%hostNameVerificationEnabled.desc" required="false" type="Boolean" default="true"/>
-        <AD id="responseType" name="%responsetype" description="%responsetype.desc" required="false" type="String" default="code">
+        <AD id="responseType" name="%responsetype" description="%responseType.desc" required="false" type="String" default="code">
             <Option label="%responseType.code" value="code" />
             <Option label="%responseType.idTokenToken" value="id_token token" />
             <!-- future
