@@ -79,11 +79,12 @@ public abstract class AnnotationsAdapterImpl {
 
         T targetObject = (T) (overlayContainer.getFromNonPersistentCache(targetPath, targetClass));
 
-        // TODO: Temporary for annotation caching testing.
-        String message = getClass().getSimpleName() +
-            ": overlayGet [ " + overlayContainer + " ]" +
-            " [ " + targetPath + " ] [ " + targetClass + " ]: [ " + targetObject + " ]";
-        Tr.info(tc, message);
+        if ( tc.isDebugEnabled() ) {
+            String message = getClass().getSimpleName() +
+                ": overlayGet [ " + overlayContainer + " ]" +
+                " [ " + targetPath + " ] [ " + targetClass + " ]: [ " + targetObject + " ]";
+            Tr.debug(tc, message);
+        }
 
         return targetObject;
     }
@@ -92,11 +93,12 @@ public abstract class AnnotationsAdapterImpl {
         OverlayContainer overlayContainer,
         String targetPath, Class<T> targetClass, T targetObject) {
 
-        // TODO: Temporary for annotation caching testing.
-        String message = getClass().getSimpleName() +
-            ": overlayPut [ " + overlayContainer + " ]" +
-            " [ " + targetPath + " ] [ " + targetClass + " ]: [ " + targetObject + " ]";
-        Tr.info(tc, message);
+        if ( tc.isDebugEnabled() ) {
+            String message = getClass().getSimpleName() +
+                ": overlayPut [ " + overlayContainer + " ]" +
+                " [ " + targetPath + " ] [ " + targetClass + " ]: [ " + targetObject + " ]";
+            Tr.debug(tc, message);
+        }
 
         overlayContainer.addToNonPersistentCache(targetPath, targetClass, targetObject);
     }

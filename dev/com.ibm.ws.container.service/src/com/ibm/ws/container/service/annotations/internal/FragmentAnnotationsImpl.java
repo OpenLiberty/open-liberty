@@ -20,10 +20,7 @@ import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
  */
 public class FragmentAnnotationsImpl implements FragmentAnnotations {
 
-    public FragmentAnnotationsImpl(
-        AnnotationTargets_Targets targets,
-        String fragmentName) {
-
+    public FragmentAnnotationsImpl(AnnotationTargets_Targets targets, String fragmentName) {
         this.targets = targets;
         this.fragmentName = fragmentName;
     }

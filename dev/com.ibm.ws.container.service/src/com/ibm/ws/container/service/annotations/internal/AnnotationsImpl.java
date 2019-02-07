@@ -176,15 +176,16 @@ public abstract class AnnotationsImpl implements Annotations {
 
         //
 
-        // TODO: Temporary for annotation caching testing.
-        String prefix = getClass().getSimpleName() + ".<init>: ";
-        Tr.info(tc, prefix + "Root container [ " + rootContainer + " ]");
-        for ( URL url : rootContainer.getURLs() ) {
-            Tr.info(tc, prefix + "  URL [ " + url + " ]");
+        if ( tc.isDebugEnabled() ) {
+        	String prefix = getClass().getSimpleName() + ".<init>: ";
+        	Tr.debug(tc, prefix + "Root container [ " + rootContainer + " ]");
+        	for ( URL url : rootContainer.getURLs() ) {
+        		Tr.debug(tc, prefix + "  URL [ " + url + " ]");
+        	}
+        	Tr.debug(tc, prefix + "Application [ " + appName + " ]");
+        	Tr.debug(tc, prefix + "Module [ " + modName + " ]");
+        	Tr.debug(tc, prefix + "Module Category [ " + modCatName + " ]");
         }
-        Tr.info(tc, prefix + "Application [ " + appName + " ]");
-        Tr.info(tc, prefix + "Module [ " + modName + " ]");
-        Tr.info(tc, prefix + "Module Category [ " + modCatName + " ]");
     }
 
     //
@@ -329,12 +330,13 @@ public abstract class AnnotationsImpl implements Annotations {
             }
             modName = useModName;
 
-            // TODO: Temporary for annotation caching testing.
-            String message = getClass().getSimpleName() + ".forceModName:" +
-                " App [ " + getAppName() + " ]" +
-                " Container [ " + getContainer() + " ]" +
-                " Mod [ " + modName + " ] (" + modNameCase + ")";
-            Tr.info(tc, message);
+            if ( tc.isDebugEnabled() ) {
+            	String message = getClass().getSimpleName() + ".forceModName:" +
+            		" App [ " + getAppName() + " ]" +
+            		" Container [ " + getContainer() + " ]" +
+            		" Mod [ " + modName + " ] (" + modNameCase + ")";
+            	Tr.debug(tc, message);
+            }
         }
     }
 
@@ -485,18 +487,19 @@ public abstract class AnnotationsImpl implements Annotations {
 
         ClassSource_Options options = createOptions();
 
-        // TODO: Temporary for annotation caching testing.
-        String prefix = getClass().getSimpleName() + ".createRootClassSource:";
-        String message1 = prefix +
-            " Class source " +
-            " app [ " + useAppName + " ]" +
-            " module [ " + useModName + " ]" +
-            " module category [ " + useModCatName + " ]";
-        String message2 = prefix +
-            " Scan threads [ " + options.getScanThreads() + " ]";
-        Tr.info(tc, message1);
-        Tr.info(tc, message2);
-
+        if ( tc.isDebugEnabled() ) {
+        	String prefix = getClass().getSimpleName() + ".createRootClassSource:";
+        	String message1 = prefix +
+        		" Class source " +
+        		" app [ " + useAppName + " ]" +
+        		" module [ " + useModName + " ]" +
+        		" module category [ " + useModCatName + " ]";
+        	String message2 = prefix +
+        		" Scan threads [ " + options.getScanThreads() + " ]";
+        	Tr.debug(tc, message1);
+        	Tr.debug(tc, message2);
+        }
+        
         try {
             return classSourceFactory.createAggregateClassSource(
                 useAppName, useModName, useModCatName,

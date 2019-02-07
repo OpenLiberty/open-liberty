@@ -1170,7 +1170,9 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                 appNameCase = "use server configuration";
             }
 
-            Tr.info(_tc, "Module [ " + modulePath + " ]: AppName [ " + appName + " ]: " + appNameCase);
+            if ( _tc.isDebugEnabled() ) {
+                Tr.debug(_tc, "Module [ " + modulePath + " ]: AppName [ " + appName + " ]: " + appNameCase);
+            }
 
             String modName = getPath(moduleContainer);
             String modNameCase;
@@ -1189,7 +1191,9 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                     modNameCase = "Using module full path";
                 }
 
-                Tr.info(_tc, "Module [ " + modulePath + " ]: ModName [ " + modName + " ]: " + modNameCase);
+                if ( _tc.isDebugEnabled() ) {
+                    Tr.debug(_tc, "Module [ " + modulePath + " ]: ModName [ " + modName + " ]: " + modNameCase);
+                }
 
                 containerAnnotations.setAppName(appName);
                 containerAnnotations.setModName(modName);
@@ -1207,8 +1211,6 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                 }
             }
         }
-
-        Tr.info(_tc, "Module [ " + modulePath + " ]: " + selectionCase);
 
         if (_tc.isDebugEnabled()) {
             Tr.debug(_tc, "Module [ " + modulePath + " ]: " + selectionCase);

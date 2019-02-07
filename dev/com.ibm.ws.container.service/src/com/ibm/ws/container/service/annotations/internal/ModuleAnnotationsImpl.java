@@ -139,7 +139,10 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
             }
         }
 
-        Tr.info(tc, "Generated application name [ " + appName + " ]: " + appNameCase);
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, "Generated application name [ " + appName + " ]: " + appNameCase);
+        }
+
         return appName;
     }
 

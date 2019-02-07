@@ -805,10 +805,14 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
             return;
         }
 
+        if ( !TraceComponent.isAnyTracingEnabled() || !tc.isDebugEnabled()) {
+            return;
+        }
+
         String prefix = CLASS_NAME + "." + methodName + ": ";
-        Tr.info(tc, prefix + "[ " + webFragmentItem + " ]: " + title + ": [ " + annotationClassNames.size() + " ]");
+        Tr.debug(tc, prefix + "[ " + webFragmentItem + " ]: " + title + ": [ " + annotationClassNames.size() + " ]");
         for ( String className : annotationClassNames ) {
-            Tr.info(tc, prefix + "  [ " + className + " ]");
+            Tr.debug(tc, prefix + "  [ " + className + " ]");
         }
     }
 
