@@ -1226,6 +1226,16 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
+        public void println() {
+            super.println();
+            try {
+                trStream.realFlush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
         public void println(String s) {
             super.print(s);
             realFlush(s);
@@ -1489,13 +1499,16 @@ public class BaseTraceService implements TrService {
 
                 String starter = "";
                 String string = "R";
-                for (int i = 0; i < 9000; i++) {
+                for (int i = 0; i < 8192; i++) {
                     starter = starter + string;
                 }
+                System.out.print(starter);
+                System.out.print("jjjj\njjjj");
+                System.out.print("Hello");
 
-                System.out.println(starter);
-                System.out.println("jjjj\njjjj");
-                System.out.println("Done");
+                System.out.print(starter);
+                System.out.print("jjjj\njjjj");
+                System.out.print("Hello");
             }
         }
     }
