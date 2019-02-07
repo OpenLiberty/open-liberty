@@ -11,6 +11,7 @@
 package com.ibm.ws.concurrent.mp;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -39,6 +40,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.concurrent.ContextualAction;
 import com.ibm.ws.concurrent.service.AbstractContextService;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.resource.ResourceFactory;
@@ -68,6 +70,9 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
 
     @Override
     public <R> Callable<R> contextualCallable(Callable<R> callable) {
+        if (callable instanceof ContextualCallable)
+            throw new IllegalArgumentException(ContextualCallable.class.getSimpleName());
+
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
         return new ContextualCallable<R>(contextDescriptor, callable);
@@ -75,6 +80,9 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
 
     @Override
     public <T, U> BiConsumer<T, U> contextualConsumer(BiConsumer<T, U> consumer) {
+        if (consumer instanceof ContextualBiConsumer)
+            throw new IllegalArgumentException(ContextualBiConsumer.class.getSimpleName());
+
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
         return new ContextualBiConsumer<T, U>(contextDescriptor, consumer);
@@ -82,6 +90,9 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
 
     @Override
     public <T> Consumer<T> contextualConsumer(Consumer<T> consumer) {
+        if (consumer instanceof ContextualConsumer)
+            throw new IllegalArgumentException(ContextualConsumer.class.getSimpleName());
+
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
         return new ContextualConsumer<T>(contextDescriptor, consumer);
@@ -89,6 +100,9 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
 
     @Override
     public <T, U, R> BiFunction<T, U, R> contextualFunction(BiFunction<T, U, R> function) {
+        if (function instanceof ContextualBiFunction)
+            throw new IllegalArgumentException(ContextualBiFunction.class.getSimpleName());
+
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
         return new ContextualBiFunction<T, U, R>(contextDescriptor, function);
@@ -96,6 +110,9 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
 
     @Override
     public <T, R> Function<T, R> contextualFunction(Function<T, R> function) {
+        if (function instanceof ContextualFunction)
+            throw new IllegalArgumentException(ContextualFunction.class.getSimpleName());
+
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
         return new ContextualFunction<T, R>(contextDescriptor, function);
@@ -103,6 +120,9 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
 
     @Override
     public Runnable contextualRunnable(Runnable runnable) {
+        if (runnable instanceof ContextualRunnable)
+            throw new IllegalArgumentException(ContextualRunnable.class.getSimpleName());
+
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
         return new ContextualRunnable(contextDescriptor, runnable);
@@ -110,9 +130,48 @@ public class ContextServiceImpl extends AbstractContextService implements Thread
 
     @Override
     public <R> Supplier<R> contextualSupplier(Supplier<R> supplier) {
+        if (supplier instanceof ContextualSupplier)
+            throw new IllegalArgumentException(ContextualSupplier.class.getSimpleName());
+
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
         return new ContextualSupplier<R>(contextDescriptor, supplier);
+    }
+
+    @Override
+    @Trivial
+    public Object createContextualProxy(Object instance, Class<?>... interfaces) {
+        if (instance instanceof ContextualAction)
+            throw new IllegalArgumentException(instance.getClass().getSimpleName());
+
+        return super.createContextualProxy(instance, interfaces);
+    }
+
+    @Override
+    @Trivial
+    public Object createContextualProxy(Object instance, Map<String, String> executionProperties, Class<?>... interfaces) {
+        if (instance instanceof ContextualAction)
+            throw new IllegalArgumentException(instance.getClass().getSimpleName());
+
+        return super.createContextualProxy(instance, executionProperties, interfaces);
+    }
+
+    @Override
+    @Trivial
+    public <T> T createContextualProxy(T instance, Class<T> intf) {
+        if (instance instanceof ContextualAction)
+            throw new IllegalArgumentException(instance.getClass().getSimpleName());
+
+        return super.createContextualProxy(instance, intf);
+    }
+
+    @Override
+    @Trivial
+    public <T> T createContextualProxy(T instance, Map<String, String> executionProperties, final Class<T> intf) {
+        if (instance instanceof ContextualAction)
+            throw new IllegalArgumentException(instance.getClass().getSimpleName());
+
+        return super.createContextualProxy(instance, executionProperties, intf);
     }
 
     @Override

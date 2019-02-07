@@ -77,7 +77,7 @@ pluginManagement {
 
     def jdkLibString = ""
     Boolean isFirstPass = true;
-    
+
     jdkLibs.each { File file ->
       if (isFirstPass) {
         jdkLibString = jdkLibString + file + ";version=file;boot=true"
@@ -145,13 +145,13 @@ pluginManagement {
     // Must be run after isRelease is set
     def timestamp = new SimpleDateFormat("yyyyMMddHHmm").format(new java.util.Date())
     def qualifier = timestamp
-    
+
     //For release builds we can use a consistent qualifier of the build label.
     //This comes from the RTC build engines
     if (isRelease && (props.getProperty('buildLabel') != null)) {
       qualifier = props.getProperty('buildLabel')
     }
-    
+
     props.setProperty('version.qualifier',             qualifier)
     props.setProperty('buildLabel',                    timestamp)
     props.setProperty('artifactory.matrix.parameters', matrixParams)
@@ -178,7 +178,7 @@ pluginManagement {
     rootProject.ext.qualifier = gradle.userProps.getProperty("version.qualifier")
     rootProject.ext.matrixParams = gradle.userProps.getProperty("artifactory.matrix.parameters")
     rootProject.ext.isAutomatedBuild =   'on'.equalsIgnoreCase(gradle.userProps.getProperty("is.automated.build"))   || 'true'.equalsIgnoreCase(gradle.userProps.getProperty("is.automated.build"))
-	rootProject.ext.isPersonal = 'on'.equalsIgnoreCase(gradle.userProps.getProperty("is.personal")) || 'true'.equalsIgnoreCase(gradle.userProps.getProperty("is.personal"))
+	  rootProject.ext.isPersonal = 'on'.equalsIgnoreCase(gradle.userProps.getProperty("is.personal")) || 'true'.equalsIgnoreCase(gradle.userProps.getProperty("is.personal"))
     rootProject.ext.isContinuousBuild =  'on'.equalsIgnoreCase(gradle.userProps.getProperty("is.continuous.build"))  || 'true'.equalsIgnoreCase(gradle.userProps.getProperty("is.continuous.build"))
     rootProject.ext.isRelease =          'on'.equalsIgnoreCase(gradle.userProps.getProperty('is.release'))           || 'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.release'))
     rootProject.ext.isUsingArtifactory = 'on'.equalsIgnoreCase(gradle.userProps.getProperty('is.using.artifactory')) || 'true'.equalsIgnoreCase(gradle.userProps.getProperty('is.using.artifactory'))
@@ -233,12 +233,15 @@ buildscript {
           }
           url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
       }
+    } else {
+      maven { url uri(bnd_repourl) }
+      maven { url "https://plugins.gradle.org/m2/" }
     }
-    maven { url uri(bnd_repourl) }
   }
 
   dependencies {
     classpath bnd_plugin
+    classpath 'net.ossindex.audit:net.ossindex.audit.gradle.plugin:0.3.8-beta'
   }
 
   /* Since the files in the repository change with each build, we need to recheck for changes */
@@ -360,14 +363,13 @@ projectNames.each { projectName ->
     include projectName
     workspace.getProject(projectName).getDependson()*.getName().each {
       include it
-     }
-    
+    }
+
     if (new File(rootDir, projectName + '/springboot.gradle').exists()) {
           includeModuleIfExists(projectName)
-     }
+    }
   }
 }
- 
 
 /* Pass workspace to root project */
 gradle.projectsLoaded { gradle ->
@@ -392,7 +394,7 @@ gradle.projectsLoaded { gradle ->
       remote(HttpBuildCache) {
         push = isContinuousBuild
         url = buildCacheURL
-        
+
         credentials {
           username = gradle.userProps.getProperty("artifactory.download.user")
           password = gradle.userProps.getProperty("artifactory.download.token")

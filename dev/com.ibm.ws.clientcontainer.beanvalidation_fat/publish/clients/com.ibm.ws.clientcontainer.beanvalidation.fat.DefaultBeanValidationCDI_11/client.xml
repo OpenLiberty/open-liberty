@@ -8,4 +8,6 @@
     
    <application id="DefaultBeanValidationCDI" name="DefaultBeanValidationCDI" type="ear" location="DefaultBeanValidationCDI.ear"/>
 
+   <!-- Doubling the default start timeout because this bucket tends to have issues on slow hardware -->
+   <applicationManager startTimeout="60s"/>
 </client>

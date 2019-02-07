@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.wim;
 
+import static com.ibm.ws.security.wim.util.UniqueNameHelper.isDNUnderBaseEntry;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -2928,6 +2930,30 @@ public class ProfileManager implements ProfileServiceLite {
             parentDN = configMgr.getDefaultParentForEntityInRealm(qualifiedEntityType, realmName);
         }
 
+        /*
+         * SCIM does not set the parent when it does a create, so we need to determine which
+         * repository should be the parent. To do that, do a best match of the entity's DN to
+         * known repository base entries.
+         */
+        if (parentDN == null && entity.getIdentifier() != null) {
+            String uniquename = entity.getIdentifier().getUniqueName();
+            String bestMatch = null;
+
+            if (uniquename != null) {
+                uniquename = uniquename.toLowerCase();
+                List<String> repos = repositoryManager.getRepoIds();
+                for (String repo : repos) {
+                    List<String> baseEntries = repositoryManager.getRepositoriesBaseEntries().get(repo);
+                    for (String baseEntry : baseEntries) {
+                        if (isDNUnderBaseEntry(uniquename, baseEntry) && (bestMatch == null || baseEntry.length() > bestMatch.length())) {
+                            bestMatch = baseEntry;
+                        }
+                    }
+                }
+                parentDN = bestMatch;
+            }
+        }
+
         if (parentDN == null) {
             // Check if we have only one repository configured. If yes, use its baseEntry as parentDN
             List<String> repos = repositoryManager.getRepoIds();
@@ -3765,5 +3791,4 @@ public class ProfileManager implements ProfileServiceLite {
         }
         return false;
     }
-
 }

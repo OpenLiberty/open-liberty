@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,9 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
+import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
+import com.ibm.ws.container.service.state.ModuleStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
@@ -45,11 +47,10 @@ import com.ibm.wsspi.webcontainer.osgi.mbeans.GeneratePluginConfig;
 /**
  *
  */
-@Component(service = { ApplicationStateListener.class, RuntimeUpdateListener.class },
-                configurationPolicy = ConfigurationPolicy.IGNORE,
-                immediate = true,
-                property = { "service.vendor=IBM" })
-public class GeneratePluginConfigListener implements RuntimeUpdateListener, ApplicationStateListener {
+@Component(service = { ApplicationStateListener.class,
+                       RuntimeUpdateListener.class,
+                       ModuleStateListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
+public class GeneratePluginConfigListener implements RuntimeUpdateListener, ApplicationStateListener, ModuleStateListener {
 
     private static final TraceComponent tc = Tr.register(GeneratePluginConfigListener.class);
 
@@ -85,8 +86,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
             Tr.debug(this, tc, "GPCL: deactivate called.");
     }
 
-    @Reference(service = com.ibm.wsspi.webcontainer.osgi.mbeans.GeneratePluginConfig.class,
-                    cardinality = ReferenceCardinality.MANDATORY)
+    @Reference(service = com.ibm.wsspi.webcontainer.osgi.mbeans.GeneratePluginConfig.class, cardinality = ReferenceCardinality.MANDATORY)
     protected void setGeneratePluginConfig(GeneratePluginConfig mb) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "GPCL: GPC set");
@@ -99,8 +99,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
         gpc = null;
     }
 
-    @Reference(service = java.util.concurrent.ExecutorService.class,
-                    cardinality = ReferenceCardinality.MANDATORY)
+    @Reference(service = java.util.concurrent.ExecutorService.class, cardinality = ReferenceCardinality.MANDATORY)
     /** Required static reference: called before activate */
     protected void setExecutor(ExecutorService executorSrvc) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -112,8 +111,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
         this.executorSrvc = null;
     }
 
-    @Reference(service = SessionManager.class,
-                    cardinality = ReferenceCardinality.MANDATORY)
+    @Reference(service = SessionManager.class, cardinality = ReferenceCardinality.MANDATORY)
     protected void setSessionManager(SessionManager ref) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "Session Manager set");
@@ -123,8 +121,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
     /** Required static reference: will be called after deactivate. Avoid NPE */
     protected void unsetSessionManager(SessionManager ref) {}
 
-    @Reference(service = WsLocationAdmin.class,
-                    cardinality = ReferenceCardinality.MANDATORY)
+    @Reference(service = WsLocationAdmin.class, cardinality = ReferenceCardinality.MANDATORY)
     protected void setLocationService(WsLocationAdmin ref) {
         locationService = ref;
     }
@@ -133,7 +130,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
 
     /*
      * (non-Javadoc
-     * 
+     *
      * @see com.ibm.ws.container.service.state.ApplicationStateListener#applicationStarting(com.ibm.ws.container.service.app.deploy.ApplicationInfo)
      */
     @Override
@@ -149,7 +146,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.container.service.state.ApplicationStateListener#applicationStarted(com.ibm.ws.container.service.app.deploy.ApplicationInfo)
      */
     @Override
@@ -163,7 +160,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.container.service.state.ApplicationStateListener#applicationStopping(com.ibm.ws.container.service.app.deploy.ApplicationInfo)
      */
     @Override
@@ -177,12 +174,11 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.container.service.state.ApplicationStateListener#applicationStopped(com.ibm.ws.container.service.app.deploy.ApplicationInfo)
      */
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "application stopped : " + appInfo.getName());
 
@@ -192,7 +188,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.runtime.update.RuntimeUpdateListener#notificationCreated(com.ibm.ws.runtime.update.RuntimeUpdateManager, com.ibm.ws.runtime.update.RuntimeUpdateNotification)
      */
     @Override
@@ -216,7 +212,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.threading.listeners.CompletionListener#successfulCompletion(java.util.concurrent.Future, java.lang.Object)
          */
         @Override
@@ -226,7 +222,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.threading.listeners.CompletionListener#failedCompletion(java.util.concurrent.Future, java.lang.Throwable)
          */
         @Override
@@ -302,6 +298,53 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
                 }
             }
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void moduleStarting(ModuleInfo moduleInfo) throws StateChangeException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "module starting: " + moduleInfo.getName());
+            Tr.debug(this, tc, "module starting application name: " + moduleInfo.getApplicationInfo().getName());
+        }
+
+        setFutureGeneratePluginTask();
+
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void moduleStarted(ModuleInfo moduleInfo) throws StateChangeException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "module started: " + moduleInfo.getName());
+            Tr.debug(this, tc, "module started application name: " + moduleInfo.getApplicationInfo().getName());
+        }
+
+        runFutureGeneratePluginTask();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void moduleStopping(ModuleInfo moduleInfo) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "module stopping: " + moduleInfo.getName());
+            Tr.debug(this, tc, "module stopping application name: " + moduleInfo.getApplicationInfo().getName());
+        }
+
+        setFutureGeneratePluginTask();
+
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void moduleStopped(ModuleInfo moduleInfo) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "module stopped: " + moduleInfo.getName());
+            Tr.debug(this, tc, "module stopped application name: " + moduleInfo.getApplicationInfo().getName());
+        }
+
+        runFutureGeneratePluginTask();
+
     }
 
 }

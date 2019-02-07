@@ -1,11 +1,3 @@
-plugins {
-  id "net.ossindex.audit" version "0.3.8-beta"
-}
-
-audit {
-    failOnError = true
-}
-
 task copyGeneratedToBuildImageBinTools (type:Copy) {
     dependsOn publishWLPJars
     from buildImage.file('wlp/lib')
