@@ -57,3 +57,13 @@ Annotation Caching Options:
      synchronously.  If set to -1, an unlimited number of write threads is allowed.
      Write thread pooling is per application.
 
+  WRITE_LIMIT_PROPERTY_NAME = "anno.cache.writeLimit";
+  -- Values: [ 1.. ]
+  -- Default: [ 16 ]
+  -- Disables writes of component and result data when the number of
+     classes in the result is less than the configured value.  Setting
+     to 1 means all data is written regardless of how few classes
+     are in the data.
+     
+     
+

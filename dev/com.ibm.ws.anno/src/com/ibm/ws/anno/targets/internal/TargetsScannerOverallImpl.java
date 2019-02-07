@@ -1270,8 +1270,22 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                 if ( scanPolicy == ScanPolicy.EXTERNAL ) {
                     continue;
                 }
+
                 if ( modData.shouldWrite("Result container") ) {
-                    modData.writeResultCon( scanPolicy, newTables[ scanPolicy.ordinal() ] );
+                    int useWriteLimit = getWriteLimit();
+
+                    TargetsTableImpl newTable = newTables[ scanPolicy.ordinal() ];
+                    int numClasses = newTable.getClassNames().size();
+
+                    if ( numClasses < useWriteLimit ) {
+                        if ( logger.isLoggable(Level.FINER) ) {
+                            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                                "Skipping result write [ {0} ]: Count of classes [ {1} ] is less than the write limit [ {2} ]",
+                                new Object[] { scanPolicy, Integer.valueOf(numClasses), Integer.valueOf(useWriteLimit) });
+                        }
+                    } else {
+                        modData.writeResultCon( scanPolicy, newTables[ scanPolicy.ordinal() ] );
+                    }
                 }
             }
 

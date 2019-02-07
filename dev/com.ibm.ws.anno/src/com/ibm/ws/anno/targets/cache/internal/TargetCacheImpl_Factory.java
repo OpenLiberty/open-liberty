@@ -156,6 +156,7 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
                 finer(methodName, "  ReadOnly        [ {0} ]", Boolean.valueOf(options.getReadOnly()));
                 // finer(methodName, "  Validate        [ {0} ]", Boolean.valueOf(options.getValidate()));
                 finer(methodName, "  Write Threads   [ {0} ]", Integer.valueOf(options.getWriteThreads()));
+                finer(methodName, "  Write Limit     [ {0} ]", Integer.valueOf(options.getWriteLimit()));
             }
         }
     }
