@@ -15,6 +15,8 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
+import org.osgi.service.component.ComponentContext;
+
 import com.ibm.tx.util.logging.FFDCFilter;
 import com.ibm.tx.util.logging.Tr;
 import com.ibm.tx.util.logging.TraceComponent;
@@ -35,6 +37,13 @@ public class RecLogServiceImpl {
 
     private String _recoveryGroup = null;
     private boolean _isPeerRecoverySupported = false;
+    private static boolean _readyToStart = false;
+    private static boolean _recoveryLogDSReady = false;
+
+    public RecLogServiceImpl() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "RecLogServiceImpl", this);
+    }
 
     //------------------------------------------------------------------------------
     // Method: RecLogServiceImpl.initialize
@@ -46,7 +55,6 @@ public class RecLogServiceImpl {
      * drive local recovery from within the start method below (called after this
      * method)
      */
-
     public void initialize(String serverName) {
 
         if (tc.isEntryEnabled())
@@ -72,6 +80,19 @@ public class RecLogServiceImpl {
             Tr.exit(tc, "initialize");
     }
 
+    /**
+     * Called by DS to activate service
+     */
+    protected void activate(ComponentContext cc) {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "activate", this);
+    }
+
+    public void unsetRecoveryLogFactory(RecoveryLogFactory fac) {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "unsetRecoveryLogFactory, factory: " + fac, this);
+    }
+
     //------------------------------------------------------------------------------
     // Method: RecLogServiceImpl.start
     //------------------------------------------------------------------------------
@@ -79,24 +100,24 @@ public class RecLogServiceImpl {
      * Driven by the runtime during server startup. This 'hook' is used to perform
      * recovery log service initialization.
      */
-    public void start() {
+    public void startRecovery(RecoveryLogFactory fac) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "start");
+            Tr.entry(tc, "startRecovery", fac);
 
         // This is a stand alone server. HA can never effect this server so direct local recovery now.
         RecoveryDirector director = null;
         try {
             director = RecoveryDirectorFactory.recoveryDirector(); /* @LI1578-22A */
-
+            director.setRecoveryLogFactory(fac);
             ((RecoveryDirectorImpl) director).driveLocalRecovery();/* @LI1578-22C */
         } catch (RecoveryFailedException exc) {
-            FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecLogServiceImpl.start", "421", this);
+            FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecLogServiceImpl.startRecovery", "421", this);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Local recovery failed.");
 //          if (tc.isEntryEnabled()) Tr.exit(tc, "start", "RuntimeError");
 //          throw new RuntimeError("Unable to complete local recovery processing", exc);
         } catch (InternalLogException ile) {
-            FFDCFilter.processException(ile, "com.ibm.ws.recoverylog.spi.RecLogServiceImpl.start", "478", this);
+            FFDCFilter.processException(ile, "com.ibm.ws.recoverylog.spi.RecLogServiceImpl.startRecovery", "478", this);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Local recovery not attempted.", ile);
 //          if (tc.isEntryEnabled()) Tr.exit(tc, "start", "RuntimeError");
@@ -111,7 +132,7 @@ public class RecLogServiceImpl {
                         ((LibertyRecoveryDirectorImpl) director).drivePeerRecovery();
                     }
                 } catch (RecoveryFailedException exc) {
-                    FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecLogServiceImpl.start", "421", this);
+                    FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecLogServiceImpl.startRecovery", "421", this);
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Local peer failed.");
                 }
@@ -119,7 +140,7 @@ public class RecLogServiceImpl {
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "start");
+            Tr.exit(tc, "startRecovery");
     }
 
     //------------------------------------------------------------------------------

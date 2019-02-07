@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@ package com.ibm.ws.concurrent.mp;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.concurrent.ContextualAction;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
@@ -21,7 +23,7 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
  *
  * @param <T> type of the consumer's parameter
  */
-class ContextualConsumer<T> implements Consumer<T> {
+class ContextualConsumer<T> implements Consumer<T>, ContextualAction<Consumer<T>> {
     private final Consumer<T> action;
     private final ThreadContextDescriptor threadContextDescriptor;
 
@@ -38,5 +40,17 @@ class ContextualConsumer<T> implements Consumer<T> {
         } finally {
             threadContextDescriptor.taskStopping(contextApplied);
         }
+    }
+
+    @Override
+    @Trivial
+    public Consumer<T> getAction() {
+        return action;
+    }
+
+    @Override
+    @Trivial
+    public ThreadContextDescriptor getContextDescriptor() {
+        return threadContextDescriptor;
     }
 }

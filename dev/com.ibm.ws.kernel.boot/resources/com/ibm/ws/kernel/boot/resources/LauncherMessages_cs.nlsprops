@@ -697,6 +697,10 @@ warning.package.root.invalid.runnable=CWWKE0948W: Volba --server-root s --includ
 warning.package.root.invalid.runnable.explanation=U\u017eivatel provedl po\u017eadavek na bal\u00edk s volbou --server-root a --include=runnable, co\u017e nen\u00ed povolenou kombinac\u00ed. Pou\u017eije se v\u00fdchoz\u00ed ko\u0159enov\u00fd adres\u00e1\u0159 serveru wlp.
 warning.package.root.invalid.runnable.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
+error.no.serialfilteragent=CWWKE0949E: Uveden\u00fd soubor JAR modulu Serial Filter Agent {0} neexistuje.
+error.no.serialfilteragent.explanation=Uveden\u00fd soubor JAR modulu Serial Filter Agent neexistuje, nebo se nezda\u0159ilo na\u010dten\u00ed.
+error.no.serialfilteragent.useraction= Zkontrolujte, \u017ee soubor existuje a \u017ee jej m\u016f\u017ee aktu\u00e1ln\u00ed u\u017eivatel \u010d\u00edst.
+
 info.serverStarting=Spou\u0161t\u011bn\u00ed serveru {0}.
 info.serverStarted=Server {0} byl spu\u0161t\u011bn.
 info.serverStartedWithPID=Server {0} byl spu\u0161t\u011bn s ID procesu {1}.
@@ -787,3 +791,4 @@ info.initlogs=Prob\u00edh\u00e1 p\u0159esm\u011brov\u00e1n\u00ed stdout a stderr
 info.no.servers.defined=V u\u017eivatelsk\u00e9m adres\u00e1\u0159i {0} nejsou definov\u00e1ny \u017e\u00e1dn\u00e9 servery.
 info.list.of.defined.servers=Vzhledem k u\u017eivatelsk\u00e9mu adres\u00e1\u0159i {0} jsou definov\u00e1ny n\u00e1sleduj\u00edc\u00ed servery.
 info.communicate.server=Mezi p\u0159\u00edkazem {0} a serverem {1} do\u0161lo k chyb\u011b komunikace.
+

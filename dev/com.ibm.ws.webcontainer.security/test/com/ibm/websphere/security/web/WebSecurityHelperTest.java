@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ public class WebSecurityHelperTest {
     /**
      * Test method for {@link com.ibm.websphere.security.web.WebSecurityHelper#getSSOCookieFromSSOToken()}.
      */
+
     @Test
     public void getSSOCookieFromSSOToken_noConfigSet() throws Exception {
         assertNull("When no WebAppSecurityConfiguration is set, the cookie should be null",
@@ -38,6 +39,15 @@ public class WebSecurityHelperTest {
         WebSecurityHelperImpl.setWebAppSecurityConfig(null);
         assertNull("When no WebAppSecurityConfiguration is set, the cookie name should be null",
                    WebSecurityHelper.getSSOCookieName());
+    }
+
+    /**
+     * Test method for {@link com.ibm.websphere.security.web.WebSecurityHelper#getJwtCookieName()}.
+     */
+    //@Test
+    public void getJwtCookieName_noConfigSet() throws Exception {
+        assertNull("When no JwtSSOTokenProxy is set, the JWT cookie name should be null",
+                   WebSecurityHelper.getJwtCookieName());
     }
 
 }

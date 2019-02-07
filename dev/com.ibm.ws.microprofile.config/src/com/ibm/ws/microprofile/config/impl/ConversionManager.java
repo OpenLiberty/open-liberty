@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-//This class was inspired by com.netflix.archaius.DefaultDecoder
+//This class was originally inspired by com.netflix.archaius.DefaultDecoder
 
 package com.ibm.ws.microprofile.config.impl;
 
@@ -93,91 +93,93 @@ public class ConversionManager {
     /**
      * Convert a String to a Type using registered converters for the Type
      *
-     * @param <T>
+     * @param           <T>
      *
      * @param rawString
      * @param type
      * @return
      */
     public Object convert(String rawString, Type type) {
-        Object value = null;
-        if (type instanceof ParameterizedType) {
-            ParameterizedType pType = (ParameterizedType) type;
-            Type[] aTypes = pType.getActualTypeArguments();
-            Type genericTypeArg = aTypes.length == 1 ? aTypes[0] : null; //initially only support one type arg
-            if (genericTypeArg instanceof Class) { //for the moment we only support a class ... so no type variables; e.g. List<String> is ok but List<T> is not
-                Class<?> genericClassArg = (Class<?>) genericTypeArg;
-                value = convert(rawString, pType.getRawType(), genericClassArg);
-            } else {
-                throw new IllegalArgumentException(Tr.formatMessage(tc, "generic.type.variables.notsupported.CWMCG0018E", type, genericTypeArg));
-            }
-        } else {
-            value = convert(rawString, type, null);
-        }
+        Object value = convert(rawString, type, null);
         return value;
     }
 
     /**
      * Convert a String to a Type using registered converters for the Type
      *
-     * @param <T>
+     * @param           <T>
      *
      * @param rawString
      * @param type
      * @return
      */
-    protected Object convert(String rawString, Type type, Class<?> genericSubType) {
-        //first box any primitives
-        if (type instanceof Class<?>) {
-            Class<?> clazz = (Class<?>) type;
-            if (clazz.isPrimitive()) {
-                type = ClassUtils.primitiveToWrapper(clazz);
+    public Object convert(String rawString, Type type, Class<?> genericSubType) {
+
+        Object converted = null;
+
+        if (genericSubType == null && type instanceof ParameterizedType) {
+            ParameterizedType pType = (ParameterizedType) type;
+            Type[] aTypes = pType.getActualTypeArguments();
+            Type genericTypeArg = aTypes.length == 1 ? aTypes[0] : null; //initially only support one type arg
+            if (genericTypeArg instanceof Class) { //for the moment we only support a class ... so no type variables; e.g. List<String> is ok but List<T> is not
+                Class<?> genericClassArg = (Class<?>) genericTypeArg;
+                converted = convert(rawString, pType.getRawType(), genericClassArg);
+            } else {
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "generic.type.variables.notsupported.CWMCG0018E", type, genericTypeArg));
             }
-        }
-
-        //do a simple lookup in the map of converters
-        ConversionStatus status = simpleConversion(rawString, type, genericSubType);
-
-        if (!status.isConverterFound() && type instanceof Class) {
-            Class<?> requestedClazz = (Class<?>) type;
-
-            //try array conversion
-            if (requestedClazz.isArray()) {
-                Class<?> arrayType = requestedClazz.getComponentType();
-                Class<?> conversionType = arrayType;
-                //first convert primitives to wrapper types
-                if (arrayType.isPrimitive()) {
-                    conversionType = ClassUtils.primitiveToWrapper(arrayType);
+        } else {
+            //first box any primitives
+            if (type instanceof Class<?>) {
+                Class<?> clazz = (Class<?>) type;
+                if (clazz.isPrimitive()) {
+                    type = ClassUtils.primitiveToWrapper(clazz);
                 }
-                //convert to an array of the wrapper type
-                Object[] wrappedArray = convertArray(rawString, conversionType);// convertArray will throw ConverterNotFoundException if it can't find a converter
+            }
 
-                //switch back to the primitive type if required
-                Object value = wrappedArray;
-                if (arrayType.isPrimitive()) {
-                    value = toPrimitiveArray(wrappedArray, arrayType);
+            //do a simple lookup in the map of converters
+            ConversionStatus status = simpleConversion(rawString, type, genericSubType);
+
+            if (!status.isConverterFound() && type instanceof Class) {
+                Class<?> requestedClazz = (Class<?>) type;
+
+                //try array conversion
+                if (requestedClazz.isArray()) {
+                    Class<?> arrayType = requestedClazz.getComponentType();
+                    Class<?> conversionType = arrayType;
+                    //first convert primitives to wrapper types
+                    if (arrayType.isPrimitive()) {
+                        conversionType = ClassUtils.primitiveToWrapper(arrayType);
+                    }
+                    //convert to an array of the wrapper type
+                    Object[] wrappedArray = convertArray(rawString, conversionType);// convertArray will throw ConverterNotFoundException if it can't find a converter
+
+                    //switch back to the primitive type if required
+                    Object value = wrappedArray;
+                    if (arrayType.isPrimitive()) {
+                        value = toPrimitiveArray(wrappedArray, arrayType);
+                    }
+
+                    status.setConverted(value);
                 }
 
-                status.setConverted(value);
+                //try implicit converters (e.g. String Constructors)
+                if (!status.isConverterFound()) {
+                    status = implicitConverters(rawString, requestedClazz);
+                }
+
+                //try to find any compatible converters
+                if (!status.isConverterFound()) {
+                    status = convertCompatible(rawString, requestedClazz);
+                }
+
             }
 
-            //try implicit converters (e.g. String Constructors)
             if (!status.isConverterFound()) {
-                status = implicitConverters(rawString, requestedClazz);
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "could.not.find.converter.CWMCG0014E", type.getTypeName()));
             }
 
-            //try to find any compatible converters
-            if (!status.isConverterFound()) {
-                status = convertCompatible(rawString, requestedClazz);
-            }
-
+            converted = status.getConverted();
         }
-
-        if (!status.isConverterFound()) {
-            throw new IllegalArgumentException(Tr.formatMessage(tc, "could.not.find.converter.CWMCG0014E", type.getTypeName()));
-        }
-
-        Object converted = status.getConverted();
         return converted;
 
     }
@@ -191,7 +193,7 @@ public class ConversionManager {
     }
 
     /**
-     * @param <T>
+     * @param                <T>
      * @param rawString
      * @param requestedClazz
      * @return

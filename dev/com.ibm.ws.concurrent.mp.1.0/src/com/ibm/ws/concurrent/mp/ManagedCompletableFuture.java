@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -413,9 +413,16 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
+        ThreadContextDescriptor contextDescriptor;
+        if (action instanceof ContextualSupplier) {
+            ContextualRunnable r = (ContextualRunnable) action;
+            contextDescriptor = r.getContextDescriptor();
+            action = r.getAction();
+        } else {
+            contextDescriptor = captureThreadContext(executor);
+        }
 
         if (JAVA8) {
             action = new ContextualRunnable(contextDescriptor, action);
@@ -455,9 +462,16 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
+        ThreadContextDescriptor contextDescriptor;
+        if (action instanceof ContextualSupplier) {
+            ContextualSupplier<U> s = (ContextualSupplier<U>) action;
+            contextDescriptor = s.getContextDescriptor();
+            action = s.getAction();
+        } else {
+            contextDescriptor = captureThreadContext(executor);
+        }
 
         if (JAVA8) {
             action = new ContextualSupplier<U>(contextDescriptor, action);
@@ -482,9 +496,11 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
-        if (contextDescriptor != null)
-            action = new ContextualConsumer<>(contextDescriptor, action);
+        if (!(action instanceof ContextualConsumer)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
+            if (contextDescriptor != null)
+                action = new ContextualConsumer<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             if (other instanceof ManagedCompletableFuture)
@@ -514,11 +530,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
-        if (contextDescriptor != null)
-            action = new ContextualConsumer<>(contextDescriptor, action);
+        if (!(action instanceof ContextualConsumer)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
+            if (contextDescriptor != null)
+                action = new ContextualConsumer<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             if (other instanceof ManagedCompletableFuture)
@@ -544,9 +562,11 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
-        if (contextDescriptor != null)
-            action = new ContextualFunction<>(contextDescriptor, action);
+        if (!(action instanceof ContextualFunction)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
+            if (contextDescriptor != null)
+                action = new ContextualFunction<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             if (other instanceof ManagedCompletableFuture)
@@ -576,11 +596,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
-        if (contextDescriptor != null)
-            action = new ContextualFunction<>(contextDescriptor, action);
+        if (!(action instanceof ContextualFunction)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
+            if (contextDescriptor != null)
+                action = new ContextualFunction<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             if (other instanceof ManagedCompletableFuture)
@@ -630,7 +652,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         }
 
         if (contextSvc == null)
-            return null;
+            return null; // TODO should we capture context based on the default executor when unmanaged executor is supplied???
 
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
@@ -676,11 +698,20 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             if (action instanceof ManagedTask)
                 throw new IllegalArgumentException(ManagedTask.class.getName());
 
-            ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
+            ThreadContextDescriptor contextDescriptor;
+            if (action instanceof ContextualSupplier) {
+                ContextualSupplier<? extends T> s = (ContextualSupplier<? extends T>) action;
+                contextDescriptor = s.getContextDescriptor();
+                action = s.getAction();
+            } else {
+                contextDescriptor = captureThreadContext(executor);
+            }
 
             if (!super.isDone()) {
                 @SuppressWarnings({ "rawtypes", "unchecked" })
                 Runnable task = new ContextualSupplierAction(contextDescriptor, action, this, false);
+                if (executor instanceof WSManagedExecutorService)
+                    executor = ((WSManagedExecutorService) executor).getNormalPolicyExecutor();
                 executor.execute(task);
                 // The existence of completeAsync means that any number of tasks could be submitted to complete a
                 // single ManagedCompletableFuture instance.  We are deciding that it is not worth it to track the
@@ -753,9 +784,11 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
-        if (contextDescriptor != null)
-            action = new ContextualFunction<>(contextDescriptor, action);
+        if (!(action instanceof ContextualFunction)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
+            if (contextDescriptor != null)
+                action = new ContextualFunction<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             CompletableFuture<T> dependentStage = completableFuture.exceptionally(action);
@@ -815,9 +848,11 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
-        if (contextDescriptor != null)
-            action = new ContextualBiFunction<>(contextDescriptor, action);
+        if (!(action instanceof ContextualBiFunction)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
+            if (contextDescriptor != null)
+                action = new ContextualBiFunction<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             CompletableFuture<R> dependentStage = completableFuture.handle(action);
@@ -845,11 +880,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
-        if (contextDescriptor != null)
-            action = new ContextualBiFunction<>(contextDescriptor, action);
+        if (!(action instanceof ContextualBiFunction)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
+            if (contextDescriptor != null)
+                action = new ContextualBiFunction<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             CompletableFuture<R> dependentStage = completableFuture.handleAsync(action, futureExecutor == null ? executor : futureExecutor);
@@ -1012,9 +1049,11 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
-        if (contextDescriptor != null)
-            action = new ContextualRunnable(contextDescriptor, action);
+        if (!(action instanceof ContextualRunnable)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
+            if (contextDescriptor != null)
+                action = new ContextualRunnable(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             if (other instanceof ManagedCompletableFuture)
@@ -1044,11 +1083,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
-        if (contextDescriptor != null)
-            action = new ContextualRunnable(contextDescriptor, action);
+        if (!(action instanceof ContextualRunnable)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
+            if (contextDescriptor != null)
+                action = new ContextualRunnable(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             if (other instanceof ManagedCompletableFuture)
@@ -1074,9 +1115,11 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
-        if (contextDescriptor != null)
-            action = new ContextualRunnable(contextDescriptor, action);
+        if (!(action instanceof ContextualRunnable)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
+            if (contextDescriptor != null)
+                action = new ContextualRunnable(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             if (other instanceof ManagedCompletableFuture)
@@ -1106,11 +1149,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
-        if (contextDescriptor != null)
-            action = new ContextualRunnable(contextDescriptor, action);
+        if (!(action instanceof ContextualRunnable)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
+            if (contextDescriptor != null)
+                action = new ContextualRunnable(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             if (other instanceof ManagedCompletableFuture)
@@ -1154,6 +1199,24 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
+     * Convenience method to validate that an executor supports running asynchronously
+     * and to wrap the executor, if an ExecutorService, with FutureRefExecutor.
+     * This method is named supportsAsync to make failure stacks more meaningful to users.
+     *
+     * @param executor executor instance supplied to *Async methods.
+     * @return FutureRefExecutor if an ExecutorService is supplied. Null if a valid executor is supplied.
+     * @throws UnsupportedOperation if the executor is incapable of running tasks.
+     */
+    @Trivial
+    private final static FutureRefExecutor supportsAsync(Executor executor) {
+        if (executor instanceof ExecutorService)
+            return new FutureRefExecutor((ExecutorService) executor); // valid
+        if (executor instanceof UnusableExecutor)
+            throw new UnsupportedOperationException(); // not valid for executing tasks
+        return null; // valid
+    }
+
+    /**
      * @see java.util.concurrent.CompletionStage#thenAccept(java.util.function.Consumer)
      */
     @Override
@@ -1162,9 +1225,11 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
-        if (contextDescriptor != null)
-            action = new ContextualConsumer<>(contextDescriptor, action);
+        if (!(action instanceof ContextualConsumer)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
+            if (contextDescriptor != null)
+                action = new ContextualConsumer<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             CompletableFuture<Void> dependentStage = completableFuture.thenAccept(action);
@@ -1192,11 +1257,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
-        if (contextDescriptor != null)
-            action = new ContextualConsumer<>(contextDescriptor, action);
+        if (!(action instanceof ContextualConsumer)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
+            if (contextDescriptor != null)
+                action = new ContextualConsumer<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             CompletableFuture<Void> dependentStage = completableFuture.thenAcceptAsync(action, futureExecutor == null ? executor : futureExecutor);
@@ -1220,9 +1287,11 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
-        if (contextDescriptor != null)
-            action = new ContextualBiConsumer<>(contextDescriptor, action);
+        if (!(action instanceof ContextualBiConsumer)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
+            if (contextDescriptor != null)
+                action = new ContextualBiConsumer<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             if (other instanceof ManagedCompletableFuture)
@@ -1252,11 +1321,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
-        if (contextDescriptor != null)
-            action = new ContextualBiConsumer<>(contextDescriptor, action);
+        if (!(action instanceof ContextualBiConsumer)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
+            if (contextDescriptor != null)
+                action = new ContextualBiConsumer<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             if (other instanceof ManagedCompletableFuture)
@@ -1282,9 +1353,11 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
-        if (contextDescriptor != null)
-            action = new ContextualFunction<>(contextDescriptor, action);
+        if (!(action instanceof ContextualFunction)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
+            if (contextDescriptor != null)
+                action = new ContextualFunction<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             CompletableFuture<R> dependentStage = completableFuture.thenApply(action);
@@ -1312,11 +1385,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
-        if (contextDescriptor != null)
-            action = new ContextualFunction<>(contextDescriptor, action);
+        if (!(action instanceof ContextualFunction)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
+            if (contextDescriptor != null)
+                action = new ContextualFunction<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             CompletableFuture<R> dependentStage = completableFuture.thenApplyAsync(action, futureExecutor == null ? executor : futureExecutor);
@@ -1340,9 +1415,11 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
-        if (contextDescriptor != null)
-            action = new ContextualBiFunction<>(contextDescriptor, action);
+        if (!(action instanceof ContextualBiFunction)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
+            if (contextDescriptor != null)
+                action = new ContextualBiFunction<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             if (other instanceof ManagedCompletableFuture)
@@ -1372,11 +1449,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
-        if (contextDescriptor != null)
-            action = new ContextualBiFunction<>(contextDescriptor, action);
+        if (!(action instanceof ContextualBiFunction)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
+            if (contextDescriptor != null)
+                action = new ContextualBiFunction<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             if (other instanceof ManagedCompletableFuture)
@@ -1402,9 +1481,11 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
-        if (contextDescriptor != null)
-            action = new ContextualFunction<>(contextDescriptor, action);
+        if (!(action instanceof ContextualFunction)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
+            if (contextDescriptor != null)
+                action = new ContextualFunction<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             CompletableFuture<U> dependentStage = completableFuture.thenCompose(action);
@@ -1432,11 +1513,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
-        if (contextDescriptor != null)
-            action = new ContextualFunction<>(contextDescriptor, action);
+        if (!(action instanceof ContextualFunction)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
+            if (contextDescriptor != null)
+                action = new ContextualFunction<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             CompletableFuture<U> dependentStage = completableFuture.thenComposeAsync(action, futureExecutor == null ? executor : futureExecutor);
@@ -1460,9 +1543,11 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
-        if (contextDescriptor != null)
-            action = new ContextualRunnable(contextDescriptor, action);
+        if (!(action instanceof ContextualRunnable)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
+            if (contextDescriptor != null)
+                action = new ContextualRunnable(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             CompletableFuture<Void> dependentStage = completableFuture.thenRun(action);
@@ -1490,11 +1575,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
-        if (contextDescriptor != null)
-            action = new ContextualRunnable(contextDescriptor, action);
+        if (!(action instanceof ContextualRunnable)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
+            if (contextDescriptor != null)
+                action = new ContextualRunnable(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             CompletableFuture<Void> dependentStage = completableFuture.thenRunAsync(action, futureExecutor == null ? executor : futureExecutor);
@@ -1565,9 +1652,11 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
-        if (contextDescriptor != null)
-            action = new ContextualBiConsumer<>(contextDescriptor, action);
+        if (!(action instanceof ContextualBiConsumer)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
+            if (contextDescriptor != null)
+                action = new ContextualBiConsumer<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             CompletableFuture<T> dependentStage = completableFuture.whenComplete(action);
@@ -1595,11 +1684,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        FutureRefExecutor futureExecutor = executor instanceof ExecutorService ? new FutureRefExecutor((ExecutorService) executor) : null;
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
 
-        ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
-        if (contextDescriptor != null)
-            action = new ContextualBiConsumer<>(contextDescriptor, action);
+        if (!(action instanceof ContextualBiConsumer)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
+            if (contextDescriptor != null)
+                action = new ContextualBiConsumer<>(contextDescriptor, action);
+        }
 
         if (JAVA8) {
             CompletableFuture<T> dependentStage = completableFuture.whenCompleteAsync(action, futureExecutor == null ? executor : futureExecutor);

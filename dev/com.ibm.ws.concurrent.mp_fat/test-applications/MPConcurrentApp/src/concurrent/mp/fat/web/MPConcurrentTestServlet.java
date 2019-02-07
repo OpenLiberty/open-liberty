@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2018 IBM Corporation and others.
+ * Copyright (c) 2017,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -46,7 +47,6 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -56,8 +56,10 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ContextService;
+import javax.enterprise.concurrent.LastExecution;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedScheduledExecutorService;
+import javax.enterprise.concurrent.Trigger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
@@ -1303,6 +1305,57 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
+     * When an already-contextualized Supplier is supplied to stage.completeAsync(supplier), it must run with the
+     * context that was previously captured rather than with context captured according to the managed executor's configuration.
+     */
+    @Test
+    public void testCompleteAsyncWithPreContextualizedAction() throws Exception {
+        CompletableFuture<String> cf1 = oneContextExecutor.newIncompleteFuture(); // this executor propagates Application context
+
+        CurrentLocation.setLocation("Lanesboro", "Minnesota");
+        try {
+            Supplier<String> action = stateContextPropagator.contextualSupplier(() -> {
+                try {
+                    Object result = InitialContext.doLookup("java:comp/env/executorRef");
+                    fail("noContextExecutor should be used as default asynchronous execution facility, and therefore, " +
+                         "Application context should not be available in order to perform a java:comp lookup. " + result);
+                } catch (NamingException x) {
+                    // test passes
+                }
+
+                return CurrentLocation.getState();
+            });
+
+            CurrentLocation.clear();
+
+            try {
+                @SuppressWarnings("unchecked")
+                CompletableFuture<String> cf2 = (CompletableFuture<String>) completeAsync.apply(cf1, action);
+
+                assertSame(cf1, cf2); // JavaDoc requires completeAsync to return same instance
+            } catch (UnsupportedOperationException x) {
+                if (AT_LEAST_JAVA_9)
+                    throw x;
+                else
+                    return; // expected for Java SE 8
+            }
+
+            CompletableFuture<String> cf2 = cf1.thenApplyAsync(result -> {
+                try {
+                    assertNotNull(InitialContext.doLookup("java:comp/env/executorRef"));
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+                return result;
+            });
+
+            assertEquals("Minnesota", cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            CurrentLocation.clear();
+        }
+    }
+
+    /**
      * Verify that completedStage returns an instance that is completed with the specified value,
      * is only accessible as a CompletionStage such that methods like obtrude are disallowed,
      * and that creates dependent stages with the default managed executor and with the same stipulations
@@ -1846,6 +1899,62 @@ public class MPConcurrentTestServlet extends FATServlet {
         }
 
         assertEquals(Integer.valueOf(2001), cf5.handle(increment).get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * When an already-contextualized Callable is supplied to managedExecutor.invokeAll, it must run with the
+     * context that was previously captured rather than with context captured according to the managed executor's configuration.
+     */
+    @Test
+    public void testInvokeAllWithPreContextualizedAction() throws Exception {
+        Callable<String> getStateMN, getStateIA, getStateWI;
+
+        try {
+            CurrentLocation.setLocation("Kasson", "Minnesota");
+            getStateMN = stateContextPropagator.contextualCallable(CurrentLocation::getState);
+
+            CurrentLocation.setLocation("Ottumwa", "Iowa");
+            getStateIA = stateContextPropagator.contextualCallable(CurrentLocation::getState);
+
+            List<Future<String>> futures = oneContextExecutor.invokeAll(Collections.singleton(getStateMN));
+            assertEquals("Minnesota", futures.get(0).get());
+
+            CurrentLocation.setLocation("Green Bay", "Wisconsin");
+            getStateWI = stateContextPropagator.contextualCallable(CurrentLocation::getState);
+        } finally {
+            CurrentLocation.clear();
+        }
+
+        List<Future<String>> futures = oneContextExecutor.invokeAll(Arrays.asList(() -> InitialContext.doLookup("java:comp/env/executorRef").toString(),
+                                                                                  getStateMN,
+                                                                                  CurrentLocation::getState,
+                                                                                  getStateIA,
+                                                                                  getStateWI));
+        assertEquals(5, futures.size());
+        assertNotNull(futures.get(0).get());
+        assertEquals("Minnesota", futures.get(1).get());
+        assertEquals("", futures.get(2).get());
+        assertEquals("Iowa", futures.get(3).get());
+        assertEquals("Wisconsin", futures.get(4).get());
+
+        // current thread's context should be clean even if invokeAll runs any of the tasks on the current thread
+        assertEquals("", CurrentLocation.getState());
+    }
+
+    /**
+     * When an already-contextualized Callable is supplied to managedExecutor.invokeAny, it must run with the
+     * context that was previously captured rather than with context captured according to the managed executor's configuration.
+     */
+    @Test
+    public void testInvokeAnyWithPreContextualizedAction() throws Exception {
+        CurrentLocation.setLocation("Oronoco", "Minnesota");
+        try {
+            Callable<String> getState = stateContextPropagator.contextualCallable(CurrentLocation::getState);
+            CurrentLocation.setLocation("Dubuque", "Iowa");
+            assertEquals("Minnesota", oneContextExecutor.invokeAny(Collections.singleton(getState)));
+        } finally {
+            CurrentLocation.clear();
+        }
     }
 
     /**
@@ -3315,6 +3424,36 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
+     * When an already-contextualized Runnable is supplied to managedExecutor.runAsync(runnable), it must run with the
+     * context that was previously captured rather than with context captured according to the managed executor's configuration.
+     */
+    @Test
+    public void testRunAsyncWithPreContextualizedAction() throws Exception {
+        Runnable action = defaultThreadContext.contextualRunnable(() -> {
+            try {
+                assertNotNull(InitialContext.doLookup("java:comp/env/executorRef")); // requires Application context
+            } catch (NamingException x) {
+                throw new RuntimeException(x);
+            }
+        });
+
+        CompletableFuture<Void> cf = noContextExecutor
+                        .runAsync(action)
+                        .thenRunAsync(() -> {
+                            try {
+                                Object result = InitialContext.doLookup("java:comp/env/executorRef");
+                                fail("noContextExecutor should be used as default asynchronous execution facility, and therefore, " +
+                                     "Application context should not be available in order to perform a java:comp lookup. " + result);
+                            } catch (NamingException x) {
+                                // test passes
+                            }
+                        });
+
+        // force assertion error to be raised, if any
+        cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+    }
+
+    /**
      * Complete an incomplete stage and verify that dependent actions of the stage run on the same thread
      * that performs the completion.
      */
@@ -3560,6 +3699,106 @@ public class MPConcurrentTestServlet extends FATServlet {
             }
         });
         executor2.submit(() -> System.out.println("Task 4 should not run. It should have been canceled from the queue upon shutdownNow."));
+    }
+
+    /**
+     * When an already-contextualized task is supplied to managedScheduledExecutorService.schedule(trigger, task), it must run with the
+     * context that was previously captured rather than with context captured according to the managed executor's configuration.
+     */
+    @Test
+    public void testScheduleViaTriggerWithPreContextualizedTask() throws Exception {
+        ManagedScheduledExecutorService executor = InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
+
+        CurrentLocation.setLocation("Dodge Center", "Minnesota");
+        try {
+            Callable<String> task = stateContextPropagator.contextualCallable(CurrentLocation::getState);
+            CurrentLocation.setLocation("Mason City", "Iowa");
+            Future<String> future = executor.schedule(task, new Trigger() {
+                @Override
+                public Date getNextRunTime(LastExecution lastExecution, Date taskScheduledTime) {
+                    // runs once, no sooner than 5ms after the time scheduled
+                    return lastExecution == null ? new Date(taskScheduledTime.getTime() + 5) : null;
+                }
+
+                @Override
+                public boolean skipRun(LastExecution lastExecution, Date scheduledRunTime) {
+                    return false;
+                }
+            });
+            assertEquals("Minnesota", future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            CurrentLocation.clear();
+        }
+    }
+
+    /**
+     * When an already-contextualized task is supplied to managedScheduledExecutorService.schedule, it must run with the
+     * context that was previously captured rather than with context captured according to the managed executor's configuration.
+     */
+    @Test
+    public void testScheduleWithPreContextualizedTask() throws Exception {
+        ManagedScheduledExecutorService executor = InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
+
+        CurrentLocation.setLocation("Mazeppa", "Minnesota");
+        try {
+            Callable<String> task = stateContextPropagator.contextualCallable(CurrentLocation::getState);
+            CurrentLocation.setLocation("Marshalltown", "Iowa");
+            Future<String> future = executor.schedule(task, 2, TimeUnit.NANOSECONDS);
+            assertEquals("Minnesota", future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            CurrentLocation.clear();
+        }
+    }
+
+    /**
+     * When an already-contextualized Runnable is supplied to managedExecutor.submit, it must run with the
+     * context that was previously captured rather than with context captured according to the managed executor's configuration.
+     */
+    @Test
+    public void testSubmitWithPreContextualizedRunnable() throws Exception {
+        CurrentLocation.setLocation("Zumbrota", "Minnesota");
+        try {
+            Runnable task = stateContextPropagator.contextualRunnable(() -> assertEquals("Minnesota", CurrentLocation.getState()));
+            CurrentLocation.setLocation("Iowa City", "Iowa");
+            oneContextExecutor.submit(task).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        } finally {
+            CurrentLocation.clear();
+        }
+    }
+
+    /**
+     * When an already-contextualized Supplier is supplied to managedExecutor.supplyAsync(supplier), it must run with the
+     * context that was previously captured rather than with context captured according to the managed executor's configuration.
+     */
+    @Test
+    public void testSupplyAsyncWithPreContextualizedAction() throws Exception {
+        ManagedExecutor executor = ManagedExecutor.builder()
+                        .propagated(TestContextTypes.CITY, TestContextTypes.STATE)
+                        .build();
+
+        CurrentLocation.setLocation("Lake City", "Minnesota");
+        try {
+            Supplier<String> action = stateContextPropagator.contextualSupplier(() -> {
+                assertEquals("", CurrentLocation.getCity()); // not propagated
+                return CurrentLocation.getState();
+            });
+
+            CurrentLocation.setLocation("Pepin", "Wisconsin");
+
+            CompletableFuture<Void> cf = executor
+                            .supplyAsync(action)
+                            .thenAcceptAsync(s -> {
+                                assertEquals("Minnesota", s); // result of prior stage reflects previously captured context
+                                assertEquals("Pepin", CurrentLocation.getCity());
+                                assertEquals("Wisconsin", CurrentLocation.getState());
+                            });
+
+            // force assertion error to be raised, if any
+            cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        } finally {
+            CurrentLocation.clear();
+            executor.shutdownNow();
+        }
     }
 
     /**
@@ -3825,6 +4064,39 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
+     * When an already-contextualized Function is supplied to stage.thenApplyAsync(function), it must run with the
+     * context that was previously captured rather than with context captured according to the managed executor's configuration.
+     */
+    @Test
+    public void testThenApplyWithPreContextualizedAction() throws Exception {
+        ThreadContext cityContextPropagator = ThreadContext.builder()
+                        .propagated(TestContextTypes.CITY)
+                        .build();
+
+        ManagedExecutor executor = ManagedExecutor.builder()
+                        .propagated(TestContextTypes.CITY)
+                        .build();
+        try {
+            CurrentLocation.setLocation("Stewartville", "Minnesota");
+
+            Function<String, String> addCity = s -> s + ',' + CurrentLocation.getCity();
+            Function<String, String> preContextualizedAddCity = cityContextPropagator.contextualFunction(addCity);
+
+            CurrentLocation.setLocation("Eyota", "Minnesota");
+
+            CompletableFuture<String> cf = executor
+                            .supplyAsync(CurrentLocation::getCity)
+                            .thenApplyAsync(preContextualizedAddCity)
+                            .thenApplyAsync(addCity);
+
+            assertEquals("Eyota,Stewartville,Eyota", cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            CurrentLocation.clear();
+            executor.shutdownNow();
+        }
+    }
+
+    /**
      * Verify thenCombine and both forms of thenCombineAsync.
      */
     @Test
@@ -4049,8 +4321,7 @@ public class MPConcurrentTestServlet extends FATServlet {
                         });
         String result;
         assertNotNull(result = cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertTrue(result, result.startsWith("100,"));
-        assertTrue(result, result.indexOf("ManagedExecutorImpl@") > 0);
+        assertTrue(result, result.startsWith("100,ManagedExecutor@"));
     }
 
     /**
@@ -4312,6 +4583,83 @@ public class MPConcurrentTestServlet extends FATServlet {
         // possible for this to run during small timing window before policy task future transitions from RUNNING to SUCCESSFUL
         assertTrue(s, s.contains("SUCCESSFUL") || s.contains("RUNNING"));
         assertTrue(s, s.contains("on managedScheduledExecutorService[noContextExecutor]/concurrencyPolicy[default-0]"));
+    }
+
+    /**
+     * Validate that toString of a managed CompletableFuture includes information about the state of the completable future,
+     * as well as indicating which PolicyExecutor Future it runs on and which managed executor.
+     */
+    @Test
+    public void testToStringManagedExecutor() throws Exception {
+        ManagedExecutor executor = ManagedExecutor.builder()
+                        .maxAsync(4)
+                        .propagated(ThreadContext.APPLICATION, ThreadContext.SECURITY)
+                        .build();
+
+        String execString = executor.toString();
+        assertTrue(execString, execString.startsWith("ManagedExecutor@"));
+        assertTrue(execString, execString.contains("_MPConcurrentApp(maxAsync=4,maxQueued=max,propagated=["));
+        assertTrue(execString, execString.contains("Application"));
+        assertTrue(execString, execString.contains("Security"));
+
+        CountDownLatch runningLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+
+        CompletableFuture<Boolean> cf = executor.supplyAsync(() -> {
+            System.out.println("> supply from testToString");
+            runningLatch.countDown();
+            try {
+                boolean result = continueLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                System.out.println("< supply " + result);
+                return result;
+            } catch (InterruptedException x) {
+                System.out.println("< supply " + x);
+                throw new CompletionException(x);
+            }
+        });
+
+        assertTrue(runningLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        String s = cf.toString();
+        assertTrue(s, s.contains("ManagedCompletableFuture@"));
+        assertTrue(s, s.contains("Not completed"));
+        assertTrue(s, s.contains("PolicyTaskFuture@"));
+        assertTrue(s, s.contains("RUNNING on " + execString));
+
+        continueLatch.countDown();
+
+        assertTrue(cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        s = cf.toString();
+        assertTrue(s, s.contains("ManagedCompletableFuture@"));
+        assertTrue(s, s.contains("Completed normally"));
+        assertTrue(s, s.contains("PolicyTaskFuture@"));
+        // possible for this to run during small timing window before policy task future transitions from RUNNING to SUCCESSFUL
+        assertTrue(s, s.contains("SUCCESSFUL") || s.contains("RUNNING"));
+        assertTrue(s, s.contains("on " + execString));
+
+        executor.shutdownNow();
+    }
+
+    /**
+     * Verify toString output for our MicroProfile Concurrency ThreadContext implementation.
+     */
+    @Test
+    public void testToStringThreadContext() throws Exception {
+        ThreadContext threadContext = ThreadContext.builder()
+                        .propagated(ThreadContext.APPLICATION)
+                        .cleared(ThreadContext.SECURITY, ThreadContext.TRANSACTION)
+                        .unchanged(ThreadContext.CDI)
+                        .build();
+
+        String s = threadContext.toString();
+        assertTrue(s, s.startsWith("ThreadContext@"));
+        assertTrue(s, s.contains("_MPConcurrentApp("));
+        assertTrue(s, s.contains("propagated=[Application]"));
+        assertTrue(s, s.contains("cleared=["));
+        assertTrue(s, s.contains("Security"));
+        assertTrue(s, s.contains("Transaction"));
+        assertTrue(s, s.contains("unchanged=[CDI]"));
     }
 
     /**
@@ -4635,8 +4983,8 @@ public class MPConcurrentTestServlet extends FATServlet {
     /**
      * Use ThreadContext.testWithContextCapture to create a contextualized CompletableFuture
      * based on one that isn't context aware. Verify that its dependent actions run with the
-     * configured context of the ThreadContext instance and that Async operations run on the
-     * servlet thread rather than a different thread from the Liberty global thread pool,
+     * configured context of the ThreadContext instance and that Async operations requested
+     * without an executor parameter raise UnsupportedOperationException,
      * as required by the spec for CompletionStage that is backed by a ThreadContext rather
      * than a managed executor.
      */
@@ -4663,10 +5011,10 @@ public class MPConcurrentTestServlet extends FATServlet {
                 }
                 String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity());
-                assertEquals("Minnesota", CurrentLocation.getState()); // runs on servlet thread
-                assertEquals(servletThreadName, threadName);
+                assertEquals("", CurrentLocation.getState());
+                assertNotSame(servletThreadName, threadName);
                 return i + 1;
-            });
+            }, defaultManagedExecutor);
 
             assertEquals(Integer.valueOf(116), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
@@ -4676,13 +5024,18 @@ public class MPConcurrentTestServlet extends FATServlet {
                 } catch (NamingException x) {
                     throw new RuntimeException(x);
                 }
-                String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity()); // context of servlet thread is cleared
                 assertEquals("Minnesota", CurrentLocation.getState()); // context of servlet thread not cleared
-                assertEquals(servletThreadName, threadName); // runs on servlet thread
                 CurrentLocation.setLocation("La Crosse", "Wisconsin");
                 return i + 1;
             });
+
+            try {
+                CompletableFuture<Integer> cf5 = cf4.whenCompleteAsync((i, x) -> System.out.println("This task should not have run."));
+                fail("whenCompleteAsync should be rejected when completion stage is not backed by an executor. " + cf5);
+            } catch (UnsupportedOperationException x) {
+                // expected
+            }
 
             assertEquals(Integer.valueOf(117), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
@@ -4696,9 +5049,11 @@ public class MPConcurrentTestServlet extends FATServlet {
                 Executor executor = defaultExecutor.apply(cf4);
                 assertFalse(executor instanceof ExecutorService); // no way for the user to shut it down
 
-                AtomicReference<String> threadNameRef = new AtomicReference<String>();
-                executor.execute(() -> threadNameRef.set(Thread.currentThread().getName()));
-                assertEquals(servletThreadName, threadNameRef.get());
+                try {
+                    executor.execute(() -> System.out.println("Executor should not be usable."));
+                } catch (UnsupportedOperationException x) {
+                    // pass - completable futures from withContextCapture are not backed by a usable executor
+                }
             }
         } finally {
             CurrentLocation.clear();
@@ -4709,8 +5064,8 @@ public class MPConcurrentTestServlet extends FATServlet {
      * Use testWithContextCapture on a ContextService configured in server.xml
      * to create a contextualized CompletableFuture based on one that isn't context aware.
      * Verify that its dependent actions run with the configured context of the ContextService
-     * instance and that Async operations run on the servlet thread rather than a different
-     * thread from the Liberty global thread pool, as required by the spec for
+     * instance and that Async operations requested without an executor parameter raise
+     * UnsupportedOperationException, as required by the spec for
      * CompletionStage that is backed by a ThreadContext rather than a managed executor.
      */
     @Test
@@ -4732,9 +5087,9 @@ public class MPConcurrentTestServlet extends FATServlet {
                 String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity());
                 assertEquals("", CurrentLocation.getState());
-                assertEquals(servletThreadName, threadName);
+                assertNotSame(servletThreadName, threadName);
                 return i + 1;
-            });
+            }, defaultManagedExecutor);
 
             assertEquals(Integer.valueOf(123), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
@@ -4744,15 +5099,20 @@ public class MPConcurrentTestServlet extends FATServlet {
                 } catch (NamingException x) {
                     throw new RuntimeException(x);
                 }
-                String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity()); // context of servlet thread is cleared
                 assertEquals("", CurrentLocation.getState()); // context of servlet thread is cleared
-                assertEquals(servletThreadName, threadName);
                 CurrentLocation.setLocation("Onalaska", "Wisconsin");
                 return i + 1;
             });
 
             assertEquals(Integer.valueOf(124), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            try {
+                CompletableFuture<Integer> cf5 = cf4.thenCombineAsync(cf3, (i, j) -> j - i);
+                fail("thenCombineAsync should be rejected when completion stage is not backed by an executor. " + cf5);
+            } catch (UnsupportedOperationException x) {
+                // expected
+            }
 
             // context restored on current thread
             assertEquals("Mankato", CurrentLocation.getCity());
@@ -4762,9 +5122,11 @@ public class MPConcurrentTestServlet extends FATServlet {
                 Executor executor = defaultExecutor.apply(cf4);
                 assertFalse(executor instanceof ExecutorService); // no way for the user to shut it down
 
-                AtomicReference<String> threadNameRef = new AtomicReference<String>();
-                executor.execute(() -> threadNameRef.set(Thread.currentThread().getName()));
-                assertEquals(servletThreadName, threadNameRef.get());
+                try {
+                    executor.execute(() -> System.out.println("Should not be able to submit this task."));
+                } catch (UnsupportedOperationException x) {
+                    // pass - completable futures from withContextCapture are not backed by a usable executor
+                }
             }
         } finally {
             CurrentLocation.clear();
@@ -4774,8 +5136,8 @@ public class MPConcurrentTestServlet extends FATServlet {
     /**
      * Use ThreadContext.testWithContextCapture to create a contextualized CompletionStage
      * based on one that isn't context aware. Verify that its dependent actions run with the
-     * configured context of the ThreadContext instance and that Async operations run on the
-     * current thread rather than a different thread from the Liberty global thread pool,
+     * configured context of the ThreadContext instance and that Async operations
+     * requested without an executor parameter raise UnsupportedOperationException,
      * as required by the spec for CompletionStage that is backed by a ThreadContext rather
      * than a managed executor.
      */
@@ -4815,10 +5177,10 @@ public class MPConcurrentTestServlet extends FATServlet {
                 }
                 String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity());
-                assertEquals("", CurrentLocation.getState()); // thread from prior stage used instead of thread from Liberty global thread pool
-                assertTrue(threadName, !threadName.startsWith("Default Executor-thread-"));
+                assertEquals("", CurrentLocation.getState());
+                assertNotSame(threadName, servletThreadName);
                 return i + 1;
-            });
+            }, defaultManagedExecutor);
 
             // verify that cs3 is a CompletionStage or limited to CompletionStage methods
             if (cs3 instanceof CompletableFuture)
@@ -4840,13 +5202,18 @@ public class MPConcurrentTestServlet extends FATServlet {
                 } catch (NamingException x) {
                     throw new RuntimeException(x);
                 }
-                String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity()); // context of servlet thread is cleared
                 assertEquals("Minnesota", CurrentLocation.getState()); // context of servlet thread not cleared
-                assertEquals(servletThreadName, threadName);
                 CurrentLocation.setLocation("Clear Lake", "Iowa");
                 return i + 1;
             });
+
+            try {
+                CompletionStage<Void> cs5 = cs4.thenAcceptBothAsync(cs3, (i, j) -> System.out.println(i * j));
+                fail("thenAcceptBothAsync should be rejected when completion stage is not backed by an executor. " + cs5);
+            } catch (UnsupportedOperationException x) {
+                // expected
+            }
 
             // verify that cs4 is a CompletionStage or limited to CompletionStage methods
             if (cs4 instanceof CompletableFuture)
@@ -4873,8 +5240,8 @@ public class MPConcurrentTestServlet extends FATServlet {
      * Use ThreadContext.testWithContextCapture on a ContextService configured in server.xml
      * to create a contextualized CompletionStage based on one that isn't context aware.
      * Verify that its dependent actions run with the configured context of the ContextService
-     * instance and that Async operations run on the current thread rather than a different
-     * thread from the Liberty global thread pool, as required by the spec for
+     * instance and that Async operations requested without an executor parameter
+     * raise UnsupportedOperationException, as required by the spec for
      * CompletionStage that is backed by a ThreadContext rather than a managed executor.
      */
     @Test
@@ -4909,9 +5276,9 @@ public class MPConcurrentTestServlet extends FATServlet {
                 String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity());
                 assertEquals("", CurrentLocation.getState());
-                assertTrue(threadName, !threadName.startsWith("Default Executor-thread-"));
+                assertNotSame(servletThreadName, threadName);
                 return i + 1;
-            });
+            }, defaultManagedExecutor);
 
             // verify that cs3 is a CompletionStage or limited to CompletionStage methods
             if (cs3 instanceof CompletableFuture)
@@ -4933,13 +5300,18 @@ public class MPConcurrentTestServlet extends FATServlet {
                 } catch (NamingException x) {
                     throw new RuntimeException(x);
                 }
-                String threadName = Thread.currentThread().getName();
                 assertEquals("", CurrentLocation.getCity()); // context of servlet thread is cleared
                 assertEquals("", CurrentLocation.getState()); // context of servlet thread is cleared
-                assertEquals(servletThreadName, threadName);
                 CurrentLocation.setLocation("Superior", "Wisconsin");
                 return i + 1;
             });
+
+            try {
+                CompletionStage<Integer> cs5 = cs4.handleAsync((i, x) -> i);
+                fail("handleAsync should be rejected when completion stage is not backed by an executor. " + cs5);
+            } catch (UnsupportedOperationException x) {
+                // expected
+            }
 
             // verify that cs4 is a CompletionStage or limited to CompletionStage methods
             if (cs4 instanceof CompletableFuture)

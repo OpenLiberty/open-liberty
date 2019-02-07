@@ -30,10 +30,9 @@
 # -------------------------------------------------------------------------------------------------
 
 copyright=\n\
-Materiali su licenza - Propriet\u00e0 di IBM\n\
-(C) COPYRIGHT International Business Machines Corp. 2010 - Tutti i diritti riservati.\n\
-Limitazioni previste per gli utenti del Governo degli Stati Uniti - L'uso, la duplicazione o la divulgazione\n\
-sono limitati dal GSA ADP Schedule Contract con IBM Corp.
+Copyright (c) 2010 IBM Corporation e altri.\n\
+Tutti i diritti riservati. Questo programma e i materiali di accompagnamento \n sono resi disponibili in base ai termini di Eclipse Public License v1.0 \n che accompagna questa distribuzione ed \u00e8 disponibile all'indirizzo \n\
+http://www.eclipse.org/legal/epl-v10.html
 
 error.parse.server=CWWKG0001E: Il parser di configurazione ha rilevato un errore durante l''analisi del root della configurazione e dei documenti di configurazione di riferimento. Errore: {0}
 error.parse.server.explanation=Non \u00e8 stato possibile leggere la configurazione del server a causa di un errore in uno dei file di configurazione.

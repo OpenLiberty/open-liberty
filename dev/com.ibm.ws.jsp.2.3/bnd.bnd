@@ -85,7 +85,6 @@ instrument.classesIncludes: com/ibm/ws/jsp23/**/*.class
 instrument.classesExcludes: org/apache/**/*.class
 
 -buildpath: \
-	${javac.bootclasspath.java7}, \
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.ws.jsp;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\

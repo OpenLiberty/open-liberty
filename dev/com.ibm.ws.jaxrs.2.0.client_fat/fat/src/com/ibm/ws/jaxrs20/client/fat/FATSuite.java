@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.jaxrs20.client.fat.test.BasicClientTest;
 import com.ibm.ws.jaxrs20.client.fat.test.ClientContextInjectionTest;
 import com.ibm.ws.jaxrs20.client.fat.test.ComplexClientTest;
+import com.ibm.ws.jaxrs20.client.fat.test.HandleResponsesTest;
 import com.ibm.ws.jaxrs20.client.fat.test.IBMJson4JProvidersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRS20ClientAsyncInvokerTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRS20ClientInvocationTest;
@@ -28,7 +29,6 @@ import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientLtpaTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLDefaultTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLFiltersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLProxyAuthTest;
-import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLTestNoLibertySSLCfg;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLTestNoLibertySSLFeature;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientStandaloneTest;
@@ -47,9 +47,10 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 AlwaysPassesTest.class,
                 BasicClientTest.class,
+                HandleResponsesTest.class,
                 JAXRSClientStandaloneTest.class,
                 JAXRS20WithClientFeatureEnabledTest.class,
-                JAXRSClientSSLTest.class,
+                //JAXRSClientSSLTest.class,
                 JAXRSClientSSLDefaultTest.class,
                 JAXRSClientSSLFiltersTest.class,
                 JAXRSClientSSLTestNoLibertySSLCfg.class,

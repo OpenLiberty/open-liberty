@@ -129,8 +129,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.17</version>
                 <configuration>
+                    <argLine>-Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
                     <systemPropertyVariables>
-                        <argLine>-Dfile.encoding=UTF-8</argLine> <!-- Needed for ZOS becuase arquillian calls string.getBtytes() -->
                         <wlp>${wlp}</wlp>
                         <tck_server>${tck_server}</tck_server>
                         <tck_port>${tck_port}</tck_port>

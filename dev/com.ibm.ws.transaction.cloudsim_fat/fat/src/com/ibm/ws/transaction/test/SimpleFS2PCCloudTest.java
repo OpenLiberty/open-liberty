@@ -1,7 +1,5 @@
-package com.ibm.ws.transaction.test;
-
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +8,8 @@ package com.ibm.ws.transaction.test;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.transaction.test;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,10 +28,10 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.cloudtx.ut.util.LastingXAResourceImpl;
 import com.ibm.ws.transaction.web.SimpleFS2PCCloudServlet;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -120,7 +120,8 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         server1.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
 
         // Lastly, clean up XA resource file
-        server1.deleteFileFromLibertyServerRoot("XAResourceData.dat");
+        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
+
     }
 
     /**
@@ -168,8 +169,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         server2.stopServer();
 
         // Lastly, clean up XA resource files
-        server1.deleteFileFromLibertyServerRoot("XAResourceData.dat");
-        server2.deleteFileFromLibertyServerRoot("XAResourceData.dat");
+        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
 
     }
 
@@ -187,8 +187,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
 
     @Mode(TestMode.LITE)
     @Test
-    @ExpectedFFDC(value = { "java.lang.IllegalStateException" })
-    @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "java.lang.IllegalStateException" })
     // defect 227411, if FScloud002 starts slowly, then access to FScloud001's indoubt tx
     // XAResources may need to be retried (tx recovery is, in such cases, working as designed.
     public void testFSRecoveryCompeteForLog() throws Exception {
@@ -252,8 +251,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         server2.stopServer();
 
         // Lastly, clean up XA resource files
-        server1.deleteFileFromLibertyServerRoot("XAResourceData.dat");
-        server2.deleteFileFromLibertyServerRoot("XAResourceData.dat");
+        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
     }
 
     private boolean lockServerLease(String recoveryId) throws Exception {

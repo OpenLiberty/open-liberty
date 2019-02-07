@@ -31,16 +31,40 @@ public class MPConfigAccessorImpl implements MPConfigAccessor {
     /**
      * Reads a String[] or Integer property value from MicroProfile Config.
      *
+     * @param config instance of org.eclipse.microprofile.config.Config.
      * @param name config property name.
      * @param defaultValue value to use if a config property with the specified name is not found.
      * @return value from MicroProfile Config. Otherwise the default value.
      */
     @Override
-    public <T> T get(String name, T defaultValue) {
-        Config config = configProviderResolver.getConfig();
+    public <T> T get(Object config, String name, T defaultValue) {
         Class<?> cl = defaultValue == null ? String[].class : defaultValue.getClass();
         @SuppressWarnings("unchecked")
-        Optional<T> configuredValue = (Optional<T>) config.getOptionalValue(name, cl);
-        return configuredValue.orElse(defaultValue);
+        Optional<T> configuredValue = (Optional<T>) ((Config) config).getOptionalValue(name, cl);
+        T value = configuredValue.orElse(defaultValue);
+
+        // MicroProfile Config is unclear about whether empty value for String[] results in
+        // an empty String array or a size 1 String array where the element is the empty string.
+        // Allow for both possibilities,
+        if (value instanceof String[]) {
+            String[] arr = ((String[]) value);
+            if (arr.length == 1 && arr[0].length() == 0) {
+                @SuppressWarnings("unchecked")
+                T emptyArray = (T) new String[0];
+                value = emptyArray;
+            }
+        }
+
+        return value;
+    }
+
+    /**
+     * Resolve instance of org.eclipse.microprofile.config.Config.
+     *
+     * @return instance of org.eclipse.microprofile.config.Config.
+     */
+    @Override
+    public Object getConfig() {
+        return configProviderResolver.getConfig();
     }
 }

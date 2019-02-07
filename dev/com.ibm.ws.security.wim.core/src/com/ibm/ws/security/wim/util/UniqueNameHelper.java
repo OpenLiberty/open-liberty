@@ -103,6 +103,20 @@ public class UniqueNameHelper {
         }
     }
 
+    public static boolean isDNUnderBaseEntry(String dn, String... bases) {
+        dn = getValidDN(dn);
+        if (dn != null) {
+            dn = dn.toLowerCase();
+            //return true if any of bases is empty node/""/root or if dn ends with any of the the base
+            for (int i = 0; i < bases.length; i++) {
+                if (bases[i].trim().length() == 0 || dn.endsWith(bases[i].toLowerCase())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * Returns the unique name based on the input value.
      *
@@ -251,7 +265,7 @@ public class UniqueNameHelper {
      * @return the array of separated RDNs.
      */
     public static String[] getRDNs(String rdnStr) {
-        StringTokenizer st = new StringTokenizer(rdnStr, "+");
+        StringTokenizer st = new StringTokenizer(rdnStr.toLowerCase(), "+");
         ArrayList<String> list = new ArrayList<String>();
         while (st.hasMoreTokens()) {
             String rdn = st.nextToken();

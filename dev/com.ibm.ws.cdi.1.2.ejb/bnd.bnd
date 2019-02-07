@@ -21,9 +21,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
   com.ibm.ws.cdi.ejb.security.EjbSecurityContextStore,\
   com.ibm.ws.cdi.ejb.interceptor.liberty.JCDIHelperFactoryImpl
 
-
-Service-Component: \
- com.ibm.ws.cdi.1.2.ejb.deserializationClassProvider;\
+Service-Component: com.ibm.ws.cdi_1_2.ejb.deserializationClassProvider;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
     properties:="service.vendor=IBM,\
@@ -44,8 +42,9 @@ Import-Package: \
 WS-TraceGroup: JCDI
 
 -buildpath: \
-        com.ibm.ws.cdi.weld;version=latest, \
-        com.ibm.ws.cdi.internal;version=latest, \
+	com.ibm.ws.serialization;version=latest, \
+	com.ibm.ws.cdi.weld;version=latest, \
+	com.ibm.ws.cdi.internal;version=latest, \
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.ejbcontainer;version=latest,\
 	com.ibm.ws.ejbcontainer.core;version=latest,\

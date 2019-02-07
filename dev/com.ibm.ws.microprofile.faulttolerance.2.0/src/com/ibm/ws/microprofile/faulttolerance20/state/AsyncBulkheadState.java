@@ -19,7 +19,14 @@ package com.ibm.ws.microprofile.faulttolerance20.state;
  *
  * <pre>
  * <code>
- * ExecutionReference reference = asyncBulkheadState.submit(() -> {codeToRun()});
+ * ExecutionReference reference = asyncBulkheadState.submit((reservation) -> {
+ *   try {
+ *     codeToRun();
+ *   } finally {
+ *     reservation.release();
+ *   }
+ * });
+ *
  * if (!reference.wasAccepted) {
  *   throw new BulkheadException();
  * }
@@ -35,16 +42,36 @@ public interface AsyncBulkheadState {
      * <p>
      * The exception handler will be called if an exception occurs handling the runnable after the submit method has returned.
      *
-     * @param runnable the runnable
+     * @param task             the task to run
      * @param exceptionHandler the exception handler
      * @return an ExecutionReference, allowing the caller to see whether the execution was accepted and to abort later if required
      */
-    public ExecutionReference submit(Runnable runnable, ExceptionHandler exceptionHandler);
+    public ExecutionReference submit(AsyncBulkheadTask task, ExceptionHandler exceptionHandler);
 
     /**
      * Shutdown the bulkhead. Any new tasks will be rejected.
      */
     public void shutdown();
+
+    /**
+     * A task that can be run by an async bulkhead
+     * <p>
+     * This is basically a Runnable except the run method takes a {@link BulkheadReservation} parameter
+     */
+    @FunctionalInterface
+    public interface AsyncBulkheadTask {
+
+        /**
+         * Run the task
+         * <p>
+         * All implementations of this method must ensure that {@code reservation.release()} is always called (whether execution of the task is successful or fails).
+         * Failure to do this will result in bulkhead permits being leaked.
+         *
+         * @param bulkheadReservation a callback to indicate that execution is complete and the bulkhead reservation should be released
+         */
+        public void run(BulkheadReservation reservation);
+
+    }
 
     /**
      * A reference to an execution submitted to the bulkhead
@@ -65,6 +92,18 @@ public interface AsyncBulkheadState {
          * @return {@code true} if the runnable was accepted, {@code false} otherwise
          */
         public boolean wasAccepted();
+    }
+
+    /**
+     * A reference to the reservation on the bulkhead
+     * <p>
+     * Allows the task to release it's reservation on the bulkhead when its work is done, allowing another task to run
+     */
+    public interface BulkheadReservation {
+        /**
+         * Report that the execution is complete, releasing the bulkhead permit
+         */
+        public void release();
     }
 
     /**

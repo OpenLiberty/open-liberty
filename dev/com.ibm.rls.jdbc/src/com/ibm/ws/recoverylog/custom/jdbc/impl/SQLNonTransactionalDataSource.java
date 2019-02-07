@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,14 +30,13 @@ import com.ibm.wsspi.resource.ResourceFactory;
  * object that represents the special non-transactional data source that has been defined
  * by an administrator for storing Transaction Logs.
  * </p>
- * 
+ *
  * <p>
  * The Liberty implementation relies on Declarative Services to coordinate the initialisation
  * of the Transaction and DataSource (com.ibm.ws.jdbc) components.
  * </p>
  */
-public class SQLNonTransactionalDataSource
-{
+public class SQLNonTransactionalDataSource {
     /**
      * WebSphere RAS TraceComponent registration.
      */
@@ -56,12 +55,11 @@ public class SQLNonTransactionalDataSource
      * <p> Constructor for the creation of
      * SQLNonTransactionalDataSource objects.
      * </p>
-     * 
+     *
      * @param dsName The name of the Data Source.
      * @param customLogProperties The custom properties of the log.
      */
-    public SQLNonTransactionalDataSource(String dsName, CustomLogProperties customLogProperties)
-    {
+    public SQLNonTransactionalDataSource(String dsName, CustomLogProperties customLogProperties) {
         _customLogProperties = customLogProperties;
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Setting CustomLogProperties in constructor" + customLogProperties);
@@ -72,14 +70,13 @@ public class SQLNonTransactionalDataSource
     //------------------------------------------------------------------------------
     /**
      * Locates a DataSource in config
-     * 
+     *
      * @return The DataSource.
-     * 
+     *
      * @exception
      */
     @FFDCIgnore(Exception.class)
-    public DataSource getDataSource() throws Exception
-    {
+    public DataSource getDataSource() throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getDataSource");
 
@@ -88,23 +85,18 @@ public class SQLNonTransactionalDataSource
         // then sets it into CustomLogProperties.
         ResourceFactory dataSourceFactory = _customLogProperties.resourceFactory();
 
-        if (dataSourceFactory != null)
-        {
+        if (dataSourceFactory != null) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Using DataSourceFactory " + dataSourceFactory);
-        }
-        else
-        {
+        } else {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "getDataSource", "Null ResourceFactory InternalLogException");
             throw new InternalLogException("Failed to locate DataSource, null Resourcefactory", null);
         }
 
-        try
-        {
+        try {
             nonTranDataSource = (DataSource) dataSourceFactory.createResource(null);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             //e.printStackTrace();
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "getDataSource", "Caught exception " + e + "throw InternalLogException");
@@ -148,7 +140,7 @@ public class SQLNonTransactionalDataSource
 //            if (!refSet)
 //                Thread.sleep(200);
 //        }
-// eof TEMPORARY 
+// eof TEMPORARY
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getDataSource", nonTranDataSource);

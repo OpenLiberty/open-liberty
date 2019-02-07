@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebRequest;
@@ -51,6 +52,7 @@ import com.ibm.ws.security.fat.common.utils.FatStringUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -61,6 +63,7 @@ import componenttest.topology.impl.LibertyServer;
  * This class should encompass all tests required for the minimal certification for the Basic RP profile.
  */
 @Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
 public abstract class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
 
     public static Class<?> thisClass = OidcCertificationRPBasicProfileTests.class;
@@ -112,6 +115,7 @@ public abstract class OidcCertificationRPBasicProfileTests extends CommonSecurit
      * Expected Results:
      * - Should successfully make authentication request and access the protected resource
      */
+    @Mode(TestMode.LITE)
     @Test
     public void test_responseType_code() throws Exception {
         String conformanceTestName = "rp-response_type-code";

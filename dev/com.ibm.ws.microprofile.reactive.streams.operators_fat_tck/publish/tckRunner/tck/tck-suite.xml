@@ -10,12 +10,12 @@
 
 <suite name="microprofile-reactive-streams-1.1-tck" verbose="2"
     configfailurepolicy="continue">
-    <test name="tck-package-org.eclipse.microprofile.reactive.streams.tck">
+    <test name="tck-package-org.eclipse.microprofile.reactive.streams.operators.tck">
         <packages>
             <package name="org.eclipse.microprofile.reactive.streams.tck.api.*" />
         </packages>
         <classes>
-            <class name="org.eclipse.microprofile.reactive.streams.tck.arquillian.ReactiveStreamsArquillianTck"/>
+            <class name="org.eclipse.microprofile.reactive.streams.operators.tck.arquillian.ReactiveStreamsArquillianTck"/>
         </classes>
     </test>
 </suite>

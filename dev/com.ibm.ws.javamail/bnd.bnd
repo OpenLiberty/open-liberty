@@ -41,10 +41,10 @@ app-resources= \
   META-INF/mailcap 
 
 Private-Package: \
-com.ibm.ws.javamail.internal.injection, \
-com.ibm.ws.javamail.internal, \
-com.ibm.ws.javamail.resources, \
-com.ibm.ws.config.xml.internal.nester
+	com.ibm.ws.javamail.internal.injection, \
+	com.ibm.ws.javamail.internal, \
+	com.ibm.ws.javamail.resources, \
+	com.ibm.ws.config.xml.internal.nester
 
 Import-Package: \
   !*.internal.*, \

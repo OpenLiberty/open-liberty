@@ -26,7 +26,6 @@ Export-Package: \
             org.eclipse.persistence.javax.persistence.osgi;version="1.0.16", \
             org.eclipse.persistence.jpa.config;version="1.0.16", \
             org.eclipse.persistence.sessions.serializers.kryo;version="1.0.16", \
-            org.eclipse.persistence.javax.*;version="1.0.16", \
             org.eclipse.persistence.internal.jpa.config.*;version="1.0.16", \
             org.eclipse.persistence.internal.jpa.metadata.graphs;version="1.0.16", \
             org.eclipse.persistence.internal.jpa.metadata.sop;version="1.0.16", \
@@ -107,7 +106,7 @@ Include-Resource: \
   @${repo;org.eclipse.persistence.asm;6.2.0.v201808061445;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.core;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa.jpql;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa.modelgen;2.6.8.WAS-v20181003-71e88a9;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.jpa.modelgen;2.6.8.WAS-v20181218-0accd7f;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa;2.6.8.WAS;EXACT}!/!META-INF/maven/*
 
 

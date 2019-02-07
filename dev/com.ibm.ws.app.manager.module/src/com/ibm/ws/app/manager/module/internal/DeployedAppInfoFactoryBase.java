@@ -45,7 +45,7 @@ import com.ibm.wsspi.library.Library;
 
 public abstract class DeployedAppInfoFactoryBase implements DeployedAppInfoFactory {
 
-    static final String SERVER_APPS_DIR = WsLocationConstants.SYMBOL_SERVER_CONFIG_DIR + "apps/";
+    static final String SERVER_APPS_DIR = WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR + "apps/";
     protected static final String EXPANDED_APPS_DIR = SERVER_APPS_DIR + "expanded/";
     protected static final String XML_SUFFIX = ".xml";
 

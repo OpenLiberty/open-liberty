@@ -20,8 +20,6 @@ WS-TraceGroup: dynamicBundle
 
 Export-Package: com.ibm.ws.dynamic.bundle;provide:=true
 
-Private-Package: com.ibm.ws.dynamic.bundle.internal
-
 -buildpath: \
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\

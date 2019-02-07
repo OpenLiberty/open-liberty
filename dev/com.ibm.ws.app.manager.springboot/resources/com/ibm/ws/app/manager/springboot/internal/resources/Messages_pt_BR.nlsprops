@@ -88,3 +88,11 @@ warning.application.started.event.timeout.useraction=Se o aplicativo for iniciad
 warning.java.version.not.supported=CWWKC0265W: A vers\u00e3o Java atual {0} n\u00e3o \u00e9 suportada pela vers\u00e3o do Spring Boot {1}. Fa\u00e7a upgrade da vers\u00e3o do aplicativo Spring Boot para a 2.0.x ou superior.
 warning.java.version.not.supported.explanation=As vers\u00f5es Java superiores a 1.8 n\u00e3o s\u00e3o suportadas pelas vers\u00f5es 1.5.x e abaixo do Spring Boot.
 warning.java.version.not.supported.useraction=Fa\u00e7a upgrade da vers\u00e3o do aplicativo Spring Boot para a 2.0.x ou superior.
+
+error.invalid.packaged.liberty.jar=CWWKC0265E: O aplicativo falhou ao iniciar porque o arquivo JAR do servidor Liberty empacotado n\u00e3o \u00e9 v\u00e1lido.
+error.invalid.packaged.liberty.jar.explanation=O arquivo JAR do servidor Liberty empacotado est\u00e1 sem um cabe\u00e7alho de manifest Server-Name, sem entradas para a raiz do servidor ou sem entradas para o diret\u00f3rio lib.index.cache.
+error.invalid.packaged.liberty.jar.useraction=Configure um arquivo JAR do servidor Liberty compactado v\u00e1lido.
+
+error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: O aplicativo falhou ao iniciar porque o aplicativo Spring Boot n\u00e3o foi localizado dentro do arquivo JAR do Liberty Server empacotado.
+error.application.not.found.inside.packaged.liberty.jar.explanation=O arquivo JAR do Liberty Server empacotado deve conter um aplicativo Spring Boot configurado.
+error.application.not.found.inside.packaged.liberty.jar.useraction=Configure um arquivo JAR do servidor Liberty compactado v\u00e1lido.

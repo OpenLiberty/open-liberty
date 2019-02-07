@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,29 +14,46 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.annotation.Annotation;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Supplier;
 
-import javax.enterprise.inject.Default;
+import javax.annotation.Resource;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.annotation.WebServlet;
+import javax.transaction.Status;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.eclipse.microprofile.concurrent.ManagedExecutorConfig;
 import org.eclipse.microprofile.concurrent.NamedInstance;
 import org.eclipse.microprofile.concurrent.ThreadContext;
+import org.eclipse.microprofile.concurrent.ThreadContextConfig;
 import org.junit.Test;
+import org.test.context.location.CurrentLocation;
 
 import componenttest.app.FATServlet;
 
@@ -48,6 +65,9 @@ public class MPConcurrentCDITestServlet extends FATServlet {
 
     @Inject
     ConcurrencyBean bean;
+
+    @Inject
+    BeanManager beanManager;
 
     @Inject
     ManagedExecutor noAnno;
@@ -109,6 +129,29 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     ManagedExecutor producerDefined;
 
     @Inject
+    @ThreadContextConfig(propagated = "State", cleared = "City", unchanged = ThreadContext.ALL_REMAINING)
+    ThreadContext threadContextWithConfig;
+
+    @Inject
+    @ThreadContextConfig
+    ThreadContext threadContextWithDefaultConfig;
+
+    @Inject
+    ThreadContext threadContextWithDefaults;
+
+    @Resource
+    UserTransaction tx;
+
+    @Inject
+    @NamedInstance("namedThreadContext")
+    ThreadContext threadContextWithName;
+
+    @Inject
+    @NamedInstance("namedThreadContext")
+    @ThreadContextConfig(propagated = ThreadContext.APPLICATION, unchanged = "State", cleared = ThreadContext.ALL_REMAINING)
+    ThreadContext threadContextWithNameAndConfig;
+
+    @Inject
     public void setMethodInjectedNoAnno(ManagedExecutor me) {
         this.methodInjectedNoAnno = me;
     }
@@ -121,6 +164,50 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     @Inject
     public void setMethodInjectedAnonymous(@ManagedExecutorConfig(maxAsync = 5) ManagedExecutor me) {
         this.methodInjectedAnonymous = me;
+    }
+
+    /**
+     * Use the BeanManager to find the bean for a ManagedExecutor produced by the container.
+     * Verify that it has no EL name and that NamedInstance is listed as a qualifier, but not ManagedExecutorConfig.
+     */
+    @Test
+    public void testBeanManagerLookupManagedExecutor() {
+        NamedInstance.Literal namedInstance_max2 = AccessController
+                        .doPrivileged((PrivilegedAction<NamedInstance.Literal>) () -> NamedInstance.Literal.of("max2"));
+        Set<Bean<?>> beans = beanManager.getBeans(ManagedExecutor.class, namedInstance_max2);
+        assertEquals(1, beans.size());
+        Bean<?> b = beans.iterator().next();
+        assertNull(b.getName()); // No EL name when @Named not present, per CDI spec 2.6.3 "Beans with no name"
+        Set<Annotation> qualifiers = b.getQualifiers();
+        NamedInstance namedInstance = null;
+        for (Annotation anno : qualifiers)
+            if (anno instanceof NamedInstance)
+                namedInstance = (NamedInstance) anno;
+            else if (!(anno instanceof Any))
+                fail("Unexpected qualifier " + anno);
+        assertEquals("max2", namedInstance.value());
+    }
+
+    /**
+     * Use the BeanManager to find the bean for a ThreadContext produced by the container.
+     * Verify that it has no EL name and that NamedInstance is listed as a qualifier, but not ThreadContextConfig.
+     */
+    @Test
+    public void testBeanManagerLookupThreadContext() {
+        NamedInstance.Literal namedInstance_namedThreadContext = AccessController
+                        .doPrivileged((PrivilegedAction<NamedInstance.Literal>) () -> NamedInstance.Literal.of("namedThreadContext"));
+        Set<Bean<?>> beans = beanManager.getBeans(ThreadContext.class, namedInstance_namedThreadContext);
+        assertEquals(1, beans.size());
+        Bean<?> b = beans.iterator().next();
+        assertNull(b.getName()); // No EL name when @Named not present, per CDI spec 2.6.3 "Beans with no name"
+        Set<Annotation> qualifiers = b.getQualifiers();
+        NamedInstance namedInstance = null;
+        for (Annotation anno : qualifiers)
+            if (anno instanceof NamedInstance)
+                namedInstance = (NamedInstance) anno;
+            else if (!(anno instanceof Any))
+                fail("Unexpected qualifier " + anno);
+        assertEquals("namedThreadContext", namedInstance.value());
     }
 
     @Test
@@ -153,15 +240,20 @@ public class MPConcurrentCDITestServlet extends FATServlet {
         assertNotNull(bean.getMyQualifier());
     }
 
-    @Test
+    // @Test // TODO enable once Literal classes are updated for Java 2 security
     public void testProgrammaticCDILookup() {
-        ManagedExecutor exec = CDI.current().select(ManagedExecutor.class).get();
-        assertNotNull(exec);
+        ManagedExecutor exec5a = CDI.current().select(ManagedExecutor.class, NamedInstance.Literal.of("maxAsync5")).get();
+        assertNotNull(exec5a);
 
-        ManagedExecutor exec2 = CDI.current().select(ManagedExecutor.class, Default.Literal.INSTANCE).get();
-        assertNotNull(exec2);
+        ManagedExecutor exec5b = CDI.current().select(ManagedExecutor.class, NamedInstance.Literal.of("maxAsync5")).get();
+        assertNotNull(exec5b);
 
-        assertEquals(exec, exec2);
+        assertEquals(exec5a.toString(), exec5b.toString());
+
+        ManagedExecutor max2 = CDI.current().select(ManagedExecutor.class, NamedInstance.Literal.of("max2")).get();
+        assertNotNull(max2);
+
+        assertFalse(exec5a.toString().equals(max2.toString()));
     }
 
     @Test
@@ -233,7 +325,7 @@ public class MPConcurrentCDITestServlet extends FATServlet {
                     String message = x.getCause().getMessage();
                     if (message == null
                         || !message.contains("CWWKE1201E")
-                        || !message.matches(".*MPConcurrentCDIApp_ManagedExecutor_.+_2_2_Remaining.*") // TODO would be better to use NamedInstance name
+                        || !message.contains("_MPConcurrentCDIApp_concurrent.mp.fat.cdi.web.MPConcurrentCDITestServlet.max2(maxAsync=2,maxQueued=2,cleared=[Transaction])")
                         || !message.contains("maxQueueSize")
                         || !message.contains(" 2")) // the maximum queue size
                         throw x;
@@ -290,4 +382,228 @@ public class MPConcurrentCDITestServlet extends FATServlet {
                               executors[i], executors[j]);
     }
 
+    /**
+     * Verify that the container creates and injects an instance for a ThreadContext injection point
+     * that is annotated with ThreadContextConfig. Verify that the created instance behaves according to
+     * the specified configuration attributes of ThreadContextConfig.
+     */
+    @Test
+    public void testThreadContextInjectedWithConfigAnnotation() throws Exception {
+        // config: propagated = "State", cleared = "City", unchanged = ALL_REMAINING
+        assertNotNull(threadContextWithConfig);
+
+        tx.begin();
+        try {
+            CurrentLocation.setLocation("Oronoco", "Minnesota");
+
+            Supplier<String> stateNameSupplier = threadContextWithConfig.contextualSupplier(() -> {
+                try {
+                    UserTransaction tx1 = InitialContext.doLookup("java:comp/UserTransaction");
+                    assertEquals(Status.STATUS_ACTIVE, tx1.getStatus()); // unchanged
+                } catch (NamingException | SystemException x) {
+                    throw new CompletionException(x);
+                }
+                assertEquals("", CurrentLocation.getCity()); // cleared
+                return CurrentLocation.getState(); // propagated
+            });
+
+            CurrentLocation.setLocation("Williston", "North Dakota");
+
+            assertEquals("Minnesota", stateNameSupplier.get());
+        } finally {
+            CurrentLocation.clear();
+            tx.commit();
+        }
+    }
+
+    /**
+     * Verify that the container creates and injects an instance for a ThreadContext injection point
+     * that is annotated with ThreadContextConfig and the NamedInstance qualifier.
+     * Verify that the created instance behaves according to the specified configuration attributes of
+     * ThreadContextConfig.
+     */
+    @Test
+    public void testThreadContextInjectedWithConfigAnnotationAndNamedInstanceQualifier() throws Exception {
+        // config: propagated = APPLICATION, unchanged = "State", cleared = ALL_REMAINING
+        assertNotNull(threadContextWithNameAndConfig);
+
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+        tx.begin();
+        try {
+            CurrentLocation.setLocation("Eyota", "Minnesota");
+
+            Callable<String> stateNameFinder = threadContextWithNameAndConfig.contextualCallable(() -> {
+                UserTransaction tx2 = InitialContext.doLookup("java:comp/UserTransaction");
+                tx2.begin(); // valid because prior transaction context is cleared (suspended) during task
+                tx2.commit();
+                assertEquals("", CurrentLocation.getCity()); // cleared
+                // Should be possible to load application classes from class loader that is propagated by Application context
+                Thread.currentThread().getContextClassLoader().loadClass(BlockableIncrementFunction.class.getName());
+                return CurrentLocation.getState();
+            });
+
+            CurrentLocation.setLocation("Minot", "North Dakota");
+            Thread.currentThread().setContextClassLoader(null);
+
+            assertEquals("North Dakota", stateNameFinder.call());
+        } finally {
+            // restore context
+            CurrentLocation.clear();
+            tx.commit();
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
+    }
+
+    /**
+     * Verify that NamedInstance behaves as a normal CDI qualifier when the injection point is not
+     * annotated with ThreadContextConfig.
+     */
+    @Test
+    public void testThreadContextInjectedWithNamedInstanceQualifier() throws Exception {
+        // config: propagated = APPLICATION, unchanged = "State", cleared = ALL_REMAINING
+        assertNotNull(threadContextWithName);
+
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+        tx.begin();
+        try {
+            CurrentLocation.setLocation("Grand Forks", "North Dakota");
+            Runnable task = threadContextWithName.contextualRunnable(() -> {
+                try {
+                    UserTransaction tx2 = InitialContext.doLookup("java:comp/UserTransaction");
+                    tx2.begin(); // valid because prior transaction context is cleared (suspended) during task
+                    tx2.commit();
+                    // Should be possible to load application classes from class loader that is propagated by Application context
+                    Thread.currentThread().getContextClassLoader().loadClass(BlockableIncrementFunction.class.getName());
+                } catch (Exception x) {
+                    throw new CompletionException(x);
+                }
+                assertEquals("", CurrentLocation.getCity()); // cleared
+                assertEquals("Minnesota", CurrentLocation.getState()); // unchanged
+                CurrentLocation.setLocation("Sioux Falls", "South Dakota");
+            });
+
+            CurrentLocation.setLocation("Vermillion", "Minnesota");
+            Thread.currentThread().setContextClassLoader(null);
+
+            task.run();
+
+            assertEquals("Vermillion", CurrentLocation.getCity()); // restored after task
+            assertEquals("South Dakota", CurrentLocation.getState()); // unchanged from task
+        } finally {
+            // restore context
+            CurrentLocation.clear();
+            tx.commit();
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
+    }
+
+    /**
+     * Verify that the container creates and injects an instance for a ThreadContext injection point
+     * that is neither annotated with ThreadContextConfig nor qualified with any qualifier annotations.
+     * Verify that the created instance behaves according to the default configuration of ThreadContextConfig,
+     * which is that Transaction context is cleared and all other known thread context types are propagated
+     * to contextual tasks.
+     */
+    @Test
+    public void testThreadContextInjectedWithoutConfigAnnotation() throws Exception {
+        assertNotNull(threadContextWithDefaults);
+
+        tx.begin();
+        try {
+            CurrentLocation.setLocation("Byron", "Minnesota");
+
+            Callable<String> getLocationName = threadContextWithDefaults.contextualCallable(() -> {
+                UserTransaction tx2 = InitialContext.doLookup("java:comp/UserTransaction");
+                tx2.begin();
+                try {
+                    return CurrentLocation.getCity() + ", " + CurrentLocation.getState();
+                } finally {
+                    tx2.commit();
+                }
+            });
+
+            CurrentLocation.setLocation("Bismarck", "North Dakota");
+
+            assertEquals("Byron, Minnesota", getLocationName.call());
+
+            assertEquals(Status.STATUS_ACTIVE, tx.getStatus());
+        } finally {
+            CurrentLocation.clear();
+            tx.commit();
+        }
+    }
+
+    /**
+     * Verify that the container creates and injects an instance for a ThreadContext injection point
+     * that is annotated with ThreadContextConfig without any parameters specified.
+     * Verify that the created instance behaves according to the default configuration of ThreadContextConfig,
+     * which is that Transaction context is cleared and all other known thread context types are propagated
+     * to contextual tasks.
+     */
+    @Test
+    public void testThreadContextInjectedWithUnconfiguredConfigAnnotation() throws Exception {
+        assertNotNull(threadContextWithDefaultConfig);
+
+        tx.begin();
+        try {
+            CurrentLocation.setLocation("Dodge Center", "Minnesota");
+
+            Callable<String> getLocationName = threadContextWithDefaultConfig.contextualCallable(() -> {
+                UserTransaction tx2 = InitialContext.doLookup("java:comp/UserTransaction");
+                tx2.begin();
+                try {
+                    return CurrentLocation.getCity() + ", " + CurrentLocation.getState();
+                } finally {
+                    tx2.commit();
+                }
+            });
+
+            CurrentLocation.setLocation("Fargo", "North Dakota");
+
+            assertEquals("Dodge Center, Minnesota", getLocationName.call());
+
+            assertEquals(Status.STATUS_ACTIVE, tx.getStatus());
+        } finally {
+            CurrentLocation.clear();
+            tx.commit();
+        }
+    }
+
+    /**
+     * Verify that we disallow propagating global transactions, but do allow propagating the absence of any transaction.
+     */
+    @Test
+    public void testTransactionContextPropagation() throws Exception {
+        ManagedExecutor executor = propagatedAB; // propagates ThreadContext.TRANSACTION
+
+        // valid to propagate empty transaction context
+        CompletableFuture<Integer> cf1 = executor.newIncompleteFuture();
+        CompletableFuture<Integer> cf2 = cf1.thenApply(i -> {
+            try {
+                return tx.getStatus();
+            } catch (SystemException x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        tx.begin();
+        try {
+            cf1.complete(50);
+            assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), cf2.get());
+
+            assertEquals(Status.STATUS_ACTIVE, tx.getStatus());
+
+            Future<?> f = executor.submit(() -> System.out.println("Should not be able to submit this task."));
+            fail("Submitted task from within a transaction when transaction context propagation is enabled: " + f);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null || !x.getMessage().startsWith("CWWKC1157E"))
+                throw x;
+        } finally {
+            tx.commit();
+        }
+
+        // valid to propagate empty transaction context
+        CompletableFuture<String> cf3 = cf2.thenApplyAsync(i -> "done");
+        assertEquals("done", cf3.get(TIMEOUT_MIN, TimeUnit.MINUTES));
+    }
 }

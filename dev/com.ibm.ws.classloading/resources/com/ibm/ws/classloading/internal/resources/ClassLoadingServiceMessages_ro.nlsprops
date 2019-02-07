@@ -140,6 +140,9 @@ slf.failed.delete=CWWKL0072W: Fi\u015fierul cache [{0}] nu poate fi \u015fters. 
 slf.failed.delete.explanation=Sistemul nu a reu\u015fit s\u0103 \u015ftearg\u0103 fi\u015fierul de cache. Deoarece fi\u015fierul \u00eenc\u0103 exist\u0103 \u00een sistem, poate fi cauzat\u0103 coruperea arhivelor imbricate.
 slf.failed.delete.useraction=Verifica\u0163i c\u0103 fi\u015fierul de cache nu este \u00eentr-o stare de blocare, care ar putea cauza e\u015fuarea \u015ftergerii fi\u015fierului.
 
+####################### API TYPE MESSAGES 0080-0089 ###############################################
+###################################################################################################
+
 cls.classloader.config.duplicate=CWWKL0080E: Tipul de API [{0}] a fost deja folosit \u00een aceast\u0103 list\u0103 [{1}].  \u00cenl\u0103tura\u0163i tipul de API duplicat.
 cls.classloader.config.duplicate.explanation=Fiecare tip de API poate fi specificat maxim o dat\u0103.
 cls.classloader.config.duplicate.useraction=Verifica\u0163i configura\u0163ia serverului pentru tipul de API duplicat pentru a v\u0103 asigura c\u0103 tipurile de API sunt corecte.
@@ -161,3 +164,6 @@ cls.classloader.config.typo2.useraction=Verifica\u0163i configura\u0163ia server
 cls.classloader.suggested.feature=CWWKL0084W: Clasa {0} nu a putut fi \u00eenc\u0103rcat\u0103. \u00cencerca\u0163i activarea \u00een fi\u015fierul server.xml a caracteristicii {1} sau a unei versiuni mai noi a caracteristicii.
 cls.classloader.suggested.feature.explanation=O clas\u0103 care este furnizat\u0103 de obicei de una sau mai multe caracteristici de server nu a putut fi \u00eenc\u0103rcat\u0103.
 cls.classloader.suggested.feature.useraction=\u00cencerca\u0163i activarea \u00een fi\u015fierul server.xml a caracteristicii specificate sau a unei versiuni mai noi a caracteristicii.
+
+####################### com.ibm.ws.classloader.context bundle messages 0090-0099 ###################
+####################################################################################################

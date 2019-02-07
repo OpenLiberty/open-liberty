@@ -24,6 +24,7 @@
 # Messages used by Config 1.1 Impl -  range is 0000-0099, plus 9999 for the emergency message
 # Messages used by Config 1.2 Impl -  range is 0100-0199, plus 9998 for the emergency message
 # Messages used by Config 1.3 Impl -  range is 0200-0299, plus 9997 for the emergency message
+# Messages used by Config 1.4 Impl -  range is 0300-0399, plus 9996 for the emergency message
 #-----------------------------------------------------------------------------------------------------------------------------
 
 # There aren't yet any 1.2 specific messages, except for the emergency one below
@@ -32,7 +33,7 @@
 # Emergency Config 1.2 error message
 #-----------------------------------------------------------------------------------------------------------------------------
 
-# A Config API error has occurred: {0}
-temporary.CWMCG9998E=CWMCG9998E: Wyst\u0105pi\u0142 b\u0142\u0105d interfejsu API Config: {0}.
+# The following Config API error has occurred: {0}.
+temporary.CWMCG9998E=CWMCG9998E: Wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d interfejsu API Config: {0}.
 temporary.CWMCG9998E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d interfejsu API Config, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie.
-temporary.CWMCG9998E.useraction=Przejrzyj dziennik serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+temporary.CWMCG9998E.useraction=Przejrzyj plik dziennika serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.

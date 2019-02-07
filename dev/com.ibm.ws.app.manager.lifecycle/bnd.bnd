@@ -16,8 +16,6 @@ Bundle-Name: WebSphere Application Manager Lifecycle
 Bundle-SymbolicName: com.ibm.ws.app.manager.lifecycle
 Bundle-Description: WebSphere Application Manager Lifecycle, version ${bVersion}
 
-Private-Package: com.ibm.ws.app.manager.lifecycle.internal
-
 Export-Package: com.ibm.wsspi.application.lifecycle
 
 -buildpath: \

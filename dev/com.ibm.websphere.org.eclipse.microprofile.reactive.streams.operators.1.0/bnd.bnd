@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -21,15 +21,19 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Import-Package: \
   org.reactivestreams; version="[1.0,1.1)", \
-  com.ibm.ws.microprofile.reactive.streams.spi.impl;version="1.0";resolution:=optional, \
+  com.ibm.ws.microprofile.reactive.streams.operators.spi.impl;version="1.0";resolution:=optional, \
   *
   
 Export-Package: \
-  org.eclipse.microprofile.reactive.streams;version=1.0, \
-  org.eclipse.microprofile.reactive.streams.spi;version=1.0
+  org.eclipse.microprofile.reactive.streams.operators;version=1.0, \
+  org.eclipse.microprofile.reactive.streams.operators.core;version=1.0, \
+  org.eclipse.microprofile.reactive.streams.operators.spi;version=1.0
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.reactive.streams:microprofile-reactive-streams-operators;1.0}
+  @${repo;org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-api;1.0}, \
+  @${repo;org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-core;1.0}
+
+
 
 WS-TraceGroup: REACTIVESTREAMS
 

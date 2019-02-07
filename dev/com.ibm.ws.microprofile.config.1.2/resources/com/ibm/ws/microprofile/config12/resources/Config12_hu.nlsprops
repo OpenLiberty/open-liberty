@@ -24,6 +24,7 @@
 # Messages used by Config 1.1 Impl -  range is 0000-0099, plus 9999 for the emergency message
 # Messages used by Config 1.2 Impl -  range is 0100-0199, plus 9998 for the emergency message
 # Messages used by Config 1.3 Impl -  range is 0200-0299, plus 9997 for the emergency message
+# Messages used by Config 1.4 Impl -  range is 0300-0399, plus 9996 for the emergency message
 #-----------------------------------------------------------------------------------------------------------------------------
 
 # There aren't yet any 1.2 specific messages, except for the emergency one below
@@ -32,7 +33,7 @@
 # Emergency Config 1.2 error message
 #-----------------------------------------------------------------------------------------------------------------------------
 
-# A Config API error has occurred: {0}
-temporary.CWMCG9998E=CWMCG9998E: Konfigur\u00e1ci\u00f3s API hiba t\u00f6rt\u00e9nt: {0}.
+# The following Config API error has occurred: {0}.
+temporary.CWMCG9998E=CWMCG9998E: A k\u00f6vetkez\u0151 konfigur\u00e1ci\u00f3s API hiba t\u00f6rt\u00e9nt: {0}.
 temporary.CWMCG9998E.explanation=A norm\u00e1l m\u0171k\u00f6d\u00e9st megakad\u00e1lyoz\u00f3 konfigur\u00e1ci\u00f3s API hiba t\u00f6rt\u00e9nt.
 temporary.CWMCG9998E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.

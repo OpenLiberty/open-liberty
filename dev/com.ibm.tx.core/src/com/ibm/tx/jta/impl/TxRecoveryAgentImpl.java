@@ -273,7 +273,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 //
                 partnerLog = rlm.getRecoveryLog(fs, partnerLogProps);
 
-                // In the special case where we support tx recovery (eg for operating in the cloud), we'll also work with a "lease" log
+                // In the special case where we support tx peer recovery (eg for operating in the cloud), we'll also work with a "lease" log
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Test to see if peer recovery is supported -  ", _isPeerRecoverySupported);
                 if (_isPeerRecoverySupported) {

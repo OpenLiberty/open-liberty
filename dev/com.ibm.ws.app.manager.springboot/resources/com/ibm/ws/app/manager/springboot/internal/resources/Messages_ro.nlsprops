@@ -88,3 +88,11 @@ warning.application.started.event.timeout.useraction=Dac\u0103 aplica\u0163ia po
 warning.java.version.not.supported=CWWKC0265W: Versiunea curent\u0103 de Java {0} nu este suportat\u0103 de Spring Boot versiunea {1}. Moderniza\u0163i versiunea Spring Boot a aplica\u0163iei la 2.0.x sau mai nou\u0103.
 warning.java.version.not.supported.explanation=Versiunile Java mai mari dec\u00e2t 1.8 nu sunt suportate de Spring Boot versiunile 1.5.x \u015fi mai mici.
 warning.java.version.not.supported.useraction=Moderniza\u0163i versiunea Spring Boot a aplica\u0163iei la 2.0.x sau mai nou\u0103.
+
+error.invalid.packaged.liberty.jar=CWWKC0265E: Pornirea aplica\u0163iei a e\u015fuat, deoarece fi\u015fierul JAR al serverului Liberty \u00eempachetat nu este valid.
+error.invalid.packaged.liberty.jar.explanation=Fi\u015fierul JAR al serverului Liberty \u00eempachetat nu are un antet de manifest Server-Name, intr\u0103ri pentru r\u0103d\u0103cina de server sau intr\u0103ri pentru directorul lib.index.cache.
+error.invalid.packaged.liberty.jar.useraction=Configura\u0163i un fi\u015fier JAR de server Liberty \u00eempachetat valid.
+
+error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: Pornirea aplica\u0163iei a e\u015fuat, deoarece nu a fost g\u0103sit\u0103 aplica\u0163ia Spring Boot \u00een fi\u015fierul JAR de server Liberty.
+error.application.not.found.inside.packaged.liberty.jar.explanation=Fi\u015fierul JAR al serverului Liberty \u00eempachetat trebuie s\u0103 con\u0163in\u0103 o aplica\u0163ie Spring Boot configurat\u0103.
+error.application.not.found.inside.packaged.liberty.jar.useraction=Configura\u0163i un fi\u015fier JAR de server Liberty \u00eempachetat valid.

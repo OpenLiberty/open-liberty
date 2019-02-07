@@ -18,7 +18,7 @@
 #     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
 #
 # The prefix for this component is:
-#     CWNEN (Injection Engine)
+#     CNTR (EJB Container)
 #
 # Message numbers are four digit numbers, from '0000' to '9999', inclusive.
 # Message numbers are filled to the left with '0', to a width of 4.
@@ -129,6 +129,14 @@ NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.useraction=\u00cenl\u0103tura\u016
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E=CNTR4019E: Nu pot fi create sau accesate cronometre persistente. Cronometrele EJB persistente nu sunt suportate de niciuna dintre caracteristicile configurate \u00een fi\u015fierul server.xml.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.explanation=Cronometrele EJB persistente nu sunt suportate de caracteristica ejbLite.
 PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.useraction=\u00cenl\u0103tura\u0163i folosirea cronometrelor persistente nesuportate din aplica\u0163ie sau ad\u0103uga\u0163i o caracteristic\u0103 ejbPersistentTimer la fi\u015fierul server.xml. 
+
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E=CNTR4020E: Bean-ul enterprise {0} din modulul {1} din aplica\u0163ia {2} declar\u0103 cronometre persistente create automat. Nu pot fi create automat cronometre persistente. Caracteristica ejbPersistentTimer este activat\u0103, dar nu a fost configurat\u0103 o surs\u0103 de date.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.explanation=Cronometrele persistente de bean enterprise create automat declarate \u00een descriptorul de implementare sau adnotare necesit\u0103 configurarea unei surse de date pentru caracteristica ejbPersistentTimer.
+AUTOMATIC_PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4020E.useraction=Configura\u0163i o surs\u0103 de date pentru caracteristica ejbPersistentTimer sau \u00eenl\u0103tura\u0163i din aplica\u0163ie utilizarea cronometrelor persistente create automat.
+
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I=CNTR4021I: Nu pot fi create sau accesate cronometre persistente. Caracteristica ejbPersistentTimer a fost activat\u0103, dar nu a fost configurat\u0103 o surs\u0103 de date.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.explanation=Aplica\u0163iile care utilizeaz\u0103 cronometre persistente trebuie s\u0103 activeze caracteristica ejbPersistentTimer \u015fi s\u0103 configureze a o surs\u0103 de date pentru stocare cronometrelor persistente.
+PERSISTENT_TIMERS_NOT_AVAILABLE_CNTR4021I.useraction=Nu este necesar\u0103 nicio ac\u0163iune dac\u0103 nu sunt utilizate cronometre persistente. Dac\u0103 sunt utilizate cronometre persistente, furniza\u0163i o configura\u0163ie de surs\u0103 de date pentru caracteristica ejbPersistentTimer. Pentru a \u00eenl\u0103tura acest mesaj, \u00eenl\u0103tura\u0163i caracteristica ejbPersistentTimer.
 
 DUPLICATE_EJB_CNTR4100E=CNTR4100E: Valoarea {0} pentru elementul <ejb-name> din fi\u015fierul ejb-jar.xml nu este unic\u0103.
 DUPLICATE_EJB_CNTR4100E.explanation=Mai multe bean-uri de \u00eentreprindere au fost definite cu acela\u015fi nume \u00een fi\u015fierul ejb-jar.xml. Fiecare bean de \u00eentreprindere trebuie s\u0103 aib\u0103 un nume unic.

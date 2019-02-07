@@ -17,6 +17,7 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigAccessor;
+import org.eclipse.microprofile.config.ConfigAccessorBuilder;
 
 @Dependent
 public class VariableResolutionBean {
@@ -25,14 +26,16 @@ public class VariableResolutionBean {
     Config config;
 
     public void variableResolutionTest() {
-        ConfigAccessor<String> accessor = config.access("layer1");
+        ConfigAccessorBuilder<String> builder = config.access("layer1", String.class);
+        ConfigAccessor<String> accessor = builder.build();
         String value = accessor.getValue();
         assertEquals("Value not correctly resolved", "start.one.two.end", value);
     }
 
     public void disabledVariableResolutionTest() {
-        ConfigAccessor<String> accessor = config.access("layer1");
-        accessor.evaluateVariables(false);
+        ConfigAccessorBuilder<String> builder = config.access("layer1", String.class);
+        builder.evaluateVariables(false);
+        ConfigAccessor<String> accessor = builder.build();
         String value = accessor.getValue();
         assertEquals("Value not correctly resolved", "start.${layer2}.end", value);
     }

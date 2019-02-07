@@ -72,7 +72,7 @@ public class PackageProcessor implements ArchiveProcessor {
     final String wlpProperty = "/lib/versions/WebSphereApplicationServer.properties";
     final String wlpPropertyBackup = "WebSphereApplicationServer.properties.bak";
 
-    private static final String PACKAGE_ARCHIVE_PREFIX = "wlp/";
+    protected static final String PACKAGE_ARCHIVE_PREFIX = "wlp/";
     public String packageArchiveEntryPrefix = PACKAGE_ARCHIVE_PREFIX;
 
     public boolean isServerRootOptionSet = false;
@@ -519,6 +519,7 @@ public class PackageProcessor implements ArchiveProcessor {
             entryConfigs.add(serverSharedDirConfig);
             // exclude security sensitive files
             serverSharedDirConfig.exclude(Pattern.compile(REGEX_SEPARATOR + "resources" + REGEX_SEPARATOR + "security" + REGEX_SEPARATOR + "key.jks"));
+            serverSharedDirConfig.exclude(Pattern.compile(REGEX_SEPARATOR + "resources" + REGEX_SEPARATOR + "security" + REGEX_SEPARATOR + "key.p12"));
 
             /*
              * exclude loose xml files from shared directory
@@ -589,7 +590,8 @@ public class PackageProcessor implements ArchiveProcessor {
                 looseConfig = ProcessorUtils.convertToLooseConfig(lf);
                 if (looseConfig != null) {
                     try {
-                        ArchiveEntryConfig looseArchiveEntryConfig = ProcessorUtils.createLooseArchiveEntryConfig(looseConfig, lf, bootProps, packageArchiveEntryPrefix);
+                        ArchiveEntryConfig looseArchiveEntryConfig = ProcessorUtils.createLooseArchiveEntryConfig(looseConfig, lf, bootProps, packageArchiveEntryPrefix,
+                                                                                                                  includeUsr(options.get(PackageOption.INCLUDE)));
                         entryConfigs.add(looseArchiveEntryConfig);
                     } catch (FileNotFoundException e) {
                         // If any exception occurs when creating loose file archive, just skip it and create the next one.

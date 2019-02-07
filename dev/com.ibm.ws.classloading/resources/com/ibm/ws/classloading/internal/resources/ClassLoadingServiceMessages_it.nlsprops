@@ -140,6 +140,9 @@ slf.failed.delete=CWWKL0072W: Il file cache [{0}] non pu\u00f2 essere eliminato.
 slf.failed.delete.explanation=Il sistema non \u00e8 riuscito ad eliminare il file cache. Poich\u00e9 il file esiste ancora nel sistema, pu\u00f2 verificarsi una corruzione degli archivi nidificati.
 slf.failed.delete.useraction=Verificare che il file cache non sia in stato bloccato, ci\u00f2 potrebbe causare la non riuscita dell'eliminazione del file.
 
+####################### API TYPE MESSAGES 0080-0089 ###############################################
+###################################################################################################
+
 cls.classloader.config.duplicate=CWWKL0080E: Il tipo API [{0}] \u00e8 gi\u00e0 stato utilizzato in questo elenco [{1}].  Rimuovere il tipo API duplicato.
 cls.classloader.config.duplicate.explanation=Ogni tipo API pu\u00f2 essere specificato al massimo una volta.
 cls.classloader.config.duplicate.useraction=Controllare se nella configurazione del server sono presenti tipi API duplicati per accertarsi che i tipi API siano corretti.
@@ -161,3 +164,6 @@ cls.classloader.config.typo2.useraction=Controllare se nella configurazione del 
 cls.classloader.suggested.feature=CWWKL0084W: Non \u00e8 stato possibile caricare la classe {0}. Provare ad abilitare la funzione {1} o una nuova versione della funzione nel file server.xml.
 cls.classloader.suggested.feature.explanation=Non \u00e8 stato possibile caricare una classe che viene normalmente fornita da una o pi\u00f9 funzioni server.
 cls.classloader.suggested.feature.useraction=Provare ad abilitare la funzione specificata o una nuova versione della funzione nel file server.xml.
+
+####################### com.ibm.ws.classloader.context bundle messages 0090-0099 ###################
+####################################################################################################

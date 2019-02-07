@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,7 @@ import com.ibm.wsspi.ssl.SSLSupport;
  */
 public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
     private static final TraceComponent tc = Tr.register(AbstractCsiv2SubsystemFactory.class);
-    protected static long TIMEOUT_SECONDS;
+    protected static long TIMEOUT_SECONDS = 10;
 
     private enum MyLocalFactory implements LocalFactory {
         INSTANCE;
@@ -131,14 +131,14 @@ public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
     /** {@inheritDoc} */
     @Override
     public void register(ReadyListener listener, Map<String, Object> properties, List<IIOPEndpoint> endpoints) {
-        ReadyRegistration rr = new ReadyRegistration(extractSslRefs(properties, endpoints), listener);
         String timeoutValue = (String) properties.get("orbSSLInitTimeout");
         if (timeoutValue != null & timeoutValue.length() > 0) {
             TIMEOUT_SECONDS = Long.valueOf(timeoutValue);
-            Tr.debug(tc, "orbSSLInitTimeout=" + timeoutValue);
-        } else {
-            Tr.debug(tc, "orbSSLInitTimeout is invalid. orbSSLInitTimeout=" + timeoutValue);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "TIMEOUT_SECONDS = " + TIMEOUT_SECONDS);
+            }
         }
+        ReadyRegistration rr = new ReadyRegistration(extractSslRefs(properties, endpoints), listener);
         regs.add(rr);
         rr.check();
     }

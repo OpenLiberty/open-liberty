@@ -152,6 +152,17 @@ public class GoogleLoginConfigImplTest extends OidcLoginConfigImplTest {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(GoogleLoginConfigImpl.KEY_clientId, clientId);
         props.put(GoogleLoginConfigImpl.KEY_clientSecret, clientSecretPS);
+        props = getRequiredAuthzEPConfig(props);
+        return props;
+    }
+    
+    protected Map<String, Object> getRequiredAuthzEPConfig() {
+    	Map<String, Object> props = new HashMap<String, Object>();
+    	return getRequiredAuthzEPConfig(props);
+    }
+    
+    protected Map<String, Object> getRequiredAuthzEPConfig(Map<String, Object> props) {
+        props.put(OidcLoginConfigImpl.KEY_authorizationEndpoint, authzEndpoint);
         return props;
     }
 

@@ -11,9 +11,15 @@
 package com.ibm.ws.concurrent.mp.context;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
+
+import javax.enterprise.concurrent.ManagedTask;
 
 import org.eclipse.microprofile.concurrent.ThreadContext;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.mp.ContextOp;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -24,6 +30,15 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  */
 @Trivial
 public class TransactionContextProvider extends ContainerContextProvider {
+    private static final TraceComponent tc = Tr.register(TransactionContextProvider.class);
+
+    /**
+     * Map with execution property that instructs the transaction context to first detect the presence of a
+     * global transaction on the requesting thread. If present, a NULL is returning indicate that context
+     * cannot be captured. If a global transaction is not present, then captures a cleared context.
+     */
+    private static final Map<String, String> SUSPEND_IF_NO_GLOBAL_TX = Collections.singletonMap(ManagedTask.TRANSACTION, "SUSPEND_IF_NO_GLOBAL_TX");
+
     public final AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> transactionContextProviderRef = new AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider>("TransactionContextProvider");
 
     @Override
@@ -32,11 +47,11 @@ public class TransactionContextProvider extends ContainerContextProvider {
         com.ibm.wsspi.threadcontext.ThreadContextProvider transactionProvider = transactionContextProviderRef.getService();
         if (transactionProvider == null)
             snapshot = new DeferredClearedContext(transactionContextProviderRef);
-        else if (op == ContextOp.PROPAGATED)
-            // TODO it is reasonable to reject this when someone explicitly asks for transaction propagation,
-            // but will it be a problem to reject this when the user specifies ALL_REMAINING ?
-            throw new UnsupportedOperationException();
-        else
+        else if (op == ContextOp.PROPAGATED) {
+            snapshot = transactionProvider.captureThreadContext(SUSPEND_IF_NO_GLOBAL_TX, EMPTY_MAP);
+            if (snapshot == null)
+                throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1157.cannot.propagate.tx"));
+        } else
             snapshot = transactionProvider.createDefaultThreadContext(EMPTY_MAP);
 
         contextSnapshots.add(snapshot);

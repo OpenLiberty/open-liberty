@@ -60,14 +60,12 @@ public class ZipArchive extends AbstractArchive {
         String fileName = archiveFile.getName().toLowerCase();
         FileOutputStream fOut = new FileOutputStream(archiveFile);
 
-        if (fileName.endsWith(".zip") || fileName.endsWith(".jar")) {
-            this.archiveOutputStream = new ZipArchiveOutputStream(fOut);
-        } else if (fileName.endsWith(".tar.gz")) {
+        if (fileName.endsWith(".tar.gz")) {
             this.archiveOutputStream = new TarArchiveOutputStream(new GZIPOutputStream(fOut));
         } else if (fileName.endsWith(".tar")) {
             this.archiveOutputStream = new TarArchiveOutputStream(fOut);
-        } else {
-            throw new IllegalArgumentException(fileName);
+        } else { // zip,jar,tmp,etc
+            this.archiveOutputStream = new ZipArchiveOutputStream(fOut);
         }
 
         if (archiveOutputStream instanceof TarArchiveOutputStream) {

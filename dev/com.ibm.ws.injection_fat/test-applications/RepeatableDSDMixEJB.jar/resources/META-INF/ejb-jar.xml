@@ -24,7 +24,7 @@
         <description>Test that a ds defined only in xml is created even if there are other ds's created via annotation or a combination of annotations and xml.</description>
         <name>java:module/mix_XMLOnlySLSBModLevelDS</name>
         <class-name>org.apache.derby.jdbc.EmbeddedXADataSource40</class-name>
-        <database-name>repeatableDsdMixTestXML</database-name>
+        <database-name>memory:repeatableDsdMixTestXML</database-name>
         <user>dsdTesterXML</user>
         <password>dsdPassword</password>
         <property>

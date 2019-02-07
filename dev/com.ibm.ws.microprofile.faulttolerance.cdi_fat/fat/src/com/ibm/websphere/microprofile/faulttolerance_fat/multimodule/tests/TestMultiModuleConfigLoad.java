@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,11 +27,11 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.confi
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.configload.RequestRetryCountingBean;
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.configload.RetryTesterServlet;
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.configload.WarRetryCountingBean;
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -56,8 +56,8 @@ public class TestMultiModuleConfigLoad extends FATServletClient {
     //run against both EE8 and EE7 features
     @ClassRule
     public static RepeatTests r = RepeatTests
-                    .with(FeatureReplacementAction.EE7_FEATURES().forServers(SERVER_NAME))
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().forServers(SERVER_NAME));
+                    .with(RepeatFaultTolerance.mp13Features(SERVER_NAME))
+                    .andWith(RepeatFaultTolerance.ft20Features(SERVER_NAME));
 
     @BeforeClass
     public static void appSetup() throws Exception {

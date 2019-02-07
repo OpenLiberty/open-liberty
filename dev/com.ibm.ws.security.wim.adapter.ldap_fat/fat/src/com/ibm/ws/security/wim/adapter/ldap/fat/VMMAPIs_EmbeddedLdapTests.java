@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 20148 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,6 +53,14 @@ import componenttest.vulnerability.LeakedPasswordChecker;
  * A general VMMService FAT test with an embedded Apache DS.
  * Server starts with mostly empty server.xml
  * Add/remove custom embedded ldapserver and libertyserver config.
+ */
+
+/*
+ * This test is disabled for the time being due to the cache implementation.
+ * The LDAP cache implementation is a 3-layered cache that swaps the levels every 1/3 of the timeout interval.
+ * The timer task it uses to do this starts running from cache instantiation and therefore when the test starts running, we cannot be sure where we are in that interval.
+ * Since the test can't be sure where it is in the interval (is there enough time left to run, or not?) it can't be stable enough without making the test extraordinarily long.
+ * Since we have unit tests that adequately tests this functionality, we decided to disable this test and revisit it in the future.
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)

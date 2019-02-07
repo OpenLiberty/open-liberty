@@ -81,8 +81,7 @@ Import-Package: com.ibm.jbatch.spi,\
 	javax.batch.*,\
 	org.xml.sax,\
 	*
-Private-Package: com.ibm.jbatch.container.*,\
-	com.ibm.jbatch.container.modelresolver.impl
+Private-Package: com.ibm.jbatch.container.*
 
 instrument.classesExcludes: com/ibm/jbatch/container/internal/resources/*.class
 

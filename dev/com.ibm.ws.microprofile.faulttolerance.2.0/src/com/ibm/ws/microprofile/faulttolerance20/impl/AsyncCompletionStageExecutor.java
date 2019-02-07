@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,9 +19,10 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
-import com.ibm.ws.threading.PolicyExecutorProvider;
+import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState.BulkheadReservation;
 
 /**
  * Executor for asynchronous methods which return a {@link CompletionStage}{@code<R>}
@@ -33,8 +34,8 @@ public class AsyncCompletionStageExecutor<R> extends AsyncExecutor<CompletionSta
     private static final TraceComponent tc = Tr.register(AsyncCompletionStageExecutor.class);
 
     public AsyncCompletionStageExecutor(RetryPolicy retry, CircuitBreakerPolicy cbPolicy, TimeoutPolicy timeoutPolicy, FallbackPolicy fallbackPolicy, BulkheadPolicy bulkheadPolicy,
-                                        ScheduledExecutorService executorService, PolicyExecutorProvider policyExecutorProvider) {
-        super(retry, cbPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, executorService, policyExecutorProvider);
+                                        ScheduledExecutorService executorService, MetricRecorder metricRecorder) {
+        super(retry, cbPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, executorService, metricRecorder);
     }
 
     @Override
@@ -59,7 +60,22 @@ public class AsyncCompletionStageExecutor<R> extends AsyncExecutor<CompletionSta
                 return null;
             });
         }
+    }
 
+    @Override
+    protected void processMethodResult(AsyncAttemptContextImpl<CompletionStage<R>> attemptContext, MethodResult<CompletionStage<R>> result, BulkheadReservation reservation) {
+        // processMethodResult is called after the user's method returns.
+        // However, for methods which return CompletionStage, if an exception was not thrown, we want to delay the rest of the fault tolerance processing
+        // until the returned CompletionStage completes, and then if it completes exceptionally, we want to use that exception as the result
+        if (result.isFailure()) {
+            super.processMethodResult(attemptContext, result, reservation);
+        } else {
+            result.getResult().thenRun(() -> super.processMethodResult(attemptContext, result, reservation));
+            result.getResult().exceptionally((t) -> {
+                super.processMethodResult(attemptContext, MethodResult.failure(t), reservation);
+                return null;
+            });
+        }
     }
 
 }

@@ -45,11 +45,15 @@ import org.apache.directory.server.i18n.I18n;
 import org.apache.directory.server.ldap.LdapServer;
 import org.apache.directory.server.protocol.shared.transport.TcpTransport;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 /**
  * An embedded ApacheDS LDAP server. This implementation is stateless between
  * initializations.
  */
 public class EmbeddedApacheDS {
+
+    private static final Class<?> c = EmbeddedApacheDS.class;
 
     /** The LDAP server */
     private LdapServer server;
@@ -78,22 +82,27 @@ public class EmbeddedApacheDS {
      *             If something went wrong
      */
     public EmbeddedApacheDS(String instance) throws Exception {
+        Log.info(c, "init", "Initialize " + instance);
         this.name = instance;
 
         File workDir = new File("apacheDS/instances/" + instance);
 
+        Log.info(c, "init", "Got a new workDir");
         /*
          * Start fresh each time.
          */
         if (workDir.exists()) {
+            Log.info(c, "init", "Remove previous directory");
             /*
              * Can replace with java.nio.file.Files.delete(...) when we stop compiling with
              * Java 6 compliance.
              */
             FileUtils.deleteDirectory(workDir);
+            Log.info(c, "init", "Removed previous directory");
         }
 
         workDir.mkdirs();
+        Log.info(c, "init", "Made directory");
 
         this.initDirectoryService(workDir);
     }
@@ -125,9 +134,13 @@ public class EmbeddedApacheDS {
      * @throws IOException If a free port could not be found.
      */
     private static int getOpenPort() throws IOException {
+        Log.info(c, "getOpenPort", "Entry.");
         ServerSocket s = new ServerSocket(0);
+        Log.info(c, "getOpenPort", "Got socket.");
         int port = s.getLocalPort();
+        Log.info(c, "getOpenPort", "Got port " + s);
         s.close();
+        Log.info(c, "getOpenPort", "Close socket");
         return port;
     }
 
@@ -157,12 +170,14 @@ public class EmbeddedApacheDS {
      * @throws Exception If the partition can't be added
      */
     public Partition addPartition(String partitionId, String partitionDn) throws Exception {
+        Log.info(c, "addPartition", "entry " + partitionId + " " + partitionDn);
         JdbmPartition partition = new JdbmPartition(this.service.getSchemaManager());
         partition.setId(partitionId);
         partition.setPartitionPath(new File(this.service.getInstanceLayout().getPartitionsDirectory(), partitionId).toURI());
         partition.setSuffixDn(new Dn(partitionDn));
         service.addPartition(partition);
 
+        Log.info(c, "addPartition", "exit");
         return partition;
     }
 
@@ -204,18 +219,22 @@ public class EmbeddedApacheDS {
      */
     private void initDirectoryService(final File workDir) throws Exception {
         // Initialize the LDAP service
+        Log.info(c, "initDirectoryService", "init");
         this.service = new DefaultDirectoryService();
+        Log.info(c, "initDirectoryService", "DefaultDirectoryService init");
         this.service.setInstanceLayout(new InstanceLayout(workDir));
-
+        Log.info(c, "initDirectoryService", "setInstanceLayout");
         final CacheService cacheService = new CacheService();
+        Log.info(c, "initDirectoryService", "CacheService init");
         cacheService.initialize(this.service.getInstanceLayout());
-
+        Log.info(c, "initDirectoryService", "CacheService initialized");
         this.service.setCacheService(cacheService);
-
+        Log.info(c, "initDirectoryService", "CacheService set");
         /*
          * First load the schema
          */
         this.initSchemaPartition();
+        Log.info(c, "initDirectoryService", "initSchemaPartition");
 
         /*
          * Then the system partition. This is a MANDATORY partition.
@@ -232,6 +251,8 @@ public class EmbeddedApacheDS {
         // Note: this system partition might be removed from trunk
         this.service.setSystemPartition(systemPartition);
 
+        Log.info(c, "initDirectoryService", "setSystemPartition");
+
         /*
          * Disable the ChangeLog system
          */
@@ -241,7 +262,9 @@ public class EmbeddedApacheDS {
         /*
          * Start the service.
          */
+        Log.info(c, "initDirectoryService", "starting service");
         this.service.startup();
+        Log.info(c, "initDirectoryService", "started service");
 
         /*
          * Add Microsoft schema for sAMAccountName and memberOf.
@@ -298,6 +321,8 @@ public class EmbeddedApacheDS {
         entry.add("m-must", "sAMAccountName");
         entry.add("m-may", "memberOf");
         add(entry);
+
+        Log.info(c, "initDirectoryService", "added microsoft attributes");
 
         /*
          * Initialize some WIM specific schema.
@@ -394,11 +419,15 @@ public class EmbeddedApacheDS {
     }
 
     public void startServer(int port) throws Exception {
+        Log.info(c, "startServer", "Create ldapserver.");
         this.server = new LdapServer();
+        Log.info(c, "startServer", "SetTransports ldapserver.");
         this.server.setTransports(new TcpTransport(port));
+        Log.info(c, "startServer", "SetDirectoryService ldapserver.");
         this.server.setDirectoryService(this.service);
+        Log.info(c, "startServer", "Start ldapserver.");
         this.server.start();
-        System.out.println("The server '" + this.name + "' is running on TCP port: " + server.getPort());
+        Log.info(c, "startServer", "The server '" + this.name + "' is running on TCP port: " + server.getPort());
     }
 
     /**
@@ -428,6 +457,8 @@ public class EmbeddedApacheDS {
      * @throws LdapException If there was a failure initialize the attributes.
      */
     private void initWimAttributes() throws LdapException {
+
+        Log.info(c, "initWimAttributes", "entry");
 
         /*
          * Initialize some branches to hold the attributes.
@@ -702,6 +733,7 @@ public class EmbeddedApacheDS {
         entry.add("m-singleValue", "FALSE");
         add(entry);
 
+        Log.info(c, "initWimAttributes", "exit");
     }
 
     /**
@@ -713,7 +745,7 @@ public class EmbeddedApacheDS {
      * @throws LdapException If there was a failure initialize the object classes.
      */
     private void initWimObjectClasses() throws LdapException {
-
+        Log.info(c, "initWimObjectClasses", "entry");
         /*
          * Create the ou=objectclasses,cn=ibm,ou=schema branch.
          */
@@ -814,5 +846,7 @@ public class EmbeddedApacheDS {
         entry.add("m-may", "extendedProperty1");
         entry.add("m-may", "extendedProperty2");
         add(entry);
+
+        Log.info(c, "initWimObjectClasses", "exit");
     }
 }

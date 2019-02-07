@@ -27,6 +27,7 @@ import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
@@ -37,7 +38,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * TODO eventually this should be merged with ContextServiceImpl such that it also
  * implements EE Concurrency ContextService. However, because the MP Concurrency spec
  * is not covering serializable thread context in its initial version, we must defer
- * this to the future. In the mean time, there will be duplicate of the MP Concurrency
+ * this to the future. In the mean time, there will be duplication of the MP Concurrency
  * method implementations between the two.
  */
 class ThreadContextImpl implements ThreadContext, WSContextService {
@@ -56,14 +57,28 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
     private final LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider;
 
     /**
+     * Hash code for this instance.
+     */
+    private final int hash;
+
+    /**
+     * Unique name for this instance.
+     */
+    private final String name;
+
+    /**
      * Construct a new instance to be used directly as a MicroProfile ThreadContext service or by a ManagedExecutor.
      *
+     * @param name unique name for this instance.
+     * @param int hash hash code for this instance.
      * @param concurrencyProvider
      * @param configPerProvider
      */
-    ThreadContextImpl(ConcurrencyProviderImpl concurrencyProvider, LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
+    ThreadContextImpl(String name, int hash, ConcurrencyProviderImpl concurrencyProvider, LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
         this.concurrencyProvider = concurrencyProvider;
         this.configPerProvider = configPerProvider;
+        this.name = name;
+        this.hash = hash;
     }
 
     @Override
@@ -74,42 +89,63 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
 
     @Override
     public <R> Callable<R> contextualCallable(Callable<R> callable) {
+        if (callable instanceof ContextualCallable)
+            throw new IllegalArgumentException(ContextualCallable.class.getSimpleName());
+
         ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
         return new ContextualCallable<R>(contextDescriptor, callable);
     }
 
     @Override
     public <T, U> BiConsumer<T, U> contextualConsumer(BiConsumer<T, U> consumer) {
+        if (consumer instanceof ContextualBiConsumer)
+            throw new IllegalArgumentException(ContextualBiConsumer.class.getSimpleName());
+
         ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
         return new ContextualBiConsumer<T, U>(contextDescriptor, consumer);
     }
 
     @Override
     public <T> Consumer<T> contextualConsumer(Consumer<T> consumer) {
+        if (consumer instanceof ContextualConsumer)
+            throw new IllegalArgumentException(ContextualConsumer.class.getSimpleName());
+
         ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
         return new ContextualConsumer<T>(contextDescriptor, consumer);
     }
 
     @Override
     public <T, U, R> BiFunction<T, U, R> contextualFunction(BiFunction<T, U, R> function) {
+        if (function instanceof ContextualBiFunction)
+            throw new IllegalArgumentException(ContextualBiFunction.class.getSimpleName());
+
         ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
         return new ContextualBiFunction<T, U, R>(contextDescriptor, function);
     }
 
     @Override
     public <T, R> Function<T, R> contextualFunction(Function<T, R> function) {
+        if (function instanceof ContextualFunction)
+            throw new IllegalArgumentException(ContextualFunction.class.getSimpleName());
+
         ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
         return new ContextualFunction<T, R>(contextDescriptor, function);
     }
 
     @Override
     public Runnable contextualRunnable(Runnable runnable) {
+        if (runnable instanceof ContextualRunnable)
+            throw new IllegalArgumentException(ContextualRunnable.class.getSimpleName());
+
         ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
         return new ContextualRunnable(contextDescriptor, runnable);
     }
 
     @Override
     public <R> Supplier<R> contextualSupplier(Supplier<R> supplier) {
+        if (supplier instanceof ContextualSupplier)
+            throw new IllegalArgumentException(ContextualSupplier.class.getSimpleName());
+
         ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
         return new ContextualSupplier<R>(contextDescriptor, supplier);
     }
@@ -126,10 +162,22 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
     }
 
     @Override
+    @Trivial
+    public int hashCode() {
+        return hash;
+    }
+
+    @Override
+    @Trivial
+    public String toString() {
+        return name;
+    }
+
+    @Override
     public <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage) {
         CompletableFuture<T> newCompletableFuture;
 
-        SameThreadExecutor executor = new SameThreadExecutor(this);
+        UnusableExecutor executor = new UnusableExecutor(this);
         if (ManagedCompletableFuture.JAVA8)
             newCompletableFuture = new ManagedCompletableFuture<T>(new CompletableFuture<T>(), executor, null);
         else
@@ -151,7 +199,7 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
     public <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage) {
         ManagedCompletionStage<T> newStage;
 
-        SameThreadExecutor executor = new SameThreadExecutor(this);
+        UnusableExecutor executor = new UnusableExecutor(this);
         if (ManagedCompletableFuture.JAVA8)
             newStage = new ManagedCompletionStage<T>(new CompletableFuture<T>(), executor, null);
         else

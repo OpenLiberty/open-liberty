@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+		       
+    Contributors:
+    IBM Corporation - initial API and implementation
+-->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0" 
+                   localization="OSGI-INF/l10n/metatype">
+
+
+<OCD id="com.ibm.ws.security.audit.file.handler.metatype" name="%audit.file.handler" description="%audit.file.handler.desc"	ibm:alias="auditFileHandler">
+   <AD id="events" name="%events.name" description="%events.desc" required="false"  ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.audit.event" type="String" cardinality="2147483647"/>
+   <AD id="maxFileSize" name="%maxFileSize.name" description="%maxFileSize.desc" required="false" type="Integer" min="0" default="20"/>
+   <AD id="maxFiles" name="%maxFiles.name" description="%maxFiles.desc" required="false" type="Integer" min="0" default="100"/>
+   <AD id="logDirectory" name="%logDirectory.name" description="%logDirectory.desc" required="false" ibm:type="location(dir)" type="String"  default="${server.output.dir}/logs"/>
+   <AD id="wrapBehavior" name="internal" description="%wrapBehavior.desc" required="false" type="String" default="WRAP"/>
+	<AD id="sign" name="%sign.name" description="%sign.desc" required="false" type="Boolean" default="false"/>
+	<AD id="encrypt" name="%encrypt.name" description="%encrypt.desc" required="false" type="Boolean" default="false"/>
+	<AD id="encryptAlias" name="%encryptAlias.name" description="%encryptAlias.desc" required="false" type="String"/>
+	<AD id="encryptKeyStoreRef" name="%encryptKeyStoreRef.name" description="%encryptKeyStoreRef.desc" type="String" required="false" ibmui:uiReference="com.ibm.ws.ssl.keystore"/>
+	<AD id="signingAlias" name="%signingAlias.name" description="%signingAlias.desc" required="false" type="String"/>
+	<AD id="signingKeyStoreRef" name="%signingKeyStoreRef.name" description="%signingKeyStoreRef.desc" type="String" required="false" ibmui:uiReference="com.ibm.ws.ssl.keystore"/>
+	<AD id="compact" name="%compact.name" description="%compact.desc" required="false" type="Boolean" default="false"/>
+</OCD>
+
+<Designate factoryPid="com.ibm.ws.security.audit.file.handler">
+   <Object ocdref="com.ibm.ws.security.audit.file.handler.metatype"/>
+</Designate>   
+
+</metatype:MetaData>

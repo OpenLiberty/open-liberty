@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2013 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,15 +26,14 @@ import com.ibm.tx.util.logging.TraceComponent;
  * and provides support for access to the recovery logs associated with a client
  * service.
  * </p>
- * 
+ *
  * <p>
- * 
+ *
  * An instance of the RecoveryLogManagerImpl class is provided to each client
  * service when it registers with the RecoveryDirector.
  * </p>
  */
-public class RecoveryLogManagerImpl implements RecoveryLogManager
-{
+public class RecoveryLogManagerImpl implements RecoveryLogManager {
     /**
      * WebSphere RAS TraceComponent registration.
      */
@@ -72,11 +71,11 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
      * initial map is keyed from FailureScope to a secondary map which is keyed from log
      * identifier to RecoveryLog. The log identifier is obtained from the LogProperties object
      * when a recovery log is accessed.
-     * 
+     *
      * This map contains only those RecoveryLog objects that have been accessed during the
      * current server run. It does not reflect all those recovery logs that have been accessed
      * during the current server deployment.
-     * 
+     *
      * <p>
      * <ul>
      * <li>java.util.HashMap (FailureScope -> java.util.HashMap (Recovery Log Identifier -> RecoveryLog))
@@ -93,7 +92,7 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
      * re-used for the new failure scope as the log type supports this. In this case, we don't
      * create a new RecoveryLog to put into _recoveryLogs, we use the one we found in
      * _multiScopeRecoveryLogs.
-     * 
+     *
      * <p>
      * <ul>
      * <li>java.util.HashMap (Recovery Log Identifier -> MultiScopeRecoveryLog)
@@ -120,21 +119,20 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
      * <p>
      * Package access constructor for the creation of RecoveryLogManagerImpl objects.
      * </p>
-     * 
+     *
      * <p>
      * This method should only be called by the RecoveryDirector class in response to a
      * RecoveryDirector.registerService() call.
      * </p>
-     * 
+     *
      * <p>
      * Creates a new RecoveryLogManagerImpl object to handle access to the recovery
      * logs associated with the client service that owns the supplied RecoveryAgent.
      * </p>
-     * 
+     *
      * @param recoveryAgent The RecoveryAgent instance.
      */
-    RecoveryLogManagerImpl(RecoveryAgent recoveryAgent, HashMap<String, RecoveryLogFactory> customLogFactories)
-    {
+    RecoveryLogManagerImpl(RecoveryAgent recoveryAgent, HashMap<String, RecoveryLogFactory> customLogFactories) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "RecoveryLogManagerImpl", new Object[] { recoveryAgent, customLogFactories });
 
@@ -163,52 +161,47 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
      * <p>
      * Returns a RecoveryLog that can be used to access a specific recovery log.
      * </p>
-     * 
+     *
      * <p>
      * Each recovery log is contained within a FailureScope. For example, the
      * transaction service on a distributed system has a transaction log in each
      * server node (ie in each FailureScope). Because of this, the caller must
      * specify the FailureScope of the required recovery log.
      * </p>
-     * 
+     *
      * <p>
      * Additionally, the caller must specify information regarding the identity and
      * physical properties of the recovery log. This is done through the LogProperties
      * object provided by the client service.
      * </p>
-     * 
+     *
      * @param failureScope The required FailureScope
      * @param logProperties Contains the identity and physical properties of the
      *            recovery log.
-     * 
+     *
      * @return The RecoveryLog instance.
-     * 
+     *
      * @exception InvalidLogPropertiesException The RLS does not recognize or cannot
      *                support the supplied LogProperties
      */
     @Override
-    public synchronized RecoveryLog getRecoveryLog(FailureScope failureScope, LogProperties logProperties) throws InvalidLogPropertiesException
-    {
+    public synchronized RecoveryLog getRecoveryLog(FailureScope failureScope, LogProperties logProperties) throws InvalidLogPropertiesException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getRecoveryLog", new java.lang.Object[] { failureScope, logProperties, this });
         /* 5@PK01151D */
         // If we're on Z, we can have a ZLogProperties (System Logger) based
         // recovery log.  Otherwise, FileLogProperties and CustomLogProperties are the only supported types.
-        if (logProperties instanceof StreamLogProperties)
-        {
-            // final PlatformHelper ph = PlatformHelperFactory.getPlatformHelper(); 
-            // if (ph.isZOS() == false)                                
-            if (Configuration.isZOS() == false)
-            {
+        if (logProperties instanceof StreamLogProperties) {
+            // final PlatformHelper ph = PlatformHelperFactory.getPlatformHelper();
+            // if (ph.isZOS() == false)
+            if (Configuration.isZOS() == false) {
                 if (tc.isEventEnabled())
                     Tr.event(tc, "Unable to create stream based recovery log on non-ZOS platform"); /* @LIDB2561.1A */
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "getRecoveryLog");
                 throw new InvalidLogPropertiesException();
             }
-        }
-        else if (!(logProperties instanceof FileLogProperties || logProperties instanceof CustomLogProperties))
-        {
+        } else if (!(logProperties instanceof FileLogProperties || logProperties instanceof CustomLogProperties)) {
             if (tc.isEventEnabled())
                 Tr.event(tc, "Unable to create non-file based or non-Custom recovery log");
             if (tc.isEntryEnabled())
@@ -224,14 +217,11 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
         // identifier.
         HashMap logsByFailureScope = (HashMap) _recoveryLogs.get(logIdentifier);
 
-        if (logsByFailureScope != null)
-        {
+        if (logsByFailureScope != null) {
             // One or more logs for the given identifier is already available.
-            // See if any of these logs are for the given failure scope.     	
+            // See if any of these logs are for the given failure scope.
             recoveryLog = (RecoveryLog) logsByFailureScope.get(failureScope);
-        }
-        else
-        {
+        } else {
             // There were no logs for the given identifier. Initialize the
             // hashmap for this identifier and add it to the outer map so
             // that it can be used to store the log that will be created
@@ -240,11 +230,9 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
             _recoveryLogs.put(logIdentifier, logsByFailureScope);
         }
 
-        if (recoveryLog == null)
-        {
-            if (logProperties instanceof FileLogProperties)
-            {
-                // The requested log has not been accessed already so we must create it.                               
+        if (recoveryLog == null) {
+            if (logProperties instanceof FileLogProperties) {
+                // The requested log has not been accessed already so we must create it.
                 MultiScopeLog multiScopeRecoveryLog = null;
                 HashMap multiScopeLogsByServerName = null; /* @253893A */
                 String serverName = failureScope.serverName(); /* @253893A */
@@ -258,8 +246,7 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
                 // stored in different logs.
                 final int logType = fileLogProperties.logType();
 
-                if (logType == FileLogProperties.LOG_TYPE_MULTIPLE_SCOPE)
-                {
+                if (logType == FileLogProperties.LOG_TYPE_MULTIPLE_SCOPE) {
                     // If this is a multiple scope log then we can check to see if
                     // we have an existing log for the given identifier. If we do
                     // we can re-use it.  A multi-scope log will only contain failure
@@ -279,20 +266,18 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
                     } /* @253893A */
                 }
 
-                if (multiScopeRecoveryLog == null)
-                {
+                if (multiScopeRecoveryLog == null) {
                     // Either a single scope log is required or there was no
-                    // existing log for the given identifier. Create a new log.			
+                    // existing log for the given identifier. Create a new log.
                     multiScopeRecoveryLog = new MultiScopeRecoveryLog(fileLogProperties, _recoveryAgent, failureScope);
 
-                    if (logType == FileLogProperties.LOG_TYPE_MULTIPLE_SCOPE)
-                    {
+                    if (logType == FileLogProperties.LOG_TYPE_MULTIPLE_SCOPE) {
                         // If this is a multiple scope log then we store it in the map so
                         // that it can be re-used by subsequent requests for a log with the
                         // same log identifier.
                         //
                         // It is worth noting that in an environment where the only logs
-                        // created are single scope logs this map will 
+                        // created are single scope logs this map will
                         // remain empty.
                         multiScopeLogsByServerName.put(serverName, multiScopeRecoveryLog); /* @253893A */
                     }
@@ -301,10 +286,8 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
                 // Create a new RecoveryLog object to be returned to the caller and
                 // store it in the map so that it can be re-used if necessary.
                 recoveryLog = new RecoveryLogImpl(multiScopeRecoveryLog, failureScope);
-            }
-            else if (logProperties instanceof CustomLogProperties)
-            {
-                // The requested log has not been accessed already so we must create it.                               
+            } else if (logProperties instanceof CustomLogProperties) {
+                // The requested log has not been accessed already so we must create it.
                 MultiScopeLog multiScopeRecoveryLog = null;
                 HashMap multiScopeLogsByServerName = null; /* @253893A */
                 String serverName = failureScope.serverName(); /* @253893A */
@@ -318,8 +301,7 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
                 // stored in different logs.
                 final int logType = customLogProperties.logType();
 
-                if (logType == CustomLogProperties.LOG_TYPE_MULTIPLE_SCOPE)
-                {
+                if (logType == CustomLogProperties.LOG_TYPE_MULTIPLE_SCOPE) {
                     // If this is a multiple scope log then we can check to see if
                     // we have an existing log for the given identifier. If we do
                     // we can re-use it.  A multi-scope log will only contain failure
@@ -339,10 +321,9 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
                     } /* @253893A */
                 }
 
-                if (multiScopeRecoveryLog == null)
-                {
+                if (multiScopeRecoveryLog == null) {
                     // Either a single scope log is required or there was no
-                    // existing log for the given identifier. Create a new log.			
+                    // existing log for the given identifier. Create a new log.
 
                     // Need to locate the factory for this Custom log via RecoveryDirector
                     // then create a log ... this could be a single or multiple scope log at this point
@@ -353,8 +334,8 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
                     RecoveryLogFactory factory = _customLogFactories.get(customLogId);
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Retrieved factory, " + factory);
-                    if (factory == null)
-                    {
+
+                    if (factory == null) {
                         if (tc.isEventEnabled())
                             Tr.event(tc, "Custom recovery log factory NOT FOUND for ", customLogId);
 
@@ -364,8 +345,7 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
                     }
 
                     recoveryLog = factory.createRecoveryLog(customLogProperties, _recoveryAgent, Configuration.getRecoveryLogComponent(), failureScope);
-                    if (recoveryLog == null)
-                    {
+                    if (recoveryLog == null) {
                         if (tc.isEventEnabled())
                             Tr.event(tc, "Custom recovery log factory returned NULL recovery log", customLogId);
                         if (tc.isEntryEnabled())
@@ -373,44 +353,37 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
                         throw new InvalidLogPropertiesException();
                     }
 
-                    if (logType == CustomLogProperties.LOG_TYPE_MULTIPLE_SCOPE && recoveryLog instanceof MultiScopeLog)
-                    {
+                    if (logType == CustomLogProperties.LOG_TYPE_MULTIPLE_SCOPE && recoveryLog instanceof MultiScopeLog) {
                         // If this is a multiple scope log then we store it in the map so
                         // that it can be re-used by subsequent requests for a log with the
                         // same log identifier.
                         //
                         // It is worth noting that in an environment where the only logs
-                        // created are single scope logs this map will 
+                        // created are single scope logs this map will
                         // remain empty.
                         multiScopeRecoveryLog = (MultiScopeLog) recoveryLog;
                         multiScopeLogsByServerName.put(serverName, multiScopeRecoveryLog); /* @253893A */
 
                         recoveryLog = new RecoveryLogImpl(multiScopeRecoveryLog, failureScope);
                     }
-                }
-                else
-                {
+                } else {
                     // Create a new RecoveryLog object to be returned to the caller and
                     // store it in the map so that it can be re-used if necessary.
                     recoveryLog = new RecoveryLogImpl(multiScopeRecoveryLog, failureScope);
                 }
-            }
-            else
-            {
+            } else {
                 // This is a stream log properties object so create
                 // the z-specific log - use reflection to do this
                 // to avoid a compile and runtime dependency on
                 // the z-specific code.
                 // TDK - IXGRecoveryLogImpl is in the same component....
-                try
-                {
+                try {
                     final Constructor ixgLogConstructor = Class.forName("com.ibm.ws390.recoverylog.spi.IXGRecoveryLogImpl").getConstructor(new Class[] {
-                                                                                                                                                        com.ibm.ws.recoverylog.spi.FailureScope.class,
-                                                                                                                                                        com.ibm.ws.recoverylog.spi.StreamLogProperties.class,
-                                                                                                                                                        com.ibm.ws.recoverylog.spi.RecoveryAgent.class });
+                                                                                                                                                         com.ibm.ws.recoverylog.spi.FailureScope.class,
+                                                                                                                                                         com.ibm.ws.recoverylog.spi.StreamLogProperties.class,
+                                                                                                                                                         com.ibm.ws.recoverylog.spi.RecoveryAgent.class });
                     recoveryLog = (RecoveryLog) ixgLogConstructor.newInstance(new Object[] { failureScope, (StreamLogProperties) logProperties, _recoveryAgent });
-                } catch (Exception e)
-                {
+                } catch (Exception e) {
                     FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.RecoveryLogManagerImpl.getRecoveryLog", "278", this);
                     if (tc.isEventEnabled())
                         Tr.event(tc, "Exception caught initializing stream-based log", e);
@@ -429,16 +402,14 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
     }
 
     @Override
-    public SharedServerLeaseLog getLeaseLog(String localRecoveryIdentity, String recoveryGroup, LogProperties logProperties) throws InvalidLogPropertiesException
-    {
+    public SharedServerLeaseLog getLeaseLog(String localRecoveryIdentity, String recoveryGroup, LogProperties logProperties) throws InvalidLogPropertiesException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getLeaseLog", new java.lang.Object[] { localRecoveryIdentity, recoveryGroup, logProperties, this });
 
         SharedServerLeaseLog leaseLog = null;
         CustomLogProperties customLogProperties = null;
 
-        if (logProperties instanceof CustomLogProperties)
-        {
+        if (logProperties instanceof CustomLogProperties) {
             //TODO: Use recoveryGroup in RDBMS implementation
             customLogProperties = (CustomLogProperties) logProperties;
             // Need to locate the factory for this Custom log. We use the same factory as for the SQLMultiScopeRecoveryLog
@@ -448,8 +419,7 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
             RecoveryLogFactory factory = _customLogFactories.get(customLogId);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Retrieved factory, " + factory);
-            if (factory == null)
-            {
+            if (factory == null) {
                 if (tc.isEventEnabled())
                     Tr.event(tc, "Custom recovery log factory NOT FOUND for ", customLogId);
 
@@ -459,17 +429,14 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
             }
 
             leaseLog = factory.createLeaseLog(customLogProperties);
-            if (leaseLog == null)
-            {
+            if (leaseLog == null) {
                 if (tc.isEventEnabled())
                     Tr.event(tc, "Custom recovery log factory returned NULL lease log", customLogId);
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "getLeaseLog");
                 throw new InvalidLogPropertiesException();
             }
-        }
-        else if (logProperties instanceof FileLogProperties)
-        {
+        } else if (logProperties instanceof FileLogProperties) {
             // Set up FileLogProperites
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Found FileLogProperties");
@@ -480,9 +447,7 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
 
             // If necessary, create a new RecoveryLog object to be returned to the caller.
             leaseLog = FileSharedServerLeaseLog.getFileSharedServerLeaseLog(logDirStem, localRecoveryIdentity, recoveryGroup);
-        }
-        else
-        {
+        } else {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "getLeaseLog");
             throw new InvalidLogPropertiesException();
@@ -500,12 +465,11 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager
     //------------------------------------------------------------------------------
     /**
      * Returns the string representation of this object instance.
-     * 
+     *
      * @return String The string representation of this object instance.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         if (_traceId == null)
             // Now establish a 'traceId' string. This is output at key trace points to allow
             // easy mapping of recovery log operations to clients logs.

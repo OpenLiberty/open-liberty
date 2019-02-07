@@ -129,7 +129,12 @@ public class HttpUtils {
             try {
                 result = httpClient.execute(request);
             } catch (IOException ioex) {
-                logErrorMessage(url, 0, "IOException: " + ioex.getMessage() + " " + ioex.getCause());
+                String errMsg = "IOException: " + ioex.getMessage() + " " + ioex.getCause();
+                String message = TraceNLS.getFormattedMessage(getClass(),
+                        "com.ibm.ws.security.common.internal.resources.SSOCommonMessages", "OIDC_CLIENT_DISCOVERY_ERROR",
+                        new Object[] { url, errMsg }, "Error processing discovery request");
+                       ;
+                Tr.error(tc, message, new Object[0]);
                 throw ioex;
             }
             StatusLine statusLine = result.getStatusLine();

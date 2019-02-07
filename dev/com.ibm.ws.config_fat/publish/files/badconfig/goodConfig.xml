@@ -17,6 +17,10 @@
 		<feature>timedexit-1.0</feature>
 	</featureManager>
 
+	<httpEndpoint id="defaultHttpEndpoint" host="*"
+		httpPort="${bvt.prop.HTTP_default}" httpsPort="${bvt.prop.HTTP_default.secure}">
+		<tcpOptions soReuseAddr="true" />
+	</httpEndpoint>
 
 
 </server>

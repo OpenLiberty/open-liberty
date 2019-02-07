@@ -140,6 +140,9 @@ slf.failed.delete=CWWKL0072W: Le fichier cache [{0}] ne peut pas \u00eatre suppr
 slf.failed.delete.explanation=Le syst\u00e8me n'est pas parvenu \u00e0 supprimer le fichier cache. Comme le fichier existe toujours sur le syst\u00e8me, ceci pourrait entra\u00eener une alt\u00e9ration des archives imbriqu\u00e9es.
 slf.failed.delete.useraction=V\u00e9rifier que le fichier cache n'est pas \u00e0 l'\u00e9tat verrouill\u00e9, ce qui pourrait entra\u00eener l'\u00e9chec de la suppression du fichier.
 
+####################### API TYPE MESSAGES 0080-0089 ###############################################
+###################################################################################################
+
 cls.classloader.config.duplicate=CWWKL0080E: Le type d''API [{0}] a d\u00e9j\u00e0 \u00e9t\u00e9 utilis\u00e9 dans cette liste [{1}]. Retirez le type d''API en double.
 cls.classloader.config.duplicate.explanation=Chaque type d'API ne peut \u00eatre sp\u00e9cifi\u00e9 qu'une seule fois.
 cls.classloader.config.duplicate.useraction=Recherchez d'\u00e9ventuels types d'API en double dans la configuration du serveur pour vous assurer que le type d'API est correct.
@@ -161,3 +164,6 @@ cls.classloader.config.typo2.useraction=Recherchez d'\u00e9ventuels types d'API 
 cls.classloader.suggested.feature=CWWKL0084W: La classe {0} n''a pas pu \u00eatre charg\u00e9e. Essayez d''activer la fonction {1} ou une version plus r\u00e9cente de celle-ci dans le fichier server.xml.
 cls.classloader.suggested.feature.explanation=Une classe habituellement fournie par une ou plusieurs fonctions du serveur n'a pas pu \u00eatre charg\u00e9e.
 cls.classloader.suggested.feature.useraction=Essayez d'activer la fonction sp\u00e9cifi\u00e9e ou une version plus r\u00e9cente de celle-ci dans le fichier server.xml.
+
+####################### com.ibm.ws.classloader.context bundle messages 0090-0099 ###################
+####################################################################################################

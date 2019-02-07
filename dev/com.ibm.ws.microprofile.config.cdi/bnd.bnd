@@ -16,7 +16,7 @@ javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.config.cdi
 Bundle-SymbolicName: com.ibm.ws.microprofile.config.cdi
-Bundle-Description: Microprofile Config CDI, version ${bVersion}
+Bundle-Description: Microprofile Config 1.1 CDI
 
 Import-Package: \
 	javax.enterprise.*; version="[1.1,3)",\
@@ -26,8 +26,7 @@ Import-Package: \
 	*
 
 Export-Package: \
-    !com.ibm.ws.microprofile.config.cdi.resources, \
-    com.ibm.ws.microprofile.config.cdi*
+    com.ibm.ws.microprofile.config.cdi
 
 Private-Package: \
     com.ibm.ws.microprofile.config.cdi.resources

@@ -26,7 +26,7 @@ import com.ibm.ws.microprofile.appConfig.cdi.test.MyObject;
 import com.ibm.ws.microprofile.appConfig.cdi.test.Parent;
 import com.ibm.ws.microprofile.appConfig.cdi.test.Pizza;
 
-public class ConfigFieldInjectionBean {
+public class ConfigFieldInjectionBean implements ConfigFieldInjectionInterface {
 
     @Inject
     Config config;
@@ -115,6 +115,11 @@ public class ConfigFieldInjectionBean {
 //    @ConfigProperty(name = "RED_CAR_KEY")
 //    Car<Red> RED_CAR_PROP;
 
+    public ConfigFieldInjectionBean() {
+        System.out.println("xtor: ConfigFieldInjectionBean()");
+    }
+
+    @Override
     public String getSIMPLE_KEY1() {
         return config.getValue("SIMPLE_KEY1", String.class);
     }
@@ -122,10 +127,12 @@ public class ConfigFieldInjectionBean {
     /**
      * @return the gENERIC_OBJECT_KEY
      */
+    @Override
     public MyObject getGENERIC_INSTANCE_KEY() {
         return GENERIC_INSTANCE_KEY.get();
     }
 
+    @Override
     public MyObject getGENERIC_PROVIDER_KEY() {
         return GENERIC_PROVIDER_KEY.get();
     }
@@ -133,6 +140,7 @@ public class ConfigFieldInjectionBean {
     /**
      * @return the sIMPLE_KEY2
      */
+    @Override
     public String getSIMPLE_KEY2() {
         return SIMPLE_KEY2;
     }
@@ -140,6 +148,7 @@ public class ConfigFieldInjectionBean {
     /**
      * @return the key3
      */
+    @Override
     public String getSIMPLE_KEY3() {
         return key3;
     }
@@ -147,50 +156,63 @@ public class ConfigFieldInjectionBean {
     /**
      * @return the uRL_KEY
      */
+    @Override
     public Parent getPARENT_KEY() {
         return PARENT_KEY;
     }
 
+    @Override
     public String getDISCOVERED_KEY() {
         return DISCOVERED_KEY;
     }
 
+    @Override
     public String getNULL_WITH_DEFAULT_KEY() {
         return NULL_WITH_DEFAULT_KEY;
     }
 
+    @Override
     public Dog getDOG_KEY() {
         return DOG_KEY;
     }
 
+    @Override
     public Animal getANIMAL_KEY() {
         return ANIMAL_KEY;
     }
 
+    @Override
     public String getSYS_PROP() {
+        System.out.println("SYS_PROP=" + SYS_PROP);
         return SYS_PROP;
     }
 
+    @Override
     public URL getOPTIONAL_KEY() {
         return OPTIONAL_KEY.orElse(null);
     }
 
+    @Override
     public URL getOPTIONAL_NULL_KEY() {
         return OPTIONAL_NULL_KEY.orElse(null);
     }
 
+    @Override
     public URL getOPTIONAL_MISSING_KEY() {
         return OPTIONAL_MISSING_KEY.orElse(null);
     }
 
+    @Override
     public Pizza getPIZZA_KEY() {
         return PIZZA_EXISTING_PROP;
     }
 
+    @Override
     public Pizza getPIZZA_MISSING_KEY() {
         return PIZZA_MISSING_PROP;
     }
 
+    @Override
     public Pizza getPIZZA_GOOD_KEY() {
         return PIZZA_GOOD_PROP;
     }

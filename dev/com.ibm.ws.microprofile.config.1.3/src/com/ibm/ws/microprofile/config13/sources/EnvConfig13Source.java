@@ -12,8 +12,6 @@ package com.ibm.ws.microprofile.config13.sources;
 
 import java.util.regex.Pattern;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 import com.ibm.ws.microprofile.config.sources.EnvConfigSource;
 
@@ -22,7 +20,6 @@ import com.ibm.ws.microprofile.config.sources.EnvConfigSource;
  */
 public class EnvConfig13Source extends EnvConfigSource {
 
-    private static final TraceComponent tc = Tr.register(EnvConfig13Source.class);
     private static Pattern p = null;
 
     static {

@@ -81,9 +81,11 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
         ldapServer = new LocalLdapServer();
         ldapServer.start();
 
-        WCApplicationHelper.addWarToServerApps(myServer, WAR_REDIRECT_NAME, true, WAR_RESOURCE_LOCATION,JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect", "web.war.identitystores.ldap.ldap1",
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_REDIRECT_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect",
+                                               "web.war.identitystores.ldap.ldap1",
                                                "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
-        WCApplicationHelper.addWarToServerApps(myServer, WAR_FORWARD_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.forward", "web.war.identitystores.ldap.ldap1",
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_FORWARD_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.forward",
+                                               "web.war.identitystores.ldap.ldap1",
                                                "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
         myServer.setServerConfigurationFile(XML_NAME);
         myServer.startServer(true);
@@ -96,9 +98,12 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer();
-        if (ldapServer != null) {
-            ldapServer.stop();
+        try {
+            myServer.stopServer();
+        } finally {
+            if (ldapServer != null) {
+                ldapServer.stop();
+            }
         }
     }
 
@@ -176,11 +181,11 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
         String response = getFormLoginPage(httpclient, urlBase + redirectQueryString, REDIRECT, urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String [] sessionCookie = {"LtpaToken2"};
+        String[] sessionCookie = { "LtpaToken2" };
         String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true, null, sessionCookie);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
-        String [] wasReqURLCookie = {"WASReqURL"};
+        String[] wasReqURLCookie = { "WASReqURL" };
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + redirectQueryString, wasReqURLCookie);
 
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.ANOTHERUSER1, Constants.getRemoteUserFound + LocalLdapServer.ANOTHERUSER1);

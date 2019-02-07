@@ -115,6 +115,7 @@ public class CommonExpectations extends com.ibm.ws.security.fat.common.utils.Com
     public static Expectations getResponseTextExpectationsForJwtCookie(String testAction, String jwtCookieName, String username) {
         Expectations expectations = new Expectations();
         expectations.addExpectations(responseTextIncludesCookie(testAction, jwtCookieName));
+        expectations.addExpectations(responseTextIncludesCookieNameFromApi(testAction, jwtCookieName));
         expectations.addExpectations(responseTextIncludesExpectedRemoteUser(testAction, username));
         expectations.addExpectations(responseTextIncludesJwtPrincipal(testAction));
         expectations.addExpectations(responseTextIncludesExpectedAccessId(testAction, JwtFatConstants.BASIC_REALM, username));
@@ -143,6 +144,14 @@ public class CommonExpectations extends com.ibm.ws.security.fat.common.utils.Com
         Expectations expectations = new Expectations();
         expectations.addExpectation(Expectation.createResponseExpectation(testAction, "cookie: " + cookieName,
                                                                           "Did not find a " + cookieName + " cookie in the response body, but should have."));
+        return expectations;
+    }
+
+    public static Expectations responseTextIncludesCookieNameFromApi(String testAction, String cookieName) {
+        Expectations expectations = new Expectations();
+
+        expectations.addExpectation(Expectation.createResponseExpectation(testAction, JwtFatConstants.JWT_COOKIE_NAME_MSG + cookieName,
+                                                                          "Response from test step " + testAction + " did not match expected value."));
         return expectations;
     }
 

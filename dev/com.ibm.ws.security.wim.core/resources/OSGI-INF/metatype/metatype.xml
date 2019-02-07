@@ -93,7 +93,7 @@
    	    <AD id="groupDisplayNameMapping" name="%groupDisplayNameMapping" description="%groupDisplayNameMapping.desc"
 		required="false" type="String" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.groupDisplayNameMapping"/>
 
-        <AD id="defaultParents" name="%defaultParents" description="%defaultParents.desc"  type="String" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.core.defaultParents" required="false" />	
+        <AD id="defaultParents" name="%defaultParents" description="%defaultParents.desc"  type="String" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.core.defaultParents" required="false" cardinality="1000"/>	
 </OCD>
 
 <Designate factoryPid="com.ibm.ws.security.wim.core.realm">

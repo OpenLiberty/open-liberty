@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.embeddable.config;
 
 /*******************************************************************************
- * Copyright (c) 2010, 2013 IBM Corporation and others.
+ * Copyright (c) 2010, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,10 +20,9 @@ import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.RuntimeMetaDataProvider;
 import com.ibm.tx.jta.util.alarm.AlarmManagerImpl;
 import com.ibm.tx.util.alarm.AlarmManager;
-import com.ibm.ws.resource.ResourceFactory;
+import com.ibm.wsspi.resource.ResourceFactory;
 
-public class EmbeddableConfigurationProviderImpl implements ConfigurationProvider
-{
+public class EmbeddableConfigurationProviderImpl implements ConfigurationProvider {
     private static final TraceComponent tc = Tr.register(EmbeddableConfigurationProviderImpl.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
     // these are copied and duplicated from RegisteredResources!
@@ -70,8 +69,7 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
 
     private final RuntimeMetaDataProvider _runtimeMetaDataProvider = new EmbeddableRuntimeMetaDataProviderImpl(this);
 
-    public EmbeddableConfigurationProviderImpl(Map<String, Object> properties)
-    {
+    public EmbeddableConfigurationProviderImpl(Map<String, Object> properties) {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         _acceptHeuristicHazard = Boolean.valueOf((String) properties.get(ACCEPT_HEURISTIC_HAZARD));
@@ -92,16 +90,11 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
 
         _heuristicCompletionDirectionString = (String) properties.get(LPS_HEURISTIC_COMPLETION);
 
-        if ("COMMIT".equalsIgnoreCase(_heuristicCompletionDirectionString))
-        {
+        if ("COMMIT".equalsIgnoreCase(_heuristicCompletionDirectionString)) {
             _heuristicCompletionDirection = HEURISTIC_COMPLETION_DIRECTION_COMMIT;
-        }
-        else if ("MANUAL".equalsIgnoreCase(_heuristicCompletionDirectionString))
-        {
+        } else if ("MANUAL".equalsIgnoreCase(_heuristicCompletionDirectionString)) {
             _heuristicCompletionDirection = HEURISTIC_COMPLETION_DIRECTION_MANUAL;
-        }
-        else
-        {
+        } else {
             _heuristicCompletionDirectionString = "ROLLBACK";
             if (traceOn && tc.isDebugEnabled())
                 Tr.debug(tc, LPS_HEURISTIC_COMPLETION + " = ROLLBACK");
@@ -140,8 +133,7 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
             Tr.debug(tc, MAXIMUM_TRANSACTION_TIMEOUT + " = " + _maximumTransactionTimeout);
 
         _tranLogDirectory = (String) properties.get(TRAN_LOG_DIRECTORY);
-        if (null == _tranLogDirectory || _tranLogDirectory.isEmpty())
-        {
+        if (null == _tranLogDirectory || _tranLogDirectory.isEmpty()) {
             _tranLogDirectory = System.getProperty("user.dir");
         }
         if (traceOn && tc.isDebugEnabled())
@@ -156,16 +148,11 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
             Tr.debug(tc, PROPAGATE_XARESOURCE_TIMEOUT + " = " + _propagateXAResourceTransactionTimeout);
 
         _wsatPrepareOrderString = (String) properties.get(WSAT_PREPARE_ORDER);
-        if ("before".equalsIgnoreCase(_wsatPrepareOrderString))
-        {
+        if ("before".equalsIgnoreCase(_wsatPrepareOrderString)) {
             _wsatPrepareOrder = WSAT_PREPARE_ORDER_BEFORE;
-        }
-        else if ("after".equalsIgnoreCase(_wsatPrepareOrderString))
-        {
+        } else if ("after".equalsIgnoreCase(_wsatPrepareOrderString)) {
             _wsatPrepareOrder = WSAT_PREPARE_ORDER_AFTER;
-        }
-        else
-        {
+        } else {
             _wsatPrepareOrder = WSAT_PREPARE_ORDER_CONCURRENT;
         }
         if (traceOn && tc.isDebugEnabled())
@@ -173,163 +160,142 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
     }
 
     @Override
-    public AlarmManager getAlarmManager()
-    {
+    public AlarmManager getAlarmManager() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "getAlarmManager", _alarmManager);
         return _alarmManager;
     }
 
     @Override
-    public int getClientInactivityTimeout()
-    {
+    public int getClientInactivityTimeout() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "getClientInactivityTimeout", _clientInactivityTimeout);
         return _clientInactivityTimeout;
     }
 
     @Override
-    public int getHeuristicCompletionDirection()
-    {
+    public int getHeuristicCompletionDirection() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "getHeuristicCompletionDirection", _heuristicCompletionDirection);
         return _heuristicCompletionDirection;
     }
 
     @Override
-    public String getHeuristicCompletionDirectionAsString()
-    {
+    public String getHeuristicCompletionDirectionAsString() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "getHeuristicCompletionDirectionAsString", _heuristicCompletionDirectionString);
         return _heuristicCompletionDirectionString;
     }
 
     @Override
-    public int getHeuristicRetryInterval()
-    {
+    public int getHeuristicRetryInterval() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "getHeuristicRetryInterval", _heuristicRetryInterval);
         return _heuristicRetryInterval;
     }
 
     @Override
-    public int getHeuristicRetryLimit()
-    {
+    public int getHeuristicRetryLimit() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "getHeuristicRetryLimit", _heuristicRetryLimit);
         return _heuristicRetryLimit;
     }
 
     @Override
-    public int getMaximumTransactionTimeout()
-    {
+    public int getMaximumTransactionTimeout() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "getMaximumTransactionTimeout", _maximumTransactionTimeout);
         return _maximumTransactionTimeout;
     }
 
     @Override
-    public RuntimeMetaDataProvider getRuntimeMetaDataProvider()
-    {
+    public RuntimeMetaDataProvider getRuntimeMetaDataProvider() {
         return _runtimeMetaDataProvider;
     }
 
     @Override
-    public int getTotalTransactionLifetimeTimeout()
-    {
+    public int getTotalTransactionLifetimeTimeout() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "getTotalTransactionLifetimeTimeout", _totalTranLifetimeTimeout);
         return _totalTranLifetimeTimeout;
     }
 
     @Override
-    public String getTransactionLogDirectory()
-    {
+    public String getTransactionLogDirectory() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "getTransactionLogDirectory", _tranLogDirectory);
         return _tranLogDirectory;
     }
 
     @Override
-    public int getTransactionLogSize()
-    {
+    public int getTransactionLogSize() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "getTransactionLogSize", _tranLogSize);
         return _tranLogSize;
     }
 
     @Override
-    public boolean isRecoverOnStartup()
-    {
+    public boolean isRecoverOnStartup() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "isRecoverOnStartup", _recoverOnStartup);
         return _recoverOnStartup;
     }
 
     @Override
-    public boolean isWaitForRecovery()
-    {
+    public boolean isWaitForRecovery() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "isWaitForRecovery", _waitForRecovery);
         return _waitForRecovery;
     }
 
     @Override
-    public boolean isAcceptHeuristicHazard()
-    {
+    public boolean isAcceptHeuristicHazard() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "isAcceptHeuristicHazard", _acceptHeuristicHazard);
         return _acceptHeuristicHazard;
     }
 
     @Override
-    public boolean isLoggingForHeuristicReportingEnabled()
-    {
+    public boolean isLoggingForHeuristicReportingEnabled() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "isLoggingForHeuristicReportingEnabled", _enableLoggingForHeuristicReporting);
         return _enableLoggingForHeuristicReporting;
     }
 
-    public static void setMaximumTransactionTimeout(int maximumTimeout)
-    {
+    public static void setMaximumTransactionTimeout(int maximumTimeout) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "setMaximumTransactionTimeout", maximumTimeout);
         _maximumTransactionTimeout = maximumTimeout;
     }
 
-    public static void setClientInactivityTimeout(int timeout)
-    {
+    public static void setClientInactivityTimeout(int timeout) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "setClientInactivityTimeout", timeout);
         _clientInactivityTimeout = timeout;
     }
 
-    public static void setTotalTransactionLifetimeTimeout(int timeout)
-    {
+    public static void setTotalTransactionLifetimeTimeout(int timeout) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "setTotalTransactionLifetimeTimeout", timeout);
         _totalTranLifetimeTimeout = timeout;
     }
 
     @Override
-    public Level getTraceLevel()
-    {
+    public Level getTraceLevel() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "getTraceLevel", Level.OFF);
         return Level.OFF;
     }
 
     @Override
-    public int getDefaultMaximumShutdownDelay()
-    {
+    public int getDefaultMaximumShutdownDelay() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "getDefaultMaximumShutdownDelay", 0);
         return 0;
     }
 
     @Override
-    public boolean getAuditRecovery()
-    {
+    public boolean getAuditRecovery() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "auditRecovery", _auditRecovery);
         return _auditRecovery;
@@ -340,20 +306,18 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
      * we'll return null.
      */
     @Override
-    public ResourceFactory getResourceFactory()
-    {
+    public ResourceFactory getResourceFactory() {
         return null;
     }
 
     @Override
-    public boolean getPropagateXAResourceTransactionTimeout()
-    {
+    public boolean getPropagateXAResourceTransactionTimeout() {
         return _propagateXAResourceTransactionTimeout;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.config.ConfigurationProvider#getRecoveryIdentity()
      */
     @Override
@@ -364,7 +328,7 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.config.ConfigurationProvider#getRecoveryGroup()
      */
     @Override
@@ -375,7 +339,7 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.config.ConfigurationProvider#getServerName()
      */
     @Override
@@ -385,7 +349,7 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.config.ConfigurationProvider#setApplId(byte[])
      */
     @Override
@@ -395,7 +359,7 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.config.ConfigurationProvider#getApplId()
      */
     @Override
@@ -405,13 +369,34 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.config.ConfigurationProvider#shutDownFramework()
      */
     @Override
     public void shutDownFramework() {
         // TODO Auto-generated method stub
 
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#isSQLRecoveryLog()
+     */
+    @Override
+    public boolean isSQLRecoveryLog() {
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.tx.config.ConfigurationProvider#needToCoordinateServices()
+     */
+    @Override
+    public boolean needToCoordinateServices() {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }
