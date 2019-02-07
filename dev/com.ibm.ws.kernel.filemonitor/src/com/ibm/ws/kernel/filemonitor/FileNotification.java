@@ -39,5 +39,5 @@ public interface FileNotification {
     /**
      * Processes pending security keystore updates {see#link: FileNotificationImpl}
      */
-    void processSecurityChanges(String name);
+    boolean processSecurityChanges(String name);
 }

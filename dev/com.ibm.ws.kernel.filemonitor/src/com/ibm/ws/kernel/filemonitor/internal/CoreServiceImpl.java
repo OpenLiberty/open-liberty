@@ -362,8 +362,8 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
      * Processes pending security keystore events (additions/modifications/removals).
      */
     @Override
-    public void processSecurityChanges(String name) {
-        // The monitor ID is used to determine who is called to process file events.
+    public boolean processSecurityChanges(String name) {
+        boolean monitorFound = false;
         for (ServiceReference<FileMonitor> fm : fileMonitors.keySet()) {
             String monitorId = (String) fm.getProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME);
             String monitorConfigId = (String) fm.getProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_CONFIG_NAME);
@@ -373,9 +373,11 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
 
             //Find the provided name specific keyStore monitor and refresh
             if (name != null && monitorConfigId != null && monitorConfigId.equalsIgnoreCase(name)) {
+                monitorFound = true;
                 fileMonitors.get(fm).processFileRefresh(false, null);
             }
         }
+        return monitorFound;
     }
 
     @Override

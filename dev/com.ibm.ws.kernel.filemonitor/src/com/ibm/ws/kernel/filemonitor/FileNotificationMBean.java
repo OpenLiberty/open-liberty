@@ -52,5 +52,5 @@ public interface FileNotificationMBean extends FileNotification {
      * Processes pending security keystore updates {see#link: FileNotificationImpl}
      */
     @Override
-    void processSecurityChanges(String name);
+    boolean processSecurityChanges(String name);
 }
