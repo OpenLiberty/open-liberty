@@ -58,5 +58,4 @@ AUTH_FILTER_CONFIG_MODIFIED.useraction=Aucune action n'est requise.
 
 AUTH_FILTER_MISSING_ID=CWWKS4360E: L''attribut d''ID obligatoire {0} est manquant dans l''\u00e9l\u00e9ment authFilter sp\u00e9cifi\u00e9 dans le fichier server.xml.
 AUTH_FILTER_MISSING_ID.explanation=L'attribut d'ID obligatoire est manquant dans l'\u00e9l\u00e9ment authFilter sp\u00e9cifi\u00e9 dans le fichier server.xml ; cet \u00e9l\u00e9ment authFilter ne sera pas utilis\u00e9.
-
 AUTH_FILTER_MISSING_ID.useraction=Assurez-vous que l'\u00e9l\u00e9ment authFilter sp\u00e9cifi\u00e9 dans le fichier server.xml comporte l'attribut d'ID.
