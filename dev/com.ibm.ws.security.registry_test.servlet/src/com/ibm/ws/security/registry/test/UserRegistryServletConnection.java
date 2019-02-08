@@ -80,18 +80,21 @@ public class UserRegistryServletConnection implements UserRegistry {
 
             boolean foundResultLine = false;
             boolean populatedResultLine = false;
-            while ((line = br.readLine()) != null) {
-                logger.info("Read line: " + line);
-                if (foundResultLine && !populatedResultLine) {
-                    resultLine = line;
-                    populatedResultLine = true;
+            try {
+                while ((line = br.readLine()) != null) {
+                    logger.info("Read line: " + line);
+                    if (foundResultLine && !populatedResultLine) {
+                        resultLine = line;
+                        populatedResultLine = true;
+                    }
+                    if (line.startsWith("Result from method: " + methodName)) {
+                        foundResultLine = true;
+                    }
+                    if (line.startsWith("getCurrentUserRegistry exception message:")) {
+                        foundResultLine = true;
+                    }
                 }
-                if (line.startsWith("Result from method: " + methodName)) {
-                    foundResultLine = true;
-                }
-                if (line.startsWith("getCurrentUserRegistry exception message:")) {
-                    foundResultLine = true;
-                }
+            } catch (java.io.IOException ex) {
             }
             if (!foundResultLine || resultLine == null) {
                 throw new IllegalStateException("Error: expected return line from servlet response not found");
