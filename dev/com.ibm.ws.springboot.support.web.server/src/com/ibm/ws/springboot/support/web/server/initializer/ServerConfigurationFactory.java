@@ -75,15 +75,19 @@ public class ServerConfigurationFactory {
     public static ServerConfiguration createServerConfiguration(Map<String, Object> serverProperties, SpringBootConfigFactory configFactory, Function<String, URL> urlGetter) {
         ServerConfiguration sc = new ServerConfiguration();
         Boolean useDefaultHost = (Boolean) serverProperties.get(LIBERTY_USE_DEFAULT_HOST);
-        if (useDefaultHost != null && useDefaultHost) {
-            // going to use the default host; return empty config
-            return sc;
+        if (useDefaultHost == null) {
+            // the server properties will only set this key to true for the server instance
+            // that must use the default virtual host.  Otherwise the key is not set and
+            // we assume false.
+            useDefaultHost = Boolean.FALSE;
         }
         Integer port = (Integer) serverProperties.get(PORT);
         if (port == null) {
             throw new IllegalArgumentException("No port specified.");
         }
-        configureVirtualHost(sc, port);
+        if (!useDefaultHost.booleanValue()) {
+            configureVirtualHost(sc, port);
+        }
         configureSSL(sc, port, serverProperties, configFactory, urlGetter);
         configureHttpEndpoint(sc, port, serverProperties);
         return sc;
