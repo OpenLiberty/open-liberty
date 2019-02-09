@@ -35,11 +35,54 @@ public final class ApplicationConfig {
     private final String _name;
     private NotificationBroadcasterSupport _notificationBroadcasterSupport;
 
-    public ApplicationConfig(String configPid, Dictionary<String, ?> config, ApplicationManager applicationManager) {
-        _configPid = configPid;
-        _config = config;
-        _applicationManager = applicationManager;
+    /**
+     * Create an application configuration, assigning a configuration ID,
+     * assigning attributes using the supplied table, and in association with
+     * a specified application manager.
+     *
+     * Several attributes are distinguished:
+     * 
+     * Assign the application location of the application based on the location
+     * attribute. A location should normally be supplied.
+     * 
+     * Assign the application type based on the type attribute.  If no type
+     * attribute was supplied, assign the type based on the extension of
+     * the location.  (Assign a null type if neither a type attribute nor a
+     * location attribute was specified.)
+     * 
+     * Assign the application name based on the name attribute.  If no name
+     * attribute was supplied, assign the name using the base name of the
+     * application location.  (Assign a null name if neither a name attribute
+     * nor a location attribute was specified.)
+     *
+     * @param configPid The configuration ID to assign to the new application
+     *     configuration.
+     * @param config A table of attributes to assign to the application
+     *     configuration.
+     * @param applicationManager The application manager to assign to the
+     *     application configuration.
+     */
+    public ApplicationConfig(
+        String configPid,
+        Dictionary<String, ?> config,
+        ApplicationManager applicationManager) {
+
+        _applicationManager = applicationManager; // Context
+        _configPid = configPid; // Identity
+
+        _config = config; // Raw attributes
+
+        // Key attributes: Location, Type, and Name ...
+
+        // The path to the application relative to the 'apps' folder.
+        // A location is usually required.
+
         _location = (String) config.get(AppManagerConstants.LOCATION);
+
+        // Types include, for example, 'ear', 'rar', and 'war'.
+        // A type is usually required, either as a raw attribute or
+        // as obtained from the location.
+
         String type = (String) config.get(AppManagerConstants.TYPE);
         if (type == null) {
             if (_location != null) {
@@ -50,6 +93,19 @@ public final class ApplicationConfig {
             }
         }
         _type = type;
+
+        // The application name, as assigned here in the application
+        // configuration, is not the only name of the application.
+        //
+        // A name may be supplied by an application
+        // deployment descriptor.
+        //
+        // In order to force unique names, the name may be adjusted
+        // by appending a numeric value.
+        //
+        // A name is usually required, as a raw attribute, or as obtained
+        // from the location.
+
         String name = (String) config.get(AppManagerConstants.NAME);
         if (name == null || "".equals(name)) {
             if (_location != null) {

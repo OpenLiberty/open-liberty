@@ -1123,97 +1123,78 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     }
 
     private boolean hasAnnotations(Container moduleContainer, Collection<String> annotationClassNames) {
-        boolean selected;;
-        String selectionCase;
+        String methodName = "hasAnnotations";
+
+        // Use the application name from the application configuration, which
+        // is implemented to obtain the name from the application information.
+        // That is either the explicit name from the server configuration, or
+        // the name value obtained from the application location.
+        //
+        // The application name as supplied by the application descriptor is
+        // not used.
 
         String modulePath = moduleContainer.getPath();
+
+        String appName = getName();
+        String modName = getPath(moduleContainer);
+
+        if ( _tc.isDebugEnabled() ) {
+        	methodName += ": Module [ " + modulePath + " ]: ";
+            Tr.debug(_tc, methodName + "AppName [ " + appName + " ]");
+            Tr.debug(_tc, methodName + "ModName [ " + modName + " ]");
+        }
+
+        if ( modName == null ) {
+            if ( _tc.isDebugEnabled() ) {
+                Tr.debug(_tc, methodName + ": REJECT: Unexpected failure to obtain module path"); 
+            }
+            return false;
+        }
+
+        if ( modName.isEmpty() ) {
+            modName = appName; 
+            if ( _tc.isDebugEnabled() ) {
+                Tr.debug(_tc, methodName + "Using AppName as ModName");
+            }
+        }
 
         ContainerAnnotations containerAnnotations;
         UnableToAdaptException boundException;
 
         try {
             containerAnnotations = moduleContainer.adapt(ContainerAnnotations.class);
-            boundException = null;
         } catch ( UnableToAdaptException e ) {
-            containerAnnotations = null;
-            boundException = e;
-        }
-
-        if ( boundException != null ) {
             // CWWKZ0121E: Application {0}: Failed to access annotations for module {1} of type {2}: {3}
-            Tr.error(_tc, "error.module.class.source", getName(), modulePath, "EJB", boundException);
-            selected = false;
-            selectionCase = "REJECT: No EJB descriptor and error obtaining annotations";
-
-        } else if ( containerAnnotations == null ) {
-            selected = false;
-            selectionCase = "REJECT: No EJB descriptor and unexpected null annotations";
-
-        } else {
-            String appName;
-            String appNameCase;
-
-            // TODO: This is an approximate unification with 'ModuleAnnotationsImpl':
-            //
-            //       The unification works exactly when the module annotations has module info
-            //       which is extended module info and when the test for annotations is performed
-            //       after application info is set.
-            //
-            //       A failure of either condition likely means different application names
-            //       will be used.
-
-            if ( appInfo != null ) {
-                appName = appInfo.getMetaData().getJ2EEName().getApplication();
-                appNameCase = "use metadata";
-            } else {
-                appName = getName();
-                appNameCase = "use server configuration";
-            }
+            Tr.error(_tc, "error.module.class.source", appName, modulePath, "EJB", boundException);
 
             if ( _tc.isDebugEnabled() ) {
-                Tr.debug(_tc, "Module [ " + modulePath + " ]: AppName [ " + appName + " ]: " + appNameCase);
+                Tr.debug(_tc, methodName + ": REJECT: No EJB descriptor and error obtaining annotations");
             }
-
-            String modName = getPath(moduleContainer);
-            String modNameCase;
-
-            if ( modName == null ) {
-                modNameCase = null; // unused
-
-                selected = false;
-                selectionCase = "REJECT: Unexpected failure to obtain module path";
-
-            } else {
-                if ( modName.isEmpty() ) {
-                    modName = appName; 
-                    modNameCase = "Using app name";
-                } else {
-                    modNameCase = "Using module full path";
-                }
-
-                if ( _tc.isDebugEnabled() ) {
-                    Tr.debug(_tc, "Module [ " + modulePath + " ]: ModName [ " + modName + " ]: " + modNameCase);
-                }
-
-                containerAnnotations.setAppName(appName);
-                containerAnnotations.setModName(modName);
-
-                containerAnnotations.setUseJandex( applicationInformation.getUseJandex() );
-
-                // A class loader is not needed: This usage of container annotations only uses
-                // a basic API.  APIs which use inheritance information are not used.
-
-                selected = containerAnnotations.hasSpecifiedAnnotations(annotationClassNames);
-                if ( selected ) {
-                    selectionCase = "SELECT: No EJB descriptor; EJB annotations were detected";
-                } else {
-                    selectionCase = "REJECT: No EJB descriptor and no EJB annotations";
-                }
-            }
+            return false;
         }
 
+        if ( containerAnnotations == null ) {
+            if ( _tc.isDebugEnabled() ) {
+                Tr.debug(_tc, methodName + ": REJECT: No EJB descriptor and unexpected null annotations"); 
+            }
+            return false;
+        }
+
+        containerAnnotations.setAppName(appName);
+        containerAnnotations.setModName(modName);
+
+        containerAnnotations.setUseJandex( applicationInformation.getUseJandex() );
+
+        // A class loader is *not* set to the annotations.
+        //
+        // Normally, a class loader is required to be set on the annotations.
+        // In this case, since the query does not use inheritance information,
+        // the class loader is not necessary.
+
+        boolean selected = containerAnnotations.hasSpecifiedAnnotations(annotationClassNames);
+
         if (_tc.isDebugEnabled()) {
-            Tr.debug(_tc, "Module [ " + modulePath + " ]: " + selectionCase);
+            Tr.debug(_tc, methodName + Boolean.valueOf(selected));
         }
         return selected;
     }

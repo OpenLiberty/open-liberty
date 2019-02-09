@@ -2411,8 +2411,6 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
         Map<String, ConfigItem<ServletConfig>> servletMap = configurator.getConfigItemMap("servlet");
 
         for (String className : webServletClassNames) {
-            System.out.println(prefix + "Servlet [ " + className + " ]");
-
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, methodName + ": @WebServlet target class [ " + className + " ]");
             }            
@@ -2703,7 +2701,10 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
                                                                                  "servlet-mapping value matches multiple servlets: " + urlText));
                     }
                 }
-                System.out.println("Map servlet [ " + servletName + " ] to URL [ " + urlText + " ]");
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, methodName + ": Map servlet [ " + servletName + " ] to URL [ " + urlText + " ]");
+                }
                 webAppConfiguration.addServletMapping(servletName, urlText);
             }
         }

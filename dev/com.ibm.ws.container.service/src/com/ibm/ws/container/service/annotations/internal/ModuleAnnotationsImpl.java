@@ -17,9 +17,6 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
-import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
-import com.ibm.ws.runtime.metadata.ModuleMetaData;
-import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -104,46 +101,44 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnnotations {
     private static final String CLASS_NAME = ModuleAnnotationsImpl.class.getSimpleName();
 
-    // TODO: This is an approximate unification with 'EARDeployedAppInfo.hasAnnotations'.
+    // The application name must be carefully obtained:
     //
-    //       The unification works exactly when the module info is extended module info
-    //       and when the EAR deployment information has set its application info.
+    // In practice, there are up to several names which are available:
     //
-    //       A failure of either condition likely means different application names
-    //       will be used.
+    // A name attribute supplied by the application element of the server configuration.
+    //
+    // A name supplied by the application descriptor.
+    //
+    // The base name of the application archive (as specified by the location attribute
+    //   of the application element).
+    //
+    // The J2EE name of the application, which is:
+    //    The name attribute from the application element, or, if that is absent,
+    //    The base name of the application archive.
+    //
+    // The disambiguated name of the application, which is:
+    //    The name from the application descriptor, or, if that is absent,
+    //    The base name of the application archive,
+    // And to which a number may be added if the resulting name is not
+    // unique to the server runtime.
+    //
+    // This implementation uses the J2EE name.
+    //
+    // The other location which generates an application name for use by the
+    // cache is:
+    //   com.ibm.ws.app.manager.ear.internal.EARDeployedAppInfo.
+    //      hasAnnotations(Container, Collection<String>)
+    // That location uses (in effect) the J2EE name of the application.
 
     public static String getAppName(ModuleInfo moduleInfo) {
-        String appName;
-        String appNameCase;
+        String methodName = "getAppName";
 
-        ModuleMetaData moduleData;
-        if ( !(moduleInfo instanceof ExtendedModuleInfo) ) {
-            moduleData = null;
-            appNameCase = "Using name from ApplicationInfo: ModuleInfo is not ExtendedModuleInfo";
-        } else {
-            moduleData = ((ExtendedModuleInfo) moduleInfo).getMetaData();
-            appNameCase = "Using name from ApplicationInfo: ModuleInfo is ExtendedModuleInfo but has null module metadata";
-        }
-
-        if ( moduleData == null ) {
-            appName = moduleInfo.getApplicationInfo().getName();
-
-        } else {
-            ApplicationMetaData appData = moduleData.getApplicationMetaData();
-            if ( appData == null ) {
-                appName = moduleData.getJ2EEName().getApplication();
-                appNameCase = "Using module metadata based application name: ModuleInfo is ExtendedModuleInfo but has null application metadata";
-            } else {
-                appName = appData.getJ2EEName().getApplication();
-                appNameCase = "Using application metadata based application name: ModuleInfo is ExtendedModuleInfo and has application metadata";
-            }
-        }
-
+        String appName = moduleInfo.getApplicationInfo().getName();
+        String appDepName = moduleInfo.getApplicationInfo().getDeploymentName();
         if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, "Generated application name [ " + appName + " ]: " + appNameCase);
+            Tr.debug(tc, methodName + ": AppName [ " + appName + " ] AppDepName [ " + appDepName + " ] (using AppDepName)");
         }
-
-        return appName;
+        return appDepName;
     }
 
     public ModuleAnnotationsImpl(
@@ -376,4 +371,46 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
             }
         }
     }
+
+    /*
+    [2/9/19 13:36:03:791 EST] 00000036 id=4016f9d5 ainer.service.app.deploy.internal.ApplicationInfoFactoryImpl > 
+    createEARApplicationInfo Entry
+    EJB_500
+    HugeEJBs_500
+    com.ibm.ws.adaptable.module.internal.InterpretedContainerImpl@fb995bd0
+    com.ibm.ws.app.manager.ear.internal.EARDeployedAppInfo@59933dcd
+    com.ibm.ws.app.manager.module.ApplicationNestedConfigHelper@e065e7a1
+    com.ibm.ws.app.manager.internal.ApplicationInstallInfo@9806c854
+    null
+    com.ibm.ws.app.manager.ear.internal.EARDeployedAppInfo@59933dcd
+
+  -- "EJB_500", which is labelled as "appName", is the name from server.xml
+  -- "HugeEJBs_500", which is labelled as "preferredName" is either the name from application.xml or from the application archive.
+
+  Within the factory method:
+
+      J2EEName j2eeName = j2eeNameFactory.getService().create(appName, null, null);
+      String name = reserveName(preferredName);
+
+      ExtendedApplicationInfo appInfo = new ApplicationInfoImpl(name, j2eeName, container, configHelper, applicationInformation);
+
+  -- "appName" is used to generate the J2EE name of the application.
+  -- "preferredName" is disambiguated and is used as the name of the application.
+
+  [2/9/19 13:36:03:791 EST] 00000036 id=00000000 ws.container.service.app.deploy.internal.ApplicationInfoImpl >
+    <init> Entry  
+    HugeEJBs_500
+    EJB_500
+    com.ibm.ws.adaptable.module.internal.InterpretedContainerImpl@fb995bd0
+    com.ibm.ws.app.manager.module.ApplicationNestedConfigHelper@e065e7a1
+    com.ibm.ws.app.manager.internal.ApplicationInstallInfo@9806c854
+
+  -- "HugeEjbs_500", which was obtained from application.xml or from the application archive,
+     is set as the "name" of the application information.
+  -- "EJB_500" is used to create metadata for the application.
+
+    ApplicationInfoImpl(String appName, J2EEName j2eeName, ...
+      this.appName = appName;
+      this.appMetaData = new ApplicationMetaDataImpl(j2eeName);
+      */    
 }

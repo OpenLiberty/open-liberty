@@ -55,16 +55,19 @@ public class AnnotationServiceImpl_Service implements AnnotationService_Service 
         }
         setCacheOptions(useCacheOptions);
 
-        if ( logger.isLoggable(Level.INFO) ) { // INFO is temporary
-            logger.logp(Level.INFO, CLASS_NAME, methodName,
-                        "Cache Disabled [ {0} ]",
-                        Boolean.valueOf( useCacheOptions.getDisabled() ));
-            logger.logp(Level.INFO, CLASS_NAME, methodName,
-                        "Cache Dir [ {0} ]",
-                        useCacheOptions.getDir());
-            logger.logp(Level.INFO, CLASS_NAME, methodName,
-                        "Cache Write Threads [ {0} ]",
-                        Integer.valueOf(useCacheOptions.getWriteThreads()));
+        if ( logger.isLoggable(Level.FINER) ) { // INFO is temporary
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "Cache Disabled [ {0} ]",
+                Boolean.valueOf( useCacheOptions.getDisabled() ));
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "Cache Dir [ {0} ]",
+                useCacheOptions.getDir());
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "Cache Write Threads [ {0} ]",
+                Integer.valueOf(useCacheOptions.getWriteThreads()));
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "Cache Write Limit [ {0} ]",
+                Integer.valueOf(useCacheOptions.getWriteLimit()));
         }
 
         setFactories(); // Need the work area path to setup the cache instance.

@@ -31,27 +31,38 @@ public class ContainerAnnotationsAdapterImpl
         ArtifactContainer rootArtifactContainer,
         Container rootAdaptableContainer) {
 
-        String adaptPath = rootArtifactContainer.getPath();
+        // Do not put container annotations in the non-persistent cache:
+        //
+        // They are a special case from: 
+        // com.ibm.ws.app.manager.ear.internal.EARDeployedAppInfo
+        //     hasAnnotations(Container, Collection<String>)
+        // And are used to perform a simple query of whether a
+        // particular EJB jar has EJB related annotations.
+        //
+        // The use is one time per EJB jar per application startup:
 
-        ContainerAnnotations containerAnnotations =
-            overlayGet(rootOverlayContainer, adaptPath, ContainerAnnotations.class);
+        // String adaptPath = rootArtifactContainer.getPath();
+        //
+        // ContainerAnnotations containerAnnotations =
+        //     overlayGet(rootOverlayContainer, adaptPath, ContainerAnnotations.class);
+        // 
+        // if ( containerAnnotations == null ) {
 
-        if ( containerAnnotations == null ) {
-            containerAnnotations = new ContainerAnnotationsImpl(
-                this,
-                rootContainer, rootOverlayContainer, rootArtifactContainer, rootAdaptableContainer,
-                ClassSource_Factory.UNNAMED_APP,
-                ClassSource_Factory.UNNAMED_MOD,
-                ClassSource_Factory.UNSET_CATEGORY_NAME);
+        ContainerAnnotations containerAnnotations = new ContainerAnnotationsImpl(
+            this,
+            rootContainer, rootOverlayContainer, rootArtifactContainer, rootAdaptableContainer,
+            ClassSource_Factory.UNNAMED_APP,
+            ClassSource_Factory.UNNAMED_MOD,
+            ClassSource_Factory.UNSET_CATEGORY_NAME);
 
-            // The container annotations are ready to be used, but is incomplete:
-            //
-            // If the annotations are to be cached, the app, mod, and mod cat names must be set.
-            // If inheritance APIs are to be used, the class loader must be set.
-            // If jandex reads are to be supported, the jandex flag must be set.
+        // The container annotations are ready to be used, but is incomplete:
+        //
+        // If the annotations are to be cached, the app, mod, and mod cat names must be set.
+        // If inheritance APIs are to be used, the class loader must be set.
+        // If jandex reads are to be supported, the jandex flag must be set.
 
-            overlayPut(rootOverlayContainer, adaptPath, ContainerAnnotations.class, containerAnnotations);
-        }
+        // overlayPut(rootOverlayContainer, adaptPath, ContainerAnnotations.class, containerAnnotations);
+        // }
 
         return containerAnnotations;
     }
