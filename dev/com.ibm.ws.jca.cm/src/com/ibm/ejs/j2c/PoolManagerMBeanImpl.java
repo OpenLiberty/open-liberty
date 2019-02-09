@@ -227,7 +227,7 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
         buf.append("size=");
         buf.append(_pm.totalConnectionCount.get());
         buf.append(nl);
-        int numUnsharedConnections = 0, numSharedConnections = 0, numFreeConnections = 0, numWaitingConnections = 0;
+        int numUnsharedConnections = 0, numSharedConnections = 0, numFreeConnections = 0;
         _pm.mcToMCWMapWrite.lock();
         try {
             int mcToMCWSize = _pm.mcToMCWMap.size();
@@ -283,9 +283,6 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
                             unsharedBuf.append(mcw.getThreadID());
                             unsharedBuf.append(nl);
                             break;
-                        case 4: // In waiter pool
-                            ++numWaitingConnections;
-                            break;
                         default:
                             break;
                     }
@@ -295,8 +292,7 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
             _pm.mcToMCWMapWrite.unlock();
         }
         // Waiting info
-        buf.append("waiting=");
-        buf.append(numWaitingConnections);
+        buf.append("waiting=" + _pm.waiterCount);
         buf.append(nl);
         // Unshared info
         buf.append("unshared=");
