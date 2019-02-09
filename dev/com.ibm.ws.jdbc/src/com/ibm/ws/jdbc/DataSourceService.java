@@ -464,7 +464,10 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 } else if (Driver.class.getName().equals(type)) {
                     ifc = Driver.class;
                     String url = vProps.getProperty("URL", vProps.getProperty("url"));
-                    vendorImpl = jdbcDriverSvc.getDriver(url, vProps, id);
+                    if (url != null && !"".equals(url)) {
+                        vendorImpl = jdbcDriverSvc.getDriver(url, vProps, id);
+                    } else 
+                        throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4014.URL.for.Driver.missing", jndiName == null ? id : jndiName));
                 } else
                     throw new SQLNonTransientException(ConnectorService.getMessage("MISSING_RESOURCE_J2CA8030", DSConfig.TYPE, type, DATASOURCE, jndiName == null ? id : jndiName));
 
@@ -620,7 +623,10 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             } else if (Driver.class.getName().equals(type)) {
                 ifc = Driver.class;
                 String url = vProps.getProperty("URL", vProps.getProperty("url"));
-                vendorImpl = jdbcDriverSvc.getDriver(url, vProps, id);
+                if (url != null && !"".equals(url)) {
+                    vendorImpl = jdbcDriverSvc.getDriver(url, vProps, id);
+                } else 
+                    throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4014.URL.for.Driver.missing", jndiName == null ? id : jndiName));
             } else
                 throw new SQLNonTransientException(ConnectorService.getMessage("MISSING_RESOURCE_J2CA8030", DSConfig.TYPE, type, DATASOURCE, jndiName == null ? id : jndiName));
 

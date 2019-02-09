@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2009 IBM Corporation and others.
+ * Copyright (c) 2005, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import java.security.PrivilegedExceptionAction;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -614,6 +615,35 @@ public class KeyStoreManager {
 
                 if (ws != null)
                     ws.clearJavaKeyStore();
+            }
+        }
+    }
+
+    /***
+     * This method is used to clear the Java KeyStores held within the WSKeyStores
+     * in the KeyStoreMap based on the files
+     ***/
+    public void clearJavaKeyStoresFromKeyStoreMap(Collection<File> modifiedFiles) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "clearJavaKeyStoresFromKeyStoreMap ", new Object[] { modifiedFiles });
+
+        String filePath = null;
+        String comparePath = null;
+        for (File modifiedKeystoreFile : modifiedFiles) {
+            try {
+                filePath = modifiedKeystoreFile.getCanonicalPath();
+                comparePath = filePath.replace('\\', '/');
+            } catch (IOException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception comparing file path.");
+                continue;
+            }
+
+            for (Entry<String, WSKeyStore> entry : keyStoreMap.entrySet()) {
+                WSKeyStore ws = entry.getValue();
+                if (ws.getLocation().equals(comparePath)) {
+                    ws.clearJavaKeyStore();
+                }
             }
         }
     }

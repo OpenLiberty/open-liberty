@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,24 +23,26 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.common.SharedOutputManager;
-
+import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelperTestHelper;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.WebRequest;
 import com.ibm.ws.webcontainer.security.WebRequestImpl;
 import com.ibm.ws.webcontainer.security.metadata.LoginConfiguration;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
 
-/**
- *
- */
+import test.common.SharedOutputManager;
+
 public class WebRequestImplTest {
+
+    private static final String CUSTOM_SSO_NAME = "CustomSSOName";
     private static final SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+
     /**
      * Using the test rule will drive capture/restore and will dump on error..
      * Notice this is not a static variable, though it is being assigned a value we
@@ -68,27 +70,21 @@ public class WebRequestImplTest {
         webRequest = new WebRequestImpl(req, resp, metadata, config);
     }
 
+    @After
+    public void tearDown() {
+        mock.assertIsSatisfied();
+    }
+
     /**
      * Test method for {@link com.ibm.ws.webcontainer.security.WebRequestImpl#hasAuthenticationData()}.
      */
     @Test
     public void hasAuthenticationData_none() {
-        mock.checking(new Expectations() {
-            {
-                one(req).getHeader(BasicAuthAuthenticator.BASIC_AUTH_HEADER_NAME);
-                will(returnValue(null));
-                one(metadata).getLoginConfiguration();
-                will(returnValue(loginConfig));
-                one(loginConfig).getAuthenticationMethod();
-                will(returnValue("CLIENT_CERT"));
-                one(req).getAttribute(CertificateLoginAuthenticator.PEER_CERTIFICATES);
-                will(returnValue(null));
-                one(req).getCookies();
-                will(returnValue(null));
-            }
-        });
-        assertFalse("No authentication data is present so this should be false",
-                    webRequest.hasAuthenticationData());
+        withAuthorizationHeader(null);
+        withCertificates(null);
+        withCookies(null);
+
+        assertFalse("No authentication data is present so this should be false.", webRequest.hasAuthenticationData());
     }
 
     /**
@@ -96,22 +92,9 @@ public class WebRequestImplTest {
      */
     @Test
     public void hasAuthenticationData_basicOnly() {
-        mock.checking(new Expectations() {
-            {
-                one(req).getHeader(BasicAuthAuthenticator.BASIC_AUTH_HEADER_NAME);
-                will(returnValue("SomeAuthzHeader"));
-                one(metadata).getLoginConfiguration();
-                will(returnValue(loginConfig));
-                one(loginConfig).getAuthenticationMethod();
-                will(returnValue("CLIENT_CERT"));
-                one(req).getAttribute(CertificateLoginAuthenticator.PEER_CERTIFICATES);
-                will(returnValue(null));
-                one(req).getCookies();
-                will(returnValue(null));
-            }
-        });
-        assertTrue("BasicAuth authentication data is present so this should be true",
-                   webRequest.hasAuthenticationData());
+        withAuthorizationHeader("Basic SomeAuthzHeader");
+
+        assertTrue("BasicAuth authentication data is present so this should be true.", webRequest.hasAuthenticationData());
     }
 
     /**
@@ -119,23 +102,12 @@ public class WebRequestImplTest {
      */
     @Test
     public void hasAuthenticationData_emptyClientCertChain() {
+        withAuthorizationHeader(null);
         final X509Certificate[] emptyCertChain = new X509Certificate[] {};
-        mock.checking(new Expectations() {
-            {
-                one(req).getHeader(BasicAuthAuthenticator.BASIC_AUTH_HEADER_NAME);
-                will(returnValue(null));
-                one(metadata).getLoginConfiguration();
-                will(returnValue(loginConfig));
-                one(loginConfig).getAuthenticationMethod();
-                will(returnValue("CLIENT_CERT"));
-                one(req).getAttribute(CertificateLoginAuthenticator.PEER_CERTIFICATES);
-                will(returnValue(emptyCertChain));
-                one(req).getCookies();
-                will(returnValue(null));
-            }
-        });
-        assertFalse("ClientCert authentication is empty so this should be false",
-                    webRequest.hasAuthenticationData());
+        withCertificates(emptyCertChain);
+        withCookies(null);
+
+        assertFalse("ClientCert authentication is empty so this should be false.", webRequest.hasAuthenticationData());
     }
 
     /**
@@ -143,22 +115,10 @@ public class WebRequestImplTest {
      */
     @Test
     public void hasAuthenticationData_clientCertOnly() {
-        mock.checking(new Expectations() {
-            {
-                one(req).getHeader(BasicAuthAuthenticator.BASIC_AUTH_HEADER_NAME);
-                will(returnValue(null));
-                one(metadata).getLoginConfiguration();
-                will(returnValue(loginConfig));
-                one(loginConfig).getAuthenticationMethod();
-                will(returnValue("CLIENT_CERT"));
-                one(req).getAttribute(CertificateLoginAuthenticator.PEER_CERTIFICATES);
-                will(returnValue(certChain));
-                one(req).getCookies();
-                will(returnValue(null));
-            }
-        });
-        assertTrue("ClientCert authentication data is present so this should be true",
-                   webRequest.hasAuthenticationData());
+        withAuthorizationHeader(null);
+        withCertificates(certChain);
+
+        assertTrue("ClientCert authentication data is present so this should be true.", webRequest.hasAuthenticationData());
     }
 
     /**
@@ -166,25 +126,13 @@ public class WebRequestImplTest {
      */
     @Test
     public void hasAuthenticationData_customSSOName() {
-        final Cookie[] customCookies = new Cookie[] { new Cookie("CustomSSOName", "SomeSSOCookieValue") };
-        mock.checking(new Expectations() {
-            {
-                one(req).getHeader(BasicAuthAuthenticator.BASIC_AUTH_HEADER_NAME);
-                will(returnValue(null));
-                one(metadata).getLoginConfiguration();
-                will(returnValue(loginConfig));
-                one(loginConfig).getAuthenticationMethod();
-                will(returnValue("CLIENT_CERT"));
-                one(req).getAttribute(CertificateLoginAuthenticator.PEER_CERTIFICATES);
-                will(returnValue(null));
-                one(req).getCookies();
-                will(returnValue(customCookies));
-                one(config).getSSOCookieName();
-                will(returnValue("CustomSSOName"));
-            }
-        });
-        assertTrue("SSO authentication data is present so this should be true",
-                   webRequest.hasAuthenticationData());
+        withAuthorizationHeader(null);
+        withCertificates(null);
+        final Cookie[] customCookies = new Cookie[] { new Cookie(CUSTOM_SSO_NAME, "SomeSSOCookieValue") };
+        withCookies(customCookies);
+        withCookieName(CUSTOM_SSO_NAME);
+
+        assertTrue("SSO authentication data is present so this should be true.", webRequest.hasAuthenticationData());
     }
 
     /**
@@ -192,24 +140,24 @@ public class WebRequestImplTest {
      */
     @Test
     public void hasAuthenticationData_onlyDefaultSSO() {
-        mock.checking(new Expectations() {
-            {
-                one(req).getHeader(BasicAuthAuthenticator.BASIC_AUTH_HEADER_NAME);
-                will(returnValue(null));
-                one(metadata).getLoginConfiguration();
-                will(returnValue(loginConfig));
-                one(loginConfig).getAuthenticationMethod();
-                will(returnValue("CLIENT_CERT"));
-                one(req).getAttribute(CertificateLoginAuthenticator.PEER_CERTIFICATES);
-                will(returnValue(null));
-                one(req).getCookies();
-                will(returnValue(cookies));
-                one(config).getSSOCookieName();
-                will(returnValue("CustomSSOName"));
-            }
-        });
-        assertTrue("SSO authentication data is present so this should be true",
-                   webRequest.hasAuthenticationData());
+        withAuthorizationHeader(null);
+        withCertificates(null);
+        withCookies(cookies);
+        withCookieName(CUSTOM_SSO_NAME);
+        withCustomCookieNameOnly(false);
+
+        assertTrue("SSO authentication data is present so this should be true.", webRequest.hasAuthenticationData());
+    }
+
+    @Test
+    public void hasAuthenticationData_onlyCustomCookieNameSSO() {
+        withAuthorizationHeader(null);
+        withCertificates(null);
+        withCookies(cookies);
+        withCookieName(CUSTOM_SSO_NAME);
+        withCustomCookieNameOnly(true);
+
+        assertFalse("No usable authentication data is present so this should be false.", webRequest.hasAuthenticationData());
     }
 
     /**
@@ -217,98 +165,85 @@ public class WebRequestImplTest {
      */
     @Test
     public void hasAuthenticationData_ssoOnly() {
-        mock.checking(new Expectations() {
-            {
-                one(req).getHeader(BasicAuthAuthenticator.BASIC_AUTH_HEADER_NAME);
-                will(returnValue(null));
-                one(metadata).getLoginConfiguration();
-                will(returnValue(loginConfig));
-                one(loginConfig).getAuthenticationMethod();
-                will(returnValue("CLIENT_CERT"));
-                one(req).getAttribute(CertificateLoginAuthenticator.PEER_CERTIFICATES);
-                will(returnValue(null));
-                one(req).getCookies();
-                will(returnValue(cookies));
-                one(config).getSSOCookieName();
-                will(returnValue(SSOAuthenticator.DEFAULT_SSO_COOKIE_NAME));
-            }
-        });
-        assertTrue("SSO authentication data is present so this should be true",
-                   webRequest.hasAuthenticationData());
+        withAuthorizationHeader(null);
+        withCertificates(null);
+        withCookies(cookies);
+        withCookieName(SSOAuthenticator.DEFAULT_SSO_COOKIE_NAME);
+
+        assertTrue("SSO authentication data is present so this should be true.", webRequest.hasAuthenticationData());
     }
 
-    /**
-     * Test method for {@link com.ibm.ws.webcontainer.security.WebRequestImpl#hasAuthenticationData()}.
-     */
     @Test
-    public void hasAuthenticationData_basicAndSSO() {
-        mock.checking(new Expectations() {
-            {
-                one(req).getHeader(BasicAuthAuthenticator.BASIC_AUTH_HEADER_NAME);
-                will(returnValue("SomeAuthzHeader"));
-                one(metadata).getLoginConfiguration();
-                will(returnValue(loginConfig));
-                one(loginConfig).getAuthenticationMethod();
-                will(returnValue("CLIENT_CERT"));
-                one(req).getAttribute(CertificateLoginAuthenticator.PEER_CERTIFICATES);
-                will(returnValue(null));
-                one(req).getCookies();
-                will(returnValue(cookies));
-                one(config).getSSOCookieName();
-                will(returnValue(SSOAuthenticator.DEFAULT_SSO_COOKIE_NAME));
-            }
-        });
-        assertTrue("BasicAuth and SSO authentication data is present so this should be true",
-                   webRequest.hasAuthenticationData());
+    public void hasAuthenticationData_JWT() {
+        withAuthorizationHeader(null);
+        withCertificates(null);
+        JwtSSOTokenHelperTestHelper jwtSSOTokenHelperTestHelper = new JwtSSOTokenHelperTestHelper(mock);
+        try {
+            jwtSSOTokenHelperTestHelper.setJwtSSOTokenProxyWithCookieName("jwtCookieName");
+            withCookies(new Cookie[] { new Cookie("jwtCookieName", "") });
+
+            assertTrue("The JWT cookie must be found in the request.", webRequest.hasAuthenticationData());
+        } finally {
+            jwtSSOTokenHelperTestHelper.tearDown();
+        }
     }
 
-    /**
-     * Test method for {@link com.ibm.ws.webcontainer.security.WebRequestImpl#hasAuthenticationData()}.
-     */
     @Test
-    public void hasAuthenticationData_clientCertAndSSO() {
-        mock.checking(new Expectations() {
-            {
-                one(req).getHeader(BasicAuthAuthenticator.BASIC_AUTH_HEADER_NAME);
-                will(returnValue(null));
-                one(metadata).getLoginConfiguration();
-                will(returnValue(loginConfig));
-                one(loginConfig).getAuthenticationMethod();
-                will(returnValue("CLIENT_CERT"));
-                one(req).getAttribute(CertificateLoginAuthenticator.PEER_CERTIFICATES);
-                will(returnValue(certChain));
-                one(req).getCookies();
-                will(returnValue(cookies));
-                one(config).getSSOCookieName();
-                will(returnValue(SSOAuthenticator.DEFAULT_SSO_COOKIE_NAME));
-            }
-        });
-        assertTrue("ClientCert and SSO authentication data is present so this should be true",
-                   webRequest.hasAuthenticationData());
+    public void hasAuthenticationData_Bearer() {
+        withCertificates(null);
+        withCookies(new Cookie[] {});
+        withAuthorizationHeader("Bearer value");
+
+        assertTrue("The Bearer token must be found in the request.", webRequest.hasAuthenticationData());
     }
 
-    /**
-     * Test method for {@link com.ibm.ws.webcontainer.security.WebRequestImpl#hasAuthenticationData()}.
-     */
-    @Test
-    public void hasAuthenticationData_all() {
+    private void withAuthorizationHeader(final String header) {
         mock.checking(new Expectations() {
             {
-                one(req).getHeader(BasicAuthAuthenticator.BASIC_AUTH_HEADER_NAME);
-                will(returnValue("SomeAuthzHeader"));
+                allowing(req).getHeader("Authorization");
+                will(returnValue(header));
+            }
+        });
+    }
+
+    private void withCertificates(final X509Certificate[] certs) {
+        mock.checking(new Expectations() {
+            {
                 one(metadata).getLoginConfiguration();
                 will(returnValue(loginConfig));
                 one(loginConfig).getAuthenticationMethod();
                 will(returnValue("CLIENT_CERT"));
                 one(req).getAttribute(CertificateLoginAuthenticator.PEER_CERTIFICATES);
-                will(returnValue(certChain));
-                one(req).getCookies();
-                will(returnValue(cookies));
-                one(config).getSSOCookieName();
-                will(returnValue(SSOAuthenticator.DEFAULT_SSO_COOKIE_NAME));
+                will(returnValue(certs));
             }
         });
-        assertTrue("All authentication data is present so this should be true",
-                   webRequest.hasAuthenticationData());
     }
+
+    private void withCookies(final Cookie[] cookies) {
+        mock.checking(new Expectations() {
+            {
+                allowing(req).getCookies();
+                will(returnValue(cookies));
+            }
+        });
+    }
+
+    private void withCookieName(final String name) {
+        mock.checking(new Expectations() {
+            {
+                one(config).getSSOCookieName();
+                will(returnValue(name));
+            }
+        });
+    }
+
+    private void withCustomCookieNameOnly(final boolean value) {
+        mock.checking(new Expectations() {
+            {
+                one(config).isUseOnlyCustomCookieName();
+                will(returnValue(value));
+            }
+        });
+    }
+
 }

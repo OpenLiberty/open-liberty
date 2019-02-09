@@ -69,11 +69,14 @@ public class TransactionContextExtension implements Extension, WebSphereCDIExten
     }
 
     private CDIService getCDIService() {
-        Bundle bundle = FrameworkUtil.getBundle(CDIService.class);
-        CDIService cdiService = AccessController.doPrivileged((PrivilegedAction<CDIService>) () -> {
-            BundleContext bCtx = bundle.getBundleContext();
-            ServiceReference<CDIService> svcRef = bCtx.getServiceReference(CDIService.class);
-            return svcRef == null ? null : bCtx.getService(svcRef);
+        final Bundle bundle = FrameworkUtil.getBundle(CDIService.class);
+        CDIService cdiService = AccessController.doPrivileged(new PrivilegedAction<CDIService>() {
+            @Override
+            public CDIService run() {
+                BundleContext bCtx = bundle.getBundleContext();
+                ServiceReference<CDIService> svcRef = bCtx.getServiceReference(CDIService.class);
+                return svcRef == null ? null : bCtx.getService(svcRef);
+            }
         });
         if (cdiService == null) {
             throw new IllegalStateException("Failed to get the CDIService.");

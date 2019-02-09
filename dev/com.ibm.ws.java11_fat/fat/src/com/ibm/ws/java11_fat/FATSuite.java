@@ -17,6 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 Java11Test.class,
-                Java11CNFETest.class
+                Java11CNFETest.class,
+                JavaInfoTest.class
 })
 public class FATSuite {}

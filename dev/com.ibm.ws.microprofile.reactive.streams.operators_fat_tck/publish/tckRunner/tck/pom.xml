@@ -169,7 +169,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.17</version>
+                <version>2.17</version> <!-- Any changes to the surefire version must be tested against ZOS -->
                 <configuration>
                     <systemPropertyVariables>
                         <argLine>UTF-8</argLine> <!-- Needed for ZOS becuase arquillian calls string.getBtytes() -->

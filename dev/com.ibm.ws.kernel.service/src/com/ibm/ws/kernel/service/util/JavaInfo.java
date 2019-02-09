@@ -48,20 +48,29 @@ public class JavaInfo {
         else
             MINOR = 0;
 
-	if (i < versionElements.length) 
-	    MICRO = Integer.valueOf(versionElements[i]);
-	else
-	    MICRO = 0;
+        if (i < versionElements.length)
+            MICRO = Integer.valueOf(versionElements[i]);
+        else
+            MICRO = 0;
 
         String vendor = getSystemProperty("java.vendor").toLowerCase();
-        if (vendor.contains("ibm"))
-            VENDOR = Vendor.IBM;
-        else if (vendor.contains("openj9"))
+        if (vendor.contains("openj9"))
             VENDOR = Vendor.OPENJ9;
+        else if (vendor.contains("ibm") || vendor.contains("j9"))
+            VENDOR = Vendor.IBM;
         else if (vendor.contains("oracle"))
             VENDOR = Vendor.ORACLE;
-        else
-            VENDOR = Vendor.UNKNOWN;
+        else {
+            vendor = getSystemProperty("java.vm.name", "unknown").toLowerCase();
+            if (vendor.contains("openj9"))
+                VENDOR = Vendor.OPENJ9;
+            else if (vendor.contains("ibm") || vendor.contains("j9"))
+                VENDOR = Vendor.IBM;
+            else if (vendor.contains("oracle") || vendor.contains("openjdk"))
+                VENDOR = Vendor.ORACLE;
+            else
+                VENDOR = Vendor.UNKNOWN;
+        }
 
         int sr = 0;
         int fp = 0;
@@ -100,6 +109,15 @@ public class JavaInfo {
 
     }
 
+    private static final String getSystemProperty(final String propName, final String defaultValue) {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return System.getProperty(propName, defaultValue);
+            }
+        });
+    }
+
     private static final String getSystemProperty(final String propName) {
         return AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
@@ -124,7 +142,7 @@ public class JavaInfo {
     }
 
     public static int microVersion() {
-	return instance().MICRO;
+        return instance().MICRO;
     }
 
     public static Vendor vendor() {

@@ -490,14 +490,13 @@ public class MPConcurrentTestServlet extends FATServlet {
                 results.add(Thread.currentThread().getName());
                 try {
                     ManagedExecutorService result = InitialContext.doLookup("java:module/noContextExecutorRef");
-                    results.add(result);
                     System.out.println("< lookup: " + result);
+                    fail("Application context should have been cleared. Looked up " + result);
                 } catch (NamingException x) {
                     System.out.println("< lookup failed");
-                    x.printStackTrace(System.out);
                     throw new CompletionException(x);
                 }
-            }, defaultManagedExecutor);
+            }, defaultManagedExecutor); // expect dependent action to run on this executor, but not with its context propagation
 
             assertFalse(cf3.isDone());
             try {
@@ -510,10 +509,15 @@ public class MPConcurrentTestServlet extends FATServlet {
             blocker2.countDown();
 
             // Dependent stage must be able to complete now
-            assertNull(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            try {
+                cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof NamingException))
+                    throw x;
+            }
             assertTrue(cf3.isDone());
             assertFalse(cf3.isCancelled());
-            assertFalse(cf3.isCompletedExceptionally());
+            assertTrue(cf3.isCompletedExceptionally());
 
             // Verify the parameter that is supplied to acceptEither's consumer
             assertEquals(Boolean.TRUE, results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
@@ -522,11 +526,6 @@ public class MPConcurrentTestServlet extends FATServlet {
             String threadName;
             assertNotNull(threadName = (String) results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
             assertTrue(threadName, threadName.startsWith(("Default Executor-thread-")));
-
-            // thread context is made available to acceptEither's consumer per the supplied managed executor, enabling java:module lookup to succeed
-            Object lookupResult;
-            assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-            assertEquals(noContextExecutor, lookupResult);
 
             // allow cf1 to complete
             blocker1.countDown();
@@ -877,12 +876,9 @@ public class MPConcurrentTestServlet extends FATServlet {
             assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
             assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // must run async on unmanaged thread
             assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-            if (lookupResult instanceof NamingException)
-                ; // pass
-            else if (lookupResult instanceof Throwable)
+            if (lookupResult instanceof Throwable)
                 throw new Exception((Throwable) lookupResult);
-            else
-                fail("Unexpected result of lookup: " + lookupResult);
+            assertEquals(defaultManagedExecutor, lookupResult);
 
             // [cf5] applyToEither on unmanaged thread (or possibly servlet thread) - context should be applied from stage creation time
             assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
@@ -1270,7 +1266,7 @@ public class MPConcurrentTestServlet extends FATServlet {
         String result = cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertTrue(result, result.startsWith("Default Executor-thread-")); // runs on Liberty thread pool
         assertTrue(result, !Thread.currentThread().getName().equals(result)); // does not run on servlet thread
-        assertTrue(result, result.endsWith(":NamingException")); // namespace context not available to thread
+        assertTrue(result, result.startsWith("Default Executor-thread-") && result.contains(":ManagedExecutor"));
 
         assertTrue(cf2.isDone());
         assertFalse(cf2.isCancelled());
@@ -1670,30 +1666,25 @@ public class MPConcurrentTestServlet extends FATServlet {
 
         CompletableFuture<?> cf2 = defaultManagedExecutor
                         .completedFuture((Throwable) null)
-                        .thenApplyAsync(lookup, testThreads) // expect lookup to fail without the context of the servlet thread
+                        .thenApplyAsync(x -> 1 / 0 < 2 ? sameThreadExecutor : null, testThreads) // force ArithmeticException to occur
                         .exceptionally(lookup);
 
         assertTrue(s = cf2.toString(), s.startsWith("ManagedCompletableFuture@"));
 
-        // thenApplyAsync on unmanaged executor
-        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
-        assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // must run async on unmanaged thread
-
         // exceptionally on unmanaged thread or servlet thread
         assertNotNull(previousFailure = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        if (previousFailure instanceof CompletionException && ((CompletionException) previousFailure).getCause() instanceof NamingException)
+        if (previousFailure instanceof CompletionException && ((CompletionException) previousFailure).getCause() instanceof ArithmeticException)
             ; // pass
         else if (previousFailure instanceof Throwable)
             throw new Exception((Throwable) previousFailure);
         else
             fail("Unexpected value supplied to function as previous failure: " + previousFailure);
 
-        String previousThreadName = threadName;
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
-        assertTrue(threadName, previousThreadName.equals(threadName) || currentThreadName.equals(threadName)); // must run on same unmanaged thread or on servlet thread
+        assertTrue(threadName, !threadName.startsWith("Default Executor-thread-") || currentThreadName.equals(threadName)); // must run on same unmanaged thread or on servlet thread
 
         assertEquals(defaultManagedExecutor, cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertEquals(3, count.get()); // two additional executions of the lookup function
+        assertEquals(2, count.get()); // one additional execution of the lookup function
     }
 
     /**
@@ -1805,6 +1796,10 @@ public class MPConcurrentTestServlet extends FATServlet {
             results.add(Thread.currentThread().getName());
             try {
                 results.add(InitialContext.doLookup("java:comp/env/executorRef"));
+                if (failure == null && !Thread.currentThread().getName().startsWith("Default Executor-thread-")) {
+                    System.out.println("< increment ArrayIndexOutOfBoundsException");
+                    throw new CompletionException(new ArrayIndexOutOfBoundsException("Intentional failure caused by test."));
+                }
                 System.out.println("< increment");
                 return count;
             } catch (NamingException x) {
@@ -1854,19 +1849,9 @@ public class MPConcurrentTestServlet extends FATServlet {
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
         assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // must run async on unmanaged thread
         assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        if (lookupResult instanceof NamingException)
-            ; // pass
-        else if (lookupResult instanceof Throwable)
+        if (lookupResult instanceof Throwable)
             throw new Exception((Throwable) lookupResult);
-        else
-            fail("Unexpected result of lookup: " + lookupResult);
-        try {
-            Integer result = cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
-            fail("Action should fail, not return " + result);
-        } catch (ExecutionException x) {
-            if (!(x.getCause() instanceof NamingException))
-                throw x;
-        }
+        assertEquals(defaultManagedExecutor, lookupResult);
 
         // handle on unmanaged thread (context should be applied from stage creation time)
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
@@ -3308,19 +3293,16 @@ public class MPConcurrentTestServlet extends FATServlet {
             assertNotSame(currentThreadName, threadName2);
             assertTrue(threadName2, threadName2.startsWith("Default Executor-thread-"));
             assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-            if (lookupResult instanceof NamingException)
-                ; // pass
-            else if (lookupResult instanceof Throwable)
+            if (lookupResult instanceof Throwable)
                 throw new Exception((Throwable) lookupResult);
-            else
-                fail("Unexpected result of lookup: " + lookupResult);
+            assertEquals(defaultManagedExecutor, lookupResult);
 
             // runAfterEitherAsync
             assertNotNull(threadName3 = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
             assertNotSame(currentThreadName, threadName3);
             assertTrue(threadName3, threadName3.startsWith("Default Executor-thread-"));
             assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-            if (lookupResult instanceof Throwable) // thread context is available, even if it wasn't available to the previous stage
+            if (lookupResult instanceof Throwable)
                 throw new Exception((Throwable) lookupResult);
             assertEquals(defaultManagedExecutor, lookupResult);
 
@@ -3408,9 +3390,12 @@ public class MPConcurrentTestServlet extends FATServlet {
             assertNotSame(currentThreadName, threadName3);
             assertTrue(threadName3, threadName3.startsWith("Default Executor-thread-"));
             assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-            if (lookupResult instanceof Throwable) // thread context is available, even if it wasn't available to the previous stage
+            if (lookupResult instanceof NamingException)
+                ; // pass
+            else if (lookupResult instanceof Throwable)
                 throw new Exception((Throwable) lookupResult);
-            assertEquals(defaultManagedExecutor, lookupResult);
+            else
+                fail("Unexpected result of lookup: " + lookupResult);
 
             assertNull(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
             assertTrue(cf3.isDone());
@@ -3858,12 +3843,9 @@ public class MPConcurrentTestServlet extends FATServlet {
         assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
         assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
         assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        if (lookupResult instanceof NamingException)
-            ; // pass
-        else if (lookupResult instanceof Throwable)
+        if (lookupResult instanceof Throwable)
             throw new Exception((Throwable) lookupResult);
-        else
-            fail("Unexpected result of lookup: " + lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
 
         // thenApplyAsync on unmanaged executor (value stored by dependent stage)
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
@@ -3950,12 +3932,9 @@ public class MPConcurrentTestServlet extends FATServlet {
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
         assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // must run async on unmanaged thread
         assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        if (lookupResult instanceof NamingException)
-            ; // pass
-        else if (lookupResult instanceof Throwable)
+        if (lookupResult instanceof Throwable)
             throw new Exception((Throwable) lookupResult);
-        else
-            fail("Unexpected result of lookup: " + lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
 
         // thenAcceptBoth on unmanaged thread or servlet thread (context should be applied from stage creation time)
         assertEquals(Integer.valueOf(5), results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
@@ -4033,12 +4012,9 @@ public class MPConcurrentTestServlet extends FATServlet {
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
         assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // must run async on unmanaged thread
         assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        if (lookupResult instanceof NamingException)
-            ; // pass
-        else if (lookupResult instanceof Throwable)
+        if (lookupResult instanceof Throwable)
             throw new Exception((Throwable) lookupResult);
-        else
-            fail("Unexpected result of lookup: " + lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
 
         // thenApply on unmanaged thread (context should be applied from stage creation time)
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
@@ -4169,12 +4145,9 @@ public class MPConcurrentTestServlet extends FATServlet {
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
         assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // must run async on unmanaged thread
         assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        if (lookupResult instanceof NamingException)
-            ; // pass
-        else if (lookupResult instanceof Throwable)
+        if (lookupResult instanceof Throwable)
             throw new Exception((Throwable) lookupResult);
-        else
-            fail("Unexpected result of lookup: " + lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
         assertEquals(Integer.valueOf(4), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
         // thenCombine on unmanaged thread or servlet thread (context should be applied from stage creation time)
@@ -4273,12 +4246,9 @@ public class MPConcurrentTestServlet extends FATServlet {
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
         assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // must run async on unmanaged thread
         assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        if (lookupResult instanceof NamingException)
-            ; // pass
-        else if (lookupResult instanceof Throwable)
+        if (lookupResult instanceof Throwable)
             throw new Exception((Throwable) lookupResult);
-        else
-            fail("Unexpected result of lookup: " + lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
 
         // thenCompose on unmanaged thread (context should be applied from stage creation time)
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
@@ -4394,12 +4364,9 @@ public class MPConcurrentTestServlet extends FATServlet {
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
         assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // must run async on unmanaged thread
         assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        if (lookupResult instanceof NamingException)
-            ; // pass
-        else if (lookupResult instanceof Throwable)
+        if (lookupResult instanceof Throwable)
             throw new Exception((Throwable) lookupResult);
-        else
-            fail("Unexpected result of lookup: " + lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
 
         // thenRun on unmanaged thread (context should be applied from stage creation time)
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
@@ -4845,9 +4812,9 @@ public class MPConcurrentTestServlet extends FATServlet {
         assertTrue(s = cf2.toString(), s.startsWith("ManagedCompletableFuture@"));
         assertTrue(s = cf3.toString(), s.startsWith("ManagedCompletableFuture@"));
 
-        // Order in which the above run is unpredictable. Distinguish by looking at the execution thread and lookup result.
+        // Order in which the above run is unpredictable. Distinguish by looking at the execution thread.
 
-        Object[] cf1result = null, cf2result = null, cf3result = null;
+        Object[] cf1or2resultA = null, cf1or2resultB = null, cf3result = null;
 
         for (int i = 1; i <= 3; i++) {
             Object[] result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
@@ -4855,30 +4822,31 @@ public class MPConcurrentTestServlet extends FATServlet {
             System.out.println(Arrays.asList(result));
             String threadName = (String) result[THREAD];
             if (threadName.startsWith("Default Executor-thread-") && !threadName.equals(currentThreadName))
-                if (result[LOOKUP_RESULT] instanceof ManagedExecutorService)
-                    cf1result = result;
+                if (cf1or2resultA == null)
+                    cf1or2resultA = result;
                 else
-                    cf2result = result;
+                    cf1or2resultB = result;
             else
                 cf3result = result;
         }
 
-        assertNotNull(cf1result);
-        assertNotNull(cf2result);
+        assertNotNull(cf1or2resultA);
+        assertNotNull(cf1or2resultB);
         assertNotNull(cf3result);
 
-        // whenCompleteAsync on default asynchronous execution facility
-        assertNull(cf1result[PREV_RESULT]);
-        assertTrue(cf1result[PREV_FAILURE].toString(), // CompletableFuture wraps the exception with CompletionException, so expect the same here
-                   cf1result[PREV_FAILURE] instanceof CompletionException && ((CompletionException) cf1result[PREV_FAILURE]).getCause() instanceof ArithmeticException);
-        assertNotSame(currentThreadName, cf1result[THREAD]); // cannot be the servlet thread because operation is async
+        // whenCompleteAsync on default asynchronous execution facility or noContextExecutor
+        assertNull(cf1or2resultA[PREV_RESULT]);
+        assertTrue(cf1or2resultA[PREV_FAILURE].toString(), // CompletableFuture wraps the exception with CompletionException, so expect the same here
+                   cf1or2resultA[PREV_FAILURE] instanceof CompletionException && ((CompletionException) cf1or2resultA[PREV_FAILURE]).getCause() instanceof ArithmeticException);
+        assertNotSame(currentThreadName, cf1or2resultA[THREAD]); // cannot be the servlet thread because operation is async
+        assertEquals(defaultManagedExecutor, cf1or2resultA[LOOKUP_RESULT]);
 
-        // whenCompleteAsync on noContextExecutor
-        assertNull(cf2result[PREV_RESULT]);
-        assertTrue(cf2result[PREV_FAILURE].toString(), // CompletableFuture wraps the exception with CompletionException, so expect the same here
-                   cf2result[PREV_FAILURE] instanceof CompletionException && ((CompletionException) cf2result[PREV_FAILURE]).getCause() instanceof ArithmeticException);
-        assertNotSame(currentThreadName, cf2result[THREAD]); // cannot be the servlet thread because operation is async
-        assertTrue(cf2result[LOOKUP_RESULT].toString(), cf2result[LOOKUP_RESULT] instanceof NamingException);
+        // whenCompleteAsync on default asynchronous execution facility or noContextExecutor
+        assertNull(cf1or2resultB[PREV_RESULT]);
+        assertTrue(cf1or2resultB[PREV_FAILURE].toString(), // CompletableFuture wraps the exception with CompletionException, so expect the same here
+                   cf1or2resultB[PREV_FAILURE] instanceof CompletionException && ((CompletionException) cf1or2resultB[PREV_FAILURE]).getCause() instanceof ArithmeticException);
+        assertNotSame(currentThreadName, cf1or2resultB[THREAD]); // cannot be the servlet thread because operation is async
+        assertEquals(defaultManagedExecutor, cf1or2resultB[LOOKUP_RESULT]);
 
         // whenComplete on unmanaged thread or servlet thread
         assertNull(cf3result[PREV_RESULT]);
@@ -4962,9 +4930,9 @@ public class MPConcurrentTestServlet extends FATServlet {
         String cf0ThreadName = cf0.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertFalse(cf0ThreadName, cf0ThreadName.startsWith("Default Executor-thread-")); // must run async on unmanaged thread
 
-        // Order in which the above run is unpredictable. Distinguish by looking at the execution thread and lookup result.
+        // Order in which the above run is unpredictable. Distinguish by looking at the execution thread.
 
-        Object[] cf1result = null, cf2result = null, cf3result = null;
+        Object[] cf1or2resultA = null, cf1or2resultB = null, cf3result = null;
 
         for (int i = 1; i <= 3; i++) {
             Object[] result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
@@ -4972,28 +4940,29 @@ public class MPConcurrentTestServlet extends FATServlet {
             System.out.println(Arrays.asList(result));
             String threadName = (String) result[THREAD];
             if (threadName.startsWith("Default Executor-thread-") && !threadName.equals(currentThreadName))
-                if (result[LOOKUP_RESULT] instanceof ManagedExecutorService)
-                    cf1result = result;
+                if (cf1or2resultA == null)
+                    cf1or2resultA = result;
                 else
-                    cf2result = result;
+                    cf1or2resultB = result;
             else
                 cf3result = result;
         }
 
-        assertNotNull(cf1result);
-        assertNotNull(cf2result);
+        assertNotNull(cf1or2resultA);
+        assertNotNull(cf1or2resultB);
         assertNotNull(cf3result);
 
-        // whenCompleteAsync on default asynchronous execution facility
-        assertEquals(cf0ThreadName, cf1result[PREV_RESULT]);
-        assertNull(cf1result[PREV_FAILURE]);
-        assertNotSame(currentThreadName, cf1result[THREAD]); // cannot be the servlet thread because operation is async
+        // whenCompleteAsync on default asynchronous execution facility or noContextExecutor
+        assertEquals(cf0ThreadName, cf1or2resultA[PREV_RESULT]);
+        assertNull(cf1or2resultA[PREV_FAILURE]);
+        assertNotSame(currentThreadName, cf1or2resultA[THREAD]); // cannot be the servlet thread because operation is async
+        assertEquals(defaultManagedExecutor, cf1or2resultA[LOOKUP_RESULT]);
 
-        // whenCompleteAsync on noContextExecutor
-        assertEquals(cf0ThreadName, cf2result[PREV_RESULT]);
-        assertNull(cf2result[PREV_FAILURE]);
-        assertNotSame(currentThreadName, cf2result[THREAD]); // cannot be the servlet thread because operation is async
-        assertTrue(cf2result[LOOKUP_RESULT].toString(), cf2result[LOOKUP_RESULT] instanceof NamingException);
+        // whenCompleteAsync on default asynchronous execution facility or noContextExecutor
+        assertEquals(cf0ThreadName, cf1or2resultB[PREV_RESULT]);
+        assertNull(cf1or2resultB[PREV_FAILURE]);
+        assertNotSame(currentThreadName, cf1or2resultB[THREAD]); // cannot be the servlet thread because operation is async
+        assertEquals(defaultManagedExecutor, cf1or2resultB[LOOKUP_RESULT]);
 
         // whenComplete on unmanaged thread or servlet thread
         assertEquals(cf0ThreadName, cf3result[PREV_RESULT]);

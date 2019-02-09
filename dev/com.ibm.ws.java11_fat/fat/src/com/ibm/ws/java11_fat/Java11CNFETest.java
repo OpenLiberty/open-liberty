@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -30,6 +31,7 @@ import componenttest.topology.utils.FATServletClient;
 import java11.cnfe.web.CNFETestServlet;
 
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 11)
 @AllowedFFDC("java.lang.ClassNotFoundException")
 public class Java11CNFETest extends FATServletClient {
 
