@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 
 package com.ibm.ws.ssl.provider;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URLStreamHandler;
 import java.security.AccessController;
 import java.security.KeyStore;
@@ -26,10 +28,12 @@ import java.security.cert.LDAPCertStoreParameters;
 import java.security.cert.PKIXBuilderParameters;
 import java.security.cert.X509CertSelector;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import javax.net.ssl.CertPathTrustManagerParameters;
@@ -924,6 +928,46 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Clearing standard javax.net.ssl.SSLContext cache.");
             sslContextCacheJAVAX.clear();
+        }
+    }
+
+    /**
+     * Clear the contents of the SSLContext cache if it uses the files passed in
+     */
+    public static void clearSSLContextCache(Collection<File> modifiedFiles) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "Clearing standard javax.net.ssl.SSLContext cached object containing keystores: " + new Object[] { modifiedFiles });
+        List<SSLConfig> removeList = new ArrayList<SSLConfig>();
+        for (File modifiedKeystoreFile : modifiedFiles) {
+            String filePath = null;
+            String comparePath = null;
+            try {
+                filePath = modifiedKeystoreFile.getCanonicalPath();
+                comparePath = filePath.replace('\\', '/');
+            } catch (IOException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception comparing file path.");
+                continue;
+            }
+
+            for (Entry<SSLConfig, SSLContext> entry : sslContextCacheJAVAX.entrySet()) {
+                SSLConfig cachedConfig = entry.getKey();
+
+                if (cachedConfig != null) {
+                    String ksPropValue = cachedConfig.getProperty(Constants.SSLPROP_KEY_STORE, null);
+                    String tsPropValue = cachedConfig.getProperty(Constants.SSLPROP_TRUST_STORE, null);
+
+                    if ((ksPropValue != null && comparePath.equals(ksPropValue)) ||
+                        (tsPropValue != null && comparePath.equals(tsPropValue))) {
+                        removeList.add(cachedConfig);
+                    }
+                }
+            }
+        }
+        if (!removeList.isEmpty()) {
+            for (SSLConfig removeEntry : removeList) {
+                sslContextCacheJAVAX.remove(removeEntry);
+            }
         }
     }
 
