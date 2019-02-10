@@ -1104,7 +1104,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         EJB_ANNOTATIONS.add("javax.ejb.Singleton");
     }
 
-    private String getPath(Container useContainer) {
+    private String getFullPath(Container useContainer) {
         StringBuilder pathBuilder = new StringBuilder();
 
         try {
@@ -1133,29 +1133,23 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         // The application name as supplied by the application descriptor is
         // not used.
 
-        String modulePath = moduleContainer.getPath();
-
         String appName = getName();
-        String modName = getPath(moduleContainer);
+
+        String modImmediatePath = moduleContainer.getPath();
+        String modFullPath = getFullPath(moduleContainer);
 
         if ( _tc.isDebugEnabled() ) {
-        	methodName += ": Module [ " + modulePath + " ]: ";
-            Tr.debug(_tc, methodName + "AppName [ " + appName + " ]");
-            Tr.debug(_tc, methodName + "ModName [ " + modName + " ]");
+            Tr.debug(_tc, methodName + ": AppName [ " + appName + " ]");
+            Tr.debug(_tc, methodName + ": ModImmediatePath [ " + modImmediatePath + " ]");
+            Tr.debug(_tc, methodName + ": ModFullPath [ " + modFullPath + " ]");
         }
 
-        if ( modName == null ) {
+        if ( modFullPath == null ) {
             if ( _tc.isDebugEnabled() ) {
-                Tr.debug(_tc, methodName + ": REJECT: Unexpected failure to obtain module path"); 
+                Tr.debug(_tc, methodName + ": Failed to obtain module path"); 
             }
-            return false;
-        }
-
-        if ( modName.isEmpty() ) {
-            modName = appName; 
-            if ( _tc.isDebugEnabled() ) {
-                Tr.debug(_tc, methodName + "Using AppName as ModName");
-            }
+        } else if ( modFullPath.isEmpty() ) {
+            modFullPath = null;
         }
 
         ContainerAnnotations containerAnnotations;
@@ -1165,23 +1159,23 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             containerAnnotations = moduleContainer.adapt(ContainerAnnotations.class);
         } catch ( UnableToAdaptException e ) {
             // CWWKZ0121E: Application {0}: Failed to access annotations for module {1} of type {2}: {3}
-            Tr.error(_tc, "error.module.class.source", appName, modulePath, "EJB", boundException);
+            Tr.error(_tc, "error.module.class.source", appName, modImmediatePath, "EJB", e);
 
             if ( _tc.isDebugEnabled() ) {
-                Tr.debug(_tc, methodName + ": REJECT: No EJB descriptor and error obtaining annotations");
+                Tr.debug(_tc, methodName + ": [ false ]: Error obtaining annotations");
             }
             return false;
         }
 
         if ( containerAnnotations == null ) {
             if ( _tc.isDebugEnabled() ) {
-                Tr.debug(_tc, methodName + ": REJECT: No EJB descriptor and unexpected null annotations"); 
+                Tr.debug(_tc, methodName + ": [ false ]: Unexpected null annotations"); 
             }
             return false;
         }
 
         containerAnnotations.setAppName(appName);
-        containerAnnotations.setModName(modName);
+        containerAnnotations.setModName(modFullPath);
 
         containerAnnotations.setUseJandex( applicationInformation.getUseJandex() );
 
@@ -1194,7 +1188,9 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         boolean selected = containerAnnotations.hasSpecifiedAnnotations(annotationClassNames);
 
         if (_tc.isDebugEnabled()) {
-            Tr.debug(_tc, methodName + Boolean.valueOf(selected));
+            Tr.debug(_tc, methodName + ": [ " + appName + " ]" +
+                          " [ " + modFullPath + " ]" +
+                          " [ " + Boolean.valueOf(selected) + " ]");
         }
         return selected;
     }
