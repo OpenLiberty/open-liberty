@@ -252,7 +252,7 @@ public class JwtEndpointServices {
 
         String signatureAlg = jwtConfig.getSignatureAlgorithm();
         if (!Constants.SIGNATURE_ALG_RS256.equals(signatureAlg)) {
-            String errorMsg = Tr.formatMessage(tc, "JWK_ENDPOINT_WRONG_ALGORITHM", new Object[] { jwtConfig.getId(), signatureAlg, Constants.SIGNATURE_ALG_RS256 });
+            String errorMsg = Tr.formatMessage(tc, "JWK_ENDPOINT_WRONG_ALLGORITHM", new Object[] { jwtConfig.getId(), signatureAlg, Constants.SIGNATURE_ALG_RS256 });
             Tr.error(tc, errorMsg);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMsg);
             return;
