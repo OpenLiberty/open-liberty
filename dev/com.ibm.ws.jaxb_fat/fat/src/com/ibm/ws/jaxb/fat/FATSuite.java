@@ -29,5 +29,6 @@ public class FATSuite {
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(new FeatureReplacementAction("jaxb-2.2", "jaxb-2.3")
                                     .forceAddFeatures(false)
-                                    .withID("JAXB-2.3"));
+                                    .withID("JAXB-2.3")
+                                    .withMinJavaLevel(8));
 }
