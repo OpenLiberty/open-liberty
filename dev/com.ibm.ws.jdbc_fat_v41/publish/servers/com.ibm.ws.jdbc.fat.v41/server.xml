@@ -61,7 +61,7 @@
     </dataSource>
     
     <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
-    <javaPermission className="java.sql.SQLPermission" name="callAbort"/>
+    <javaPermission codebase="${server.config.dir}/apps/basicfat.war" className="java.sql.SQLPermission" name="callAbort"/>
     <javaPermission codebase="${server.config.dir}/apps/basicfat.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
     <javaPermission codebase="${server.config.dir}/apps/basicfat.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
     <javaPermission codebase="${server.config.dir}/apps/basicfat.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
