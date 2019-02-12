@@ -16,85 +16,97 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.ibm.ws.feature.utils.FeatureInfo.Edition;
+import com.ibm.ws.feature.utils.FeatureInfo.Kind;
+
 public class FeatureVerifier {
 
-	private Map<String, FeatureInfo> omni;
+    private Map<String, FeatureInfo> omni;
 
-	//Send in the omnibus of features.
-	public FeatureVerifier(Map<String, FeatureInfo> omni) {
-		this.omni = omni;
-	}
+    //Send in the omnibus of features.
+    public FeatureVerifier(Map<String, FeatureInfo> omni) {
+        this.omni = omni;
+    }
 
-	public Map<String, Set<String>> verifyAllFeatures() {
+    public Map<String, Set<String>> verifyAllFeatures() {
 
-		Set<String> lessVisible = null;
+        Set<String> lessVisible = null;
 
-		Map<String, Set<String>> violations = new HashMap<String, Set<String>>();
+        Map<String, Set<String>> violations = new HashMap<String, Set<String>>();
 
-		for (String feature : omni.keySet()) {
-			lessVisible = findViolatingFeatures(new HashSet<String>(), feature, getLevelFromKind(omni.get(feature).getKind()), "KIND");
-			lessVisible.addAll(findViolatingFeatures(new HashSet<String>(), feature, getLevelFromEdition(omni.get(feature).getEdition()), "EDITION"));
+        for (String feature : omni.keySet()) {
+            lessVisible = findViolatingFeatures(new HashSet<String>(), feature, getLevelFromKind(omni.get(feature).getKind()), "KIND");
+            lessVisible.addAll(findViolatingFeatures(new HashSet<String>(), feature, getLevelFromEdition(omni.get(feature).getEdition()), "EDITION"));
 
-			violations.put(feature, lessVisible);
-		}
+            violations.put(feature, lessVisible);
+        }
 
-		return violations;
+        return violations;
 
+    }
 
-	}
+    public String printFeature(String feature) {
+        return "Feature: [" + feature + "]   Edition: [" + omni.get(feature).getEdition() + "]   Kind: [" + omni.get(feature).getKind() + "]";
+    }
 
-	public String printFeature(String feature) {
-		return "Feature: [" + feature + "]   Edition: [" + omni.get(feature).getEdition() + "]   Kind: [" + omni.get(feature).getKind() + "]";
-	}
+    private Set<String> EMPTY_SET = new HashSet<String>();
 
-	private Set<String> EMPTY_SET = new HashSet<String>();
+    private Set<String> findViolatingFeatures(Set<String> seen, String featureName, int featureVisibility, String classification) {
 
-	private Set<String> findViolatingFeatures(Set<String> seen, String featureName, int featureVisibility, String classification) {
+        //short circuit if we start go go down a path we've already been down.
+        if (!omni.containsKey(featureName) || (seen.contains(featureName)))
+            return EMPTY_SET;
 
-		//short circuit if we start go go down a path we've already been down.
-		if (!omni.containsKey(featureName) || (seen.contains(featureName)))
-			return EMPTY_SET;
+        seen.add(featureName);
 
-		seen.add(featureName);
+        Set<String> featuresLessVisible = new HashSet<String>();
 
-		Set<String> featuresLessVisible = new HashSet<String>();
+        int featureLevel = (classification.contentEquals("KIND") //
+                        ? getLevelFromKind(omni.get(featureName).getKind()) //
+                        : getLevelFromEdition(omni.get(featureName).getEdition()));
 
-		String featureClass = (classification.contentEquals("KIND") ? omni.get(featureName).getKind() : omni.get(featureName).getEdition());
-		int featureLevel = (classification.contentEquals("KIND") ? getLevelFromKind(featureClass) : getLevelFromEdition(featureClass));
+        if (featureLevel < featureVisibility) {
+            featuresLessVisible.add(featureName);
+        }
 
-		if (featureLevel < featureVisibility ) {
-			featuresLessVisible.add(featureName);
-		}
+        for (String depFeature : omni.get(featureName).getDependentFeatures()) {
+            featuresLessVisible.addAll(findViolatingFeatures(seen, depFeature, featureVisibility, classification));
+        }
 
-		for (String depFeature : omni.get(featureName).getDependentFeatures()) {
-				featuresLessVisible.addAll(findViolatingFeatures(seen, depFeature, featureVisibility, classification));
-		}
+        return featuresLessVisible;
 
-		return featuresLessVisible;
+    }
 
-	}
+    private int getLevelFromEdition(Edition edition) {
+        switch (edition) {
+            case FULL:
+                return 0;
+            case UNSUPPORTED:
+                return 1;
+            case ZOS:
+                return 2;
+            case ND:
+                return 3;
+            case BASE:
+                return 4;
+            case CORE:
+                return 5;
+            default:
+                return 99;
+        }
+    }
 
-	private int getLevelFromEdition(String edition) {
-		switch(edition.toLowerCase()) {
-		    case "full": return 0;
-		    case "unsupported": return 1;
-		    case "zos": return 2;
-			case "nd": return 3;
-			case "base": return 4;
-			case "core": return 5;
-			default: return 99;
-		}
-	}
-
-	private int getLevelFromKind(String kind) {
-		switch(kind.toLowerCase()) {
-			case "noship": return 0;
-			case "beta": return 1;
-			case "ga": return 2;
-			default: return 99;
-		}
-	}
-
-
+    private int getLevelFromKind(Kind kind) {
+        switch (kind) {
+            case NOSHIP:
+                return 0;
+            case BETA:
+                return 1;
+            case GA:
+                return 2;
+            default:
+                return 99;
+        }
+    }
 
 }
