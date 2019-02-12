@@ -102,6 +102,9 @@ public class TransactionContext implements AlterableContext, TransactionScopeDes
         //A new transaction has called get() for the first time. This is what we consider to be the start of a transaction scope. 
         beanManager.fireEvent("Initializing transaction context" , initializedQualifier);
 
+        //Put this into the registry so it can be found when it's time to call destroy.
+        tsr.putResource("transactionScopeDestroyer", this);
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "get", t);
 

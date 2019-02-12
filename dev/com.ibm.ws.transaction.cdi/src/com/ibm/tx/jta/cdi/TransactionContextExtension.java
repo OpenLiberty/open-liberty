@@ -52,7 +52,6 @@ public class TransactionContextExtension implements Extension, WebSphereCDIExten
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager) {
         TransactionContext tc = new TransactionContext(getBeanManager());
-        com.ibm.tx.jta.impl.TransactionImpl.registerTransactionScopeDestroyer(tc);
         event.addContext(tc);
     }
 
