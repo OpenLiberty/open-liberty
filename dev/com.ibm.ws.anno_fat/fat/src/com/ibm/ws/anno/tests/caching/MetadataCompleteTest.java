@@ -126,17 +126,25 @@ public class MetadataCompleteTest extends LoggingTest {
         ear.addWar(war);
         
         Jar jar1 = new Jar("TestServlet40.jar");
-        Jar jar2 = new Jar("TestServletA.jar");
-        Jar jar3 = new Jar("TestServletB.jar");
-        Jar jar4 = new Jar("TestServletC.jar");
-        Jar jar5 = new Jar("TestServletD.jar");
-        
         jar1.addPackageName("testservlet40.jar.servlets");
+        jar1.addPackageName("testservlet40.jar.util");
+
+        Jar jar2 = new Jar("TestServletA.jar");
         jar2.addPackageName("testservleta.jar.servlets");
+        jar2.addPackageName("testservleta.jar.util");
+
+        Jar jar3 = new Jar("TestServletB.jar");
         jar3.addPackageName("testservletb.jar.servlets");
+        jar3.addPackageName("testservletb.jar.util");
+
+        Jar jar4 = new Jar("TestServletC.jar");
         jar4.addPackageName("testservletc.jar.servlets");
+        jar4.addPackageName("testservletc.jar.util");
+
+        Jar jar5 = new Jar("TestServletD.jar");
         jar5.addPackageName("testservletd.jar.servlets");
-        
+        jar5.addPackageName("testservletd.jar.util");
+
         war.addJar(jar1);
         war.addJar(jar2);
         war.addJar(jar3);
@@ -146,9 +154,7 @@ public class MetadataCompleteTest extends LoggingTest {
         war.addPackageName("testservlet40.war.servlets");
 
         try {
-        	
-           FatHelper.addEarToServerApps(SHARED_SERVER.getLibertyServer(),
-            	                                      ear);
+           FatHelper.addEarToServerApps(SHARED_SERVER.getLibertyServer(), ear);
 
         } catch (Exception e) {
         	LOG.info("Caught exception from addEarToServerApps [" + e.getMessage() + "]");

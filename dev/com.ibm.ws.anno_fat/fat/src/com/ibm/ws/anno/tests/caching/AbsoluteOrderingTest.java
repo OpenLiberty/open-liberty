@@ -17,582 +17,531 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * 
- * These tests to verify that updates to the <absolute-ordering> element in the web.xml
+ * These tests to verify that updates to the absolute-ordering element in the web.xml
  * are noticed after server restarts.
- *
  */
 public class AbsoluteOrderingTest extends CachingTest {
     private static final Logger LOG = Logger.getLogger(AbsoluteOrderingTest.class.getName());
 
-    enum ServerStartType 
-    { 
+    enum ServerStartType { 
         NONE, CLEAN, DIRTY; 
     }
-    //
 
+    private void handleStart(String serverConfig, ServerStartType startType) throws Exception {
+        // Always start by installing a new server configuration.
+        replaceWebXmlInExpandedApp(serverConfig);
+
+        // When the server restarts, it re-expands the .ear file into the expanded app.
+        // So it will wipe out the change we just made.  To prevent that we need to 
+        // replace the .ear file file with the contents of the expanded app directory tree.
+        replaceApplicationFileFromExpandedApp();
+
+        switch ( startType ) {
+            case CLEAN: 
+                startServerClean();
+                break;
+            case DIRTY:
+                startServerDirty();
+                break;
+            case NONE:
+                waitForAppUpdateToBeNoticed();
+                break;
+        }
+    }
+
+    private void handleStop(ServerStartType startType) throws Exception {
+        if ( startType != ServerStartType.NONE ) {
+            stopServer("CWWKZ0014W", "SRVE0190E");
+        }
+    }
+
+    // Setup for all absolute ordering tests ...
+
+    /**
+     * Setup to run absolute ordering tests.
+     *
+     * The test uses the shared server "annoFat_Server", as
+     * defined by "CachingTest", and uses FAT test application "TestServlet40.ear".
+     *
+     * Jandex use is not enabled.  Application auto-expand is enabled.
+     *
+     * Setup removes any prior copy of the application, including expanded
+     * application files, then copies in a fresh copy of the application.
+     *
+     * A single startup and shutdown sequence is performed.  This causes application
+     * files to be expanded, and causes the annotation cache to be written.
+     */
     @BeforeClass
     public static void setUp() throws Exception {
-        LOG.info("setUp AbsoluteOrderingTest");
+        LOG.info("setUp ENTRY");
        
         setEarName("TestServlet40.ear");
         setSharedServer();
         
-        installServerXml("jandexDefaultsAutoExpandTrue_server.xml");  // Default Jandex settings.  NOT using Jandex.
+        installServerXml("jandexDefaultsAutoExpandTrue_server.xml");  // Default: Do NOT use Jandex.
         
-        // First Clean up from any prior tests that used this app
         deleteApplicationFile();
         deleteExpandedApplication();
-        
-        // Copy the test application to the server.
+
         addAppToServerAppsDir( createApp() );
         
-        // Here we could expand the application and insert the web.xml that we
-        // want to start the test with, but instead we will start and stop the
-        // server which will expand the application
-        
-        // Starting and stopping the server will expand the application
-        //     expandApplication(EAR_FILE_NAME);
-
         long lStartTime = System.nanoTime();
         startServerClean();
-
         long lEndTime = System.nanoTime();        
         long elapsed = lEndTime - lStartTime;
         LOG.info("Server started in milliseconds: " + elapsed / 1000000);        
 
         stopServer();
 
-        LOG.info("setUp exit");
+        LOG.info("setUp EXIT");
     }
 
+    /**
+     * Cleanup after running all absolute ordering tests.
+     *
+     * Cleanup consists of making sure the server is stopped.
+     */
     @AfterClass
     public static void cleanUp() throws Exception {
-        LOG.info("cleanUp");
+        LOG.info("cleanUp ENTRY");
         stopServer();
-        LOG.info("cleanUp complete");
+        LOG.info("cleanUp EXIT");
     }
-    
-    /**
-     * Test various changes to the web.xml that affect absolute ordering.  Restart the server
-     * after each web.xml update.
-     * @throws Exception
-     */
-    @Test  /*  Expensive test because of the server estarts */
-    public void testAbsoluteOrdering() throws Exception {
 
-        // Start with a web.xml with absolute-ordering containing Fragments A & B
+    //
+
+    /**
+     * Test various changes to the web.xml that affect absolute ordering.  Each test starts
+     * and then stops the server.  There are six (6) different ordering combinations which
+     * are tested, making this a fairly expensive test due to the server restarts.
+     */
+    @Test // Expensive test because of the server restarts
+    public void testAbsoluteOrdering() throws Exception {
+        // Run the variations with a server start and stop for each
+        // variation.  Do not clear the annotation cache between variations
+        // (but do clear the cache for the first variation).
+
+        tryStandardVariations(ServerStartType.DIRTY);
+    }
+
+    /**
+     * A standard sequence of order variations.
+     *
+     * The first variation does a clean startup.  Second and subsequent variations
+     * use the start mode as specified.
+     *
+     * @param startType The start mode for the second and subsequent variations.
+     *
+     * @throws Exception Thrown in case of an unexpected test failure.
+     */
+    private void tryStandardVariations(ServerStartType startType) throws Exception {
+        // Base sequence: Set the order to "A B", then change the order to "A B C",
+        // then back to "A B".
+
+        // 'startType' will be either 'DIRTY' (which does starts and stops)
+        // or 'none', which does an initial start and a final stop.
+        //
+        // In either case, 'startType' correctly selects the stop action for
+        // the first variation.
+
+        // Start with a web.xml with absolute-ordering containing Fragments A and B
         // Start the server cleanly and verify we get the expected response 
         // (or expected lack of a response) from the servlets.
-        tryWebXmlWithAbsoluteOrder_A_B(ServerStartType.CLEAN, "Initial Test with web.xml containing Fragments A & B");       
+        tryWith_A_B(ServerStartType.CLEAN, startType, "Initial test: Fragments A and B");
         
         // Now replace web.xml, adding "JAR C" to the absolute-ordering element, and start the server
         // dirty to see if the anno cache gets updated properly.
-        tryWebXmlWithAbsoluteOrder_A_B_C(ServerStartType.DIRTY, "Test adding Fragment C to web.xml");
+        tryWith_A_B_C(startType, "Second test: Add fragment C");
           
         // Now go back to using the previous web.xml.  The effect is that "Fragment C" is removed from the
         // absolute order.  So it's servlet should no longer respond.
-        tryWebXmlWithAbsoluteOrder_A_B(ServerStartType.DIRTY, "Test removing Fragment C from web.xml");
-        
+        tryWith_A_B(startType, "Third test: Remove fragment C");
+
+        // "Others" sequence: "A B others" then "C, D, A, B, Others".
+
         // Add an others element.  Now all of the servlets in the fragments should respond.
-        tryWebXmlWithAbsoluteOrder_A_B_Others(ServerStartType.DIRTY, "Test with web.xml with ordering A B others");
+        tryWith_A_B_Others(startType, "Fourth test: add others");
 
         // Move C to the front.  All of the servlets in the fragments should respond.
-        tryWebXmlWithAbsoluteOrder_C_D_A_B_Others(ServerStartType.DIRTY, "Test with web.xml with ordering C D A B others");
-        
-        tryRemovingAndAddingAJar(ServerStartType.DIRTY, "Test removing TestServletD.jar from app.");     
+        tryWith_C_D_A_B_Others(startType, "Fifth test: Fragments C, D, A, B, and others");
+
+        // "JAR" sequence: Remove and add a fragment JAR, while "others" is present in the ordering.
+
+        tryRemovingAndAddingAJar(startType, "Sixth test: Remove and add TestServletD.jar");
+
+        // When the start type is set to NONE, none of the variations stops the server.
+        // An explicit stop must be added at the end.
+
+        if ( startType == ServerStartType.NONE ) {
+            stopServer("CWWKZ0014W", "SRVE0190E");
+        }
     }
-    
+
+    /**
+     * Test a clean startup with cache validation enabled.
+     */    
     @Test
     public void testCacheValidate() throws Exception {
         installJvmOptions("JvmOptions_AnnoCacheValidate_True.txt");
-        startServerClean();
-        
-        // Start with a web.xml with absolute-ordering containing Fragments A & B
-        // Start the server cleanly and verify we get the expected response 
-        // (or expected lack of a response) from the servlets.
-        tryWebXmlWithAbsoluteOrder_A_B(ServerStartType.NONE, "Initial Test with web.xml containing Fragments A & B");       
-  
-        LOG.info("Stopping server");
-        stopServer("CWWKZ0014W", "SRVE0190E");      
+
+        tryWith_A_B(ServerStartType.CLEAN, "Initial Test with web.xml containing Fragments A & B");       
     }
-    
+  
+    /**
+     * Test a clean startup with scan threads reduced to 1, then with scan threads
+     * set to -1 (unlimited).
+     */
     @Test
     public void testReducedScanThreads() throws Exception {
         installJvmOptions("JvmOptions_ComIbmWsAnnoScanThreads_1.txt");
-        startServerClean();
-        
-        // Start with a web.xml with absolute-ordering containing Fragments A & B
-        // Start the server cleanly and verify we get the expected response 
-        // (or expected lack of a response) from the servlets.
-        tryWebXmlWithAbsoluteOrder_A_B(ServerStartType.NONE, "Test reducing number of scan threads to 1");       
-  
-        LOG.info("Stopping server");
-        stopServer("CWWKZ0014W", "SRVE0190E");      
-        
+
+        tryWith_A_B(ServerStartType.CLEAN, "Test scan threads set to 1");
+
         //-----------------------------------------------------------------------------
-        
+
         installJvmOptions("JvmOptions_ComIbmWsAnnoScanThreads_-1.txt");
-        startServerClean();
-        
-        // Start with a web.xml with absolute-ordering containing Fragments A & B
-        // Start the server cleanly and verify we get the expected response 
-        // (or expected lack of a response) from the servlets.
-        tryWebXmlWithAbsoluteOrder_A_B(ServerStartType.NONE, "Test reducing number of scan threads to -1");    
-  
-        LOG.info("Stopping server");
-        stopServer("CWWKZ0014W", "SRVE0190E"); 
+
+        tryWith_A_B(ServerStartType.CLEAN, "Test scan threads set to -1 (unlimited)");
     }
-    
+
+    /**
+     * Test with write threads set to 1, then with write threads set to -1 (unlimited).
+     */    
     @Test
     public void testReducedWriteThreads() throws Exception {
         installJvmOptions("JvmOptions_AnnoCacheWriteThreads_1.txt");
-        startServerClean();
-        
-        // Start with a web.xml with absolute-ordering containing Fragments A & B
-        // Start the server cleanly and verify we get the expected response 
-        // (or expected lack of a response) from the servlets.
-        tryWebXmlWithAbsoluteOrder_A_B(ServerStartType.NONE, "Test reducing number of write threads to 1");       
-  
-        LOG.info("Stopping server");
-        stopServer("CWWKZ0014W", "SRVE0190E"); 
+
+        tryWith_A_B(ServerStartType.CLEAN, "Test write threads set to 1");
         
         //----------------------------------------------------------------------
         
         installJvmOptions("JvmOptions_AnnoCacheWriteThreads_-1.txt");
-        startServerClean();
-        
-        // Start with a web.xml with absolute-ordering containing Fragments A & B
-        // Start the server cleanly and verify we get the expected response 
-        // (or expected lack of a response) from the servlets.
-        tryWebXmlWithAbsoluteOrder_A_B(ServerStartType.NONE, "Test reducing number of write threads to -1");    
-  
-        LOG.info("Stopping server");
-        stopServer("CWWKZ0014W", "SRVE0190E"); 
+
+        tryWith_A_B(ServerStartType.CLEAN, "Test set write threads to -1 (unlimited)1");    
     }
     
     /**
      * Test various changes to the web.xml that affect absolute ordering.  Rely on Liberty to detect
      * the change in the app WITHOUT restarting the server.
-     * @throws Exception
      */
     @Test    
     public void testAbsoluteOrderingNoRestart() throws Exception {
+        // Run the variations with only a single server start and stop for
+        // all of the variations.  Do clear the annotation class for the
+        // first start.
 
-        // Since the individual test methods ("try" methods) do not start and stop the server, we
-        // start and stop the server at the beginning and end of this method.
-        startServerClean();
-        
-        // Start with a web.xml with absolute-ordering containing Fragments A & B
-        // Start the server cleanly and verify we get the expected response 
-        // (or expected lack of a response) from the servlets.
-        tryWebXmlWithAbsoluteOrder_A_B(ServerStartType.NONE, "Initial Test with web.xml containing Fragments A & B");       
-        
-        // Now replace web.xml, adding "JAR C" to the absolute-ordering element, and start the server
-        // dirty to see if the anno cache gets updated properly.
-        tryWebXmlWithAbsoluteOrder_A_B_C(ServerStartType.NONE, "Test adding Fragment C to web.xml");
-          
-        // Now go back to using the previous web.xml.  The effect is that "Fragment C" is removed from the
-        // absolute order.  So it's servlet should no longer respond.
-        tryWebXmlWithAbsoluteOrder_A_B(ServerStartType.NONE, "Test removing Fragment C from web.xml");
-        
-        // Add an others element.  Now all of the servlets in the fragments should respond.
-        tryWebXmlWithAbsoluteOrder_A_B_Others(ServerStartType.NONE, "Test with web.xml with ordering A B others");
-
-        // Move C to the front.  All of the servlets in the fragments should respond.
-        tryWebXmlWithAbsoluteOrder_C_D_A_B_Others(ServerStartType.NONE, "Test with web.xml with ordering C D A B others");
-        
-        tryRemovingAndAddingAJar(ServerStartType.NONE, "Test removing TestServletD.jar from app.");
-        
-        LOG.info("Stopping server");
-        stopServer("CWWKZ0014W", "SRVE0190E");
+        tryStandardVariations(ServerStartType.NONE);
     }
-    
-    /**
-     * Absolute ordering of only A & B must hide all other JARs and the servlets therein.
-     * 
-     * @param serverStartType - clean, dirty, or none
-     * @throws Exception
-     */
-    private void tryWebXmlWithAbsoluteOrder_A_B(ServerStartType serverStartType, String msg) throws Exception {
 
+    // Ordering variation helpers ...
+
+    /**
+     * Perform the "A" "B" variation with the same start and stop modes.
+     */    
+    private void tryWith_A_B(ServerStartType serverStartType, String msg) throws Exception {
+        tryWith_A_B(serverStartType, serverStartType, msg);
+    }
+
+    /**
+     * Test with only "A" and "B" in the absolute ordering.  Other fragments are
+     * excluded and should not be visibile to the web container.  The "classes"
+     * folder is not excluded.
+     *
+     * The ordering of listeners must be "classes", "A", then "B".
+     *
+     * A start mode and a stop mode must be provided: When this test variation occurs first
+     * in a sequence of variations, the variation will have a CLEAN start mode and a NONE
+     * stop mode.
+     */
+    private void tryWith_A_B(ServerStartType serverStartType, ServerStartType stopType, String msg) throws Exception {
         logBlock(msg + " - Server start type -> " +  serverStartType);        
         
-        // Start with an initial web.xml has absolute-ordering that specifies only JARs A & B
-        replaceWebXmlInExpandedApp("web-absolute-ordering-a-b.xml");
-        
-        // When the server restarts, it re-expands the .ear file into the expanded app directory.
-        // So it will wipe out the change we just made.  To prevent that we need to 
-        // replace the .ear file file with the contents of the expanded app directory tree.
-        replaceApplicationFileFromExpandedApp();
-              
-        switch (serverStartType) {
-        case CLEAN: 
-            startServerClean();
-        case DIRTY:
-            startServerDirty();
-        case NONE:
-            waitForAppUpdateToBeNoticed();
-        }
-        
+        handleStart("web-absolute-ordering-a-b.xml", serverStartType);
+
         displayWebXml();
-        
-        // MyServlet should work because WEB-INF/classes is processed before the absolute order is considered
+
+        // MyServlet should work because WEB-INF/classes is never excluded.
         verifyResponse("/TestServlet40/MyServlet", "Hello World");
 
         String[] expectedResponses = new String[4];
         String[] unExpectedResponses = {};
         
-        /////// Servlet A
+        // Servlet A
         expectedResponses[0] = "Hello From Servlet A"; 
         expectedResponses[1] = "SCI A actually ran!"; 
         expectedResponses[2] = "Listener A actually ran!";
         expectedResponses[3] = "Listener order [ AB ]";
-        
+
         verifyResponse("/TestServlet40/ServletA", expectedResponses, unExpectedResponses);
-             
-        //////// Servlet B
+
+        // Servlet B
         expectedResponses[0] = "Hello From Servlet B"; 
         expectedResponses[1] = "SCI B actually ran!"; 
         expectedResponses[2] = "Listener B actually ran!";
         expectedResponses[3] = "Listener order [ AB ]";
-        
+
         verifyResponse("/TestServlet40/ServletB",  expectedResponses, unExpectedResponses);
-        
+
         // All others are excluded, and should not be found.
         verifyBadUrl("/TestServlet40/ServletC");
         verifyBadUrl("/TestServlet40/ServletD");
         verifyBadUrl("/TestServlet40/SimpleTestServlet");
-        
-        if (serverStartType != ServerStartType.NONE) {
-            LOG.info("Stopping server");
-            stopServer("CWWKZ0014W", "SRVE0190E");
-        }
-        
+
+        handleStop(stopType);
+
         LOG.info("RETURN");
     }
     
-    
     /**
-     * Absolute ordering of only A, B, & C must hide all other JARs and the servlets therein.
-     * @param startServerClean - if true, do a clean server start which will rebuild the anno cache from scratch.
-     * @throws Exception
+     * Test with only "A" and "B" and "C" in the absolute ordering.  Other fragments
+     * are excluded and should not be visibile to the web container.  The "classes"
+     * folder is not excluded.
+     *
+     * The ordering of listeners must be "classes", "A", then "B", then "C".
      */
-    private void tryWebXmlWithAbsoluteOrder_A_B_C(ServerStartType serverStartType, String msg) throws Exception {
-
+    private void tryWith_A_B_C(ServerStartType serverStartType, String msg) throws Exception {
         logBlock(msg + " - Server start type -> " +  serverStartType);
 
-        replaceWebXmlInExpandedApp("web-absolute-ordering-a-b-c.xml");
-        
-        // When the server restarts, it re-expands the .ear file into the expanded app.
-        // So it will wipe out the change we just made.  To prevent that we need to 
-        // replace the .ear file file with the contents of the expanded app directory tree.
-        replaceApplicationFileFromExpandedApp();
-        
-        switch (serverStartType) {
-        case CLEAN: 
-            startServerClean();
-        case DIRTY:
-            startServerDirty();
-        case NONE:
-            waitForAppUpdateToBeNoticed();       
-        }
-        
+        handleStart("web-absolute-ordering-a-b-c.xml", serverStartType);
+
         displayWebXml();
 
-        // MyServlet is not specified in the absolute-ordering, but since it is in WEB-INF/classes, it should work.
+        // MyServlet should work because WEB-INF/classes is never excluded.
         verifyResponse("/TestServlet40/MyServlet", "Hello World");
-        
+
         String[] expectedResponses = new String[4];
         String[] unExpectedResponses = {};
-        
-        /////// Servlet A
+
+        // Servlet A
         expectedResponses[0] = "Hello From Servlet A"; 
         expectedResponses[1] = "SCI A actually ran!";
         expectedResponses[2] = "Listener A actually ran!";
         expectedResponses[3] = "Listener order [ ABC ]";
-     
+
         verifyResponse("/TestServlet40/ServletA", expectedResponses, unExpectedResponses);
-        
-        //////// Servlet B
+
+        // Servlet B
         expectedResponses[0] = "Hello From Servlet B"; 
         expectedResponses[1] = "SCI B actually ran!";
         expectedResponses[2] = "Listener B actually ran!";
         expectedResponses[3] = "Listener order [ ABC ]";
-        
+
         verifyResponse("/TestServlet40/ServletB",  expectedResponses, unExpectedResponses);
-        
-        ////////Servlet C
+
+        // Servlet C
         expectedResponses[0] = "Hello From Servlet C";
         expectedResponses[1] = "SCI C actually ran!";
         expectedResponses[2] = "Listener C actually ran!";
         expectedResponses[3] = "Listener order [ ABC ]";
 
         verifyResponse("/TestServlet40/ServletC",  expectedResponses, unExpectedResponses);
-        
-        ///////// Everything else is EXCLUDED by the absolute-ordering
+
+        // Everything else is EXCLUDED by the absolute-ordering
         verifyBadUrl("/TestServlet40/ServletD");
         verifyBadUrl("/TestServlet40/SimpleTestServlet");
 
-        // Expecting the additional Error message in the logs due to the missing servlets in these test case.
-        if (serverStartType != ServerStartType.NONE) {
-            LOG.info("Stopping server");
-            stopServer("CWWKZ0014W", "SRVE0190E");
-        }
-        
+        handleStop(serverStartType);
+
         LOG.info("RETURN");
     }
     
     /**
-     * Absolute ordering of only A & B but inclusion of "others" makes all of the JARs and the servlets therein
-     * visible.  
-     * 
-     * @param startServerClean - if true, do a clean server start which will rebuild the anno cache from scratch.
-     * @throws Exception
+     * Test with "A" and "B" and "others" in the absolute ordering.  No fragment is
+     * excluded.
+     *
+     * The ordering of listeners must be "classes", "A", then "B", then others, in
+     * any order.
      */
-    private void tryWebXmlWithAbsoluteOrder_A_B_Others(ServerStartType serverStartType, String msg) throws Exception {
-        
+    private void tryWith_A_B_Others(ServerStartType serverStartType, String msg) throws Exception {
         logBlock(msg + " - Server start type -> " +  serverStartType);
-         
-        // Replace web.xml, Order A then B and then others
-        replaceWebXmlInExpandedApp("web-absolute-ordering-a-b-others.xml");
-        
-        // When the server restarts, it re-expands the .ear file into the expanded app.
-        // So it will wipe out the change we just made.  To prevent that we need to 
-        // replace the .ear file file with the contents of the expanded app directory tree.
-        replaceApplicationFileFromExpandedApp();
 
-        switch (serverStartType) {
-        case CLEAN: 
-            startServerClean();
-        case DIRTY:
-            startServerDirty();
-        case NONE:
-            waitForAppUpdateToBeNoticed();
-        }
+        handleStart("web-absolute-ordering-a-b-others.xml", serverStartType);
         
         displayWebXml();
 
-        // MyServlet is not specified in the absolute-ordering, but since it is in WEB-INF/classes, it should work.
+        // MyServlet should work because WEB-INF/classes is never excluded.
         verifyResponse("/TestServlet40/MyServlet", "Hello World");
 
         String[] expectedResponses = new String[4];
         String[] unExpectedResponses = {};
-        
-        /////// Servlet A
+
+        // Servlet A
         expectedResponses[0] = "Hello From Servlet A"; 
         expectedResponses[1] = "SCI A actually ran!";
         expectedResponses[2] = "Listener A actually ran!";
         expectedResponses[3] = "Listener order [ AB";  // C&D are included by "others".  Order is undefined for those.
-        
+
         verifyResponse("/TestServlet40/ServletA", expectedResponses, unExpectedResponses);
-               
-        //////// Servlet B
+
+        // Servlet B
         expectedResponses[0] = "Hello From Servlet B"; 
         expectedResponses[1] = "SCI B actually ran!";
         expectedResponses[2] = "Listener B actually ran!";
         expectedResponses[3] = "Listener order [ AB";  // C&D are included by "others".  Order is undefined for those.
-        
+
         verifyResponse("/TestServlet40/ServletB",  expectedResponses, unExpectedResponses);
-        
-        ////////Servlet C
+
+        // Servlet C
         expectedResponses[0] = "Hello From Servlet C";
         expectedResponses[1] = "SCI C actually ran!";
         expectedResponses[2] = "Listener C actually ran!";
         expectedResponses[3] = "Listener order [ AB";  // C&D are included by "others".  Order is undefined for those.
         verifyResponse("/TestServlet40/ServletC",  expectedResponses, unExpectedResponses);
-        
-        ////////Servlet D
+
+        // Servlet D
         expectedResponses[0] = "Hello From Servlet D";
         expectedResponses[1] = "SCI D actually ran!";
         expectedResponses[2] = "Listener D actually ran!";
         expectedResponses[3] = "Listener order [ AB";  // C&D are included by "others".  Order is undefined for those.
         verifyResponse("/TestServlet40/ServletD",  expectedResponses, unExpectedResponses);   
-        
-        ////////SimpleTestServlet
+
+        // SimpleTestServlet
         expectedResponses[0] = "Hello World";
         expectedResponses[1] = "SCI says Hi";
         expectedResponses[2] = "";
         expectedResponses[3] = "";
         verifyResponse("/TestServlet40/SimpleTestServlet",  expectedResponses, unExpectedResponses);         
 
-        // Expecting the additional Error message in the logs due to the missing servlets in these test case.
-        if (serverStartType != ServerStartType.NONE) {
-            LOG.info("Stopping server");
-            stopServer("CWWKZ0014W", "SRVE0190E");
-        }
-        
+        handleStop(serverStartType);
+
         LOG.info("RETURN");
     }
     
     /**
-     * Absolute ordering of only C, D, A & B with the inclusion of others makes all of the JARs and servlets therein visible.
-     * The execution order of the Listeners is tested to be CDAB.
-     * 
-     * @param startServerClean - if true, do a clean server start which will rebuild the anno cache from scratch.
-     * @throws Exception
+     * Test with "C", "D", "A", "B", and "others" in the absolute ordering.  No fragment is
+     * excluded.
+     *
+     * The ordering of listeners must be "classes", "C", "D", "A", "B", then others, in
+     * any order.
      */
-    private void tryWebXmlWithAbsoluteOrder_C_D_A_B_Others(ServerStartType serverStartType, String msg) throws Exception {
-        
+    private void tryWith_C_D_A_B_Others(ServerStartType serverStartType, String msg) throws Exception {
         logBlock(msg + " - Server start type -> " +  serverStartType);
-         
-        replaceWebXmlInExpandedApp("web-absolute-ordering-c-d-a-b-others.xml");
-        
-        // When the server restarts, it re-expands the .ear file into the expanded app.
-        // So it will wipe out the change we just made.  To prevent that we need to 
-        // replace the .ear file file with the contents of the expanded app directory tree.
-        replaceApplicationFileFromExpandedApp();
 
-        switch (serverStartType) {
-        case CLEAN: 
-            startServerClean();
-        case DIRTY:
-            startServerDirty();
-        case NONE:
-            waitForAppUpdateToBeNoticed();
-        }
-        
+        handleStart("web-absolute-ordering-c-d-a-b-others.xml", serverStartType);
+
         displayWebXml();
 
-        // MyServlet is not specified in the absolute-ordering, but since it is in WEB-INF/classes, it should work.
+        // MyServlet should work because WEB-INF/classes is never excluded.
         verifyResponse("/TestServlet40/MyServlet", "Hello World");
 
         String[] expectedResponses = new String[4];
         String[] unExpectedResponses = {};
-        
-        /////// Servlet A
+
+        // Servlet A
         expectedResponses[0] = "Hello From Servlet A"; 
         expectedResponses[1] = "SCI A actually ran!";
         expectedResponses[2] = "Listener A actually ran!";
         expectedResponses[3] = "Listener order [ CDAB ]";
-        
+
         verifyResponse("/TestServlet40/ServletA", expectedResponses, unExpectedResponses);
-        
-        //////// Servlet B
+
+        // Servlet B
         expectedResponses[0] = "Hello From Servlet B"; 
         expectedResponses[1] = "SCI B actually ran!";
         expectedResponses[2] = "Listener B actually ran!";
         expectedResponses[3] = "Listener order [ CDAB ]";
-        
+
         verifyResponse("/TestServlet40/ServletB",  expectedResponses, unExpectedResponses);
-        
-        ////////Servlet C
+
+        // Servlet C
         expectedResponses[0] = "Hello From Servlet C";
         expectedResponses[1] = "SCI C actually ran!";
         expectedResponses[2] = "Listener C actually ran!";
         expectedResponses[3] = "Listener order [ CDAB ]";
+
         verifyResponse("/TestServlet40/ServletC",  expectedResponses, unExpectedResponses);
-        
-        ////////Servlet D
+
+        // Servlet D
         expectedResponses[0] = "Hello From Servlet D";
         expectedResponses[1] = "SCI D actually ran!";
         expectedResponses[2] = "Listener D actually ran!";
         expectedResponses[3] = "Listener order [ CDAB ]";
+
         verifyResponse("/TestServlet40/ServletD",  expectedResponses, unExpectedResponses);   
-        
-        ////////SimpleTestServlet
+
+        // SimpleTestServlet
         expectedResponses[0] = "Hello World";
         expectedResponses[1] = "SCI says Hi";
         expectedResponses[2] = "";
         expectedResponses[3] = "";
+
         verifyResponse("/TestServlet40/SimpleTestServlet",  expectedResponses, unExpectedResponses);  
 
-        // Expecting the additional Error message in the logs due to the missing servlets in these test case.
-        if (serverStartType != ServerStartType.NONE) {
-            LOG.info("Stopping server");
-            stopServer("CWWKZ0014W", "SRVE0190E");
-        }
+        handleStop(serverStartType);
         
         LOG.info("RETURN");
     }
     
     /**
-     * If a JAR is removed, it's servlets should no longer be available.
-     * When a JAR is added to the application, it's servlets should become available.
-     * After removing TestServletD.JAR, we do a modified version of the AB others ordering test, the difference
-     * being that TestServletD should not be available. 
-     * Then we restore TestServletD.JAR to the app, and run the un-modified  version of the AB others test.
-     * 
-     * @param startServerClean - if true, do a clean server start which will rebuild the anno cache from scratch.
-     * @throws Exception
+     * Test with "A", "B", and "others".  Start by removing the jar for "D", which
+     * would be handled under "others".  Then re-add the jar for "D".  The content from
+     * "D" should disappear when its jar is removed, then re-appear when its jar is
+     * re-added.
      */
     private void tryRemovingAndAddingAJar(ServerStartType serverStartType, String msg) throws Exception {
-
         logBlock(msg + " - Server start type -> " +  serverStartType);        
-        
-        // Start with an initial web.xml has absolute-ordering that specifies only JARs A & B
 
-        renameJarFileInApplication("TestServlet40.war", "TestServletD.jar", "TestServletD.jar_backup");
-        replaceWebXmlInExpandedApp("web-absolute-ordering-a-b-others.xml");
-        
-        // When the server restarts, it re-expands the .ear file into the expanded app.
-        // So it will wipe out the change we just made.  To prevent that we need to 
-        // replace the .ear file file with the contents of the expanded app directory tree.
-        replaceApplicationFileFromExpandedApp();
-        
-        switch (serverStartType) {
-        case CLEAN: 
-            startServerClean();
-        case DIRTY:
-            startServerDirty();
-        case NONE:
-            waitForAppUpdateToBeNoticed();
-        }
-        
+        LOG.info("Remove TestServletD.jar from the application");
+
+        renameJarFileInApplication("TestServlet40.war",
+                                   "TestServletD.jar", "TestServletD.jar_backup");
+
+        handleStart("web-absolute-ordering-a-b-others.xml", serverStartType);
+
         displayWebXml();
 
-        // MyServlet is not specified in the absolute-ordering, but since it is in WEB-INF/classes, it should work.
+        // We can't use the standard "A", "B", "others" variation, since
+        // that expects "D", which is not present.
+
+        // MyServlet should work because WEB-INF/classes is never excluded.
         verifyResponse("/TestServlet40/MyServlet", "Hello World");
 
         String[] expectedResponses = new String[4];
         String[] unExpectedResponses = {};
-        
-        /////// Servlet A
+
+        // Servlet A
         expectedResponses[0] = "Hello From Servlet A"; 
         expectedResponses[1] = "SCI A actually ran!";
         expectedResponses[2] = "Listener A actually ran!";
         expectedResponses[3] = "Listener order [ AB";  // C&D are included by "others".  Order is undefined for those.
-        
+
         verifyResponse("/TestServlet40/ServletA", expectedResponses, unExpectedResponses);
-               
-        //////// Servlet B
+
+        // Servlet B
         expectedResponses[0] = "Hello From Servlet B"; 
         expectedResponses[1] = "SCI B actually ran!";
         expectedResponses[2] = "Listener B actually ran!";
         expectedResponses[3] = "Listener order [ AB";  // C&D are included by "others".  Order is undefined for those.
-        
+
         verifyResponse("/TestServlet40/ServletB",  expectedResponses, unExpectedResponses);
-        
-        ////////Servlet C
+
+        // Servlet C
         expectedResponses[0] = "Hello From Servlet C";
         expectedResponses[1] = "SCI C actually ran!";
         expectedResponses[2] = "Listener C actually ran!";
         expectedResponses[3] = "Listener order [ AB";  // C&D are included by "others".  Order is undefined for those.
         verifyResponse("/TestServlet40/ServletC",  expectedResponses, unExpectedResponses);
-        
-        ////////Servlet D
+
+        // Servlet D
         verifyBadUrl("/TestServlet40/ServletD");   
-        
-        ////////SimpleTestServlet
+
+        // SimpleTestServlet
         expectedResponses[0] = "Hello World";
         expectedResponses[1] = "SCI says Hi";
         expectedResponses[2] = "";
         expectedResponses[3] = "";
         verifyResponse("/TestServlet40/SimpleTestServlet",  expectedResponses, unExpectedResponses);         
 
-        // Expecting the additional Error message in the logs due to the missing servlets in these test case.
-        if (serverStartType != ServerStartType.NONE) {
-            LOG.info("Stopping server");
-            stopServer("CWWKZ0014W", "SRVE0190E");
-        }
-        
-        // Put things back the way they were, and then rerun the test.  Servlet D should be available this time.
-        logBlock("Restoring TestServletD.jar to the application"); 
+        handleStop(serverStartType);
+
+        LOG.info("Add TestServletD.jar back into the application");
+
         renameJarFileInApplication("TestServlet40.war", "TestServletD.jar_backup", "TestServletD.jar");
-        tryWebXmlWithAbsoluteOrder_A_B_Others(serverStartType, "Test with web.xml with ordering A B others");
+
+        // We should be back to the standard "A", "B", "others" variation.
+
+        tryWith_A_B_Others(serverStartType, "Test with web.xml with ordering A B others");
  
         LOG.info("RETURN");
     }
 }
-
-

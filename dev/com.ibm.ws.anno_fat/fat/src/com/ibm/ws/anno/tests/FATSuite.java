@@ -51,20 +51,20 @@ import com.ibm.ws.fat.util.FatLogHandler;
 @SuiteClasses({
     // BigAppTest.class, // This test can take 10 min and is disabled for regular builds.
 
-    //  Annotation caching tests ...
-    BasicAnnoCacheUsageTest.class,
-    AbsoluteOrderingTest.class,
-    LooseConfigTest.class,
-    MetadataCompleteTest.class,
-    MetadataCompleteMissingServletsTest.class,
+    // Annotation caching tests ...
+        BasicAnnoCacheUsageTest.class,
+        AbsoluteOrderingTest.class,
+        LooseConfigTest.class,
+        MetadataCompleteTest.class,
+        MetadataCompleteMissingServletsTest.class,
 
     // Jandex tests ...
-    JandexAppDefaultAppMgrDefaultTest.class,
-    JandexAppDefaultAppMgrTrueTest.class,
-    JandexAppFalseAppMgrFalseTest.class,
-    JandexAppFalseAppMgrTrueTest.class,
-    JandexAppTrueAppMgrFalseTest.class,
-    JandexAppTrueAppMgrTrueTest.class
+        JandexAppDefaultAppMgrDefaultTest.class,
+        JandexAppDefaultAppMgrTrueTest.class,
+        JandexAppFalseAppMgrFalseTest.class,
+        JandexAppFalseAppMgrTrueTest.class,
+        JandexAppTrueAppMgrFalseTest.class,
+        JandexAppTrueAppMgrTrueTest.class
 })
 
 public class FATSuite {

@@ -31,352 +31,88 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FileUtils;
 
 /**
- * 
- * Super class for all caching tests
- *
+ * Super class for all caching tests.
  */
-
 public abstract class CachingTest extends LoggingTest {
     private static final Logger LOG = Logger.getLogger(CachingTest.class.getName());
-    
-    public static String earFileName = null;
-    public static final String ANNO_CACHE_BACKUP_DIR = "annoBackup";
 
-
-    // Depending on Test Classes to set sharedServer in an @BeforeClass method.
-    // Otherwise, expect NPEs or sharedServer is set to server from previous test class.
-    public static SharedServer sharedServer = null;
-    public static LibertyServer libertyServer = null;
-
-    @Override
-    public SharedServer getSharedServer() {
-        if (sharedServer == null) {
-            sharedServer = new SharedServer("annoFat_server", false);
+    protected static void logBlock(String msg) {
+        String blockChars = "";
+        for ( int i = 0; i < msg.length() + 6; i++ ) {
+            blockChars += "=";
         }
-        return sharedServer;
+
+        LOG.info("");
+        LOG.info(blockChars);
+        LOG.info("=  " + msg + "  =");
+        LOG.info(blockChars);
     }
     
-    public static void setSharedServer() {
-        sharedServer = new SharedServer("annoFat_server", false);
-        libertyServer = sharedServer.getLibertyServer();
-    }
-    
+    // Test application ...
+
+    public static String earFileName = null;
+
     public static String getEarName() throws Exception {
-        if (earFileName == null) {
+        if ( earFileName == null ) {
             throw new Exception("EAR file name not initialized");
         }
         return earFileName;
     }
-    
+
     public static void setEarName(String earName) {
         earFileName = earName;
     }
-    
 
-    public static void addAppToServerAppsDir(Ear ear) throws Exception {
-        LOG.info("Add TestServlet40 to the server if not already present.");
-
-        try {
-           FatHelper.addEarToServerApps(sharedServer.getLibertyServer(), ear);
-
-        } catch (Exception e) {
-            LOG.info("Caught exception from addEarToServerApps [" + e.getMessage() + "]");
-            throw e;
-        }
-    }
-    
-    /**
-     * Copy the app (ear file) from <serverRoot>/apps
-     * to .../<annoCacheRoot>/<ANNO_CACHE_BACKUP_DIR>/apps/<earFileName>
-     * 
-     * @throws IOException
-     */
-    public static void backupApplicationFile() throws Exception {
-        String annoCacheParentPath = Utils.getAnnoCacheParentPath(sharedServer);
-        String backupPath = annoCacheParentPath + "/" + ANNO_CACHE_BACKUP_DIR + "/apps/";
-        String backupFileName = backupPath + getEarName();
-        File backupFile = new File(backupFileName);
-        mkDir(backupPath, DELETE_IF_EXISTS);
-        
-        String earPath = sharedServer.getLibertyServer().getServerRoot() + "/apps/" + getEarName();
-        File sourceArchive = new File(earPath);
-
-        LOG.info("Backing up file [ " + earPath + " ] to [ " + backupFileName + " ]");
-        FileUtils.copyFile(sourceArchive, backupFile);
-    }
-    
-    /**
-     * 
-     * @param sourcePath
-     * @param destinationPath
-     * @throws IOException
-     */
-    public static void copyFile(String sourcePath, String destinationPath) throws IOException {
-        LOG.info("CopyFile ENTER [ "  + sourcePath + " ] to [ " + destinationPath + " ]");
-        File sourceFile = null;
-        File destinationFile = null;
-        try {
-            sourceFile = new File(sourcePath);
-            destinationFile = new File(destinationPath);
-            
-            if (destinationFile.isDirectory()) {
-                destinationFile = new File(destinationPath, sourceFile.getName());
-            }
-            
-            LOG.info("Copying [ "  + sourceFile.getAbsolutePath() + " ] to [ " + destinationFile.getAbsolutePath() + " ]");
-            FileUtils.copyFile(sourceFile, destinationFile);
-            
-        } catch (IOException ioe) {
-            LOG.info("Caught exception while copying [ "  + sourcePath + " ] to [ " + destinationPath + " ] Exception is [ "+ ioe.getMessage() + " ]");
-            StackTraceElement[] stes = ioe.getStackTrace();
-            for (StackTraceElement ste : stes) {
-                LOG.info("    at " + ste.toString());
-            }
-            
-            LOG.info(ioe.getStackTrace().toString());
-            throw ioe;
-        } 
-        
-        LOG.info("Copied [ "  + sourcePath + " ] to [ " + destinationPath + " ]");
-
-    }
-    
-    /**
-     * 
-     * @param source
-     */
-    public static void listFiles(File source) {
-        File[] files = source.listFiles();
-        LOG.info("* File List from [" + source.getName() + "]" );
-        for (File f : files) {
-            if (f.isDirectory()) {
-                listFiles(f);
-            } else {
-               LOG.info(" *   -  " + f.getName());
-            }
-        }
+    public static String getApplicationPath() throws Exception {
+        return getAppsPath() + getEarName();
     }
 
-    /**
-     * 
-     * @param sourcePath
-     * @param destinationPath
-     * @throws IOException
-     */
-    public static void copyFolder(String sourcePath, String destinationPath) throws IOException {
-        LOG.info("CopyFolder ENTER [ "  + sourcePath + " ] to [ " + destinationPath + " ]");
-        File source = null;
-        File destination = null;
-        
-        // Sanity check.  Make sure the sourcePath exists and that source and dest are folders.
-        try {
-            source = new File(sourcePath);
-            destination = new File(destinationPath);
-
-            if (!source.exists()) {
-                throw new IOException("sourcePath [" + sourcePath + "] does not exist.");
-            }
-            if (!source.isDirectory() ) {
-                throw new IOException("sourcePath [" + sourcePath + "] is not a directory");
-            }
-
-            if (destination.exists() && !destination.isDirectory() ) {
-                throw new IOException("destinationPath [" + destinationPath + "] is not a directory");
-            }
-        } catch (Exception ioe) {
-            LOG.info("Caught exception while copying [ "  + sourcePath + " ] to [ " + destinationPath + " ] Exception is [ "+ ioe.getMessage() + " ]");
-            StackTraceElement[] stes = ioe.getStackTrace();
-            for (StackTraceElement ste : stes) {
-                LOG.info("    at " + ste.toString());
-            }
-
-            LOG.info(ioe.getStackTrace().toString());
-            throw ioe;
-        }
-        
-        copyFolder(source, destination, false);
-    }  
-    
-    public static void copyFolder(File source, File destination) throws IOException {
-        copyFolder(source, destination, false);
+    public static File getApplicationFile() throws Exception {
+        return new File( getApplicationPath() );
     }
-    
-    public static void copyFolder(File source, File destination, boolean zipWars) throws IOException {
-        LOG.info("Copying [ "  + source.getAbsolutePath() + " ] to [ " + destination.getAbsolutePath() + " ]");
-        if (source.isDirectory()) {
-            if (!destination.exists()) {
-                destination.mkdirs();
-            }
 
-            String files[] = source.list();
+    public static File getInstalledAppFile() throws Exception {
+        return getApplicationFile();
+    } 
 
-            for (String file : files)   {
-                File srcFile = new File(source, file);
-                File destFile = new File(destination, file);
-
-                //  if it's a war zip it to the destination   
-                if ( zipWars && srcFile.getName().toUpperCase().endsWith(".WAR"))  {
-                    LOG.info("Zipping WAR [ " + srcFile.getAbsolutePath() + " ] to [ " + destFile.getAbsolutePath());
-                    
-                    FileOutputStream fos = null;
-                    ZipOutputStream zos = null;
-                    try {
-                        fos = new FileOutputStream(destFile);
-                        zos = new ZipOutputStream(fos);
-
-                        zip(srcFile, "", zos);
-                    } catch (Exception e) {
-                        LOG.info("Caught exception while copying [ "  + source.getAbsolutePath() + " ] to [ " + destination.getAbsolutePath() + " ] Exception is [ "+ e.getMessage() + " ]");
-                        StackTraceElement[] stes = e.getStackTrace();
-                        for (StackTraceElement ste : stes) {
-                            LOG.info("    at " + ste.toString());
-                        }
-                        throw e;
-
-                    } finally {
-                        try {
-                            if (zos != null) zos.close();
-                            if (fos != null) fos.close();
-
-                        } catch (Exception e) {
-                            LOG.info("Caught exception while closing streams. Exception is [ "+ e.getMessage() + " ]");
-                            // ignore
-                        }
-                    }
-                } else {
-                    copyFolder(srcFile, destFile, zipWars);
-                }
-            }
-        } else {
-            InputStream in = null;
-            OutputStream out = null;
-
-            try {
-                in = new FileInputStream(source);
-                out = new FileOutputStream(destination);
-
-                byte[] buffer = new byte[1024];
-
-                int length;
-                while ((length = in.read(buffer)) > 0) {
-                    out.write(buffer, 0, length);
-                }
-
-            } catch (Exception e) {
-                LOG.info("Caught exception while copying [ "  + source.getAbsolutePath() + " ] to [ " + destination.getAbsolutePath() + " ] Exception is [ "+ e.getMessage() + " ]");
-                StackTraceElement[] stes = e.getStackTrace();
-                for (StackTraceElement ste : stes) {
-                    LOG.info("    at " + ste.toString());
-                }
-                throw e;
-
-            } finally {
-                try {
-                    in.close();
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                }
-
-                try {
-                    out.close();
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                } 
-            }
-        }
+    public static String getExpandedApplicationPath() throws Exception {
+        return getExpandedAppsPath() + getEarName();
     }
-    
-    /**
-     * Delete the application file (ear file) from <serverRoot>/apps
-     * @throws IOException
-     */
-    public static void deleteApplicationFile() throws Exception { 
-        LOG.info("entry");
-        String appPath = sharedServer.getLibertyServer().getServerRoot() + "/apps/" + getEarName();
 
-        File appFile = new File(appPath);
-        if (!!!appFile.exists()) {
-            LOG.info("appication file [" + appPath + "] does not exist. No need to delete.");
-            return;
-        }
-        
-        LOG.info("Deleting appication file [" + appPath + "]");
-        appFile.delete();
-        if (appFile.exists()) {
-            throw new IOException("Unable to delete [" + appFile.getName() + "]");
-        }
-        LOG.info("Deleted successfully.  Exit");
+    public static File getExpandedApplicationFile() throws Exception {
+        return new File( getExpandedApplicationPath() );
     }
-    
-    /**
-     * Recursively delete the .../<server>/apps/expanded/<Application.EAR> directory.
-     * @throws Exception
-     */
-    public static void deleteExpandedApplication() throws Exception {
-        LOG.info("entry");
-        String expandedAppPath = getServerRoot() + "/apps/expanded/" + getEarName() ;
-        File expandedAppDir = new File(expandedAppPath);
-        
-        if (!!!expandedAppDir.exists()) {
-            LOG.info("expanded app dir [" + expandedAppDir + "] does not exist. No need to delete.");
-            return;
-        }
-        
-        if (expandedAppDir.exists()) {
-            LOG.info("Deleting expanded app [ " + expandedAppPath + " ]" );
-            FileUtils.recursiveDelete(expandedAppDir);
-        }
-        LOG.info("exit");
-    }
-    
-    /**
-     * Expand the .../<server>/apps/<Application.ear> file 
-     *    to the apps/expanded/<Application.ear> directory 
-     *    
-     *  If expanded application directory already exists, it is deleted before
-     *  the application expanded.  
-     *    
-     * @throws Exception
-     */
-    public static void expandApplication() throws Exception {
-        LOG.info("entry");
-
-        // First delete the existing expanded app
-        String expandedAppPath = getServerRoot() + "/apps/expanded/" + getEarName() ;
-        
-        File expandedAppDir = new File(expandedAppPath);
-        
-        if (expandedAppDir.exists()) {
-            deleteExpandedApplication();
-        }
-        
-        // Then expand the application
-        // Need to implement unzip
-        // unzip(zippedEarPath, expandedAppPath);
-    }    
 
     public static Ear createApp() throws Exception {
+        // This jar put the servlets and listeners in the same package.
         Jar jar1 = new Jar("TestServlet40.jar");
         jar1.addPackageName("testservlet40.jar.servlets");
+        jar1.addPackageName("testservlet40.jar.util");
 
         Jar jar2 = new Jar("TestServletA.jar");
         jar2.addPackageName("testservleta.jar.servlets");
         jar2.addPackageName("testservleta.jar.listeners");
+        jar2.addPackageName("testservleta.jar.util");
 
         Jar jar3 = new Jar("TestServletB.jar");
         jar3.addPackageName("testservletb.jar.servlets");
         jar3.addPackageName("testservletb.jar.listeners");
+        jar3.addPackageName("testservletb.jar.util");
 
         Jar jar4 = new Jar("TestServletC.jar");
         jar4.addPackageName("testservletc.jar.servlets");
         jar4.addPackageName("testservletc.jar.listeners");
+        jar4.addPackageName("testservletc.jar.util");
 
         Jar jar5 = new Jar("TestServletD.jar");
         jar5.addPackageName("testservletd.jar.servlets");
         jar5.addPackageName("testservletd.jar.listeners");
-        
+        jar5.addPackageName("testservletd.jar.util");
+
+        // Classes put everything in a single package.
         War war = new War("TestServlet40.war");
         war.addPackageName("testservlet40.war.servlets");
+
         war.addJar(jar1);
         war.addJar(jar2);
         war.addJar(jar3);
@@ -389,59 +125,157 @@ public abstract class CachingTest extends LoggingTest {
         return ear;
     }
     
-    /**
-     * Returns a File object for the application file under the "apps" directory under the .../server_root_dir/.
-     * @return
-     */
-    public static File getInstalledAppFile() throws Exception {
-        String installedAppPath = sharedServer.getLibertyServer().getServerRoot() + "/apps/" + getEarName();
+    // Shared server ...
 
-        LOG.info("installedAppPath [" + installedAppPath + "]");
-        return new File(installedAppPath);
-    } 
-    
-    /**
-     * Returns a File object for the application file under the "apps" directory under the .../server_root_dir/.
-     * @return
-     */
-    public static File getInstalledAppDir() throws Exception {
-        String installedAppsPath = sharedServer.getLibertyServer().getServerRoot() + "/apps/";
+    // Depending on Test Classes to set sharedServer in an @BeforeClass method.
+    // Otherwise, expect NPEs or sharedServer is set to server from previous test class.
 
-        LOG.info("installedAppsPath [" + installedAppsPath + "]");
-        return new File(installedAppsPath);
-    } 
+    public static final String SERVER_NAME = "annoFat_server";
+
+    public static SharedServer sharedServer = null;
+    public static LibertyServer libertyServer = null;
+
+    public static void setSharedServer() {
+        sharedServer = new SharedServer(SERVER_NAME, false);
+        libertyServer = sharedServer.getLibertyServer();
+    }
     
-    
-    /**
-     * Returns the root directory of the Liberty server.
-     * @return
-     * @throws Exception
-     */
+    @Override
+    public SharedServer getSharedServer() {
+        if ( sharedServer == null ) {
+            sharedServer = new SharedServer(SERVER_NAME, false);
+        }
+        return sharedServer;
+    }
+
     protected static String getServerRoot() throws Exception {
         return sharedServer.getLibertyServer().getServerRoot();
     }
     
-    /**
-     * Copy a "jvm.options" from the test server configuration folder to the server directory.
-     * @param sourceJvmOptions  - File to copy to jvm.options in the server directory.
-     * @throws Exception
-     */
-    protected static void installJvmOptions(String sourceJvmOptions) throws Exception {
-        LOG.info("installJvmOptions : " + sourceJvmOptions);
+    public static String getAppsPath() throws Exception {
+        return getServerRoot() + "/apps/";
+    }
 
-        String serverRootDir = getServerRoot();
-        File jvmOptionsFile = new File(serverRootDir + "/jvm.options");
+    public static String getExpandedAppsPath() throws Exception {
+        return getAppsPath() + "expanded/";
+    }
 
-        if (jvmOptionsFile.exists()) {
-            // Delete jvm.options file
-            assertTrue("Unable to delete jvm.options file", jvmOptionsFile.delete());
-            assertFalse("Unable to delete jvm.options file, still exists", jvmOptionsFile.exists());
+    public static File getInstalledAppDir() throws Exception {
+        return new File( getAppsPath() );
+    } 
+
+    public static void addAppToServerAppsDir(Ear ear) throws Exception {
+        LOG.info("Add application [" + ear + " ]");
+
+        try {
+           FatHelper.addEarToServerApps(sharedServer.getLibertyServer(), ear);
+
+        } catch ( Exception e ) {
+            LOG.info("Exception: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    protected static void startServerClean() throws Exception {
+        sharedServer.startIfNotStarted();
+    }
+
+    protected static void startServerDirty() throws Exception {
+        sharedServer.startIfNotStarted(false, false, false);  
+    }
+
+    protected static void stopServer()  {    
+        stopServer("CWWKZ0014W");
+    }
+
+    protected static void stopServer(String... expectedMessages) {
+        LOG.info("stopServer ENTER");
+        for ( String message : expectedMessages ) {
+            LOG.info("stopServer : expecting [ " + message + " ]");
         }
 
-        // if sourceJvmOptions is null, then the assumption is that we just want to delete any existing jvm.options
-        if (sourceJvmOptions != null) {
-            File serverJvmOptionsFile = new File(serverRootDir + "/serverConfigurations/" + sourceJvmOptions);
-            FileUtils.copyFile(serverJvmOptionsFile, jvmOptionsFile); 
+        try {
+            sharedServer.getLibertyServer().stopServer(expectedMessages);
+        } catch ( Exception e ) {
+            LOG.info("Caught Exception: " + e.getMessage());
+        }
+
+        LOG.info("stopServer RETURN");
+    }
+
+    protected static long waitForAppUpdateToBeNoticed() throws Exception {
+        long lStartTime = System.nanoTime();
+        libertyServer.waitForStringInLog("CWWKZ0003I:", libertyServer.getConsoleLogFile());
+        long lEndTime = System.nanoTime();
+        long elapsed = lEndTime - lStartTime;
+        LOG.info("Server updated in milliseconds: " + elapsed / 1000000);
+
+        libertyServer.setMarkToEndOfLog(libertyServer.getConsoleLogFile());
+
+        return elapsed;
+    }
+
+    //
+
+    public static void deleteApplicationFile() throws Exception { 
+        delete( getApplicationFile() );
+    }
+    
+    public static void deleteExpandedApplication() throws Exception {
+        File appDir = getExpandedApplicationFile();
+        String appAbsPath = appDir.getAbsolutePath();
+
+        if ( !appDir.exists() ) {
+            LOG.info("Skip delete; application directory [ " + appAbsPath + " ] does not exist.");
+            return;
+        }
+
+        LOG.info("Delete application directory [ " + appAbsPath + " ]" );
+        FileUtils.recursiveDelete(appDir);
+    }
+    
+    /**
+     * Expand the .../<server>/apps/<Application.ear> file 
+     * to the apps/expanded/<Application.ear> directory 
+     *    
+     * If expanded application directory already exists, it is deleted before
+     * the application expanded.  
+     */
+    public static void expandApplication() throws Exception {
+        LOG.info("entry");
+
+        String expandedAppPath = getServerRoot() + "/apps/expanded/" + getEarName() ;
+        File expandedAppDir = new File(expandedAppPath);
+        
+        if ( expandedAppDir.exists() ) {
+            deleteExpandedApplication();
+        }
+        
+        // Then expand the application
+        // Need to implement unzip
+
+        // unzip(zippedEarPath, expandedAppPath);
+    }    
+
+    /**
+     * Copy a "jvm.options" from the test server configuration folder to the server directory.
+     *
+     * @param sourceJvmOptions New options file.  If null, set the server to have no options.
+     */
+    protected static void installJvmOptions(String sourceJvmOptions) throws Exception {
+        LOG.info("installJvmOptions [ " + sourceJvmOptions + " ]");
+
+        String serverRootDir = getServerRoot();
+        File serverJvmOptionsFile = new File(serverRootDir + "/jvm.options");
+
+        if ( serverJvmOptionsFile.exists() ) {
+            assertTrue("Unable to delete jvm.options file", serverJvmOptionsFile.delete());
+            assertFalse("Unable to delete jvm.options file, still exists", serverJvmOptionsFile.exists());
+        }
+
+        if ( sourceJvmOptions != null ) {
+            File sourceJvmOptionsFile = new File(serverRootDir + "/serverConfigurations/" + sourceJvmOptions);
+            FileUtils.copyFile(sourceJvmOptionsFile, serverJvmOptionsFile); 
         }
     }
 
@@ -449,31 +283,21 @@ public abstract class CachingTest extends LoggingTest {
      * Copy a server.xml from the server configuration to the shared server.
      */
     protected static void installServerXml(String sourceServerXml) throws Exception {
+        LOG.info("installServerXml [ " + sourceServerXml + " ]");
+
         String serverRootDir = getServerRoot();
         File serverXmlFile = new File(serverRootDir + "/server.xml");
 
-        if (serverXmlFile.exists()) {
+        if ( serverXmlFile.exists() ) {
             serverXmlFile.delete();
         }
 
-        File serverConfigurationFile = new File(serverRootDir + "/serverConfigurations/" + sourceServerXml);
-        FileUtils.copyFile(serverConfigurationFile, serverXmlFile); 
+        File sourceServerXmlFile = new File(serverRootDir + "/serverConfigurations/" + sourceServerXml);
+        FileUtils.copyFile(sourceServerXmlFile, serverXmlFile); 
     } 
-    
-    protected static void logBlock(String msg) {
-        String blockChars = "";
-        for (int i = 0; i < msg.length() + 6; i++) {
-            blockChars += "=";
-        }
-        LOG.info("");
-        LOG.info(blockChars);
-        LOG.info("=  " + msg + "  =");
-        LOG.info(blockChars);
-    }
-    
+
     /**
      * Display the web.xml file in the logs
-     * @throws Exception
      */
     public static void displayWebXml() throws Exception {
         String webInfDirName = getServerRoot() + "/apps/expanded/" + getEarName() + "/TestServlet40.war/WEB-INF/";
@@ -501,11 +325,6 @@ public abstract class CachingTest extends LoggingTest {
     protected static final boolean DELETE_IF_EXISTS = true;
     protected static final boolean SKIP_IF_EXISTS = false;
     
-    /**
-     * 
-     * @param dirPath  - path to create
-     * @throws IOException
-     */
     protected static void mkDir(String dirPath, boolean deleteIfAlreadyExists) throws IOException {
         LOG.info("ENTER. [" + dirPath + "] deleteIfAlreadyExists [ " + deleteIfAlreadyExists + " ]");
         Path path = Paths.get(dirPath);
@@ -545,7 +364,6 @@ public abstract class CachingTest extends LoggingTest {
     }
     
     public static void renameJarFileInApplication(String warName, String fileNameToRename, String newFileName) throws Exception {
-        
         String webInfLibDirName = sharedServer.getLibertyServer().getServerRoot() + "/apps/expanded/" + getEarName() + "/" + warName + "/WEB-INF/lib/";
         File fileToRename = new File(webInfLibDirName + fileNameToRename);
         File fileNewName = new File(webInfLibDirName + newFileName);
@@ -559,11 +377,7 @@ public abstract class CachingTest extends LoggingTest {
         // locked.  Give the server time to unlock the file, then try again.
 
         if (!renameWorked) {
-            try {
-                Thread.currentThread().sleep(400);
-            } catch (InterruptedException e) {
-                // Ignore
-            }
+            standardDelay();
             renameWorked = fileToRename.renameTo(fileNewName);
         }
 
@@ -574,15 +388,9 @@ public abstract class CachingTest extends LoggingTest {
         }
     }
 
-    /**
-     * rename oldFile to newFile
-     * 
-     * @param oldFile
-     * @param newFile
-     * @throws Exception
-     */
     public static void renameFile(File oldFile, File newFile) throws IOException {
         LOG.info("Attempt to rename [" + oldFile.getName() + "] to [" + newFile.getName() + "]");
+
         if (newFile.exists()) {
             LOG.info(newFile.getName() + " already exists.  Going to delete it.");
             newFile.delete();
@@ -609,122 +417,63 @@ public abstract class CachingTest extends LoggingTest {
         }
     }
     
-    /**
-     * 
-     * @param sharedServer
-     * @param appFileName
-     * @throws IOException
-     */
+    public static final String ANNO_CACHE_BACKUP_DIR = "annoBackup";
+
     public static void replaceApplicationFileFromExpandedApp() throws Exception {
-        
-        backupApplicationFile();
-        deleteApplicationFile();
-        
-        String expandedAppPath = Utils.getExpandedAppPath(sharedServer, getEarName());
-        File expandedAppDir = new File(expandedAppPath);
-        LOG.info("expandedAppPath [" + expandedAppPath + "]");
-        
-        // Destination for expanded EAR in temp location
-        String annoCacheParentPath = Utils.getAnnoCacheParentPath(sharedServer);
-        String tempPath = annoCacheParentPath + "/" + ANNO_CACHE_BACKUP_DIR + "/apps/expandedEAR/" + getEarName();
-        File tempDir = new File(tempPath);
-        mkDir(tempPath, DELETE_IF_EXISTS);
-        
-        // In the zipped EAR, the WAR is also zipped.  In the expanded EAR, the WAR is also expanded.
-        // Copy the expanded app to a temporary location, but zip the WAR directories.
-        // The temp directory will hold an expanded EAR suitable for zipping.
-        LOG.info("Copying expanded App [ "+ expandedAppPath + " ]");
-        LOG.info("Copying to [ "+ tempPath + " ].  Zipping WAR dirs before copying.");
-        copyFolder(expandedAppDir, tempDir, true);
-               
-//        // If there are any unzipped WARs in the app, zip them.
-//        File[] children = expandedAppDir.listFiles();
-//        for (File child : children) {
-//            
-//            String childName = child.getName();
-//            LOG.info("childName [" + childName + "]");
-//            if (child.getName().toUpperCase().endsWith(".WAR") && child.isDirectory()) {
-//                LOG.info("Found WAR in application [" + childName + "]");
-//                zipWarInExpandedApp(sharedServer, expandedAppPath, childName);
-//            }
-//        }
-//        
-//        LOG.info("expandedAppPath [ " + expandedAppPath + " ]");
-//        
-        // Replace the installedAppFile ( The application file under the <SERVER_NAME>/apps )
-        File installedAppFile = getInstalledAppFile();
-        LOG.info("installedAppPath [ " + installedAppFile.getCanonicalPath() + " ]");
-        
-        FileOutputStream fos = new FileOutputStream(installedAppFile);
-        ZipOutputStream zos = new ZipOutputStream(fos);
-        
-        LOG.info("Zipping tempDir [ " + tempDir.getAbsolutePath() + " ] to installedAppPath [ " + installedAppFile.getCanonicalPath() + " ]");
-        zip(tempDir, "", zos);
-        zos.close();
-        fos.close();
+        String origPath = getApplicationPath();
+        File origFile = new File(origPath);
+        String origAbsPath = origFile.getAbsolutePath();
+
+        String expandedPath = Utils.getExpandedAppPath(sharedServer, getEarName());
+        File expandedFile = new File(expandedPath);
+        String expandedAbsPath = expandedFile.getAbsolutePath();
+
+        String cacheParentPath = Utils.getAnnoCacheParentPath(sharedServer);
+        String backupRootPath = cacheParentPath + "/" + ANNO_CACHE_BACKUP_DIR + "/backup/";
+        String updatedRootPath = cacheParentPath + "/" + ANNO_CACHE_BACKUP_DIR + "/updated/";
+
+        String backupPath = backupRootPath + getEarName();
+        File backupFile = new File(backupPath);
+        String backupAbsPath = backupFile.getAbsolutePath();
+
+        String updatedPath = updatedRootPath + getEarName();
+        File updatedFile  = new File(updatedPath);
+        String updatedAbsPath = updatedFile.getAbsolutePath();
+
+        LOG.info("appOriginal [ " + origAbsPath + " ]");
+        LOG.info("appBackup   [ " + backupAbsPath + " ]");
+        LOG.info("appExpanded [ " + expandedAbsPath + " ]");
+        LOG.info("appUpdated  [ " + updatedAbsPath + " ]");
+
+        LOG.info("Prepare updated folder [ " + updatedRootPath + " ]");
+        mkDir(updatedRootPath, DELETE_IF_EXISTS);
+
+        LOG.info("Collapse updated application [ " + expandedAbsPath + " ] to [ " + updatedAbsPath + " ]");
+        zip(expandedFile, updatedFile);
+
+        LOG.info("Prepare backup folder [ " + backupRootPath + " ]");
+        mkDir(backupRootPath, DELETE_IF_EXISTS);
+
+        LOG.info("Move original application [ " + origAbsPath + " ] to [ " + backupAbsPath + " ]");
+        origFile.renameTo(backupFile);
+
+        LOG.info("Move updated application [ " + updatedAbsPath + " ] to [ " + origAbsPath + " ]");
+        updatedFile.renameTo(origFile);
     }
     
     public static void replaceWebXmlInExpandedApp(String newWebXmlName) throws Exception {
- 
-        String webInfDirName = sharedServer.getLibertyServer().getServerRoot() + "/apps/expanded/" + getEarName() + "/TestServlet40.war/WEB-INF/";
-        File webXml = new File(webInfDirName + "web.xml");
+        String webInfDirName = getExpandedApplicationPath() + "/TestServlet40.war/WEB-INF/";
+
+        File origWebXml = new File(webInfDirName + "web.xml");
         File newWebXml = new File(webInfDirName + newWebXmlName);
-          
-        // Copy new web.xml over old web.xml
-        LOG.info("webInfDirName=[ " + webInfDirName + " ]");
-        LOG.info("Replacing file [ " + webXml.getName() + " ] with [ " + newWebXml.getName() + " ]");
-        FileUtils.copyFile(newWebXml, webXml);   
-    } 
-    
-    protected static void startServerClean() throws Exception {
-        LOG.info("starting server");
-        sharedServer.startIfNotStarted();
-        LOG.info("completed start server CLEAN step");
-    }
 
-    protected static void startServerDirty() throws Exception {
-        LOG.info("starting server");
-        sharedServer.startIfNotStarted(false, false, false);  
-        LOG.info("completed start server DIRTY step");
-    }
-
-    
-    protected static void stopServer()  {    
-            stopServer("CWWKZ0014W");
-    }
-
-    protected static void stopServer(String... expectedMessages) {
-
-        LOG.info("stopServer : stopping server");
-        for ( String message : expectedMessages ) {
-            LOG.info("stopServer : expecting [ " + message + " ]");
-        }
-        
-        try {
-            sharedServer.getLibertyServer().stopServer(expectedMessages);
-            
-        } catch (Exception e) {
-            LOG.info("Caught Exception: [ " + e.getMessage() + " ]");
-        }
-
-        LOG.info("stopServer : stopped server");
+        LOG.info("Copy [ " + newWebXml.getAbsolutePath() + " ] over [ " + origWebXml.getAbsolutePath() + " ]");
+        FileUtils.copyFile(newWebXml, origWebXml);
     }
     
-    protected static long waitForAppUpdateToBeNoticed() throws Exception {
-        long lStartTime = System.nanoTime();
-        libertyServer.waitForStringInLog("CWWKZ0003I:", libertyServer.getConsoleLogFile());
-
-        long lEndTime = System.nanoTime();        
-        long elapsed = lEndTime - lStartTime;
-        LOG.info("Server updated in milliseconds: " + elapsed / 1000000);
-        libertyServer.setMarkToEndOfLog(libertyServer.getConsoleLogFile());
-        return elapsed;
-    }
-    
-    public static void zzzzzzunzip(File sourceArchive, String destinationPath) throws IOException {
-
-        String destinationDirPath = destinationPath;
-        LOG.info("unzipping [ " + sourceArchive + " ] to [" + destinationDirPath + " ]" );
+    public static void zzzzzzunzip(File sourceArchive, String destPath) throws IOException {
+        String destDirPath = destPath;
+        LOG.info("unzipping [ " + sourceArchive + " ] to [" + destDirPath + " ]" );
         
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(sourceArchive));
@@ -735,7 +484,7 @@ public abstract class CachingTest extends LoggingTest {
             String entryName = zipEntry.getName();
             LOG.info("entryName [ " + entryName + " ]" );
             
-            File outFile = new File(destinationDirPath + entryName);
+            File outFile = new File(destDirPath + entryName);
             FileOutputStream fos = new FileOutputStream(outFile);
             int len;
             while ((len = zis.read(buffer)) > 0) {
@@ -748,16 +497,16 @@ public abstract class CachingTest extends LoggingTest {
         zis.close();
     }  
     
-//    public static void unzip(String zipFileName, String destinationPath){
+//    public static void unzip(String zipFileName, String destPath){
 //
 //        byte[] buffer = new byte[1024];
 //
 //        try {
 //            LOG.info("Unzipping  [ " + zipFileName + " ]" );
 //            
-//            File destinationDir  = new File(destinationPath);
-//            if ( !!!destinationDir.exists() ) {
-//                mkDir(destinationPath);
+//            File destDir  = new File(destPath);
+//            if ( !destDir.exists() ) {
+//                mkDir(destPath);
 //            }
 //
 //            ZipInputStream zis = new ZipInputStream( new FileInputStream(zipFileName) );
@@ -766,13 +515,13 @@ public abstract class CachingTest extends LoggingTest {
 //            while ( entry != null ) {
 //
 //                String entryName = entry.getName();
-//                File newFile = new File( destinationPath + File.separator + entryName );
+//                File newFile = new File( destPath + File.separator + entryName );
 //                
 //                String parentPath = newFile.getParent();
 //                
 //                if (entryName.toUpperCase().endsWith(".WAR")) {
 //                    
-//                    unzip(destinationPath + File.separator + entryName);
+//                    unzip(destPath + File.separator + entryName);
 //                
 //                }                
 //
@@ -799,7 +548,242 @@ public abstract class CachingTest extends LoggingTest {
 //            ex.printStackTrace(); 
 //        }
 //    }    
+
+    public static void zipWarInExpandedApp(SharedServer sharedServer, String parentPath, String warName) throws IOException {
+        String warPath = parentPath + "/" + warName;
+        String tempWarPath = warPath + ".temp";
+
+        File warFile = new File(warPath);
+        File tempWarFile = new File(tempWarPath);
+        
+        renameFile(warFile, tempWarFile);
+
+        if ( warFile.exists()) {
+            LOG.info("         !!!! RENAME DID NOT WORK !!!!!");
+        }
+
+        zip(tempWarFile, warFile);
+        
+        FileUtils.recursiveDelete(tempWarFile);
+    }
+
+    // Zip primitives ...
+
+    public static void zip(File source, File target) throws IOException {
+        LOG.info("Zip source [ " + source.getAbsolutePath() + " ] into [ " + target.getAbsolutePath() + " ]");
+
+        FileOutputStream fos = null;
+        ZipOutputStream zos = null;
+
+        try {
+            fos = new FileOutputStream(target);
+            zos = new ZipOutputStream(fos);
+
+            // Note the empty string parameter.
+            // Store entries using their relative path from the root.
+
+            zip(source, "", zos);
+
+        } finally {
+            if ( zos != null ) {
+                try {
+                    zos.close();
+                } catch ( IOException e ) {
+                    e.printStackTrace();
+                }
+            }
+            if ( fos != null ) {
+                try {
+                    fos.close();
+                } catch ( IOException e ) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
     
+    private static final byte[] transferBuffer = new byte[16 * 1024];
+
+    public static void zip(File source, String targetName, ZipOutputStream zos) throws IOException {
+        LOG.info("fileToZip Source [ " + source.getAbsolutePath() + " ] Target [" + targetName + " ]" );
+
+        if ( source.isHidden() ) {
+            LOG.info("fileToZip skipped: Source is hidden");
+            return;
+        }
+
+        if ( source.isDirectory() ) {
+            if ( !targetName.equals("") ) {
+                if ( !targetName.endsWith("/") ) {
+                    targetName += "/";
+                }
+
+                LOG.info("putEntry [" + targetName +  " ]" );
+                zos.putNextEntry(new ZipEntry(targetName));
+                zos.closeEntry();
+            }
+
+            File[] children = source.listFiles();
+            for ( File child : children ) {
+                zip(child, targetName + child.getName(), zos);
+            }
+
+        } else {
+            FileInputStream fis = new FileInputStream(source);
+            try {
+                LOG.info("putEntry [" + targetName +  " ]" );
+                ZipEntry zipEntry = new ZipEntry(targetName);
+                zos.putNextEntry(zipEntry);
+                int length;
+                while ( (length = fis.read(transferBuffer)) >= 0 ) {
+                    zos.write(transferBuffer, 0, length);
+                }
+                zos.closeEntry();
+            } finally {
+                fis.close();
+            }
+        }
+    }
+
+    // File primitives ...
+
+    public static void listFiles(File source) {
+        listFiles(source, IS_ROOT, "* ", "- ");
+    }
+
+    public static final boolean IS_ROOT = true;
+    public static final boolean IS_NOT_ROOT = false;
+
+    public static void listFiles(File source, boolean isRoot, String dirIndent, String fileIndent) {
+        String sourceName = ( IS_ROOT ? source.getAbsolutePath() : source.getName() );
+
+        if ( source.isDirectory() ) {
+            LOG.info(dirIndent + sourceName);
+
+            String nextDirIndent = dirIndent + "  ";
+            String nextFileIndent = fileIndent + "  ";
+
+            File[] files = source.listFiles();
+            for ( File f : files ) {
+                listFiles(f, IS_NOT_ROOT, nextDirIndent, nextFileIndent);
+            }
+
+        } else {
+            LOG.info(fileIndent + sourceName);
+        }
+    }
+
+    public static void copyFile(String sourcePath, String destPath) throws IOException {
+        File sourceFile = new File(sourcePath);
+        String sourceAbsPath = sourceFile.getAbsolutePath();
+
+        File destFile = new File(destPath);
+        String destAbsPath = destFile.getAbsolutePath();
+
+        if ( destFile.isDirectory() ) {
+            destFile = new File( destPath, sourceFile.getName() );
+        }
+
+        LOG.info("Copy [ "  + sourceAbsPath + " ] to [ " + destAbsPath + " ]");
+        FileUtils.copyFile(sourceFile, destFile);
+    }
+
+    public static void copyFolder(String sourcePath, String destPath) throws IOException {
+        File sourceFile = new File(sourcePath);
+        String sourceAbsPath = sourceFile.getAbsolutePath();
+
+        File destFile = new File(destPath);
+        String destAbsPath = destFile.getAbsolutePath();
+
+        LOG.info("Copy [ "  + sourceAbsPath + " ] to [ " + destAbsPath + " ]");
+        
+        if ( !sourceFile.exists() ) {
+            throw new IOException("Source [ " + sourceAbsPath + " ] does not exist.");
+        } else if ( !sourceFile.isDirectory() ) {
+            throw new IOException("Source [ " + sourceAbsPath + " ] is not a directory");
+        } else if ( destFile.exists() && !destFile.isDirectory() ) {
+            throw new IOException("Destination [ " + destAbsPath + " ] is not a directory");
+        }
+        
+        copyFolder(sourceFile, destFile, DO_NOT_COLLAPSE_WARS);
+    }  
+    
+    public static void copyFolder(File source, File dest) throws IOException {
+        copyFolder(source, dest, DO_NOT_COLLAPSE_WARS);
+    }
+
+    //
+
+    public static final boolean DO_COLLAPSE_WARS = true;
+    public static final boolean DO_NOT_COLLAPSE_WARS = false;
+
+    public static void copyFolder(File source, File dest, boolean collapseWars) throws IOException {
+        String sourcePath = source.getAbsolutePath();
+        String destPath = dest.getAbsolutePath();
+
+        LOG.info("Copy [ "  + sourcePath + " ] to [ " + destPath + " ]");
+        LOG.info("Collapse WARs [ "  + collapseWars + " ]");
+
+        if ( source.isDirectory() ) {
+            if ( !dest.exists() ) {
+                dest.mkdirs();
+            }
+
+            String files[] = source.list();
+            for ( String file : files )   {
+                File srcFile = new File(source, file);
+                File destFile = new File(dest, file);
+
+                if ( collapseWars && isWar(srcFile) ) {
+                    zip(srcFile, destFile);
+                } else {
+                    copyFolder(srcFile, destFile, collapseWars);
+                }
+            }
+
+        } else {
+            transfer(source, dest);
+        }
+    }
+
+    public static long transfer(File source, File dest) throws IOException {
+        long total = 0L;
+
+        InputStream in = null;
+        OutputStream out = null;
+
+        try {
+            in = new FileInputStream(source);
+            out = new FileOutputStream(dest);
+
+            int length;
+            while ((length = in.read(transferBuffer)) > 0) {
+                out.write(transferBuffer, 0, length);
+                total += length;
+            }
+
+        } finally {
+            if ( in != null ) {
+                try {
+                    in.close();
+                } catch ( IOException e ) {
+                    e.printStackTrace();
+                }
+            }
+            if ( out != null ) {
+                try {
+                    out.close();
+                } catch ( IOException e ) {
+                    e.printStackTrace();
+                } 
+            }
+        }
+
+        return total;
+    }
+
+    //
+
     public static String getFileNameFromPath(String path) {
        int pos = path.lastIndexOf(File.separator);
        if ( pos != -1 ) {
@@ -808,76 +792,43 @@ public abstract class CachingTest extends LoggingTest {
        return null;    
     }
 
-    
-   public static void zip(File fileToZip, String zippedFileName, ZipOutputStream zos) throws IOException {
-        
-        LOG.info("fileToZip [" + fileToZip.getAbsolutePath() + "] ZipToName [" + zippedFileName + " ]" );
-        if (fileToZip.isHidden()) {
-            return;
-        }
-        if (fileToZip.isDirectory()) {
-            String dirName = zippedFileName;
-            if (!!!dirName.equals("")) {
-                if (zippedFileName.endsWith("/")) {
-                    LOG.info("putEntry [" + dirName +  " ]" );
-                    zos.putNextEntry(new ZipEntry(dirName));
-                    zos.closeEntry();
-                } else {
-                    dirName += "/";
-                    zos.putNextEntry(new ZipEntry(dirName));
-                    zos.closeEntry();  
-                }
-            }
-            File[] children = fileToZip.listFiles();
-            for (File child : children) {
-                zip(child, dirName + child.getName(), zos);
-            }
-            return;
-        }
-        
-        // If just a file (not a directory)
-        FileInputStream fis = new FileInputStream(fileToZip);
-        ZipEntry zipEntry = new ZipEntry(zippedFileName);
-        zos.putNextEntry(zipEntry);
-        byte[] bytes = new byte[1024];
-        int length;
-        while ((length = fis.read(bytes)) >= 0) {
-            zos.write(bytes, 0, length);
-        }
-        fis.close();
-    }
-   
-    
-    /**
-     * 
-     * @param sharedServer
-     * @param parentPath  - parent directory of WAR.
-     * @param warName
-     * @throws IOException
-     */
-    public static void zipWarInExpandedApp(SharedServer sharedServer, String parentPath, String warName) throws IOException {
-        String warPath = parentPath + "/" + warName;
-        String tempPath = warPath + ".temp";
-        File warFile = new File(warPath);
-        File tempFile = new File(tempPath);
-        
-        renameFile(warFile, tempFile);
-        
-        if ( warFile.exists()) {
-            LOG.info("         !!!! RENAME DID NOT WORK !!!!!");
-        }
-
-        File tempDir = new File(tempPath);    // Zip this directory 
-        File newWarFile = new File(warPath);  // into this file (the original file name)
-        
-        FileOutputStream fos = new FileOutputStream(newWarFile);
-        ZipOutputStream zos = new ZipOutputStream(fos);
-        
-        zip(tempDir, "", zos);  // Note empty string instead of WAR path, because we want the relative path from the root of the WAR - Not the absolute path of the WAR.
-        zos.close();
-        fos.close();
-        
-        FileUtils.recursiveDelete(tempDir);
+    public static boolean isWar(File file) {
+        return file.getName().toUpperCase().endsWith(".WAR");
     }
 
+    //
+
+    private static void delete(File file) throws IOException {
+        String path = file.getAbsolutePath();
+
+        if ( !file.exists() ) {
+            LOG.info("Skip delete; [ " + path + " ] does not exist");
+            return;
+        }
+
+        LOG.info("Delete [ " + path + " ]");
+        file.delete();
+        if ( file.exists() ) {
+            LOG.info("Failed first deletion of [ " + path + " ]; sleeping 400 ms");
+            standardDelay();
+
+            LOG.info("Delete [ " + path + " ] (second try)");
+            file.delete();
+            if ( file.exists() ) {
+                throw new IOException("Failed to delete [ " + path + " ]");
+            } else {
+                LOG.info("Deleted [ " + path + " ] (second try)");
+            }
+        } else {
+            LOG.info("Deleted [ " + path + " ]");
+        }
+    }
+
+    private static void standardDelay() {
+        try {
+            Thread.sleep(400); // Give the server extra time to release the EAR.
+        } catch ( InterruptedException e ) {
+            // Ignore
+        }
+    }
 }

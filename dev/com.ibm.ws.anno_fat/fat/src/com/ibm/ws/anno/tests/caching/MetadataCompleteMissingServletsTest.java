@@ -71,18 +71,23 @@ public class MetadataCompleteMissingServletsTest extends LoggingTest {
     protected static Ear createApp() throws Exception {
         Jar jar1 = new Jar("TestServlet40.jar");
         jar1.addPackageName("testservlet40.jar.servlets");
+        jar1.addPackageName("testservlet40.jar.util");
 
         Jar jar2 = new Jar("TestServletA.jar");
         jar2.addPackageName("testservleta.jar.servlets");
+        jar2.addPackageName("testservleta.jar.util");
 
         Jar jar3 = new Jar("TestServletB.jar");
         jar3.addPackageName("testservletb.jar.servlets");
+        jar3.addPackageName("testservletb.jar.util");
 
         Jar jar4 = new Jar("TestServletC.jar");
         jar4.addPackageName("testservletc.jar.servlets");
+        jar4.addPackageName("testservletc.jar.util");
 
         Jar jar5 = new Jar("TestServletD.jar");
         jar5.addPackageName("testservletd.jar.servlets");
+        jar5.addPackageName("testservletd.jar.util");
         
         War war = new War("TestServlet40.war");
         war.addPackageName("testservlet40.war.servlets");

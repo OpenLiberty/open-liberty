@@ -35,12 +35,26 @@ public class ZipUtils {
     public void recursiveDelete(File f) throws IOException {
         File[] subFiles = f.listFiles();
         if (subFiles != null) {
-            for (File c : subFiles) {
-                recursiveDelete(c);
+            for (File subFile : subFiles) {
+                recursiveDelete(subFile);
             }
         }
-        if (!f.delete())
-            throw new IOException("Failed to delete file " + f.getName());
+
+        f.delete();
+        if (f.exists()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "First delete failed; sleep 400 ms and retry: " + f.getAbsolutePath());
+            }
+            try {
+                Thread.sleep(400); // Twice zip.reaper.slow.pend.max
+            } catch ( InterruptedException e ) {
+                // FFDC
+            }
+            f.delete();
+            if (f.exists()) {
+                throw new IOException("Failed to delete " + f.getAbsolutePath());
+            }
+        }
     }
 
     /**
