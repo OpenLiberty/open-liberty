@@ -27,10 +27,12 @@ import componenttest.topology.impl.LibertyServerFactory;
  *
  */
 public class RepeatWithJPA20 extends FeatureReplacementAction {
+    public static final String ID = "JPA20_FEATURES";
+
     public RepeatWithJPA20() {
         super(EE8FeatureReplacementAction.EE8_FEATURE_SET, featuresToAdd());
         forceAddFeatures(false);
-        this.withID("JPA_20");
+        this.withID(ID);
     }
 
     private static Set<String> featuresToAdd() {
@@ -47,5 +49,10 @@ public class RepeatWithJPA20 extends FeatureReplacementAction {
         File jpa20Feature = new File(server.getInstallRoot() + "/lib/features/com.ibm.websphere.appserver.jpa-2.0.mf");
         Log.info(getClass(), "isEnabled", "Does the jpa-2.0 feature exist? " + jpa20Feature.exists());
         return jpa20Feature.exists();
+    }
+
+    @Override
+    public String toString() {
+        return "Set JPA feature to 2.0 version";
     }
 }
