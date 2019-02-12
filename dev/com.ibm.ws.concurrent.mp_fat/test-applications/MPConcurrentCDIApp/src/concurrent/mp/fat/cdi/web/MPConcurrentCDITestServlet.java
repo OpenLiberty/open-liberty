@@ -325,7 +325,7 @@ public class MPConcurrentCDITestServlet extends FATServlet {
                     String message = x.getCause().getMessage();
                     if (message == null
                         || !message.contains("CWWKE1201E")
-                        || !message.contains("_MPConcurrentCDIApp_concurrent.mp.fat.cdi.web.MPConcurrentCDITestServlet.max2(maxAsync=2,maxQueued=2,cleared=[Transaction])")
+                        || !message.contains("_MPConcurrentCDIApp_concurrent.mp.fat.cdi.web.MPConcurrentCDITestServlet/max2(maxAsync=2,maxQueued=2,cleared=[Transaction])")
                         || !message.contains("maxQueueSize")
                         || !message.contains(" 2")) // the maximum queue size
                         throw x;
