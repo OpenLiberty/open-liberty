@@ -282,6 +282,9 @@ task zipOpenLiberty(type: Zip) {
     from packageDir
     destinationDir distsDir
     version releaseVersion
+    doLast{
+        props.setProperty('zipopenliberty.runtime.archivename', archivePath.toString())
+    }
 }
 publish.dependsOn zipOpenLiberty
 
@@ -292,6 +295,9 @@ task zipOpenLibertyKernel(type: Zip) {
     from packageDir
     destinationDir distsDir
     version releaseVersion
+    doLast{
+        props.setProperty('zipopenliberty.kernel.archivename', archivePath.toString())
+    }
 }
 publish.dependsOn zipOpenLibertyKernel
 
@@ -302,6 +308,9 @@ task zipOpenLibertyWebProfile8(type: Zip) {
     from packageDir
     destinationDir distsDir
     version releaseVersion
+    doLast{
+        props.setProperty('zipopenliberty.webprofile8.archivename', archivePath.toString())
+    }
 }
 publish.dependsOn zipOpenLibertyWebProfile8
 
@@ -312,6 +321,9 @@ task zipOpenLibertyJavaee8(type: Zip) {
     from packageDir
     destinationDir distsDir
     version releaseVersion
+    doLast{
+        props.setProperty('zipopenliberty.javaee8.archivename', archivePath.toString())
+    }
 }
 publish.dependsOn zipOpenLibertyJavaee8
 
@@ -321,6 +333,9 @@ task zipOpenLibertyMicroProfile2(type: Zip) {
     from packageDir
     destinationDir distsDir
     version releaseVersion
+    doLast {
+        props.setProperty('zipopenliberty.microprofile2.archivename', archivePath.toString())
+    }
 }
 publish.dependsOn zipOpenLibertyMicroProfile2
 
@@ -663,6 +678,12 @@ task publishPublicArtifactsOnDhe {
             artifactList.add(props.getProperty("gradle.test.report.zip"))
         } else {
             artifactList.add(props.getProperty("junit.report.zip"))
+            // add runtime, javaee8, and webprofile8 images to publish list for release builds only
+            if (isRelease) {
+                artifactList.add(props.getProperty("zipopenliberty.runtime.archivename"))
+                artifactList.add(props.getProperty("zipopenliberty.javaee8.archivename"))
+                artifactList.add(props.getProperty("zipopenliberty.webprofile8.archivename"))
+            }
         }
 
         mkdir("${buildDir}/${version}")
