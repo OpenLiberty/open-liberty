@@ -16,11 +16,9 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Iterator;
-import java.util.Properties;
 import java.util.ServiceLoader;
 
 import javax.json.bind.Jsonb;
@@ -111,8 +109,8 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
     public Object readFrom(Class<Object> clazz, Type genericType, Annotation[] annotations,
                            MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
         Object obj = null;
-        obj = this.jsonb.fromJson(entityStream, clazz);
-        
+        obj = this.jsonb.fromJson(entityStream, genericType);
+
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "object=" + obj);
         }
