@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web;
+package transactionscopedtest;
 
 import java.io.IOException;
 import java.io.PrintWriter;

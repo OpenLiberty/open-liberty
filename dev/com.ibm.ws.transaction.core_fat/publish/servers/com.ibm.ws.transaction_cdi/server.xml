@@ -47,5 +47,6 @@
     </dataSource>
 
     <application location="transactionscoped.war"/>
+    <application location="transactionscopedtwo.war"/>
 
 </server>

@@ -8,17 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web;
+package transactionscopedtest;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
+/**
+ *
+ */
+public class DestroyCallback {
+    private boolean destroyed = false;
 
-import web.RequiredTransactionalHelperBean.Work;
+    public void destroy() {
+        destroyed = true;
+    }
 
-public class RequiresNewTransactionalHelperBean {
-
-    @Transactional(TxType.REQUIRES_NEW)
-    public void runUnderRequiresNew(Work work) throws Exception {
-        work.run();
+    public boolean isDestroyed() {
+        return destroyed;
     }
 }

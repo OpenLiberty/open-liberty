@@ -8,24 +8,47 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web;
+package transactionscopedtest;
 
 import java.io.Serializable;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
 import javax.transaction.TransactionScoped;
+
+import com.ibm.wsspi.uow.UOWManager;
 
 @TransactionScoped
 @SuppressWarnings("serial")
-public class TransactionScopedBean2 implements Serializable {
+public class TransactionScopedBean implements Serializable {
+
+    @Resource
+    UOWManager uowm;
+
+    private String txid;
 
     private DestroyCallback destroyCallback;
 
+    @PostConstruct
+    private void init() {
+        txid = uowm.getLocalUOWId() + ":" + System.nanoTime();
+        System.out.println("Created " + this.getClass().getCanonicalName() + " instance: " + txid);
+    }
+
     @PreDestroy
     private void destroy() {
+        TransactionScopedTestServlet.registerBeanDestroyed(this);
+        txid = uowm.getLocalUOWId() + ":" + System.nanoTime();
+        System.out.println("Destroyed " + this.getClass().getCanonicalName() + " instance: " + txid);
         if (destroyCallback != null) {
             destroyCallback.destroy();
         }
+    }
+
+    public String test() {
+        System.out.println("Accessed " + this.getClass().getCanonicalName() + " instance: " + txid);
+        return txid;
     }
 
     public void setDestroyCallback(DestroyCallback destroyCallback) {

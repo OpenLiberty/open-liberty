@@ -8,20 +8,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web;
+package transactionscopedtest;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
+import java.io.Serializable;
 
-public class RequiredTransactionalHelperBean {
+import javax.enterprise.context.RequestScoped;
 
-    @Transactional(TxType.REQUIRED)
-    public void runUnderRequired(Work work) throws Exception {
-        work.run();
-    }
+@RequestScoped
+public class RequestScopedBean implements Serializable {
 
-    public static interface Work {
-        public void run() throws Exception;
+    public void doNothing() {
     }
 
 }

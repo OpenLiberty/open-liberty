@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
+import java.io.File;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,22 +31,33 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
-import web.TransactionScopedTestServlet;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+
+import transactionscopedtest.TransactionScopedTestServlet;
 
 @RunWith(FATRunner.class)
 public class TransactionScopedObserversTest extends FATServletClient {
 
     public static final String APP_NAME = "transactionscoped";
-    public static final String SERVLET_NAME = "transactionscoped/transactionscoped";
+    public static final String SECOND_APP_NAME = "transactionscopedtwo";
 
     @Server("com.ibm.ws.transaction_cdi")
-    @TestServlet(servlet = TransactionScopedTestServlet.class, contextRoot = APP_NAME)
+    @TestServlets({@TestServlet(servlet = TransactionScopedTestServlet.class, contextRoot = APP_NAME),
+                   @TestServlet(servlet = TransactionScopedTestServlet.class, contextRoot = SECOND_APP_NAME)})
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "web.*");
+        ShrinkHelper.defaultApp(server, APP_NAME, "transactionscopedtest.*");
+        //Default app uses the app name to find resource files, since I'm just duplicating an app I'll manually deploy it.
+        WebArchive appTwo = ShrinkWrap.create(WebArchive.class, SECOND_APP_NAME + ".war")
+                        .addPackage("transactionscopedtest")
+                        .add(new FileAsset(new File("test-applications/transactionscoped/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
 
+        ShrinkHelper.exportAppToServer(server, appTwo);
+        server.addInstalledAppForValidation(SECOND_APP_NAME);
         server.startServer();
     }
 

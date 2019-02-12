@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web;
+package transactionscopedtest;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.ContextNotActiveException;
@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import componenttest.app.FATServlet;
 
-import web.RequiredTransactionalHelperBean.Work;
+import transactionscopedtest.RequiredTransactionalHelperBean.Work;
 
 /**
  * Servlet implementation class TransactionalTest
@@ -33,6 +33,9 @@ import web.RequiredTransactionalHelperBean.Work;
 @WebServlet("/transactionscoped")
 public class TransactionScopedTestServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
+
+    private static boolean tsb1Destroyed = false;
+    private static boolean tsb2Destroyed = false;
 
     @Inject RequestScopedBean rsb;
 
@@ -79,6 +82,23 @@ public class TransactionScopedTestServlet extends FATServlet {
 
         if (! TransactionScopeObserver.hasSeenDestroyed()) {
             throw new Exception("CDI transaction scope destruction observer never fired");
+        }
+
+        if (! tsb1Destroyed) {
+            throw new Exception("tsb1 predestroy was not called.");
+        }
+
+        if (! tsb2Destroyed) {
+            throw new Exception("tsb2 predestroy was not called");
+        }
+    }
+
+    //This is used because once the bean is destroyed we can't call any methods, so we register that preDestroy was invocked here.
+    public static void registerBeanDestroyed(Object bean) {
+        if (TransactionScopedBean.class.isInstance(bean)) {
+            tsb1Destroyed = true;
+        } else if (TransactionScopedBean2.class.isInstance(bean)) {
+            tsb2Destroyed = true;
         }
     }
 }

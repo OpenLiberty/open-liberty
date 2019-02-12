@@ -8,55 +8,33 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web;
+package transactionscopedtest;
 
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
 import javax.transaction.TransactionScoped;
-
-import com.ibm.wsspi.uow.UOWManager;
 
 @TransactionScoped
 @SuppressWarnings("serial")
-public class TransactionScopedBean implements Serializable {
-
-    @Resource
-    UOWManager uowm;
-
-    private String txid;
+public class TransactionScopedBean2 implements Serializable {
 
     private DestroyCallback destroyCallback;
 
-public TransactionScopedBean() {
-
-for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-    System.out.println(ste);
-}
-}
-
     @PostConstruct
     private void init() {
-        txid = uowm.getLocalUOWId() + ":" + System.nanoTime();
-        System.out.println("Created " + this.getClass().getCanonicalName() + " instance: " + txid);
+        System.out.println("Created " + this.getClass().getCanonicalName());
     }
 
     @PreDestroy
     private void destroy() {
-        txid = uowm.getLocalUOWId() + ":" + System.nanoTime();
-        System.out.println("Destroyed " + this.getClass().getCanonicalName() + " instance: " + txid);
+        TransactionScopedTestServlet.registerBeanDestroyed(this);
+        System.out.println("Destroyed " + this.getClass().getCanonicalName());
         if (destroyCallback != null) {
             destroyCallback.destroy();
         }
     }
-
-    public String test() {
-        System.out.println("Accessed " + this.getClass().getCanonicalName() + " instance: " + txid);
-        return txid;
-    }
-
     public void setDestroyCallback(DestroyCallback destroyCallback) {
         this.destroyCallback = destroyCallback;
     }
