@@ -14,8 +14,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.After;
@@ -58,6 +60,26 @@ public class ConfigServerXMLOverrideTests20 extends AbstractSpringTests {
     @Override
     public AppConfigType getApplicationConfigType() {
         return AppConfigType.SPRING_BOOT_APP_TAG;
+    }
+
+    @Override
+    public Map<String, String> getBootStrapProperties() {
+        String methodName = testName.getMethodName();
+        Map<String, String> properties = new HashMap<>();
+        if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+            properties.put("bvt.prop.HTTP_default", "-1");
+            properties.put("bvt.prop.HTTP_default.secure", "-1");
+        }
+        return properties;
+    }
+
+    @Override
+    public boolean useDefaultVirtualHost() {
+        String methodName = testName.getMethodName();
+        if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -175,7 +197,12 @@ public class ConfigServerXMLOverrideTests20 extends AbstractSpringTests {
 
     @After
     public void stopOverrideServer() throws Exception {
-        super.stopServer();
+        String methodName = testName.getMethodName();
+        if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+            super.stopServer(true, "CWWKT0015W");
+        } else {
+            super.stopServer();
+        }
     }
 
     @Test
@@ -196,6 +223,16 @@ public class ConfigServerXMLOverrideTests20 extends AbstractSpringTests {
 
     @Test
     public void configureServerXMLOverrideKeyStores() throws Exception {
+        doSSLRequest();
+    }
+
+    @Test
+    public void testDefaultHostWithAppPortconfigureServerXMLOverrideSSL() throws Exception {
+        doSSLRequest();
+    }
+
+    @Test
+    public void testDefaultHostWithAppPortconfigureServerXMLOverrideKeyStores() throws Exception {
         doSSLRequest();
     }
 
