@@ -30,5 +30,6 @@ public class FATSuite {
                                                 "permission java.lang.RuntimePermission \"accessDeclaredMembers\";" };
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new RepeatWithJPA20())
                     .andWith(FeatureReplacementAction.EE8_FEATURES());
 }
