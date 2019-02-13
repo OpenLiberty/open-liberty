@@ -73,10 +73,6 @@ final class SharedClassCacheHook implements ClassLoaderHook {
     @Override
     public byte[] loadClass(URL path, String name) {
         if (findSharedClassMethod != null) {
-            // file protocol doesn't appear to work right now.
-            if (path != null && "file".equals(path.getProtocol())) {
-                return null;
-            }
             try {
                 return (byte[]) findSharedClassMethod.invoke(sharedClassURLHelper, path, name);
             } catch (Exception e) {
@@ -89,10 +85,6 @@ final class SharedClassCacheHook implements ClassLoaderHook {
     @Override
     public void storeClass(URL path, Class<?> clazz) {
         if (storeSharedClassMethod != null) {
-            // file protocol doesn't appear to work right now.
-            if (path != null && "file".equals(path.getProtocol())) {
-                return;
-            }
             try {
                 storeSharedClassMethod.invoke(sharedClassURLHelper, path, clazz);
             } catch (Exception e) {
