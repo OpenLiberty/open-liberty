@@ -130,9 +130,9 @@ public class Bell implements LibraryChangeListener {
     /**
      * Configures this bell with a specific library and a possible set of service names
      *
-     * @param context the bundle context
+     * @param context  the bundle context
      * @param executor the executor service
-     * @param config the configuration settings
+     * @param config   the configuration settings
      */
     void update() {
         final BundleContext context = componentContext.getBundleContext();
@@ -155,7 +155,7 @@ public class Bell implements LibraryChangeListener {
             @Override
             public List<ServiceRegistration<?>> addingService(ServiceReference<Library> libraryRef) {
                 Library library = context.getService(libraryRef);
-                // Got the library not regisrter the services.
+                // Got the library now register the services.
                 // The list of registrations is returned so we don't have to store them ourselves.
                 return registerLibraryServices(library, serviceNames);
             }
@@ -310,21 +310,21 @@ public class Bell implements LibraryChangeListener {
                         int index = line.indexOf(COMMENT_CHAR);
                         String implClass;
                         if (index != -1) {
-                          String propStr = line.substring(index + 1);
-                          implClass = line.substring(0, index).trim();
-                          if (implClass.length() == 0) {
-                            String[] prop = propStr.split("=");
-                            if (prop.length == 2) {
-                              props.put(prop[0].trim(), prop[1].trim());
+                            String propStr = line.substring(index + 1);
+                            implClass = line.substring(0, index).trim();
+                            if (implClass.length() == 0) {
+                                String[] prop = propStr.split("=");
+                                if (prop.length == 2) {
+                                    props.put(prop[0].trim(), prop[1].trim());
+                                }
                             }
-                          }
                         } else {
-                          implClass = line.trim();
+                            implClass = line.trim();
                         }
 
                         if (implClass.length() > 0) {
-                          serviceInfos.add(new ServiceInfo(providerConfigFile, implClass, props));
-                          props = new Hashtable<String, String>();
+                            serviceInfos.add(new ServiceInfo(providerConfigFile, implClass, props));
+                            props = new Hashtable<String, String>();
                         }
                     }
                 } finally {
@@ -412,7 +412,13 @@ public class Bell implements LibraryChangeListener {
         return new PrototypeServiceFactory() {
             @Override
             public Object getService(Bundle bundle, ServiceRegistration registration) {
-                // Not the following methods will produce messages if something goes wrong
+                if (library.id() == null) {
+                    // this is a case where the library has been deleted but we have not
+                    // gotten to unregister the service factory yet;
+                    // just return null instead of failing out here with exceptions
+                    return null;
+                }
+                // Note the following methods will produce messages if something goes wrong
                 Class<?> serviceType = findClass(serviceInfo.implClass, library, fileUrl);
                 if (serviceType != null) {
                     return createService(serviceType, library.id(), fileUrl);
@@ -424,7 +430,8 @@ public class Bell implements LibraryChangeListener {
             }
 
             @Override
-            public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {}
+            public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
+            }
         };
     }
 
