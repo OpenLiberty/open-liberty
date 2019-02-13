@@ -1202,9 +1202,14 @@ public class LibertyServer implements LogMonitorClient {
             JVM_ARGS += " " + MAC_RUN;
         }
 
-        if (info.vendor() == JavaInfo.Vendor.SUN_ORACLE && info.majorVersion() >= 8) {
-            //This works around a change in Oracle JKD 8 update 11 documented in 163555: Test Failure (20150216-1921 (tests for cl50520150215-1500, child-e0)): com.ibm.ws.fat.cdi.tests.JavaEightTests.testLambda
-            JVM_ARGS += " -noverify";
+        if (info.vendor() == JavaInfo.Vendor.SUN_ORACLE) {
+            if (info.majorVersion() == 8) {
+                //This works around a change in Oracle JDK 8 update 11 documented in 163555: Test Failure (20150216-1921 (tests for cl50520150215-1500, child-e0)): com.ibm.ws.fat.cdi.tests.JavaEightTests.testLambda
+                JVM_ARGS += " -noverify";
+            } else if (info.majorVersion() == 11) {
+                // Do this to produce nicer VerifyErrors instead of letting Hotspot crash
+                JVM_ARGS += " -Xverify:all";
+            }
         }
 
         // if we have java 2 security enabled, add java.security.manager and java.security.policy

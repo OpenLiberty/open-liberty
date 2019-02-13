@@ -91,17 +91,17 @@ public class MetricsMonitorTest {
     public void testEnableDisableFeatures() throws Exception {
 
     	String testName = "testEnableDisableFeatures";
-    	
     	Log.info(c, testName, "------- No monitor-1.0: no vendor metrics should be available ------");
     	server.setServerConfigurationFile("server_mpMetric11.xml");
     	server.startServer();
     	Assert.assertNotNull("Web application /metrics not loaded", server.waitForStringInLog("CWWKT0016I: Web application available \\(default_host\\): http:\\/\\/.*:.*\\/metrics\\/"));
        	Assert.assertNotNull("CWWKO0219I NOT FOUND",server.waitForStringInLogUsingMark("defaultHttpEndpoint-ssl"));
+       	Assert.assertNotNull("SRVE9103I NOT FOUND",server.waitForStringInLogUsingMark("SRVE9103I"));
     	Log.info(c, testName, "------- server started -----");
       	checkStrings(getHttpsServlet("/metrics"), 
           	new String[] { "base:" }, 
           	new String[] { "vendor:" });
-    	
+      	
     	Log.info(c, testName, "------- Enable mpMetrics-1.1 and monitor-1.0: threadpool metrics should be available ------");
     	server.setMarkToEndOfLog();
     	server.setServerConfigurationFile("server_monitor.xml");
