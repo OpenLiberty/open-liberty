@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2016 IBM Corporation and others.
+    Copyright (c) 2011, 2019 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -1250,6 +1250,47 @@
   <AD id="serviceName"                        ibmui:group="Advanced" required="false" type="String"  name="%serviceName" description="%serviceName.desc"/>
   <AD id="TNSEntryName"                       ibmui:group="Advanced" required="false" type="String"  name="%TNSEntryName" description="%TNSEntryName.desc"/>
   <AD id="user"                               ibmui:group="Advanced" required="false" type="String"  name="%user" description="%user.desc"/>
+ </OCD>
+ 
+  <!--  Oracle UCP properties -->
+ <Designate factoryPid="com.ibm.ws.jdbc.dataSource.properties.oracle.ucp">
+  <Object ocdref="com.ibm.ws.jdbc.dataSource.properties.oracle.ucp"/>
+ </Designate>
+ 
+  <OCD id="com.ibm.ws.jdbc.dataSource.properties.oracle.ucp" name="%properties.oracle.ucp" description="%properties.oracle.ucp.desc" ibm:beta="true" ibm:extendsAlias="oracle.ucp" ibm:extends="com.ibm.ws.jdbc.dataSource.properties.supertype" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+  <AD id="connectionFactoryClassName"         required="false" type="String" name="%connectionFactoryClassName" description="%connectionFactoryClassName.desc">
+   <Option value="oracle.jdbc.pool.OracleDataSource"               label="oracle.jdbc.pool.OracleDataSource"/>
+   <Option value="oracle.jdbc.pool.OracleConnectionPoolDataSource" label="oracle.jdbc.pool.OracleConnectionPoolDataSource"/>
+   <Option value="oracle.jdbc.xa.client.OracleXADataSource"        label="oracle.jdbc.xa.client.OracleXADataSource"/>
+  </AD>
+  <AD id="connectionPoolName"                 required="false" type="String"  name="%connectionPoolName" description="%connectionPoolName.desc"/>
+  <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseName.desc"/>
+  <AD id="serverName"                         required="false" type="String"  default="localhost" name="%serverName" description="%serverName.desc"/>
+  <AD id="portNumber"                         required="false" type="Integer" default="1521" name="%portNumber" description="%portNumber.desc"/>
+  <AD id="URL"                                required="false" type="String"  name="%URL" description="%URL.oracle.desc"/>
+  <!-- Advanced properties for properties.oracle.ucp -->
+  <AD id="connectionProperties"               ibmui:group="Advanced" required="false" type="String"  name="%connectionProperties" description="%connectionProperties.desc"/>
+  <AD id="connectionWaitTimeout"              ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%connectionWaitTimeout" description="%connectionWaitTimeout.desc"/>
+  <AD id="fastConnectionFailoverEnabled"      ibmui:group="Advanced" required="false" type="Boolean" name="%fastConnectionFailoverEnabled" description="%fastConnectionFailoverEnabled.desc"/>
+  <AD id="inactiveConnectionTimeout"          ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%inactiveConnectionTimeout" description="%inactiveConnectionTimeout.desc"/>
+  <AD id="initialPoolSize"                    ibmui:group="Advanced" required="false" type="Integer" name="%initialPoolSize" description="%initialPoolSize.desc"/>
+  <AD id="loginTimeout"                       ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" min="0" name="%loginTimeout" description="%loginTimeout.desc"/>
+  <AD id="maxConnectionReuseCount"            ibmui:group="Advanced" required="false" type="Integer" name="%maxConnectionReuseCount" description="%maxConnectionReuseCount.desc"/>
+  <AD id="maxConnectionReuseTime"             ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%maxConnectionReuseTime" description="%maxConnectionReuseTime.desc"/>
+  <AD id="maxIdleTime"                        ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%maxIdleTime.oracle" description="%maxIdleTime.oracle.desc"/>
+  <AD id="maxPoolSize"                        ibmui:group="Advanced" required="false" type="Integer" name="%maxPoolSize.oracle" description="%maxPoolSize.oracle.desc"/>
+  <AD id="maxStatements"                      ibmui:group="Advanced" required="false" type="Integer" name="%maxStatements" description="%maxStatements.desc"/>
+  <AD id="minPoolSize"                        ibmui:group="Advanced" required="false" type="Integer" name="%minPoolSize.oracle" description="%minPoolSize.oracle.desc"/>
+  <AD id="networkProtocol"                    ibmui:group="Advanced" required="false" type="String"  name="%networkProtocol" description="%networkProtocol.desc"/>
+  <AD id="ONSConfiguration"                   ibmui:group="Advanced" required="false" type="String"  name="%ONSConfiguration" description="%ONSConfiguration.desc"/>
+  <AD id="password"                           ibmui:group="Advanced" required="false" type="String"  ibm:type="password" name="%password" description="%password.desc"/>
+  <AD id="propertyCycle"                      ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%propertyCycle" description="%propertyCycle.desc"/>
+  <AD id="roleName"                           ibmui:group="Advanced" required="false" type="String"  name="%roleName" description="%roleName.desc"/>
+  <AD id="SQLForValidateConnection"           ibmui:group="Advanced" required="false" type="String"  name="%SQLForValidateConnection" description="%SQLForValidateConnection.desc"/>
+  <AD id="secondsToTrustIdleConnection"       ibmui:group="Advanced" required="false" type="String" ibm:type="duration(s)" name="%secondsToTrustIdleConnection" description="%secondsToTrustIdleConnection.desc" />
+  <AD id="timeoutCheckInterval"               ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%timeoutCheckInterval" description="%timeoutCheckInterval.desc"/>
+  <AD id="user"                               ibmui:group="Advanced" required="false" type="String"  name="%user" description="%user.desc"/>
+  <AD id="validateConnectionOnBorrow"         ibmui:group="Advanced" required="false" type="Boolean" name="%validateConnectionOnBorrow" description="%validateConnectionOnBorrow.desc"/>
  </OCD>
 
  <!-- Sybase properties -->
