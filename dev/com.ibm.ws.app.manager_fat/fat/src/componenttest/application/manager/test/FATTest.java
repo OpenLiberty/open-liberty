@@ -204,7 +204,7 @@ public class FATTest extends AbstractAppManagerTest {
                 // It's possible that we're restarting twice because the file monitor picked up the changes in the middle
                 // of the unzip. If that happens, wait for another updated message and try again.
                 assertNotNull("The application testWarApplication did not appear to have been updated a second time.",
-                              server.waitForStringInLog("CWWKZ0003I.* testWarApplication|CWWKZ0062I.* testWarApplication"));
+                              server.waitForMultipleStringsInLogUsingMark(2, "CWWKZ0003I.* testWarApplication|CWWKZ0062I.* testWarApplication"));
                 con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
                 br = HttpUtils.getConnectionStream(con);
                 line = br.readLine();
