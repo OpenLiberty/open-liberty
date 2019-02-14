@@ -1,2 +1,3 @@
 -Dcom.sun.jndi.ldap.object.disableEndpointIdentification=true
 -Djdk.tls.acknowledgeCloseNotify=true
+-Dcom.ibm.ws.ssl.enableTLSv1.3=true

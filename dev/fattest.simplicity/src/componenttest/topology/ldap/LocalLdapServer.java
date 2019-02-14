@@ -78,6 +78,7 @@ public class LocalLdapServer {
             ADS_TDS_INSTANCE_HOME = "\"" + APACHE_DS_HOME + "/instances/" + instanceName + "\"";
         }
         List<String> params = java.util.Arrays.asList(JAVA_COMMAND, ADS_CONTROLS, ADS_EXTENDED_OPERATIONS, ADS_TDS_LOG4J_CONFIG, ADS_TDS_LOG_DIR, "-cp", ADS_CLASSPATH,
+                                                      "-Djavax.net.debug=all", "-Djdk.tls.acknowledgeCloseNotify=true",
                                                       "org.apache.directory.server.UberjarMain", ADS_TDS_INSTANCE_HOME);
         Log.info(c, method, instanceName + " params : " + params.toString());
 
@@ -126,11 +127,26 @@ public class LocalLdapServer {
         } catch (IOException e2) {
             Log.error(c, "start", e2, "Error occored while reading the buffered reader");
         } finally {
-            try {
-                in.close();
-            } catch (IOException e) {
-                Log.error(c, "start", e, "Error occored while closing the buffered reader");
-            }
+            Thread dumpit = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        String line = in.readLine();
+                        while (line != null) {
+
+                            if (line != null) {
+                                Log.info(c, "from apache", line);
+                            }
+                            line = in.readLine();
+                        }
+                    } catch (Exception e) {
+                        Log.info(c, "from thread", e.toString());
+                        e.printStackTrace();
+                    }
+                }
+            };
+            dumpit.setDaemon(true);
+            dumpit.start();
         }
 
         Log.exiting(c, method);
