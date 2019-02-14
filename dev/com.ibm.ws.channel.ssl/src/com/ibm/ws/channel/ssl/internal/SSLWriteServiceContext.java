@@ -220,108 +220,95 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
             Tr.entry(tc, "writeAsync, numBytes=" + _numBytes + ", timeout=" + timeout
                          + ", fromQueue=" + fromQueue + ", vc=" + getVCHash());
         }
-        long numBytes = _numBytes;
+        VirtualConnection vc = null;
+        try {
+            long numBytes = _numBytes;
 
-        // Handle timing out of former read request.
-        if (timeout == IMMED_TIMEOUT || timeout == ABORT_TIMEOUT) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Requested to timeout former request.  Calling device side.");
+            // Handle timing out of former read request.
+            if (timeout == IMMED_TIMEOUT || timeout == ABORT_TIMEOUT) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Requested to timeout former request.  Calling device side.");
+                }
+                getConnLink().getDeviceWriteInterface().write(numBytes, this, forceQueue, timeout);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.exit(tc, "writeAsync: " + getVC());
+                }
+                return getVC();
             }
-            getConnLink().getDeviceWriteInterface().write(numBytes, this, forceQueue, timeout);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "writeAsync: " + getVC());
-            }
-            return getVC();
-        }
 
-        // Look for errors in the request.
-        IOException exceptionInRequest = checkForErrors(numBytes, true);
-        if (exceptionInRequest != null) {
-            // Found an error.
-            boolean fireHere = true;
+            // Look for errors in the request.
+            IOException exceptionInRequest = checkForErrors(numBytes, true);
+            if (exceptionInRequest != null) {
+                // Found an error.
+                boolean fireHere = true;
+                if (forceQueue) {
+                    // Error must be returned on a separate thread.
+                    queuedWork.setErrorParameters(getConnLink().getVirtualConnection(),
+                                                this, userCallback, exceptionInRequest);
+
+                    EventEngine events = SSLChannelProvider.getEventService();
+                    if (null == events) {
+                        Exception e = new Exception("missing event admin");
+                        FFDCFilter.processException(e, getClass().getName(), "172", this);
+                        // fall-thru below and use callback here regardless
+                    } else {
+                        // fire an event to continue this queued work
+                        Event event = events.createEvent(SSLEventHandler.TOPIC_QUEUED_WORK);
+                        event.setProperty(SSLEventHandler.KEY_RUNNABLE, this.queuedWork);
+                        events.postEvent(event);
+                        fireHere = false;
+                    }
+                }
+                if (fireHere) {
+                    // Call the callback on this thread.
+                    userCallback.error(getConnLink().getVirtualConnection(), this, exceptionInRequest);
+                }
+                // Return null indicating that the callback will handle the response.
+                return null;
+            }
+
+            // Get the work on another thread if queuing is being forced.
             if (forceQueue) {
-                // Error must be returned on a separate thread.
-                queuedWork.setErrorParameters(getConnLink().getVirtualConnection(),
-                                              this, userCallback, exceptionInRequest);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Forcing write request to another thread, vc=" + getVCHash());
+                }
+                queuedWork.setWriteParameters(numBytes, userCallback, timeout);
 
                 EventEngine events = SSLChannelProvider.getEventService();
                 if (null == events) {
-                    Exception e = new Exception("missing event admin");
-                    FFDCFilter.processException(e, getClass().getName(), "172", this);
-                    // fall-thru below and use callback here regardless
+                    IOException e = new IOException("missing event admin");
+                    FFDCFilter.processException(e, getClass().getName(), "471", this);
+                    userCallback.error(getConnLink().getVirtualConnection(), this, e);
                 } else {
                     // fire an event to continue this queued work
                     Event event = events.createEvent(SSLEventHandler.TOPIC_QUEUED_WORK);
                     event.setProperty(SSLEventHandler.KEY_RUNNABLE, this.queuedWork);
                     events.postEvent(event);
-                    fireHere = false;
                 }
-            }
-            if (fireHere) {
-                // Call the callback on this thread.
-                userCallback.error(getConnLink().getVirtualConnection(), this, exceptionInRequest);
-            }
-            // Return null indicating that the callback will handle the response.
-            return null;
-        }
-
-        // Get the work on another thread if queuing is being forced.
-        if (forceQueue) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Forcing write request to another thread, vc=" + getVCHash());
-            }
-            queuedWork.setWriteParameters(numBytes, userCallback, timeout);
-
-            EventEngine events = SSLChannelProvider.getEventService();
-            if (null == events) {
-                IOException e = new IOException("missing event admin");
-                FFDCFilter.processException(e, getClass().getName(), "471", this);
-                userCallback.error(getConnLink().getVirtualConnection(), this, e);
-            } else {
-                // fire an event to continue this queued work
-                Event event = events.createEvent(SSLEventHandler.TOPIC_QUEUED_WORK);
-                event.setProperty(SSLEventHandler.KEY_RUNNABLE, this.queuedWork);
-                events.postEvent(event);
-            }
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "writeAsync: null");
-            }
-            return null;
-        }
-
-        callback = userCallback;
-
-        // Adjust size of numBytes if all data is requested to be written (-1).
-        if (numBytes == TCPWriteRequestContext.WRITE_ALL_DATA) {
-            numBytes = WsByteBufferUtils.lengthOf(getBuffers());
-        }
-
-        VirtualConnection vc = null;
-        SSLEngineResult sslResult = null;
-
-        // Check if a handshake is needed.
-        if (SSLUtils.isHandshaking(getConnLink().getSSLEngine())) {
-            // A handshake is needed. Set the write parameters.
-            handshakeCallback.setWriteParameters(numBytes, timeout);
-            try {
-                sslResult = doHandshake(handshakeCallback);
-            } catch (IOException e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Caught exception during SSL handshake, " + e);
-                }
-                callback.error(getConnLink().getVirtualConnection(), this, e);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                    Tr.exit(tc, "writeAsynch: null");
+                    Tr.exit(tc, "writeAsync: null");
                 }
                 return null;
             }
-            // Check to see if handshake was done synchronously.
-            if (sslResult != null) {
-                // Handshake was done synchronously. Verify results.
-                if (sslResult.getHandshakeStatus() != HandshakeStatus.FINISHED) {
-                    IOException e = new IOException("Unable to complete SSLhandshake");
+
+            callback = userCallback;
+
+            // Adjust size of numBytes if all data is requested to be written (-1).
+            if (numBytes == TCPWriteRequestContext.WRITE_ALL_DATA) {
+                numBytes = WsByteBufferUtils.lengthOf(getBuffers());
+            }
+
+            SSLEngineResult sslResult = null;
+
+            // Check if a handshake is needed.
+            if (SSLUtils.isHandshaking(getConnLink().getSSLEngine())) {
+                // A handshake is needed. Set the write parameters.
+                handshakeCallback.setWriteParameters(numBytes, timeout);
+                try {
+                    sslResult = doHandshake(handshakeCallback);
+                } catch (IOException e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Unable to complete SSLhandshake, " + e);
+                        Tr.debug(tc, "Caught exception during SSL handshake, " + e);
                     }
                     callback.error(getConnLink().getVirtualConnection(), this, e);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -329,25 +316,75 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
                     }
                     return null;
                 }
-            } else {
-                // Handshake is being handled asynchronously.
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                    Tr.exit(tc, "writeAsynch: null");
+                // Check to see if handshake was done synchronously.
+                if (sslResult != null) {
+                    // Handshake was done synchronously. Verify results.
+                    if (sslResult.getHandshakeStatus() != HandshakeStatus.FINISHED) {
+                        IOException e = new IOException("Unable to complete SSLhandshake");
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Unable to complete SSLhandshake, " + e);
+                        }
+                        callback.error(getConnLink().getVirtualConnection(), this, e);
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                            Tr.exit(tc, "writeAsynch: null");
+                        }
+                        return null;
+                    }
+                } else {
+                    // Handshake is being handled asynchronously.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        Tr.exit(tc, "writeAsynch: null");
+                    }
+                    return null;
                 }
-                return null;
+            }
+
+            // Code can only get here if handshake wasn't needed or was done sync with valid return code.
+            // Encrypt the data and write it to the network.
+            vc = encryptAndWriteAsync(numBytes, false, timeout);
+
+            // If data is ready, but this was from a formerly queued request, call the callback.
+            if (vc != null && fromQueue) {
+                callback.complete(vc, this);
+                vc = null;
+            }
+        } catch (Exception original) {
+            synchronized (closeSync) {
+                // if close has been called then assume this exception was due to a race condition
+                // with the close logic. so no FFDC here.
+                if (closeCalled) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Cannot write, the link was already closed; vc=" +this.getVCHash());
+                    }
+                    return null;
+                } else {
+                    IOException ioe;
+                    if (original instanceof IOException) {
+                        ioe = (IOException) original;
+                    }
+                    ioe = new IOException("writeAsynch failed with exception: " +original.getMessage());
+                    boolean fireHere = true;
+                    if (forceQueue) {
+                        // Error must be returned on a separate thread.
+                        queuedWork.setErrorParameters(getConnLink().getVirtualConnection(),
+                                                    this, userCallback, ioe);
+                        EventEngine events = SSLChannelProvider.getEventService();
+                        if (null != events) {
+                            // fire an event to continue this queued work
+                            Event event = events.createEvent(SSLEventHandler.TOPIC_QUEUED_WORK);
+                            event.setProperty(SSLEventHandler.KEY_RUNNABLE, this.queuedWork);
+                            events.postEvent(event);
+                            fireHere = false;
+                        }
+                    }
+                    if (fireHere) {
+                        // Call the callback on this thread.
+                        userCallback.error(getConnLink().getVirtualConnection(), this, ioe);
+                    }
+                    return null;
+                }
             }
         }
-
-        // Code can only get here if handshake wasn't needed or was done sync with valid return code.
-        // Encrypt the data and write it to the network.
-        vc = encryptAndWriteAsync(numBytes, false, timeout);
-
-        // If data is ready, but this was from a formerly queued request, call the callback.
-        if (vc != null && fromQueue) {
-            callback.complete(vc, this);
-            vc = null;
-        }
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "writeAsynch: " + vc);
         }

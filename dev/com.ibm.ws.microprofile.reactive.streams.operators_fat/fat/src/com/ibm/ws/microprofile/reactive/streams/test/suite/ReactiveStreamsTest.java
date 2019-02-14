@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,21 +8,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config13.test;
+package com.ibm.ws.microprofile.reactive.streams.test.suite;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
-import com.ibm.ws.microprofile.config13.mapEnvVar.web.MapEnvVarServlet;
+import com.ibm.ws.microprofile.reactive.streams.test.basic.ReactiveStreamsTestServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -40,24 +39,24 @@ import componenttest.topology.utils.FATServletClient;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
-public class MapEnvVarTest extends FATServletClient {
+public class ReactiveStreamsTest extends FATServletClient {
 
-    public static final String APP_NAME = "mapEnvVarApp";
+    public static final String APP_NAME = "ReactiveStreamsTest";
 
-    @Server("MapEnvVarServer")
-    @TestServlet(servlet = MapEnvVarServlet.class, contextRoot = APP_NAME)
+    @Server("ReactiveStreamsTestServer")
+    @TestServlet(servlet = ReactiveStreamsTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
-
-    @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeatConfig13("MapEnvVarServer");
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
-        // Include the 'app1.web' package and all of it's java classes and sub-packages
+        // Create a WebArchive that will have the file name APP_NAME.war once it's written to a file
+        // Include the 'APP_NAME.web' package and all of it's java classes and sub-packages
         // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
-        ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.microprofile.config13.mapEnvVar.*");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+                        .addPackages(true, "com.ibm.ws.microprofile.reactive.streams.test.basic");
+
+        ShrinkHelper.exportDropinAppToServer(server, war);
 
         server.startServer();
     }

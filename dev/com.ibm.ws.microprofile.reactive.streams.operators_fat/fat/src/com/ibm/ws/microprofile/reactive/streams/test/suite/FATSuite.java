@@ -8,18 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.streams.operators.tck;
+package com.ibm.ws.microprofile.reactive.streams.test.suite;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
-
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class, //ReactiveStreamsTCKLauncher is set to full mode. This will prevent a build failure from zero tests running.
-                ReactiveStreamsTCKLauncher.class
+                ReactiveStreamsTest.class,
+                ReactiveJaxRSTest.class
 })
-
-public class FATSuite {}
+public class FATSuite {
+    // this page intentionally left blank
+}

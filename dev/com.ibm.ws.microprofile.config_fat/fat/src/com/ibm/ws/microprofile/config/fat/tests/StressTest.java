@@ -21,7 +21,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.appConfig.stress.test.StressTestServlet;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig14EE8;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
@@ -43,8 +43,7 @@ public class StressTest extends FATServletClient {
     public static final String APP_NAME = "stress";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests //selected combinations
-                    .with(new RepeatConfig14EE8("StressServer"));
+    public static RepeatTests r = RepeatConfigActions.repeatConfig11("StressServer");
 
     @Server("StressServer")
     @TestServlet(servlet = StressTestServlet.class, contextRoot = APP_NAME)

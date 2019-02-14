@@ -16,6 +16,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 
+import org.eclipse.microprofile.reactive.streams.operators.core.ReactiveStreamsEngineResolver;
 import org.eclipse.microprofile.reactive.streams.operators.core.ReactiveStreamsFactoryImpl;
 import org.eclipse.microprofile.reactive.streams.operators.spi.Graph;
 import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsEngine;
@@ -39,7 +40,6 @@ import io.smallrye.reactive.streams.Engine;
 @Component(name = "com.ibm.ws.microprofile.reactive.streams.operators.spi.impl.WASReactiveStreamsEngineImpl", service = {
         ReactiveStreamsEngine.class }, property = {
                 "service.vendor=IBM" }, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
-
 public class WASReactiveStreamsEngineImpl extends Engine implements ReactiveStreamsEngine {
 
     private static final TraceComponent tc = Tr.register(WASReactiveStreamsEngineImpl.class);
@@ -57,7 +57,20 @@ public class WASReactiveStreamsEngineImpl extends Engine implements ReactiveStre
     public void activate(ComponentContext cc) {
         executorServiceRef.activate(cc);
         ReactiveStreamsFactoryResolver.setInstance(new ReactiveStreamsFactoryImpl());
+        ReactiveStreamsEngineResolver.setInstance(this);
         singleton = this;
+    }
+
+    /**
+     * The OSGi component deactive call
+     *
+     * @param cc the OSGi component context
+     */
+    public void deactivate(ComponentContext cc) {
+        singleton = null;
+        ReactiveStreamsEngineResolver.setInstance(null);
+        ReactiveStreamsFactoryResolver.setInstance(null);
+        executorServiceRef.deactivate(cc);
     }
 
     @Reference(name = "executorService", service = ExecutorService.class)
