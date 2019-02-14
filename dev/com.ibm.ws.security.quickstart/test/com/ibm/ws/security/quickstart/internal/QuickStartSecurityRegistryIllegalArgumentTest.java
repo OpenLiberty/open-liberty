@@ -12,6 +12,7 @@ package com.ibm.ws.security.quickstart.internal;
 
 import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.ws.security.registry.UserRegistryIllegalArgumentTemplate;
+import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 /**
  * @see UserRegistryIllegalArgumentTemplate
@@ -19,6 +20,6 @@ import com.ibm.ws.security.registry.UserRegistryIllegalArgumentTemplate;
 public class QuickStartSecurityRegistryIllegalArgumentTest extends UserRegistryIllegalArgumentTemplate {
 
     public QuickStartSecurityRegistryIllegalArgumentTest() {
-        super(new QuickStartSecurityRegistry("user", new ProtectedString("pwd".toCharArray())));
+         super(new QuickStartSecurityRegistry("user", Password.create(new SerializableProtectedString("pwd".toCharArray()))));
     }
 }

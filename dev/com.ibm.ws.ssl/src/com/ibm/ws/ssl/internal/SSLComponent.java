@@ -101,8 +101,9 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
             Tr.event(tc, "Activated: " + properties);
         }
 
-        // We are claiming TLSv1.3 support startig with Java 11.0.2 on OpenJ9
-        Tr.debug(tc, "Java vendor: " + JavaInfo.vendor() + " Java major:  " + JavaInfo.majorVersion() + " Java minor: " + JavaInfo.minorVersion() + " Java micro: " + JavaInfo.microVersion());
+        // We are claiming TLSv1.3 support starting with Java 11.0.2 on OpenJ9
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "Java vendor: " + JavaInfo.vendor() + " Java major:  " + JavaInfo.majorVersion());
         if (JavaInfo.vendor().equals(JavaInfo.Vendor.ORACLE) && JavaInfo.majorVersion() >= 11)
             disableTLSv13();
 

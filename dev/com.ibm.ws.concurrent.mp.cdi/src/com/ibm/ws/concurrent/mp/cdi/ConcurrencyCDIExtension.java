@@ -101,9 +101,9 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
                 b.propagated(config.propagated());
             }
         } else {
-            int start = injectionPointName.length() + 1;
+            int start = injectionPointName.length() + 23;
             int len = start + 10;
-            StringBuilder propName = new StringBuilder(len).append(injectionPointName).append('.');
+            StringBuilder propName = new StringBuilder(len).append(injectionPointName).append("/ManagedExecutorConfig/");
 
             // In order to efficiently reuse StringBuilder, properties are added in the order of the length of their names,
 
@@ -163,9 +163,9 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
                 b.propagated(config.propagated());
             }
         } else {
-            int start = injectionPointName.length() + 1;
+            int start = injectionPointName.length() + 21;
             int len = start + 10;
-            StringBuilder propName = new StringBuilder(len).append(injectionPointName).append('.');
+            StringBuilder propName = new StringBuilder(len).append(injectionPointName).append("/ThreadContextConfig/");
 
             // In order to efficiently reuse StringBuilder, properties are added in the order of the length of their names,
 
@@ -236,9 +236,9 @@ public class ConcurrencyCDIExtension implements Extension, WebSphereCDIExtension
         // Instance name is either @NamedInstance.value() or generated from fully-qualified field name or method parameter index
         NamedInstance nameAnno = injectionPoint.getAnnotation(NamedInstance.class);
         Member member = event.getInjectionPoint().getMember();
-        StringBuilder n = new StringBuilder(member.getDeclaringClass().getTypeName()).append('.').append(member.getName());
+        StringBuilder n = new StringBuilder(member.getDeclaringClass().getTypeName()).append('/').append(member.getName());
         if (injectionPoint instanceof AnnotatedParameter)
-            n.append('.').append(((AnnotatedParameter<?>) injectionPoint).getPosition() + 1); // switch from 0-based to 1-based
+            n.append('/').append(((AnnotatedParameter<?>) injectionPoint).getPosition() + 1); // switch from 0-based to 1-based
         String injectionPointName = n.toString();
         String instanceName = nameAnno == null ? injectionPointName : nameAnno.value();
 

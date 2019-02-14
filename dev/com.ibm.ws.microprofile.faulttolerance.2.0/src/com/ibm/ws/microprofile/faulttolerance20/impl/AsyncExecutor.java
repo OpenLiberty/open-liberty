@@ -11,6 +11,9 @@
 package com.ibm.ws.microprofile.faulttolerance20.impl;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletionStage;
@@ -44,6 +47,9 @@ import com.ibm.ws.microprofile.faulttolerance20.state.FaultToleranceStateFactory
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState;
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState.RetryResult;
 import com.ibm.ws.microprofile.faulttolerance20.state.TimeoutState;
+import com.ibm.wsspi.threadcontext.ThreadContext;
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
+import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
  * Abstract executor for asynchronous calls.
@@ -91,8 +97,22 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
 
     private static final TraceComponent tc = Tr.register(AsyncExecutor.class);
 
+    /**
+     * The collection of contexts to capture under createThreadContext.
+     * Classloader, JeeMetadata, and security.
+     */
+    @SuppressWarnings("unchecked")
+    private static final Map<String, ?>[] THREAD_CONTEXT_PROVIDERS = new Map[] {
+                                                                                 Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER,
+                                                                                                          "com.ibm.ws.classloader.context.provider"),
+                                                                                 Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER,
+                                                                                                          "com.ibm.ws.javaee.metadata.context.provider"),
+                                                                                 Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER,
+                                                                                                          "com.ibm.ws.security.context.provider"),
+    };
+
     public AsyncExecutor(RetryPolicy retry, CircuitBreakerPolicy cbPolicy, TimeoutPolicy timeoutPolicy, FallbackPolicy fallbackPolicy, BulkheadPolicy bulkheadPolicy,
-                         ScheduledExecutorService executorService, MetricRecorder metricRecorder) {
+                         ScheduledExecutorService executorService, WSContextService contextService, MetricRecorder metricRecorder) {
         retryPolicy = retry;
         circuitBreaker = FaultToleranceStateFactory.INSTANCE.createCircuitBreakerState(cbPolicy, metricRecorder);
         this.timeoutPolicy = timeoutPolicy;
@@ -100,6 +120,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         this.fallbackPolicy = fallbackPolicy;
         bulkhead = FaultToleranceStateFactory.INSTANCE.createAsyncBulkheadState(executorService, bulkheadPolicy, metricRecorder);
         this.metricRecorder = metricRecorder;
+        this.contextService = contextService;
     }
 
     private final RetryPolicy retryPolicy;
@@ -108,6 +129,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
     private final TimeoutPolicy timeoutPolicy;
     private final FallbackPolicy fallbackPolicy;
     private final AsyncBulkheadState bulkhead;
+    private final WSContextService contextService;
     private final MetricRecorder metricRecorder;
 
     @Override
@@ -123,6 +145,8 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
 
         W returnWrapper = createReturnWrapper(executionContext);
         executionContext.setReturnWrapper(returnWrapper);
+
+        executionContext.setThreadContextDescriptor(contextService.captureThreadContext(null, THREAD_CONTEXT_PROVIDERS));
 
         RetryState retryState = FaultToleranceStateFactory.INSTANCE.createRetryState(retryPolicy, metricRecorder);
         executionContext.setRetryState(retryState);
@@ -204,12 +228,17 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 Tr.event(tc, "Method {0} running execution attempt", executionContext.getMethod());
             }
 
+            ThreadContextDescriptor contextDescriptor = executionContext.getThreadContextDescriptor();
+            ArrayList<ThreadContext> context = contextDescriptor.taskStarting();
+
             MethodResult<W> methodResult;
             try {
                 W result = executionContext.getCallable().call();
                 methodResult = MethodResult.success(result);
             } catch (Throwable e) {
                 methodResult = MethodResult.failure(e);
+            } finally {
+                contextDescriptor.taskStopping(context);
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {

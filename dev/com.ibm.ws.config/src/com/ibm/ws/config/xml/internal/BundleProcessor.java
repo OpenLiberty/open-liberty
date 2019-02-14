@@ -238,6 +238,11 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
 
             Set<String> updates = changeHandler.removeMetatypeConvertedConfig(sc, updatedPids);
             configUpdater.fireMetatypeDeletedEvents(updates);
+            if (tc.isDebugEnabled()) {
+                for (String update : updates) {
+                    Tr.debug(tc, "Removed metatype for PID " + update);
+                }
+            }
 
         }
 

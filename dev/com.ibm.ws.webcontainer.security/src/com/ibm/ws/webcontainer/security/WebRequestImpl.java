@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.webcontainer.security.internal.BasicAuthAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.CertificateLoginAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.SSOAuthenticator;
@@ -30,6 +31,9 @@ import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
  *
  */
 public class WebRequestImpl implements WebRequest {
+
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BEARER_AUTHORIZATION_METHOD = "Bearer ";
 
     private final HttpServletRequest request;
     private final HttpServletResponse response;
@@ -144,45 +148,70 @@ public class WebRequestImpl implements WebRequest {
      * @return {@code true} if some authentication data is available, {@code false} otherwise.
      */
     private boolean determineIfRequestHasAuthenticationData() {
-        // Do we have a BasicAuth header?
-        boolean hasBasicAuthHeader = request.getHeader(BasicAuthAuthenticator.BASIC_AUTH_HEADER_NAME) != null;
+        return isBasicAuthHeaderInRequest(request) || isClientCertHeaderInRequest(request) || isSSOCookieInRequest(request);
+    }
 
-        // Do we have client cert data?
+    private boolean isBasicAuthHeaderInRequest(HttpServletRequest request) {
+        String hdrValue = request.getHeader(BasicAuthAuthenticator.BASIC_AUTH_HEADER_NAME);
+        return hdrValue != null && hdrValue.startsWith("Basic ");
+    }
+
+    private boolean isClientCertHeaderInRequest(HttpServletRequest request) {
         boolean hasClientCertHeader = false;
-
         LoginConfiguration loginConfig = getLoginConfig();
         String authenticationMethod = null;
+
         if (loginConfig != null) {
             authenticationMethod = loginConfig.getAuthenticationMethod();
         }
+
         if (LoginConfiguration.CLIENT_CERT.equals(authenticationMethod)) {
             X509Certificate certChain[] = (X509Certificate[]) request.getAttribute(CertificateLoginAuthenticator.PEER_CERTIFICATES);
-            if (certChain == null || certChain.length == 0) {
-                hasClientCertHeader = false;
-            } else {
-                hasClientCertHeader = true;
-            }
+            hasClientCertHeader = certChain != null && certChain.length > 0;
+        }
+        return hasClientCertHeader;
+    }
+
+    private boolean isSSOCookieInRequest(HttpServletRequest request) {
+        return isJwtCookieInRequest(request) || isBearerAuthorizationHeaderInRequest(request) || canUseLTPATokenFromRequest(request);
+    }
+
+    private boolean isJwtCookieInRequest(HttpServletRequest request) {
+        String jwtCookieName = JwtSSOTokenHelper.getJwtCookieName();
+        if (jwtCookieName == null) {
+            return false;
         }
 
-        // Do we have an SSO cookie?
-        boolean hasSSOToken = false;
         Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            hasSSOToken = false;
-        } else {
-            // check SSO Cookie
+        return CookieHelper.hasCookie(cookies, jwtCookieName);
+    }
+
+    private boolean isBearerAuthorizationHeaderInRequest(HttpServletRequest request) {
+        String hdrValue = request.getHeader(AUTHORIZATION_HEADER);
+        return hdrValue != null && hdrValue.startsWith(BEARER_AUTHORIZATION_METHOD);
+    }
+
+    private boolean canUseLTPATokenFromRequest(HttpServletRequest request) {
+        return JwtSSOTokenHelper.shouldUseLtpaIfJwtAbsent() && isLtpaCookieInRequest(request);
+    }
+
+    private boolean isLtpaCookieInRequest(HttpServletRequest request) {
+        boolean ssoCookieFound = false;
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null && cookies.length > 0) {
             String cookieName = config.getSSOCookieName();
-            String[] hdrVals = CookieHelper.getCookieValues(cookies, cookieName);
-            if (hdrVals == null && !SSOAuthenticator.DEFAULT_SSO_COOKIE_NAME.equalsIgnoreCase(cookieName)) {
-                hdrVals = CookieHelper.getCookieValues(cookies, SSOAuthenticator.DEFAULT_SSO_COOKIE_NAME);
-            }
-            if (hdrVals != null) {
-                hasSSOToken = true;
+            ssoCookieFound = CookieHelper.hasCookie(cookies, cookieName);
+
+            if (ssoCookieFound == false) {
+                boolean useOnlyCustomCookieName = config != null && config.isUseOnlyCustomCookieName();
+                if (!SSOAuthenticator.DEFAULT_SSO_COOKIE_NAME.equalsIgnoreCase(cookieName) && !useOnlyCustomCookieName) {
+                    ssoCookieFound = CookieHelper.hasCookie(cookies, SSOAuthenticator.DEFAULT_SSO_COOKIE_NAME);
+                }
             }
         }
 
-        // If any of that is true, we have authentication data!
-        return hasBasicAuthHeader || hasClientCertHeader || hasSSOToken;
+        return ssoCookieFound;
     }
 
     /** {@inheritDoc} */

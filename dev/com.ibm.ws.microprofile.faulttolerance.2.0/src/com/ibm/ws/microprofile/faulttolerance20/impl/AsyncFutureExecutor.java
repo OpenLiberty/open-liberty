@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
+import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
  * Executor for Asynchronous calls which return a {@link Future}
@@ -33,8 +34,8 @@ public class AsyncFutureExecutor<R> extends AsyncExecutor<Future<R>> {
     private static final TraceComponent tc = Tr.register(AsyncFutureExecutor.class);
 
     public AsyncFutureExecutor(RetryPolicy retry, CircuitBreakerPolicy cbPolicy, TimeoutPolicy timeoutPolicy, FallbackPolicy fallbackPolicy, BulkheadPolicy bulkheadPolicy,
-                               ScheduledExecutorService executorService, MetricRecorder metricRecorder) {
-        super(retry, cbPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, executorService, metricRecorder);
+                               ScheduledExecutorService executorService, WSContextService contextService, MetricRecorder metricRecorder) {
+        super(retry, cbPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, executorService, contextService, metricRecorder);
     }
 
     @Override

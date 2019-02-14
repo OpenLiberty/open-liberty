@@ -345,6 +345,7 @@ goto:eof
   call:serverExists true
   if %RC% == 2 goto:eof
   "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe"  //IS//%SERVER_NAME% --Startup=manual --DisplayName="%SERVER_NAME%" --Description="Open Liberty" ++DependsOn=Tcpip --LogPath="%WLP_INSTALL_DIR%\usr\servers\%SERVER_NAME%\logs" --StdOutput=auto --StdError=auto --StartMode=exe --StartPath="%WLP_INSTALL_DIR%" --StartImage="%WLP_INSTALL_DIR%\bin\server.bat" ++StartParams=start#%SERVER_NAME% --StopMode=exe --StopPath="%WLP_INSTALL_DIR%" --StopImage="%WLP_INSTALL_DIR%\bin\server.bat" ++StopParams=stop#%SERVER_NAME%                                                                                                                             
+  set RC=!errorlevel!
 goto:eof
 
 :startWinService
@@ -364,8 +365,9 @@ goto:eof
     )
   ) else (
      "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe" //ES//%SERVER_NAME%
-      call:serverRunning
-      call:javaCmdResult
+     set RC=!errorlevel!
+     call:serverRunning
+     call:javaCmdResult
   )   
 goto:eof
 
@@ -375,11 +377,13 @@ goto:eof
   call:serverExists true
   if %RC% == 2 goto:eof
   "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe" //SS//%SERVER_NAME%
+  set RC=!errorlevel!
 goto:eof
 
 :unregisterWinService
   if NOT "%OS%" == "Windows_NT" goto:eof
   "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe" //DS//%SERVER_NAME%
+  set RC=!errorlevel!
 goto:eof
 
 :pauseServer

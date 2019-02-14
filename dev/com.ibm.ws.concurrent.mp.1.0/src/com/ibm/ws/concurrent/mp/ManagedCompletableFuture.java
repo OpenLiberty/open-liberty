@@ -418,10 +418,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         ThreadContextDescriptor contextDescriptor;
         if (action instanceof ContextualSupplier) {
             ContextualRunnable r = (ContextualRunnable) action;
-            contextDescriptor = r.threadContextDescriptor;
-            action = r.action;
+            contextDescriptor = r.getContextDescriptor();
+            action = r.getAction();
+        } else if (executor instanceof WSManagedExecutorService) {
+            WSContextService contextSvc = ((WSManagedExecutorService) executor).getContextService();
+            contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
         } else {
-            contextDescriptor = captureThreadContext(executor);
+            contextDescriptor = null;
         }
 
         if (JAVA8) {
@@ -467,14 +470,18 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         ThreadContextDescriptor contextDescriptor;
         if (action instanceof ContextualSupplier) {
             ContextualSupplier<U> s = (ContextualSupplier<U>) action;
-            contextDescriptor = s.threadContextDescriptor;
-            action = s.action;
+            contextDescriptor = s.getContextDescriptor();
+            action = s.getAction();
+        } else if (executor instanceof WSManagedExecutorService) {
+            WSContextService contextSvc = ((WSManagedExecutorService) executor).getContextService();
+            contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
         } else {
-            contextDescriptor = captureThreadContext(executor);
+            contextDescriptor = null;
         }
 
         if (JAVA8) {
-            action = new ContextualSupplier<U>(contextDescriptor, action);
+            if (contextDescriptor != null)
+                action = new ContextualSupplier<U>(contextDescriptor, action);
             CompletableFuture<U> completableFuture = CompletableFuture.supplyAsync(action, futureExecutor == null ? executor : futureExecutor);
             return new ManagedCompletableFuture<U>(completableFuture, executor, futureExecutor);
         } else {
@@ -639,23 +646,26 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
-     * Captures thread context, if possible, based on thread context propagation configured for the specified executor.
+     * Captures thread context, if possible, first based on the default asynchronous execution facility,
+     * otherwise based on the specified executor. If neither of these executors are a managed executor,
+     * then thread context is not captured.
      *
-     * @param executor
-     * @return captured thread context. NULL if the executor does not support capturing context.
+     * @param executor executor argument that is supplied when creating a dependent stage.
+     * @return captured thread context. NULL neither the default asynchronous execution facility nor the
+     *         specified executor support capturing context.
      */
-    private static ThreadContextDescriptor captureThreadContext(Executor executor) {
-        WSContextService contextSvc = null;
-        if (executor instanceof WSManagedExecutorService) {
-            WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
-            contextSvc = managedExecutor.getContextService();
-        }
+    private ThreadContextDescriptor captureThreadContext(Executor executor) {
+        WSManagedExecutorService managedExecutor = defaultExecutor instanceof WSManagedExecutorService //
+                        ? (WSManagedExecutorService) defaultExecutor //
+                        : executor != defaultExecutor && executor instanceof WSManagedExecutorService //
+                                        ? (WSManagedExecutorService) executor //
+                                        : null;
 
-        if (contextSvc == null)
-            return null; // TODO should we capture context based on the default executor when unmanaged executor is supplied???
+        if (managedExecutor == null)
+            return null;
 
         @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+        ThreadContextDescriptor contextDescriptor = managedExecutor.getContextService().captureThreadContext(XPROPS_SUSPEND_TRAN);
         return contextDescriptor;
     }
 
@@ -701,8 +711,8 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             ThreadContextDescriptor contextDescriptor;
             if (action instanceof ContextualSupplier) {
                 ContextualSupplier<? extends T> s = (ContextualSupplier<? extends T>) action;
-                contextDescriptor = s.threadContextDescriptor;
-                action = s.action;
+                contextDescriptor = s.getContextDescriptor();
+                action = s.getAction();
             } else {
                 contextDescriptor = captureThreadContext(executor);
             }

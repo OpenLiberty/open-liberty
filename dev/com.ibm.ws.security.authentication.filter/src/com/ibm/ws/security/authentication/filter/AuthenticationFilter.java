@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package com.ibm.ws.security.authentication.filter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
  * supports filtering rules that allow specification of coarse or fine-grained
  * criteria for determining when to intercept a given HTTP request.
  * <P>
- * 
+ *
  * @version 1.0.0
  */
 public interface AuthenticationFilter {
@@ -28,11 +29,11 @@ public interface AuthenticationFilter {
     /**
      * Initializes the request filtering mechanism. The operation is invoked
      * when the interceptor is initialized if a custom filter is specified.
-     * 
+     *
      * @param filter
      *            describes arbitrary filtering rules used by the filter to
      *            determine when an HTTP request should be intercepted
-     * 
+     *
      * @return true if no errors were encountered while parsing the filter
      *         argument, false otherwise.
      */
@@ -42,10 +43,10 @@ public interface AuthenticationFilter {
      * Indicates whether or not the service should intercept the given request,
      * according to the filtering rules defined in the <CODE>init()</CODE>
      * operation.
-     * 
+     *
      * @param request
      *            the HTTP request currently being processed.
-     * 
+     *
      * @return true if the request matches the filtering criteria, otherwise
      *         false
      */
@@ -54,7 +55,7 @@ public interface AuthenticationFilter {
     /**
      * Indicates that all HTTP requests processed by the filter will be
      * intercepted.
-     * 
+     *
      * @param all
      *            true causes the operation <CODE>isAccepted()</CODE> to
      *            unconditionally return true, otherwise

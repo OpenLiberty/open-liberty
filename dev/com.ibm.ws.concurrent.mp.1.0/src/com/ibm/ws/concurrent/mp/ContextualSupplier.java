@@ -13,6 +13,8 @@ package com.ibm.ws.concurrent.mp;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.concurrent.ContextualAction;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
@@ -21,9 +23,9 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
  *
  * @param <T> type of the result that is supplied by the supplier
  */
-class ContextualSupplier<T> implements Supplier<T> {
-    final Supplier<T> action;
-    final ThreadContextDescriptor threadContextDescriptor;
+class ContextualSupplier<T> implements Supplier<T>, ContextualAction<Supplier<T>> {
+    private final Supplier<T> action;
+    private final ThreadContextDescriptor threadContextDescriptor;
 
     ContextualSupplier(ThreadContextDescriptor threadContextDescriptor, Supplier<T> action) {
         this.action = action;
@@ -38,5 +40,17 @@ class ContextualSupplier<T> implements Supplier<T> {
         } finally {
             threadContextDescriptor.taskStopping(contextApplied);
         }
+    }
+
+    @Override
+    @Trivial
+    public Supplier<T> getAction() {
+        return action;
+    }
+
+    @Override
+    @Trivial
+    public ThreadContextDescriptor getContextDescriptor() {
+        return threadContextDescriptor;
     }
 }

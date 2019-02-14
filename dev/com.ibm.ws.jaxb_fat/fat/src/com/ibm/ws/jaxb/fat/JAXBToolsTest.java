@@ -26,14 +26,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-public class JAXBToolsTest {
+public class JAXBToolsTest extends FATServletClient {
 
     // This server doesn't ever get started, we just have it here to get a hold of files from the Liberty install
     @Server("com.ibm.ws.jaxb.tools.TestServer")
@@ -95,13 +97,9 @@ public class JAXBToolsTest {
         }
         commandBuilder.append(" ").append(xjcArgs);
 
-        StringBuilder outputBuilder = new StringBuilder();
-
-        for (String line : execute(commandBuilder.toString())) {
-            outputBuilder.append(line);
-        }
-
-        assertTrue("The output should contain the error id 'CWWKW0700E', but the actual is not.", outputBuilder.toString().indexOf("CWWKW0700E") >= 0);
+        String output = execute(commandBuilder.toString());
+        assertTrue("The output should contain the error id 'CWWKW0700E', but does not.\nActual output:\n" + output,
+                   output.indexOf("CWWKW0700E") >= 0);
     }
 
     @Test
@@ -193,11 +191,12 @@ public class JAXBToolsTest {
         assertTrue("ShippingAddress.class does not exist.", shippingAddressClassFile.exists());
     }
 
-    private List<String> execute(String commandLine) throws IOException, InterruptedException {
+    private String execute(String commandLine) throws IOException, InterruptedException {
         List<String> command = new ArrayList<String>();
         for (String arg : commandLine.split(" ")) {
             command.add(arg);
         }
+        Log.info(getClass(), "execute", "Run command: " + commandLine);
 
         ProcessBuilder builder = new ProcessBuilder();
         builder.command(command);
@@ -214,11 +213,18 @@ public class JAXBToolsTest {
         p.waitFor();
 
         int exitValue = p.exitValue();
+
+        StringBuilder sb = new StringBuilder();
+        for (String line : output) {
+            sb.append(line).append('\n');
+            Log.info(getClass(), "execute", line);
+        }
+
         if (exitValue != 0) {
             throw new IOException(command.get(0) + " failed (" + exitValue + "): " + output);
         }
 
-        return output;
+        return sb.toString();
     }
 
     private class OutputStreamCopier implements Runnable {

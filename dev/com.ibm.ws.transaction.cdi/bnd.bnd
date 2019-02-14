@@ -11,6 +11,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+javac.source: 1.7
+javac.target: 1.7
+
 Bundle-Name: Transactions CDI Integration
 Bundle-SymbolicName: com.ibm.ws.transaction.cdi
 Bundle-Description: Transactions CDI Integration, version ${bVersion}
@@ -34,7 +37,7 @@ Export-Package: \
 
 -dsannotations-inherit: true
 -dsannotations: \
-  com.ibm.tx.jta.cdi.TransactionContextExtension 
+  com.ibm.tx.jta.cdi.TransactionContextExtension
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core,\

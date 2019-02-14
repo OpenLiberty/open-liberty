@@ -11,6 +11,7 @@
 package componenttest.rules.repeater;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public class EE7FeatureReplacementAction extends FeatureReplacementAction {
 
     static final String[] EE7_FEATURES_ARRAY = { "javaee-7.0", "webProfile-7.0", "javaeeClient-7.0", "servlet-3.1", "jdbc-4.1", "javaMail-1.5", "cdi-1.2", "jpa-2.1",
                                                  "beanValidation-1.1", "jaxrs-2.0", "jaxrsClient-2.0", "jsf-2.2", "appSecurity-2.0", "jsonp-1.0" };
-    static final Set<String> EE7_FEATURE_SET = new HashSet<>(Arrays.asList(EE7_FEATURES_ARRAY));
+    public static final Set<String> EE7_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE7_FEATURES_ARRAY)));
 
     public EE7FeatureReplacementAction() {
         super(EE8FeatureReplacementAction.EE8_FEATURE_SET, EE7_FEATURE_SET);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -182,8 +182,8 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
             Tr.entry(tc, "performFileBasedAction", new Object[] { modifiedFiles });
 
         try {
-            com.ibm.ws.ssl.provider.AbstractJSSEProvider.clearSSLContextCache();
-            com.ibm.ws.ssl.config.KeyStoreManager.getInstance().clearJavaKeyStoresFromKeyStoreMap();
+            com.ibm.ws.ssl.config.KeyStoreManager.getInstance().clearJavaKeyStoresFromKeyStoreMap(modifiedFiles);
+            com.ibm.ws.ssl.provider.AbstractJSSEProvider.clearSSLContextCache(modifiedFiles);
             com.ibm.ws.ssl.config.SSLConfigManager.getInstance().resetDefaultSSLContextIfNeeded(modifiedFiles);
             Tr.audit(tc, "ssl.keystore.modified.CWPKI0811I", modifiedFiles.toArray());
         } catch (Exception e) {
