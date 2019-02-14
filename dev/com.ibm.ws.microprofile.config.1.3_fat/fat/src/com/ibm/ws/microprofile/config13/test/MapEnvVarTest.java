@@ -16,8 +16,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig13EE8;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig14EE8;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
 import com.ibm.ws.microprofile.config13.mapEnvVar.web.MapEnvVarServlet;
 
 import componenttest.annotation.Server;
@@ -50,9 +49,7 @@ public class MapEnvVarTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests
-                    .with(new RepeatConfig13EE8("MapEnvVarServer"))
-                    .andWith(new RepeatConfig14EE8("MapEnvVarServer"));
+    public static RepeatTests r = RepeatConfigActions.repeatConfig13("MapEnvVarServer");
 
     @BeforeClass
     public static void setUp() throws Exception {
