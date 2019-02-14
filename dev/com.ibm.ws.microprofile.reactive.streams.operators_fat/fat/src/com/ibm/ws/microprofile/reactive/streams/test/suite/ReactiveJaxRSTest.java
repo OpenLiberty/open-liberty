@@ -8,20 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.streams.operators.test;
+package com.ibm.ws.microprofile.reactive.streams.test.suite;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.reactive.streams.test.ReactiveStreamsTestServlet;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import componenttest.topology.utils.HttpUtils;
 
 /**
  * Example Shrinkwrap FAT project:
@@ -37,12 +39,11 @@ import componenttest.topology.utils.FATServletClient;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
-public class ReactiveStreamsTest extends FATServletClient {
+public class ReactiveJaxRSTest extends FATServletClient {
 
-    public static final String APP_NAME = "ReactiveStreamsTest";
+    public static final String APP_NAME = "ReactiveWithJaxRS";
 
     @Server("ReactiveStreamsTestServer")
-    @TestServlet(servlet = ReactiveStreamsTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @BeforeClass
@@ -51,7 +52,10 @@ public class ReactiveStreamsTest extends FATServletClient {
         // Include the 'APP_NAME.web' package and all of it's java classes and sub-packages
         // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
-        ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.microprofile.reactive.streams.*");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+                        .addPackages(true, "com.ibm.ws.microprofile.reactive.streams.test.jaxrs");
+
+        ShrinkHelper.exportDropinAppToServer(server, war);
 
         server.startServer();
     }
@@ -59,6 +63,17 @@ public class ReactiveStreamsTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
+    }
+
+    @Test
+    public void testReactiveChainWithJaxRS() throws Exception {
+        HttpUtils.findStringInReadyUrl(server, "/ReactiveWithJaxRS/input?message=message1", FATServletClient.SUCCESS);
+        HttpUtils.findStringInReadyUrl(server, "/ReactiveWithJaxRS/input?message=message2", FATServletClient.SUCCESS);
+        HttpUtils.findStringInReadyUrl(server, "/ReactiveWithJaxRS/input?message=message3", FATServletClient.SUCCESS);
+        HttpUtils.findStringInReadyUrl(server, "/ReactiveWithJaxRS/input?message=message4", FATServletClient.SUCCESS);
+        HttpUtils.findStringInReadyUrl(server, "/ReactiveWithJaxRS/input?message=message5", FATServletClient.SUCCESS);
+
+        HttpUtils.findStringInReadyUrl(server, "/ReactiveWithJaxRS/output?count=5", "message1", "message2", "message3", "message4", "message5");
     }
 
 }
