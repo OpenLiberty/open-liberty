@@ -15,10 +15,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 
 import test.common.SharedOutputManager;
 
@@ -30,42 +29,11 @@ import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
  * Test the bytebuffer utils class.
  */
 public class ByteBufferUtilsTest {
-    private static SharedOutputManager outputMgr;
+    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+    @Rule
+    public TestRule managerRule = outputMgr;
     private static final String data = "test string";
     private static final String data2 = "secondary test data";
-
-    /**
-     * Capture stdout/stderr output to the manager.
-     * 
-     * @throws Exception
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        outputMgr = SharedOutputManager.getInstance();
-        outputMgr.captureStreams();
-    }
-
-    /**
-     * Final teardown work when class is exiting.
-     * 
-     * @throws Exception
-     */
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-        // Make stdout and stderr "normal"
-        outputMgr.restoreStreams();
-    }
-
-    /**
-     * Individual teardown after each test.
-     * 
-     * @throws Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-        // Clear the output generated after each method invocation
-        outputMgr.resetStreams();
-    }
 
     private WsByteBuffer setupBuffer(int size, String content) {
         WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(size);
