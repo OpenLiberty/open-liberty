@@ -75,9 +75,7 @@ public class FrameworkConfigurator {
         // that storage area, we use space specific to the server.
         config.put(org.osgi.framework.Constants.FRAMEWORK_STORAGE, workarea.getAbsolutePath());
 
-        // Use an equinox property to identify the location of the equinox
-        // configuration area.
-        config.put("osgi.configuration.area", workarea.getAbsolutePath());
+        config.put("osgi.logfile", new File(workarea, "equinox.log").getAbsolutePath());
 
         // Use an equinox property to identify the location of the equinox
         // user area (we'll treat the server directory as the user area)

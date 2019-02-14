@@ -8,18 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.streams.operators.tck;
+package com.ibm.ws.microprofile.reactive.streams.test.jaxrs;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.enterprise.context.ApplicationScoped;
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
+@ApplicationScoped
+public class SimpleAsyncPublisher extends AbstractAsyncPublisher<String> {
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AlwaysPassesTest.class, //ReactiveStreamsTCKLauncher is set to full mode. This will prevent a build failure from zero tests running.
-                ReactiveStreamsTCKLauncher.class
-})
-
-public class FATSuite {}
+}
