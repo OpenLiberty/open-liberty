@@ -14,20 +14,14 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.cloudtx.ut.util.LastingXAResourceImpl;
-import com.ibm.ws.transaction.web.SimpleFS2PCCloudServlet;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -42,34 +36,13 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
 
     protected static LibertyServer serverTemplate;
     public static final String APP_NAME = "transaction";
-    public static final String SERVLET_NAME = "transaction/SimpleFS2PCCloudServlet";
-    protected static final int FScloud2ServerPort = 9992;
-    public static final String FSCloud1RecoveryIdentity = "FScloud001";
+    protected static final int Cloud2ServerPort = 9992;
 
-    @Server("com.ibm.ws.transaction_FSCLOUD001")
-    @TestServlet(servlet = SimpleFS2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server1;
 
-    @Server("com.ibm.ws.transaction_FSCLOUD002")
-    @TestServlet(servlet = SimpleFS2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server2;
-
-    @BeforeClass
-    public static void setUp() throws Exception {
-
-        // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
-        // Include the 'app1.web' package and all of it's java classes and sub-packages
-        // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
-        // Exports the resulting application to the ${server.config.dir}/apps/ directory
-        ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
-        ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
-
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        // server1.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
-    }
+    public static String servletName;
+    public static String cloud1RecoveryIdentity;
 
     @Test
     public void dynamicCloudRecovery001() throws Exception {
@@ -209,7 +182,7 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
 
         try {
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
+            sb = runTestWithResponse(server1, servletName, "setupRec" + id);
         } catch (Throwable e) {
             // as expected
             Log.error(this.getClass(), method, e); // TODO remove this
@@ -220,7 +193,7 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         assertNotNull("First server did not crash", server1.waitForStringInLog("Dump State:"));
 
         // Now start server2
-        server2.setHttpDefaultPort(FScloud2ServerPort);
+        server2.setHttpDefaultPort(Cloud2ServerPort);
         ProgramOutput po = server2.startServerAndValidate(false, true, true);
 
         if (po.getReturnCode() != 0) {
@@ -233,16 +206,19 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         }
 
         // wait for 2nd server to perform peer recovery
-        assertNotNull("Second server did not perform peer recovery", server2.waitForStringInTrace("Performed recovery for " + FSCloud1RecoveryIdentity));
+        assertNotNull("Second server did not perform peer recovery", server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity));
 
         // flush the resource states
         try {
-            sb = runTestWithResponse(server2, SERVLET_NAME, "dumpState");
+            sb = runTestWithResponse(server2, servletName, "dumpState");
             Log.info(this.getClass(), method, sb.toString());
         } catch (Exception e) {
             Log.error(this.getClass(), method, e);
             throw e;
         }
+
+        //Stop server2
+        server2.stopServer(null);
 
         // restart 1st server
         server1.startServerAndValidate(false, true, true);
@@ -252,7 +228,7 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         // check resource states
         Log.info(this.getClass(), method, "calling checkRec" + id);
         try {
-            sb = runTestWithResponse(server1, SERVLET_NAME, "checkRec" + id);
+            sb = runTestWithResponse(server1, servletName, "checkRec" + id);
         } catch (Exception e) {
             Log.error(this.getClass(), "dynamicTest", e);
             throw e;
