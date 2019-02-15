@@ -26,8 +26,6 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyClientFactory;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -64,7 +62,6 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private final Set<String> clients = new HashSet<>(Arrays.asList(ALL_CLIENTS));
     private final Set<String> removeFeatures = new HashSet<>();
     private final Set<String> addFeatures = new HashSet<>();
-    private TestMode testRunMode = TestMode.LITE;
 
     public FeatureReplacementAction() {}
 
@@ -179,16 +176,6 @@ public class FeatureReplacementAction implements RepeatTestAction {
         return this;
     }
 
-    public FeatureReplacementAction fullFATOnly() {
-        this.testRunMode = TestMode.FULL;
-        return this;
-    }
-
-    public FeatureReplacementAction withTestMode(TestMode mode) {
-        this.testRunMode = mode;
-        return this;
-    }
-
     /**
      * Specify a list of server names to include in the feature replace action and any server configuration
      * files under "publish/servers/SERVER_NAME/" will be scanned.
@@ -232,10 +219,6 @@ public class FeatureReplacementAction implements RepeatTestAction {
         boolean enabled = JavaInfo.forCurrentVM().majorVersion() >= minJavaLevel;
         if (!enabled)
             Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the java level is too low.");
-        enabled = TestModeFilter.FRAMEWORK_TEST_MODE.compareTo(testRunMode) >= 0;
-        if (!enabled)
-            Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the test mode " + testRunMode + " is not valid for current mode "
-                                     + TestModeFilter.FRAMEWORK_TEST_MODE);
         return enabled;
     }
 
@@ -335,11 +318,12 @@ public class FeatureReplacementAction implements RepeatTestAction {
                 features.addAll(addFeatures);
             } else {
                 for (String removeFeature : removeFeatures) {
-                    boolean removed = false;
+                    boolean removed = false; 
                     if (removeFeature.endsWith("*")) {
                         removed = removeWildcardFeature(features, removeFeature);
-                    } else if (features.remove(removeFeature)) {
-                        removed = true;
+                    }
+                    else if (features.remove(removeFeature)) {
+                        removed = true; 
                     }
 
                     // If we found a feature to remove that is actually present in config file, then
@@ -390,7 +374,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
                 removed = true;
             }
         }
-        return removed;
+        return removed; 
     }
 
     private static Set<File> findFile(File dir, String suffix) {

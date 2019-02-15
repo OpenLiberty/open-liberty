@@ -98,7 +98,7 @@ public class RepeatTests extends ExternalResource {
             final String m = "evaluate";
             ArrayList<Throwable> errors = new ArrayList<>();
 
-            Log.info(c, m, "All tests attempt to run " + actions.size() + " times:");
+            Log.info(c, m, "All tests will run " + actions.size() + " times:");
             for (int i = 0; i < actions.size(); i++)
                 Log.info(c, m, "  [" + i + "] " + actions.get(i));
 
@@ -113,12 +113,6 @@ public class RepeatTests extends ExternalResource {
                         Log.info(c, m, "===================================");
                         action.setup();
                         statement.evaluate();
-                    } else {
-                        Log.info(c, m, "===================================");
-                        Log.info(c, m, "");
-                        Log.info(c, m, "Skipping tests with action: " + action);
-                        Log.info(c, m, "");
-                        Log.info(c, m, "===================================");
                     }
                 } catch (Throwable t) {
                     // Contrary to the javadoc for @ClassRule, a class statement may throw an exception
