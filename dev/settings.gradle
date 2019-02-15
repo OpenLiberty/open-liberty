@@ -44,6 +44,21 @@ pluginManagement {
       if (genProps['zipopenliberty.archivename'] != null) {
         props.setProperty('zipopenliberty.archivename', genProps['zipopenliberty.archivename'])
       }
+      if (genProps['zipopenliberty.runtime.archivename'] != null) {
+        props.setProperty('zipopenliberty.runtime.archivename', genProps['zipopenliberty.runtime.archivename'])
+      }
+      if (genProps['zipopenliberty.kernel.archivename'] != null) {
+        props.setProperty('zipopenliberty.kernel.archivename', genProps['zipopenliberty.kernel.archivename'])
+      }
+      if (genProps['zipopenliberty.webprofile8.archivename'] != null) {
+        props.setProperty('zipopenliberty.webprofile8.archivename', genProps['zipopenliberty.webprofile8.archivename'])
+      }
+      if (genProps['zipopenliberty.javaee8.archivename'] != null) {
+        props.setProperty('zipopenliberty.javaee8.archivename', genProps['zipopenliberty.javaee8.archivename'])
+      }
+      if (genProps['zipopenliberty.microprofile2.archivename'] != null) {
+        props.setProperty('zipopenliberty.microprofile2.archivename', genProps['zipopenliberty.microprofile2.archivename'])
+      }
     }
 
     // Properties for automated-build relevant tasks. These assignments below are defaults for when building locally
