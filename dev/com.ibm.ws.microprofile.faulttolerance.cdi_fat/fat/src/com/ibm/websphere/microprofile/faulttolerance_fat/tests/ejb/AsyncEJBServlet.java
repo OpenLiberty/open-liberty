@@ -68,4 +68,26 @@ public class AsyncEJBServlet extends FATServlet {
         }
     }
 
+    /**
+     * Test that the thread context is set during a fallback method
+     */
+    @Test
+    public void testAsyncEjbSecurityFallback(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Future<String> value = threadContextBean.fallbackToSecuredEjb();
+        try {
+            value.get();
+            fail("Able to access EJB without logging in");
+        } catch (ExecutionException e) {
+            assertThat(e.getCause(), instanceOf(EJBAccessException.class));
+        }
+
+        try {
+            req.login("test", "test");
+            Future<String> value2 = threadContextBean.fallbackToSecuredEjb();
+            assertThat(value2.get(), is("OK"));
+        } finally {
+            req.logout();
+        }
+    }
+
 }
