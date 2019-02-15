@@ -229,14 +229,16 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     @Override
     public boolean isEnabled() {
-        boolean enabled = JavaInfo.forCurrentVM().majorVersion() >= minJavaLevel;
-        if (!enabled)
+        if (JavaInfo.forCurrentVM().majorVersion() < minJavaLevel) {
             Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the java level is too low.");
-        enabled = TestModeFilter.FRAMEWORK_TEST_MODE.compareTo(testRunMode) >= 0;
-        if (!enabled)
-            Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the test mode " + testRunMode + " is not valid for current mode "
-                                     + TestModeFilter.FRAMEWORK_TEST_MODE);
-        return enabled;
+            return false;
+        }
+        if (TestModeFilter.FRAMEWORK_TEST_MODE.compareTo(testRunMode) < 0) {
+            Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the test mode " + testRunMode +
+                                     " is not valid for current mode " + TestModeFilter.FRAMEWORK_TEST_MODE);
+            return false;
+        }
+        return true;
     }
 
     @Override
