@@ -39,7 +39,6 @@ public class WARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
     protected ModuleHandler webModuleHandler;
     private ApplicationManager applicationManager;
     private final ZipUtils zipUtils = new ZipUtils();
-    private final static Map<String, Long> timestamps = new HashMap<String, Long>();
 
     @Reference(target = "(type=web)")
     protected void setWebModuleHandler(ModuleHandler handler) {
@@ -59,64 +58,112 @@ public class WARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
         this.applicationManager = null;
     }
 
-    @Override
-    public WARDeployedAppInfo createDeployedAppInfo(ApplicationInformation<DeployedAppInfo> applicationInformation) throws UnableToAdaptException {
+    // WAR expansion ...
 
-        try {
-            // Check whether we need to expand this WAR
-            if (applicationManager.getExpandApps()) {
+    protected void prepareExpansion() throws IOException {
+        WsResource expansionResource = getLocationAdmin().resolveResource(EXPANDED_APPS_DIR);
+        expansionResource.create();
+    }
 
-                // Make sure this is a file and not an expanded directory
-                String location = applicationInformation.getLocation();
-                File warFile = new File(location);
-                if (warFile.isFile() && !location.toLowerCase().endsWith(XML_SUFFIX)) {
+    protected WsResource resolveExpansion(String appName) {
+        return getLocationAdmin().resolveResource(EXPANDED_APPS_DIR + appName + ".war/");
+    }
 
-                    // Make sure the apps/expanded directory is available
-                    WsResource expandedAppsDir = getLocationAdmin().resolveResource(EXPANDED_APPS_DIR);
-                    expandedAppsDir.create();
+    private long getStamp(File file) {
+        return file.lastModified();
+    }
 
-                    // Store the war file timestamp and get the current value (if it exists)
-                    Long warFileTimestamp = timestamps.put(warFile.getAbsolutePath(), warFile.lastModified());
+    private void setStamp(File file, long lastModified) {
+        file.setLastModified(lastModified);
+    }
 
-                    WsResource expandedWarDir = getLocationAdmin().resolveResource(EXPANDED_APPS_DIR + applicationInformation.getName() + ".war/");
-                    if (expandedWarDir.exists()) {
-                        // If the expanded WAR directory already exists, we need to try to figure out if this was an update to the WAR file in apps/dropins
-                        // or an update to the expanded directory. We do this by checking the WAR file timestamp against a stored value. 
-                        // 
-                        // Doing it this way is really unfortunate, but it seems to be the best option at the moment. 
-                        // TODO - Either figure out a legitimate way to use Notifier to determine which container changed, or
-                        // improve by caching the timestamp values
+    protected void expand(
+        String warName, File warFile,
+        WsResource expandedResource, File expandedFile) throws IOException {
 
-                        // If we don't have a timestamp for the war, or the war file has been changed, delete the expanded directory
-                        if (warFileTimestamp == null || warFileTimestamp.longValue() != warFile.lastModified()) {
-                            zipUtils.recursiveDelete(expandedWarDir.asFile());
+        long newStamp = getStamp(warFile);
 
-                            // Create the expanded directory again
-                            expandedWarDir.create();
+        boolean doDelete;
+        boolean doExpand;
 
-                            // Unzip the WAR into the expanded directory
-                            zipUtils.unzip(warFile, expandedWarDir.asFile());
-                        }
-                    } else {
-                        // The expanded directory doesn't exist yet, so create it and unzip the WAR file contents into it                        
-                        expandedWarDir.create();
-                        zipUtils.unzip(warFile, expandedWarDir.asFile());
-                    }
+        if ( expandedResource.exists() ) {
+            long oldStamp = getStamp(expandedFile);
 
-                    // Set up the new container pointing to the expanded directory
-                    Container container = setupContainer(applicationInformation.getPid(), expandedWarDir.asFile());
-                    applicationInformation.setContainer(container);
-
+            if ( oldStamp != newStamp ) {
+                if ( tc.isDebugEnabled() ) {
+                    Tr.debug(tc, "Delete and re-extract web module [ " + warName + " ] from [ " + warFile.getPath() + " ] to [ " + expandedFile.getPath() + " ]");
                 }
-
+                doDelete = true;
+                doExpand = true;
+            } else {
+                if ( tc.isDebugEnabled() ) {
+                    Tr.debug(tc, "Reuse web module [ " + warName + " ] extracted from [ " + warFile.getPath() + " ] to [ " + expandedFile.getPath() + " ]");
+                }
+                doDelete = false;
+                doExpand = false;
             }
-        } catch (IOException ex) {
-            // Log error and continue to use the container for the WAR file
-            Tr.error(tc, "warning.could.not.expand.application", applicationInformation.getName(), ex.getMessage());
+        } else {
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, "Extract web module [ " + warName + " ] from [ " + warFile.getPath() + " ] to [ " + expandedFile.getPath() + " ]");
+            }
+            doDelete = false;
+            doExpand = true;
         }
 
-        WARDeployedAppInfo deployedApp = new WARDeployedAppInfo(applicationInformation, this);
-        applicationInformation.setHandlerInfo(deployedApp);
+        if ( doDelete || doExpand ) {
+        	ZipUtils zipUtils = new ZipUtils();
+
+            if ( doDelete ) {
+                zipUtils.deleteWithRetry(expandedFile);
+            }
+
+            if ( doExpand ) {
+                expandedResource.create();
+                zipUtils.unzip(warFile, expandedFile, ZipUtils.IS_NOT_EAR, newStamp);
+            }
+        }
+    }
+
+    private boolean isArchive(File warFile, String warPath) {
+        if ( warPath.toLowerCase().endsWith(XML_SUFFIX) ) {
+            return false;
+        } else if ( !warFile.isFile() ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public WARDeployedAppInfo createDeployedAppInfo(ApplicationInformation<DeployedAppInfo> appInfo)
+        throws UnableToAdaptException {
+
+        String warPid = appInfo.getPid();
+        String warName = appInfo.getName();
+        String warPath = appInfo.getLocation();
+        File warFile = new File(warPath);
+
+        Tr.debug(tc, "Create deployed application: PID [ " + warPid + " ] Name [ " + warName + " ] Location [ " + warPath + " ]");
+
+        if ( applicationManager.getExpandApps() && isArchive(warFile, warPath) ) {
+            try {
+                prepareExpansion();
+
+                WsResource expandedResource = resolveExpansion(warName);
+                File expandedFile = expandedResource.asFile();
+                expand(warName, warFile, expandedResource, expandedFile);
+
+                Container expandedContainer = setupContainer(warPid, expandedFile);
+                appInfo.setContainer(expandedContainer);
+
+            } catch ( IOException e ) {
+                Tr.error(tc, "warning.could.not.expand.application", warName, e.getMessage());
+            }
+        }
+
+        WARDeployedAppInfo deployedApp = new WARDeployedAppInfo(appInfo, this);
+        appInfo.setHandlerInfo(deployedApp);
+
         return deployedApp;
     }
 

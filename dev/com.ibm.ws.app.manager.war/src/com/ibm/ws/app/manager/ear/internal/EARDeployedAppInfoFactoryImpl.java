@@ -48,8 +48,6 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 public class EARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
     private static final TraceComponent _tc = Tr.register(EARDeployedAppInfoFactoryImpl.class);
 
-    private final static Map<String, Long> timestamps = new HashMap<String, Long>();
-
     protected ModuleHandler webModuleHandler;
     protected ModuleHandler ejbModuleHandler;
     protected ModuleHandler clientModuleHandler;
@@ -60,7 +58,6 @@ public class EARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
     protected volatile Version platformVersion = JavaEEVersion.DEFAULT_VERSION;
 
     private ApplicationManager applicationManager;
-    private final ZipUtils zipUtils = new ZipUtils();
 
     @Reference(service = JavaEEVersion.class,
                cardinality = ReferenceCardinality.OPTIONAL,
@@ -140,93 +137,171 @@ public class EARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
         this.applicationManager = null;
     }
 
-    @Override
-    public DeployedAppInfo createDeployedAppInfo(ApplicationInformation<DeployedAppInfo> applicationInformation) throws UnableToAdaptException {
-        Container applicationContainer = applicationInformation.getContainer();
-        Container originalContainer = null;
+    // Application expansion ...
 
-        try {
-            // Check whether we need to expand this EAR
-            if (applicationManager.getExpandApps()) {
+    protected void prepareExpansion() throws IOException {
+        WsResource expansionResource = getLocationAdmin().resolveResource(EXPANDED_APPS_DIR);
+        expansionResource.create();
+    }
 
-                // Make sure this is a file and not an expanded directory
-                String location = applicationInformation.getLocation();
-                File earFile = new File(location);
-                if (earFile.isFile() && !location.toLowerCase().endsWith(XML_SUFFIX)) {
+    protected WsResource resolveExpansion(String appName) {
+        return getLocationAdmin().resolveResource(EXPANDED_APPS_DIR + appName + ".ear/");
+    }
 
-                    // Make sure the apps/expanded directory is available
-                    WsResource expandedAppsDir = getLocationAdmin().resolveResource(EXPANDED_APPS_DIR);
-                    expandedAppsDir.create();
+    private long getStamp(File file) {
+        return file.lastModified();
+    }
 
-                    // Store the timestamp for the EAR file and get the current value (if it exists)
-                    Long earFileTimestamp = timestamps.put(earFile.getAbsolutePath(), earFile.lastModified());
+    private void setStamp(File file, long lastModified) {
+        file.setLastModified(lastModified);
+    }
 
-                    // If the expanded directory exists, delete it.
-                    WsResource expandedEarDir = getLocationAdmin().resolveResource(EXPANDED_APPS_DIR + applicationInformation.getName() + ".ear/");
-                    if (expandedEarDir.exists()) {
-                        // If the expanded EAR directory already exists we need to try to figure out if this was an update to the EAR file in apps/dropins
-                        // or an update to the expanded directory. We do this by checking the EAR file timestamp against a stored value. 
-                        //
-                        // Doing it this way is really unfortunate, but it seems to be the best option at the moment. 
-                        // TODO - Either figure out a legitimate way to use Notifier to determine which container changed, or
-                        // improve by cachine the timestamp values
+    protected void expand(
+        String appName, File appFile,
+        WsResource expandedResource, File expandedFile) throws IOException {
 
-                        // If we don't have a timestampe for the EAR, or the ear file has been changed, delete the expanded directory
-                        if (earFileTimestamp == null || earFileTimestamp.longValue() != earFile.lastModified()) {
-                            zipUtils.recursiveDelete(expandedEarDir.asFile());
-                            expandedEarDir.create();
-                            zipUtils.unzip(earFile, expandedEarDir.asFile());
-                        }
-                    } else {
-                        // The expanded directory doesn't exist yet, so create it and unzip the EAR (and any contained WAR files)                 
-                        expandedEarDir.create();
-                        zipUtils.unzip(earFile, expandedEarDir.asFile());
-                    }
+        long newStamp = getStamp(appFile);
 
-                    originalContainer = applicationContainer;
-                    applicationContainer = setupContainer(applicationInformation.getPid(), expandedEarDir.asFile());
+        boolean doDelete;
+        boolean doExpand;
 
+        if ( expandedResource.exists() ) {
+            long oldStamp = getStamp(expandedFile);
+            if ( oldStamp != newStamp ) {
+                if ( _tc.isDebugEnabled() ) {
+                    Tr.debug(_tc, "Delete and re-extract application [ " + appName + " ] from [ " + appFile.getPath() + " ] to [ " + expandedFile.getPath() + " ]");
                 }
-
+                doDelete = true;
+                doExpand = true;
+            } else {
+                if ( _tc.isDebugEnabled() ) {
+                    Tr.debug(_tc, "Reuse application [ " + appName + " ] extracted from [ " + appFile.getPath() + " ] to [ " + expandedFile.getPath() + " ]");
+                }
+                doDelete = false;
+                doExpand = false;
             }
-        } catch (IOException ex) {
-            // Log error and continue to use the container for the EAR file           
-            Tr.error(_tc, "warning.could.not.expand.application", applicationInformation.getName(), ex.getMessage());
+        } else {
+            if ( _tc.isDebugEnabled() ) {
+                Tr.debug(_tc, "Extract application [ " + appName + " ] from [ " + appFile.getPath() + " ] to [ " + expandedFile.getPath() + " ]");
+            }
+            doDelete = false;
+            doExpand = true;
         }
 
-        // An exception means there was a parse error; a null value means that there was
-        // no descriptor at all.
+        if ( doDelete || doExpand ) {
+        	ZipUtils zipUtils = new ZipUtils();
+        	
+            if ( doDelete ) {
+                zipUtils.deleteWithRetry(expandedFile);
+            }
+
+            if ( doExpand ) {
+                expandedResource.create();
+                zipUtils.unzip(appFile, expandedFile, ZipUtils.IS_EAR, newStamp);
+            }
+        }
+    }
+
+    private boolean isArchive(File appFile, String appPath) {
+        if ( appPath.toLowerCase().endsWith(XML_SUFFIX) ) {
+            return false;
+        } else if ( !appFile.isFile() ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Create deployment information for a java enterprise application.
+     *
+     * A location must be specified for the application.  The location must
+     * have an java enterprise application archive (an EAR file), an expanded
+     * enterprise archive, or an XML loose configuration file.
+     *
+     * If expansion is enabled, and if the application location holds an EAR file,
+     * expand the application to the expanded applications location.
+     *
+     * @param appInfo Information for the application for which to create
+     *     deployment information.
+     * @return Deployment information for the application.
+     *
+     * @throws UnableToAdaptException Thrown if the deployment information
+     *     count not be created.
+     */
+    @Override
+    public DeployedAppInfo createDeployedAppInfo(ApplicationInformation<DeployedAppInfo> appInfo)
+        throws UnableToAdaptException {
+
+        String appPid = appInfo.getPid(); 
+        String appName = appInfo.getName();
+        String appPath = appInfo.getLocation();
+        File appFile = new File(appPath);
+
+        Tr.debug(_tc, "Create deployed application:" +
+                      " PID [ " + appPid + " ]" +
+                      " Name [ " + appName + " ]" +
+                      " Location [ " + appPath + " ]");
+
+        Container appContainer = appInfo.getContainer();
+        Container originalAppContainer = null;
+
+        // If enabled by an attribute of the application manager configuration,
+        // expand the application.
+        //
+        // Expansion is possible if the application file is not already a directory, and is
+        // not loosely configuration.
+
+        if ( applicationManager.getExpandApps() && isArchive(appFile, appPath) ) {
+            try {
+                prepareExpansion();
+
+                WsResource expandedResource = resolveExpansion(appName);
+                File expandedFile = expandedResource.asFile();
+                expand(appName, appFile, expandedResource, expandedFile);
+
+                originalAppContainer = appContainer;
+                appContainer = setupContainer(appPid, expandedFile);
+
+            } catch ( IOException e ) {
+                Tr.error(_tc, "warning.could.not.expand.application", appName, e.getMessage());
+            }
+        }
+
         Application applicationDD;
         try {
-            applicationDD = applicationContainer.adapt(Application.class); // throws UnableToAdaptException
-        } catch (UnableToAdaptException e) {
-            // error.application.parse.descriptor=
-            // CWWKZ0113E: Application {0}: Parse error for application descriptor {1}: {2}            
-            Tr.error(_tc, "error.application.parse.descriptor", applicationInformation.getName(), "META-INF/application.xml", e);
+            applicationDD = appContainer.adapt(Application.class); // throws UnableToAdaptException
+            // Null when there is no application descriptor.
+        } catch ( UnableToAdaptException e ) {
+            // CWWKZ0113E: Application {0}: Parse error for application descriptor {1}: {2}
+            Tr.error(_tc, "error.application.parse.descriptor", appName, "META-INF/application.xml", e);
             throw e;
         }
 
         InterpretedContainer jeeContainer;
-        if (applicationContainer instanceof InterpretedContainer) {
-            jeeContainer = (InterpretedContainer) applicationContainer;
+        if ( appContainer instanceof InterpretedContainer ) {
+            jeeContainer = (InterpretedContainer) appContainer;
         } else {
-            jeeContainer = applicationContainer.adapt(InterpretedContainer.class);
+            jeeContainer = appContainer.adapt(InterpretedContainer.class);
         }
+
         // Set a structure helper for modules that might be expanded inside
         // (e.g., x.ear/y.war or x.ear/y.jar/).
-        if (applicationDD == null) {
-            jeeContainer.setStructureHelper(EARStructureHelper.getUnknownRootInstance());
+        if ( applicationDD == null ) {
+            jeeContainer.setStructureHelper( EARStructureHelper.getUnknownRootInstance() );
         } else {
             List<String> modulePaths = new ArrayList<String>();
-            for (Module module : applicationDD.getModules()) {
-                modulePaths.add(module.getModulePath());
+            for ( Module module : applicationDD.getModules() ) {
+                modulePaths.add( module.getModulePath() );
             }
-            jeeContainer.setStructureHelper(EARStructureHelper.create(modulePaths));
+            jeeContainer.setStructureHelper( EARStructureHelper.create(modulePaths) );
         }
-        applicationInformation.setContainer(jeeContainer);
+        appInfo.setContainer(jeeContainer);
 
-        EARDeployedAppInfo deployedApp = new EARDeployedAppInfo(applicationInformation, applicationDD, this, originalContainer);
-        applicationInformation.setHandlerInfo(deployedApp);
+        EARDeployedAppInfo deployedApp =
+            new EARDeployedAppInfo(appInfo, applicationDD, this, originalAppContainer);
+        appInfo.setHandlerInfo(deployedApp);
+
         return deployedApp;
     }
 }
