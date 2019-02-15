@@ -128,7 +128,11 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
             return;
         }
 
-        final boolean isOpenJPA = jpaResource.getEm().getDelegate().getClass().getName().toLowerCase().contains("openjpa");
+        final Class delegateClass = jpaResource.getEm().getDelegate().getClass();
+        final String delegateClassStr = delegateClass.getName().toLowerCase();
+        final boolean isOpenJPA = delegateClassStr.contains("org.apache.openjpa") || delegateClassStr.contains("com.ibm.websphere.persistence")
+                                  || delegateClassStr.contains("com.ibm.ws.persistence");
+        System.out.println("isOpenJPA = " + isOpenJPA);
 
         String lockModeTypeStr = (String) testExecCtx.getProperties().get("LockModeType");
         LockModeType lockModeType = LockModeType.valueOf(lockModeTypeStr);
