@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
+import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 import com.ibm.ws.microprofile.config13.variableServerXML.web.VariableServerXMLServlet;
 
 import componenttest.annotation.Server;
@@ -53,9 +54,6 @@ import componenttest.topology.utils.FATServletClient;
  */
 @RunWith(FATRunner.class)
 public class VariableServerXMLTest extends FATServletClient {
-
-    //The default refresh rate for dynamic sources
-    public static final long DEFAULT_DYNAMIC_REFRESH_INTERVAL = 500;
 
     public static final String APP_NAME = "variableServerXMLApp";
 
@@ -91,25 +89,31 @@ public class VariableServerXMLTest extends FATServletClient {
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=varPropertiesOrderTest");
     }
 
-    private void copyFileToLibertyServerRoot(String filename) throws Exception {
+    /**
+     * Copy a server config file to the server root and wait for notification that the server config has been updated
+     *
+     * @param filename
+     * @throws Exception
+     */
+    private void copyConfigFileToLibertyServerRoot(String filename) throws Exception {
         server.setMarkToEndOfLog();
         server.copyFileToLibertyServerRoot(filename);
 
         server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false);
 
-        Thread.sleep(DEFAULT_DYNAMIC_REFRESH_INTERVAL * 2); // We need this pause so that the MP config change is picked up through the polling mechanism
+        Thread.sleep(ConfigConstants.DEFAULT_DYNAMIC_REFRESH_INTERVAL * 2); // We need this pause so that the MP config change is picked up through the polling mechanism
     }
 
     @Test
     public void testChangeVariablesConfig() throws Exception {
 
-        copyFileToLibertyServerRoot("original/variableServerXMLApp.xml");
+        copyConfigFileToLibertyServerRoot("original/variableServerXMLApp.xml");
 
         // run the "before" test to check the value of the variable before the server.xml is updated
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=varPropertiesBeforeTest");
 
         //update the config
-        copyFileToLibertyServerRoot("refreshVariables/variableServerXMLApp.xml");
+        copyConfigFileToLibertyServerRoot("refreshVariables/variableServerXMLApp.xml");
 
         // run the "after" test to check the value of the variable after the server.xml is updated
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=varPropertiesAfterTest");
@@ -118,13 +122,13 @@ public class VariableServerXMLTest extends FATServletClient {
     @Test
     public void testChangeAppPropertiesConfig() throws Exception {
 
-        copyFileToLibertyServerRoot("original/variableServerXMLApp.xml");
+        copyConfigFileToLibertyServerRoot("original/variableServerXMLApp.xml");
 
         // run the "before" test to check the value of the variable before the server.xml is updated
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=appPropertiesBeforeTest");
 
         //update the config
-        copyFileToLibertyServerRoot("refreshAppProperties/variableServerXMLApp.xml");
+        copyConfigFileToLibertyServerRoot("refreshAppProperties/variableServerXMLApp.xml");
 
         // run the "after" test to check the value of the variable after the server.xml is updated
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=appPropertiesAfterTest");
