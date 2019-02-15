@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,11 +26,62 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
 
+import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
+
 /**
  * File and zip file utilities.
  */
 public class ZipUtils {
     private static final TraceComponent tc = Tr.register(ZipUtils.class);
+
+    // Retry parameters:
+    //
+    // Total of twice the zip.reaper.slow.pend.max.
+
+    public static final int RETRY_COUNT;
+    public static final long RETRY_AMOUNT = 50; // Split into 50ms wait periods.
+    public static final int RETRY_LIMIT = 1000; // Don't ever wait more than a second.
+
+    static {
+        if ( ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING == 0 ) {
+            // MAX_PENDING == 0 means the reaper cache is disabled.
+            // Allow just one retry for normal zip processing.
+            RETRY_COUNT = 1;
+
+        } else {
+            // The quiesce time is expected to be no greater than twice the largest
+            // wait time set for the zip file cache.  Absent new activity, the reaper
+            // cache will never wait longer than twice the largest wait time.
+            // (The maximum wait time is more likely capped at 20% above the largest
+            // wait time.  That is changed to 100% as an added safety margin.)
+            //
+            // The quiesce time will not be correct if the reaper thread is starved
+            // and is prevented from releasing zip files.
+            long totalAmount = ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX * 2;
+            if ( totalAmount <= 0 ) {
+                // The pending max is supposed to be greater than zero.  Put in safe
+                // values just in case it isn't.
+                RETRY_COUNT = 1;
+            } else {
+                // The slow pending max is not expected to be set to values larger
+                // than tenth's of seconds.  To make the limit explicit, don't accept
+                // a retry limit which is more than 1/2 second.
+                if ( totalAmount > RETRY_LIMIT ) {
+                    totalAmount = RETRY_LIMIT; // 1/2 second * 2 == 1 second
+                }
+
+                // Conversion to int is safe: The total amount must be
+                // greater than 0 and less than or equal to 1000.  The
+                // retry count will be greater than 1 and less then or
+                // equal to 20.
+                int retryCount = (int) (totalAmount / RETRY_AMOUNT);
+                if ( totalAmount % RETRY_AMOUNT > 0 ) {
+                    retryCount++;
+                }
+                RETRY_COUNT = retryCount;
+            }
+        }
+    }
 
     /**
      * Attempt to recursively delete a target file.
@@ -71,16 +122,25 @@ public class ZipUtils {
         }
 
         if ( filePath != null ) {
-            Tr.debug(tc, methodName + ": Failed first delete [ " + filePath + " ]: Sleep 400 ms and retry");
-        }
-        try {
-            Thread.sleep(400); // Twice zip.reaper.slow.pend.max
-        } catch ( InterruptedException e ) {
-            // FFDC
+            Tr.debug(tc, methodName + ": Failed first delete [ " + filePath + " ]: Sleep up to 50 ms and retry");
         }
 
-        File secondFailure = delete(file);
-        
+        // Extract can occur with the server running, and not long after activity
+        // on the previously extracted archives.
+        //
+        // If the first delete attempt failed, try again, up to a limit based on
+        // the expected quiesce time of the zip file cache.
+
+        File secondFailure = firstFailure;
+        for ( int tryNo = 0; (secondFailure != null) && tryNo < RETRY_COUNT; tryNo++ ) {
+            try {
+                Thread.sleep(RETRY_AMOUNT);
+            } catch ( InterruptedException e ) {
+                // FFDC
+            }
+            secondFailure = delete(file);
+        }
+
         if ( secondFailure == null ) {
             if ( filePath != null ) {
                 Tr.debug(tc, methodName + ": Successful first delete [ " + filePath + " ]");
@@ -121,7 +181,7 @@ public class ZipUtils {
 
         if ( file.isDirectory() ) {
             if ( filePath != null ) {
-                Tr.debug(tc, methodName + "Delete directory [ " + filePath + " ]");
+                Tr.debug(tc, methodName + ": Delete directory [ " + filePath + " ]");
             }
 
             File firstFailure = null;
@@ -146,13 +206,19 @@ public class ZipUtils {
             }
         } else {
             if ( filePath != null ) {
-                Tr.debug(tc, methodName + "Delete simple file [ " + filePath + " ]");
+                Tr.debug(tc, methodName + ": Delete simple file [ " + filePath + " ]");
             }
         }
 
         if ( !file.delete() ) {
+            if ( filePath != null ) {
+                Tr.debug(tc, methodName + ": Failed to delete [ " + filePath + " ]");
+            }
             return file;
         } else {
+            if ( filePath != null ) {
+                Tr.debug(tc, methodName + ": Deleted [ " + filePath + " ]");
+            }
             return null;
         }
     }
@@ -265,9 +331,9 @@ public class ZipUtils {
                     entryModified = lastModified;
                 }
                 targetFile.setLastModified(entryModified);
-                
+
                 if ( nextWarData != null ) {
-                	nextWarData[2] = Long.valueOf(entryModified);
+                    nextWarData[2] = Long.valueOf(entryModified);
                 }
             }
 
