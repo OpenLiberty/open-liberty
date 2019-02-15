@@ -46,7 +46,7 @@ import componenttest.topology.utils.LDAPUtils;
  * LDAP search paging tests.
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 public class SearchPagingTest {
     private static LibertyServer libertyServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.adapter.ldap.fat.search.paging");
     private static final Class<?> c = SearchPagingTest.class;
@@ -79,18 +79,18 @@ public class SearchPagingTest {
      */
     @AfterClass
     public static void teardownClass() throws Exception {
-        if (libertyServer != null) {
-            try {
+        try {
+            if (libertyServer != null) {
                 libertyServer.stopServer();
-            } catch (Exception e) {
-                Log.error(c, "teardown", e, "Liberty server threw error while stopping. " + e.getMessage());
+
             }
-        }
-        if (ldapServer != null) {
-            try {
-                ldapServer.stopService();
-            } catch (Exception e) {
-                Log.error(c, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
+        } finally {
+            if (ldapServer != null) {
+                try {
+                    ldapServer.stopService();
+                } catch (Exception e) {
+                    Log.error(c, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
+                }
             }
         }
 
