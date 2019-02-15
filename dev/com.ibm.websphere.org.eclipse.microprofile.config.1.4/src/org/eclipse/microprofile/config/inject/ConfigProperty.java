@@ -31,11 +31,15 @@ import java.time.temporal.ChronoUnit;
 
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
-
+ 
 /**
+ * <p>
  * Binds the injection point with a configured value.
  * Can be used to annotate injection points of type {@code TYPE}, {@code Optional<TYPE>} or {@code javax.inject.Provider<TYPE>},
  * where {@code TYPE} can be {@code String} and all types which have appropriate converters.
+ * <p>
+ * Injected values are the same values that would be retrieved from an injected {@link org.eclipse.microprofile.config.Config} instance 
+ * or from the instance retrieved from {@link org.eclipse.microprofile.config.ConfigProvider#getConfig()}
  *
  * <h2>Examples</h2>
  *
@@ -44,24 +48,24 @@ import javax.inject.Qualifier;
  * The first sample injects the configured value of the {@code my.long.property} property.
  * The injected value does not change even if the underline
  * property value changes in the {@link org.eclipse.microprofile.config.Config}.
- *
+ * 
  * <p>Injecting a native value is recommended for a mandatory property and its value does not change at runtime or used by a bean with RequestScoped.
- * <p>A further recommendation is to use the built in {@code META-INF/javaconfig.properties} file mechanism
+ * <p>A further recommendation is to use the built in {@code META-INF/microprofile-config.properties} file mechanism
  * to provide default values inside an Application.
- * If no configured value exists for this property, a {@code DeploymentException} will be thrown during startup.
+ * If no configured value exists for this property, a {@code DeplymentException} will be thrown during startup.
  * <pre>
  * &#064;Inject
  * &#064;ConfigProperty(name="my.long.property")
  * private Long injectedLongValue;
  * </pre>
- *
+ * 
  *
  * <h3>Injecting Optional Values</h3>
  *
- *
+ * 
  * Contrary to natively injecting, if the property is not specified, this will not lead to a DeploymentException.
- * The following code injects a Long value to the {@code my.optional.long.property}.
- * If the property does not exist, the value {@code 123} will be assigned.
+ * The following code injects a Long value to the {@code my.optional.long.property}. 
+ * If the property does not exist, the value {@code 123} will be assigned. 
  * to {@code injectedLongValue}.
  * <pre>
  * &#064;Inject
@@ -80,7 +84,7 @@ import javax.inject.Qualifier;
  * The next sample injects a Provider for the value of {@code my.long.property} property to resolve the property dynamically.
  * Each invocation to {@code Provider#get()} will resolve the latest value from underlying {@link org.eclipse.microprofile.config.Config} again.
  * The existence of configured values will get checked during startup.
- * Instances of {@code javax.inject.Provider<T>} are guaranteed to be Serializable.
+ * Instances of {@code Provider<T>} are guaranteed to be Serializable.
  * <pre>
  * &#064;Inject
  * &#064;ConfigProperty(name = "my.long.property" defaultValue="123")
@@ -100,7 +104,16 @@ import javax.inject.Qualifier;
 @Target({METHOD, FIELD, PARAMETER, TYPE})
 public @interface ConfigProperty {
     String UNCONFIGURED_VALUE="org.eclipse.microprofile.config.configproperty.unconfigureddvalue";
-
+    /**
+     * Provide a way to specify {@code null} value for a property. 
+     * e.g. The following example is to set the default value of {@code my.port} to null if the property is not specified in any config sources.
+     * <pre>
+     * &#064;Inject
+     * &#064;ConfigProperty(name="my.port" defaultValue=ConfigProperty.NULL_VALUE)
+     * String value;
+     * </pre>
+     */
+    String NULL_VALUE="org.eclipse.microprofile.config.configproperty.nullvalue";
     /**
      * The key of the config property used to look up the configuration value.
      * If it is not specified, it will be derived automatically as {@code <class_name>.<injection_point_name>},
@@ -137,11 +150,11 @@ public @interface ConfigProperty {
      * @return {@code TimeUnit} for {@link #cacheFor()}
      */
     @Nonbinding
-    ChronoUnit cacheForTimeUnit() default ChronoUnit.SECONDS;
+    ChronoUnit cacheTimeUnit() default ChronoUnit.SECONDS;
 
     /**
      * Only valid for injection of dynamically readable values, e.g. {@code Provider<String>}!
-     * @return how long should dynamic values be locally cached. Measured in {@link #cacheForTimeUnit()}.
+     * @return how long should dynamic values be locally cached. Measured in {@link #cacheTimeUnit()}.
      */
     @Nonbinding
     long cacheFor() default 0L;

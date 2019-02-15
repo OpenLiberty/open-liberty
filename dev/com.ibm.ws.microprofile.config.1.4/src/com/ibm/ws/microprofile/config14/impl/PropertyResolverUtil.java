@@ -13,9 +13,8 @@ package com.ibm.ws.microprofile.config14.impl;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 
-import org.eclipse.microprofile.config.Config;
-
 import com.ibm.ws.microprofile.config14.interfaces.Config14Constants;
+import com.ibm.ws.microprofile.config14.interfaces.WebSphereConfig14;
 
 public class PropertyResolverUtil {
 
@@ -34,7 +33,7 @@ public class PropertyResolverUtil {
      * @param raw    the raw string to be resolved
      * @return the fully resolved string
      */
-    public static String resolve(Config config, String raw) {
+    public static String resolve(WebSphereConfig14 config, String raw) {
         String resolved = raw;
         StringCharacterIterator itr = new StringCharacterIterator(resolved);
         int startCount = 0; //how many times have we encountered the start token (EVAL_START_TOKEN) without it being matched by the end token (EVAL_END_TOKEN)
@@ -73,7 +72,7 @@ public class PropertyResolverUtil {
                         String resolvedPropertyName = resolve(config, propertyName);
 
                         //once we have the fully resolved property name, find the string value for that property
-                        String resolvedValue = config.getValue(resolvedPropertyName, String.class);
+                        String resolvedValue = (String) config.getValue(resolvedPropertyName, String.class, false, null, true);
 
                         //extract the part of the raw string which went before and after the variable
                         String prefix = resolved.substring(0, startIndex);

@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ScheduledExecutorService;
@@ -29,6 +30,8 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.config.spi.ConfigSource.ChangeSupport;
 import org.eclipse.microprofile.config.spi.Converter;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.impl.AbstractConfig;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
@@ -40,7 +43,10 @@ import com.ibm.ws.microprofile.config14.interfaces.WebSphereConfig14;
 
 public class Config14Impl extends AbstractConfig implements WebSphereConfig14 {
 
+    private static final TraceComponent tc = Tr.register(Config14Impl.class);
+
     private final Map<PropertyChangeListener, String> listeners = new HashMap<>();
+    private final Set<ChangeSupport> changeSupportListeners = new HashSet<>();
 
     /**
      * The sources passed in should have already been wrapped up as an unmodifiable copy
@@ -52,22 +58,57 @@ public class Config14Impl extends AbstractConfig implements WebSphereConfig14 {
     public Config14Impl(ConversionManager conversionManager, SortedSources sources, ScheduledExecutorService executor, long refreshInterval) {
         super(conversionManager, sources);
         for (ConfigSource source : sources) {
-            ChangeSupport changeSupport = source.registerAttributeChangeConsumer(this);
+            ChangeSupport changeSupport = source.onAttributeChange(this);
+            this.changeSupportListeners.add(changeSupport);
             //TODO do something with changeSupport
         }
     }
 
     @Override
-    public SourcedValue getSourcedValue(String key, Type type) {
+    protected Object getValue(String propertyName, Type propertyType, boolean optional, String defaultString) {
+        Object value = super.getValue(propertyName, propertyType, optional, defaultString);
+        if (ConfigProperty.NULL_VALUE.equals(value)) {
+            value = null;
+        }
+        return value;
+    }
+
+    @Override
+    public Object getValue(String propertyName, Type propertyType, boolean optional, String defaultString, boolean evaluateVariables) {
+        Object value = null;
         assertNotClosed();
-        SourcedValue sourcedValue = getSourcedValue(Collections.singletonList(key), type, null, ConfigProperty.UNCONFIGURED_VALUE, ConfigProperty.UNCONFIGURED_VALUE,
-                                                    Config14Constants.EVALUATE_VARIABLES_DEFAULT,
+
+        SourcedValue sourced = getSourcedValue(propertyName, propertyType, evaluateVariables);
+        if (sourced != null) {
+            value = sourced.getValue();
+        } else {
+            if (optional) {
+                value = convertValue(defaultString, propertyType);
+            } else {
+                //TODO make sure this message is accessible from this bundle
+                throw new NoSuchElementException(Tr.formatMessage(tc, "no.such.element.CWMCG0015E", propertyName));
+            }
+        }
+        return value;
+    }
+
+    @Override
+    public SourcedValue getSourcedValue(String key, Type type) {
+        SourcedValue sourcedValue = getSourcedValue(key, type, Config14Constants.CONFIG_EVALUATE_VARIABLES_DEFAULT);
+        return sourcedValue;
+    }
+
+    @Override
+    public SourcedValue getSourcedValue(String key, Type type, boolean evaluateVariables) {
+        assertNotClosed();
+        SourcedValue sourcedValue = getSourcedValue(Collections.singletonList(key), type, null, ConfigProperty.UNCONFIGURED_VALUE,
+                                                    evaluateVariables,
                                                     null);
         return sourcedValue;
     }
 
     @Override
-    public SourcedValue getSourcedValue(List<String> keys, Type type, Class<?> genericSubType, Object defaultValue, String defaultString, boolean evaluateVariables,
+    public SourcedValue getSourcedValue(List<String> keys, Type type, Class<?> genericSubType, Object defaultValue, boolean evaluateVariables,
                                         Converter<?> converter) {
         assertNotClosed();
         SourcedValue sourcedValue = null; //sourcedValue is the fully resolved and converted value from the config
@@ -85,8 +126,6 @@ public class Config14Impl extends AbstractConfig implements WebSphereConfig14 {
         if (rawProp == null) { //if rawProp is still null then use the defaults if available
             if (!ConfigProperty.UNCONFIGURED_VALUE.equals(defaultValue)) {
                 sourcedValue = new SourcedValueImpl(key, defaultValue, type, genericSubType, Config14Constants.DEFAULT_VALUE_SOURCE_NAME);
-            } else if (!ConfigProperty.UNCONFIGURED_VALUE.equals(defaultString)) {
-                rawProp = new SourcedValueImpl(key, defaultString, String.class, Config14Constants.DEFAULT_STRING_SOURCE_NAME);
             }
         }
 
@@ -204,8 +243,8 @@ public class Config14Impl extends AbstractConfig implements WebSphereConfig14 {
     @Override
     public void close() {
         if (!isClosed()) {
-            for (ConfigSource source : getConfigSources()) {
-                source.deregisterAttributeChangeConsumer(this);
+            for (ChangeSupport changeSupport : this.changeSupportListeners) {
+                changeSupport.close();
             }
             super.close();
         }

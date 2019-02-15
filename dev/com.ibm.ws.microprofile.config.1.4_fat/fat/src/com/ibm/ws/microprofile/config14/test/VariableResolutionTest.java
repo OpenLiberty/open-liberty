@@ -47,11 +47,12 @@ import componenttest.topology.utils.FATServletClient;
 public class VariableResolutionTest extends FATServletClient {
 
     public static final String APP_NAME = "variableResolutionApp";
+    public static final String SERVER_NAME = "Config14Server";
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeatConfig14("VariableResolutionServer");
+    public static RepeatTests r = RepeatConfigActions.repeatConfig14(SERVER_NAME);
 
-    @Server("VariableResolutionServer")
+    @Server(SERVER_NAME)
     @TestServlet(servlet = VariableResolutionServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 

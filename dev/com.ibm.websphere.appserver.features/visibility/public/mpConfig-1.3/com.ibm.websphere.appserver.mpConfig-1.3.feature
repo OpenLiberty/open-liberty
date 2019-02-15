@@ -16,7 +16,7 @@ Subsystem-Name: MicroProfile Config 1.3
  com.ibm.websphere.appserver.containerServices-1.0, \
  com.ibm.websphere.appserver.appmanager-1.0
 -bundles=com.ibm.ws.require.java8, \
- com.ibm.ws.microprofile.config, \
+ com.ibm.ws.microprofile.config.1.1, \
  com.ibm.ws.microprofile.config.1.2, \
  com.ibm.ws.microprofile.config.1.3, \
  com.ibm.ws.microprofile.config.1.3.services, \

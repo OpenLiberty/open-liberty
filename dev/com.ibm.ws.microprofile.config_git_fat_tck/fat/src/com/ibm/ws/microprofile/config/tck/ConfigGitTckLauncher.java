@@ -100,7 +100,7 @@ public class ConfigGitTckLauncher {
         // We store a set of keys that we want the system to add "1.1" or "1.2" etc to
         // depending on the pom.xml contents.
         HashSet<String> versionedLibraries = new HashSet<>(Arrays.asList("com.ibm.websphere.org.eclipse.microprofile.config"));
-        String backStopImpl = "1.3"; // Used if there is no impl matching the spec/pom.xml <version> AND impl.version is not set
+        String backStopImpl = "1.4"; // Used if there is no impl matching the spec/pom.xml <version> AND impl.version is not set
 
         MvnUtils.runTCKMvnCmdWithProps(server, "com.ibm.ws.microprofile.config_fat_tck", this.getClass() + ":launchConfigTCK",
                                        addedProps, versionedLibraries, backStopImpl);

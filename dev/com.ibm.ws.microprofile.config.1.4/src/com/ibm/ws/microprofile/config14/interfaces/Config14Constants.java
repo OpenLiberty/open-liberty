@@ -27,7 +27,8 @@ public class Config14Constants {
     public static final String DEFAULT_STRING_SOURCE_NAME = "_DEFAULT_STRING_";
     public static final String DEFAULT_VALUE_SOURCE_NAME = "_DEFAULT_VALUE_";
 
-    public static final boolean EVALUATE_VARIABLES_DEFAULT = getEvaluateVariable();
+    public static final boolean ACCESSOR_EVALUATE_VARIABLES_DEFAULT = getEvaluateVariable();
+    public static final boolean CONFIG_EVALUATE_VARIABLES_DEFAULT = false;
 
     @Trivial
     private static final boolean getEvaluateVariable() {

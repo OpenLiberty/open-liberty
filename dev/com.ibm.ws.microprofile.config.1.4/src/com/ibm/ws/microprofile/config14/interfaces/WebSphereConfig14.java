@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.config14.interfaces;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -22,6 +23,8 @@ import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 public interface WebSphereConfig14 extends WebSphereConfig, Consumer<Set<String>> {
 
+    public SourcedValue getSourcedValue(String key, Type type, boolean evaluateVariables);
+
     /**
      * @param key
      * @param type
@@ -30,10 +33,25 @@ public interface WebSphereConfig14 extends WebSphereConfig, Consumer<Set<String>
      * @param converter
      * @return
      */
-    SourcedValue getSourcedValue(List<String> keys, Type type, Class<?> genericSubType, Object defaultValue, String defaultString, boolean evaluateVariables,
-                                 Converter<?> converter);
+    public SourcedValue getSourcedValue(List<String> keys, Type type, Class<?> genericSubType, Object defaultValue, boolean evaluateVariables,
+                                        Converter<?> converter);
 
-    void registerPropertyChangeListener(PropertyChangeListener listener, String propertyName);
+    /**
+     * Get the converted value of the given property.
+     * If the property is not found and optional is true then use the default string to create a value to return.
+     * If the property is not found and optional is false then throw an exception.
+     *
+     * @param propertyName      the property to get
+     * @param propertyType      the type to convert to
+     * @param optional          is the property optional
+     * @param defaultString     the default string to use if the property was not found and optional is true
+     * @param evaluateVariables if true, resolve variables within the value
+     * @return the converted value
+     * @throws NoSuchElementException thrown if the property was not found and optional was false
+     */
+    public Object getValue(String propertyName, Type propertyType, boolean optional, String defaultString, boolean evaluateVariables);
+
+    public void registerPropertyChangeListener(PropertyChangeListener listener, String propertyName);
 
     @FunctionalInterface
     public static interface PropertyChangeListener {
