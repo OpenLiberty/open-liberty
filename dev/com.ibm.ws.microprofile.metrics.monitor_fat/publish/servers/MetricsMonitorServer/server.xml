@@ -6,6 +6,8 @@
     	<feature>mpMetrics-1.1</feature>
     </featureManager>
 
+    <logging traceSpecification="com.ibm.ws.config.*=all;logservice=all"/>
+
     <include location="../fatTestPorts.xml"/>
     <include location="serverJDBCConfig.xml"/>
     <include location="serverConfig.xml"/>
