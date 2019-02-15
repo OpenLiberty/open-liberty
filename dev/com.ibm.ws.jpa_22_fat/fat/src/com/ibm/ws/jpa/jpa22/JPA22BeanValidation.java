@@ -55,7 +55,7 @@ public class JPA22BeanValidation extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.dumpServer("beanval");
+//        server1.dumpServer("beanval");
         server1.stopServer("CWWJP9991W"); // From Eclipselink drop-and-create tables option
     }
 }
