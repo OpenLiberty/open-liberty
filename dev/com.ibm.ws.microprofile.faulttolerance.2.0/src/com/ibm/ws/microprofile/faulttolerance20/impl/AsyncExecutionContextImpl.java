@@ -21,11 +21,11 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 /**
  * Stores context for one asynchronous method execution
  *
- * @param <W> the return type of the code being executed, which is also the type of the return wrapper (e.g. {@code Future<String>})
+ * @param <W> the return type of the code being executed, which is also the type of the result wrapper (e.g. {@code Future<String>})
  */
 public class AsyncExecutionContextImpl<W> extends SyncExecutionContextImpl {
 
-    private W returnWrapper;
+    private W resultWrapper;
     private Callable<W> callable;
     private RetryState retryState;
     private final AtomicBoolean isCancelled = new AtomicBoolean(false);
@@ -37,12 +37,12 @@ public class AsyncExecutionContextImpl<W> extends SyncExecutionContextImpl {
         super(method, parameters);
     }
 
-    public W getReturnWrapper() {
-        return returnWrapper;
+    public W getResultWrapper() {
+        return resultWrapper;
     }
 
-    public void setReturnWrapper(W returnWrapper) {
-        this.returnWrapper = returnWrapper;
+    public void setResultWrapper(W returnWrapper) {
+        this.resultWrapper = returnWrapper;
     }
 
     public Callable<W> getCallable() {

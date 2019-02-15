@@ -43,13 +43,13 @@ public class AsyncCompletionStageExecutor<R> extends AsyncExecutor<CompletionSta
     }
 
     @Override
-    protected CompletionStage<R> createReturnWrapper(AsyncExecutionContextImpl<CompletionStage<R>> executionContext) {
+    protected CompletionStage<R> createEmptyResultWrapper(AsyncExecutionContextImpl<CompletionStage<R>> executionContext) {
         return new CompletableFuture<R>();
     }
 
     @Override
-    protected void commitResult(AsyncExecutionContextImpl<CompletionStage<R>> executionContext, MethodResult<CompletionStage<R>> result) {
-        CompletableFuture<R> returnWrapper = (CompletableFuture<R>) executionContext.getReturnWrapper();
+    protected void setResult(AsyncExecutionContextImpl<CompletionStage<R>> executionContext, MethodResult<CompletionStage<R>> result) {
+        CompletableFuture<R> resultWrapper = (CompletableFuture<R>) executionContext.getResultWrapper();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Method {0} final fault tolerance result: {1}", executionContext.getMethod(), result);
@@ -61,11 +61,11 @@ public class AsyncCompletionStageExecutor<R> extends AsyncExecutor<CompletionSta
 
         try {
             if (result.isFailure()) {
-                returnWrapper.completeExceptionally(result.getFailure());
+                resultWrapper.completeExceptionally(result.getFailure());
             } else {
-                result.getResult().thenAccept(returnWrapper::complete);
+                result.getResult().thenAccept(resultWrapper::complete);
                 result.getResult().exceptionally((ex) -> {
-                    returnWrapper.completeExceptionally(ex);
+                    resultWrapper.completeExceptionally(ex);
                     return null;
                 });
             }
