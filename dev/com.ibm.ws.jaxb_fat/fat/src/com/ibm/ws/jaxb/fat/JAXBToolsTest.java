@@ -12,14 +12,13 @@ package com.ibm.ws.jaxb.fat;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Scanner;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,6 +35,8 @@ import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
 public class JAXBToolsTest extends FATServletClient {
+
+    private static final Class<?> c = JAXBToolsTest.class;
 
     // This server doesn't ever get started, we just have it here to get a hold of files from the Liberty install
     @Server("com.ibm.ws.jaxb.tools.TestServer")
@@ -196,84 +197,57 @@ public class JAXBToolsTest extends FATServletClient {
         for (String arg : commandLine.split(" ")) {
             command.add(arg);
         }
-        Log.info(getClass(), "execute", "Run command: " + commandLine);
+        Log.info(c, "execute", "Run command: " + commandLine);
 
         ProcessBuilder builder = new ProcessBuilder();
         builder.command(command);
-        builder.environment().put("JAVA_HOME", JavaInfo.forServer(server).javaHome());
+        String javaHome = JavaInfo.forServer(server).javaHome();
+        builder.environment().put("JAVA_HOME", javaHome);
+        Log.info(c, "execute", "Using JAVA_HOME=" + javaHome);
 
         final Process p = builder.start();
-        List<String> output = new ArrayList<String>();
+        List<String> stdout = new ArrayList<String>();
+        List<String> stderr = new ArrayList<String>();
+        Thread outThread = inheritIO(p.getInputStream(), stdout);
+        Thread errThread = inheritIO(p.getErrorStream(), stderr);
 
-        Thread stderrCopier = new Thread(new OutputStreamCopier(p.getErrorStream(), output));
-        stderrCopier.start();
-        new OutputStreamCopier(p.getInputStream(), output).run();
-
-        stderrCopier.join();
+        outThread.join(60 * 1000);
+        errThread.join(60 * 1000);
         p.waitFor();
 
         int exitValue = p.exitValue();
 
         StringBuilder sb = new StringBuilder();
-        for (String line : output) {
+        Log.info(c, "execute", "Stdout:");
+        for (String line : stdout) {
             sb.append(line).append('\n');
-            Log.info(getClass(), "execute", line);
+            Log.info(c, "execute", line);
+        }
+        Log.info(c, "execute", "Stderr:");
+        for (String line : stderr) {
+            sb.append(line).append('\n');
+            Log.info(c, "execute", line);
         }
 
         if (exitValue != 0) {
-            throw new IOException(command.get(0) + " failed (" + exitValue + "): " + output);
+            throw new IOException(command.get(0) + " failed (" + exitValue + "): " + sb.toString());
         }
 
         return sb.toString();
     }
 
-    private class OutputStreamCopier implements Runnable {
-        private final InputStream in;
-        private final List<String> output;
-
-        OutputStreamCopier(InputStream in, List<String> lines) {
-            this.in = in;
-            this.output = lines;
-        }
-
-        @Override
-        public void run() {
-            try {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                boolean inEval = false;
-                int carryover = 0;
-
-                for (String line; (line = reader.readLine()) != null;) {
-                    // Filter empty lines and sh -x trace output.
-                    if (inEval) {
-                        System.out.println("(trace eval) " + line);
-                        if (line.trim().equals("'")) {
-                            inEval = false;
-                        }
-                    } else if (line.equals("+ eval '")) {
-                        inEval = true;
-                        System.out.println("(trace eval) " + line);
-                    } else if (carryover > 0) {
-                        carryover--;
-                        System.out.println("(trace) " + line);
-                    } else if (line.startsWith("+") || line.equals("'")) {
-                        int index = 0;
-                        index = line.indexOf("+", index + 1);
-                        while (index != -1) {
-                            index = line.indexOf("+", index + 1);
-                            carryover++;
-                        }
-                        System.out.println("(trace) " + line);
-                    } else if (!line.isEmpty()) {
-                        synchronized (output) {
-                            output.add(line);
-                        }
-                        System.out.println(line);
+    private static Thread inheritIO(final InputStream src, final List<String> lines) {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try (Scanner sc = new Scanner(src)) {
+                    while (sc.hasNextLine()) {
+                        lines.add(sc.nextLine());
                     }
                 }
-            } catch (IOException ex) {
-                throw new Error(ex);
             }
-        }
+        });
+        t.start();
+        return t;
     }
 }
