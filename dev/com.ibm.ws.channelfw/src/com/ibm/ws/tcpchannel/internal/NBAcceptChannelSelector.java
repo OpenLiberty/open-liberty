@@ -33,7 +33,7 @@ import com.ibm.ws.tcpchannel.internal.NBAccept.EndPointActionInfo;
 
 /**
  * Non blocking accept selector.
- * 
+ *
  */
 public class NBAcceptChannelSelector extends ChannelSelector implements FFDCSelfIntrospectable {
 
@@ -61,7 +61,7 @@ public class NBAcceptChannelSelector extends ChannelSelector implements FFDCSelf
 
     /**
      * Constructor.
-     * 
+     *
      * @throws IOException
      */
     public NBAcceptChannelSelector(boolean argCheckStartup) throws IOException {
@@ -165,7 +165,7 @@ public class NBAcceptChannelSelector extends ChannelSelector implements FFDCSelf
 
     /**
      * Query the number of listening ports using this selector.
-     * 
+     *
      * @return int
      */
     protected int getUsageCount() {
@@ -186,7 +186,7 @@ public class NBAcceptChannelSelector extends ChannelSelector implements FFDCSelf
 
     /**
      * Increment the number of accept() error conditions that have happened.
-     * 
+     *
      */
     private void incrementExceptions() {
         // if the gap between the first exception and this newest one is over
@@ -208,7 +208,7 @@ public class NBAcceptChannelSelector extends ChannelSelector implements FFDCSelf
 
     /**
      * Reset the looping exception handling variables.
-     * 
+     *
      */
     private void resetExceptions() {
         this.numExceptions = 0;
@@ -368,7 +368,7 @@ public class NBAcceptChannelSelector extends ChannelSelector implements FFDCSelf
     /**
      * Handle closing the socket channel with appropriate debug and error
      * protection.
-     * 
+     *
      * @param sc
      */
     private void closeSocketChannel(SocketChannel sc) {
@@ -384,6 +384,7 @@ public class NBAcceptChannelSelector extends ChannelSelector implements FFDCSelf
         try {
             sc.close();
         } catch (IOException ioe) {
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(this, tc, "IOException caught while closing connection " + ioe);
             }
@@ -395,7 +396,7 @@ public class NBAcceptChannelSelector extends ChannelSelector implements FFDCSelf
      * timing window in various JDKs, namely AIX and HPUX, where getLocalPort()
      * or getLocalSocketAddress() may throw a runtime error if the client has
      * already closed the socket prior to these calls.
-     * 
+     *
      * @param sc
      * @return boolean - true means the socket is valid
      */

@@ -11,6 +11,7 @@
 package com.ibm.ws.tcpchannel.internal;
 
 import java.io.IOException;
+import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 import java.nio.channels.CancelledKeyException;
 import java.nio.channels.ClosedChannelException;
@@ -38,7 +39,7 @@ public class SocketRWChannelSelector extends ChannelSelector implements Runnable
 
     /**
      * Create a new SocketRWChannelSelector.
-     * 
+     *
      * @param _wakeupOption
      *            specifies the algorithm to use to decide if the
      *            selector should be woken up after adding work to its work queue
@@ -403,7 +404,17 @@ public class SocketRWChannelSelector extends ChannelSelector implements Runnable
                         }
 
                         // create timeout exception to pass to callback error method
-                        IOException e = new SocketTimeoutException("Socket operation timed out before it could be completed");
+                        // Add local and remote address information
+                        String ioeMessage = "Socket operation timed out before it could be completed";
+                        try {
+                            SocketAddress iaLocal = req.getTCPConnLink().getSocketIOChannel().getSocket().getLocalSocketAddress();
+                            SocketAddress iaRemote = req.getTCPConnLink().getSocketIOChannel().getSocket().getRemoteSocketAddress();
+                            ioeMessage = ioeMessage + " local=" + iaLocal + " remote=" + iaRemote;
+                        } catch (Exception x) {
+                            // do not alter the message if the socket got nuked while we tried to look at it
+                        }
+                        IOException e = new SocketTimeoutException(ioeMessage);
+
                         if (wqm.dispatch(req, e)) {
                             // reset interest ops so selector won't fire again for this key
                             key.interestOps(0);
