@@ -288,7 +288,7 @@ goto:eof
     set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
 
     @REM Use javaw so command windows can be closed.
-    start /b "" !JAVA_CMD_QUOTED!w !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED! >> "%X_LOG_DIR%\%X_LOG_FILE%" 2>&1
+    start /min /b "" !JAVA_CMD_QUOTED!w !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED! >> "%X_LOG_DIR%\%X_LOG_FILE%" 2>&1
 
     set IBM_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
 
