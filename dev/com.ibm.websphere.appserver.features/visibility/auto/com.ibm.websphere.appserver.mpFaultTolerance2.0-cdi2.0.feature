@@ -9,5 +9,5 @@ IBM-Provision-Capability: \
   com.ibm.ws.microprofile.faulttolerance.cdi.2.0.services,\
   com.ibm.ws.microprofile.faulttolerance.cdi.2.0
 IBM-Install-Policy: when-satisfied
-kind=noship
-edition=full
+kind=beta
+edition=core
