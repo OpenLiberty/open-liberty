@@ -10,8 +10,8 @@
  *******************************************************************************/
 
 @Version("1.0.0")
-@TraceOptions(traceGroup = "concurrent")
-package com.ibm.ws.concurrent.mp.cdi.context;
+@TraceOptions(traceGroup = "JCDI")
+package com.ibm.ws.cdi.mp.concurrent.context;
 
 import org.osgi.annotation.versioning.Version;
 

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.concurrent.mp.cdi.context;
+package com.ibm.ws.cdi.mp.concurrent.context;
 
 import java.util.Map;
 

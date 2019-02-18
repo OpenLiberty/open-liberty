@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.concurrent.mp.cdi.context;
+package com.ibm.ws.cdi.mp.concurrent.context;
 
 import static java.util.Collections.emptySet;
 
@@ -35,12 +35,11 @@ import org.jboss.weld.manager.api.WeldManager;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.concurrent.mp.cdi.ConcurrencyCDIExtension;
 
 @Trivial
 public class WeldContextSnapshot implements ThreadContextSnapshot {
 
-    private static final TraceComponent tc = Tr.register(ConcurrencyCDIExtension.class);
+    private static final TraceComponent tc = Tr.register(WeldContextSnapshot.class);
 
     private final WeldManager manager;
     private final ContextualInstanceSnapshot contextToApply;
