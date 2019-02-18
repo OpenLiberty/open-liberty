@@ -109,7 +109,7 @@ import org.apache.cxf.transport.MessageObserver;
  *
  */
 public abstract class AbstractClient implements Client {
-    public static final String EXECUTOR_SERVICE_PROPERTY = "executorService"; //Liberty change
+    public static final String EXECUTOR_SERVICE_PROPERTY = "executorService";
 
     protected static final String REQUEST_CONTEXT = "RequestContext";
     protected static final String RESPONSE_CONTEXT = "ResponseContext";
@@ -557,7 +557,7 @@ public abstract class AbstractClient implements Client {
         }
 
         int status = r.getStatus();
-        if ((status < 200 || status == 204) && r.getLength() <= 0 || status >= 300) {
+        if ((status < 200 || status == 204) && r.getLength() <= 0 || (status >= 300 && status != 304)) {
             return null;
         }
         //defect 211445

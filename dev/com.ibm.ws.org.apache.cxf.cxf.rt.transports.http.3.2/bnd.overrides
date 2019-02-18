@@ -7,15 +7,17 @@ Bundle-Activator: com.ibm.ws.jaxrs21.transports.http.NoOpActivator
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
+exportVer=3.3.0
+
 Export-Package: \
   com.ibm.ws.jaxrs21.transports.http,\
-  org.apache.cxf.transport.http,\
-  org.apache.cxf.transport.http.auth,\
-  org.apache.cxf.transport.http.osgi,\
-  org.apache.cxf.transport.https,\
-  org.apache.cxf.transport.servlet,\
-  org.apache.cxf.transports.http;version=3.2.4,\
-  org.apache.cxf.transports.http.configuration
+  org.apache.cxf.transport.http;version=${exportVer},\
+  org.apache.cxf.transport.http.auth;version=${exportVer},\
+  org.apache.cxf.transport.http.osgi;version=${exportVer},\
+  org.apache.cxf.transport.https;version=${exportVer},\
+  org.apache.cxf.transport.servlet;version=${exportVer},\
+  org.apache.cxf.transports.http;version=${exportVer},\
+  org.apache.cxf.transports.http.configuration;version=${exportVer}
   
 Import-Package: \
   !org.apache.aries.*,\
