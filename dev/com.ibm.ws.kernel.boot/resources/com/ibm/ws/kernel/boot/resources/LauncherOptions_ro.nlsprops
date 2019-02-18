@@ -16,7 +16,7 @@
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Utilizare: java [JVM options] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
 \t-jar bin/tools/ws-server.jar serverName {0} [o\u0163iuni]  
-scriptUsage=Utilizare: {0} {1} serverName [o\u0163iuni]
+scriptUsage=Utilizare: {0} {1} serverName [options] [JVM options]
 
 use.actions=Ac\u0163iuni:
 use.options=Op\u0163iuni:
@@ -179,4 +179,4 @@ option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tDezactiva\u0163i generarea parolei de depozit de chei implicite
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="folderul r\u0103d\u0103cin\u0103 al serverului din arhiv\u0103"
-option-desc.package.server-root=\tSpecific\u0103 numele folderului r\u0103d\u0103cin\u0103 al serverului \u00een fi\u015fierul arhiv\u0103.
+option-desc.package.server-root=\tSpecific\u0103 folderul r\u0103d\u0103cin\u0103 al serverului din fi\u015fierul arhiv\u0103.    \n
