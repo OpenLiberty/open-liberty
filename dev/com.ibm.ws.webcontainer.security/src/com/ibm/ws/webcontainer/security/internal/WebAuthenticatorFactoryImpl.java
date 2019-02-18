@@ -93,6 +93,7 @@ public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
 
     protected void unsetUnauthenticatedSubjectService(UnauthenticatedSubjectService unauthenticatedSubjectService) {
         this.unauthenticatedSubjectService = null;
+    }
 
     @Override
     public WebAppSecurityConfig getWebAppSecurityConfigImpl() {
