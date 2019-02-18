@@ -53,6 +53,7 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
     private static final Object COULD_NOT_OBTAIN_LOCK_EXCEPTION = "Could not obtain lock";
 	private static final String COULD_NOT_GET_SERVICE_FROM_REF = "could not get service from ref";
 	private static final String COULD_NOT_OBTAIN_ALL_REQ_DEPS = "could not obtain all required dependencies";
+	private static final String SERVICE_NOT_AVAILABLE = "service not available from service registry for servicereference";
 
     private final Map<Bundle, OSGiTraceComponent> traceComponents = new ConcurrentHashMap<Bundle, OSGiTraceComponent>();
 
@@ -247,16 +248,12 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
      * Squelch info / warnings related to circular references
      */
     private boolean shouldBeLogged(ExtendedLogEntry logEntry, OSGiTraceComponent tc) {
-        String message = logEntry.getMessage();
-        if(message.toLowerCase().contains(COULD_NOT_GET_SERVICE_FROM_REF)) {
+        String message = logEntry.getMessage().toLowerCase();
+        if(message.contains(COULD_NOT_GET_SERVICE_FROM_REF) ||
+                message.contains(COULD_NOT_OBTAIN_ALL_REQ_DEPS) ||
+                message.contains(SERVICE_NOT_AVAILABLE)) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Could not get service from ref. This is not an error, but may indicate high system load",
-                        getObjects(logEntry, false));
-            }
-            return false;
-        } else if (message.toLowerCase().contains(COULD_NOT_OBTAIN_ALL_REQ_DEPS)) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Could not obtain all required dependencies.  This is not an error, but may indicate high system load",
+                Tr.debug(tc, "This is not an error, but may indicate high system load - " + logEntry.getMessage(),
                         getObjects(logEntry, false));
             }
             return false;
