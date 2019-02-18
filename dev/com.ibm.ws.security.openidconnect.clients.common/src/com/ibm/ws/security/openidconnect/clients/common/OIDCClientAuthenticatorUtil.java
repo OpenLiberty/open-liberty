@@ -18,6 +18,7 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -116,7 +117,7 @@ public class OIDCClientAuthenticatorUtil {
                 return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
             }
 
-            authzEndPointUrlWithQuery = buildAuthorizationUrlWithQuery((OidcClientRequest) req.getAttribute(ClientConstants.ATTRIB_OIDC_CLIENT_REQUEST), state, clientConfig, redirect_url, acr_values);
+            authzEndPointUrlWithQuery = buildAuthorizationUrlWithQuery(req, (OidcClientRequest) req.getAttribute(ClientConstants.ATTRIB_OIDC_CLIENT_REQUEST), state, clientConfig, redirect_url, acr_values);
 
             // preserve post param.
             WebAppSecurityConfig webAppSecConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
@@ -343,7 +344,7 @@ public class OIDCClientAuthenticatorUtil {
         return false;
     }
 
-    String buildAuthorizationUrlWithQuery(OidcClientRequest oidcClientRequest, String state, ConvergedClientConfig clientConfig, String redirect_url, String acr_values) throws UnsupportedEncodingException {
+    String buildAuthorizationUrlWithQuery(HttpServletRequest req, OidcClientRequest oidcClientRequest, String state, ConvergedClientConfig clientConfig, String redirect_url, String acr_values) throws UnsupportedEncodingException {
         String strResponse_type = Constants.RESPONSE_TYPE_CODE; // default is asking for "authorization code
         boolean isImplicit = false;
         if (Constants.IMPLICIT.equals(clientConfig.getGrantType())) {
@@ -391,7 +392,10 @@ public class OIDCClientAuthenticatorUtil {
                 query += resources;
             }
         }
-        // look for custom params to send to the authorization ep
+        // check and see if we have any additional params to forward from the request
+        query = handleForwardAuthzParams(clientConfig, req, query);
+        
+        // look for custom params in the configuration to send to the authorization ep
         query = handleCustomParams(clientConfig, query);
 
         // in case the AuthorizationEndpoint already has set up its own parameters
@@ -402,6 +406,29 @@ public class OIDCClientAuthenticatorUtil {
         }
         return s + queryMark + query;
     }
+    
+    private String handleForwardAuthzParams(ConvergedClientConfig clientConfig, HttpServletRequest req, String query) {
+        List<String> forwardAuthzParams = clientConfig.getForwardAuthzParameter();
+        if (forwardAuthzParams != null && !forwardAuthzParams.isEmpty()) {         
+            for (String entry : forwardAuthzParams) {
+                if (entry != null && !entry.isEmpty()) {
+                    String value = null;
+                    value = req.getParameter(entry);
+                    if (value != null && !value.isEmpty()) {
+                        try {
+                            query = String.format("%s&%s=%s", query, URLEncoder.encode(entry, ClientConstants.CHARSET),
+                                    URLEncoder.encode(value, ClientConstants.CHARSET));
+                        } catch (UnsupportedEncodingException e) {
+
+                        }
+                    }
+                    
+                }
+            }
+        }
+        return query;
+    }
+
 
     /**
      * @param clientConfig

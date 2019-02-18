@@ -149,5 +149,7 @@ public interface ConvergedClientConfig {
     public HashMap<String, String> getUserinfoRequestParams();
 
     public HashMap<String, String> getJwkRequestParams();
+    
+    public List<String> getForwardAuthzParameter();
 
 }
