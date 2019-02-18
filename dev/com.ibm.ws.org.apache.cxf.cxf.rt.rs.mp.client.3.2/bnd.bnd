@@ -14,7 +14,7 @@ javac.source: 1.8
 javac.target: 1.8
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-rs-mp-client;3.2.6}!/!META-INF/MANIFEST.MF,\
+  @${repo;org.apache.cxf:cxf-rt-rs-mp-client;3.2.6;EXACT}!/!META-INF/MANIFEST.MF,\
   org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: \

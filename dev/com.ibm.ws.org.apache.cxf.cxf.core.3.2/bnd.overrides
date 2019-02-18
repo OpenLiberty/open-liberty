@@ -7,7 +7,7 @@ Bundle-Activator: com.ibm.ws.jaxrs21.cxf.core.NoOpActivator
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-exportVer=3.2.4
+exportVer=3.3.0
 
 #Export-Package: org.apache.cxf,\
 #  org.apache.cxf.attachment,\
@@ -101,5 +101,6 @@ Import-Package: \
   !org.springframework.*,\
   !javax.validation.*, \
   !org.apache.aries.*,\
+  !org.apache.cxf.transport.https,\
   !org.osgi.service.blueprint.*,\
   *

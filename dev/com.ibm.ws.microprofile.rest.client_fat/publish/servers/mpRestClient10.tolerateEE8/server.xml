@@ -9,7 +9,6 @@
     <feature>jsp-2.3</feature>
     <feature>cdi-2.0</feature>
     <feature>mpConfig-1.1</feature>
-    <feature>mpFaultTolerance-1.0</feature>
     <feature>jaxrs-2.1</feature>
     <feature>localConnector-1.0</feature>
     <feature>mpRestClient-1.0</feature>

@@ -31,12 +31,19 @@ public class BasicTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-        .andWith(new FeatureReplacementAction("mpRestClient-1.0", "mpRestClient-1.1").forServers("mpRestClient10.basic"));
+             .andWith(new FeatureReplacementAction("mpRestClient-1.0", "mpRestClient-1.1")
+                 .removeFeature("mpRestClient-1.2")
+                 .withID("mpRestClient-1.1")
+                 .forServers("mpRestClient10.basic"))
+             .andWith(new FeatureReplacementAction("mpRestClient-1.0", "mpRestClient-1.2")
+                 .removeFeature("mpRestClient-1.1")
+                 .withID("mpRestClient-1.2")
+                 .forServers("mpRestClient10.basic"));
 
     private static final String appName = "basicClientApp";
 
     /*
-     * We need two servers to clearly distiguish that the "client" server
+     * We need two servers to clearly distinguish that the "client" server
      * only has the client features enabled - it includes mpRestClient-1.0
      * which includes the jaxrsClient-2.0 feature, but not the jaxrs-2.0
      * feature that contains server code. The client should be able to
