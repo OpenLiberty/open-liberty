@@ -13,13 +13,14 @@ bVersion=1.0
 
 src: \
   fat/src,\
+  test-applications/cdiApp/src,\
+  test-applications/classSubResApp/src,\
+  test-applications/formApp/src,\
+  test-applications/jsonbapp/src,\
+  test-applications/jsonbContextResolverApp/src,\
+  test-applications/mutableHeadersApp/src,\
   test-applications/patchapp/src,\
   test-applications/providerPriorityApp/src,\
-  test-applications/classSubResApp/src,\
-  test-applications/cdiApp/src,\
-  test-applications/jsonbapp/src,\
-  test-applications/formApp/src,\
-  test-applications/mutableHeadersApp/src,\
   test-applications/subResourceApp
 
 fat.project: true

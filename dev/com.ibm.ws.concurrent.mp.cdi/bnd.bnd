@@ -10,12 +10,12 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
+bSymbolicName=com.ibm.ws.concurrent.mp.cdi
 
 javac.source: 1.8
 javac.target: 1.8
 
 Bundle-Name: CDI Integration for MicroProfile Concurrency 1.0
-Bundle-SymbolicName: com.ibm.ws.concurrent.mp.cdi
 Bundle-Description: CDI integration for MicroProfile Concurrency 1.0; version=${bVersion}
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
@@ -36,12 +36,13 @@ DynamicImport-Package: \
 
 Include-Resource: \
   META-INF=resources/META-INF
-    
+
 instrument.classesExcludes: com/ibm/ws/concurrent/mp/cdi/resources/*.class
 
 -dsannotations: \
   com.ibm.ws.concurrent.mp.cdi.ConcurrencyCDIExtension,\
-  com.ibm.ws.concurrent.mp.cdi.MPConfigAccessorImpl
+  com.ibm.ws.concurrent.mp.cdi.MPConfigAccessorImpl,\
+  com.ibm.ws.concurrent.mp.cdi.context.WeldContextProvider
 
 -buildpath: \
   com.ibm.websphere.appserver.spi.logging,\
@@ -60,6 +61,7 @@ instrument.classesExcludes: com/ibm/ws/concurrent/mp/cdi/resources/*.class
   com.ibm.ws.context;version=latest,\
   com.ibm.ws.kernel.service;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.org.jboss.weld3;version=latest,\
   com.ibm.ws.resource;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations,\
   com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest,\

@@ -26,11 +26,14 @@ import javax.json.bind.spi.JsonbProvider;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
+import javax.ws.rs.ext.Providers;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -39,11 +42,14 @@ import com.ibm.websphere.ras.TraceComponent;
 @Consumes({ "*/*" })
 @Provider
 public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyReader<Object> {
-    
+
     private final static TraceComponent tc = Tr.register(JsonBProvider.class);
-    
+
     private final Jsonb jsonb;
-    
+
+    @Context
+    private Providers providers;
+
     public JsonBProvider(JsonbProvider jsonbProvider) {
         if(jsonbProvider != null) {
             this.jsonb = jsonbProvider.create().build();
@@ -81,7 +87,6 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
                 } else {
                     this.jsonb = null;
                 }
-                
             } catch (PrivilegedActionException ex) {
                 Throwable t = ex.getCause();
                 if (t instanceof RuntimeException) {
@@ -98,7 +103,7 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
         if (!isUntouchable(type) && isJsonType(mediaType)) {
             readable = true;
         }
-        
+
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "readable=" + readable);
         }
@@ -109,7 +114,7 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
     public Object readFrom(Class<Object> clazz, Type genericType, Annotation[] annotations,
                            MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
         Object obj = null;
-        obj = this.jsonb.fromJson(entityStream, genericType);
+        obj = getJsonb().fromJson(entityStream, genericType);
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "object=" + obj);
@@ -123,23 +128,23 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
         if (!isUntouchable(type) && isJsonType(mediaType)) {
             writeable = true;
         }
-        
+
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "writeable=" + writeable);
         }
         return writeable;
     }
-    
+
     private boolean isUntouchable(Class<?> clazz) {
         final String[] jsonpClasses = new String[] { "javax.json.JsonArray", "javax.json.JsonObject", "javax.json.JsonStructure" };
-        
+
         boolean untouchable = false;
         for (String c : jsonpClasses) {
             if(clazz.toString().equals(c)) {
                 untouchable = true;
             }
         }
-        
+
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "untouchable=" + untouchable);
         }
@@ -154,10 +159,22 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
     @Override
     public void writeTo(Object obj, Class<?> type, Type genericType, Annotation[] annotations,
                         MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
-        this.jsonb.toJson(obj, entityStream);
-        
+        getJsonb().toJson(obj, entityStream);
+
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "object=" + obj);
         }
+    }
+
+    private Jsonb getJsonb() {
+        if (providers != null) {
+            ContextResolver<Jsonb> cr = providers.getContextResolver(Jsonb.class, MediaType.WILDCARD_TYPE);
+            if (cr != null) {
+                return cr.getContext(null);
+            }
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Context-injected Providers is null");
+        }
+        return this.jsonb;
     }
 }
