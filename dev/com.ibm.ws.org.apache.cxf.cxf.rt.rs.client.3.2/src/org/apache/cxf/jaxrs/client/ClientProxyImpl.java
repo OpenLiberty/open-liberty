@@ -21,17 +21,11 @@ package org.apache.cxf.jaxrs.client;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.net.URI;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -163,100 +157,6 @@ public class ClientProxyImpl extends AbstractClient implements
         }
     }
 
-    private static class WrappedException extends Exception {
-        private static final long serialVersionUID = 1183890106889852917L;
-
-        final Throwable wrapped;
-        WrappedException(Throwable wrapped) {
-            this.wrapped = wrapped;
-        }
-        Throwable getWrapped() {
-            return wrapped;
-        }
-    }
-
-    @FFDCIgnore({PrivilegedActionException.class})
-    private static Object invokeDefaultMethod(Class<?> declaringClass, Object o, Method m, Object[] params)
-        throws Throwable {
-
-        try {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                @Override
-                @FFDCIgnore({NoSuchFieldException.class, Throwable.class})
-                public Object run() throws Exception {
-                    try {
-                        final MethodHandles.Lookup lookup = MethodHandles
-                                .publicLookup()
-                                .in(declaringClass);
-                        
-                        // force private access so unreflectSpecial can invoke the interface's default method
-                        // Liberty change start - handle IBM JDK
-                        Field f;
-                        try {
-                            f = MethodHandles.Lookup.class.getDeclaredField("allowedModes");
-                        } catch (NoSuchFieldException nsfe) {
-                            // IBM JDK uses a different field name
-                            f = MethodHandles.Lookup.class.getDeclaredField("accessMode");
-                            m.setAccessible(true);
-                        }
-
-                        final int modifiers = f.getModifiers();
-                        if (Modifier.isFinal(modifiers)) {
-                            final Field modifiersField = Field.class.getDeclaredField("modifiers");
-                            modifiersField.setAccessible(true);
-                            modifiersField.setInt(f, modifiers & ~Modifier.FINAL);
-                            f.setAccessible(true);
-                            f.set(lookup, MethodHandles.Lookup.PRIVATE);
-                        }
-
-                        MethodHandle mh = lookup.unreflectSpecial(m, declaringClass).bindTo(o);
-                        return params != null && params.length > 0 ? mh.invokeWithArguments(params) : mh.invoke();
-                        // Liberty change end
-                    } catch (Throwable t) {
-                        if (t instanceof IllegalAccessException) {
-                            try {
-                                return invokeDefaultMethodUsingPrivateLookup(declaringClass, o, m, params);
-                            } catch (final NoSuchMethodException ex) {
-                                throw new WrappedException(t);
-                            }
-                        } else {
-                            throw new WrappedException(t);
-                        }
-                    }
-                }
-            });
-        } catch (PrivilegedActionException pae) {
-            Throwable wrapped = pae.getCause();
-            if (wrapped instanceof WrappedException) {
-                throw ((WrappedException)wrapped).getWrapped();
-            }
-            throw wrapped;
-        }
-    }
-
-    /**
-     * For JDK 9+, we could use MethodHandles.privateLookupIn, which is not 
-     * available in JDK 8.
-     */
-    private static Object invokeDefaultMethodUsingPrivateLookup(Class<?> declaringClass, Object o, Method m, 
-            Object[] params) throws WrappedException, NoSuchMethodException {
-        try {
-            final Method privateLookup = MethodHandles
-                .class
-                .getDeclaredMethod("privateLookupIn", Class.class, MethodHandles.Lookup.class);
-            
-            return ((MethodHandles.Lookup)privateLookup
-                .invoke(null, declaringClass, MethodHandles.lookup()))
-                .unreflectSpecial(m, declaringClass)
-                .bindTo(o)
-                .invokeWithArguments(params);
-        } catch (NoSuchMethodException t) {
-            throw t;
-        } catch (Throwable t) {
-            throw new WrappedException(t);
-        }
-    }
-
     /**
      * Updates the current state if Client method is invoked, otherwise
      * does the remote invocation or returns a new proxy if subresource
@@ -275,9 +175,6 @@ public class ClientProxyImpl extends AbstractClient implements
         resetResponse();
         OperationResourceInfo ori = cri.getMethodDispatcher().getOperationResourceInfo(m);
         if (ori == null) {
-            if (m.isDefault()) {
-                return invokeDefaultMethod(declaringClass, o, m, params);
-            }
             reportInvalidResourceMethod(m, "INVALID_RESOURCE_METHOD");
         }
 
@@ -832,18 +729,6 @@ public class ClientProxyImpl extends AbstractClient implements
                     });
                 });
     }
-
-    protected Message createMessage(Object body,
-                                    OperationResourceInfo ori,
-                                    MultivaluedMap<String, String> headers,
-                                    URI currentURI,
-                                    Exchange exchange,
-                                    Map<String, Object> invocationContext,
-                                    boolean isProxy) {
-        return createMessage(body, ori.getHttpMethod(), headers, currentURI,
-                             exchange, invocationContext, isProxy);
-    }
-
     //CHECKSTYLE:OFF
     protected Object doChainedInvocation(URI uri,
                                        MultivaluedMap<String, String> headers,
@@ -862,7 +747,8 @@ public class ClientProxyImpl extends AbstractClient implements
             if (loader != null) {
                 origLoader = ClassLoaderUtils.setThreadContextClassloader(loader);
             }
-            Message outMessage = createMessage(body, ori, headers, uri, exchange, invocationContext, true);
+            Message outMessage = createMessage(body, ori, headers, uri,
+                                               exchange, invocationContext, true);
             if (bodyIndex != -1) {
                 outMessage.put(Type.class, ori.getMethodToInvoke().getGenericParameterTypes()[bodyIndex]);
             }
@@ -917,6 +803,17 @@ public class ClientProxyImpl extends AbstractClient implements
 
     }
 
+    protected Message createMessage(Object body,
+                                    OperationResourceInfo ori,
+                                    MultivaluedMap<String, String> headers,
+                                    URI currentURI,
+                                    Exchange exchange,
+                                    Map<String, Object> invocationContext,
+                                    boolean isProxy) {
+        return createMessage(body, ori.getHttpMethod(), headers, currentURI,
+                             exchange, invocationContext, isProxy);
+    }
+
     protected InvocationCallback<Object> checkAsyncCallback(OperationResourceInfo ori,
                                                             Map<String, Object> reqContext,
                                                             Message outMessage) {
@@ -966,20 +863,13 @@ public class ClientProxyImpl extends AbstractClient implements
         return null;
     }
 
-    //Liberty change begin
     protected JaxrsClientCallback<?> newJaxrsClientCallback(InvocationCallback<Object> asyncCallback,
-                                                            Message outMessage,
+                                                            Message outMessage, //Liberty change
                                                             Class<?> responseClass,
                                                             Type outGenericType) {
         return new JaxrsClientCallback<>(asyncCallback, responseClass, outGenericType);
     }
-    //Liberty change end
 
-    protected JaxrsClientCallback<?> newJaxrsClientCallback(InvocationCallback<Object> asyncCallback,
-                                                            Class<?> responseClass,
-                                                            Type outGenericType) {
-        return new JaxrsClientCallback<>(asyncCallback, responseClass, outGenericType);
-    }
     @Override
     protected Object retryInvoke(URI newRequestURI,
                                  MultivaluedMap<String, String> headers,

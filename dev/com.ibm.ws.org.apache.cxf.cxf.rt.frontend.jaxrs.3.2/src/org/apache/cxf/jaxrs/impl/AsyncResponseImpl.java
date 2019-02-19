@@ -60,8 +60,8 @@ public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
     private volatile boolean resumedByApplication;
     private volatile Long pendingTimeout;
 
-    private final List<CompletionCallback> completionCallbacks = new LinkedList<>();
-    private final List<ConnectionCallback> connectionCallbacks = new LinkedList<>();
+    private final List<CompletionCallback> completionCallbacks = new LinkedList<CompletionCallback>();
+    private final List<ConnectionCallback> connectionCallbacks = new LinkedList<ConnectionCallback>();
     private Throwable unmappedThrowable;
     //Liberty code change start
     //defect 168372
@@ -244,7 +244,8 @@ public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
     @Override
     public Map<Class<?>, Collection<Class<?>>> register(Object callback, Object... callbacks)
         throws NullPointerException {
-        Map<Class<?>, Collection<Class<?>>> map = new HashMap<>();
+        Map<Class<?>, Collection<Class<?>>> map =
+            new HashMap<Class<?>, Collection<Class<?>>>();
 
         Object[] allCallbacks = new Object[1 + callbacks.length];
         allCallbacks[0] = callback;
@@ -257,7 +258,7 @@ public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
             Class<?> callbackCls = allCallbacks[i].getClass();
             Collection<Class<?>> knownCallbacks = map.get(callbackCls);
             if (knownCallbacks == null) {
-                knownCallbacks = new HashSet<>();
+                knownCallbacks = new HashSet<Class<?>>();
                 map.put(callbackCls, knownCallbacks);
             }
 

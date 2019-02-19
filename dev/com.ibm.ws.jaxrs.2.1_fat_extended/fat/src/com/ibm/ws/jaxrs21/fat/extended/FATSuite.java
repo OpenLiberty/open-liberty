@@ -16,14 +16,16 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                PatchTest.class,
-                ProviderPriorityTest.class,
-                ClassSubResTest.class,
+                
                 CDITest.class,
-                PackageJsonBTestNoFeature.class,
-                PackageJsonBTestWithFeature.class,
+                ClassSubResTest.class,
+                JsonbContextResolverTest.class,
                 FormBehaviorTest.class,
                 MutableHeadersTest.class,
+                PackageJsonBTestNoFeature.class,
+                PackageJsonBTestWithFeature.class,
+                PatchTest.class,
+                ProviderPriorityTest.class,
                 SubResourceTest.class
 })
 public class FATSuite {}

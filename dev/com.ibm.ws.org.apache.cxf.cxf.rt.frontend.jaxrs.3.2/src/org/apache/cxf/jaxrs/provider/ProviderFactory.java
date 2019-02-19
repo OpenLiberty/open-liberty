@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
+//https://issues.apache.org/jira/browse/CXF-6307
 package org.apache.cxf.jaxrs.provider;
 
 import java.lang.annotation.Annotation;
@@ -66,7 +66,6 @@ import javax.ws.rs.ext.WriterInterceptor;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.common.classloader.ClassLoaderUtils;
-
 import org.apache.cxf.common.util.ClassHelper;
 import org.apache.cxf.common.util.PropertyUtils;
 import org.apache.cxf.endpoint.Endpoint;
@@ -121,10 +120,8 @@ public abstract class ProviderFactory {
     private static final String PROVIDER_CACHE_ALLOWED = "org.apache.cxf.jaxrs.provider.cache.allowed";
     private static final String PROVIDER_CACHE_CHECK_ALL = "org.apache.cxf.jaxrs.provider.cache.checkAllCandidates";
 
-    protected Map<NameKey, ProviderInfo<ReaderInterceptor>> readerInterceptors =
-        new NameKeyMap<>(true);
-    protected Map<NameKey, ProviderInfo<WriterInterceptor>> writerInterceptors =
-        new NameKeyMap<>(true);
+    protected Map<NameKey, ProviderInfo<ReaderInterceptor>> readerInterceptors = new NameKeyMap<ProviderInfo<ReaderInterceptor>>(true);
+    protected Map<NameKey, ProviderInfo<WriterInterceptor>> writerInterceptors = new NameKeyMap<ProviderInfo<WriterInterceptor>>(true);
 
     //Liberty code change start
     private final AtomicReferenceProviderList<MessageBodyReader<?>> messageReaders =
@@ -139,17 +136,15 @@ public abstract class ProviderFactory {
                     new AtomicReferenceProviderList<>();
     //Liberty code change end
 
-
     private boolean paramConverterContextsAvailable;
     // List of injected providers
-    private Collection<ProviderInfo<?>> injectedProviders =
-        new HashSet<>();
+    private final Collection<ProviderInfo<?>> injectedProviders = new HashSet<ProviderInfo<?>>();
 
-    private Bus bus;
+    private final Bus bus;
 
     private Comparator<?> providerComparator;
 
-    private ProviderCache providerCache;
+    private final ProviderCache providerCache;
     //Liberty code change start
     //defect 178126
     //A cache for getGenericInterfaces
@@ -165,13 +160,13 @@ public abstract class ProviderFactory {
     public Bus getBus() {
         return bus;
     }
-    protected static ProviderCache initCache(Bus theBus) {
+
+    protected static ProviderCache initCache(final Bus theBus) {
         Object allowProp = theBus.getProperty(PROVIDER_CACHE_ALLOWED);
         boolean allowed = allowProp == null || PropertyUtils.isTrue(allowProp);
         if (!allowed) {
             return null;
         }
-        //Liberty change start - CXF does not check system properties, Liberty does
         boolean checkAll = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
 
             @Override
@@ -183,50 +178,30 @@ public abstract class ProviderFactory {
                 return PropertyUtils.isTrue(o);
             }
         });
-        // Liberty change end
         return new ProviderCache(checkAll);
     }
 
     protected static void initFactory(ProviderFactory factory) {
-        // ensure to not load providers not available in a module environment if not needed
         factory.setProviders(false,
                              false,
-                     new BinaryDataProvider<Object>(),
-                     new SourceProvider<Object>(),
-                     //tryCreateInstance("org.apache.cxf.jaxrs.provider.DataSourceProvider"),
-                     new DataSourceProvider<Object>(), // Liberty change - tryCreateInstance changes behavior
-                     new FormEncodingProvider<Object>(),
-                     new StringTextProvider(),
-                     new PrimitiveTextProvider<Object>(),
-                     //tryCreateInstance(JAXB_PROVIDER_NAME),
-                     new JAXBElementProvider<Object>(), // Liberty change - tryCreateInstance changes behavior
-                     //tryCreateInstance("org.apache.cxf.jaxrs.provider.JAXBElementTypedProvider"),
-                     new JAXBElementTypedProvider(), // Liberty change - tryCreateInstance changes behavior
-                     createJsonpProvider(), // Liberty Change for CXF Begin
-                     createJsonBindingProvider(),
-                     new IBMMultipartProvider(), // Liberty Change for CXF End
-                     //tryCreateInstance("org.apache.cxf.jaxrs.provider.MultipartProvider"));
-                     new MultipartProvider());// Liberty change - tryCreateInstance changes behavior
+                             new BinaryDataProvider<Object>(),
+                             new SourceProvider<Object>(),
+                             new DataSourceProvider<Object>(),
+                             new FormEncodingProvider<Object>(),
+                             new StringTextProvider(),
+                             new PrimitiveTextProvider<Object>(),
+                             new JAXBElementProvider<Object>(),
+                             new JAXBElementTypedProvider(),
+                             //new StringProvider<Object>(), // Liberty Change for CXF
+                             //new JAXBElementSubProvider(),
+                             createJsonpProvider(), // Liberty Change for CXF Begin
+                             createJsonBindingProvider(),
+                             new IBMMultipartProvider(), // Liberty Change for CXF End
+                             new MultipartProvider());
         Object prop = factory.getBus().getProperty("skip.default.json.provider.registration");
         if (!PropertyUtils.isTrue(prop)) {
             factory.setProviders(false, false, createProvider(JSON_PROVIDER_NAME, factory.getBus()));
         }
-
-    }
-
-    protected static Object tryCreateInstance(final String className) {
-        try {
-            final Class<?> cls = ClassLoaderUtils.loadClass(className, ProviderFactory.class);
-            return cls.getConstructor().newInstance();
-        } catch (final Throwable ex) {
-            // Liberty change start
-            //LOG.fine(className + " not available, skipping");
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "className not available, skipping", ex);
-            }
-            // Liberty change end
-        }
-        return null;
     }
 
     @FFDCIgnore(value = { Throwable.class }) // Liberty Change
@@ -345,22 +320,22 @@ public abstract class ProviderFactory {
         if (contextCls == null) {
             return null;
         }
-        List<ContextResolver<T>> candidates = new LinkedList<>();
+        List<ContextResolver<T>> candidates = new LinkedList<ContextResolver<T>>();
         for (ProviderInfo<ContextResolver<?>> cr : contextResolvers) {
             Type[] types = cr.getProvider().getClass().getGenericInterfaces();
             for (Type t : types) {
                 if (t instanceof ParameterizedType) {
-                    ParameterizedType pt = (ParameterizedType)t;
+                    ParameterizedType pt = (ParameterizedType) t;
                     Type[] args = pt.getActualTypeArguments();
                     if (args.length > 0) {
                         Class<?> argCls = InjectionUtils.getActualType(args[0]);
 
                         if (argCls != null && argCls.isAssignableFrom(contextCls)) {
                             List<MediaType> mTypes = JAXRSUtils.getProduceTypes(
-                                 cr.getProvider().getClass().getAnnotation(Produces.class));
+                                                                                cr.getProvider().getClass().getAnnotation(Produces.class));
                             if (JAXRSUtils.doMimeTypesIntersect(mTypes, type)) {
                                 injectContextValues(cr, m);
-                                candidates.add((ContextResolver<T>)cr.getProvider());
+                                candidates.add((ContextResolver<T>) cr.getProvider());
                             }
                         }
                     }
@@ -389,13 +364,13 @@ public abstract class ProviderFactory {
             Type[] types = cr.getProvider().getClass().getGenericInterfaces();
             for (Type t : types) {
                 if (t instanceof ParameterizedType) {
-                    ParameterizedType pt = (ParameterizedType)t;
+                    ParameterizedType pt = (ParameterizedType) t;
                     Type[] args = pt.getActualTypeArguments();
                     if (args.length > 0) {
                         Class<?> argCls = InjectionUtils.getActualType(args[0]);
 
                         if (argCls != null && argCls.isAssignableFrom(contextCls)) {
-                            return (ContextProvider<T>)cr.getProvider();
+                            return (ContextProvider<T>) cr.getProvider();
                         }
                     }
                 }
@@ -405,22 +380,23 @@ public abstract class ProviderFactory {
     }
 
 
+
     public <T> ParamConverter<T> createParameterHandler(Class<T> paramType,
                                                         Type genericType,
                                                         Annotation[] anns,
                                                         Message m) {
 
-
-        anns = anns != null ? anns : new Annotation[]{};
-        for (ProviderInfo<ParamConverterProvider> pi : paramConverters) {
-            injectContextValues(pi, m);
-            ParamConverter<T> converter = pi.getProvider().getConverter(paramType, genericType, anns);
-            if (converter != null) {
-                return converter;
+        if (paramConverters != null) {
+            anns = anns != null ? anns : new Annotation[] {};
+            for (ProviderInfo<ParamConverterProvider> pi : paramConverters) {
+                injectContextValues(pi, m);
+                ParamConverter<T> converter = pi.getProvider().getConverter(paramType, genericType, anns);
+                if (converter != null) {
+                    return converter;
+                }
+                pi.clearThreadLocalProxies();
             }
-            pi.clearThreadLocalProxies();
         }
-
         return null;
     }
 
@@ -484,7 +460,7 @@ public abstract class ProviderFactory {
                                        boolean injectContext) {
         return handleMapper(em, expectedType, m, providerClass, null, injectContext);
     }
-    
+
     protected <T> boolean handleMapper(ProviderInfo<T> em,
                                        Class<?> expectedType,
                                        Message m,
@@ -499,21 +475,22 @@ public abstract class ProviderFactory {
         // Liberty Change for CXF End
         Type[] types = null;
         if (m != null && MessageUtils.getContextualBoolean(m, IGNORE_TYPE_VARIABLES)) {
-            types = new Type[]{mapperClass};
+            types = new Type[] { mapperClass };
         } else {
             types = getGenericInterfaces(mapperClass, expectedType, commonBaseClass);
         }
         for (Type t : types) {
             if (t instanceof ParameterizedType) {
-                ParameterizedType pt = (ParameterizedType)t;
+                ParameterizedType pt = (ParameterizedType) t;
                 Type[] args = pt.getActualTypeArguments();
-                for (Type arg : args) {
+                for (int i = 0; i < args.length; i++) {
+                    Type arg = args[i];
                     if (arg instanceof TypeVariable) {
                         TypeVariable<?> var = (TypeVariable<?>) arg;
                         Type[] bounds = var.getBounds();
                         boolean isResolved = false;
-                        for (Type bound : bounds) {
-                            Class<?> cls = InjectionUtils.getRawType(bound);
+                        for (int j = 0; j < bounds.length; j++) {
+                            Class<?> cls = InjectionUtils.getRawType(bounds[j]);
                             if (cls != null && (cls == Object.class || cls.isAssignableFrom(expectedType))) {
                                 isResolved = true;
                                 break;
@@ -547,7 +524,7 @@ public abstract class ProviderFactory {
                         return true;
                     }
                 }
-            } else if (t instanceof Class && providerClass.isAssignableFrom((Class<?>)t)) {
+            } else if (t instanceof Class && providerClass.isAssignableFrom((Class<?>) t)) {
                 if (injectContext) {
                     injectContextValues(em, m);
                 }
@@ -560,19 +537,18 @@ public abstract class ProviderFactory {
         return false;
     }
 
-
     public <T> List<ReaderInterceptor> createMessageBodyReaderInterceptor(Class<T> bodyType,
-                                                            Type parameterType,
-                                                            Annotation[] parameterAnnotations,
-                                                            MediaType mediaType,
-                                                            Message m,
-                                                            boolean checkMbrNow,
-                                                            Set<String> names) {
+                                                                          Type parameterType,
+                                                                          Annotation[] parameterAnnotations,
+                                                                          MediaType mediaType,
+                                                                          Message m,
+                                                                          boolean checkMbrNow,
+                                                                          Set<String> names) {
         MessageBodyReader<T> mr = !checkMbrNow ? null : createMessageBodyReader(bodyType,
-                                                      parameterType,
-                                                      parameterAnnotations,
-                                                      mediaType,
-                                                      m);
+                                                                                parameterType,
+                                                                                parameterAnnotations,
+                                                                                mediaType,
+                                                                                m);
         int size = readerInterceptors.size();
         if (mr != null || size > 0) {
             ReaderInterceptor mbrReader = new ReaderInterceptorMBR(mr, m.getExchange().getInMessage());
@@ -603,17 +579,17 @@ public abstract class ProviderFactory {
                                                                           Message m,
                                                                           Set<String> names) {
         MessageBodyWriter<T> mw = createMessageBodyWriter(bodyType,
-                                                      parameterType,
-                                                      parameterAnnotations,
-                                                      mediaType,
-                                                      m);
+                                                          parameterType,
+                                                          parameterAnnotations,
+                                                          mediaType,
+                                                          m);
         int size = writerInterceptors.size();
         if (mw != null || size > 0) {
 
             @SuppressWarnings({
-                "unchecked", "rawtypes"
+                                "unchecked", "rawtypes"
             })
-            WriterInterceptor mbwWriter = new WriterInterceptorMBW((MessageBodyWriter)mw, m);
+            WriterInterceptor mbwWriter = new WriterInterceptorMBW((MessageBodyWriter) mw, m);
 
             List<WriterInterceptor> interceptors = null;
             if (size > 0) {
@@ -634,8 +610,6 @@ public abstract class ProviderFactory {
         return null;
     }
 
-
-
     @SuppressWarnings("unchecked")
     public <T> MessageBodyReader<T> createMessageBodyReader(Class<T> type,
                                                             Type genericType,
@@ -647,7 +621,7 @@ public abstract class ProviderFactory {
         if (providerCache != null) {
             for (ProviderInfo<MessageBodyReader<?>> ep : providerCache.getReaders(type, mediaType)) {
                 if (isReadable(ep, type, genericType, annotations, mediaType, m)) {
-                    return (MessageBodyReader<T>)ep.getProvider();
+                    return (MessageBodyReader<T>) ep.getProvider();
                 }
             }
         }
@@ -669,7 +643,7 @@ public abstract class ProviderFactory {
                 if (selectedReader == null
                     && isReadable(ep, type, genericType, annotations, mediaType, m)) {
                     // This writer is a selected candidate
-                    selectedReader = (MessageBodyReader<T>)ep.getProvider();
+                    selectedReader = (MessageBodyReader<T>) ep.getProvider();
                     if (!checkAll) {
                         return selectedReader;
                     }
@@ -698,7 +672,7 @@ public abstract class ProviderFactory {
         if (providerCache != null) {
             for (ProviderInfo<MessageBodyWriter<?>> ep : providerCache.getWriters(type, mediaType)) {
                 if (isWriteable(ep, type, genericType, annotations, mediaType, m)) {
-                    return (MessageBodyWriter<T>)ep.getProvider();
+                    return (MessageBodyWriter<T>) ep.getProvider();
                 }
             }
         }
@@ -723,7 +697,7 @@ public abstract class ProviderFactory {
                 if (selectedWriter == null
                     && isWriteable(ep, type, genericType, annotations, mediaType, m)) {
                     // This writer is a selected candidate
-                    selectedWriter = (MessageBodyWriter<T>)ep.getProvider();
+                    selectedWriter = (MessageBodyWriter<T>) ep.getProvider();
                     if (!checkAll) {
                         return selectedWriter;
                     }
@@ -739,7 +713,7 @@ public abstract class ProviderFactory {
     }
 
     protected void setBusProviders() {
-        List<Object> extensions = new LinkedList<>();
+        List<Object> extensions = new LinkedList<Object>();
         addBusExtension(extensions,
                         MessageBodyReader.class,
                         MessageBodyWriter.class,
@@ -748,7 +722,6 @@ public abstract class ProviderFactory {
             setProviders(true, true, extensions.toArray());
         }
     }
-
 
     private void addBusExtension(List<Object> extensions, Class<?>... extClasses) {
         for (Class<?> extClass : extClasses) {
@@ -760,7 +733,7 @@ public abstract class ProviderFactory {
         Object allProp = bus.getProperty(BUS_PROVIDERS_ALL);
         if (allProp instanceof List) {
             @SuppressWarnings("unchecked")
-            List<Object> all = (List<Object>)allProp;
+            List<Object> all = (List<Object>) allProp;
             extensions.addAll(all);
         }
     }
@@ -770,17 +743,17 @@ public abstract class ProviderFactory {
     @SuppressWarnings("unchecked")
     protected void setCommonProviders(List<ProviderInfo<? extends Object>> theProviders) {
         //Liberty code change start
-        List<ProviderInfo<MessageBodyReader<?>>> newReaders = new ArrayList<>();
-        List<ProviderInfo<MessageBodyWriter<?>>> newWriters = new ArrayList<>();
-        List<ProviderInfo<ContextResolver<?>>> newResolvers = new ArrayList<>();
-        List<ProviderInfo<ContextProvider<?>>> newContextProviders = new ArrayList<>();
-        List<ProviderInfo<ParamConverterProvider>> newParamConverters = new ArrayList<>();
+        List<ProviderInfo<MessageBodyReader<?>>> newReaders = new ArrayList<ProviderInfo<MessageBodyReader<?>>>();
+        List<ProviderInfo<MessageBodyWriter<?>>> newWriters = new ArrayList<ProviderInfo<MessageBodyWriter<?>>>();
+        List<ProviderInfo<ContextResolver<?>>> newResolvers = new ArrayList<ProviderInfo<ContextResolver<?>>>();
+        List<ProviderInfo<ContextProvider<?>>> newContextProviders = new ArrayList<ProviderInfo<ContextProvider<?>>>();
+        List<ProviderInfo<ParamConverterProvider>> newParamConverters = new ArrayList<ProviderInfo<ParamConverterProvider>>();
         //Liberty code change end
 
         List<ProviderInfo<ReaderInterceptor>> readInts =
-            new LinkedList<>();
+            new LinkedList<ProviderInfo<ReaderInterceptor>>();
         List<ProviderInfo<WriterInterceptor>> writeInts =
-            new LinkedList<>();
+            new LinkedList<ProviderInfo<WriterInterceptor>>();
         for (ProviderInfo<? extends Object> provider : theProviders) {
             Class<?> providerCls = ClassHelper.getRealClass(bus, provider.getProvider());
 
@@ -809,11 +782,11 @@ public abstract class ProviderFactory {
             }
 
             if (filterContractSupported(provider, providerCls, ReaderInterceptor.class)) {
-                readInts.add((ProviderInfo<ReaderInterceptor>)provider);
+                readInts.add((ProviderInfo<ReaderInterceptor>) provider);
             }
 
             if (filterContractSupported(provider, providerCls, WriterInterceptor.class)) {
-                writeInts.add((ProviderInfo<WriterInterceptor>)provider);
+                writeInts.add((ProviderInfo<WriterInterceptor>) provider);
             }
 
             if (filterContractSupported(provider, providerCls, ParamConverterProvider.class)) {
@@ -846,7 +819,7 @@ public abstract class ProviderFactory {
         //Liberty code change start
         injectContextProxies(messageReaders.get(), messageWriters.get(), contextResolvers.get(), paramConverters.get(),
         //Liberty code change end
-            readerInterceptors.values(), writerInterceptors.values());
+                             readerInterceptors.values(), writerInterceptors.values());
         checkParamConverterContexts();
     }
 
@@ -862,8 +835,6 @@ public abstract class ProviderFactory {
     public boolean isParamConverterContextsAvailable() {
         return paramConverterContextsAvailable;
     }
-
-
 
     protected void injectContextValues(ProviderInfo<?> pi, Message m) {
         if (m != null) {
@@ -881,7 +852,7 @@ public abstract class ProviderFactory {
         list2.add(provider);
     }
 
-    protected void injectContextProxies(Collection<?> ... providerLists) {
+    protected void injectContextProxies(Collection<?>... providerLists) {
         for (Collection<?> list : providerLists) {
             Collection<ProviderInfo<?>> l2 = CastUtils.cast(list);
             for (ProviderInfo<?> pi : l2) {
@@ -1010,7 +981,7 @@ public abstract class ProviderFactory {
             referent.set(Collections.emptyList());
         }
     }
-
+    
     private void addAndSortParamConverters(List<ProviderInfo<ParamConverterProvider>> newParamConverters, boolean forceSort) {
         Comparator<ProviderInfo<ParamConverterProvider>> comparator = null;
         if (!customComparatorAvailable(ParamConverter.class)) {
@@ -1026,13 +997,13 @@ public abstract class ProviderFactory {
             Type type = ((ParameterizedType)providerComparator.getClass()
                 .getGenericInterfaces()[0]).getActualTypeArguments()[0];
             if (type instanceof ParameterizedType) {
-                ParameterizedType pt = (ParameterizedType)type;
+                ParameterizedType pt = (ParameterizedType) type;
                 if (pt.getRawType() == ProviderInfo.class) {
                     Type type2 = pt.getActualTypeArguments()[0];
                     if (type2 == providerClass
                         || type2 instanceof WildcardType
                         || type2 instanceof ParameterizedType
-                           && ((ParameterizedType)type2).getRawType() == providerClass) {
+                           && ((ParameterizedType) type2).getRawType() == providerClass) {
                         return true;
                     }
                 }
@@ -1050,16 +1021,14 @@ public abstract class ProviderFactory {
             .getGenericInterfaces()[0]).getActualTypeArguments()[0];
         if (type == Object.class) {
             theProviderComparator =
-                new ProviderInfoClassComparator((Comparator<Object>)theProviderComparator);
+                (new ProviderInfoClassComparator((Comparator<Object>)theProviderComparator));
         }
-        List<T> theProviders = (List<T>)listOfProviders;
-        Comparator<? super T> theComparator = (Comparator<? super T>)theProviderComparator;
+        List<T> theProviders = (List<T>) listOfProviders;
+        Comparator<? super T> theComparator = (Comparator<? super T>) theProviderComparator;
         theProviders.sort(theComparator);
     }
 
-private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = new IdentityHashMap<>();
-
-
+    private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = new IdentityHashMap<>();
 
     /**
      * This method attempts to optimize performance by checking a cache of known MessageBodyReaders's media types,
@@ -1097,12 +1066,11 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
         MessageBodyReader<?> ep = pi.getProvider();
         if (m.get(ACTIVE_JAXRS_PROVIDER_KEY) != ep) {
             injectContextValues(pi, m);
-            ep = pi.getProvider(); // now that CDI or EJB may have changed the provider impl //Liberty change
+            ep = pi.getProvider(); // now that CDI or EJB may have changed the provider impl
         }
         return ep.isReadable(type, genericType, annotations, mediaType);
     }
 
-    //Liberty change start
     private final Map<MessageBodyWriter<?>, List<MediaType>> writerMediaTypesMap = new IdentityHashMap<>();
 
     /**
@@ -1123,7 +1091,6 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
         }
         return mediaTypes;
     }
-    //Liberty change end
 
     private <T> boolean matchesWriterMediaTypes(ProviderInfo<MessageBodyWriter<?>> pi,
                                                 MediaType mediaType) {
@@ -1132,20 +1099,25 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
         }
         MessageBodyWriter<?> ep = pi.getProvider();
         List<MediaType> supportedMediaTypes = JAXRSUtils.getProviderProduceTypes(ep);
-
-        return JAXRSUtils.doMimeTypesIntersect(Collections.singletonList(mediaType), supportedMediaTypes);
+        //Liberty code change begin
+        boolean b = JAXRSUtils.doMimeTypesIntersect(Collections.singletonList(mediaType), supportedMediaTypes);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "matchesWriterMediaTypes return " + b);
+        }
+        return b;
+        //Liberty code change end
     }
 
     private boolean isWriteable(ProviderInfo<MessageBodyWriter<?>> pi,
-                               Class<?> type,
-                               Type genericType,
-                               Annotation[] annotations,
-                               MediaType mediaType,
-                               Message m) {
+                                Class<?> type,
+                                Type genericType,
+                                Annotation[] annotations,
+                                MediaType mediaType,
+                                Message m) {
         MessageBodyWriter<?> ep = pi.getProvider();
         if (m.get(ACTIVE_JAXRS_PROVIDER_KEY) != ep) {
             injectContextValues(pi, m);
-            ep = pi.getProvider(); // now that CDI or EJB may have changed the provider impl - Liberty change
+            ep = pi.getProvider(); // now that CDI or EJB may have changed the provider impl
         }
         return ep.isWriteable(type, genericType, annotations, mediaType);
     }
@@ -1168,14 +1140,13 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
         //Liberty code change end
     }
 
-
     public void registerUserProvider(Object provider) {
         setUserProviders(Collections.singletonList(provider));
     }
 
     /**
      * Use for injection of entityProviders
-
+     *
      * @param entityProviders the entityProviders to set
      */
     public void setUserProviders(List<?> userProviders) {
@@ -1313,7 +1284,7 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
         clearProxies(injectedProviders);
     }
 
-    void clearProxies(Collection<?> ...lists) {
+    void clearProxies(Collection<?>... lists) {
         for (Collection<?> list : lists) {
             Collection<ProviderInfo<?>> l2 = CastUtils.cast(list);
             for (ProviderInfo<?> pi : l2) {
@@ -1343,10 +1314,10 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
 
     @FFDCIgnore(value = { Exception.class }) // Liberty Change
     private boolean injectProviderProperty(Object provider, String mName, Class<?> pClass,
-                                        Object pValue) {
+                                           Object pValue) {
         try {
-            Method m = provider.getClass().getMethod(mName, new Class[]{pClass});
-            m.invoke(provider, new Object[]{pValue});
+            Method m = provider.getClass().getMethod(mName, new Class[] { pClass });
+            m.invoke(provider, new Object[] { pValue });
             return true;
         } catch (Exception ex) {
             // ignore
@@ -1361,22 +1332,22 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
     }
 
     protected static <T> List<ProviderInfo<T>> getBoundFilters(Map<NameKey, ProviderInfo<T>> boundFilters,
-                                                                          Set<String> names) {
+                                                               Set<String> names) {
         if (boundFilters.isEmpty()) {
             return Collections.emptyList();
         }
-        names = names == null ? Collections.<String>emptySet() : names;
+        names = names == null ? Collections.<String> emptySet() : names;
 
         MultivaluedMap<ProviderInfo<T>, String> map =
-            new MetadataMap<>();
+            new MetadataMap<ProviderInfo<T>, String>();
         for (Map.Entry<NameKey, ProviderInfo<T>> entry : boundFilters.entrySet()) {
             String entryName = entry.getKey().getName();
             ProviderInfo<T> provider = entry.getValue();
             if (entryName.equals(DEFAULT_FILTER_NAME_BINDING)) {
-                map.put(provider, Collections.<String>emptyList());
+                map.put(provider, Collections.<String> emptyList());
             } else {
                 if (provider instanceof FilterProviderInfo) {
-                    FilterProviderInfo<?> fpi = (FilterProviderInfo<?>)provider;
+                    FilterProviderInfo<?> fpi = (FilterProviderInfo<?>) provider;
                     if (fpi.isDynamic() && !names.containsAll(fpi.getNameBindings())) {
                         continue;
                     }
@@ -1384,7 +1355,7 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
                 map.add(provider, entryName);
             }
         }
-        List<ProviderInfo<T>> list = new LinkedList<>();
+        List<ProviderInfo<T>> list = new LinkedList<ProviderInfo<T>>();
         for (Map.Entry<ProviderInfo<T>, List<String>> entry : map.entrySet()) {
             List<String> values = entry.getValue();
             if (names.containsAll(values)) {
@@ -1398,9 +1369,9 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
     public void initProviders(List<ClassResourceInfo> cris) {
         Set<Object> set = getReadersWriters();
         for (Object o : set) {
-            Object provider = ((ProviderInfo<?>)o).getProvider();
+            Object provider = ((ProviderInfo<?>) o).getProvider();
             if (provider instanceof AbstractConfigurableProvider) {
-                ((AbstractConfigurableProvider)provider).init(cris);
+                ((AbstractConfigurableProvider) provider).init(cris);
             }
         }
     }
@@ -1429,25 +1400,6 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
         }
     }
 
-    public static class ProviderInfoClassComparator implements Comparator<ProviderInfo<?>> {
-        Comparator<Object> comp;
-        boolean defaultComp;
-        public ProviderInfoClassComparator(Class<?> expectedCls) {
-            this.comp = new ClassComparator(expectedCls);
-            this.defaultComp = true;
-        }
-        public ProviderInfoClassComparator(Comparator<Object> comp) {
-            this.comp = comp;
-        }
-        public int compare(ProviderInfo<?> p1, ProviderInfo<?> p2) {
-            int result = comp.compare(p1.getProvider(), p2.getProvider());
-            if (result == 0 && defaultComp) {
-                result = compareCustomStatus(p1, p2);
-            }
-            return result;
-        }
-    }
-
     static class PriorityBasedClassComparator extends ClassComparator {
         PriorityBasedClassComparator() {
             super();
@@ -1467,6 +1419,28 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
         }
     }
 
+    public static class ProviderInfoClassComparator implements Comparator<ProviderInfo<?>> {
+        final Comparator<Object> comp;
+        boolean defaultComp;
+
+        public ProviderInfoClassComparator(Class<?> expectedCls) {
+            this.comp = new ClassComparator(expectedCls);
+            this.defaultComp = true;
+        }
+
+        public ProviderInfoClassComparator(Comparator<Object> comp) {
+            this.comp = comp;
+        }
+
+        @Override
+        public int compare(ProviderInfo<?> p1, ProviderInfo<?> p2) {
+            int result = comp.compare(p1.getProvider(), p2.getProvider());
+            if (result == 0 && defaultComp) {
+                result = compareCustomStatus(p1, p2);
+            }
+            return result;
+        }
+    }
 
     public static ProviderFactory getInstance(Message m) {
         Endpoint e = m.getExchange().getEndpoint();
@@ -1475,7 +1449,7 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
         boolean isClient = outM != null && MessageUtils.isRequestor(outM);
         String name = isClient ? CLIENT_FACTORY_NAME : SERVER_FACTORY_NAME;
 
-        return (ProviderFactory)e.get(name);
+        return (ProviderFactory) e.get(name);
     }
 
     protected static int compareClasses(Object o1, Object o2) {
@@ -1503,10 +1477,10 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
         if (realClass1.isAssignableFrom(realClass2)) {
             // subclass should go first
             return 1;
-        } else if (realClass2.isAssignableFrom(realClass1)) { //Liberty change
+        } else if (realClass2.isAssignableFrom(realClass1)) {
             return -1;
         }
-        return 0; // Liberty change
+        return 0;
     }
 
 
@@ -1517,7 +1491,7 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
     //defect 178126
     //Add the result to cache before return
     private static Type[] getGenericInterfaces(Class<?> cls, Class<?> expectedClass,
-                                               Class<?> commonBaseCls) {
+                                       Class<?> commonBaseCls) {
         if (Object.class == cls) {
             return emptyType;
         }
@@ -1532,7 +1506,7 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
                     Type[] tempTypes = new Type[] { genericSuperType };
                     putTypes(cls, expectedClass, commonBaseCls, tempTypes);
                     return tempTypes;
-                } else if (commonBaseCls != null && commonBaseCls != Object.class 
+                } else if (commonBaseCls != null && commonBaseCls != Object.class
                            && commonBaseCls.isAssignableFrom(expectedClass)
                            && commonBaseCls.isAssignableFrom(actualType)
                            || expectedClass.isAssignableFrom(actualType)) {
@@ -1555,7 +1529,7 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
 
     protected static class AbstractPriorityComparator {
 
-        private boolean ascending;
+        private final boolean ascending;
 
         protected AbstractPriorityComparator(boolean ascending) {
             this.ascending = ascending;
@@ -1588,7 +1562,8 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
     //Liberty code change end
 
     static class ContextResolverProxy<T> implements ContextResolver<T> {
-        private List<ContextResolver<T>> candidates;
+        private final List<ContextResolver<T>> candidates;
+
         ContextResolverProxy(List<ContextResolver<T>> candidates) {
             this.candidates = candidates;
         }
@@ -1610,10 +1585,10 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
     }
 
     public static ProviderInfo<? extends Object> createProviderFromConstructor(Constructor<?> c,
-                                                                 Map<Class<?>, Object> values,
-                                                                 Bus theBus,
-                                                                 boolean checkContexts,
-                                                                 boolean custom) {
+                                                                               Map<Class<?>, Object> values,
+                                                                               Bus theBus,
+                                                                               boolean checkContexts,
+                                                                               boolean custom) {
 
 
         Map<Class<?>, Map<Class<?>, ThreadLocalProxy<?>>> proxiesMap =
@@ -1636,47 +1611,36 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
             instance = c.newInstance(cArgs);
         } catch (Throwable ex) {
             throw new RuntimeException("Resource or provider class " + c.getDeclaringClass().getName()
-                                       + " can not be instantiated", ex);
+                                       + " can not be instantiated");
         }
         Map<Class<?>, ThreadLocalProxy<?>> proxies =
-            new LinkedHashMap<>();
+            new LinkedHashMap<Class<?>, ThreadLocalProxy<?>>();
         for (int i = 0; i < paramTypes.length; i++) {
             if (cArgs[i] instanceof ThreadLocalProxy) {
                 @SuppressWarnings("unchecked")
-                ThreadLocalProxy<Object> proxy = (ThreadLocalProxy<Object>)cArgs[i];
+                ThreadLocalProxy<Object> proxy = (ThreadLocalProxy<Object>) cArgs[i];
                 proxies.put(paramTypes[i], proxy);
             }
         }
         boolean isApplication = Application.class.isAssignableFrom(c.getDeclaringClass());
         if (isApplication) {
-            return new ApplicationInfo((Application)instance, proxies, theBus);
+            return new ApplicationInfo((Application) instance, proxies, theBus);
+        } else {
+            return new ProviderInfo<Object>(instance, proxies, theBus, checkContexts, custom);
         }
-        return new ProviderInfo<Object>(instance, proxies, theBus, checkContexts, custom);
     }
 
-
     protected static class NameKey {
-        private String name;
-        private Integer priority;
-        private Class<?> providerCls;
-        private ProviderInfo<?> providerInfo;
+        private final String name;
+        private final Integer priority;
+        private final Class<?> providerCls;
 
         public NameKey(String name,
                        int priority,
                        Class<?> providerCls) {
-
-            this(name, priority, providerCls, null);
-        }
-
-        public NameKey(String name,
-                       int priority,
-                       Class<?> providerCls,
-                       ProviderInfo<?> provider) {
-
             this.name = name;
             this.priority = priority;
             this.providerCls = providerCls;
-            this.providerInfo = provider;
         }
 
         public String getName() {
@@ -1687,18 +1651,14 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
             return priority;
         }
 
-        public ProviderInfo<?> getProviderInfo() {
-            return providerInfo;
-        }
-
         @Override
         public boolean equals(Object o) {
             if (!(o instanceof NameKey)) {
                 return false;
             }
-            NameKey other = (NameKey)o;
+            NameKey other = (NameKey) o;
             return name.equals(other.name) && priority.equals(other.priority)
-                && providerCls == other.providerCls;
+                   && providerCls == other.providerCls;
         }
 
         @Override
@@ -1723,7 +1683,7 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
             int priority = getFilterPriority(p, providerCls);
 
             for (String name : names) {
-                map.put(new NameKey(name, priority, p.getClass(), p), p);
+                map.put(new NameKey(name, priority, p.getClass()), p);
             }
         }
 
@@ -1735,7 +1695,6 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
         } else {
             return getFilterNameBindings(p.getBus(), p.getProvider());
         }
-
     }
     protected static Set<String> getFilterNameBindings(Bus bus, Object provider) {
         Class<?> pClass = ClassHelper.getRealClass(bus, provider);
@@ -1754,17 +1713,8 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
     protected static class NameKeyComparator extends AbstractPriorityComparator
         implements Comparator<NameKey> {
 
-        private final Comparator<ProviderInfo<?>> comparator;
-
         public NameKeyComparator(boolean ascending) {
-            this(null, ascending);
-        }
-
-        public NameKeyComparator(
-            Comparator<ProviderInfo<?>> comparator, boolean ascending) {
-
             super(ascending);
-            this.comparator = comparator;
         }
 
         @Override
@@ -1773,16 +1723,6 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
             if (result != 0) {
                 return result;
             }
-
-            if (comparator != null) {
-                result = comparator.compare(
-                    key1.getProviderInfo(), key2.getProviderInfo());
-
-                if (result != 0) {
-                    return result;
-                }
-            }
-
             return compare(key1.hashCode(), key2.hashCode());
         }
 
@@ -1790,12 +1730,6 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
 
     protected static class NameKeyMap<T> extends TreeMap<NameKey, T> {
         private static final long serialVersionUID = -4352258671270502204L;
-
-        public NameKeyMap(
-            Comparator<ProviderInfo<?>> comparator, boolean ascending) {
-
-            super(new NameKeyComparator(comparator, ascending));
-        }
 
         public NameKeyMap(boolean ascending) {
             super(new NameKeyComparator(ascending));
@@ -1809,7 +1743,7 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
         if (contract.isAssignableFrom(providerCls)) {
             Set<Class<?>> actualContracts = null;
             if (provider instanceof FilterProviderInfo) {
-                actualContracts = ((FilterProviderInfo<?>)provider).getSupportedContracts();
+                actualContracts = ((FilterProviderInfo<?>) provider).getSupportedContracts();
             }
             if (actualContracts != null) {
                 result = actualContracts.contains(contract);
@@ -1826,7 +1760,7 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
                                                                     Object[] providers,
                                                                     ProviderInfo<Application> application) {
         List<ProviderInfo<? extends Object>> theProviders =
-            new ArrayList<>(providers.length);
+            new ArrayList<ProviderInfo<? extends Object>>(providers.length);
         @SuppressWarnings("unchecked")
         Map<String, Object> beanCustomizerContexts = (Map<String, Object>) getBus().getProperty(JaxRsConstants.ENDPOINT_BEANCUSTOMIZER_CONTEXTOBJ);
 
@@ -1893,7 +1827,6 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
         return providerComparator;
     }
 
-    @SuppressWarnings("unchecked")
     public void setProviderComparator(Comparator<?> providerComparator) {
         this.providerComparator = providerComparator;
         //Liberty code change start

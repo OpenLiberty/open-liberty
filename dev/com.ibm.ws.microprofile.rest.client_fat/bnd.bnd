@@ -27,8 +27,6 @@ src: \
 
 fat.project: true
 
-tested.features=mpRestClient-1.2,jdbc-4.2
-
 javac.source: 1.8
 javac.target: 1.8
 
