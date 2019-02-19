@@ -7,6 +7,8 @@ Subsystem-Name: Config and Validator REST API 1.0
 -features=\
  com.ibm.websphere.appserver.restHandler-1.0
 -bundles=\
- com.ibm.ws.rest.handler.config
+ com.ibm.ws.rest.handler.config,\
+ com.ibm.ws.rest.handler.validator,\
+ com.ibm.ws.rest.handler.validator.jdbc
 kind=noship
 edition=full
