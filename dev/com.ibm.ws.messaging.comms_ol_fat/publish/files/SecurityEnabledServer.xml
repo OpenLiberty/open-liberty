@@ -1,6 +1,6 @@
 <server description="new server">
 	<include location="../fatTestPorts.xml"/>
-	<logging maxFileSize="200" traceSpecification="SIBJFapChannel:SIBCommunications:SSLChannel:SSL=all:dummy.FILE=none"/>
+	<logging maxFileSize="200" traceSpecification="SIBJFapChannel:SIBCommunications:SSLChannel:SSL=all:config.source=files/SecurityEnabledServer.xml"/>
 
 	<!-- Enable features -->
 	<featureManager>
