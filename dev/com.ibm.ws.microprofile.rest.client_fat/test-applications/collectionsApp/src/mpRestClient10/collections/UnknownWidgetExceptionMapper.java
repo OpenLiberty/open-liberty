@@ -18,9 +18,6 @@ import javax.ws.rs.ext.Provider;
 
 import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;
 
-/**
- *
- */
 @Provider
 public class UnknownWidgetExceptionMapper implements ResponseExceptionMapper<UnknownWidgetException> {
     Logger LOG = Logger.getLogger(UnknownWidgetExceptionMapper.class.getName());

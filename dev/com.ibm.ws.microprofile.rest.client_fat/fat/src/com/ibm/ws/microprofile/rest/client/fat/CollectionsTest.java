@@ -66,16 +66,17 @@ public class CollectionsTest extends FATServletClient {
         ShrinkHelper.exportDropinAppToServer(remoteAppServer, app);
         remoteAppServer.startServer();
 
-        app = ShrinkHelper.buildDefaultApp(appName, "mpRestClient10.collections");
-        //app.addAsLibraries(new File(JOHNZON_IMPL).listFiles());
-        //app.addAsLibraries(new File(JSONB_API).listFiles());
-        ShrinkHelper.exportDropinAppToServer(server, app);
+        ShrinkHelper.defaultDropinApp(server, appName, "mpRestClient10.collections");
         server.startServer();
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer();
-        remoteAppServer.stopServer();
+        if (server != null) {
+            server.stopServer();
+        }
+        if (remoteAppServer != null) {
+            remoteAppServer.stopServer();
+        }
     }
 }
