@@ -1,6 +1,6 @@
 <server>
     <include location="../fatTestPorts.xml"/>
-    <logging maxFileSize="200" traceSpecification="SIBJFapChannel:SIBCommunications:SSLChannel:SSL=all:config.source=files/server1.xml"/>
+    <logging maxFileSize="200" traceSpecification="SIBJFapChannel:SIBCommunications:SSLChannel:SSL=all:CONFIG_SOURCE...files/server1.xml"/>
 
     <!-- TESTING THE UPLOAD! -->
     <featureManager>

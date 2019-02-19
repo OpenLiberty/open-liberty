@@ -1,6 +1,6 @@
 <server description="JMSClient">
     <include location="../fatTestPorts.xml"/>
-    <logging maxFileSize="200" traceSpecification="SIBJFapChannel:SIBCommunications:SSLChannel:SSL=all:config.source=servers/WasJmsOutBoundTest_com.ibm.ws.messaging.comms.WJO.Client/server.xml"/>
+    <logging maxFileSize="200" traceSpecification="SIBJFapChannel:SIBCommunications:SSLChannel:SSL=all:CONFIG_SOURCE...servers/WasJmsOutBoundTest_com.ibm.ws.messaging.comms.WJO.Client/server.xml"/>
 
     <!-- Enable features -->
     <featureManager>
