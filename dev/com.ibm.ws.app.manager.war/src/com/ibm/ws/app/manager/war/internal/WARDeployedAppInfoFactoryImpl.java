@@ -13,7 +13,9 @@ package com.ibm.ws.app.manager.war.internal;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -69,42 +71,79 @@ public class WARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
         return getLocationAdmin().resolveResource(EXPANDED_APPS_DIR + appName + ".war/");
     }
 
+    // Record of what WAR files have been expanded this time the server
+    // was started.
+    //
+    // The preference is to remove this record and rely entirely on
+    // time stamps.  Because of test implications, that change has not
+    // yet been made.
+
+    private static final Set<String> expanded = new HashSet<String>(1);
+
+    private static boolean didExpand(String path) {
+    	synchronized ( expanded ) {
+    		return ( expanded.contains(path) );
+    	}
+    }
+    private static void recordExpansion(String path) {
+    	synchronized ( expanded ) {
+    		expanded.add(path);
+    	}
+    }
+
+    private static void clearExpansion(String path) {
+    	synchronized ( expanded ) { 
+    		expanded.remove(path);
+    	}
+    }
+
     private long getStamp(File file) {
         return file.lastModified();
     }
 
-    private void setStamp(File file, long lastModified) {
-        file.setLastModified(lastModified);
-    }
-
     protected void expand(
-        String warName, File warFile,
+        String name, File collapsedFile,
         WsResource expandedResource, File expandedFile) throws IOException {
 
-        long newStamp = getStamp(warFile);
+        String expandedPath = expandedFile.getAbsolutePath();
+
+        long newStamp = getStamp(collapsedFile);
 
         boolean doDelete;
         boolean doExpand;
 
         if ( expandedResource.exists() ) {
-            long oldStamp = getStamp(expandedFile);
+        	// 'didExpand' is used to preserve the prior behavior.
+        	// Remove this logic to enable re-use of expansions across
+        	// restarts.  The logic has not been removed because there
+        	// are test implications.
 
-            if ( oldStamp != newStamp ) {
-                if ( tc.isDebugEnabled() ) {
-                    Tr.debug(tc, "Delete and re-extract web module [ " + warName + " ] from [ " + warFile.getPath() + " ] to [ " + expandedFile.getPath() + " ]");
-                }
-                doDelete = true;
-                doExpand = true;
-            } else {
-                if ( tc.isDebugEnabled() ) {
-                    Tr.debug(tc, "Reuse web module [ " + warName + " ] extracted from [ " + warFile.getPath() + " ] to [ " + expandedFile.getPath() + " ]");
-                }
-                doDelete = false;
-                doExpand = false;
-            }
+        	if ( didExpand(expandedPath) ) {
+        		long oldStamp = getStamp(expandedFile);
+        		if ( oldStamp != newStamp ) {
+        			if ( tc.isDebugEnabled() ) {
+        				Tr.debug(tc, "Same Launch: Delete and re-extract [ " + name + " ] from [ " + collapsedFile.getPath() + " ] to [ " + expandedPath + " ]");
+        			}
+        			doDelete = true;
+        			doExpand = true;
+        		} else {
+        			if ( tc.isDebugEnabled() ) {
+        				Tr.debug(tc, "Same Launch: Reuse extraction of [ " + name + " ] from [ " + collapsedFile.getPath() + " ] to [ " + expandedPath + " ]");
+        			}
+        			doDelete = false;
+        			doExpand = false;
+        		}
+        	} else {
+    			if ( tc.isDebugEnabled() ) {
+    				Tr.debug(tc, "New Launch: Delete and re-extract [ " + name + " ] from [ " + collapsedFile.getPath() + " ] to [ " + expandedPath + " ]");
+    			}
+        		doDelete = true;
+        		doExpand = true;
+        	}
+        	
         } else {
             if ( tc.isDebugEnabled() ) {
-                Tr.debug(tc, "Extract web module [ " + warName + " ] from [ " + warFile.getPath() + " ] to [ " + expandedFile.getPath() + " ]");
+                Tr.debug(tc, "Extract [ " + name + " ] from [ " + collapsedFile.getPath() + " ] to [ " + expandedPath + " ]");
             }
             doDelete = false;
             doExpand = true;
@@ -113,21 +152,34 @@ public class WARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
         if ( doDelete || doExpand ) {
         	ZipUtils zipUtils = new ZipUtils();
 
+        	// The order (clear, delete, unzip, record) is deliberate:
+        	// The expansion should be recorded only if successful.
+
             if ( doDelete ) {
-                zipUtils.deleteWithRetry(expandedFile);
+            	clearExpansion(expandedPath);
+
+                File failedDelete = zipUtils.deleteWithRetry(expandedFile);
+                if ( failedDelete != null ) {
+                    if ( failedDelete == expandedFile ) {
+                    	throw new IOException("Failed to delete [ " + expandedPath + " ]");
+                    } else {
+                    	throw new IOException("Failed to delete [ " + expandedPath + " ] because [ " + failedDelete.getAbsolutePath() + " ] could not be deleted.");
+                    }
+                }
             }
 
             if ( doExpand ) {
                 expandedResource.create();
-                zipUtils.unzip(warFile, expandedFile, ZipUtils.IS_NOT_EAR, newStamp);
+                zipUtils.unzip(collapsedFile, expandedFile, ZipUtils.IS_NOT_EAR, newStamp); // throws IOException
+                recordExpansion(expandedPath);
             }
         }
     }
 
-    private boolean isArchive(File warFile, String warPath) {
-        if ( warPath.toLowerCase().endsWith(XML_SUFFIX) ) {
+    private boolean isArchive(File file, String path) {
+        if ( path.toLowerCase().endsWith(XML_SUFFIX) ) {
             return false;
-        } else if ( !warFile.isFile() ) {
+        } else if ( !file.isFile() ) {
             return false;
         } else {
             return true;
