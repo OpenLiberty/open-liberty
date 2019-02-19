@@ -5,7 +5,6 @@
 	<!-- Enable features -->
 	<featureManager>
 		<feature>timedexit-1.0</feature>
-		<feature>servlet-3.1</feature>
 		<feature>wasJmsServer-1.0</feature>
 		<feature>wasJmsSecurity-1.0</feature>
 	</featureManager>
@@ -17,10 +16,6 @@
 	<variable name="bvt.prop.jms.ssl"  value="${bvt.prop.jms.1.ssl}" />
 	<!-- wasJmsPort and wasJmsSSLPort settings in wasJmsEndpoint must match those set in fatTestPorts.xml, to avoid configuration conflict warnings. -->
 	<wasJmsEndpoint id="InboundJmsCommsEndpoint" host="*" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}" />
-
-	<!-- Overriding the values of the properties used for httpEndpoint port configuration in fatTestPorts.xml -->
-	<variable name="bvt.prop.HTTP_default"         value="${bvt.prop.http.1}" />
-	<variable name="bvt.prop.HTTP_default.secure"  value="${bvt.prop.http.1.ssl}" />
 
 	<variable name="onError" value="FAIL"/>
 
