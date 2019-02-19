@@ -132,6 +132,8 @@
         <properties>
             <property name="eclipselink.logging.parameters" value="true"/>
         	<property name="eclipselink.cache.shared.default" value="false"/>
+        	<property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+        	<property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=true" />
         </properties>
     </persistence-unit>
     <persistence-unit name="QueryLockMode_JEE_RL" transaction-type="RESOURCE_LOCAL">
@@ -249,6 +251,8 @@
         <properties>
             <property name="eclipselink.logging.parameters" value="true"/>
         	<property name="eclipselink.cache.shared.default" value="false"/>
+        	<property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+        	<property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=true" />
         </properties>
     </persistence-unit>
 

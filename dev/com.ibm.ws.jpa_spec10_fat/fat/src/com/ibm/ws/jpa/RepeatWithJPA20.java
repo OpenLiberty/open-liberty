@@ -18,7 +18,6 @@ import java.util.Set;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.rules.repeater.EE7FeatureReplacementAction;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -30,7 +29,7 @@ public class RepeatWithJPA20 extends FeatureReplacementAction {
     public static final String ID = "JPA20_FEATURES";
 
     public RepeatWithJPA20() {
-        super(EE8FeatureReplacementAction.EE8_FEATURE_SET, featuresToAdd());
+        super(EE7FeatureReplacementAction.EE7_FEATURE_SET, featuresToAdd());
         forceAddFeatures(false);
         this.withID(ID);
     }
