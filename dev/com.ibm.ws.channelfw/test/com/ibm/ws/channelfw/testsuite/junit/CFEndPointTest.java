@@ -30,11 +30,10 @@ import javax.management.DynamicMBean;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -64,7 +63,9 @@ import test.common.SharedOutputManager;
  * Unit tests for the CFEndPoint logic.
  */
 public class CFEndPointTest {
-    private static SharedOutputManager outputMgr;
+    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+    @Rule
+    public TestRule managerRule = outputMgr;
 
     private final Mockery mock = new JUnit4Mockery();
     private final EndPointMgr mgrMock = mock.mock(EndPointMgr.class);
@@ -76,39 +77,6 @@ public class CFEndPointTest {
     public void setUp() {
         endpointPort = Integer.parseInt(System.getProperty("CFEndPointTest.endpointPort", "1010"));
         EndPointMgrImpl.setRef(mgrMock);
-    }
-
-    /**
-     * Capture stdout/stderr output to the manager.
-     *
-     * @throws Exception
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        outputMgr = SharedOutputManager.getInstance();
-        outputMgr.captureStreams();
-    }
-
-    /**
-     * Final teardown work when class is exiting.
-     *
-     * @throws Exception
-     */
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-        // Make stdout and stderr "normal"
-        outputMgr.restoreStreams();
-    }
-
-    /**
-     * Individual teardown after each test.
-     *
-     * @throws Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-        // Clear the output generated after each method invocation
-        outputMgr.resetStreams();
     }
 
     /**
