@@ -821,6 +821,13 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         return null;
     }
     
+    /** {@inheritDoc} */
+    @Override
+    public List<String> getForwardAuthzParameter() {
+        // TODO
+        return null;
+    }
+    
     /**
      * @param authzRequestParamMap2
      * @param authzReqParams 
