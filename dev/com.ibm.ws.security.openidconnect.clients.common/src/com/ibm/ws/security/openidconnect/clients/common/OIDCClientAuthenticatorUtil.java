@@ -69,7 +69,7 @@ public class OIDCClientAuthenticatorUtil {
      */
     public ProviderAuthenticationResult handleRedirectToServer(HttpServletRequest req, HttpServletResponse res, ConvergedClientConfig clientConfig) {
         String authorizationEndpoint = clientConfig.getAuthorizationEndpointUrl();
-      
+
         if (!checkHttpsRequirement(clientConfig, authorizationEndpoint)) {
             Tr.error(tc, "OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS", authorizationEndpoint);
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
@@ -164,7 +164,7 @@ public class OIDCClientAuthenticatorUtil {
             ConvergedClientConfig clientConfig) {
         ProviderAuthenticationResult oidcResult = null;
 
-        if(!isEndpointValid(clientConfig)) {
+        if (!isEndpointValid(clientConfig)) {
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
         boolean isImplicit = false;
@@ -276,9 +276,9 @@ public class OIDCClientAuthenticatorUtil {
             url = clientConfig.getTokenEndpointUrl();
         } else {
             url = clientConfig.getAuthorizationEndpointUrl();
-        }     
+        }
         return url != null;
-        
+
     }
 
     //todo: avoid call on each request.
@@ -393,8 +393,8 @@ public class OIDCClientAuthenticatorUtil {
             }
         }
         // check and see if we have any additional params to forward from the request
-        query = handleForwardAuthzParams(clientConfig, req, query);
-        
+        query = addForwardAuthzParamsToQuery(clientConfig, req, query);
+
         // look for custom params in the configuration to send to the authorization ep
         query = handleCustomParams(clientConfig, query);
 
@@ -406,29 +406,27 @@ public class OIDCClientAuthenticatorUtil {
         }
         return s + queryMark + query;
     }
-    
-    private String handleForwardAuthzParams(ConvergedClientConfig clientConfig, HttpServletRequest req, String query) {
-        List<String> forwardAuthzParams = clientConfig.getForwardAuthzParameter();
-        if (forwardAuthzParams != null && !forwardAuthzParams.isEmpty()) {         
-            for (String entry : forwardAuthzParams) {
-                if (entry != null && !entry.isEmpty()) {
-                    String value = null;
-                    value = req.getParameter(entry);
-                    if (value != null && !value.isEmpty()) {
-                        try {
-                            query = String.format("%s&%s=%s", query, URLEncoder.encode(entry, ClientConstants.CHARSET),
-                                    URLEncoder.encode(value, ClientConstants.CHARSET));
-                        } catch (UnsupportedEncodingException e) {
 
-                        }
+    String addForwardAuthzParamsToQuery(ConvergedClientConfig clientConfig, HttpServletRequest req, String query) {
+        List<String> forwardAuthzParams = clientConfig.getForwardAuthzParameter();
+        if (forwardAuthzParams == null || forwardAuthzParams.isEmpty()) {
+            return query;
+        }
+        for (String entry : forwardAuthzParams) {
+            if (entry != null) {
+                String value = req.getParameter(entry);
+                if (value != null) {
+                    try {
+                        query = String.format("%s&%s=%s", query, URLEncoder.encode(entry, ClientConstants.CHARSET), URLEncoder.encode(value, ClientConstants.CHARSET));
+                    } catch (UnsupportedEncodingException e) {
+                        // Do nothing - encoding will be supported
                     }
-                    
                 }
+
             }
         }
         return query;
     }
-
 
     /**
      * @param clientConfig
