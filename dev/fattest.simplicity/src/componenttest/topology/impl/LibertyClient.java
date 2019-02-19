@@ -1359,7 +1359,7 @@ public class LibertyClient {
     protected void checkLogsForErrorsAndWarnings() throws Exception {
         final String method = "checkLogsForErrorsAndWarnings";
 
-        if (false && !checkingDisabled) {
+        if (!checkingDisabled) {
             // Get all warnings and errors in logs
             List<String> errorsInLogs = null;
             try {
