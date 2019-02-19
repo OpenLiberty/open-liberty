@@ -578,7 +578,7 @@ public class ReferenceContextImpl implements ReferenceContext {
 
         List<Class<?>> injectionClasses = masterCompNSConfig.getInjectionClasses();
         if (injectionClasses != null) {
-            ivProcessedInjectionClasses.addAll(injectionClasses);
+            //ivProcessedInjectionClasses.addAll(injectionClasses);
         }
 
         //-----------------------------------------------
@@ -973,7 +973,7 @@ public class ReferenceContextImpl implements ReferenceContext {
 
             // Now that metadata has processed successfully, add all the classes
             // to the list of processed classes.
-            ivProcessedInjectionClasses.addAll(injectionClasses);
+            //ivProcessedInjectionClasses.addAll(injectionClasses);
         }
 
         if (isTraceOn && tc.isDebugEnabled())
