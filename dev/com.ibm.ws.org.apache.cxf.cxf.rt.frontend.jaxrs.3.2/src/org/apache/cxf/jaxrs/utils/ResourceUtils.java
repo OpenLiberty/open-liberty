@@ -70,6 +70,9 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
 import org.apache.cxf.Bus;
@@ -396,7 +399,7 @@ public final class ResourceUtils {
     }
 
     public static Constructor<?> findResourceConstructor(Class<?> resourceClass, boolean perRequest) {
-        List<Constructor<?>> cs = new LinkedList<>();
+        List<Constructor<?>> cs = new LinkedList<Constructor<?>>();
         for (Constructor<?> c : resourceClass.getConstructors()) {
             // Liberty change start
             Annotation[] anna = c.getDeclaredAnnotations();
@@ -719,13 +722,6 @@ public final class ResourceUtils {
                                                ResourceTypes types,
                                                boolean jaxbOnly,
                                                MessageBodyWriter<?> jaxbWriter) {
-        Class<?> jaxbElement = null;
-        try {
-            jaxbElement = ClassLoaderUtils.loadClass("javax.xml.bind.JAXBElement", ResourceUtils.class);
-        } catch (final ClassNotFoundException e) {
-            // no-op
-        }
-
         for (OperationResourceInfo ori : resource.getMethodDispatcher().getOperationResourceInfos()) {
             Method method = ori.getAnnotatedMethod() == null ? ori.getMethodToInvoke() : ori.getAnnotatedMethod();
             Class<?> realReturnType = method.getReturnType();
@@ -736,7 +732,7 @@ public final class ResourceUtils {
             Type type = method.getGenericReturnType();
             if (jaxbOnly) {
                 checkJaxbType(resource.getServiceClass(), cls, realReturnType == Response.class || ori.isAsync()
-                    ? cls : type, types, method.getAnnotations(), jaxbWriter, jaxbElement);
+                    ? cls : type, types, method.getAnnotations(), jaxbWriter);
             } else {
                 types.getAllTypes().put(cls, type);
             }
@@ -748,7 +744,7 @@ public final class ResourceUtils {
                         Type paramType = method.getGenericParameterTypes()[pm.getIndex()];
                         if (jaxbOnly) {
                             checkJaxbType(resource.getServiceClass(), inType, paramType, types,
-                                          method.getParameterAnnotations()[pm.getIndex()], jaxbWriter, jaxbElement);
+                                          method.getParameterAnnotations()[pm.getIndex()], jaxbWriter);
                         } else {
                             types.getAllTypes().put(inType, paramType);
                         }
@@ -780,8 +776,7 @@ public final class ResourceUtils {
                                       Type genericType,
                                       ResourceTypes types,
                                       Annotation[] anns,
-                                      MessageBodyWriter<?> jaxbWriter,
-                                      Class<?> jaxbElement) {
+                                      MessageBodyWriter<?> jaxbWriter) {
         boolean isCollection = false;
         if (InjectionUtils.isSupportedCollectionOrArray(type)) {
             type = InjectionUtils.getActualType(genericType);
@@ -796,7 +791,7 @@ public final class ResourceUtils {
         }
         if (type == null
             || InjectionUtils.isPrimitive(type)
-            || (jaxbElement != null && jaxbElement.isAssignableFrom(type))
+            || JAXBElement.class.isAssignableFrom(type)
             || Response.class.isAssignableFrom(type)
             || type.isInterface()) {
             return;
@@ -804,7 +799,7 @@ public final class ResourceUtils {
 
         MessageBodyWriter<?> writer = jaxbWriter;
         if (writer == null) {
-            JAXBElementProvider<Object> defaultWriter = new JAXBElementProvider<>();
+            JAXBElementProvider<Object> defaultWriter = new JAXBElementProvider<Object>();
             defaultWriter.setMarshallAsJaxbElement(true);
             defaultWriter.setXmlTypeAsJaxbElementOnly(true);
             writer = defaultWriter;
@@ -939,7 +934,7 @@ public final class ResourceUtils {
         Set<Object> singletons = app.getSingletons();
         verifySingletons(singletons);
 
-        List<Class<?>> resourceClasses = new ArrayList<>();
+        List<Class<?>> resourceClasses = new ArrayList<Class<?>>();
         List<Object> providers = new ArrayList<>();
         List<Feature> features = new ArrayList<>();
         Map<Class<?>, ResourceProvider> map = new HashMap<>();
@@ -1090,4 +1085,24 @@ public final class ResourceUtils {
         }
         return true;
     }
+
+    //TODO : consider moving JAXBDataBinding.createContext to JAXBUtils
+    public static JAXBContext createJaxbContext(Set<Class<?>> classes, Class<?>[] extraClass,
+                                                Map<String, Object> contextProperties) {
+        if (classes == null || classes.isEmpty()) {
+            return null;
+        }
+        JAXBUtils.scanPackages(classes, extraClass, null);
+
+        JAXBContext ctx;
+        try {
+            ctx = JAXBContext.newInstance(classes.toArray(new Class[0]),
+                                          contextProperties);
+            return ctx;
+        } catch (JAXBException ex) {
+            LOG.log(Level.SEVERE, "No JAXB context can be created", ex);
+        }
+        return null;
+    }
+
 }

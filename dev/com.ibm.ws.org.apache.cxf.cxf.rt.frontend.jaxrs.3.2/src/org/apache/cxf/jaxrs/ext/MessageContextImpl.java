@@ -205,7 +205,7 @@ public class MessageContextImpl implements MessageContext {
     private void convertToAttachments(Object value) {
         List<?> handlers = (List<?>)value;
         List<org.apache.cxf.message.Attachment> atts =
-            new ArrayList<>();
+            new ArrayList<org.apache.cxf.message.Attachment>();
 
         for (int i = 1; i < handlers.size(); i++) {
             Attachment handler = (Attachment)handlers.get(i);
@@ -222,7 +222,7 @@ public class MessageContextImpl implements MessageContext {
         Attachment root = (Attachment)handlers.get(0);
 
         String rootContentType = root.getContentType().toString();
-        MultivaluedMap<String, String> rootHeaders = new MetadataMap<>(root.getHeaders());
+        MultivaluedMap<String, String> rootHeaders = new MetadataMap<String, String>(root.getHeaders());
         if (!AttachmentUtil.isMtomEnabled(outMessage)) {
             rootHeaders.putSingle(Message.CONTENT_TYPE, rootContentType);
         }
@@ -287,7 +287,7 @@ public class MessageContextImpl implements MessageContext {
 
         new AttachmentInputInterceptor().handleMessage(inMessage);
 
-        List<Attachment> newAttachments = new LinkedList<>();
+        List<Attachment> newAttachments = new LinkedList<Attachment>();
         try {
             Map<String, List<String>> headers
                 = CastUtils.cast((Map<?, ?>)inMessage.get(AttachmentDeserializer.ATTACHMENT_PART_HEADERS));
