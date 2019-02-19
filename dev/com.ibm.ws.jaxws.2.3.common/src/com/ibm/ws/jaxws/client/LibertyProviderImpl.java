@@ -22,7 +22,7 @@ import javax.xml.ws.spi.ServiceDelegate;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
-import org.apache.cxf.jaxws22.spi.ProviderImpl;
+import org.apache.cxf.jaxws.spi.ProviderImpl;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;

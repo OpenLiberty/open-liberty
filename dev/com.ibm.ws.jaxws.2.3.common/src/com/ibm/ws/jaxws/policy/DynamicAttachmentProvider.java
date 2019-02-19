@@ -21,6 +21,8 @@ import javax.xml.namespace.QName;
 import org.apache.cxf.Bus;
 import org.apache.cxf.common.injection.NoJSR250Annotations;
 import org.apache.cxf.helpers.DOMUtils;
+import org.apache.cxf.message.Message;
+import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.service.model.BindingFaultInfo;
 import org.apache.cxf.service.model.BindingMessageInfo;
 import org.apache.cxf.service.model.BindingOperationInfo;
@@ -70,7 +72,7 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider
         return location;
     }
 
-    @Override
+
     public Policy getEffectivePolicy(BindingFaultInfo bfi) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getEffectivePolicy for BindingFaultInfo", bfi != null ? bfi : null);
@@ -90,7 +92,7 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider
         return p;
     }
 
-    @Override
+
     public Policy getEffectivePolicy(BindingMessageInfo bmi) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getEffectivePolicy for BindingMessageInfo", bmi != null ? bmi.getMessageInfo() : null);
@@ -110,7 +112,6 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider
         return p;
     }
 
-    @Override
     public Policy getEffectivePolicy(BindingOperationInfo boi) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getEffectivePolicy for BindingOperationInfo", boi != null ? boi : null);
@@ -130,7 +131,6 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider
         return p;
     }
 
-    @Override
     public Policy getEffectivePolicy(EndpointInfo ei) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getEffectivePolicy for EndpointInfo", ei != null ? ei : null);
@@ -150,7 +150,6 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider
         return p;
     }
 
-    @Override
     public Policy getEffectivePolicy(ServiceInfo si) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getEffectivePolicy for ServiceInfo", si != null ? si.getName() : null);
@@ -190,7 +189,7 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider
             if (null == is) {
                 throw new PolicyException(new Exception("Could not open the special policy attachment file because getResourceAsStream is null"));
             }
-            doc = DOMUtils.readXml(is);
+            doc = StaxUtils.read(is);
         } catch (Exception ex) {
             throw new PolicyException(ex);
         }
@@ -325,5 +324,35 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider
 
         });
     }
+
+	@Override
+	public Policy getEffectivePolicy(ServiceInfo arg0, Message arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Policy getEffectivePolicy(EndpointInfo arg0, Message arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Policy getEffectivePolicy(BindingOperationInfo arg0, Message arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Policy getEffectivePolicy(BindingMessageInfo arg0, Message arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Policy getEffectivePolicy(BindingFaultInfo arg0, Message arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

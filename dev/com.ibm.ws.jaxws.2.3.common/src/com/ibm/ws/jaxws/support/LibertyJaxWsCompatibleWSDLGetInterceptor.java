@@ -78,7 +78,7 @@ public class LibertyJaxWsCompatibleWSDLGetInterceptor extends WSDLGetInterceptor
 
     }
 
-    @Override
+
     public Document getDocument(Message message, String base, Map<String, String> params, String ctxUri, EndpointInfo endpointInfo) {
 
         if (wsdlLoationExisted) {
@@ -112,11 +112,11 @@ public class LibertyJaxWsCompatibleWSDLGetInterceptor extends WSDLGetInterceptor
         //time as the addresses may get mixed up
         synchronized (message.getExchange().getEndpoint()) {
             Map<String, String> map = UrlUtils.parseQueryString(query);
-            if (isRecognizedQuery(map, baseUri, ctx,
-                                  message.getExchange().getEndpoint().getEndpointInfo())) {
+            //@TJJ removed isRecognizedQuery and make the check here
+            if (map.containsKey("wsdl") || map.containsKey("xsd")) {
 
                 try {
-                    Conduit c = message.getExchange().getDestination().getBackChannel(message, null, null);
+                    Conduit c = message.getExchange().getDestination().getBackChannel(message);
                     Message mout = new MessageImpl();
                     mout.setExchange(message.getExchange());
                     message.getExchange().setOutMessage(mout);

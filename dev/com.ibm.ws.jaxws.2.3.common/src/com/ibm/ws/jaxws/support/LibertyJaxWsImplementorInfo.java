@@ -177,7 +177,8 @@ public class LibertyJaxWsImplementorInfo extends JaxWsImplementorInfo {
     public AddressingFeature getAddressingFeature() {
         AddressingFeatureInfo featureInfo = endpointInfo.getAddressingFeatureInfo();
         if (null != featureInfo) {
-            if (ProviderImpl.isJaxWs22()) {
+        		// @TJJ going to try to disable this check as the method has been removed from CXF
+            //if (ProviderImpl.isJaxWs22()) {
                 try {
                     Object responses = featureInfo.getResponses();
                     java.lang.reflect.Constructor<?> constructor =
@@ -191,9 +192,9 @@ public class LibertyJaxWsImplementorInfo extends JaxWsImplementorInfo {
                     }
                     return new AddressingFeature(featureInfo.isEnabled(), featureInfo.isRequired());
                 }
-            } else {
-                return new AddressingFeature(featureInfo.isEnabled(), featureInfo.isRequired());
-            }
+            //} else {
+            //    return new AddressingFeature(featureInfo.isEnabled(), featureInfo.isRequired());
+            //}
         }
         return null;
     }

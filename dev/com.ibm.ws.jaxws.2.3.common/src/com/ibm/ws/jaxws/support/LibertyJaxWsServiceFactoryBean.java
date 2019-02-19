@@ -32,6 +32,7 @@ import org.apache.cxf.databinding.source.SourceDataBinding;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.endpoint.EndpointException;
 import org.apache.cxf.feature.AbstractFeature;
+import org.apache.cxf.feature.Feature;
 import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.jaxws.JAXWSMethodDispatcher;
 import org.apache.cxf.jaxws.JAXWSProviderMethodDispatcher;
@@ -42,7 +43,7 @@ import org.apache.cxf.jaxws.support.JaxWsServiceConfiguration;
 import org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean;
 import org.apache.cxf.jaxws.support.WebServiceProviderConfiguration;
 import org.apache.cxf.service.Service;
-import org.apache.cxf.service.factory.AbstractServiceConfiguration;
+import org.apache.cxf.wsdl.service.factory.AbstractServiceConfiguration;
 import org.apache.cxf.service.factory.FactoryBeanListener;
 import org.apache.cxf.service.model.BindingInfo;
 import org.apache.cxf.service.model.DescriptionInfo;
@@ -415,7 +416,7 @@ public class LibertyJaxWsServiceFactoryBean extends JaxWsServiceFactoryBean {
             if (endpoint.getFeatures() == null || endpoint.getFeatures().isEmpty()) {
                 endpoint.getFeatures().add(feature);
             } else {
-                for (AbstractFeature f : endpoint.getFeatures()) {
+                for (Feature f : endpoint.getFeatures()) {
                     if (f instanceof WSAddressingFeature) {
                         return;
                     }

@@ -22,11 +22,11 @@ import javax.xml.ws.WebServiceException;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.LogicalHandler;
 
-import org.apache.cxf.helpers.XMLUtils;
-import org.apache.cxf.jaxws.javaee.CString;
-import org.apache.cxf.jaxws.javaee.ParamValueType;
-import org.apache.cxf.jaxws.javaee.PortComponentHandlerType;
-import org.apache.cxf.jaxws.javaee.XsdQNameType;
+import org.apache.cxf.staxutils.StaxUtils;
+import org.apache.cxf.jaxws.handler.types.CString;
+import org.apache.cxf.jaxws.handler.types.ParamValueType;
+import org.apache.cxf.jaxws.handler.types.PortComponentHandlerType;
+import org.apache.cxf.jaxws.handler.types.XsdQNameType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -181,12 +181,12 @@ public class HandlerChainInfoBuilder {
                 throw new WebServiceException(Tr.formatMessage(tc, "error.no.handlerChainFile.found", fileName));
             }
 
-            Document doc = XMLUtils.parse(handlerFileURL.openStream());
+            Document doc = StaxUtils.read(handlerFileURL.openStream());
             Element el = doc.getDocumentElement();
             if (!"http://java.sun.com/xml/ns/javaee".equals(el.getNamespaceURI())
                 || !"handler-chains".equals(el.getLocalName())) {
 
-                String xml = XMLUtils.toString(el);
+                String xml = StaxUtils.toString(el);
                 throw new WebServiceException(Tr.formatMessage(tc, "error.invalid.handlerChainFile.content", xml));
             }
 
@@ -197,7 +197,7 @@ public class HandlerChainInfoBuilder {
                     if (!el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee")
                         || !el.getLocalName().equals("handler-chain")) {
 
-                        String xml = XMLUtils.toString(el);
+                        String xml = StaxUtils.toString(el);
                         throw new WebServiceException(Tr.formatMessage(tc, "error.invalid.handlerChainFile.content", xml));
                     }
                     chainsInfo.addHandlerChainInfo(processHandlerChainElement(el, portQName, serviceQName, bindingID));
@@ -222,7 +222,7 @@ public class HandlerChainInfoBuilder {
             if (cur instanceof Element) {
                 el = (Element) cur;
                 if (!el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee")) {
-                    String xml = XMLUtils.toString(el);
+                    String xml = StaxUtils.toString(el);
                     throw new WebServiceException(Tr.formatMessage(tc, "error.invalid.handlerChainFile.content", xml));
                 }
                 String name = el.getLocalName();

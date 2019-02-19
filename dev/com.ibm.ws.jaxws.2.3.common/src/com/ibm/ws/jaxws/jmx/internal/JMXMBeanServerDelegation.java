@@ -551,17 +551,14 @@ public class JMXMBeanServerDelegation implements MBeanServer {
         throw new MBeanException(null, ERR_UNSUPPORTED_METHOD);
     }
 
-    @Override
     public ObjectInputStream deserialize(ObjectName name, byte[] data) throws InstanceNotFoundException, OperationsException {
         throw new InstanceNotFoundException(ERR_UNSUPPORTED_METHOD);
     }
 
-    @Override
     public ObjectInputStream deserialize(String className, byte[] data) throws OperationsException, ReflectionException {
         throw new OperationsException(ERR_UNSUPPORTED_METHOD);
     }
 
-    @Override
     public ObjectInputStream deserialize(String className, ObjectName loaderName, byte[] data) throws InstanceNotFoundException, OperationsException, ReflectionException {
         throw new InstanceNotFoundException(ERR_UNSUPPORTED_METHOD);
     }

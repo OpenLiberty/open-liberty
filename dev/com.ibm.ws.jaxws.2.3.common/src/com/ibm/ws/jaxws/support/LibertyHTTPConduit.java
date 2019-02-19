@@ -11,13 +11,19 @@
 package com.ibm.ws.jaxws.support;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.service.model.EndpointInfo;
+import org.apache.cxf.transport.http.Address;
 import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transport.https.HttpsURLConnectionInfo;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
 import com.ibm.ws.util.ThreadContextAccessor;
@@ -38,26 +44,39 @@ public class LibertyHTTPConduit extends HTTPConduit {
     }
 
     @Override
-    protected String getAddress() {
+	public String getAddress() {
         return super.getAddress();
     }
 
     @Override
-    protected void finalizeConfig() {
+	public void finalizeConfig() {
         super.finalizeConfig();
     }
 
-    @Override
-    protected OutputStream createOutputStream(Message message, HttpURLConnection connection, boolean needToCacheRequest, boolean isChunking, int chunkThreshold) {
-        return new LibertyWrappedOutputStream(message, connection, needToCacheRequest, isChunking, chunkThreshold, getConduitName());
+    protected OutputStream createOutputStream(Message message, HttpURLConnection connection, boolean needToCacheRequest, boolean isChunking, int chunkThreshold) throws IOException {
+        try {
+    			return new LibertyWrappedOutputStream(message, connection, needToCacheRequest, isChunking, chunkThreshold, getConduitName());
+    
+        } catch (URISyntaxException e) {
+        	 	throw new IOException(e);
+        }
     }
 
+    // @TJJ Added to allow for change to HTTPConduit.WrappedOutputStream constructor. 
+    private static URI findURI(Message outMessage, HttpURLConnection connection) throws URISyntaxException {
+        Address add = (Address)outMessage.get(KEY_HTTP_CONNECTION_ADDRESS);
+        return add != null ? add.getURI() : connection.getURL().toURI();
+    }
+    
     protected class LibertyWrappedOutputStream extends HTTPConduit.WrappedOutputStream {
 
         protected LibertyWrappedOutputStream(Message outMessage, HttpURLConnection connection, boolean possibleRetransmit, boolean isChunking, int chunkThreshold,
-                                             String conduitName) {
-            super(outMessage, connection, possibleRetransmit, isChunking, chunkThreshold, conduitName);
-        }
+                                             String conduitName) throws URISyntaxException {
+
+            super(outMessage, possibleRetransmit, isChunking,
+                    chunkThreshold, conduitName,
+                    findURI(outMessage, connection));
+       }
 
         //handleResponse will call handleResponseInternal either synchronously or asynchronously
         //so if call asynchronously, we set the thread context classloader because liberty executor won't set anything when run the task.
@@ -80,7 +99,116 @@ public class LibertyHTTPConduit extends HTTPConduit {
                     THREAD_CONTEXT_ACCESSOR.setContextClassLoader(Thread.currentThread(), oldCl);
                 }
             }
+            
         }
 
+		@Override
+		protected void closeInputStream() throws IOException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		protected HttpsURLConnectionInfo getHttpsURLConnectionInfo() throws IOException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		protected InputStream getInputStream() throws IOException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		protected InputStream getPartialResponse() throws IOException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		protected int getResponseCode() throws IOException {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		protected String getResponseMessage() throws IOException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		protected void handleResponseAsync() throws IOException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		protected void retransmitStream() throws IOException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		protected void setFixedLengthStreamingMode(int arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		protected void setProtocolHeaders() throws IOException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		protected void setupNewConnection(String arg0) throws IOException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		protected void setupWrappedStream() throws IOException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		protected void updateCookiesBeforeRetransmit() throws IOException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		protected void updateResponseHeaders(Message arg0) throws IOException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		protected boolean usingProxy() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void thresholdReached() throws IOException {
+			// TODO Auto-generated method stub
+			
+		}
+
     }
+
+	@Override
+	protected OutputStream createOutputStream(Message arg0, boolean arg1, boolean arg2, int arg3) throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void setupConnection(Message arg0, Address arg1, HTTPClientPolicy arg2) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
 }

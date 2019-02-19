@@ -140,6 +140,7 @@ org.apache.cxf:cxf-rt-databinding-jaxb:3.2.6
 org.apache.cxf:cxf-rt-frontend-jaxrs:3.3.0
 org.apache.cxf:cxf-rt-frontend-jaxws:3.2.6
 org.apache.cxf:cxf-rt-frontend-simple:3.2.6
+org.apache.cxf:cxf-rt-management:3.2.6
 org.apache.cxf:cxf-rt-rs-client:3.3.0
 org.apache.cxf:cxf-rt-rs-mp-client:3.2.6
 org.apache.cxf:cxf-rt-rs-mp-client:3.3.0

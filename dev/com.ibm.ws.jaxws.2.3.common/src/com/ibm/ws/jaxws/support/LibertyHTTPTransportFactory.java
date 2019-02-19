@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.xml.namespace.QName;
 
+import org.apache.cxf.Bus;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.Conduit;
 import org.apache.cxf.transport.http.HTTPConduitConfigurer;
@@ -38,8 +39,7 @@ public class LibertyHTTPTransportFactory extends HTTPTransportFactory {
     /**
      * set the auto-redirect to true
      */
-    @Override
-    public Conduit getConduit(EndpointInfo endpointInfo, EndpointReferenceType target) throws IOException {
+    public Conduit getConduit(Bus bus, EndpointInfo endpointInfo, EndpointReferenceType target) throws IOException {
         //create our LibertyHTTPConduit so that we can set the TCCL when run the handleResponseInternal asynchronously
         LibertyHTTPConduit conduit = new LibertyHTTPConduit(bus, endpointInfo, target);
 
@@ -53,7 +53,7 @@ public class LibertyHTTPTransportFactory extends HTTPTransportFactory {
         if (c1 != null) {
             c1.configure(conduit.getBeanName(), address, conduit);
         }
-        configure(conduit, conduit.getBeanName(), address);
+        configure(bus, conduit, conduit.getBeanName(), address);
         conduit.finalizeConfig();
         //copy end.
 

@@ -27,7 +27,7 @@ import javax.xml.ws.Service;
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.saaj.SAAJFactoryResolver;
 import org.apache.cxf.binding.soap.saaj.SAAJUtils;
-import org.apache.cxf.common.WSDLConstants;
+import org.apache.cxf.wsdl.WSDLConstants;
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.jaxws.handler.logical.LogicalMessageContextImpl;

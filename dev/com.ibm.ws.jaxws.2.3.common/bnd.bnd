@@ -16,7 +16,6 @@ Bundle-Name: JAX-WS Common
 Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.common
 Bundle-Description: IBM JAX-WS Common; version=${bVersion}
 
-
 cxfVersion=3.2.6
 
 # in cxf-rt-frontend-jaxws-2.6.2 bundle, we exposed: 
@@ -39,14 +38,14 @@ Export-Package: \
    
 Import-Package: \
    javax.xml.bind.*;version="[2.3,3)", \
-   javax.xml.ws.*;version="[2.3,3]", \
+   javax.xml.ws.*;version="[2.3,3)", \
    com.ibm.ws.javaee.ddmodel.wsbnd, \
    *
 
 Private-Package:\
    com.ibm.ws.jaxws.*, \
    com.ibm.wsspi.jaxws
-
+   
 # Use Dynamic Import Packages for JAXB Context Factory, 
 # with that, we could work without ResourceProvider Hook
 DynamicImport-Package: com.sun.xml.bind.v2, \
@@ -191,15 +190,15 @@ instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 	com.ibm.ws.javaee.dd.common;version=latest,\
 	com.ibm.ws.javaee.ddmodel.wsbnd;version=latest,\
 	com.ibm.ws.logging;version=latest,\
-	org.apache.cxf:cxf-core;version=${cxfVersion}, \
+	org.apache.cxf:cxf-core;version=${cxfVersion},\
 	org.apache.cxf:cxf-rt-bindings-soap;version=${cxfVersion},\
 	org.apache.cxf:cxf-rt-bindings-xml;version=${cxfVersion},\
 	org.apache.cxf:cxf-rt-databinding-jaxb;version=${cxfVersion},\
 	org.apache.cxf:cxf-rt-frontend-jaxws;version=${cxfVersion},\
 	org.apache.cxf:cxf-rt-frontend-simple;version=${cxfVersion},\
 	org.apache.cxf:cxf-rt-ws-addr;version=${cxfVersion},\
-	#org.apache.cxf.cxf-rt-management;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
-	org.apache.cxf:cxf-rt-transports-http;version=${cxfVersion},
+	org.apache.cxf.cxf-rt-management;strategy=exact;version=${cxfVersion},\
+	org.apache.cxf:cxf-rt-transports-http;version=${cxfVersion},\
 	org.apache.cxf:cxf-rt-ws-policy;version=${cxfVersion},\
 	com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
@@ -209,9 +208,10 @@ instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.webservices.handler;version=latest,\
 	com.ibm.ws.org.apache.neethi.3.0.2;version=latest,\
-	com.ibm.websphere.appserver.spi.threading;version=latest, \
+	com.ibm.websphere.appserver.spi.threading;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	javax.activation:activation;version=1.1
+	javax.activation:activation;version=1.1,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2;version=latest
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \
