@@ -228,9 +228,6 @@ public class MetricsMonitorTest {
        		new String[] {"vendor:threadpool", "vendor:servlet", "vendor:session", "vendor:connectionpool" }, 
        		new String[] {});
        	
-       	
-       	Thread.sleep(5000);
-       	System.out.println("START ***");
        	Log.info(c, testName, "------- Remove JAX-WS application ------");
        	boolean rc1 = server.removeAndStopDropinsApplications("testJaxWsApp.war");
        	Log.info(c, testName, "------- " + (rc1 ? "successfully removed" : "failed to remove") + " JAX-WS application ------");
@@ -242,10 +239,7 @@ public class MetricsMonitorTest {
        	Log.info(c, testName, "------- jax-ws metrics should not be available ------");
       	checkStrings(getHttpsServlet("/metrics/vendor"), 
       		new String[] { "vendor:" }, 
-      		new String[] { "vendor:jaxws_client", "vendor:jaxws_server"});
-      	System.out.println("START ***");
-       	Thread.sleep(5000);
-       	
+      		new String[] { "vendor:jaxws_client", "vendor:jaxws_server"});       	
       	
        	Log.info(c, testName, "------- Remove JDBC application ------");
        	boolean rc2 = server.removeAndStopDropinsApplications("testJDBCApp.war");
