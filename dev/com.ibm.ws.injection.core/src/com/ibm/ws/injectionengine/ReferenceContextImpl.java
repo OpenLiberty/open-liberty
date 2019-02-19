@@ -973,7 +973,7 @@ public class ReferenceContextImpl implements ReferenceContext {
 
             // Now that metadata has processed successfully, add all the classes
             // to the list of processed classes.
-            ivProcessedInjectionClasses.addAll(injectionClasses);
+            //ivProcessedInjectionClasses.addAll(injectionClasses);
         }
 
         if (isTraceOn && tc.isDebugEnabled())
