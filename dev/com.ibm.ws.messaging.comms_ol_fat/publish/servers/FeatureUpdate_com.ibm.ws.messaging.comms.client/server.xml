@@ -1,4 +1,7 @@
 <server>
+    <include location="../fatTestPorts.xml"/>
+    <logging maxFileSize="200" traceSpecification="SIBJFapChannel:SIBCommunications:SSLChannel:SSL=all:dummy.FILE=none"/>
+
     <!-- TESTING THE UPLOAD! -->
     <featureManager>
         <feature>timedexit-1.0</feature>
@@ -10,14 +13,6 @@
 
     <variable name="onError" value="FAIL"/>
 
-    <logging
-            traceSpecification="SIBJFapChannel:SIBCommunications:SSLChannel:SSL=all"
-            maxFileSize="200"
-            maxFiles="2"
-    />
-
-    <include location="../fatTestPorts.xml"/>
-    <!-- 	<keyStore id="defaultKeyStore" location="key.jks" type="JKS" password="defaultPWD" /> -->
     <keyStore id="defaultKeyStore" location="mykeynew.jks" type="JKS" password="key123"/>
 
 

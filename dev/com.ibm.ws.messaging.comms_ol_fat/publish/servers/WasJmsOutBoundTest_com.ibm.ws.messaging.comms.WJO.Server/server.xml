@@ -1,5 +1,6 @@
 <server description="JMSServer1">
 	<include location="../fatTestPorts.xml"/>
+	<logging maxFileSize="200" traceSpecification="SIBJFapChannel:SIBCommunications:SSLChannel:SSL=all:dummy.FILE=none"/>
 
 	<!-- Enable features -->
 	<featureManager>
@@ -15,7 +16,6 @@
 	<httpEndpoint id="defaultHttpEndpoint">
 		<sslOptions sslRef="CustomSslOptions" />
 	</httpEndpoint>
-
 
 	<quickStartSecurity userPassword="ppersona99" userName="persona99" />
 

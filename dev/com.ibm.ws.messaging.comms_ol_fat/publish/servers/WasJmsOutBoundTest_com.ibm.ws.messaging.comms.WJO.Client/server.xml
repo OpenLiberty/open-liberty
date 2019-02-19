@@ -1,5 +1,6 @@
 <server description="JMSClient">
     <include location="../fatTestPorts.xml"/>
+    <logging maxFileSize="200" traceSpecification="SIBJFapChannel:SIBCommunications:SSLChannel:SSL=all:dummy.FILE=none"/>
 
     <!-- Enable features -->
     <featureManager>
@@ -15,19 +16,8 @@
         <sslOptions sslRef="CustomSslOptions" />
     </httpEndpoint>
 
-
-
-
-    <!-- <httpEndpoint id="defaultHttpEndpoint1" >
-     <sslOptions sslRef="CustomSslOptions" />
-    </httpEndpoint> 
-   -->
-
-
     <ssl id="CustomSslOptions" keyStoreRef="defaultKeystore"/>
     <keyStore id="defaultKeystore" location="clientKey.jks" type="JKS" password="key123"/>
-
-
 
     <wasJmsOutbound id="jmsSecureCustomChain" useSSL="true">
         <sslOptions sslRef="CustomSslOptions" />

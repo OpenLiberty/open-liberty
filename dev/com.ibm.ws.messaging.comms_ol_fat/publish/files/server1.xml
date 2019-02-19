@@ -1,4 +1,7 @@
 <server>
+    <include location="../fatTestPorts.xml"/>
+    <logging maxFileSize="200" traceSpecification="SIBJFapChannel:SIBCommunications:SSLChannel:SSL=all:dummy.FILE=none"/>
+
     <!-- TESTING THE UPLOAD! -->
     <featureManager>
         <feature>timedexit-1.0</feature>
@@ -10,10 +13,7 @@
 
     <variable name="onError" value="FAIL"/>
 
-    <include location="../fatTestPorts.xml"/>
-    <!-- 	<keyStore id="defaultKeyStore" location="key.jks" type="JKS" password="defaultPWD" /> -->
     <keyStore id="defaultKeyStore" location="mykeynew.jks" type="JKS" password="key123"/>
-
 
     <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr1">
         <properties.wasJms userName="user1"
@@ -22,7 +22,6 @@
         />
     </jmsQueueConnectionFactory>
     <connectionManager id="ConMgr1" maxPoolSize="2"/>
-
 
     <jmsQueue jndiName="jndi_INPUT_Q">
         <properties.wasJms 	queueName="QUEUE1"

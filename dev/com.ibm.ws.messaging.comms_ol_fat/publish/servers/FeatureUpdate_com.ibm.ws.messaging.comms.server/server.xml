@@ -1,5 +1,6 @@
 <server description="new server">
 	<include location="../fatTestPorts.xml"/>
+	<logging maxFileSize="200" traceSpecification="SIBJFapChannel:SIBCommunications:SSLChannel:SSL=all:dummy.FILE=none"/>
 
 	<!-- Enable features -->
 	<featureManager>
@@ -9,13 +10,7 @@
 		<feature>wasJmsSecurity-1.0</feature>
 	</featureManager>
 
-
-	<!-- <keyStore id="defaultKeyStore" password="{xor}NDombm1s" />  -->
-	<!-- 	<keyStore id="defaultKeyStore" location="key.jks" type="JKS" password="defaultPWD" /> -->
-
 	<keyStore location="${server.output.dir}/resources/security/mykeynew.jks" password="{xor}NDombm1s" id="defaultKeyStore"/>
-
-	<!-- <keyStore id="defaultKeyStore" location="mykey2.jks" type="JKS" password="123key123"/> -->
 
 	<!-- Overriding the values of the properties used for wasJmsEndpoint port configuration in fatTestPorts.xml -->
 	<variable name="bvt.prop.jms"      value="${bvt.prop.jms.1}" />
@@ -29,12 +24,6 @@
 
 	<variable name="onError" value="FAIL"/>
 
-	<logging
-			traceSpecification="SIBJFapChannel:SIBCommunications:SSLChannel:SSL=all"
-			maxFileSize="200"
-			maxFiles="2"
-	/>
-
 	<basicRegistry id="basic" realm="SampleBasicRealm">
 		<user name="user1" password="password123" />
 		<user name="user2" password="password123" />
@@ -46,8 +35,6 @@
 
 
 	<!-- Messaging Security Tag -->
-
-
 	<messagingEngine id="newME" >
 		<queue id="QUEUE1" />
 		<queue id="QUEUE2" />
