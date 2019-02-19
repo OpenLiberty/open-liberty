@@ -6,7 +6,7 @@
     	<feature>mpMetrics-1.1</feature>
     </featureManager>
 
-    <logging traceSpecification="com.ibm.ws.config.*=all;logservice=all"/>
+    <logging traceSpecification="com.ibm.ws.config.*=all;logservice=all;com.ibm.ws.microprofile.metrics.monitor.*=all"/>
 
     <include location="../fatTestPorts.xml"/>
     <include location="serverJDBCConfig.xml"/>
