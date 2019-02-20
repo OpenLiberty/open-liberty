@@ -23,8 +23,14 @@ import org.eclipse.microprofile.reactive.streams.operators.core.ReactiveStreamsE
 import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsFactoryResolver;
 import org.junit.Test;
 
+/**
+ * Tests that we can call the serviceLoading relacement 'setInstance' methods
+ */
 public class SetInstanceTest extends WASReactiveUT {
 
+    /**
+     * Test setEngine does not affect call with Engine parameter
+     */
     @Test
     public void testSetEngineDoesNotAffectCallWithEngineParameter() {
 
@@ -46,8 +52,12 @@ public class SetInstanceTest extends WASReactiveUT {
         assertEquals("BitString:falsefalsefalsefalse", engine.check());
     }
 
+    /**
+     * Test that we make use of a user's custom reactive streams engine for building
+     * Completions.
+     */
     @Test
-    public void testCustomBuildCompletion() {
+    public void testCustomEngineBuildCompletionCalled() {
 
         PrintStream out = System.out;
         WASReactiveStreamsEngineImplSubclass engine = new WASReactiveStreamsEngineImplSubclass();
@@ -67,6 +77,9 @@ public class SetInstanceTest extends WASReactiveUT {
         assertEquals("BitString:falsefalsefalsetrue", engine.check());
     }
 
+    /**
+     * Test user can set a custom ReactiveStreamsFactory
+     */
     @Test
     public void testSetFactoryWorks() {
 

@@ -12,8 +12,6 @@
 
 package com.ibm.ws.microprofile.reactive.streams.test;
 
-import java.util.concurrent.ExecutionException;
-
 import org.eclipse.microprofile.reactive.streams.operators.ProcessorBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
@@ -23,8 +21,14 @@ import io.reactivex.subscribers.TestSubscriber;
 
 public class ElementDroppingAndAddingTest extends WASReactiveUT {
 
+    /**
+     * Test that the number of element that goes into a stream is not necessarily
+     * the number that comes out
+     *
+     * @throws InterruptedException
+     */
     @Test
-    public void testDropping() throws InterruptedException, ExecutionException {
+    public void testDropping() throws InterruptedException {
 
         PublisherBuilder<Integer> data = ReactiveStreams.of(1, 2, 3, 4, 5);
         ProcessorBuilder<Integer, Integer> filter = ReactiveStreams.<Integer>builder().dropWhile(t -> t < 3);
@@ -39,8 +43,13 @@ public class ElementDroppingAndAddingTest extends WASReactiveUT {
 
     }
 
+    /**
+     * Test that we can splice streams together
+     *
+     * @throws InterruptedException
+     */
     @Test
-    public void testConcatFallback() throws InterruptedException, ExecutionException {
+    public void testConcatFallback() throws InterruptedException {
 
         PublisherBuilder<Integer> stream1 = ReactiveStreams.of(1, 2, 3, 4, 5);
         PublisherBuilder<Integer> stream2 = ReactiveStreams.of(6, 7, 8, 9, 10);

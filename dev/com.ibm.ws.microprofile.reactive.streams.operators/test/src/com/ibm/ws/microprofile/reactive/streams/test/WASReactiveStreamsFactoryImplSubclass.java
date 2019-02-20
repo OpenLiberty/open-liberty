@@ -24,7 +24,8 @@ import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 
 /**
- *
+ * This is a simple subclass that merely records if its methods have been called
+ * before delegating to the superclass
  */
 public class WASReactiveStreamsFactoryImplSubclass extends ReactiveStreamsFactoryImpl
         implements ReactiveStreamsFactory {

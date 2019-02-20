@@ -12,20 +12,28 @@
 
 package com.ibm.ws.microprofile.reactive.streams.test;
 
-import java.util.concurrent.ExecutionException;
-
 import org.eclipse.microprofile.reactive.streams.operators.ProcessorBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.junit.Test;
 
 import io.reactivex.Flowable;
+import io.reactivex.processors.UnicastProcessor;
 import io.reactivex.subscribers.TestSubscriber;
 
+/**
+ *
+ */
 public class RsoElementsTest extends WASReactiveUT {
 
+    /**
+     * Tests we can import a reactive streams dot org Subscriber and uses a RxJava2
+     * Subscriber to do it
+     *
+     * @throws InterruptedException
+     */
     @Test
-    public void testReactiveStreamsDotOrgSubscriber() throws InterruptedException, ExecutionException {
+    public void testReactiveStreamsDotOrgSubscriber() throws InterruptedException {
 
         PublisherBuilder<Integer> data = ReactiveStreams.of(1, 2, 3, 4, 5);
         TestSubscriber<Integer> rxSub = new TestSubscriber<Integer>();
@@ -37,8 +45,14 @@ public class RsoElementsTest extends WASReactiveUT {
 
     }
 
+    /**
+     * Tests we can import a reactive streams dot org Publisher and uses a RxJava2
+     * Publisher to do it
+     *
+     * @throws InterruptedException
+     */
     @Test
-    public void testReactiveStreamsDotOrgPublisher() throws InterruptedException, ExecutionException {
+    public void testReactiveStreamsDotOrgPublisher() throws InterruptedException {
 
         Flowable<String> flowable = Flowable.fromArray("one", "two", "three");
         PublisherBuilder<String> data = ReactiveStreams.fromPublisher(flowable);
@@ -52,19 +66,25 @@ public class RsoElementsTest extends WASReactiveUT {
 
     }
 
+    /**
+     * Tests we can import a reactive streams dot org Processor and uses a RxJava2
+     * Processor to do it
+     *
+     * @throws InterruptedException
+     */
     @Test
-    public void testDropping() throws InterruptedException, ExecutionException {
+    public void testReactiveStreamsDotOrgProcessor() throws InterruptedException {
 
         PublisherBuilder<Integer> data = ReactiveStreams.of(1, 2, 3, 4, 5);
-        ProcessorBuilder<Integer, Integer> filter = ReactiveStreams.<Integer>builder().dropWhile(t -> t < 3);
-
+        UnicastProcessor<Integer> rxProc = UnicastProcessor.create();
+        ProcessorBuilder<Integer, Integer> rxProcBuilder = ReactiveStreams.fromProcessor(rxProc);
         TestSubscriber<Integer> rxSub = new TestSubscriber<Integer>();
-        data.via(filter).to(rxSub).run(getEngine());
 
-        TestSubscriber<Integer> o = rxSub.await();
-        o.assertComplete();
-        o.assertNoErrors();
-        o.assertResult(3, 4, 5);
+        data.via(rxProcBuilder).to(rxSub).run(getEngine());
+        rxSub.await()
+                .assertComplete()
+                .assertNoErrors()
+                .assertResult(1, 2, 3, 4, 5);
 
     }
 

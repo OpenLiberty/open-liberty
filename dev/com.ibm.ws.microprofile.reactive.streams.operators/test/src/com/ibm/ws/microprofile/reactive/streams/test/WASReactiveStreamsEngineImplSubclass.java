@@ -22,7 +22,8 @@ import org.reactivestreams.Publisher;
 import com.ibm.ws.microprofile.reactive.streams.operators.spi.impl.WASReactiveStreamsEngineImpl;
 
 /**
- *
+ * This is a simple subclass that merely records if its methods have been called
+ * before delegating to the superclass
  */
 public class WASReactiveStreamsEngineImplSubclass
         extends WASReactiveStreamsEngineImpl implements ReactiveStreamsEngine {
@@ -60,6 +61,9 @@ public class WASReactiveStreamsEngineImplSubclass
         return super.buildCompletion(graph);
     }
 
+    /**
+     * @return
+     */
     String check() {
         String check = "BitString:" + buildPublisherCalled + buildSubscriberCalled + buildProcessorCalled +
                 buildCompletionCalled;
