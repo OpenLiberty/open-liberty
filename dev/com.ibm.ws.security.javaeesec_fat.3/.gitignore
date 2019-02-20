@@ -1,0 +1,7 @@
+bundles
+dist
+/bootstrapping.properties
+/*.log*
+/coverage.ec
+/lib
+test-applications
