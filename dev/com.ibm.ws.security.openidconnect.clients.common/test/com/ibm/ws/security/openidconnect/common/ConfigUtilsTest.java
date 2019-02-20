@@ -44,7 +44,7 @@ public class ConfigUtilsTest extends CommonTestClass {
     private final String uniqueId = "myConfig";
     private final String configAttributeName = "forwardAuthzParameter";
 
-    private static final String CWWKS1530W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED = "CWWKS1530W";
+    private static final String CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED = "CWWKS1783W";
 
     ConfigUtils utils = new ConfigUtils(null);
 
@@ -153,7 +153,7 @@ public class ConfigUtilsTest extends CommonTestClass {
             assertNotNull("Value read should not have been null, but was. Parameter value was " + Arrays.toString(configValue) + ".", forwardAuthzParameter);
             assertTrue("Value read should have been empty, but wasn't. Value read was " + forwardAuthzParameter + ".", forwardAuthzParameter.isEmpty());
 
-            verifyLogMessage(outputMgr, CWWKS1530W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + blacklistedValue);
+            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + blacklistedValue);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -198,8 +198,8 @@ public class ConfigUtilsTest extends CommonTestClass {
             assertNotNull("Value read should not have been null, but was. Parameter value was " + Arrays.toString(configValue) + ".", forwardAuthzParameter);
             assertTrue("Value read should have been empty, but wasn't. Value read was " + forwardAuthzParameter + ".", forwardAuthzParameter.isEmpty());
 
-            verifyLogMessage(outputMgr, CWWKS1530W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry1);
-            verifyLogMessage(outputMgr, CWWKS1530W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry2);
+            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry1);
+            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry2);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -226,8 +226,8 @@ public class ConfigUtilsTest extends CommonTestClass {
             assertFalse("Value read should not have contained [" + bad2 + "] entry. Value read was " + forwardAuthzParameter + ".", forwardAuthzParameter.contains(bad2));
             assertEquals("Value read did not have expected number of entries. Value read was " + forwardAuthzParameter + ".", 2, forwardAuthzParameter.size());
 
-            verifyLogMessage(outputMgr, CWWKS1530W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + bad1);
-            verifyLogMessage(outputMgr, CWWKS1530W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + bad2);
+            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + bad1);
+            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + bad2);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -297,7 +297,7 @@ public class ConfigUtilsTest extends CommonTestClass {
             assertNotNull("Updated parameter list should not have been null, but was. Method input was " + configuredList + ".", updatedList);
             assertTrue("Updated parameter list should have had original blacklisted entry removed. Updated list was " + updatedList, updatedList.isEmpty());
 
-            verifyLogMessage(outputMgr, CWWKS1530W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry);
+            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -379,10 +379,10 @@ public class ConfigUtilsTest extends CommonTestClass {
             assertNotNull("Updated parameter list should not have been null, but was. Method input was " + configuredList + ".", updatedList);
             assertTrue("Updated parameter list should have had original blacklisted entry removed. Updated list was " + updatedList, updatedList.isEmpty());
 
-            verifyLogMessage(outputMgr, CWWKS1530W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry1);
-            verifyLogMessage(outputMgr, CWWKS1530W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry2);
+            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry1);
+            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry2);
             // entry3 is a duplicate of entry1 and should only show up once
-            verifyNoLogMessage(outputMgr, CWWKS1530W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry1 + ".*" + entry3);
+            verifyNoLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry1 + ".*" + entry3);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -413,8 +413,8 @@ public class ConfigUtilsTest extends CommonTestClass {
             assertFalse("Updated parameter list should not have contained [" + bad2 + "] entry. Updated list was " + updatedList + ".", updatedList.contains(bad2));
             assertEquals("Updated parameter list did not have expected number of entries. Updated list was " + updatedList + ".", 3, updatedList.size());
 
-            verifyLogMessage(outputMgr, CWWKS1530W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + bad1);
-            verifyLogMessage(outputMgr, CWWKS1530W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + bad2);
+            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + bad1);
+            verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + bad2);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
