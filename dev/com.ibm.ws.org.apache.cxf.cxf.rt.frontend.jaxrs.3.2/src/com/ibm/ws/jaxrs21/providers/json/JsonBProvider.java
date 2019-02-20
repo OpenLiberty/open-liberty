@@ -114,7 +114,7 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
     public Object readFrom(Class<Object> clazz, Type genericType, Annotation[] annotations,
                            MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
         Object obj = null;
-        obj = getJsonb().fromJson(entityStream, clazz);
+        obj = getJsonb().fromJson(entityStream, genericType);
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "object=" + obj);
