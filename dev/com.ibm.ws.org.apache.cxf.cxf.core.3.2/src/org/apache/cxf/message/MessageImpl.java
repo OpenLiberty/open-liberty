@@ -127,7 +127,7 @@ public class MessageImpl extends StringMapImpl implements Message {
         if (index >= contents.length) {
             //very unlikely to happen.   Haven't seen more than about 6,
             //but just in case we'll add a few more
-            Object tmp[] = new Object[contents.length + 10];
+            Object[] tmp = new Object[contents.length + 10];
             System.arraycopy(contents, 0, tmp, 0, contents.length);
             contents = tmp;
         }
@@ -155,7 +155,7 @@ public class MessageImpl extends StringMapImpl implements Message {
     @Override
     public Set<Class<?>> getContentFormats() {
 
-        Set<Class<?>> c = new HashSet<Class<?>>();
+        Set<Class<?>> c = new HashSet<>();
         for (int x = 0; x < index; x += 2) {
             c.add((Class<?>) contents[x]);
         }

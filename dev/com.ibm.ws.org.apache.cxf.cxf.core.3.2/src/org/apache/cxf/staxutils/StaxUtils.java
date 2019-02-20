@@ -136,7 +136,7 @@ public final class StaxUtils {
     private static final XMLOutputFactory SAFE_OUTPUT_FACTORY;
 
     private static final String XML_NS = "http://www.w3.org/2000/xmlns/";
-    private static final String DEF_PREFIXES[] = new String[] {
+    private static final String[] DEF_PREFIXES = new String[] {
         "ns1".intern(), "ns2".intern(), "ns3".intern(),
         "ns4".intern(), "ns5".intern(), "ns6".intern(),
         "ns7".intern(), "ns8".intern(), "ns9".intern()
@@ -156,8 +156,8 @@ public final class StaxUtils {
     static {
         int i = getInteger("org.apache.cxf.staxutils.pool-size", 20);
 
-        NS_AWARE_INPUT_FACTORY_POOL = new ArrayBlockingQueue<XMLInputFactory>(i);
-        OUTPUT_FACTORY_POOL = new ArrayBlockingQueue<XMLOutputFactory>(i);
+        NS_AWARE_INPUT_FACTORY_POOL = new ArrayBlockingQueue<>(i);
+        OUTPUT_FACTORY_POOL = new ArrayBlockingQueue<>(i);
 
         //old names
         innerElementCountThreshold = getInteger(INNER_ELEMENT_COUNT_SYSTEM_PROP, innerElementCountThreshold);
@@ -720,7 +720,7 @@ public final class StaxUtils {
 
     /**
      * Copies the reader to the writer. The start and end document methods must
-     * be handled on the writer manually.
+     * be handled on the writer manually. 
      *
      * @param reader
      * @param writer
@@ -740,7 +740,7 @@ public final class StaxUtils {
         // number of elements read in
         int read = 0;
         int elementCount = 0;
-        Stack<Integer> countStack = new Stack<Integer>();
+        Stack<Integer> countStack = new Stack<>();
         int event = reader.getEventType();
 
         while (reader.hasNext()) {
@@ -834,7 +834,7 @@ public final class StaxUtils {
 
         // Write out the element name
         if (uri != null) {
-            if (prefix.length() == 0 && StringUtils.isEmpty(uri)) {
+            if (prefix.isEmpty() && StringUtils.isEmpty(uri)) {
                 writer.writeStartElement(local);
             } else {
                 writer.writeStartElement(prefix, local, uri);
@@ -853,7 +853,7 @@ public final class StaxUtils {
             if (nsURI == null) {
                 nsURI = "";
             }
-            if (nsPrefix.length() == 0) {
+            if (nsPrefix.isEmpty()) {
                 writer.writeDefaultNamespace(nsURI);
                 writer.setDefaultNamespace(nsURI);
             } else {
@@ -870,7 +870,7 @@ public final class StaxUtils {
         // We need this check because namespace writing works
         // different on Woodstox and the RI.
         if (writeElementNS) {
-            if (prefix.length() == 0) {
+            if (prefix.isEmpty()) {
                 writer.writeDefaultNamespace(uri);
                 writer.setDefaultNamespace(uri);
             } else {
@@ -883,9 +883,9 @@ public final class StaxUtils {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String ns = reader.getAttributeNamespace(i);
             String nsPrefix = reader.getAttributePrefix(i);
-            if (ns == null || ns.length() == 0) {
+            if (ns == null || ns.isEmpty()) {
                 writer.writeAttribute(reader.getAttributeLocalName(i), reader.getAttributeValue(i));
-            } else if (nsPrefix == null || nsPrefix.length() == 0) {
+            } else if (nsPrefix == null || nsPrefix.isEmpty()) {
                 writer.writeAttribute(reader.getAttributeNamespace(i), reader.getAttributeLocalName(i),
                                       reader.getAttributeValue(i));
             } else {
@@ -984,7 +984,7 @@ public final class StaxUtils {
         String decUri = writer.getNamespaceContext().getNamespaceURI(prefix);
         boolean declareNamespace = decUri == null || !decUri.equals(ns);
 
-        if (ns == null || ns.length() == 0) {
+        if (ns == null || ns.isEmpty()) {
             writer.writeStartElement(localName);
             if (StringUtils.isEmpty(decUri)) {
                 declareNamespace = false;
@@ -1023,9 +1023,9 @@ public final class StaxUtils {
                 } else {
                     String attns = attr.getNamespaceURI();
                     String value = attr.getNodeValue();
-                    if (attns == null || attns.length() == 0) {
+                    if (attns == null || attns.isEmpty()) {
                         writer.writeAttribute(name, value);
-                    } else if (attrPrefix.length() == 0) {
+                    } else if (attrPrefix.isEmpty()) {
                         writer.writeAttribute(attns, name, value);
                     } else {
                         if (repairing && writer.getNamespaceContext().getNamespaceURI(attrPrefix) == null) {
@@ -1062,7 +1062,7 @@ public final class StaxUtils {
         if (attrs.getLength() == 0) {
             return Collections.<Node> emptyList();
         }
-        List<Node> sortedAttrs = new LinkedList<Node>();
+        List<Node> sortedAttrs = new LinkedList<>();
         for (int i = 0; i < attrs.getLength(); i++) {
             Node attr = attrs.item(i);
             String name = attr.getLocalName();
@@ -1278,7 +1278,7 @@ public final class StaxUtils {
                                        XMLStreamReader reader, boolean repairing, boolean recordLoc,
                                        boolean isThreshold)
         throws XMLStreamException {
-        Stack<Node> stack = new Stack<Node>();
+        Stack<Node> stack = new Stack<>();
         int event = reader.getEventType();
         int elementCount = 0;
         while (reader.hasNext()) {
@@ -1378,7 +1378,7 @@ public final class StaxUtils {
     }
 
     public static class StreamToDOMContext {
-        private Stack<Node> stack = new Stack<Node>();
+        private Stack<Node> stack = new Stack<>();
         private int elementCount;
         private boolean repairing;
         private boolean recordLoc;

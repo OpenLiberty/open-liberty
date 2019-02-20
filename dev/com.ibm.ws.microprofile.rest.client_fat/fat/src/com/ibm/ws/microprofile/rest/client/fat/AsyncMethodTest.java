@@ -21,6 +21,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTestAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -36,7 +37,10 @@ public class AsyncMethodTest extends FATServletClient {
     @ClassRule
     public static RepeatTests r = 
         RepeatTests.withoutModification()
-                   .andWith(FeatureReplacementAction.EE8_FEATURES().forServers("mpRestClient11.async"));
+                   .andWith(new FeatureReplacementAction().withID("mpRestClient-1.2")
+                                                          .addFeature("mpRestClient-1.2")
+                                                          .removeFeature("mpRestClient-1.1")
+                                                          .forServers("mpRestClient11.async"));
 
     private static final String appName = "asyncApp";
 

@@ -425,7 +425,7 @@ public class JAXRSInvoker extends AbstractInvoker {
 
     @SuppressWarnings("unchecked")
     protected MultivaluedMap<String, String> getTemplateValues(Message msg) {
-        MultivaluedMap<String, String> values = new MetadataMap<String, String>();
+        MultivaluedMap<String, String> values = new MetadataMap<>();
         MultivaluedMap<String, String> oldValues =
             (MultivaluedMap<String, String>)msg.get(URITemplate.TEMPLATE_PARAMETERS);
         if (oldValues != null) {
