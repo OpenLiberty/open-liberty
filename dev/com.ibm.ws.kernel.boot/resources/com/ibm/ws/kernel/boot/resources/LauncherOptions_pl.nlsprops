@@ -16,7 +16,7 @@
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Sk\u0142adnia: java [opcje JVM] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
 \t-jar bin/tools/ws-server.jar serverName {0} [opcje]  
-scriptUsage=Sk\u0142adnia: {0} {1} serverName [opcje]
+scriptUsage=Sk\u0142adnia: {0} {1} serverName [opcje] [opcje maszyny JVM]
 
 use.actions=Dzia\u0142ania:
 use.options=Opcje:
@@ -178,4 +178,4 @@ option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tWy\u0142\u0105cz generowanie domy\u015blnego has\u0142a magazynu kluczy
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="g\u0142\u00f3wny folder serwera w archiwum"
-option-desc.package.server-root=\tOkre\u015bla nazw\u0119 folderu g\u0142\u00f3wnego serwera w pliku archiwum.
+option-desc.package.server-root=\tOkre\u015bla nazw\u0119 g\u0142\u00f3wnego folderu serwera w pliku archiwum.\n

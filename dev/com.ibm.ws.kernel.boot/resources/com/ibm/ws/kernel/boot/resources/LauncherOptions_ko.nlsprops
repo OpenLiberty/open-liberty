@@ -16,7 +16,7 @@
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=\uc0ac\uc6a9\ubc95: java [JVM \uc635\uc158] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
 \t-jar bin/tools/ws-server.jar serverName {0} [\uc635\uc158]  
-scriptUsage=\uc0ac\uc6a9\ubc95: {0} {1} serverName [\uc635\uc158]
+scriptUsage=\uc0ac\uc6a9\ubc95: {0} {1} serverName [\uc635\uc158] [JVM \uc635\uc158]
 
 use.actions=\uc870\uce58:
 use.options=\uc635\uc158:
@@ -180,4 +180,4 @@ option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\t\uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c \ube44\ubc00\ubc88\ud638 \uc0dd\uc131 \uc0ac\uc6a9 \uc548\ud568
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="\uc544\uce74\uc774\ube0c\uc758 \ub8e8\ud2b8 \uc11c\ubc84 \ud3f4\ub354"
-option-desc.package.server-root=\t\uc544\uce74\uc774\ube0c \ud30c\uc77c\uc758 \ub8e8\ud2b8 \uc11c\ubc84 \ud3f4\ub354 \uc774\ub984\uc744 \uc9c0\uc815\ud569\ub2c8\ub2e4.
+option-desc.package.server-root=\t\uc544\uce74\uc774\ube0c \ud30c\uc77c\uc758 \ub8e8\ud2b8 \uc11c\ubc84 \ud3f4\ub354 \uc774\ub984\uc744 \uc9c0\uc815\ud569\ub2c8\ub2e4.           \n

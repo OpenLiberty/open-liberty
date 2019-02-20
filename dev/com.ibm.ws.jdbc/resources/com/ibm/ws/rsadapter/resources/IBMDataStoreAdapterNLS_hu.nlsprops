@@ -271,6 +271,14 @@ DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: A JDBC illeszt\u0151program
 DSRA4011.tran.none.iso.switch.unsupported.explanation=A JDBC specifik\u00e1ci\u00f3 nem t\u00e1mogatja az \u00e1tv\u00e1lt\u00e1st TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szintre.
 DSRA4011.tran.none.iso.switch.unsupported.useraction=Ker\u00fclje az \u00e1tv\u00e1lt\u00e1st a TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szintre.
 
+DSRA4012.ignored.datasource.config.used=DSRA4012I: Oracle UCP haszn\u00e1lata eset\u00e9n az al\u00e1bbi adatforr\u00e1s tulajdons\u00e1gok figyelmen k\u00edv\u00fcl maradnak: statementCacheSize \u00e9s validationTimeout. Haszn\u00e1lja az egyen\u00e9rt\u00e9k\u0171 Oracle UCP funkcionalit\u00e1st.
+DSRA4012.ignored.datasource.config.used.explanation=A statementCacheSize \u00e9s validationTimeout adatforr\u00e1s tulajdons\u00e1gok nem \u00e9rv\u00e9nyesek Oracle UCP haszn\u00e1lata eset\u00e9n.
+DSRA4012.ignored.datasource.config.used.useraction=T\u00e1vol\u00edtsa el az adatforr\u00e1s tulajdons\u00e1gokat, \u00e9s haszn\u00e1lja helyett\u00fck az egyen\u00e9rt\u00e9k\u0171 Oracle UCP funkcionalit\u00e1st.
+
+DSRA4013.ignored.connection.manager.config.used=DSRA4013I: Oracle UCP haszn\u00e1lata eset\u00e9n az al\u00e1bbi kapcsolatkezel\u0151 tulajdons\u00e1gok figyelmen k\u00edv\u00fcl maradnak: agedTimeout, connectionTimeout, maxIdleTime, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxConnectionsPerThread, maxConnectionsPerThreadLocal. Haszn\u00e1lja az egyen\u00e9rt\u00e9k\u0171 Oracle UCP funkcionalit\u00e1st.
+DSRA4013.ignored.connection.manager.config.used.explanation=A felsorolt kapcsolatkezel\u0151 tulajdons\u00e1gok nem \u00e9rv\u00e9nyesek Oracle UCP haszn\u00e1lata eset\u00e9n.
+DSRA4013.ignored.connection.manager.config.used.useraction=T\u00e1vol\u00edtsa el a kapcsolatkezel\u0151 tulajdons\u00e1gokat, \u00e9s haszn\u00e1lja helyett\u00fck az egyen\u00e9rt\u00e9k\u0171 Oracle UCP funkcionalit\u00e1st.
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
