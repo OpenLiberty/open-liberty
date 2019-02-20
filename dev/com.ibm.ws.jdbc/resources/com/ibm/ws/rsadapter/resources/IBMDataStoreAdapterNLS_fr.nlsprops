@@ -271,6 +271,14 @@ DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: Le pilote JDBC ne prend pas
 DSRA4011.tran.none.iso.switch.unsupported.explanation=La sp\u00e9cification JDBC ne prend pas en charge le passage au niveau d'isolement TRANSACTION_NONE.
 DSRA4011.tran.none.iso.switch.unsupported.useraction=Evitez de passer au niveau d'isolement TRANSACTION_NONE.
 
+DSRA4012.ignored.datasource.config.used=DSRA4012I: Si vous utilisez un pool de connexions universelles (UCP) Oracle, les propri\u00e9t\u00e9s de source de donn\u00e9es suivantes sont ignor\u00e9es : statementCacheSize et validationTimeout. Utilisez la fonctionnalit\u00e9 de pool de connexions universelles (UCP) Oracle \u00e9quivalente.
+DSRA4012.ignored.datasource.config.used.explanation=Les propri\u00e9t\u00e9s de source de donn\u00e9es statementCacheSize et validationTimeout ne sont pas valides si vous utilisez un pool de connexions universelles (UCP) Oracle.
+DSRA4012.ignored.datasource.config.used.useraction=Retirez les propri\u00e9t\u00e9s de source de donn\u00e9es et utilisez la fonctionnalit\u00e9 de pool de connexions universelles (UCP) Oracle \u00e9quivalente \u00e0 la place.
+
+DSRA4013.ignored.connection.manager.config.used=DSRA4013I: Si vous utilisez un pool de connexions universelles (UCP) Oracle, les propri\u00e9t\u00e9s de gestionnaire de connexion suivantes sont ignor\u00e9es : agedTimeout, connectionTimeout, maxIdleTime, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxConnectionsPerThread et maxConnectionsPerThreadLocal. Utilisez la fonctionnalit\u00e9 de pool de connexions universelles (UCP) Oracle \u00e9quivalente.
+DSRA4013.ignored.connection.manager.config.used.explanation=Les propri\u00e9t\u00e9s de gestionnaire de connexions r\u00e9pertori\u00e9es ne sont pas valides si vous utilisez un pool de connexions universelles (UCP) Oracle.
+DSRA4013.ignored.connection.manager.config.used.useraction=Retirez les propri\u00e9t\u00e9s de gestionnaire de connexions et utilisez la fonctionnalit\u00e9 de pool de connexions universelles (UCP) Oracle \u00e9quivalente \u00e0 la place.
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

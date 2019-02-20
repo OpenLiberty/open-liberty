@@ -271,6 +271,14 @@ DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: Il driver JDBC non supporta
 DSRA4011.tran.none.iso.switch.unsupported.explanation=La specifica JDBC non supporta la commutazione a un livello di isolamento di TRANSACTION_NONE.
 DSRA4011.tran.none.iso.switch.unsupported.useraction=Evitare la commutazione a un livello di isolamento di TRANSACTION_NONE.
 
+DSRA4012.ignored.datasource.config.used=DSRA4012I: Quando si utilizza l'UCP Oracle le seguenti propriet\u00e0 di origine dati vengono ignorate: statementCacheSize e validationTimeout. Utilizzare la funzionalit\u00e0 UCP Oracle equivalente.
+DSRA4012.ignored.datasource.config.used.explanation=Le propriet\u00e0 dell'origine dati statementCacheSize e validationTimeout non sono valide quando si utilizza UCP Oracle.
+DSRA4012.ignored.datasource.config.used.useraction=Rimuovere le propriet\u00e0 dell'origine dati e utilizzare invece la funzionalit\u00e0 UCP Oracle equivalente.
+
+DSRA4013.ignored.connection.manager.config.used=DSRA4013I: Quando si utilizza UCP Oracle le seguenti propriet\u00e0 del gestore connessioni vengono ignorate: agedTimeout, connectionTimeout, maxIdleTime, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxConnectionsPerThread, maxConnectionsPerThreadLocal. Utilizzare la funzionalit\u00e0 UCP Oracle equivalente.
+DSRA4013.ignored.connection.manager.config.used.explanation=Le propriet\u00e0 del gestore connessioni elencate non sono valide quando si utilizza UCP Oracle.
+DSRA4013.ignored.connection.manager.config.used.useraction=Rimuovere le propriet\u00e0 del gestore connessioni e utilizzare invece la funzionalit\u00e0 UCP Oracle equivalente.
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

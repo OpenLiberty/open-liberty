@@ -11,6 +11,8 @@
 package remoteApp.basic;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,9 +31,6 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-/**
- *
- */
 @Path("/basic")
 @ApplicationPath("/")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -89,5 +88,43 @@ public class BasicService extends Application {
     @Path("/batch")
     public Response unbatch(Widget widget) {
         return Response.accepted( delete(widget.getName()) ).build();
+    }
+
+    @GET
+    @Path("/collections")
+    public Set<Widget> getWidgets() {
+        Set<Widget> set = new HashSet<>();
+        for (Widget w : widgets.values()) {
+            set.add(w);
+        }
+        return set;
+    }
+
+    @GET
+    @Path("/collections/byName/{search}")
+    public Map<String, Widget> getWidgetsByName(@PathParam("search") String search) {
+        Map<String, Widget> matchingWidgets = new HashMap<>();
+        widgets.keySet().stream()
+                        .filter(s -> s.contains(search))
+                        .forEach(s -> matchingWidgets.put(s, widgets.get(s)));
+        return matchingWidgets;
+    }
+
+    @POST
+    @Path("/collections")
+    public int createNewWidgets(List<Widget> widget) {
+        if (widget.stream().anyMatch(w -> widgets.containsKey(w.getName()))) {
+            throw new WebApplicationException(409); // conflict
+        }
+        widget.stream().forEach(w -> widgets.put(w.getName(), w));
+        return widget.size();
+    }
+
+    @DELETE
+    @Path("/collections/byName")
+    public Map<String, Widget> removeWidgets(Set<String> names) {
+        Map<String, Widget> removedWidgets = new HashMap<>();
+        names.stream().forEach(s -> removedWidgets.put(s, widgets.remove(s)));
+        return removedWidgets;
     }
 }

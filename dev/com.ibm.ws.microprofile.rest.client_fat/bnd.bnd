@@ -19,6 +19,7 @@ src: \
   test-applications/basicEJBClientApp/src,\
   test-applications/basicRemoteApp/src,\
   test-applications/cdiPropsAndProvidersApp/src,\
+  test-applications/collectionsApp/src,\
   test-applications/handleresponsesApp/src,\
   test-applications/headerPropagationApp/src,\
   test-applications/multiClientCdiApp/src,\
@@ -26,6 +27,8 @@ src: \
   test-applications/propsApp/src
 
 fat.project: true
+
+tested.features=mpRestClient-1.2,jdbc-4.2
 
 javac.source: 1.8
 javac.target: 1.8
