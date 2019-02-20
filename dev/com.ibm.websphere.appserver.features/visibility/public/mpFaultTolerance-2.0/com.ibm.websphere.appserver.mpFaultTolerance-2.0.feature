@@ -14,5 +14,5 @@ Subsystem-Name: MicroProfile Fault Tolerance 2.0
 -bundles=com.ibm.ws.net.jodah.failsafe.1.0.4; apiJar=false; location:="lib/", \
  com.ibm.ws.microprofile.faulttolerance.2.0; apiJar=false; location:="lib/", \
  com.ibm.ws.microprofile.faulttolerance.spi; apiJar=false; location:="lib/"
-kind=noship
-edition=full
+kind=beta
+edition=core
