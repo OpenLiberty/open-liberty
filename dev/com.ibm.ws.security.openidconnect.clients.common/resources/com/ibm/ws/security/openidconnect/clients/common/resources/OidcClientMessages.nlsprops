@@ -16,6 +16,8 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS1700 - CWWKS1750
+# BEWARE: Due to code refactoring, some of these messages are also used in the openidconnect.client bundle. Check there too before using or
+# altering any of these messages.
 
 
 # used by clients project
@@ -26,27 +28,27 @@ OIDC_CLIENT_AUTHORIZE_ERR.useraction=Retry the request with different OpenID Con
 
 #do not translate enforceHTTPS
 
-# used_by_client_project and clients project
+# used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: The OpenID Connect client requires SSL (HTTPS) but the OpenID Connect provider URL is HTTP: [{0}].  Update the configuration so that [enforceHTTPS] attribute matches the target URL scheme. 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=The OpenID Connect client (relying party or resource server) requires SSL (HTTPS) but the OpenID Connect provider (OP) URL protocol specified in the OpenID Connect client configuration is not HTTPS.
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Do one of the following: 1) Ensure that OpenID Connect provider supports SSL. 2) If the OpenID Connector provider does not support SSL, set enforceHTTPS in the OpenID Connect client configuration to false.
 
-# unused
+# unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: The current state [{0}] for the OpenID Connect client [{2}] and the state parameter [{1}] in the response from the OpenID Connect provider do not match.  This condition is not allowed.
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=The OpenID Connect client (relying party or RP) has sent a request to an OpenID Connect provider (OP) and the OP has sent back a response with a state parameter does not match the state of the RP at the time it was sent. The OP must include in the response the same state as was sent.  The state is used in this manner to prevent cross-site request forgery. 
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.useraction=Ensure that your OP URL is correct. Check the logs on your OP to ensure that it has received the request.
 
-# This is not in use any more
+# This is not in use any more, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE IN BOTH BUNDLES
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR=CWWKS1705E: The OpenID Connect client [{0}] failed to authenticate the ID token because a subject identifier was not included in the token. 
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR.explanation=In order to authenticate an ID token, the OpenID Connect client (relying party or RP) must have a subject identifier. The ID token received in the response from OpenID Connect provider (OP) did not contain a subject identifier, so authentication failed. 
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR.useraction=Ensure that the OpenID Connect provider (OP) returns an ID token that includes a subject identifier.
 
-#used_by_client_project and clients project
+#used_by_client_project and clients project. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR=CWWKS1706E: The OpenID Connect client [{1}] failed to validate the ID token due to [{0}].
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR.explanation=The OpenID Connect client (relying party or RP) cannot validate the ID token successfully. This might have been caused by a failure in the process of required claims validation. Some of the ID token required claims include issuer, audience, issued time. 
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR.useraction=Ensure that OpenID Connect client (RP) system clock is in sync with OpenID Connect provider (OP) system clock (in case they are on two different systems). Also see the user action for the error that appears after this error.
 
-#used_by_client_project and clients proje
+#used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1707E: The OpenID Connect client [{1}] was unable to create an SSL context due to [{0}]. Ensure that your SSL feature is properly configured.
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.explanation=The OpenID Connect client (relying party or resource server) configuration is configured to use the HTTPS scheme, but an HTTPS connection could not be established. The SSL feature may not be enabled. The keyStore element may be missing or incorrectly specified.  
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Ensure that you have the correct SSL information in the server.xml. See the user action for the error that appears before this message.
@@ -56,16 +58,19 @@ OIDC_CLIENT_TOKEN_REQUEST_FAILURE=CWWKS1708E: The OpenID Connect client [{1}] is
 OIDC_CLIENT_TOKEN_REQUEST_FAILURE.explanation=The OpenID Connect client (relying party or RP) failed to obtain an ID token from the OpenID Connect provider (OP) because a connection could not be established with the provider. The OP might not have been available at the time of the request, the request might not have been directed to a valid endpoint, or there might be some configuration mismatch between the OP and the RP. The reason for the error appears after the message.
 OIDC_CLIENT_TOKEN_REQUEST_FAILURE.useraction=Check the server configuration to make sure the configured token endpoint URL is a valid URL and points to the token endpoint of an active OpenID Connect provider. See the actions for the error displayed after this message.
 
+
 # used by clients
 OIDC_CLIENT_INVALID_HTTP_RESPONSE=CWWKS1709E: The OpenID Connect client [{1}] encountered an error while processing the HTTP response from the OpenID Connect provider due to [{0}].
 OIDC_CLIENT_INVALID_HTTP_RESPONSE.explanation=The OpenID Connect client (relying party or resource server) received a response from the OpenID Connect provider (OP), but an error occurred while the relying party or the resource server was processing the response. The reason for the error appears after the message.
 OIDC_CLIENT_INVALID_HTTP_RESPONSE.useraction=See the actions for the error displayed after this message.
 
-#used_by_client_project
+
+#used_by_client_project, present in clients.common bundle. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OAUTH_REQUEST_ACCESS_DENIED=CWWKS1710E: The OpenID Connect request has been denied by the user, or another error occurred that resulted in denial of the request.
 OAUTH_REQUEST_ACCESS_DENIED.explanation=The user has either denied the OpenID Connect request by canceling the request on the scope consent form, or some other error has occurred that has denied access to the OpenID Connect request.
 OAUTH_REQUEST_ACCESS_DENIED.useraction=The user must allow the OpenID Connect provider to share the scopes that the client requires in order for the OpenID Connect request to succeed. If the user approved the request, check the logs on the OP for any additional errors.
 
+#1711 is used by client bundle, don't use here.
 
 #
 #used by clients project
@@ -83,6 +88,7 @@ OIDC_CLIENT_REQUEST_NONCE_FAILED=CWWKS1714E: The OpenID Connect client [{0}] ena
 OIDC_CLIENT_REQUEST_NONCE_FAILED.explanation=OpenID Connect client requests require the nonce to be handled properly during the request flow to mitigate replay attacks. The nonce that is included in the token does not match the nonce that is associated with this request, therefore the request is not valid.
 OIDC_CLIENT_REQUEST_NONCE_FAILED.useraction=Ensure that the OpenID Connect provider generates tokens using the nonce that is specified in the initial OpenID Connect client request.
 
+# 1715, 16, 17, 18, 19, 20, 21 are used in client bundle, do not use here.
 
 # used by clients proj
 PROPAGATION_TOKEN_MISSING_USERID=CWWKS1722E: The resource server failed the authentication request because the access token does not contain the claim [{0}] specified by the [{1}] attribute.
@@ -90,16 +96,17 @@ PROPAGATION_TOKEN_MISSING_USERID.explanation=The provided access token does not 
 PROPAGATION_TOKEN_MISSING_USERID.useraction=Do one of the following. 1)Verify that the OpenID Connect client configuration specifies the correct claim name 2)Verify that the OpenID Connect provider (OP) emits the access token with the specified claim.
 
 
+# PRESENT IN CLIENT AND CLIENTS.COMMON BUNDLE. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 # PROPAGATION_TOKEN_USERINFO_ISS_ERROR=CWWKS1728E: The resource server failed the authentication request because the issuerIdentifier [{0}] in the configuration does not match the "iss" claim [{1}] in the UserInfo.
 # PROPAGATION_TOKEN_USERINFO_ISS_ERROR.explanation=The provided access token cannot be verified because the "iss" claim in the UserInfo does not match the issuerIdentifier configuration attribute, and the runtime cannot continue with the authentication process.
 # PROPAGATION_TOKEN_USERINFO_ISS_ERROR.useraction=Verify that the OpenID Connect client configuration has the issuerIdentifier that matches the "iss" claim in the UserInfo.
 
-#unused
+#unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: The resource server failed the authentication request because the validation method [{0}] was not appropriate for the validation endpoint URL [{1}].
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=The validationEndpointUrl specified in the OpenID Connect client configuration is not the appropriate endpoint for the specified validationMethod.
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Update the OpenID Connect client configuration by either changing the validationMethod or the validationEndpointUrl.
  
-#used by clients proj 
+#used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: The resource server failed the authentication request because the data type of the [{0}] claim in the access token associated with the [{1}] configuration attribute is not valid. 
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.explanation=The provided access token has an invalid claim data type and the runtime cannot continue with the authentication process.
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.useraction=Verify that the OpenID Connect client configuration specifies the correct claim name for the attribute.
@@ -109,20 +116,21 @@ PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: The resource server failed the authe
 PROPAGATION_TOKEN_MISSING_REALM.explanation=The provided access token does not contain the specified claim to identify the realm and the runtime cannot continue with the authentication process.
 PROPAGATION_TOKEN_MISSING_REALM.useraction=Do one of the following. 1)Verify that the OpenID Connect client configuration specifies the realmName attribute 2)Verify that the OpenID Connect provider (OP) emits the access token with the specified claim 3)Verify whether the OP can emit the access token with the "iss" claim. 
 
+# 1732, 33 used by client bundle, don't use here.
 
 #used by clients project
 OIDC_CLIENT_ID_TOKEN_MISSING_CLAIM=CWWKS1734E: The OpenID Connect client [{0}] failed to authenticate the ID token because the claim [{1}] specified by the [{2}] configuration attribute was not included in the token.
 OIDC_CLIENT_ID_TOKEN_MISSING_CLAIM.explanation=The specified configuration attribute defines the ID token claim to use when creating a user subject. The specified claim could not be found in the ID token, so the ID token could not be authenticated and a user subject could not be created.
 OIDC_CLIENT_ID_TOKEN_MISSING_CLAIM.useraction=Configure the specified attribute to refer to a claim that exists in the ID token and can be used to create a subject.
 
-#used_by_client_project
+#present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1735E: The resource server failed the authentication request because the response from the validation end point [{0}] has the [{1}] claim, but the [{2}] attribute is set to true.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Since the OpenID Connect client configuration specifies "disableIssChecking", the resource server expects the json response from the validation end point to not have the "iss" claim.  
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Do one of the following. 1)Update the OpenID Connect client configuration and set the "disableIssChecking" to "false" 2) Make the validation end point to not emit the "iss" claim.
 
 # Do not translate "JSON Web Token"
 #0=Java runtime level, 1=Minimum Java level required by JWT library
-#unused
+#unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OIDC_CLIENT_JWT_JDK7=CWWKS1736E: The Java version used by this run time [{0}] is not supported by the JSON Web Token library. The supported Java version is [{1}] or higher.
 OIDC_CLIENT_JWT_JDK7.explanation=The open source libraries for processing JSON Web Tokens does not support the Java version that the Liberty server is currently using.
 OIDC_CLIENT_JWT_JDK7.useraction=Install a Java version that is at or higher than the Java level shown in the message.
@@ -136,19 +144,25 @@ OIDC_CLIENT_JWT_VERIFY_ERR.useraction=See the user action for the error that app
 
 # Do not translate "JSON Web Token"
 #0=OIDC client ID, 1=JWT claim (such as aud, iat, exp), 2=Client config attribute (userIdentifier or userIdentityToCreateSubject)
-#used by clients proje
+#used by clients project
 OIDC_CLIENT_JWT_MISSING_CLAIM=CWWKS1738E: The OpenID Connect client [{0}] failed to authenticate the JSON Web Token because the claim [{1}] specified by the [{2}] configuration attribute was not included in the token.
 OIDC_CLIENT_JWT_MISSING_CLAIM.explanation=The specified configuration attribute defines the JSON Web Token claim to use when creating a user subject. The specified claim could not be found in the JSON Web Token, so the JSON Web Token could not be authenticated and a user subject could not be created.
 OIDC_CLIENT_JWT_MISSING_CLAIM.useraction=Do one of the following actions: 1) Change your configuration of the specified attribute to refer to a claim that exists in the JSON Web Token. 2) Modify the JSON Web Token to include the specified attribute.
 
+#present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 #0=signatureAlgorithm, 1=exception or error message if any
 #used_by_client_project and clients project
 OIDC_CLIENT_NO_VERIFYING_KEY=CWWKS1739E: A signing key required by signature algorithm [{0}] was not available. {1}
 OIDC_CLIENT_NO_VERIFYING_KEY.explanation=A signing key could not be found, or a key that uses the configured signature algorithm could not be found. This could be due to missing, malformed, or inaccurate information in the client configuration or token.
 OIDC_CLIENT_NO_VERIFYING_KEY.useraction=Do one of the following actions: 1) If using JWK to sign and validate tokens, ensure the jwkEndpointUrl attribute is configured properly and the JWT and JWK claims are correct. 2) If using X.509 certificates to sign and validate tokens, ensure the signatureAlgorithm, trustStoreRef, and trustStoreAlias attributes are configured properly. 3) If using shared keys to sign and validate tokens, ensure the clientId and clientSecret attributes are configured properly.
 
+#1740, 41 used in client bundle, do not use here.
+
+
 # CWWKS1742E
 #JWK_RETRIVE_FAILED=CWWKS1742E: Cannot get the Json Web Key(JWK) from the URL [{0}]. Response status [{1}]. Message:[{2}] 
+
+#1742 used in client bundle, do not use here.
 
 #0: the issuer, 1:jti
 #used by clients
@@ -162,6 +176,7 @@ OIDC_CLIENT_RESPONSE_STATE_ERR=CWWKS1744E: The current state [{0}] of a response
 OIDC_CLIENT_RESPONSE_STATE_ERR.explanation=The OpenID Connect client (relying party or RP) has received a response from an OpenID Connect provider (OP), but the state parameter in the response is not valid. It is either expired or has already been used.
 OIDC_CLIENT_RESPONSE_STATE_ERR.useraction=Make sure the clocks on all systems are synchronized to ensure that state values do not expire prematurely. Make sure that state values are used only once.
 
+# present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 # do not translate WASOidcCode
 # 0: the content of WASOidcCode, 1: client ID
 #used_by_client_project and clients project
@@ -180,10 +195,12 @@ JWK_RETRIEVE_FAILED=CWWKS1747E: A JSON Web Key (JWK) was not returned from the U
 JWK_RETRIEVE_FAILED.explanation=A JSON Web Key cannot be returned from the specified URL. The URL might not be valid, the URL might not be configured to return a JWK, the response from the URL might be empty, or an unknown error occurred.
 JWK_RETRIEVE_FAILED.useraction=Verify that the URL is formatted correctly and specifies a location that is capable of returning JSON Web Keys. Check the status code and content of the response for more information.
 
+#present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 USERINFO_RETREIVE_FAILED=CWWKS1748E: The UserInfo URL [{0}] could not be contacted.  The response status was [{1}] and the content returned was [{2}].
 USERINFO_RETREIVE_FAILED.explanation=User Info data could not be obtained from the specified URL. The URL might not be valid, the supplied access token might not be valid, the response from the URL might be empty, or an unknown error occurred.
 USERINFO_RETREIVE_FAILED.useraction=Verify that the URL is formatted correctly and specifies a location that is capable of returning User Info data. Check the status code and content of the response for more information.
 
+# present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 USERINFO_INVALID=CWWKS1749E: The User Info data [{0}] is invalid because the sub claim does not match the sub claim of the ID Token [{1}].
 USERINFO_INVALID.explanation=The sub claim of user info data is required to match the sub claim of the ID token, but it does not. 
 USERINFO_INVALID.useraction=Ensure that the OpenID Connect provider generates valid User Info data.
