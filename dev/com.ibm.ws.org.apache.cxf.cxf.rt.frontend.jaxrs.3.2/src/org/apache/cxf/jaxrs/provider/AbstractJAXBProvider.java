@@ -192,10 +192,10 @@ public abstract class AbstractJAXBProvider<T> extends AbstractConfigurableProvid
             if (cris != null) {
                 allTypes = new HashSet<Class<?>>(ResourceUtils.getAllRequestResponseTypes(cris, true)
                     .getAllTypes().keySet());
-                context = ResourceUtils.createJaxbContext(allTypes, extraClass, cProperties);
+                context = org.apache.cxf.jaxrs.utils.JAXBUtils.createJaxbContext(allTypes, extraClass, cProperties);
             } else if (extraClass != null) {
                 allTypes = new HashSet<Class<?>>(Arrays.asList(extraClass));
-                context = ResourceUtils.createJaxbContext(allTypes, null, cProperties);
+                context = org.apache.cxf.jaxrs.utils.JAXBUtils.createJaxbContext(allTypes, null, cProperties);
             }
 
             if (context != null) {

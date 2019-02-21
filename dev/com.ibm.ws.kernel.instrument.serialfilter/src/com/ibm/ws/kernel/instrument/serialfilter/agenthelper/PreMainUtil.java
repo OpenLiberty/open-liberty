@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ public class PreMainUtil {
     public static final String KEY_SERIALFILTER_AGENT_ENABLE = "com.ibm.websphere.serialfilter.enable";
     public static final String KEY_SERIALFILTER_AGENT_ACTIVE = "com.ibm.websphere.serialfilter.active";
     public static final String DEBUG_PROPERTY = "com.ibm.websphere.kernel.instrument.serialfilter.debug";
+    public static final String MESSAGE_PROPERTY = "com.ibm.websphere.kernel.instrument.serialfilter.message";
     private static final String BETA = "EARLY_ACCESS";
     private static final String PRODUCT_EDITION = "com.ibm.websphere.productEdition";
     private static final String WPI_FILE = "versions/WebSphereApplicationServer.properties";
@@ -36,7 +37,15 @@ public class PreMainUtil {
         }
         return false;
     }
-    
+
+    public static boolean isMessageEnabled() {
+        String value = System.getProperty(MESSAGE_PROPERTY);
+        if (value != null && "false".equalsIgnoreCase(value)) {
+            return false;
+        }
+        return true;
+    }
+
     public static boolean isBeta() {
         try {
             File wasProductInfoFile = getWasProductInfoFile();

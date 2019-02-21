@@ -45,6 +45,9 @@ public class Servlet3ContinuationProvider implements ContinuationProvider {
     Message inMessage;
     Servlet3Continuation continuation;
 
+    //Liberty change - we don't check for servlet 3.1 here 
+    // since we're required to be in servlet 3.1 or 4.0
+
     public Servlet3ContinuationProvider(HttpServletRequest req,
                                         HttpServletResponse resp,
                                         Message inMessage) {

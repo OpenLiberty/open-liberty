@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -158,27 +158,32 @@ final class ConfigImpl implements Config {
 
     @Override
     public boolean allows(final Class<?> cls, final Class<?> [] toSkip) {
-        return allows(cls, toSkip, true);
+        return allows(cls, toSkip, false);
     }
     @Override
-    public boolean allows(final Class<?> cls, final Class<?> [] toSkip, boolean enableMessage) {
-        Logger log = null;
-        if (enableMessage) {
-            log = Logger.getLogger(ConfigImpl.class.getName());
-        }
+    public boolean allows(final Class<?> cls, final Class<?> [] toSkip, boolean isDiscovery) {
+        Logger log = Logger.getLogger(ConfigImpl.class.getName());
         // short-circuit if this parent hierarchy has already been checked
         if (cls != toSkip[0]) {
             if (isForbidden(cls)) {
-                if (log != null) log.severe(MessageUtil.format("SF_ERROR_NOT_PERMIT", cls.getName()));
-                return false;
+                if (log.isLoggable(FINEST)) log.finest("Denied : " + cls);
+                if (isDiscovery) {
+                    if (log.isLoggable(INFO)) log.info(MessageUtil.format("SF_INFO_NOT_ON_WHITELIST", cls.getName()));
+                } else {
+                    log.severe(MessageUtil.format("SF_ERROR_NOT_PERMIT", cls.getName()));
+                }                
             }
             // if child class is externalizable, only check externalizable ancestors
             // if child class is serializable, only check serializable ancestors
             final Class<?> iface = externalizableOrSerializable(cls);
             for (Class c = cls.getSuperclass(); c != null && iface.isAssignableFrom(c); c = c.getSuperclass()) {
                 if (isForbidden(c)) {
-                    if (log != null) log.severe(MessageUtil.format("SF_ERROR_NOT_PERMIT_SUPERCLASS", cls.getName(), c.getName()));
-                    return false;
+                    if (log.isLoggable(FINEST)) log.finest("Denied : " + cls + " because of super class : " + c);
+                    if (isDiscovery) {
+                        if (log.isLoggable(INFO)) log.info(MessageUtil.format("SF_INFO_NOT_ON_WHITELIST", c.getName()));
+                    } else {
+                        log.severe(MessageUtil.format("SF_ERROR_NOT_PERMIT_SUPERCLASS", cls.getName(), c.getName()));
+                    }
                 }
             }
         }

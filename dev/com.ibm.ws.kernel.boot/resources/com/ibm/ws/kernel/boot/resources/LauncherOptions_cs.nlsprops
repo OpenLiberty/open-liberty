@@ -16,7 +16,7 @@
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Pou\u017eit\u00ed: java [volby JVM] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
 \t-jar bin/tools/ws-server.jar serverName {0} [volby]  
-scriptUsage=Pou\u017eit\u00ed: {0} {1} serverName [volby]
+scriptUsage=Pou\u017eit\u00ed: {0} {1} serverName [volby] [volby JVM]
 
 use.actions=Akce:
 use.options=Volby:
@@ -174,4 +174,4 @@ option-key.no-password=\ \ \ \ --\u017e\u00e1dn\u00e9 heslo
 option-desc.no-password=\tZak\u00e1zat generov\u00e1n\u00ed v\u00fdchoz\u00edho hesla \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ Slo\u017eka serveru --server-root="root v archivu"
-option-desc.package.server-root=\tUr\u010duje n\u00e1zev slo\u017eky ko\u0159enov\u00e9ho serveru v archivn\u00edm souboru.
+option-desc.package.server-root=\tUr\u010duje n\u00e1zev slo\u017eky ko\u0159enov\u00e9ho serveru v archivn\u00edm souboru.\n

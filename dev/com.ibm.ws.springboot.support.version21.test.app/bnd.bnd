@@ -36,6 +36,8 @@ javac.target: 1.8
 	org.springframework:spring-core;strategy=exact;version=5.1.4.RELEASE, \
 	org.springframework:spring-context;strategy=exact;version=5.1.4.RELEASE, \
 	org.springframework:spring-beans;strategy=exact;version=5.1.4.RELEASE, \
+	org.springframework:spring-web;strategy=exact;version=5.1.4.RELEASE, \
+	org.springframework:spring-webmvc;strategy=exact;version=5.1.4.RELEASE, \
 	org.springframework.boot:spring-boot-autoconfigure;version=2.1.2.RELEASE, \
 	org.springframework.boot:spring-boot;version=2.1.2.RELEASE, \
 	org.springframework.security:spring-security-web;strategy=exact;version=5.1.3.RELEASE, \

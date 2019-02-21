@@ -206,7 +206,7 @@ public final class ResponseImpl extends Response {
 
     @Override
     public MultivaluedMap<String, String> getStringHeaders() {
-        MetadataMap<String, String> headers = new MetadataMap<String, String>(metadata.size());
+        MetadataMap<String, String> headers = new MetadataMap<>(metadata.size());
         for (Map.Entry<String, List<Object>> entry : metadata.entrySet()) {
             String headerName = entry.getKey();
             headers.put(headerName, toListOfStrings(headerName, entry.getValue()));
@@ -352,7 +352,7 @@ public final class ResponseImpl extends Response {
         if (linkValues == null) {
             return Collections.emptySet();
         }
-        Set<Link> links = new LinkedHashSet<Link>();
+        Set<Link> links = new LinkedHashSet<>();
         for (Object o : linkValues) {
             Link link = o instanceof Link ? (Link)o : Link.valueOf(o.toString());
             if (!link.getUri().isAbsolute()) {
