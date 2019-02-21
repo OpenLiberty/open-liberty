@@ -553,7 +553,6 @@ goto:eof
 
   @REM Filter off all of the -D and -X arguments off of !PARAMS_QUOTED! and
   @REM add them onto !JVM_OPTIONS!
-  set REMAINING_ARGS=
   set INCLUDE_NEXT_ARG=F
   for %%a in (%PARAMS_QUOTED%) do (
     set CUR_ARG=%%a
@@ -567,11 +566,8 @@ goto:eof
 	  set INCLUDE_NEXT_ARG=T
     ) else if "!CUR_ARG:~0,2!"=="-X" (
       set JVM_TEMP_OPTIONS=!JVM_TEMP_OPTIONS! !CUR_ARG!
-    ) else (
-      set REMAINING_ARGS=!REMAINING_ARGS! !CUR_ARG!
-    )
+    ) 
   )
-  set PARAMS_QUOTED=!REMAINING_ARGS!
 
   set JVM_OPTIONS=!JVM_OPTIONS!%JVM_TEMP_OPTIONS%
 goto:eof
