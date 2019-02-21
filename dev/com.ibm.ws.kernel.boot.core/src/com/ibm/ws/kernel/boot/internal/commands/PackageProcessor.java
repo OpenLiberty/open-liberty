@@ -519,7 +519,6 @@ public class PackageProcessor implements ArchiveProcessor {
             entryConfigs.add(serverSharedDirConfig);
             // exclude security sensitive files
             serverSharedDirConfig.exclude(Pattern.compile(REGEX_SEPARATOR + "resources" + REGEX_SEPARATOR + "security" + REGEX_SEPARATOR + "key.jks"));
-            serverSharedDirConfig.exclude(Pattern.compile(REGEX_SEPARATOR + "resources" + REGEX_SEPARATOR + "security" + REGEX_SEPARATOR + "key.p12"));
 
             /*
              * exclude loose xml files from shared directory
