@@ -24,10 +24,10 @@
             required="false" type="String" ibm:type="password" />
 
         <AD id="location" name="%location" description="%location.desc" ibm:type="location"
-            required="false" type="String" default="${server.output.dir}/resources/security/key.p12" />
+            required="false" type="String" default="${server.output.dir}/resources/security/key.jks" />
 
         <AD id="type" name="%type" description="%type.desc" 
-            required="false" type="String" default="PKCS12"/>
+            required="false" type="String" default="jks"/>
             
         <AD id="valid" name="internal" description="internal use only" 
             ibm:final="true" required="false" type="Boolean" default="true"  />           

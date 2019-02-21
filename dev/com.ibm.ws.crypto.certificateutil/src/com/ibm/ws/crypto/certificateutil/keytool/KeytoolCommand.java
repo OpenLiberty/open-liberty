@@ -45,7 +45,6 @@ class KeytoolCommand {
      * @param ksType
      */
     KeytoolCommand(String filePath, String password, int validity, String subjectDN, int keySize, String keyType, String sigAlg, String ksType) {
-
         cmd = new ArrayList<String>();
         cmd.add(getAbsoluteKeytoolPath());
         cmd.add("-genkey");
