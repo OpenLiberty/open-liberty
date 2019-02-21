@@ -271,6 +271,14 @@ DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: Sterownik JDBC nie obs\u014
 DSRA4011.tran.none.iso.switch.unsupported.explanation=Specyfikacja JDBC nie obs\u0142uguje prze\u0142\u0105czania na poziom odseparowania TRANSACTION_NONE.
 DSRA4011.tran.none.iso.switch.unsupported.useraction=Unikaj prze\u0142\u0105czania na poziom odseparowania TRANSACTION_NONE. 
 
+DSRA4012.ignored.datasource.config.used=DSRA4012I: W przypadku korzystania z puli Oracle UCP nast\u0119puj\u0105ce w\u0142a\u015bciwo\u015bci \u017ar\u00f3d\u0142a danych s\u0105 ignorowane: statementCacheSize i validationTimeout. U\u017cyj r\u00f3wnowa\u017cnej funkcjonalno\u015bci puli Oracle UCP.
+DSRA4012.ignored.datasource.config.used.explanation=W\u0142a\u015bciwo\u015bci \u017ar\u00f3d\u0142a danych statementCacheSize i validationTimeout nie s\u0105 poprawne, je\u015bli jest u\u017cywana pula Oracle UCP.
+DSRA4012.ignored.datasource.config.used.useraction=Usu\u0144 w\u0142a\u015bciwo\u015bci \u017ar\u00f3d\u0142a danych i zamiast nich u\u017cyj r\u00f3wnowa\u017cnej funkcji puli Oracle UCP.
+
+DSRA4013.ignored.connection.manager.config.used=DSRA4013I: W przypadku u\u017cywania puli Oracle UCP nast\u0119puj\u0105ce w\u0142a\u015bciwo\u015bci mened\u017cera po\u0142\u0105cze\u0144 s\u0105 ignorowane: agedTimeout, connectionTimeout, maxIdleTime, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxConnectionsPerThread, maxConnectionsPerThreadLocal. U\u017cyj r\u00f3wnowa\u017cnej funkcjonalno\u015bci puli Oracle UCP.
+DSRA4013.ignored.connection.manager.config.used.explanation=Wy\u015bwietlone w\u0142a\u015bciwo\u015bci mened\u017cera po\u0142\u0105cze\u0144 nie s\u0105 poprawne, je\u015bli jest u\u017cywana pula Oracle UCP.
+DSRA4013.ignored.connection.manager.config.used.useraction=Usu\u0144 w\u0142a\u015bciwo\u015bci mened\u017cera po\u0142\u0105cze\u0144 i zamiast nich u\u017cyj r\u00f3wnowa\u017cnej funkcji puli Oracle UCP.
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

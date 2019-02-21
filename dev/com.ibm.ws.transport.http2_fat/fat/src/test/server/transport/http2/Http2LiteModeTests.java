@@ -283,10 +283,11 @@ public class Http2LiteModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
-    public void testDataOnStreamZero() throws Exception {
-        runTest(genericServletPath, testName.getMethodName());
-    }
+    // Moved to trace, build break 259034
+    //@Test
+    //public void testDataOnStreamZero() throws Exception {
+    //    runTest(genericServletPath, testName.getMethodName());
+    //}
 
     /**
      * Test Coverage: Client starts a stream 7, then starts a stream 5, which is illegal;

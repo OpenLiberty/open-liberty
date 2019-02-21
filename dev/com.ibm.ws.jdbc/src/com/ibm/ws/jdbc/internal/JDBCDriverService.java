@@ -519,6 +519,12 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 String vendorPropertiesPID = props instanceof PropertyService ? ((PropertyService) props).getFactoryPID() : PropertyService.FACTORY_PID;
                 className = JDBCDrivers.getConnectionPoolDataSourceClassName(vendorPropertiesPID);
                 if (className == null) {
+                    //if properties.oracle.ucp is configured do not search based on classname or infer because the customer has indicated
+                    //they want to use UCP, but this will likely pick up the Oracle driver instead of the UCP driver (since UCP has no ConnectionPoolDataSource)
+                    if(vendorPropertiesPID != null && vendorPropertiesPID.equals("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp")) {
+                        //TODO consider if we want to throw a more specific exception here
+                        throw classNotFound(ConnectionPoolDataSource.class.getName(), null, dataSourceID, null);
+                    }
                     className = JDBCDrivers.getConnectionPoolDataSourceClassName(getClasspath(sharedLib, true));
                     if (className == null) {
                         Set<String> packagesSearched = new LinkedHashSet<String>();

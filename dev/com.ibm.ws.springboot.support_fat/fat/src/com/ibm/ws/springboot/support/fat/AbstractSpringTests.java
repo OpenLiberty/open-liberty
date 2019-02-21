@@ -69,6 +69,7 @@ public abstract class AbstractSpringTests {
     public static final String SPRING_BOOT_20_APP_BASE = "com.ibm.ws.springboot.support.version20.test.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_WEBFLUX = "com.ibm.ws.springboot.support.version20.test.webflux.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_WEBFLUX_WRONG_VERSION = "com.ibm.ws.springboot.support.version20.test.webflux.wrong.version.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_21_APP_BASE = "com.ibm.ws.springboot.support.version21.test.app-0.0.1-SNAPSHOT.jar";
     public static final String LIBERTY_USE_DEFAULT_HOST = "server.liberty.use-default-host";
     public static final String SPRING_LIB_INDEX_CACHE = "lib.index.cache";
     public static final String SPRING_WORKAREA_DIR = "workarea/spring/";
@@ -79,6 +80,7 @@ public abstract class AbstractSpringTests {
     public static final int DEFAULT_HTTP_PORT;
     public static final int DEFAULT_HTTPS_PORT;
     public static final String javaVersion;
+    protected static final String DEFAULT_HOST_WITH_APP_PORT = "DefaultHostWithAppPort";
 
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.springboot.support.fat.SpringBootTests");
     static {
@@ -100,10 +102,10 @@ public abstract class AbstractSpringTests {
     @AfterClass
     public static void stopServer() throws Exception {
         stopServer(true);
-        extraServerArgs.clear();
     }
 
     public static void stopServer(boolean cleanupApps, String... expectedFailuresRegExps) throws Exception {
+        extraServerArgs.clear();
         boolean isActive = serverStarted.getAndSet(false);
         try {
             // don't archive until after stopping and removing the lib.index.cache
@@ -252,8 +254,14 @@ public abstract class AbstractSpringTests {
                 assertNotNull("The application was not installed", server
                                 .waitForStringInLog("CWWKZ0001I:.*"));
                 if (expectWebApplication()) {
-                    assertNotNull("The endpoint is not available", server
-                                    .waitForStringInLog("CWWKT0016I:.*"));
+                    String testMethodName = testName.getMethodName();
+                    if (testMethodName != null && testMethodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+                        assertNotNull("The endpoint not available on default_host", server
+                                        .waitForStringInLog("CWWKT0016I:.*\\bdefault_host\\b.*"));
+                    } else {
+                        assertNotNull("The endpoint is not available", server
+                                        .waitForStringInLog("CWWKT0016I:.*"));
+                    }
                 }
             }
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Interface for providing thread context that can be captured and applied to other threads.
+ * Legacy interface for providing thread context that can be captured and applied to other threads.
  * Some examples: classloaderContext, jeeMetadataContext, securityContext, zosWLMContext.
  * 
  * All thread context providers must be singletons. For example:
@@ -100,6 +100,9 @@ import java.util.Map;
  * 
  * ThreadContextProvider implementations must be capable of handling all of the above
  * usage patterns, as well as all combinations of these patterns.
+ *
+ * @deprecated Do not create new implementations of this interface. This model is being replaced
+ * by MicroProfile Concurrency's ThreadContextProvider SPI.
  */
 public interface ThreadContextProvider {
     /**

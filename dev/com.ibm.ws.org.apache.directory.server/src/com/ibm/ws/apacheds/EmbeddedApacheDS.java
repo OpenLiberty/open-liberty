@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -443,8 +443,11 @@ public class EmbeddedApacheDS {
      * cannot clean up the file directory.
      */
     public void stopService() throws Exception {
+        Log.info(c, "stopService", "Stopping LdapServer");
         this.server.stop();
+        Log.info(c, "stopService", "Stopping DirectoryService");
         service.shutdown();
+        Log.info(c, "stopService", "Ldap stopped.");
     }
 
     public boolean isStarted() {

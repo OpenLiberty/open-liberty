@@ -271,6 +271,14 @@ DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: Ovlada\u010d JDBC nepodporu
 DSRA4011.tran.none.iso.switch.unsupported.explanation=Specifikace JDBC nepodporuje p\u0159ep\u00edn\u00e1n\u00ed na \u00farove\u0148 izolace TRANSACTION_NONE.
 DSRA4011.tran.none.iso.switch.unsupported.useraction=Zabra\u0148te p\u0159ep\u00edn\u00e1n\u00ed na \u00farove\u0148 izolace TRANSACTION_NONE.
 
+DSRA4012.ignored.datasource.config.used=DSRA4012I: P\u0159i pou\u017eit\u00ed Oracle UCP jsou ignorov\u00e1ny n\u00e1sleduj\u00edc\u00ed vlastnosti zdroje dat: statementCacheSize a validationTimeout. Pou\u017eijte ekvivalentn\u00ed funk\u010dnost Oracle UPC.
+DSRA4012.ignored.datasource.config.used.explanation=Vlastnosti zdroje dat statementCacheSize a validationTimeout nejsou platn\u00e9 p\u0159i pou\u017eit\u00ed Oracle UPC.
+DSRA4012.ignored.datasource.config.used.useraction=Odeberte vlastnosti zdroje dat a m\u00edsto toho pou\u017eijte ekvivalentn\u00ed funk\u010dnost Oracle UPC.
+
+DSRA4013.ignored.connection.manager.config.used=DSRA4013I: P\u0159i pou\u017eit\u00ed Oracle UCP jsou n\u00e1sleduj\u00edc\u00ed vlastnosti spr\u00e1vce p\u0159ipojen\u00ed ignorov\u00e1ny: agedTimeout, connectionTimeout, maxIdleTime, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxConnectionsPerThread, maxConnectionsPerThreadLocal. Pou\u017eijte ekvivalentn\u00ed funk\u010dnost Oracle UPC.
+DSRA4013.ignored.connection.manager.config.used.explanation=Uveden\u00e9 vlastnosti spr\u00e1vce p\u0159ipojen\u00ed nejsou platn\u00e9 p\u0159i pou\u017eit\u00ed Oracle UPC.
+DSRA4013.ignored.connection.manager.config.used.useraction=Odeberte vlastnosti spr\u00e1vce p\u0159ipojen\u00ed a m\u00edsto toho pou\u017eijte ekvivalentn\u00ed funk\u010dnost Oracle UPC.
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
