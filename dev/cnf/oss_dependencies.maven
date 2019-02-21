@@ -367,7 +367,7 @@ org.springframework:spring-beans:5.1.4.RELEASE
 org.springframework:spring-context:5.1.4.RELEASE
 org.springframework:spring-web:5.1.4.RELEASE
 org.springframework:spring-webflux:5.1.4.RELEASE
-org.springframework:spring-webmvc:5.1.4	.RELEASE
+org.springframework:spring-webmvc:5.1.4.RELEASE
 org.springframework.boot:spring-boot:2.1.2.RELEASE
 org.springframework.boot:spring-boot-autoconfigure:2.1.2.RELEASE
 io.projectreactor:reactor-core:3.1.8.RELEASE
