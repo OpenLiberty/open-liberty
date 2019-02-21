@@ -247,7 +247,7 @@ public class WSKeyStore extends Properties {
                 specifiedType = Constants.KEYSTORE_TYPE_PKCS12;
                 this.type = Constants.KEYSTORE_TYPE_PKCS12;
             } else if (!type.equals(Constants.KEYSTORE_TYPE_JKS)) {
-                if (this.location != null && (this.location.toLowerCase().endsWith(".jks"))) {
+                if (this.location != null && (this.location.toLowerCase().endsWith(".jks") || this.location.toLowerCase().contains(".jceks"))) {
                     type = LibertyConstants.DEFAULT_FALLBACK_TYPE;
                     specifiedType = type;
                 }
@@ -273,9 +273,9 @@ public class WSKeyStore extends Properties {
                 }
             }
         } else {
-            // this is not the default keystore, but a location has been specified.  If the keystore is JKS type, set the type to JKS
+            // this is not the default keystore, but a location has been specified.  If the keystore is a JKS or JCEKS type, set the type to JKS
             if (this.location != null
-                && (this.location.toUpperCase().endsWith(Constants.KEYSTORE_TYPE_JKS))) {
+                && (this.location.toUpperCase().endsWith(Constants.KEYSTORE_TYPE_JKS) || this.location.toUpperCase().endsWith(Constants.KEYSTORE_TYPE_JCEKS))) {
                 specifiedType = Constants.KEYSTORE_TYPE_JKS;
                 this.type = Constants.KEYSTORE_TYPE_JKS;
             }
