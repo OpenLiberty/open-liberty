@@ -73,7 +73,7 @@ import org.apache.cxf.common.i18n.BundleUtils;
 import org.apache.cxf.common.classloader.ClassLoaderUtils;
 import org.apache.cxf.common.util.ClassHelper;
 import org.apache.cxf.common.util.PrimitiveUtils;
-import org.apache.cxf.common.util.ProxyClassLoader;
+import org.apache.cxf.common.util.ProxyClassLoaderCache;
 import org.apache.cxf.common.util.ReflectionUtil;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.helpers.CastUtils;
@@ -155,7 +155,10 @@ public final class InjectionUtils {
     private static final String ENUM_CONVERSION_CASE_SENSITIVE = "enum.conversion.case.sensitive";
 
     private static final String IGNORE_MATRIX_PARAMETERS = "ignore.matrix.parameters";
-
+    
+    private static ProxyClassLoaderCache proxyClassLoaderCache = 
+        new ProxyClassLoaderCache();
+    
 //    private static List<String> JAXRS_JEE_COMPONENTS = Collections.<String> emptyList();
 
     private static List<String> explicitLifcycle = new ArrayList<String>();
@@ -437,6 +440,7 @@ public final class InjectionUtils {
         } catch (IllegalAccessException ex) {
             reportServerError("METHOD_ACCESS_FAILURE", method.getName());
         } catch (InvocationTargetException ex) {
+            Tr.error(tc, ex.getCause().getMessage(), ex); // Liberty change
             Response r = JAXRSUtils.convertFaultToResponse(ex.getCause(), inMessage);
             if (r != null) {
                 inMessage.getExchange().put(Response.class, r);
@@ -708,7 +712,7 @@ public final class InjectionUtils {
         }
 
         Map<String, MultivaluedMap<String, String>> parsedValues =
-                        new HashMap<String, MultivaluedMap<String, String>>();
+                        new HashMap<>();
         for (Map.Entry<String, List<String>> entry : values.entrySet()) {
             String memberKey = entry.getKey();
             String beanKey = null;
@@ -723,7 +727,7 @@ public final class InjectionUtils {
 
             MultivaluedMap<String, String> value = parsedValues.get(beanKey);
             if (value == null) {
-                value = new MetadataMap<String, String>();
+                value = new MetadataMap<>();
                 parsedValues.put(beanKey, value);
             }
             value.put(memberKey, entry.getValue());
@@ -840,7 +844,7 @@ public final class InjectionUtils {
         Type secondType = InjectionUtils.getType(paramType.getActualTypeArguments(), 1);
 
         if (secondType instanceof ParameterizedType) {
-            MultivaluedMap<Object, Object> theValues = new MetadataMap<Object, Object>();
+            MultivaluedMap<Object, Object> theValues = new MetadataMap<>();
             ParameterizedType valueParamType = (ParameterizedType) secondType;
             Class<?> valueType = (Class<?>) InjectionUtils.getType(valueParamType
                             .getActualTypeArguments(), 0);
@@ -902,7 +906,7 @@ public final class InjectionUtils {
                                                                       MultivaluedMap<String, String> values,
                                                                       boolean isbean) {
         List<MultivaluedMap<String, String>> valuesList =
-                        new ArrayList<MultivaluedMap<String, String>>();
+                        new ArrayList<>();
 
         if (isbean && InjectionUtils.isSupportedCollectionOrArray(type)) {
             Class<?> realType = InjectionUtils.getActualType(genericType);
@@ -947,7 +951,7 @@ public final class InjectionUtils {
                     MultivaluedMap<String, String> splitValues =
                                     (idx < valuesList.size()) ? valuesList.get(idx) : null;
                     if (splitValues == null) {
-                        splitValues = new MetadataMap<String, String>();
+                        splitValues = new MetadataMap<>();
                         valuesList.add(splitValues);
                     }
                     splitValues.add(memberKey, value);
@@ -1068,7 +1072,7 @@ public final class InjectionUtils {
         }
         List<String> newValues = new ArrayList<>();
         for (String v : values) {
-            String[] segments = StringUtils.split(v, "/");
+            String[] segments = v.split("/");
             for (String s : segments) {
                 if (s.length() != 0) {
                     newValues.add(s);
@@ -1111,7 +1115,7 @@ public final class InjectionUtils {
 
         Object value = null;
         if (InjectionUtils.isSupportedCollectionOrArray(paramType)) {
-            MultivaluedMap<String, String> paramValuesMap = new MetadataMap<String, String>();
+            MultivaluedMap<String, String> paramValuesMap = new MetadataMap<>();
             paramValuesMap.put("", paramValues);
             value = InjectionUtils.injectIntoCollectionOrArray(paramType, genericType, paramAnns,
                                                                paramValuesMap, false, decoded, pathParam, message);
@@ -1143,7 +1147,7 @@ public final class InjectionUtils {
         } else if (SecurityContext.class.isAssignableFrom(type)) {
             proxy = new ThreadLocalSecurityContext();
         } else if (ContextResolver.class.isAssignableFrom(type)) {
-            proxy = new ThreadLocalContextResolver<Object>();
+            proxy = new ThreadLocalContextResolver<>();
         } else if (Request.class.isAssignableFrom(type)) {
             proxy = new ThreadLocalRequest();
         } else if (Providers.class.isAssignableFrom(type)) {
@@ -1163,17 +1167,46 @@ public final class InjectionUtils {
             proxy = createThreadLocalServletApiContext(type.getName());
         }
         if (proxy == null) {
-            ProxyClassLoader loader = new ProxyClassLoader(getClassLoader(Proxy.class));
-            loader.addLoader(getClassLoader(type));
-            loader.addLoader(getClassLoader(ThreadLocalProxy.class));
-            return (ThreadLocalProxy<T>) Proxy.newProxyInstance(loader,
-                                                                new Class[] { type, ThreadLocalProxy.class },
-                                                                new ThreadLocalInvocationHandler<T>());
+            ClassLoader loader
+                = proxyClassLoaderCache.getProxyClassLoader(Proxy.class.getClassLoader(), 
+                                                            new Class<?>[]{Proxy.class, ThreadLocalProxy.class, type}); 
+            if (!canSeeAllClasses(loader, new Class<?>[]{Proxy.class, ThreadLocalProxy.class, type})) {
+                // Liberty change start - (LOG to Tr)
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "find a loader from ProxyClassLoader cache," 
+                        + " but can't see all interfaces");
+                
+                    Tr.debug(tc, "create a new one with parent  " + Proxy.class.getClassLoader());
+                }
+                //Liberty change end
+                proxyClassLoaderCache.removeStaleProxyClassLoader(type);
+                proxyClassLoaderCache.getProxyClassLoader(Proxy.class.getClassLoader(), 
+                                                          new Class<?>[]{Proxy.class, ThreadLocalProxy.class, type}); 
+            }
+            return (ThreadLocalProxy<T>)Proxy.newProxyInstance(loader,
+                                                     new Class[] {type, ThreadLocalProxy.class },
+                                                     new ThreadLocalInvocationHandler<T>());
         }
 
         return (ThreadLocalProxy<T>) proxy;
     }
-
+    
+    private static boolean canSeeAllClasses(ClassLoader loader, Class<?>[] interfaces) {
+        for (Class<?> currentInterface : interfaces) {
+            String ifName = currentInterface.getName();
+            try {
+                Class<?> ifClass = Class.forName(ifName, true, loader);
+                if (ifClass != currentInterface) {
+                    return false;
+                }
+               
+            } catch (NoClassDefFoundError | ClassNotFoundException e) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     private static boolean isServletApiContext(String name) {
         return name.startsWith("javax.servlet.");
     }
@@ -1497,7 +1530,7 @@ public final class InjectionUtils {
     }
 
     public static MultivaluedMap<String, Object> extractValuesFromBean(Object bean, String baseName) {
-        MultivaluedMap<String, Object> values = new MetadataMap<String, Object>();
+        MultivaluedMap<String, Object> values = new MetadataMap<>();
         fillInValuesFromBean(bean, baseName, values);
         return values;
     }
@@ -1572,7 +1605,7 @@ public final class InjectionUtils {
     public static Map<Parameter, Class<?>> getParametersFromBeanClass(Class<?> beanClass,
                                                                       ParameterType type,
                                                                       boolean checkIgnorable) {
-        Map<Parameter, Class<?>> params = new LinkedHashMap<Parameter, Class<?>>();
+        Map<Parameter, Class<?>> params = new LinkedHashMap<>();
         for (Method m : beanClass.getMethods()) {
             String methodName = m.getName();
             boolean startsFromGet = methodName.startsWith("get");

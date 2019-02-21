@@ -271,6 +271,14 @@ DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: Der JDBC-Treiber unterst\u0
 DSRA4011.tran.none.iso.switch.unsupported.explanation=Die JDBC-Spezifikation unterst\u00fctzt den Wechsel auf die Isolationsstufe TRANSACTION_NONE nicht.
 DSRA4011.tran.none.iso.switch.unsupported.useraction=Vermeiden Sie den Wechsel auf die Isolationsstufe TRANSACTION_NONE.
 
+DSRA4012.ignored.datasource.config.used=DSRA4012I: Bei der Verwendung von Oracle UCP werden die folgenden Datenquelleneigenschaften ignoriert: statementCacheSize und validationTimeout. Verwenden Sie die entsprechende Oracle UCP-Funktionalit\u00e4t.
+DSRA4012.ignored.datasource.config.used.explanation=Die Datenquelleneigenschaften statementCacheSize und validationTimeout sind bei Verwendung von Oracle UCP nicht zul\u00e4ssig.
+DSRA4012.ignored.datasource.config.used.useraction=Entfernen Sie die Datenquelleneigenschaften und verwenden Sie stattdessen die entsprechende Oracle UCP-Funktionalit\u00e4t.
+
+DSRA4013.ignored.connection.manager.config.used=DSRA4013I: Bei der Verwendung von Oracle UCP werden die folgenden Connection Manager-Eigenschaften ignoriert: agedTimeout, connectionTimeout, maxIdleTime, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxConnectionsPerThread, maxConnectionsPerThreadLocal. Verwenden Sie die entsprechende Oracle UCP-Funktionalit\u00e4t.
+DSRA4013.ignored.connection.manager.config.used.explanation=Die aufgef\u00fchrten Connection Manager-Eigenschaften sind bei Verwendung von Oracle UCP nicht zul\u00e4ssig.
+DSRA4013.ignored.connection.manager.config.used.useraction=Entfernen Sie die Connection Manager-Eigenschaften und verwenden Sie stattdessen die entsprechende Oracle UCP-Funktionalit\u00e4t.
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

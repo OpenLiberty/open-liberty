@@ -17,7 +17,7 @@
 briefUsage=Syntaxe : java [JVM options] \
 -javaagent:bin/tools/ws-javaagent.jar \\        \n \t-jar bin/tools/ws-server.jar \
 serverName {0} [options]  
-scriptUsage=Syntaxe : {0} {1} serverName [options]
+scriptUsage=Syntaxe : {0} {1} serverName [options] [options JVM]
 
 use.actions=Actions :
 use.options=Options :
@@ -184,4 +184,4 @@ option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tD\u00e9sactivez la g\u00e9n\u00e9ration d'un mot de passe de magasin de cl\u00e9s par d\u00e9faut
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="dossier de serveur racine dans l'archive"
-option-desc.package.server-root=\tSp\u00e9cifie le nom du dossier de serveur racine dans le fichier archive.
+option-desc.package.server-root=\tSp\u00e9cifie le nom du dossier de serveur racine dans le fichier archive. \n

@@ -1,0 +1,18 @@
+plugins {
+	id 'org.springframework.boot' version '2.1.2.RELEASE'
+}
+
+apply plugin: 'java'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.ibm.ws.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+	compile('org.springframework.boot:spring-boot-starter-security')
+	compile 'org.webjars:bootstrap:3.3.1'
+	compile 'org.webjars:webjars-locator:0.33'
+}

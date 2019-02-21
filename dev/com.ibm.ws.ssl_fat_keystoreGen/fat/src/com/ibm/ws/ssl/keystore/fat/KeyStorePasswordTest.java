@@ -100,13 +100,13 @@ public class KeyStorePasswordTest extends FATServletClient {
 
     private static void validateGeneratedKeyStore(LibertyServer server, String password) throws Exception {
         String m = "validateGeneratedKeyStore";
-        File keystore = new File(server.getFileFromLibertyServerRoot("resources/security/key.p12").getAbsolutePath());
+        File keystore = new File(server.getFileFromLibertyServerRoot("resources/security/key.jks").getAbsolutePath());
         if (!keystore.exists())
             fail("Keystore was not generated at location: " + keystore.getAbsolutePath());
         Log.info(c, m, "Keystore exists at " + keystore.getAbsolutePath());
 
         Log.info(c, m, "Verifying that keystore is accessible using password=" + password);
-        KeyStore ks = KeyStore.getInstance("PKCS12");
+        KeyStore ks = KeyStore.getInstance("jks");
         ks.load(new FileInputStream(keystore), password.toCharArray());
     }
 

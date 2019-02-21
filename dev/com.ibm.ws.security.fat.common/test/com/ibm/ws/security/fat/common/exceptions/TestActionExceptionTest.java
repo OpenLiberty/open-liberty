@@ -80,7 +80,7 @@ public class TestActionExceptionTest extends CommonTestClass {
      * Tests:
      * - Provided cause has no message
      * Expects:
-     * - Exception message should match the provided failure message (no sub-message from the cause)
+     * - Exception message should match the provided failure message, plus the toString() of the cause
      * - "Exception occurred" message logged
      */
     @Test
@@ -92,7 +92,7 @@ public class TestActionExceptionTest extends CommonTestClass {
             try {
                 throw new TestActionException(method, defaultExceptionMsg, cause);
             } catch (TestActionException e) {
-                verifyPattern(e.getMessage(), "^" + Pattern.quote(defaultExceptionMsg) + "$");
+                verifyPattern(e.getMessage(), "^" + Pattern.quote(defaultExceptionMsg) + " " + Pattern.quote(cause.toString()) + "$");
                 assertStringInTrace(outputMgr, "Exception occurred in " + method);
             }
         } catch (Throwable t) {
@@ -104,7 +104,7 @@ public class TestActionExceptionTest extends CommonTestClass {
      * Tests:
      * - Provided cause includes its own message
      * Expects:
-     * - Exception message should match the provided failure message, plus the sub-message from the cause
+     * - Exception message should match the provided failure message, plus the toString() of the cause
      * - "Exception occurred" message logged
      */
     @Test
@@ -117,7 +117,36 @@ public class TestActionExceptionTest extends CommonTestClass {
             try {
                 throw new TestActionException(method, defaultExceptionMsg, cause);
             } catch (TestActionException e) {
-                verifyPattern(e.getMessage(), "^" + Pattern.quote(defaultExceptionMsg) + " " + Pattern.quote(subMessage) + "$");
+                verifyPattern(e.getMessage(), "^" + Pattern.quote(defaultExceptionMsg) + " " + Pattern.quote(cause.toString()) + "$");
+                assertStringInTrace(outputMgr, "Exception occurred in " + method);
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Provided cause includes its own message
+     * Expects:
+     * - Exception message should match the provided failure message, plus the toString() of the original cause
+     * - "Exception occurred" message logged
+     */
+    @Test
+    public void test_constructor_nestedCause() {
+        try {
+            String method = "some method";
+            String cause1Message = "Sub-message for the first cause";
+            Throwable cause1 = new Exception(cause1Message);
+            String cause2Message = "Sub-message for the second cause";
+            Throwable cause2 = new Exception(cause2Message, cause1);
+            String cause3Message = "Sub-message for the third cause";
+            Throwable cause3 = new Exception(cause3Message, cause2);
+
+            try {
+                throw new TestActionException(method, defaultExceptionMsg, cause3);
+            } catch (TestActionException e) {
+                verifyPattern(e.getMessage(), "^" + Pattern.quote(defaultExceptionMsg) + " " + Pattern.quote(cause1.toString()) + "$");
                 assertStringInTrace(outputMgr, "Exception occurred in " + method);
             }
         } catch (Throwable t) {

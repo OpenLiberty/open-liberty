@@ -33,9 +33,9 @@ public interface SpringBootConfig {
      * to the factoryParamType and called to create instances
      * for the configuration.
      *
-     * @param config liberty server configuration
-     * @param factoryParam a factory specific parameter
-     * @param factoryParamtype the helper specific parameter type
+     * @param config                     liberty server configuration
+     * @param factoryParam               a factory specific parameter
+     * @param factoryParamtype           the helper specific parameter type
      * @param additionalAppConfiguration Spring boot application config
      */
     <T> void configure(ServerConfiguration config, T factoryParam, Class<T> factoryParamType, SpringConfiguration additionalAppConfiguration);

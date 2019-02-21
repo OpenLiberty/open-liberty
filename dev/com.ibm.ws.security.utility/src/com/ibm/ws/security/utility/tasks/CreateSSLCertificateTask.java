@@ -138,7 +138,7 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
         }
 
         // Create the directories we need before we prompt for a password
-        String location = dir + "resources" + SLASH + "security" + SLASH + "key.p12";
+        String location = dir + "resources" + SLASH + "security" + SLASH + "key.jks";
         File fLocation = new File(location);
         location = fileUtility.resolvePath(fLocation);
         if (!fileUtility.createParentDirectory(stdout, fLocation)) {

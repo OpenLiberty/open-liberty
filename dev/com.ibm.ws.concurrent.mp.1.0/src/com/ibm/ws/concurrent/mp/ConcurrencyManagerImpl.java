@@ -79,6 +79,12 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
         contextProviders.add(concurrencyProvider.wlmContextProvider);
         available.add(WLMContextProvider.WORKLOAD);
 
+        ThreadContextProvider cdiCtx = concurrencyProvider.cdiContextProvider;
+        if (cdiCtx != null) {
+            contextProviders.add(cdiCtx);
+            available.add(ThreadContext.CDI);
+        }
+
         // Thread context providers for the supplied class loader
         for (ThreadContextProvider provider : ServiceLoader.load(ThreadContextProvider.class, classloader)) {
             String type = provider.getThreadContextType();
@@ -121,6 +127,10 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
 
         if (WLMContextProvider.WORKLOAD.equals(conflictingType))
             return concurrencyProvider.wlmContextProvider;
+
+        if (concurrencyProvider.cdiContextProvider != null &&
+            ThreadContext.CDI.equals(conflictingType))
+            return concurrencyProvider.cdiContextProvider;
 
         // should be unreachable
         throw new IllegalStateException(conflictingType);

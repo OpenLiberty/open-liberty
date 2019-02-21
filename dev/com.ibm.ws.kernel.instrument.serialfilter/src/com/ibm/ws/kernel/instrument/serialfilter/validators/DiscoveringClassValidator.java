@@ -1,9 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse./epl-v10.html
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -38,11 +38,10 @@ class DiscoveringClassValidator extends ClassValidator {
         if (cls == null) return null;
         if (cls.isArray()) return cls;
         if (log.isLoggable(FINEST)) log.finest(String.format("Discovering. Class name : %s ClassLoader name : %s", cls.getName(), getLoader(cls)));
-        boolean whitelisted = config.allows(cls, skipOnce, false);
+        boolean whitelisted = config.allows(cls, skipOnce, true);
         if (whitelisted)
             return cls;
         if (log.isLoggable(FINEST)) log.finest(String.format("The class is not on the whitelist. Class name : %s ClassLoader name : %s", cls.getName(), getLoader(cls)));
-        if (log.isLoggable(INFO)) log.info(MessageUtil.format("SF_INFO_NOT_ON_WHITELIST", cls.getName()));
         return cls;
     }
 

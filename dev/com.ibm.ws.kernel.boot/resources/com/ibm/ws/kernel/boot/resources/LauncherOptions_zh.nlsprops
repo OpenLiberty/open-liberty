@@ -16,7 +16,7 @@
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=\u7528\u6cd5\uff1ajava [JVM options] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
 \t-jar bin/tools/ws-server.jar serverName {0} [options]  
-scriptUsage=\u7528\u6cd5\uff1a{0} {1} serverName [options]
+scriptUsage=\u7528\u6cd5\uff1a{0} {1} serverName [options] [JVM options]
 
 use.actions=\u64cd\u4f5c\uff1a
 use.options=\u9009\u9879\uff1a
@@ -178,4 +178,4 @@ option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\t\u7981\u7528\u751f\u6210\u7f3a\u7701\u5bc6\u94a5\u5e93\u5bc6\u7801
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="root server folder in archive"
-option-desc.package.server-root=\t\u6307\u5b9a\u5f52\u6863\u6587\u4ef6\u4e2d\u7684\u6839\u670d\u52a1\u5668\u6587\u4ef6\u5939\u540d\u79f0\u3002
+option-desc.package.server-root=\t\u6307\u5b9a\u5f52\u6863\u6587\u4ef6\u4e2d\u7684\u6839\u670d\u52a1\u5668\u6587\u4ef6\u5939\u540d\u79f0\u3002        \n
