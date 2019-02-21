@@ -56,12 +56,12 @@ import org.apache.http.impl.nio.conn.ManagedNHttpClientConnectionFactory;
 import org.apache.http.impl.nio.conn.PoolingNHttpClientConnectionManager;
 import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
 import org.apache.http.impl.nio.reactor.IOReactorConfig;
-import org.apache.http.nio.conn.ManagedNHttpClientConnection;
+
 import org.apache.http.nio.conn.NoopIOSessionStrategy;
 import org.apache.http.nio.conn.SchemeIOSessionStrategy;
 import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 import org.apache.http.nio.reactor.IOReactorException;
-import org.apache.http.nio.reactor.IOSession;
+
 import org.apache.http.protocol.HttpContext;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -334,14 +334,7 @@ public class AsyncHTTPConduitFactory implements HTTPConduitFactory {
                     .build();
 
 
-        ManagedNHttpClientConnectionFactory connectionFactory = new ManagedNHttpClientConnectionFactory() {
-
-            @Override
-            public ManagedNHttpClientConnection create(final IOSession iosession, final ConnectionConfig config) {
-                ManagedNHttpClientConnection conn = super.create(iosession, config);
-                return conn;
-            }
-        };
+        ManagedNHttpClientConnectionFactory connectionFactory = new ManagedNHttpClientConnectionFactory();
 
         DefaultConnectingIOReactor ioreactor = new DefaultConnectingIOReactor(config);
         connectionManager = new PoolingNHttpClientConnectionManager(
@@ -393,12 +386,11 @@ public class AsyncHTTPConduitFactory implements HTTPConduitFactory {
             }});
         // Start the client thread
         client.start();
-        if (this.connectionTTL == 0) {
-            //if the connection does not have an expiry deadline
-            //use the ConnectionMaxIdle to close the idle connection
-            new CloseIdleConnectionThread(connectionManager, client).start();
-        }
+        //Always start the idle checker thread to validate pending requests and
+        //use the ConnectionMaxIdle to close the idle connection
+        new CloseIdleConnectionThread(connectionManager, client).start();
     }
+
 
     //provide a hook to customize the builder
     protected void adaptClientBuilder(HttpAsyncClientBuilder httpAsyncClientBuilder) {
@@ -419,7 +411,7 @@ public class AsyncHTTPConduitFactory implements HTTPConduitFactory {
 
         public CloseIdleConnectionThread(PoolingNHttpClientConnectionManager connMgr,
                                      CloseableHttpAsyncClient client) {
-            super();
+            super("CXFCloseIdleConnectionThread");
             this.connMgr = connMgr;
             this.client = client;
         }
@@ -427,13 +419,22 @@ public class AsyncHTTPConduitFactory implements HTTPConduitFactory {
         @FFDCIgnore(InterruptedException.class)
         @Override
         public void run() {
+            long nextIdleCheck = System.currentTimeMillis() + connectionMaxIdle;
             try {
                 while (client.isRunning()) {
                     synchronized (this) {
-                        sleep(connectionMaxIdle);
-                        // close connections
-                        // that have been idle longer than specified connectionMaxIdle
-                        connMgr.closeIdleConnections(connectionMaxIdle, TimeUnit.MILLISECONDS);
+                        sleep(selectInterval);
+                        // make sure pending leases fail in a timely manner,
+                        // not just when a connection becomes available
+                        connMgr.validatePendingRequests();
+
+                        if (connectionTTL == 0
+                            && connectionMaxIdle > 0 && System.currentTimeMillis() >= nextIdleCheck) {
+                            nextIdleCheck += connectionMaxIdle;
+                            // close connections
+                            // that have been idle longer than specified connectionMaxIdle
+                            connMgr.closeIdleConnections(connectionMaxIdle, TimeUnit.MILLISECONDS);
+                        }
                     }
                 }
             } catch (InterruptedException ex) {

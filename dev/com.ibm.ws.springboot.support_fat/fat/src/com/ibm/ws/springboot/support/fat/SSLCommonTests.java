@@ -45,6 +45,39 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
 
     private static final String TEST_CLIENT_AUTH_NEED = "testClientAuthNeedWithClientSideKeyStore";
 
+    @Override
+    public Map<String, String> getBootStrapProperties() {
+        String methodName = testName.getMethodName();
+        Map<String, String> properties = new HashMap<>();
+        properties.put("server.ssl.key-store", "classpath:server-keystore.jks");
+        properties.put("server.ssl.key-store-password", "secret");
+        properties.put("server.ssl.key-password", "secret");
+        properties.put("server.ssl.trust-store", "classpath:server-truststore.jks");
+        properties.put("server.ssl.trust-store-password", "secret");
+        if (methodName != null) {
+            if (methodName.contains("Need")) {
+                properties.put("server.ssl.client-auth", "NEED");
+            } else if (methodName.contains("Want")) {
+                properties.put("server.ssl.client-auth", "WANT");
+            }
+        }
+
+        if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+            properties.put("bvt.prop.HTTP_default", "-1");
+            properties.put("bvt.prop.HTTP_default.secure", "-1");
+        }
+        return properties;
+    }
+
+    @Override
+    public boolean useDefaultVirtualHost() {
+        String methodName = testName.getMethodName();
+        if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+            return true;
+        }
+        return false;
+    }
+
     public String getKeyStorePath(String methodName) {
         if (methodName.startsWith(TEST_CLIENT_AUTH_NEED)) {
             try {
@@ -189,11 +222,13 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
 
             @Override
             public void checkClientTrusted(
-                                           java.security.cert.X509Certificate[] certs, String authType) {}
+                                           java.security.cert.X509Certificate[] certs, String authType) {
+            }
 
             @Override
             public void checkServerTrusted(
-                                           java.security.cert.X509Certificate[] certs, String authType) {}
+                                           java.security.cert.X509Certificate[] certs, String authType) {
+            }
         } };
 
         return trustAllCerts;
@@ -202,25 +237,6 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
     private static URL getURL(String path, LibertyServer server) throws MalformedURLException {
         return new URL("https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + path);
 
-    }
-
-    @Override
-    public Map<String, String> getBootStrapProperties() {
-        String methodName = testName.getMethodName();
-        Map<String, String> properties = new HashMap<>();
-        properties.put("server.ssl.key-store", "classpath:server-keystore.jks");
-        properties.put("server.ssl.key-store-password", "secret");
-        properties.put("server.ssl.key-password", "secret");
-        properties.put("server.ssl.trust-store", "classpath:server-truststore.jks");
-        properties.put("server.ssl.trust-store-password", "secret");
-        if (methodName != null) {
-            if (methodName.contains("Need")) {
-                properties.put("server.ssl.client-auth", "NEED");
-            } else if (methodName.contains("Want")) {
-                properties.put("server.ssl.client-auth", "WANT");
-            }
-        }
-        return properties;
     }
 }
 

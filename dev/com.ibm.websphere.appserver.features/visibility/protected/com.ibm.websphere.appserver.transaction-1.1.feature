@@ -23,7 +23,7 @@ IBM-API-Service: com.ibm.wsspi.uow.UOWManager, \
  com.ibm.websphere.appserver.containerServices-1.0, \
  com.ibm.websphere.appserver.anno-1.0
 -bundles=com.ibm.ws.tx.jta.extensions, \
- com.ibm.ws.transaction, \
+ com.ibm.ws.transaction; start-phase:=CONTAINER_LATE, \
  com.ibm.tx.jta, \
  com.ibm.tx.util, \
  com.ibm.tx.ltc, \

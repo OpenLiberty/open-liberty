@@ -22,17 +22,21 @@ public class JwtSSOTokenHelperTestHelper {
 
     private final Mockery mockery;
 
+    private final JwtSSOTokenHelper jwtSSOTokenHelper;
+    private final ComponentContext cc;
+    private ServiceReference<JwtSSOTokenProxy> jwtSSOTokenProxyServiceRef = null;
+
     public JwtSSOTokenHelperTestHelper(Mockery mock) {
         this.mockery = mock;
+        cc = mockery.mock(ComponentContext.class);
+        jwtSSOTokenHelper = new JwtSSOTokenHelper();
     }
 
     @SuppressWarnings("unchecked")
     public void setJwtSSOTokenProxyWithCookieName(final String jwtCookieName) {
-        JwtSSOTokenHelper jwtSSOTokenHelper = new JwtSSOTokenHelper();
-        final ServiceReference<JwtSSOTokenProxy> jwtSSOTokenProxyServiceRef = mockery.mock(ServiceReference.class);
+        jwtSSOTokenProxyServiceRef = mockery.mock(ServiceReference.class);
         final JwtSSOTokenProxy jwtSSOTokenProxy = mockery.mock(JwtSSOTokenProxy.class);
         jwtSSOTokenHelper.setJwtSSOToken(jwtSSOTokenProxyServiceRef);
-        final ComponentContext cc = mockery.mock(ComponentContext.class);
 
         mockery.checking(new Expectations() {
             {
@@ -44,6 +48,13 @@ public class JwtSSOTokenHelperTestHelper {
         });
 
         jwtSSOTokenHelper.activate(cc);
+    }
+
+    public void tearDown() {
+        if (jwtSSOTokenProxyServiceRef != null) {
+            jwtSSOTokenHelper.unsetJwtSSOToken(jwtSSOTokenProxyServiceRef);
+            jwtSSOTokenHelper.deactivate(cc);
+        }
     }
 
 }

@@ -660,7 +660,7 @@ public final class HttpUtils {
 
         // No, then just keep climbing up until we find a common base.
         URI relative = URI.create("");
-        while (!(uriRel.getPath().startsWith(commonBase.getPath())) && !(commonBase.getPath().equals("/"))) {
+        while (!(uriRel.getPath().startsWith(commonBase.getPath())) && !"/".equals(commonBase.getPath())) {
             commonBase = commonBase.resolve("../");
             relative = relative.resolve("../");
         }

@@ -17,9 +17,7 @@ import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArch
 import org.jboss.arquillian.container.test.spi.RemoteLoadableExtension;
 
 /**
- * We register an extension class with Arquillian that amends the vanilla tck's wars
- * to add any libraries that are not in the default Liberty environment as well as 
- * logs the start and stop time for tests. 
+ * We register an extension class with Arquillian logs the start and stop time for tests. 
  */
 public class TestLoggingObserverExtension implements RemoteLoadableExtension {
 

@@ -274,9 +274,16 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             if (instance == null) {
                 throw new IllegalStateException("No Config instance set.");
             }
+
             checkExistingConfig(config);
-            if (!config.getVirtualHosts().isEmpty()) {
-                // only install a virtual host config if we are not using the default-host
+
+            if (config.getVirtualHosts().isEmpty()) {
+                if (!instance.isEndpointConfigured()) {
+                    //use app configured port with default_host
+                    virtualHostConfig.updateAndGet((b) -> installVirtualHostBundle(b, config));
+                }
+            } else {
+                //use app configured port with custom virtual host
                 virtualHostConfig.updateAndGet((b) -> installVirtualHostBundle(b, config));
             }
             instance.start();
@@ -344,21 +351,20 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         }
 
         private void checkExistingConfig(ServerConfiguration libertyConfig) {
-            List<VirtualHost> hosts = libertyConfig.getVirtualHosts();
-            if (hosts.isEmpty()) {
-                return;
-            }
-            String requestedPort = hosts.get(0).getId().substring(ID_VIRTUAL_HOST.length());
+            String requestedPort = libertyConfig.getHttpEndpoints().get(0).getId().substring(ID_HTTP_ENDPOINT.length());
 
             // Checks ConfigurationAdmin to see if the ID for the following
             // exist.  This is done in priority order because if a higher
             // priority configuration is found then we remove all the lower
             // priority elements as well as the element with the matching ID
             // 1. <virtualHost/> - highest priority
-            if (checkVirtualHost(libertyConfig, requestedPort)) {
-                // found matching ID for <virtualHost/> return because we cleared out the rest
-                return;
+            if (!libertyConfig.getVirtualHosts().isEmpty()) {
+                if (checkVirtualHost(libertyConfig, requestedPort)) {
+                    // found matching ID for <virtualHost/> return because we cleared out the rest
+                    return;
+                }
             }
+
             // 2. <httpEndpoint/> - second priority
             if (checkHttpEndpoint(libertyConfig, requestedPort)) {
                 // found matching ID for <httpEndpoint/> return because we cleared out the other
@@ -377,20 +383,20 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
 
         private boolean checkVirtualHost(ServerConfiguration sc, String requestedPort) {
             String virtualHostFilter = createFilter("com.ibm.ws.http.virtualhost", ID_VIRTUAL_HOST + requestedPort);
-            return checkConfigElement(sc, virtualHostFilter, sc.getVirtualHosts(), sc.getHttpEndpoints(), sc.getSsls(), sc.getKeyStores());
+            return checkConfigElement(virtualHostFilter, sc.getVirtualHosts(), sc.getHttpEndpoints(), sc.getSsls(), sc.getKeyStores());
         }
 
         private boolean checkHttpEndpoint(ServerConfiguration sc, String requestedPort) {
             String endpointFilter = createFilter("com.ibm.ws.http", ID_HTTP_ENDPOINT + requestedPort);
-            return checkConfigElement(sc, endpointFilter, sc.getHttpEndpoints(), sc.getSsls(), sc.getKeyStores());
+            return checkConfigElement(endpointFilter, sc.getHttpEndpoints(), sc.getSsls(), sc.getKeyStores());
         }
 
         private boolean checkSsl(ServerConfiguration sc, String requestedPort) {
             String sslFilter = createFilter("com.ibm.ws.ssl.repertoire", ID_SSL + requestedPort);
-            return checkConfigElement(sc, sslFilter, sc.getSsls(), sc.getKeyStores());
+            return checkConfigElement(sslFilter, sc.getSsls(), sc.getKeyStores());
         }
 
-        private boolean checkConfigElement(ServerConfiguration libertyConfig, String filter, List<? extends ConfigElement> toCheck,
+        private boolean checkConfigElement(String filter, List<? extends ConfigElement> toCheck,
                                            @SuppressWarnings("rawtypes") List... lowerPriority) {
             boolean result = false;
             try {

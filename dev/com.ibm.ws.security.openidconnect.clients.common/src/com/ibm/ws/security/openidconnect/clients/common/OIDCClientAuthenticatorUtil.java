@@ -68,6 +68,7 @@ public class OIDCClientAuthenticatorUtil {
      */
     public ProviderAuthenticationResult handleRedirectToServer(HttpServletRequest req, HttpServletResponse res, ConvergedClientConfig clientConfig) {
         String authorizationEndpoint = clientConfig.getAuthorizationEndpointUrl();
+      
         if (!checkHttpsRequirement(clientConfig, authorizationEndpoint)) {
             Tr.error(tc, "OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS", authorizationEndpoint);
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
@@ -162,6 +163,9 @@ public class OIDCClientAuthenticatorUtil {
             ConvergedClientConfig clientConfig) {
         ProviderAuthenticationResult oidcResult = null;
 
+        if(!isEndpointValid(clientConfig)) {
+            return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
+        }
         boolean isImplicit = false;
         if (Constants.IMPLICIT.equals(clientConfig.getGrantType())) {
             isImplicit = true;
@@ -263,6 +267,17 @@ public class OIDCClientAuthenticatorUtil {
             }
         }
         return metHttpsRequirement;
+    }
+
+    public static boolean isEndpointValid(ConvergedClientConfig clientConfig) {
+        String url = null;
+        if (clientConfig.getGrantType() == Constants.IMPLICIT) {
+            url = clientConfig.getTokenEndpointUrl();
+        } else {
+            url = clientConfig.getAuthorizationEndpointUrl();
+        }     
+        return url != null;
+        
     }
 
     //todo: avoid call on each request.

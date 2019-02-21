@@ -24,8 +24,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 
-@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "api.classes=org.eclipse.microprofile.reactive.streams.operators.ProcessorBuilder",
-"service.vendor=IBM" })
+@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
 public class ReactiveStreamsEngineInjectionExtension implements Extension, WebSphereCDIExtension {
 
     private final static TraceComponent tc = Tr.register(ReactiveStreamsEngineInjectionExtension.class);

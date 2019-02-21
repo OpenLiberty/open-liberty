@@ -58,44 +58,43 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs21.clientconfig.JAXRSClientConfigHolder;
 import com.ibm.ws.jaxrs21.clientconfig.JAXRSClientConstants;
 
+import static org.apache.cxf.jaxrs.client.ClientProperties.DEFAULT_THREAD_SAFETY_CLIENT_STATUS;
+import static org.apache.cxf.jaxrs.client.ClientProperties.HTTP_AUTOREDIRECT_PROP;
+import static org.apache.cxf.jaxrs.client.ClientProperties.HTTP_CONNECTION_TIMEOUT_PROP;
+import static org.apache.cxf.jaxrs.client.ClientProperties.HTTP_MAINTAIN_SESSION_PROP;
+import static org.apache.cxf.jaxrs.client.ClientProperties.HTTP_PROXY_SERVER_PORT_PROP;
+import static org.apache.cxf.jaxrs.client.ClientProperties.HTTP_PROXY_SERVER_PROP;
+import static org.apache.cxf.jaxrs.client.ClientProperties.HTTP_RECEIVE_TIMEOUT_PROP;
+import static org.apache.cxf.jaxrs.client.ClientProperties.HTTP_RESPONSE_AUTOCLOSE_PROP;
+import static org.apache.cxf.jaxrs.client.ClientProperties.THREAD_SAFE_CLIENT_PROP;
+import static org.apache.cxf.jaxrs.client.ClientProperties.THREAD_SAFE_CLIENT_STATE_CLEANUP_PERIOD;
+import static org.apache.cxf.jaxrs.client.ClientProperties.THREAD_SAFE_CLIENT_STATE_CLEANUP_PROP;
+
 /*
  * This class overrides the same "pure" Apache class found in the libs of com.ibm.ws.org.apache.cxf.jaxrs
  */
 public class ClientImpl implements Client {
-    static final String HTTP_CONNECTION_TIMEOUT_PROP = "http.connection.timeout";
-    static final String HTTP_RECEIVE_TIMEOUT_PROP = "http.receive.timeout";
-    private static final String HTTP_PROXY_SERVER_PROP = "http.proxy.server.uri";
-    private static final String HTTP_PROXY_SERVER_PORT_PROP = "http.proxy.server.port";
-    private static final String HTTP_AUTOREDIRECT_PROP = "http.autoredirect";
-    private static final String HTTP_MAINTAIN_SESSION_PROP = "http.maintain.session";
-    private static final String HTTP_RESPONSE_AUTOCLOSE_PROP = "http.response.stream.auto.close";
-    private static final String THREAD_SAFE_CLIENT_PROP = "thread.safe.client";
-    private static final String THREAD_SAFE_CLIENT_STATE_CLEANUP_PROP = "thread.safe.client.state.cleanup.period";
-    private static final Boolean DEFAULT_THREAD_SAFETY_CLIENT_STATUS;
-    private static final Integer THREAD_SAFE_CLIENT_STATE_CLEANUP_PERIOD;
-    static {
-        DEFAULT_THREAD_SAFETY_CLIENT_STATUS =
-            Boolean.parseBoolean(SystemPropertyAction.getPropertyOrNull(THREAD_SAFE_CLIENT_PROP));
-        THREAD_SAFE_CLIENT_STATE_CLEANUP_PERIOD =
-            getIntValue(SystemPropertyAction.getPropertyOrNull(THREAD_SAFE_CLIENT_STATE_CLEANUP_PROP));
-    }
 
-    private final Configurable<Client> configImpl;
-    private final TLSConfiguration secConfig;
+
+    private Configurable<Client> configImpl;
+    private TLSConfiguration secConfig;
     private boolean closed;
     private Set<WebClient> baseClients =
-        Collections.newSetFromMap(new WeakHashMap<WebClient, Boolean>());
+        Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<WebClient, Boolean>()));
+
     public ClientImpl(Configuration config,
                       TLSConfiguration secConfig) {
-        configImpl = new ClientConfigurableImpl<Client>(this, config);
+        configImpl = new ClientConfigurableImpl<>(this, config);
         this.secConfig = secConfig;
     }
 
     @Override
     public void close() {
         if (!closed) {
-            for (WebClient wc : baseClients) {
-                wc.close();
+            synchronized (baseClients) {
+                for (WebClient wc : baseClients) {
+                    wc.close();
+                }
             }
             baseClients = null;
             closed = true;
@@ -122,6 +121,7 @@ public class ClientImpl implements Client {
 
         return new WebTargetImpl(builder, getConfiguration());
     }
+
 
     @Override
     public WebTarget target(String address) {
@@ -260,9 +260,10 @@ public class ClientImpl implements Client {
     }
 
     public class WebTargetImpl implements WebTarget {
-        private final Configurable<WebTarget> configImpl;
-        private final UriBuilder uriBuilder;
+        private Configurable<WebTarget> configImpl;
+        private UriBuilder uriBuilder;
         private WebClient targetClient;
+
 
         public WebTargetImpl(UriBuilder uriBuilder,
                              Configuration config) {
@@ -273,7 +274,7 @@ public class ClientImpl implements Client {
         public WebTargetImpl(UriBuilder uriBuilder,
                              Configuration config,
                              WebClient targetClient) {
-            this.configImpl = new ClientConfigurableImpl<WebTarget>(this, config);
+            this.configImpl = new ClientConfigurableImpl<>(this, config);
             this.uriBuilder = uriBuilder.clone();
             this.targetClient = targetClient;
 
@@ -317,13 +318,15 @@ public class ClientImpl implements Client {
 
             initTargetClientIfNeeded(configProps);
 
-            ClientProviderFactory pf = ClientProviderFactory.getInstance(WebClient.getConfig(targetClient).getEndpoint());
-            List<Object> providers = new LinkedList<Object>();
-            List<org.apache.cxf.feature.Feature> cxfFeatures = new LinkedList<org.apache.cxf.feature.Feature>();
+            ClientProviderFactory pf =
+                ClientProviderFactory.getInstance(WebClient.getConfig(targetClient).getEndpoint());
+            List<Object> providers = new LinkedList<>();
+            List<org.apache.cxf.feature.Feature> cxfFeatures =
+                new LinkedList<>();
             Configuration cfg = configImpl.getConfiguration();
             for (Object p : cfg.getInstances()) {
                 if (p instanceof org.apache.cxf.feature.Feature) {
-                    cxfFeatures.add((org.apache.cxf.feature.Feature) p);
+                    cxfFeatures.add((org.apache.cxf.feature.Feature)p);
                 } else if (!(p instanceof Feature)) {
                     Map<Class<?>, Integer> contracts = cfg.getContracts(p.getClass());
                     if (contracts == null || contracts.isEmpty()) {
@@ -342,7 +345,7 @@ public class ClientImpl implements Client {
             clientCfg.getRequestContext().putAll(configProps);
             clientCfg.getRequestContext().put(Client.class.getName(), ClientImpl.this);
             clientCfg.getRequestContext().put(Configuration.class.getName(),
-                                              getConfiguration());
+                                                                      getConfiguration());
 
             // Response auto-close
             Boolean responseAutoClose = getBooleanValue(configProps.get(HTTP_RESPONSE_AUTOCLOSE_PROP));
@@ -382,7 +385,7 @@ public class ClientImpl implements Client {
             }
             Object proxyServerValue = configProps.get(HTTP_PROXY_SERVER_PROP);
             if (proxyServerValue != null) {
-                clientCfg.getHttpConduit().getClient().setProxyServer((String) proxyServerValue);
+                clientCfg.getHttpConduit().getClient().setProxyServer((String)proxyServerValue);
             }
             Integer proxyServerPortValue = getIntValue(configProps.get(HTTP_PROXY_SERVER_PORT_PROP));
             if (proxyServerPortValue != null) {
@@ -459,7 +462,7 @@ public class ClientImpl implements Client {
             checkNullValues(name, values);
             UriBuilder thebuilder = getUriBuilder();
             if (values == null || values.length == 1 && values[0] == null) {
-                thebuilder.replaceQueryParam(name, (Object[]) null);
+                thebuilder.replaceQueryParam(name, (Object[])null);
             } else {
                 thebuilder.queryParam(name, values);
             }
@@ -473,7 +476,7 @@ public class ClientImpl implements Client {
 
             UriBuilder thebuilder = getUriBuilder();
             if (values == null || values.length == 1 && values[0] == null) {
-                thebuilder.replaceMatrixParam(name, (Object[]) null);
+                thebuilder.replaceMatrixParam(name, (Object[])null);
             } else {
                 thebuilder.matrixParam(name, values);
             }
@@ -618,9 +621,9 @@ public class ClientImpl implements Client {
             : o instanceof Integer ? ((Integer)o).longValue() : null;
     }
     private static Integer getIntValue(Object o) {
-        return o instanceof Integer ? (Integer) o : o instanceof String ? Integer.valueOf(o.toString()) : null;
+        return o instanceof Integer ? (Integer)o : o instanceof String ? Integer.valueOf(o.toString()) : null;
     }
     private static Boolean getBooleanValue(Object o) {
-        return o instanceof Boolean ? (Boolean) o : o instanceof String ? Boolean.valueOf(o.toString()) : null;
+        return o instanceof Boolean ? (Boolean)o : o instanceof String ? Boolean.valueOf(o.toString()) : null;
     }
 }

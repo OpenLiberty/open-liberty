@@ -11,7 +11,9 @@
 package com.ibm.ws.springboot.support.fat;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.After;
@@ -44,6 +46,17 @@ public class MultContextTests20 extends AbstractSpringTests {
     }
 
     @Override
+    public Map<String, String> getBootStrapProperties() {
+        String methodName = testName.getMethodName();
+        Map<String, String> properties = new HashMap<>();
+        if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+            properties.put("bvt.prop.HTTP_default", "-1");
+            properties.put("bvt.prop.HTTP_default.secure", "-1");
+        }
+        return properties;
+    }
+
+    @Override
     public boolean useDefaultVirtualHost() {
         String methodName = testName.getMethodName();
         if (methodName == null) {
@@ -64,12 +77,32 @@ public class MultContextTests20 extends AbstractSpringTests {
 
     @After
     public void stopOverrideServer() throws Exception {
-        super.stopServer();
+        String methodName = testName.getMethodName();
+        if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+            super.stopServer(true, "CWWKT0015W");
+        } else {
+            super.stopServer();
+        }
     }
 
     @Test
     public void useDefaultHostPorts() throws Exception {
         server.setHttpDefaultPort(DEFAULT_HTTP_PORT);
+        HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
+
+        server.setHttpDefaultPort(CHILD1_ACTUATOR_PORT);
+        HttpUtils.findStringInUrl(server, "actuator/health", "UP");
+
+        server.setHttpDefaultPort(CHILD2_MAIN_PORT);
+        HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
+
+        server.setHttpDefaultPort(CHILD2_ACTUATOR_PORT);
+        HttpUtils.findStringInUrl(server, "actuator/health", "UP");
+    }
+
+    @Test
+    public void useDefaultHostWithAppPort() throws Exception {
+        server.setHttpDefaultPort(CHILD1_MAIN_PORT);
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
 
         server.setHttpDefaultPort(CHILD1_ACTUATOR_PORT);

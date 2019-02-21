@@ -37,6 +37,7 @@ import com.ibm.ws.security.jwtsso.fat.utils.JwtFatActions;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
 import com.ibm.ws.security.jwtsso.fat.utils.MessageConstants;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -316,7 +317,7 @@ public class ConfigAttributeTests extends CommonSecurityFat {
      * see evidence in the logs that the customized issuer was presented.
      * That's all we care about.
      */
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException",
+    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException",
                     "com.ibm.websphere.security.jwt.InvalidTokenException",
                     "com.ibm.ws.security.authentication.AuthenticationException" })
     @Mode(TestMode.LITE)
@@ -384,7 +385,8 @@ public class ConfigAttributeTests extends CommonSecurityFat {
      * Test the detection of the mpJwt server config element. Specify an extra element and try to authenticate.
      * We should get an error message about the extra element.
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException", "com.ibm.ws.security.authentication.AuthenticationException" })
+    @ExpectedFFDC({ "com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException"})
+    @AllowedFFDC({ "com.ibm.ws.security.authentication.AuthenticationException" })
     @Mode(TestMode.LITE)
     @Test
     public void test_invalidConsumerRef() throws Exception {

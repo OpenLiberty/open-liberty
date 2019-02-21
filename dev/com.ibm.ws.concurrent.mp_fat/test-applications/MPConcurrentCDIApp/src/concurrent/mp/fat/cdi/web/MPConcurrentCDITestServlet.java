@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.annotation.Annotation;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -30,6 +35,9 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
 import javax.annotation.Resource;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
@@ -57,6 +65,18 @@ public class MPConcurrentCDITestServlet extends FATServlet {
 
     @Inject
     ConcurrencyBean bean;
+
+    @Inject
+    BeanManager beanManager;
+
+    @Inject
+    RequestScopedBean requestBean;
+
+    @Inject
+    SessionScopedBean sessionBean;
+
+    @Inject
+    ConversationScopeBean conversationBean;
 
     @Inject
     ManagedExecutor noAnno;
@@ -107,6 +127,14 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     @ManagedExecutorConfig(propagated = { ThreadContext.TRANSACTION, ThreadContext.APPLICATION }, cleared = {})
     ManagedExecutor propagatedBA;
 
+    @Inject
+    @ManagedExecutorConfig(propagated = { ThreadContext.CDI, ThreadContext.APPLICATION })
+    ManagedExecutor propagateCDI;
+
+    @Inject
+    @ManagedExecutorConfig(propagated = {}, cleared = ThreadContext.ALL_REMAINING)
+    ManagedExecutor propagatedNone;
+
     ManagedExecutor methodInjectedNoAnno;
 
     ManagedExecutor methodInjectedMax5;
@@ -136,6 +164,10 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     ThreadContext threadContextWithName;
 
     @Inject
+    @ThreadContextConfig(propagated = {}, cleared = ThreadContext.ALL_REMAINING)
+    ThreadContext threadContextClearAll;
+
+    @Inject
     @NamedInstance("namedThreadContext")
     @ThreadContextConfig(propagated = ThreadContext.APPLICATION, unchanged = "State", cleared = ThreadContext.ALL_REMAINING)
     ThreadContext threadContextWithNameAndConfig;
@@ -155,9 +187,105 @@ public class MPConcurrentCDITestServlet extends FATServlet {
         this.methodInjectedAnonymous = me;
     }
 
+    /**
+     * Use the BeanManager to find the bean for a ManagedExecutor produced by the container.
+     * Verify that it has no EL name and that NamedInstance is listed as a qualifier, but not ManagedExecutorConfig.
+     */
+    @Test
+    public void testBeanManagerLookupManagedExecutor() {
+        NamedInstance.Literal namedInstance_max2 = AccessController
+                        .doPrivileged((PrivilegedAction<NamedInstance.Literal>) () -> NamedInstance.Literal.of("max2"));
+        Set<Bean<?>> beans = beanManager.getBeans(ManagedExecutor.class, namedInstance_max2);
+        assertEquals(1, beans.size());
+        Bean<?> b = beans.iterator().next();
+        assertNull(b.getName()); // No EL name when @Named not present, per CDI spec 2.6.3 "Beans with no name"
+        Set<Annotation> qualifiers = b.getQualifiers();
+        NamedInstance namedInstance = null;
+        for (Annotation anno : qualifiers)
+            if (anno instanceof NamedInstance)
+                namedInstance = (NamedInstance) anno;
+            else if (!(anno instanceof Any))
+                fail("Unexpected qualifier " + anno);
+        assertEquals("max2", namedInstance.value());
+    }
+
+    /**
+     * Use the BeanManager to find the bean for a ThreadContext produced by the container.
+     * Verify that it has no EL name and that NamedInstance is listed as a qualifier, but not ThreadContextConfig.
+     */
+    @Test
+    public void testBeanManagerLookupThreadContext() {
+        NamedInstance.Literal namedInstance_namedThreadContext = AccessController
+                        .doPrivileged((PrivilegedAction<NamedInstance.Literal>) () -> NamedInstance.Literal.of("namedThreadContext"));
+        Set<Bean<?>> beans = beanManager.getBeans(ThreadContext.class, namedInstance_namedThreadContext);
+        assertEquals(1, beans.size());
+        Bean<?> b = beans.iterator().next();
+        assertNull(b.getName()); // No EL name when @Named not present, per CDI spec 2.6.3 "Beans with no name"
+        Set<Annotation> qualifiers = b.getQualifiers();
+        NamedInstance namedInstance = null;
+        for (Annotation anno : qualifiers)
+            if (anno instanceof NamedInstance)
+                namedInstance = (NamedInstance) anno;
+            else if (!(anno instanceof Any))
+                fail("Unexpected qualifier " + anno);
+        assertEquals("namedThreadContext", namedInstance.value());
+    }
+
     @Test
     public void testMEDefaultsNotEqual() {
         assertUnique(noAnno, noAnno2, bean.getNoAnno());
+    }
+
+    @Test
+    public void testCDI_ME_Ctx_Propagate() throws Exception {
+        checkCDIPropagation(true, "testCDI_ME_Ctx_Propagate-REQUEST", propagateCDI, requestBean);
+        checkCDIPropagation(true, "testCDI_ME_Ctx_Propagate-SESSION", propagateCDI, sessionBean);
+        checkCDIPropagation(true, "testCDI_ME_Ctx_Propagate-CONVERSATION", propagateCDI, conversationBean);
+    }
+
+    @Test
+    public void testCDI_ME_Ctx_Clear() throws Exception {
+        checkCDIPropagation(false, "testCDI_ME_Ctx_Clear-REQUEST", propagatedNone, requestBean);
+        checkCDIPropagation(false, "testCDI_ME_Ctx_Clear-SESSION", propagatedNone, sessionBean);
+        checkCDIPropagation(false, "testCDI_ME_Ctx_Clear-CONVERSATION", propagatedNone, conversationBean);
+    }
+
+    private void checkCDIPropagation(boolean expectPropagate, String stateToPropagate, ManagedExecutor me, AbstractBean bean) throws Exception {
+        bean.setState(stateToPropagate);
+        CompletableFuture<String> cf = me.supplyAsync(() -> {
+            String state = bean.getState();
+            System.out.println(stateToPropagate + " state=" + state);
+            return state;
+        });
+        assertEquals(expectPropagate ? stateToPropagate : AbstractBean.UNINITIALIZED, cf.get(TIMEOUT_MIN, TimeUnit.MINUTES));
+    }
+
+    @Test
+    public void testCDI_TC_Ctx_Propagate() throws Exception {
+        requestBean.setState("testCDIContextPropagate-STATE2");
+        Callable<String> getState = threadContextWithDefaultConfig.contextualCallable(() -> {
+            String state = requestBean.getState();
+            System.out.println("testCDIContextPropagate#2 state=" + state);
+            return state;
+        });
+        assertEquals("testCDIContextPropagate-STATE2", getState.call());
+    }
+
+    @Test
+    public void testCDI_TC_Ctx_Clear() throws Exception {
+        ThreadContext clearAllCtx = ThreadContext.builder()
+                        .propagated() // propagate nothing
+                        .cleared(ThreadContext.ALL_REMAINING)
+                        .build();
+
+        requestBean.setState("testCDIThreadCtxClear-STATE1");
+
+        Callable<String> getState = clearAllCtx.contextualCallable(() -> {
+            String state = requestBean.getState();
+            System.out.println("testCDIThreadCtxClear#1 state=" + state);
+            return state;
+        });
+        assertEquals("UNINITIALIZED", getState.call());
     }
 
     @Test
@@ -270,7 +398,7 @@ public class MPConcurrentCDITestServlet extends FATServlet {
                     String message = x.getCause().getMessage();
                     if (message == null
                         || !message.contains("CWWKE1201E")
-                        || !message.contains("_MPConcurrentCDIApp_concurrent.mp.fat.cdi.web.MPConcurrentCDITestServlet.max2(maxAsync=2,maxQueued=2,cleared=[Transaction])")
+                        || !message.contains("_MPConcurrentCDIApp_concurrent.mp.fat.cdi.web.MPConcurrentCDITestServlet/max2(maxAsync=2,maxQueued=2,cleared=[Transaction])")
                         || !message.contains("maxQueueSize")
                         || !message.contains(" 2")) // the maximum queue size
                         throw x;

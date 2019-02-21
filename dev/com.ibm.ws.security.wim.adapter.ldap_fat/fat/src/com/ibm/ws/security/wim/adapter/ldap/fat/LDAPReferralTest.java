@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,7 +67,7 @@ import componenttest.topology.utils.LDAPUtils;
  *
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 public class LDAPReferralTest {
 
     private static LibertyServer libertyServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.adapter.ldap.fat.referral");
@@ -108,28 +108,27 @@ public class LDAPReferralTest {
      */
     @AfterClass
     public static void teardownClass() throws Exception {
-        if (libertyServer != null) {
-            try {
-                libertyServer.stopServer();
-            } catch (Exception e) {
-                Log.error(c, "teardown", e, "Liberty server threw error while stopping. " + e.getMessage());
-            }
-        }
-        if (delegateServer != null) {
-            try {
-                delegateServer.stopService();
-            } catch (Exception e) {
-                Log.error(c, "teardown", e, "Delegate LDAP server threw error while stopping. " + e.getMessage());
-            }
-        }
-        if (subordinateServer != null) {
-            try {
-                subordinateServer.stopService();
-            } catch (Exception e) {
-                Log.error(c, "teardown", e, "Subordinate LDAP server threw error while stopping. " + e.getMessage());
-            }
-        }
+        try {
+            if (libertyServer != null) {
+                libertyServer.stopServer("CWIML4529E", "CWWKG0032W");
 
+            }
+        } finally {
+            if (delegateServer != null) {
+                try {
+                    delegateServer.stopService();
+                } catch (Exception e) {
+                    Log.error(c, "teardown", e, "Delegate LDAP server threw error while stopping. " + e.getMessage());
+                }
+            }
+            if (subordinateServer != null) {
+                try {
+                    subordinateServer.stopService();
+                } catch (Exception e) {
+                    Log.error(c, "teardown", e, "Subordinate LDAP server threw error while stopping. " + e.getMessage());
+                }
+            }
+        }
         libertyServer.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");
     }
 

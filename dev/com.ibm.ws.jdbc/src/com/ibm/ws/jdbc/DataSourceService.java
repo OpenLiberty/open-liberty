@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -464,7 +464,10 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 } else if (Driver.class.getName().equals(type)) {
                     ifc = Driver.class;
                     String url = vProps.getProperty("URL", vProps.getProperty("url"));
-                    vendorImpl = jdbcDriverSvc.getDriver(url, vProps, id);
+                    if (url != null && !"".equals(url)) {
+                        vendorImpl = jdbcDriverSvc.getDriver(url, vProps, id);
+                    } else 
+                        throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4014.URL.for.Driver.missing", jndiName == null ? id : jndiName));
                 } else
                     throw new SQLNonTransientException(ConnectorService.getMessage("MISSING_RESOURCE_J2CA8030", DSConfig.TYPE, type, DATASOURCE, jndiName == null ? id : jndiName));
 
@@ -620,7 +623,10 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             } else if (Driver.class.getName().equals(type)) {
                 ifc = Driver.class;
                 String url = vProps.getProperty("URL", vProps.getProperty("url"));
-                vendorImpl = jdbcDriverSvc.getDriver(url, vProps, id);
+                if (url != null && !"".equals(url)) {
+                    vendorImpl = jdbcDriverSvc.getDriver(url, vProps, id);
+                } else 
+                    throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4014.URL.for.Driver.missing", jndiName == null ? id : jndiName));
             } else
                 throw new SQLNonTransientException(ConnectorService.getMessage("MISSING_RESOURCE_J2CA8030", DSConfig.TYPE, type, DATASOURCE, jndiName == null ? id : jndiName));
 
@@ -654,8 +660,9 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 }
             }
 
-            //TODO remove noship guard before GA
-            isUCP = vendorImplClassName.startsWith("oracle.ucp.jdbc.") && vProps.containsKey("internal.dev.nonship.function.do.not.use.production");
+            //TODO remove noship/beta guard before GA
+            isUCP = vendorImplClassName.startsWith("oracle.ucp.jdbc.") && 
+                            (vProps.containsKey("internal.dev.nonship.function.do.not.use.production") || (vProps.getFactoryPID() != null && vProps.getFactoryPID().equals("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp")));
             if (isUCP) {
                 if (!createdDefaultConnectionManager && !sentUCPConnMgrPropsIgnoredInfoMessage) {
                     Tr.info(tc, "DSRA4013.ignored.connection.manager.config.used");

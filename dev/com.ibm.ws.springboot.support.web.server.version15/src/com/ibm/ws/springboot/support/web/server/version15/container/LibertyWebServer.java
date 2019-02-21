@@ -60,7 +60,8 @@ import com.ibm.ws.springboot.support.web.server.initializer.WebInitializer;
  *
  */
 public class LibertyWebServer implements EmbeddedServletContainer {
-    private static final Object token = new Object() {};
+    private static final Object token = new Object() {
+    };
     private final SpringBootConfig springBootConfig;
     private final LibertyServletWebServerFactory factory;
     private final AtomicInteger port = new AtomicInteger();
@@ -116,7 +117,7 @@ public class LibertyWebServer implements EmbeddedServletContainer {
         configHolder.setCompression_configured_in_spring_app(factory.getCompression().getEnabled() != DEFAULT_COMPRESSION_ENABLED_SETTING);
         // check if check if spring session config changes made so that a not-supported warning may be issued.
         configHolder.setSession_configured_in_spring_app(factory.getSessionTimeout() != DEFAULT_SESSION_TIMEOUT_SECONDS
-                                                     || factory.isPersistSession() != DEFAULT_SESSION_PERSISTENT_SETTING);
+                                                         || factory.isPersistSession() != DEFAULT_SESSION_PERSISTENT_SETTING);
         Set<org.springframework.boot.web.servlet.ErrorPage> errorPages = factory.getErrorPages();
         for (org.springframework.boot.web.servlet.ErrorPage spring_ep : errorPages) {
             SpringErrorPageData ibm_spring_errpg = new SpringErrorPageData();

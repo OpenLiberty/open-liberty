@@ -147,6 +147,15 @@ public class OutboundSSLSelections {
             Tr.exit(tc, "loadOutboundConnectionInfo");
     }
 
+    public void checkDefaultConflict() {
+        if (dynamicHostSelections.containsKey("*,*")) {
+            String sslConfigAlias = dynamicHostSelections.get("*,*");
+            if (!warningIssued && isDefaultOutboundRefSet(sslConfigAlias)) {
+                dynamicHostSelections.remove("*,*");
+            }
+        }
+    }
+
     /**
      * @param sslCfgAlias
      * @return

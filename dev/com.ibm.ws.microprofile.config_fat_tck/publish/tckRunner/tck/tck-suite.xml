@@ -11,17 +11,18 @@
 <suite name="microprofile-config-1.1-tck" verbose="2"
     configfailurepolicy="continue">
     <test name="tck-package-org.eclipse.microprofile.config.tck">
-        <packages>
-            <method-selectors>
-                <method-selector>
-                    <script language="beanshell">
+        <method-selectors>
+            <method-selector>
+                <script language="beanshell">
                     <![CDATA[
                         !method.getName().contains("testEnvironmentConfigSource")
                     ]]>
-                    </script>
-                </method-selector>
-            </method-selectors>
-            <package name="org.eclipse.microprofile.config.tck.*"></package>
+                </script>
+            </method-selector>
+        </method-selectors>
+        <packages>
+            <package
+                name="org.eclipse.microprofile.config.tck.*"></package>
         </packages>
     </test>
 </suite>

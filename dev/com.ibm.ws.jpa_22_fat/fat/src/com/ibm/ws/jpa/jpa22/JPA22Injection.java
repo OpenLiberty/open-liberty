@@ -59,7 +59,7 @@ public class JPA22Injection extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.dumpServer("injection");
+//        server1.dumpServer("injection");
         server1.stopServer("CWWJP9991W"); // From Eclipselink drop-and-create tables option
     }
 }

@@ -37,10 +37,13 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class Relationships_OneXOne_Web extends JPAFATServletClient {
     private final static String RESOURCE_ROOT = "test-applications/jpa10/relationships/oneXone/";
 
@@ -145,7 +148,7 @@ public class Relationships_OneXOne_Web extends JPAFATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-            server1.dumpServer("relationships_oneXone_web");
+//            server1.dumpServer("relationships_oneXone_web");
             server1.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
                                "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
             );

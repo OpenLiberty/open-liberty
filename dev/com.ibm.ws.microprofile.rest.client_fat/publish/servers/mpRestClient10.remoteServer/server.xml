@@ -15,4 +15,12 @@
                   host="*"
                   httpPort="${bvt.prop.HTTP_secondary}"
                   httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+
+  <!-- Required for Johnzon in Collections tests -->
+  <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+  <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+  <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+  <javaPermission className="java.lang.RuntimePermission" name="getProtectionDomain"/>
+  <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+
 </server>

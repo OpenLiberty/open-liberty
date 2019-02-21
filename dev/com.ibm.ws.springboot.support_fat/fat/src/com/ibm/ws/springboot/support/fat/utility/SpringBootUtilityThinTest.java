@@ -50,6 +50,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.config.HttpEndpoint;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.springboot.support.fat.CommonWebServerTests;
@@ -111,14 +112,19 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         new RemoteFile(appsDir, SPRING_BOOT_20_WAR_THIN).delete();
         server.deleteDirectoryFromLibertyServerRoot("apps/" + SPRING_LIB_INDEX_CACHE);
         // note that stop server also deletes the shared and workarea library caches
-        stopServer();
+        String methodName = testName.getMethodName();
+        if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+            super.stopServer(true, "CWWKT0015W");
+        } else {
+            super.stopServer();
+        }
     }
 
     @Override
     public Set<String> getFeatures() {
         Set<String> features = new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
         String methodName = testName.getMethodName();
-        if ("testRunLibertyUberJarWithSSL".equals(methodName)) {
+        if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
             features.add("transportSecurity-1.0");
         }
         return features;
@@ -146,7 +152,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
     @Override
     public Map<String, String> getBootStrapProperties() {
         String methodName = testName.getMethodName();
-        if ("testRunLibertyUberJarWithSSL".equals(methodName)) {
+        if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
             Map<String, String> properties = new HashMap<>();
             properties.put("server.ssl.key-store", "classpath:server-keystore.jks");
             properties.put("server.ssl.key-store-password", "secret");
@@ -154,6 +160,15 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
             return properties;
         }
         return super.getBootStrapProperties();
+    }
+
+    @Override
+    public boolean useDefaultVirtualHost() {
+        String methodName = testName.getMethodName();
+        if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -297,7 +312,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
     }
 
     @Test
-    public void testRunLibertyUberJarWithSSL() throws Exception {
+    public void testDefaultHostWithAppPortRunLibertyUberJarWithSSL() throws Exception {
         String dropinsSpring = "dropins/" + SPRING_APP_TYPE + "/";
         new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();
         RemoteFile thinApp = new RemoteFile(server.getFileFromLibertyServerRoot(dropinsSpring), "springBootApp.jar");
@@ -318,6 +333,16 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         configureBootStrapProperties(true, false);
 
         ServerConfiguration config = getServerConfiguration();
+
+        //set defaultHttpEndpoint ports to -1 to use application port
+        List<HttpEndpoint> endpoints = config.getHttpEndpoints();
+        endpoints.clear();
+        HttpEndpoint endpoint = new HttpEndpoint();
+        endpoints.add(endpoint);
+        endpoint.setId("defaultHttpEndpoint");
+        endpoint.setHost("*");
+        endpoint.setHttpPort("-1");
+        endpoint.setHttpsPort("-1");
 
         server.updateServerConfiguration(config);
 
@@ -344,7 +369,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
             }
         }
         assertNotNull("The endpoint is not available", line);
-        assertTrue("Expected log not found", line.contains("CWWKT0016I"));
+        assertTrue("Expected log not found", line.contains("CWWKT0016I") && line.contains("default_host"));
 
         int start = line.indexOf("https");
         String url = line.substring(start);
@@ -403,11 +428,13 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
             @Override
             public void checkClientTrusted(
-                                           java.security.cert.X509Certificate[] certs, String authType) {}
+                                           java.security.cert.X509Certificate[] certs, String authType) {
+            }
 
             @Override
             public void checkServerTrusted(
-                                           java.security.cert.X509Certificate[] certs, String authType) {}
+                                           java.security.cert.X509Certificate[] certs, String authType) {
+            }
         } };
 
         return trustAllCerts;

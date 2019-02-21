@@ -919,10 +919,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
     public void propertyChange(PropertyChangeEvent event) {}
 
     public int getConnctionWaitTime() {
-        // TODO Auto-generated method stub
-        // This may not be needed, keep for now, but most likely will be removed.
-
-        return 0;
+        return connectionTimeout;
     }
 
     /**

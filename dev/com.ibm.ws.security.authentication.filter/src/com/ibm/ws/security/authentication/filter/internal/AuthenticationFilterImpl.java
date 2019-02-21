@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package com.ibm.ws.security.authentication.filter.internal;
 
 import java.util.Map;
@@ -24,10 +25,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 
-@Component(configurationPid = "com.ibm.ws.security.authentication.filter",
-                service = { AuthenticationFilter.class },
-                configurationPolicy = ConfigurationPolicy.REQUIRE,
-                property = { "service.vendor=IBM" })
+@Component(configurationPid = "com.ibm.ws.security.authentication.filter", service = { AuthenticationFilter.class }, configurationPolicy = ConfigurationPolicy.REQUIRE, property = { "service.vendor=IBM" })
 public class AuthenticationFilterImpl implements AuthenticationFilter {
     public static final TraceComponent tc = Tr.register(AuthenticationFilterImpl.class);
     protected AuthFilterConfig authFilterConfig = null;

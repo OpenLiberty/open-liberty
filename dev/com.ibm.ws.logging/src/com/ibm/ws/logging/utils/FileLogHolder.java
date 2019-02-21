@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -377,10 +377,7 @@ public class FileLogHolder implements TraceWriter {
      */
     private synchronized PrintStream createStream(boolean showError) {
 
-        // Create the non-unique file (e.g. trace.log)
-        File targetLogFile = LoggingFileUtils.createNewFile(fileLogSet, showError);
-
-        setStreamFromFile(targetLogFile, true, 0);
+        setStreamFromFile(null, true, 0, showError);
 
         return currentPrintStream;
     }
@@ -393,8 +390,9 @@ public class FileLogHolder implements TraceWriter {
      * @param targetLogFile The file to create the stream from.
      * @param closeExisting Whether to close the existing streams.
      * @param startOffset The start of the file.
+     * @param showError Show errors.
      */
-    private void setStreamFromFile(File targetLogFile, boolean closeExisting, long startOffset) {
+    private void setStreamFromFile(File targetLogFile, boolean closeExisting, long startOffset, boolean showError) {
         long realMaxFileSizeBytes = maxFileSizeBytes;
 
         // Store the value, and temporarily "disable" log rolling to avoid
@@ -410,6 +408,11 @@ public class FileLogHolder implements TraceWriter {
                 if (currentFileStream != null) {
                     LoggingFileUtils.tryToClose(currentFileStream);
                 }
+            }
+
+            if (targetLogFile == null) {
+                // Create the non-unique file (e.g. trace.log)
+                targetLogFile = LoggingFileUtils.createNewFile(fileLogSet, showError);
             }
 
             if (targetLogFile != null) {
@@ -464,7 +467,7 @@ public class FileLogHolder implements TraceWriter {
      */
     private PrintStream getPrimaryStream(boolean showError) {
         File primaryFile = getPrimaryFile();
-        setStreamFromFile(primaryFile, false, primaryFile.length());
+        setStreamFromFile(primaryFile, false, primaryFile.length(), showError);
         return currentPrintStream;
     }
 

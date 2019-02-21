@@ -11,6 +11,9 @@
 package com.ibm.ws.microprofile.faulttolerance20.impl;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletionStage;
@@ -44,6 +47,9 @@ import com.ibm.ws.microprofile.faulttolerance20.state.FaultToleranceStateFactory
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState;
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState.RetryResult;
 import com.ibm.ws.microprofile.faulttolerance20.state.TimeoutState;
+import com.ibm.wsspi.threadcontext.ThreadContext;
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
+import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
  * Abstract executor for asynchronous calls.
@@ -62,7 +68,7 @@ import com.ibm.ws.microprofile.faulttolerance20.state.TimeoutState;
  * <ul>
  * <li>start at {@code execute()} (called by the fault tolerance interceptor)</li>
  * <li>create a return wrapper and store it in the execution context (see createReturnWrapper)</li>
- * <li>enqueue the first execution attempt to run on another thread (by submitting a task to the AsyncBulkheadState, see enqueueAttempt)</li>
+ * <li>prepare the first execution attempt to run on another thread (by submitting a task to the AsyncBulkheadState, see prepareExecutionAttempt)</li>
  * <li>return the return wrapper to the interceptor</li>
  * </ul>
  * <p>
@@ -70,29 +76,43 @@ import com.ibm.ws.microprofile.faulttolerance20.state.TimeoutState;
  * <ul>
  * <li>entry point is {@code runExecutionAttempt}</li>
  * <li>the user's method is run and the result is stored in a MethodResult</li>
- * <li>fault tolerance policies are applied based on the MethodResult (see processMethodResult and finalizeAttempt)</li>
- * <li>if it's determined that a retry should be run, a new execution attempt is enqueued to run on another thread (see enqueueAttempt)</li>
- * <li>otherwise, the MethodResult is set into the return wrapper and the execution is complete (see commitResult)</li>
+ * <li>fault tolerance policies are applied based on the MethodResult (see processMethodResult and processEndOfAttempt)</li>
+ * <li>if it's determined that a retry should be run, a new execution attempt is enqueued to run on another thread (see prepareExecutionAttempt)</li>
+ * <li>otherwise, the MethodResult is set into the result wrapper and the execution is complete (see setResult)</li>
  * </ul>
  * <p>
  * There are also some complications that can disrupt the normal flow:
  * <ul>
  * <li>If a timeout occurs, the {@code timeout()} method is called where we try to abort the attempt (interrupting it if it's running) and do the fault tolerance handling (by
- * calling finalizeAttempt)</li>
- * <li>If the user cancels the execution, we try to abort the current attempt and do the fault tolerance handling (calling finalizeAttempt). We'll never retry if the user has tried
- * to cancel.</li>
- * <li>If an unexpected exception is caught, we call {@code handleException()} which will log an FFDC, return the exception as the result to the user and call finalizeAttempt to
- * record a failure and ensure any reserved resources are released.</li>
+ * calling processEndOfAttempt)</li>
+ * <li>If the user cancels the execution, we try to abort the current attempt and do the fault tolerance handling (calling processEndOfAttempt). We'll never retry if the user has
+ * tried to cancel.</li>
+ * <li>If an unexpected exception is caught, we call {@code handleException()} which will log an FFDC, return the exception as the result to the user and call processEndOfAttempt
+ * to record a failure and ensure any reserved resources are released.</li>
  * </ul>
  *
- * @param <W> the return type of the code being executed, which is also the type of the return wrapper (e.g. {@code Future<String>})
+ * @param <W> the return type of the code being executed, which is also the type of the result wrapper (e.g. {@code Future<String>})
  */
 public abstract class AsyncExecutor<W> implements Executor<W> {
 
     private static final TraceComponent tc = Tr.register(AsyncExecutor.class);
 
+    /**
+     * The collection of contexts to capture under createThreadContext.
+     * Classloader, JeeMetadata, and security.
+     */
+    @SuppressWarnings("unchecked")
+    private static final Map<String, ?>[] THREAD_CONTEXT_PROVIDERS = new Map[] {
+                                                                                 Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER,
+                                                                                                          "com.ibm.ws.classloader.context.provider"),
+                                                                                 Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER,
+                                                                                                          "com.ibm.ws.javaee.metadata.context.provider"),
+                                                                                 Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER,
+                                                                                                          "com.ibm.ws.security.context.provider"),
+    };
+
     public AsyncExecutor(RetryPolicy retry, CircuitBreakerPolicy cbPolicy, TimeoutPolicy timeoutPolicy, FallbackPolicy fallbackPolicy, BulkheadPolicy bulkheadPolicy,
-                         ScheduledExecutorService executorService, MetricRecorder metricRecorder) {
+                         ScheduledExecutorService executorService, WSContextService contextService, MetricRecorder metricRecorder) {
         retryPolicy = retry;
         circuitBreaker = FaultToleranceStateFactory.INSTANCE.createCircuitBreakerState(cbPolicy, metricRecorder);
         this.timeoutPolicy = timeoutPolicy;
@@ -100,6 +120,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         this.fallbackPolicy = fallbackPolicy;
         bulkhead = FaultToleranceStateFactory.INSTANCE.createAsyncBulkheadState(executorService, bulkheadPolicy, metricRecorder);
         this.metricRecorder = metricRecorder;
+        this.contextService = contextService;
     }
 
     private final RetryPolicy retryPolicy;
@@ -108,6 +129,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
     private final TimeoutPolicy timeoutPolicy;
     private final FallbackPolicy fallbackPolicy;
     private final AsyncBulkheadState bulkhead;
+    private final WSContextService contextService;
     private final MetricRecorder metricRecorder;
 
     @Override
@@ -121,16 +143,18 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
 
         executionContext.setCallable(callable);
 
-        W returnWrapper = createReturnWrapper(executionContext);
-        executionContext.setReturnWrapper(returnWrapper);
+        W resultWrapper = createEmptyResultWrapper(executionContext);
+        executionContext.setResultWrapper(resultWrapper);
+
+        executionContext.setThreadContextDescriptor(contextService.captureThreadContext(null, THREAD_CONTEXT_PROVIDERS));
 
         RetryState retryState = FaultToleranceStateFactory.INSTANCE.createRetryState(retryPolicy, metricRecorder);
         executionContext.setRetryState(retryState);
         retryState.start();
 
-        enqueueAttempt(executionContext);
+        prepareExecutionAttempt(executionContext);
 
-        return returnWrapper;
+        return resultWrapper;
     }
 
     /**
@@ -138,7 +162,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
      *
      * @return the wrapper instance
      */
-    abstract protected W createReturnWrapper(AsyncExecutionContextImpl<W> executionContext);
+    abstract protected W createEmptyResultWrapper(AsyncExecutionContextImpl<W> executionContext);
 
     /**
      * Stores the result of the execution inside the wrapper instance
@@ -146,12 +170,14 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
      * @param executionContext the execution context
      * @param result           the method result
      */
-    abstract protected void commitResult(AsyncExecutionContextImpl<W> executionContext, MethodResult<W> result);
+    abstract protected void setResult(AsyncExecutionContextImpl<W> executionContext, MethodResult<W> result);
 
     /**
-     * Enqueue an execution attempt on the bulkhead
+     * Submit an execution attempt to be run
+     * <p>
+     * Submission is done through the bulkhead object which may either queue the execution or immediately submit it to the global execution service
      */
-    private void enqueueAttempt(AsyncExecutionContextImpl<W> executionContext) {
+    private void prepareExecutionAttempt(AsyncExecutionContextImpl<W> executionContext) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Method {0} enqueuing new execution attempt", executionContext.getMethod());
         }
@@ -167,7 +193,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
             }
 
             MethodResult<W> result = MethodResult.failure(new CircuitBreakerOpenException());
-            finalizeAttempt(attemptContext, result);
+            processEndOfAttempt(attemptContext, result);
             return;
         }
 
@@ -180,7 +206,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 Tr.event(tc, "Method {0} bulkhead rejected execution", executionContext.getMethod());
             }
 
-            finalizeAttempt(attemptContext, MethodResult.failure(new BulkheadException()));
+            processEndOfAttempt(attemptContext, MethodResult.failure(new BulkheadException()));
             return;
         }
 
@@ -189,12 +215,14 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         // Update what we should do if the user cancels the execution
         executionContext.setCancelCallback((mayInterrupt) -> {
             ref.abort(mayInterrupt);
-            finalizeAttempt(attemptContext, MethodResult.failure(new CancellationException()));
+            processEndOfAttempt(attemptContext, MethodResult.failure(new CancellationException()));
         });
     }
 
     /**
-     * Run one attempt at the execution {@link #execute(Callable, ExecutionContext)}
+     * Run one attempt of the execution {@link #execute(Callable, ExecutionContext)}
+     * <p>
+     * This stage includes running the user's code
      */
     @FFDCIgnore(Throwable.class)
     private void runExecutionAttempt(AsyncAttemptContextImpl<W> attemptContext, BulkheadReservation reservation) {
@@ -204,12 +232,17 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 Tr.event(tc, "Method {0} running execution attempt", executionContext.getMethod());
             }
 
+            ThreadContextDescriptor contextDescriptor = executionContext.getThreadContextDescriptor();
+            ArrayList<ThreadContext> context = contextDescriptor.taskStarting();
+
             MethodResult<W> methodResult;
             try {
                 W result = executionContext.getCallable().call();
                 methodResult = MethodResult.success(result);
             } catch (Throwable e) {
                 methodResult = MethodResult.failure(e);
+            } finally {
+                contextDescriptor.taskStopping(context);
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -226,10 +259,10 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 Thread.interrupted(); // Clear interrupted thread
             }
         } catch (Throwable t) {
-            // Handle any Unexpected exceptions
+            // Handle any unexpected exceptions
             // Manual FFDC since we've ignored it for the catch above
-            String sourceId = AsyncExecutor.class.getName() + "runExecutionAttempt";
-            FFDCFilter.processException(t, sourceId, "errorBarrier", this);
+            String sourceId = AsyncExecutor.class.getName();
+            FFDCFilter.processException(t, sourceId, "runExecutionAttempt.errorBarrier", this);
 
             // Release bulkhead before handling exception so we don't leak permits
             reservation.release();
@@ -250,9 +283,9 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
 
         TimeoutState timeoutState = attemptContext.getTimeoutState();
         timeoutState.stop();
-        // Make sure that if we timed out, the timeout callback calls finalizeAttempt rather than us
+        // Make sure that if we timed out, the timeout callback calls processEndOfAttempt rather than us
         if (!timeoutState.isTimedOut()) {
-            finalizeAttempt(attemptContext, methodResult);
+            processEndOfAttempt(attemptContext, methodResult);
         }
     }
 
@@ -267,30 +300,31 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         ref.abort(true);
 
         MethodResult<W> result = MethodResult.failure(new TimeoutException());
-        finalizeAttempt(attemptContext, result);
+        processEndOfAttempt(attemptContext, result);
     }
 
     /**
      * Process the result of an attempt
      * <p>
-     * This method is usually called from {@link #runExecutionAttempt(AsyncAttemptContextImpl)} at the end of the attempt or from
+     * This method is usually called from {@link #processMethodResult(AsyncAttemptContextImpl, MethodResult, BulkheadReservation)} at the end of the attempt or from
      * {@link #timeout(AsyncAttemptContextImpl, ExecutionReference)} in response to a timeout. In the case of an unexpected exception, it can also be called from
      * {@link #handleExceptions(Runnable, AsyncAttemptContextImpl, AsyncExecutionContextImpl)}.
      * <p>
-     * To ensure that the finalize logic is only run once, this method will do nothing if called a second time for the same attempt context.
+     * To ensure that the end-of-attempt logic is only run once, this method will do nothing if called a second time for the same attempt context.
      * <p>
-     * In regular execution, this method will enqueue another attempt if a retry is needed or run any fallback logic and commit the result if no retry is needed.
+     * In regular execution, if a retry is needed this method will prepare another attempt, if a fallback is needed it will prepare execution of the fallback and otherwise it will
+     * call {@link #processEndOfExecution(AsyncExecutionContextImpl, MethodResult)}.
      * <p>
-     * In the case of an internal exception, this method will commit the result directly, skipping any fallback or retry logic.
+     * In the case of an internal exception, this method will set the result directly, skipping any fallback or retry logic.
      */
-    protected void finalizeAttempt(AsyncAttemptContextImpl<W> attemptContext, MethodResult<W> result) {
+    protected void processEndOfAttempt(AsyncAttemptContextImpl<W> attemptContext, MethodResult<W> result) {
         AsyncExecutionContextImpl<W> executionContext = attemptContext.getExecutionContext();
 
         try {
 
             if (!attemptContext.end()) {
-                // This attempt has already been finalized (probably because an error occurred)
-                // Whatever the reason, we don't want to run the finalization logic again
+                // This attempt has already been completed (probably because an error occurred)
+                // Whatever the reason, we don't want to run the end-of-attempt logic again
                 return;
             }
 
@@ -308,11 +342,11 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                         Tr.event(tc, "Method {0} retrying with delay: {1} {2}", executionContext.getMethod(), retryResult.getDelay(), retryResult.getDelayUnit());
                     }
                     if (retryResult.getDelay() > 0) {
-                        executorService.schedule(handleExceptions(() -> enqueueAttempt(executionContext), null, executionContext),
+                        executorService.schedule(handleExceptions(() -> prepareExecutionAttempt(executionContext), null, executionContext),
                                                  retryResult.getDelay(),
                                                  retryResult.getDelayUnit());
                     } else {
-                        enqueueAttempt(executionContext);
+                        prepareExecutionAttempt(executionContext);
                     }
                     // We've enqueued the retry to run, exit here
                     return;
@@ -322,50 +356,84 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                     }
                 }
 
-                result = runFallback(result, executionContext);
+                if (result.isFailure() && fallbackPolicy != null) {
+                    prepareFallback(result, executionContext);
+                    return;
+                }
             }
 
-            metricRecorder.incrementInvocationCount();
-            if (result.isFailure()) {
-                metricRecorder.incrementInvocationFailedCount();
-            }
-
-            commitResult(executionContext, result);
+            processEndOfExecution(executionContext, result);
 
         } catch (Throwable t) {
             // This method is used as a general error handler, so we need some special logic in case something goes wrong while handling the error
             MethodResult<W> errorResult = MethodResult.internalFailure(new FaultToleranceException(Tr.formatMessage(tc, "internal.error.CWMFT4998E", t), t));
-            commitResult(attemptContext.getExecutionContext(), errorResult);
+            setResult(attemptContext.getExecutionContext(), errorResult);
             throw t;
         }
     }
 
+    private void processEndOfExecution(AsyncExecutionContextImpl<W> executionContext, MethodResult<W> result) {
+        metricRecorder.incrementInvocationCount();
+        if (result.isFailure()) {
+            metricRecorder.incrementInvocationFailedCount();
+        }
+
+        setResult(executionContext, result);
+    }
+
+    /**
+     * Prepare the execution of the fallback method or handler to run on another thread
+     *
+     * @param result
+     * @param executionContext
+     */
+    private void prepareFallback(MethodResult<W> result, AsyncExecutionContextImpl<W> executionContext) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(tc, "Method {0} fallback is required", executionContext.getMethod());
+        }
+
+        executorService.submit(() -> runFallback(result, executionContext));
+    }
+
+    @FFDCIgnore(Throwable.class)
     @SuppressWarnings("unchecked")
-    private MethodResult<W> runFallback(MethodResult<W> result, AsyncExecutionContextImpl<W> executionContext) {
-        // TODO: we need to make sure we're on the right thread and have the right context when we run fallback
-        // I.e. on BulkheadException, we're still on calling thread, on TimeoutException we're on timer thread without context
-        if (result.getFailure() == null || fallbackPolicy == null) {
-            return result;
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Method {0} calling fallback", executionContext.getMethod());
-        }
-
-        metricRecorder.incrementFallbackCalls();
-
-        executionContext.setFailure(result.getFailure());
+    private void runFallback(MethodResult<W> failedResult, AsyncExecutionContextImpl<W> executionContext) {
         try {
-            result = MethodResult.success((W) fallbackPolicy.getFallbackFunction().execute(executionContext));
-        } catch (Throwable ex) {
-            result = MethodResult.failure(ex);
-        }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Method {0} fallback result: {1}", executionContext.getMethod(), result);
-        }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Method {0} calling fallback", executionContext.getMethod());
+            }
 
-        return result;
+            metricRecorder.incrementFallbackCalls();
+
+            executionContext.setFailure(failedResult.getFailure());
+
+            ThreadContextDescriptor contextDescriptor = executionContext.getThreadContextDescriptor();
+            ArrayList<ThreadContext> context = contextDescriptor.taskStarting();
+
+            MethodResult<W> fallbackResult;
+            try {
+                fallbackResult = MethodResult.success((W) fallbackPolicy.getFallbackFunction().execute(executionContext));
+            } catch (Throwable ex) {
+                fallbackResult = MethodResult.failure(ex);
+            } finally {
+                contextDescriptor.taskStopping(context);
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Method {0} fallback result: {1}", executionContext.getMethod(), fallbackResult);
+            }
+
+            processEndOfExecution(executionContext, fallbackResult);
+
+        } catch (Throwable t) {
+            // Handle any unexpected exceptions
+            // Manual FFDC since we've ignored it for the catch above
+            String sourceId = AsyncExecutor.class.getName();
+            FFDCFilter.processException(t, sourceId, "runFallback.errorBarrier", this);
+
+            handleException(t, null, executionContext);
+        }
     }
 
     @Override
@@ -386,8 +454,8 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
      * The strategy used to handle exceptions is as follows:
      * <ul>
      * <li>Log and FFDC the exception
-     * <li>If an attemptContext was passed, call finalizeContext, reporting the exception as an internal error
-     * <li>If an attemptContext was not passed, call commitResult, reporting the exception as the result
+     * <li>If an attemptContext was passed, call processEndOfAttempt, reporting the exception as an internal error
+     * <li>If an attemptContext was not passed, call setResult, reporting the exception as the result
      * </ul>
      *
      * @param runnable         the runnable to wrap
@@ -415,9 +483,9 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         Tr.error(tc, "internal.error.CWMFT4998E", t);
         MethodResult<W> result = MethodResult.internalFailure(new FaultToleranceException(Tr.formatMessage(tc, "internal.error.CWMFT4998E", t), t));
         if (attemptContext != null) {
-            finalizeAttempt(attemptContext, result);
+            processEndOfAttempt(attemptContext, result);
         } else {
-            commitResult(executionContext, result);
+            setResult(executionContext, result);
         }
     }
 

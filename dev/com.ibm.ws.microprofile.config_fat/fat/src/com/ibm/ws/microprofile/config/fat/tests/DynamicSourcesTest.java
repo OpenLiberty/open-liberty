@@ -21,8 +21,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.appConfig.dynamicSources.test.DynamicSourcesTestServlet;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig11EE7;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig13EE8;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
@@ -67,9 +66,6 @@ public class DynamicSourcesTest extends FATServletClient {
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests
-                    .with(new RepeatConfig11EE7("DynamicSourcesServer"))
-                    .andWith(new RepeatConfig13EE8("DynamicSourcesServer"));
-    //note that these dynamic tests are not applicable to MP Config 1.4 and higher
+    public static RepeatTests r = RepeatConfigActions.repeatConfig11Not14("DynamicSourcesServer");
 
 }

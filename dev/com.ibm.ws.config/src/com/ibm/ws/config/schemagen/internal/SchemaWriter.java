@@ -841,7 +841,9 @@ class SchemaWriter {
              */
         }
         for (OCDType extender : ocdReference.getExtensions()) {
-            buildRefElement(ocdType, xmlElements, attributeDef, requiredForThisAttribute, baseId, extender, false);
+            if (shouldAddOCD(extender)) {
+                buildRefElement(ocdType, xmlElements, attributeDef, requiredForThisAttribute, baseId, extender, false);
+            }
         }
     }
 
@@ -877,7 +879,9 @@ class SchemaWriter {
         }
 
         for (OCDType child : ocdType.getExtensions()) {
-            gatherAliases(child, aliases);
+            if (shouldAddOCD(child)) {
+                gatherAliases(child, aliases);
+            }
         }
     }
 

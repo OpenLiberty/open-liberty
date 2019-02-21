@@ -77,6 +77,7 @@ public class JavaInfo {
      */
     public static enum Vendor {
         IBM,
+        OPENJ9,
         SUN_ORACLE,
         UNKNOWN
     }
@@ -84,14 +85,16 @@ public class JavaInfo {
     final String JAVA_HOME;
     final int MAJOR;
     final int MINOR;
+    final int MICRO;
     final Vendor VENDOR;
     final int SERVICE_RELEASE;
     final int FIXPACK;
 
-    private JavaInfo(String jdk_home, int major, int minor, Vendor v, int sr, int fp) {
+    private JavaInfo(String jdk_home, int major, int minor, int micro, Vendor v, int sr, int fp) {
         JAVA_HOME = jdk_home;
         MAJOR = major;
         MINOR = minor;
+        MICRO = micro;
         VENDOR = v;
         SERVICE_RELEASE = sr;
         FIXPACK = fp;
@@ -102,24 +105,43 @@ public class JavaInfo {
     private JavaInfo() {
         JAVA_HOME = System.getProperty("java.home");
 
-        // Parse MAJOR and MINOR versions
-        String specVersion = System.getProperty("java.specification.version");
-        String[] versions = specVersion.split("[^0-9]"); // split on non-numeric chars
-        // Offset for 1.MAJOR.MINOR vs. MAJOR.MINOR version syntax
-        int offset = "1".equals(versions[0]) ? 1 : 0;
-        if (versions.length <= offset)
-            throw new IllegalStateException("Bad Java runtime version string: " + specVersion);
-        MAJOR = Integer.parseInt(versions[offset]);
-        MINOR = versions.length < (2 + offset) ? 0 : Integer.parseInt(versions[(1 + offset)]);
+        String version = System.getProperty("java.version");
+        String[] versionElements = version.split("\\D"); // split on non-digits
 
-        // Parse vendor
-        String vendorInfo = System.getProperty("java.vendor").toLowerCase();
-        if (vendorInfo.contains("ibm")) {
+        // Pre-JDK 9 the java.version is 1.MAJOR.MINOR
+        // Post-JDK 9 the java.version is MAJOR.MINOR
+        int i = Integer.valueOf(versionElements[0]) == 1 ? 1 : 0;
+        MAJOR = Integer.valueOf(versionElements[i++]);
+
+        if (i < versionElements.length)
+            MINOR = Integer.valueOf(versionElements[i++]);
+        else
+            MINOR = 0;
+
+        if (i < versionElements.length)
+            MICRO = Integer.valueOf(versionElements[i]);
+        else
+            MICRO = 0;
+
+        String vendor = System.getProperty("java.vendor").toLowerCase();
+        if (vendor.contains("openj9"))
+            VENDOR = Vendor.OPENJ9;
+        else if (vendor.contains("ibm") || vendor.contains("j9"))
             VENDOR = Vendor.IBM;
-        } else if (vendorInfo.contains("oracle") || vendorInfo.contains("sun")) {
+        else if (vendor.contains("oracle"))
             VENDOR = Vendor.SUN_ORACLE;
-        } else {
-            VENDOR = Vendor.UNKNOWN;
+        else {
+            vendor = System.getProperty("java.vm.name", "unknown").toLowerCase();
+            if (vendor.contains("openj9"))
+                VENDOR = Vendor.OPENJ9;
+            else if (vendor.contains("ibm") || vendor.contains("j9"))
+                VENDOR = Vendor.IBM;
+            else if (vendor.contains("oracle") || vendor.contains("openjdk"))
+                VENDOR = Vendor.SUN_ORACLE;
+            else {
+                Log.info(c, "<init>", "WARNING: Found unknown java vendor: " + vendor);
+                VENDOR = Vendor.UNKNOWN;
+            }
         }
 
         // Parse service release
@@ -162,6 +184,10 @@ public class JavaInfo {
 
     public int minorVersion() {
         return MINOR;
+    }
+
+    public int microVersion() {
+        return MICRO;
     }
 
     public Vendor vendor() {
@@ -237,6 +263,7 @@ public class JavaInfo {
             throw new IllegalStateException("Bad Java runtime version string: " + versionInfo);
         int major = Integer.parseInt(versions[offset]);
         int minor = versions.length < (2 + offset) ? 0 : Integer.parseInt(versions[(1 + offset)]);
+        int micro = versions.length < (3 + offset) ? 0 : Integer.parseInt(versions[(2 + offset)]);
 
         // Parse service release
         int sr = 0;
@@ -267,7 +294,7 @@ public class JavaInfo {
             }
         }
 
-        return new JavaInfo(javaHome, major, minor, v, sr, fp);
+        return new JavaInfo(javaHome, major, minor, micro, v, sr, fp);
     }
 
     @Override

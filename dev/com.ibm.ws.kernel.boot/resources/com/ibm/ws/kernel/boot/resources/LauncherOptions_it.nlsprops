@@ -16,7 +16,7 @@
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Utilizzo: java [opzioni JVM] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
 \t-jar bin/tools/ws-server.jar serverName {0} [opzioni]  
-scriptUsage=Utilizzo: {0} {1} nome server [opzioni]
+scriptUsage=Utilizzo: {0} {1} nome server [opzioni] [opzioni JVM]
 
 use.actions=Azioni:
 use.options=Opzioni:
@@ -176,4 +176,4 @@ option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tDisabilita la generazione della password del keystore predefinito
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="cartella server root nell'archivio"
-option-desc.package.server-root=\tSpecifica il nome della cartella del server root nel file di archivio.
+option-desc.package.server-root=\tSpecifica il nome della cartella del server root nel file di archivio.\n

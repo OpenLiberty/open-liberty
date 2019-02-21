@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,31 +16,33 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState;
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
 /**
  * Stores context for one asynchronous method execution
  *
- * @param <W> the return type of the code being executed, which is also the type of the return wrapper (e.g. {@code Future<String>})
+ * @param <W> the return type of the code being executed, which is also the type of the result wrapper (e.g. {@code Future<String>})
  */
 public class AsyncExecutionContextImpl<W> extends SyncExecutionContextImpl {
 
-    private W returnWrapper;
+    private W resultWrapper;
     private Callable<W> callable;
     private RetryState retryState;
     private final AtomicBoolean isCancelled = new AtomicBoolean(false);
     private boolean interruptOnCancellation;
     private Consumer<Boolean> cancelCallback;
+    private ThreadContextDescriptor threadContextDescriptor;
 
     public AsyncExecutionContextImpl(Method method, Object[] parameters) {
         super(method, parameters);
     }
 
-    public W getReturnWrapper() {
-        return returnWrapper;
+    public W getResultWrapper() {
+        return resultWrapper;
     }
 
-    public void setReturnWrapper(W returnWrapper) {
-        this.returnWrapper = returnWrapper;
+    public void setResultWrapper(W returnWrapper) {
+        this.resultWrapper = returnWrapper;
     }
 
     public Callable<W> getCallable() {
@@ -57,6 +59,14 @@ public class AsyncExecutionContextImpl<W> extends SyncExecutionContextImpl {
 
     public void setRetryState(RetryState retryState) {
         this.retryState = retryState;
+    }
+
+    public ThreadContextDescriptor getThreadContextDescriptor() {
+        return threadContextDescriptor;
+    }
+
+    public void setThreadContextDescriptor(ThreadContextDescriptor threadContextDescriptor) {
+        this.threadContextDescriptor = threadContextDescriptor;
     }
 
     public void setCancelCallback(Consumer<Boolean> cancelCallback) {

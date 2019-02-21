@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -98,7 +98,7 @@ public class PermissionManagerTest {
 
     /**
      * ClassLoading service
-     * 
+     *
      * @throws IOException
      */
     private final ClassLoadingService classLoadingService = mock.mock(ClassLoadingService.class, "classLoadingService");
@@ -300,7 +300,7 @@ public class PermissionManagerTest {
         grantReadProperty(null, false);
         CodeSource appCodeSource = new CodeSource(new URL("file:///aPath/appWAR"), (java.security.cert.Certificate[]) null);
         PermissionCollection staticPolicyPermissions = Policy.getPolicy().getPermissions(appCodeSource);
-        permissionManager.addPermissionsXMLPermission("aPath/appWAR", fileReadPermission);
+        permissionManager.addPermissionsXMLPermission(appCodeSource, fileReadPermission);
         // permissionManager.setCodeBasePermission("aPath/appWAR", propertyReadPermission);
         PermissionCollection permissions = permissionManager.getCombinedPermissions(staticPolicyPermissions, appCodeSource);
         List<Permission> permissionsList = Collections.list(permissions.elements());
@@ -319,7 +319,7 @@ public class PermissionManagerTest {
         grantReadProperty(null, false);
         CodeSource appCodeSource = new CodeSource(new URL("file:///aPath/appWAR"), (java.security.cert.Certificate[]) null);
         PermissionCollection staticPolicyPermissions = Policy.getPolicy().getPermissions(appCodeSource);
-        permissionManager.addPermissionsXMLPermission("aPath/appWAR", fileReadPermission);
+        permissionManager.addPermissionsXMLPermission(appCodeSource, fileReadPermission);
         PermissionCollection permissions = permissionManager.getCombinedPermissions(new Permissions(), appCodeSource);
         List<Permission> permissionsList = Collections.list(permissions.elements());
         List<Permission> staticPermissionsList = Collections.list(staticPolicyPermissions.elements());
@@ -366,7 +366,7 @@ public class PermissionManagerTest {
         grantReadProperty(codeBase, false);
         CodeSource appCodeSource = new CodeSource(new URL("file:///aPath/toThe/appWAR.jar"), (java.security.cert.Certificate[]) null);
         PermissionCollection staticPolicyPermissions = Policy.getPolicy().getPermissions(appCodeSource);
-        permissionManager.addPermissionsXMLPermission("aPath/toThe/appWAR.jar", fileReadPermission);
+        permissionManager.addPermissionsXMLPermission(appCodeSource, fileReadPermission);
         PermissionCollection permissions = permissionManager.getCombinedPermissions(staticPolicyPermissions, appCodeSource);
         List<Permission> permissionsList = Collections.list(permissions.elements());
         List<Permission> staticPermissionsList = Collections.list(staticPolicyPermissions.elements());
@@ -411,10 +411,19 @@ public class PermissionManagerTest {
     @Test
     public void getEffectivePermissionLongPaths() throws Exception {
         String earCodeBase = "/home/Jazz_Build/_FsFcIKC-Eea1sp7ekxxX3Q-EBC.PROD.WASRTC-9J5-000-00-00/jbe/build/image/output/wlp/usr/servers/com.ibm.ws.webcontainer.security.fat.delegation/apps/delegationXML.ear";
+        CodeSource earCodeSource = new CodeSource(new URL("file://" + earCodeBase), (java.security.cert.Certificate[]) null);
         String codeBase = "/home/Jazz_Build/_FsFcIKC-Eea1sp7ekxxX3Q-EBC.PROD.WASRTC-9J5-000-00-00/jbe/build/image/output/wlp/usr/servers/com.ibm.ws.webcontainer.security.fat.delegation/apps/delegation.war";
-        permissionManager.addPermissionsXMLPermission(earCodeBase, new AuthPermission("wssecurity.getRunAsSubject"));
-        permissionManager.addPermissionsXMLPermission(codeBase, new AuthPermission("wssecurity.getRunAsSubject"));
+        CodeSource codeSource = new CodeSource(new URL("file://" + codeBase), (java.security.cert.Certificate[]) null);
+        permissionManager.addPermissionsXMLPermission(earCodeSource, new AuthPermission("wssecurity.getRunAsSubject"));
+        permissionManager.addPermissionsXMLPermission(codeSource, new AuthPermission("wssecurity.getRunAsSubject"));
         List<Permission> permissions = permissionManager.getEffectivePermissions(codeBase);
         assertTrue(new AuthPermission("wssecurity.getRunAsSubject").implies(permissions.get(0)));
     }
+
+//    @Test
+    public void getProtectionDomain() throws Exception {
+        CodeSource codeSource = null;
+//        ProtectionDomain protectionDomain = permissionManager.getProtectionDomain(codeSource);
+    }
+
 }

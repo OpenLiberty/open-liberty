@@ -204,7 +204,7 @@ public class FATTest extends AbstractAppManagerTest {
                 // It's possible that we're restarting twice because the file monitor picked up the changes in the middle
                 // of the unzip. If that happens, wait for another updated message and try again.
                 assertNotNull("The application testWarApplication did not appear to have been updated a second time.",
-                              server.waitForStringInLog("CWWKZ0003I.* testWarApplication|CWWKZ0062I.* testWarApplication"));
+                              server.waitForMultipleStringsInLogUsingMark(2, "CWWKZ0003I.* testWarApplication|CWWKZ0062I.* testWarApplication"));
                 con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
                 br = HttpUtils.getConnectionStream(con);
                 line = br.readLine();
@@ -918,6 +918,28 @@ public class FATTest extends AbstractAppManagerTest {
             fail("unexpected exception thrown. Expecting FileNotFoundException, got: " + e.getMessage());
         }
         server.stopServer("CWWKZ0014W");
+    }
+
+    @Test
+    public void testConfigureInvalidApplication() throws Exception {
+        final String method = testName.getMethodName();
+
+        try {
+            //load a new server xml
+            server.setServerConfigurationFile("/appsConfigured/server.xml");
+
+            server.copyFileToLibertyServerRoot("apps",
+                                               "/bootstrap.properties");
+            server.renameLibertyServerRootFile("apps/bootstrap.properties", "apps/snoop.war");
+            server.startServer(method + ".log");
+
+            // Because the required location attribute is missing, config will issue an error
+            assertNotNull("Invalid archive message not found", server.waitForStringInLog("CWWKM0101E.*"));
+            assertNotNull("Invalid resource message not found", server.waitForStringInLog("CWWKZ0021E.*"));
+        } finally {
+            pathsToCleanup.add(server.getServerRoot() + "/apps");
+            server.stopServer("CWWKZ0021E", "CWWKM0101E");
+        }
     }
 
     /**

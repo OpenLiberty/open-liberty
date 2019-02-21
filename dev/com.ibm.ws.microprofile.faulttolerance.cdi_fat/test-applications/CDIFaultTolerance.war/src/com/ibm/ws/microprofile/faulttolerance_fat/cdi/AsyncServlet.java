@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -299,23 +299,33 @@ public class AsyncServlet extends FATServlet {
         assertThat("Call result", future.get(), is("Done"));
     }
 
+    @Test
     public void testAsyncConfig() throws Exception {
         Future<String> value = configBean.getValue();
         assertThat(value.get(), is("configuredAsyncValue"));
     }
 
+    @Test
     public void testAsyncConfigInjected() throws Exception {
         Future<String> value = threadContextBean.getConfigValueFromInjectedBean();
         assertThat(value.get(), is("configuredAsyncValue"));
     }
 
+    @Test
     public void testAsyncGetCdi() throws Exception {
         Future<CDI<Object>> value = threadContextBean.getCdi();
         assertThat(value.get(), notNullValue());
     }
 
+    @Test
     public void testAsyncGetBeanManagerViaJndi() throws Exception {
         Future<BeanManager> value = threadContextBean.getBeanManagerViaJndi();
+        assertThat(value.get(), notNullValue());
+    }
+
+    @Test
+    public void testAsyncTccl() throws Exception {
+        Future<Class<?>> value = threadContextBean.loadClassWithTccl();
         assertThat(value.get(), notNullValue());
     }
 
