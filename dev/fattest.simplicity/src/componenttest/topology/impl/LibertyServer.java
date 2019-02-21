@@ -4617,12 +4617,15 @@ public class LibertyServer implements LogMonitorClient {
      * Update the log offset for the specified log file to the offset provided.
      *
      * @deprecated Using log offsets is deprecated in favor of using log marks.
-     *             For all new test code, use the following methods: {@link #resetLogMarks()}, {@link #setMarkToEndOfLog(RemoteFile...)},
-     *             {@link #waitForStringInLogUsingMark(String)} and {@link #getMarkOffset(String)}.
+     *     For all new test code, use the following methods: {@link #resetLogMarks()},
+     *     {@link #setMarkToEndOfLog(RemoteFile...)},
+     *     {@link #waitForStringInLogUsingMark(String)} and
+     *     {@link #getMarkOffset(String)}.
      */
     @Deprecated
     public void updateLogOffset(String logFile, Long newLogOffset) {
-        Long oldLogOffset = logOffsets.put(logFile, newLogOffset);
+        @SuppressWarnings("unused")
+		Long oldLogOffset = logOffsets.put(logFile, newLogOffset);
     }
 
     /**
@@ -5459,7 +5462,7 @@ public class LibertyServer implements LogMonitorClient {
         setMarkToEndOfLog(); // Only want messages which follow the app removal.
 
         // Logging in 'renameLibertyFileWithRetry'.
-        if (!LibertyFileManager.renameLibertyFileWithRetry(machine, appInDropinsPath, appExcisedPath)) { // throws Exception
+        if (!LibertyFileManager.renameLibertyFile(machine, appInDropinsPath, appExcisedPath)) { // throws Exception
             Log.info(c, method, "Unable to move " + appFileName + " out of dropins, failing.");
             return false;
         } else {
@@ -5554,7 +5557,7 @@ public class LibertyServer implements LogMonitorClient {
         String appInDropinsPath = serverRoot + "/dropins/" + appFileName;
         String nonDropinsFilePath = serverRoot + "/" + appFileName;
 
-        if (!LibertyFileManager.renameLibertyFileWithRetry(machine, appInDropinsPath, nonDropinsFilePath)) { // throws Exception
+        if (!LibertyFileManager.renameLibertyFile(machine, appInDropinsPath, nonDropinsFilePath)) { // throws Exception
             Log.info(c, method, "Unable to move " + appFileName + " out of dropins, failing.");
             return false;
         } else {

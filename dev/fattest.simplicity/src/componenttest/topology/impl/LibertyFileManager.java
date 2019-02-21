@@ -384,7 +384,7 @@ public class LibertyFileManager {
      * 3) The target file was not deleted.
      *
      * Retry the deletion operation if the first attempt fails.
-     * See {@link RemoteFile#deleteWithRetry()}.
+     * See {@link RemoteFile#delete()}.
      *
      * @param machine The machine which has the specified file.
      * @param absPath The absolute path of the file.
@@ -404,7 +404,7 @@ public class LibertyFileManager {
         if ( !remoteFile.exists() ) {
             Log.finer(CLASS, method, prefix + " does not exist");
         } else {
-            if ( remoteFile.deleteWithRetry() ) { // throws Exception
+            if ( remoteFile.delete() ) { // throws Exception
                 Log.finer(CLASS, method, prefix + " was deleted");
             } else {
                 Log.finer(CLASS, method, prefix + " could not be deleted");
@@ -412,17 +412,6 @@ public class LibertyFileManager {
         }
     }
 
-    /**
-     * Delete a directory on a specified machine.
-     * 
-     * Delegate to {@link #deleteLibertyFile}, which uses {@link RemoteFile#deleteWithRetry()},
-     * and which handles directories.
-     *
-     * @param machine The machine which has the specified file.
-     * @param absPath The absolute path of the file.
-     *
-     * @throws Exception Thrown in case of an error deleting the file.
-     */
     public static void deleteLibertyDirectoryAndContents(Machine machine, String absPath) throws Exception {
         deleteLibertyFile(machine, absPath); // throws Exception
     }
@@ -455,20 +444,11 @@ public class LibertyFileManager {
         return false;
     }
 
-    public static boolean renameLibertyFileWithRetry(Machine machine, String oldFilePath, String newFilePath) throws Exception {
+    public static boolean renameLibertyFileNoRetry(Machine machine, String oldFilePath, String newFilePath) throws Exception {
         RemoteFile source = createRemoteFile(machine, oldFilePath);
         RemoteFile target = createRemoteFile(machine, newFilePath);
         if ( source.exists() ) {
-            return source.renameWithRetry(target);
-        }
-        return false;
-    }
-
-    public static boolean renameLibertyFileWithRetry(Machine machine, String oldFilePath, String newFilePath, long retryNs) throws Exception {
-        RemoteFile source = createRemoteFile(machine, oldFilePath);
-        RemoteFile target = createRemoteFile(machine, newFilePath);
-        if ( source.exists() ) {
-            return source.renameWithRetry(target, retryNs);
+            return source.renameNoRetry(target);
         }
         return false;
     }

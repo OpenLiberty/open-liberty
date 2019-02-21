@@ -79,7 +79,43 @@ public class RemoteFile {
      */
     public static final long STANDARD_RETRY_INTERVAL_NS =
         TimeUnit.MILLISECONDS.toNanos(200 * 2);
-    
+
+    public static final long STANDARD_RETRY_PARTIAL_INTERVAL_NS =
+        TimeUnit.MILLISECONDS.toNanos(50);
+
+    public interface Operation {
+        public boolean act() throws Exception;
+    }
+
+    public boolean retry(Operation op, long retryNs) throws Exception {
+        String methodName = "rename";
+
+        boolean didAct = op.act();
+        if ( didAct ) {
+            return true;
+        }
+
+        if ( retryNs < 0 ) {
+            Log.info(c, methodName, "Retry interval [ " + retryNs + " ] for [ " + getAbsolutePath() + " ] is less then 0"); 
+            retryNs = 0;
+        }
+
+        if ( retryNs == 0 ) {
+            return false;
+        }
+
+        int retryCount = ((int) (retryNs / STANDARD_RETRY_PARTIAL_INTERVAL_NS));
+        if ( (retryNs % STANDARD_RETRY_PARTIAL_INTERVAL_NS) > 0 ) {
+            retryCount++;
+        }
+
+        for ( int retryNo = 0; !didAct && retryNo < retryCount; retryNo++ ) {
+            didAct = op.act();
+        }
+
+        return didAct;
+    }
+
     //
 
     private final Machine host;
@@ -497,72 +533,55 @@ public class RemoteFile {
 
     // Delete ...
 
-    /**
-     * Deletes this file or directory.
-     *
-     * @return True or false telling if this file was deleted.
-     */
     public boolean delete() throws Exception {
-        if ( host.isLocal() ) {
+        return delete(STANDARD_RETRY_INTERVAL_NS);
+    }
+
+    public boolean deleteNoRetry() throws Exception {
+        return delete(0L);
+    }
+
+    public boolean delete(long retryNs) throws Exception {
+        Operation deleteOp = new Operation() {
+            public boolean act() throws Exception {
+                return basicDelete();
+            }
+        };
+        return retry(deleteOp, retryNs);
+        // return retry( () -> basicDelete(), retryNs );
+    }
+
+    public boolean deleteLocalDirectory(File localDir) throws Exception {
+        return deleteLocalDirectory(localDir, STANDARD_RETRY_INTERVAL_NS);
+    }
+
+    public boolean deleteLocalDirectoryNoRetry(File localDir) throws Exception {
+        return deleteLocalDirectory(localDir, 0L);
+    }
+
+    public boolean deleteLocalDirectory(final File localDir, long retryNs) throws Exception {
+        Operation deleteOp = new Operation() {
+            public boolean act() {
+                return basicDeleteLocalDirectory(localDir);
+            }
+        };
+        return retry(deleteOp, retryNs);
+        // return retry( () -> basicDeleteLocalDirectory(localDir), retryNs );
+    }
+
+    private boolean basicDelete() throws Exception {
+        if ( host.isLocal() ) { // This is 'localFile != null' in open-liberty.
             if ( localFile.isDirectory() ) {
-                return deleteLocalDirectory(localFile);
+                return basicDeleteLocalDirectory(localFile);
             } else {
-                return deleteLocalFile(localFile);
+                return basicDeleteLocalFile(localFile);
             }
         } else {
-            return deleteRemoteFile();
+            return basicDeleteRemoteFile();
         }
     }
 
-    /**
-     * Attempt to delete this file, retrying a second time after the
-     * default delete retry interval ({@link #STANDARD_DELETE_INTERVAL})
-     * if the first delete attempt failed.
-     * 
-     * @return True or false telling if the deletion was successful.
-     * 
-     * @throws Exception Thrown if the delete attempt encountered an error.
-     *     Only possible for remote files.
-     */
-    public boolean deleteWithRetry() throws Exception {
-        return deleteWithRetry(STANDARD_RETRY_INTERVAL_NS); // throws Exception
-    }
-
-    /**
-     * Attempt to delete this file, retrying a second time after the
-     * specified interval if the first delete attempt failed.
-     * 
-     * @return True or false telling if the deletion was successful.
-     * 
-     * @throws Exception Thrown if the delete attempt encountered an error.
-     *     Only possible for remote files.
-     */
-
-    public boolean deleteWithRetry(long retryNs) throws Exception {
-        if ( host.isLocal() ) { // TODO: This is 'localFile != null' in open-liberty.
-            if ( localFile.isDirectory() ) {
-                return deleteLocalDirectory(localFile, retryNs);
-            } else {
-                return deleteLocalFile(localFile, retryNs);
-            }
-        } else {
-            return deleteRemoteFile(retryNs); // throws Exception
-        }
-    }
-
-    /**
-     * Attempt to recursively delete a local directory and its contents.
-     *
-     * Continue processing even if deletion of a child file fails. 
-     *
-     * @param localDir A local directory which is to be deleted.
-     *
-     * @return True or false telling if the local directory and its
-     *     contents were deleted.
-     */
-    public boolean deleteLocalDirectory(File localDir) {
-        String methodName = "deleteLocalDirectory";
-
+    private boolean basicDeleteLocalDirectory(File localDir) {
         if ( !localDir.exists() ) {
             return true;
         }
@@ -570,74 +589,20 @@ public class RemoteFile {
         File[] files = localDir.listFiles();
         for ( File file : files ) {
             if ( file.isDirectory() ) {
-                // Failure logging in 'deleteLocalDirectory'.
-                deleteLocalDirectory(file);
-
+                if ( !basicDeleteLocalDirectory(file) ) {
+                    return false;
+                }
             } else {
-                if ( !deleteLocalFile(file) ) {
-                    Log.info(c, methodName, "Failed to delete: " + file);
+                if ( !basicDeleteLocalFile(file) ) {
+                    return false;
                 }
             }
         }
 
-        // Failure logging in 'deleteLocalFile'.
-        return ( deleteLocalFile(localDir) );
+        return ( basicDeleteLocalFile(localDir) );
     }
 
-    /**
-     * Attempt to delete a local directory and its contents.
-     * 
-     * Immediately return with a true result if the local directory
-     * does not exist.
-     *
-     * Retry on all failed simple file deletion attempts.
-     *
-     * @param localDir The local directory which is to be deleted. 
-     * @param retryNs The interval between retry attempts.
-     *
-     * @return True or false telling if the directory and its
-     *     contents were deleted.
-     */
-    public boolean deleteLocalDirectory(File localDir, long retryNs) {
-        String methodName = "deleteLocalDirectory";
-
-        if ( !localDir.exists() ) {
-            return true;
-        }
-
-        File[] childFiles = localDir.listFiles();
-        for ( File childFile : childFiles ) {
-            if ( childFile.isDirectory() ) {
-                // Failure logging in 'deleteLocalDirectory'.
-                deleteLocalDirectory(childFile, retryNs);
-
-            } else {
-                if ( !deleteLocalFile(childFile, retryNs) ) {
-                    Log.info(c, methodName, "Failed to delete: " + childFile);
-                }
-            }
-        }
-
-        // Failure logging in 'deleteLocalFile'.
-        return ( deleteLocalFile(localDir, retryNs) );
-    }
-
-    /**
-     * Attempt to delete a local file using {@link Files#delete(Path)}.
-     *
-     * The file is any simple local file or any empty local directory.  An attempt to delete
-     * a non-empty directory will fail.
-     *
-     * Catch any exception that occurs.
-     *
-     * If deletion fails because of a thrown exception, catch that exception, log
-     * an informational message with the exception message, and answer false.
-     *
-     * @param The file which is to be deleted.
-     *
-     * @return True or false telling if the file was deleted.
-     */
-    private boolean deleteLocalFile(File useLocalFile) {
+    private boolean basicDeleteLocalFile(File useLocalFile) {
         String methodName = "deleteLocalFile";
 
         Path localPath = useLocalFile.toPath();
@@ -649,68 +614,9 @@ public class RemoteFile {
             return false;
         }
     }
-    
-    private boolean deleteLocalFile(File useLocalFile, long retryNs) {
-        String methodName = "deleteLocalFile";
 
-        Path localPath = useLocalFile.toPath();
-
-        try {
-            Files.delete(localPath);
-            return true;
-        } catch ( IOException e ) {
-            Log.info(c, methodName, "Failed to delete (first try) '" + localPath + "': " + e.getMessage());
-        }
-
-        try {
-            sleep(retryNs);
-        } catch ( InterruptedException e ) {
-            Log.info(c, methodName, "Interrupted while deleting '" + localPath + "': " + e.getMessage());
-            return false;
-        }
-
-        try {
-            Files.delete(localPath);
-            return true;
-        } catch ( IOException e ) {
-            Log.info(c, methodName, "Failed to delete (second try) '" + localPath + "': " + e.getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Attempt to delete this file as a remote file.
-     *
-     * @return True or false telling if the delete was successful.
-     *
-     * @throws Exception Thrown in case of an error attempting to delete
-     *     this file as a remote file.
-     */
-    private boolean deleteRemoteFile() throws Exception {
-        return providerDelete(); // throws Exception
-    }
-
-    /**
-     * Attempt to delete this file as a remote file.
-     * 
-     * Retry after the specified retry interval if the first
-     * attempt fails.
-     *
-     * @param retryNs The interval between retry attempts.
-     *
-     * @return True or false telling if the delete was successful.
-     *
-     * @throws Exception Thrown in case of an error attempting to delete
-     *     this file as a remote file.
-     */
-    private boolean deleteRemoteFile(long retryNs) throws Exception {
-        boolean firstResult = deleteRemoteFile(); // throws Exception
-        if ( firstResult ) {
-            return firstResult;
-        }
-        sleep(retryNs); // throws InterruptedException
-        boolean secondResult = deleteRemoteFile(); // throws Exception
-        return secondResult;
+    private boolean basicDeleteRemoteFile() throws Exception {
+        return providerDelete();
     }
 
     //
@@ -843,63 +749,30 @@ public class RemoteFile {
 
     //
 
-    /**
-     * Attempt to rename this file.
-     *
-     * @param newFile The target file.
-     *
-     * @throws Exception Thrown if the rename failed.
-     */
     public boolean rename(RemoteFile newFile) throws Exception {
+        return rename(newFile, STANDARD_RETRY_INTERVAL_NS);
+    }
+
+    public boolean renameNoRetry(RemoteFile newFile) throws Exception {
+        return rename(newFile, 0L);
+    }
+
+    public boolean rename(final RemoteFile newFile, long retryNs) throws Exception {
+        Operation renameOp = new Operation() {
+            public boolean act() throws Exception {
+                return basicRename(newFile);
+            }
+        };
+        return retry(renameOp, retryNs);
+        // return retry( () -> basicRename(newFile), retryNs );
+    }
+
+    private boolean basicRename(RemoteFile newFile) throws Exception {
         if ( host.isLocal() ) {
             return localFile.renameTo(new File(newFile.getAbsolutePath()));
         } else {
             return providerRename(newFile);
         }
-    }
-
-    /**
-     * Attempt to rename a file including a retry interval.  Use the standard
-     * retry interval, {@link #STANDARD_RETRY_INTERVAL_NS}.
-     *
-     * If the initial rename fails, sleep for the specified interval, then try again.
-     *
-     * This is provided as a guard against latent holds on archive files, which
-     * occur because of zip file caching.
-     *
-     * See also {@link #renameWithRetry(RemoteFile, long)}, {@link #rename(RemoteFile)},
-     * and {@link #sleep(long)}.
-     *
-     * @param newFile The new file.
-     *
-     * @return True or false telling if the retry was successful.
-     */
-    public boolean renameWithRetry(RemoteFile newFile) throws Exception {
-        return renameWithRetry(newFile, STANDARD_RETRY_INTERVAL_NS);
-    }
-
-    /**
-     * Attempt to rename a file including a retry interval.  A retry will be
-     * attempted even when the source file is non-local, since the lock can
-     * be on either the source or the target file, and the target file is
-     * always local.
-     *
-     * This is provided as a guard against latent holds on archive files, which
-     * occur because of zip file caching.
-     *
-     * @param newFile The new file.
-     * @param retryNs The retry interval, in nanoseconds.
-     *
-     * @return True or false telling if the retry was successful.
-     */
-    public boolean renameWithRetry(RemoteFile newFile, long retryNs) throws Exception {
-        boolean firstResult = rename(newFile); // throws Exception
-        if ( firstResult ) {
-            return firstResult;
-        }
-        sleep(retryNs); // throws InterruptedException
-        boolean secondResult = rename(newFile); // throws Exception
-        return secondResult;
     }
 
     //
