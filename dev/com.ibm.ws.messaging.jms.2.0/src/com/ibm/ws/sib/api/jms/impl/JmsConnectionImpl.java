@@ -1123,17 +1123,20 @@ public class JmsConnectionImpl implements Connection, JmsConnInternals, ApiJmsCo
             SibTr.entry(tc, "allocateOrderingContext");
 
         // Synchronize on the state lock, and either re-use an existing
-        // object or create a new one
-        OrderingContext oc;
+        // unused and open OrderingContext, or create a new one.
+        OrderingContext oc = null;
         synchronized (stateLock) {
-            if (unusedOrderingContexts.isEmpty()) {
-                oc = coreConnection.createOrderingContext();
-            }
-            else {
-                // Re-use an existing object.
-                // It is most efficient to remove the last entry in the array list.
-                oc = unusedOrderingContexts.remove(unusedOrderingContexts.size() - 1);
-            }
+          while   (oc == null && !unusedOrderingContexts.isEmpty()) {
+              oc = unusedOrderingContexts.remove(0);
+              if (oc.isProxyConnectionClosed()) {
+                  // Abandon this one.
+                  oc = null;
+              }
+          }
+          if (oc == null) {
+            oc = coreConnection.createOrderingContext();
+          }
+          
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())

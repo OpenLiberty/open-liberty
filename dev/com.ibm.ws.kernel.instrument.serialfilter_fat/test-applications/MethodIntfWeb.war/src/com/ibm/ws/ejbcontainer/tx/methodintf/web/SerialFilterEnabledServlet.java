@@ -20,7 +20,7 @@ import org.junit.Test;
 import com.ibm.websphere.ejbcontainer.test.tools.FATMDBHelper;
 import com.ibm.ws.ejbcontainer.tx.methodintf.ejb.MethodIntfMDB;
 
-import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
 
 /**
@@ -45,7 +45,7 @@ public class SerialFilterEnabledServlet extends FATServlet {
      * transaction.
      */
     @Test
-    @ExpectedFFDC("java.io.InvalidClassException")
+    @AllowedFFDC("java.io.InvalidClassException")
     public void testMessageEndpoint() throws Exception {
         try {
             MethodIntfMDB.setup();

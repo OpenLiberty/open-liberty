@@ -42,8 +42,8 @@ public class Http2FullTracingTests extends FATServletClient {
     private final static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.transport.http2.fat.tracing");
 
     String defaultServletPath = "H2FATDriver/H2FATDriverServlet?hostName=";
-
     String dataServletPath = "H2FATDriver/DataFrameTests?hostName=";
+    String genericServletPath = "H2FATDriver/GenericFrameTests?hostName=";
 
     @Rule
     public TestName testName = new TestName();
@@ -110,4 +110,9 @@ public class Http2FullTracingTests extends FATServletClient {
         runTest(dataServletPath, testName.getMethodName());
     }
 
+    // Moved to trace, build break 259034
+    @Test
+    public void testDataOnStreamZero() throws Exception {
+        runTest(genericServletPath, testName.getMethodName());
+    }
 }

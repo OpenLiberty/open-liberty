@@ -72,7 +72,7 @@ public class SerialFilterEnabledTest {
     public static void cleanUp() throws Exception {
         restorePropFile(backupFile);
         if (server != null && server.isStarted()) {
-            server.stopServer("CWWKS8014E.*", "WTRN0040W.*");
+            server.stopServer("CWWKS8014E.*", "CWWKS8015E.*", "WTRN0040W.*");
         }
     }
 

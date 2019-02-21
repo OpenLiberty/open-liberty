@@ -27,15 +27,17 @@ public class FormReaderInterceptor implements ReaderInterceptor {
 
     @Override
     public Object aroundReadFrom(ReaderInterceptorContext ctx) throws IOException, WebApplicationException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(ctx.getInputStream()));
-        String line;
-        while ((line = br.readLine()) != null) {
-            LOG.info("readLine: " + line);
-        }
+        if ("true".equalsIgnoreCase(ctx.getHeaders().getFirst("REPLACE-STREAM"))) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(ctx.getInputStream()));
+            String line;
+            while ((line = br.readLine()) != null) {
+                LOG.info("readLine: " + line);
+            }
 
-        ByteArrayInputStream bais = new ByteArrayInputStream("value=MODIFIED".getBytes());
-        LOG.info("set value=MODIFIED");
-        ctx.setInputStream(bais);
+            ByteArrayInputStream bais = new ByteArrayInputStream("value=MODIFIED".getBytes());
+            LOG.info("set value=MODIFIED");
+            ctx.setInputStream(bais);
+        }
         return ctx.proceed();
     }
 

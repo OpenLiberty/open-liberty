@@ -235,11 +235,11 @@ public class MetricsMonitorTest {
        	server.setServerConfigurationFile("server_noJaxWs.xml");
        	Assert.assertNotNull("CWWKG0017I NOT FOUND",server.waitForStringInLogUsingMark("CWWKG0017I"));
        	Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLogUsingMark("CWWKT0016I"));
-       	Assert.assertNotNull("CWWKZ0009I NOT FOUND",server.waitForStringInLogUsingMark("CWWKZ0009I"));
+       	Assert.assertNotNull("SRVE9103I NOT FOUND",server.waitForStringInLogUsingMark("SRVE9103I"));
        	Log.info(c, testName, "------- jax-ws metrics should not be available ------");
       	checkStrings(getHttpsServlet("/metrics/vendor"), 
       		new String[] { "vendor:" }, 
-      		new String[] { "vendor:jaxws_client", "vendor:jaxws_server"});
+      		new String[] { "vendor:jaxws_client", "vendor:jaxws_server"});       	
       	
        	Log.info(c, testName, "------- Remove JDBC application ------");
        	boolean rc2 = server.removeAndStopDropinsApplications("testJDBCApp.war");

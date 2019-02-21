@@ -1,13 +1,13 @@
-/*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
 #CMVCPATHNAME com.ibm.ws.security.audit.reader/resources/com/ibm/ws/security/audit/reader/resources/UtilityOptions.nlsprops
 #ISMESSAGEFILE FALSE
 #NLS_ENCODING=UNICODE
@@ -87,6 +87,7 @@ auditreader.option-desc.signed=\t\u6307\u5b9a\u5be9\u6838\u65e5\u8a8c\u662f\u542
 auditreader.option-key.signingKeyStoreLocation=\ \ \ \ --signingKeyStoreLocation=[\u7528\u4f86\u5132\u5b58\u6191\u8b49\uff08\u7528\u4f86\u89e3\u9664\u7c3d\u7f72\u5be9\u6838\u8a18\u9304\uff09\u4e4b\u91d1\u9470\u5132\u5b58\u5eab\u7684\u5b8c\u6574\u6a94\u6848 URL \u4f4d\u7f6e\u3002\
 ]
 auditreader.option-desc.signingKeyStoreLocation=\t\u6307\u5b9a\u91d1\u9470\u5132\u5b58\u5eab\u7684\u5b8c\u6574\u6a94\u6848 URL \u4f4d\u7f6e\uff0c\u9019\u500b\u91d1\u9470\u5132\u5b58\u5eab\u6703\u5132\u5b58\u7528\u4f86\u89e3\u9664\u7c3d\u7f72\u5be9\u6838\u8a18\u9304\u7684\u6191\u8b49\u3002
+
 auditreader.option-key.signingKeyStorePassword=\ \ \ \ --signingKeyStorePassword=[\u5bc6\u78bc]
 auditreader.option-desc.signingKeyStorePassword=\t\u6307\u5b9a\u91d1\u9470\u5132\u5b58\u5eab\u7684\u5bc6\u78bc\uff0c\u9019\u500b\u91d1\u9470\u5132\u5b58\u5eab\u542b\u6709\u7528\u4f86\u89e3\u9664\u7c3d\u7f72\u5be9\u6838\u8a18\u9304\u7684\u6191\u8b49\u3002
 auditreader.option-key.signingKeyStoreType=\ \ \ \ --signingKeyStoreType=[\u91d1\u9470\u5132\u5b58\u5eab\u985e\u578b]

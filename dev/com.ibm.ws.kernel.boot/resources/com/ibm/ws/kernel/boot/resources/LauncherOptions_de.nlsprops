@@ -16,7 +16,7 @@
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Syntax: java [JVM-Optionen] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
 \t-jar bin/tools/ws-server.jar Servername {0} [Optionen]  
-scriptUsage=Syntax: {0} {1} Servername [Optionen]
+scriptUsage=Syntax: {0} {1} serverName [Optionen] [JVM-Optionen]
 
 use.actions=Aktionen:
 use.options=Optionen:
@@ -186,4 +186,4 @@ option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tInaktiviert die Generierung des Standard-Keystore-Kennworts.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="Serverstammordner im Archiv"
-option-desc.package.server-root=\tGibt den Namen des Serverstammordners in der Archivdatei an.
+option-desc.package.server-root=\tGibt den Namen des Serverstammordners in der Archivdatei an.\n
