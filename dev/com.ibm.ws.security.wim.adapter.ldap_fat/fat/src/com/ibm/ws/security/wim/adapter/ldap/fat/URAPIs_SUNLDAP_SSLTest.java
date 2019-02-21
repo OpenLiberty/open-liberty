@@ -33,6 +33,7 @@ import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -196,6 +197,8 @@ public class URAPIs_SUNLDAP_SSLTest {
      * Hit the test servlet to see if checkPassword works when passed in an invalid user
      * This verifies the various required bundles got installed and are working.
      */
+    @AllowedFFDC("javax.naming.NamingException")
+    @Mode(TestMode.FULL)
     @Test
     public void checkPasswordWithBadCredentials() throws Exception {
         String user = "persona1@ibm.com";
@@ -203,7 +206,7 @@ public class URAPIs_SUNLDAP_SSLTest {
         Log.info(c, "checkPasswordWithBadCredentials", "Checking bad credentials");
         assertNull("Authentication should not succeed.",
                    servlet.checkPassword(user, password));
-        server.waitForStringInLog("CWIML4529E");
+        server.waitForStringInLog("CWIML4537E");
         //passwordChecker.checkForPasswordInAnyFormat(password);
     }
 
