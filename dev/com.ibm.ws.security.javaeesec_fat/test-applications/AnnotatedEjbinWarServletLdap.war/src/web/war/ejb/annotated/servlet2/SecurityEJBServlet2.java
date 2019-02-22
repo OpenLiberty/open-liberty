@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,7 @@ import web.ejb.jar.bean.SecurityEJBInterface;
  */
 @BasicAuthenticationMechanismDefinition(realmName = "ejbRealm2")
 @LdapIdentityStoreDefinition(
-                             url = "ldap://localhost:10389/",
+                             url = "${ldapIDStorePropsBean.hostnameUrl}",
                              callerBaseDn = "",
                              callerSearchBase = "ou=anotherusers,o=ibm,c=us",
                              callerSearchScope = LdapIdentityStoreDefinition.LdapSearchScope.SUBTREE,

@@ -18,7 +18,7 @@
 			</security-role>
 			<security-role name="Manager">
 				<user name="user1"
-					access-id="user:localhost:10389/uid=user1,ou=anotherusers,o=ibm,c=us" />
+					access-id="user:localhost:${ldap.1.port}/uid=user1,ou=anotherusers,o=ibm,c=us" />
 			</security-role>
 		</application-bnd>
 		<classloader commonLibraryRef="DerbyLib" />
@@ -30,7 +30,7 @@
 			<security-role name="Employee">
 			</security-role>
 			<security-role name="Manager">
-				<user name="user1" access-id="user:127.0.0.1:10389/uid=user1,ou=users,o=ibm,c=us" />
+				<user name="user1" access-id="user:127.0.0.1:${ldap.1.port}/uid=user1,ou=users,o=ibm,c=us" />
 			</security-role>
 		</application-bnd>
 		<classloader commonLibraryRef="DerbyLib" />
