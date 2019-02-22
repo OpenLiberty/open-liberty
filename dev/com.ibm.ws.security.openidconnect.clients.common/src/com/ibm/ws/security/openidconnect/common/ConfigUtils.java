@@ -355,7 +355,7 @@ public class ConfigUtils {
         return value;
     }
 
-    public List<String> readAndSanitizeForwardAuthzParameter(Map<String, Object> props, String configId, String configAttributeName) {
+    public List<String> readAndSanitizeForwardLoginParameter(Map<String, Object> props, String configId, String configAttributeName) {
         String[] attributeValue = commonConfigUtils.getStringArrayConfigAttribute(props, configAttributeName);
         if (attributeValue == null) {
             return new ArrayList<String>();

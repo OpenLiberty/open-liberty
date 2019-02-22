@@ -42,7 +42,7 @@ public class ConfigUtilsTest extends CommonTestClass {
     protected final AtomicServiceReference<ConfigurationAdmin> configAdminRef = mockery.mock(AtomicServiceReference.class);
 
     private final String uniqueId = "myConfig";
-    private final String configAttributeName = "forwardAuthzParameter";
+    private final String configAttributeName = "forwardLoginParameter";
 
     private static final String CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED = "CWWKS1783W";
 
@@ -72,16 +72,16 @@ public class ConfigUtilsTest extends CommonTestClass {
         outputMgr.restoreStreams();
     }
 
-    /************************************** readAndSanitizeForwardAuthzParameter **************************************/
+    /************************************** readAndSanitizeForwardLoginParameter **************************************/
 
     @Test
-    public void test_readAndSanitizeForwardAuthzParameter_emptyProps() {
+    public void test_readAndSanitizeForwardLoginParameter_emptyProps() {
         try {
             final Map<String, Object> props = new HashMap<String, Object>();
 
-            List<String> forwardAuthzParameter = utils.readAndSanitizeForwardAuthzParameter(props, uniqueId, configAttributeName);
-            assertNotNull("Value read should not have been null, but was.", forwardAuthzParameter);
-            assertTrue("Value read should have been empty, but was " + forwardAuthzParameter + ".", forwardAuthzParameter.isEmpty());
+            List<String> sanitizedValue = utils.readAndSanitizeForwardLoginParameter(props, uniqueId, configAttributeName);
+            assertNotNull("Value read should not have been null, but was.", sanitizedValue);
+            assertTrue("Value read should have been empty, but was " + sanitizedValue + ".", sanitizedValue.isEmpty());
 
             verifyNoLogMessage(outputMgr, MSG_BASE_ERROR_WARNING);
         } catch (Throwable t) {
@@ -90,13 +90,13 @@ public class ConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_readAndSanitizeForwardAuthzParameter_missingAttribute() {
+    public void test_readAndSanitizeForwardLoginParameter_missingAttribute() {
         try {
             final Map<String, Object> props = createSampleProps();
 
-            List<String> forwardAuthzParameter = utils.readAndSanitizeForwardAuthzParameter(props, uniqueId, configAttributeName);
-            assertNotNull("Value read should not have been null, but was.", forwardAuthzParameter);
-            assertTrue("Value read should have been empty, but was " + forwardAuthzParameter + ".", forwardAuthzParameter.isEmpty());
+            List<String> sanitizedValue = utils.readAndSanitizeForwardLoginParameter(props, uniqueId, configAttributeName);
+            assertNotNull("Value read should not have been null, but was.", sanitizedValue);
+            assertTrue("Value read should have been empty, but was " + sanitizedValue + ".", sanitizedValue.isEmpty());
 
             verifyNoLogMessage(outputMgr, MSG_BASE_ERROR_WARNING);
         } catch (Throwable t) {
@@ -105,16 +105,16 @@ public class ConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_readAndSanitizeForwardAuthzParameter_configValueEmptyArray() {
+    public void test_readAndSanitizeForwardLoginParameter_configValueEmptyArray() {
         try {
             final Map<String, Object> props = createSampleProps();
 
             String[] value = new String[0];
             props.put(configAttributeName, value);
 
-            List<String> forwardAuthzParameter = utils.readAndSanitizeForwardAuthzParameter(props, uniqueId, configAttributeName);
-            assertNotNull("Value read should not have been null, but was.", forwardAuthzParameter);
-            assertTrue("Value read should have been empty, but was " + forwardAuthzParameter + ".", forwardAuthzParameter.isEmpty());
+            List<String> sanitizedValue = utils.readAndSanitizeForwardLoginParameter(props, uniqueId, configAttributeName);
+            assertNotNull("Value read should not have been null, but was.", sanitizedValue);
+            assertTrue("Value read should have been empty, but was " + sanitizedValue + ".", sanitizedValue.isEmpty());
 
             verifyNoLogMessage(outputMgr, MSG_BASE_ERROR_WARNING);
         } catch (Throwable t) {
@@ -123,15 +123,15 @@ public class ConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_readAndSanitizeForwardAuthzParameter_configValueSingleValue_valid() {
+    public void test_readAndSanitizeForwardLoginParameter_configValueSingleValue_valid() {
         try {
             final Map<String, Object> props = createSampleProps();
 
             String[] value = new String[] { "testing" };
             props.put(configAttributeName, value);
 
-            List<String> forwardAuthzParameter = utils.readAndSanitizeForwardAuthzParameter(props, uniqueId, configAttributeName);
-            assertEquals("Read value did not match expected value.", Arrays.asList(value), forwardAuthzParameter);
+            List<String> sanitizedValue = utils.readAndSanitizeForwardLoginParameter(props, uniqueId, configAttributeName);
+            assertEquals("Read value did not match expected value.", Arrays.asList(value), sanitizedValue);
 
             verifyNoLogMessage(outputMgr, MSG_BASE_ERROR_WARNING);
         } catch (Throwable t) {
@@ -140,7 +140,7 @@ public class ConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_readAndSanitizeForwardAuthzParameter_configValueSingleValue_blacklistedValue() {
+    public void test_readAndSanitizeForwardLoginParameter_configValueSingleValue_blacklistedValue() {
         try {
             final Map<String, Object> props = createSampleProps();
 
@@ -148,10 +148,10 @@ public class ConfigUtilsTest extends CommonTestClass {
             String[] configValue = new String[] { blacklistedValue };
             props.put(configAttributeName, configValue);
 
-            List<String> forwardAuthzParameter = utils.readAndSanitizeForwardAuthzParameter(props, uniqueId, configAttributeName);
+            List<String> sanitizedValue = utils.readAndSanitizeForwardLoginParameter(props, uniqueId, configAttributeName);
 
-            assertNotNull("Value read should not have been null, but was. Parameter value was " + Arrays.toString(configValue) + ".", forwardAuthzParameter);
-            assertTrue("Value read should have been empty, but wasn't. Value read was " + forwardAuthzParameter + ".", forwardAuthzParameter.isEmpty());
+            assertNotNull("Value read should not have been null, but was. Parameter value was " + Arrays.toString(configValue) + ".", sanitizedValue);
+            assertTrue("Value read should have been empty, but wasn't. Value read was " + sanitizedValue + ".", sanitizedValue.isEmpty());
 
             verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + blacklistedValue);
         } catch (Throwable t) {
@@ -160,7 +160,7 @@ public class ConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_readAndSanitizeForwardAuthzParameter_configValueMultipleValues_allValid() {
+    public void test_readAndSanitizeForwardLoginParameter_configValueMultipleValues_allValid() {
         try {
             final Map<String, Object> props = createSampleProps();
 
@@ -170,12 +170,12 @@ public class ConfigUtilsTest extends CommonTestClass {
             String[] configValue = new String[] { entry1, entry2, entry3 };
             props.put(configAttributeName, configValue);
 
-            List<String> forwardAuthzParameter = utils.readAndSanitizeForwardAuthzParameter(props, uniqueId, configAttributeName);
+            List<String> sanitizedValue = utils.readAndSanitizeForwardLoginParameter(props, uniqueId, configAttributeName);
 
-            assertNotNull("Value read should not have been null, but was. Parameter value was " + Arrays.toString(configValue) + ".", forwardAuthzParameter);
-            assertTrue("Value read did not contain original [" + entry1 + "] entry. Value read was " + forwardAuthzParameter + ".", forwardAuthzParameter.contains(entry1));
-            assertTrue("Value read did not contain original [" + entry2 + "] entry. Value read was " + forwardAuthzParameter + ".", forwardAuthzParameter.contains(entry2));
-            assertTrue("Value read did not contain original [" + entry3 + "] entry. Value read was " + forwardAuthzParameter + ".", forwardAuthzParameter.contains(entry3));
+            assertNotNull("Value read should not have been null, but was. Parameter value was " + Arrays.toString(configValue) + ".", sanitizedValue);
+            assertTrue("Value read did not contain original [" + entry1 + "] entry. Value read was " + sanitizedValue + ".", sanitizedValue.contains(entry1));
+            assertTrue("Value read did not contain original [" + entry2 + "] entry. Value read was " + sanitizedValue + ".", sanitizedValue.contains(entry2));
+            assertTrue("Value read did not contain original [" + entry3 + "] entry. Value read was " + sanitizedValue + ".", sanitizedValue.contains(entry3));
 
             verifyNoLogMessage(outputMgr, MSG_BASE_ERROR_WARNING);
         } catch (Throwable t) {
@@ -184,7 +184,7 @@ public class ConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_readAndSanitizeForwardAuthzParameter_configValueMultipleValues_allBlacklisted() {
+    public void test_readAndSanitizeForwardLoginParameter_configValueMultipleValues_allBlacklisted() {
         try {
             final Map<String, Object> props = createSampleProps();
 
@@ -193,10 +193,10 @@ public class ConfigUtilsTest extends CommonTestClass {
             String[] configValue = new String[] { entry1, entry2 };
             props.put(configAttributeName, configValue);
 
-            List<String> forwardAuthzParameter = utils.readAndSanitizeForwardAuthzParameter(props, uniqueId, configAttributeName);
+            List<String> sanitizedValue = utils.readAndSanitizeForwardLoginParameter(props, uniqueId, configAttributeName);
 
-            assertNotNull("Value read should not have been null, but was. Parameter value was " + Arrays.toString(configValue) + ".", forwardAuthzParameter);
-            assertTrue("Value read should have been empty, but wasn't. Value read was " + forwardAuthzParameter + ".", forwardAuthzParameter.isEmpty());
+            assertNotNull("Value read should not have been null, but was. Parameter value was " + Arrays.toString(configValue) + ".", sanitizedValue);
+            assertTrue("Value read should have been empty, but wasn't. Value read was " + sanitizedValue + ".", sanitizedValue.isEmpty());
 
             verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry1);
             verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + entry2);
@@ -206,7 +206,7 @@ public class ConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_readAndSanitizeForwardAuthzParameter_configValueMultipleValues_mixedValidAndBlacklisted() {
+    public void test_readAndSanitizeForwardLoginParameter_configValueMultipleValues_mixedValidAndBlacklisted() {
         try {
             final Map<String, Object> props = createSampleProps();
 
@@ -217,14 +217,14 @@ public class ConfigUtilsTest extends CommonTestClass {
             String[] configValue = new String[] { good1, bad1, bad2, good2 };
             props.put(configAttributeName, configValue);
 
-            List<String> forwardAuthzParameter = utils.readAndSanitizeForwardAuthzParameter(props, uniqueId, configAttributeName);
+            List<String> sanitizedValue = utils.readAndSanitizeForwardLoginParameter(props, uniqueId, configAttributeName);
 
-            assertNotNull("Value read should not have been null, but was. Parameter value was " + Arrays.toString(configValue) + ".", forwardAuthzParameter);
-            assertTrue("Value read did not contain original [" + good1 + "] entry. Value read was " + forwardAuthzParameter + ".", forwardAuthzParameter.contains(good1));
-            assertTrue("Value read did not contain original [" + good2 + "] entry. Value read was " + forwardAuthzParameter + ".", forwardAuthzParameter.contains(good2));
-            assertFalse("Value read should not have contained [" + bad1 + "] entry. Value read was " + forwardAuthzParameter + ".", forwardAuthzParameter.contains(bad1));
-            assertFalse("Value read should not have contained [" + bad2 + "] entry. Value read was " + forwardAuthzParameter + ".", forwardAuthzParameter.contains(bad2));
-            assertEquals("Value read did not have expected number of entries. Value read was " + forwardAuthzParameter + ".", 2, forwardAuthzParameter.size());
+            assertNotNull("Value read should not have been null, but was. Parameter value was " + Arrays.toString(configValue) + ".", sanitizedValue);
+            assertTrue("Value read did not contain original [" + good1 + "] entry. Value read was " + sanitizedValue + ".", sanitizedValue.contains(good1));
+            assertTrue("Value read did not contain original [" + good2 + "] entry. Value read was " + sanitizedValue + ".", sanitizedValue.contains(good2));
+            assertFalse("Value read should not have contained [" + bad1 + "] entry. Value read was " + sanitizedValue + ".", sanitizedValue.contains(bad1));
+            assertFalse("Value read should not have contained [" + bad2 + "] entry. Value read was " + sanitizedValue + ".", sanitizedValue.contains(bad2));
+            assertEquals("Value read did not have expected number of entries. Value read was " + sanitizedValue + ".", 2, sanitizedValue.size());
 
             verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + bad1);
             verifyLogMessage(outputMgr, CWWKS1783W_BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED + ".*" + bad2);

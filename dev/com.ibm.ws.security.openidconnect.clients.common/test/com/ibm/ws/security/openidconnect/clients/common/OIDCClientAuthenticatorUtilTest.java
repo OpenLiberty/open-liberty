@@ -1148,7 +1148,7 @@ public class OIDCClientAuthenticatorUtilTest {
     }
 
     @Test
-    public void testAddForwardAuthzParamsToQuery_forwardAuthzParametersNull() {
+    public void testAddForwardLoginParamsToQuery_forwardLoginParametersNull() {
         try {
             String query = "";
             final List<String> configuredValue = null;
@@ -1158,7 +1158,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(configuredValue));
                 }
             });
-            String newQuery = oidcCAUtil.addForwardAuthzParamsToQuery(convClientConfig, req, query);
+            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
             assertEquals("Returned query should have matched original query.", query, newQuery);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1166,7 +1166,7 @@ public class OIDCClientAuthenticatorUtilTest {
     }
 
     @Test
-    public void testAddForwardAuthzParamsToQuery_forwardAuthzParametersEmpty() {
+    public void testAddForwardLoginParamsToQuery_forwardLoginParametersEmpty() {
         try {
             String query = "The quick brown fox jumps over the lazy dog.";
             final List<String> configuredValue = new ArrayList<String>();
@@ -1176,7 +1176,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(configuredValue));
                 }
             });
-            String newQuery = oidcCAUtil.addForwardAuthzParamsToQuery(convClientConfig, req, query);
+            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
             assertEquals("Returned query should have matched original query.", query, newQuery);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1184,7 +1184,7 @@ public class OIDCClientAuthenticatorUtilTest {
     }
 
     @Test
-    public void testAddForwardAuthzParamsToQuery_oneParameter_emptyString_requestMissingThatParameter() {
+    public void testAddForwardLoginParamsToQuery_oneParameter_emptyString_requestMissingThatParameter() {
         try {
             String query = "scope=myScope";
             final String paramName = "";
@@ -1197,7 +1197,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(null));
                 }
             });
-            String newQuery = oidcCAUtil.addForwardAuthzParamsToQuery(convClientConfig, req, query);
+            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
             assertEquals("Returned query should have matched original query.", query, newQuery);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1205,7 +1205,7 @@ public class OIDCClientAuthenticatorUtilTest {
     }
 
     @Test
-    public void testAddForwardAuthzParamsToQuery_oneParameter_emptyString_matchingParam_emptyString() {
+    public void testAddForwardLoginParamsToQuery_oneParameter_emptyString_matchingParam_emptyString() {
         try {
             String query = "some existing query string";
             final String paramName = "";
@@ -1219,7 +1219,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(paramValue));
                 }
             });
-            String newQuery = oidcCAUtil.addForwardAuthzParamsToQuery(convClientConfig, req, query);
+            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
 
             String expectedQuery = query + "&=";
             assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
@@ -1229,7 +1229,7 @@ public class OIDCClientAuthenticatorUtilTest {
     }
 
     @Test
-    public void testAddForwardAuthzParamsToQuery_oneParameter_emptyString_matchingParam_whitespaceOnly() {
+    public void testAddForwardLoginParamsToQuery_oneParameter_emptyString_matchingParam_whitespaceOnly() {
         try {
             String query = "some existing query string";
             final String paramName = "";
@@ -1243,7 +1243,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(paramValue));
                 }
             });
-            String newQuery = oidcCAUtil.addForwardAuthzParamsToQuery(convClientConfig, req, query);
+            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
 
             // Parameter value should have been encoded
             String expectedQuery = query + "&=+%09%0A+%0D";
@@ -1254,7 +1254,7 @@ public class OIDCClientAuthenticatorUtilTest {
     }
 
     @Test
-    public void testAddForwardAuthzParamsToQuery_oneParameter_emptyString_matchingParam_nonEmpty() {
+    public void testAddForwardLoginParamsToQuery_oneParameter_emptyString_matchingParam_nonEmpty() {
         try {
             String query = "some existing query string";
             final String paramName = "";
@@ -1268,7 +1268,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(paramValue));
                 }
             });
-            String newQuery = oidcCAUtil.addForwardAuthzParamsToQuery(convClientConfig, req, query);
+            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
 
             String expectedQuery = query + "&=" + paramValue;
             assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
@@ -1278,7 +1278,7 @@ public class OIDCClientAuthenticatorUtilTest {
     }
 
     @Test
-    public void testAddForwardAuthzParamsToQuery_oneParameter_whitespace_requestMissingThatParameter() {
+    public void testAddForwardLoginParamsToQuery_oneParameter_whitespace_requestMissingThatParameter() {
         try {
             String query = "some existing query string";
             final String paramName = " ";
@@ -1291,7 +1291,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(null));
                 }
             });
-            String newQuery = oidcCAUtil.addForwardAuthzParamsToQuery(convClientConfig, req, query);
+            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
             assertEquals("Returned query should have matched original query.", query, newQuery);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1299,7 +1299,7 @@ public class OIDCClientAuthenticatorUtilTest {
     }
 
     @Test
-    public void testAddForwardAuthzParamsToQuery_oneParameter_whitespace_matchingParam_whitespaceOnly() {
+    public void testAddForwardLoginParamsToQuery_oneParameter_whitespace_matchingParam_whitespaceOnly() {
         try {
             String query = "some existing query string";
             final String paramName = "\n\r\t";
@@ -1313,7 +1313,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(paramValue));
                 }
             });
-            String newQuery = oidcCAUtil.addForwardAuthzParamsToQuery(convClientConfig, req, query);
+            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
 
             // Parameter name and value should have been encoded
             String expectedQuery = query + "&" + "%0A%0D%09" + "=" + "++++";
@@ -1324,7 +1324,7 @@ public class OIDCClientAuthenticatorUtilTest {
     }
 
     @Test
-    public void testAddForwardAuthzParamsToQuery_oneParameter_whitespace_matchingParam_nonEmpty() {
+    public void testAddForwardLoginParamsToQuery_oneParameter_whitespace_matchingParam_nonEmpty() {
         try {
             String query = "some existing query string";
             final String paramName = "\n \n";
@@ -1338,7 +1338,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(paramValue));
                 }
             });
-            String newQuery = oidcCAUtil.addForwardAuthzParamsToQuery(convClientConfig, req, query);
+            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
 
             // Parameter name and value should have been encoded
             String expectedQuery = query + "&" + "%0A+%0A" + "=" + "some+parameter+value";
@@ -1349,7 +1349,7 @@ public class OIDCClientAuthenticatorUtilTest {
     }
 
     @Test
-    public void testAddForwardAuthzParamsToQuery_oneParameter_nonEmpty_requestMissingThatParameter() {
+    public void testAddForwardLoginParamsToQuery_oneParameter_nonEmpty_requestMissingThatParameter() {
         try {
             String query = "scope=mySCope";
             final String paramName = "missingParam";
@@ -1362,7 +1362,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(null));
                 }
             });
-            String newQuery = oidcCAUtil.addForwardAuthzParamsToQuery(convClientConfig, req, query);
+            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
             assertEquals("Returned query should have matched original query.", query, newQuery);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1370,7 +1370,7 @@ public class OIDCClientAuthenticatorUtilTest {
     }
 
     @Test
-    public void testAddForwardAuthzParamsToQuery_oneParameter_specialChars_matchingParam_specialChars() {
+    public void testAddForwardLoginParamsToQuery_oneParameter_specialChars_matchingParam_specialChars() {
         try {
             String query = "scope=myScope&redirect_uri=some value";
             final String paramName = "`~!@#$%^&*()-_=+[{]}\\|;:'\",<.>/?";
@@ -1384,7 +1384,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(paramValue));
                 }
             });
-            String newQuery = oidcCAUtil.addForwardAuthzParamsToQuery(convClientConfig, req, query);
+            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
 
             String encodedSpecialChars = "%60%7E%21%40%23%24%25%5E%26*%28%29-_%3D%2B%5B%7B%5D%7D%5C%7C%3B%3A%27%22%2C%3C.%3E%2F%3F";
             // Parameter name and value should have been encoded
@@ -1396,7 +1396,7 @@ public class OIDCClientAuthenticatorUtilTest {
     }
 
     @Test
-    public void testAddForwardAuthzParamsToQuery_multipleParameters_noneInRequest() {
+    public void testAddForwardLoginParamsToQuery_multipleParameters_noneInRequest() {
         try {
             String query = "initial query";
             final List<String> configuredValues = Arrays.asList("", "my param", "Special! \n\t (Param) ", " 1234567890 ");
@@ -1414,7 +1414,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     }
                 });
             }
-            String newQuery = oidcCAUtil.addForwardAuthzParamsToQuery(convClientConfig, req, query);
+            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
             assertEquals("Returned query should have matched original query.", query, newQuery);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1422,7 +1422,7 @@ public class OIDCClientAuthenticatorUtilTest {
     }
 
     @Test
-    public void testAddForwardAuthzParamsToQuery_multipleParameters_oneInRequest() {
+    public void testAddForwardLoginParamsToQuery_multipleParameters_oneInRequest() {
         try {
             String query = "initial query";
             final String emptyParam = "";
@@ -1446,7 +1446,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(null));
                 }
             });
-            String newQuery = oidcCAUtil.addForwardAuthzParamsToQuery(convClientConfig, req, query);
+            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
 
             // Parameter name and value should have been encoded
             String expectedQuery = query + "&" + "my+param" + "=" + "My%0AParam%0DValue";
@@ -1457,7 +1457,7 @@ public class OIDCClientAuthenticatorUtilTest {
     }
 
     @Test
-    public void testAddForwardAuthzParamsToQuery_multipleParameters_multipleInRequest() {
+    public void testAddForwardLoginParamsToQuery_multipleParameters_multipleInRequest() {
         try {
             String query = "initial query";
             final String emptyParam = "";
@@ -1481,7 +1481,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(foundParamValue2));
                 }
             });
-            String newQuery = oidcCAUtil.addForwardAuthzParamsToQuery(convClientConfig, req, query);
+            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
 
             // Parameter names and values should have been encoded
             String expectedQuery = query + "&" + "my+param" + "=" + "My%0AParam%0DValue" + "&" + "+1234567890+" + "=" + foundParamValue2;
@@ -1492,7 +1492,7 @@ public class OIDCClientAuthenticatorUtilTest {
     }
 
     @Test
-    public void testAddForwardAuthzParamsToQuery_multipleParameters_allInRequest() {
+    public void testAddForwardLoginParamsToQuery_multipleParameters_allInRequest() {
         try {
             String query = "initial query";
             final String paramName1 = "name1";
@@ -1518,7 +1518,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(paramValue4));
                 }
             });
-            String newQuery = oidcCAUtil.addForwardAuthzParamsToQuery(convClientConfig, req, query);
+            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
 
             // Parameter names and values should have been encoded
             String expectedQuery = query + "&" + paramName1 + "=" + paramValue1 + "&" + paramName2 + "=" + paramValue2 + "&" + paramName3 + "=" + paramValue3 + "&" + paramName4 + "=" + paramValue4;

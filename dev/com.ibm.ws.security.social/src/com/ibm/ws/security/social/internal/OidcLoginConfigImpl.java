@@ -122,8 +122,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     private HashMap<String, String> userinfoRequestParamMap;
     private HashMap<String, String> jwkRequestParamMap;
 
-    public static final String CFG_KEY_FORWARD_AUTHZ_PARAMETER = "forwardAuthzParameter";
-    private List<String> forwardAuthzParameter = null;
+    public static final String CFG_KEY_FORWARD_LOGIN_PARAMETER = "forwardLoginParameter";
+    private List<String> forwardLoginParameter = null;
 
     HttpUtils httputils = new HttpUtils();
     ConfigUtils oidcConfigUtils = new ConfigUtils(null);
@@ -213,7 +213,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             jwkRequestParamMap = handleCustomRequestParameters(jwkRequestParamMap, jwkReqParams);
         }
 
-        forwardAuthzParameter = oidcConfigUtils.readAndSanitizeForwardAuthzParameter(props, this.uniqueId, CFG_KEY_FORWARD_AUTHZ_PARAMETER);
+        forwardLoginParameter = oidcConfigUtils.readAndSanitizeForwardLoginParameter(props, this.uniqueId, CFG_KEY_FORWARD_LOGIN_PARAMETER);
 
         if (discovery) {
             String OIDC_CLIENT_DISCOVERY_COMPLETE = "CWWKS6110I: The client [{" + getId() + "}] configuration has been established with the information from the discovery endpoint URL [{" + this.discoveryEndpointUrl + "}]. This information enables the client to interact with the OpenID Connect provider to process the requests such as authorization and token.";
@@ -400,7 +400,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             Tr.debug(tc, KEY_realmName + " = " + realmName);
             Tr.debug(tc, KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT + " = " + includeCustomCacheKeyInSubject);
             Tr.debug(tc, KEY_resource + " = " + resource);
-            Tr.debug(tc, CFG_KEY_FORWARD_AUTHZ_PARAMETER + " = " + forwardAuthzParameter);
+            Tr.debug(tc, CFG_KEY_FORWARD_LOGIN_PARAMETER + " = " + forwardLoginParameter);
         }
     }
 
@@ -807,7 +807,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     /** {@inheritDoc} */
     @Override
     public List<String> getForwardAuthzParameter() {
-        return forwardAuthzParameter;
+        return forwardLoginParameter;
     }
 
     /**

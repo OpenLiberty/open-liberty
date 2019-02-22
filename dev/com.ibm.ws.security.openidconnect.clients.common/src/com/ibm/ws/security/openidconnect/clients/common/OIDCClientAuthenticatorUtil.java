@@ -392,11 +392,11 @@ public class OIDCClientAuthenticatorUtil {
                 query += resources;
             }
         }
-        // check and see if we have any additional params to forward from the request
-        query = addForwardAuthzParamsToQuery(clientConfig, req, query);
-
         // look for custom params in the configuration to send to the authorization ep
         query = handleCustomParams(clientConfig, query);
+
+        // check and see if we have any additional params to forward from the request
+        query = addForwardLoginParamsToQuery(clientConfig, req, query);
 
         // in case the AuthorizationEndpoint already has set up its own parameters
         String s = clientConfig.getAuthorizationEndpointUrl();
@@ -407,7 +407,7 @@ public class OIDCClientAuthenticatorUtil {
         return s + queryMark + query;
     }
 
-    String addForwardAuthzParamsToQuery(ConvergedClientConfig clientConfig, HttpServletRequest req, String query) {
+    String addForwardLoginParamsToQuery(ConvergedClientConfig clientConfig, HttpServletRequest req, String query) {
         List<String> forwardAuthzParams = clientConfig.getForwardAuthzParameter();
         if (forwardAuthzParams == null || forwardAuthzParams.isEmpty()) {
             return query;
@@ -419,7 +419,7 @@ public class OIDCClientAuthenticatorUtil {
                     try {
                         query = String.format("%s&%s=%s", query, URLEncoder.encode(entry, ClientConstants.CHARSET), URLEncoder.encode(value, ClientConstants.CHARSET));
                     } catch (UnsupportedEncodingException e) {
-                        // Do nothing - encoding will be supported
+                        // Do nothing - UTF-8 encoding will be supported
                     }
                 }
 
