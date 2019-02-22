@@ -409,7 +409,7 @@ public class MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_Tests extends MPJwtMPCo
      * @throws Exception
      */
     @Test
-    @AllowedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtException" })
+    @AllowedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtException", "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
     public void MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_BadFilePublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
 
         standardTestFlow(resourceServer, MpJwtFatConstants.BAD_FILE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
