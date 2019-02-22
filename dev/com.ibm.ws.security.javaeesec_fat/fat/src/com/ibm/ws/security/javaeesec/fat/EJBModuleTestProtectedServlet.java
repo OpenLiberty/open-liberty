@@ -403,7 +403,7 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
 
         // create ejbinwarservlet.war,
         WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean", "web.war.ejb.is.servlet",
-                                      "web.war.identitystores.db.derby2");
+                                      "web.war.identitystores.db.derby2", "web.war.identitystores.ldap");
 
         // create ejbinwarservlet.war,
         WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME2, true, EJB_BEAN_JAR_NAME, true, "web.jar.base",

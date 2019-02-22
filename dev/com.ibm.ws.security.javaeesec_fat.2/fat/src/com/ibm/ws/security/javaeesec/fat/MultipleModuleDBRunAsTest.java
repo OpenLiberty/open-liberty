@@ -46,6 +46,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 @Mode(TestMode.FULL)
 public class MultipleModuleDBRunAsTest extends JavaEESecTestBase {
 
+    protected static String portNumber = System.getProperty("ldap.1.port");
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");
     protected static Class<?> logClass = MultipleModuleDBRunAsTest.class;
     protected static String urlBase;
@@ -79,16 +80,18 @@ public class MultipleModuleDBRunAsTest extends JavaEESecTestBase {
     protected static String REALM2_USER = "realm2user";
     protected static String REALM2_PASSWORD = "s3cur1ty";
 
-    protected static String IS1_REALM_NAME = "127.0.0.1:10389";
-    protected static String IS2_REALM_NAME = "localhost:10389";
+    protected static String IS1_REALM_NAME = "127.0.0.1:" + portNumber;
+    protected static String IS2_REALM_NAME = "localhost:" + portNumber;
     protected static String REALM1_REALM_NAME = "Realm1";
     protected static String REALM2_REALM_NAME = "Realm2";
 
-    protected static String IS1_GROUP_REALM_NAME = "group:127.0.0.1:10389/";
-    protected static String IS2_GROUP_REALM_NAME = "group:localhost:10389/";
+    protected static String IS1_GROUP_REALM_NAME = "group:127.0.0.1:" + portNumber + "/";
+    protected static String IS2_GROUP_REALM_NAME = "group:localhost:" + portNumber + "/";
 
-    protected static String IS1_GROUPS = "group:127.0.0.1:10389/grantedgroup2, group:127.0.0.1:10389/grantedgroup, group:127.0.0.1:10389/group1";
-    protected static String IS2_GROUPS = "group:localhost:10389/grantedgroup2, group:localhost:10389/anothergroup1, group:localhost:10389/grantedgroup";
+    protected static String IS1_GROUPS = "group:127.0.0.1:" + portNumber + "/grantedgroup2, group:127.0.0.1:" + portNumber + "/grantedgroup, group:127.0.0.1:" + portNumber
+                                         + "/group1";
+    protected static String IS2_GROUPS = "group:localhost:" + portNumber + "/grantedgroup2, group:localhost:" + portNumber + "/anothergroup1, group:localhost:" + portNumber
+                                         + "/grantedgroup";
     protected static String REALM1_GROUPS = "group:Realm1/grantedgroup2, group:Realm1/grantedgroup, group:Realm1/realm1group1, group:Realm1/realm1group2";
     protected static String REALM2_GROUPS = "group:Realm2/grantedgroup2, group:Realm2/realm2group2, group:Realm2/realm2group1, group:Realm2/grantedgroup";
     protected DefaultHttpClient httpclient;
@@ -164,11 +167,11 @@ public class MultipleModuleDBRunAsTest extends JavaEESecTestBase {
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirectrunas",
                                       "web.war.identitystores.ldap.ldap1", "web.war.identitystores.custom.grouponly", "web.war.identitystores.custom.realm1",
-                                      "web.war.identitystores.db.db1");
+                                      "web.war.identitystores.db.db1", "web.war.identitystores.ldap");
         // create module2, custom form login, forward, ldap2. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform",
                                       "web.war.servlets.customform.get.forwardrunas", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly",
-                                      "web.war.identitystores.custom.realm2", "web.war.identitystores.db.db2");
+                                      "web.war.identitystores.custom.realm2", "web.war.identitystores.db.db2", "web.war.identitystores.ldap");
 
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EAR_NAME, true, WAR1_NAME, WAR2CUSTOM_NAME);
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_NAME);

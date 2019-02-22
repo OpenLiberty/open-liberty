@@ -142,11 +142,11 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
 
         // create ejbinwarservlet.war,
         WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_REALM1_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean",
-                                      "web.war.ejb.annotated.servlet.realm1", "web.war.identitystores.ldap.ldap1");
+                                      "web.war.ejb.annotated.servlet.realm1", "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap");
 
         // create ejbinwarservlet.war,
         WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_REALM2_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base",
-                                      "web.ejb.jar.bean", "web.war.ejb.annotated.servlet.realm2", "web.war.identitystores.ldap.ldap2");
+                                      "web.ejb.jar.bean", "web.war.ejb.annotated.servlet.realm2", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.ldap");
 
         // add the servlet war inside the ear
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EJB_EAR_REALM_NAME, true, EJB_REALM1_WAR_NAME);
@@ -226,11 +226,11 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
 
         // create ejbinwarservlet.war,
         WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_REALM1_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean",
-                                      "web.war.ejb.annotated.servlet.realm1", "web.war.identitystores.ldap.ldap1");
+                                      "web.war.ejb.annotated.servlet.realm1", "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap");
 
         // create ejbinwarservlet.war,
         WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_REALM2_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base",
-                                      "web.ejb.jar.bean", "web.war.ejb.annotated.servlet.realm2", "web.war.identitystores.ldap.ldap2");
+                                      "web.ejb.jar.bean", "web.war.ejb.annotated.servlet.realm2", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.ldap");
 
         // add the servlet war inside the ear
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EJB_EAR_REALM_NAME, true, EJB_REALM1_WAR_NAME);
