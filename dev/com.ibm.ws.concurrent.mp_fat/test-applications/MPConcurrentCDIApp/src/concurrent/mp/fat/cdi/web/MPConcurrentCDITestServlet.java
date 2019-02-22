@@ -70,6 +70,15 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     BeanManager beanManager;
 
     @Inject
+    RequestScopedBean requestBean;
+
+    @Inject
+    SessionScopedBean sessionBean;
+
+    @Inject
+    ConversationScopeBean conversationBean;
+
+    @Inject
     ManagedExecutor noAnno;
 
     @Inject
@@ -118,6 +127,14 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     @ManagedExecutorConfig(propagated = { ThreadContext.TRANSACTION, ThreadContext.APPLICATION }, cleared = {})
     ManagedExecutor propagatedBA;
 
+    @Inject
+    @ManagedExecutorConfig(propagated = { ThreadContext.CDI, ThreadContext.APPLICATION })
+    ManagedExecutor propagateCDI;
+
+    @Inject
+    @ManagedExecutorConfig(propagated = {}, cleared = ThreadContext.ALL_REMAINING)
+    ManagedExecutor propagatedNone;
+
     ManagedExecutor methodInjectedNoAnno;
 
     ManagedExecutor methodInjectedMax5;
@@ -145,6 +162,10 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     @Inject
     @NamedInstance("namedThreadContext")
     ThreadContext threadContextWithName;
+
+    @Inject
+    @ThreadContextConfig(propagated = {}, cleared = ThreadContext.ALL_REMAINING)
+    ThreadContext threadContextClearAll;
 
     @Inject
     @NamedInstance("namedThreadContext")
@@ -213,6 +234,58 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     @Test
     public void testMEDefaultsNotEqual() {
         assertUnique(noAnno, noAnno2, bean.getNoAnno());
+    }
+
+    @Test
+    public void testCDI_ME_Ctx_Propagate() throws Exception {
+        checkCDIPropagation(true, "testCDI_ME_Ctx_Propagate-REQUEST", propagateCDI, requestBean);
+        checkCDIPropagation(true, "testCDI_ME_Ctx_Propagate-SESSION", propagateCDI, sessionBean);
+        checkCDIPropagation(true, "testCDI_ME_Ctx_Propagate-CONVERSATION", propagateCDI, conversationBean);
+    }
+
+    @Test
+    public void testCDI_ME_Ctx_Clear() throws Exception {
+        checkCDIPropagation(false, "testCDI_ME_Ctx_Clear-REQUEST", propagatedNone, requestBean);
+        checkCDIPropagation(false, "testCDI_ME_Ctx_Clear-SESSION", propagatedNone, sessionBean);
+        checkCDIPropagation(false, "testCDI_ME_Ctx_Clear-CONVERSATION", propagatedNone, conversationBean);
+    }
+
+    private void checkCDIPropagation(boolean expectPropagate, String stateToPropagate, ManagedExecutor me, AbstractBean bean) throws Exception {
+        bean.setState(stateToPropagate);
+        CompletableFuture<String> cf = me.supplyAsync(() -> {
+            String state = bean.getState();
+            System.out.println(stateToPropagate + " state=" + state);
+            return state;
+        });
+        assertEquals(expectPropagate ? stateToPropagate : AbstractBean.UNINITIALIZED, cf.get(TIMEOUT_MIN, TimeUnit.MINUTES));
+    }
+
+    @Test
+    public void testCDI_TC_Ctx_Propagate() throws Exception {
+        requestBean.setState("testCDIContextPropagate-STATE2");
+        Callable<String> getState = threadContextWithDefaultConfig.contextualCallable(() -> {
+            String state = requestBean.getState();
+            System.out.println("testCDIContextPropagate#2 state=" + state);
+            return state;
+        });
+        assertEquals("testCDIContextPropagate-STATE2", getState.call());
+    }
+
+    @Test
+    public void testCDI_TC_Ctx_Clear() throws Exception {
+        ThreadContext clearAllCtx = ThreadContext.builder()
+                        .propagated() // propagate nothing
+                        .cleared(ThreadContext.ALL_REMAINING)
+                        .build();
+
+        requestBean.setState("testCDIThreadCtxClear-STATE1");
+
+        Callable<String> getState = clearAllCtx.contextualCallable(() -> {
+            String state = requestBean.getState();
+            System.out.println("testCDIThreadCtxClear#1 state=" + state);
+            return state;
+        });
+        assertEquals("UNINITIALIZED", getState.call());
     }
 
     @Test

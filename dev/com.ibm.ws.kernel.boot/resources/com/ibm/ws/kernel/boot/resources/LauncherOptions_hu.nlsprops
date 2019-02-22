@@ -16,7 +16,7 @@
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Haszn\u00e1lat: java [JVM param\u00e9terek] -javaagent:bin/tools/ws-javaagent.jar \\\n\
 \t-jar bin/tools/ws-server.jar serverName {0} [param\u00e9terek]  
-scriptUsage=Haszn\u00e1lat: {0} {1} serverName [param\u00e9terek]
+scriptUsage=Haszn\u00e1lat: {0} {1} serverName [param\u00e9terek] [JVM param\u00e9terek]
 
 use.actions=M\u0171veletek:
 use.options=Param\u00e9terek:
@@ -182,4 +182,4 @@ option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tAlap\u00e9rtelmezett kulcst\u00e1rol\u00f3 jelsz\u00f3 el\u0151\u00e1ll\u00edt\u00e1s\u00e1nak letilt\u00e1sa
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="gy\u00f6k\u00e9r kiszolg\u00e1l\u00f3mappa az arch\u00edvumban"
-option-desc.package.server-root=\tA gy\u00f6k\u00e9r kiszolg\u00e1l\u00f3mappa nev\u00e9t hat\u00e1rozza meg az arch\u00edv f\u00e1jlban.
+option-desc.package.server-root=\tA gy\u00f6k\u00e9r kiszolg\u00e1l\u00f3mappa nev\u00e9t hat\u00e1rozza meg az arch\u00edv f\u00e1jlban.  \n

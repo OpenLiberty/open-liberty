@@ -132,6 +132,12 @@ public class ConcurrencyProviderImpl implements ApplicationStateListener, Concur
         return ccmgr;
     }
 
+    @Reference(target = "(component.name=com.ibm.ws.cdi.context.provider)",
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected volatile org.eclipse.microprofile.concurrent.spi.ThreadContextProvider cdiContextProvider;
+
     @Reference(service = com.ibm.wsspi.threadcontext.ThreadContextProvider.class,
                target = "(component.name=com.ibm.ws.classloader.context.provider)")
     protected void setClassloaderContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {

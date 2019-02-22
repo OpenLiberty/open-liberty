@@ -21,8 +21,8 @@ package org.apache.cxf.service.model;
 
 import javax.xml.namespace.QName;
 
+import org.apache.cxf.ws.addressing.AttributedURIType;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
-import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 
 /**
  * The EndpointInfo contains the information for a web service 'port' inside of a service.
@@ -103,10 +103,18 @@ public class EndpointInfo extends AbstractDescriptionElement implements NamedIte
     public void setAddress(String addr) {
         EndpointReferenceType address = threadLocal.get();  //Liberty #3669
         if (null == address) {
-            address = EndpointReferenceUtils.getEndpointReference(addr);
+            // address = EndpointReferenceUtils.getEndpointReference(addr); loads jaxb and we want to avoid it
+            final EndpointReferenceType reference = new EndpointReferenceType();
+            final AttributedURIType a = new AttributedURIType();
+            a.setValue(addr);
+            reference.setAddress(a);
+            address = reference;
             threadLocal.set(address); //Liberty #3669
         } else {
-            EndpointReferenceUtils.setAddress(address, addr);
+            final AttributedURIType a = new AttributedURIType();
+            a.setValue(addr);
+            address.setAddress(a);
+            // EndpointReferenceUtils.setAddress(address, addr);
         }
         lastAddressSet = address; //Liberty 
     }
@@ -120,7 +128,7 @@ public class EndpointInfo extends AbstractDescriptionElement implements NamedIte
     public void resetAddress() {
         threadLocal.remove(); //Liberty #3669
     }
-    
+
     @Override
     public <T> T getTraversedExtensor(T defaultValue, Class<T> type) {
         T value = getExtensor(type);

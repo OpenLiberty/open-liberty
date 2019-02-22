@@ -44,6 +44,7 @@ import javax.ws.rs.ext.Providers;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
+import org.apache.cxf.common.util.ReflectionUtil;
 import org.apache.cxf.jaxrs.impl.tl.ThreadLocalProxy;
 import org.apache.cxf.jaxrs.utils.InjectionUtils;
 import org.apache.cxf.jaxrs.utils.ThreadLocalProxyCopyOnWriteArraySet;
@@ -161,30 +162,25 @@ public abstract class AbstractResourceInfo {
         if (cls == Object.class || cls == null) {
             return;
         }
-        //Liberty code change start
-        Field[] fields = AccessController.doPrivileged(new PrivilegedAction<Field[]>() {
-            @Override
-            public Field[] run() {
-                return cls.getDeclaredFields();
-            }
-        });
-        for (Field f : fields) {
-            //Liberty code change end
+        for (Field f : ReflectionUtil.getDeclaredFields(cls)) {
+            Class<?> fType = f.getType();
             for (Annotation a : f.getAnnotations()) {
+                //Liberty code change start defect 169218
+                //Add the FieldProxy to the set
                 if (a.annotationType() == Context.class) {
                     contextFields = addContextField(contextFields, f);
-                    if (f.getType().isInterface()) {
-                        checkContextClass(f.getType());
-                        //Liberty code change start defect 169218
-                        //Add the FieldProxy to the set
+                    if (fType.isInterface()) {
+                        checkContextClass(fType);
+
                         ThreadLocalProxy<?> proxy = getFieldThreadLocalProxy(f, provider);
-                        boolean added = addToMap(getFieldProxyMap(true), f, proxy);
-                        if (added) {
-                            ThreadLocalProxyCopyOnWriteArraySet<ThreadLocalProxy<?>> proxySet = getProxySet();
-                            proxySet.add(proxy);
+                        if (!InjectionUtils.VALUE_CONTEXTS.contains(f.getType().getName())) {
+                            if (addToMap(getFieldProxyMap(true), f, proxy)) {
+                                ThreadLocalProxyCopyOnWriteArraySet<ThreadLocalProxy<?>> proxySet = getProxySet();
+                                proxySet.add(proxy);
+                            }
                         }
-                        //Liberty code change end
                     }
+                    //Liberty code change end
                 }
             }
         }
@@ -238,7 +234,7 @@ public abstract class AbstractResourceInfo {
         //synchronized (bus) {
         property = bus.getProperty(prop);
         if (property == null && create) {
-            Map<Class<?>, Map<T, ThreadLocalProxy<?>>> map = new ConcurrentHashMap<Class<?>, Map<T, ThreadLocalProxy<?>>>(2);
+            Map<Class<?>, Map<T, ThreadLocalProxy<?>>> map = new ConcurrentHashMap<>(2);
             bus.setProperty(prop, map);
             property = map;
         }
@@ -274,7 +270,7 @@ public abstract class AbstractResourceInfo {
     private Map<Class<?>, Map<Class<?>, ThreadLocalProxy<?>>> getConstructorProxyMap(boolean create) {
         Object property = bus.getProperty(CONSTRUCTOR_PROXY_MAP);
         if (property == null) {
-            Map<Class<?>, Map<Class<?>, ThreadLocalProxy<?>>> map = new ConcurrentHashMap<Class<?>, Map<Class<?>, ThreadLocalProxy<?>>>(2);
+            Map<Class<?>, Map<Class<?>, ThreadLocalProxy<?>>> map = new ConcurrentHashMap<>(2);
             bus.setProperty(CONSTRUCTOR_PROXY_MAP, map);
             property = map;
         }
@@ -429,13 +425,13 @@ public abstract class AbstractResourceInfo {
         return theFields;
     }
 
-    //Liberty code change start defect 182967
+    //Liberty code change start defect 182967 - returns boolean instead of void
     private <T, V> boolean addToMap(Map<Class<?>, Map<T, V>> proxyMap,
                                     T f,
                                     V proxy) {
         Map<T, V> proxies = proxyMap.get(serviceClass);
         if (proxies == null) {
-            proxies = new HashMap<T, V>();
+            proxies = new ConcurrentHashMap<>();
             proxyMap.put(serviceClass, proxies);
         }
         if (!proxies.containsKey(f)) {
@@ -444,7 +440,6 @@ public abstract class AbstractResourceInfo {
         }
         return false;
     }
-
     //Liberty code change end
 
     private List<Field> getList(Map<Class<?>, List<Field>> fields) {

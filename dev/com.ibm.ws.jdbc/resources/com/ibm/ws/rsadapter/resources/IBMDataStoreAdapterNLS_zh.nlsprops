@@ -131,6 +131,7 @@ INVALID_CONNECTION.useraction=\u8bf7\u9000\u51fa\u53d1\u8d77\u8fde\u63a5\u8bf7\u
 WS_ERROR=DSRA0250E: Data Store Adapter \u63a5\u6536\u5230\u5f02\u5e38\u3002\u8bf7\u53c2\u9605\u539f\u59cb\u5f02\u5e38\u6d88\u606f\uff1a{0}\u3002
 WS_ERROR.explanation=CMSG0001
 WS_ERROR.useraction=CMSG0002
+
 # 0280 deleted
 
 # ----------------------------------------------------------------------------
@@ -143,9 +144,11 @@ THROW_XAEXCEPTION.explanation=\u5bf9\u6570\u636e\u5e93\u6267\u884c\u4e24\u9636\u
 THROW_XAEXCEPTION.useraction=CMSG0002
 
 
+
 DISPLAY_XAEX_CONTENT=DSRA0304E:  \u53d1\u751f XAException\u3002XAException \u7684\u5185\u5bb9\u548c\u8be6\u7ec6\u4fe1\u606f\uff1a{0}\u3002
 DISPLAY_XAEX_CONTENT.explanation=\u5bf9\u6570\u636e\u5e93\u6267\u884c\u4e24\u9636\u6bb5\u64cd\u4f5c\u65f6\u53d1\u751f\u5f02\u5e38\u3002
 DISPLAY_XAEX_CONTENT.useraction=CMSG0002
+
 # 0310E      XID_MISMATCH
 # 
 # {0}        The Xid from the XAResource.start method.
@@ -266,6 +269,14 @@ DSRA4010.tran.none.autocommit.required.useraction=\u8bf7\u4fdd\u6301\u5c06 auto 
 DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: JDBC \u9a71\u52a8\u7a0b\u5e8f\u4e0d\u652f\u6301\u5bf9\u6570\u636e\u6e90 {0} \u5207\u6362\u5230 TRANSACTION_NONE \u9694\u79bb\u7ea7\u522b\u3002
 DSRA4011.tran.none.iso.switch.unsupported.explanation=JDBC \u89c4\u8303\u4e0d\u652f\u6301\u5207\u6362\u5230 TRANSACTION_NONE \u9694\u79bb\u7ea7\u522b\u3002
 DSRA4011.tran.none.iso.switch.unsupported.useraction=\u5e94\u907f\u514d\u5207\u6362\u5230 TRANSACTION_NONE \u9694\u79bb\u7ea7\u522b\u3002
+
+DSRA4012.ignored.datasource.config.used=DSRA4012I: \u4f7f\u7528 Oracle UCP \u65f6\uff0c\u5c06\u5ffd\u7565\u4e0b\u5217\u6570\u636e\u6e90\u5c5e\u6027\uff1astatementCacheSize \u548c validationTimeout\u3002\u8bf7\u4f7f\u7528\u7b49\u6548\u7684 Oracle UCP \u529f\u80fd\u3002
+DSRA4012.ignored.datasource.config.used.explanation=\u4f7f\u7528 Oracle UCP \u65f6\uff0cstatementCacheSize \u548c validationTimeout \u6570\u636e\u6e90\u5c5e\u6027\u65e0\u6548\u3002
+DSRA4012.ignored.datasource.config.used.useraction=\u8bf7\u79fb\u9664\u8fd9\u4e9b\u6570\u636e\u6e90\u5c5e\u6027\uff0c\u5e76\u6539\u4e3a\u4f7f\u7528\u7b49\u6548\u7684 Oracle UCP \u529f\u80fd\u3002
+
+DSRA4013.ignored.connection.manager.config.used=DSRA4013I: \u4f7f\u7528 Oracle UCP \u65f6\uff0c\u5c06\u5ffd\u7565\u4e0b\u5217\u8fde\u63a5\u7ba1\u7406\u5668\u5c5e\u6027\uff1aagedTimeout\u3001connectionTimeout\u3001maxIdleTime\u3001maxPoolSize\u3001minPoolSize\u3001purgePolicy\u3001reapTime\u3001maxConnectionsPerThread \u548c maxConnectionsPerThreadLocal\u3002\u8bf7\u4f7f\u7528\u7b49\u6548\u7684 Oracle UCP \u529f\u80fd\u3002
+DSRA4013.ignored.connection.manager.config.used.explanation=\u4f7f\u7528 Oracle UCP \u65f6\uff0c\u5217\u793a\u7684\u8fde\u63a5\u7ba1\u7406\u5668\u5c5e\u6027\u65e0\u6548\u3002
+DSRA4013.ignored.connection.manager.config.used.useraction=\u8bf7\u79fb\u9664\u8fd9\u4e9b\u8fde\u63a5\u7ba1\u7406\u5668\u5c5e\u6027\uff0c\u5e76\u6539\u4e3a\u4f7f\u7528\u7b49\u6548\u7684 Oracle UCP \u529f\u80fd\u3002
 
 # ----------------------------------------------------------------------------
 # 
@@ -437,6 +448,7 @@ NONTRAN_DATASOURCE_WARNING.useraction=\u8bf7\u5c06\u8be5\u6570\u636e\u6e90\u914d
 ERR_CLOSING_OBJECT=DSRA8600W: \u5173\u95ed {0} \u65f6\u53d1\u751f\u9519\u8bef\n{1}
 ERR_CLOSING_OBJECT.explanation=\u5173\u95ed\u6240\u6307\u5b9a JDBC \u5bf9\u8c61\u65f6\u53d1\u751f\u9519\u8bef\u3002
 ERR_CLOSING_OBJECT.useraction=CMSG0002
+
 # 8650 deleted
 # 8660 deleted
 # 8680 deleted

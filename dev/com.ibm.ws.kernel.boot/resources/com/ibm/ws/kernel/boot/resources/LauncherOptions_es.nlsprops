@@ -16,7 +16,7 @@
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Uso: java [opciones de JVM ] -javaagent:bin/tools/ws-javaagent.jar \\      \n\
 \t-jar bin/tools/ws-server.jar serverName {0} [opciones]  
-scriptUsage=Uso: {0} {1} serverName [opciones]
+scriptUsage=Uso: {0} {1} serverName [opciones] [opciones de JVM]
 
 use.actions=Acciones:
 use.options=Opciones:
@@ -176,4 +176,4 @@ option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tInhabilitar la generaci\u00f3n de contrase\u00f1a de almac\u00e9n de claves predeterminada
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="carpeta de servidor ra\u00edz del archivador"
-option-desc.package.server-root=\tEspecifica el nombre de la carpeta de servidor ra\u00edz en el archivo de archivado.
+option-desc.package.server-root=\tEspecifica el nombre de la carpeta de servidor ra\u00edz en el archivo de archivado.           \n

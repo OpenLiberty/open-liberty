@@ -271,6 +271,10 @@ public class OrderingContextProxy extends Proxy implements OrderingContext
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "close");
    }
 
+   public boolean isProxyConnectionClosed() {
+       return isClosed();
+   }
+   
    /**
     * @return Returns info about the order context
     */

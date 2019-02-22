@@ -59,4 +59,8 @@ package com.ibm.wsspi.sib.core;
   */
   public interface OrderingContext
   {
+	  /**
+	    * @return true if this ordering context is a proxy and its connection is closed.
+	    */
+	  boolean isProxyConnectionClosed();
   }

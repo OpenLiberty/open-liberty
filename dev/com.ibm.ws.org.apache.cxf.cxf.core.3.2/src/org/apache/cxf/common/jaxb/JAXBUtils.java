@@ -101,7 +101,7 @@ public final class JAXBUtils {
     public static final String JAXB_URI = "http://java.sun.com/xml/ns/jaxb";
 
     private static final Logger LOG = LogUtils.getL7dLogger(JAXBUtils.class);
-    
+
     public enum IdentifierType {
         CLASS,
         INTERFACE,
@@ -591,7 +591,7 @@ public final class JAXBUtils {
             return cls;
         }
         if (cls != null) {
-            if (cls.getName().equals("javax.xml.ws.wsaddressing.W3CEndpointReference")) {
+            if ("javax.xml.ws.wsaddressing.W3CEndpointReference".equals(cls.getName())) {
                 return cls;
             }
             Constructor<?> cons = ReflectionUtil.getDeclaredConstructor(cls);
@@ -656,7 +656,7 @@ public final class JAXBUtils {
     public static BridgeWrapper createBridge(Set<Class<?>> ctxClasses,
                                       QName qname,
                                       Class<?> refcls,
-                                      Annotation anns[]) throws JAXBException {
+                                      Annotation[] anns) throws JAXBException {
         try {
             Class<?> cls;
             Class<?> refClass;
@@ -682,7 +682,7 @@ public final class JAXBUtils {
 
             Object ctx = null;
             for (Method m : cls.getDeclaredMethods()) {
-                if (m.getName().equals("newInstance")
+                if ("newInstance".equals(m.getName())
                     && m.getParameterTypes().length == 6) {
                     ctx = m.invoke(null, clses.toArray(new Class<?>[0]),
                                          typeRefs, null, null, true, null);
@@ -1580,7 +1580,7 @@ public final class JAXBUtils {
     public static void setEscapeHandler(Marshaller marshaller, Object escapeHandler) {
         try {
             String postFix = getPostfix(marshaller.getClass());
-            if (postFix != null) {
+            if (postFix != null && escapeHandler != null) {
                 marshaller.setProperty("com.sun.xml" + postFix + ".bind.characterEscapeHandler", escapeHandler);
             }
         } catch (PropertyException e) {
