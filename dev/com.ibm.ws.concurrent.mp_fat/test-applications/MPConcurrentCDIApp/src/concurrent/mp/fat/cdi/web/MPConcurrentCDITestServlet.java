@@ -35,6 +35,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
 import javax.annotation.Resource;
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -74,6 +75,9 @@ public class MPConcurrentCDITestServlet extends FATServlet {
 
     @Inject
     SessionScopedBean sessionBean;
+
+    @Inject
+    TransactionScopedBean txBean;
 
     @Inject
     ConversationScopeBean conversationBean;
@@ -678,5 +682,105 @@ public class MPConcurrentCDITestServlet extends FATServlet {
         // valid to propagate empty transaction context
         CompletableFuture<String> cf3 = cf2.thenApplyAsync(i -> "done");
         assertEquals("done", cf3.get(TIMEOUT_MIN, TimeUnit.MINUTES));
+    }
+
+    /**
+     * Verify that TransactionScope beans reflect the propagation of an empty transaction context
+     * and the restoration of the transaction context on the thread afterward.
+     * Verify that the presence of CDI context propagation does not interfere.
+     */
+    @Test
+    public void testTransactionScopeWithCDIContextPropagation() throws Exception {
+        ThreadContext txAndCDIContext = ThreadContext.builder()
+                        .propagated(ThreadContext.CDI, ThreadContext.TRANSACTION)
+                        .cleared(ThreadContext.ALL_REMAINING)
+                        .build();
+
+        Runnable verifyContextNotActive = txAndCDIContext.contextualRunnable(() -> {
+            try {
+                String state = txBean.getState();
+                throw new RuntimeException("TransactionScoped context should not be active when the absence of a transaction is propagated");
+            } catch (ContextNotActiveException x) {
+                // expected
+            }
+        });
+
+        Callable<Boolean> updateStateWithinNewTransaction = txAndCDIContext.contextualCallable(() -> {
+            tx.begin();
+            try {
+                assertEquals(AbstractBean.UNINITIALIZED, txBean.getState());
+                txBean.setState("testTransactionScope-D");
+                return true;
+            } finally {
+                tx.commit();
+            }
+        });
+
+        tx.begin();
+        try {
+            txBean.setState("testTransactionScope-C");
+
+            verifyContextNotActive.run();
+
+            assertEquals("testTransactionScope-C", txBean.getState());
+
+            assertEquals(Boolean.TRUE, updateStateWithinNewTransaction.call());
+
+            assertEquals("testTransactionScope-C", txBean.getState());
+        } finally {
+            tx.commit();
+        }
+    }
+
+    /**
+     * Verify that TransactionScope beans reflect the propagation of an empty transaction context
+     * and the restoration of the transaction context on the thread afterward.
+     * Verify that the clearing of CDI context does not interfere.
+     */
+    @Test
+    public void testTransactionScopeWithoutCDIContextPropagation() throws Exception {
+        ManagedExecutor executor = propagatedAB; // propagates ThreadContext.TRANSACTION
+
+        CompletableFuture<Boolean> readyToVerifyContextNotActive = executor.newIncompleteFuture();
+        CompletableFuture<String> verifyContextNotActive = readyToVerifyContextNotActive.thenApply(b -> {
+            try {
+                return txBean.getState();
+            } catch (ContextNotActiveException x) {
+                return "ContextNotActiveException";
+            }
+        });
+
+        CompletableFuture<Boolean> readyToUpdateState = executor.newIncompleteFuture();
+        CompletableFuture<Boolean> updateStateWithinNewTransaction = readyToUpdateState.thenApply(b -> {
+            try {
+                tx.begin();
+                try {
+                    assertEquals(AbstractBean.UNINITIALIZED, txBean.getState());
+                    txBean.setState("testTransactionScope-B");
+                    return true;
+                } finally {
+                    tx.commit();
+                }
+            } catch (Exception x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        tx.begin();
+        try {
+            txBean.setState("testTransactionScope-A");
+
+            readyToVerifyContextNotActive.complete(true);
+            assertEquals("ContextNotActiveException", verifyContextNotActive.join());
+
+            assertEquals("testTransactionScope-A", txBean.getState());
+
+            readyToUpdateState.complete(true);
+            assertEquals(Boolean.TRUE, updateStateWithinNewTransaction.join());
+
+            assertEquals("testTransactionScope-A", txBean.getState());
+        } finally {
+            tx.commit();
+        }
     }
 }
