@@ -40,12 +40,17 @@ import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(FATRunner.class)
 public class ConfigRESTHandlerTest extends FATServletClient {
-
     @Server("com.ibm.ws.rest.handler.config.fat")
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
+        // Install user features
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/nestedFlat-1.0.mf");
+
+        // Install bundles for user features
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/test.config.nested.flat.jar");
+
         server.startServer();
 
         // Wait for the API to become available
@@ -64,10 +69,15 @@ public class ConfigRESTHandlerTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKE0701E", // TODO remove once transaction manager fixes its circular reference bug
-                          "CWWKS1300E", // auth alias doesn't exist
-                          "WTRN0112E" // TODO remove once transactions code is fixed to use container auth for the recovery log dataSource
-        );
+        try {
+            server.stopServer("CWWKE0701E", // TODO remove once transaction manager fixes its circular reference bug
+                              "CWWKS1300E", // auth alias doesn't exist
+                              "WTRN0112E" // TODO remove once transactions code is fixed to use container auth for the recovery log dataSource
+            );
+        } finally {
+            // Remove the user extension added during setup
+            server.deleteDirectoryFromLibertyInstallRoot("usr/extension/");
+        }
     }
 
     // Invoke /ibm/api/config REST API to display information for all configured instances.
@@ -673,7 +683,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertNotNull(err, ja = j.getJsonArray("feature"));
 
         int length = ja.size();
-        assertEquals(err, 4, length);
+        assertEquals(err, 5, length);
         List<String> features = new ArrayList<String>();
         for (int i = 0; i < length; i++)
             features.add(ja.getString(i));
@@ -681,6 +691,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertTrue(err, features.contains("configValidator-1.0"));
         assertTrue(err, features.contains("jdbc-4.2"));
         assertTrue(err, features.contains("timedexit-1.0"));
+        assertTrue(err, features.contains("usr:nestedFlat-1.0"));
         assertEquals(err, "FAIL", j.getString("onError"));
     }
 
@@ -721,7 +732,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
 
     // Test a user-defined configuration that has nested flat config elements, for example:
     // <usr_parent id="a" name="one"> <child value="two"> <grandchild value="three"/> </child> </usr_parent>
-    // TODO enable once user feature ported to test case @Test
+    @Test
     public void testNestedFlat() throws Exception {
         JsonArray resp = new HttpsRequest(server, "/ibm/api/config/usr_parent").run(JsonArray.class);
         String err = "unexpected response: " + resp;
