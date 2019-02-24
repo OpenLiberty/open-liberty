@@ -10,7 +10,7 @@
 	<application type="war" id="JavaEEsecFormAuth" name="JavaEEsecFormAuth" location="JavaEEsecFormAuth.war">
  		<application-bnd>
 			<security-role name="grantedgroup">
-				<user name="user1" access-id="user:127.0.0.1:10389/uid=user1,ou=users,o=ibm,c=us" />
+				<user name="user1" access-id="user:127.0.0.1:${ldap.1.port}/uid=user1,ou=users,o=ibm,c=us" />
 			</security-role>
 		</application-bnd>
 	</application>
@@ -18,7 +18,7 @@
 	<application type="war" id="JavaEEsecFormAuthRedirect" name="JavaEEsecFormAuthRedirect" location="JavaEEsecFormAuthRedirect.war">
  		<application-bnd>	
 			<security-role name="grantedgroup">
-				<user name="user1" access-id="user:127.0.0.1:10389/uid=user1,ou=users,o=ibm,c=us" />
+				<user name="user1" access-id="user:127.0.0.1:${ldap.1.port}/uid=user1,ou=users,o=ibm,c=us" />
 			</security-role>
 		</application-bnd>
 	</application>
