@@ -71,6 +71,9 @@ public class PluginUtilityGenerateTest {
         assertNotNull("The smarter planet message did not get printed",
                 remoteAccessServer.waitForStringInLog("CWWKF0011I"));
 
+        // wait for LTPA key to be available to avoid CWWKS4000E
+        assertNotNull("CWWKS4105I.* not recieved on remoteAccessServer",
+                remoteAccessServer.waitForStringInLog("CWWKS4105I.*"));
     }
 
     @AfterClass
