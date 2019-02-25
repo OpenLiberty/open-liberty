@@ -32,33 +32,31 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.websphere.event.Topic;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.audit.AuditConstants;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.websphere.security.audit.InvalidConfigurationException;
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
-import com.ibm.wsspi.collector.manager.Source;
 import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.utils.SequenceNumber;
 import com.ibm.ws.security.audit.event.AuditMgmtEvent;
 import com.ibm.ws.security.audit.utils.AuditUtils;
 import com.ibm.wsspi.collector.manager.BufferManager;
+import com.ibm.wsspi.collector.manager.Source;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.audit.AuditService;
-
 
 /**
  * This class is the security audit service. It handles audit config and is also
  * a collector manager Source for audit events.
  */
-@Component(service = { AuditService.class, Source.class },
-           configurationPid = "com.ibm.ws.security.audit.event",
-           configurationPolicy = ConfigurationPolicy.OPTIONAL,
-           property = "service.vendor=IBM",
-           immediate = true)
+@Component(service = { AuditService.class, Source.class }, configurationPid = "com.ibm.ws.security.audit.event", configurationPolicy = ConfigurationPolicy.OPTIONAL,
+           property = "service.vendor=IBM", immediate = true)
+
 public class AuditServiceImpl implements AuditService, Source {
 
     private static final String VAR_DEFAULTHOSTNAME = "${defaultHostName}";
@@ -68,6 +66,11 @@ public class AuditServiceImpl implements AuditService, Source {
     private static final String ENV_VAR_CONTAINERNAME = "${env.CONTAINER_NAME}";
     private static final String AUDIT_SERVER_ID_PREFIX = "websphere: ";
     private static final String AUDIT_SERVER_ID_SEPARATOR = ":";
+
+    /** Event topic used for queued work */
+    public static final Topic TOPIC_QUEUED_WORK = new Topic("com/ibm/ws/jmx/QUEUED_AUDIT_WORK");
+    public static final String TOPIC_QUEUED_WORK_NAME = TOPIC_QUEUED_WORK.getName();
+    /** Event property key for finding the actual runnable task */
 
     private int eventSequenceNumber = 0;
     private static Object syncObject = new Object();
@@ -162,7 +165,7 @@ public class AuditServiceImpl implements AuditService, Source {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "auditStarted, bufferMgr = " + bufferMgr + " saved_bufferMgr = " + saved_bufferMgr);
         }
-
+        auditServiceStarted = true;
         Tr.info(tc, "AUDIT_SERVICE_READY");
     }
 
