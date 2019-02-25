@@ -29,14 +29,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import test.common.SharedLocationManager;
-import test.common.SharedOutputManager;
-import test.utils.SharedConstants;
-
 import com.ibm.websphere.config.ConfigEvaluatorException;
 import com.ibm.ws.config.admin.ConfigID;
 import com.ibm.ws.config.xml.internal.XMLConfigParser.MergeBehavior;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
+
+import test.common.SharedLocationManager;
+import test.common.SharedOutputManager;
+import test.utils.SharedConstants;
 
 public class ConfigurationTest {
     final static String CONFIG_ROOT = "${server.config.dir}/server.xml";
@@ -95,7 +95,8 @@ public class ConfigurationTest {
 
         BaseConfiguration defaultConfig = configParser.parseDefaultConfiguration(new StringReader("<server>" +
                                                                                                   "  <host port=\"1234\" />" +
-                                                                                                  "</server>"), "test");
+                                                                                                  "</server>"),
+                                                                                 "test");
 
         serverConfig = configParser.parseServerConfiguration(new StringReader("<server>" +
                                                                               "  <host name=\"localhost\" />" +
@@ -312,7 +313,7 @@ public class ConfigurationTest {
 
     /**
      * Drive getVariables when there have been no variables established.
-     * 
+     *
      * @throws ConfigMergeException
      */
     @Test
@@ -323,13 +324,13 @@ public class ConfigurationTest {
 
     /**
      * Drive getVariables when there have been at least some variables established.
-     * 
+     *
      * @throws ConfigMergeException
      */
     @Test
     public void getVariables_populatedVariableList() throws ConfigMergeException {
         BaseConfiguration config = new BaseConfiguration();
-        ConfigVariable inVariable = new ConfigVariable("name", "value", MergeBehavior.MERGE, "location");
+        ConfigVariable inVariable = new ConfigVariable("name", "value", null, MergeBehavior.MERGE, "location");
         BaseConfiguration in = new BaseConfiguration();
         in.addVariable(inVariable);
         config.add(in);
@@ -338,14 +339,14 @@ public class ConfigurationTest {
 
     /**
      * Drive getVariables when variables have been established, but were then removed.
-     * 
+     *
      * @throws ConfigMergeException
      */
     @Test
     public void getVariables_emptyVariableList() throws ConfigMergeException {
         BaseConfiguration config = new BaseConfiguration();
 
-        ConfigVariable inVariable = new ConfigVariable("name", "value", MergeBehavior.MERGE, "location");
+        ConfigVariable inVariable = new ConfigVariable("name", "value", null, MergeBehavior.MERGE, "location");
         BaseConfiguration in = new BaseConfiguration();
         in.addVariable(inVariable);
         config.add(in);
@@ -358,8 +359,8 @@ public class ConfigurationTest {
     public void getVariables_conflictReplace() throws ConfigMergeException {
         BaseConfiguration config = new BaseConfiguration();
 
-        ConfigVariable inVariable = new ConfigVariable("name", "value", MergeBehavior.REPLACE, "location");
-        ConfigVariable anotherVariable = new ConfigVariable("name", "value2", MergeBehavior.MERGE, "location2");
+        ConfigVariable inVariable = new ConfigVariable("name", "value", null, MergeBehavior.REPLACE, "location");
+        ConfigVariable anotherVariable = new ConfigVariable("name", "value2", null, MergeBehavior.MERGE, "location2");
         BaseConfiguration in = new BaseConfiguration();
         in.addVariable(inVariable);
         in.addVariable(anotherVariable);
@@ -377,8 +378,8 @@ public class ConfigurationTest {
     public void getVariables_conflictReplaceDifferentOrder() throws ConfigMergeException {
         BaseConfiguration config = new BaseConfiguration();
 
-        ConfigVariable inVariable = new ConfigVariable("name", "value", MergeBehavior.MERGE, "location");
-        ConfigVariable anotherVariable = new ConfigVariable("name", "value2", MergeBehavior.REPLACE, "location2");
+        ConfigVariable inVariable = new ConfigVariable("name", "value", null, MergeBehavior.MERGE, "location");
+        ConfigVariable anotherVariable = new ConfigVariable("name", "value2", null, MergeBehavior.REPLACE, "location2");
         BaseConfiguration in = new BaseConfiguration();
         in.addVariable(inVariable);
         in.addVariable(anotherVariable);
@@ -396,8 +397,8 @@ public class ConfigurationTest {
     public void getVariables_conflictIgnore() throws ConfigMergeException {
         BaseConfiguration config = new BaseConfiguration();
 
-        ConfigVariable inVariable = new ConfigVariable("name", "value", MergeBehavior.IGNORE, "location");
-        ConfigVariable anotherVariable = new ConfigVariable("name", "value2", MergeBehavior.MERGE, "location2");
+        ConfigVariable inVariable = new ConfigVariable("name", "value", null, MergeBehavior.IGNORE, "location");
+        ConfigVariable anotherVariable = new ConfigVariable("name", "value2", null, MergeBehavior.MERGE, "location2");
         BaseConfiguration in = new BaseConfiguration();
         in.addVariable(inVariable);
         in.addVariable(anotherVariable);
@@ -417,8 +418,8 @@ public class ConfigurationTest {
     public void getVariables_conflictIgnoreDifferentOrder() throws ConfigMergeException {
         BaseConfiguration config = new BaseConfiguration();
 
-        ConfigVariable inVariable = new ConfigVariable("name", "value", MergeBehavior.MERGE, "location");
-        ConfigVariable anotherVariable = new ConfigVariable("name", "value2", MergeBehavior.IGNORE, "location2");
+        ConfigVariable inVariable = new ConfigVariable("name", "value", null, MergeBehavior.MERGE, "location");
+        ConfigVariable anotherVariable = new ConfigVariable("name", "value2", null, MergeBehavior.IGNORE, "location2");
         BaseConfiguration in = new BaseConfiguration();
         in.addVariable(inVariable);
         in.addVariable(anotherVariable);

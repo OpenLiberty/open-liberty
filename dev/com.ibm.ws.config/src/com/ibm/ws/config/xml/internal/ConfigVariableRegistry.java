@@ -132,7 +132,8 @@ class ConfigVariableRegistry implements VariableRegistry, ConfigVariables {
         for (Map.Entry<String, ConfigVariable> entry : newVariables.entrySet()) {
             String variableName = entry.getKey();
             String variableValue = entry.getValue().getValue();
-            registry.replaceVariable(variableName, variableValue);
+            if (variableValue != null)
+                registry.replaceVariable(variableName, variableValue);
         }
         configVariables = newVariables;
 
@@ -351,10 +352,37 @@ class ConfigVariableRegistry implements VariableRegistry, ConfigVariables {
         HashMap<String, String> userDefinedVariables = new HashMap<String, String>();
         for (Map.Entry<String, ConfigVariable> entry : configVariables.entrySet()) {
             ConfigVariable var = entry.getValue();
-            userDefinedVariables.put(var.getName(), var.getValue());
+            if (var.getValue() != null) {
+                userDefinedVariables.put(var.getName(), var.getValue());
+            }
         }
         for (CommandLineVariable clVar : commandLineVariables) {
             userDefinedVariables.put(clVar.getName(), clVar.getValue());
+        }
+        return userDefinedVariables;
+    }
+
+    /**
+     * Returns the defaultValue from the variable definition, or null if it doesn't exist.
+     */
+    public String lookupVariableDefaultValue(String variableName) {
+        ConfigVariable cv = configVariables.get(variableName);
+        return cv == null ? null : cv.getDefaultValue();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.config.xml.ConfigVariables#getUserDefinedVariableDefaults()
+     */
+    @Override
+    public Map<String, String> getUserDefinedVariableDefaults() {
+        HashMap<String, String> userDefinedVariables = new HashMap<String, String>();
+        for (Map.Entry<String, ConfigVariable> entry : configVariables.entrySet()) {
+            ConfigVariable var = entry.getValue();
+            if (var.getValue() == null && var.getDefaultValue() != null) {
+                userDefinedVariables.put(var.getName(), var.getDefaultValue());
+            }
         }
         return userDefinedVariables;
     }

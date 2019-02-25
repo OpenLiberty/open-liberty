@@ -56,6 +56,19 @@ public class DelayedVariableTestServlet extends HttpServlet {
     private static final String VARIABLE_STRING = "${variableDelayTest}";
     private static final String EVALUATED_VARIABLE = "evaluated";
 
+    private static final String ENV_VAR_ATTR = "envVar";
+    private static final String ALL_CAPS_ENV_VAR_ATTR = "allCapsEnvVar";
+    private static final String MANGLED_ENV_VAR_ATTR = "mangledEnvVar";
+    private static final String MANGLED_CAPS_ENV_VAR_ATTR = "mangledCapsEnvVar";
+    private static final String DEFAULT_VAR_ATTR = "defaultVar";
+    private static final String META_REF_VAR_ATTR = "metaRefVar";
+
+    private static final String DEFAULT_VALUE = "this is the default";
+    private static final String MANGLED_VALUE = "mangled";
+    private static final String MANGLED_CAPS_VALUE = "mangledCaps";
+    private static final String CAP_VALUE = "caps";
+    private static final String ENV_VALUE = "envValue";
+
     private final ArrayList<ServiceReference<?>> references = new ArrayList<ServiceReference<?>>();
     private BundleContext bundleContext;
 
@@ -136,6 +149,13 @@ public class DelayedVariableTestServlet extends HttpServlet {
         assertEquals(EVALUATED_VARIABLE, properties.get(IMMEDIATE_VAR_ATTR));
         assertEquals(EVALUATED_VARIABLE, properties.get(IMMEDIATE_VAR_TWO));
 
+        assertEquals(ENV_VALUE, properties.get(ENV_VAR_ATTR));
+        assertEquals(CAP_VALUE, properties.get(ALL_CAPS_ENV_VAR_ATTR));
+        assertEquals(MANGLED_VALUE, properties.get(MANGLED_ENV_VAR_ATTR));
+        assertEquals(MANGLED_CAPS_VALUE, properties.get(MANGLED_CAPS_ENV_VAR_ATTR));
+        assertEquals(DEFAULT_VALUE, properties.get(DEFAULT_VAR_ATTR));
+        assertEquals(DEFAULT_VALUE, properties.get(META_REF_VAR_ATTR));
+
     }
 
     // Tests method to return variables defined in server.xml
@@ -149,6 +169,17 @@ public class DelayedVariableTestServlet extends HttpServlet {
         assertEquals(vars.get("variableDelayTest"), "evaluated");
         // Check that bootstrap var is not
         assertNull(vars.get("com.ibm.ws.logging.trace.specification"));
+
+        // Check that variable with default value is not
+        assertNull(vars.get("variableDefaultTest"));
+
+        Map<String, String> defaultVars = cvc.getServerXMLVariableDefaultValues();
+        assertEquals("this is the default", defaultVars.get("variableDefaultTest"));
+
+        // Check server.xml variable is not present
+        assertNull(defaultVars.get("variableDelayTest"));
+        // Check that bootstrap var is not present
+        assertNull(defaultVars.get("com.ibm.ws.logging.trace.specification"));
 
     }
 
