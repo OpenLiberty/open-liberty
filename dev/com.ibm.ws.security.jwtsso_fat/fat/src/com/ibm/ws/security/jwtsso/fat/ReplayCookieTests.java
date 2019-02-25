@@ -207,7 +207,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
      * - FFDCs should be emitted because the JWT signature is not valid
      */
     @AllowedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtException", "com.ibm.websphere.security.jwt.InvalidTokenException",
-                   "com.ibm.ws.security.authentication.AuthenticationException" })
+                   "com.ibm.ws.security.authentication.AuthenticationException", "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
     @Test
     public void test_reaccessResource_jwtCookieWithEmptySignature() throws Exception {
 
