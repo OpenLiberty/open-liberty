@@ -183,8 +183,15 @@ public class ReaderUtils {
 
             b.append(parentPath);
         }
-        if (classLevelPath != null) {
-            b.append(classLevelPath.value());
+        if (classLevelPath != null && !"/".equals(classLevelPath.value())) {
+            String classPath = classLevelPath.value();
+            if (!classPath.startsWith("/") && !b.toString().endsWith("/")) {
+                b.append("/");
+            }
+            if (classPath.endsWith("/")) {
+                classPath = classPath.substring(0, classPath.length() - 1);
+            }
+            b.append(classPath);
         }
         if (methodLevelPath != null && !"/".equals(methodLevelPath.value())) {
             String methodPath = methodLevelPath.value();
