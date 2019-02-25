@@ -33,7 +33,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 MultipleIdentityStoreCustomFormPostTest.class,
                 MultipleIdentityStoreApplLoginToContinueTest.class,
                 LoginToContinueELTest.class,
-                EJBModuleTestProtectedServlet.class,
+                //EJBModuleTestProtectedServlet.class,
                 EJBModuleTestUnprotectedServlet.class,
                 FeatureTest.class
 })
