@@ -26,7 +26,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 VariableMergeTests.class,
                 MetatypeProviderTest.class,
                 WSConfigurationHelperTest.class,
-                SchemaGeneratorMBeanTest.class,
+                //SchemaGeneratorMBeanTest.class,
                 FeaturelistGeneratorMBeanTest.class,
                 ServerXMLConfigurationMBeanTest.class,
                 DropinsTest.class,
