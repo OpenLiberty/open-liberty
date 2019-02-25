@@ -74,7 +74,7 @@ public class TAIRequestHelper {
             Tr.entry(tc, methodName, request, mpJwtTaiRequest);
         }
 
-        String loginHint = getLoginHint(request);
+        String loginHint = null;
         mpJwtTaiRequest = setTaiRequestConfigInfo(request, loginHint, mpJwtTaiRequest, defaultConfig);
         boolean result = false;
         boolean ignoreAppAuthMethod = true;
@@ -149,43 +149,7 @@ public class TAIRequestHelper {
 
     }
 
-    String getLoginHint(HttpServletRequest request) {
-        String methodName = "getLoginHint";
-        if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName, request);
-        }
-        String specifiedServiceId = getLoginHintFromHeaderOrParameter(request);
-        if (specifiedServiceId == null || specifiedServiceId.isEmpty()) {
-            // The request did not contain a login hint
-            specifiedServiceId = null;
-        }
-        if (tc.isDebugEnabled()) {
-            Tr.exit(tc, methodName, specifiedServiceId);
-        }
-        return specifiedServiceId;
-    }
-
-    String getLoginHintFromHeaderOrParameter(HttpServletRequest request) {
-        String methodName = "getLoginHintFromHeaderOrParameter";
-        if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName, request);
-        }
-        String specifiedServiceId = request.getHeader(ClientConstants.LOGIN_HINT);
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "specifiedService(h) id:" + specifiedServiceId);
-        }
-        if (specifiedServiceId == null || specifiedServiceId.isEmpty()) {
-            specifiedServiceId = request.getParameter(ClientConstants.LOGIN_HINT);
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "specifiedService(p) id:" + specifiedServiceId);
-            }
-        }
-        if (tc.isDebugEnabled()) {
-            Tr.exit(tc, methodName, specifiedServiceId);
-        }
-        return specifiedServiceId;
-    }
-
+    
     public String getBearerToken(HttpServletRequest req, MicroProfileJwtConfig clientConfig) {
         String methodName = "getBearerToken";
         if (tc.isDebugEnabled()) {
