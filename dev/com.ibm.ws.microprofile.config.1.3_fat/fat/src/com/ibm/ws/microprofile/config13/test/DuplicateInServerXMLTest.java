@@ -16,8 +16,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig13EE7;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig14EE8;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
 import com.ibm.ws.microprofile.config13.duplicateInServerXML.web.DuplicateInServerXMLServlet;
 
 import componenttest.annotation.Server;
@@ -50,9 +49,7 @@ public class DuplicateInServerXMLTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests
-                    .with(new RepeatConfig13EE7("DuplicateInServerXMLServer"))
-                    .andWith(new RepeatConfig14EE8("DuplicateInServerXMLServer"));
+    public static RepeatTests r = RepeatConfigActions.repeatConfig13("DuplicateInServerXMLServer");
 
     @BeforeClass
     public static void setUp() throws Exception {

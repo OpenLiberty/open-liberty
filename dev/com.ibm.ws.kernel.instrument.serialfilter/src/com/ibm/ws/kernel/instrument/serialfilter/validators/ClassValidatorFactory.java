@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,13 +21,11 @@ import java.util.logging.Logger;
 import static java.util.logging.Level.FINEST;
 
 final class ClassValidatorFactory extends ConfigHolder {
-    private final Logger log;
     private final Config config;
 
     ClassValidatorFactory(Config config) {
         super(config);
         this.config = config;
-        log = Logger.getLogger(ClassValidatorFactory.class.getName());
     }
 
     /**
@@ -43,6 +41,7 @@ final class ClassValidatorFactory extends ConfigHolder {
     }
 
     private ClassValidator createValidator(ObjectInputStream caller) {
+        Logger log = Logger.getLogger(ClassValidatorFactory.class.getName());
         if (log.isLoggable(FINEST)) {
             log.finest("Creating validator for " + caller.getClass().getName());
         }

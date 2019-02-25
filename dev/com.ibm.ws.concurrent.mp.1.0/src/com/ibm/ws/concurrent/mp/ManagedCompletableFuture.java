@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
@@ -73,7 +76,45 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * The Java SE 8 CompletableFuture lacks certain important methods, namely defaultExecutor and newIncompleteFuture,
      * without which it is difficult to extend Java's built-in implementation.
      */
-    static final boolean JAVA8 = JavaInfo.majorVersion() == 8;
+    static final boolean JAVA8;
+
+    // Java 12 methods // TODO remove usage of reflection once Liberty compiles against higher Java level
+    private static final MethodHandle super_exceptionallyAsync, super_exceptionallyCompose, super_exceptionallyComposeAsync;
+
+    static {
+        int version = JavaInfo.majorVersion();
+        JAVA8 = version == 8;
+
+        if (version < 12)
+            super_exceptionallyAsync = super_exceptionallyCompose = super_exceptionallyComposeAsync = null;
+        else {
+            MethodHandles.Lookup methods = MethodHandles.lookup();
+            MethodHandle exceptionallyAsync = null, exceptionallyCompose = null, exceptionallyComposeAsync = null;
+
+            try {
+                exceptionallyAsync = methods.findSpecial(CompletableFuture.class,
+                                                         "exceptionallyAsync",
+                                                         MethodType.methodType(CompletableFuture.class, Function.class, Executor.class),
+                                                         ManagedCompletableFuture.class);
+
+                exceptionallyCompose = methods.findSpecial(CompletableFuture.class,
+                                                           "exceptionallyCompose",
+                                                           MethodType.methodType(CompletableFuture.class, Function.class),
+                                                           ManagedCompletableFuture.class);
+
+                exceptionallyComposeAsync = methods.findSpecial(CompletableFuture.class,
+                                                                "exceptionallyComposeAsync",
+                                                                MethodType.methodType(CompletableFuture.class, Function.class, Executor.class),
+                                                                ManagedCompletableFuture.class);
+            } catch (IllegalAccessException | NoSuchMethodException x) {
+                throw new ExceptionInInitializerError(x);
+            }
+
+            super_exceptionallyAsync = exceptionallyAsync;
+            super_exceptionallyCompose = exceptionallyCompose;
+            super_exceptionallyComposeAsync = exceptionallyComposeAsync;
+        }
+    }
 
     /**
      * Execution property that indicates a task should run with any previous transaction suspended.
@@ -805,6 +846,97 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             return newInstance(dependentStage, defaultExecutor, null);
         } else {
             return super.exceptionally(action);
+        }
+    }
+
+    @Trivial
+    public CompletableFuture<T> exceptionallyAsync(Function<Throwable, ? extends T> action) {
+        return exceptionallyAsync(action, defaultExecutor);
+    }
+
+    public CompletableFuture<T> exceptionallyAsync(Function<Throwable, ? extends T> action, Executor executor) {
+        if (super_exceptionallyAsync == null) // unavailable prior to Java 12
+            throw new UnsupportedOperationException();
+
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
+
+        if (!(action instanceof ContextualFunction)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
+            if (contextDescriptor != null)
+                action = new ContextualFunction<>(contextDescriptor, action);
+        }
+
+        futureRefLocal.set(futureExecutor);
+        try {
+            Executor exec = futureExecutor == null ? executor : futureExecutor;
+            return (CompletableFuture<T>) super_exceptionallyAsync.invokeExact(this, action, exec);
+        } catch (Error | RuntimeException x) {
+            throw x;
+        } catch (Throwable x) {
+            throw new RuntimeException(x);
+        } finally {
+            futureRefLocal.remove();
+        }
+    }
+
+    public CompletableFuture<T> exceptionallyCompose(Function<Throwable, ? extends CompletionStage<T>> action) {
+        if (super_exceptionallyCompose == null) // unavailable prior to Java 12
+            throw new UnsupportedOperationException();
+
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        if (!(action instanceof ContextualFunction)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(defaultExecutor);
+            if (contextDescriptor != null)
+                action = new ContextualFunction<>(contextDescriptor, action);
+        }
+
+        try {
+            return (CompletableFuture<T>) super_exceptionallyCompose.invokeExact(this, action);
+        } catch (Error | RuntimeException x) {
+            throw x;
+        } catch (Throwable x) {
+            throw new RuntimeException(x);
+        }
+    }
+
+    @Trivial
+    public CompletableFuture<T> exceptionallyComposeAsync(Function<Throwable, ? extends CompletionStage<T>> action) {
+        return exceptionallyComposeAsync(action, defaultExecutor);
+    }
+
+    public CompletableFuture<T> exceptionallyComposeAsync(Function<Throwable, ? extends CompletionStage<T>> action, Executor executor) {
+        if (super_exceptionallyComposeAsync == null) // unavailable prior to Java 12
+            throw new UnsupportedOperationException();
+
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        FutureRefExecutor futureExecutor = supportsAsync(executor);
+
+        if (!(action instanceof ContextualFunction)) {
+            ThreadContextDescriptor contextDescriptor = captureThreadContext(executor);
+            if (contextDescriptor != null)
+                action = new ContextualFunction<>(contextDescriptor, action);
+        }
+
+        futureRefLocal.set(futureExecutor);
+        try {
+            Executor exec = futureExecutor == null ? executor : futureExecutor;
+            return (CompletableFuture<T>) super_exceptionallyComposeAsync.invokeExact(this, action, exec);
+        } catch (Error | RuntimeException x) {
+            throw x;
+        } catch (Throwable x) {
+            throw new RuntimeException(x);
+        } finally {
+            futureRefLocal.remove();
         }
     }
 

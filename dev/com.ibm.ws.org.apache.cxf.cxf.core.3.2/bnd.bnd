@@ -14,14 +14,14 @@ javac.source: 1.8
 javac.target: 1.8
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-core;3.2.6}!/!*-INF/*,\
+   @${repo;org.apache.cxf:cxf-core;3.3.0}!/!*-INF/*,\
    org/apache/cxf=${bin}/org/apache/cxf,\
    META-INF=resources/META-INF
    
 instrument.classesExcludes: org/apache/cxf/common/jaxb/*.class
 
--buildpath: org.apache.cxf:cxf-core;version=3.2.6,\
+-buildpath: org.apache.cxf:cxf-core;version=3.3.0,\
   com.ibm.ws.logging.core,\
-  org.apache.cxf:cxf-rt-transports-http;version=3.2.6,\
+  org.apache.cxf:cxf-rt-transports-http;version=3.3.0,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.wsspi.org.osgi.core

@@ -104,59 +104,32 @@ public class SSLHelper {
             } else {
                 sslPort = port;
             }
+
             try {
                 KeyManager keyManagers[] = null;
                 if (ksPath != null) {
                     KeyManagerFactory kmFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 
                     File ksFile = new File(ksPath);
-                    KeyStore keyStore = null;
-                    try {
-                        keyStore = KeyStore.getInstance("JKS");
-                        ksStream = new FileInputStream(ksFile);
-                        keyStore.load(ksStream, ksPassword.toCharArray());
-                    } catch (Exception e) {
-                        try {
-                            keyStore = KeyStore.getInstance("PKCS12");
-                            ksStream = new FileInputStream(ksFile);
-                            keyStore.load(ksStream, ksPassword.toCharArray());
-                        } catch (Exception e1) {
-                            throw e1;
-                        }
+                    KeyStore keyStore = KeyStore.getInstance("JKS");
+                    ksStream = new FileInputStream(ksFile);
+                    keyStore.load(ksStream, ksPassword.toCharArray());
 
-                    }
                     kmFactory.init(keyStore, ksPassword.toCharArray());
-
                     keyManagers = kmFactory.getKeyManagers();
                 }
 
                 TrustManager[] trustManagers = null;
-
                 if (tsPath != null) {
                     TrustManagerFactory tmFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+
                     File tsFile = new File(tsPath);
-
-                    KeyStore trustStore = null;
-                    try {
-                        trustStore = KeyStore.getInstance("JKS");
-                        tsStream = new FileInputStream(tsFile);
-                        trustStore.load(tsStream, tsPassword.toCharArray());
-
-                    } catch (Exception e) {
-                        try {
-                            trustStore = KeyStore.getInstance("PKCS12");
-                            tsStream = new FileInputStream(tsFile);
-                            trustStore.load(tsStream, tsPassword.toCharArray());
-                        } catch (Exception e1) {
-                            throw e1;
-                        }
-
-                    }
+                    KeyStore trustStore = KeyStore.getInstance("JKS");
+                    tsStream = new FileInputStream(tsFile);
+                    trustStore.load(tsStream, tsPassword.toCharArray());
 
                     tmFactory.init(trustStore);
-
                     trustManagers = tmFactory.getTrustManagers();
-
                 }
                 if (trustManagers == null) {
                     trustManagers = new TrustManager[] { createTrustAllTrustManager() };
@@ -167,14 +140,11 @@ public class SSLHelper {
 
                 SSLContext ctx = SSLContext.getInstance(sslProtocol);
                 ctx.init(keyManagers, trustManagers, null);
-
                 SSLSocketFactory socketFactory = new SSLSocketFactory(ctx, SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
                 Scheme sch = new Scheme("https", sslPort, socketFactory);
                 client.getConnectionManager().getSchemeRegistry().register(sch);
             } catch (Exception e) {
-                if (!tsPath.contains("localTrustStore.tmp"))
-                    throw new RuntimeException("Unable to establish SSLSocketFactory", e);
+                throw new RuntimeException("Unable to establish SSLSocketFactory", e);
             }
         } finally {
             try {

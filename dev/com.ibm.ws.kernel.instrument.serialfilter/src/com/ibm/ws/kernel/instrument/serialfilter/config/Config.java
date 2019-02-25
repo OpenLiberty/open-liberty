@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,9 +30,9 @@ public interface Config extends SimpleConfig {
     boolean allows(Class<?> cls, Class<?> [] toSkip);
 
     /**
-     * The functionality is same as above, but support suppressing logging messages if enableMessage is set to false. true is the default.
+     * The functionality is same as above, but support discovery logging messages if isDiscovery is set to true
      */
-    boolean allows(Class<?> cls, Class<?> [] toSkip, boolean enableMessage);
+    boolean allows(Class<?> cls, Class<?> [] toSkip, boolean isDiscovery);
 
     /**
      * Discover the appropriate validation mode for a stream at construction,

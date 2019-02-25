@@ -138,7 +138,7 @@ public class JPA20QueryLockMode_WEB extends JPAFATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-            server1.dumpServer("QueryLockModeWeb");
+//            server1.dumpServer("QueryLockModeWeb");
             server1.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
                                "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
             );

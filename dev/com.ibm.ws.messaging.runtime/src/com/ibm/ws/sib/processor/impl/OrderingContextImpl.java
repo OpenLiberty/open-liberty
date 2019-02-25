@@ -35,4 +35,8 @@ public class OrderingContextImpl implements OrderingContext
   public OrderingContextImpl()
   {
   }
+  
+  public boolean isProxyConnectionClosed() {
+      return false;
+  }
 }

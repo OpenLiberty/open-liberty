@@ -59,7 +59,7 @@ public class JPA22QueryTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.dumpServer("query");
+//        server1.dumpServer("query");
         server1.stopServer("CWWJP9991W"); // From Eclipselink drop-and-create tables option
     }
 }

@@ -27,9 +27,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.appConfig.simultaneousRequests.test.SimultaneousRequestsTestServlet;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig11EE7;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig12EE8;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig14EE8;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
@@ -45,10 +43,7 @@ public class SimultaneousRequestsTest extends FATServletClient {
     public static final String APP_NAME = "simultaneousRequests";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests
-                    .with(new RepeatConfig11EE7("SimultaneousRequestsServer"))
-                    .andWith(new RepeatConfig12EE8("SimultaneousRequestsServer"))
-                    .andWith(new RepeatConfig14EE8("SimultaneousRequestsServer"));
+    public static RepeatTests r = RepeatConfigActions.repeatConfig11("SimultaneousRequestsServer");
 
     @Server("SimultaneousRequestsServer")
     @TestServlet(servlet = SimultaneousRequestsTestServlet.class, contextRoot = APP_NAME)

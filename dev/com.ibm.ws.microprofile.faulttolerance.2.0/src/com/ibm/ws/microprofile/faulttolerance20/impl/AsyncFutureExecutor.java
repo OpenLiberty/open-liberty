@@ -39,27 +39,27 @@ public class AsyncFutureExecutor<R> extends AsyncExecutor<Future<R>> {
     }
 
     @Override
-    protected void commitResult(AsyncExecutionContextImpl<Future<R>> executionContext, MethodResult<Future<R>> result) {
+    protected void setResult(AsyncExecutionContextImpl<Future<R>> executionContext, MethodResult<Future<R>> result) {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Method {0} final fault tolerance result: {1}", executionContext.getMethod(), result);
         }
 
-        FutureShell<R> returnWrapper = (FutureShell<R>) executionContext.getReturnWrapper();
+        FutureShell<R> resultWrapper = (FutureShell<R>) executionContext.getResultWrapper();
         if (result.isFailure()) {
             CompletableFuture<R> failureResult = new CompletableFuture<R>();
             failureResult.completeExceptionally(result.getFailure());
-            returnWrapper.setDelegate(failureResult);
+            resultWrapper.setDelegate(failureResult);
         } else {
-            returnWrapper.setDelegate(result.getResult());
+            resultWrapper.setDelegate(result.getResult());
         }
     }
 
     @Override
-    protected Future<R> createReturnWrapper(AsyncExecutionContextImpl<Future<R>> executionContext) {
-        FutureShell<R> returnWrapper = new FutureShell<>();
-        returnWrapper.setCancellationCallback(executionContext::cancel);
-        return returnWrapper;
+    protected Future<R> createEmptyResultWrapper(AsyncExecutionContextImpl<Future<R>> executionContext) {
+        FutureShell<R> resultWrapper = new FutureShell<>();
+        resultWrapper.setCancellationCallback(executionContext::cancel);
+        return resultWrapper;
     }
 
 }

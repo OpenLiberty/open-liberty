@@ -73,6 +73,17 @@ public class TestModeFilter extends Filter {
             testMode = mode.value();
         }
 
+        boolean run = shouldRun(testMode);
+
+        if (!run) {
+            Log.debug(getClass(), "Removing test " + desc.getMethodName() + " with mode " + testMode + " from list to run, because not valid for current mode "
+                                  + FRAMEWORK_TEST_MODE);
+            return false;
+        } else
+            return true;
+    }
+
+    public static boolean shouldRun(TestMode testMode) {
         //compare the current run level of the framework to the
         //test annotated run level
         //exclude the test if the current run mode is lower than the test's
@@ -82,8 +93,6 @@ public class TestModeFilter extends Filter {
         // lite                | lite | lite = lite | 0 | true, lite should run lite tests
         // rapid               | lite | rapid < lite | < 0 | false, rapid should not run lite tests
         if (FRAMEWORK_TEST_MODE.compareTo(testMode) < 0) {
-            Log.debug(getClass(), "Removing test " + desc.getMethodName() + " with mode " + testMode + " from list to run, because not valid for current mode "
-                                  + FRAMEWORK_TEST_MODE);
             return false;
         } else
             return true;

@@ -16,14 +16,17 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
 import com.ibm.ws.microprofile.config14.variableResolution.web.VariableResolutionServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -44,6 +47,9 @@ import componenttest.topology.utils.FATServletClient;
 public class VariableResolutionTest extends FATServletClient {
 
     public static final String APP_NAME = "variableResolutionApp";
+
+    @ClassRule
+    public static RepeatTests r = RepeatConfigActions.repeatConfig14("VariableResolutionServer");
 
     @Server("VariableResolutionServer")
     @TestServlet(servlet = VariableResolutionServlet.class, contextRoot = APP_NAME)

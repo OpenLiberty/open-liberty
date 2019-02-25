@@ -30,11 +30,24 @@ public class TestActionException extends Exception {
         if (cause == null) {
             return "";
         }
-        String causeMsg = cause.getMessage();
-        if (causeMsg == null || causeMsg.isEmpty()) {
-            return "";
+        Throwable originalCause = getOriginalCause(cause);
+        if (originalCause == null) {
+            originalCause = cause;
         }
-        return " " + causeMsg;
+        return " " + originalCause.toString();
+    }
+
+    private static Throwable getOriginalCause(Throwable cause) {
+        if (cause == null) {
+            return null;
+        }
+        Throwable originalCause = cause;
+        Throwable currentCause = originalCause.getCause();
+        while (currentCause != null) {
+            originalCause = currentCause;
+            currentCause = currentCause.getCause();
+        }
+        return originalCause;
     }
 
 }

@@ -16,7 +16,7 @@
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Uso: java [op\u00e7\u00f5es de JVM] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
 \t-jar bin/tools/ws-server.jar serverName {0} [op\u00e7\u00f5es]  
-scriptUsage=Uso: {0} {1} serverName [op\u00e7\u00f5es]
+scriptUsage=Uso: {0} {1} serverName [op\u00e7\u00f5es] [op\u00e7\u00f5es da JVM]
 
 use.actions=A\u00e7\u00f5es:
 use.options=Op\u00e7\u00f5es:
@@ -173,4 +173,4 @@ option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tDesativar gera\u00e7\u00e3o de senha de keystore padr\u00e3o
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="pasta do servidor raiz no archive"
-option-desc.package.server-root=\tEspecifica o nome da pasta do servidor raiz no archive.
+option-desc.package.server-root=\tEspecifica o nome da pasta do servidor raiz no archive.           \n

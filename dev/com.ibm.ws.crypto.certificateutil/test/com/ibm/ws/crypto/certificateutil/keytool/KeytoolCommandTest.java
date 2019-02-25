@@ -41,7 +41,7 @@ public class KeytoolCommandTest {
 
     @Test
     public void getCommand_justArguments() {
-        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "PKCS12");
+        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "JKS");
         List<String> cmdArgs = cmd.getCommandArgs();
         assertEquals("-genkey", cmdArgs.get(1));
         assertEquals("-keystore", cmdArgs.get(2));
@@ -66,7 +66,7 @@ public class KeytoolCommandTest {
 
     @Test
     public void getAbsoluteKeytoolPath() {
-        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "PKCS12");
+        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "JKS");
         String path = cmd.getAbsoluteKeytoolPath();
         assertTrue("keytool path does not start with this JVM's java.home directory",
                    path.startsWith(System.getProperty("java.home")));
@@ -88,7 +88,7 @@ public class KeytoolCommandTest {
      */
     @Test
     public void test_toString() {
-        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "PKCS12");
+        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "JKS");
         assertFalse("The command line contained the password in plain text",
                     cmd.toString().contains("myPwd"));
 
@@ -135,7 +135,7 @@ public class KeytoolCommandTest {
         cmdArgs.append(" ");
         cmdArgs.append("-storetype");
         cmdArgs.append(" ");
-        cmdArgs.append("PKCS12");
+        cmdArgs.append("JKS");
         assertEquals("The command line was not in the format expected",
                      cmdArgs.toString(),
                      cmd.toString());
@@ -152,7 +152,7 @@ public class KeytoolCommandTest {
                 will(returnValue(-1));
             }
         });
-        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "PKCS12");
+        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "JKS");
         cmd.getProcErrorOutput(proc);
 
         mock.assertIsSatisfied();
@@ -169,7 +169,7 @@ public class KeytoolCommandTest {
                 will(returnValue(0));
             }
         });
-        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "PKCS12");
+        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "JKS");
         cmd.getProcErrorOutput(proc);
 
         mock.assertIsSatisfied();
@@ -186,7 +186,7 @@ public class KeytoolCommandTest {
                 will(returnValue(50));
             }
         });
-        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "PKCS12");
+        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "JKS");
         cmd.getProcErrorOutput(proc);
 
         mock.assertIsSatisfied();
@@ -206,7 +206,7 @@ public class KeytoolCommandTest {
                 will(returnValue(-1));
             }
         });
-        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "PKCS12");
+        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "JKS");
         cmd.getProcErrorOutput(proc);
 
         mock.assertIsSatisfied();
@@ -226,7 +226,7 @@ public class KeytoolCommandTest {
                 will(returnValue(50));
             }
         });
-        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "PKCS12");
+        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "JKS");
         cmd.getProcErrorOutput(proc);
 
         mock.assertIsSatisfied();
@@ -249,7 +249,7 @@ public class KeytoolCommandTest {
                 will(returnValue(-1));
             }
         });
-        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "PKCS12");
+        KeytoolCommand cmd = new KeytoolCommand("myLoc", "myPwd", 365, "CN=myName", 2048, "RSA", "SHA256withRSA", "JKS");
         cmd.getProcErrorOutput(proc);
 
         mock.assertIsSatisfied();

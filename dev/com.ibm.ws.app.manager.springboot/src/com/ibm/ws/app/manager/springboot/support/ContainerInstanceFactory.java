@@ -29,6 +29,8 @@ public interface ContainerInstanceFactory<T> {
         void start();
 
         void stop();
+
+        boolean isEndpointConfigured();
     }
 
     Class<T> getType();
