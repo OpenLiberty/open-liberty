@@ -10,19 +10,19 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.spi;
 
-public interface ExecutorBuilder<T, R> {
+public interface ExecutorBuilder<R> {
 
-    public ExecutorBuilder<T, R> setRetryPolicy(RetryPolicy retry);
+    public ExecutorBuilder<R> setRetryPolicy(RetryPolicy retry);
 
-    public ExecutorBuilder<T, R> setCircuitBreakerPolicy(CircuitBreakerPolicy circuitBreaker);
+    public ExecutorBuilder<R> setCircuitBreakerPolicy(CircuitBreakerPolicy circuitBreaker);
 
-    public ExecutorBuilder<T, R> setBulkheadPolicy(BulkheadPolicy bulkhead);
+    public ExecutorBuilder<R> setBulkheadPolicy(BulkheadPolicy bulkhead);
 
-    public ExecutorBuilder<T, R> setFallbackPolicy(FallbackPolicy fallback);
+    public ExecutorBuilder<R> setFallbackPolicy(FallbackPolicy fallback);
 
-    public ExecutorBuilder<T, R> setTimeoutPolicy(TimeoutPolicy timeout);
+    public ExecutorBuilder<R> setTimeoutPolicy(TimeoutPolicy timeout);
 
-    public ExecutorBuilder<T, R> setMetricRecorder(MetricRecorder metricRecorder);
+    public ExecutorBuilder<R> setMetricRecorder(MetricRecorder metricRecorder);
 
     public Executor<R> build();
 

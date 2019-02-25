@@ -19,7 +19,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.threading.PolicyExecutorProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
-public class ExecutorBuilderImpl20<T, R> extends ExecutorBuilderImpl<T, R> {
+public class ExecutorBuilderImpl20<R> extends ExecutorBuilderImpl<R> {
 
     public ExecutorBuilderImpl20(WSContextService contextService, PolicyExecutorProvider policyExecutorProvider, ScheduledExecutorService scheduledExecutorService) {
         super(contextService, policyExecutorProvider, scheduledExecutorService);
