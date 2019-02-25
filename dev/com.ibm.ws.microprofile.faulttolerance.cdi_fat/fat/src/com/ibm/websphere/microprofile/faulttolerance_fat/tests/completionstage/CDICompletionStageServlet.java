@@ -25,6 +25,7 @@ import java.util.concurrent.TimeoutException;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
+import org.eclipse.microprofile.faulttolerance.exceptions.BulkheadException;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -93,6 +94,48 @@ public class CDICompletionStageServlet extends FATServlet {
     }
 
     @Test
+    public void testCompletionStageBulkhead() throws InterruptedException {
+        // First call will wait on latch until we complete it
+        CompletableFuture<Void> returnValue1 = getLatch();
+        CompletionStage<Void> result1 = bean.serviceCsBulkhead(returnValue1);
+
+        // Second call does not wait on latch
+        CompletionStage<Void> result2 = bean.serviceCsBulkhead(CompletableFuture.completedFuture(null));
+
+        // First method call should return but result should not be complete because the returned CS is not complete
+        assertNotCompleting(result1);
+        assertEquals("Concurrent calls to serviceCsBulkhead", 0, bean.getConcurrentServiceCsBulkhead());
+
+        // Second method should not be allowed to run yet as bulkhead permit is held until CS from first call completes
+        assertNotCompleting(result2);
+
+        // Third execution should fail with BulkheadException
+        CompletionStage<Void> result3 = bean.serviceCsBulkhead(CompletableFuture.completedFuture(null));
+        assertException(result3, BulkheadException.class);
+
+        // If we allow the first call to complete, both the first and second calls should run and complete
+        returnValue1.complete(null);
+        assertResult(result1, null);
+        assertResult(result2, null);
+    }
+
+    @Test
+    public void testCompletionStageBulkheadTimeout() throws InterruptedException {
+        // First call will wait on latch until we complete it
+        CompletableFuture<Void> returnValue1 = getLatch();
+        CompletionStage<Void> result1 = bean.serviceCsBulkheadTimeout(returnValue1);
+
+        // Call will time out after 500ms
+        assertException(result1, org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException.class);
+
+        // Second call will not wait on latch
+        CompletionStage<Void> result2 = bean.serviceCsBulkheadTimeout(CompletableFuture.completedFuture(null));
+
+        // However, second call is not allowed to run as first call still holds the bulkhead, resulting in TimeoutException after 500ms
+        assertException(result2, org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException.class);
+    }
+
+    @Test
     public void testCompletionStageRetry() throws InterruptedException {
         CompletionStage<Void> result = bean.serviceCsRetryAlwaysFails();
         assertCompleting(result);
@@ -118,6 +161,17 @@ public class CDICompletionStageServlet extends FATServlet {
             fail("CompletionStage did not complete within 2 seconds");
         } catch (ExecutionException ex) {
             throw new AssertionError("Completion Stage failed with exception", ex);
+        }
+    }
+
+    private void assertException(CompletionStage<?> cs, Class<? extends Throwable> exceptionClazz) throws InterruptedException {
+        try {
+            toCompletableFuture(cs).get(2, SECONDS);
+            fail("Completion stage completed successfully");
+        } catch (ExecutionException ex) {
+            assertThat(ex.getCause(), instanceOf(exceptionClazz));
+        } catch (TimeoutException e) {
+            fail("CompletionStage did not complete within 2 seconds");
         }
     }
 
