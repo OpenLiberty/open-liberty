@@ -20,7 +20,7 @@ public class GenericData {
 
     private String jsonMessage = null;
 
-    private Integer lastIndex = -1;
+    private int lastIndex = -1;
 
     public GenericData() {
         pairs = new KeyValuePair[DEFAULT_SIZE];
