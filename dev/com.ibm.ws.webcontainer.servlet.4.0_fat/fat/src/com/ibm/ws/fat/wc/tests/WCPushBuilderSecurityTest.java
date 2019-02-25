@@ -46,13 +46,8 @@ public class WCPushBuilderSecurityTest extends LoggingTest {
         WCApplicationHelper.addWarToServerApps(SHARED_SERVER.getLibertyServer(), "TestPushBuilderSecurity.war", true, "testpushbuildersecurity.war.servlets");
 
         SHARED_SERVER.startIfNotStarted();
-
-        LOG.info("Setup : wait for message to indicate app has started");
-
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestPushBuilderSecurity", 10000);
-
+        WCApplicationHelper.waitForAppStart("TestPushBuilderSecurity", WCPushBuilderSecurityTest.class.getName(), SHARED_SERVER.getLibertyServer());
         LOG.info("Setup : complete, ready for Tests");
-
     }
 
     @AfterClass

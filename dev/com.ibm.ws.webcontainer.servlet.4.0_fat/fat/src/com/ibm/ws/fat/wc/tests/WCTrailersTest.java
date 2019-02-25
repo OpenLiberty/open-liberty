@@ -72,15 +72,9 @@ public class WCTrailersTest extends LoggingTest {
         ArrayList<String> expectedErrors = new ArrayList<String>();
         expectedErrors.add("CWWWC0401E:.*");
         SHARED_SERVER.getLibertyServer().addIgnoredErrors(expectedErrors);
-
         SHARED_SERVER.startIfNotStarted();
-
-        LOG.info("Setup : wait for message to indicate app has started");
-
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestServlet40", 10000);
-
-        LOG.info("Setup : wait for message to indicate app has started");
-
+        WCApplicationHelper.waitForAppStart("TestServlet40", WCTrailersTest.class.getName(), SHARED_SERVER.getLibertyServer());
+        LOG.info("Setup : complete, ready for Tests");
     }
 
     @AfterClass

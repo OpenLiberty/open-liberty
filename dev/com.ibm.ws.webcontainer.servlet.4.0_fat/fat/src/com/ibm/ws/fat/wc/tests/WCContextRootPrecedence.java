@@ -93,18 +93,13 @@ public class WCContextRootPrecedence extends LoggingTest {
         WCApplicationHelper.addWarToServerDropins(SHARED_SERVER.getLibertyServer(),
                                                   "TestDefaultContextPathWithoutStartSlashInvalidCase.war", true, null);
 
-        LOG.info("Setup : wait for messages to indicate apps have started");
-
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestContextRootAppNamePrecedence", 10000);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestContextRootDirOrFileNamePrecedence", 10000);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestContextRootEARAppPrecedence", 10000);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestContextRootServerXmlPrecedence", 10000);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestContextRootWebExtPrecedence", 10000);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestDefaultContextPathPrecedence", 10000);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestDefaultContextPathWithEndSlashInvalidCase", 10000);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestDefaultContextPathWithoutStartSlashInvalidCase", 10000);
-
-        LOG.info("Setup : ready to run tests.");
+        WCApplicationHelper.waitForAppStart("TestContextRootDirOrFileNamePrecedence", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
+        WCApplicationHelper.waitForAppStart("AppNameContextRoot", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
+        WCApplicationHelper.waitForAppStart("TestServerXmlContextRoot", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
+        WCApplicationHelper.waitForAppStart("TestWebExtContextRoot", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
+        WCApplicationHelper.waitForAppStart("TestDefaultContextPathPrecedence", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
+        WCApplicationHelper.waitForAppStart("TestContextRootEARAppPrecedence", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
+        LOG.info("Setup : complete, ready for Tests");
     }
 
     @AfterClass
