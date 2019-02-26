@@ -51,6 +51,8 @@ Include-Resource: \
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.crypto.passwordutil;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.event;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.wsspi.org.osgi.service.event;version=latest,\
 	com.ibm.ws.messaging.comms.client;version=latest,\
