@@ -1063,4 +1063,5 @@ public class ReferenceContextImpl implements ReferenceContext {
         // set of processed injection classes.
         return new HashSet<Class<?>>(ivProcessedInjectionClasses);
     }
+
 }
