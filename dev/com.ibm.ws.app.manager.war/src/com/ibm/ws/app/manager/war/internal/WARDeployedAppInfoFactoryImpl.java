@@ -71,108 +71,111 @@ public class WARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
         return getLocationAdmin().resolveResource(EXPANDED_APPS_DIR + appName + ".war/");
     }
 
-    // Record of what WAR files have been expanded this time the server
-    // was started.
+    // Time stamps of WAR files which have been expanded during this JVM launch..
+    
+    // TODO: This will cause a slow memory leak during a long run which adds then removes
+    //       a long sequence of applications.
     //
-    // The preference is to remove this record and rely entirely on
-    // time stamps.  Because of test implications, that change has not
-    // yet been made.
+    //       But, there will also be a gradual accumulation of files on disk, as removing
+    //       unexpanded WAR files doesn't cause the expansions of those files to be removed.
 
-    private static final Set<String> expanded = new HashSet<String>(1);
 
-    private static boolean didExpand(String path) {
-    	synchronized ( expanded ) {
-    		return ( expanded.contains(path) );
-    	}
+    private static final Map<String, Long> expansionStamps = new HashMap<String, Long>(1);
+
+    /**
+     * Tell if a file should be expanded by answering the updated time stamp
+     * of the file.
+     * 
+     * If the file was previously expanded during this JVM run, and the file
+     * time stamp is the same as when the file was expanded, answer null.
+     * 
+     * If either the file was not yet expanded during this JVM run, or if the
+     * the current file time stamp is different than the time stamp of the file
+     * when it was expanded, update the recorded time stamp, and answer the new
+     * time stamp.
+     *
+     * @param absPath The absolute path of the file which is to be tested.
+     * @param file The file which is to be tested.
+     *
+     * @return The new time stamp of the file, if the file is to be expanded.
+     *     Null if the file is not to be expanded.
+     */
+    private static Long getUpdatedStamp(String absPath, File file) {
+        String methodName = "getUpdatedStamp";
+        boolean doDebug = tc.isDebugEnabled();
+
+        Long currentStamp = Long.valueOf( file.lastModified() );
+
+        Long newStamp;
+        String newStampReason = null;
+
+        synchronized ( expansionStamps ) {
+            Long priorStamp = expansionStamps.put(absPath, currentStamp);
+
+            if ( priorStamp == null ) {
+                newStamp = currentStamp;
+                if ( doDebug ) {
+                    newStampReason = "First extraction; stamp [ " + currentStamp + " ]";
+                }
+            } else if ( currentStamp.longValue() != priorStamp.longValue() ) {
+                newStamp = currentStamp;
+                if ( doDebug ) {
+                    newStampReason = "Additional extraction; old stamp [ " + priorStamp + " ] new stamp [ " + currentStamp + " ]";
+                }
+            } else {
+                newStamp = null;
+                if ( doDebug ) {
+                    newStampReason = "No extraction; stamp [ " + currentStamp + " ]";
+                }
+            }
+        }
+
+        if ( doDebug ) {
+            Tr.debug(tc, methodName + ": " + newStampReason);
+        }
+        return newStamp;
     }
-    private static void recordExpansion(String path) {
-    	synchronized ( expanded ) {
-    		expanded.add(path);
-    	}
-    }
 
-    private static void clearExpansion(String path) {
-    	synchronized ( expanded ) { 
-    		expanded.remove(path);
-    	}
-    }
-
-    private long getStamp(File file) {
-        return file.lastModified();
+    private static void clearStamp(String absPath, File file) {
+        synchronized ( expansionStamps ) { 
+            expansionStamps.remove(absPath);
+        }
     }
 
     protected void expand(
         String name, File collapsedFile,
         WsResource expandedResource, File expandedFile) throws IOException {
 
-        String expandedPath = expandedFile.getAbsolutePath();
+        String collapsedPath = collapsedFile.getAbsolutePath();
 
-        long newStamp = getStamp(collapsedFile);
-
-        boolean doDelete;
-        boolean doExpand;
-
-        if ( expandedResource.exists() ) {
-        	// 'didExpand' is used to preserve the prior behavior.
-        	// Remove this logic to enable re-use of expansions across
-        	// restarts.  The logic has not been removed because there
-        	// are test implications.
-
-        	if ( didExpand(expandedPath) ) {
-        		long oldStamp = getStamp(expandedFile);
-        		if ( oldStamp != newStamp ) {
-        			if ( tc.isDebugEnabled() ) {
-        				Tr.debug(tc, "Same Launch: Delete and re-extract [ " + name + " ] from [ " + collapsedFile.getPath() + " ] to [ " + expandedPath + " ]");
-        			}
-        			doDelete = true;
-        			doExpand = true;
-        		} else {
-        			if ( tc.isDebugEnabled() ) {
-        				Tr.debug(tc, "Same Launch: Reuse extraction of [ " + name + " ] from [ " + collapsedFile.getPath() + " ] to [ " + expandedPath + " ]");
-        			}
-        			doDelete = false;
-        			doExpand = false;
-        		}
-        	} else {
-    			if ( tc.isDebugEnabled() ) {
-    				Tr.debug(tc, "New Launch: Delete and re-extract [ " + name + " ] from [ " + collapsedFile.getPath() + " ] to [ " + expandedPath + " ]");
-    			}
-        		doDelete = true;
-        		doExpand = true;
-        	}
-        	
-        } else {
-            if ( tc.isDebugEnabled() ) {
-                Tr.debug(tc, "Extract [ " + name + " ] from [ " + collapsedFile.getPath() + " ] to [ " + expandedPath + " ]");
-            }
-            doDelete = false;
-            doExpand = true;
+        Long updatedStamp = getUpdatedStamp(collapsedPath, collapsedFile);
+        if ( updatedStamp == null ) {
+            // Nothing to do: Already extracted by this JVM, and has the same
+            // time stamp as when previously extracted.
+            return;
         }
 
-        if ( doDelete || doExpand ) {
-        	ZipUtils zipUtils = new ZipUtils();
-
-        	// The order (clear, delete, unzip, record) is deliberate:
-        	// The expansion should be recorded only if successful.
-
-            if ( doDelete ) {
-            	clearExpansion(expandedPath);
-
-                File failedDelete = zipUtils.deleteWithRetry(expandedFile);
+        try {
+            if ( expandedFile.exists() ) {
+                File failedDelete = ZipUtils.deleteWithRetry(expandedFile);
                 if ( failedDelete != null ) {
                     if ( failedDelete == expandedFile ) {
-                    	throw new IOException("Failed to delete [ " + expandedPath + " ]");
+                        throw new IOException("Failed to delete [ " + expandedFile.getAbsolutePath() + " ]");
                     } else {
-                    	throw new IOException("Failed to delete [ " + expandedPath + " ] because [ " + failedDelete.getAbsolutePath() + " ] could not be deleted.");
+                        throw new IOException("Failed to delete [ " + expandedFile.getAbsolutePath() + " ] because [ " + failedDelete.getAbsolutePath() + " ] could not be deleted.");
                     }
                 }
             }
 
-            if ( doExpand ) {
-                expandedResource.create();
-                zipUtils.unzip(collapsedFile, expandedFile, ZipUtils.IS_NOT_EAR, newStamp); // throws IOException
-                recordExpansion(expandedPath);
-            }
+            expandedResource.create();
+
+            ZipUtils.unzip(collapsedFile, expandedFile, ZipUtils.IS_NOT_EAR, updatedStamp); // throws IOException
+
+        } catch ( IOException e ) {
+            // Forget about the expansion if it failed.
+            clearStamp(collapsedPath, collapsedFile);
+
+            throw e;
         }
     }
 
@@ -218,5 +221,4 @@ public class WARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
 
         return deployedApp;
     }
-
 }

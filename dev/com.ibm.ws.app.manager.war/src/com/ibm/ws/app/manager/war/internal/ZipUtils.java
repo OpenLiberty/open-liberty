@@ -102,7 +102,7 @@ public class ZipUtils {
      *     could not be deleted if the file could not be deleted.
      */
     @Trivial
-    public File deleteWithRetry(File file) {
+    public static File deleteWithRetry(File file) {
         String methodName = "deleteWithRetry";
 
         String filePath;
@@ -169,7 +169,7 @@ public class ZipUtils {
      *     could not be deleted if the file could not be deleted.
      */
     @Trivial
-    public File delete(File file) {
+    public static File delete(File file) {
         String methodName = "delete";
 
         String filePath;
@@ -248,7 +248,7 @@ public class ZipUtils {
      *
      * @throws IOException Thrown in case of a failure.
      */
-    public void unzip(File source, File target, boolean isEar, long lastModified) throws IOException {
+    public static void unzip(File source, File target, boolean isEar, long lastModified) throws IOException {
         String methodName = "unzip";
 
         String sourcePath = source.getAbsolutePath();
@@ -274,6 +274,8 @@ public class ZipUtils {
 
         ZipFile sourceZip = new ZipFile(source);
         try {
+            byte[] transferBuffer = new byte[16 * 1024];
+
             Enumeration<? extends ZipEntry> sourceEntries = sourceZip.entries();
             while ( sourceEntries.hasMoreElements() ) {
                 ZipEntry sourceEntry = sourceEntries.nextElement();
@@ -320,7 +322,7 @@ public class ZipUtils {
                         throw new IOException("Failed to create directory [ " + targetParent.getAbsolutePath() + " ]");
                     }
 
-                    transfer(sourceZip, sourceEntry, targetFile); // throws IOException
+                    transfer(sourceZip, sourceEntry, targetFile, transferBuffer); // throws IOException
                 }
 
                 // If the entry doesn't provide a meaningful last modified time,
@@ -367,9 +369,11 @@ public class ZipUtils {
         }
     }
 
-    private byte[] transferBuffer = new byte[16 * 1024];
+    private static void transfer(
+        ZipFile sourceZip, ZipEntry sourceEntry,
+        File targetFile,
+        byte[] transferBuffer) throws IOException {
 
-    private void transfer(ZipFile sourceZip, ZipEntry sourceEntry, File targetFile) throws IOException {
         InputStream inputStream = null;
         OutputStream outputStream = null;
 
@@ -392,7 +396,7 @@ public class ZipUtils {
         }
     }
 
-    private boolean reachesOut(String entryPath) {
+    private static boolean reachesOut(String entryPath) {
         if ( !entryPath.contains("..") ) {
             return false;
         }
