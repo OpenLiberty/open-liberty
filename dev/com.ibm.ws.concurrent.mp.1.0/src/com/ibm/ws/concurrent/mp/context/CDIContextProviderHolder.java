@@ -8,42 +8,42 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.mp.concurrent.context;
+package com.ibm.ws.concurrent.mp.context;
 
 import java.util.Map;
 
 import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextSnapshot;
-import org.jboss.weld.manager.api.WeldManager;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.cdi.CDIService;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-@Component(immediate = true, name = "com.ibm.ws.cdi.context.provider")
-public class WeldContextProvider implements ThreadContextProvider {
+@Trivial
+public class CDIContextProviderHolder implements ThreadContextProvider {
 
-    @Reference
-    CDIService cdiService;
+    public final AtomicServiceReference<ThreadContextProvider> cdiContextProviderRef = new AtomicServiceReference<>("CDIContextProvider");
 
     @Override
     public ThreadContextSnapshot currentContext(Map<String, String> props) {
-        return cdiService.isCurrentModuleCDIEnabled() ? //
-                        new WeldContextSnapshot(true, (WeldManager) cdiService.getCurrentModuleBeanManager()) : //
-                        new DeferredClearedWeldContextSnapshot(cdiService);
+        ThreadContextProvider provider = cdiContextProviderRef.getService();
+        if (provider != null)
+            return provider.currentContext(props);
+        else
+            // No CDI feature enabled at the point of capturing context, but may be available when applying context.
+            return new DeferredClearedContextSnapshot(cdiContextProviderRef, props);
     }
 
     @Override
     public ThreadContextSnapshot clearedContext(Map<String, String> props) {
-        return cdiService.isCurrentModuleCDIEnabled() ? //
-                        new WeldContextSnapshot(false, (WeldManager) cdiService.getCurrentModuleBeanManager()) : //
-                        new DeferredClearedWeldContextSnapshot(cdiService);
+        ThreadContextProvider provider = cdiContextProviderRef.getService();
+        if (provider != null)
+            return provider.clearedContext(props);
+        else
+            return new DeferredClearedContextSnapshot(cdiContextProviderRef, props);
     }
 
     @Override
-    @Trivial
     public String getThreadContextType() {
         return ThreadContext.CDI;
     }

@@ -26,6 +26,7 @@ import com.ibm.wsspi.threadcontext.ThreadContext;
  * until the action or task is about to start.
  */
 @Trivial
+@SuppressWarnings("deprecation")
 public class DeferredClearedContext implements com.ibm.wsspi.threadcontext.ThreadContext {
     private static final long serialVersionUID = 1L;
 
@@ -60,8 +61,10 @@ public class DeferredClearedContext implements com.ibm.wsspi.threadcontext.Threa
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append('@').append(Integer.toHexString(hashCode())) //
-                        .append(" for ").append(contextProviderRef);
+        StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append('@')
+                        .append(Integer.toHexString(hashCode())) //
+                        .append(" for ")
+                        .append(contextProviderRef);
         return sb.toString();
     }
 
