@@ -13,6 +13,7 @@ package com.ibm.ws.cdi.mp.concurrent.context;
 import java.util.Map;
 
 import org.eclipse.microprofile.concurrent.ThreadContext;
+import org.eclipse.microprofile.concurrent.spi.ThreadContextController;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 import org.eclipse.microprofile.concurrent.spi.ThreadContextSnapshot;
 import org.jboss.weld.manager.api.WeldManager;
@@ -25,26 +26,40 @@ import com.ibm.ws.cdi.CDIService;
 @Component(immediate = true, name = "com.ibm.ws.cdi.context.provider")
 public class WeldContextProvider implements ThreadContextProvider {
 
+    private static final NoopSnapshot NO_OP_SNAPSHOT = new NoopSnapshot();
+
     @Reference
     CDIService cdiService;
 
     @Override
     public ThreadContextSnapshot currentContext(Map<String, String> props) {
-        return cdiService.isCurrentModuleCDIEnabled() ? //
-                        new WeldContextSnapshot(true, (WeldManager) cdiService.getCurrentModuleBeanManager()) : //
-                        new DeferredClearedWeldContextSnapshot(cdiService);
+        if (!cdiService.isCurrentModuleCDIEnabled())
+            return NO_OP_SNAPSHOT;
+        return new WeldContextSnapshot(true, (WeldManager) cdiService.getCurrentModuleBeanManager());
     }
 
     @Override
     public ThreadContextSnapshot clearedContext(Map<String, String> props) {
-        return cdiService.isCurrentModuleCDIEnabled() ? //
-                        new WeldContextSnapshot(false, (WeldManager) cdiService.getCurrentModuleBeanManager()) : //
-                        new DeferredClearedWeldContextSnapshot(cdiService);
+        if (!cdiService.isCurrentModuleCDIEnabled())
+            return NO_OP_SNAPSHOT;
+        return new WeldContextSnapshot(false, (WeldManager) cdiService.getCurrentModuleBeanManager());
     }
 
     @Override
     @Trivial
     public String getThreadContextType() {
         return ThreadContext.CDI;
+    }
+
+    @Trivial
+    private static class NoopSnapshot implements ThreadContextSnapshot, ThreadContextController {
+        @Override
+        public ThreadContextController begin() {
+            return this;
+        }
+
+        @Override
+        public void endContext() throws IllegalStateException {
+        }
     }
 }

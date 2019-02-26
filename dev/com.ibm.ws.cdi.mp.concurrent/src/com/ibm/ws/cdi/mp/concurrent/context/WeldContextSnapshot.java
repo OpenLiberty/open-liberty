@@ -32,7 +32,7 @@ public class WeldContextSnapshot implements ThreadContextSnapshot {
 
     private static final TraceComponent tc = Tr.register(WeldContextSnapshot.class);
 
-    WeldManager manager;
+    private final WeldManager manager;
     private final ContextualInstanceSnapshot contextToApply;
 
     public WeldContextSnapshot(boolean propagate, WeldManager manager) {

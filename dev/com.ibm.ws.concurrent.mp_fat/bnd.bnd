@@ -19,9 +19,7 @@ src: \
 	test-applications/MPConcurrentApp/src,\
 	test-applications/MPConcurrentCDIApp/src,\
 	test-applications/MPConcurrentConfigApp/src,\
-	test-applications/customcontext/src,\
-	test-applications/multiModuleAppWar/src,\
-	test-applications/multiModuleAppLib/src
+	test-applications/customcontext/src
 
 fat.project: true
 
