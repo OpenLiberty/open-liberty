@@ -25,7 +25,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 Import-Package: \
   org.apache.cxf.*;version="[3.0.2,4)", \
   com.ibm.websphere.ras.*, \
-  com.ibm.ws.jaxrs20.client, \
+  com.ibm.ws.cxf.client, \
   com.ibm.ws.ffdc, \
   com.ibm.ws.concurrent, \
   com.ibm.wsspi.kernel.service.utils, \
