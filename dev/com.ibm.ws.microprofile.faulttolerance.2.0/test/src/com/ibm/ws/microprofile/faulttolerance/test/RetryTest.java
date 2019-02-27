@@ -42,7 +42,7 @@ public class RetryTest extends AbstractFTTest {
         RetryPolicy retry = FaultToleranceProvider.newRetryPolicy();
         retry.setMaxRetries(3);
 
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
         builder.setRetryPolicy(retry);
 
         Executor<String> executor = builder.build();
@@ -66,7 +66,7 @@ public class RetryTest extends AbstractFTTest {
         //100ms between retries
         retry.setDelay(Duration.ofMillis(100));
 
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
         builder.setRetryPolicy(retry);
 
         TimeoutPolicy timeout = FaultToleranceProvider.newTimeoutPolicy();
@@ -95,7 +95,7 @@ public class RetryTest extends AbstractFTTest {
         RetryPolicy retry = FaultToleranceProvider.newRetryPolicy();
         retry.setMaxRetries(3);
 
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
         builder.setRetryPolicy(retry);
 
         Executor<Future<String>> executor = builder.buildAsync(Future.class);

@@ -48,7 +48,7 @@ public class AsyncTest extends AbstractFTTest {
 
     @Test
     public void testAsync() throws InterruptedException, ExecutionException, TimeoutException {
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
         Executor<Future<String>> executor = builder.buildAsync(Future.class);
 
         Future<String>[] futures = new Future[TASKS];
@@ -78,7 +78,7 @@ public class AsyncTest extends AbstractFTTest {
 
     @Test
     public void testAsyncCancel() throws InterruptedException, ExecutionException, TimeoutException {
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
         Executor<Future<String>> executor = builder.buildAsync(Future.class);
 
         String id = "testAsyncCancel";
@@ -100,7 +100,7 @@ public class AsyncTest extends AbstractFTTest {
         TimeoutPolicyImpl timeout = new TimeoutPolicyImpl();
         timeout.setTimeout(Duration.ofMillis(500));
 
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
         builder.setTimeoutPolicy(timeout);
         Executor<Future<String>> executor = builder.buildAsync(Future.class);
 
