@@ -92,11 +92,12 @@ public class SyncExecutor<R> implements Executor<R> {
     }
 
     private MethodResult<R> run(Callable<R> callable, ExecutionContext context) {
+        SyncExecutionContextImpl executionContext = (SyncExecutionContextImpl) context;
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Fault tolerance execution started for {0}", context.getMethod());
+            Tr.event(tc, "Execution {0} Fault tolerance execution started for {1}", executionContext.getId(), context.getMethod());
         }
 
-        SyncExecutionContextImpl executionContext = (SyncExecutionContextImpl) context;
         Thread runningThread = Thread.currentThread();
 
         MethodResult<R> result = null;
@@ -113,7 +114,7 @@ public class SyncExecutor<R> implements Executor<R> {
 
             if (!circuitBreaker.requestPermissionToExecute()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Method {0} attempt Circuit Breaker open, not executing", context.getMethod());
+                    Tr.event(tc, "Execution {0} attempt Circuit Breaker open, not executing", executionContext.getId());
                 }
 
                 result = MethodResult.failure(new CircuitBreakerOpenException());
@@ -128,7 +129,7 @@ public class SyncExecutor<R> implements Executor<R> {
                 result = bulkhead.run(callable);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Method {0} attempt result: {1}", context.getMethod(), result);
+                    Tr.event(tc, "Execution {0} attempt result: {1}", executionContext.getId(), result);
                 }
 
                 timeoutState.stop();
@@ -136,7 +137,7 @@ public class SyncExecutor<R> implements Executor<R> {
 
             if (timeoutState.isTimedOut()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Method {0} finished but has timed out, result changed to TimeoutException", context.getMethod());
+                    Tr.event(tc, "Execution {0} finished but has timed out, result changed to TimeoutException", executionContext.getId());
                 }
 
                 result = MethodResult.failure(new TimeoutException());
@@ -148,13 +149,13 @@ public class SyncExecutor<R> implements Executor<R> {
             RetryResult retryResult = retryContext.recordResult(result);
             if (!retryResult.shouldRetry()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Method {0} not retrying", context.getMethod());
+                    Tr.event(tc, "Execution {0} not retrying", executionContext.getId());
                 }
 
                 done = true;
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Method {0} retrying with delay: {1} {2}", context.getMethod(), retryResult.getDelay(), retryResult.getDelayUnit());
+                    Tr.event(tc, "Execution {0} retrying with delay: {1} {2}", executionContext.getId(), retryResult.getDelay(), retryResult.getDelayUnit());
                 }
 
                 try {
@@ -170,7 +171,7 @@ public class SyncExecutor<R> implements Executor<R> {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Method {0} final fault tolerance result: {1}", context.getMethod(), result);
+            Tr.event(tc, "Execution {0} final fault tolerance result: {1}", executionContext.getId(), result);
         }
 
         metricRecorder.incrementInvocationCount();
@@ -184,7 +185,7 @@ public class SyncExecutor<R> implements Executor<R> {
     @SuppressWarnings("unchecked")
     private MethodResult<R> runFallback(MethodResult<R> result, SyncExecutionContextImpl executionContext) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Method {0} calling fallback", executionContext.getMethod());
+            Tr.event(tc, "Execution {0} calling fallback", executionContext.getId());
         }
 
         metricRecorder.incrementFallbackCalls();
@@ -197,7 +198,7 @@ public class SyncExecutor<R> implements Executor<R> {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Method {0} fallback result: {1}", executionContext.getMethod(), result);
+            Tr.event(tc, "Execution {0} fallback result: {1}", executionContext.getId(), result);
         }
 
         return result;
@@ -206,7 +207,7 @@ public class SyncExecutor<R> implements Executor<R> {
     /** {@inheritDoc} */
     @Override
     public FTExecutionContext newExecutionContext(String id, Method method, Object... parameters) {
-        SyncExecutionContextImpl executionContext = new SyncExecutionContextImpl(method, parameters);
+        SyncExecutionContextImpl executionContext = new SyncExecutionContextImpl(id, method, parameters);
         return executionContext;
     }
 
