@@ -66,12 +66,8 @@ public class WCAddJspFileTest extends LoggingTest {
                                                   "TestAddJspFile.war", true, null, false, "testaddjspfile.war.listeners");
 
         SHARED_SERVER.startIfNotStarted();
-
-        LOG.info("Setup : wait for message to indicate app has started");
-
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestAddJspFile", 10000);
-
-        LOG.info("Setup : wait for message to indicate app has started");
+        WCApplicationHelper.waitForAppStart("TestAddJspFile", WCAddJspFileTest.class.getName(), SHARED_SERVER.getLibertyServer());
+        LOG.info("Setup : complete, ready for Tests");
     }
 
     @AfterClass
