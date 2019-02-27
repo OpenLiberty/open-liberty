@@ -99,7 +99,7 @@ public class MappingTable {
         	{ "sipcontainer.receivedMessages.count", "Incoming traffic", "sipcontainer.receivedMessages.count.description", GAUGE, MetricUnits.NONE, "ReceivedSipMsgs", null },
         	{ "sipcontainer.newSipApplications.count", "New SIP application sessions", "sipcontainer.newSipApplications.count.description", GAUGE, MetricUnits.NONE, "NewSipApplications", null },
         	{ "sipcontainer.requestProcessingTime.total", "Response time", "sipcontainer.requestProcessingTime.total.description", GAUGE, MetricUnits.NONE, "SipRequestProcessing", null },
-        	{ "sipcontainer.invokerSize", "Queue size	", "sipcontainer.invokerSize.description", GAUGE, MetricUnits.NONE, "InvokerSize", null },
+        	{ "sipcontainer.invokerSize", "Queue size", "sipcontainer.invokerSize.description", GAUGE, MetricUnits.NONE, "InvokerSize", null },
         	{ "sipcontainer.rejectedMessages", "Rejected SIP messages", "sipcontainer.rejectedMessages.description", COUNTER, MetricUnits.NONE, "RejectedMessages", null },       	
         	{ "sipcontainer.sipTimersInvocations.count", "SIP timer invocations", "sipcontainer.sipTimersInvocations.count.description", COUNTER, MetricUnits.NONE, "SipTimersInvocations", null },        	
         	{ "sipcontainer.sipSessions", "Number of active SIP sessions", "sipcontainer.sipSessions.description", GAUGE, MetricUnits.NONE, "SipSessions", null },       	
@@ -111,7 +111,7 @@ public class MappingTable {
         	{ "sipTaskDuration.avgOutBoundQueue", 		"Average Task Duration in outbound queue", 	"sipTaskDuration.avgOutBoundQueue.description", 	GAUGE, MetricUnits.NONE, "AvgTaskDurationOutBoundQueue", null },        	
         	{ "sipTaskDuration.maxOutBoundQueue", 		"Maximum Task Duration in outbound queue", 	"sipTaskDuration.maxOutBoundQueue.description", 	GAUGE, MetricUnits.NONE, "MaxTaskDurationOutBoundQueue", null },        	
         	{ "sipTaskDuration.minOutBoundQueue",		"Minimum Task Duration in outbound queue", 	"sipTaskDuration.minOutBoundQueue.description", 	GAUGE, MetricUnits.NONE, "MinTaskDurationOutBoundQueue", null },
-        	{ "sipTaskDuration.avgInProcessingQueue",	"Average Task Duration in outbound queue", 	"sipTaskDuration.avgInProcessingQueue.description", GAUGE, MetricUnits.NONE, "AvgTaskDurationInProcessingQueue", null },
+        	{ "sipTaskDuration.avgInProcessingQueue",	"Average Task Duration in processing queue","sipTaskDuration.avgInProcessingQueue.description", GAUGE, MetricUnits.NONE, "AvgTaskDurationInProcessingQueue", null },
         	{ "sipTaskDuration.maxInProcessingQueue",	"Maximum Task Duration in processing queue","sipTaskDuration.maxInProcessingQueue.description", GAUGE, MetricUnits.NONE, "MaxTaskDurationInProcessingQueue", null },
         	{ "sipTaskDuration.minInProcessingQueue",	"Minimum Task Duration in processing queue","sipTaskDuration.minInProcessingQueue.description", GAUGE, MetricUnits.NONE, "MinTaskDurationInProcessingQueue", null }
         };
