@@ -257,7 +257,6 @@ public class EARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
         }
     }
 
-
     private boolean isArchive(File file, String path) {
         if ( path.toLowerCase().endsWith(XML_SUFFIX) ) {
             return false;

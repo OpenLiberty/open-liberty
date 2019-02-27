@@ -248,7 +248,19 @@ public class ZipUtils {
      *
      * @throws IOException Thrown in case of a failure.
      */
-    public static void unzip(File source, File target, boolean isEar, long lastModified) throws IOException {
+    public static void unzip(
+        File source, File target,
+        boolean isEar, long lastModified) throws IOException {
+
+        byte[] transferBuffer = new byte[16 * 1024];
+        unzip(source, target, isEar, lastModified, transferBuffer);
+    }
+
+    public static void unzip(
+        File source, File target,
+        boolean isEar, long lastModified,
+        byte[] transferBuffer) throws IOException {
+
         String methodName = "unzip";
 
         String sourcePath = source.getAbsolutePath();
@@ -261,21 +273,18 @@ public class ZipUtils {
 
         if ( !source.exists() ) {
             throw new IOException("Source [ " + sourcePath + " ] does not exist");
+        } else if ( !source.isFile() ) {
+            throw new IOException("Source [ " + sourcePath + " ] is not a simple file");
         } else if ( !target.exists() ) {
             throw new IOException("Target [ " + targetPath + " ] does not exist");
+        } else if ( !target.isDirectory() ) {
+            throw new IOException("Target [ " + targetPath + " ] is not a directory");
         }
-
-        if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, methodName + ": Set last modified [ " + lastModified + " ]");
-        }
-        target.setLastModified(lastModified); 
 
         List<Object[]> warData = ( isEar ? new ArrayList<Object[]>() : null );
 
         ZipFile sourceZip = new ZipFile(source);
         try {
-            byte[] transferBuffer = new byte[16 * 1024];
-
             Enumeration<? extends ZipEntry> sourceEntries = sourceZip.entries();
             while ( sourceEntries.hasMoreElements() ) {
                 ZipEntry sourceEntry = sourceEntries.nextElement();
@@ -294,8 +303,7 @@ public class ZipUtils {
                           tmpNo++ ) {
                         // Empty
                     }
-                    nextWarData = new String[] { sourceEntryName, targetFileName, null };
-                    warData.add(nextWarData);
+                    nextWarData = new Object[] { sourceEntryName, targetFileName, null };
                 } else {
                     targetFileName = sourceEntryName;
                     nextWarData = null;
@@ -336,6 +344,8 @@ public class ZipUtils {
 
                 if ( nextWarData != null ) {
                     nextWarData[2] = Long.valueOf(entryModified);
+
+                    warData.add(nextWarData);
                 }
             }
 
@@ -358,7 +368,7 @@ public class ZipUtils {
 
                 File packedWarFile = new File(target, packedWarName);
 
-                unzip(packedWarFile, unpackedWarFile, IS_NOT_EAR, warLastModified);
+                unzip(packedWarFile, unpackedWarFile, IS_NOT_EAR, warLastModified, transferBuffer);
 
                 if ( !packedWarFile.delete() ) {
                     if ( tc.isDebugEnabled() ) {
@@ -367,6 +377,15 @@ public class ZipUtils {
                 }
             }
         }
+
+        // Do this last: The extraction into the target will update
+        // the target time stamp.  We need the time stamp to be the time stamp
+        // of the source.
+
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, methodName + ": Set last modified [ " + lastModified + " ]");
+        }
+        target.setLastModified(lastModified); 
     }
 
     private static void transfer(

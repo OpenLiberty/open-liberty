@@ -69,7 +69,7 @@ public class TestAppHandler implements ApplicationHandler<String>, RuntimeUpdate
     @Override
     public Future<Boolean> install(final ApplicationInformation<String> applicationInformation) {
         if (RETURN_NULL.equals(applicationInformation.getName())) {
-            return null;
+            return futureMonitor.createFutureWithResult((Boolean) null);
         }
         if (RETURN_FAILED.equals(applicationInformation.getName())) {
             return futureMonitor.createFutureWithResult(Boolean.class, new RuntimeException("TEST FAILURE"));
