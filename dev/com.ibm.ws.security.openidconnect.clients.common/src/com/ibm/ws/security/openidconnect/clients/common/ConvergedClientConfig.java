@@ -150,7 +150,6 @@ public interface ConvergedClientConfig {
 
     public HashMap<String, String> getJwkRequestParams();
 
-    // TODO - rename to getForwardLoginParameter
-    public List<String> getForwardAuthzParameter();
+    public List<String> getForwardLoginParameter();
 
 }

@@ -1154,7 +1154,7 @@ public class OIDCClientAuthenticatorUtilTest {
             final List<String> configuredValue = null;
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getForwardAuthzParameter();
+                    one(convClientConfig).getForwardLoginParameter();
                     will(returnValue(configuredValue));
                 }
             });
@@ -1172,7 +1172,7 @@ public class OIDCClientAuthenticatorUtilTest {
             final List<String> configuredValue = new ArrayList<String>();
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getForwardAuthzParameter();
+                    one(convClientConfig).getForwardLoginParameter();
                     will(returnValue(configuredValue));
                 }
             });
@@ -1191,7 +1191,7 @@ public class OIDCClientAuthenticatorUtilTest {
             final List<String> configuredValue = Arrays.asList(paramName);
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getForwardAuthzParameter();
+                    one(convClientConfig).getForwardLoginParameter();
                     will(returnValue(configuredValue));
                     one(req).getParameter(paramName);
                     will(returnValue(null));
@@ -1213,7 +1213,7 @@ public class OIDCClientAuthenticatorUtilTest {
             final String paramValue = "";
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getForwardAuthzParameter();
+                    one(convClientConfig).getForwardLoginParameter();
                     will(returnValue(configuredValue));
                     one(req).getParameter(paramName);
                     will(returnValue(paramValue));
@@ -1237,7 +1237,7 @@ public class OIDCClientAuthenticatorUtilTest {
             final String paramValue = " \t\n \r";
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getForwardAuthzParameter();
+                    one(convClientConfig).getForwardLoginParameter();
                     will(returnValue(configuredValue));
                     one(req).getParameter(paramName);
                     will(returnValue(paramValue));
@@ -1262,7 +1262,7 @@ public class OIDCClientAuthenticatorUtilTest {
             final String paramValue = "some_simple_param_value";
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getForwardAuthzParameter();
+                    one(convClientConfig).getForwardLoginParameter();
                     will(returnValue(configuredValue));
                     one(req).getParameter(paramName);
                     will(returnValue(paramValue));
@@ -1285,7 +1285,7 @@ public class OIDCClientAuthenticatorUtilTest {
             final List<String> configuredValue = Arrays.asList(paramName);
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getForwardAuthzParameter();
+                    one(convClientConfig).getForwardLoginParameter();
                     will(returnValue(configuredValue));
                     one(req).getParameter(paramName);
                     will(returnValue(null));
@@ -1307,7 +1307,7 @@ public class OIDCClientAuthenticatorUtilTest {
             final String paramValue = "    ";
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getForwardAuthzParameter();
+                    one(convClientConfig).getForwardLoginParameter();
                     will(returnValue(configuredValue));
                     one(req).getParameter(paramName);
                     will(returnValue(paramValue));
@@ -1332,7 +1332,7 @@ public class OIDCClientAuthenticatorUtilTest {
             final String paramValue = "some parameter value";
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getForwardAuthzParameter();
+                    one(convClientConfig).getForwardLoginParameter();
                     will(returnValue(configuredValue));
                     one(req).getParameter(paramName);
                     will(returnValue(paramValue));
@@ -1356,7 +1356,7 @@ public class OIDCClientAuthenticatorUtilTest {
             final List<String> configuredValue = Arrays.asList(paramName);
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getForwardAuthzParameter();
+                    one(convClientConfig).getForwardLoginParameter();
                     will(returnValue(configuredValue));
                     one(req).getParameter(paramName);
                     will(returnValue(null));
@@ -1378,7 +1378,7 @@ public class OIDCClientAuthenticatorUtilTest {
             final String paramValue = paramName;
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getForwardAuthzParameter();
+                    one(convClientConfig).getForwardLoginParameter();
                     will(returnValue(configuredValue));
                     one(req).getParameter(paramName);
                     will(returnValue(paramValue));
@@ -1402,7 +1402,7 @@ public class OIDCClientAuthenticatorUtilTest {
             final List<String> configuredValues = Arrays.asList("", "my param", "Special! \n\t (Param) ", " 1234567890 ");
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getForwardAuthzParameter();
+                    one(convClientConfig).getForwardLoginParameter();
                     will(returnValue(configuredValues));
                 }
             });
@@ -1433,7 +1433,7 @@ public class OIDCClientAuthenticatorUtilTest {
             final String foundParamValue = "My\nParam\rValue";
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getForwardAuthzParameter();
+                    one(convClientConfig).getForwardLoginParameter();
                     will(returnValue(configuredValues));
                     one(req).getParameter(emptyParam);
                     will(returnValue(null));
@@ -1469,7 +1469,7 @@ public class OIDCClientAuthenticatorUtilTest {
             final String foundParamValue2 = "a_simple_param_value";
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getForwardAuthzParameter();
+                    one(convClientConfig).getForwardLoginParameter();
                     will(returnValue(configuredValues));
                     one(req).getParameter(emptyParam);
                     will(returnValue(null));
@@ -1506,7 +1506,7 @@ public class OIDCClientAuthenticatorUtilTest {
             final List<String> configuredValues = Arrays.asList(paramName1, paramName2, paramName3, paramName4);
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getForwardAuthzParameter();
+                    one(convClientConfig).getForwardLoginParameter();
                     will(returnValue(configuredValues));
                     one(req).getParameter(paramName1);
                     will(returnValue(paramValue1));
