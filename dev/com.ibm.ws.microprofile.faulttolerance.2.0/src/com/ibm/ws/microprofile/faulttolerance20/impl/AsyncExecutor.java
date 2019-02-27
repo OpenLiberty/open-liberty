@@ -352,7 +352,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                     return;
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                        Tr.event(tc, "Execution {0} not retrying", executionContext.getId());
+                        Tr.event(tc, "Execution {0} not retrying: {1}", executionContext.getId(), retryResult);
                     }
                 }
 

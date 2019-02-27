@@ -149,7 +149,7 @@ public class SyncExecutor<R> implements Executor<R> {
             RetryResult retryResult = retryContext.recordResult(result);
             if (!retryResult.shouldRetry()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Execution {0} not retrying", executionContext.getId());
+                    Tr.event(tc, "Execution {0} not retrying: {1}", executionContext.getId(), retryResult);
                 }
 
                 done = true;
