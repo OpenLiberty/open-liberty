@@ -72,7 +72,11 @@ public class PropertyResolverUtil {
                         String resolvedPropertyName = resolve(config, propertyName);
 
                         //once we have the fully resolved property name, find the string value for that property
-                        String resolvedValue = (String) config.getValue(resolvedPropertyName, String.class, false, null, true);
+                        String resolvedValue = (String) config.getValue(resolvedPropertyName, //property name
+                                                                        String.class, //conversion type
+                                                                        false, //optional
+                                                                        null, //default string
+                                                                        true); //evaluate variables
 
                         //extract the part of the raw string which went before and after the variable
                         String prefix = resolved.substring(0, startIndex);
