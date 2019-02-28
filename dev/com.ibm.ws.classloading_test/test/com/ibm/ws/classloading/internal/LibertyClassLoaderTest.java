@@ -67,7 +67,7 @@ public class LibertyClassLoaderTest {
 
         loader = new AppClassLoader(loader.getParent(), loader.config, Arrays.asList(c), (DeclaredApiAccess) (loader.getParent()), null, null, new GlobalClassloadingConfiguration()) {
             @Override
-            protected com.ibm.ws.classloading.internal.AppClassLoader.ByteResourceInformation findClassBytes(String className, String resourceName) throws IOException {
+            protected com.ibm.ws.classloading.internal.AppClassLoader.ByteResourceInformation findBytes(String resourceName) throws IOException {
                 throw new IOException();
             }
         };

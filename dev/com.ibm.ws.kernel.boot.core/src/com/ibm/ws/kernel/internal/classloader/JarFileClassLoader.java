@@ -126,15 +126,16 @@ public class JarFileClassLoader extends SecureClassLoader implements Closeable {
             throw new ClassNotFoundException(className);
         }
 
-        ResourceHandler resourceHandler = entry.getResourceHandler();
-        URL jarURL = resourceHandler.toURL();
-
+        URL entryURL = null;
         byte[] classBytes = null;
         boolean foundInClassCache = false;
         if (hook != null) {
-            classBytes = hook.loadClass(jarURL, className);
+            entryURL = entry.toExternalURL();
+            classBytes = hook.loadClass(entryURL, className);
             foundInClassCache = (classBytes != null);
         }
+
+        ResourceHandler resourceHandler = entry.getResourceHandler();
 
         Manifest manifest = null;
         try {
@@ -149,6 +150,8 @@ public class JarFileClassLoader extends SecureClassLoader implements Closeable {
             }
             throw new ClassNotFoundException(className, e);
         }
+
+        URL jarURL = resourceHandler.toURL();
 
         int packageEnd = className.lastIndexOf('.');
         if (packageEnd >= 0) {
@@ -166,7 +169,7 @@ public class JarFileClassLoader extends SecureClassLoader implements Closeable {
         Class<?> clazz = defineClass(className, classBytes, 0, classBytes.length, source);
 
         if (hook != null && !foundInClassCache) {
-            hook.storeClass(jarURL, clazz);
+            hook.storeClass(entryURL, clazz);
         }
 
         return clazz;
