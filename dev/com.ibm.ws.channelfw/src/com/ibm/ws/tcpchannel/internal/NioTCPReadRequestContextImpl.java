@@ -11,6 +11,7 @@
 package com.ibm.ws.tcpchannel.internal;
 
 import java.io.IOException;
+import java.net.SocketAddress;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -27,7 +28,7 @@ public class NioTCPReadRequestContextImpl extends TCPReadRequestContextImpl {
 
     /**
      * Constructor.
-     * 
+     *
      * @param link
      */
     public NioTCPReadRequestContextImpl(TCPConnLink link) {
@@ -103,7 +104,16 @@ public class NioTCPReadRequestContextImpl extends TCPReadRequestContextImpl {
                     Tr.event(this, tc, "Sync read throwing IOException");
                 }
 
-                throw new IOException("Read failed.  End of data reached.");
+                // Add local and remote address information
+                String s = "Read failed.  End of data reached.";
+                try {
+                    SocketAddress iaLocal = getTCPConnLink().getSocketIOChannel().getSocket().getLocalSocketAddress();
+                    SocketAddress iaRemote = getTCPConnLink().getSocketIOChannel().getSocket().getRemoteSocketAddress();
+                    s = s + " local=" + iaLocal + " remote=" + iaRemote;
+                } catch (Exception x) {
+                    // do not alter the message if the socket got nuked while we tried to look at it
+                }
+                throw new IOException(s);
             }
         }
         return bytesRead;

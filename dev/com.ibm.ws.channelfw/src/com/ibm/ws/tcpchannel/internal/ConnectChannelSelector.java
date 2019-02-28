@@ -11,6 +11,7 @@
 package com.ibm.ws.tcpchannel.internal;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.nio.channels.CancelledKeyException;
 import java.nio.channels.ClosedChannelException;
@@ -32,12 +33,12 @@ public class ConnectChannelSelector extends ChannelSelector {
     private static final TraceComponent tc = Tr.register(ConnectChannelSelector.class, TCPChannelMessageConstants.TCP_TRACE_NAME, TCPChannelMessageConstants.TCP_BUNDLE);
 
     protected WorkQueueManager wqm;
-    private int countIndex;
-    private int channelType;
+    private final int countIndex;
+    private final int channelType;
 
     /**
      * Constructor.
-     * 
+     *
      * @param _wqm
      * @param _index
      * @param _channelType
@@ -219,7 +220,11 @@ public class ConnectChannelSelector extends ChannelSelector {
                             }
 
                             // create timeout exception to pass to callback error method
-                            IOException e = new SocketTimeoutException("Socket operation timed out before it could be completed");
+                            // Add local and remote address information
+                            InetSocketAddress iaRemote = ci.remoteAddress;
+                            InetSocketAddress iaLocal = ci.localAddress;
+                            IOException e = new SocketTimeoutException("Socket operation timed out before it could be completed. local=" + iaLocal + " remote=" + iaRemote);
+
                             // Hand off to another thread
                             ci.setError(e);
                             if (wqm.dispatchConnect(ci)) {
