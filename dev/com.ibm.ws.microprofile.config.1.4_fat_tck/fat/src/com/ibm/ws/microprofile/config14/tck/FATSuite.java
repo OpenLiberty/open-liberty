@@ -10,22 +10,18 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config14.tck;
 
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class,
-                Config14TCKLauncher.class
+                AlwaysPassesTest.class, //LITE
+                Config14TCKLauncher.class //EXPERIMENTAL
 })
 
 public class FATSuite {
-    @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES()).andWith(FeatureReplacementAction.EE8_FEATURES());
+
 }

@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.config14.tck;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -20,6 +21,8 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -28,8 +31,11 @@ import componenttest.topology.utils.MvnUtils;
  * There is a detailed output on specific
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+@Mode(TestMode.EXPERIMENTAL)
 public class Config14TCKLauncher {
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES()).andWith(FeatureReplacementAction.EE8_FEATURES());
 
     @Server("Config14TCKServer")
     public static LibertyServer server;
