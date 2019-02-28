@@ -406,104 +406,9 @@ public class ZipFileContainerUtils {
         return true;
     }
 
-    abstract static class ZipEntryData {
+    //
 
-        @Trivial
-        ZipEntryData(String r_path, long time) {
-            this.r_path = r_path;
-            this.time = time;
-        }
-
-        final String r_path;
-        private final long time;
-        private int offset = -1;
-
-        final void setOffset(int offset) {
-            this.offset = offset;
-        }
-
-        final int getOffset() {
-            return offset;
-        }
-
-        @Trivial
-        final String r_getPath() {
-            return r_path;
-        }
-
-        @Trivial
-        final long getTime() {
-            return time;
-        }
-
-        abstract String getPath();
-
-        abstract boolean isDirectory();
-
-        abstract int getSize();
-    }
-
-    @Trivial
-    private static class FileZipEntryData extends ZipEntryData {
-        FileZipEntryData(ZipEntry zipEntry) {
-            super(stripPath(zipEntry.getName()), zipEntry.getTime());
-            this.path = zipEntry.getName();
-            this.size = (int) zipEntry.getSize();
-        }
-
-        final String path;
-
-        @Override
-        String getPath() {
-            return path;
-        }            
-
-        @Override
-        boolean isDirectory() {
-            return false; 
-        }
-        
-        final int size;
-
-        @Override
-        int getSize() {
-            return size;
-        }
-    }
-
-    @Trivial
-    private static class DirZipEntryData extends ZipEntryData {
-        DirZipEntryData(ZipEntry zipEntry) {
-            super(stripPath(zipEntry.getName()), zipEntry.getTime());
-        }
-
-        @Override
-        String getPath() {
-            return r_path;
-        }            
-
-        @Override
-        boolean isDirectory() {
-            return true; 
-        }
-
-        @Override
-        int getSize() {
-            return 0;
-        }
-    }
-
-    @Trivial
-    private static final ZipEntryData createZipEntryData(ZipEntry entry) {
-        String path = entry.getName();
-        if (path.charAt( path.length() - 1 ) == '/' ) {
-            return new DirZipEntryData(entry);
-        }
-        return new FileZipEntryData(entry);
-    }
-
-    private static class SearchZipEntryData extends ZipEntryData {
-
+    public static class ZipEntryData {
         /**
          * Create zip entry data with only the relative path
          * set.  This is for use in array searching operations.
@@ -511,29 +416,73 @@ public class ZipFileContainerUtils {
          * @param r_path The relative path for the new data.
          */
         @Trivial
-        SearchZipEntryData(String r_path) {
-            super(r_path, -1L);
+        public ZipEntryData(String r_path) {
+            this.path = null;
+            this.r_path = r_path;
+            this.size = -1L;
+            this.time = -1L;
+            
+            this.offset = -1;
+        }
+        
+        @Trivial        
+        public ZipEntryData(ZipEntry zipEntry) {
+            this.path = zipEntry.getName();
+            this.r_path = stripPath(this.path);
+            this.size = zipEntry.getSize();
+            this.time = zipEntry.getTime();
+            
+            this.offset = -1;
+        }
+
+        //
+
+        private int offset;
+
+        public void setOffset(int offset) {
+            this.offset = offset;
+        }
+
+        public int getOffset() {
+            return offset;
+        }
+
+        //
+
+        private final String path;
+        private final String r_path;
+
+        @Trivial
+        public String getPath() {
+            return path;
+        }            
+
+        @Trivial
+        public boolean isDirectory() {
+            return ( path.charAt( path.length() - 1 ) == '/' ); 
+        }
+
+        @Trivial
+        public String r_getPath() {
+            return r_path;
+        }
+
+        //
+        
+        private final long size;
+        private final long time;
+
+        @Trivial
+        public long getSize() {
+            return size;
         }
         
         @Trivial
-        @Override
-        String getPath() {
-            return null;
-        }
-
-        @Trivial
-        @Override
-        boolean isDirectory() {
-            return false;
-        }
-
-        @Trivial
-        @Override
-        int getSize() {
-            return -1;
+        public long getTime() {
+            return time;
         }
     }
-
+    
     public static class ZipEntryDataComparator implements Comparator<ZipEntryData> {
         @Trivial
         public int compare(ZipEntryData data1, ZipEntryData data2) {
@@ -561,7 +510,7 @@ public class ZipFileContainerUtils {
 
         final Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
         while ( zipEntries.hasMoreElements() ) {
-            entriesList.add( createZipEntryData( zipEntries.nextElement() ) );
+            entriesList.add( new ZipEntryData( zipEntries.nextElement() ) );
         }
         
         ZipEntryData[] entryData = entriesList.toArray( new ZipEntryData[ entriesList.size() ] );
@@ -607,7 +556,7 @@ public class ZipFileContainerUtils {
      */
     @Trivial
     public static int locatePath(ZipEntryData[] entryData, final String r_path) {
-        ZipEntryData targetData = new SearchZipEntryData(r_path);
+        ZipEntryData targetData = new ZipEntryData(r_path);
 
         // Given:
         //
