@@ -380,10 +380,11 @@ public abstract class AbstractJPAComponent
      * 
      * @param xmlSchemaVersion the schema version of the persistence.xml
      * @param integrationProperties the current set of integration-level properties
+     * @param applicationClassLoader the application's classloader. Used to create dynamic proxies for hibernate integration.
      */
     // F743-12524
     public void addIntegrationProperties(String xmlSchemaVersion,
-                                         Map<String, Object> integrationProperties)
+                                         Map<String, Object> integrationProperties, ClassLoader applicationClassLoader)
     {
         // No additional properties added by default.
     }

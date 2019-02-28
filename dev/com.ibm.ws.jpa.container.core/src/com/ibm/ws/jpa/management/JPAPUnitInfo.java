@@ -890,8 +890,9 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
 
         // Starting with JPA 2.0, the application server must make the
         // ValidatorFactory available to the provider.          F743-12524 PM65716
+        // ivClassloader is used to create dynamic proxies for hibernate integration.
         getJPAComponent().addIntegrationProperties(xmlSchemaVersion,
-                                                   integrationProperties);
+                                                   integrationProperties, ivClassLoader);
 
         if (isTraceOn && tc.isDebugEnabled()) {
             Tr.debug(tc, "createContainerEMF properties:" + this.toString());
