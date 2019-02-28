@@ -1999,7 +1999,7 @@ public class OpenAPIDeserializer {
         }
 
         String pattern = getString("pattern", node, false, location, result);
-        if (StringUtils.isNotBlank(value)) {
+        if (StringUtils.isNotBlank(pattern)) {
             schema.setPattern(pattern);
         }
 
