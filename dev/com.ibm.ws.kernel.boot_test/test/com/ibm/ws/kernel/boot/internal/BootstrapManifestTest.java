@@ -151,6 +151,18 @@ public class BootstrapManifestTest {
             versionsToCheck = "10,9";
         } else if (javaVersion == 11) {
             versionsToCheck = "11,10,9";
+        } else if (javaVersion == 12) {
+            versionsToCheck = "12,11,10,9";
+        } else if (javaVersion == 13) {
+            versionsToCheck = "13,12,11,10,9";
+        } else if (javaVersion == 14) {
+            versionsToCheck = "14,13,12,11,10,9";
+        } else if (javaVersion == 15) {
+            versionsToCheck = "15,14,13,12,11,10,9";
+        } else if (javaVersion == 16) {
+            versionsToCheck = "16,15,14,13,12,11,10,9";
+        } else if (javaVersion == 17) {
+            versionsToCheck = "17,16,15,14,13,12,11,10,9";
         } else {
             fail("The running java version: " + javaVersion + " is newer than we have properties files for, system-packages udpates are required");
         }
