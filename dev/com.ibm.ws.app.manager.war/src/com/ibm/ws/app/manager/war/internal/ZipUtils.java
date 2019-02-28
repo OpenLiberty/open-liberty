@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -102,7 +102,7 @@ public class ZipUtils {
      *     could not be deleted if the file could not be deleted.
      */
     @Trivial
-    public File deleteWithRetry(File file) {
+    public static File deleteWithRetry(File file) {
         String methodName = "deleteWithRetry";
 
         String filePath;
@@ -169,7 +169,7 @@ public class ZipUtils {
      *     could not be deleted if the file could not be deleted.
      */
     @Trivial
-    public File delete(File file) {
+    public static File delete(File file) {
         String methodName = "delete";
 
         String filePath;
@@ -248,7 +248,19 @@ public class ZipUtils {
      *
      * @throws IOException Thrown in case of a failure.
      */
-    public void unzip(File source, File target, boolean isEar, long lastModified) throws IOException {
+    public static void unzip(
+        File source, File target,
+        boolean isEar, long lastModified) throws IOException {
+
+        byte[] transferBuffer = new byte[16 * 1024];
+        unzip(source, target, isEar, lastModified, transferBuffer);
+    }
+
+    public static void unzip(
+        File source, File target,
+        boolean isEar, long lastModified,
+        byte[] transferBuffer) throws IOException {
+
         String methodName = "unzip";
 
         String sourcePath = source.getAbsolutePath();
@@ -261,14 +273,13 @@ public class ZipUtils {
 
         if ( !source.exists() ) {
             throw new IOException("Source [ " + sourcePath + " ] does not exist");
+        } else if ( !source.isFile() ) {
+            throw new IOException("Source [ " + sourcePath + " ] is not a simple file");
         } else if ( !target.exists() ) {
             throw new IOException("Target [ " + targetPath + " ] does not exist");
+        } else if ( !target.isDirectory() ) {
+            throw new IOException("Target [ " + targetPath + " ] is not a directory");
         }
-
-        if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, methodName + ": Set last modified [ " + lastModified + " ]");
-        }
-        target.setLastModified(lastModified); 
 
         List<Object[]> warData = ( isEar ? new ArrayList<Object[]>() : null );
 
@@ -292,8 +303,7 @@ public class ZipUtils {
                           tmpNo++ ) {
                         // Empty
                     }
-                    nextWarData = new String[] { sourceEntryName, targetFileName, null };
-                    warData.add(nextWarData);
+                    nextWarData = new Object[] { sourceEntryName, targetFileName, null };
                 } else {
                     targetFileName = sourceEntryName;
                     nextWarData = null;
@@ -320,7 +330,7 @@ public class ZipUtils {
                         throw new IOException("Failed to create directory [ " + targetParent.getAbsolutePath() + " ]");
                     }
 
-                    transfer(sourceZip, sourceEntry, targetFile); // throws IOException
+                    transfer(sourceZip, sourceEntry, targetFile, transferBuffer); // throws IOException
                 }
 
                 // If the entry doesn't provide a meaningful last modified time,
@@ -334,6 +344,8 @@ public class ZipUtils {
 
                 if ( nextWarData != null ) {
                     nextWarData[2] = Long.valueOf(entryModified);
+
+                    warData.add(nextWarData);
                 }
             }
 
@@ -356,7 +368,7 @@ public class ZipUtils {
 
                 File packedWarFile = new File(target, packedWarName);
 
-                unzip(packedWarFile, unpackedWarFile, IS_NOT_EAR, warLastModified);
+                unzip(packedWarFile, unpackedWarFile, IS_NOT_EAR, warLastModified, transferBuffer);
 
                 if ( !packedWarFile.delete() ) {
                     if ( tc.isDebugEnabled() ) {
@@ -365,11 +377,22 @@ public class ZipUtils {
                 }
             }
         }
+
+        // Do this last: The extraction into the target will update
+        // the target time stamp.  We need the time stamp to be the time stamp
+        // of the source.
+
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, methodName + ": Set last modified [ " + lastModified + " ]");
+        }
+        target.setLastModified(lastModified); 
     }
 
-    private byte[] transferBuffer = new byte[16 * 1024];
+    private static void transfer(
+        ZipFile sourceZip, ZipEntry sourceEntry,
+        File targetFile,
+        byte[] transferBuffer) throws IOException {
 
-    private void transfer(ZipFile sourceZip, ZipEntry sourceEntry, File targetFile) throws IOException {
         InputStream inputStream = null;
         OutputStream outputStream = null;
 
@@ -392,7 +415,7 @@ public class ZipUtils {
         }
     }
 
-    private boolean reachesOut(String entryPath) {
+    private static boolean reachesOut(String entryPath) {
         if ( !entryPath.contains("..") ) {
             return false;
         }
