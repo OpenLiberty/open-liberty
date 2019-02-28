@@ -135,7 +135,7 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
                     if (ctx!=null){
                         // set app classloader as TCCL; JSF might need to load resources during session cleanup
                         ClassLoader origClassLoader = ThreadContextHelper.getContextClassLoader();
-                        final ClassLoader warClassLoader = this.request.getServletContext().getClassLoader();
+                        final ClassLoader warClassLoader = wa.getClassLoader();
                         if (warClassLoader != origClassLoader) {
                             if (logger.isLoggable(Level.FINE)) {
                                 if(origClassLoader != null) {
@@ -143,7 +143,8 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
                                                 + " ,to --> " + warClassLoader.toString());
                                 }
                                 else {
-                                    logger.logp(Level.FINE, CLASS_NAME, "finish", "re-set class loader from origClassLoader--> null ,to --> " + warClassLoader.toString()); 
+                                    logger.logp(Level.FINE, CLASS_NAME, "finish", "re-set class loader from origClassLoader--> null ,to --> " 
+                                        + warClassLoader.toString()); 
                                 }
                             }
                             ThreadContextHelper.setClassLoader(warClassLoader);
@@ -151,12 +152,15 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
                             origClassLoader = null;
                         }
 
-                        wa.getSessionContext().sessionPostInvoke(s);
-                            
-                        // reset TCCL to its original loader
-                        if (origClassLoader != null) {
-                            final ClassLoader fOriginalClassloader = origClassLoader;
-                            ThreadContextHelper.setClassLoader(fOriginalClassloader);
+                        try {
+                            wa.getSessionContext().sessionPostInvoke(s);
+                        }
+                        finally {
+                            // reset TCCL to its original loader
+                            if (origClassLoader != null) {
+                                final ClassLoader fOriginalClassloader = origClassLoader;
+                                ThreadContextHelper.setClassLoader(fOriginalClassloader);
+                            }
                         }
                     }
                     else if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) { 
