@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,8 @@ public class Constants {
     public static final String REDIRECT_URI = "redirect_uri";
     public static final String CODE = "code";
     public static final String STATE = "state";
+    public static final String NONCE = "nonce";
+    public static final String RESPONSE_TYPE = "response_type";
     public static final String SESSION_STATE = "session_state";
     public static final String BROWSER_STATE_COOKIE = "oidc_bsc";
     public static final String ERROR = "error";

@@ -39,7 +39,7 @@ public class CircuitBreakerTest extends AbstractFTTest {
         circuitBreaker.setFailureRatio(1.0);
         circuitBreaker.setRequestVolumeThreshold(2);
 
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
         builder.setCircuitBreakerPolicy(circuitBreaker);
 
         Executor<String> executor = builder.build();

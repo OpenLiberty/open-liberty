@@ -28,11 +28,10 @@ import componenttest.exception.TopologyException;
 import componenttest.topology.utils.LibertyServerUtils;
 
 /**
- *
+ * Class for managing files relative to a liberty server.
  */
 public class LibertyFileManager {
-
-    private static final Class<?> c = LibertyFileManager.class;
+    private static final Class<? extends LibertyFileManager> CLASS = LibertyFileManager.class;
 
     /**
      * Container object to encapsulate the search results and last
@@ -85,7 +84,7 @@ public class LibertyFileManager {
     static int findMultipleStringsInFile(int numberOfMatches, String regexp,
                                          RemoteFile fileToSearch) throws Exception {
         final String method = "findMultipleStringsInFile";
-        Log.entering(c, method);
+        Log.entering(CLASS, method);
 
         List<String> matches = Collections.emptyList();
 
@@ -97,11 +96,11 @@ public class LibertyFileManager {
 
             //Produce some trace if user was interested in more than one match but didn't find enough
             if (numberOfMatches > 1 && matches.size() < numberOfMatches) {
-                Log.finer(c, method, "Only found " + matches.size() + " matches");
+                Log.finer(CLASS, method, "Only found " + matches.size() + " matches");
             }
         }
 
-        Log.exiting(c, method);
+        Log.exiting(CLASS, method);
         return matches.size();
     }
 
@@ -116,7 +115,7 @@ public class LibertyFileManager {
     static String findStringInFile(String regexp,
                                    RemoteFile fileToSearch) throws Exception {
         final String method = "findStringInFile";
-        Log.entering(c, method);
+        Log.entering(CLASS, method);
 
         String foundString = null;
 
@@ -130,7 +129,7 @@ public class LibertyFileManager {
             }
         }
 
-        Log.exiting(c, method);
+        Log.exiting(CLASS, method);
         return foundString;
 
     }
@@ -149,11 +148,11 @@ public class LibertyFileManager {
      */
     static LogSearchResult findStringInFile(String regexp, RemoteFile fileToSearch, Long offset) throws Exception {
         final String method = "findStringInFile";
-        Log.entering(c, method, new Object[] { regexp, fileToSearch.getAbsolutePath(), offset });
+        Log.entering(CLASS, method, new Object[] { regexp, fileToSearch.getAbsolutePath(), offset });
 
         LogSearchResult offsetAndMatches = findStringsInFileCommon(Collections.singletonList(regexp), 1, fileToSearch, offset);
 
-        Log.exiting(c, method);
+        Log.exiting(CLASS, method);
         return offsetAndMatches;
     }
 
@@ -168,7 +167,7 @@ public class LibertyFileManager {
     public static List<String> findStringsInFile(String regexp,
                                                  RemoteFile fileToSearch) throws Exception {
         final String method = "findStringsInFile";
-        Log.entering(c, method);
+        Log.entering(CLASS, method);
 
         List<String> matches = null;
 
@@ -178,7 +177,7 @@ public class LibertyFileManager {
             matches = allMatches.getMatches();
         }
 
-        Log.exiting(c, method);
+        Log.exiting(CLASS, method);
         return matches;
     }
 
@@ -194,11 +193,11 @@ public class LibertyFileManager {
      */
     static LogSearchResult findStringsInFile(String regexp, RemoteFile fileToSearch, Long offset) throws Exception {
         final String method = "findStringsInFile";
-        Log.entering(c, method, new Object[] { regexp, fileToSearch.getAbsolutePath(), offset });
+        Log.entering(CLASS, method, new Object[] { regexp, fileToSearch.getAbsolutePath(), offset });
 
         LogSearchResult offsetAndMatches = findStringsInFileCommon(Collections.singletonList(regexp), Integer.MAX_VALUE, fileToSearch, offset);
 
-        Log.exiting(c, method);
+        Log.exiting(CLASS, method);
         return offsetAndMatches;
     }
 
@@ -214,11 +213,11 @@ public class LibertyFileManager {
      */
     static LogSearchResult findStringsInFile(List<String> regexpList, RemoteFile fileToSearch, Long offset) throws Exception {
         final String method = "findStringsInFile";
-        Log.entering(c, method, new Object[] { regexpList, fileToSearch.getAbsolutePath(), offset });
+        Log.entering(CLASS, method, new Object[] { regexpList, fileToSearch.getAbsolutePath(), offset });
 
         LogSearchResult offsetAndMatches = findStringsInFileCommon(regexpList, Integer.MAX_VALUE, fileToSearch, offset);
 
-        Log.exiting(c, method);
+        Log.exiting(CLASS, method);
         return offsetAndMatches;
     }
 
@@ -239,10 +238,10 @@ public class LibertyFileManager {
                                                    RemoteFile fileToSearch,
                                                    Long offset) throws Exception {
         final String method = "findStringsInFileCommon";
-        Log.entering(c, method, new Object[] { regexpList, (searchLimit == Integer.MAX_VALUE ? "(all)" : searchLimit), fileToSearch.getAbsolutePath(), offset });
+        Log.entering(CLASS, method, new Object[] { regexpList, (searchLimit == Integer.MAX_VALUE ? "(all)" : searchLimit), fileToSearch.getAbsolutePath(), offset });
 
         if (!fileToSearch.exists()) {
-            Log.info(c, method, "The file being validated doesn't exist: " + fileToSearch.getAbsolutePath());
+            Log.info(CLASS, method, "The file being validated doesn't exist: " + fileToSearch.getAbsolutePath());
             return null;
         }
 
@@ -259,7 +258,7 @@ public class LibertyFileManager {
             for (long totalSkipped = 0; totalSkipped < offset;) {
                 long skipped = input.skip(offset);
                 if (skipped == 0) {
-                    Log.info(c, method, "The file might have been rotated: " + fileToSearch.getAbsolutePath());
+                    Log.info(CLASS, method, "The file might have been rotated: " + fileToSearch.getAbsolutePath());
                     return null;
                 }
                 totalSkipped += skipped;
@@ -268,7 +267,7 @@ public class LibertyFileManager {
             UnbufferedInputStreamReader rawReader = new UnbufferedInputStreamReader(input, fileToSearch.getEncoding());
             reader = new LineReader(rawReader);
 
-            Log.finer(c, method, "Now looking for strings " + regexpList
+            Log.finer(CLASS, method, "Now looking for strings " + regexpList
                                  + " in the file " + fileToSearch.getName());
 
             Pattern[] patterns = new Pattern[regexpList.size()];
@@ -280,7 +279,7 @@ public class LibertyFileManager {
             newOffset = offset;
 
             for (String line; (line = reader.readLine()) != null;) {
-                Log.finest(c, method, "offset " + newOffset + ": " + line);
+                Log.finest(CLASS, method, "offset " + newOffset + ": " + line);
 
                 // We only want to match against complete lines.
                 if (!reader.eof()) {
@@ -292,7 +291,7 @@ public class LibertyFileManager {
 
                     if (findAny(line, patterns)) {
                         matches.add(line);
-                        Log.finer(c, method, "Match number " + matches.size() + " after reading " + input.count() + " bytes");
+                        Log.finer(CLASS, method, "Match number " + matches.size() + " after reading " + input.count() + " bytes");
                         if (matches.size() >= searchLimit) {
                             break;
                         }
@@ -313,7 +312,7 @@ public class LibertyFileManager {
         }
 
         LogSearchResult result = new LogSearchResult(newOffset, matches, firstLine, lastLine);
-        Log.exiting(c, method, result);
+        Log.exiting(CLASS, method, result);
         return result;
     }
 
@@ -326,91 +325,98 @@ public class LibertyFileManager {
         return false;
     }
 
-    public static RemoteFile getLibertyFile(Machine machine, String fileAbsPath) throws Exception {
-        RemoteFile file = createRemoteFile(machine, fileAbsPath);
-        if (!!!file.exists()) {
-            throw new FileNotFoundException("The Specified file \'"
-                                            + fileAbsPath + "\' does not exist");
-        } else {
-            return file;
+    /**
+     * Answer a remote file on a specified machine and having a specified absolute
+     * path.
+     * 
+     * @param machine The machine which has the specified file.
+     * @param absPath The absolute path of the file.
+     *
+     * @return A remote file which encapsulates the machine and path.
+     *
+     * @throws Exception Thrown if the target file does not exist.
+     */
+    public static RemoteFile getLibertyFile(Machine machine, String absPath) throws Exception {
+        RemoteFile remoteFile = createRemoteFile(machine, absPath);
+        if ( !remoteFile.exists() ) {
+            String msg = "File \'" + absPath + "\' on machine '" + machine + "' does not exist.";
+            throw new FileNotFoundException(msg);
         }
+        return remoteFile;
     }
 
-    public static boolean libertyFileExists(Machine machine, String fileAbsPath) throws Exception {
-        RemoteFile file = createRemoteFile(machine, fileAbsPath);
+    /**
+     * Tell if a remote file exists.
+     *
+     * @param machine The machine which has the specified file.
+     * @param absPath The absolute path of the file.
+     *
+     * @return True or false telling if the target remote file exists.
+     */
+    
+    public static boolean libertyFileExists(Machine machine, String absPath) throws Exception {
+        RemoteFile file = createRemoteFile(machine, absPath);
         return file.exists();
     }
 
-    public static RemoteFile createRemoteFile(Machine machine, String fileAbsPath) {
-        return new RemoteFile(machine, LibertyServerUtils.makeJavaCompatible(fileAbsPath, machine));
+    /**
+     * Create a remote file which encapsulates a machine and an absolute path.
+     * The target remote file need not exist.
+     *
+     * @param machine The machine which has the specified file.
+     * @param absPath The absolute path of the file.
+     *
+     * @return A remote file which encapsulates the machine and path.
+     */
+    public static RemoteFile createRemoteFile(Machine machine, String absPath) {
+        return new RemoteFile(machine, LibertyServerUtils.makeJavaCompatible(absPath, machine));
     }
 
-    public static void deleteLibertyFile(Machine machine, String fileToDeleteAbsPath) throws Exception {
-        final String method = "deleteLibertyFile";
-        Log.info(c, method, "Deleting file '" + fileToDeleteAbsPath + "\'");
-        try {
-            RemoteFile fileToDelete = getLibertyFile(machine, fileToDeleteAbsPath);
-            if (fileToDelete.exists()) {
-                boolean deleted = fileToDelete.delete();
-                if (!deleted) {
-                    Log.info(c, method, "File \'" + fileToDeleteAbsPath
-                                        + "\' was not able to be deleted");
-                }
+    // Delete operations ...
+
+    /**
+     * Attempt to delete a file on a specified machine.
+     *
+     * Emit a log message describing one of three result cases:
+     *
+     * 1) The target file already does not exist.
+     * 2) The target file was deleted.
+     * 3) The target file was not deleted.
+     *
+     * Retry the deletion operation if the first attempt fails.
+     * See {@link RemoteFile#delete()}.
+     *
+     * @param machine The machine which has the specified file.
+     * @param absPath The absolute path of the file.
+     *
+     * @throws Exception Thrown in case of an error deleting the file.
+     */
+    public static void deleteLibertyFile(Machine machine, String absPath) throws Exception {
+        String method = "deleteLibertyFile";
+
+        // TODO: For now, don't log the machine, since it doesn't seem to
+        //       be significant.
+        // + " on machine '" + machine + "'";
+        String prefix = "File '" + absPath + "'";
+        Log.finer(CLASS, method, prefix);
+
+        RemoteFile remoteFile = createRemoteFile(machine, absPath);
+        if ( !remoteFile.exists() ) {
+            Log.finer(CLASS, method, prefix + " does not exist");
+        } else {
+            if ( remoteFile.delete() ) { // throws Exception
+                Log.finer(CLASS, method, prefix + " was deleted");
             } else {
-                Log.info(c, method, "File \'" + fileToDeleteAbsPath
-                                    + "\' does not exist so cannot be deleted");
-            }
-        } catch (FileNotFoundException e) {
-            Log.info(c, method, "File \'" + fileToDeleteAbsPath
-                                + "\' does not exist so cannot be deleted");
-        }
-
-    }
-
-    public static void deleteLibertyDirectoryAndContents(Machine machine, String dirToDeleteAbsPath) throws Exception {
-        final String method = "deleteLibertyDirectoryAndContents";
-        Log.finer(c, method, "deleting Directory and Contents: " + dirToDeleteAbsPath);
-        try {
-            RemoteFile fileToDelete = getLibertyFile(machine, dirToDeleteAbsPath);
-            if (fileToDelete.exists()) {
-                recursivelyDeleteDirectory(machine, fileToDelete);
-            }
-        } catch (FileNotFoundException e) {
-        }
-    }
-
-    private static void recursivelyDeleteDirectory(Machine machine, RemoteFile destinationToDelete) throws Exception {
-        ArrayList<String> contents = new ArrayList<String>();
-        contents = listRemoteContents(destinationToDelete);
-        for (String l : contents) {
-            RemoteFile toDelete = new RemoteFile(machine, destinationToDelete, l);
-            if (toDelete.isDirectory()) {
-                //Recurse if a directory
-                recursivelyDeleteDirectory(machine, toDelete);
-            } else {
-                //else we can delete
-                toDelete.delete();
+                Log.finer(CLASS, method, prefix + " could not be deleted");
             }
         }
-        //Delete directory once contents deleted
-        destinationToDelete.delete();
     }
 
-    private static ArrayList<String> listRemoteContents(RemoteFile remoteDir) throws Exception {
-        final String method = "listRemoteContents";
-        Log.entering(c, method);
-        if (!!!remoteDir.isDirectory() || !!!remoteDir.exists())
-            throw new FileNotFoundException("The specified directoryPath \'"
-                                            + remoteDir.getAbsolutePath() + "\' was not a directory or didn't exist");
-
-        RemoteFile[] firstLevelFiles = remoteDir.list(false);
-        ArrayList<String> firstLevelFileNames = new ArrayList<String>();
-
-        for (RemoteFile f : firstLevelFiles) {
-            firstLevelFileNames.add(f.getName());
-        }
-        return firstLevelFileNames;
+    public static void deleteLibertyDirectoryAndContents(Machine machine, String absPath) throws Exception {
+        deleteLibertyFile(machine, absPath); // throws Exception
     }
+
+    //
 
     /**
      * This copies the named file into the liberty server and maintains the name of the file. This is equivalent to calling
@@ -438,20 +444,11 @@ public class LibertyFileManager {
         return false;
     }
 
-    public static boolean renameLibertyFileWithRetry(Machine machine, String oldFilePath, String newFilePath) throws Exception {
+    public static boolean renameLibertyFileNoRetry(Machine machine, String oldFilePath, String newFilePath) throws Exception {
         RemoteFile source = createRemoteFile(machine, oldFilePath);
         RemoteFile target = createRemoteFile(machine, newFilePath);
         if ( source.exists() ) {
-            return source.renameWithRetry(target);
-        }
-        return false;
-    }
-
-    public static boolean renameLibertyFileWithRetry(Machine machine, String oldFilePath, String newFilePath, long retryNs) throws Exception {
-        RemoteFile source = createRemoteFile(machine, oldFilePath);
-        RemoteFile target = createRemoteFile(machine, newFilePath);
-        if ( source.exists() ) {
-            return source.renameWithRetry(target, retryNs);
+            return source.renameNoRetry(target);
         }
         return false;
     }
@@ -529,13 +526,13 @@ public class LibertyFileManager {
             // different file system (e.g., tmpfs on Linux), which would cause
             // rename to fail.
             RemoteFile tmpFile = new RemoteFile(machine, tmpDir + "/" + destFile.getName() + '.' + System.currentTimeMillis());
-            Log.info(c, "copyFileIntoLiberty", "Copying: " + src.getAbsolutePath() + " to " + dest.getAbsolutePath() + " via " + tmpFile.getAbsolutePath());
+            Log.info(CLASS, "copyFileIntoLiberty", "Copying: " + src.getAbsolutePath() + " to " + dest.getAbsolutePath() + " via " + tmpFile.getAbsolutePath());
             if (!src.copyToDest(tmpFile, recursivelyCopy, true)) {
                 throw new TopologyException("Failed to copy " + src.getAbsolutePath() + " to " + tmpFile.getAbsolutePath());
             }
 
             // Create the destination directory as RemoteFile.copyToDest would.
-            Log.finer(c, "copyFileIntoLiberty", "mkdirs " + destDir);
+            Log.finer(CLASS, "copyFileIntoLiberty", "mkdirs " + destDir);
             destDir.mkdirs();
 
             if (!tmpFile.rename(destFile)) {
@@ -553,16 +550,16 @@ public class LibertyFileManager {
 
                 throw new TopologyException("Failed to rename " + tmpFile.getAbsolutePath() + " to " + destFile.getAbsolutePath() + extraMessage, cause);
             }
-            Log.finer(c, "copyFileIntoLiberty", "Done: copied " + destFile.length() + " / " + destFile.length() + " bytes");
+            Log.finer(CLASS, "copyFileIntoLiberty", "Done: copied " + destFile.length() + " / " + destFile.length() + " bytes");
         } else {
-            Log.info(c, "copyFileIntoLiberty", "Copying: " + src.getAbsolutePath() + " to " + dest.getAbsolutePath());
+            Log.info(CLASS, "copyFileIntoLiberty", "Copying: " + src.getAbsolutePath() + " to " + dest.getAbsolutePath());
             if (!src.copyToDest(dest, recursivelyCopy, true)) {
                 throw new TopologyException("Failed to copy " + src.getAbsolutePath() + " to " + dest.getAbsolutePath());
             }
-            Log.finer(c, "copyFileIntoLiberty", "Done: copied " + dest.length() + " / " + src.length() + " bytes");
+            Log.finer(CLASS, "copyFileIntoLiberty", "Done: copied " + dest.length() + " / " + src.length() + " bytes");
         }
 
-        Log.finer(c, "copyFileIntoLiberty", "Copy successfull!");
+        Log.finer(CLASS, "copyFileIntoLiberty", "Copy successfull!");
         return dest.getAbsolutePath();
     }
 
@@ -571,7 +568,7 @@ public class LibertyFileManager {
         RemoteFile remoteFileTmp = new RemoteFile(machine, path + "/" + destinationFileName + ".tmp");
         RemoteFile remoteFile = new RemoteFile(machine, path + "/" + destinationFileName);
 
-        Log.info(c, "moveFileIntoLiberty", "Copying " + localFile.getAbsolutePath() + " to " + remoteFileTmp.getAbsolutePath());
+        Log.info(CLASS, "moveFileIntoLiberty", "Copying " + localFile.getAbsolutePath() + " to " + remoteFileTmp.getAbsolutePath());
 
         if (!localFile.copyToDest(remoteFileTmp, false, true)) {
             throw new TopologyException("The file \"" + localFile.getName() + "\" failed to copy");
@@ -583,14 +580,14 @@ public class LibertyFileManager {
     }
 
     public static void moveLibertyFile(RemoteFile srcFile, RemoteFile dstFile) throws Exception {
-        Log.info(c, "moveLibertyFile", "Moving " + srcFile.getAbsolutePath() + " to " + dstFile.getAbsolutePath());
+        Log.info(CLASS, "moveLibertyFile", "Moving " + srcFile.getAbsolutePath() + " to " + dstFile.getAbsolutePath());
         if (srcFile.rename(dstFile)) {
-            Log.info(c, "moveLibertyFile", dstFile.getName() + " was successfully moved.");
+            Log.info(CLASS, "moveLibertyFile", dstFile.getName() + " was successfully moved.");
         } else {
             // rename failed, let's copy
             if (srcFile.copyToDest(dstFile)) {
                 srcFile.delete();
-                Log.info(c, "moveLibertyFile", dstFile.getName() + " was successfully copied.");
+                Log.info(CLASS, "moveLibertyFile", dstFile.getName() + " was successfully copied.");
             } else {
                 srcFile.delete();
                 throw new TopologyException("Failed to move " + srcFile.getAbsolutePath() + " to " + dstFile.getAbsolutePath());

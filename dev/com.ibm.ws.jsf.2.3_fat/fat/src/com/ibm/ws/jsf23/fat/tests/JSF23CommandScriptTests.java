@@ -83,7 +83,7 @@ public class JSF23CommandScriptTests {
         URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSF23CommandScriptAutorunDefaultExecute.xhtml");
 
         HtmlPage page = (HtmlPage) webClient.getPage(url);
-        webClient.waitForBackgroundJavaScript(1000);
+        webClient.waitForBackgroundJavaScript(5000);
         // Log the page for debugging if necessary in the future.
         Log.info(c, name.getMethodName(), page.asText());
         Log.info(c, name.getMethodName(), page.asXml());
@@ -108,7 +108,7 @@ public class JSF23CommandScriptTests {
         URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSF23CommandScriptAutorun.xhtml");
 
         HtmlPage page = (HtmlPage) webClient.getPage(url);
-        webClient.waitForBackgroundJavaScript(1000);
+        webClient.waitForBackgroundJavaScript(5000);
 
         // Log the page for debugging if necessary in the future.
         Log.info(c, name.getMethodName(), page.asText());
@@ -134,7 +134,7 @@ public class JSF23CommandScriptTests {
         URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSF23CommandScriptActionListener.xhtml");
 
         HtmlPage page = (HtmlPage) webClient.getPage(url);
-        webClient.waitForBackgroundJavaScript(1000);
+        webClient.waitForBackgroundJavaScript(5000);
 
         // Log the page for debugging if necessary in the future.
         Log.info(c, name.getMethodName(), page.asText());
@@ -165,7 +165,7 @@ public class JSF23CommandScriptTests {
         URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSF23CommandScriptActionListenerAttr.xhtml");
 
         HtmlPage page = (HtmlPage) webClient.getPage(url);
-        webClient.waitForBackgroundJavaScript(1000);
+        webClient.waitForBackgroundJavaScript(5000);
 
         // Log the page for debugging if necessary in the future.
         Log.info(c, name.getMethodName(), page.asText());
@@ -196,7 +196,7 @@ public class JSF23CommandScriptTests {
         URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSF23CommandScriptParam.xhtml");
 
         HtmlPage page = (HtmlPage) webClient.getPage(url);
-        webClient.waitForBackgroundJavaScript(1000);
+        webClient.waitForBackgroundJavaScript(5000);
 
         // Log the page for debugging if necessary in the future.
         Log.info(c, name.getMethodName(), page.asText());
@@ -225,7 +225,7 @@ public class JSF23CommandScriptTests {
 
         // Now click the submit button
         page.getElementById("button1").click();
-        webClient.waitForBackgroundJavaScript(2000);
+        webClient.waitForBackgroundJavaScript(5000);
 
         // Log the page for debugging if necessary in the future.
         Log.info(c, name.getMethodName(), page.asText());

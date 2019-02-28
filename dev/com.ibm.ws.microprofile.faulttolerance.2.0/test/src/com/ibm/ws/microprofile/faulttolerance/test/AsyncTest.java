@@ -48,7 +48,7 @@ public class AsyncTest extends AbstractFTTest {
 
     @Test
     public void testAsync() throws InterruptedException, ExecutionException, TimeoutException {
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
         Executor<Future<String>> executor = builder.buildAsync(Future.class);
 
         List<Future<String>> futures = new ArrayList<>();
@@ -78,7 +78,7 @@ public class AsyncTest extends AbstractFTTest {
 
     @Test
     public void testAsyncCancel() throws InterruptedException, ExecutionException, TimeoutException {
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
         Executor<Future<String>> executor = builder.buildAsync(Future.class);
         ExecutionContext context = executor.newExecutionContext("testAsyncCancellation", null);
 
@@ -135,7 +135,7 @@ public class AsyncTest extends AbstractFTTest {
 
     @Test
     public void testAsyncCS() throws InterruptedException, ExecutionException, TimeoutException {
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
         Executor<CompletionStage<String>> executor = builder.buildAsync(CompletionStage.class);
         ExecutionContext context = executor.newExecutionContext("testAsyncCS", null);
 

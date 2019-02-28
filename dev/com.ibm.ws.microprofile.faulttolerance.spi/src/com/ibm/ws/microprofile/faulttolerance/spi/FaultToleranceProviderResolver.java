@@ -26,7 +26,8 @@ import java.util.ServiceLoader;
  *
  */
 public abstract class FaultToleranceProviderResolver {
-    protected FaultToleranceProviderResolver() {}
+    protected FaultToleranceProviderResolver() {
+    }
 
     private static volatile FaultToleranceProviderResolver instance = null;
 
@@ -40,7 +41,7 @@ public abstract class FaultToleranceProviderResolver {
 
     public abstract TimeoutPolicy newTimeoutPolicy();
 
-    public abstract <T, R> ExecutorBuilder<T, R> newExecutionBuilder();
+    public abstract <R> ExecutorBuilder<R> newExecutionBuilder();
 
     /**
      * Creates a FaultToleranceProviderResolver object
@@ -114,7 +115,7 @@ public abstract class FaultToleranceProviderResolver {
      * pattern is not supported.
      *
      * @param resolver
-     *            set the instance.
+     *                     set the instance.
      */
     public static void setInstance(FaultToleranceProviderResolver resolver) {
         instance = resolver;

@@ -14,16 +14,12 @@ package com.ibm.ws.microprofile.reactive.streams.test;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.reactive.streams.operators.CompletionRunner;
@@ -33,8 +29,16 @@ import org.eclipse.microprofile.reactive.streams.operators.SubscriberBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsEngine;
 import org.junit.Test;
 
+/**
+ * This is the ground-zero test set that is run most commonly during development
+ * to be able to look at a Stream all at once, you need to collect it.
+ */
 public class CollectTest extends WASReactiveUT {
 
+    /**
+     * This simple test is broken down into small stages so that we can tell which
+     * part is broken
+     */
     @Test
     public void toListStageShouldReturnAList() {
 
@@ -64,12 +68,18 @@ public class CollectTest extends WASReactiveUT {
                 list);
     }
 
+    /**
+     * Simple, no member, stream testing
+     */
     @Test
     public void toListStageShouldReturnEmpty() {
         assertEquals(await(
                 ReactiveStreams.of().toList().run(getEngine())), Collections.emptyList());
     }
 
+    /**
+     * Are all elements sent down a simple stream
+     */
     @Test
     public void collectShouldAccumulateResult() {
         assertEquals(await(
@@ -78,6 +88,9 @@ public class CollectTest extends WASReactiveUT {
                 6);
     }
 
+    /**
+     * Can we collect a stream with no elements
+     */
     @Test
     public void collectShouldSupportEmptyStreams() {
         assertEquals(await(
@@ -86,12 +99,18 @@ public class CollectTest extends WASReactiveUT {
                 42);
     }
 
+    /**
+     * Do failed streams terminate
+     */
     @Test(expected = RuntimeException.class)
     public void collectShouldPropagateErrors() {
         await(ReactiveStreams.<Integer>failed(new RuntimeException("failed")).collect(() -> new AtomicInteger(0),
                 AtomicInteger::addAndGet).run(getEngine()));
     }
 
+    /**
+     * Can we collect but, inside that, operate on each element
+     */
     @Test
     public void finisherFunctionShouldBeInvoked() {
         assertEquals(await(
@@ -100,75 +119,18 @@ public class CollectTest extends WASReactiveUT {
                 "1, 2, 3");
     }
 
-    @Test(expected = RuntimeException.class)
-    public void toListStageShouldPropagateErrors() {
-        await(ReactiveStreams.failed(new RuntimeException("failed")).toList().run(getEngine()));
-    }
-
-    @Test(expected = QuietRuntimeException.class)
-    public void collectShouldPropagateUpstreamErrors2() {
-        await(ReactiveStreams.<Integer>failed(new QuietRuntimeException("failed")).collect(() -> new AtomicInteger(0),
-                AtomicInteger::addAndGet).run(getEngine()));
-    }
-
-    @Test(expected = QuietRuntimeException.class)
-    public void toListStageShouldPropagateUpstreamErrors2() {
-        await(ReactiveStreams.failed(new QuietRuntimeException("failed")).toList().run(getEngine()));
-    }
-
-    @Test(expected = QuietRuntimeException.class)
-    public void collectStageShouldPropagateErrorsFromSupplierThroughCompletionStage() {
-        CompletableFuture<Void> cancelled = new CompletableFuture<>();
-        CompletionStage<Integer> result = null;
-        try {
-            result = infiniteStream().onTerminate(() -> cancelled.complete(null))
-                    .collect(Collector.<Integer, Integer, Integer>of(() -> {
-                        throw new QuietRuntimeException("failed");
-                    }, (a, b) -> {
-                    }, (a, b) -> a + b,
-                            Function.identity()))
-                    .run(getEngine());
-        } catch (Exception e) {
-            assertNull(
-                    "Exception thrown directly from stream, it should have been captured by the returned CompletionStage",
-                    e);
-        }
-        await(cancelled);
-        await(result);
-    }
-
-    @Test(expected = QuietRuntimeException.class)
-    public void collectStageShouldPropagateErrorsFromAccumulator() {
-        CompletableFuture<Void> cancelled = new CompletableFuture<>();
-        CompletionStage<String> result = infiniteStream().onTerminate(() -> cancelled.complete(null))
-                .collect(Collector.of(() -> "", (a, b) -> {
-                    throw new QuietRuntimeException("failed");
-                }, (a, b) -> a + b,
-                        Function.identity()))
-                .run(getEngine());
-        await(cancelled);
-        await(result);
-    }
-
-    @Test(expected = QuietRuntimeException.class)
-    public void collectStageShouldPropagateErrorsFromFinisher() {
-        CompletionStage<Integer> result = ReactiveStreams.of(1, 2, 3)
-                .collect(Collector.<Integer, Integer, Integer>of(() -> 0, (a, b) -> {
-                }, (a, b) -> a + b, r -> {
-                    throw new QuietRuntimeException("failed");
-                })).run(getEngine());
-        await(result);
-    }
-
+    /**
+     * A SubscriberBuilder should be reusable
+     */
     @Test
     public void collectStageBuilderShouldBeReusable() {
-        SubscriberBuilder<Integer, List<Integer>> toList = ReactiveStreams.<Integer>builder().toList();
+        SubscriberBuilder<Integer, List<Integer>> reusedBuilder = ReactiveStreams.<Integer>builder().toList();
         assertEquals(await(
-                ReactiveStreams.of(1, 2, 3).to(toList).run(getEngine())),
+                ReactiveStreams.of(1, 2, 3).to(reusedBuilder).run(getEngine())),
                 Arrays.asList(1, 2,
                         3));
         assertEquals(await(ReactiveStreams.of(4, 5,
-                6).to(toList).run(getEngine())), Arrays.asList(4, 5, 6));
+                6).to(reusedBuilder).run(getEngine())), Arrays.asList(4, 5, 6));
     }
 
 }

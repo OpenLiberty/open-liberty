@@ -247,11 +247,11 @@ public class ConsumerUtil {
 		return signingKey;
 	}
 
-	JsonWebStructure getJwtHeader(JwtContext jwtContext) throws InvalidJwtException {
+	JsonWebStructure getJwtHeader(JwtContext jwtContext) throws Exception {
 		List<JsonWebStructure> jsonStructures = jwtContext.getJoseObjects();
 		if (jsonStructures == null || jsonStructures.isEmpty()) {
 			// TODO - NLS message
-			throw new InvalidJwtException("Invalid JsonWebStructure");
+		    throw new Exception("Invalid JsonWebStructure");
 		}
 		JsonWebStructure jwtHeader = jsonStructures.get(0);
 		debugJwtHeader(jwtHeader);
@@ -655,7 +655,7 @@ public class ConsumerUtil {
 		JsonWebStructure jwtHeader = null;
 		try {
 			jwtHeader = getJwtHeader(jwtContext);
-		} catch (InvalidJwtException e) {
+		} catch (Exception e) {
 			// TODO - NLS message?
 			if (tc.isDebugEnabled()) {
 				Tr.debug(tc, "Failed to obtain JWT header");

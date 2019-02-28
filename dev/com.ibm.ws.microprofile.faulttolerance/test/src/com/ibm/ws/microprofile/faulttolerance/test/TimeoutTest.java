@@ -36,7 +36,7 @@ public class TimeoutTest extends AbstractFTTest {
         TimeoutPolicy timeout = FaultToleranceProvider.newTimeoutPolicy();
         timeout.setTimeout(Duration.ofMillis(500));
 
-        ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
         builder.setTimeoutPolicy(timeout);
 
         Executor<String> executor = builder.build();

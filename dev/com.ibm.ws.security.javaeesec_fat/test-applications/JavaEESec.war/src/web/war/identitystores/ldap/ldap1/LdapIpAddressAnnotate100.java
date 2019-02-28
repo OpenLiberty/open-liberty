@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
 
 @LdapIdentityStoreDefinition(
-                             url = "ldap://127.0.0.1:10389/",
+                             url = "${ldapIDStorePropsBean.ipUrl}",
                              callerBaseDn = "",
                              callerSearchBase = "ou=users,o=ibm,c=us",
                              callerSearchScope = LdapIdentityStoreDefinition.LdapSearchScope.SUBTREE,

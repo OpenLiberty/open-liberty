@@ -12,7 +12,7 @@
     <keyStore id="defaultTrustStore" location="${server.config.dir}/resources/security/trust.jks" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 4/12/2038 -->
     <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" clientAuthentication="true" />
 
-    <ldapRegistry id="LDAP" realm="MyLdapRealm" host="localhost" port="10389" ignoreCase="true"
+    <ldapRegistry id="LDAP" realm="MyLdapRealm" host="localhost" port="${ldap.1.port}" ignoreCase="true"
         loginProperty="uid"
         bindDN="uid=admin,ou=users,o=ibm,c=us"
         bindPassword="s3cur1ty"

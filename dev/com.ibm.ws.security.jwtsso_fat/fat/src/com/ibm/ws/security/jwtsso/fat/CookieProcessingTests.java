@@ -30,9 +30,11 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.utils.FatStringUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwtsso.fat.expectations.CookieExpectation;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
+import com.ibm.ws.security.jwtsso.fat.utils.JwtFatActions;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
 
 import componenttest.annotation.Server;
@@ -57,7 +59,7 @@ public class CookieProcessingTests extends CommonSecurityFat {
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
 
-    private final TestActions actions = new TestActions();
+    private final JwtFatActions actions = new JwtFatActions();
     private final TestValidationUtils validationUtils = new TestValidationUtils();
 
     @BeforeClass
@@ -253,26 +255,25 @@ public class CookieProcessingTests extends CommonSecurityFat {
     @Test
     public void test_TokenInAuthHeader() throws Exception {
 
-        // get jwt token from token endpoint.
-        String tokenEndpointUrl = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() +
-                                  "/jwt/ibm/api/defaultJwtSso/token";
-        wc = new WebClient();
-        wc.getOptions().setUseInsecureSSL(true);
+        // get jwt token from token endpoint
+        String tokenEndpointUrl = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + "/jwt/ibm/api/defaultJwtSso/token";
+        wc = actions.createWebClient();
         response = actions.invokeUrlWithBasicAuth(_testName, wc, tokenEndpointUrl, defaultUser, defaultPassword);
         String responseStr = response.getWebResponse().getContentAsString();
-        Log.info(thisClass, "", "received this from token endpoint: " + responseStr);
-        // strip json
-        String token = responseStr.replace("{\"token\": ", "").replaceAll("\"}", "");
-        Log.info(thisClass, "", "parsed token: " + token);
+        Log.info(thisClass, _testName, "received this from token endpoint: " + responseStr);
+        String token = FatStringUtils.extractRegexGroup(responseStr, "\"token\": \"(.+)\"");
+        Log.info(thisClass, _testName, "parsed token: " + token);
 
-        wc = new WebClient();
+        String action = JwtFatActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+
+        wc = actions.createWebClient();
         response = actions.invokeUrlWithBearerToken(_testName, wc, protectedUrl, token);
 
-        // should be able to reach protected page, skipping login form
-        responseStr = response.getWebResponse().getContentAsString();
-        boolean check2 = responseStr.contains("SimpleServlet");
-        assertTrue("Did not successfully access the protected resource", check2);
-
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(action, protectedUrl));
+        expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(action, defaultUser, JwtFatConstants.DEFAULT_ISS_REGEX));
+        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(action, wc, JwtFatConstants.JWT_COOKIE_NAME));
+        validationUtils.validateResult(response, action, expectations);
     }
 
     //TODO: more tests for multiple cookies on non-root path

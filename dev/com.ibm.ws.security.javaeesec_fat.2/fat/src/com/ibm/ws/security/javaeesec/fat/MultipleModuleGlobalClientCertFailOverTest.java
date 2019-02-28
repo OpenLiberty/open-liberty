@@ -47,6 +47,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 @Mode(TestMode.FULL)
 public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBase {
 
+    protected static String portNumber = System.getProperty("ldap.1.port");
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.clientcert.fat");
     protected static Class<?> logClass = MultipleModuleGlobalClientCertFailOverTest.class;
     protected static String urlBase;
@@ -74,14 +75,16 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
     protected static String MODULE1_TITLE_LOGIN_PAGE = "login page for the form login test";
     protected static String MODULE2_TITLE_CUSTOMLOGIN_PAGE = "Custom Login Sample by using JSF";
 
-    protected static String IS1_REALM_NAME = "127.0.0.1:10389";
-    protected static String IS2_REALM_NAME = "localhost:10389";
+    protected static String IS1_REALM_NAME = "127.0.0.1:" + portNumber;
+    protected static String IS2_REALM_NAME = "localhost:" + portNumber;
 
-    protected static String IS1_GROUP_REALM_NAME = "group:127.0.0.1:10389/";
-    protected static String IS2_GROUP_REALM_NAME = "group:localhost:10389/";
+    protected static String IS1_GROUP_REALM_NAME = "group:127.0.0.1:" + portNumber + "/";
+    protected static String IS2_GROUP_REALM_NAME = "group:localhost:" + portNumber + "/";
 
-    protected static String IS1_GROUPS = "group:127.0.0.1:10389/grantedgroup2, group:127.0.0.1:10389/grantedgroup, group:127.0.0.1:10389/group1";
-    protected static String IS2_GROUPS = "group:localhost:10389/grantedgroup2, group:localhost:10389/anothergroup1, group:localhost:10389/grantedgroup";
+    protected static String IS1_GROUPS = "group:127.0.0.1:" + portNumber + "/grantedgroup2, group:127.0.0.1:" + portNumber + "/grantedgroup, group:127.0.0.1:" + portNumber
+                                         + "/group1";
+    protected static String IS2_GROUPS = "group:localhost:" + portNumber + "/grantedgroup2, group:localhost:" + portNumber + "/anothergroup1, group:localhost:" + portNumber
+                                         + "/grantedgroup";
 
     protected final static String CERTUSER1_KEYFILE = "certuser1.jks";
     protected final static String CERTUSER4_KEYFILE = "certuser4.jks";
@@ -128,11 +131,12 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
 
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect",
-                                      "web.war.identitystores.ldap.ldap1", "web.war.identitystores.custom.grouponly", "web.war.identitystores.custom.realm1");
+                                      "web.war.identitystores.ldap.ldap1", "web.war.identitystores.custom.grouponly", "web.war.identitystores.custom.realm1",
+                                      "web.war.identitystores.ldap");
         // create module2, custom form login, forward, ldap2. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform",
                                       "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly",
-                                      "web.war.identitystores.custom.realm2");
+                                      "web.war.identitystores.custom.realm2", "web.war.identitystores.ldap");
 
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EAR_NAME, true, WAR1_NAME, WAR2CUSTOM_NAME);
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_NAME);

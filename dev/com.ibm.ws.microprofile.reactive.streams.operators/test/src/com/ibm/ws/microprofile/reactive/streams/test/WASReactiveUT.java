@@ -24,7 +24,7 @@ import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsEn
 import com.ibm.ws.microprofile.reactive.streams.operators.spi.impl.WASReactiveStreamsEngineImpl;
 
 /**
- *
+ * A bag of utility functions
  */
 public class WASReactiveUT {
 

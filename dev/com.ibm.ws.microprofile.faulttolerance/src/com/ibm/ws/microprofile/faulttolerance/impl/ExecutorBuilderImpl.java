@@ -27,7 +27,7 @@ import com.ibm.ws.microprofile.faulttolerance.utils.DummyMetricRecorder;
 import com.ibm.ws.threading.PolicyExecutorProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
-public class ExecutorBuilderImpl<T, R> implements ExecutorBuilder<T, R> {
+public class ExecutorBuilderImpl<R> implements ExecutorBuilder<R> {
 
     protected CircuitBreakerPolicy circuitBreakerPolicy = null;
     protected RetryPolicy retryPolicy = null;
@@ -47,42 +47,42 @@ public class ExecutorBuilderImpl<T, R> implements ExecutorBuilder<T, R> {
 
     /** {@inheritDoc} */
     @Override
-    public ExecutorBuilder<T, R> setRetryPolicy(RetryPolicy retry) {
+    public ExecutorBuilder<R> setRetryPolicy(RetryPolicy retry) {
         this.retryPolicy = retry;
         return this;
     }
 
     /** {@inheritDoc} */
     @Override
-    public ExecutorBuilder<T, R> setCircuitBreakerPolicy(CircuitBreakerPolicy circuitBreaker) {
+    public ExecutorBuilder<R> setCircuitBreakerPolicy(CircuitBreakerPolicy circuitBreaker) {
         this.circuitBreakerPolicy = circuitBreaker;
         return this;
     }
 
     /** {@inheritDoc} */
     @Override
-    public ExecutorBuilder<T, R> setBulkheadPolicy(BulkheadPolicy bulkhead) {
+    public ExecutorBuilder<R> setBulkheadPolicy(BulkheadPolicy bulkhead) {
         this.bulkheadPolicy = bulkhead;
         return this;
     }
 
     /** {@inheritDoc} */
     @Override
-    public ExecutorBuilder<T, R> setFallbackPolicy(FallbackPolicy fallback) {
+    public ExecutorBuilder<R> setFallbackPolicy(FallbackPolicy fallback) {
         this.fallbackPolicy = fallback;
         return this;
     }
 
     /** {@inheritDoc} */
     @Override
-    public ExecutorBuilder<T, R> setTimeoutPolicy(TimeoutPolicy timeout) {
+    public ExecutorBuilder<R> setTimeoutPolicy(TimeoutPolicy timeout) {
         this.timeoutPolicy = timeout;
         return this;
     }
 
     /** {@inheritDoc} */
     @Override
-    public ExecutorBuilder<T, R> setMetricRecorder(MetricRecorder metricRecorder) {
+    public ExecutorBuilder<R> setMetricRecorder(MetricRecorder metricRecorder) {
         this.metricRecorder = metricRecorder;
         return this;
     }
