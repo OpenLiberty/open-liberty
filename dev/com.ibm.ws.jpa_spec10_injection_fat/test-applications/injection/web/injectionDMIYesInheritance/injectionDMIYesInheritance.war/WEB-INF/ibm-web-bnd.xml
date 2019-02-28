@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
 /*******************************************************************************
  * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -8,18 +10,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+-->
+<web-bnd xmlns="http://websphere.ibm.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd"
+	version="1.0">
 
-package com.ibm.ws.jpa.injection.dmi;
+	<virtual-host name="default_host" />
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-                JPA10Injection_DMI_NoInheritance_Web.class,
-                JPA10Injection_DMI_YesInheritance_Web.class
-})
-public class JPA10Injection_DMI_NoInheritance {
-
-}
+</web-bnd>

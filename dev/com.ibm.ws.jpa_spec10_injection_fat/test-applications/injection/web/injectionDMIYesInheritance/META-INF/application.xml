@@ -16,17 +16,17 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd"
 	id="Application_ID">
 
-	<display-name>JPA10Injection_DFIYesInheritance_Web</display-name>
+	<display-name>JPA10Injection_DMIYesInheritance_Web</display-name>
 	<module id="WebModule_1">
         <web>
-            <web-uri>injectionDFIYesInheritance.war</web-uri>
-            <context-root>JPA10Injection_DFIYesInheritance_Web</context-root>
+            <web-uri>injectionDMIYesInheritance.war</web-uri>
+            <context-root>JPA10Injection_DMIYesInheritance_Web</context-root>
         </web>
     </module>
     <module id="WebModule_2">
         <web>
-            <web-uri>injectionDFIYesInheritanceDDOvrd.war</web-uri>
-            <context-root>JPA10Injection_DFIYesInheritance_DDOvrd_Web</context-root>
+            <web-uri>injectionDMIYesInheritanceDDOvrd.war</web-uri>
+            <context-root>JPA10Injection_DMIYesInheritance_DDOvrd_Web</context-root>
         </web>
     </module>
 </application>

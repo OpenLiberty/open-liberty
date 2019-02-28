@@ -9,17 +9,17 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa.injection.dmi;
+package com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.ddovrd;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-                JPA10Injection_DMI_NoInheritance_Web.class,
-                JPA10Injection_DMI_YesInheritance_Web.class
-})
-public class JPA10Injection_DMI_NoInheritance {
-
+/**
+ * JPA Injection Test Servlet
+ *
+ * Injection Type: Field
+ * Field/Method Protection: Private
+ * Inheritance: Yes, Annotation Override of Superclass Injection Fields
+ *
+ *
+ */
+public class DFIPriYesInhDDOvrdTestServlet extends DFIPriYesInhDDOvrdTestSuperclass {
+    private static final long serialVersionUID = 3356302178371125501L;
 }

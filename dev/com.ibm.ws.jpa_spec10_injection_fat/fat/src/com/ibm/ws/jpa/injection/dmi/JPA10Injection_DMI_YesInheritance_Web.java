@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa.injection.dfi;
+package com.ibm.ws.jpa.injection.dmi;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,14 +28,14 @@ import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.FATSuite;
 import com.ibm.ws.jpa.JPAFATServletClient;
-import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.anoovrd.DFIPkgYesInhAnoOvrdTestServlet;
-import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.anoovrd.DFIPriYesInhAnoOvrdTestServlet;
-import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.anoovrd.DFIProYesInhAnoOvrdTestServlet;
-import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.anoovrd.DFIPubYesInhAnoOvrdTestServlet;
-import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestServlet;
-import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestServlet;
-import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestServlet;
-import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestServlet;
+import com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.anoovrd.DMIPkgYesInhAnoOvrdTestServlet;
+import com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.anoovrd.DMIPriYesInhAnoOvrdTestServlet;
+import com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.anoovrd.DMIProYesInhAnoOvrdTestServlet;
+import com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.anoovrd.DMIPubYesInhAnoOvrdTestServlet;
+import com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.ddovrd.DMIPkgYesInhDDOvrdTestServlet;
+import com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.ddovrd.DMIPriYesInhDDOvrdTestServlet;
+import com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.ddovrd.DMIProYesInhDDOvrdTestServlet;
+import com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.ddovrd.DMIPubYesInhDDOvrdTestServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -46,11 +46,11 @@ import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
 //@Mode(TestMode.FULL)
-public class JPA10Injection_DFI_YesInheritance_Web extends JPAFATServletClient {
+public class JPA10Injection_DMI_YesInheritance_Web extends JPAFATServletClient {
     private final static String RESOURCE_ROOT = "test-applications/injection/";
-    private final static String applicationName = "JPA10Injection_DFIYesInheritance_Web"; // Name of EAR
-    private final static String contextRoot = "JPA10Injection_DFIYesInheritance_Web";
-    private final static String contextRoot2 = "JPA10Injection_DFIYesInheritance_DDOvrd_Web";
+    private final static String applicationName = "JPA10Injection_DMIYesInheritance_Web"; // Name of EAR
+    private final static String contextRoot = "JPA10Injection_DMIYesInheritance_Web";
+    private final static String contextRoot2 = "JPA10Injection_DMIYesInheritance_DDOvrd_Web";
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
@@ -64,15 +64,15 @@ public class JPA10Injection_DFI_YesInheritance_Web extends JPAFATServletClient {
 
     @Server("JPAServer")
     @TestServlets({
-                    @TestServlet(servlet = DFIPkgYesInhAnoOvrdTestServlet.class, path = contextRoot + "/" + "DFIPkgYesInhAnoOvrdTestServlet"),
-                    @TestServlet(servlet = DFIPriYesInhAnoOvrdTestServlet.class, path = contextRoot + "/" + "DFIPriYesInhAnoOvrdTestServlet"),
-                    @TestServlet(servlet = DFIProYesInhAnoOvrdTestServlet.class, path = contextRoot + "/" + "DFIProYesInhAnoOvrdTestServlet"),
-                    @TestServlet(servlet = DFIPubYesInhAnoOvrdTestServlet.class, path = contextRoot + "/" + "DFIPubYesInhAnoOvrdTestServlet"),
+                    @TestServlet(servlet = DMIPkgYesInhAnoOvrdTestServlet.class, path = contextRoot + "/" + "DMIPkgYesInhAnoOvrdTestServlet"),
+                    @TestServlet(servlet = DMIPriYesInhAnoOvrdTestServlet.class, path = contextRoot + "/" + "DMIPriYesInhAnoOvrdTestServlet"),
+                    @TestServlet(servlet = DMIProYesInhAnoOvrdTestServlet.class, path = contextRoot + "/" + "DMIProYesInhAnoOvrdTestServlet"),
+                    @TestServlet(servlet = DMIPubYesInhAnoOvrdTestServlet.class, path = contextRoot + "/" + "DMIPubYesInhAnoOvrdTestServlet"),
 
-                    @TestServlet(servlet = DFIPkgYesInhDDOvrdTestServlet.class, path = contextRoot2 + "/" + "DFIPkgYesInhDDOvrdTestServlet"),
-                    @TestServlet(servlet = DFIPriYesInhDDOvrdTestServlet.class, path = contextRoot2 + "/" + "DFIPriYesInhDDOvrdTestServlet"),
-                    @TestServlet(servlet = DFIProYesInhDDOvrdTestServlet.class, path = contextRoot2 + "/" + "DFIProYesInhDDOvrdTestServlet"),
-                    @TestServlet(servlet = DFIPubYesInhDDOvrdTestServlet.class, path = contextRoot2 + "/" + "DFIPubYesInhDDOvrdTestServlet"),
+                    @TestServlet(servlet = DMIPkgYesInhDDOvrdTestServlet.class, path = contextRoot2 + "/" + "DMIPkgYesInhDDOvrdTestServlet"),
+                    @TestServlet(servlet = DMIPriYesInhDDOvrdTestServlet.class, path = contextRoot2 + "/" + "DMIPriYesInhDDOvrdTestServlet"),
+                    @TestServlet(servlet = DMIProYesInhDDOvrdTestServlet.class, path = contextRoot2 + "/" + "DMIProYesInhDDOvrdTestServlet"),
+                    @TestServlet(servlet = DMIPubYesInhDDOvrdTestServlet.class, path = contextRoot2 + "/" + "DMIPubYesInhDDOvrdTestServlet"),
 
     })
     public static LibertyServer server1;
@@ -80,7 +80,7 @@ public class JPA10Injection_DFI_YesInheritance_Web extends JPAFATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server1, FATSuite.JAXB_PERMS);
-        bannerStart(JPA10Injection_DFI_YesInheritance_Web.class);
+        bannerStart(JPA10Injection_DMI_YesInheritance_Web.class);
         timestart = System.currentTimeMillis();
 
         server1.startServer();
@@ -105,8 +105,8 @@ public class JPA10Injection_DFI_YesInheritance_Web extends JPAFATServletClient {
     }
 
     private static void setupTestApplication() throws Exception {
-        final String webModuleName = "injectionDFIYesInheritance";
-        final String webModule2Name = "injectionDFIYesInheritanceDDOvrd";
+        final String webModuleName = "injectionDMIYesInheritance";
+        final String webModule2Name = "injectionDMIYesInheritanceDDOvrd";
         final String webFileRootPath = RESOURCE_ROOT + "web/" + webModuleName + "/";
         final String libsPath = RESOURCE_ROOT + "libs/";
 
@@ -134,13 +134,15 @@ public class JPA10Injection_DFI_YesInheritance_Web extends JPAFATServletClient {
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, webModuleName + ".war");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.injection.entities.war");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.injection.testlogic");
-        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.anoovrd");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.anoovrd");
         ShrinkHelper.addDirectory(webApp, webFileRootPath + webModuleName + ".war");
 
         WebArchive webApp2 = ShrinkWrap.create(WebArchive.class, webModule2Name + ".war");
         webApp2.addPackages(true, "com.ibm.ws.jpa.fvt.injection.entities.war");
         webApp2.addPackages(true, "com.ibm.ws.jpa.fvt.injection.testlogic");
-        webApp2.addPackages(true, "com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.ddovrd");
+        webApp2.addPackages(true, "com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh");
+        webApp2.addPackages(true, "com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.ddovrd");
         ShrinkHelper.addDirectory(webApp2, webFileRootPath + webModule2Name + ".war");
 
         final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, applicationName + ".ear");
@@ -186,7 +188,7 @@ public class JPA10Injection_DFI_YesInheritance_Web extends JPAFATServletClient {
                                "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
             );
         } finally {
-            bannerEnd(JPA10Injection_DFI_YesInheritance_Web.class, timestart);
+            bannerEnd(JPA10Injection_DMI_YesInheritance_Web.class, timestart);
         }
 
         ServerConfiguration sc = server1.getServerConfiguration();
