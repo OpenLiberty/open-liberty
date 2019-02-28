@@ -11,6 +11,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+IBM-Interim-Fixes: OLGH08828
+
 instrument.disabled: true
 
 publish.wlp.jar.disabled: true
