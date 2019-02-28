@@ -41,10 +41,9 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
 
 public class XMLConfigParser {
-    /**  */
-    private static final String VARIABLE_VALUE = "value";
 
-    /**  */
+    private static final String VARIABLE_VALUE = "value";
+    private static final String VARIABLE_DEFAULT_VALUE = "defaultValue";
     private static final String VARIABLE_NAME = "name";
 
     private static final TraceComponent tc = Tr.register(XMLConfigParser.class, XMLConfigConstants.TR_GROUP, XMLConfigConstants.NLS_PROPS);
@@ -421,6 +420,7 @@ public class XMLConfigParser {
     private ConfigVariable parseVariable(DepthAwareXMLStreamReader parser, String docLocation) throws ConfigParserTolerableException {
         String variableName = null;
         String variableValue = null;
+        String variableDefault = null;
 
         int attrCount = parser.getAttributeCount();
         for (int i = 0; i < attrCount; ++i) {
@@ -428,14 +428,10 @@ public class XMLConfigParser {
             String value = parser.getAttributeValue(i);
             if (VARIABLE_NAME.equals(name)) {
                 variableName = value;
-                if (variableValue != null) {
-                    break;
-                }
             } else if (VARIABLE_VALUE.equals(name)) {
                 variableValue = value;
-                if (variableName != null) {
-                    break;
-                }
+            } else if (VARIABLE_DEFAULT_VALUE.equals(name)) {
+                variableDefault = value;
             }
         }
 
@@ -445,13 +441,13 @@ public class XMLConfigParser {
             throw new ConfigParserTolerableException();
         }
 
-        if (variableValue == null) {
+        if (variableValue == null && variableDefault == null) {
             Location l = parser.getLocation();
             logError("error.variable.value.missing", l.getLineNumber(), l.getSystemId());
             throw new ConfigParserTolerableException();
         }
 
-        return new ConfigVariable(variableName, variableValue, behaviorStack.getLast(), docLocation);
+        return new ConfigVariable(variableName, variableValue, variableDefault, behaviorStack.getLast(), docLocation);
     }
 
     @FFDCIgnore(XMLStreamException.class)
