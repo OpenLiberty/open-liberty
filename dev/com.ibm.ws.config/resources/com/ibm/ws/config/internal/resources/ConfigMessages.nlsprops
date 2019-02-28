@@ -433,7 +433,7 @@ error.variable.name.missing.useraction=Add a name attribute to the variable.
 
 error.variable.value.missing=CWWKG0092E: A value attribute or defaultValue attribute must be specified for the variable on line {0} of resource {1}
 error.variable.value.missing.explanation=The server configuration contains a variable configuration element that does not have a value attribute or defaultValue attribute.
-error.variable.value.missing.useraction=Add a value attribute or defaultValue attribvute to the variable.
+error.variable.value.missing.useraction=Add a value attribute or defaultValue attribute to the variable.
 
 audit.dropin.being.processed=CWWKG0093A: Processing configuration drop-ins resource: {0}
 audit.dropin.being.processed.explanation=The contents of the specified resource will be included in the server configuration.
