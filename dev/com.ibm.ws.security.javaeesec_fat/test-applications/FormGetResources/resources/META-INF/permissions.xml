@@ -49,4 +49,9 @@
       <actions>resolve</actions>
    </permission>
 
+   <permission>
+      <class-name>java.util.PropertyPermission</class-name>
+      <name>ldap.1.port</name>
+      <actions>read</actions>
+   </permission>
 </permissions>

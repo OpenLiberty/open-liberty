@@ -288,7 +288,7 @@ goto:eof
     set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
 
     @REM Use javaw so command windows can be closed.
-    start /b "" !JAVA_CMD_QUOTED!w !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED! >> "%X_LOG_DIR%\%X_LOG_FILE%" 2>&1
+    start /min /b "" !JAVA_CMD_QUOTED!w !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED! >> "%X_LOG_DIR%\%X_LOG_FILE%" 2>&1
 
     set IBM_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
 
@@ -553,7 +553,6 @@ goto:eof
 
   @REM Filter off all of the -D and -X arguments off of !PARAMS_QUOTED! and
   @REM add them onto !JVM_OPTIONS!
-  set REMAINING_ARGS=
   set INCLUDE_NEXT_ARG=F
   for %%a in (%PARAMS_QUOTED%) do (
     set CUR_ARG=%%a
@@ -567,11 +566,8 @@ goto:eof
 	  set INCLUDE_NEXT_ARG=T
     ) else if "!CUR_ARG:~0,2!"=="-X" (
       set JVM_TEMP_OPTIONS=!JVM_TEMP_OPTIONS! !CUR_ARG!
-    ) else (
-      set REMAINING_ARGS=!REMAINING_ARGS! !CUR_ARG!
-    )
+    ) 
   )
-  set PARAMS_QUOTED=!REMAINING_ARGS!
 
   set JVM_OPTIONS=!JVM_OPTIONS!%JVM_TEMP_OPTIONS%
 goto:eof

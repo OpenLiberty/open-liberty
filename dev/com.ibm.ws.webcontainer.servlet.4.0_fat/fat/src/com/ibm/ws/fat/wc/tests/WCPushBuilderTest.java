@@ -47,13 +47,8 @@ public class WCPushBuilderTest extends LoggingTest {
                                                   "testservlet40.war.listeners", "testservlet40.jar.servlets");
 
         SHARED_SERVER.startIfNotStarted();
-
-        LOG.info("Setup : wait for message to indicate app has started");
-
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestServlet40", 10000);
-
+        WCApplicationHelper.waitForAppStart("TestServlet40", WCPushBuilderTest.class.getName(), SHARED_SERVER.getLibertyServer());
         LOG.info("Setup : complete, ready for Tests");
-
     }
 
     @AfterClass

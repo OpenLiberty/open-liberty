@@ -457,8 +457,8 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * 
      * @throws Exception
      */
-    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException"})
-    @AllowedFFDC({"com.ibm.websphere.security.jwt.InvalidTokenException" })
+    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException" })
     @Test
     public void MPJwtConfigUsingBuilderTests_buildUsingJWK_mpJWTusingX509() throws Exception {
 
@@ -469,7 +469,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
         expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request using the provided token."));
-        expectations.addExpectation(new ServerMessageExpectation(resourceServer, "JWS signature is invalid", "Message log did not contain an exception indicating that the signature (kid) was NOT valid."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, "Invalid JWS Signature", "Message log did not contain an exception indicating that the signature was NOT valid."));
         expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, "Message log did not contain an exception indicating that the signature was NOT valid."));
 
         genericConfigTest(builtToken, expectations);
@@ -552,8 +552,8 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * 
      * @throws Exception
      */
-    @ExpectedFFDC({ "java.security.cert.CertificateException", "com.ibm.websphere.security.jwt.KeyException"})
-    @AllowedFFDC({"com.ibm.websphere.security.jwt.InvalidTokenException" })
+    @ExpectedFFDC({ "java.security.cert.CertificateException", "com.ibm.websphere.security.jwt.KeyException" })
+    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException" })
     @Test
     public void MPJwtConfigUsingBuilderTests_KeyName_invalidKeyName() throws Exception {
 
@@ -605,8 +605,8 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      */
     @Mode(TestMode.LITE)
     @Test
-    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException"})
-    @AllowedFFDC({"com.ibm.websphere.security.jwt.InvalidTokenException" })
+    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException" })
     public void MPJwtConfigUsingBuilderTests_hs256_mismatchSharedKey() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_audience_hs256.xml");
@@ -653,7 +653,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
      * 
      * @throws Exception
      */
-    @AllowedFFDC({"com.ibm.websphere.security.jwt.InvalidTokenException" , "org.jose4j.jwt.consumer.InvalidJwtSignatureException"})
+    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
     @ExpectedFFDC({ "com.ibm.websphere.security.jwt.KeyException", "java.security.cert.CertificateException" })
     @Test
     public void MPJwtConfigUsingBuilderTests_SSLRef_invalid_usingX509() throws Exception {

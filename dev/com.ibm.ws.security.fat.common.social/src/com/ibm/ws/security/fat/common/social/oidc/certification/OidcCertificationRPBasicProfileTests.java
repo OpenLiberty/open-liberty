@@ -52,6 +52,7 @@ import com.ibm.ws.security.fat.common.utils.FatStringUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -174,6 +175,7 @@ public abstract class OidcCertificationRPBasicProfileTests extends CommonSecurit
      * - 401 when accessing the protected resource
      * - Error message should be logged saying the OIDC client failed to validate the ID token because the "sub" claim was missing
      */
+    @AllowedFFDC("org.jose4j.jwt.consumer.InvalidJwtException")
     @Test
     public void test_idTokenMissingSub() throws Exception {
         String conformanceTestName = "rp-id_token-sub";

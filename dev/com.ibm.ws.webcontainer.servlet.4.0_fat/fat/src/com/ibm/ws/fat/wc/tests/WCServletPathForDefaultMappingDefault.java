@@ -46,13 +46,9 @@ public class WCServletPathForDefaultMappingDefault extends LoggingTest {
                                                   "servletpathdefaultmapping.war.servlets");
 
         SHARED_SERVER.startIfNotStarted();
-
-        LOG.info("Setup : wait for message to indicate app has started");
-
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* ServletPathDefaultMapping", 10000);
-
+        WCApplicationHelper.waitForAppStart("ServletPathDefaultMapping", WCServletPathForDefaultMappingDefault.class.getName(), 
+            SHARED_SERVER.getLibertyServer());
         LOG.info("Setup : complete, ready for Tests");
-
     }
 
     /**
