@@ -29,6 +29,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * backed by Liberty's Transaction context.
  */
 @Trivial
+@SuppressWarnings("deprecation")
 public class TransactionContextProvider extends ContainerContextProvider {
     private static final TraceComponent tc = Tr.register(TransactionContextProvider.class);
 

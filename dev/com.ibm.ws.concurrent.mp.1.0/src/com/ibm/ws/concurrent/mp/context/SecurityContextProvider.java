@@ -23,6 +23,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * backed by Liberty's Security context.
  */
 @Trivial
+@SuppressWarnings("deprecation")
 public class SecurityContextProvider extends ContainerContextProvider {
     public final AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> securityContextProviderRef = new AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider>("SecurityContextProvider");
     public final AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> threadIdentityContextProviderRef = new AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider>("ThreadIdentityContextProvider");
