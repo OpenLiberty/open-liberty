@@ -48,23 +48,18 @@ public class TransactionContext implements AlterableContext, TransactionScopeDes
 
     private static final TraceComponent tc = Tr.register(TransactionContext.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
-    private static InitializedQualifier initializedQualifier;
+    private static InitializedQualifier initializedQualifier = initializedQualifier = new InitializedQualifier() {
+        public Class value() {
+            return TransactionScoped.class;
+        }
+    };
 
-    private static DestroyedQualifier destroyedQualifier;
-
-    {
-    initializedQualifier = new InitializedQualifier() {
-            public Class value() {
-                return TransactionScoped.class;
-            }
-        };
-
-    destroyedQualifier = new DestroyedQualifier() {
-            public Class value() {
-                return TransactionScoped.class;
-            }
-        };
-    }
+    private static DestroyedQualifier destroyedQualifier = destroyedQualifier = new DestroyedQualifier() {
+        public Class value() {
+            return TransactionScoped.class;
+        }
+    };
+    
 
     private BeanManager beanManager = null;
 
@@ -299,7 +294,7 @@ public class TransactionContext implements AlterableContext, TransactionScopeDes
 
 
     //These can be removed in java 8.
-    public abstract class DestroyedQualifier extends AnnotationLiteral<Destroyed> implements Destroyed {} 
-    public abstract class InitializedQualifier extends AnnotationLiteral<Initialized> implements Initialized {} 
+    public abstract static class DestroyedQualifier extends AnnotationLiteral<Destroyed> implements Destroyed {} 
+    public abstract static class InitializedQualifier extends AnnotationLiteral<Initialized> implements Initialized {} 
 
 }
