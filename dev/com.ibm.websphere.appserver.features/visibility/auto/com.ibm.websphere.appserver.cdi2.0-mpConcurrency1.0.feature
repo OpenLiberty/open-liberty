@@ -8,5 +8,5 @@ IBM-Provision-Capability: \
   com.ibm.ws.cdi.mp.concurrent,\
   com.ibm.ws.concurrent.mp.cdi
 IBM-Install-Policy: when-satisfied
-kind=noship
-edition=full
+kind=beta
+edition=core
