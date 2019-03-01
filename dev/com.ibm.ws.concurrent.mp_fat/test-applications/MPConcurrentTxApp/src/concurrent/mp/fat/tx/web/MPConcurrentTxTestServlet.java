@@ -94,6 +94,99 @@ public class MPConcurrentTxTestServlet extends FATServlet {
         }
     }
 
+    /**
+     * This case demonstrates that the com.ibm.tx.jta.TransactionManagerFactory public API, even without MP Concurrency,
+     * already enables applications to concurrently run multiple operations within a single transaction
+     * by resuming the transaction onto another thread and performing transactional operations in it
+     * while it simultaneously remains actively in use on the main thread.
+     */
+    @Test
+    public void testTransactionPropagationToMultipleThreadsWithExistingTransactionManagerAPI() throws Exception {
+        javax.transaction.TransactionManager tm = com.ibm.tx.jta.TransactionManagerFactory.getTransactionManager();
+
+        // scenario with successful commit
+        tx.begin();
+        try {
+            javax.transaction.Transaction tranToPropagate = tm.getTransaction();
+
+            Connection con = defaultDataSource.getConnection();
+            Statement st = con.createStatement();
+            assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Hennepin', 1224763)"));
+
+            CompletableFuture<Integer> stage = CompletableFuture.supplyAsync(() -> {
+                try {
+                    javax.transaction.Transaction tranToRestore = tm.suspend();
+                    tm.resume(tranToPropagate);
+                    try (Connection con2 = defaultDataSource.getConnection(); Statement st2 = con2.createStatement()) {
+                        return st2.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Dubuque', 96571)");
+                    } finally {
+                        tm.suspend();
+                        if (tranToRestore != null)
+                            tm.resume(tranToRestore);
+                    }
+                } catch (Exception x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Dakota', 414655)"));
+            con.close();
+
+            // ensure the above runs in the same transaction while the transaction is still active on the current thread
+            assertEquals(Integer.valueOf(1), stage.join());
+
+            tx.commit();
+        } finally {
+            if (tx.getStatus() != Status.STATUS_NO_TRANSACTION)
+                tx.rollback();
+        }
+
+        // scenario with rollback
+        tx.begin();
+        try {
+            javax.transaction.Transaction tranToPropagate = tm.getTransaction();
+
+            Connection con = defaultDataSource.getConnection();
+            Statement st = con.createStatement();
+            assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Ramsey', 537893)"));
+
+            CompletableFuture<Integer> stage = CompletableFuture.supplyAsync(() -> {
+                try {
+                    javax.transaction.Transaction tranToRestore = tm.suspend();
+                    tm.resume(tranToPropagate);
+                    try (Connection con2 = defaultDataSource.getConnection(); Statement st2 = con2.createStatement()) {
+                        return st2.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Story', 95888)");
+                    } finally {
+                        tm.suspend();
+                        if (tranToRestore != null)
+                            tm.resume(tranToRestore);
+                    }
+                } catch (Exception x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Anoka', 344861)"));
+            con.close();
+
+            // ensure the above runs in the same transaction while the transaction is still active on the current thread
+            assertEquals(Integer.valueOf(1), stage.join());
+        } finally {
+            tx.rollback();
+        }
+
+        // verify table contents, which should show that first transaction was committed and the second rolled back.
+        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Hennepin' OR NAME='Ramsey' OR NAME='Dakota' OR NAME='Anoka'");
+            assertTrue(result.next());
+            assertEquals(1639418, result.getInt(1));
+
+            result = st.executeQuery("SELECT SUM(POPULATION) FROM IACOUNTIES WHERE NAME='Dubuque' OR NAME='Story'");
+            assertTrue(result.next());
+            assertEquals(96571, result.getInt(1));
+        }
+    }
+
     @Test
     public void testTransactionPropagatedToSameThread() throws Exception {
         CompletableFuture<Integer> stage0 = txExecutor.newIncompleteFuture();
