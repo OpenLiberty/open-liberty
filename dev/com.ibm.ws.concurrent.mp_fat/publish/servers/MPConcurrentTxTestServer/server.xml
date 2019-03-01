@@ -10,12 +10,12 @@
  -->
 <server>
 
-	<featureManager>
-	    <feature>componenttest-1.0</feature>
-	    <feature>jdbc-4.2</feature>
-	    <feature>jndi-1.0</feature>
-	    <feature>mpConcurrency-1.0</feature>
-		<feature>servlet-4.0</feature>
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>jdbc-4.2</feature>
+        <feature>jndi-1.0</feature>
+        <feature>mpConcurrency-1.0</feature>
+        <feature>servlet-4.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
@@ -23,13 +23,13 @@
     <application location="MPConcurrentTxApp.war"/>
 
     <dataSource id="DefaultDataSource">
-	    <jdbcDriver libraryRef="DerbyLib"/>
-	    <properties.derby.embedded createDatabase="create" databaseName="memory:txdb"/>
-	</dataSource>
-	
-	<library id="DerbyLib">
-	    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
-	</library>
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:txdb"/>
+    </dataSource>
+
+    <library id="DerbyLib">
+        <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    </library>
 
     <!-- permissions for Derby -->
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>

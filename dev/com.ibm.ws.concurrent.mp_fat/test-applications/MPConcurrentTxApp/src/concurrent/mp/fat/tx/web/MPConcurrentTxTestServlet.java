@@ -219,7 +219,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                 try {
                     tx.rollback();
                 } catch (Exception x2) {
-                    throw new CompletionException(x);
+                    x2.printStackTrace();
                 }
                 throw new CompletionException(x);
             });
@@ -261,7 +261,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                 try {
                     tx.rollback();
                 } catch (Exception x2) {
-                    throw new CompletionException(x);
+                    x2.printStackTrace();
                 }
                 throw new CompletionException(x);
             });

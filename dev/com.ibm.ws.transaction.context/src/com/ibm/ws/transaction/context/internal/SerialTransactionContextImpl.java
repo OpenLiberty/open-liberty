@@ -87,7 +87,6 @@ public class SerialTransactionContextImpl implements ThreadContext {
 
         // Suspend the transaction that we propagated to the thread if it is still active
         try {
-            EmbeddableTransactionManagerFactory.getTransactionManager();
             if (tx.equals(tm.getTransaction()))
                 tm.suspend();
         } catch (Throwable x) {
