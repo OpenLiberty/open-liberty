@@ -27,7 +27,6 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
@@ -43,11 +42,14 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.apacheds.EmbeddedApacheDS;
 import com.ibm.ws.security.javaeesec.fat_helper.FATHelper;
 import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 import com.ibm.ws.security.javaeesec.identitystore.LdapIdentityStore;
+import com.unboundid.ldap.listener.InMemoryDirectoryServer;
+import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig;
+import com.unboundid.ldap.listener.InMemoryListenerConfig;
+import com.unboundid.ldap.sdk.Entry;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
@@ -74,7 +76,8 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 //    private final LeakedPasswordChecker passwordChecker = new LeakedPasswordChecker(server);
     protected DefaultHttpClient httpclient;
 
-    private static EmbeddedApacheDS ldapServer = null;
+    private static InMemoryDirectoryServerConfig config;
+    // private static EmbeddedApacheDS ldapServer = null;
 
     // LDAP Partitions
     private static final String LDAP_ROOT_PARTITION = "o=ibm,c=us";
@@ -116,35 +119,36 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         try {
             myServer.stopServer("CWWKS1916W", "CWWKS3400W", "CWWKS3401E", "CWWKS3402E", "CWWKS3405W", "CWWKS3406W");
         } finally {
-            if (ldapServer != null) {
-                try {
-                    ldapServer.stopService();
-                } catch (Exception e) {
-                    Log.error(logClass, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
-                }
-            }
+//            if (ldapServer != null) {
+//                try {
+//                    ldapServer.stopService();
+//                } catch (Exception e) {
+//                    Log.error(logClass, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
+//                }
+//            }
         }
     }
 
-    /**
-     * Configure the embedded LDAP server with a single LDAP user (jaspildapuser1).
-     *
-     * @throws Exception If there was an issue configuring the LDAP server.
-     */
     private static void setupldapServer() throws Exception {
-        ldapServer = new EmbeddedApacheDS("HTTPAuthLDAP");
-        ldapServer.addPartition("test", LDAP_ROOT_PARTITION);
-        ldapServer.startServer(Integer.parseInt(System.getProperty("ldap.1.port")));
+        config = new InMemoryDirectoryServerConfig("dc=oracle,dc=com");
+        config.addAdditionalBindCredentials("cn=Directory Manager", "password");
+        config.setListenerConfigs(
+                                  InMemoryListenerConfig.createLDAPConfig("LDAP", // Listener name
+                                                                          null, // Listen address. (null = listen on all interfaces)
+                                                                          Integer.parseInt(System.getProperty("ldap.1.port")), // Listen port (0 = automatically choose an available port)
+                                                                          null) // StartTLS factory
+        ); // Client factory
 
-        Entry entry = ldapServer.newEntry(LDAP_ROOT_PARTITION);
-        entry.add("objectclass", "organization");
-        entry.add("o", "ibm");
-        ldapServer.add(entry);
+        config.setSchema(null);
+        InMemoryDirectoryServer ds = new InMemoryDirectoryServer(config);
+        //ds.importFromLDIF(true, "/home/eschr/ldif2.ldif");
+        ds.startListening();
 
-        entry = ldapServer.newEntry(LDAP_SUBTREE_PARTITION);
-        entry.add("objectclass", "organizationalunit");
-        entry.add("ou", "level2");
-        ldapServer.add(entry);
+        Entry entry = new Entry("objectClass: organization", "o: ibm");
+        ds.add(entry);
+
+        entry = new Entry("objectClass: organizationalunit", "ou: level2");
+        ds.add(entry);
 
         /*
          * Create LDAP users and groups.
@@ -155,62 +159,123 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
          * Users 1 and 3 have authorization directly. Users 2 and 4 only have
          * authorization through group membership.
          */
-        final String LDAP_USER1_DN = "uid=" + LDAP_USER1_UID + "," + LDAP_ROOT_PARTITION;
-        final String LDAP_USER2_DN = "uid=" + LDAP_USER2_UID + "," + LDAP_ROOT_PARTITION;
-        final String LDAP_USER3_DN = "uid=" + LDAP_USER3_UID + "," + LDAP_SUBTREE_PARTITION;
-        final String LDAP_USER4_DN = "uid=" + LDAP_USER4_UID + "," + LDAP_SUBTREE_PARTITION;
-        final String LDAP_GROUP1_DN = "cn=ldapgroup1," + LDAP_ROOT_PARTITION;
-        final String LDAP_GROUP2_DN = "cn=ldapgroup2," + LDAP_SUBTREE_PARTITION;
+        final String LDAP_USER1_DN = "uid: " + LDAP_USER1_UID + "," + LDAP_ROOT_PARTITION;
+        final String LDAP_USER2_DN = "uid: " + LDAP_USER2_UID + "," + LDAP_ROOT_PARTITION;
+        final String LDAP_USER3_DN = "uid: " + LDAP_USER3_UID + "," + LDAP_SUBTREE_PARTITION;
+        final String LDAP_USER4_DN = "uid: " + LDAP_USER4_UID + "," + LDAP_SUBTREE_PARTITION;
+        final String LDAP_GROUP1_DN = "cn: ldapgroup1," + LDAP_ROOT_PARTITION;
+        final String LDAP_GROUP2_DN = "cn: ldapgroup2," + LDAP_SUBTREE_PARTITION;
 
-        entry = ldapServer.newEntry(LDAP_USER1_DN);
-        entry.add("objectclass", "inetorgperson");
-        entry.add("uid", LDAP_USER1_UID);
-        entry.add("sn", LDAP_USER1_UID + "sn");
-        entry.add("cn", LDAP_USER1_UID + "cn");
-        entry.add("userPassword", LDAP_USER1_PASSWORD);
-        ldapServer.add(entry);
+        entry = new Entry(LDAP_USER1_DN, "objectclass", "inetorgperson", "uid", LDAP_USER1_UID, "sn", LDAP_USER1_UID + "sn", "cn", LDAP_USER1_UID
+                                                                                                                                   + "cn", "userPassword", LDAP_USER1_PASSWORD);
+        ds.add(entry);
 
-        entry = ldapServer.newEntry(LDAP_USER2_DN);
-        entry.add("objectclass", "inetorgperson");
-        entry.add("objectclass", "simulatedMicrosoftSecurityPrincipal");
-        entry.add("uid", LDAP_USER2_UID);
-        entry.add("samaccountname", LDAP_USER2_UID);
-        entry.add("sn", LDAP_USER2_UID + "sn");
-        entry.add("cn", LDAP_USER2_UID + "cn");
-        entry.add("memberOf", LDAP_GROUP1_DN);
-        entry.add("userPassword", LDAP_USER2_PASSWORD);
-        ldapServer.add(entry);
+        entry = new Entry(LDAP_USER2_DN, "objectclass", "inetorgperson", "objectclass", "simulatedMicrosoftSecurityPrincipal", "uid", LDAP_USER2_UID, "samaccountname", LDAP_USER2_UID, "sn", LDAP_USER2_UID
+                                                                                                                                                                                              + "sn", "cn", LDAP_USER2_UID
+                                                                                                                                                                                                            + "cn", "memberOf", LDAP_GROUP1_DN, "userPassword", LDAP_USER2_PASSWORD);
+        ds.add(entry);
 
-        entry = ldapServer.newEntry(LDAP_USER3_DN);
-        entry.add("objectclass", "inetorgperson");
-        entry.add("uid", LDAP_USER3_UID);
-        entry.add("sn", LDAP_USER3_UID + "sn");
-        entry.add("cn", LDAP_USER3_UID + "cn");
-        entry.add("userPassword", LDAP_USER3_PASSWORD);
-        ldapServer.add(entry);
+        entry = new Entry(LDAP_USER3_DN, "objectclass", "inetorgperson", "uid", LDAP_USER3_UID, "sn", LDAP_USER3_UID + "sn", "cn", LDAP_USER3_UID
+                                                                                                                                   + "cn", "userPassword", LDAP_USER3_PASSWORD);
+        ds.add(entry);
 
-        entry = ldapServer.newEntry(LDAP_USER4_DN);
-        entry.add("objectclass", "inetorgperson");
-        entry.add("objectclass", "simulatedMicrosoftSecurityPrincipal");
-        entry.add("uid", LDAP_USER4_UID);
-        entry.add("samaccountname", LDAP_USER4_UID);
-        entry.add("sn", LDAP_USER4_UID + "sn");
-        entry.add("cn", LDAP_USER4_UID + "cn");
-        entry.add("memberOf", LDAP_GROUP2_DN);
-        entry.add("userPassword", LDAP_USER4_PASSWORD);
-        ldapServer.add(entry);
+        entry = new Entry(LDAP_USER4_DN, "objectclass", "inetorgperson", "objectclass", "simulatedMicrosoftSecurityPrincipal", "uid", LDAP_USER4_UID, "samaccountname", LDAP_USER4_UID, "sn", LDAP_USER4_UID
+                                                                                                                                                                                              + "sn", "cn", LDAP_USER4_UID
+                                                                                                                                                                                                            + "cn", "memberOf", LDAP_GROUP2_DN, "userPassword", LDAP_USER4_PASSWORD);
+        ds.add(entry);
 
-        entry = ldapServer.newEntry("cn=ldapgroup1," + LDAP_ROOT_PARTITION);
-        entry.add("objectclass", "groupofnames");
-        entry.add("cn", "ldapgroup1");
-        entry.add("member", LDAP_USER2_DN);
-        ldapServer.add(entry);
+        entry = new Entry("cn=ldapgroup1," + LDAP_ROOT_PARTITION, "objectclass", "groupofnames", "cn", "ldapgroup1", "member", LDAP_USER2_DN);
+        ds.add(entry);
 
-        entry = ldapServer.newEntry("cn=ldapgroup2," + LDAP_SUBTREE_PARTITION);
-        entry.add("objectclass", "groupofnames");
-        entry.add("cn", "ldapgroup2");
-        entry.add("member", LDAP_USER4_DN);
-        ldapServer.add(entry);
+        entry = new Entry("cn=ldapgroup2," + LDAP_SUBTREE_PARTITION, "objectclass", "groupofnames", "cn", "ldapgroup2", "member", LDAP_USER4_DN);
+        ds.add(entry);
+    }
+
+    /**
+     * Configure the embedded LDAP server with a single LDAP user (jaspildapuser1).
+     *
+     * @throws Exception If there was an issue configuring the LDAP server.
+     */
+    private static void setupldapServer2() throws Exception {
+//        ldapServer = new EmbeddedApacheDS("HTTPAuthLDAP");
+//        ldapServer.addPartition("test", LDAP_ROOT_PARTITION);
+//        ldapServer.startServer(Integer.parseInt(System.getProperty("ldap.1.port")));
+//
+//        Entry entry = ldapServer.newEntry(LDAP_ROOT_PARTITION);
+//        entry.add("objectclass", "organization");
+//        entry.add("o", "ibm");
+//        ldapServer.add(entry);
+//
+//        entry = ldapServer.newEntry(LDAP_SUBTREE_PARTITION);
+//        entry.add("objectclass", "organizationalunit");
+//        entry.add("ou", "level2");
+//        ldapServer.add(entry);
+
+        /*
+         * Create LDAP users and groups.
+         *
+         * Users 1 and 2 are in the root of the main partition. Users 3 and 4 are in the
+         * subtree. Groups 1 is in the main partition, while group 2 is in the sub tree.
+         *
+         * Users 1 and 3 have authorization directly. Users 2 and 4 only have
+         * authorization through group membership.
+         */
+//        final String LDAP_USER1_DN = "uid=" + LDAP_USER1_UID + "," + LDAP_ROOT_PARTITION;
+//        final String LDAP_USER2_DN = "uid=" + LDAP_USER2_UID + "," + LDAP_ROOT_PARTITION;
+//        final String LDAP_USER3_DN = "uid=" + LDAP_USER3_UID + "," + LDAP_SUBTREE_PARTITION;
+//        final String LDAP_USER4_DN = "uid=" + LDAP_USER4_UID + "," + LDAP_SUBTREE_PARTITION;
+//        final String LDAP_GROUP1_DN = "cn=ldapgroup1," + LDAP_ROOT_PARTITION;
+//        final String LDAP_GROUP2_DN = "cn=ldapgroup2," + LDAP_SUBTREE_PARTITION;
+//
+//        entry = ldapServer.newEntry(LDAP_USER1_DN);
+//        entry.add("objectclass", "inetorgperson");
+//        entry.add("uid", LDAP_USER1_UID);
+//        entry.add("sn", LDAP_USER1_UID + "sn");
+//        entry.add("cn", LDAP_USER1_UID + "cn");
+//        entry.add("userPassword", LDAP_USER1_PASSWORD);
+//        ldapServer.add(entry);
+//
+//        entry = ldapServer.newEntry(LDAP_USER2_DN);
+//        entry.add("objectclass", "inetorgperson");
+//        entry.add("objectclass", "simulatedMicrosoftSecurityPrincipal");
+//        entry.add("uid", LDAP_USER2_UID);
+//        entry.add("samaccountname", LDAP_USER2_UID);
+//        entry.add("sn", LDAP_USER2_UID + "sn");
+//        entry.add("cn", LDAP_USER2_UID + "cn");
+//        entry.add("memberOf", LDAP_GROUP1_DN);
+//        entry.add("userPassword", LDAP_USER2_PASSWORD);
+//        ldapServer.add(entry);
+//
+//        entry = ldapServer.newEntry(LDAP_USER3_DN);
+//        entry.add("objectclass", "inetorgperson");
+//        entry.add("uid", LDAP_USER3_UID);
+//        entry.add("sn", LDAP_USER3_UID + "sn");
+//        entry.add("cn", LDAP_USER3_UID + "cn");
+//        entry.add("userPassword", LDAP_USER3_PASSWORD);
+//        ldapServer.add(entry);
+//
+//        entry = ldapServer.newEntry(LDAP_USER4_DN);
+//        entry.add("objectclass", "inetorgperson");
+//        entry.add("objectclass", "simulatedMicrosoftSecurityPrincipal");
+//        entry.add("uid", LDAP_USER4_UID);
+//        entry.add("samaccountname", LDAP_USER4_UID);
+//        entry.add("sn", LDAP_USER4_UID + "sn");
+//        entry.add("cn", LDAP_USER4_UID + "cn");
+//        entry.add("memberOf", LDAP_GROUP2_DN);
+//        entry.add("userPassword", LDAP_USER4_PASSWORD);
+//        ldapServer.add(entry);
+//
+//        entry = ldapServer.newEntry("cn=ldapgroup1," + LDAP_ROOT_PARTITION);
+//        entry.add("objectclass", "groupofnames");
+//        entry.add("cn", "ldapgroup1");
+//        entry.add("member", LDAP_USER2_DN);
+//        ldapServer.add(entry);
+//
+//        entry = ldapServer.newEntry("cn=ldapgroup2," + LDAP_SUBTREE_PARTITION);
+//        entry.add("objectclass", "groupofnames");
+//        entry.add("cn", "ldapgroup2");
+//        entry.add("member", LDAP_USER4_DN);
+//        ldapServer.add(entry);
     }
 
     @Before
