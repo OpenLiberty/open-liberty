@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2018 IBM Corporation and others.
+ * Copyright (c) 2004, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.net.InetAddress;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -43,10 +44,12 @@ import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants.LiteralIndexType;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl;
+import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.internal.GenericEnumWrap;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.genericbnf.BNFHeaders;
 import com.ibm.wsspi.genericbnf.HeaderField;
+import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.HeaderStorage;
 import com.ibm.wsspi.genericbnf.exception.MalformedMessageException;
 import com.ibm.wsspi.genericbnf.exception.MessageSentException;
@@ -2143,4 +2146,46 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
     }
 
+    /*
+     * @see com.ibm.ws.genericbnf.internal.BNFHeadersImpl#filterAdd(com.ibm.wsspi.
+     * genericbnf.HeaderKeys, byte[])
+     */
+    @Override
+    protected boolean filterAdd(HeaderKeys key, byte[] value) {
+        boolean rc = super.filterAdd(key, value);
+
+        if (HttpHeaderKeys.isWasPrivateHeader(key.getName())) {
+            rc = isPrivateHeaderTrusted(key);
+        }
+        return rc;
+    }
+
+    /**
+     * Check the to see if the current remote host is allowed to send a private header
+     * @see HttpDispatcher.usePrivateHeaders()
+     * 
+     * @param key WAS private header 
+     * @return true if the remote host is allowed to send key
+     */
+    private boolean isPrivateHeaderTrusted(HeaderKeys key) {
+        HttpServiceContextImpl hisc = getServiceContext();
+        InetAddress remoteAddr = null;       
+        String address = null;
+        if (hisc != null && (remoteAddr = hisc.getRemoteAddr()) != null) {
+            address = remoteAddr.getHostAddress();
+        }
+
+        boolean trusted = false;
+        if (address != null) {
+            trusted = HttpDispatcher.usePrivateHeaders(address, key.getName());
+        }
+
+        if (!trusted) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "isPrivateHeaderTrusted: " + key.getName() + " is not trusted for host " + address);
+            }
+            return false;
+        }
+        return true;
+    }
 }

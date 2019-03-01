@@ -230,6 +230,9 @@
             
         <AD name="%dispatcher.trustedHeaderOrigin" description="%dispatcher.trustedHeaderOrigin.desc"
             id="trustedHeaderOrigin" required="false" type="String" default="*" cardinality="2147483647" />
+
+         <AD name="%dispatcher.trustedSensitiveHeaderOrigin" description="%dispatcher.trustedSensitiveHeaderOrigin.desc"
+            id="trustedSensitiveHeaderOrigin" required="false" type="String" default="none" cardinality="2147483647" />
     </OCD>
 
     <Designate pid="com.ibm.ws.http.dispatcher">
