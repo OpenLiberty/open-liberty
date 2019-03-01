@@ -70,9 +70,6 @@ public class ServerStartAsServiceTest {
         final String METHOD_NAME = "testWinServiceLifeCycle";
         Log.entering(c, METHOD_NAME);
 
-        //Log.info(c, METHOD_NAME, "calling LibertyServerFactory.getLibertyServer(SERVER_NAME, ON): " + SERVER_NAME);
-        //server = LibertyServerFactory.getLibertyServer(SERVER_NAME, LibertyServerFactory.WinServiceOption.ON);
-
         Log.info(c, METHOD_NAME, "calling server.startServer()");
         server.startServer();
 
@@ -98,9 +95,6 @@ public class ServerStartAsServiceTest {
         final String METHOD_NAME = "testWinServiceAppAccess";
 
         Log.entering(c, METHOD_NAME);
-
-        //Log.info(c, METHOD_NAME, "calling LibertyServerFactory.getLibertyServer(SERVER_NAME, ON): " + SERVER_NAME);
-        //server = LibertyServerFactory.getLibertyServer(SERVER_NAME, LibertyServerFactory.WinServiceOption.ON);
 
         Log.info(c, METHOD_NAME, "calling server.startServer()");
         server.startServer();
