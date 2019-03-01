@@ -30,9 +30,22 @@ import mpRestClient10.handleresponses.ClientTestServlet;
 @RunWith(FATRunner.class)
 public class HandleResponsesTest extends FATServletClient {
 
+    final static String SERVER_NAME = "mpRestClient10.handleresponses";
+
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-        .andWith(new FeatureReplacementAction("mpRestClient-1.0", "mpRestClient-1.1").forServers("mpRestClient10.handleresponses"));
+        .andWith(new FeatureReplacementAction()
+                 .withID("mpRestClient-1.1")
+                 .addFeature("mpRestClient-1.1")
+                 .removeFeature("mpRestClient-1.0")
+                 .removeFeature("mpRestClient-1.2")
+                 .forServers(SERVER_NAME))
+        .andWith(new FeatureReplacementAction()
+                 .withID("mpRestClient-1.2")
+                 .addFeature("mpRestClient-1.2")
+                 .removeFeature("mpRestClient-1.0")
+                 .removeFeature("mpRestClient-1.1")
+                 .forServers(SERVER_NAME));
 
     private static final String appName = "handleresponsesApp";
 
@@ -44,7 +57,7 @@ public class HandleResponsesTest extends FATServletClient {
      * work on its own - by splitting out the "server" server into it's
      * own server, we can verify this.
      */
-    @Server("mpRestClient10.handleresponses")
+    @Server(SERVER_NAME)
     @TestServlet(servlet = ClientTestServlet.class, contextRoot = appName)
     public static LibertyServer server;
 
