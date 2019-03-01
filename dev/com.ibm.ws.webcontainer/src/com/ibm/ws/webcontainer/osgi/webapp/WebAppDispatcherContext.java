@@ -17,6 +17,7 @@
 package com.ibm.ws.webcontainer.osgi.webapp;
 
 import java.security.Principal;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 
