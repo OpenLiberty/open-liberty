@@ -3,6 +3,7 @@
 	<featureManager>
 		<feature>ssl-1.0</feature>
 		<feature>servlet-3.1</feature>
+		<feature>timedexit-1.0</feature>
 	</featureManager>
 
 	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty -->
@@ -13,4 +14,5 @@
 
 	<include optional="true" location="../fatTestPorts.xml"/>
 
+    <javaPermission className="java.security.AllPermission"/>
 </server>
