@@ -66,9 +66,9 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
             return new TransactionContextImpl(true);
         else if (ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD.equals(value))
             return new TransactionContextImpl(false);
-        else if ("SUSPEND_IF_NO_GLOBAL_TX".equals(value)) {
+        else if ("PROPAGATE".equals(value)) {
             if (EmbeddableTransactionManagerFactory.getUOWCurrent().getUOWType() == UOWCurrent.UOW_GLOBAL)
-                return null;
+                return new SerialTransactionContextImpl();
             else
                 return new TransactionContextImpl(true);
         } else

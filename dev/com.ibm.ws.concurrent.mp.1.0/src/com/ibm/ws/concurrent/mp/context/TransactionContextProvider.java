@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,11 +34,9 @@ public class TransactionContextProvider extends ContainerContextProvider {
     private static final TraceComponent tc = Tr.register(TransactionContextProvider.class);
 
     /**
-     * Map with execution property that instructs the transaction context to first detect the presence of a
-     * global transaction on the requesting thread. If present, a NULL is returning indicate that context
-     * cannot be captured. If a global transaction is not present, then captures a cleared context.
+     * Map with execution property that instructs the transaction context to propagate transactions for serial use.
      */
-    private static final Map<String, String> SUSPEND_IF_NO_GLOBAL_TX = Collections.singletonMap(ManagedTask.TRANSACTION, "SUSPEND_IF_NO_GLOBAL_TX");
+    private static final Map<String, String> PROPAGATE_TX_FOR_SERIAL_USE = Collections.singletonMap(ManagedTask.TRANSACTION, "PROPAGATE");
 
     public final AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> transactionContextProviderRef = new AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider>("TransactionContextProvider");
 
@@ -49,9 +47,7 @@ public class TransactionContextProvider extends ContainerContextProvider {
         if (transactionProvider == null)
             snapshot = new DeferredClearedContext(transactionContextProviderRef);
         else if (op == ContextOp.PROPAGATED) {
-            snapshot = transactionProvider.captureThreadContext(SUSPEND_IF_NO_GLOBAL_TX, EMPTY_MAP);
-            if (snapshot == null)
-                throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1157.cannot.propagate.tx"));
+            snapshot = transactionProvider.captureThreadContext(PROPAGATE_TX_FOR_SERIAL_USE, EMPTY_MAP);
         } else
             snapshot = transactionProvider.createDefaultThreadContext(EMPTY_MAP);
 
