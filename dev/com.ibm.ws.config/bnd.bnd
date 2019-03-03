@@ -31,7 +31,7 @@ Export-Package: com.ibm.websphere.config;provide:=true, \
 Private-Package: com.ibm.ws.config.admin, \
    com.ibm.ws.config*.internal*
 
-Import-Package: org.osgi.service.cm;version="[1.5,1.6)", \
+Import-Package: org.osgi.service.cm;version="[1.6,1.7)", \
    org.osgi.service.metatype;version="[1.1,2.0)", \
    !*.internal.*, \
    !org.eclipse.equinox.metatype.impl, \

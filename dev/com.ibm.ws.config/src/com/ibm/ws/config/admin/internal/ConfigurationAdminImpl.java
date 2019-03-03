@@ -18,6 +18,7 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.cm.Configuration;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -168,4 +169,27 @@ class ConfigurationAdminImpl implements ConfigurationAdmin {
         }
         return caFactory.getConfigurationStore().listConfigurations(FrameworkUtil.createFilter(filterString));
     }
+
+
+	//
+	//
+    // R7 Upgrade
+    //
+    //
+
+    public Configuration getFactoryConfiguration(String factoryPid, String name, String location) throws IOException {
+
+		 // TODO: Maybe do list config, and create factory?  This new concept goes against our current
+		 // IMPL..so need to think on it. Throwing IllegalStateException for now if called.
+
+		throw new IllegalStateException("getFactoryConfiguration(String factoryPid, String name, String location) in ConfigurationAdminImpl.java has not been implemented.");
+
+	}
+
+	public Configuration getFactoryConfiguration(String factoryPid, String name) throws IOException {
+
+		//TODO: Similar comments as 3 parameter method.
+
+		throw new IllegalStateException("getFactoryConfiguration(String factoryPid, String name) in ConfigurationAdminImpl.java has not been implemented.");
+	}
 }

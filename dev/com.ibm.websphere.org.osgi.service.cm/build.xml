@@ -18,7 +18,7 @@
   <property name="original.jar.version" value=""/>
   <target name="package">
 
-    <rejar base.name="com.ibm.websphere" version="1.0" src.jar="lib/org.osgi.service.cm-1.5.0.jar" output.dir="${dev.dir}/api/spec" />
+    <rejar base.name="com.ibm.websphere" version="1.1" src.jar="lib/org.osgi.service.cm-1.5.0.jar" output.dir="${dev.dir}/api/spec" />
 
   </target>
 
