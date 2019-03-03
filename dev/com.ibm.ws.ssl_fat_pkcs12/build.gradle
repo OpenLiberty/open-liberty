@@ -14,6 +14,9 @@
  */
 def appBuildDir = "${buildDir}/test-application"
 
+addRequiredLibraries {
+}
+
 dependencies { 
   requiredLibs 'com.ibm.ws.componenttest:public.api:1.0.0',
     'commons-logging:commons-logging:1.1.1',
