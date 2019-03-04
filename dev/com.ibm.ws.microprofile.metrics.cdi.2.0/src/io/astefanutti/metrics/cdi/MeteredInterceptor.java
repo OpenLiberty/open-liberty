@@ -82,7 +82,7 @@ import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
         Meter meter = (Meter) registry.getMetrics().get(tmid);
 
         if (meter == null)
-            throw new IllegalStateException("No meter with name [" + metered.metricName() + "] found in registry [" + registry + "]");
+            throw new IllegalStateException("No meter with metricID [" + tmid + "] found in registry [" + registry + "]");
 
         meter.mark();
         return context.proceed();

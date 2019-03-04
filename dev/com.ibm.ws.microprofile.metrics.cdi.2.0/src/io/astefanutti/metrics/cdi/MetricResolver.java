@@ -38,6 +38,8 @@ import org.eclipse.microprofile.metrics.MetadataBuilder;
 import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.ConcurrentGauge;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
 import org.eclipse.microprofile.metrics.annotation.Metered;
@@ -59,6 +61,10 @@ public class MetricResolver {
 
     <E extends Member & AnnotatedElement> Of<Counted> counted(Class<?> topClass, E element) {
         return resolverOf(topClass, element, Counted.class);
+    }
+
+    <E extends Member & AnnotatedElement> Of<ConcurrentGauge> concurentGauged(Class<?> topClass, E element) {
+        return resolverOf(topClass, element, ConcurrentGauge.class);
     }
 
     Of<Gauge> gauge(Class<?> topClass, Method method) {
@@ -169,6 +175,8 @@ public class MetricResolver {
     private String metricName(Annotation annotation) {
         if (Counted.class.isInstance(annotation))
             return ((Counted) annotation).name();
+        else if (ConcurrentGauge.class.isInstance(annotation))
+            return ((ConcurrentGauge) annotation).name();
         else if (Gauge.class.isInstance(annotation))
             return ((Gauge) annotation).name();
         else if (Metered.class.isInstance(annotation))
@@ -185,6 +193,8 @@ public class MetricResolver {
 
         if (Counted.class.isInstance(annotation))
             return ((Counted) annotation).absolute();
+        else if (ConcurrentGauge.class.isInstance(annotation))
+            return ((ConcurrentGauge) annotation).absolute();
         else if (Gauge.class.isInstance(annotation))
             return ((Gauge) annotation).absolute();
         else if (Metered.class.isInstance(annotation))
@@ -198,6 +208,8 @@ public class MetricResolver {
     private String[] getTags(Annotation annotation) {
         if (Counted.class.isInstance(annotation))
             return ((Counted) annotation).tags();
+        else if (ConcurrentGauge.class.isInstance(annotation))
+            return ((ConcurrentGauge) annotation).tags();
         else if (Gauge.class.isInstance(annotation))
             return ((Gauge) annotation).tags();
         else if (Metered.class.isInstance(annotation))
@@ -212,6 +224,8 @@ public class MetricResolver {
     private String getDisplayname(Annotation annotation) {
         if (Counted.class.isInstance(annotation))
             return ((Counted) annotation).displayName();
+        else if (ConcurrentGauge.class.isInstance(annotation))
+            return ((ConcurrentGauge) annotation).displayName();
         else if (Gauge.class.isInstance(annotation))
             return ((Gauge) annotation).displayName();
         else if (Metered.class.isInstance(annotation))
@@ -226,6 +240,8 @@ public class MetricResolver {
     private String getDescription(Annotation annotation) {
         if (Counted.class.isInstance(annotation))
             return ((Counted) annotation).description();
+        else if (ConcurrentGauge.class.isInstance(annotation))
+            return ((ConcurrentGauge) annotation).description();
         else if (Gauge.class.isInstance(annotation))
             return ((Gauge) annotation).description();
         else if (Metered.class.isInstance(annotation))
@@ -239,6 +255,8 @@ public class MetricResolver {
     private MetricType getType(Annotation annotation) {
         if (Counted.class.isInstance(annotation))
             return MetricType.COUNTER;
+        else if (ConcurrentGauge.class.isInstance(annotation))
+            return MetricType.CONCURRENT_GAUGE;
         else if (Gauge.class.isInstance(annotation))
             return MetricType.GAUGE;
         else if (Metered.class.isInstance(annotation))
@@ -252,6 +270,8 @@ public class MetricResolver {
     private String getUnit(Annotation annotation) {
         if (Counted.class.isInstance(annotation))
             return ((Counted) annotation).unit();
+        else if (ConcurrentGauge.class.isInstance(annotation))
+            return MetricUnits.NONE;
         else if (Gauge.class.isInstance(annotation))
             return ((Gauge) annotation).unit();
         else if (Metered.class.isInstance(annotation))
@@ -265,6 +285,8 @@ public class MetricResolver {
     private boolean getReusable(Annotation annotation) {
         if (Counted.class.isInstance(annotation))
             return ((Counted) annotation).reusable();
+        else if (ConcurrentGauge.class.isInstance(annotation))
+            return ((ConcurrentGauge) annotation).reusable();
         else if (Gauge.class.isInstance(annotation))
             return false;
         else if (Metered.class.isInstance(annotation))

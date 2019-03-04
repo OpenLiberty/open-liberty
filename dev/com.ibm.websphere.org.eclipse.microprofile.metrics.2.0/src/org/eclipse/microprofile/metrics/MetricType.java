@@ -1,6 +1,6 @@
 /*
  **********************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-18 Contributors to the Eclipse Foundation
  *               2017 Red Hat, Inc. and/or its affiliates
  *               and other contributors as indicated by the @author tags.
  *
@@ -27,12 +27,20 @@ import java.util.EnumSet;
 
 /**
  * An enumeration representing the different types of metrics.
- * 
+ *
  * @author hrupp, Raymond Lam, Ouyang Zhou
  */
 public enum MetricType {
+
     /**
-     * A Counter monotonically in-/decreases its values.
+     * A concurrent gauge counts the number of parallel invocations of
+     * a target (method). Upon entering the target the value is increased.
+     * It is decreased again upon exiting the target.
+     */
+
+    CONCURRENT_GAUGE("concurrent gauge", ConcurrentGauge.class),
+    /**
+     * A Counter monotonically increases its values.
      * An example could be the number of Transactions committed.
      */
     COUNTER("counter", Counter.class),
@@ -55,11 +63,11 @@ public enum MetricType {
     HISTOGRAM("histogram", Histogram.class),
 
     /**
-     * A timer aggregates timing durations and provides duration 
+     * A timer aggregates timing durations and provides duration
      * statistics, plus throughput statistics
      */
     TIMER("timer", Timer.class),
-    
+
     /**
      * Invalid - Placeholder
      */

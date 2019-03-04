@@ -30,6 +30,7 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.interceptor.Interceptor;
 
+import org.eclipse.microprofile.metrics.ConcurrentGauge;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
@@ -53,6 +54,15 @@ import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
         extension.addMetricName(metadata.getName());
 
         return registry.counter(metadata, Utils.tagsToTags(tags));
+    }
+
+    @Produces
+    private static ConcurrentGauge concurrentGauge(InjectionPoint ip, MetricRegistry registry, MetricName metricName, MetricsExtension extension) {
+        Metadata metadata = metricName.metadataOf(ip, Counter.class);
+        String[] tags = metricName.tagOf(ip);
+        extension.addMetricName(metadata.getName());
+
+        return registry.concurrentGauge(metadata, Utils.tagsToTags(tags));
     }
 
     @Produces

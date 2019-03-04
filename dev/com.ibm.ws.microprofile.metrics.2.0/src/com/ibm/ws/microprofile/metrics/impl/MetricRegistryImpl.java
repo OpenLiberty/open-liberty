@@ -42,6 +42,7 @@ import javax.enterprise.inject.Vetoed;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
+import org.eclipse.microprofile.metrics.ConcurrentGauge;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
@@ -224,7 +225,9 @@ public class MetricRegistryImpl extends MetricRegistry {
         } catch (NoSuchElementException e) {
             //Continue if there is no global tags
         }
-        MetricID MetricID = new MetricID(metadata.getName(), cumulativeTags.toArray(new Tag[0]));
+        MetricID MetricID = new MetricID(metadata.getName(), tags); //test
+        //MetricID MetricID = new MetricID(metadata.getName(), cumulativeTags.toArray(new Tag[0]));
+
         Class<T> metricClass = determineMetricClass(metric);
         validateMetricNameToSingleType(MetricID.getName(), metricClass);
         //System.out.println("\ngoing to add this class: " + metricClass.getName());
@@ -624,13 +627,13 @@ public class MetricRegistryImpl extends MetricRegistry {
     @SuppressWarnings("unchecked")
     private <T extends Metric> T getOrAdd(Metadata metadata, MetricBuilder<T> builder, Tag... tags) {
         //refactor this
-
         validateMetricNameToSingleType(metadata.getName(), builder);
 
         MetricID metricID = new MetricID(metadata.getName(), tags);
         final Metric metric = metricsMID.get(metricID);
 
         //Found an existing metric with matching MetricID- return that instead
+
         if (builder.isInstance(metric)) {
             return (T) metric;
         } else if (metric == null) { //otherwise register this new metric..
@@ -707,6 +710,8 @@ public class MetricRegistryImpl extends MetricRegistry {
     private <T extends Metric> Class<T> determineMetricClass(T metric) {
         if (Counter.class.isInstance(metric))
             return (Class<T>) Counter.class;
+        if (ConcurrentGauge.class.isInstance(metric))
+            return (Class<T>) ConcurrentGauge.class;
         if (Histogram.class.isInstance(metric))
             return (Class<T>) Histogram.class;
         if (Meter.class.isInstance(metric))
@@ -731,6 +736,18 @@ public class MetricRegistryImpl extends MetricRegistry {
             @Override
             public boolean isInstance(Metric metric) {
                 return Counter.class.isInstance(metric);
+            }
+        };
+
+        MetricBuilder<ConcurrentGauge> CONCURRENT_GAUGE = new MetricBuilder<ConcurrentGauge>() {
+            @Override
+            public ConcurrentGauge newMetric() {
+                return new ConcurrentGaugeImpl();
+            }
+
+            @Override
+            public boolean isInstance(Metric metric) {
+                return ConcurrentGauge.class.isInstance(metric);
             }
         };
 
@@ -779,5 +796,49 @@ public class MetricRegistryImpl extends MetricRegistry {
     @Override
     public SortedSet<MetricID> getMetricIDs() {
         return Collections.unmodifiableSortedSet(new TreeSet<MetricID>(metricsMID.keySet()));
+    }
+
+    @Override
+    public ConcurrentGauge concurrentGauge(String name) {
+        return this.concurrentGauge(name, null);
+    }
+
+    @Override
+    public ConcurrentGauge concurrentGauge(String name, Tag... tags) {
+        Metadata metadata = Metadata.builder().withName(name).withType(MetricType.CONCURRENT_GAUGE).build();
+
+        if (metadataMID.keySet().contains(name)) {
+            metadata = metadataMID.get(name);
+
+            if (!metadata.getTypeRaw().equals(MetricType.CONCURRENT_GAUGE)) {
+                throw new IllegalArgumentException(name + " is CONCURRENT_GAUGE used for a different type of metric");
+            }
+        }
+
+        return this.concurrentGauge(metadata, tags);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ConcurrentGauge concurrentGauge(Metadata metadata) {
+        return this.concurrentGauge(metadata, null);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ConcurrentGauge concurrentGauge(Metadata metadata, Tag... tags) {
+        return getOrAdd(metadata, MetricBuilder.CONCURRENT_GAUGE, tags);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public SortedMap<MetricID, ConcurrentGauge> getConcurrentGauges() {
+        return getConcurrentGauges(MetricFilter.ALL);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public SortedMap<MetricID, ConcurrentGauge> getConcurrentGauges(MetricFilter filter) {
+        return getMetrics(ConcurrentGauge.class, filter);
     }
 }

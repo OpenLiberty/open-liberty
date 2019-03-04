@@ -22,7 +22,7 @@ public class Utils {
 
     public static Tag[] tagsToTags(String[] tags) {
         List<Tag> tagsList = new ArrayList<Tag>();
-        //tags.put(kvString.substring(0, kvString.indexOf("=")), kvString.substring(kvString.indexOf("=") + 1));
+
         //convert to Tag object -
         if (tags != null) {
             for (String tag : tags) {

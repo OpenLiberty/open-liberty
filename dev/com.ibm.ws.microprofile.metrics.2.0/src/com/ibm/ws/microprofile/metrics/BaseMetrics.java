@@ -24,6 +24,7 @@ import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.Tag;
 
 import com.ibm.ws.microprofile.metrics.impl.CounterImpl;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
@@ -117,15 +118,14 @@ public class BaseMetrics {
 
             String gcNameNoSpace = removeSpaces(gcName);
 
-            //gc.%s.count
-            String nameToRegister = "gc." + gcNameNoSpace + ".count";
+            Tag gcNameNoSpaceTag = new Tag("name", gcNameNoSpace);
+            String nameToRegister = "gc.count";
             registry.register(Metadata.builder().withName(nameToRegister).withDisplayName("Garbage Collection Count").withDescription("garbageCollectionCount.description").withType(MetricType.COUNTER).withUnit(MetricUnits.NONE).build(),
-                              new BMCounter(BaseMetricConstants.GC_OBJECT_TYPE_NAME + gcName, "CollectionCount"));
+                              new BMCounter(BaseMetricConstants.GC_OBJECT_TYPE_NAME + gcName, "CollectionCount"), gcNameNoSpaceTag);
 
-            //gc.%s.time
-            nameToRegister = "gc." + gcNameNoSpace + ".time";
+            nameToRegister = "gc.time";
             registry.register(Metadata.builder().withName(nameToRegister).withDisplayName("Garbage Collection Time").withDescription("garbageCollectionTime.description").withType(MetricType.GAUGE).withUnit(MetricUnits.MILLISECONDS).build(),
-                              new BMGauge<Number>(BaseMetricConstants.GC_OBJECT_TYPE_NAME + gcName, "CollectionTime"));
+                              new BMGauge<Number>(BaseMetricConstants.GC_OBJECT_TYPE_NAME + gcName, "CollectionTime"), gcNameNoSpaceTag);
         }
 
     }

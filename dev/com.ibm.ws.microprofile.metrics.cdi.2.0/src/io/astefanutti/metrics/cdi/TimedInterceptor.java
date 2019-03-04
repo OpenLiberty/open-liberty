@@ -81,7 +81,7 @@ import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
         MetricID MetricID = new MetricID(timed.metricName(), Utils.tagsToTags(timed.tags()));
         Timer timer = (Timer) registry.getMetrics().get(MetricID);
         if (timer == null)
-            throw new IllegalStateException("No timer with name [" + timed.metricName() + "] found in registry [" + registry + "]");
+            throw new IllegalStateException("No timer with metricID [" + MetricID + "] found in registry [" + registry + "]");
 
         Timer.Context time = timer.time();
         try {

@@ -44,7 +44,7 @@ public class MetadataBuilder {
 
     private String unit = MetricUnits.NONE;
 
-    private boolean reusable = false;
+    private boolean reusable = true;
 
     MetadataBuilder(Metadata metadata) {
         this.name = metadata.getName();
@@ -141,7 +141,7 @@ public class MetadataBuilder {
     }
 
     /**
-     * @return
+     * @return An object implementing {@link Metadata} from the provided properties
      * @throws IllegalStateException when either name is null
      */
     public Metadata build() {

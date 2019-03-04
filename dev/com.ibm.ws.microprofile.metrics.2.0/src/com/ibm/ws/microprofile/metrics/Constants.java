@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,8 +43,9 @@ public class Constants {
     private final static String[] REGISTRY_NAMES_ARRAY = { MetricRegistry.Type.BASE.getName(), MetricRegistry.Type.VENDOR.getName(), MetricRegistry.Type.APPLICATION.getName() };
     public final static List<String> REGISTRY_NAMES_LIST = Arrays.asList(REGISTRY_NAMES_ARRAY);
 
-    // Dropwizard Histogram, Meter, or Timer Constants
+    // Dropwizard Histogram, Meter, Timer, or ConcurrentGauge Constants
     public final static String COUNT = "count";
+    public final static String CURRENT = "current";
     public final static String MEAN_RATE = "meanRate";
     public final static String ONE_MINUTE_RATE = "oneMinRate";
     public final static String FIVE_MINUTE_RATE = "fiveMinRate";

@@ -15,8 +15,8 @@ import java.io.Writer;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
+import org.eclipse.microprofile.metrics.ConcurrentGauge;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
@@ -91,6 +91,7 @@ public class JSONMetricWriter implements OutputWriter {
     private JSONObject getJsonFromMetricMap(Map<MetricID, Metric> metricMap) {
         JSONObject jsonObject = new JSONObject();
 
+        //For each Metric that was returned
         for (Entry<MetricID, Metric> entry : metricMap.entrySet()) {
             MetricID metricID = entry.getKey();
             TreeMap<String, String> alphabeticalMap = new TreeMap<String, String>(metricID.getTags());
@@ -100,13 +101,29 @@ public class JSONMetricWriter implements OutputWriter {
             String metricNameWithTags = metricName;
 
             if (alphabeticalMap.size() != 0) {
-                tags = "{" + alphabeticalMap.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(",")) + "}";
+                for (Entry<String, String> metricsMap : alphabeticalMap.entrySet()) {
+                    String value = metricsMap.getValue();
+                    if (value.contains(";")) {
+                        value = value.replaceAll(";", "_");
+                    }
+                    tags += ";" + metricsMap.getKey() + "=" + value;
+                }
+
+                //tags = ";" + alphabeticalMap.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(";"));
                 metricNameWithTags = metricName + tags;
             }
             Metric metric = entry.getValue();
 
+            //Problem after this was that for each tagged MetricA , the "put" would overwrite the previous value.
+
             if (Counter.class.isInstance(metric)) {
                 jsonObject.put(metricNameWithTags, ((Counter) metric).getCount());
+            } else if (ConcurrentGauge.class.isInstance(metric)) {
+//old code that lists the cg resources separately
+//                jsonObject.put(metricNameWithTags, ((ConcurrentGauge) metric).getCount());
+//                jsonObject.put(metricName + "_min" + tags, ((ConcurrentGauge) metric).getMin());
+//                jsonObject.put(metricName + "_max" + tags, ((ConcurrentGauge) metric).getMax());
+                jsonObject.put(metricName, getJsonFromMap(Util.getConcurrentGaugeNumbers((ConcurrentGauge) metric, tags), metricName, jsonObject));
             } else if (Gauge.class.isInstance(metric)) {
                 try {
                     jsonObject.put(metricNameWithTags, ((Gauge) metric).getValue());
@@ -114,11 +131,11 @@ public class JSONMetricWriter implements OutputWriter {
                     // The forwarding gauge is likely unloaded. A warning has already been emitted
                 }
             } else if (Timer.class.isInstance(metric)) {
-                jsonObject.put(metricName, getJsonFromMap(Util.getTimerNumbers((Timer) metric, tags)));
+                jsonObject.put(metricName, getJsonFromMap(Util.getTimerNumbers((Timer) metric, tags), metricName, jsonObject));
             } else if (Histogram.class.isInstance(metric)) {
-                jsonObject.put(metricName, getJsonFromMap(Util.getHistogramNumbers((Histogram) metric, tags)));
+                jsonObject.put(metricName, getJsonFromMap(Util.getHistogramNumbers((Histogram) metric, tags), metricName, jsonObject));
             } else if (Meter.class.isInstance(metric)) {
-                jsonObject.put(metricName, getJsonFromMap(Util.getMeterNumbers((Meter) metric, tags)));
+                jsonObject.put(metricName, getJsonFromMap(Util.getMeterNumbers((Meter) metric, tags), metricName, jsonObject));
             } else {
                 Tr.event(tc, "Metric type '" + metric.getClass() + " for " + metricName + " is invalid.");
             }
@@ -126,8 +143,20 @@ public class JSONMetricWriter implements OutputWriter {
         return jsonObject;
     }
 
-    private JSONObject getJsonFromMap(Map<String, Number> map) {
-        JSONObject jsonObject = new JSONObject();
+    private JSONObject getJsonFromMap(Map<String, Number> map, String metricName, JSONObject parentJSONObject) {
+
+        /*
+         * Check if parent JsonObject has this "metric" already set in it.
+         * If so, need to grow the JsonObject and then reinsert
+         */
+        JSONObject jsonObject;
+        if (parentJSONObject.containsKey(metricName)) {
+            jsonObject = (JSONObject) parentJSONObject.get(metricName);
+        } else {
+            jsonObject = new JSONObject();
+        }
+
+        //map already contains "keys" with the "tags"
         for (Entry<String, Number> entry : map.entrySet()) {
             jsonObject.put(entry.getKey(), entry.getValue());
         }

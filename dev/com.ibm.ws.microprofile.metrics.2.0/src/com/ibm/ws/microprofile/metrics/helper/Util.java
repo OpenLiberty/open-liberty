@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.microprofile.metrics.ConcurrentGauge;
 import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Meter;
@@ -154,6 +155,14 @@ public class Util {
         results.put(Constants.FIVE_MINUTE_RATE + tags, meter.getFiveMinuteRate());
         results.put(Constants.FIFTEEN_MINUTE_RATE + tags, meter.getFifteenMinuteRate());
 
+        return results;
+    }
+
+    public static Map<String, Number> getConcurrentGaugeNumbers(ConcurrentGauge concurrentgauge, String tags) {
+        Map<String, Number> results = new HashMap<String, Number>();
+        results.put(Constants.CURRENT + tags, concurrentgauge.getCount());
+        results.put(Constants.MIN + tags, concurrentgauge.getMin());
+        results.put(Constants.MAX + tags, concurrentgauge.getMax());
         return results;
     }
 }

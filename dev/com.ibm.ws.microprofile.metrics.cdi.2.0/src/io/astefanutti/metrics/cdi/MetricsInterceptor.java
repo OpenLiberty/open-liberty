@@ -39,6 +39,7 @@ import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricFilter;
 import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.annotation.ConcurrentGauge;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
 import org.eclipse.microprofile.metrics.annotation.Metered;
@@ -118,6 +119,12 @@ import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
         if (counted.isPresent()) {
             registry.counter(counted.metadata(), Utils.tagsToTags(counted.tags()));
             extension.addMetricName(element, counted.metricAnnotation(), counted.metadata().getName());
+        }
+
+        MetricResolver.Of<ConcurrentGauge> concurrentGauge = resolver.concurentGauged(bean, element);
+        if (concurrentGauge.isPresent()) {
+            registry.concurrentGauge(concurrentGauge.metadata(), Utils.tagsToTags(concurrentGauge.tags()));
+            extension.addMetricName(element, concurrentGauge.metricAnnotation(), concurrentGauge.metadata().getName());
         }
 
         MetricResolver.Of<Metered> metered = resolver.metered(bean, element);

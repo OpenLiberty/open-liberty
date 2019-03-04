@@ -23,7 +23,7 @@
 package org.eclipse.microprofile.metrics;
 
 /**
- * An incrementing and decrementing counter metric.
+ * An incrementing counter metric.
  */
 public interface Counter extends Metric, Counting {
 
@@ -39,17 +39,6 @@ public interface Counter extends Metric, Counting {
      */
     void inc(long n);
 
-    /**
-     * Decrement the counter by one.
-     */
-    void dec();
-
-    /**
-     * Decrement the counter by {@code n}.
-     *
-     * @param n the amount by which the counter will be decreased
-     */
-    void dec(long n);
 
     /**
      * Returns the counter's current value.

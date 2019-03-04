@@ -54,24 +54,6 @@ public class CounterImpl implements Counter {
     }
 
     /**
-     * Decrement the counter by one.
-     */
-    @Override
-    public void dec() {
-        dec(1);
-    }
-
-    /**
-     * Decrement the counter by {@code n}.
-     *
-     * @param n the amount by which the counter will be decreased
-     */
-    @Override
-    public void dec(long n) {
-        count.add(-n);
-    }
-
-    /**
      * Returns the counter's current value.
      *
      * @return the counter's current value

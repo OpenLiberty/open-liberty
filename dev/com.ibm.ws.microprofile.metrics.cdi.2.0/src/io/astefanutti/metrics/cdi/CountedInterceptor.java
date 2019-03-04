@@ -81,14 +81,9 @@ import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
         MetricID tmid = new MetricID(counted.metricName(), Utils.tagsToTags(counted.tags()));
         Counter counter = (Counter) registry.getMetrics().get(tmid);
         if (counter == null)
-            throw new IllegalStateException("No counter with name [" + counted.metricName() + "] found in registry [" + registry + "]");
+            throw new IllegalStateException("No counter with metricID [" + tmid + "] found in registry [" + registry + "]");
 
         counter.inc();
-        try {
-            return context.proceed();
-        } finally {
-            if (!counted.metricAnnotation().monotonic())
-                counter.dec();
-        }
+        return context.proceed();
     }
 }

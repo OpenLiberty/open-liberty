@@ -72,14 +72,14 @@ public class DefaultMetadata implements Metadata {
     private final String unit;
 
     /**
-     * Can this metric name (in a scope) be used multiple times?
+     * Can this metric (in a scope) be used multiple times?
      * <p>
-     * Setting this is optional. The default is <tt>false</tt>, which
-     * prevents reusing.
+     * Setting this is optional. The default is <tt>true</tt>, which
+     * allows reusing.
      * </p>
      * Note that this only has an effect if the <tt>name</tt> is explicitly given or
      * <tt>absolute</tt> is set to true and two methods that are marked as metric have
-     * the same name.
+     * the same MetricID (name and tags).
      * <p>
      * If the name is automatically determined, then this flag has no effect as
      * all metric names are different anyway
@@ -166,6 +166,18 @@ public class DefaultMetadata implements Metadata {
         sb.append(", type=").append(type);
         sb.append(", unit='").append(unit).append('\'');
         sb.append(", reusable=").append(reusable);
+        if(description != null) {
+            sb.append(", description='").append(description).append('\'');
+        }
+        else {
+            sb.append(", description=null");
+        }
+        if(displayName != null) {
+            sb.append(", displayName='").append(displayName).append('\'');
+        }
+        else {
+            sb.append(", displayName=null");
+        }
         sb.append('}');
         return sb.toString();
     }

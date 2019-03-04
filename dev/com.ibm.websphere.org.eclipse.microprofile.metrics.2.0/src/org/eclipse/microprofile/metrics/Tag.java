@@ -106,4 +106,12 @@ public class Tag {
         Tag that = (Tag) o;
         return Objects.equals(this.tagName, that.getTagName()) && Objects.equals(this.tagValue, that.getTagValue());
     }
+
+    @Override
+    public String toString() {
+        return "Tag{"
+            + tagName + '=' + tagValue
+            + '}';
+    }
+
 }

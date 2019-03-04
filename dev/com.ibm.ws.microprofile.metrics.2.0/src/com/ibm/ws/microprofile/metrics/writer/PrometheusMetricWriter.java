@@ -16,6 +16,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.microprofile.metrics.ConcurrentGauge;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
@@ -224,12 +225,9 @@ public class PrometheusMetricWriter implements OutputWriter {
             }
 
             if (Counter.class.isInstance(metric)) {
-                if (!metricNamePrometheus.endsWith("_total")) {
-                    metricNamePrometheus += "_total";
-                } else if (!metricNamePrometheus.endsWith("_")) {
-                    metricNamePrometheus += "total";
-                }
                 PrometheusBuilder.buildCounter(builder, metricNamePrometheus, (Counter) metric, description, tags);
+            } else if (ConcurrentGauge.class.isInstance(metric)) {
+                PrometheusBuilder.buildConcurrentGauge(builder, metricNamePrometheus, (ConcurrentGauge) metric, description, tags);
             } else if (Gauge.class.isInstance(metric)) {
                 PrometheusBuilder.buildGauge(builder, metricNamePrometheus, (Gauge) metric, description, conversionFactor, tags, appendUnit);
             } else if (Timer.class.isInstance(metric)) {

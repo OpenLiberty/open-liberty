@@ -30,9 +30,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.eclipse.microprofile.config.ConfigProvider;
 
 /**
  *
@@ -65,13 +68,13 @@ import java.util.stream.Stream;
  */
 public class MetricID implements Comparable<MetricID> {
 
-    public static final String GLOBAL_TAGS_VARIABLE = "MP_METRICS_TAGS";
+    public static final String GLOBAL_TAGS_VARIABLE = "mp.metrics.tags";//"MP_METRICS_TAGS";
 
     private static final String GLOBAL_TAG_MALFORMED_EXCEPTION = "Malformed list of Global Tags. Tag names "
-                                                                + "must match the following regex [a-zA-Z_][a-zA-Z0-9_]*."
-                                                                + " Global Tag values must not be empty."
-                                                                + " Global Tag values MUST escape equal signs `=` and commas `,`"
-                                                                + " with a backslash `\\` ";
+                                                                 + "must match the following regex [a-zA-Z_][a-zA-Z0-9_]*."
+                                                                 + " Global Tag values must not be empty."
+                                                                 + " Global Tag values MUST escape equal signs `=` and commas `,`"
+                                                                 + " with a backslash `\\` ";
 
     /**
      * Name of the metric.
@@ -109,8 +112,10 @@ public class MetricID implements Comparable<MetricID> {
      */
     public MetricID(String name, Tag... tags) {
         this.name = name;
-        String globalTagsFromEnv = System.getenv(GLOBAL_TAGS_VARIABLE);
-        parseGlobalTags(globalTagsFromEnv);
+        Optional<String> globalTags = ConfigProvider.getConfig().getOptionalValue(GLOBAL_TAGS_VARIABLE, String.class);
+        globalTags.ifPresent(this::parseGlobalTags);
+        //String globalTagsFromEnv = System.getenv(GLOBAL_TAGS_VARIABLE);
+        //parseGlobalTags(globalTagsFromEnv);
         addTags(tags);
     }
 
@@ -169,6 +174,14 @@ public class MetricID implements Comparable<MetricID> {
     @Override
     public int hashCode() {
         return Objects.hash(name, tags);
+    }
+
+    @Override
+    public String toString() {
+        return "MetricID{" +
+               "name='" + name + '\'' +
+               ", tags=[" + getTagsAsString() +
+               "]}";
     }
 
     /**
@@ -275,8 +288,7 @@ public class MetricID implements Comparable<MetricID> {
                     compareVal = thisEntry.getKey().compareTo(otherEntry.getKey());
                     if (compareVal != 0) {
                         return compareVal;
-                    } 
-                    else {
+                    } else {
                         compareVal = thisEntry.getValue().compareTo(otherEntry.getValue());
                         if (compareVal != 0) {
                             return compareVal;

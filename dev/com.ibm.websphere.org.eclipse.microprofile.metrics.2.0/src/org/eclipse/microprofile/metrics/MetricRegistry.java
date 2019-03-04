@@ -168,8 +168,8 @@ public abstract class MetricRegistry {
 
     /**
      * Return the {@link Counter} registered under the {@link MetricID} with this name and with no tags;
-     * or create and register a new {@link Counter} if none is registered. 
-     * 
+     * or create and register a new {@link Counter} if none is registered.
+     *
      * If a {@link Counter} was created, a {@link Metadata} object will be registered with the name
      * and type. If a {@link Metadata} object is already registered with this metric name then that
      * {@link Metadata} will be used.
@@ -181,8 +181,8 @@ public abstract class MetricRegistry {
 
     /**
      * Return the {@link Counter} registered under the {@link MetricID} with this name and with the provided
-     * {@link Tag}s; or create and register a new {@link Counter} if none is registered. 
-     * 
+     * {@link Tag}s; or create and register a new {@link Counter} if none is registered.
+     *
      * If a {@link Counter} was created, a {@link Metadata} object will be registered with the name
      * and type. If a {@link Metadata} object is already registered with this metric name then that
      * {@link Metadata} will be used.
@@ -227,10 +227,62 @@ public abstract class MetricRegistry {
     public abstract Counter counter(Metadata metadata, Tag... tags);
 
     /**
+     * Return the {@link ConcurrentGauge} registered under the {@link MetricID} with this name; or create and register
+     * a new {@link ConcurrentGauge} if none is registered.
+     * If a {@link ConcurrentGauge} was created, a {@link Metadata} object will be registered with the name and type.
+     *
+     * @param name the name of the metric
+     * @return a new or pre-existing {@link ConcurrentGauge}
+     */
+    public abstract ConcurrentGauge concurrentGauge(String name);
+
+    /**
+     * Return the {@link ConcurrentGauge} registered under the {@link MetricID} with this name and
+     * with the provided {@link Tag}s; or create and register a new {@link ConcurrentGauge} if none is registered.
+     * If a {@link ConcurrentGauge} was created, a {@link Metadata} object will be registered with the name and type.
+     *
+     * @param name the name of the metric
+     * @param tags the tags of the metric
+     * @return a new or pre-existing {@link ConcurrentGauge}
+     */
+    public abstract ConcurrentGauge concurrentGauge(String name, Tag... tags);
+
+    /**
+     * Return the {@link ConcurrentGauge} registered under the {@link MetricID} with the {@link Metadata}'s name;
+     * or create and register a new {@link ConcurrentGauge} if none is registered.
+     * If a {@link ConcurrentGauge} was created, the provided {@link Metadata} object will be registered.
+     * <p>
+     * Note: During retrieval or creation, if a {@link Metadata} object is already registered under
+     * this metric name and is not equal to the provided {@link Metadata} object then an exception
+     * will be thrown.
+     * </p>
+     *
+     * @param metadata the name of the metric
+     * @return a new or pre-existing {@link ConcurrentGauge}
+     */
+    public abstract ConcurrentGauge concurrentGauge(Metadata metadata);
+
+    /**
+     * Return the {@link ConcurrentGauge} registered under the {@link MetricID} with the {@link Metadata}'s name and
+     * with the provided {@link Tag}s; or create and register a new {@link ConcurrentGauge} if none is registered.
+     * If a {@link ConcurrentGauge} was created, the provided {@link Metadata} object will be registered.
+     * <p>
+     * Note: During retrieval or creation, if a {@link Metadata} object is already registered under
+     * this metric name and is not equal to the provided {@link Metadata} object then an exception
+     * will be thrown.
+     * </p>
+     *
+     * @param metadata the name of the metric
+     * @param tags the tags of the metric
+     * @return a new or pre-existing {@link ConcurrentGauge}
+     */
+    public abstract ConcurrentGauge concurrentGauge(Metadata metadata, Tag... tags);
+
+    /**
      * Return the {@link Histogram} registered under the {@link MetricID} with this name and with no tags;
-     * or create and register a new {@link Histogram} if none is registered. 
-     * 
-     * If a {@link Histogram} was created, a {@link Metadata} object will be registered with the name 
+     * or create and register a new {@link Histogram} if none is registered.
+     *
+     * If a {@link Histogram} was created, a {@link Metadata} object will be registered with the name
      * and type. If a {@link Metadata} object is already registered with this metric name then that
      * {@link Metadata} will be used.
      *
@@ -242,7 +294,7 @@ public abstract class MetricRegistry {
     /**
      * Return the {@link Histogram} registered under the {@link MetricID} with this name and with the
      * provided {@link Tag}s; or create and register a new {@link Histogram} if none is registered.
-     * 
+     *
      * If a {@link Histogram} was created, a {@link Metadata} object will be registered with the name
      * and type. If a {@link Metadata} object is already registered with this metric name then that
      * {@link Metadata} will be used.
@@ -289,8 +341,8 @@ public abstract class MetricRegistry {
 
     /**
      * Return the {@link Meter} registered under the {@link MetricID} with this name and with no tags; or
-     * create and register a new {@link Meter} if none is registered. 
-     * 
+     * create and register a new {@link Meter} if none is registered.
+     *
      * If a {@link Meter} was created, a {@link Metadata} object will be registered with the name
      * and type. If a {@link Metadata} object is already registered with this metric name then that
      * {@link Metadata} will be used.
@@ -302,8 +354,8 @@ public abstract class MetricRegistry {
 
     /**
      * Return the {@link Meter} registered under the {@link MetricID} with this name and with the provided {@link Tag}s;
-     * or create and register a new {@link Meter} if none is registered. 
-     * 
+     * or create and register a new {@link Meter} if none is registered.
+     *
      * If a {@link Meter} was created, a {@link Metadata} object will be registered with the name
      * and type. If a {@link Metadata} object is already registered with this metric name then that
      * {@link Metadata} will be used.
@@ -350,11 +402,11 @@ public abstract class MetricRegistry {
     /**
      * Return the {@link Timer} registered under the {@link MetricID} with this name and with no tags; or create
      * and register a new {@link Timer} if none is registered.
-     * 
+     *
      * If a {@link Timer} was created, a {@link Metadata} object will be registered with the name
      * and type. If a {@link Metadata} object is already registered with this metric name then that
      * {@link Metadata} will be used.
-     * 
+     *
      * @param name the name of the metric
      * @return a new or pre-existing {@link Timer}
      */
@@ -363,11 +415,11 @@ public abstract class MetricRegistry {
     /**
      * Return the {@link Timer} registered under the {@link MetricID} with this name and with the provided {@link Tag}s;
      * or create and register a new {@link Timer} if none is registered.
-     * 
+     *
      * If a {@link Timer} was created, a {@link Metadata} object will be registered with the name
      * and type. If a {@link Metadata} object is already registered with this metric name then that
      * {@link Metadata} will be used.
-     * 
+     *
      *
      * @param name the name of the metric
      * @param tags the tags of the metric
@@ -477,6 +529,22 @@ public abstract class MetricRegistry {
      * @return all the counters in the registry
      */
     public abstract SortedMap<MetricID, Counter> getCounters(MetricFilter filter);
+
+    /**
+     * Returns a map of all the concurrent gauges in the registry and their {@link MetricID}s.
+     *
+     * @return all the concurrent gauges in the registry
+     */
+    public abstract SortedMap<MetricID, ConcurrentGauge> getConcurrentGauges();
+
+    /**
+     * Returns a map of all the concurrent gauges in the registry and their {@link MetricID}s which match
+     * the given filter.
+     *
+     * @param filter    the metric filter to match
+     * @return all the concurrent gauges in the registry
+     */
+    public abstract SortedMap<MetricID, ConcurrentGauge> getConcurrentGauges(MetricFilter filter);
 
     /**
      * Returns a map of all the histograms in the registry and their {@link MetricID}s.

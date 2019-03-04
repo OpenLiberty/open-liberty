@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.metrics.helper;
 
+import org.eclipse.microprofile.metrics.ConcurrentGauge;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Counting;
 import org.eclipse.microprofile.metrics.Gauge;
@@ -59,9 +60,50 @@ public class PrometheusBuilder {
     }
 
     public static void buildCounter(StringBuilder builder, String name, Counter counter, String description, String tags) {
-        getPromTypeLine(builder, name, "counter");
-        getPromHelpLine(builder, name, description);
-        getPromValueLine(builder, name, counter.getCount(), tags);
+        String lineName = name;
+        if (!name.endsWith("_total")) {
+            lineName += "_total";
+        } else if (!name.endsWith("_")) {
+            lineName += "total";
+        }
+
+        getPromTypeLine(builder, lineName, "counter");
+        getPromHelpLine(builder, lineName, description);
+        getPromValueLine(builder, lineName, counter.getCount(), tags);
+    }
+
+    public static void buildConcurrentGauge(StringBuilder builder, String name, ConcurrentGauge counter, String description, String tags) {
+        String lineName = name;
+        if (!name.endsWith("_current")) {
+            lineName += "_current";
+        } else if (!name.endsWith("_")) {
+            lineName += "total";
+        }
+
+        getPromTypeLine(builder, lineName, "gauge");
+        getPromHelpLine(builder, lineName, description);
+        getPromValueLine(builder, lineName, counter.getCount(), tags);
+
+        lineName = name;
+        if (!name.endsWith("_min")) {
+            lineName += "_min";
+        } else if (!name.endsWith("_")) {
+            lineName += "_min";
+        }
+
+        getPromTypeLine(builder, lineName, "gauge");
+        getPromHelpLine(builder, lineName, description);
+        getPromValueLine(builder, lineName, counter.getMin(), tags);
+
+        lineName = name;
+        if (!name.endsWith("_max")) {
+            lineName += "_max";
+        } else if (!name.endsWith("_")) {
+            lineName += "_max";
+        }
+        getPromTypeLine(builder, lineName, "gauge");
+        getPromHelpLine(builder, lineName, description);
+        getPromValueLine(builder, lineName, counter.getMax(), tags);
     }
 
     public static void buildTimer(StringBuilder builder, String name, Timer timer, String description, String tags) {
