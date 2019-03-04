@@ -20,6 +20,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
 import com.ibm.ws.microprofile.config14.variableResolution.web.VariableResolutionServlet;
 
@@ -31,7 +32,6 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 /**
- * Example Shrinkwrap FAT project:
  * <li> Application packaging is done in the @BeforeClass, instead of ant scripting.
  * <li> Injects servers via @Server annotation. Annotation value corresponds to the
  * server directory name in 'publish/servers/%annotation_value%' where ports get
@@ -47,11 +47,12 @@ import componenttest.topology.utils.FATServletClient;
 public class VariableResolutionTest extends FATServletClient {
 
     public static final String APP_NAME = "variableResolutionApp";
+    public static final String SERVER_NAME = "Config14Server";
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeatConfig14("VariableResolutionServer");
+    public static RepeatTests r = RepeatConfigActions.repeatConfig14(SERVER_NAME);
 
-    @Server("VariableResolutionServer")
+    @Server(SERVER_NAME)
     @TestServlet(servlet = VariableResolutionServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
@@ -66,7 +67,7 @@ public class VariableResolutionTest extends FATServletClient {
                         .addAsManifestResource(new File("test-applications/" + APP_NAME + "/META-INF/microprofile-config.properties"),
                                                "microprofile-config.properties");
 
-        ShrinkHelper.exportDropinAppToServer(server, war);
+        ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

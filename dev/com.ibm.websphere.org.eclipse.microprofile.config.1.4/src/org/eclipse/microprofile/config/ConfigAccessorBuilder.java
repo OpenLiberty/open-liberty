@@ -27,12 +27,10 @@
 package org.eclipse.microprofile.config;
 
 
-
-
-import java.time.temporal.ChronoUnit;
-import java.util.List;
+import java.time.Duration;
 
 import org.eclipse.microprofile.config.spi.Converter;
+
  
 
 /**
@@ -46,19 +44,18 @@ import org.eclipse.microprofile.config.spi.Converter;
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  * @author <a href="mailto:gpetracek@apache.org">Gerhard Petracek</a>
  * @author <a href="mailto:tomas.langer@oracle.com">Tomas Langer</a>
+ * @author <a href="mailto:emijiang@uk.ibm.com">Emily Jiang</a>
  */
 public interface ConfigAccessorBuilder<T> {
 
 
-	ConfigAccessorBuilder<List<T>> asList();
-	
     /**
      * Defines a specific {@link Converter} to be used instead of applying the default Converter resolving logic.
      *
      * @param converter The converter for the target type
      * @return This builder as a typed ConfigAccessor
      */
-    ConfigAccessorBuilder<T> withConverter(Converter<T> converter);
+    ConfigAccessorBuilder<T> useConverter(Converter<T> converter);
 
     /**
      * Sets the default value to use in case the resolution returns null.
@@ -78,18 +75,17 @@ public interface ConfigAccessorBuilder<T> {
     /**
      * Specify that a resolved value will get cached for a certain maximum amount of time.
      * After the time expires the next {@link ConfigAccessor#getValue()} will again resolve the value
-     * from the underlying {@link org.eclipse.microprofile.config.Config}.
+     * from the underlying {@link Config}.
      *
      * Note that that the cache will get flushed if a {@code ConfigSource} notifies
      * the underlying {@link Config} about a value change.
      * This is done by invoking the callback provided to the {@code ConfigSource} via
      * {@link org.eclipse.microprofile.config.spi.ConfigSource#onAttributeChange(java.util.function.Consumer)}.
      *
-     * @param value the amount of the TimeUnit to wait
-     * @param unit the ChronoUnit for the value
+     * @param duration the duration (e.g. 3s) to cache for
      * @return This builder
      */
-    ConfigAccessorBuilder<T> cacheFor(long value, ChronoUnit unit);
+    ConfigAccessorBuilder<T> cacheFor(Duration duration);
 
     /**
      * Whether to evaluate variables in configured values.
@@ -110,46 +106,6 @@ public interface ConfigAccessorBuilder<T> {
      */
     ConfigAccessorBuilder<T> evaluateVariables(boolean evaluateVariables);
 
-    /**
-     * The methods {@link ConfigAccessorBuilder#addLookupSuffix(String)} 
-     * append the given parameters as optional suffixes to the {@link ConfigAccessor#getPropertyName()}.
-     * Those methods can be called multiple times.
-     * Each time the given suffix will be added to the end of suffix chain.
-     *
-     * This very version
-     *
-     * <p>Usage:
-     * <pre>
-     * String tenant = getCurrentTenant();
-     *
-     * Integer timeout = config.access("some.server.url", Integer.class)
-     *                         .addLookupSuffix(tenant)
-     *                         .addLookupSuffix(config.access("org.eclipse.microprofile.config.projectStage").build())
-     *                         .build()
-     *                         .getValue();
-     * </pre>
-     *
-     * Given the current tenant name is 'myComp' and the property
-     * {@code javaconfig.projectStage} is 'Production' this would lead to the following lookup order:
-     *
-     * <ul>
-     *     <li>"some.server.url.myComp.Production"</li>
-     *     <li>"some.server.url.myComp"</li>
-     *     <li>"some.server.url.Production"</li>
-     *     <li>"some.server.url"</li>
-     * </ul>
-     *
-     * The algorithm to use in {@link ConfigAccessor#getValue()} is a binary count down.
-     * Every parameter is either available (1) or not (0).
-     * Having 3 parameters, we start with binary {@code 111} and count down to zero.
-     * The first combination which resolves to a result is being treated as result.
-     *
-     * @param suffixValue fixed String to be used as suffix
-     * @return This builder
-     */
-    ConfigAccessorBuilder<T> addLookupSuffix(String suffixValue);
-
-    
     /**
      * Build a ConfigAccessor 
      * @return the configAccessor

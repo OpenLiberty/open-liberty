@@ -16,6 +16,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.eclipse.microprofile.config.ConfigSnapshot;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.config.spi.Converter;
 
 import com.ibm.websphere.ras.Tr;
@@ -38,7 +39,6 @@ public class ConfigAccessorImpl<T> implements WebSphereConfigAccessor<T>, Proper
     private final Duration cacheFor;
     private boolean evaluateVariables;
     private final Object defaultValue;
-    private final String defaultString;
     private final Converter<T> converter;
 
     //must only be referenced within synchronized(this) block
@@ -57,9 +57,25 @@ public class ConfigAccessorImpl<T> implements WebSphereConfigAccessor<T>, Proper
         this.evaluateVariables = evaluateVariables;
         this.cacheFor = cacheFor;
         this.evaluateVariables = evaluateVariables;
-        this.defaultValue = defaultValue;
-        this.defaultString = defaultString;
         this.converter = converter;
+
+        if (ConfigProperty.UNCONFIGURED_VALUE.equals(defaultValue)) {
+            if (!ConfigProperty.UNCONFIGURED_VALUE.equals(defaultString)) {
+                if (ConfigProperty.NULL_VALUE.equals(defaultString)) {
+                    this.defaultValue = config.convertValue(null, rawType, genericSubType);
+                } else {
+                    this.defaultValue = config.convertValue(defaultString, rawType, genericSubType);
+                }
+            } else {
+                this.defaultValue = ConfigProperty.UNCONFIGURED_VALUE;
+            }
+        } else {
+            if (ConfigProperty.NULL_VALUE.equals(defaultValue)) {
+                this.defaultValue = null;
+            } else {
+                this.defaultValue = defaultValue;
+            }
+        }
 
         if (cacheFor != null) {
             getSourcedValue(); //this will have the effect of retrieving, converting and caching the value for use later
@@ -113,7 +129,7 @@ public class ConfigAccessorImpl<T> implements WebSphereConfigAccessor<T>, Proper
         if (snapshot == null) {
             synchronized (this) {
                 if (!checkCache()) {
-                    sourcedValue = config.getSourcedValue(this.propertyNames, this.rawType, this.genericSubType, this.defaultValue, this.defaultString, this.evaluateVariables,
+                    sourcedValue = config.getSourcedValue(this.propertyNames, this.rawType, this.genericSubType, this.defaultValue, this.evaluateVariables,
                                                           this.converter);
 
                     //only set the cache to valid if cacheFor is positive
@@ -159,21 +175,25 @@ public class ConfigAccessorImpl<T> implements WebSphereConfigAccessor<T>, Proper
         return propertyNames.get(propertyNames.size() - 1); //last one is always the base
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public String getResolvedPropertyName() {
-        String resolvedPropertyName;
-        synchronized (this) {
-            resolvedPropertyName = mostRecentPropertyName;
-        }
-        return resolvedPropertyName;
-    }
+//    /** {@inheritDoc} */
+//    @Override
+//    public String getResolvedPropertyName() {
+//        String resolvedPropertyName;
+//        synchronized (this) {
+//            resolvedPropertyName = mostRecentPropertyName;
+//        }
+//        return resolvedPropertyName;
+//    }
 
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     @Override
     public T getDefaultValue() {
-        return (T) this.defaultValue;
+        if (this.defaultValue == null || ConfigProperty.NULL_VALUE.equals(this.defaultValue) || ConfigProperty.UNCONFIGURED_VALUE.equals(this.defaultValue)) {
+            return null;
+        } else {
+            return (T) this.defaultValue;
+        }
     }
 
     /** {@inheritDoc} */

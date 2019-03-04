@@ -20,7 +20,7 @@ import componenttest.app.FATServlet;
 /**
  *
  */
-@WebServlet("/MapEnvVarServlet")
+@WebServlet("/")
 public class VariableResolutionServlet extends FATServlet {
 
     @Inject
