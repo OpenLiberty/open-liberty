@@ -110,7 +110,7 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
                     if (fileBased.booleanValue()) {
                         createFileMonitor(svc.getKeyStore().getName(), svc.getKeyStore().getLocation(), trigger, svc.getKeyStore().getPollingRate());
                     } else if (svc.getKeyStore().getLocation().contains(KeyringMonitor.SAF_PREFIX)) {
-                        createKeyringMonitor(svc.getKeyStore().getName(), trigger);
+                        createKeyringMonitor(svc.getKeyStore().getName(), trigger, svc.getKeyStore().getLocation());
                     }
                 }
             } else {
@@ -316,12 +316,12 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
     /**
      * Handles the creation of the SAF keyring monitor.
      */
-    private void createKeyringMonitor(String name, String trigger) {
+    private void createKeyringMonitor(String name, String trigger, String keyStoreLocation) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "createKeyringMonitor", new Object[] { name, trigger });
         try {
             SafKeyringMonitor = new SAFKeyringMonitor(this);
-            setKeyringMonitorRegistration(SafKeyringMonitor.monitorKeyRings(name, trigger));
+            setKeyringMonitorRegistration(SafKeyringMonitor.monitorKeyRings(name, trigger, keyStoreLocation));
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception creating the keyring monitor.", e);

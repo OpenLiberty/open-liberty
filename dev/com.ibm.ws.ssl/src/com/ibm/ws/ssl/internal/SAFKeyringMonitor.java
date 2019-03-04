@@ -43,13 +43,14 @@ public class SAFKeyringMonitor implements KeyringMonitor {
      * @param trigger what trigger the keyring update notification mbean
      * @return The <code>KeyringMonitor</code> service registration.
      */
-    public ServiceRegistration<KeyringMonitor> monitorKeyRings(String name, String trigger) {
+    public ServiceRegistration<KeyringMonitor> monitorKeyRings(String name, String trigger, String keyStoreLocation) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "monitorKeyRing registration for", name);
         }
         BundleContext bundleContext = actionable.getBundleContext();
         final Hashtable<String, Object> keyRingMonitorProps = new Hashtable<String, Object>();
         keyRingMonitorProps.put(KeyringMonitor.MONITOR_IDENTIFICATION_CONFIG_NAME, name);
+        keyRingMonitorProps.put(KeyringMonitor.SAF_LOCATION, keyStoreLocation);
         if (!(trigger.equalsIgnoreCase("disabled")) && trigger.equals("polled")) {
             Tr.warning(tc, "Cannot have polled trigger for keyRing name", name);
         }
@@ -58,7 +59,7 @@ public class SAFKeyringMonitor implements KeyringMonitor {
 
     /** {@inheritDoc} */
     @Override
-    public void refreshRequested(String name) {
+    public void refreshRequested(String keyStoreLocation) {
         actionable.performFileBasedAction(null);
     }
 

@@ -28,6 +28,17 @@ public interface KeyringMonitor {
      */
     String MONITOR_IDENTIFICATION_CONFIG_NAME = "monitor.config.name";
 
+    /**
+     * <h4>Service property</h4>
+     *
+     * The value should be a String, indicating the safLocation of
+     * keyring that should be monitored.
+     */
+    String SAF_LOCATION = "saf.location";
+
+    /**
+     * Constant that is used for prefix
+     */
     String SAF_PREFIX = "safkeyring://";
 
     /**
