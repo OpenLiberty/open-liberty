@@ -21,6 +21,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * backed by Liberty's z/OS WLM context.
  */
 @Trivial
+@SuppressWarnings("deprecation")
 public class WLMContextProvider extends ContainerContextProvider {
     public static final String WORKLOAD = "Workload";
 

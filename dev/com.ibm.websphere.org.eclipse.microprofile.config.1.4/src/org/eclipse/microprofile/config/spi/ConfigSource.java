@@ -1,6 +1,6 @@
 /*
  ******************************************************************************
- * Copyright (c) 2009-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2009-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,12 +27,17 @@
  *   2016-11-14 - Emily Jiang / IBM Corp
  *      Methods renamed, JavaDoc and cleanup
  *
+ *
  *******************************************************************************/
 package org.eclipse.microprofile.config.spi;
 
+import java.io.Closeable;
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+
+
 
 /**
  * <p>Implement this interfaces to provide a ConfigSource.
@@ -44,20 +49,16 @@ import java.util.function.Consumer;
  * <ol>
  * <li>System properties (ordinal=400)</li>
  * <li>Environment properties (ordinal=300)
- *    <p>Some operating systems allow only alphabetic characters or an underscore(_), in environment variables.
- *    Other characters such as ., /, etc may be disallowed.
- *    In order to set a value for a config property that has a name containing such disallowed characters from an environment variable,
- *    the following rules are used.
- *    This ConfigSource searches for potentially 3 environment variables with a given property name (e.g. {@code "com.ACME.size"}):</p>
+ *    <p>Depending on the operating system type, environment variables with '.' are not always allowed.
+ *    This ConfigSource searches 3 environment variables for a given property name (e.g. {@code "com.ACME.size"}):</p>
  *        <ol>
  *            <li>Exact match (i.e. {@code "com.ACME.size"})</li>
- *            <li>Replace the character that is neither alphanumeric nor '_' with '_' (i.e. {@code "com_ACME_size"})</li>
- *            <li>Replace the character that is neither alphanumeric nor '_' with '_' and convert to upper case 
- *            (i.e. {@code "COM_ACME_SIZE"})</li>
+ *            <li>Replace all '.' by '_' (i.e. {@code "com_ACME_size"})</li>
+ *            <li>Replace all '.' by '_' and convert to upper case (i.e. {@code "COM_ACME_SIZE"})</li>
  *        </ol>
  *    <p>The first environment variable that is found is returned by this ConfigSource.</p>
  * </li>
- * <li>/META-INF/javaconfig.properties (ordinal=100)</li>
+ * <li>/META-INF/microprofile-config.properties (ordinal=100)</li>
  * </ol>
  *
  * <p>Custom ConfigSource will get picked up via the {@link java.util.ServiceLoader} mechanism and and can be registered by
@@ -86,10 +87,8 @@ public interface ConfigSource {
     int DEFAULT_ORDINAL = 100;
 
     /**
-     * Return the properties in this config source.
-     *
-     * @return the map containing the properties in this config source if these can be scanned, or empty Map
-     * @see #isScannable()
+     * Return the properties in this config source
+     * @return the map containing the properties in this config source
      */
     Map<String, String> getProperties();
 
@@ -99,8 +98,7 @@ public interface ConfigSource {
      * For backwards compatibility, there is a default implementation that just returns the keys of {@code getProperties()}
      * slower ConfigSource implementations should replace this with a more performant implementation
      *
-     * @return the set of property keys that are known to this config source if these can be scanned or empty Set
-     * @see #isScannable()
+     * @return the set of property keys that are known to this ConfigSource
      */
     default Set<String> getPropertyNames() {
         return getProperties().keySet();
@@ -114,10 +112,23 @@ public interface ConfigSource {
      * Note that this property only gets evaluated during ConfigSource discovery.
      *
      * The default ordinals for the default config sources:
-     * <ol>
-     *  <li>System properties (default ordinal=400)</li>
-     *  <li>Environment properties (default ordinal=300)</li>
-     *  <li>/META-INF/javaconfig.properties (default ordinal=100)</li>
+     <ol>
+     * <li>System properties (ordinal=400)</li>
+     * <li>Environment properties (ordinal=300)
+     *    <p>Some operating systems allow only alphabetic characters or an underscore(_), in environment variables.
+     *    Other characters such as ., /, etc may be disallowed.
+     *    In order to set a value for a config property that has a name containing such disallowed characters from an environment variable,
+     *    the following rules are used.
+     *    This ConfigSource searches for potentially 3 environment variables with a given property name (e.g. {@code "com.ACME.size"}):</p>
+     *        <ol>
+     *            <li>Exact match (i.e. {@code "com.ACME.size"})</li>
+     *            <li>Replace the character that is neither alphanumeric nor '_' with '_' (i.e. {@code "com_ACME_size"})</li>
+     *            <li>Replace the character that is neither alphanumeric nor '_' with '_' and convert to upper case 
+     *            (i.e. {@code "COM_ACME_SIZE"})</li>
+     *        </ol>
+     *    <p>The first environment variable that is found is returned by this ConfigSource.</p>
+     * </li>
+     * <li>/META-INF/microprofile-config.properties (default ordinal=100)</li>
      * </ol>
      *
      *
@@ -130,7 +141,7 @@ public interface ConfigSource {
      */
     default int getOrdinal() {
         String configOrdinal = getValue(CONFIG_ORDINAL);
-        if (configOrdinal != null) {
+        if(configOrdinal != null) {
             try {
                 return Integer.parseInt(configOrdinal);
             }
@@ -143,32 +154,18 @@ public interface ConfigSource {
 
     /**
      * Return the value for the specified property in this config source.
-     *
      * @param propertyName the property name
-     * @return the property value, or {@code null} when property is not defined by this config source
+     * @return the property value
      */
     String getValue(String propertyName);
 
     /**
-     * The name of this config source might be used for logging or analysis of configured values.
+     * The name of the config might be used for logging or analysis of configured values.
      *
      * @return the 'name' of the configuration source, e.g. 'property-file mylocation/myproperty.properties'
      */
     String getName();
 
-
-    /**
-     * Determines if this config source should be scanned for its list of properties.
-     *
-     * Generally, slow ConfigSources should return false here.
-     *
-     * @return {@code true} if this ConfigSource should be scanned for its list of properties,
-     *         {@code false} if it should not be scanned.
-     */
-    default boolean isScannable() {
-        return true;
-    }
-
     /**
      * The callback should get invoked if an attribute change got detected inside the ConfigSource.
      *
@@ -178,23 +175,10 @@ public interface ConfigSource {
      * @return ChangeSupport informing the {@link org.eclipse.microprofile.config.Config} implementation about support for changes by this source
      * @see ChangeSupport
      */
-    default ChangeSupport registerAttributeChangeConsumer(Consumer<Set<String>> callback) {
+    default ChangeSupport onAttributeChange(Consumer<Set<String>> callback) {
         // do nothing by default. Just for compat with older ConfigSources.
         // return unsupported to tell config that it must re-query this source every time
-        return ChangeSupport.UNSUPPORTED;
-    }
-    
-    /**
-     * The callback should get invoked if an attribute change got detected inside the ConfigSource.
-     *
-     * @param callback will be set by the {@link org.eclipse.microprofile.config.Config} after this
-     *                 {@code ConfigSource} got created and before any configured values
-     *                 get served.
-     * @return ChangeSupport informing the {@link org.eclipse.microprofile.config.Config} implementation about support for changes by this source
-     * @see ChangeSupport
-     */
-    default void deregisterAttributeChangeConsumer(Consumer<Set<String>> callback) {
-        // do nothing by default. Just for compat with older ConfigSources.
+        return () -> ChangeSupport.Type.UNSUPPORTED;
     }
 
     /**
@@ -202,25 +186,34 @@ public interface ConfigSource {
      * <p>
      * {@link org.eclipse.microprofile.config.Config} implementations may use this information for internal optimizations.
      */
-    enum ChangeSupport {
-        /**
-         * Config change is supported, this config source will invoke the callback provided by
-         * {@link ConfigSource#onAttributeChange(Consumer)}.
-         * <p>
-         * Example: File based config source that watches the file for changes
-         */
-        SUPPORTED,
-        /**
-         * Config change is not supported. Configuration values can change, though this change is not reported back.
-         * <p>
-         * Example: LDAP based config source
-         */
-        UNSUPPORTED,
-        /**
-         * Configuration values cannot change for the lifetime of this {@link ConfigSource}.
-         * <p>
-         * Example: Environment variables config source, classpath resource config source
-         */
-        IMMUTABLE
+    interface ChangeSupport extends Closeable, Serializable {
+
+        enum Type {
+            /**
+             * Config change is supported, this config source will invoke the callback provided by
+             * {@link ConfigSource#onAttributeChange(Consumer)}.
+             * <p>
+             * Example: File based config source that watches the file for changes
+             */
+            SUPPORTED,
+            /**
+             * Config change is not supported. Configuration values can change, though this change is not reported back.
+             * <p>
+             * Example: LDAP based config source
+             */
+            UNSUPPORTED,
+            /**
+             * Configuration values cannot change for the lifetime of this {@link ConfigSource}.
+             * <p>
+             * Example: Environment variables config source, classpath resource config source
+             */
+            IMMUTABLE
+        }
+
+        Type getType();
+
+        @Override
+        default void close() {
+        }
     }
 }

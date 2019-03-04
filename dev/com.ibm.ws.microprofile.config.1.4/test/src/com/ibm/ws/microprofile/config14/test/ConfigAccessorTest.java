@@ -12,10 +12,11 @@ package com.ibm.ws.microprofile.config14.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.time.temporal.ChronoUnit;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigAccessor;
 import org.eclipse.microprofile.config.ConfigAccessorBuilder;
 import org.eclipse.microprofile.config.ConfigSnapshot;
+import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.eclipse.microprofile.config.spi.Converter;
 import org.junit.Test;
@@ -42,9 +44,9 @@ public class ConfigAccessorTest extends AbstractConfigTest {
     @Test
     public void testCacheFor() throws InterruptedException {
         System.setProperty("testCacheFor", "value1");
-        Config config = ConfigProviderResolver.instance().getConfig();
+        Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
         ConfigAccessorBuilder<String> builder = config.access("testCacheFor", String.class);
-        builder.cacheFor(CACHE_TIME, ChronoUnit.MILLIS);
+        builder.cacheFor(Duration.ofMillis(CACHE_TIME));
         ConfigAccessor<String> accessor = builder.build();
         String value = accessor.getValue();
         assertEquals("Value not correct", "value1", value);
@@ -57,20 +59,40 @@ public class ConfigAccessorTest extends AbstractConfigTest {
     }
 
     @Test
+    public void testCacheInvalidation() throws InterruptedException {
+        ConfigBuilder configBuilder = ConfigProviderResolver.instance().getBuilder();
+        configBuilder.addDefaultSources();
+        ChangeSupportConfigSource mySource = new ChangeSupportConfigSource();
+        mySource.put("testCacheInvalidation", "value1");
+        configBuilder.withSources(mySource);
+        Config config = configBuilder.build();
+
+        ConfigAccessorBuilder<String> builder = config.access("testCacheInvalidation", String.class);
+        builder.cacheFor(Duration.ofMillis(CACHE_TIME * 100)); //50 seconds
+        ConfigAccessor<String> accessor = builder.build();
+        String value = accessor.getValue();
+        assertEquals("Value not correct", "value1", value);
+
+        mySource.put("testCacheInvalidation", "value2");
+        value = accessor.getValue();
+        assertEquals("Value not correct", "value2", value);
+    }
+
+    @Test
     public void testOptionalCacheFor() throws InterruptedException {
-        Config config = ConfigProviderResolver.instance().getConfig();
+        Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
         ConfigAccessorBuilder<String> builder = config.access("testOptionalCacheFor", String.class);
-        builder.cacheFor(CACHE_TIME, ChronoUnit.MILLIS);
+        builder.cacheFor(Duration.ofMillis(CACHE_TIME));
         ConfigAccessor<String> accessor = builder.build();
         try {
-            String value = accessor.getValue();
+            accessor.getValue();
             fail("NoSuchElementException not thrown");
         } catch (NoSuchElementException e) {
             //expected
         }
         System.setProperty("testOptionalCacheFor", "value1");
         try {
-            String value = accessor.getValue();
+            accessor.getValue();
             fail("NoSuchElementException not thrown");
         } catch (NoSuchElementException e) {
             //expected
@@ -82,33 +104,27 @@ public class ConfigAccessorTest extends AbstractConfigTest {
         assertTrue("Optional should be present", optional.isPresent());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testZeroCacheFor() {
         System.setProperty("testCacheFor", "value1");
-        Config config = ConfigProviderResolver.instance().getConfig();
-        ConfigAccessorBuilder<String> builder = config.access("testCacheFor", String.class);
-        builder.cacheFor(0, ChronoUnit.MILLIS);
-        ConfigAccessor<String> accessor = builder.build();
-        String value = accessor.getValue();
-        assertEquals("Value not correct", "value1", value);
-        System.setProperty("testCacheFor", "value2");
-        value = accessor.getValue();
-        assertEquals("Value not correct", "value2", value);
+        Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
+        ConfigAccessorBuilder<String> builder = config.access("testZeroCacheFor", String.class);
+        builder.cacheFor(Duration.ofMillis(0));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testNegativeCacheFor() {
         System.setProperty("testCacheFor", "value1");
-        Config config = ConfigProviderResolver.instance().getConfig();
-        ConfigAccessorBuilder<String> builder = config.access("testCacheFor", String.class);
-        builder.cacheFor(-1, ChronoUnit.MILLIS);
+        Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
+        ConfigAccessorBuilder<String> builder = config.access("testNegativeCacheFor", String.class);
+        builder.cacheFor(Duration.ofMillis(-1));
     }
 
     @Test
     public void testSnapshot() {
         System.setProperty("testSnapshot1", "value1");
         System.setProperty("testSnapshot2", "value2");
-        Config config = ConfigProviderResolver.instance().getConfig();
+        Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
         ConfigAccessorBuilder<String> builder1 = config.access("testSnapshot1", String.class);
         ConfigAccessor<String> accessor1 = builder1.build();
 
@@ -170,98 +186,128 @@ public class ConfigAccessorTest extends AbstractConfigTest {
         }
     }
 
+//    @Test
+//    public void testLookupSuffix() {
+//        System.setProperty("testLookupSuffix", "WRONG");
+//        System.setProperty("testLookupSuffix.TWO", "RIGHT");
+//        System.setProperty("testLookupSuffix.THREE", "WRONG");
+//
+//        Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
+//        ConfigAccessorBuilder<String> builder1 = config.access("testLookupSuffix", String.class);
+//        builder1.addLookupSuffix("ONE");
+//        builder1.addLookupSuffix("TWO");
+//        builder1.addLookupSuffix("THREE");
+//        builder1.addLookupSuffix("FOUR");
+//        ConfigAccessor<String> accessor1 = builder1.build();
+//
+//        String value = accessor1.getValue();
+//        assertEquals("Value not correct", "RIGHT", value);
+//
+//        String resolvedPropertyName = accessor1.getResolvedPropertyName();
+//        assertEquals("testLookupSuffix.TWO", resolvedPropertyName);
+//    }
+//
+//    @Test
+//    public void testAsList() {
+//        System.setProperty("testAsList", "value1,value2,value3");
+//        Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
+//        ConfigAccessorBuilder<String> builder = config.access("testAsList", String.class);
+//        ConfigAccessorBuilder<List<String>> listBuilder = builder.asList();
+//        ConfigAccessor<List<String>> accessor = listBuilder.build();
+//        List<String> value = accessor.getValue();
+//        assertEquals("Value not correct", "value1", value.get(0));
+//        assertEquals("Value not correct", "value2", value.get(1));
+//        assertEquals("Value not correct", "value3", value.get(2));
+//    }
+
     @Test
-    public void testLookupSuffix() {
-        System.setProperty("testLookupSuffix", "WRONG");
-        System.setProperty("testLookupSuffix.TWO", "RIGHT");
-        System.setProperty("testLookupSuffix.THREE", "WRONG");
-
-        Config config = ConfigProviderResolver.instance().getConfig();
-        ConfigAccessorBuilder<String> builder1 = config.access("testLookupSuffix", String.class);
-        builder1.addLookupSuffix("ONE");
-        builder1.addLookupSuffix("TWO");
-        builder1.addLookupSuffix("THREE");
-        builder1.addLookupSuffix("FOUR");
-        ConfigAccessor<String> accessor1 = builder1.build();
-
-        String value = accessor1.getValue();
-        assertEquals("Value not correct", "RIGHT", value);
-
-        String resolvedPropertyName = accessor1.getResolvedPropertyName();
-        assertEquals("testLookupSuffix.TWO", resolvedPropertyName);
-    }
-
-    @Test
-    public void testAsList() {
-        System.setProperty("testAsList", "value1,value2,value3");
-        Config config = ConfigProviderResolver.instance().getConfig();
-        ConfigAccessorBuilder<String> builder = config.access("testAsList", String.class);
-        ConfigAccessorBuilder<List<String>> listBuilder = builder.asList();
-        ConfigAccessor<List<String>> accessor = listBuilder.build();
-        List<String> value = accessor.getValue();
-        assertEquals("Value not correct", "value1", value.get(0));
-        assertEquals("Value not correct", "value2", value.get(1));
-        assertEquals("Value not correct", "value3", value.get(2));
-    }
-
-    @Test
-    public void testWithConverter() {
+    public void testUseConverter() {
         System.setProperty("testWithConverter", "value1");
-        Config config = ConfigProviderResolver.instance().getConfig();
+        Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
         ConfigAccessorBuilder<MyTestObject> builder = config.access("testWithConverter", MyTestObject.class);
-        builder.withConverter(new MyTestObjectConverter());
+        builder.useConverter(new MyTestObjectConverter());
         ConfigAccessor<MyTestObject> accessor = builder.build();
         MyTestObject value = accessor.getValue();
         assertEquals("Value not correct", "MyTestObject(value1)", value.toString());
     }
 
+//    @Test
+//    public void testAsListWithConverter() {
+//        System.setProperty("testAsListWithConverter", "value1,value2,value3");
+//        Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
+//        ConfigAccessorBuilder<MyTestObject> builder = config.access("testAsListWithConverter", MyTestObject.class);
+//        ConfigAccessorBuilder<List<MyTestObject>> listBuilder = builder.asList();
+//        listBuilder.withConverter(new MyTestObjectListConverter());
+//        ConfigAccessor<List<MyTestObject>> accessor = listBuilder.build();
+//        List<MyTestObject> value = accessor.getValue();
+//        assertEquals("Value not correct", "MyTestObject(value1)", value.get(0).toString());
+//        assertEquals("Value not correct", "MyTestObject(value2)", value.get(1).toString());
+//        assertEquals("Value not correct", "MyTestObject(value3)", value.get(2).toString());
+//        assertEquals("List is wrong type", LinkedList.class, value.getClass());
+//    }
+//
+//    @Test
+//    public void testAsListWithExistingDefaultValue() {
+//        Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
+//        ConfigAccessorBuilder<MyTestObject> builder = config.access("testAsListWithExistingStuff", MyTestObject.class); //property does not exist, will use default
+//
+//        MyTestObject defaultValue = new MyTestObject();
+//        defaultValue.setRawString("DEFAULT");
+//        builder.withDefault(defaultValue);
+//
+//        ConfigAccessorBuilder<List<MyTestObject>> listBuilder = builder.asList();
+//        ConfigAccessor<List<MyTestObject>> accessor = listBuilder.build();
+//        List<MyTestObject> value = accessor.getValue();
+//
+//        assertEquals("List should be a singleton", 1, value.size());
+//        assertEquals("Value not correct", "MyTestObject(DEFAULT)", value.get(0).toString());
+//    }
+
+//    @Test
+//    public void testAsListWithExistingDefaultString() {
+//        Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
+//        ConfigAccessorBuilder<MyTestObject> builder = config.access("testAsListWithExistingDefaultString", MyTestObject.class); //property does not exist, will use default
+//
+//        builder.withStringDefault("value1,value2,value3");
+//        ConfigAccessorBuilder<List<MyTestObject>> listBuilder = builder.asList();
+//        listBuilder.withConverter(new MyTestObjectListConverter());
+//
+//        ConfigAccessor<List<MyTestObject>> accessor = listBuilder.build();
+//        List<MyTestObject> value = accessor.getValue();
+//
+//        assertEquals("Value not correct", "MyTestObject(value1)", value.get(0).toString());
+//        assertEquals("Value not correct", "MyTestObject(value2)", value.get(1).toString());
+//        assertEquals("Value not correct", "MyTestObject(value3)", value.get(2).toString());
+//    }
+
     @Test
-    public void testAsListWithConverter() {
-        System.setProperty("testAsListWithConverter", "value1,value2,value3");
-        Config config = ConfigProviderResolver.instance().getConfig();
-        ConfigAccessorBuilder<MyTestObject> builder = config.access("testAsListWithConverter", MyTestObject.class);
-        ConfigAccessorBuilder<List<MyTestObject>> listBuilder = builder.asList();
-        listBuilder.withConverter(new MyTestObjectListConverter());
-        ConfigAccessor<List<MyTestObject>> accessor = listBuilder.build();
-        List<MyTestObject> value = accessor.getValue();
-        assertEquals("Value not correct", "MyTestObject(value1)", value.get(0).toString());
-        assertEquals("Value not correct", "MyTestObject(value2)", value.get(1).toString());
-        assertEquals("Value not correct", "MyTestObject(value3)", value.get(2).toString());
-        assertEquals("List is wrong type", LinkedList.class, value.getClass());
+    public void testGetDefaultValue() {
+        Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
+        ConfigAccessor<Integer> accessor1 = config.access("testGetDefaultValue", Integer.class).withDefault(123).build();
+        ConfigAccessor<Integer> accessor2 = config.access("testGetDefaultValue", Integer.class).withStringDefault("123").build();
+        Integer int1 = accessor1.getDefaultValue();
+        Integer int2 = accessor2.getDefaultValue();
+        assertEquals(int1, int2);
+        assertEquals(new Integer(123), int1);
     }
 
     @Test
-    public void testAsListWithExistingDefaultValue() {
-        Config config = ConfigProviderResolver.instance().getConfig();
-        ConfigAccessorBuilder<MyTestObject> builder = config.access("testAsListWithExistingStuff", MyTestObject.class); //property does not exist, will use default
-
-        MyTestObject defaultValue = new MyTestObject();
-        defaultValue.setRawString("DEFAULT");
-        builder.withDefault(defaultValue);
-
-        ConfigAccessorBuilder<List<MyTestObject>> listBuilder = builder.asList();
-        ConfigAccessor<List<MyTestObject>> accessor = listBuilder.build();
-        List<MyTestObject> value = accessor.getValue();
-
-        assertEquals("List should be a singleton", 1, value.size());
-        assertEquals("Value not correct", "MyTestObject(DEFAULT)", value.get(0).toString());
+    public void testGetDefaultValue2() {
+        Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
+        ConfigAccessor<Integer> accessor1 = config.access("testGetDefaultValue", Integer.class).withDefault(123).withStringDefault("456").build();
+        ConfigAccessor<Integer> accessor2 = config.access("testGetDefaultValue", Integer.class).withStringDefault("123").withDefault(456).build();
+        Integer int1 = accessor1.getDefaultValue();
+        Integer int2 = accessor2.getDefaultValue();
+        assertEquals(int1, int2);
+        assertEquals(new Integer(456), int1);
     }
 
     @Test
-    public void testAsListWithExistingDefaultString() {
-        Config config = ConfigProviderResolver.instance().getConfig();
-        ConfigAccessorBuilder<MyTestObject> builder = config.access("testAsListWithExistingDefaultString", MyTestObject.class); //property does not exist, will use default
-
-        builder.withStringDefault("value1,value2,value3");
-        ConfigAccessorBuilder<List<MyTestObject>> listBuilder = builder.asList();
-        listBuilder.withConverter(new MyTestObjectListConverter());
-
-        ConfigAccessor<List<MyTestObject>> accessor = listBuilder.build();
-        List<MyTestObject> value = accessor.getValue();
-
-        assertEquals("Value not correct", "MyTestObject(value1)", value.get(0).toString());
-        assertEquals("Value not correct", "MyTestObject(value2)", value.get(1).toString());
-        assertEquals("Value not correct", "MyTestObject(value3)", value.get(2).toString());
+    public void testGetDefaultValueNull() {
+        Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
+        ConfigAccessor<Integer> accessor1 = config.access("testGetDefaultValue", Integer.class).withDefault(null).build();
+        Integer int1 = accessor1.getDefaultValue();
+        assertNull(int1);
     }
 
     public static class MyTestObject {

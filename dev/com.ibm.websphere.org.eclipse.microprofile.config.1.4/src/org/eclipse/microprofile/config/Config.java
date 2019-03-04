@@ -47,8 +47,11 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
  * <p>If multiple {@link ConfigSource ConfigSources} are specified with
  * the same ordinal, the {@link ConfigSource#getName()} will be used for sorting.
  * <p>
- * The config objects produced via the injection model <pre>@Inject Config</pre> are guaranteed to be serializable, while
+ * The config objects produced via the injection model {@code @Inject Config} are guaranteed to be serializable, while
  * the programmatically created ones are not required to be serializable.
+ * <p>
+ * If one or more converters are registered for a class of a requested value then the registered {@link org.eclipse.microprofile.config.spi.Converter}
+ * which has the highest {@code @javax.annotation.Priority} is used to convert the string value retrieved from the config sources.
  *
  * <h3>Usage</h3>
  *
@@ -62,7 +65,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
  * </pre>
  *
  * <p>For accessing a configuration in a dynamic way you can also use {@link #access(String, Class)}.
- * This method returns a builder-style {@link ConfigAccessor} instance for the given key.
+ * This method returns a builder {@link ConfigAccessorBuilder} instance for the given key.
  * You can further specify a Type of the underlying configuration, a cache time, lookup paths and
  * many more.
  *
@@ -87,9 +90,10 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
  * @author <a href="mailto:emijiang@uk.ibm.com">Emily Jiang</a>
  * @author <a href="mailto:gunnar@hibernate.org">Gunnar Morling</a>
  * @author <a href="mailto:manfred.huber@downdrown.at">Manfred Huber</a>
- * @author <a href="mailto:alexander.falb@rise-world.com">Alex Falb</a>
+ * @author <a href="mailto:elexx@apache.org">Alex Falb</a>
  *
  */
+@org.osgi.annotation.versioning.ProviderType
 public interface Config {
 
     /**
@@ -151,15 +155,16 @@ public interface Config {
      *
      * <pre>
      *     // get the current host value
-     *     ConfigAccessor&lt;String&gt; hostCfg config.resolve("myapp.host")
-     *              .cacheFor(60, TimeUnit.MINUTES);
+     *     ConfigAccessor&lt;String&gt; hostCfg config.access("myapp.host", String.class)
+     *              .cacheFor(60, TimeUnit.MINUTES)
+     *              .build();
      *
-     *     // and right inbetween the underlying values get changed to 'newserver' and port 8082
+     *     // and right in between the underlying values get changed to 'newserver' and port 8082
      *
      *     // get the current port for the host
-     *     ConfigAccessor&lt;Integer&gt; portCfg config.resolve("myapp.port")
-     *              .as(Integer.class)
-     *              .cacheFor(60, TimeUnit.MINUTES);
+     *     ConfigAccessor&lt;Integer&gt; portCfg config.access("myapp.port", Integer.class)
+     *              .cacheFor(60, TimeUnit.MINUTES)
+     *              .build();
      * </pre>
      *
      * In ths above code we would get the combination of {@code 'oldserver'} but with the new port {@code 8081}.
@@ -195,5 +200,4 @@ public interface Config {
      * @return all currently registered {@link ConfigSource ConfigSources} sorted by descending ordinal and ConfigSource name
      */
     Iterable<ConfigSource> getConfigSources();
-
 }

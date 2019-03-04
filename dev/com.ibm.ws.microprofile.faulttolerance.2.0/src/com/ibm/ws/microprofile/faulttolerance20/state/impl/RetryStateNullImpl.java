@@ -34,10 +34,16 @@ public class RetryStateNullImpl implements RetryState {
         public long getDelay() {
             return 0;
         }
+
+        @Override
+        public String toString() {
+            return "@Retry annotation not used";
+        }
     };
 
     @Override
-    public void start() {}
+    public void start() {
+    }
 
     @Override
     public RetryResult recordResult(MethodResult<?> result) {

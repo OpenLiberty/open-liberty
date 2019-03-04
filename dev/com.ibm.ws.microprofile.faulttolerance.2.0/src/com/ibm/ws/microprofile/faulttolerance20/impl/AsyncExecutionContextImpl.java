@@ -33,8 +33,13 @@ public class AsyncExecutionContextImpl<W> extends SyncExecutionContextImpl {
     private Consumer<Boolean> cancelCallback;
     private ThreadContextDescriptor threadContextDescriptor;
 
-    public AsyncExecutionContextImpl(Method method, Object[] parameters) {
-        super(method, parameters);
+    /**
+     * @param id         an id for the execution (used in trace messages)
+     * @param method     the method being executed
+     * @param parameters the parameters passed to the method
+     */
+    public AsyncExecutionContextImpl(String id, Method method, Object[] parameters) {
+        super(id, method, parameters);
     }
 
     public W getResultWrapper() {

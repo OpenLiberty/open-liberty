@@ -806,7 +806,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
 
     /** {@inheritDoc} */
     @Override
-    public List<String> getForwardAuthzParameter() {
+    public List<String> getForwardLoginParameter() {
         return forwardLoginParameter;
     }
 

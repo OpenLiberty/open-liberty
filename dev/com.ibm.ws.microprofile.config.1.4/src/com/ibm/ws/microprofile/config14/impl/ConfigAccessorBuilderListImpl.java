@@ -43,17 +43,17 @@ public class ConfigAccessorBuilderListImpl<T> extends AbstractConfigAccessorBuil
             withDefault(Collections.singletonList((T) defaultValue));
         }
 
-        withStringDefault(source.getDefaultString());
-        addLookupSuffixes(source.getSuffixValues());
+//        withStringDefault(source.getDefaultString());
+//        addLookupSuffixes(source.getSuffixValues());
 
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public ConfigAccessorBuilder<List<List<T>>> asList() {
-        //this is already a list so asList does not make sense
-        throw new UnsupportedOperationException();
-    }
+//    /** {@inheritDoc} */
+//    @Override
+//    public ConfigAccessorBuilder<List<List<T>>> asList() {
+//        //this is already a list so asList does not make sense
+//        throw new UnsupportedOperationException();
+//    }
 
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked")

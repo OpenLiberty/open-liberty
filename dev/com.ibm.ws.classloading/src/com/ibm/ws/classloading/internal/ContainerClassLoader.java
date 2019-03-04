@@ -231,9 +231,9 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
                 } catch (MalformedURLException e) {
                     sharedClassCacheURL = null;
                 }
-            } else if (!"file".equals(protocol)) {
+            } else {//if (!"file".equals(protocol)) {
                 sharedClassCacheURL = null;
-            } else {
+            } /*else {
                 String externalForm = resourceURL.toExternalForm();
                 if (externalForm.endsWith(resourceName)) {
                     try {
@@ -244,7 +244,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
                 } else {
                     sharedClassCacheURL = null;
                 }
-            }
+            }*/
         }
         return sharedClassCacheURL;
     }

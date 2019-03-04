@@ -22,4 +22,6 @@
 		<feature>mpFaultTolerance-2.0</feature>
 	</featureManager>
 	
+	<logging traceSpecification="FAULTTOLERANCE=event"/>
+	
 </server>

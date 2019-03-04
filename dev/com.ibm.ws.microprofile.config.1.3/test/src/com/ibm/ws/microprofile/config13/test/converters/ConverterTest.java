@@ -46,8 +46,8 @@ import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 public class ConverterTest extends AbstractConfigTest {
 
     private static <T> T defaultConversion(Class<T> type, String value) {
-        WebSphereConfig config = (WebSphereConfig) ConfigProviderResolver.instance().getConfig();
-        return (T) config.convertValue(value, type);
+        WebSphereConfig config = (WebSphereConfig) ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
+        return config.convertValue(value, type);
     }
 
     @Test

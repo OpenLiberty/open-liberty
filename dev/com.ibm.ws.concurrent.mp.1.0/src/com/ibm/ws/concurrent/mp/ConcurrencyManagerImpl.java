@@ -56,7 +56,7 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
      * on the class loader, detecting any duplicate provider types.
      *
      * @param concurrencyProvider the registered concurrency provider
-     * @param classloader the class loader from which to discover thread context providers
+     * @param classloader         the class loader from which to discover thread context providers
      */
     ConcurrencyManagerImpl(ConcurrencyProviderImpl concurrencyProvider, ClassLoader classloader) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -72,18 +72,14 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
         // Built-in thread context providers (always available)
         contextProviders.add(concurrencyProvider.applicationContextProvider);
         available.add(ThreadContext.APPLICATION);
+        contextProviders.add(concurrencyProvider.cdiContextProvider);
+        available.add(ThreadContext.CDI);
         contextProviders.add(concurrencyProvider.securityContextProvider);
         available.add(ThreadContext.SECURITY);
         contextProviders.add(concurrencyProvider.transactionContextProvider);
         available.add(ThreadContext.TRANSACTION);
         contextProviders.add(concurrencyProvider.wlmContextProvider);
         available.add(WLMContextProvider.WORKLOAD);
-
-        ThreadContextProvider cdiCtx = concurrencyProvider.cdiContextProvider;
-        if (cdiCtx != null) {
-            contextProviders.add(cdiCtx);
-            available.add(ThreadContext.CDI);
-        }
 
         // Thread context providers for the supplied class loader
         for (ThreadContextProvider provider : ServiceLoader.load(ThreadContextProvider.class, classloader)) {
@@ -104,7 +100,7 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
      * Finds and returns the first thread context provider that provides the same
      * thread context type as the specified provider.
      *
-     * @param provider provider that is found to provide a conflicting thread context type with another provider.
+     * @param provider    provider that is found to provide a conflicting thread context type with another provider.
      * @param classloader class loader from which to load thread context providers.
      * @return thread context provider with which the specified provider conflicts.
      */
@@ -119,6 +115,9 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
         if (ThreadContext.APPLICATION.equals(conflictingType))
             return concurrencyProvider.applicationContextProvider;
 
+        if (ThreadContext.CDI.equals(conflictingType))
+            return concurrencyProvider.cdiContextProvider;
+
         if (ThreadContext.SECURITY.equals(conflictingType))
             return concurrencyProvider.securityContextProvider;
 
@@ -127,10 +126,6 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
 
         if (WLMContextProvider.WORKLOAD.equals(conflictingType))
             return concurrencyProvider.wlmContextProvider;
-
-        if (concurrencyProvider.cdiContextProvider != null &&
-            ThreadContext.CDI.equals(conflictingType))
-            return concurrencyProvider.cdiContextProvider;
 
         // should be unreachable
         throw new IllegalStateException(conflictingType);

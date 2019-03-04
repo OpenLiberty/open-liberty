@@ -118,7 +118,10 @@ public class ConnectionManager implements TCPConfigConstants {
                 return ioSocket;
             }
             if (ci.getError() == null) {
-                ci.setError(new IOException("Connection could not be established"));
+                // Add local and remote address information
+                InetSocketAddress iaRemote = ci.remoteAddress;
+                InetSocketAddress iaLocal = ci.localAddress;
+                ci.setError(new IOException("Connection could not be established. local=" + iaLocal + " remote=" + iaRemote));
             }
             throw ci.getError();
         }

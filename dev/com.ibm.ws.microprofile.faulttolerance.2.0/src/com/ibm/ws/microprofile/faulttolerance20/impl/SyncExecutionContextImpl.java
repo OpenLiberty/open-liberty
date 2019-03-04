@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.faulttolerance20.impl;
 
 import java.lang.reflect.Method;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.faulttolerance.spi.FTExecutionContext;
 
 /**
@@ -21,9 +22,16 @@ public class SyncExecutionContextImpl implements FTExecutionContext {
 
     private final Method method;
     private final Object[] parameters;
+    private final String id;
     private Throwable failure;
 
-    public SyncExecutionContextImpl(Method method, Object[] parameters) {
+    /**
+     * @param id         an id for the execution (used in trace messages)
+     * @param method     the method being executed
+     * @param parameters the parameters passed to the method
+     */
+    public SyncExecutionContextImpl(String id, Method method, Object[] parameters) {
+        this.id = id;
         this.method = method;
         this.parameters = parameters;
     }
@@ -47,7 +55,22 @@ public class SyncExecutionContextImpl implements FTExecutionContext {
         return failure;
     }
 
+    /**
+     * Returns the execution ID
+     * <p>
+     * This is not guaranteed to be unique and should only be used for tracing.
+     * <p>
+     * It will be blank if no tracing is enabled
+     *
+     * @return the execution id, only used for tracing
+     */
+    @Trivial // When we're calling this method, we're tracing out the result anyway
+    public String getId() {
+        return id;
+    }
+
     @Override
-    public void close() {}
+    public void close() {
+    }
 
 }

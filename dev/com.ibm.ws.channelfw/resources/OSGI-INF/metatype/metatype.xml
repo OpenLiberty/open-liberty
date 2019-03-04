@@ -78,6 +78,9 @@
         	
         <AD name="%tcp.acceptThread" description="%tcp.acceptThread.desc"
         	id="acceptThread" required="false" type="Boolean" default="false" />
+        	
+        <AD name="%tcp.maxOpenConnections" description="%tcp.maxOpenConnections.desc"
+        	id="maxOpenConnections" required="false" type="Integer" default="128000" />
 
         <AD name="internal" description="internal use only"
             id="service.ranking" required="false" type="Integer" default="0"/>
