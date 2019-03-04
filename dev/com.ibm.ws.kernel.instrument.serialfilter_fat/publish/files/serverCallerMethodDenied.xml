@@ -1,0 +1,11 @@
+<server>
+    <include location="../fatTestPorts.xml"/>
+    
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+    
+    <serialFilter class="*" permission="Allow" mode="Enforce"/>
+    <serialFilter class="com.ibm.ws.serialfilter.fat.web.SerialFilterTestServlet" method="ProhibitedCaller" permission="Deny" mode="Reject"/>
+</server>

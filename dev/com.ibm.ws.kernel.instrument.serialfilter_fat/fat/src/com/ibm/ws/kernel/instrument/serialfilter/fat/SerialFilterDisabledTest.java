@@ -68,7 +68,7 @@ public class SerialFilterDisabledTest extends FATServletClient {
     public static void cleanUp() throws Exception {
         restorePropFile(backupFile);
         if (server != null && server.isStarted()) {
-            server.stopServer("CWWKS8014E.*", "WTRN0040W.*");
+            server.stopServer();
         }
     }
 
@@ -80,7 +80,7 @@ public class SerialFilterDisabledTest extends FATServletClient {
         Log.info(this.getClass(), "AllAllowed", "AllAllowed returned: " + result);
         assertTrue("The result should be SUCCESS", result.contains("SUCCESS"));
         server.resetLogMarks();
-        assertNull("The messages.log file should contain CWWKS8000I message.", server.waitForStringInLogUsingMark("CWWKS8000I"));
+        assertNull("The messages.log file should not contain CWWKS8000I message.", server.waitForStringInLogUsingMark("CWWKS8000I", 1000));
     }
 
     private static String backupPropFile() throws Exception {
@@ -94,7 +94,10 @@ public class SerialFilterDisabledTest extends FATServletClient {
 
     private static void restorePropFile(String name) throws Exception {
         String backupFileName = server.getInstallRoot() + "/" + WAS_PROP_PATH + "/" + name;
-        Files.copy(Paths.get(backupFileName), Paths.get(server.getInstallRoot() + "/" + WAS_PROP_PATH + "/" + WAS_PROP_FILE), StandardCopyOption.REPLACE_EXISTING);
-        new File(backupFileName).delete();
+        try {
+            Files.copy(Paths.get(backupFileName), Paths.get(server.getInstallRoot() + "/" + WAS_PROP_PATH + "/" + WAS_PROP_FILE), StandardCopyOption.REPLACE_EXISTING);
+            new File(backupFileName).delete();
+        } catch (Exception e) {
+        }
     }
 }

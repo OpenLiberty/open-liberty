@@ -12,6 +12,7 @@
 package com.ibm.ws.kernel.instrument.serialfilter.fat;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -76,7 +77,6 @@ public class SerialFilterEnabledTest extends FATServletClient {
         restorePropFile(backupFile);
         if (server != null && server.isStarted()) {
             server.stopServer("CWWKS8014E.*", "CWWKS8015E.*", "CWWKS8028E.*");
-//            server.stopServer();
         }
     }
 
@@ -87,13 +87,15 @@ public class SerialFilterEnabledTest extends FATServletClient {
 
         // update server.xml
         server.reconfigureServer("serverAllAllowed.xml");
-//        server.reconfigureServer("serverTest1Allowed.xml");
-//        server.startServer(true);
+
+        server.resetLogMarks();
+        assertNotNull("The messages.log file should contain CWWKS8000I message.", server.waitForStringInLogUsingMark("CWWKS8000I"));
+
+        server.setMarkToEndOfLog();
         String result = runTestWithResponse(server, SERVLET_NAME, "AllAllowed").toString();
         Log.info(this.getClass(), "AllAllowed", "AllAllowed returned: " + result);
         assertTrue("The result should be SUCCESS", result.contains("SUCCESS"));
-        server.resetLogMarks();
-        assertNotNull("The messages.log file should contain CWWKS8000I message.", server.waitForStringInLogUsingMark("CWWKS8000I"));
+        assertNull("The messages.log file should not contain CWWKS80xxE message.", server.waitForStringInLogUsingMark("CWWKS80[0-3][0-9]", 1000));
     }
 
     @Mode(TestMode.LITE)
@@ -102,9 +104,12 @@ public class SerialFilterEnabledTest extends FATServletClient {
     public void testTest1Allowed() throws Exception {
         // update server.xml
         server.reconfigureServer("serverTest1Allowed.xml");
+        server.setMarkToEndOfLog();
         String result = runTestWithResponse(server, SERVLET_NAME, "Test1Allowed").toString();
         Log.info(this.getClass(), "Test1Allowed", "Test1Allowed returned: " + result);
         assertTrue("The result should be SUCCESS", result.contains("SUCCESS"));
+        assertNotNull("The messages.log file should contain CWWKS8014E with violated class (Test2) message.",
+                      server.waitForStringInLogUsingMark("CWWKS8014E:.*Test2.*", 1000));
     }
 
     @Mode(TestMode.LITE)
@@ -113,9 +118,12 @@ public class SerialFilterEnabledTest extends FATServletClient {
     public void testTest1And2Allowed() throws Exception {
         // update server.xml
         server.reconfigureServer("serverTest1And2Allowed.xml");
+        server.setMarkToEndOfLog();
         String result = runTestWithResponse(server, SERVLET_NAME, "Test1And2Allowed").toString();
         Log.info(this.getClass(), "Test1And2Allowed", "Test1And2Allowed returned: " + result);
         assertTrue("The result should be SUCCESS", result.contains("SUCCESS"));
+        assertNotNull("The messages.log file should contain CWWKS8014E with violated class (Test3) message.",
+                      server.waitForStringInLogUsingMark("CWWKS8014E:.*Test3.*", 1000));
     }
 
     @Mode(TestMode.LITE)
@@ -124,21 +132,43 @@ public class SerialFilterEnabledTest extends FATServletClient {
     public void testTestAllAllowed() throws Exception {
         // update server.xml
         server.reconfigureServer("serverTestAllAllowed.xml");
+        server.setMarkToEndOfLog();
         String result = runTestWithResponse(server, SERVLET_NAME, "TestAllAllowed").toString();
         Log.info(this.getClass(), "TestAllAllowed", "TestAllAllowed returned: " + result);
         assertTrue("The result should be SUCCESS", result.contains("SUCCESS"));
+        assertNull("The messages.log file should not contain CWWKS80xxE message.", server.waitForStringInLogUsingMark("CWWKS80[0-3][0-9]", 1000));
     }
 
     @Mode(TestMode.LITE)
-
     @Test
     @AllowedFFDC(value = { "com.ibm.ws.kernel.productinfo.ProductInfoParseException" })
-    public void testAllDenied() throws Exception {
+    public void testAllRejected() throws Exception {
         // update server.xml
-        server.reconfigureServer("serverAllDenied.xml");
+        server.reconfigureServer("serverAllRejected.xml");
+        server.setMarkToEndOfLog();
         String result = runTestWithResponse(server, SERVLET_NAME, "AllDenied").toString();
         Log.info(this.getClass(), "AllDenied", "AllDenied returned: " + result);
         assertTrue("The result should be SUCCESS", result.contains("SUCCESS"));
+        assertNotNull("The messages.log file should contain CWWKS8028E with violated class (Test1) message.",
+                      server.waitForStringInLogUsingMark("CWWKS8028E:.*Test1.*", 1000));
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC(value = { "com.ibm.ws.kernel.productinfo.ProductInfoParseException" })
+    public void testCallerMethodDenied() throws Exception {
+        // update server.xml
+        server.reconfigureServer("serverCallerMethodDenied.xml");
+        server.setMarkToEndOfLog();
+        String result = runTestWithResponse(server, SERVLET_NAME, "ProhibitedCaller").toString();
+        Log.info(this.getClass(), "testCallerMethodDenied", "ProhibitedCaller returned: " + result);
+        assertTrue("The result should be SUCCESS", result.contains("SUCCESS"));
+        assertNotNull("The messages.log file should contain CWWKS8028E message.", server.waitForStringInLogUsingMark("CWWKS8028E:"));
+        server.setMarkToEndOfLog();
+        result = runTestWithResponse(server, SERVLET_NAME, "AllAllowed").toString();
+        Log.info(this.getClass(), "testCallerMethodDenied", "AllAllowed returned: " + result);
+        assertTrue("The result should be SUCCESS", result.contains("SUCCESS"));
+        assertNull("The messages.log file should not contain CWWKS8028E message.", server.waitForStringInLogUsingMark("CWWKS8028E:", 1000));
     }
 
     private static String backupPropFile() throws Exception {
@@ -146,13 +176,15 @@ public class SerialFilterEnabledTest extends FATServletClient {
         String name = f.getName();
         f.delete();
         server.renameLibertyInstallRootFile(WAS_PROP_PATH + "/" + WAS_PROP_FILE, WAS_PROP_PATH + "/" + name);
-        //deleteFileFromLibertyInstallRoot(String filePath);
         return name;
     }
 
     private static void restorePropFile(String name) throws Exception {
         String backupFileName = server.getInstallRoot() + "/" + WAS_PROP_PATH + "/" + name;
-        Files.copy(Paths.get(backupFileName), Paths.get(server.getInstallRoot() + "/" + WAS_PROP_PATH + "/" + WAS_PROP_FILE), StandardCopyOption.REPLACE_EXISTING);
-        new File(backupFileName).delete();
+        try {
+            Files.copy(Paths.get(backupFileName), Paths.get(server.getInstallRoot() + "/" + WAS_PROP_PATH + "/" + WAS_PROP_FILE), StandardCopyOption.REPLACE_EXISTING);
+            new File(backupFileName).delete();
+        } catch (Exception e) {
+        }
     }
 }

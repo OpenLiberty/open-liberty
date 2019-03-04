@@ -64,6 +64,26 @@ public class SerialFilterTestServlet extends FATServlet {
         testDeserialize(false, false, false);
     }
 
+    public void ProhibitedCaller(HttpServletRequest request,
+                                 HttpServletResponse response) throws Exception {
+        System.out.println("ProhibitedCaller");
+        Test1 t1 = new Test1(10, "test1object");
+        ByteArrayInputStream ba = new ByteArrayInputStream(serialize(t1));
+        ObjectInputStream in = new ObjectInputStream(ba);
+
+        try {
+            in.readObject();
+            throw new Exception("ProhibitedCaller: InvalidClassException should be caught.");
+        } catch (InvalidClassException e) {
+            System.out.println("ProhibitedCaller: InvalidClassException is caught which is expected.");
+
+        } finally {
+            in.close();
+            ba.close();
+        }
+        return;
+    }
+
     private void testDeserialize(boolean test1Allowed, boolean test2Allowed, boolean test3Allowed) throws Exception {
         testDeserializeTest1(test1Allowed);
         testDeserializeTest2(test2Allowed);
