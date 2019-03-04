@@ -27,16 +27,13 @@ public class OpentracingRestClientListener implements RestClientListener {
     /** {@inheritDoc} */
     @Override
     public void onNewClient(Class<?> serviceInterface, RestClientBuilder builder) {
-        System.out.println("onNewClient entry");
-
         Traced traced = serviceInterface.getAnnotation(Traced.class);
         if (traced != null && !traced.value()) {
             // tracing is disabled
-            System.out.println("onNewClient disabled");
+            Tr.debug(tc, "@Traced(false) specified on service interface");
             return;
         }
         builder.register(OpentracingRestClientFilter.class);
-        System.out.println("onNewClient exit");
     }
 
 }
