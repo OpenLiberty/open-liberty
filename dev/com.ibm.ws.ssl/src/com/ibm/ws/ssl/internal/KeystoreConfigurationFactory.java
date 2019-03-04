@@ -196,6 +196,31 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
     }
 
     /**
+     * This method is intended for Z/OS keystore mbean monitoring. The specified keystore (keyring) have been modified
+     * and we need to clear the SSLContext caches and keystore caches that reference them. Clearing the cache
+     * will cause them to get loaded the next time something requests the keystore.
+     */
+    public void performKeyStoreAction(Collection<String> modifiedKeyStores) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "performSAFKeyRingAction", new Object[] { modifiedKeyStores });
+
+        for (String modifiedKeyStore : modifiedKeyStores) {
+            try {
+                com.ibm.ws.ssl.config.KeyStoreManager.getInstance().findKeyStoreInMapAndClear(modifiedKeyStore);
+                com.ibm.ws.ssl.provider.AbstractJSSEProvider.removeEntryFromSSLContextMap(modifiedKeyStore);
+                com.ibm.ws.ssl.config.SSLConfigManager.getInstance().resetDefaultSSLContextIfNeeded(modifiedKeyStore);
+                Tr.audit(tc, "ssl.keystore.modified.CWPKI0811I", modifiedKeyStores.toArray());
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Exception while trying to reload keystore file, exception is: " + e.getMessage());
+                }
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "performSAFKeyRingAction");
+    }
+
+    /**
      * Retrieves the BundleContext, assuming we're still valid. If we've been
      * deactivated, then the registration no longer needs / can happen and in
      * that case return null.
