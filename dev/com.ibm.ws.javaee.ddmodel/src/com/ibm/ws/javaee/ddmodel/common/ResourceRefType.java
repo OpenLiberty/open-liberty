@@ -18,7 +18,6 @@ import com.ibm.ws.javaee.dd.common.ResourceRef;
 import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParsableListImplements;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
-import com.ibm.ws.javaee.ddmodel.web.common.WebAppType;
 
 /*
  <xsd:complexType name="resource-refType">
@@ -189,6 +188,7 @@ public class ResourceRefType extends ResourceGroup implements ResourceRef {
     }
 
     static class ResAuthType extends XSDTokenType {
+        final static String WEB_APP_TYPE = "com.ibm.ws.javaee.ddmodel.web.common.WebAppType";
         // content
         ResAuthEnum value;
 
@@ -196,7 +196,7 @@ public class ResourceRefType extends ResourceGroup implements ResourceRef {
         public void finish(DDParser parser) throws ParseException {
             super.finish(parser);
             if (!isNil()) {
-                if (parser.getRootParsable() instanceof WebAppType && parser.version < 23) {
+                if (parser.getRootParsable().getClass().getName().equals(WEB_APP_TYPE) && parser.version < 23) {
                     value = parseEnumValue(parser, ResAuthEnumWebAppLegacy.class).value;
                 } else {
                     value = parseEnumValue(parser, ResAuthEnum.class);

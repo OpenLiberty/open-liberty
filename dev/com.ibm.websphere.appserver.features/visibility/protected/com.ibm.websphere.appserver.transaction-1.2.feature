@@ -21,6 +21,8 @@ IBM-API-Service: com.ibm.wsspi.uow.UOWManager, \
  com.ibm.websphere.appserver.javax.servlet-3.0; ibm.tolerates:="3.1,4.0"; apiJar=false, \
  com.ibm.websphere.appserver.artifact-1.0, \
  com.ibm.websphere.appserver.javaeedd-1.0, \
+ com.ibm.websphere.appserver.javaeeddWeb-1.0, \
+ com.ibm.websphere.appserver.javaeeddEjb-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
  com.ibm.websphere.appserver.javax.annotation-1.2; ibm.tolerates:=1.3; apiJar=false, \
  com.ibm.websphere.appserver.anno-1.0

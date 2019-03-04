@@ -35,51 +35,6 @@ Service-Component: \
     version=com.ibm.ws.javaee.ddmodel.client.ApplicationClientDDParserVersion?;\
     greedy:=version;\
     properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.client.ApplicationClient",\
-   com.ibm.ws.javaee.dd.web.app.adapter;\
-    implementation:=com.ibm.ws.javaee.ddmodel.web.WebAppAdapter;\
-    provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
-    configuration-policy:=ignore;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.web.WebApp",\
-   com.ibm.ws.javaee.dd.web.app.entry.adapter;\
-    implementation:=com.ibm.ws.javaee.ddmodel.web.WebAppEntryAdapter;\
-    provide:=com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;\
-    configuration-policy:=ignore;\
-    version=com.ibm.ws.javaee.version.ServletVersion?;\
-    greedy:=version;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.web.WebApp",\
-   com.ibm.ws.javaee.dd.web.fragment.adapter;\
-    implementation:=com.ibm.ws.javaee.ddmodel.web.WebFragmentAdapter;\
-    provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
-    configuration-policy:=ignore;\
-    version=com.ibm.ws.javaee.version.ServletVersion?;\
-    greedy:=version;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.web.WebFragment",\
-   com.ibm.ws.javaee.dd.jsf.adapter;\
-    implementation:=com.ibm.ws.javaee.ddmodel.jsf.FacesConfigAdapter;\
-    provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
-    configuration-policy:=ignore;\
-    version=com.ibm.ws.javaee.version.FacesVersion?;\
-    greedy:=version;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.jsf.FacesConfig",\
-   com.ibm.ws.javaee.dd.jsf.entry.adapter;\
-    implementation:=com.ibm.ws.javaee.ddmodel.jsf.FacesConfigEntryAdapter;\
-    provide:=com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;\
-    configuration-policy:=ignore;\
-    version=com.ibm.ws.javaee.version.FacesVersion?;\
-    greedy:=version;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.jsf.FacesConfig",\
-   com.ibm.ws.javaee.dd.ejb.adapter;\
-    implementation:=com.ibm.ws.javaee.ddmodel.ejb.EJBJarAdapter;\
-    provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
-    configuration-policy:=ignore;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.ejb.EJBJar",\
-   com.ibm.ws.javaee.dd.ejb.entry.adapter;\
-    implementation:=com.ibm.ws.javaee.ddmodel.ejb.EJBJarEntryAdapter;\
-    provide:=com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;\
-    configuration-policy:=ignore;\
-    version=com.ibm.ws.javaee.ddmodel.ejb.EJBJarDDParserVersion?;\
-    greedy:=version;\
-    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.ejb.EJBJar",\
    com.ibm.ws.javaee.dd.bval.adapter;\
     implementation:=com.ibm.ws.javaee.ddmodel.bval.ValidationConfigAdapter;\
     provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
@@ -110,23 +65,6 @@ Include-Resource: OSGI-INF/metatype=resources.gen/OSGI-INF/metatype,OSGI-INF=res
 	com.ibm.ws.javaee.ddmodel.appext.ApplicationExtComponentImpl,\
 	com.ibm.ws.javaee.ddmodel.appext.ModuleExtensionComponentImpl,\
 	com.ibm.ws.javaee.ddmodel.commonbnd.EJBRefComponentImpl,\
-	com.ibm.ws.javaee.ddmodel.webbnd.WebBndAdapter,\
-	com.ibm.ws.javaee.ddmodel.webbnd.WebBndComponentImpl,\
-	com.ibm.ws.javaee.ddmodel.webbnd.VirtualHostComponentImpl,\
-	com.ibm.ws.javaee.ddmodel.webext.AttributeComponentImpl,\
-	com.ibm.ws.javaee.ddmodel.webext.MimeFilterComponentImpl,\
-	com.ibm.ws.javaee.ddmodel.webext.WebExtComponentImpl,\
-	com.ibm.ws.javaee.ddmodel.webext.WebExtAdapter,\
-    com.ibm.ws.javaee.ddmodel.ejbbnd.ListenerPortComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.ejbbnd.SessionComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.ejbbnd.EJBJarBndComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.ejbbnd.EJBJarBndAdapter,\
-    com.ibm.ws.javaee.ddmodel.ejbbnd.EnterpriseBeanComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.ejbbnd.InterfaceComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.ejbbnd.JCAAdapterComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.ejbbnd.MessageDrivenComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanComponentImpl,\
     com.ibm.ws.javaee.ddmodel.commonbnd.RefBindingsGroupComponentImpl,\
     com.ibm.ws.javaee.ddmodel.commonbnd.ResourceEnvRefComponentImpl,\
     com.ibm.ws.javaee.ddmodel.commonbnd.DataSourceComponentImpl,\
@@ -144,20 +82,7 @@ Include-Resource: OSGI-INF/metatype=resources.gen/OSGI-INF/metatype,OSGI-INF=res
     com.ibm.ws.javaee.ddmodel.commonext.ResourceRefComponentImpl,\
     com.ibm.ws.javaee.ddmodel.clientbnd.ClientRefBindingsGroupComponentImpl,\
     com.ibm.ws.javaee.ddmodel.clientbnd.ApplicationClientBndComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.ejbext.EJBJarExtComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.ejbext.MessageDrivenComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.ejbext.StartAtAppStartComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.ejbext.EnterpriseBeanComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.ejbext.RunAsModeComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.ejbext.RunAsModeBaseComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.ejbext.SpecifiedIdentityComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.ejbext.ExtendedMethodComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.ejbext.TimeOutComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.ejbext.SessionComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.ejbext.BeanCacheComponentImpl,\
-    com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndAdapter,\
-    com.ibm.ws.javaee.ddmodel.clientbnd.ApplicationClientBndAdapter,\
-    com.ibm.ws.javaee.ddmodel.ejbext.EJBJarExtAdapter
+    com.ibm.ws.javaee.ddmodel.clientbnd.ApplicationClientBndAdapter
 
 Export-Package: \
     com.ibm.ws.javaee.ddmodel*
@@ -183,7 +108,6 @@ instrument.classesExcludes: com/ibm/ws/javaee/internal/ddmodel/resources/*.class
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.container.service;version=latest,\
-	com.ibm.ws.javaee.dd.ejb;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \

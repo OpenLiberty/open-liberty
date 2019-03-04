@@ -20,14 +20,13 @@
                           com.ibm.ws.javaee.dd.clientbnd,
                           com.ibm.ws.javaee.dd.commonbnd,
                           com.ibm.ws.javaee.dd.commonext,
-                          com.ibm.ws.javaee.dd.ejbbnd,
-                          com.ibm.ws.javaee.dd.ejbext,
-                          com.ibm.ws.javaee.dd.managedbean,
+    					  com.ibm.ws.javaee.dd.ejbbnd,
+    	                  com.ibm.ws.javaee.dd.ejbext,
+    	                  com.ibm.ws.javaee.dd.managedbean,
                           com.ibm.ws.javaee.dd.webbnd,
                           com.ibm.ws.javaee.dd.webext">
       <src>
-        <src path="../com.ibm.ws.javaee.dd/src"/>
-        <src path="../com.ibm.ws.javaee.dd.ejb/src"/>
+        <src path="../com.ibm.ws.javaee.dd/src"/>   
       </src>
     </genddmodel>
   </target>
