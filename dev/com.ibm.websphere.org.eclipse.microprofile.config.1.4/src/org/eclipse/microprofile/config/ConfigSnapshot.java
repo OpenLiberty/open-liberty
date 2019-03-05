@@ -1,6 +1,6 @@
 /*
  *******************************************************************************
- * Copyright (c) 2011-2018 Contributors to the Eclipse Foundation and others
+ * Copyright (c) 2011-2019 Contributors to the Eclipse Foundation and others
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.

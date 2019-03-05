@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 JPA10Injection_DMI_NoInheritance_Web.class,
+                JPA10Injection_DMI_YesInheritance_Web.class
 })
 public class JPA10Injection_DMI_NoInheritance {
 

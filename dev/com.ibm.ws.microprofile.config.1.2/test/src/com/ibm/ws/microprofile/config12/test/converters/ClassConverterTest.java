@@ -25,11 +25,11 @@ public class ClassConverterTest extends AbstractConfigTest {
     @Test
     public void testClassConverter() {
 
-        WebSphereConfig config = (WebSphereConfig) ConfigProviderResolver.instance().getConfig();
+        WebSphereConfig config = (WebSphereConfig) ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
 
         String value = "com.ibm.ws.microprofile.config12.test.converters.MyObject";
         System.out.println("String :" + value);
-        Class<?> converted = (Class<?>) config.convertValue(value, Class.class);
+        Class<?> converted = config.convertValue(value, Class.class);
         assertEquals(MyObject.class, converted);
     }
 

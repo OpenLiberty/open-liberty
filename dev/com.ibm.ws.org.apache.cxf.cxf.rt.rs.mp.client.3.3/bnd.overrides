@@ -57,6 +57,10 @@ Import-Package: \
  com.ibm.ws.jaxrs20.client.configuration
 # org.apache.cxf.jaxrs.provider.jsrjsonp;version="[3.1,4)",\
 
+DynamicImport-Package: \
+  com.ibm.ws.microprofile.faulttolerance.cdi,\
+  org.eclipse.microprofile.faulttolerance
+
 -dsannotations: com.ibm.ws.microprofile.rest.client.component.*
 
 app-resources= \

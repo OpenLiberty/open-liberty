@@ -22,11 +22,11 @@ Bundle-Description:MicroProfile Configuration 1.4 Implementation, version ${bVer
 testsrc: test/src
 
 Export-Package: \
-    com.ibm.ws.microprofile.config14.impl
+        com.ibm.ws.microprofile.config14.impl
     
-
 Private-Package: \
-	com.ibm.ws.microprofile.config14.resources, \
+        com.ibm.ws.microprofile.config14.resources, \
+	com.ibm.ws.microprofile.config14.converters, \
 	com.ibm.ws.microprofile.config14.interfaces
 
 Import-Package: \
@@ -49,7 +49,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
         com.ibm.ws.microprofile.config.1.3;version=latest, \
         com.ibm.ws.microprofile.config.1.2;version=latest, \
-        com.ibm.ws.microprofile.config;version=latest, \
+        com.ibm.ws.microprofile.config.1.1;version=latest, \
 	com.ibm.ws.kernel.service;version=latest, \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \

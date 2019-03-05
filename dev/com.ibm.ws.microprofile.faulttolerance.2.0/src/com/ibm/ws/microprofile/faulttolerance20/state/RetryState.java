@@ -86,6 +86,12 @@ public interface RetryState {
          * @return the TimeUnit used to express the result of {@link #getDelay()}
          */
         public TimeUnit getDelayUnit();
+
+        /**
+         * @return a string describing the result, for debugging and tracing purposes
+         */
+        @Override
+        public String toString();
     }
 
 }

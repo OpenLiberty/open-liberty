@@ -52,7 +52,7 @@ public abstract class SocketIOChannel implements FFDCSelfIntrospectable {
 
     /**
      * Constructor.
-     * 
+     *
      * @param socket
      * @param _tcpChannel
      */
@@ -70,7 +70,7 @@ public abstract class SocketIOChannel implements FFDCSelfIntrospectable {
 
         /**
          * Constructor.
-         * 
+         *
          * @param _ioSocket
          * @param _address
          */
@@ -82,6 +82,7 @@ public abstract class SocketIOChannel implements FFDCSelfIntrospectable {
         /*
          * @see java.security.PrivilegedExceptionAction#run()
          */
+        @Override
         public Boolean run() throws IOException {
             return Boolean.valueOf(ioSocket.connect(address));
         }
@@ -97,7 +98,7 @@ public abstract class SocketIOChannel implements FFDCSelfIntrospectable {
         } catch (PrivilegedActionException pae) {
             Throwable t = pae.getCause();
             if (!(t instanceof IOException)) {
-                throw new IOException("Failed to connect", t);
+                throw new IOException("Failed to connect. remote= " + address + " ", t);
             }
             throw (IOException) t;
         } finally {
@@ -107,7 +108,7 @@ public abstract class SocketIOChannel implements FFDCSelfIntrospectable {
 
     /**
      * Attempt to read for the socket.
-     * 
+     *
      * @param readReq
      * @param fromSelector
      * @return IOResult
@@ -184,7 +185,7 @@ public abstract class SocketIOChannel implements FFDCSelfIntrospectable {
 
     /**
      * Attempt to write information stored in the active buffers to the network.
-     * 
+     *
      * @param req
      * @return IOResult
      * @throws IOException
@@ -251,12 +252,12 @@ public abstract class SocketIOChannel implements FFDCSelfIntrospectable {
      * Close the underlying IO transport
      */
     public void close() {
-    // do nothings
+        // do nothings
     }
 
     /**
      * Get the Socket associated with this channel.
-     * 
+     *
      * @return Socket
      */
     public Socket getSocket() {
@@ -265,7 +266,7 @@ public abstract class SocketIOChannel implements FFDCSelfIntrospectable {
 
     /**
      * Get the SocketChannel associated with this channel.
-     * 
+     *
      * @return SocketChannel
      */
     protected SocketChannel getChannel() {
@@ -273,12 +274,12 @@ public abstract class SocketIOChannel implements FFDCSelfIntrospectable {
     }
 
     protected void connectActions() throws IOException {
-    // nothing to do
+        // nothing to do
     }
 
     /**
      * Introspect this object for FFDC output.
-     * 
+     *
      * @return List<String>
      */
     public List<String> introspect() {
@@ -302,6 +303,7 @@ public abstract class SocketIOChannel implements FFDCSelfIntrospectable {
     /*
      * @see com.ibm.ws.ffdc.FFDCSelfIntrospectable#introspectSelf()
      */
+    @Override
     public String[] introspectSelf() {
         List<String> rc = introspect();
         return rc.toArray(new String[rc.size()]);

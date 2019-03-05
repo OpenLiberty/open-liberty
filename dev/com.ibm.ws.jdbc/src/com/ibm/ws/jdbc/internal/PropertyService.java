@@ -80,6 +80,7 @@ public class PropertyService extends Properties {
                                                                            "memberConnectTimeout",
                                                                            "queryTimeout",
                                                                            "retryIntervalForClientReroute",
+                                                                           "secondsToTrustIdleConnection",
                                                                            "soLinger",
                                                                            "timeoutCheckInterval",
                                                                            "timeToLiveConnectionTimeout"
@@ -101,7 +102,8 @@ public class PropertyService extends Properties {
     private static final List<String> PASSWORD_PROPS = Arrays.asList(DataSourceDef.password.name(),
                                                                      "keyStoreSecret",
                                                                      "trustStorePassword",
-                                                                     "connectionProperties"
+                                                                     "connectionProperties",
+                                                                     "connectionFactoryProperties"
                                                                      );
 
     /**

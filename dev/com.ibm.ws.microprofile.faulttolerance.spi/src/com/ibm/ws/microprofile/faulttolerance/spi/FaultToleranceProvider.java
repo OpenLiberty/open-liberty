@@ -41,7 +41,7 @@ public final class FaultToleranceProvider {
         return INSTANCE.newTimeoutPolicy();
     }
 
-    public static <T, R> ExecutorBuilder<T, R> newExecutionBuilder() {
+    public static <R> ExecutorBuilder<R> newExecutionBuilder() {
         return INSTANCE.newExecutionBuilder();
     }
 }
