@@ -89,6 +89,12 @@ public class VariableEvaluator {
             }
 
             if (rep != null) {
+                // Recursively resolve variables so that we can find cycles.
+
+                context.push(rep);
+                rep = resolveVariables(rep, context, ignoreWarnings);
+                context.pop();
+
                 str = str.replace(matcher.group(0), rep);
                 matcher.reset(str);
             }

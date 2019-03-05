@@ -134,6 +134,8 @@ class ConfigVariableRegistry implements VariableRegistry, ConfigVariables {
             String variableValue = entry.getValue().getValue();
             if (variableValue != null)
                 registry.replaceVariable(variableName, variableValue);
+            else
+                registry.removeVariable(variableName);
         }
         configVariables = newVariables;
 
