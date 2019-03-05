@@ -59,12 +59,12 @@ public class CreateSSLCertificateTaskTest {
     private static String EXPECTED_CLIENT_KEYSTORE_PATH;
     private static File EXPECTED_KEYSTORE_FILE;
     {
-        EXPECTED_KEYSTORE_FILE = new File(EXPECTED_SERVER_DIR + "resources" + CreateSSLCertificateTask.SLASH + "security" + CreateSSLCertificateTask.SLASH + "key.jks");
+        EXPECTED_KEYSTORE_FILE = new File(EXPECTED_SERVER_DIR + "resources" + CreateSSLCertificateTask.SLASH + "security" + CreateSSLCertificateTask.SLASH + "key.p12");
         EXPECTED_KEYSTORE_PATH = EXPECTED_KEYSTORE_FILE.getAbsolutePath();
     }
     private static File EXPECTED_CLIENT_KEYSTORE_FILE;
     {
-        EXPECTED_CLIENT_KEYSTORE_FILE = new File(EXPECTED_CLIENT_DIR + "resources" + CreateSSLCertificateTask.SLASH + "security" + CreateSSLCertificateTask.SLASH + "key.jks");
+        EXPECTED_CLIENT_KEYSTORE_FILE = new File(EXPECTED_CLIENT_DIR + "resources" + CreateSSLCertificateTask.SLASH + "security" + CreateSSLCertificateTask.SLASH + "key.p12");
         EXPECTED_CLIENT_KEYSTORE_PATH = EXPECTED_CLIENT_KEYSTORE_FILE.getAbsolutePath();
     }
     private static final String PLAINTEXT = "encodeMe";
