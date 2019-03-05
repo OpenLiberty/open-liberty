@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.net.SocketTimeoutException;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -27,6 +28,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.LocalFile;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.RegistryException;
@@ -334,7 +336,7 @@ public class URAPIs_ADLDAPTest {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void getUsersForMaxSearchResultException() {
+    public void getUsersForMaxSearchResultException() throws Exception {
         // This test will only be executed when using physical LDAP server
         Assume.assumeTrue(!LDAPUtils.USE_LOCAL_LDAP_SERVER);
         String user = "*";
@@ -345,6 +347,13 @@ public class URAPIs_ADLDAPTest {
         } catch (RegistryException e) {
             String msg = e.getMessage();
             assertTrue("Message did not contain expected message 'CWIML1018E': " + msg, msg.contains("CWIML1018E"));
+        } catch (Exception e) {
+            // I am looking for a SocketTimeoutException
+            Log.info(c, "Caught Exception ", e.toString());
+            if (e.toString().contains("SocketTimeoutException")) {
+                final LocalFile lf = server.dumpServer("wlp_adapter_fat_dump");
+                Log.info(c, "Got dump file: ", lf.toString());
+            }
         }
     }
 
