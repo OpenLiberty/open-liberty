@@ -506,7 +506,7 @@ public class ConfigUtilsTest extends CommonTestClass {
             String configAttrValue = null;
             mockery.checking(new Expectations() {
                 {
-                    one(configAdmin).getConfiguration(configValue);
+                    one(configAdmin).getConfiguration(configValue, "");
                     will(returnValue(null));
                 }
             });
@@ -530,7 +530,7 @@ public class ConfigUtilsTest extends CommonTestClass {
             final Dictionary<String, Object> props = createSampleConfigProps();
             mockery.checking(new Expectations() {
                 {
-                    one(configAdmin).getConfiguration(configValue);
+                    one(configAdmin).getConfiguration(configValue, "");
                     will(returnValue(configuration));
                     one(configuration).getProperties();
                     will(returnValue(props));
@@ -560,7 +560,7 @@ public class ConfigUtilsTest extends CommonTestClass {
             props.put(configAttrValue, value);
             mockery.checking(new Expectations() {
                 {
-                    one(configAdmin).getConfiguration(configValue);
+                    one(configAdmin).getConfiguration(configValue, "");
                     will(returnValue(configuration));
                     one(configuration).getProperties();
                     will(returnValue(props));
@@ -596,15 +596,15 @@ public class ConfigUtilsTest extends CommonTestClass {
             // None of the configurations associated with the custom request parameters exist or contain the required properties
             mockery.checking(new Expectations() {
                 {
-                    one(configAdmin).getConfiguration(configValue1);
+                    one(configAdmin).getConfiguration(configValue1, "");
                     will(returnValue(config1));
                     one(config1).getProperties();
                     will(returnValue(null));
-                    one(configAdmin).getConfiguration(configValue2);
+                    one(configAdmin).getConfiguration(configValue2, "");
                     will(returnValue(config2));
                     one(config2).getProperties();
                     will(returnValue(new Hashtable<String, Object>()));
-                    one(configAdmin).getConfiguration(configValue3);
+                    one(configAdmin).getConfiguration(configValue3, "");
                     will(returnValue(config3));
                     one(config3).getProperties();
                     will(returnValue(createSampleConfigProps()));
@@ -649,19 +649,19 @@ public class ConfigUtilsTest extends CommonTestClass {
             config3Props.put(configAttrValue, config3Value);
             mockery.checking(new Expectations() {
                 {
-                    one(configAdmin).getConfiguration(configValue1);
+                    one(configAdmin).getConfiguration(configValue1, "");
                     will(returnValue(config1));
                     one(config1).getProperties();
                     will(returnValue(null));
-                    one(configAdmin).getConfiguration(configValue2);
+                    one(configAdmin).getConfiguration(configValue2, "");
                     will(returnValue(config2));
                     one(config2).getProperties();
                     will(returnValue(config2Props));
-                    one(configAdmin).getConfiguration(configValue3);
+                    one(configAdmin).getConfiguration(configValue3, "");
                     will(returnValue(config3));
                     one(config3).getProperties();
                     will(returnValue(config3Props));
-                    one(configAdmin).getConfiguration(configValue4);
+                    one(configAdmin).getConfiguration(configValue4, "");
                     will(returnValue(config4));
                     one(config4).getProperties();
                     will(returnValue(createSampleConfigProps()));

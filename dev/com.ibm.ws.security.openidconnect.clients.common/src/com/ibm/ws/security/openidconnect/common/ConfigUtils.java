@@ -423,7 +423,7 @@ public class ConfigUtils {
     Configuration getConfigurationFromConfigAdmin(ConfigurationAdmin configAdmin, String configParameter) {
         Configuration config = null;
         try {
-            config = configAdmin.getConfiguration(configParameter);
+            config = configAdmin.getConfiguration(configParameter, "");
         } catch (IOException e) {
         }
         return config;
