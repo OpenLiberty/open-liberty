@@ -10,7 +10,7 @@ $ keytool -genkey -keystore myKS -storepass WebAS0 -keypass WebAS0 -validity 365
 # To view the contents of the created keystore:
 $ keytool -list -v -keystore myKS -storepass WebAS0
 
-Keystore type: jks
+Keystore type: pkcs12
 Keystore provider: IBMJCE
 
 Your keystore contains 1 entry

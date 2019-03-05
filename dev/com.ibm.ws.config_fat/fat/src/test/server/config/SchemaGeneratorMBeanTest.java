@@ -91,7 +91,7 @@ public class SchemaGeneratorMBeanTest {
                       server.waitForStringInLog("CWWKO0219I.*ssl"));
 
         // Set up the trust store
-        System.setProperty("javax.net.ssl.trustStore", outputDir + "/resources/security/key.jks");
+        System.setProperty("javax.net.ssl.trustStore", outputDir + "/resources/security/key.p12");
         System.setProperty("javax.net.ssl.trustStorePassword", "Liberty");
 
         Map<String, Object> environment = new HashMap<String, Object>();

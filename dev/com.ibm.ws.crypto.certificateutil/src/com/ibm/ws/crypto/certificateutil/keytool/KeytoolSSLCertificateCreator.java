@@ -28,11 +28,23 @@ public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreato
     @Override
     public File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg) throws CertificateException {
 
+        String setKeyStoreType = null;
+        KeytoolCommand keytoolCmd = null;
+
         validateParameters(filePath, password, validity, subjectDN, keySize, sigAlg);
 
         String keyType = getKeyFromSigAlg(sigAlg);
 
-        KeytoolCommand keytoolCmd = new KeytoolCommand(filePath, password, validity, subjectDN, keySize, keyType, sigAlg, DEFAULT_KEYSTORE_TYPE);
+        if (filePath.lastIndexOf(".") != -1) {
+            setKeyStoreType = filePath.substring(filePath.lastIndexOf(".") + 1, filePath.length());
+        }
+
+        if (!setKeyStoreType.equals("p12") && (!setKeyStoreType.equals(DEFAULT_KEYSTORE_TYPE))) {
+            keytoolCmd = new KeytoolCommand(filePath, password, validity, subjectDN, keySize, keyType, sigAlg, setKeyStoreType);
+        } else {
+            keytoolCmd = new KeytoolCommand(filePath, password, validity, subjectDN, keySize, keyType, sigAlg, DEFAULT_KEYSTORE_TYPE);
+        }
+
         keytoolCmd.executeCommand();
         File f = new File(filePath);
         if (f.exists()) {

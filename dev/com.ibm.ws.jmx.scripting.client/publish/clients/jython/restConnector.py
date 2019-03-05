@@ -48,6 +48,7 @@ class JMXRESTConnector(object):
 	mbeanConnection = None
 	trustStore = None
 	trustStorePassword = None
+	trustStoreType = None
 
 	def __init__(self):
 		pass
@@ -62,6 +63,7 @@ class JMXRESTConnector(object):
 		print "Connecting to the server..."
 		System.setProperty("javax.net.ssl.trustStore", self.trustStore)
 		System.setProperty("javax.net.ssl.trustStorePassword", self.trustStorePassword)
+		System.setProperty("javax.net.ssl.trustStoreType", "PKCS12");
 		url = JMXServiceURL("REST", host, port, "/IBMJMXConnectorREST")
 		self.connector = JMXConnectorFactory.newJMXConnector(url, map)
 		self.connector.connect()

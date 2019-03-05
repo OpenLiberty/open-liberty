@@ -12,6 +12,7 @@ package com.ibm.ws.ssl.internal;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -28,9 +29,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -60,12 +61,20 @@ public class KeystoreConfigurationFactoryTest {
 
     @Before
     public void setUp() {
+        final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+        final File defaultKeyStoreJKS = new File(defaultKeyStore);
+
         mock.checking(new Expectations() {
             {
                 allowing(cc).getBundleContext();
                 will(returnValue(bc));
                 allowing(cc).locateService("locMgr", locSvcRef);
                 will(returnValue(locSvc));
+                allowing(cc).locateService("LocMgr", locSvcRef);
+                will(returnValue(locSvc));
+                allowing(locSvc).resolveString(defaultKeyStore);
+                will(returnValue(defaultKeyStoreJKS.getAbsoluteFile()));
+
             }
         });
         ksConfigFactory = new KeystoreConfigurationFactory();
@@ -83,10 +92,13 @@ public class KeystoreConfigurationFactoryTest {
 
     /**
      * Test method for {@link com.ibm.ws.ssl.internal.KeystoreConfigurationFactory#updated(java.lang.String, java.util.Dictionary)}.
+     * b
      */
     @Test
     public void updated_noId() throws Exception {
+
         ksConfigFactory.updated("registeredPid", props);
+
     }
 
     /**

@@ -26,7 +26,7 @@ import com.ibm.ws.crypto.certificateutil.DefaultSubjectDN;
  */
 public class KeytoolSSLCertificateCreatorTest {
     private final KeytoolSSLCertificateCreator creator = new KeytoolSSLCertificateCreator();
-    private final String location = System.getProperty("user.dir") + "/build/testKS.jks";
+    private final String location = System.getProperty("user.dir") + "/build/testKS.p12";
 
     /**
      * Test method for {@link com.ibm.ws.crypto.certificateutil.keytool.KeytoolSSLCertificateCreator#KeytoolCommand(java.lang.String, int, java.lang.String)}.

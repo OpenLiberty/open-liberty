@@ -95,8 +95,8 @@ public class SSLConfig extends Properties {
 
         if (keyStoreType == null && getProperty(Constants.SYSTEM_SSLPROP_KEY_STORE_TYPE) == null) {
             setProperty(Constants.SSLPROP_KEY_STORE_FILE_BASED, Constants.TRUE);
-            setProperty(Constants.SSLPROP_KEY_STORE_TYPE, Constants.KEYSTORE_TYPE_JKS);
-            keyStoreType = Constants.KEYSTORE_TYPE_JKS;
+            setProperty(Constants.SSLPROP_KEY_STORE_TYPE, Constants.KEYSTORE_TYPE_PKCS12);
+            keyStoreType = Constants.KEYSTORE_TYPE_PKCS12;
         } else {
             if (keyStoreType != null &&
                 !keyStoreType.equals(Constants.KEYSTORE_TYPE_JKS) &&
@@ -114,8 +114,8 @@ public class SSLConfig extends Properties {
 
         if (trustStoreType == null && getProperty(Constants.SYSTEM_SSLPROP_TRUST_STORE_TYPE) == null) {
             setProperty(Constants.SSLPROP_TRUST_STORE_FILE_BASED, Constants.TRUE);
-            setProperty(Constants.SSLPROP_TRUST_STORE_TYPE, Constants.KEYSTORE_TYPE_JKS);
-            trustStoreType = Constants.KEYSTORE_TYPE_JKS;
+            setProperty(Constants.SSLPROP_TRUST_STORE_TYPE, Constants.KEYSTORE_TYPE_PKCS12);
+            trustStoreType = Constants.KEYSTORE_TYPE_PKCS12;
         } else {
             if (trustStoreType != null &&
                 !trustStoreType.equals(Constants.KEYSTORE_TYPE_JKS) &&
