@@ -599,8 +599,10 @@ class ConfigComparator {
             delta = (newVariable == null) ? null : DeltaType.ADDED;
         } else if (newVariable == null) {
             delta = DeltaType.REMOVED;
-        } else if (oldVariable.getValue().equals(newVariable.getValue())) {
+        } else if (oldVariable.getValue() != null && oldVariable.getValue().equals(newVariable.getValue())) {
             delta = compareVariableReferences(oldVariables, newVariables, oldVariable.getValue(), stack);
+        } else if (oldVariable.getDefaultValue() != null && oldVariable.getDefaultValue().equals(newVariable.getDefaultValue())) {
+            delta = compareVariableReferences(oldVariables, newVariables, oldVariable.getDefaultValue(), stack);
         } else {
             delta = DeltaType.MODIFIED;
         }
