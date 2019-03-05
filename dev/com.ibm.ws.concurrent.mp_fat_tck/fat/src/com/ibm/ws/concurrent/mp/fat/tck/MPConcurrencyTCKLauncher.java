@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,9 @@ public class MPConcurrencyTCKLauncher {
         server.stopServer();
     }
 
-    @AllowedFFDC("java.lang.NegativeArraySizeException") // intentionally raised by test case to simulate failure during completion stage action
+    @AllowedFFDC({ "java.lang.NegativeArraySizeException", // intentionally raised by test case to simulate failure during completion stage action
+                   "org.jboss.weld.contexts.ContextNotActiveException" // expected when testing TransactionScoped bean cannot be accessed outside of transaction
+    })
     @Test
     public void launchMPConcurrency10Tck() throws Exception {
         // TODO: Run this all the time once the MP Concurrency 1.0 TCK is finalized
