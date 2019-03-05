@@ -25,6 +25,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 CollectionsTest.class,
                 HandleResponsesTest.class,
                 HeaderPropagationTest.class,
+                HeaderPropagation12Test.class,
                 MultiClientCdiTest.class,
                 ProduceConsumeTest.class,
                 PropsTest.class
