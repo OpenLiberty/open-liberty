@@ -153,8 +153,11 @@ public class CacheHashMap extends BackedHashMap {
             // the / and : characters (JCache spec does not allow these in cache names)
             // and also the % character (which is necessary because of percent encoding)
             String a = PERCENT.matcher(_iStore.getId()).replaceAll("%25"); // must be done first to avoid replacing % that is added when replacing the others
-            a = SLASH.matcher(a).replaceAll("%2F");
-            a = COLON.matcher(a).replaceAll("%3A");
+            // a = SLASH.matcher(a).replaceAll("%2F");
+            // a = COLON.matcher(a).replaceAll("%3A");
+            // #6762 The Hazelcast management center can not correctly display statistics for a cache with %2F
+            a = SLASH.matcher(a).replaceAll(".");
+            a = COLON.matcher(a).replaceAll(".");
 
             // Session Meta Information Cache
 
