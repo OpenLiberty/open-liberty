@@ -15,13 +15,13 @@
                    localization="OSGI-INF/l10n/metatype">
 
 <OCD id="com.ibm.ws.kernel.instrument.serialfilter.serverconfig" name="%filter.config" description="%filter.config.desc" ibm:alias="serialFilter">
-    <AD id="mode" name="%mode" description="%mode.desc" required="true" type="String" default="Enforce">
+    <AD id="mode" name="%mode" description="%mode.desc" required="false" type="String" default="Enforce">
             <Option label="%inactive" value="Inactive"/>
             <Option label="%discover" value="Discover"/>
             <Option label="%enforce" value="Enforce"/>
             <Option label="%reject" value="Reject"/>
     </AD>
-    <AD id="permission" name="%permission" description="%permission.desc" required="false" type="String" default="Deny">
+    <AD id="permission" name="%permission" description="%permission.desc" required="false" type="String">
             <Option label="%allow" value="Allow"/>
             <Option label="%deny" value="Deny"/>
     </AD>

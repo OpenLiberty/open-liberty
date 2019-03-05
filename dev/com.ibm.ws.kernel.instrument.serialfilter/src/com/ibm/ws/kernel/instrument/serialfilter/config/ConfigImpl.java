@@ -317,9 +317,8 @@ final class ConfigImpl implements Config {
                 return mode == permissions.put(SpecifierFormat.internalize(s), mode);
             case METHOD:
             case METHOD_PREFIX:
-                if (log.isLoggable(FINER))
-                    log.finer("Permission mode " + mode + " is ignored because method name is set.  " + s);
-                return true;
+                log.severe(MessageUtil.format("SF_ERROR_SET_PERMISSION_VALUE_METHOD", s));
+                return false;
             case UNKNOWN:
             default:
                 log.severe(MessageUtil.format("SF_ERROR_SET_PERMISSION_VALUE_UNKNOWN", s));
