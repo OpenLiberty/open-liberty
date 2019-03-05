@@ -244,7 +244,7 @@ public class BaseTraceService implements TrService {
      * of system properties we expect (for FFDC and logging).
      *
      * @param config a {@link LogProviderConfigImpl} containing TrService configuration
-     *            from bootstrap properties
+     *                   from bootstrap properties
      */
     @Override
     public void init(LogProviderConfig config) {
@@ -290,7 +290,7 @@ public class BaseTraceService implements TrService {
      * so values set there are not unset by metatype defaults.
      *
      * @param config a {@link LogProviderConfigImpl} containing dynamic updates from
-     *            the OSGi managed service.
+     *                   the OSGi managed service.
      */
     @Override
     public synchronized void update(LogProviderConfig config) {
@@ -847,10 +847,10 @@ public class BaseTraceService implements TrService {
     /**
      * Publish a trace log record.
      *
-     * @param detailLog the trace writer
+     * @param detailLog           the trace writer
      * @param logRecord
-     * @param id the trace object id
-     * @param formattedMsg the result of {@link BaseTraceFormatter#formatMessage}
+     * @param id                  the trace object id
+     * @param formattedMsg        the result of {@link BaseTraceFormatter#formatMessage}
      * @param formattedVerboseMsg the result of {@link BaseTraceFormatter#formatVerboseMessage}
      */
     protected void publishTraceLogRecord(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
@@ -997,7 +997,7 @@ public class BaseTraceService implements TrService {
      * the trace file.
      *
      * @param config a {@link LogProviderConfigImpl} containing TrService configuration
-     *            from bootstrap properties
+     *                   from bootstrap properties
      */
     protected void initializeWriters(LogProviderConfigImpl config) {
         // createFileLog may or may not return the original log holder..
@@ -1122,7 +1122,7 @@ public class BaseTraceService implements TrService {
      * Escape \b, \f, \n, \r, \t, ", \, / characters and appends to a string builder
      *
      * @param sb String builder to append to
-     * @param s String to escape
+     * @param s  String to escape
      */
     private void jsonEscape(StringBuilder sb, String s) {
         if (s == null) {
@@ -1200,11 +1200,160 @@ public class BaseTraceService implements TrService {
 
     public final static class TeePrintStream extends PrintStream {
         protected final TrOutputStream trStream;
+        protected final boolean autoFlush;
 
         public TeePrintStream(TrOutputStream trStream, boolean autoFlush) {
             super(trStream, autoFlush);
+            this.autoFlush = autoFlush;
             this.trStream = trStream;
         }
+
+        public void preFlush(String s) {
+            if (autoFlush) {
+                try {
+                    trStream.realFlush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (autoFlush && (s.indexOf('\n') >= 0)) {
+                try {
+                    trStream.realFlush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        @Override
+        public void println() {
+            super.println();
+            try {
+                trStream.realFlush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void println(String s) {
+            super.print(s + "\n");
+            preFlush(s);
+        }
+
+        @Override
+        public void println(boolean b) {
+            super.print(b);
+            super.print("\n");
+            String str = b ? "true" : "false";
+            str += "\n";
+            preFlush(str);
+        }
+
+        @Override
+        public void println(char c) {
+            super.print(c);
+            super.print("\n");
+            preFlush(String.valueOf(c) + "\n");
+        }
+
+        @Override
+        public void println(int i) {
+            super.print(i);
+            super.print("\n");
+            preFlush(String.valueOf(i) + "\n");
+        }
+
+        @Override
+        public void println(long l) {
+            super.print(l);
+            super.print("\n");
+            preFlush(String.valueOf(l) + "\n");
+        }
+
+        @Override
+        public void println(float f) {
+            super.print(f);
+            super.print("\n");
+            preFlush(String.valueOf(f) + "\n");
+        }
+
+        @Override
+        public void println(double d) {
+            super.print(d);
+            super.print("\n");
+            preFlush(String.valueOf(d) + "\n");
+        }
+
+        @Override
+        public void println(char s[]) {
+            super.print(s);
+            super.print("\n");
+            preFlush(String.valueOf(s) + "\n");
+        }
+
+        @Override
+        public void println(Object obj) {
+            super.print(obj);
+            super.print("\n");
+            preFlush(String.valueOf(obj) + "\n");
+        }
+
+        @Override
+        public void print(String s) {
+            super.print(s);
+            preFlush(s);
+        }
+
+        @Override
+        public void print(boolean b) {
+            super.print(b);
+            String str = b ? "true" : "false";
+            preFlush(str);
+        }
+
+        @Override
+        public void print(char c) {
+            super.print(c);
+            preFlush(String.valueOf(c));
+        }
+
+        @Override
+        public void print(int i) {
+            super.print(i);
+            preFlush(String.valueOf(i));
+        }
+
+        @Override
+        public void print(long l) {
+            super.print(l);
+            preFlush(String.valueOf(l));
+        }
+
+        @Override
+        public void print(float f) {
+            super.print(f);
+            preFlush(String.valueOf(f));
+        }
+
+        @Override
+        public void print(double d) {
+            super.print(d);
+            preFlush(String.valueOf(d));
+        }
+
+        @Override
+        public void print(char s[]) {
+            super.print(s);
+            preFlush(String.valueOf(s));
+        }
+
+        @Override
+        public void print(Object obj) {
+            super.print(obj);
+            preFlush(String.valueOf(obj));
+        }
+
     }
 
     /**
@@ -1223,7 +1372,9 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public synchronized void flush() throws IOException {
+        public synchronized void flush() {}
+
+        public synchronized void realFlush() throws IOException {
             super.flush();
 
             if (!holder.isEnabled()) {
@@ -1276,8 +1427,8 @@ public class BaseTraceService implements TrService {
      * Write the text to the associated original stream.
      * This is preserved as a subroutine for extension by other delegates (test, JSR47 logging)
      *
-     * @param tc StreamTraceComponent associated with original stream
-     * @param txt pre-formatted or raw message
+     * @param tc        StreamTraceComponent associated with original stream
+     * @param txt       pre-formatted or raw message
      * @param rawStream if true, this is from direct invocation of System.out or System.err
      */
     protected synchronized void writeStreamOutput(SystemLogHolder holder, String txt, boolean rawStream) {
