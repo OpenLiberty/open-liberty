@@ -30,8 +30,8 @@ public class ExpressionGenerator extends CodeGeneratorBase {
             writeDebugStartBegin(writer);
 
             //PI82426: White spaces at the beginning and end are useless in java scripting language
-            //If there are white spaces at the end of processing the expression, the code will try to write()... and such method does not exist.
-            String expression= new String(GeneratorUtils.escapeQuotes(chars)).trim();
+            //If there are white spaces at the end of processing the expression, the code will try to write()... and such method does not exist.           
+            String expression= new String(GeneratorUtils.escapeQuotes(chars)).replaceFirst("[\\t\\p{Zs}]++$", "");
             // detect simple cases of string catenation
             if (expression.indexOf('+') != -1 && expression.indexOf('"') != -1) {
                // there may be a potential string catenation operation with a constant string               
