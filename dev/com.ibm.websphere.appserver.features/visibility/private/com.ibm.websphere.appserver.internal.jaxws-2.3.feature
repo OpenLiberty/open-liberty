@@ -37,12 +37,7 @@ com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2, \
 com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2, \
 com.ibm.ws.org.apache.cxf.cxf.rt.rs.service.description.3.2, \
 com.ibm.ws.org.apache.cxf.cxf.rt.rs.sse.3.2, \
-com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.hc.3.2, \
-com.ibm.ws.org.apache.cxf.cxf.tools.wadlto.jaxrs.3.2, \
-com.ibm.ws.jaxrs.2.0.tools, \
-com.ibm.ws.jaxrs.2.0.web, \
-com.ibm.ws.jaxrs.2.0.server, \
-com.ibm.ws.jaxrs.2.0.client
+com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.hc.3.2
 -files=\
 bin/jaxws/wsgen; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
 bin/jaxws/wsimport; ibm.executable:=true; ibm.file.encoding:=ebcdic, \

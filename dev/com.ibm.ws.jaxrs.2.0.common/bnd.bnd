@@ -47,8 +47,6 @@ Export-Package: \
 	org.apache.cxf.jaxrs.client;version=3.1.18
 
 Import-Package: \
- com.ibm.ws.cxf.client,\ 
- com.ibm.ws.cxf.client.component,\ 
  !com.wordnik.swagger.jaxrs.config, \
  !com.wordnik.swagger.jaxrs.listing, \
  com.ibm.websphere.jaxrs20.multipart, \
@@ -151,7 +149,7 @@ Include-Resource: \
   org/apache/cxf=${bin}/org/apache/cxf, \
   org/codehaus/jackson=${bin}/org/codehaus/jackson
 
--dsannotations: com.ibm.ws.cxf.client.component.*, \
+-dsannotations: \
     com.ibm.ws.jaxrs20.component.*, \
  	com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfigImpl, \
  	com.ibm.ws.jaxrs20.providers.customexceptionmapper.CustomExceptionMapperRegister, \

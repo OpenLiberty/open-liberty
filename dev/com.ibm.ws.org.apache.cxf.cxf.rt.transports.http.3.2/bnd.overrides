@@ -10,8 +10,6 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 exportVer=3.3.0
 
 Export-Package: \
-  com.ibm.ws.cxf.client, \
-  com.ibm.ws.cxf.client.component, \
   com.ibm.ws.jaxrs21.transports.http,\
   org.apache.cxf.transport.http;version=${exportVer},\
   org.apache.cxf.transport.http.auth;version=${exportVer},\
@@ -30,6 +28,8 @@ Import-Package: \
   !org.apache.cxf.ws.policy.*,\
   !org.apache.cxf.wsdl,\
   !org.osgi.service.blueprint.*,\
+  com.ibm.ws.cxf.client, \
+  com.ibm.ws.cxf.client.component, \
   *
 
 Service-Component: \
