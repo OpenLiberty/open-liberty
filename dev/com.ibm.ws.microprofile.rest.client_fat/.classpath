@@ -10,6 +10,7 @@
 	<classpathentry kind="src" path="test-applications/collectionsApp/src"/>
 	<classpathentry kind="src" path="test-applications/handleresponsesApp/src"/>
 	<classpathentry kind="src" path="test-applications/headerPropagationApp/src"/>
+	<classpathentry kind="src" path="test-applications/headerPropagation12App/src"/>
 	<classpathentry kind="src" path="test-applications/multiClientCdiApp/src"/>
 	<classpathentry kind="src" path="test-applications/produceConsumeApp/src"/>
 	<classpathentry kind="src" path="test-applications/propsApp/src"/>
