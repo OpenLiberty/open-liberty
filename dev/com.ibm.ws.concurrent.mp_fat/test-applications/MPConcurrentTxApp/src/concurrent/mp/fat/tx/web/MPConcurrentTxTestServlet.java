@@ -11,7 +11,9 @@
 package concurrent.mp.fat.tx.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,6 +22,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -187,8 +190,11 @@ public class MPConcurrentTxTestServlet extends FATServlet {
         }
     }
 
+    /**
+     * Propagates transaction context to stages that are later run inline on the same thread and committed.
+     */
     @Test
-    public void testTransactionPropagatedToSameThread() throws Exception {
+    public void testTransactionPropagatedToSameThreadAndCommit() throws Exception {
         CompletableFuture<Integer> stage0 = txExecutor.newIncompleteFuture();
         CompletableFuture<Integer> stage1, stage2, stage3;
         tx.begin();
@@ -238,8 +244,186 @@ public class MPConcurrentTxTestServlet extends FATServlet {
         }
     }
 
+    /**
+     * Propagates transaction context to stages that are later run inline on the same thread and rolled back.
+     */
     @Test
-    public void testTransactionUsedSeriallyAndCommitOnDifferentThread() throws Exception {
+    public void testTransactionPropagatedToSameThreadAndRollBack() throws Exception {
+        CompletableFuture<Integer> stage0 = txExecutor.newIncompleteFuture();
+        CompletableFuture<Integer> stage1, stage2, stage3;
+        tx.begin();
+        try {
+            stage1 = stage0.thenApply(numUpdates -> {
+                try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+                    return numUpdates + st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Sherburne', 92024)");
+                } catch (Exception x) {
+                    throw new CompletionException(x);
+                }
+            });
+            stage2 = stage1.thenApply(numUpdates -> {
+                try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+                    return numUpdates + st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('St. Louis', 200294)");
+                } catch (Exception x) {
+                    throw new CompletionException(x);
+                }
+            });
+            stage3 = stage2.thenApply(numUpdates -> {
+                try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+                    numUpdates += st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Stearns', 155300)");
+                    if (numUpdates > 0) // always true
+                        throw new SQLException("Fake error is raised to force a rollback.");
+                    return numUpdates;
+                } catch (Exception x) {
+                    throw new CompletionException(x);
+                }
+            }).exceptionally(x -> {
+                try {
+                    tx.rollback();
+                } catch (Exception x2) {
+                    x2.printStackTrace();
+                }
+                throw new CompletionException(x);
+            });
+        } finally {
+            tm.suspend();
+        }
+
+        assertTrue(stage0.complete(0));
+
+        try {
+            fail("Should report exception completion. Instead: " + stage3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } catch (ExecutionException x) {
+            // expected
+        }
+
+        // Verify that the transaction rolled back, meaning none of the inserts remain in the database
+        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Sherburne' OR NAME='St. Louis' OR NAME='Stearns'");
+            assertTrue(result.next());
+            assertEquals(0, result.getInt(1));
+        }
+    }
+
+    /**
+     * Propagates transaction context to be used serially from another thread, which also commits the transaction.
+     */
+    @Test
+    public void testTransactionUsedSeriallyAndCommitWhenComplete() throws Exception {
+        CompletableFuture<Integer> stage1 = txExecutor.newIncompleteFuture();
+        CompletableFuture<Integer> stage2;
+        tx.begin();
+        try {
+            stage2 = stage1.thenApply(numUpdates -> {
+                try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+                    return numUpdates + st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Waseca', 18898)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(numUpdates -> {
+                try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+                    return numUpdates + st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Wadena', 13626)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).whenComplete((result, failure) -> {
+                try {
+                    if (failure == null && tx.getStatus() == Status.STATUS_ACTIVE)
+                        tx.commit();
+                    else
+                        tx.rollback();
+                } catch (Exception x) {
+                    x.printStackTrace();
+                    if (failure == null)
+                        throw new CompletionException(x);
+                }
+            });
+        } finally {
+            tm.suspend();
+        }
+
+        // complete the stages on another thread
+        int updateCount = testThreads.submit(() -> {
+            stage1.complete(0);
+            return stage2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        }).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        assertEquals(2, updateCount);
+
+        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Waseca' OR NAME='Wadena'");
+            assertTrue(result.next());
+            assertEquals(32524, result.getInt(1));
+        }
+    }
+
+    /**
+     * Propagates transaction context to be used serially from another thread, which also rolls back the transaction.
+     */
+    @Test
+    public void testTransactionUsedSeriallyAndRollBackWhenComplete() throws Exception {
+        CompletableFuture<Integer> stage1 = txExecutor.newIncompleteFuture();
+        CompletableFuture<Integer> stage2;
+        tx.begin();
+        try {
+            stage2 = stage1.thenApply(numUpdates -> {
+                try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+                    return numUpdates + st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Washington', 250979)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(numUpdates -> {
+                try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+                    return numUpdates + st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Wright', 131130)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(numUpdates -> {
+                try {
+                    tx.setRollbackOnly(); // ensure the transaction always rolls back
+                    return 0;
+                } catch (IllegalStateException | SystemException x) {
+                    throw new CompletionException(x);
+                }
+            }).whenComplete((result, failure) -> {
+                try {
+                    if (failure == null && tx.getStatus() == Status.STATUS_ACTIVE)
+                        tx.commit();
+                    else
+                        tx.rollback();
+                } catch (Exception x) {
+                    x.printStackTrace();
+                    if (failure == null)
+                        throw new CompletionException(x);
+                }
+            });
+        } finally {
+            tm.suspend();
+        }
+
+        // complete the stages on another thread
+        int updateCount = testThreads.submit(() -> {
+            stage1.complete(0);
+            return stage2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        }).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        assertEquals(0, updateCount);
+
+        // Verify that the transaction rolled back, meaning none of the inserts remain in the database
+        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Washington' OR NAME='Wright'");
+            assertTrue(result.next());
+            assertEquals(0, result.getInt(1));
+        }
+    }
+
+    /**
+     * Propagates transaction context such that transactional operations are performed serially on
+     * another thread (which also does the commit). These operations can overlap the transaction
+     * which remains active on the main thread for a time during which no transactional work is being
+     * performed by the main thread.
+     */
+    @Test
+    public void testTransactionUsedSeriallyWithOverlapAndCommitWithinLastStage() throws Exception {
         CompletableFuture<Integer> stage;
         tx.begin();
         try {
@@ -278,8 +462,67 @@ public class MPConcurrentTxTestServlet extends FATServlet {
         }
     }
 
+    /**
+     * Propagates transaction context such that transactional operations are performed serially on
+     * another thread (which also does the rollback). These operations can overlap the transaction
+     * which remains active on the main thread for a time during which no transactional work is being
+     * performed by the main thread.
+     */
     @Test
-    public void testTwoThreadsConcurrentlyOperateInTransaction() throws Exception {
+    public void testTransactionUsedSeriallyWithOverlapAndRollBackWithinLastStage() throws Exception {
+        CompletableFuture<Integer> stage;
+        tx.begin();
+        try {
+            stage = txExecutor.supplyAsync(() -> {
+                try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+                    return st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Houston', 18709)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApplyAsync(numUpdates -> {
+                try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+                    numUpdates += st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Steele', 36612)");
+                    if (numUpdates > 0) // should always be true - intentionally cause rollback
+                        throw new SQLException("Intentionally raising error to force a rollback.");
+                    else {
+                        tx.commit();
+                        return numUpdates;
+                    }
+                } catch (Exception x) {
+                    throw new CompletionException(x);
+                }
+            }).exceptionally(x -> {
+                try {
+                    tx.rollback();
+                } catch (Exception x2) {
+                    x2.printStackTrace();
+                }
+                throw new CompletionException(x);
+            });
+        } finally {
+            tm.suspend();
+        }
+
+        try {
+            fail("Should raise CompletionException. Instead: " + stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } catch (ExecutionException x) {
+            // expected
+        }
+
+        // Verify that the transaction rolled back, meaning none of the inserts remain in the database
+        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Houston' OR NAME='Steele'");
+            assertTrue(result.next());
+            assertEquals(0, result.getInt(1));
+        }
+    }
+
+    /**
+     * Have two threads perform transactional operations within the same thread, which can run
+     * at the same time. The main thread commits the transaction when the transactional operations finish.
+     */
+    @Test
+    public void testTwoThreadsConcurrentlyOperateInTransactionAndCommit() throws Exception {
         tx.begin();
         try (Connection con = defaultDataSource.getConnection()) {
             PreparedStatement ps = con.prepareStatement("INSERT INTO MNCOUNTIES VALUES (?,?)");
@@ -313,6 +556,47 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             result = st.executeQuery("SELECT POPULATION FROM IACOUNTIES WHERE NAME='Linn'");
             assertTrue(result.next());
             assertEquals(220008, result.getInt(1));
+        }
+    }
+
+    /**
+     * Have two threads perform transactional operations within the same thread, which can run
+     * at the same time. The main thread rolls back the transaction when the transactional operations finish.
+     */
+    @Test
+    public void testTwoThreadsConcurrentlyOperateInTransactionAndRollBack() throws Exception {
+        tx.begin();
+        try (Connection con = defaultDataSource.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("INSERT INTO MNCOUNTIES VALUES (?,?)");
+            ps.setString(1, "Le Sueur");
+            ps.setInt(2, 27810);
+            ps.executeUpdate();
+
+            CompletableFuture<Integer> stage = txExecutor.supplyAsync(() -> {
+                try (Connection con2 = defaultDataSource.getConnection()) {
+                    assertEquals(Status.STATUS_ACTIVE, tx.getStatus());
+                    return con2.createStatement().executeUpdate("INSERT INTO IACOUNTIES VALUES ('Allamakee', 13940)");
+                } catch (SQLException | SystemException x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            ps.setString(1, "Faribault");
+            ps.setInt(2, 13966);
+            ps.executeUpdate();
+
+            assertEquals(Integer.valueOf(1), stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            tx.rollback();
+        }
+
+        // Verify that the transaction rolled back, meaning none of the inserts remain in the database
+        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT POPULATION FROM MNCOUNTIES WHERE NAME='Le Sueur' OR NAME='Faribault'");
+            assertFalse(result.next());
+            result.close();
+            result = st.executeQuery("SELECT POPULATION FROM IACOUNTIES WHERE NAME='Allamakee'");
+            assertFalse(result.next());
         }
     }
 }
