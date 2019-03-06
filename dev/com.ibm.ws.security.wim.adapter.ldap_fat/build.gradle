@@ -121,6 +121,7 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.emptyInput',
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.propertynotsupported',
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.nested',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds.searchbase',
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.ssl',
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.sslref',
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.sslref.badssl',
