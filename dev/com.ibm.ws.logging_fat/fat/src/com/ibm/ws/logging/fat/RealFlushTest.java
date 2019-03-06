@@ -69,15 +69,16 @@ public class RealFlushTest {
 
     public static void addApp() throws Exception {
 
-        ShrinkHelper.defaultDropinApp(server, "RealFlushTestApp", "com.ibm.ws.logging.fat.printBoolTests",
-                                      "com.ibm.ws.logging.fat.printCharTests",
-                                      "com.ibm.ws.logging.fat.printFloatTests",
-                                      "com.ibm.ws.logging.fat.printIntTests",
-                                      "com.ibm.ws.logging.fat.printLongTests",
-                                      "com.ibm.ws.logging.fat.printNothingTests",
-                                      "com.ibm.ws.logging.fat.printObjectTests",
-                                      "com.ibm.ws.logging.fat.printStringTests",
-                                      "com.ibm.ws.logging.fat.printTestApp");
+        ShrinkHelper.defaultDropinApp(server, "RealFlushTestApp", "com.ibm.ws.logging.flush.fat.printTestApp",
+                                      "com.ibm.ws.logging.flush.fat.printBoolTests",
+                                      "com.ibm.ws.logging.flush.fat.printCharArrayTests",
+                                      "com.ibm.ws.logging.flush.fat.printCharTests",
+                                      "com.ibm.ws.logging.flush.fat.printDoubleTests",
+                                      "com.ibm.ws.logging.flush.fat.printFloatTests",
+                                      "com.ibm.ws.logging.flush.fat.printIntTests",
+                                      "com.ibm.ws.logging.flush.fat.printLongTests",
+                                      "com.ibm.ws.logging.flush.fat.printObjectTests",
+                                      "com.ibm.ws.logging.flush.fat.printStringTests");
         server.startServer();
     }
 

@@ -1201,6 +1201,7 @@ public class BaseTraceService implements TrService {
     public final static class TeePrintStream extends PrintStream {
         protected final TrOutputStream trStream;
         protected final boolean autoFlush;
+        protected boolean trouble = false;
 
         public TeePrintStream(TrOutputStream trStream, boolean autoFlush) {
             super(trStream, autoFlush);
@@ -1213,14 +1214,14 @@ public class BaseTraceService implements TrService {
                 try {
                     trStream.realFlush();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    trouble = true;
                 }
             }
             if (autoFlush && (s.indexOf('\n') >= 0)) {
                 try {
                     trStream.realFlush();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    trouble = true;
                 }
             }
         }
@@ -1231,7 +1232,7 @@ public class BaseTraceService implements TrService {
             try {
                 trStream.realFlush();
             } catch (IOException e) {
-                e.printStackTrace();
+                trouble = true;
             }
         }
 
@@ -1352,6 +1353,11 @@ public class BaseTraceService implements TrService {
         public void print(Object obj) {
             super.print(obj);
             preFlush(String.valueOf(obj));
+        }
+
+        @Override
+        public boolean checkError() {
+            return (super.checkError() || this.trouble);
         }
 
     }
