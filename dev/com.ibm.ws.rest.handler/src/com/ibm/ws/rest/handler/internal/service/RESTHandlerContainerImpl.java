@@ -409,7 +409,8 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
     @FFDCIgnore({ RESTHandlerInternalError.class, RESTHandlerUserError.class, RESTHandlerMethodNotAllowedError.class, RESTHandlerUnsupportedMediaType.class,
                   RESTHandlerJsonException.class, RESTHandlerForbiddenError.class })
     public boolean handleRequest(RESTRequest request, RESTResponse response) throws IOException {
-        final String requestURL = request.getContextPath() + request.getPath();
+        final String contextPath = request.getContextPath();
+        final String requestURL = contextPath + request.getPath();
         final HandlerInfo handlerInfo = getHandler(requestURL);
         final boolean isRouting = DefaultRoutingHelper.containsLegacyRoutingContext(request) || DefaultRoutingHelper.containsRoutingContext(request);
 

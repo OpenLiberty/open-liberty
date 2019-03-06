@@ -334,7 +334,7 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
                 }
                 JSONArray api = new JSONArray();
                 for (String root : apiRoots) {
-                    StringBuilder r = new StringBuilder("/ibm/api");
+                    StringBuilder r = new StringBuilder("/bogus/root");
                     if (root.charAt(0) != '/')
                         r.append('/');
                     r.append(root);
