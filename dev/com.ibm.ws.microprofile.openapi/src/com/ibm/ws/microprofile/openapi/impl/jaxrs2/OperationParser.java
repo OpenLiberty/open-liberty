@@ -11,8 +11,6 @@
 
 package com.ibm.ws.microprofile.openapi.impl.jaxrs2;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Optional;
 
 import javax.ws.rs.Consumes;
@@ -28,7 +26,6 @@ import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.models.responses.APIResponses;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.openapi.impl.core.util.AnnotationsUtils;
 import com.ibm.ws.microprofile.openapi.impl.model.media.ContentImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.MediaTypeImpl;
@@ -68,7 +65,6 @@ public class OperationParser {
         return AnnotationsUtils.getApiResponses(responses, classProduces, methodProduces, components, true);
     }
 
-    @FFDCIgnore({ SecurityException.class, NoSuchMethodException.class })
     public static Optional<Content> getContent(org.eclipse.microprofile.openapi.annotations.media.Content[] annotationContents, String[] classTypes, String[] methodTypes,
                                                Components components) {
         if (annotationContents == null) {
@@ -85,23 +81,6 @@ public class OperationParser {
             ExampleObject[] examples = annotationContent.examples();
             for (ExampleObject example : examples) {
                 AnnotationsUtils.getExample(example).ifPresent(exampleObject -> mediaType.addExample(AnnotationsUtils.getNameOfReferenceableItem(example), exampleObject));
-            }
-            Method getExampleMethod = null;
-            try {
-                getExampleMethod = annotationContent.getClass().getMethod("example");
-            } catch (NoSuchMethodException e) {
-            } catch (SecurityException e) {
-            }
-            if (getExampleMethod != null) {
-                try {
-                    String example = (String) getExampleMethod.invoke(annotationContent);
-                    if (example != null && !example.isEmpty()) {
-                        mediaType.example(example);
-                    }
-                } catch (IllegalAccessException e) {
-                } catch (IllegalArgumentException e) {
-                } catch (InvocationTargetException e) {
-                }
             }
             Encoding[] encodings = annotationContent.encoding();
             for (Encoding encoding : encodings) {

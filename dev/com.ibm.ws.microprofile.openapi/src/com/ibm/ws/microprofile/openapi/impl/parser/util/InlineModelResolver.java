@@ -500,7 +500,7 @@ public class InlineModelResolver {
         if (source.getExtensions() != null) {
             Map<String, Object> vendorExtensions = source.getExtensions();
             for (String extName : vendorExtensions.keySet()) {
-                ((SchemaImpl) target).addExtension_compat(extName, vendorExtensions.get(extName));
+                target.addExtension(extName, vendorExtensions.get(extName));
             }
         }
     }
