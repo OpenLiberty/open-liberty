@@ -213,13 +213,9 @@ public class ClientProxyImpl extends AbstractClient implements
                         return params != null && params.length > 0 ? mh.invokeWithArguments(params) : mh.invoke();
                         // Liberty change end
                     } catch (Throwable t) {
-                        if (t instanceof IllegalAccessException) {
-                            try {
-                                return invokeDefaultMethodUsingPrivateLookup(declaringClass, o, m, params);
-                            } catch (final NoSuchMethodException ex) {
-                                throw new WrappedException(t);
-                            }
-                        } else {
+                        try {
+                            return invokeDefaultMethodUsingPrivateLookup(declaringClass, o, m, params);
+                        } catch (final NoSuchMethodException ex) {
                             throw new WrappedException(t);
                         }
                     }
