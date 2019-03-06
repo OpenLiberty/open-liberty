@@ -662,7 +662,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
 
             //TODO remove noship/beta guard before GA
             isUCP = vendorImplClassName.startsWith("oracle.ucp.jdbc.") && 
-                            (vProps.containsKey("internal.dev.nonship.function.do.not.use.production") || (vProps.getFactoryPID() != null && vProps.getFactoryPID().equals("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp")));
+                            (wProps.containsKey("internalDevNonshipFunctionDoNotUseProduction") || (vProps.getFactoryPID() != null && vProps.getFactoryPID().equals("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp")));
             if (isUCP) {
                 if (!createdDefaultConnectionManager && !sentUCPConnMgrPropsIgnoredInfoMessage) {
                     Tr.info(tc, "DSRA4013.ignored.connection.manager.config.used");
@@ -1051,6 +1051,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 sentUCPDataSourcePropsIgnoredInfoMessage = true;
             }
         }
+        
         Object statementCacheSize = wProps.get(DSConfig.STATEMENT_CACHE_SIZE);
         if(statementCacheSize != null) {
             long numericVal = -1;
