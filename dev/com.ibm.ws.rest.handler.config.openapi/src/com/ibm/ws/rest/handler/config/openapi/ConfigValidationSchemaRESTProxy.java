@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.rest.handler.config.internal;
+package com.ibm.ws.rest.handler.config.openapi;
 
 import java.io.IOException;
 
@@ -26,7 +26,7 @@ import com.ibm.ws.rest.handler.helper.ServletRESTRequestImpl;
 import com.ibm.ws.rest.handler.helper.ServletRESTResponseImpl;
 import com.ibm.wsspi.rest.handler.RESTHandlerContainer;
 
-public class ConfigValidationRESTProxyServlet extends HttpServlet {
+public class ConfigValidationSchemaRESTProxy extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private transient RESTHandlerContainer REST_HANDLER_CONTAINER = null;

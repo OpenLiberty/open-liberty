@@ -20,25 +20,11 @@ Bundle-Description: REST API for server configuration; version=${bVersion}
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-WS-TraceGroup: config.rest
-
-Web-ContextPath: bogus/root
-OL-VirtualHost: ${admin.virtual.host}
-
-IBM-Authorization-Roles: com.ibm.ws.management
-IBM-Web-Extension-Processing-Disabled: true
+WS-TraceGroup: rest.config
 
 Private-Package:\
   com.ibm.ws.rest.handler.config.*
-  
-#Import-Package: com.ibm.wsspi.rest.handler,\
-#  com.ibm.wsspi.rest.handler.helper,\
-#  com.ibm.ws.rest.handler.helper,\
-#  *
 
-Include-Resource: \
-    WEB-INF=resources/WEB-INF
-    
 -dsannotations:\
   com.ibm.ws.rest.handler.config.internal.ConfigRESTHandler
 
@@ -56,6 +42,4 @@ Include-Resource: \
   com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.bnd.annotations;version=latest,\
   com.ibm.ws.org.apache.felix.scr;version=latest,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  com.ibm.websphere.javaee.servlet.3.0;version=latest,\
-  com.ibm.ws.rest.handler;version=latest
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest

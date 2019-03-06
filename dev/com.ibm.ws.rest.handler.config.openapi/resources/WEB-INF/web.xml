@@ -11,13 +11,13 @@
  -->
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app id="WebApp_ID" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
-  <display-name>bogus/root</display-name>
-  <description>The Config Validation Rest APIs for the Liberty server</description>
+  <display-name>/openapi/platform</display-name>
+  <description>Open API information for REST-based config validation resources.</description>
 
   <servlet>
-    <display-name>RESTProxyServlet</display-name>
-    <servlet-name>RESTProxyServlet</servlet-name>
-    <servlet-class>com.ibm.ws.rest.handler.config.internal.ConfigValidationRESTProxyServlet</servlet-class>
+    <display-name>ConfigValidationSchemaRESTProxy</display-name>
+    <servlet-name>ConfigValidationSchemaRESTProxy</servlet-name>
+    <servlet-class>com.ibm.ws.rest.handler.config.openapi.ConfigValidationSchemaRESTProxy</servlet-class>
     <multipart-config>
         <max-file-size>1000000000</max-file-size>
         <max-request-size>1000000000</max-request-size>
@@ -26,14 +26,14 @@
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>RESTProxyServlet</servlet-name>
+    <servlet-name>ConfigValidationSchemaRESTProxy</servlet-name>
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
   
   <security-constraint id="SecurityConstraint_1">
-    <display-name>bogus/root REST Security Constraint - DefaultAuthorizationHelper</display-name>
+    <display-name>openapi/platform REST Security Constraint - Administrator Role</display-name>
     <web-resource-collection id="WebResourceCollection_1">
-      <web-resource-name>bogus/root REST URL</web-resource-name>
+      <web-resource-name>/openapi/platform REST URL</web-resource-name>
       <url-pattern>/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
@@ -46,9 +46,9 @@
   </security-constraint>
 
   <security-constraint id="SecurityConstraint_2">
-    <display-name>bogus/root REST Security Constraint - OPTIONS</display-name>
+    <display-name>openapi/platform REST Security Constraint - OPTIONS</display-name>
     <web-resource-collection id="WebResourceCollection_2">
-      <web-resource-name>bogus/root REST URL</web-resource-name>
+      <web-resource-name>openapi/platform REST URL</web-resource-name>
       <url-pattern>/*</url-pattern>
       <http-method>OPTIONS</http-method>
     </web-resource-collection>
@@ -58,9 +58,9 @@
   </security-constraint>
 
   <security-constraint id="SecurityConstraint_3">
-    <display-name>bogus/root REST Security Constraint - Viewer Role</display-name>
+    <display-name>openapi/platform REST Security Constraint - Viewer Role</display-name>
     <web-resource-collection id="WebResourceCollection_3">
-      <web-resource-name>bogus/root REST URL</web-resource-name>
+      <web-resource-name>openapi/platform REST URL</web-resource-name>
       <url-pattern>/*</url-pattern>
       <http-method>GET</http-method>
     </web-resource-collection>
@@ -89,7 +89,7 @@
 
   <login-config id="LoginConfig_1">
   	<auth-method>CLIENT_CERT</auth-method>
-    <realm-name>bogus/root</realm-name>
+    <realm-name>openapi/platform</realm-name>
   </login-config>  
 
 </web-app>

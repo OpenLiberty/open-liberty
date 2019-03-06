@@ -20,7 +20,7 @@ Bundle-Description: Data source validator; version=${bVersion}
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-WS-TraceGroup: validator.rest
+WS-TraceGroup: rest.validation
 
 Private-Package:\
   com.ibm.ws.rest.handler.validator.jdbc.*
