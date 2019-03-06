@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.common;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
@@ -28,6 +29,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.xml.internal.nester.Nester;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 // import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -386,6 +388,70 @@ public class ConfigUtils {
         blacklistedParamNames.add(Constants.STATE);
         blacklistedParamNames.add(Constants.SCOPE);
         return blacklistedParamNames;
+    }
+
+    /**
+     * Populates a map of custom request parameter names and values to add to a certain OpenID Connect request type.
+     *
+     * @param configAdmin
+     *            Config admin that has access to the necessary server configuration properties.
+     * @param paramMapToPopulate
+     *            Request-specific map of custom parameters to populate (for example, a map of parameters to add to authorization
+     *            requests).
+     * @param configuredCustomRequestParams
+     *            List of configured custom parameter elements for a particular request type.
+     * @param configAttrName
+     *            Name of the config attribute that specifies the parameter name.
+     * @param configAttrValue
+     *            Name of the config attribute that specifies the parameter value.
+     */
+    public void populateCustomRequestParameterMap(ConfigurationAdmin configAdmin, HashMap<String, String> paramMapToPopulate, String[] configuredCustomRequestParams, String configAttrName, String configAttrValue) {
+        if (configuredCustomRequestParams == null) {
+            return;
+        }
+        for (String configuredParameter : configuredCustomRequestParams) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Configured custom request param [" + configuredParameter + "]");
+            }
+            Configuration config = getConfigurationFromConfigAdmin(configAdmin, configuredParameter);
+            if (config != null) {
+                addCustomRequestParameterValueToMap(config, paramMapToPopulate, configAttrName, configAttrValue);
+            }
+        }
+    }
+
+    Configuration getConfigurationFromConfigAdmin(ConfigurationAdmin configAdmin, String configParameter) {
+        Configuration config = null;
+        try {
+            config = configAdmin.getConfiguration(configParameter, "");
+        } catch (IOException e) {
+        }
+        return config;
+    }
+
+    @FFDCIgnore(ClassCastException.class)
+    void addCustomRequestParameterValueToMap(Configuration config, HashMap<String, String> paramMapToPopulate, String configAttrName, String configAttrValue) {
+        Dictionary<String, Object> configProps = config.getProperties();
+        if (configProps == null || configAttrName == null || configAttrValue == null) {
+            return;
+        }
+        String paramName = null;
+        String paramValue = null;
+        try {
+            paramName = (String) configProps.get(configAttrName);
+            paramValue = (String) configProps.get(configAttrValue);
+        } catch (ClassCastException e) {
+            // Do nothing. We expect string values for these props, so leave the values null if they're not strings
+        }
+        if (paramName != null && paramValue != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Adding parameter name [" + paramName + "] and value [" + paramValue + "] to map");
+            }
+            if (paramMapToPopulate == null) {
+                paramMapToPopulate = new HashMap<String, String>();
+            }
+            paramMapToPopulate.put(paramName, paramValue);
+        }
     }
 
 }

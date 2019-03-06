@@ -18,7 +18,6 @@ import java.util.Map;
 
 import javax.net.ssl.SSLSocketFactory;
 
-import org.osgi.service.cm.Configuration;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
@@ -189,29 +188,10 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         this.includeCustomCacheKeyInSubject = configUtils.getBooleanConfigAttribute(props, KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT, this.includeCustomCacheKeyInSubject);
         this.resource = configUtils.getConfigAttribute(props, KEY_resource);
 
-        String[] authzReqParams = configUtils.trim((String[]) props.get(KEY_AUTHZ_PARAM));
-        if (authzReqParams != null && authzReqParams.length > 0) {
-            authzRequestParamMap = new HashMap<String, String>();
-            authzRequestParamMap = handleCustomRequestParameters(authzRequestParamMap, authzReqParams);
-        }
-
-        String[] tokenReqParams = configUtils.trim((String[]) props.get(KEY_TOKEN_PARAM));
-        if (tokenReqParams != null && tokenReqParams.length > 0) {
-            tokenRequestParamMap = new HashMap<String, String>();
-            tokenRequestParamMap = handleCustomRequestParameters(tokenRequestParamMap, tokenReqParams);
-        }
-
-        String[] userinfoReqParams = configUtils.trim((String[]) props.get(KEY_USERINFO_PARAM));
-        if (userinfoReqParams != null && userinfoReqParams.length > 0) {
-            userinfoRequestParamMap = new HashMap<String, String>();
-            userinfoRequestParamMap = handleCustomRequestParameters(userinfoRequestParamMap, userinfoReqParams);
-        }
-
-        String[] jwkReqParams = configUtils.trim((String[]) props.get(KEY_JWK_PARAM));
-        if (jwkReqParams != null && jwkReqParams.length > 0) {
-            jwkRequestParamMap = new HashMap<String, String>();
-            jwkRequestParamMap = handleCustomRequestParameters(jwkRequestParamMap, jwkReqParams);
-        }
+        authzRequestParamMap = populateCustomRequestParameterMap(props, KEY_AUTHZ_PARAM);
+        tokenRequestParamMap = populateCustomRequestParameterMap(props, KEY_TOKEN_PARAM);
+        userinfoRequestParamMap = populateCustomRequestParameterMap(props, KEY_USERINFO_PARAM);
+        jwkRequestParamMap = populateCustomRequestParameterMap(props, KEY_JWK_PARAM);
 
         forwardLoginParameter = oidcConfigUtils.readAndSanitizeForwardLoginParameter(props, this.uniqueId, CFG_KEY_FORWARD_LOGIN_PARAMETER);
 
@@ -220,6 +200,15 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             discoveryUtil.logDiscoveryMessage("OIDC_CLIENT_DISCOVERY_COMPLETE", null, OIDC_CLIENT_DISCOVERY_COMPLETE);
         }
 
+    }
+
+    private HashMap<String, String> populateCustomRequestParameterMap(Map<String, Object> configProps, String configAttributeName) {
+        HashMap<String, String> customRequestParameterMap = new HashMap<String, String>();
+        String[] customRequestParameterElements = configUtils.getStringArrayConfigAttribute(configProps, configAttributeName);
+        if (customRequestParameterElements != null && customRequestParameterElements.length > 0) {
+            populateCustomRequestParameterMap(customRequestParameterMap, customRequestParameterElements);
+        }
+        return customRequestParameterMap;
     }
 
     /**
@@ -810,33 +799,6 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         return forwardLoginParameter;
     }
 
-    /**
-     * @param authzRequestParamMap2
-     * @param authzReqParams
-     * @return
-     */
-    private HashMap<String, String> handleCustomRequestParameters(HashMap<String, String> paramMap, String[] reqParams) {
-
-        for (String reqParameter : reqParams) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "custom authz request param");
-            }
-
-            Configuration config = getCustomConfiguration(reqParameter);
-
-            String paramName = null;
-            String paramValue = null;
-            if (config != null && config.getProperties() != null) {
-                paramName = configUtils.trim((String) config.getProperties().get(KEY_PARAM_NAME));
-                paramValue = configUtils.trim((String) config.getProperties().get(KEY_PARAM_VALUE));
-                if (paramName != null && paramValue != null) {
-                    paramMap.put(paramName, paramValue);
-                }
-            }
-        }
-        return paramMap;
-    }
-
     @Override
     public String getDiscoveryEndpointUrl() {
         return this.discoveryEndpointUrl;
@@ -860,6 +822,14 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     @Override
     public HashMap<String, String> getJwkRequestParams() {
         return this.jwkRequestParamMap;
+    }
+
+    private void populateCustomRequestParameterMap(HashMap<String, String> paramMapToPopulate, String[] configuredCustomRequestParams) {
+        SocialLoginService socialLoginService = this.socialLoginServiceRef.getService();
+        if (socialLoginService == null) {
+            return;
+        }
+        oidcConfigUtils.populateCustomRequestParameterMap(socialLoginService.getConfigAdmin(), paramMapToPopulate, configuredCustomRequestParams, KEY_PARAM_NAME, KEY_PARAM_VALUE);
     }
 
 }
