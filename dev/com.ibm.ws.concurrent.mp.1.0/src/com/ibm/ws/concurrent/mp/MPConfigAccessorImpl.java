@@ -8,15 +8,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.concurrent.mp.cdi;
+package com.ibm.ws.concurrent.mp;
 
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
+
+import com.ibm.ws.concurrent.mp.service.MPConfigAccessor;
 
 /**
  * This class abstracts away usage of MicroProfile Config so that values can be
@@ -37,21 +42,26 @@ public class MPConfigAccessorImpl implements MPConfigAccessor {
      * @return value from MicroProfile Config. Otherwise the default value.
      */
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T get(Object config, String name, T defaultValue) {
-        Class<?> cl = defaultValue == null ? String[].class : defaultValue.getClass();
-        @SuppressWarnings("unchecked")
+        Class<?> cl = defaultValue == null || defaultValue instanceof Set ? String[].class : defaultValue.getClass();
         Optional<T> configuredValue = (Optional<T>) ((Config) config).getOptionalValue(name, cl);
         T value = configuredValue.orElse(defaultValue);
 
-        // MicroProfile Config is unclear about whether empty value for String[] results in
-        // an empty String array or a size 1 String array where the element is the empty string.
-        // Allow for both possibilities,
         if (value instanceof String[]) {
+            // MicroProfile Config is unclear about whether empty value for String[] results in
+            // an empty String array or a size 1 String array where the element is the empty string.
+            // Allow for both possibilities,
             String[] arr = ((String[]) value);
             if (arr.length == 1 && arr[0].length() == 0) {
-                @SuppressWarnings("unchecked")
-                T emptyArray = (T) new String[0];
-                value = emptyArray;
+                if (defaultValue instanceof Set)
+                    value = (T) Collections.EMPTY_SET;
+                else // TODO remove if config annotations are removed
+                    value = (T) new String[0];
+            } else if (defaultValue instanceof Set) {
+                Set<String> set = new LinkedHashSet<String>();
+                Collections.addAll(set, arr);
+                value = (T) set;
             }
         }
 

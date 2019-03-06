@@ -49,6 +49,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.ws.concurrent.mp.service.MPConfigAccessor;
 import com.ibm.ws.concurrent.mp.service.ConcurrencyCDIHelper;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
