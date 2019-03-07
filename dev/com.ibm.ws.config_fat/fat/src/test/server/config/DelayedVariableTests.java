@@ -48,6 +48,16 @@ public class DelayedVariableTests extends ServletRunner {
         test(server);
     }
 
+    @Test
+    public void testVariableCycleFailure() throws Exception {
+
+        server.setServerConfigurationFile("delayedVar/cycle.xml");
+        //CWWKG0011W: The configuration validation did not succeed. Variable evaluation loop detected: [${cycle2}, ${cycle3}, ${cycle1}andSomeText]
+        server.waitForStringInLog("CWWKG0011W.*[${cycle2}, ${cycle3}, ${cycle1}andSomeText]");
+        server.setServerConfigurationFile("delayedVar/original.xml");
+        server.waitForConfigUpdateInLogUsingMark(null);
+    }
+
     @BeforeClass
     public static void setUpForMergedConfigTests() throws Exception {
         //copy the config feature into the server features location
@@ -68,7 +78,7 @@ public class DelayedVariableTests extends ServletRunner {
 
     @AfterClass
     public static void shutdown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKG0083W", "CWWKG0011W");
         server.deleteFileFromLibertyInstallRoot("lib/features/configfatlibertyinternals-1.0.mf");
         server.deleteFileFromLibertyInstallRoot("lib/test.config.variables_1.0.0.jar");
         server.deleteFileFromLibertyInstallRoot("lib/features/delayedVariable-1.0.mf");
