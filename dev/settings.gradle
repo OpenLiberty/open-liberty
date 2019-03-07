@@ -257,6 +257,7 @@ buildscript {
   dependencies {
     classpath bnd_plugin
     classpath 'net.ossindex.audit:net.ossindex.audit.gradle.plugin:0.3.8-beta'
+    classpath 'com.gradle:build-scan-plugin:2.1'
   }
 
   /* Since the files in the repository change with each build, we need to recheck for changes */

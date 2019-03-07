@@ -8,6 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+apply plugin: 'com.gradle.build-scan'
+
+buildScan {
+    termsOfServiceUrl   = 'https://gradle.com/terms-of-service'
+    apply from: './.build-scans.gradle'
+}
+
 /*
  * Master Gradle build script
  *
