@@ -552,7 +552,7 @@ goto:eof
   )
 
   @REM Filter off all of the -D and -X arguments off of !PARAMS_QUOTED! and
-  @REM add them onto !JVM_OPTIONS!
+  @REM add them onto !JVM_OPTIONS! 
   set INCLUDE_NEXT_ARG=F
   for %%a in (%PARAMS_QUOTED%) do (
     set CUR_ARG=%%a
@@ -635,7 +635,7 @@ goto:eof
   )
 
   @REM Windows prints a generic "The system cannot find the path specified.",
-  @REM so echo the java command.
+  @REM so  the java command.
   echo !JAVA_CMD_QUOTED!
 goto:eof
 
