@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,37 +12,37 @@ package com.ibm.ws.concurrent.mp.context;
 
 import java.util.ArrayList;
 
-import org.eclipse.microprofile.context.ThreadContext;
-
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.mp.ContextOp;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
- * Partial implementation of MicroProfile Security context,
- * backed by Liberty's Security context.
+ * Partial implementation of MicroProfile Thread Identity context provider,
+ * backed by Liberty's z/OS thread identity context.
  */
 @Trivial
 @SuppressWarnings("deprecation")
-public class SecurityContextProvider extends ContainerContextProvider {
-    public final AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> securityContextProviderRef = new AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider>("SecurityContextProvider");
+public class ThreadIdentityContextProvider extends ContainerContextProvider {
+    public static final String THREADIDENTITY = "ThreadIdentity";
+
+    public final AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> threadIdentityContextProviderRef = new AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider>("ThreadIdentityContextProvider");
 
     @Override
     public void addContextSnapshot(ContextOp op, ArrayList<com.ibm.wsspi.threadcontext.ThreadContext> contextSnapshots) {
         com.ibm.wsspi.threadcontext.ThreadContext snapshot;
+        com.ibm.wsspi.threadcontext.ThreadContextProvider threadIdentityProvider = threadIdentityContextProviderRef.getService();
 
-        com.ibm.wsspi.threadcontext.ThreadContextProvider securityProvider = securityContextProviderRef.getService();
-        if (securityProvider == null)
-            snapshot = new DeferredClearedContext(securityContextProviderRef);
+        if (threadIdentityProvider == null)
+            snapshot = new DeferredClearedContext(threadIdentityContextProviderRef);
         else if (op == ContextOp.PROPAGATED)
-            snapshot = securityProvider.captureThreadContext(EMPTY_MAP, EMPTY_MAP);
+            snapshot = threadIdentityProvider.captureThreadContext(EMPTY_MAP, EMPTY_MAP);
         else
-            snapshot = securityProvider.createDefaultThreadContext(EMPTY_MAP);
+            snapshot = threadIdentityProvider.createDefaultThreadContext(EMPTY_MAP);
         contextSnapshots.add(snapshot);
     }
 
     @Override
     public final String getThreadContextType() {
-        return ThreadContext.SECURITY;
+        return THREADIDENTITY;
     }
 }

@@ -23,6 +23,7 @@ import org.eclipse.microprofile.context.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.concurrent.mp.context.ThreadIdentityContextProvider;
 import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -83,6 +84,9 @@ public class ContextManagerImpl implements ContextManager {
         available.add(ThreadContext.CDI);
         contextProviders.add(cmProvider.securityContextProvider);
         available.add(ThreadContext.SECURITY);
+        // ThreadIdentity must come after Security and Application as it depends on both.
+        contextProviders.add(cmProvider.threadIdendityContextProvider);
+        available.add(ThreadIdentityContextProvider.THREADIDENTITY);
         contextProviders.add(cmProvider.transactionContextProvider);
         available.add(ThreadContext.TRANSACTION);
         contextProviders.add(cmProvider.wlmContextProvider);
