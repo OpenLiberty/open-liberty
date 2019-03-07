@@ -31,13 +31,17 @@ Export-Package: \
 	com.ibm.ws.microprofile.openapi,\
 	com.ibm.ws.microprofile.openapi.utils,\
     !com.ibm.ws.microprofile.openapi.impl.validation.resources,\
-    com.ibm.ws.microprofile.openapi.impl.*
+    com.ibm.ws.microprofile.openapi.impl,\
+    com.ibm.ws.microprofile.openapi.impl.core.*,\
+    com.ibm.ws.microprofile.openapi.impl.jaxrs2.*,\
+    com.ibm.ws.microprofile.openapi.impl.parser.*,\
+    com.ibm.ws.microprofile.openapi.impl.validation
     
 
 Private-Package: \
     com.ibm.ws.microprofile.openapi.resources,\
     com.ibm.ws.microprofile.openapi.impl.validation.resources
-    
+        
 Include-Resource: \
     WEB-INF=resources/WEB-INF, \
   	META-INF/services=resources/META-INF/services
@@ -86,7 +90,8 @@ instrument.classesExcludes: \
 	com.fasterxml.jackson.core:jackson-databind;version=2.9.1,\
 	com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;version=2.9.1,\
 	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
-	org.yaml.snakeyaml;version=1.18
+	org.yaml.snakeyaml;version=1.18,\
+	com.ibm.ws.microprofile.openapi.model;version=latest
 
 -testpath: \
         ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

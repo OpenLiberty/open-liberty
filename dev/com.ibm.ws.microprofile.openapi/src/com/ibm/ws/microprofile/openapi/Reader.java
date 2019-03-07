@@ -211,7 +211,7 @@ public class Reader {
             Map<String, Object> ext = BaseReaderUtils.parseExtensions(classExtensions.toArray(new org.eclipse.microprofile.openapi.annotations.extensions.Extension[classExtensions.size()]));
             if (ext != null && ext.size() > 0) {
                 ext.forEach((k, v) -> {
-                    openAPI.addExtension(k, v);
+                    ((OpenAPIImpl) openAPI).addExtension_compat(k, v);
                 });
             }
         }
@@ -812,7 +812,8 @@ public class Reader {
             Map<String, Object> ext = BaseReaderUtils.parseExtensions(operationExtensions.toArray(new org.eclipse.microprofile.openapi.annotations.extensions.Extension[operationExtensions.size()]));
             if (ext != null && ext.size() > 0) {
                 ext.forEach((k, v) -> {
-                    operation.addExtension(k, v);
+
+                    ((OperationImpl) operation).addExtension_compat(k, v);
                 });
             }
         }
