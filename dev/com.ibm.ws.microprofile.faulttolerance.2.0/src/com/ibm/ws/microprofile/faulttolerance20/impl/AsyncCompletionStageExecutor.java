@@ -15,6 +15,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ScheduledExecutorService;
 
+import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceException;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
@@ -57,20 +59,25 @@ public class AsyncCompletionStageExecutor<R> extends AsyncExecutor<CompletionSta
 
         // Completing the return wrapper may cause user code to run, so set the thread context first as we may be on an async thread
         ThreadContextDescriptor threadContext = executionContext.getThreadContextDescriptor();
-        ArrayList<ThreadContext> contexts = threadContext.taskStarting();
-
         try {
-            if (result.isFailure()) {
-                resultWrapper.completeExceptionally(result.getFailure());
-            } else {
-                result.getResult().thenAccept(resultWrapper::complete);
-                result.getResult().exceptionally((ex) -> {
-                    resultWrapper.completeExceptionally(ex);
-                    return null;
-                });
+            ArrayList<ThreadContext> contexts = threadContext.taskStarting();
+
+            try {
+                if (result.isFailure()) {
+                    resultWrapper.completeExceptionally(result.getFailure());
+                } else {
+                    result.getResult().thenAccept(resultWrapper::complete);
+                    result.getResult().exceptionally((ex) -> {
+                        resultWrapper.completeExceptionally(ex);
+                        return null;
+                    });
+                }
+            } finally {
+                threadContext.taskStopping(contexts);
             }
-        } finally {
-            threadContext.taskStopping(contexts);
+        } catch (Throwable t) {
+            Tr.error(tc, "internal.error.CWMFT4998E", t);
+            resultWrapper.completeExceptionally(new FaultToleranceException(Tr.formatMessage(tc, "internal.error.CWMFT4998E", t), t));
         }
     }
 
