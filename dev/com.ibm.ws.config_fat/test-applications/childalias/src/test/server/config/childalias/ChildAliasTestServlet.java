@@ -101,7 +101,7 @@ public class ChildAliasTestServlet extends HttpServlet {
 
     /**
      * Just for manual debugging
-     * 
+     *
      * @param writer
      * @throws Exception
      */
@@ -241,11 +241,11 @@ public class ChildAliasTestServlet extends HttpServlet {
 
     /**
      * Simulate bundle ordering issues by loading a new feature that forces a new bundle to load.
-     * 
+     *
      * Bundle B has a parent with an unloaded child and a child with an unloaded parent. At this point,
      * nothing much will be resolved, but we can verify that there is no contamination with other child
      * elements with the same childAlias.
-     * 
+     *
      * @throws Exception
      */
     public void testBundleOrdering1() throws Exception {
@@ -271,7 +271,7 @@ public class ChildAliasTestServlet extends HttpServlet {
         String[] child6Pids = (String[]) parentProperties.get("testCAChild");
         assertNotNull(PARENT_6_PID + " should have a child element testCAChild", child6Pids);
         assertEquals("There should be 1 child pid", 1, child6Pids.length);
-        Configuration child6Config = ca.getConfiguration(child6Pids[0]);
+        Configuration child6Config = ca.getConfiguration(child6Pids[0], null);
         assertNotNull("The child for " + PARENT_6_PID + " should be available in the configuration", child6Config);
         Dictionary<String, Object> child6Props = child6Config.getProperties();
         assertEquals("The child should not be metatype processed", "Not Default", child6Props.get("testAttribute6"));
@@ -283,10 +283,10 @@ public class ChildAliasTestServlet extends HttpServlet {
 
     /**
      * Simulate bundle ordering issues by loading a new feature that forces a new bundle to load.
-     * 
+     *
      * Bundle C has a parent with a child in Bundle B and a child with a parent in Bundle B. All
      * elements should be resolved correctly at this point.
-     * 
+     *
      * @throws Exception
      */
     public void testBundleOrdering2() throws Exception {
@@ -310,7 +310,7 @@ public class ChildAliasTestServlet extends HttpServlet {
         String[] child6Pids = (String[]) parentProperties.get("testCAChild");
         assertNotNull(PARENT_6_PID + " should have a child element testCAChild", child6Pids);
         assertEquals("There should be only one child pid", 1, child6Pids.length);
-        Configuration child6Config = ca.getConfiguration(child6Pids[0]);
+        Configuration child6Config = ca.getConfiguration(child6Pids[0], null);
         assertNotNull("The child for " + PARENT_6_PID + " should be available in the configuration", child6Config);
         Dictionary<String, Object> child6Props = child6Config.getProperties();
         assertEquals("The child should have correct properties", "Not Default", child6Props.get("testAttribute6"));
@@ -323,7 +323,7 @@ public class ChildAliasTestServlet extends HttpServlet {
     /**
      * Same scenario as testBundleOrdering2, but asserting that there are no contamination issues between the
      * top level element and the child alias elements.
-     * 
+     *
      * @throws Exception
      */
     public void testBundleOrderingAliasConflict() throws Exception {
@@ -369,7 +369,7 @@ public class ChildAliasTestServlet extends HttpServlet {
         String[] child6Pids = (String[]) parentProperties.get("testCAChild");
         assertNotNull(PARENT_6_PID + " should have a child element testCAChild", child6Pids);
         assertEquals("There should be only one child pid", 1, child6Pids.length);
-        Configuration child6Config = ca.getConfiguration(child6Pids[0]);
+        Configuration child6Config = ca.getConfiguration(child6Pids[0], null);
         assertNotNull("The child for " + PARENT_6_PID + " should be available in the configuration", child6Config);
         Dictionary<String, Object> child6Props = child6Config.getProperties();
         assertEquals("The child should have correct properties", "New Child", child6Props.get("testAttribute6"));
@@ -417,7 +417,7 @@ public class ChildAliasTestServlet extends HttpServlet {
         String[] child3Pids = (String[]) parentProperties.get("testCAChild");
         assertNotNull(PARENT_3_PID + " should have a child element testCAChild", child3Pids);
         assertEquals("There should be only one child pid", 1, child3Pids.length);
-        Configuration child3Config = ca.getConfiguration(child3Pids[0]);
+        Configuration child3Config = ca.getConfiguration(child3Pids[0], null);
         assertNotNull("The child for " + PARENT_3_PID + " should be available in the configuration", child3Config);
         Dictionary<String, Object> child3Props = child3Config.getProperties();
         assertEquals("The child should have correct properties", "New Singleton Child", child3Props.get("testAttribute3"));
