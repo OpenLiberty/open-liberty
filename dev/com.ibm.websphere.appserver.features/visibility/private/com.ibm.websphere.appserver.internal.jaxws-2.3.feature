@@ -4,7 +4,7 @@ visibility=private
 singleton=true
 IBM-App-ForceRestart: uninstall, \
 install
-Subsystem-Name: Internal Java RESTful Services 2.1
+Subsystem-Name: Internal Java Web Services 2.3
 -features=\
 com.ibm.websphere.appserver.injection-1.0, \z
 com.ibm.websphere.appserver.servlet-4.0, \
@@ -46,5 +46,5 @@ bin/jaxws/wsimport.bat, \
 bin/jaxws/tools/ws-wsimport.jar, \
 bin/jaxws/wsgen.bat, \
 bin/jaxws/tools/ws-wsgen.jar
-kind=beta
+kind=noship
 edition=core
