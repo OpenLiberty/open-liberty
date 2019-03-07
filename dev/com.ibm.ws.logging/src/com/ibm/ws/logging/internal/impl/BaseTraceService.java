@@ -1219,10 +1219,14 @@ public class BaseTraceService implements TrService {
             }
             try {
                 if (autoFlush && (s.indexOf('\n') >= 0)) {
-                    trStream.realFlush();
+                    try {
+                        trStream.realFlush();
+                    } catch (IOException e) {
+                        trouble = true;
+                    }
                 }
-            } catch (IOException e) {
-                trouble = true;
+            } catch (Exception e) {
+                //String passed was null do nothing
             }
         }
 
