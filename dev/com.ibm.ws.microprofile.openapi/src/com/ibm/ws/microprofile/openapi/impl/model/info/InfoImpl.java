@@ -16,7 +16,7 @@ import org.eclipse.microprofile.openapi.models.info.Contact;
 import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.info.License;
 
-import com.ibm.ws.microprofile.openapi.model.utils.OpenAPIUtils;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**
  *

@@ -13,7 +13,7 @@ package com.ibm.ws.microprofile.openapi.impl.model.examples;
 
 import org.eclipse.microprofile.openapi.models.examples.Example;
 
-import com.ibm.ws.microprofile.openapi.model.utils.OpenAPIUtils;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**
  * Example

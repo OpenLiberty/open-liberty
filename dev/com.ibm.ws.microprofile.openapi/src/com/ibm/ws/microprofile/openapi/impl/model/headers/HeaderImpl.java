@@ -19,7 +19,7 @@ import org.eclipse.microprofile.openapi.models.headers.Header;
 import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 
-import com.ibm.ws.microprofile.openapi.model.utils.OpenAPIUtils;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**
  * Header

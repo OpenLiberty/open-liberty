@@ -24,7 +24,7 @@ import org.eclipse.microprofile.openapi.models.responses.APIResponses;
 import org.eclipse.microprofile.openapi.models.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 
-import com.ibm.ws.microprofile.openapi.model.utils.OpenAPIUtils;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**
  * Operation

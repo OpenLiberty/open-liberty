@@ -17,7 +17,7 @@ import org.eclipse.microprofile.openapi.models.headers.Header;
 import org.eclipse.microprofile.openapi.models.links.Link;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 
-import com.ibm.ws.microprofile.openapi.model.utils.OpenAPIUtils;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**
  * Link

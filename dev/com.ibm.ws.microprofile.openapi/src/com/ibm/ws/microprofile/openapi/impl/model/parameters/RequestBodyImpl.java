@@ -13,7 +13,7 @@ package com.ibm.ws.microprofile.openapi.impl.model.parameters;
 import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.parameters.RequestBody;
 
-import com.ibm.ws.microprofile.openapi.model.utils.OpenAPIUtils;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**
  * RequestBody

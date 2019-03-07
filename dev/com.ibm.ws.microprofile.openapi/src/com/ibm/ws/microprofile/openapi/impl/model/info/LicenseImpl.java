@@ -14,7 +14,7 @@ import java.util.Objects;
 
 import org.eclipse.microprofile.openapi.models.info.License;
 
-import com.ibm.ws.microprofile.openapi.model.utils.OpenAPIUtils;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**
  * License

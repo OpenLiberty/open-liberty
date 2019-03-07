@@ -16,7 +16,7 @@ import java.util.Objects;
 
 import org.eclipse.microprofile.openapi.models.security.Scopes;
 
-import com.ibm.ws.microprofile.openapi.model.utils.OpenAPIUtils;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**
  * Scopes
