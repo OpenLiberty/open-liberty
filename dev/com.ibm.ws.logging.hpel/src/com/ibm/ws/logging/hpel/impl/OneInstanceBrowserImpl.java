@@ -20,18 +20,24 @@ import com.ibm.ws.logging.object.hpel.RepositoryPointerImpl;
 /**
  * Implementation of the browser over instances when selected directory is an instance itself.
  */
-public class OneInstanceBrowserImpl extends LogRepositoryBaseImpl implements MainLogRepositoryBrowser {
+public class OneInstanceBrowserImpl implements MainLogRepositoryBrowser {
 
     private final LogRepositoryBrowser browser;
+    /** Location of the repository this instance is configured with */
+    protected final File repositoryLocation;
 
     /**
      * Initialize this main browser with a browser over files in the instance
-     * 
+     *
      * @param browser providing details about the instance
      */
     public OneInstanceBrowserImpl(LogRepositoryBrowser browser, File location) {
-        super(location);
+        this.repositoryLocation = location;
         this.browser = browser;
+    }
+
+    public File getLocation() {
+        return repositoryLocation;
     }
 
     @Override
