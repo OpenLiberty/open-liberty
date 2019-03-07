@@ -20,11 +20,14 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -41,18 +44,31 @@ public class ServerStartAsServiceTest {
     @ClassRule
     public static final TestRule onWinRule = new OnlyRunOnWinRule();
 
+    @BeforeClass
+    public static void before() throws Exception {
+        final String METHOD_NAME = "before";
+        Log.info(c, METHOD_NAME, "calling LibertyServerFactory.getLibertyServer(SERVER_NAME, ON): " + SERVER_NAME);
+        server = LibertyServerFactory.getLibertyServer(SERVER_NAME, LibertyServerFactory.WinServiceOption.ON);
+    }
+
+    @AfterClass
+    public static void after() throws Exception {
+        final String METHOD_NAME = "after";
+        if (server.isStarted()) {
+            Log.info(c, METHOD_NAME, "Server still started after test method.  Issuing a stop command before next action.");
+            server.stopServer();
+        }
+    }
+
     @Test
     /**
      * test Liberty Server to Register, Start, Stop and Unregister as a Windows Service
-     * 
+     *
      * @throws Exception
      */
     public void testWinServiceLifeCycle() throws Exception {
         final String METHOD_NAME = "testWinServiceLifeCycle";
         Log.entering(c, METHOD_NAME);
-
-        Log.info(c, METHOD_NAME, "calling LibertyServerFactory.getLibertyServer(SERVER_NAME, ON): " + SERVER_NAME);
-        server = LibertyServerFactory.getLibertyServer(SERVER_NAME, LibertyServerFactory.WinServiceOption.ON);
 
         Log.info(c, METHOD_NAME, "calling server.startServer()");
         server.startServer();
@@ -72,16 +88,13 @@ public class ServerStartAsServiceTest {
     /**
      * test Liberty Server to Register, Start, Stop and Unregister as a Windows Service
      * test snoop can be installed and accessed.
-     * 
+     *
      * @throws Exception
      */
     public void testWinServiceAppAccess() throws Exception {
         final String METHOD_NAME = "testWinServiceAppAccess";
 
         Log.entering(c, METHOD_NAME);
-
-        Log.info(c, METHOD_NAME, "calling LibertyServerFactory.getLibertyServer(SERVER_NAME, ON): " + SERVER_NAME);
-        server = LibertyServerFactory.getLibertyServer(SERVER_NAME, LibertyServerFactory.WinServiceOption.ON);
 
         Log.info(c, METHOD_NAME, "calling server.startServer()");
         server.startServer();
@@ -110,7 +123,7 @@ public class ServerStartAsServiceTest {
     /**
      * This method is used to get a connection stream from an HTTP connection. It
      * gives the output from the webpage that it gets from the connection
-     * 
+     *
      * @param con The connection to the HTTP address
      * @return The Output from the webpage
      */
@@ -123,7 +136,7 @@ public class ServerStartAsServiceTest {
 
     /**
      * This method creates a connection to a webpage and then reutrns the connection
-     * 
+     *
      * @param url The Http Address to connect to
      * @return The connection to the http address
      */
