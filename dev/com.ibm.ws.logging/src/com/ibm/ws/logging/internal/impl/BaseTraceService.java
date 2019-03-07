@@ -1217,12 +1217,12 @@ public class BaseTraceService implements TrService {
                     trouble = true;
                 }
             }
-            if (autoFlush && (s.indexOf('\n') >= 0)) {
-                try {
+            try {
+                if (autoFlush && (s.indexOf('\n') >= 0)) {
                     trStream.realFlush();
-                } catch (IOException e) {
-                    trouble = true;
                 }
+            } catch (IOException e) {
+                trouble = true;
             }
         }
 
