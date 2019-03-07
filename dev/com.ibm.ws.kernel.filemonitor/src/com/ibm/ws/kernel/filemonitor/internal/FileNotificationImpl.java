@@ -71,8 +71,8 @@ public class FileNotificationImpl extends StandardMBean implements FileNotificat
 
     /** {@inheritDoc} */
     @Override
-    public boolean processSecurityChanges(String name) {
-        return notificationDelegate.processSecurityChanges(name);
+    public boolean processSecurityChanges(String id) {
+        return notificationDelegate.processSecurityChanges(id);
 
     }
 }

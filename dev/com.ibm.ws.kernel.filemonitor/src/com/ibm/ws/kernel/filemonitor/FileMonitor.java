@@ -30,7 +30,7 @@ public interface FileMonitor extends com.ibm.wsspi.kernel.filemonitor.FileMonito
      */
     String MONITOR_IDENTIFICATION_NAME = "monitor.identification";
 
-    String MONITOR_IDENTIFICATION_CONFIG_NAME = "monitor.config.name";
+    String MONITOR_IDENTIFICATION_CONFIG_ID = "monitor.config.id";
 
     /**
      * Called by the monitor service when a scheduled scan completes with

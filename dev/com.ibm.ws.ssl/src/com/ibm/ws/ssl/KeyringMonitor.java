@@ -14,7 +14,7 @@ package com.ibm.ws.ssl;
  * Components that want to monitor the keyring for changes should implement
  * the KeyringMonitor interface and register that implementation in the service registry.
  * <p>
- * The properties associated with the registered service specify name of keyring
+ * The properties associated with the registered service specify id of keyring
  * to be monitored. Valid service properties are listed as constants below with
  * descriptive javadoc.
  */
@@ -23,18 +23,18 @@ public interface KeyringMonitor {
     /**
      * <h4>Service property</h4>
      *
-     * The value should be a String, indicating the name of
+     * The value should be a String, indicating the id of
      * keyring that should be monitored.
      */
-    String MONITOR_IDENTIFICATION_CONFIG_NAME = "monitor.config.name";
+    String MONITOR_IDENTIFICATION_CONFIG_ID = "monitor.config.id";
 
     /**
      * <h4>Service property</h4>
      *
-     * The value should be a String, indicating the safLocation of
+     * The value should be a String, indicating the keystore location of
      * keyring that should be monitored.
      */
-    String SAF_LOCATION = "saf.location";
+    String KEYSTORE_LOCATION = "keystore.location";
 
     /**
      * Constant that is used for prefix
@@ -42,11 +42,11 @@ public interface KeyringMonitor {
     String SAF_PREFIX = "safkeyring://";
 
     /**
-     * Method to call the update of SAF keyrings
+     * Method to call the update of keyrings
      *
-     * @param name - The name of the keyring to be refresh,
+     * @param keyStoreLocation - The keyring location to be refresh,
      *            or null if all keyrings should be refreshed.
      */
-    public void refreshRequested(String name);
+    public void refreshRequested(String keyStoreLocation);
 
 }

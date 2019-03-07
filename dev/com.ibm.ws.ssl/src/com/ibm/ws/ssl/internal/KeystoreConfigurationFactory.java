@@ -56,7 +56,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 @Component(service = ManagedServiceFactory.class,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = { "service.vendor=IBM", "service.pid=com.ibm.ws.ssl.keystore" })
-public class KeystoreConfigurationFactory implements ManagedServiceFactory, FileBasedActionable {
+public class KeystoreConfigurationFactory implements ManagedServiceFactory, FileBasedActionable, KeyringBasedActionable {
     /** Trace service */
     private static final TraceComponent tc = Tr.register(KeystoreConfigurationFactory.class);
 
@@ -65,7 +65,7 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
     private ServiceRegistration<FileMonitor> keyStoreFileMonitorRegistration;
     private ServiceRegistration<KeyringMonitor> keyringMonitorRegistration;
     private SecurityFileMonitor keyStoreFileMonitor;
-    private SAFKeyringMonitor SafKeyringMonitor;
+    private KeyringMonitorImpl KeyringMonitor;
 
     private BundleContext bContext = null;
     private volatile ComponentContext cc = null;
@@ -208,6 +208,7 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
      * and we need to clear the SSLContext caches and keystore caches that reference them. Clearing the cache
      * will cause them to get loaded the next time something requests the keystore.
      */
+    @Override
     public void performKeyStoreAction(Collection<String> modifiedKeyStores) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "performSAFKeyRingAction", new Object[] { modifiedKeyStores });
@@ -272,17 +273,17 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
     /**
      * Handles the creation of the keystore file monitor.
      */
-    private void createFileMonitor(String name, String keyStoreLocation, String trigger, long interval) {
+    private void createFileMonitor(String ID, String keyStoreLocation, String trigger, long interval) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "createFileMonitor", new Object[] { name, keyStoreLocation, trigger, interval });
+            Tr.entry(tc, "createFileMonitor", new Object[] { ID, keyStoreLocation, trigger, interval });
         try {
             keyStoreFileMonitor = new SecurityFileMonitor(this);
-            setFileMonitorRegistration(keyStoreFileMonitor.monitorFiles(name, Arrays.asList(keyStoreLocation), interval, trigger));
+            setFileMonitorRegistration(keyStoreFileMonitor.monitorFiles(ID, Arrays.asList(keyStoreLocation), interval, trigger));
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception creating the keystore file monitor.", e);
             }
-            FFDCFilter.processException(e, getClass().getName(), "createFileMonitor", this, new Object[] { keyStoreLocation, interval });
+            FFDCFilter.processException(e, getClass().getName(), "createFileMonitor", this, new Object[] { ID, keyStoreLocation, interval });
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "createFileMonitor");
@@ -314,19 +315,19 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
     }
 
     /**
-     * Handles the creation of the SAF keyring monitor.
+     * Handles the creation of the keyring monitor.
      */
-    private void createKeyringMonitor(String name, String trigger, String keyStoreLocation) {
+    private void createKeyringMonitor(String ID, String trigger, String keyStoreLocation) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "createKeyringMonitor", new Object[] { name, trigger });
+            Tr.entry(tc, "createKeyringMonitor", new Object[] { ID, trigger });
         try {
-            SafKeyringMonitor = new SAFKeyringMonitor(this);
-            setKeyringMonitorRegistration(SafKeyringMonitor.monitorKeyRings(name, trigger, keyStoreLocation));
+            KeyringMonitor = new KeyringMonitorImpl(this);
+            setKeyringMonitorRegistration(KeyringMonitor.monitorKeyRings(ID, trigger, keyStoreLocation));
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception creating the keyring monitor.", e);
             }
-            FFDCFilter.processException(e, getClass().getName(), "createKeyringMonitor", this, new Object[] { name });
+            FFDCFilter.processException(e, getClass().getName(), "createKeyringMonitor", this, new Object[] { ID, keyStoreLocation });
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "createKeyringMonitor");
