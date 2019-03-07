@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2018 IBM Corporation and others.
+ * Copyright (c) 2004, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.HeaderStorage;
 import com.ibm.wsspi.genericbnf.exception.MalformedMessageException;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 /**
  * Generic class implementing an Augmented BNF Header/Value storage. This
@@ -2103,6 +2104,18 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                 return;
             }
         }
+       if (HttpHeaderKeys.isWasPrivateHeader(key.getName())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "checking to see if private header is allowed: " + key.getName());
+            }
+           if (!filterAdd(key, elem.asBytes())) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, key.getName() +" is not trusted for this host; not adding header");
+                }
+               return;
+           }
+       }
+       
         incrementHeaderCounter();
         HeaderElement root = findHeader(key);
         boolean rc = addInstanceOfElement(root, elem);
