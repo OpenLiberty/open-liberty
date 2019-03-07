@@ -20,10 +20,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.config14.impl.PropertyResolverUtil;
+import com.ibm.ws.microprofile.config14.interfaces.WebSphereConfig14;
 
-/**
- *
- */
 public class VariableResolverTest extends AbstractConfigTest {
 
     @BeforeClass
@@ -40,7 +38,7 @@ public class VariableResolverTest extends AbstractConfigTest {
 
     @Test
     public void variableResolutionTest() {
-        Config config = ConfigProviderResolver.instance().getConfig();
+        Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
         ConfigAccessorBuilder<String> builder = config.access("layer1", String.class);
         ConfigAccessor<String> accessor = builder.build();
         String value = accessor.getValue();
@@ -49,7 +47,7 @@ public class VariableResolverTest extends AbstractConfigTest {
 
     @Test
     public void disabledVariableResolutionTest() {
-        Config config = ConfigProviderResolver.instance().getConfig();
+        Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
         ConfigAccessorBuilder<String> builder = config.access("layer1", String.class);
         builder.evaluateVariables(false);
         ConfigAccessor<String> accessor = builder.build();
@@ -60,7 +58,7 @@ public class VariableResolverTest extends AbstractConfigTest {
     @Test
     public void testResolver() {
         String raw = "${layer1}";
-        Config config = ConfigProviderResolver.instance().getConfig();
+        WebSphereConfig14 config = (WebSphereConfig14) ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
         String resolved = PropertyResolverUtil.resolve(config, raw);
         assertEquals("Value not correctly resolved", "{start.one.two_dollar_brace.end}", resolved);
     }
@@ -68,7 +66,7 @@ public class VariableResolverTest extends AbstractConfigTest {
     @Test
     public void testUnbalancedResolver1() {
         String raw = "${${layer1}";
-        Config config = ConfigProviderResolver.instance().getConfig();
+        WebSphereConfig14 config = (WebSphereConfig14) ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
         String resolved = PropertyResolverUtil.resolve(config, raw);
         assertEquals("Value not correctly resolved", "${{start.one.two_dollar_brace.end}", resolved);
     }
@@ -76,7 +74,7 @@ public class VariableResolverTest extends AbstractConfigTest {
     @Test
     public void testUnbalancedResolver2() {
         String raw = "a${b${layer1}";
-        Config config = ConfigProviderResolver.instance().getConfig();
+        WebSphereConfig14 config = (WebSphereConfig14) ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
         String resolved = PropertyResolverUtil.resolve(config, raw);
         assertEquals("Value not correctly resolved", "a${b{start.one.two_dollar_brace.end}", resolved);
     }
@@ -84,7 +82,7 @@ public class VariableResolverTest extends AbstractConfigTest {
     @Test
     public void testUnbalancedResolver3() {
         String raw = "${layer1}${";
-        Config config = ConfigProviderResolver.instance().getConfig();
+        WebSphereConfig14 config = (WebSphereConfig14) ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
         String resolved = PropertyResolverUtil.resolve(config, raw);
         assertEquals("Value not correctly resolved", "{start.one.two_dollar_brace.end}${", resolved);
     }
@@ -92,7 +90,7 @@ public class VariableResolverTest extends AbstractConfigTest {
     @Test
     public void testUnbalancedResolver4() {
         String raw = "${layer1}${a";
-        Config config = ConfigProviderResolver.instance().getConfig();
+        WebSphereConfig14 config = (WebSphereConfig14) ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
         String resolved = PropertyResolverUtil.resolve(config, raw);
         assertEquals("Value not correctly resolved", "{start.one.two_dollar_brace.end}${a", resolved);
     }
@@ -100,7 +98,7 @@ public class VariableResolverTest extends AbstractConfigTest {
     @Test
     public void testResolverEmptyPropertyName() {
         String raw = "${}";
-        Config config = ConfigProviderResolver.instance().getConfig();
+        WebSphereConfig14 config = (WebSphereConfig14) ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();
         String resolved = PropertyResolverUtil.resolve(config, raw);
         assertEquals("Value not correctly resolved", "nothing", resolved);
     }

@@ -23,7 +23,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 WS-TraceGroup: concurrent
 
 Private-Package:\
-  com.ibm.ws.concurrent.mp.cdi.*
+  com.ibm.ws.concurrent.mp.cdi
 
 Import-Package: \
   !org.eclipse.microprofile.config,\
@@ -41,8 +41,7 @@ instrument.classesExcludes: com/ibm/ws/concurrent/mp/cdi/resources/*.class
 
 -dsannotations: \
   com.ibm.ws.concurrent.mp.cdi.ConcurrencyCDIExtension,\
-  com.ibm.ws.concurrent.mp.cdi.MPConfigAccessorImpl,\
-  com.ibm.ws.concurrent.mp.cdi.context.WeldContextProvider
+  com.ibm.ws.concurrent.mp.cdi.MPConfigAccessorImpl
 
 -buildpath: \
   com.ibm.websphere.appserver.spi.logging,\
@@ -61,9 +60,6 @@ instrument.classesExcludes: com/ibm/ws/concurrent/mp/cdi/resources/*.class
   com.ibm.ws.context;version=latest,\
   com.ibm.ws.kernel.service;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  com.ibm.ws.org.jboss.weld3;version=latest,\
-  com.ibm.ws.resource;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations,\
-  com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest,\
-  com.ibm.ws.threading;version=latest
+  com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest
   

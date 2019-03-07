@@ -23,6 +23,12 @@
 	<AD id="delayedIBMVar" type="String" required="false" default="default value" ibm:variableSubstitution="false" ibm:variable="variableDelayTest"/>
 	<AD id="immediateVar" type="String" required="false" default="default value" ibm:variableSubstitution="true"/>
 	<AD id="immediateVarTwo" type="String" required="false" default="default value"/>
+	<AD id="envVar" type="String" required="false" default="${fromEnvironment}"/>
+	<AD id="allCapsEnvVar" type="String" required="false" default="${fromEnvironmentCaps}"/>
+	<AD id="mangledEnvVar" type="String" required="false" default="${from--environment}"/>
+	<AD id="mangledCapsEnvVar" type="String" required="false" default="${from-environment-caps}"/>
+	<AD id="defaultVar" type="String" required="false" default="${variableDefaultTest}"/>
+	<AD id="metaRefVar" type="String" required="false" default="${defaultVar}"/>
 </OCD>
 
  

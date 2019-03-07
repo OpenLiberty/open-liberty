@@ -78,7 +78,7 @@ public class WsByteBufferPool {
             intUniqueId = intUniqueCounter.getAndIncrement();
         }
 
-        return new PooledWsByteBufferImpl(Integer.valueOf(intUniqueId));
+        return new PooledWsByteBufferImpl(intUniqueId);
     }
 
     public void destroy(PooledWsByteBufferImpl obj) {

@@ -78,16 +78,10 @@ public class WCEncodingTest extends LoggingTest {
         ArrayList<String> expectedErrors = new ArrayList<String>();
         expectedErrors.add("CWWWC0401E:.*");
         SHARED_SERVER.getLibertyServer().addIgnoredErrors(expectedErrors);
-
         SHARED_SERVER.startIfNotStarted();
-
-        LOG.info("Setup : wait for message to indicate apps have started");
-
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestEncoding", 10000);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestServlet40", 10000);
-
-        LOG.info("Setup : wait for message to indicate app has started");
-
+        WCApplicationHelper.waitForAppStart("TestEncoding", WCEncodingTest.class.getName(), SHARED_SERVER.getLibertyServer());
+        WCApplicationHelper.waitForAppStart("TestServlet40", WCEncodingTest.class.getName(), SHARED_SERVER.getLibertyServer());
+        LOG.info("Setup : complete, ready for Tests");
     }
 
     @AfterClass

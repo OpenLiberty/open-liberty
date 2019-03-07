@@ -12,8 +12,6 @@ package com.ibm.ws.microprofile.faulttolerance.cdi;
 
 import java.lang.reflect.Method;
 
-import org.eclipse.microprofile.faulttolerance.ExecutionContext;
-
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
@@ -137,7 +135,7 @@ public class AggregatedFTPolicy {
     public Executor<Object> getExecutor() {
         synchronized (this) {
             if (this.executor == null) {
-                ExecutorBuilder<ExecutionContext, ?> builder = newBuilder();
+                ExecutorBuilder<?> builder = newBuilder();
 
                 if (isAsynchronous()) {
                     this.executor = builder.buildAsync(asyncResultWrapper);
@@ -149,13 +147,13 @@ public class AggregatedFTPolicy {
         }
     }
 
-    private ExecutorBuilder<ExecutionContext, ?> newBuilder() {
-        ExecutorBuilder<ExecutionContext, ?> builder = FaultToleranceProvider.newExecutionBuilder();
+    private ExecutorBuilder<?> newBuilder() {
+        ExecutorBuilder<?> builder = FaultToleranceProvider.newExecutionBuilder();
         builder = updateBuilder(builder);
         return builder;
     }
 
-    private <R> ExecutorBuilder<ExecutionContext, R> updateBuilder(ExecutorBuilder<ExecutionContext, R> builder) {
+    private <R> ExecutorBuilder<R> updateBuilder(ExecutorBuilder<R> builder) {
         TimeoutPolicy timeoutPolicy = getTimeoutPolicy();
         CircuitBreakerPolicy circuitBreakerPolicy = getCircuitBreakerPolicy();
         RetryPolicy retryPolicy = getRetryPolicy();
@@ -179,12 +177,12 @@ public class AggregatedFTPolicy {
         }
 
         builder.setMetricRecorder(FaultToleranceCDIComponent.getMetricProvider().getMetricRecorder(method,
-                                                                                        retryPolicy,
-                                                                                        circuitBreakerPolicy,
-                                                                                        timeoutPolicy,
-                                                                                        bulkheadPolicy,
-                                                                                        fallbackPolicy,
-                                                                                        isAsynchronous() ? AsyncType.ASYNC : AsyncType.SYNC));
+                                                                                                   retryPolicy,
+                                                                                                   circuitBreakerPolicy,
+                                                                                                   timeoutPolicy,
+                                                                                                   bulkheadPolicy,
+                                                                                                   fallbackPolicy,
+                                                                                                   isAsynchronous() ? AsyncType.ASYNC : AsyncType.SYNC));
 
         return builder;
     }

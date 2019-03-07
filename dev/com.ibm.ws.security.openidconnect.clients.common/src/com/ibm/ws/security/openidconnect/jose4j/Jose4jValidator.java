@@ -21,7 +21,6 @@ import org.joda.time.Instant;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.NumericDate;
-import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.InvalidJwtSignatureException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
@@ -65,7 +64,7 @@ public class Jose4jValidator {
         this.oidcClientRequest = oidcClientRequest;
     }
 
-    @FFDCIgnore({ InvalidJwtSignatureException.class, InvalidJwtException.class })
+    @FFDCIgnore({ InvalidJwtSignatureException.class })
     public JwtClaims parseJwtWithValidation(String jwtString,
             JwtContext jwtContext,
             JsonWebSignature signature) throws JWTTokenValidationFailedException, IllegalStateException, Exception {
@@ -129,7 +128,7 @@ public class Jose4jValidator {
                 // Let's make it behave the same the old IDToken though why it failed
                 // 221386
                 String errMsg = OidcClientRequest.TYPE_ID_TOKEN.equals(oidcClientRequest.getTokenType()) ? "ID token validation Error[issuer]" : "Json Web Token validation Error[issuer]";
-                throw new InvalidJwtException(errMsg);
+                throw new Exception(errMsg);
             }
             // So far, we only have JWT and IDToken in this code path
             // Do some specific ID Token checking
@@ -239,7 +238,7 @@ public class Jose4jValidator {
                 throw new JWTTokenValidationFailedException(e.getMessage(), e);
             }
 
-        } catch (InvalidJwtException e) {
+        } catch (Exception e) {
             Throwable cause = getRootCause(e);
             // java.security.InvalidKeyException: No installed provider supports this key: (null)
             if (cause instanceof InvalidKeyException) {

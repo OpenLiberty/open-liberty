@@ -281,7 +281,7 @@ public class Utils {
                 int oldPos = buf.position();
                 while ((buf.position() < buf.limit()) && (j < maxToPrint)) {
                     byte b = buf.get();
-                    // Special Debug and comment for findbug avoidance 
+                    // Special Debug and comment for findbug avoidance
                     // System.out.println("buf:" + i + " pos:" + (buf.position() - 1) + "-->0x" + Integer.toHexString(b & 0xff));
                     j++;
                 }
@@ -297,7 +297,7 @@ public class Utils {
             int oldPos = buf.position();
             while ((buf.position() < buf.limit()) && (j < maxToPrint)) {
                 byte b = buf.get();
-                // Special Debug and comment for findbug avoidance 
+                // Special Debug and comment for findbug avoidance
                 // System.out.println("buf pos:" + (buf.position() - 1) + "-->0x" + Integer.toHexString(b & 0xff));
                 j++;
             }
@@ -347,8 +347,7 @@ public class Utils {
 
         if (t instanceof Class) {
             clazz = (Class<?>) t;
-        }
-        else if (t instanceof ParameterizedType) {
+        } else if (t instanceof ParameterizedType) {
             ParameterizedType pp = (ParameterizedType) t;
             Type tp = pp.getRawType();
             if (tp instanceof Class) {
@@ -491,11 +490,13 @@ public class Utils {
             byte[] reasonBytes = reasonPhrase.getBytes(Utils.UTF8_CHARSET);
             int len = reasonBytes.length;
 
-            // Why 120?   UTF-8 can take 4 bytes per character, so we either hit the boundary, or are off by 1-3 bytes.   
+            // Why 120?   UTF-8 can take 4 bytes per character, so we either hit the boundary, or are off by 1-3 bytes.
             //  Subtract 3 from 123 and we'll try to cut only if it is greater than that.
             if (len > 120) {
-                String updatedPhrase = cutStringByByteSize(reasonPhrase, 123);
-                reasonPhrase = updatedPhrase;    }
+                String updatedPhrase = cutStringByByteSize(reasonPhrase, 120);
+                reasonPhrase = updatedPhrase;
+            }
+
         }
         return reasonPhrase;
     }
@@ -506,6 +507,11 @@ public class Utils {
         cd.onMalformedInput(CodingErrorAction.IGNORE);
 
         byte[] bytez = s.getBytes(UTF8_CHARSET);
+
+        // safeguard the wrap
+        if (len > bytez.length) {
+            len = bytez.length;
+        }
 
         ByteBuffer bb = ByteBuffer.wrap(bytez, 0, len);
         CharBuffer cb = CharBuffer.allocate(len);
@@ -518,13 +524,12 @@ public class Utils {
     public static ClassLoader getContextClassloaderPrivileged() {
         final Thread tr = Thread.currentThread();
         return AccessController.doPrivileged(
-                        new PrivilegedAction<ClassLoader>() {
-                            @Override
-                            public ClassLoader run() {
+                                             new PrivilegedAction<ClassLoader>() {
+                                                 @Override
+                                                 public ClassLoader run() {
 
-                                return tr.getContextClassLoader();
-                            }
-                        }
-                        );
+                                                     return tr.getContextClassLoader();
+                                                 }
+                                             });
     }
 }

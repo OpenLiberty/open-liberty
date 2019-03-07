@@ -29,6 +29,7 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.framework.ServiceReference;
 
 import test.common.SharedOutputManager;
 
@@ -97,7 +98,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.osgi.service.cm.ConfigurationAdmin#createFactoryConfiguration(java.lang.String)
          */
         @Override
@@ -124,7 +125,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.osgi.service.cm.ConfigurationAdmin#createFactoryConfiguration(java.lang.String, java.lang.String)
          */
         @Override
@@ -135,7 +136,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.osgi.service.cm.ConfigurationAdmin#getConfiguration(java.lang.String, java.lang.String)
          */
         @Override
@@ -146,7 +147,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.osgi.service.cm.ConfigurationAdmin#getConfiguration(java.lang.String)
          */
         @Override
@@ -157,7 +158,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.osgi.service.cm.ConfigurationAdmin#listConfigurations(java.lang.String)
          */
         @Override
@@ -171,6 +172,15 @@ public class ConfigRetrieverTest {
             return configs.toArray(new TestConfiguration[configs.size()]);
         }
 
+        @Override
+        public Configuration getFactoryConfiguration(String factoryPid, String name, String location) throws IOException {
+			return null;
+		}
+
+		@Override
+		public Configuration getFactoryConfiguration(String factoryPid, String name) throws IOException {
+			return null;
+		}
     }
 
     private class TestConfiguration implements ExtendedConfiguration {
@@ -189,7 +199,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.osgi.service.cm.Configuration#getPid()
          */
         @Override
@@ -200,7 +210,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.osgi.service.cm.Configuration#getProperties()
          */
         @Override
@@ -210,7 +220,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.osgi.service.cm.Configuration#update(java.util.Dictionary)
          */
         @Override
@@ -221,7 +231,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.osgi.service.cm.Configuration#delete()
          */
         @Override
@@ -232,7 +242,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.osgi.service.cm.Configuration#getFactoryPid()
          */
         @Override
@@ -242,7 +252,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.osgi.service.cm.Configuration#update()
          */
         @Override
@@ -253,7 +263,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.osgi.service.cm.Configuration#setBundleLocation(java.lang.String)
          */
         @Override
@@ -264,7 +274,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.osgi.service.cm.Configuration#getBundleLocation()
          */
         @Override
@@ -275,7 +285,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.osgi.service.cm.Configuration#getChangeCount()
          */
         @Override
@@ -286,7 +296,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.config.admin.ExtendedConfiguration#lock()
          */
         @Override
@@ -297,7 +307,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.config.admin.ExtendedConfiguration#unlock()
          */
         @Override
@@ -308,7 +318,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.config.admin.ExtendedConfiguration#fireConfigurationDeleted(java.util.Collection)
          */
         @Override
@@ -319,7 +329,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.config.admin.ExtendedConfiguration#fireConfigurationUpdated(java.util.Collection)
          */
         @Override
@@ -330,7 +340,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.config.admin.ExtendedConfiguration#delete(boolean)
          */
         @Override
@@ -341,7 +351,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.config.admin.ExtendedConfiguration#getProperty(java.lang.String)
          */
         @Override
@@ -352,7 +362,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.config.admin.ExtendedConfiguration#getReadOnlyProperties()
          */
         @Override
@@ -363,7 +373,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.config.admin.ExtendedConfiguration#updateCache(java.util.Dictionary, java.util.Set, java.util.Set)
          */
         @Override
@@ -374,7 +384,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.config.admin.ExtendedConfiguration#updateProperties(java.util.Dictionary)
          */
         @Override
@@ -385,7 +395,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.config.admin.ExtendedConfiguration#getReferences()
          */
         @Override
@@ -396,7 +406,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.config.admin.ExtendedConfiguration#setInOverridesFile(boolean)
          */
         @Override
@@ -407,7 +417,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.config.admin.ExtendedConfiguration#isInOverridesFile()
          */
         @Override
@@ -418,7 +428,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.config.admin.ExtendedConfiguration#getUniqueVariables()
          */
         @Override
@@ -429,7 +439,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.config.admin.ExtendedConfiguration#setFullId(com.ibm.ws.config.admin.ConfigID)
          */
         @Override
@@ -440,7 +450,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.config.admin.ExtendedConfiguration#getFullId()
          */
         @Override
@@ -451,7 +461,7 @@ public class ConfigRetrieverTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.config.admin.ExtendedConfiguration#isDeleted()
          */
         @Override
@@ -459,6 +469,32 @@ public class ConfigRetrieverTest {
             // TODO Auto-generated method stub
             return false;
         }
+
+        @Override
+		public java.util.Dictionary<java.lang.String,java.lang.Object> getProcessedProperties(ServiceReference<?> reference) {
+			return null;
+		}
+
+		@Override
+		public Set<ConfigurationAttribute> getAttributes() {
+			return null;
+		}
+
+		@Override
+		public void addAttributes(Configuration.ConfigurationAttribute... attrs) throws IOException {
+
+		}
+
+		@Override
+		public void removeAttributes(Configuration.ConfigurationAttribute... attrs) throws IOException {
+
+		}
+
+		@Override
+		public boolean updateIfDifferent(java.util.Dictionary<java.lang.String,?> properties) throws java.io.IOException {
+			return false;
+
+		}
 
     }
 

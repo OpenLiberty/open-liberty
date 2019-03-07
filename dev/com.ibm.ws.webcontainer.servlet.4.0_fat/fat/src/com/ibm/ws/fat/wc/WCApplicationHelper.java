@@ -19,6 +19,8 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
+import org.junit.Assert;
+
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.topology.impl.LibertyServer;
@@ -29,6 +31,8 @@ import componenttest.topology.impl.LibertyServer;
 public class WCApplicationHelper {
 
     private static final Logger LOG = Logger.getLogger(WCApplicationHelper.class.getName());
+
+    public static final int APP_STARTUP_TIMEOUT = 120 * 1000; // 120 seconds
 
     /*
      * Helper method to create a war and add it to the dropins directory
@@ -135,6 +139,20 @@ public class WCApplicationHelper {
         } else {
             ShrinkHelper.exportToServer(server, dir, war);
         }
+    }
 
+    /**
+     * Wait for APP_STARTUP_TIMEOUT (120s) for an application's start message (CWWKZ0001I)
+     * @param String appName
+     * @param String testName
+     * @param LibertyServer server
+     */
+    public static void waitForAppStart(String appName, String className, LibertyServer server) {
+        LOG.info("Setup : wait for the app startup complete (CWWKZ0001I) message for " + appName);
+
+        String appStarted = server.waitForStringInLog("CWWKZ0001I.* " + appName, APP_STARTUP_TIMEOUT);
+        if (appStarted == null) {
+            Assert.fail(className + ": application " + appName + " failed to start within " + APP_STARTUP_TIMEOUT +"ms");
+        }
     }
 }

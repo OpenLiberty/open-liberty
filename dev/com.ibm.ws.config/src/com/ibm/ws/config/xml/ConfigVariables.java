@@ -18,4 +18,6 @@ import java.util.Map;
 public interface ConfigVariables {
 
     public Map<String, String> getUserDefinedVariables();
+
+    public Map<String, String> getUserDefinedVariableDefaults();
 }

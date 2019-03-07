@@ -28,13 +28,11 @@ import java.util.Set;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONArtifact;
@@ -60,9 +58,6 @@ import com.ibm.wsspi.validator.Validator;
            property = { "com.ibm.wsspi.rest.handler.context.root=/ibm/api", "com.ibm.wsspi.rest.handler.root=/validator" }) // TODO switch to /openapi/platform
 public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
     private static final TraceComponent tc = Tr.register(ValidatorRESTHandler.class);
-
-    @Reference
-    private ConfigurationAdmin configAdmin;
 
     private ComponentContext context;
 

@@ -19,16 +19,22 @@ import org.junit.BeforeClass;
 import com.ibm.ws.microprofile.reactive.streams.operators.spi.impl.WASReactiveStreamsEngineImpl;
 
 /**
- *
+ * This is just a simple base class to put common function in.
  */
 public abstract class AbstractReactiveUnitTest {
 
+    /**
+     * Runs before any tests in classes that inherit from us
+     */
     @BeforeClass
     public static void setup() {
         ReactiveStreamsEngineResolver.setInstance(new WASReactiveStreamsEngineImpl());
         ReactiveStreamsFactoryResolver.setInstance(new ReactiveStreamsFactoryImpl());
     }
 
+    /**
+     * Runs after any tests in classes that inherit from us
+     */
     @AfterClass
     public static void tearDown() {
         ReactiveStreamsEngineResolver.setInstance(null);

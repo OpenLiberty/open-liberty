@@ -639,7 +639,7 @@ public class LibertyServer implements LogMonitorClient {
         // Now it sets all OS specific stuff
         this.machineJava = LibertyServerUtils.makeJavaCompatible(machineJava, machine);
 
-        Log.info(c, "setup", "Machine operating System is: " + machineOS.name());
+        Log.info(c, "setup", "Successfully obtained machine. Operating System is: " + machineOS.name());
         // Continues with setup, we now validate the Java used is a JDK by looking for java and jar files
         String jar = "jar";
         String java = "java";
@@ -656,6 +656,8 @@ public class LibertyServer implements LogMonitorClient {
             machineJarPath = testJar.getAbsolutePath();
             if (!!!testJar.exists()) {
                 throw new TopologyException("cannot find a " + jar + " file in " + machineJava + "/bin. Please ensure you have set the machine javaHome to point to a JDK");
+            } else {
+                Log.info(c, "setup", "Jar Home now set to: " + machineJarPath);
             }
         }
         if (!!!testJava.exists())
@@ -4615,12 +4617,15 @@ public class LibertyServer implements LogMonitorClient {
      * Update the log offset for the specified log file to the offset provided.
      *
      * @deprecated Using log offsets is deprecated in favor of using log marks.
-     *             For all new test code, use the following methods: {@link #resetLogMarks()}, {@link #setMarkToEndOfLog(RemoteFile...)},
-     *             {@link #waitForStringInLogUsingMark(String)} and {@link #getMarkOffset(String)}.
+     *     For all new test code, use the following methods: {@link #resetLogMarks()},
+     *     {@link #setMarkToEndOfLog(RemoteFile...)},
+     *     {@link #waitForStringInLogUsingMark(String)} and
+     *     {@link #getMarkOffset(String)}.
      */
     @Deprecated
     public void updateLogOffset(String logFile, Long newLogOffset) {
-        Long oldLogOffset = logOffsets.put(logFile, newLogOffset);
+        @SuppressWarnings("unused")
+		Long oldLogOffset = logOffsets.put(logFile, newLogOffset);
     }
 
     /**
@@ -5454,9 +5459,10 @@ public class LibertyServer implements LogMonitorClient {
         // by property <code>zip.reaper.slow.pend.max</code>.  The default value
         // is 200 NS.  The retry interval is set at twice that.
 
-        setMarkToEndOfLog();
+        setMarkToEndOfLog(); // Only want messages which follow the app removal.
 
-        if (!LibertyFileManager.renameLibertyFileWithRetry(machine, appInDropinsPath, appExcisedPath)) { // throws Exception
+        // Logging in 'renameLibertyFileWithRetry'.
+        if (!LibertyFileManager.renameLibertyFile(machine, appInDropinsPath, appExcisedPath)) { // throws Exception
             Log.info(c, method, "Unable to move " + appFileName + " out of dropins, failing.");
             return false;
         } else {
@@ -5468,8 +5474,10 @@ public class LibertyServer implements LogMonitorClient {
             return false;
         }
 
-        setMarkToEndOfLog();
+        // Detection of the stop message means the mark was updated.  There is no need
+        // to set the mark explicitly.
 
+        // Logging in 'renameLibertyFileWithRetry'.
         if (!LibertyFileManager.renameLibertyFile(machine, appExcisedPath, appInDropinsPath)) { // throws Exception
             Log.info(c, method, "Unable to move " + appFileName + " back into dropins, failing.");
             return false;
@@ -5481,6 +5489,10 @@ public class LibertyServer implements LogMonitorClient {
         if (startMsg == null) {
             return false;
         }
+
+        // Detection of the start message means the mark was updated.  Subsequent log
+        // log detection which uses the mark will start immediately following the
+        // start message.
 
         return true;
     }
@@ -5545,7 +5557,7 @@ public class LibertyServer implements LogMonitorClient {
         String appInDropinsPath = serverRoot + "/dropins/" + appFileName;
         String nonDropinsFilePath = serverRoot + "/" + appFileName;
 
-        if (!LibertyFileManager.renameLibertyFileWithRetry(machine, appInDropinsPath, nonDropinsFilePath)) { // throws Exception
+        if (!LibertyFileManager.renameLibertyFile(machine, appInDropinsPath, nonDropinsFilePath)) { // throws Exception
             Log.info(c, method, "Unable to move " + appFileName + " out of dropins, failing.");
             return false;
         } else {

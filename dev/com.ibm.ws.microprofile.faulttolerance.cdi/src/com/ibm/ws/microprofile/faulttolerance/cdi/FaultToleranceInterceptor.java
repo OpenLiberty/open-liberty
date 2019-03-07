@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.annotation.PreDestroy;
 import javax.annotation.Priority;
@@ -35,6 +36,7 @@ import org.eclipse.microprofile.faulttolerance.Timeout;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.AnnotationConfigFactory;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.AsynchronousConfig;
@@ -216,8 +218,7 @@ public class FaultToleranceInterceptor {
 
             Method method = invocationContext.getMethod();
             Object[] params = invocationContext.getParameters();
-            String id = method.getName(); //TODO does this id need to be better? it's only for debug
-            ExecutionContext executionContext = executor.newExecutionContext(id, method, params);
+            ExecutionContext executionContext = executor.newExecutionContext(generateId(method), method, params);
 
             Callable<Object> callable = () -> {
                 return invocationContext.proceed();
@@ -240,6 +241,12 @@ public class FaultToleranceInterceptor {
             result = invocationContext.proceed();
         }
         return result;
+    }
+
+    @Trivial
+    private String generateId(Method method) {
+        int rand = ThreadLocalRandom.current().nextInt();
+        return method.getName() + "-" + Integer.toHexString(rand);
     }
 
     @Dependent

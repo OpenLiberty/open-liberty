@@ -29,8 +29,8 @@
           with id="defaultKeyStore", which defines a password.
           The password must be at least 6 characters, which can be encoded.
           
-          This will look for a JKS keystore named
-          ${server.output.dir}/resources/security/key.jks and will create
+          This will look for a PKCS12 keystore named
+          ${server.output.dir}/resources/security/key.p12 and will create
           it if it does not exist with a self-signed certificate.
           
           By default, the self-signed certificate has a validity of 365 days,
@@ -43,8 +43,8 @@
          to be under the ${server.config.dir}/resources/security/ directory,
          OR the ${server.output.dir}/resources/security/ directory. -->
         <keyStore id="defaultKeyStore"
-              location="myKey.jks"
-              type="JKS"
+              location="myKey.p12"
+              type="PKCS12"
               password="123456" />
 
 
@@ -55,8 +55,8 @@
          Note that autogeneration of the certificate only happens if the
          keystore location is under the ${server.output.dir}. -->
     <keyStore id="defaultKeyStore"
-              location="${server.output.dir}/alternateKey.jks"
-              type="JKS"
+              location="${server.output.dir}/alternateKey.p12"
+              type="PKCS12"
               password="123456" />
 
 
@@ -64,11 +64,11 @@
          keystore and truststore referenced by this element as per below. -->
     <ssl id="defaultSSLConfig" keyStoreRef="MyKeyStore" trustStoreRef="MyTrustStore"/>
     <keyStore id="MyKeyStore"
-              location="${server.config.dir}/MyServerKeyFile.jks"
-              type="JKS" password="123456" />
+              location="${server.config.dir}/MyServerKeyFile.p12"
+              type="PKCS12" password="123456" />
     <keyStore id="MyTrustStore"
-              location="${server.config.dir}/MyServerTrustFile.jks"
-              type="JKS" password="123456" />
+              location="${server.config.dir}/MyServerTrustFile.p12"
+              type="PKCS12" password="123456" />
 
 
     <!-- A full SSL configuration can also be specified, but no automatic

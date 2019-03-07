@@ -11,6 +11,8 @@
 package com.ibm.ws.tcpchannel.internal;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.LinkedList;
@@ -685,9 +687,28 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
             // construct an IOException to pass to error callback
             // do not use static as the stacks are not the same
             if (req.isRequestTypeRead()) {
-                ioe = new IOException("Connection closed: Read failed.  Possible end of stream encountered. ");
+                // Add local and remote address information
+                String s = "Connection closed: Read failed.  Possible end of stream encountered.";
+                try {
+                    SocketAddress aLocal = conn.getSocketIOChannel().getSocket().getLocalSocketAddress();
+                    SocketAddress aRemote = conn.getSocketIOChannel().getSocket().getRemoteSocketAddress();
+                    s = s + " local=" + aLocal + " remote=" + aRemote;
+                } catch (Exception x) {
+                    // do not alter the message if the socket got nuked while we tried to look at it
+                }
+                ioe = new IOException(s);
+
             } else {
-                ioe = new IOException("Connection closed: Write failed");
+                // Add local and remote address information
+                String s = "Connection closed: Write failed.";
+                try {
+                    SocketAddress aLocal = conn.getSocketIOChannel().getSocket().getLocalSocketAddress();
+                    SocketAddress aRemote = conn.getSocketIOChannel().getSocket().getRemoteSocketAddress();
+                    s = s + " local=" + aLocal + " remote=" + aRemote;
+                } catch (Exception x) {
+                    // do not alter the message if the socket got nuked while we tried to look at it
+                }
+                ioe = new IOException(s);
             }
 
             // callback the error method
@@ -837,13 +858,19 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
                             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                                 Tr.event(tc, "FinishConnect returned true, but not connected");
                             }
-                            IOException e = new IOException("Connection could not be established");
+
+                            // Add local and remote address information
+                            InetSocketAddress iaRemote = ci.remoteAddress;
+                            InetSocketAddress iaLocal = ci.localAddress;
+                            IOException e = new IOException("Connection could not be established. local=" + iaLocal + " remote=" + iaRemote);
+
                             ci.setError(e);
                             ci.tcpConnLink.connectFailed(e);
 
                             break;
                         }
                     } catch (IOException ioe) {
+
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                             Tr.event(tc, "SocketChannel connect failed, local: " + ci.ioSocket.getSocket().getLocalSocketAddress() + " remote: "
                                          + ci.ioSocket.getSocket().getRemoteSocketAddress());
@@ -874,6 +901,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
                 try {
                     ci.tcpConnLink.connectComplete(ci.ioSocket);
                 } catch (IOException ioe) {
+
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                         Tr.event(tc, "SocketChannel connect failed, local: " + ci.ioSocket.getSocket().getLocalSocketAddress() + " remote: "
                                      + ci.ioSocket.getSocket().getRemoteSocketAddress());

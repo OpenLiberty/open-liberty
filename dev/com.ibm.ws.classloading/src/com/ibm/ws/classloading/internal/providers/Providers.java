@@ -38,7 +38,7 @@ import com.ibm.wsspi.library.Library;
 
 public class Providers {
     static final TraceComponent tc = Tr.register(Providers.class);
-    static final BundleContext bundleContext;
+    static BundleContext bundleContext;
 
     static {
         Bundle ourBundle = FrameworkUtil.getBundle(SharedLibraryFactory.class);

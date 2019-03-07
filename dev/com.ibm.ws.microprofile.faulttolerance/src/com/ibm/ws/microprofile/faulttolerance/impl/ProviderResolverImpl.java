@@ -104,8 +104,8 @@ public class ProviderResolverImpl extends FaultToleranceProviderResolver {
     }
 
     @Override
-    public <T, R> ExecutorBuilder<T, R> newExecutionBuilder() {
-        ExecutorBuilderImpl<T, R> ex = new ExecutorBuilderImpl<T, R>(contextService, policyExecutorProvider, getScheduledExecutorService());
+    public <R> ExecutorBuilder<R> newExecutionBuilder() {
+        ExecutorBuilderImpl<R> ex = new ExecutorBuilderImpl<R>(contextService, policyExecutorProvider, getScheduledExecutorService());
         return ex;
     }
 

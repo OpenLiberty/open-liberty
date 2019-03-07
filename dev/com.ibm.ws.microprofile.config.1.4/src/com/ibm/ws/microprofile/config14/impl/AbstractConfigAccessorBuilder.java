@@ -11,7 +11,6 @@
 package com.ibm.ws.microprofile.config14.impl;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +29,7 @@ public abstract class AbstractConfigAccessorBuilder<T> implements ConfigAccessor
 
     //access to these variables must be synchronized to prevent them being changed during a call to build()
     private Duration cacheFor = Duration.ZERO;
-    private boolean evaluateVariables = Config14Constants.EVALUATE_VARIABLES_DEFAULT;
+    private boolean evaluateVariables = Config14Constants.ACCESSOR_EVALUATE_VARIABLES_DEFAULT;
     private Object defaultValue = ConfigProperty.UNCONFIGURED_VALUE;
     private String defaultString = ConfigProperty.UNCONFIGURED_VALUE;
     private Converter<T> converter = null;
@@ -41,7 +40,7 @@ public abstract class AbstractConfigAccessorBuilder<T> implements ConfigAccessor
     }
 
     @Override
-    public ConfigAccessorBuilder<T> withConverter(Converter<T> converter) {
+    public ConfigAccessorBuilder<T> useConverter(Converter<T> converter) {
         if (converter == null) {
             //TODO NLS
             throw new IllegalArgumentException("converter may not be null");
@@ -57,6 +56,7 @@ public abstract class AbstractConfigAccessorBuilder<T> implements ConfigAccessor
     public ConfigAccessorBuilder<T> withDefault(T value) {
         synchronized (this) {
             this.defaultValue = value;
+            this.defaultString = ConfigProperty.UNCONFIGURED_VALUE;
         }
         return this;
     }
@@ -66,30 +66,20 @@ public abstract class AbstractConfigAccessorBuilder<T> implements ConfigAccessor
     public ConfigAccessorBuilder<T> withStringDefault(String value) {
         synchronized (this) {
             this.defaultString = value;
+            this.defaultValue = ConfigProperty.UNCONFIGURED_VALUE;
         }
         return this;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public ConfigAccessorBuilder<T> cacheFor(long value, ChronoUnit timeUnit) {
-        if (timeUnit == null) {
-            //TODO NLS
-            throw new IllegalArgumentException("timeUnit may not be null");
-        }
-        Duration cacheFor = Duration.of(value, timeUnit);
-        cacheFor(cacheFor);
-        return this;
-    }
-
     public ConfigAccessorBuilder<T> cacheFor(Duration cacheFor) {
         if (cacheFor == null) {
             //TODO NLS
-            throw new IllegalArgumentException("duration may not be null");
+            throw new IllegalArgumentException("cacheFor may not be null");
         }
-        if (cacheFor.isNegative()) {
+        if (cacheFor.isNegative() || cacheFor.isZero()) {
             //TODO NLS
-            throw new IllegalArgumentException("cacheFor value must be non-negative");
+            throw new IllegalArgumentException("cacheFor value must greater than zero");
         }
         synchronized (this) {
             this.cacheFor = cacheFor;
@@ -106,29 +96,29 @@ public abstract class AbstractConfigAccessorBuilder<T> implements ConfigAccessor
         return this;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public ConfigAccessorBuilder<T> addLookupSuffix(String suffixValue) {
-        if (suffixValue == null) {
-            //TODO NLS
-            throw new IllegalArgumentException("suffixValue may not be null");
-        }
-        synchronized (this) {
-            this.suffixValues.add(suffixValue);
-        }
-        return this;
-    }
-
-    public ConfigAccessorBuilder<T> addLookupSuffixes(List<String> suffixValues) {
-        if (suffixValues == null) {
-            //TODO NLS
-            throw new IllegalArgumentException("suffixValues may not be null");
-        }
-        synchronized (this) {
-            this.suffixValues.addAll(suffixValues);
-        }
-        return this;
-    }
+//    /** {@inheritDoc} */
+//    @Override
+//    public ConfigAccessorBuilder<T> addLookupSuffix(String suffixValue) {
+//        if (suffixValue == null) {
+//            //TODO NLS
+//            throw new IllegalArgumentException("suffixValue may not be null");
+//        }
+//        synchronized (this) {
+//            this.suffixValues.add(suffixValue);
+//        }
+//        return this;
+//    }
+//
+//    public ConfigAccessorBuilder<T> addLookupSuffixes(List<String> suffixValues) {
+//        if (suffixValues == null) {
+//            //TODO NLS
+//            throw new IllegalArgumentException("suffixValues may not be null");
+//        }
+//        synchronized (this) {
+//            this.suffixValues.addAll(suffixValues);
+//        }
+//        return this;
+//    }
 
     /**
      * This method uses a binary count down to append suffixes to a base propertyName.

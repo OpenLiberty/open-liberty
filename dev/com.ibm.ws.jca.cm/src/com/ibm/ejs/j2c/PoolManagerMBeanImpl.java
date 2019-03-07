@@ -104,16 +104,28 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
     @Override
     public Object invoke(String actionName, Object[] params, String[] signature) throws MBeanException, ReflectionException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(this, tc, "invoke");
+            Tr.entry(this, tc, "invoke", params, signature);
 
         Object o = null;
 
         if ("showPoolContents".equalsIgnoreCase(actionName)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Displaying the connection pool");
+            }
             o = showPoolContents();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Connection pool contents", o);
+            }
         } else if ("purgePoolContents".equalsIgnoreCase(actionName)) {
             if (params == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Normal purge of the connection pool");
+                }
                 purgePoolContents("normal");
             } else if (params.length == 1 && params[0] instanceof java.lang.String) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Purging the connection pool using option", (String) params[0]);
+                }
                 purgePoolContents((String) params[0]);
             } else {
                 throw new MBeanException(new IllegalArgumentException(Arrays.toString(params)), Tr.formatMessage(tc, "INVALID_MBEAN_INVOKE_PARAM_J2CA8060", Arrays.toString(params),

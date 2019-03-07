@@ -4,3 +4,11 @@ bVersion=1.0
 Bundle-SymbolicName: com.ibm.ws.org.apache.felix.scr
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+Export-Package: org.apache.felix.scr.component, \
+ org.apache.felix.scr.info, \
+ org.osgi.service.component, \
+ org.osgi.service.component.runtime, \
+ org.osgi.service.component.runtime.dto, \
+ org.osgi.util.function, \
+ org.osgi.util.promise

@@ -18,4 +18,6 @@ import java.util.Map;
 public interface ServerXMLVariables {
 
     public Map<String, String> getServerXMLVariables();
+
+    public Map<String, String> getServerXMLVariableDefaultValues();
 }

@@ -10,7 +10,8 @@ IBM-API-Package: \
   org.eclipse.microprofile.concurrent.spi; type="stable"
 -features=\
   com.ibm.websphere.appserver.concurrent-1.0, \
-  com.ibm.websphere.appserver.concurrent.mp-1.0
+  com.ibm.websphere.appserver.concurrent.mp-1.0, \
+  com.ibm.websphere.appserver.javaeeCompatible-8.0
 -bundles=\
   com.ibm.ws.require.java8
 kind=beta

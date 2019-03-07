@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -149,11 +149,11 @@ public class FeatureTest extends JavaEESecTestBase {
 
         // create ejbinwarservlet.war,
         WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean", "web.war.ejb.is.servlet",
-                                      "web.war.identitystores.ldap.ldap1");
+                                      "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap");
 
         // create ejbinwarservlet.war,
         WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME2, true, EJB_BEAN_JAR_NAME, true, "web.jar.base",
-                                      "web.ejb.jar.bean", "web.war.ejb.is.servlet2", "web.war.identitystores.ldap.ldap2");
+                                      "web.ejb.jar.bean", "web.war.ejb.is.servlet2", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.ldap");
 
         // add the servlet war inside the ear
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EJB_EAR_NAME, true, EJB_WAR_NAME, EJB_WAR_NAME2);
@@ -211,11 +211,11 @@ public class FeatureTest extends JavaEESecTestBase {
 
         // create ejbinwarservlet.war,
         WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean", "web.war.ejb.is.servlet",
-                                      "web.war.identitystores.ldap.ldap1");
+                                      "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap");
 
         // create ejbinwarservlet.war,
         WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME2, true, EJB_BEAN_JAR_NAME, true, "web.jar.base",
-                                      "web.ejb.jar.bean", "web.war.ejb.is.servlet2", "web.war.identitystores.ldap.ldap2");
+                                      "web.ejb.jar.bean", "web.war.ejb.is.servlet2", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.ldap");
 
         // add the servlet war inside the ear
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EJB_EAR_NAME_noPermission, true, EJB_WAR_NAME, EJB_WAR_NAME2);
@@ -262,11 +262,11 @@ public class FeatureTest extends JavaEESecTestBase {
 
         // create ejbinwarservlet.war,
         WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean", "web.war.ejb.is.servlet",
-                                      "web.war.identitystores.ldap.ldap1");
+                                      "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap");
 
         // create ejbinwarservlet.war,
         WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME2, true, EJB_BEAN_JAR_NAME, true, "web.jar.base",
-                                      "web.ejb.jar.bean", "web.war.ejb.is.servlet2", "web.war.identitystores.ldap.ldap2");
+                                      "web.ejb.jar.bean", "web.war.ejb.is.servlet2", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.ldap");
 
         // add the servlet war inside the ear
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EJB_EAR_NAME_noPermission, true, EJB_WAR_NAME, EJB_WAR_NAME2);
