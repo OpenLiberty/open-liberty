@@ -701,6 +701,15 @@ task publishPublicArtifactsOnDhe {
             copy {
                 from filePath
                 into "${buildDir}/${version}"
+                print "isUnittestsDisabled = "
+                print isUnittestsDisabled
+				println()
+                if (!isUnittestsDisabled && props.getProperty("gradle.test.report.zip") != null && props.getProperty("gradle.test.report.zip").equals(filePath)) {
+                    def reportZip = file(props.getProperty("gradle.test.report.zip"))
+                    from zipTree(reportZip)
+                    mkdir("${buildDir}/${version}/junit")
+                    into "${buildDir}/${version}/junit"
+                }
             }
         }
 
