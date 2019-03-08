@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -266,19 +266,33 @@ public class DatabaseTaskStore implements TaskStore {
      * @return true if the property was created. False if a property with the same name already exists.
      * @throws Exception if an error occurs when attempting to update the persistent task store.
      */
-    @FFDCIgnore({ EntityExistsException.class, PersistenceException.class })
+    @FFDCIgnore({ EntityExistsException.class, PersistenceException.class, Exception.class })
     @Override
     public boolean createProperty(String name, String value) throws Exception {
         EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        Property property = new Property(name, value);
         try {
-            em.persist(new Property(name, value));
+            em.persist(property);
             em.flush();
         } catch (EntityExistsException x) {
             return false;
         } catch (PersistenceException x) {
-            // TODO why can't JPA do a better job of interpreting the exception and always raise EntityExistsException?
-            if (x.getCause() instanceof SQLIntegrityConstraintViolationException || em.find(Property.class, name) != null)
+            // Some JPA providers may throw PersistenceException for some scenarios where it can be
+            // determined the row really does exist; handle those here
+            if (x.getCause() instanceof SQLIntegrityConstraintViolationException) {
                 return false;
+            }
+            try {
+                em.detach(property); // ensure em.find won't return object from cache
+                if (em.find(Property.class, name) != null) {
+                    return false;
+                }
+            } catch (Exception ex) {
+                // Oddly, JPA has not defined exceptions for em.find; throws subclass of RuntimeException
+                // Do not FFDC; just adds extra clutter (original will be FFDC'd below)
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "createProperty", ex);
+            }
             FFDCFilter.processException(x, getClass().getName(), "309", this);
             throw x;
         } finally {
