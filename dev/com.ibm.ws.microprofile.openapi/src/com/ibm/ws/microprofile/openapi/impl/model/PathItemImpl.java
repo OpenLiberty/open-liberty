@@ -20,7 +20,6 @@ import org.eclipse.microprofile.openapi.models.PathItem;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 
-import com.ibm.ws.microprofile.openapi.Constants;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**

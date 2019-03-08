@@ -25,7 +25,6 @@ import org.eclipse.microprofile.openapi.models.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.models.responses.APIResponse;
 import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
 
-import com.ibm.ws.microprofile.openapi.Constants;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**
@@ -330,7 +329,7 @@ public class ComponentsImpl implements Components {
         sb = (links != null) ? sb.append("    links: ").append(OpenAPIUtils.mapToString(links)).append("\n") : sb.append("");
         sb = (callbacks != null) ? sb.append("    callbacks: ").append(OpenAPIUtils.mapToString(callbacks)).append("\n") : sb.append("");
         sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
-        
+
         sb.append("}");
         return sb.toString();
     }

@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.media.Discriminator;
 
-import com.ibm.ws.microprofile.openapi.Constants;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 public class DiscriminatorImpl implements Discriminator {

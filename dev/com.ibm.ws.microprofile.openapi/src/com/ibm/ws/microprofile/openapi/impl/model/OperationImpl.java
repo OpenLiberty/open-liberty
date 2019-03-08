@@ -24,7 +24,6 @@ import org.eclipse.microprofile.openapi.models.responses.APIResponses;
 import org.eclipse.microprofile.openapi.models.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 
-import com.ibm.ws.microprofile.openapi.Constants;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**
@@ -318,6 +317,10 @@ public class OperationImpl implements Operation {
         this.extensions.put(name, value);
     }
 
+    public void addExtension_compat(String name, Object value) {
+        addExtension(name, value);
+    }
+
     @Override
     public void setExtensions(java.util.Map<String, Object> extensions) {
         this.extensions = extensions;
@@ -340,7 +343,7 @@ public class OperationImpl implements Operation {
         sb = (security != null) ? sb.append("    security: ").append(toIndentedString(security)).append("\n") : sb.append("");
         sb = (servers != null) ? sb.append("    servers: ").append(toIndentedString(servers)).append("\n") : sb.append("");
         sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
-        
+
         sb.append("}");
         return sb.toString();
     }

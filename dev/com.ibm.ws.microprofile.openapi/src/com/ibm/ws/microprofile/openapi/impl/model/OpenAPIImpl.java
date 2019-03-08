@@ -25,7 +25,6 @@ import org.eclipse.microprofile.openapi.models.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
 
-import com.ibm.ws.microprofile.openapi.Constants;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**
@@ -250,6 +249,10 @@ public class OpenAPIImpl implements OpenAPI {
             this.extensions = new java.util.HashMap<>();
         }
         this.extensions.put(name, value);
+    }
+
+    public void addExtension_compat(String name, Object value) {
+        addExtension(name, value);
     }
 
     @Override
