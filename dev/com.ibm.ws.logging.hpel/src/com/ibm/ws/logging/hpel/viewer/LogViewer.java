@@ -589,6 +589,7 @@ public class LogViewer {
                         } else {
                             logResults = logReader.getLogLists(logRepositoryPointer, stopDate, searchCriteria).iterator();
                         }
+
                         nextLogList = logResults.next();
                     }
                 } else {
@@ -696,7 +697,6 @@ public class LogViewer {
                         // we have a non-zero resultList set, so print header.
 
                         if (needHeader) {
-
                             theFormatter.setStartDatetime(record.getMillis());
                             printHeader(pidHeaderProps, outps, headerPrinted);
                             headerPrinted = true;
@@ -704,6 +704,7 @@ public class LogViewer {
                         }
                         if (!useTrace) {
                             logRepositoryPointer = record.getRepositoryPointer();
+                            //logRepositoryPointer = null;
                         } else if (!useLog) {
                             traceRepositoryPointer = record.getRepositoryPointer();
                         } else {
@@ -718,14 +719,17 @@ public class LogViewer {
                         } else {
                             outps.println(theFormatter.formatRecord(record));
                         }
+
                         recordcount++;
                     }
 
                 }
+
                 // If there's a new instance after the one we are monitoring we don't need to wait anymore.
                 if (requestedProcess != null && requestedProcess.before(logRepository.getLogListForCurrentServerInstance().getStartTime())) {
                     break;
                 }
+
                 // We are tailing the log, wait interval and pickup where we left off.
                 try {
                     Thread.sleep(tailInterval * 1000);
@@ -733,6 +737,7 @@ public class LogViewer {
                     // User wants to exit.
                     break;
                 }
+
             } while (true);
 
             // If specific instance was selected
