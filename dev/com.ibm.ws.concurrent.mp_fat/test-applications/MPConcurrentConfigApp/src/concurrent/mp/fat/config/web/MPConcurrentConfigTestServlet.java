@@ -332,6 +332,123 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
     }
 
     /**
+     * Use MicroProfile Config to specify the default propagated and cleared context types for
+     * ManagedExecutor instances. This is verified by confirming that maxAsync=2, maxQueued=3
+     * from microprofile-config.properties is enforced.
+     */
+    @Test
+    public void testMPConfigSpecifiesDefaultAsyncAndQueuedMaximumsForManagedExecutor() throws Exception {
+        // Defaults:
+        // ManagedExecutor/maxAsync=2
+        // ManagedExecutor/maxQueued=3
+        ManagedExecutor executor = ManagedExecutor.builder().build();
+
+        // schedule 2 tasks to block and wait for them to start
+        Exchanger<String> status1 = new Exchanger<String>();
+        Exchanger<String> status2 = new Exchanger<String>();
+        Future<String> future1 = executor.submit(() -> status1.exchange(status1.exchange("READY_1")));
+        Future<String> future2 = executor.submit(() -> status2.exchange(status2.exchange("READY_2")));
+
+        try {
+            status1.exchange("WAITING_1", TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            status2.exchange("WAITING_2", TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            CompletableFuture<Integer> cf3 = executor.supplyAsync(() -> 30);
+            CompletableFuture<Integer> cf4 = executor.supplyAsync(() -> 40);
+            CompletableFuture<Integer> cf5 = executor.supplyAsync(() -> 50);
+
+            try {
+                Future<?> future = executor.submit(() -> System.out.println("This shouldn't be running!"));
+                fail("Should not be able to run more than 2 tasks or have more than 3 queued. " + future);
+            } catch (RejectedExecutionException x) {
+                // Pass - intentionally exceeded queue capacity in order to test maxQueued constraint
+            }
+
+            // unblock one of the the running tasks
+            status1.exchange("CONTINUE_1");
+
+            assertEquals("CONTINUE_1", future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(Integer.valueOf(30), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(Integer.valueOf(40), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(Integer.valueOf(50), cf5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // unblock the other running task
+            status2.exchange("CONTINUE_2");
+
+            assertEquals("CONTINUE_2", future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            if (future1.isDone())
+                future1.cancel(true);
+            if (future2.isDone())
+                future2.cancel(true);
+        }
+    }
+
+    /**
+     * Use MicroProfile Config to specify the default propagated and cleared context types for ManagedExecutor instances.
+     */
+    @Test
+    public void testMPConfigSpecifiesDefaultContextPropagationForManagedExecutor() throws Exception {
+        // Defaults:
+        // ManagedExecutor/cleared=Transaction
+        // ManagedExecutor/propagated=City,Application
+        ManagedExecutor executor = ManagedExecutor.builder()
+                        .maxAsync(10)
+                        .build();
+
+        CurrentLocation.setLocation("Mantorville", "Minnesota");
+        try {
+            // Run on same thread to confirm cleared context
+            CompletableFuture<Void> cf1 = executor.completedFuture("unused").thenAccept(s -> {
+                assertEquals("Context type not cleared.", "", CurrentLocation.getState());
+                CurrentLocation.setLocation("Tomah", "Wisconsin");
+            });
+            cf1.join();
+
+            // Run on another thread to confirm propagated context
+            CompletableFuture<Void> cf2 = cf1.thenRunAsync(() -> assertEquals("Context type not propagated.", "Mantorville", CurrentLocation.getCity()));
+            cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            assertEquals("Context type not restored.", "Mantorville", CurrentLocation.getCity());
+            assertEquals("Context type not restored.", "Minnesota", CurrentLocation.getState());
+        } finally {
+            CurrentLocation.clear();
+            executor.shutdownNow();
+        }
+    }
+
+    /**
+     * Use MicroProfile Config to specify the default propagated and cleared context types for ThreadContext instances.
+     */
+    @Test
+    public void testMPConfigSpecifiesDefaultContextPropagationForThreadContext() throws Exception {
+        // Defaults:
+        // ThreadContext/cleared=
+        // ThreadContext/propagated=State
+        // ThreadContext/unchanged=Remaining
+        ThreadContext threadContext = ThreadContext.builder().build();
+
+        CurrentLocation.setLocation("Owatonna", "Minnesota");
+        try {
+            // Run on same thread to confirm cleared context
+            Runnable test = threadContext.contextualRunnable(() -> {
+                assertEquals("Context type not left unchanged.", "Oskaloosa", CurrentLocation.getCity());
+                assertEquals("Context type not propagated.", "Minnesota", CurrentLocation.getState());
+                CurrentLocation.setLocation("Wasau", "Wisconsin");
+            });
+
+            CurrentLocation.setLocation("Oskaloosa", "Iowa");
+
+            test.run();
+
+            assertEquals("Context type not restored.", "Wasau", CurrentLocation.getCity());
+            assertEquals("Context type not restored.", "Iowa", CurrentLocation.getState());
+        } finally {
+            CurrentLocation.clear();
+        }
+    }
+
+    /**
      * Verifies that a managed executor configured with cleared=SECURITY clears security context for async actions/tasks.
      */
     public void testSecurityContextCleared(HttpServletRequest req, HttpServletResponse resp) throws Exception {

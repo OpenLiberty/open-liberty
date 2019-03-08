@@ -36,6 +36,7 @@ import com.ibm.ws.concurrent.mp.context.CDIContextProviderHolder;
 import com.ibm.ws.concurrent.mp.context.SecurityContextProvider;
 import com.ibm.ws.concurrent.mp.context.TransactionContextProvider;
 import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
+import com.ibm.ws.concurrent.mp.service.MPConfigAccessor;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
@@ -65,6 +66,11 @@ public class ConcurrencyProviderImpl implements ApplicationStateListener, Concur
     @Reference
     protected MetaDataIdentifierService metadataIdentifierService;
 
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected volatile MPConfigAccessor mpConfigAccessor;
+
     @Reference
     protected PolicyExecutorProvider policyExecutorProvider;
 
@@ -86,13 +92,11 @@ public class ConcurrencyProviderImpl implements ApplicationStateListener, Concur
 
     @Override
     @Trivial
-    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
-    }
+    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {}
 
     @Override
     @Trivial
-    public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
-    }
+    public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {}
 
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
