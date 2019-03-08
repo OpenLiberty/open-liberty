@@ -12,7 +12,11 @@
 
     <test name="microprofile-faulttolerance 2.0 TCK">
         <packages>
-            <package name="org.eclipse.microprofile.fault.tolerance.tck.*"></package>
+            <package name="org.eclipse.microprofile.fault.tolerance.tck.*">
+                <!-- Exclude due to https://github.com/OpenLiberty/liberty-arquillian/issues/36 -->
+                <exclude name="org.eclipse.microprofile.fault.tolerance.tck.fallbackmethod"/>
+                <exclude name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters"/>
+            </package>
         </packages>
     </test>
 </suite>
