@@ -192,9 +192,9 @@ public class SseJsonbTestServlet extends FATServlet {
         assertEquals("Unexpected event or event out of order", JSONB_OBJECTS[0], receivedEvents.get(0));
         assertEquals("Unexpected event or event out of order", JSONB_OBJECTS[1], receivedEvents.get(1));
         assertEquals("Unexpected event or event out of order", JSONB_OBJECTS[2], receivedEvents.get(2));
-        assertTrue("Incorrect Property Order", JSONB_OBJECTS[0].confirmOrder(receivedEventDetails.get(0)));
-        assertTrue("Incorrect Property Order", JSONB_OBJECTS[1].confirmOrder(receivedEventDetails.get(1)));
-        assertTrue("Incorrect Property Order", JSONB_OBJECTS[2].confirmOrder(receivedEventDetails.get(2)));
+        JsonbObject.confirmOrder(receivedEventDetails.get(0));
+        JsonbObject.confirmOrder(receivedEventDetails.get(1));
+        JsonbObject.confirmOrder(receivedEventDetails.get(2));
     }
 
 }

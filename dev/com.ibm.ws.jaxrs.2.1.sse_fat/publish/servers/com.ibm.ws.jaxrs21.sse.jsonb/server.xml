@@ -20,5 +20,10 @@
 	<variable name="onError" value="FAIL" />
 
 	<application location="SseJsonbApp.war"/>
+	
+	<javaPermission codebase="${server.config.dir}/apps/SseJsonbApp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+	<javaPermission codebase="${server.config.dir}/apps/SseJsonbApp.war" className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.*" actions="read"/>
+	<javaPermission codebase="${server.config.dir}/apps/SseJsonbApp.war" className="java.net.NetPermission" name="requestPasswordAuthentication"/>
+	
 
 </server>
