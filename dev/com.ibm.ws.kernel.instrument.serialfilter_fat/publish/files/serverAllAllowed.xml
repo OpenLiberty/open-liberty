@@ -5,7 +5,6 @@
         <feature>servlet-3.1</feature>
         <feature>componenttest-1.0</feature>
     </featureManager>
-
-    <serialFilter class="*" permission="Deny" mode="Enforce"/>
-    <serialFilter class="com.ibm.ws.serialfilter.fat.object.Test1" permission="Allow" mode="Enforce"/>
+    
+    <serialFilter class="*" permission="Allow" mode="Enforce"/>
 </server>
