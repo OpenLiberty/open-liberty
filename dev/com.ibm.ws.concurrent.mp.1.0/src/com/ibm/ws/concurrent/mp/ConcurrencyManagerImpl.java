@@ -24,7 +24,6 @@ import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
-import com.ibm.ws.concurrent.mp.service.MPConfigAccessor;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
