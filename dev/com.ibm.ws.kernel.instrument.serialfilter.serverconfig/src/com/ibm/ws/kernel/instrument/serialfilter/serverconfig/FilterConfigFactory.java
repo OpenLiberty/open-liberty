@@ -11,124 +11,141 @@
 package com.ibm.ws.kernel.instrument.serialfilter.serverconfig;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Properties;
+import java.util.Set;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.config.xml.internal.nester.Nester;
 import com.ibm.ws.kernel.instrument.serialfilter.agenthelper.PreMainUtil;
 import com.ibm.ws.kernel.instrument.serialfilter.config.ConfigFacade;
 import com.ibm.ws.kernel.instrument.serialfilter.config.SimpleConfig;
-
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
-@Component(service = ManagedServiceFactory.class,
-           configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM", "service.pid=com.ibm.ws.kernel.instrument.serialfilter.serverconfig" })
-public class FilterConfigFactory implements ManagedServiceFactory {
+@Component(configurationPid = "com.ibm.ws.kernel.instrument.serialfilter.serverconfig",
+           configurationPolicy = ConfigurationPolicy.REQUIRE,
+           property = { "service.vendor=IBM"})
+public class FilterConfigFactory {
     private static final TraceComponent tc = Tr.register(FilterConfigFactory.class);
 
     /**
      * Constant for the configuration keys.
      */
-    public static final String CONFIG_MODE = "mode";
+    public static final String CONFIG_MODE = "filterMode";
+    public static final String CONFIG_POLICY = "policy";
+    public static final String CONFIG_OPERATION = "operation";
     public static final String CONFIG_PERMISSION = "permission";
     public static final String CONFIG_CLASS = "class";
     public static final String CONFIG_METHOD = "method";
     
     public static final String VALUE_MODE_INACTIVE = "Inactive";
     public static final String VALUE_MODE_DISCOVER = "Discover";
-    public static final String VALUE_MODE_ENFORCE = "Envorce";
+    public static final String VALUE_MODE_ENFORCE = "Enforce";
     public static final String VALUE_MODE_REJECT = "Reject";
 
     public static final String VALUE_PERMISSION_ALLOW = "Allow";
     public static final String VALUE_PERMISSION_DENY = "Deny";
 
     @SuppressWarnings("rawtypes")
-	private Map<String, Dictionary> serialFilterConfigMap = new HashMap<String, Dictionary>();
-    private static boolean isEnableMessageShown=false;
-    
-    @Override
-    public void updated(String pid, @SuppressWarnings("rawtypes") Dictionary properties) throws ConfigurationException {
-        // If we are stopping ignore the update
-        if (isStopping()) {
-            return;
-        }
+	private Map<String, Dictionary> serialFilterConfigMap = new HashMap<String, Dictionary>();  // to be deleted    
+   
+    @Activate
+    protected void activate(ComponentContext ctx, Map<String, Object> properties) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "updated filterConfig pid : " + pid, properties);
+            Tr.debug(this, tc, "activate", properties);
         }
-        if (isEnabled()) {
-            serialFilterConfigMap.put(pid, properties);
-            try {
-                propagateConfigMap(serialFilterConfigMap);
-                if (!isEnableMessageShown) {
-                	isEnableMessageShown=true;
-                	Tr.info(tc, "SF_INFO_ENABLED");
-                }
-            } catch (ConfigurationException e) {
-                serialFilterConfigMap.remove(pid);
-                throw e;
-            }
+        if(isEnabled()) {
+            loadMaps(properties);
+        } else {
+        	Tr.error(tc, "SF_ERROR_NOT_ENABLED");
         }
     }
 
-    @Override
-    public void deleted(String pid) {
+    @Modified
+    protected void modified(Map<String, Object> properties) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "deleted filterConfig pid : " + pid);
+            Tr.debug(this, tc, "modified", properties);
         }
-        if (isEnabled()) {
-            if (serialFilterConfigMap.containsKey(pid)) {
-                serialFilterConfigMap.remove(pid);
-                try {
-                    propagateConfigMap(serialFilterConfigMap);
-                } catch (ConfigurationException e) {
-                    // ignore.
-                }
-            }
+        if(isEnabled()) {
+            loadMaps(properties);
         }
     }
 
-    @Override
-    public String getName() {
-        return "filter config";
-    }
-
-    protected void activate(ComponentContext ctx) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "activate", ctx.getProperties());
-        }
-    }
-
+    @Deactivate
     protected void deactivate(ComponentContext ctx, int reason) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "deactivate, reason=" + reason);
+            Tr.debug(this, tc, "deactivate, reason : " + reason);
         }
     }
 
-    protected void propagateConfigMap(@SuppressWarnings("rawtypes") Map<String, Dictionary> map) throws ConfigurationException {
+    private void loadMaps(Map<String, Object> properties) {
+        Map<String, String> modeMap = new HashMap<String, String>();
+        Map<String, String> policyMap = new HashMap<String, String>();
+   	    loadModeMap(Nester.nest(CONFIG_MODE, properties), modeMap);
+   	    loadPolicyMap(Nester.nest(CONFIG_POLICY, properties), policyMap);
+        propagateConfigMap(modeMap, policyMap);
+      	Tr.info(tc, "SF_INFO_ENABLED");
+    }
+
+    private void loadModeMap(List<Map<String, Object>> items, Map<String, String> modeMap) {
+        if (items != null && !items.isEmpty()) {
+            for (Map<String, Object> item : items) {
+                String clazz = (String)item.get(CONFIG_CLASS);
+                String method = (String)item.get(CONFIG_METHOD);
+                String operation = (String)item.get(CONFIG_OPERATION);
+                String key;
+                if (method != null) {
+                	key = clazz + "#" + method;
+                } else {
+                	key = clazz;                	
+                }
+                if(!modeMap.containsKey(key)) {
+                    modeMap.put(key, operation);
+                } else {
+                	Tr.warning(tc, "SF_WARNING_DUPLICATE_MODE", new Object[] {operation, clazz, method});
+                }
+            }
+        }
+    }
+
+    private void loadPolicyMap(List<Map<String, Object>> items, Map<String, String> policyMap) {
+        if (items != null && !items.isEmpty()) {
+            for (Map<String, Object> item : items) {
+                String clazz = (String)item.get(CONFIG_CLASS);
+                String permission = (String)item.get(CONFIG_PERMISSION);
+                if(!policyMap.containsKey(clazz)) {
+                  	policyMap.put(clazz, permission);                	
+                } else {
+                	Tr.warning(tc, "SF_WARNING_DUPLICATE_POLICY", new Object[] {permission, clazz});
+                }
+            }
+        }
+    }
+
+    protected void propagateConfigMap(Map<String, String> modeMap, Map<String, String> policyMap) {
         SimpleConfig configObject = getSystemConfigProxy();
         Properties filterConfig = new Properties();
-        try {
-            convertData(map, filterConfig);
-        } catch (ConfigurationException e) {
-            // in case of error, disable everything and throws an exception.
-            filterConfig.clear();
-            filterConfig.setProperty("*", "REJECT");
-            configObject.reset();
-            configObject.load(filterConfig);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Due to an error, set serialFilter for rejecting everything.");
-            }
-            throw e;
-        }
+
+        convertData(modeMap, policyMap, filterConfig);
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "serialFilter configuration is being updated.", filterConfig);
         }
@@ -139,38 +156,23 @@ public class FilterConfigFactory implements ManagedServiceFactory {
         }
     }
 
-    @SuppressWarnings("rawtypes")
-	protected void convertData(Map<String, Dictionary> map, Properties filterConfig) throws ConfigurationException {
-        for ( Map.Entry<String, Dictionary> entry : map.entrySet() ) {
-            String pid = entry.getKey();
-            Dictionary props = entry.getValue();
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "propagateConfigMap", pid, props);
-            }
-            // class and mode are always set. if not, configService will not allow to process, since metadata is
-            // set as required for these attributes.
-            if (props != null && !props.isEmpty()) {
-                String clazz = (String)props.get(CONFIG_CLASS);
-                String mode = (String)props.get(CONFIG_MODE);
-                String permission = (String)props.get(CONFIG_PERMISSION);
-                String method = (String)props.get(CONFIG_METHOD);
-                String value = mode.toUpperCase();
-                // valid value.
-                if (method != null && !method.isEmpty()) {
-                    clazz = clazz + "#" + method;
-                }
-                if (permission != null && !permission.isEmpty()) {
-                    value =  value + "," + permission.toUpperCase();
-                }
-                filterConfig.setProperty(clazz, value);
+	protected void convertData(Map<String, String> modeMap, Map<String, String> policyMap, Properties filterConfig) {
+        // first create a combined key list
+    	// Set from keySet() does not support addAll, convert it to HashSet.
+    	Set<String> keys = new HashSet(modeMap.keySet());
+    	keys.addAll(policyMap.keySet());
+    	
+    	for ( String key : keys ) {
+            String operation = (String)modeMap.get(key);
+            String permission = (String)policyMap.get(key);
+            if (operation != null && permission != null) {
+                filterConfig.setProperty(key, operation.toUpperCase() + "," + permission.toUpperCase());
+            } else if (operation != null) {
+                filterConfig.setProperty(key, operation.toUpperCase());            	
+            } else {
+                filterConfig.setProperty(key, permission.toUpperCase());
             }
         }
-        return;
-    }
-
-
-    protected boolean isStopping() {
-        return FrameworkState.isStopping();
     }
 
     protected boolean isEnabled() {
@@ -187,10 +189,5 @@ public class FilterConfigFactory implements ManagedServiceFactory {
 
     protected SimpleConfig getSystemConfigProxy() {
         return ConfigFacade.getSystemConfigProxy();
-    }
-
-    @SuppressWarnings("rawtypes")
-	protected Map<String, Dictionary> getConfigMap() {
-        return serialFilterConfigMap;
     }
 }
