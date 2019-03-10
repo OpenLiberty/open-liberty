@@ -252,27 +252,34 @@ public class ZipCachingProperties {
     public static final int ZIP_CACHE_HANDLE_MAX;
 
     /** The largest sized entry to keep in the per-handle entry cache. */
-    public static final String ZIP_CACHE_ENTRY_LIMIT_PROPERTY_NAME = "zip.cache.entry.limit";
-    public static final int ZIP_CACHE_ENTRY_LIMIT_DEFAULT_VALUE = 8192;
-    public static final int ZIP_CACHE_ENTRY_LIMIT;
+    public static final String ZIP_CACHE_CLASS_ENTRY_LIMIT_PROPERTY_NAME = "zip.cache.entry.limit";
+    public static final int ZIP_CACHE_CLASS_ENTRY_LIMIT_DEFAULT_VALUE = 8192;
+    public static final int ZIP_CACHE_CLASS_ENTRY_LIMIT;
 
     /** The maximum number of entries to keep in the per-handle entry cache. */
-    public static final String ZIP_CACHE_ENTRY_MAX_PROPERTY_NAME = "zip.cache.entry.max";
-    public static final int ZIP_CACHE_ENTRY_MAX_DEFAULT_VALUE = 16;
-    public static final int ZIP_CACHE_ENTRY_MAX;
+    public static final String ZIP_CACHE_CLASS_ENTRY_MAX_PROPERTY_NAME = "zip.cache.entry.max";
+    public static final int ZIP_CACHE_CLASS_ENTRY_MAX_DEFAULT_VALUE = 16;
+    public static final int ZIP_CACHE_CLASS_ENTRY_MAX;
+
+    /** The largest sized entry to keep in the per-handle entry cache. */
+    public static final String ZIP_CACHE_MANIFEST_ENTRY_LIMIT_PROPERTY_NAME = "zip.cache.manifest.limit";
+    public static final int ZIP_CACHE_MANIFEST_ENTRY_LIMIT_DEFAULT_VALUE = 8192 * 16;
+    public static final int ZIP_CACHE_MANIFEST_ENTRY_LIMIT;
 
     static {
         String methodName = "<static init>";
 
         ZIP_CACHE_HANDLE_MAX = getProperty(methodName,
             ZIP_CACHE_HANDLE_MAX_PROPERTY_NAME, ZIP_CACHE_HANDLE_MAX_DEFAULT_VALUE);
-        ZIP_CACHE_ENTRY_LIMIT = getProperty(methodName,
-            ZIP_CACHE_ENTRY_LIMIT_PROPERTY_NAME, ZIP_CACHE_ENTRY_LIMIT_DEFAULT_VALUE);
-        ZIP_CACHE_ENTRY_MAX = getProperty(methodName,
-            ZIP_CACHE_ENTRY_MAX_PROPERTY_NAME, ZIP_CACHE_ENTRY_MAX_DEFAULT_VALUE);
-    }
 
-    //
+        ZIP_CACHE_CLASS_ENTRY_LIMIT = getProperty(methodName,
+            ZIP_CACHE_CLASS_ENTRY_LIMIT_PROPERTY_NAME, ZIP_CACHE_CLASS_ENTRY_LIMIT_DEFAULT_VALUE);
+        ZIP_CACHE_CLASS_ENTRY_MAX = getProperty(methodName,
+            ZIP_CACHE_CLASS_ENTRY_MAX_PROPERTY_NAME, ZIP_CACHE_CLASS_ENTRY_MAX_DEFAULT_VALUE);
+
+        ZIP_CACHE_MANIFEST_ENTRY_LIMIT = getProperty(methodName,
+            ZIP_CACHE_MANIFEST_ENTRY_LIMIT_PROPERTY_NAME, ZIP_CACHE_MANIFEST_ENTRY_LIMIT_DEFAULT_VALUE);
+    }
 
     //
 
