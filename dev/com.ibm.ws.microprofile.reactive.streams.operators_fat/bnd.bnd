@@ -13,6 +13,7 @@ bVersion=1.0
 
 src: \
 	fat/src,\
+	test-applications/ConcurrentWorkTest/src, \
 	test-applications/ReactiveStreamsTest/src, \
 	test-applications/ReactiveWithJaxRS/src
 	

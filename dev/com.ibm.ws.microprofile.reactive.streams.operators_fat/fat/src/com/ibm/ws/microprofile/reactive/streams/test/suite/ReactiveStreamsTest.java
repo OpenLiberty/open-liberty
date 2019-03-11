@@ -41,7 +41,7 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class ReactiveStreamsTest extends FATServletClient {
 
-    public static final String APP_NAME = "ReactiveStreamsTest";
+    public static final String APP_NAME = "ReactiveStreamsConcurrencyTest";
 
     @Server("ReactiveStreamsTestServer")
     @TestServlet(servlet = ReactiveStreamsTestServlet.class, contextRoot = APP_NAME)

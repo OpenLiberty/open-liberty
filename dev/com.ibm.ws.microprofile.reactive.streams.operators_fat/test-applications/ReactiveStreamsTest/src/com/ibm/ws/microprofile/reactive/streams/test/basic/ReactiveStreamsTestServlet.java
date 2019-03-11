@@ -76,7 +76,6 @@ public class ReactiveStreamsTestServlet extends FATServlet {
         ProcessorBuilder<Integer, Integer> filter = ReactiveStreams.<Integer> builder().dropWhile(t -> t < 3);
 
         data.via(filter).to(integerSubscriber).run();
-        integerSubscriber.startConsuming();
 
         while (!integerSubscriber.isComplete()) {
             Thread.sleep(100);
