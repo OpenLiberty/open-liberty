@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.eclipse.microprofile.concurrent.ThreadContext;
@@ -23,6 +24,7 @@ import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
+import com.ibm.ws.concurrent.mp.service.MPConfigAccessor;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
@@ -52,11 +54,17 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
     final ArrayList<ThreadContextProvider> contextProviders = new ArrayList<ThreadContextProvider>();
 
     /**
+     * Lazily initialized reference to MicroProfile Config, if available.
+     * When uninitialized, the value is FALSE. Once initialized, the value is either a valid MP Config instance or null (no MP Config).
+     */
+    private final AtomicReference<Object> mpConfigRef = new AtomicReference<Object>(Boolean.FALSE);
+
+    /**
      * Merge built-in thread context providers from the container with those found
      * on the class loader, detecting any duplicate provider types.
      *
      * @param concurrencyProvider the registered concurrency provider
-     * @param classloader         the class loader from which to discover thread context providers
+     * @param classloader the class loader from which to discover thread context providers
      */
     ConcurrencyManagerImpl(ConcurrencyProviderImpl concurrencyProvider, ClassLoader classloader) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -100,7 +108,7 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
      * Finds and returns the first thread context provider that provides the same
      * thread context type as the specified provider.
      *
-     * @param provider    provider that is found to provide a conflicting thread context type with another provider.
+     * @param provider provider that is found to provide a conflicting thread context type with another provider.
      * @param classloader class loader from which to load thread context providers.
      * @return thread context provider with which the specified provider conflicts.
      */
@@ -131,13 +139,34 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
         throw new IllegalStateException(conflictingType);
     }
 
+    /**
+     * Obtain a default value from MicroProfile Config if available.
+     *
+     * @param mpConfigPropName name of the MicroProfile Config property.
+     * @param defaultValue value to use if not found in MicroProfile Config.
+     * @return default value.
+     */
+    <T> T getDefault(String mpConfigPropName, T defaultValue) {
+        MPConfigAccessor accessor = concurrencyProvider.mpConfigAccessor;
+        if (accessor != null) {
+            Object mpConfig = mpConfigRef.get();
+            if (mpConfig == Boolean.FALSE) // not initialized yet
+                if (!mpConfigRef.compareAndSet(Boolean.FALSE, mpConfig = accessor.getConfig()))
+                    mpConfig = mpConfigRef.get();
+
+            if (mpConfig != null)
+                defaultValue = accessor.get(mpConfig, mpConfigPropName, defaultValue);
+        }
+        return defaultValue;
+    }
+
     @Override
     public ManagedExecutor.Builder newManagedExecutorBuilder() {
-        return new ManagedExecutorBuilderImpl(concurrencyProvider, contextProviders);
+        return new ManagedExecutorBuilderImpl(this, contextProviders);
     }
 
     @Override
     public ThreadContext.Builder newThreadContextBuilder() {
-        return new ThreadContextBuilderImpl(concurrencyProvider, contextProviders);
+        return new ThreadContextBuilderImpl(this, contextProviders);
     }
 }

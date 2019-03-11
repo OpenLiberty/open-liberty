@@ -44,6 +44,7 @@ IBM-SPI-Package: \
  com.ibm.ws.require.java8, \
  com.ibm.ws.microprofile.openapi,\
  com.ibm.ws.microprofile.openapi.ui,\
+ com.ibm.ws.microprofile.openapi.model,\
  com.ibm.ws.com.fasterxml.jackson.2.9.1
 kind=ga
 edition=core

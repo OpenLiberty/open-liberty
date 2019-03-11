@@ -14,7 +14,6 @@ import java.util.Objects;
 
 import org.eclipse.microprofile.openapi.models.info.Contact;
 
-import com.ibm.ws.microprofile.openapi.Constants;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**

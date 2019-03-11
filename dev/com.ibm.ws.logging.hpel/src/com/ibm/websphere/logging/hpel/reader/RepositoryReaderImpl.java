@@ -38,7 +38,7 @@ import com.ibm.ws.logging.object.hpel.RepositoryPointerImpl;
 
 /**
  * Implementation of the {@link RepositoryReader} providing access to a local HPEL repository.
- * 
+ *
  * @ibm-api
  */
 public class RepositoryReaderImpl implements RepositoryReader {
@@ -54,7 +54,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
 
     /**
      * creates RepositoryReader instance working on the binary log set.
-     * 
+     *
      * @param directory or zip file containing log and/or trace files.
      */
     public RepositoryReaderImpl(String directory) {
@@ -64,19 +64,18 @@ public class RepositoryReaderImpl implements RepositoryReader {
     /**
      * Creates RepositoryReader instance working on the binary log set and trace log set. This allows for a merging of repositories
      * in directories which may not be adjacent.
-     * 
+     *
      * @param logDirectory containing log files. If this is null, then use trace only
      * @param traceDirectory containing log files. If this is null, then use log only
      * @throws IllegalArgumentException if both <code>logDirectory</code> and <code>traceDirectory</code> are null.
      */
     public RepositoryReaderImpl(String logDirectory, String traceDirectory) {
-        this(logDirectory == null ? null : new File(logDirectory),
-             traceDirectory == null ? null : new File(traceDirectory));
+        this(logDirectory == null ? null : new File(logDirectory), traceDirectory == null ? null : new File(traceDirectory));
     }
 
     /**
      * creates RepositoryReader instance working on the binary log set.
-     * 
+     *
      * @param directory or zip file containing log and/or trace files.
      */
     public RepositoryReaderImpl(File directory) {
@@ -86,7 +85,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
     /**
      * Creates RepositoryReader instance working on the binary log set and trace log set. This allows for a merging of repositories
      * in directories which may not be adjacent.
-     * 
+     *
      * @param logLocation containing log files. If this is null, then use trace only
      * @param traceLocation containing log files. If this is null, then use log only
      * @throws IllegalArgumentException if both <code>logLocation</code> and <code>traceLocation</code> are null.
@@ -124,14 +123,14 @@ public class RepositoryReaderImpl implements RepositoryReader {
     private static MainLogRepositoryBrowser createBrowser(File location) {
         if (isFile(location)) {
             // If it's a file return browser over one file.
-            return new OneInstanceBrowserImpl(new OneFileBrowserImpl(location));
+            return new OneInstanceBrowserImpl(new OneFileBrowserImpl(location), location);
         }
 
         if (location.isDirectory()) {
             LogRepositoryBrowser browser = new LogRepositoryBrowserImpl(location, new String[] { location.getName() });
             if (browser.findNext((File) null, -1) != null || !browser.getSubProcesses().isEmpty()) {
                 // If it contains log files or subprocesses, browse over one instance.
-                return new OneInstanceBrowserImpl(browser);
+                return new OneInstanceBrowserImpl(browser, location);
             }
         }
 
@@ -173,7 +172,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
                 return location;
             }
 
-            // If location contains instance directories it is a repository.		
+            // If location contains instance directories it is a repository.
             MainLogRepositoryBrowserImpl fileBrowser = new MainLogRepositoryBrowserImpl(location);
             // If it contains instance directories it's a repository.
             if (fileBrowser.findByMillis(-1) != null) {
@@ -203,16 +202,21 @@ public class RepositoryReaderImpl implements RepositoryReader {
 
     /**
      * Returns log directory used by this reader.
-     * 
+     *
      * @return absolute path to log directory.
      */
     public String getLogLocation() {
-        return ((MainLogRepositoryBrowserImpl) logInstanceBrowser).getLocation().getAbsolutePath();
+        if (logInstanceBrowser instanceof MainLogRepositoryBrowserImpl) {
+            return ((MainLogRepositoryBrowserImpl) logInstanceBrowser).getLocation().getAbsolutePath();
+        } else {
+            return ((OneInstanceBrowserImpl) logInstanceBrowser).getLocation().getAbsolutePath();
+        }
+
     }
 
     /**
      * Returns trace directory used by this reader.
-     * 
+     *
      * @return absolute path to trace directory.
      */
     public String getTraceLocation() {
@@ -249,7 +253,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
 
     /**
      * checks if specified location contains log files.
-     * 
+     *
      * @param location to check.
      * @return <code>true</code> if the directory itself or known subdirectories contain log files.
      */
@@ -292,9 +296,9 @@ public class RepositoryReaderImpl implements RepositoryReader {
         }
 
         for (File file : new File[] {
-                                     location,
-                                     getChild(location, LogRepositoryBrowserImpl.DEFAULT_LOCATION),
-                                     getChild(location, LogRepositoryBrowserImpl.TRACE_LOCATION) }) {
+                                      location,
+                                      getChild(location, LogRepositoryBrowserImpl.DEFAULT_LOCATION),
+                                      getChild(location, LogRepositoryBrowserImpl.TRACE_LOCATION) }) {
             // Contains Instance directories
             if (file.isDirectory()) {
                 MainLogRepositoryBrowserImpl fileBrowser = new MainLogRepositoryBrowserImpl(file);
@@ -322,7 +326,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
 
     /**
      * list subdirectories containing repository files.
-     * 
+     *
      * @param parent the directory to check subdirectories in.
      * @return list of subdirectory names containing repository files.
      */
@@ -347,7 +351,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
 
     /**
      * returns log records from the binary repository
-     * 
+     *
      * @return the iterable instance of a list of log records
      *         If no records are available, the iterable has no entries
      */
@@ -358,7 +362,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
 
     /**
      * returns log records from the binary repository that are within the date range and which satisfy condition of the filter as specified by the parameters.
-     * 
+     *
      * @param after pointer to the a repository location where the query should start. Only includes records after this point
      * @return the iterable instance of a list of log records within a process that are within the parameter range and satisfy the condition.
      *         If no records exist after the location, an Iterable is returned with no entries
@@ -370,7 +374,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
 
     /**
      * returns log records from the binary repository that are within the date range and which satisfy condition of the filter as specified by the parameters.
-     * 
+     *
      * @param beginTime the minimum {@link Date} value that the returned records can have
      * @param endTime the maximum {@link Date} value that the returned records can have
      * @param filter an instance implementing {@link LogRecordHeaderFilter} interface to verify one record at a time.
@@ -427,7 +431,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
      * returns log records from the binary repository that are beyond a given repository location, occured before a given time, and meet a filter condition
      * as specified by the parameters. Callers would have to invoke {@link RepositoryLogRecord#getRepositoryPointer()} to obtain the RepositoryPointer
      * of the last record read.
-     * 
+     *
      * @param after RepositoryPointer of the last read log record.
      * @param endTime the maximum {@link Date} value that the returned records can have
      * @param filter an instance implementing {@link LogRecordHeaderFilter} interface to verify one record at a time.
@@ -531,7 +535,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
 
     /**
      * returns log records from the binary repository that are within the date range and which satisfy condition of the filter as specified by the parameters.
-     * 
+     *
      * @param beginTime the minimum {@link Date} value that the returned records can have
      * @param endTime the maximum {@link Date} value that the returned records can have
      * @param filter an instance implementing {@link LogRecordFilter} interface to verify one record at a time.
@@ -588,7 +592,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
      * returns log records from the binary repository that are beyond a given repository location, occured before a given time, and meet a filter condition
      * as specified by the parameters. Callers would have to invoke {@link RepositoryLogRecord#getRepositoryPointer()} to obtain the RepositoryPointer
      * of the last record read.
-     * 
+     *
      * @param after RepositoryPointer of the last read log record.
      * @param endTime the maximum {@link Date} value that the returned records can have
      * @param filter an instance implementing {@link LogRecordFilter} interface to verify one record at a time.
@@ -692,7 +696,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
 
     /**
      * returns log records from the binary repository that are within the level range as specified by the parameters.
-     * 
+     *
      * @param minLevel integer value of the minimum {@link Level} that the returned records need to match
      * @param maxLevel integer value of the maximum {@link Level} that the returned records need to match
      * @return the iterable instance of a list of log records within a process that are within the parameter range
@@ -705,7 +709,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
     /**
      * returns log records from the binary repository beyond the given repository pointer and within the level range as specified by the parameters.
      * Callers would have to invoke {@link RepositoryLogRecord#getRepositoryPointer()} to obtain the RepositoryPointer of the last record read.
-     * 
+     *
      * @param after RepositoryPointer of the last read log record.
      * @param minLevel integer value of the minimum {@link Level} that the returned records need to match
      * @param maxLevel integer value of the maximum {@link Level} that the returned records need to match
@@ -719,7 +723,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
     /**
      * returns log records from the binary repository beyond the given repository pointer and within the level range as specified by the parameters.
      * Callers would have to invoke {@link RepositoryLogRecord#getRepositoryPointer()} to obtain the RepositoryPointer of the last record read.
-     * 
+     *
      * @param minLevel integer value of the minimum {@link Level} that the returned records need to match
      * @param maxLevel integer value of the maximum {@link Level} that the returned records need to match
      * @return the iterable instance of a list of log records within a process that are within the parameter range
@@ -733,7 +737,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
     /**
      * returns log records from the binary repository beyond the given repository pointer and within the level range as specified by the parameters.
      * Callers would have to invoke {@link RepositoryLogRecord#getRepositoryPointer()} to obtain the RepositoryPointer of the last record read.
-     * 
+     *
      * @param after RepositoryPointer of the last read log record.
      * @param minLevel Level value of the minimum {@link Level} that the returned records need to match
      * @param maxLevel Level value of the maximum {@link Level} that the returned records need to match
@@ -747,7 +751,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
 
     /**
      * returns log records from the binary repository that are between 2 dates (inclusive)
-     * 
+     *
      * @param minTime the minimum {@link Date} value that the returned records can have
      * @param maxTime the maximum {@link Date} value that the returned records can have
      * @return the iterable instance of a list of log records within a process that are within the parameter range and satisfy the condition.
@@ -761,7 +765,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
     /**
      * returns log records from the binary repository that are after a given location and less than or equal to a given date
      * Callers would have to invoke {@link RepositoryLogRecord#getRepositoryPointer()} to obtain the RepositoryPointer of the last record read.
-     * 
+     *
      * @param after RepositoryPointer of the last read log record.
      * @param maxTime the maximum {@link Date} value that the returned records can have
      * @return the iterable instance of a list of log records within a process that are within the parameter range and satisfy the condition.
@@ -809,7 +813,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
     /**
      * returns log records from the binary repository which satisfy condition of the filter as specified by the parameter. The returned logs
      * will be from the same server instance. The server instance will be determined by the time as specified by the parameter.
-     * 
+     *
      * @param time the {@link Date} time value used to determine the server instance where the server start time occurs before this value
      *            and the server stop time occurs after this value
      * @param filter an instance implementing {@link LogRecordHeaderFilter} interface to verify one record at a time.
@@ -834,7 +838,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
      * returns log records from the binary repository that are beyond a given repository location and satisfies the filter criteria as specified
      * by the parameters. Callers would have to invoke {@link RepositoryLogRecord#getRepositoryPointer()} to obtain the RepositoryPointer
      * of the last record read. The returned logs will be from the same server instance.
-     * 
+     *
      * @param after RepositoryPointer of the last read log record.
      * @param filter an instance implementing {@link LogRecordHeaderFilter} interface to verify one record at a time.
      * @return the iterable list of log records
@@ -870,7 +874,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
     /**
      * returns log records from the binary repository which satisfy condition of the filter as specified by the parameter. The returned logs
      * will be from the same server instance. The server instance will be determined by the time as specified by the parameter.
-     * 
+     *
      * @param time the {@link Date} time value used to determine the server instance where the server start time occurs before this value
      *            and the server stop time occurs after this value
      * @param filter an instance implementing {@link LogRecordFilter} interface to verify one record at a time.
@@ -895,7 +899,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
      * returns log records from the binary repository that are beyond a given repository location and satisfies the filter criteria as specified
      * by the parameters. Callers would have to invoke {@link RepositoryLogRecord#getRepositoryPointer()} to obtain the RepositoryPointer
      * of the last record read. The returned logs will be from the same server instance.
-     * 
+     *
      * @param after RepositoryPointer of the last read log record.
      * @param filter an instance implementing {@link LogRecordFilter} interface to verify one record at a time.
      * @return the iterable list of log records
@@ -1206,7 +1210,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
 
         /**
          * Construct entry using correct relative information for browsers.
-         * 
+         *
          * @param pointerBrowser file browser the pointer came from.
          * @param recordBrowser file browser which need to use RepositoryLogRecord as a relative point.
          * @param location the pointer used in the query.
@@ -1257,7 +1261,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
 
         /**
          * Construct entry using correct relative information for browsers.
-         * 
+         *
          * @param pointerBrowser file browser the pointer came from.
          * @param recordBrowser file browser which need to use RepositoryLogRecord as a relative point.
          * @param location the pointer used in the query.
@@ -1319,7 +1323,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
         /**
          * retrieves result from the repository using user specified query. It is used for all
          * processes in the list.
-         * 
+         *
          * @param browser retriever of the files in the repository.
          * @return instance containing result of the user query. It is used to construct ServerInstanceLogRecordList
          *         instances return by the iterator.
@@ -1329,7 +1333,7 @@ public class RepositoryReaderImpl implements RepositoryReader {
         /**
          * retrieves result from the first repository in the list using user specified query. By
          * default it uses {@link #queryResult(LogRepositoryBrowser)}.
-         * 
+         *
          * @param firstLog log part of the first repository in the list.
          * @param firstTrace trace part of the first repository in the list.
          * @return instance which is return as the first entry by the iterator.

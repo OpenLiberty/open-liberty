@@ -172,6 +172,7 @@ final class ConfigImpl implements Config {
                 } else {
                     log.severe(MessageUtil.format("SF_ERROR_NOT_PERMIT", cls.getName()));
                 }                
+                return false;
             }
             // if child class is externalizable, only check externalizable ancestors
             // if child class is serializable, only check serializable ancestors
@@ -184,6 +185,7 @@ final class ConfigImpl implements Config {
                     } else {
                         log.severe(MessageUtil.format("SF_ERROR_NOT_PERMIT_SUPERCLASS", cls.getName(), c.getName()));
                     }
+                    return false;
                 }
             }
         }
