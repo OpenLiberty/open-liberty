@@ -23,10 +23,10 @@ public interface KeyringMonitor {
     /**
      * <h4>Service property</h4>
      *
-     * The value should be a String, indicating the id of
-     * keyring that should be monitored.
+     * The value should be a String, indicating the config id of
+     * keyring that should be monitored for external update
      */
-    String MONITOR_IDENTIFICATION_CONFIG_ID = "monitor.config.id";
+    String MONITOR_KEYSTORE_CONFIG_ID = "monitor.keystore.id";
 
     /**
      * <h4>Service property</h4>
@@ -44,8 +44,8 @@ public interface KeyringMonitor {
     /**
      * Method to call the update of keyrings
      *
-     * @param keyStoreLocation - The keyring location to be refresh,
-     *            or null if all keyrings should be refreshed.
+     * @param keyStoreLocation - The keyring location to be refreshed
+     * 
      */
     public void refreshRequested(String keyStoreLocation);
 

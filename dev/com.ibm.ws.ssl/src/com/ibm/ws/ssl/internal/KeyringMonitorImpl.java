@@ -49,7 +49,7 @@ public class KeyringMonitorImpl implements KeyringMonitor {
         }
         BundleContext bundleContext = actionable.getBundleContext();
         final Hashtable<String, Object> keyRingMonitorProps = new Hashtable<String, Object>();
-        keyRingMonitorProps.put(KeyringMonitor.MONITOR_IDENTIFICATION_CONFIG_ID, ID);
+        keyRingMonitorProps.put(KeyringMonitor.MONITOR_KEYSTORE_CONFIG_ID, ID);
         keyRingMonitorProps.put(KeyringMonitor.KEYSTORE_LOCATION, keyStoreLocation);
         if (!(trigger.equalsIgnoreCase("disabled")) && trigger.equals("polled")) {
             Tr.warning(tc, "Cannot have polled trigger for keyRing ID: ", ID);

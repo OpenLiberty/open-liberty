@@ -66,9 +66,9 @@ public class SecurityFileMonitor implements FileMonitor {
         final Hashtable<String, Object> fileMonitorProps = new Hashtable<String, Object>();
         fileMonitorProps.put(FileMonitor.MONITOR_FILES, paths);
         //Adding INTERNAL parameter MONITOR_IDENTIFICATION_NAME to identify this monitor.
-        fileMonitorProps.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, "com.ibm.ws.security.monitor.keystore");
+        fileMonitorProps.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_MONITOR_IDENTIFICATION_VALUE);
         //Adding parameter MONITOR_IDENTIFICATION_CONFIG_ID to identify this monitor by the ID.
-        fileMonitorProps.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_CONFIG_ID, ID);
+        fileMonitorProps.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_KEYSTORE_CONFIG_ID, ID);
         if (!(trigger.equalsIgnoreCase("disabled"))) {
             if (trigger.equals("mbean")) {
                 fileMonitorProps.put(FileMonitor.MONITOR_TYPE, FileMonitor.MONITOR_TYPE_EXTERNAL);
