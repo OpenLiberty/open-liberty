@@ -124,7 +124,7 @@ public class ZipFileData {
     public ZipFileData(String path, long initialAt)
         throws IOException, ZipException {
         String methodName = "<init>";
-        if ( tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName, "Create [ " + path + " ]");
         }
 
@@ -200,7 +200,7 @@ public class ZipFileData {
     @Trivial
     public void enactOpen(long openAt) {
         String methodName = "enactOpen";
-        if ( tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName + " On [ " + path + " ] at [ " + toRelSec(initialAt, openAt) + " (s) ]");
         }
 
@@ -269,7 +269,7 @@ public class ZipFileData {
     @Trivial
     public boolean enactClose(long closeAt, boolean closeAll) {
         String methodName = "enactClose";
-        if ( tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName + " On [ " + path + " ] at [ " + toRelSec(initialAt, closeAt) + " (s) ]");
         }
 
@@ -319,7 +319,7 @@ public class ZipFileData {
     @Trivial
     public void enactFullClose(long fullCloseAt) {
         String methodName = "enactFullClose";
-        if ( tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName + " On [ " + path + " ] at [ " + toRelSec(initialAt, fullCloseAt) + " (s) ]");
         }
 
@@ -484,7 +484,7 @@ public class ZipFileData {
                     " Update length from [ " + Long.valueOf(zipLength) + " ]" +
                     " to [ " + Long.valueOf(newZipLength) + " ]");
             } else {
-                if ( tc.isDebugEnabled() ) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName +
                         " Zip [ " + path + " ]:" +
                         " Update length from [ " + Long.valueOf(zipLength) + " ]" +
@@ -502,7 +502,7 @@ public class ZipFileData {
                     " Update last modified from [ " + Long.valueOf(zipLastModified) + " ]" +
                     " to [ " + Long.valueOf(newZipLastModified) + " ]");
             } else {
-                if ( tc.isDebugEnabled() ) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName +
                         " Zip [ " + path + " ]:" +
                         " Update last modified from [ " + Long.valueOf(zipLastModified) + " ]" +
@@ -515,7 +515,7 @@ public class ZipFileData {
             if ( openCount > closeCount ) {
                 Tr.warning(tc, methodName + " Reopen [ " + path + " ]");
             } else {
-                if ( tc.isDebugEnabled() ) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName + " Reopen [ " + path + " ]");
                 }
             }
@@ -553,7 +553,7 @@ public class ZipFileData {
         zipLength = useZipLength;
         zipLastModified = useZipLastModified;
 
-        if ( tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc,
                 methodName +
                 " Path [ " + path + " ]" +
@@ -566,7 +566,7 @@ public class ZipFileData {
     @Trivial
     protected ZipFile closeZipFile() {
         String methodName = "closeZipFile";
-        if ( tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName + " Path [ " + path + " ]");
         }
 
