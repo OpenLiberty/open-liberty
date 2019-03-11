@@ -11,7 +11,6 @@
 package com.ibm.ws.microprofile.faulttolerance.impl.sync;
 
 import java.lang.reflect.Method;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -92,12 +91,12 @@ public class SynchronousExecutorImpl<R> implements Executor<R> {
     }
 
     //internal constructor for the nested synchronous part of an asynchronous execution
-    protected SynchronousExecutorImpl() {}
+    protected SynchronousExecutorImpl() {
+    }
 
     @Override
-    public FTExecutionContext newExecutionContext(String id_prefix, Method method, Object... params) {
+    public FTExecutionContext newExecutionContext(String id, Method method, Object... params) {
 
-        String id = id_prefix + "_" + UUID.randomUUID();
         TimeoutImpl timeout = null;
         if (this.timeoutPolicy != null && !this.timeoutPolicy.getTimeout().isZero()) {
             timeout = new TimeoutImpl(id, this.timeoutPolicy, this.scheduledExecutorService);
@@ -127,7 +126,7 @@ public class SynchronousExecutorImpl<R> implements Executor<R> {
      * Subclasses can override this if they require different end of execution behaviour
      *
      * @param executionContext the execution context
-     * @param t the exception thrown, or {@code null} if no exception was thrown
+     * @param t                the exception thrown, or {@code null} if no exception was thrown
      */
     protected void executionComplete(ExecutionContextImpl executionContext, Throwable t) {
         executionContext.onFullExecutionComplete(t);
@@ -140,7 +139,7 @@ public class SynchronousExecutorImpl<R> implements Executor<R> {
      * <p>
      * Subclasses can override this if they require different behaviour
      *
-     * @param failsafe the failsafe executor to configure
+     * @param failsafe             the failsafe executor to configure
      * @param executionContextImpl the execution context
      */
     protected void configureFailsafe(SyncFailsafe<R> failsafe, ExecutionContextImpl executionContextImpl) {

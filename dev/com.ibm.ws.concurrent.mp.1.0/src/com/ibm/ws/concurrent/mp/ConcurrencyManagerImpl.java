@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.microprofile.concurrent.ManagedExecutor;
 import org.eclipse.microprofile.concurrent.ThreadContext;
@@ -52,6 +53,12 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
     final ArrayList<ThreadContextProvider> contextProviders = new ArrayList<ThreadContextProvider>();
 
     /**
+     * Lazily initialized reference to MicroProfile Config, if available.
+     * When uninitialized, the value is FALSE. Once initialized, the value is either a valid MP Config instance or null (no MP Config).
+     */
+    private final AtomicReference<Object> mpConfigRef = new AtomicReference<Object>(Boolean.FALSE);
+
+    /**
      * Merge built-in thread context providers from the container with those found
      * on the class loader, detecting any duplicate provider types.
      *
@@ -72,18 +79,14 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
         // Built-in thread context providers (always available)
         contextProviders.add(concurrencyProvider.applicationContextProvider);
         available.add(ThreadContext.APPLICATION);
+        contextProviders.add(concurrencyProvider.cdiContextProvider);
+        available.add(ThreadContext.CDI);
         contextProviders.add(concurrencyProvider.securityContextProvider);
         available.add(ThreadContext.SECURITY);
         contextProviders.add(concurrencyProvider.transactionContextProvider);
         available.add(ThreadContext.TRANSACTION);
         contextProviders.add(concurrencyProvider.wlmContextProvider);
         available.add(WLMContextProvider.WORKLOAD);
-
-        ThreadContextProvider cdiCtx = concurrencyProvider.cdiContextProvider;
-        if (cdiCtx != null) {
-            contextProviders.add(cdiCtx);
-            available.add(ThreadContext.CDI);
-        }
 
         // Thread context providers for the supplied class loader
         for (ThreadContextProvider provider : ServiceLoader.load(ThreadContextProvider.class, classloader)) {
@@ -119,6 +122,9 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
         if (ThreadContext.APPLICATION.equals(conflictingType))
             return concurrencyProvider.applicationContextProvider;
 
+        if (ThreadContext.CDI.equals(conflictingType))
+            return concurrencyProvider.cdiContextProvider;
+
         if (ThreadContext.SECURITY.equals(conflictingType))
             return concurrencyProvider.securityContextProvider;
 
@@ -128,21 +134,38 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
         if (WLMContextProvider.WORKLOAD.equals(conflictingType))
             return concurrencyProvider.wlmContextProvider;
 
-        if (concurrencyProvider.cdiContextProvider != null &&
-            ThreadContext.CDI.equals(conflictingType))
-            return concurrencyProvider.cdiContextProvider;
-
         // should be unreachable
         throw new IllegalStateException(conflictingType);
     }
 
+    /**
+     * Obtain a default value from MicroProfile Config if available.
+     *
+     * @param mpConfigPropName name of the MicroProfile Config property.
+     * @param defaultValue value to use if not found in MicroProfile Config.
+     * @return default value.
+     */
+    <T> T getDefault(String mpConfigPropName, T defaultValue) {
+        MPConfigAccessor accessor = concurrencyProvider.mpConfigAccessor;
+        if (accessor != null) {
+            Object mpConfig = mpConfigRef.get();
+            if (mpConfig == Boolean.FALSE) // not initialized yet
+                if (!mpConfigRef.compareAndSet(Boolean.FALSE, mpConfig = accessor.getConfig()))
+                    mpConfig = mpConfigRef.get();
+
+            if (mpConfig != null)
+                defaultValue = accessor.get(mpConfig, mpConfigPropName, defaultValue);
+        }
+        return defaultValue;
+    }
+
     @Override
     public ManagedExecutor.Builder newManagedExecutorBuilder() {
-        return new ManagedExecutorBuilderImpl(concurrencyProvider, contextProviders);
+        return new ManagedExecutorBuilderImpl(this, contextProviders);
     }
 
     @Override
     public ThreadContext.Builder newThreadContextBuilder() {
-        return new ThreadContextBuilderImpl(concurrencyProvider, contextProviders);
+        return new ThreadContextBuilderImpl(this, contextProviders);
     }
 }

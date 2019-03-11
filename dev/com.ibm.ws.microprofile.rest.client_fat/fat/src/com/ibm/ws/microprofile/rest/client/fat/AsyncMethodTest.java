@@ -34,17 +34,19 @@ import mpRestClient11.async.AsyncTestServlet;
 @RunWith(FATRunner.class)
 public class AsyncMethodTest extends FATServletClient {
 
+    final static String SERVER_NAME = "mpRestClient11.async";
+
     @ClassRule
-    public static RepeatTests r = 
-        RepeatTests.withoutModification()
-                   .andWith(new FeatureReplacementAction().withID("mpRestClient-1.2")
-                                                          .addFeature("mpRestClient-1.2")
-                                                          .removeFeature("mpRestClient-1.1")
-                                                          .forServers("mpRestClient11.async"));
+    public static RepeatTests r = RepeatTests.withoutModification()
+        .andWith(new FeatureReplacementAction()
+                 .withID("mpRestClient-1.2")
+                 .addFeature("mpRestClient-1.2")
+                 .removeFeature("mpRestClient-1.1")
+                 .forServers(SERVER_NAME));
 
     private static final String appName = "asyncApp";
 
-    @Server("mpRestClient11.async")
+    @Server(SERVER_NAME)
     @TestServlet(servlet = AsyncTestServlet.class, contextRoot = appName)
     public static LibertyServer server;
 

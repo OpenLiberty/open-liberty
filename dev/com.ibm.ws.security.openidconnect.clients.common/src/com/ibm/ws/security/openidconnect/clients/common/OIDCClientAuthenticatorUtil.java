@@ -408,7 +408,7 @@ public class OIDCClientAuthenticatorUtil {
     }
 
     String addForwardLoginParamsToQuery(ConvergedClientConfig clientConfig, HttpServletRequest req, String query) {
-        List<String> forwardAuthzParams = clientConfig.getForwardAuthzParameter();
+        List<String> forwardAuthzParams = clientConfig.getForwardLoginParameter();
         if (forwardAuthzParams == null || forwardAuthzParams.isEmpty()) {
             return query;
         }

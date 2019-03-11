@@ -32,6 +32,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.mp.context.ApplicationContextProvider;
+import com.ibm.ws.concurrent.mp.context.CDIContextProviderHolder;
 import com.ibm.ws.concurrent.mp.context.SecurityContextProvider;
 import com.ibm.ws.concurrent.mp.context.TransactionContextProvider;
 import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
@@ -44,11 +45,13 @@ import com.ibm.ws.threading.PolicyExecutorProvider;
 /**
  * Registers this implementation as the provider of MicroProfile Concurrency.
  */
+@SuppressWarnings("deprecation")
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class ConcurrencyProviderImpl implements ApplicationStateListener, ConcurrencyProvider {
     private static final TraceComponent tc = Tr.register(ConcurrencyProviderImpl.class);
 
     final ApplicationContextProvider applicationContextProvider = new ApplicationContextProvider();
+    final CDIContextProviderHolder cdiContextProvider = new CDIContextProviderHolder();
     final SecurityContextProvider securityContextProvider = new SecurityContextProvider();
     final TransactionContextProvider transactionContextProvider = new TransactionContextProvider();
     final WLMContextProvider wlmContextProvider = new WLMContextProvider();
@@ -62,6 +65,11 @@ public class ConcurrencyProviderImpl implements ApplicationStateListener, Concur
     @Reference
     protected MetaDataIdentifierService metadataIdentifierService;
 
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected volatile MPConfigAccessor mpConfigAccessor;
+
     @Reference
     protected PolicyExecutorProvider policyExecutorProvider;
 
@@ -73,6 +81,7 @@ public class ConcurrencyProviderImpl implements ApplicationStateListener, Concur
     protected void activate(ComponentContext osgiComponentContext) {
         applicationContextProvider.classloaderContextProviderRef.activate(osgiComponentContext);
         applicationContextProvider.jeeMetadataContextProviderRef.activate(osgiComponentContext);
+        cdiContextProvider.cdiContextProviderRef.activate(osgiComponentContext);
         securityContextProvider.securityContextProviderRef.activate(osgiComponentContext);
         securityContextProvider.threadIdentityContextProviderRef.activate(osgiComponentContext);
         transactionContextProvider.transactionContextProviderRef.activate(osgiComponentContext);
@@ -115,6 +124,7 @@ public class ConcurrencyProviderImpl implements ApplicationStateListener, Concur
         transactionContextProvider.transactionContextProviderRef.deactivate(osgiComponentContext);
         securityContextProvider.threadIdentityContextProviderRef.deactivate(osgiComponentContext);
         securityContextProvider.securityContextProviderRef.deactivate(osgiComponentContext);
+        cdiContextProvider.cdiContextProviderRef.deactivate(osgiComponentContext);
         applicationContextProvider.jeeMetadataContextProviderRef.deactivate(osgiComponentContext);
         applicationContextProvider.classloaderContextProviderRef.deactivate(osgiComponentContext);
     }
@@ -132,11 +142,14 @@ public class ConcurrencyProviderImpl implements ApplicationStateListener, Concur
         return ccmgr;
     }
 
-    @Reference(target = "(component.name=com.ibm.ws.cdi.context.provider)",
+    @Reference(service = org.eclipse.microprofile.concurrent.spi.ThreadContextProvider.class,
+               target = "(component.name=com.ibm.ws.cdi.context.provider)",
                cardinality = ReferenceCardinality.OPTIONAL,
                policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
-    protected volatile org.eclipse.microprofile.concurrent.spi.ThreadContextProvider cdiContextProvider;
+    protected void setCDIContextProvider(ServiceReference<org.eclipse.microprofile.concurrent.spi.ThreadContextProvider> ref) {
+        cdiContextProvider.cdiContextProviderRef.setReference(ref);
+    }
 
     @Reference(service = com.ibm.wsspi.threadcontext.ThreadContextProvider.class,
                target = "(component.name=com.ibm.ws.classloader.context.provider)")
@@ -184,6 +197,10 @@ public class ConcurrencyProviderImpl implements ApplicationStateListener, Concur
                policyOption = ReferencePolicyOption.GREEDY)
     protected void setWLMContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
         wlmContextProvider.wlmContextProviderRef.setReference(ref);
+    }
+
+    protected void unsetCDIContextProvider(ServiceReference<org.eclipse.microprofile.concurrent.spi.ThreadContextProvider> ref) {
+        cdiContextProvider.cdiContextProviderRef.unsetReference(ref);
     }
 
     protected void unsetClassloaderContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {

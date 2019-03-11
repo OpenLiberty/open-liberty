@@ -36,7 +36,7 @@ public interface Executor<R> {
     /**
      * Create a new execution context
      *
-     * @param id         an identifier for the execution, currently only used for tracing
+     * @param id         an identifier for the execution, only used for tracing
      * @param method     the method which is being executed by the callable, as returned by {@link ExecutionContext#getMethod()}
      * @param parameters the parameters passed to the method, as returned by {@link ExecutionContext#getParameters()}
      * @return the new execution context

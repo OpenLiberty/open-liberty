@@ -428,13 +428,11 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
             @Override
             public void checkClientTrusted(
-                                           java.security.cert.X509Certificate[] certs, String authType) {
-            }
+                                           java.security.cert.X509Certificate[] certs, String authType) {}
 
             @Override
             public void checkServerTrusted(
-                                           java.security.cert.X509Certificate[] certs, String authType) {
-            }
+                                           java.security.cert.X509Certificate[] certs, String authType) {}
         } };
 
         return trustAllCerts;
@@ -474,7 +472,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         List<String> logMessages = server.findStringsInLogs("CWWKC0265E");
         assertTrue("Expected log not found containing CWWKC0265E", !logMessages.isEmpty());
         assertTrue("Expected error message CWWKC0265E not found", logMessages.get(0).contains("CWWKC0265E"));
-        server.stopServer("CWWKZ0002E", "CWWKC0265E");
+        server.stopServer(false, "CWWKZ0002E", "CWWKC0265E");
         server.deleteDirectoryFromLibertyInstallRoot("usr/shared/resources/libraries/");
     }
 
@@ -512,7 +510,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         List<String> logMessages = server.findStringsInLogs("CWWKC0266E");
         assertTrue("Expected log not found containing CWWKC0266E", !logMessages.isEmpty());
         assertTrue("Expected error message CWWKC0266E not found", logMessages.get(0).contains("CWWKC0266E"));
-        server.stopServer("CWWKZ0002E", "CWWKC0266E");
+        server.stopServer(false, "CWWKZ0002E", "CWWKC0266E");
         server.deleteDirectoryFromLibertyServerRoot("thin/");
     }
 

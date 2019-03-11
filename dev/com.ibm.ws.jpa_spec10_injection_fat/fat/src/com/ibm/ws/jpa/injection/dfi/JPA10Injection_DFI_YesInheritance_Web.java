@@ -32,6 +32,10 @@ import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.anoovrd.DFIPkgYesInhAnoOvr
 import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.anoovrd.DFIPriYesInhAnoOvrdTestServlet;
 import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.anoovrd.DFIProYesInhAnoOvrdTestServlet;
 import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.anoovrd.DFIPubYesInhAnoOvrdTestServlet;
+import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestServlet;
+import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestServlet;
+import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestServlet;
+import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -46,6 +50,7 @@ public class JPA10Injection_DFI_YesInheritance_Web extends JPAFATServletClient {
     private final static String RESOURCE_ROOT = "test-applications/injection/";
     private final static String applicationName = "JPA10Injection_DFIYesInheritance_Web"; // Name of EAR
     private final static String contextRoot = "JPA10Injection_DFIYesInheritance_Web";
+    private final static String contextRoot2 = "JPA10Injection_DFIYesInheritance_DDOvrd_Web";
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
@@ -63,6 +68,12 @@ public class JPA10Injection_DFI_YesInheritance_Web extends JPAFATServletClient {
                     @TestServlet(servlet = DFIPriYesInhAnoOvrdTestServlet.class, path = contextRoot + "/" + "DFIPriYesInhAnoOvrdTestServlet"),
                     @TestServlet(servlet = DFIProYesInhAnoOvrdTestServlet.class, path = contextRoot + "/" + "DFIProYesInhAnoOvrdTestServlet"),
                     @TestServlet(servlet = DFIPubYesInhAnoOvrdTestServlet.class, path = contextRoot + "/" + "DFIPubYesInhAnoOvrdTestServlet"),
+
+                    @TestServlet(servlet = DFIPkgYesInhDDOvrdTestServlet.class, path = contextRoot2 + "/" + "DFIPkgYesInhDDOvrdTestServlet"),
+                    @TestServlet(servlet = DFIPriYesInhDDOvrdTestServlet.class, path = contextRoot2 + "/" + "DFIPriYesInhDDOvrdTestServlet"),
+                    @TestServlet(servlet = DFIProYesInhDDOvrdTestServlet.class, path = contextRoot2 + "/" + "DFIProYesInhDDOvrdTestServlet"),
+                    @TestServlet(servlet = DFIPubYesInhDDOvrdTestServlet.class, path = contextRoot2 + "/" + "DFIPubYesInhDDOvrdTestServlet"),
+
     })
     public static LibertyServer server1;
 
@@ -95,6 +106,7 @@ public class JPA10Injection_DFI_YesInheritance_Web extends JPAFATServletClient {
 
     private static void setupTestApplication() throws Exception {
         final String webModuleName = "injectionDFIYesInheritance";
+        final String webModule2Name = "injectionDFIYesInheritanceDDOvrd";
         final String webFileRootPath = RESOURCE_ROOT + "web/" + webModuleName + "/";
         final String libsPath = RESOURCE_ROOT + "libs/";
 
@@ -125,8 +137,15 @@ public class JPA10Injection_DFI_YesInheritance_Web extends JPAFATServletClient {
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.anoovrd");
         ShrinkHelper.addDirectory(webApp, webFileRootPath + webModuleName + ".war");
 
+        WebArchive webApp2 = ShrinkWrap.create(WebArchive.class, webModule2Name + ".war");
+        webApp2.addPackages(true, "com.ibm.ws.jpa.fvt.injection.entities.war");
+        webApp2.addPackages(true, "com.ibm.ws.jpa.fvt.injection.testlogic");
+        webApp2.addPackages(true, "com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.ddovrd");
+        ShrinkHelper.addDirectory(webApp2, webFileRootPath + webModule2Name + ".war");
+
         final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, applicationName + ".ear");
         app.addAsModule(webApp);
+        app.addAsModule(webApp2);
         app.addAsLibrary(jpapulibJar);
         app.addAsLibrary(jpacoreJar);
         app.addAsLibrary(jpaejbJar);

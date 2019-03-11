@@ -50,6 +50,7 @@ import com.ibm.ws.jaxrs20.fat.servletcoexist.JAXRSServletCoexistTest;
 import com.ibm.ws.jaxrs20.fat.standard.StandardProvidersTest;
 import com.ibm.ws.jaxrs20.fat.subresource.ExceptionsSubresourcesTest;
 import com.ibm.ws.jaxrs20.fat.thirdpartyjersey.JerseyTest;
+import com.ibm.ws.jaxrs20.fat.uriInfo.UriInfoTest;
 import com.ibm.ws.jaxrs20.fat.wadl.WADLTest;
 import com.ibm.ws.jaxrs20.fat.webcontainer.JAXRSWebContainerTest;
 
@@ -95,6 +96,7 @@ import componenttest.rules.repeater.RepeatTests;
                 SecuritySSLTest.class,
                 ServiceScopeTest.class,
                 StandardProvidersTest.class,
+                UriInfoTest.class,
                 UTF8Test.class,
                 //ValidationTest.class, //TODO: fix up and reenable tests - 6325
                 WADLTest.class

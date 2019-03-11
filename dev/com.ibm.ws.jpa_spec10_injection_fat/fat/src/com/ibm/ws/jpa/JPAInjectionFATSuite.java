@@ -27,7 +27,7 @@ import com.ibm.ws.jpa.injection.jndi.JPA10Injection_JNDI;
 @SuiteClasses({
                 JPA10Injection_JNDI.class,
                 JPA10Injection_DFI_NoInheritance.class,
-                JPA10Injection_DMI_NoInheritance.class,
+                JPA10Injection_DMI_NoInheritance.class
 })
 public class JPAInjectionFATSuite {
 

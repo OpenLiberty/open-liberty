@@ -34,6 +34,8 @@ config.internal.metatype.variableDefinitionType.name.documentation=The name of t
 config.internal.metatype.variableDefinitionType.name.label=Name
 config.internal.metatype.variableDefinitionType.value.documentation=The value to be assigned to the variable.
 config.internal.metatype.variableDefinitionType.value.label=Value
+config.internal.metatype.variableDefinitionType.defaultValue.documentation=The defaultValue to be assigned to the variable if no value is available.
+config.internal.metatype.variableDefinitionType.defaultValue.label=Default value
 
 config.internal.metatype.duration.desc=Specify a positive integer followed by a unit of time, which can be hours (h), minutes (m), seconds (s), or milliseconds (ms). For example, specify 500 milliseconds as 500ms. You can include multiple values in a single entry. For example, 1s500ms is equivalent to 1.5 seconds.
 config.internal.metatype.duration-s.desc=Specify a positive integer followed by a unit of time, which can be hours (h), minutes (m), or seconds (s). For example, specify 30 seconds as 30s. You can include multiple values in a single entry. For example, 1m30s is equivalent to 90 seconds.

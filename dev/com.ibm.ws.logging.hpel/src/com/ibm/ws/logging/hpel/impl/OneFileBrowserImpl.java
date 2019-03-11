@@ -52,6 +52,7 @@ public class OneFileBrowserImpl implements LogRepositoryBrowser {
     }
 
     public OneFileBrowserImpl(File repositoryLocation) throws IllegalArgumentException {
+        this.repositoryFile = repositoryLocation;
         if (!isFile(repositoryLocation)) {
             throw new IllegalArgumentException("Specified location is not a file.");
         }
@@ -74,7 +75,7 @@ public class OneFileBrowserImpl implements LogRepositoryBrowser {
         }
         RepositoryLogRecord first = it.next();
         this.timestamp = first == null ? -1L : first.getMillis();
-        this.repositoryFile = repositoryLocation;
+
     }
 
     /**
@@ -122,7 +123,9 @@ public class OneFileBrowserImpl implements LogRepositoryBrowser {
 
     @Override
     public String[] getIds() {
-        return new String[0];
+        String[] s = new String[1];
+        s[0] = repositoryFile.getParentFile().getName();
+        return s;
     }
 
     @Override

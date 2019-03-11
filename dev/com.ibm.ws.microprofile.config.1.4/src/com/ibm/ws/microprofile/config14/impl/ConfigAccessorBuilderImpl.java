@@ -28,10 +28,10 @@ public class ConfigAccessorBuilderImpl<T> extends AbstractConfigAccessorBuilder<
         this.conversionType = conversionType;
     }
 
-    @Override
-    public ConfigAccessorBuilder<List<T>> asList() {
-        return new ConfigAccessorBuilderListImpl<T>(this);
-    }
+//    @Override
+//    public ConfigAccessorBuilder<List<T>> asList() {
+//        return new ConfigAccessorBuilderListImpl<T>(this);
+//    }
 
     /** {@inheritDoc} */
     @Override

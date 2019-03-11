@@ -185,16 +185,6 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                         continue;
                     }
 
-                    if (key.equalsIgnoreCase(MAX_CONNS)) {
-                        // convert and check
-                        keyType = ValidateUtils.KEY_TYPE_INT;
-                        minValue = MAX_CONNECTIONS_MIN;
-                        maxValue = MAX_CONNECTIONS_MAX;
-                        this.maxOpenConnections = convertIntegerValue(value);
-                        result = ValidateUtils.testMaxConnections(this.maxOpenConnections);
-                        continue;
-                    }
-
                     if (key.equalsIgnoreCase(NEW_BUFF_SIZE)) {
                         // convert and check
                         keyType = ValidateUtils.KEY_TYPE_INT;
@@ -410,6 +400,16 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                     continue;
                 }
 
+                if (key.equalsIgnoreCase(MAX_CONNS)) {
+                    // convert and check
+                    keyType = ValidateUtils.KEY_TYPE_INT;
+                    minValue = MAX_CONNECTIONS_MIN;
+                    maxValue = MAX_CONNECTIONS_MAX;
+                    this.maxOpenConnections = convertIntegerValue(value);
+                    result = ValidateUtils.testMaxConnections(this.maxOpenConnections);
+                    continue;
+                }
+
                 if (key.equalsIgnoreCase(RCV_BUFF_SIZE)) {
                     // convert and check
                     keyType = ValidateUtils.KEY_TYPE_INT;
@@ -600,16 +600,6 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                         continue;
                     }
 
-                    if (key.equalsIgnoreCase(MAX_CONNS)) {
-                        // convert and check
-                        keyType = ValidateUtils.KEY_TYPE_INT;
-                        minValue = MAX_CONNECTIONS_MIN;
-                        maxValue = MAX_CONNECTIONS_MAX;
-                        maxOpenConnectionsNew = convertIntegerValue(value);
-                        result = ValidateUtils.testMaxConnections(maxOpenConnectionsNew);
-                        continue;
-                    }
-
                     if (key.equalsIgnoreCase(NEW_BUFF_SIZE)) {
                         // convert and check
                         keyType = ValidateUtils.KEY_TYPE_INT;
@@ -746,6 +736,16 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                     if (convertBooleanValue(value) != oldBool) {
                         result = ValidateUtils.VALIDATE_NOT_EQUAL;
                     }
+                    continue;
+                }
+
+                if (key.equalsIgnoreCase(MAX_CONNS)) {
+                    // convert and check
+                    keyType = ValidateUtils.KEY_TYPE_INT;
+                    minValue = MAX_CONNECTIONS_MIN;
+                    maxValue = MAX_CONNECTIONS_MAX;
+                    maxOpenConnectionsNew = convertIntegerValue(value);
+                    result = ValidateUtils.testMaxConnections(maxOpenConnectionsNew);
                     continue;
                 }
 

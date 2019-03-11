@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,15 +31,15 @@ import concurrent.mp.fat.cdi.web.MPConcurrentCDITestServlet;
 @RunWith(FATRunner.class)
 public class MPConcurrentCDITest extends FATServletClient {
 
-    private static final String APP_NAME = "MPConcurrentCDIApp";
+    private static final String CDI_APP = "MPConcurrentCDIApp";
 
     @Server("MPConcurrentCDITestServer")
-    @TestServlet(servlet = MPConcurrentCDITestServlet.class, contextRoot = APP_NAME)
+    @TestServlet(servlet = MPConcurrentCDITestServlet.class, contextRoot = CDI_APP)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "concurrent.mp.fat.cdi.web");
+        ShrinkHelper.defaultApp(server, CDI_APP, "concurrent.mp.fat.cdi.web");
 
         JavaArchive customContextProviders = ShrinkWrap.create(JavaArchive.class, "customContextProviders.jar")
                         .addPackage("org.test.context.location")

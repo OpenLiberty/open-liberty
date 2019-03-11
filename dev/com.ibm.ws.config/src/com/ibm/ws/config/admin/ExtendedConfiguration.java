@@ -17,6 +17,8 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.Configuration.ConfigurationAttribute;
+import org.osgi.framework.ServiceReference;
 
 /**
  *
@@ -51,22 +53,36 @@ public interface ExtendedConfiguration extends Configuration {
 
     /**
      * Set the ConfigID that this configuration is registered under
-     * 
+     *
      * @param id
      */
     public void setFullId(ConfigID id);
 
     /**
-     * 
+     *
      * @return
      */
     public ConfigID getFullId();
 
     /**
      * Returns true if the configuration has been deleted
-     * 
+     *
      * @return true if the configuration has been deleted
      */
     public boolean isDeleted();
 
+
+	//
+    // R7 Upgrade
+    //
+
+    public Set<ConfigurationAttribute> getAttributes();
+
+    public void addAttributes(Configuration.ConfigurationAttribute... attrs) throws IOException;
+
+	public void removeAttributes(Configuration.ConfigurationAttribute... attrs) throws IOException;
+
+	public boolean updateIfDifferent(java.util.Dictionary<java.lang.String,?> properties) throws java.io.IOException;
+
+    public java.util.Dictionary<java.lang.String,java.lang.Object> getProcessedProperties(ServiceReference<?> reference);
 }

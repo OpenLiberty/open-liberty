@@ -235,8 +235,12 @@ public class TCPPort {
                     listenPort = serverSocket.getLocalPort();
                 } else {
                     String displayableHostName = channelConfig.getDisplayableHostname();
+
+                    // add in the exception message to help in problem diagnostics without tracing
                     Tr.error(tc, TCPChannelMessageConstants.BIND_ERROR,
-                             new Object[] { channelConfig.getChannelData().getExternalName(), displayableHostName, String.valueOf(channelConfig.getPort()) });
+                             new Object[] { channelConfig.getChannelData().getExternalName(), displayableHostName, String.valueOf(channelConfig.getPort()),
+                                            bindError.getMessage() });
+
                     throw new RetryableChannelException(bindError.getMessage());
                 }
 
@@ -265,8 +269,9 @@ public class TCPPort {
                     Tr.debug(tc, "Early Bind generated the following exception: " + e);
                 }
 
+                // add in the exception message to help in problem diagnostics without tracing
                 Tr.error(tc, TCPChannelMessageConstants.BIND_ERROR,
-                         new Object[] { channelConfig.getChannelData().getExternalName(), earlyBind.getHostname(), String.valueOf(earlyBind.getPort()) });
+                         new Object[] { channelConfig.getChannelData().getExternalName(), earlyBind.getHostname(), String.valueOf(earlyBind.getPort()), e.getMessage() });
 
                 if (e instanceof IOException) {
                     throw (IOException) e;

@@ -42,6 +42,7 @@ src: \
   test-applications/servletcoexist2/src,\
   test-applications/servletcoexist3/src,\
   test-applications/thirdpartyjersey/src,\
+  test-applications/uriInfo/src,\
   test-applications/validation/src,\
   test-applications/wadl/src,\
   test-applications/webcontainer/src

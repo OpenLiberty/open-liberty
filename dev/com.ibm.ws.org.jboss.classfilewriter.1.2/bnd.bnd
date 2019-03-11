@@ -8,6 +8,6 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.jboss.classfilewriter:jboss-classfilewriter;1.2.3.Final;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.jboss.classfilewriter:jboss-classfilewriter;1.2.4.Final;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--buildpath: org.jboss.classfilewriter:jboss-classfilewriter;version=1.2.3.Final
+-buildpath: org.jboss.classfilewriter:jboss-classfilewriter;version=1.2.4.Final

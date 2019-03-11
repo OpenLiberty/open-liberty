@@ -90,7 +90,7 @@ public abstract class AbstractSpringTests {
         // Tests can change this, but it will be reset by the @After method resetDefaultPorts
         server.setHttpDefaultPort(EXPECTED_HTTP_PORT);
         server.setHttpDefaultSecurePort(EXPECTED_HTTP_PORT);
-        javaVersion = System.getProperty("java.version");
+        javaVersion = System.getProperty("java.version"); // Pre-JDK 9 the java.version is 1.MAJOR.MINOR, post-JDK 9 its MAJOR.MINOR
 
     }
     public static final AtomicBoolean serverStarted = new AtomicBoolean();

@@ -12,6 +12,8 @@ package com.ibm.ws.classloading.internal;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
@@ -57,11 +59,27 @@ public class ThreadContextClassLoader extends UnifiedClassLoader implements Keye
     private void cleanup() {
         final String methodName = "cleanup(): ";
         try {
-            Bundle b = bundle.getAndSet(null);
+            final Bundle b = bundle.getAndSet(null);
             if (b != null) {
-                if (tc.isDebugEnabled())
+                if (tc.isDebugEnabled()) {
                     Tr.debug(tc, methodName + "Uninstalling bundle location: " + b.getLocation() + ", bundle id: " + b.getBundleId());
-                b.uninstall();
+                }
+                SecurityManager sm = System.getSecurityManager();
+                if (sm != null) {
+                    AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                        @Override
+                        public Void run() {
+                            try {
+                                b.uninstall();
+                                return null;
+                            } catch (BundleException ignored) {
+                                return null;
+                            }
+                        }
+                    });
+                } else {
+                    b.uninstall();
+                }
             }
         } catch (BundleException ignored) {
         } catch (IllegalStateException ignored) {
