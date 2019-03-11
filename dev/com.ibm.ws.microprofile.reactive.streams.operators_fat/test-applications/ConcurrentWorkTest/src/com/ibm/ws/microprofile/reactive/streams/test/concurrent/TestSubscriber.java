@@ -17,6 +17,9 @@ import javax.enterprise.context.Dependent;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
+/**
+ * A simple test subscriber that logs its results locally and is noisy on the log
+ */
 @Dependent
 public class TestSubscriber implements Subscriber<Integer> {
 

@@ -74,22 +74,6 @@ public class ReactiveConcurrentWorkTest extends FATServletClient {
     }
 
     /**
-     * Simple test that issues a small burst of work to Liberty
-     * this is used to enable observation of how worker threads
-     * are used.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testReactiveSerial() throws Exception {
-        int count = Runtime.getRuntime().availableProcessors();
-
-        for (int i = 0; i < count; i++) {
-            HttpUtils.findStringInReadyUrl(server, "/ReactiveConcurrentWorkTest/serial?message=serial" + count, FATServletClient.SUCCESS);
-        }
-    }
-
-    /**
      * Issue a slightly larger burst of work to Liberty
      * this is used to enable observation of how worker threads
      * are used.
@@ -131,7 +115,7 @@ public class ReactiveConcurrentWorkTest extends FATServletClient {
      * @throws Exception
      */
     @Test
-    public void testReactiveSingle() throws Exception {
+    public void testReactiveParallelInServer() throws Exception {
         HttpUtils.findStringInReadyUrl(server, "/ReactiveConcurrentWorkTest/parallelInServer?message=single1", FATServletClient.SUCCESS);
     }
 

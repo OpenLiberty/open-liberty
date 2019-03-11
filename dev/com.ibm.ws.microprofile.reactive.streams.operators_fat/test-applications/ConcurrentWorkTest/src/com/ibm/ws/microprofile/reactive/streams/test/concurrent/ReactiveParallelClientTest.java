@@ -29,8 +29,8 @@ import componenttest.topology.utils.FATServletClient;
 @Path("/parallel")
 public class ReactiveParallelClientTest {
 
-    private static final int RS_ELEMENTS_IN_STREAM = 10;
-    private static final int DATA_ITEMS_SENT_DOWN_STREAM = 99;
+    private static final int RS_ELEMENTS_IN_STREAM = 5;
+    private static final int DATA_ITEMS_SENT_DOWN_STREAM = 10;
     private static int instanceId = 0;
 
     /**

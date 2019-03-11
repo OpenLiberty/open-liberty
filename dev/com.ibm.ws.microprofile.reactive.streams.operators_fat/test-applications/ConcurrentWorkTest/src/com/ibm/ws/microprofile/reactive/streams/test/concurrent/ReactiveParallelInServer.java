@@ -44,6 +44,14 @@ import componenttest.topology.utils.FATServletClient;
 @Path("/parallelInServer")
 public class ReactiveParallelInServer {
 
+    /**  */
+    private static final int PROC_INCREMENT = 100;
+    /**  */
+    private static final int PIPE_LENGTH = 5;
+    /**  */
+    private static final int FOUNDATION = 1000000;
+    /**  */
+    private static final int ELEMENTS = 10;
     @Resource
     private ManagedExecutorService mes; //Injected by the container
 
@@ -52,7 +60,7 @@ public class ReactiveParallelInServer {
 
         System.out.println(message + " received on thread " + Thread.currentThread().getName());
 
-        // Set up the parallel tasks we create 3 * thyose that can be run on a physical core
+        // Set up the parallel tasks we create 3 * those that can be run on a physical core
         int count = 3 * Runtime.getRuntime().availableProcessors();
         System.out.println(" Going to run " + count + " in parallel");
         Collection<Callable<String>> tasks = new ArrayList<>(count);
@@ -101,10 +109,10 @@ public class ReactiveParallelInServer {
      */
     public <T> void multiElementStreamTest(Integer i) {
 
-        int pipeLength = 10;
-        int base = i * 1000000;
+        int pipeLength = PIPE_LENGTH;
+        int base = i * FOUNDATION;
         PublisherBuilder<Integer> stream = ReactiveStreams.fromIterable(() -> {
-            return IntStream.rangeClosed(0 + base, 99 + base).boxed().iterator();
+            return IntStream.rangeClosed(0 + base, ELEMENTS + base).boxed().iterator();
         });
 
         TestSubscriber subscriber = new TestSubscriber("mst");
@@ -129,14 +137,23 @@ public class ReactiveParallelInServer {
 
         ArrayList<Integer> actualResults = subscriber.getResults();
         System.out.println(Arrays.deepToString(actualResults.toArray()) + " results received on thread " + Thread.currentThread().getName());
-        assertEquals(expectedResults(), actualResults);
+        assertEquals(expectedResults(PIPE_LENGTH, base, ELEMENTS), "" + actualResults);
     }
 
     /**
      * @return
      */
-    private Object expectedResults() {
-        return "[15001000, 15001001, 15001002, 15001003, 15001004, 15001005, 15001006, 15001007, 15001008, 15001009, 15001010, 15001011, 15001012, 15001013, 15001014, 15001015, 15001016, 15001017, 15001018, 15001019, 15001020, 15001021, 15001022, 15001023, 15001024, 15001025, 15001026, 15001027, 15001028, 15001029, 15001030, 15001031, 15001032, 15001033, 15001034, 15001035, 15001036, 15001037, 15001038, 15001039, 15001040, 15001041, 15001042, 15001043, 15001044, 15001045, 15001046, 15001047, 15001048, 15001049, 15001050, 15001051, 15001052, 15001053, 15001054, 15001055, 15001056, 15001057, 15001058, 15001059, 15001060, 15001061, 15001062, 15001063, 15001064, 15001065, 15001066, 15001067, 15001068, 15001069, 15001070, 15001071, 15001072, 15001073, 15001074, 15001075, 15001076, 15001077, 15001078, 15001079, 15001080, 15001081, 15001082, 15001083, 15001084, 15001085, 15001086, 15001087, 15001088, 15001089, 15001090, 15001091, 15001092, 15001093, 15001094, 15001095, 15001096, 15001097, 15001098, 15001099]";
+    private Object expectedResults(int pipeLength, int base, int elements) {
+        String result = "[";
+
+        result = result + (base + (PIPE_LENGTH * PROC_INCREMENT));
+        int floor = base;
+        for (int i = 1; i <= elements; i++) {
+            result = result + ", " + (floor + (i + (PIPE_LENGTH * PROC_INCREMENT)));
+        }
+        result = result + "]";
+
+        return result;
     }
 
     /**
@@ -151,7 +168,7 @@ public class ReactiveParallelInServer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return j + 100;
+        return j + PROC_INCREMENT;
     }
 
 }
