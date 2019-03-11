@@ -36,7 +36,6 @@ import com.ibm.ws.concurrent.mp.context.CDIContextProviderHolder;
 import com.ibm.ws.concurrent.mp.context.SecurityContextProvider;
 import com.ibm.ws.concurrent.mp.context.TransactionContextProvider;
 import com.ibm.ws.concurrent.mp.context.WLMContextProvider;
-import com.ibm.ws.concurrent.mp.service.MPConfigAccessor;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.container.service.state.ApplicationStateListener;

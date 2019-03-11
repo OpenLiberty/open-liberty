@@ -21,8 +21,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
-import com.ibm.ws.concurrent.mp.service.MPConfigAccessor;
-
 /**
  * This class abstracts away usage of MicroProfile Config so that values can be
  * conditionally read from MicroProfile Config if available. The only data types

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.concurrent.mp.service;
+package com.ibm.ws.concurrent.mp;
 
 /**
  * This interface abstracts away usage of MicroProfile Config so that values can be
