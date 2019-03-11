@@ -32,7 +32,6 @@ Export-Package: \
 	com.ibm.ws.microprofile.openapi.utils,\
     !com.ibm.ws.microprofile.openapi.impl.validation.resources,\
     com.ibm.ws.microprofile.openapi.impl,\
-    com.ibm.ws.microprofile.openapi.impl.model.*,\
     com.ibm.ws.microprofile.openapi.impl.core.*,\
     com.ibm.ws.microprofile.openapi.impl.jaxrs2.*,\
     com.ibm.ws.microprofile.openapi.impl.parser.*,\
