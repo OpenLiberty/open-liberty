@@ -56,6 +56,9 @@ public class MPConcurrentTxTestServlet extends FATServlet {
     @Resource
     private DataSource defaultDataSource;
 
+    @Resource(shareable = false)
+    private DataSource defaultDataSource_unsharable;
+
     // Executor that can be used when tests don't want to tie up threads from the Liberty global thread pool to perform concurrent test logic
     private ExecutorService testThreads;
 
@@ -104,7 +107,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * while it simultaneously remains actively in use on the main thread.
      */
     @Test
-    public void testTransactionPropagationToMultipleThreadsWithExistingTransactionManagerAPI() throws Exception {
+    public void testJTATransactionPropagationToMultipleThreadsWithExistingTransactionManagerAPI() throws Exception {
         javax.transaction.TransactionManager tm = com.ibm.tx.jta.TransactionManagerFactory.getTransactionManager();
 
         // scenario with successful commit
@@ -194,7 +197,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * Propagates transaction context to stages that are later run inline on the same thread and committed.
      */
     @Test
-    public void testTransactionPropagatedToSameThreadAndCommit() throws Exception {
+    public void testJTATransactionPropagatedToSameThreadAndCommit() throws Exception {
         CompletableFuture<Integer> stage0 = txExecutor.newIncompleteFuture();
         CompletableFuture<Integer> stage1, stage2, stage3;
         tx.begin();
@@ -248,7 +251,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * Propagates transaction context to stages that are later run inline on the same thread and rolled back.
      */
     @Test
-    public void testTransactionPropagatedToSameThreadAndRollBack() throws Exception {
+    public void testJTATransactionPropagatedToSameThreadAndRollBack() throws Exception {
         CompletableFuture<Integer> stage0 = txExecutor.newIncompleteFuture();
         CompletableFuture<Integer> stage1, stage2, stage3;
         tx.begin();
@@ -308,7 +311,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * Propagates transaction context to be used serially from another thread, which also commits the transaction.
      */
     @Test
-    public void testTransactionUsedSeriallyAndCommitWhenComplete() throws Exception {
+    public void testJTATransactionUsedSeriallyAndCommitWhenComplete() throws Exception {
         CompletableFuture<Integer> stage1 = txExecutor.newIncompleteFuture();
         CompletableFuture<Integer> stage2;
         tx.begin();
@@ -360,7 +363,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * Propagates transaction context to be used serially from another thread, which also rolls back the transaction.
      */
     @Test
-    public void testTransactionUsedSeriallyAndRollBackWhenComplete() throws Exception {
+    public void testJTATransactionUsedSeriallyAndRollBackWhenComplete() throws Exception {
         CompletableFuture<Integer> stage1 = txExecutor.newIncompleteFuture();
         CompletableFuture<Integer> stage2;
         tx.begin();
@@ -423,7 +426,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * performed by the main thread.
      */
     @Test
-    public void testTransactionUsedSeriallyWithOverlapAndCommitWithinLastStage() throws Exception {
+    public void testJTATransactionUsedSeriallyWithOverlapAndCommitWithinLastStage() throws Exception {
         CompletableFuture<Integer> stage;
         tx.begin();
         try {
@@ -469,7 +472,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * performed by the main thread.
      */
     @Test
-    public void testTransactionUsedSeriallyWithOverlapAndRollBackWithinLastStage() throws Exception {
+    public void testJTATransactionUsedSeriallyWithOverlapAndRollBackWithinLastStage() throws Exception {
         CompletableFuture<Integer> stage;
         tx.begin();
         try {
@@ -518,11 +521,281 @@ public class MPConcurrentTxTestServlet extends FATServlet {
     }
 
     /**
+     * Serially use a sharable connection handle across multiple threads in a resource local transaction.
+     * Commit the transaction and verify the updates.
+     * The steps performed within this test do not actually require transaction context propagation.
+     * The purpose of this test is to verify that transaction context propagation/clearing at each stage
+     * does not interfere with resource local transactions.
+     */
+    @Test
+    public void testResourceLocalTransactionWithSharableHandleUsedSeriallyAndCommit() throws Exception {
+        Connection con = defaultDataSource.getConnection();
+        con.setAutoCommit(false);
+
+        CompletableFuture<Integer> stage = txExecutor
+                        .supplyAsync(() -> {
+                            try {
+                                return con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Chippewa', 12040)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        })
+                        .thenApply(numUpdates -> {
+                            try {
+                                return numUpdates + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Chisago', 54297)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        })
+                        .thenApplyAsync(numUpdates -> {
+                            try {
+                                return numUpdates + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Clay', 62040)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        })
+                        .whenComplete((result, failure) -> {
+                            try {
+                                try {
+                                    if (failure == null)
+                                        con.commit();
+                                    else
+                                        con.rollback();
+                                } finally {
+                                    con.close();
+                                }
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        });
+
+        assertEquals(Integer.valueOf(3), stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // verify table contents, which should show that the above transaction committed
+        try (Connection c = defaultDataSource.getConnection(); Statement st = c.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Chippewa' OR NAME='Chisago' OR NAME='Clay'");
+            assertTrue(result.next());
+            assertEquals(128377, result.getInt(1));
+        }
+    }
+
+    /**
+     * Serially use a sharable connection handle across multiple threads in a resource local transaction.
+     * Roll back the transaction and verify that no updates were made.
+     * The steps performed within this test do not actually require transaction context propagation.
+     * The purpose of this test is to verify that transaction context propagation/clearing at each stage
+     * does not interfere with resource local transactions.
+     */
+    @Test
+    public void testResourceLocalTransactionWithSharableHandleUsedSeriallyAndRollBack() throws Exception {
+        Connection con = defaultDataSource.getConnection();
+        con.setAutoCommit(false);
+
+        CompletableFuture<Integer> stage = txExecutor
+                        .supplyAsync(() -> {
+                            try {
+                                return con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Carlton', 35408)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        })
+                        .thenApply(numUpdates -> {
+                            try {
+                                return numUpdates + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Carver', 98799)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+
+                        })
+                        .thenApplyAsync(numUpdates -> {
+                            try {
+                                return numUpdates + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Cass', 28810)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        })
+                        .thenApplyAsync(numUpdates -> {
+                            try {
+                                // Intentionally violate the primary key constraint in order to force an exception path,
+                                // causing subsequent logic to roll back the transaction
+                                return numUpdates + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Cass', 29355)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        })
+                        .whenComplete((result, failure) -> {
+                            try {
+                                try {
+                                    if (failure == null)
+                                        con.commit();
+                                    else
+                                        con.rollback();
+                                } finally {
+                                    con.close();
+                                }
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        });
+
+        try {
+            fail("Duplicate key should have caused failure, not result of " + stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } catch (ExecutionException x) {
+            // expected
+        }
+
+        // verify table contents, which should show that the above transaction rolled back
+        try (Connection c = defaultDataSource.getConnection(); Statement st = c.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Carlton' OR NAME='Carver' OR NAME='Cass'");
+            assertTrue(result.next());
+            assertEquals(0, result.getInt(1));
+        }
+    }
+
+    /**
+     * Serially use an unshared connection handle across multiple threads in a resource local transaction.
+     * Commit the transaction and verify the updates.
+     * The steps performed within this test do not actually require transaction context propagation.
+     * The purpose of this test is to verify that transaction context propagation/clearing at each stage
+     * does not interfere with resource local transactions.
+     */
+    // TODO Unshared connections ARE impacted by the usage of different LTCs for the various stages.
+    // When clearing the LTC after the first stage:
+    // WLTC0033W: Resource dataSource[DefaultDataSource]/connectionManager rolled back in cleanup of LocalTransactionContainment.
+    // WLTC0032W: One or more local transaction resources were rolled back during the cleanup of a LocalTransactionContainment.
+    // FFDC1015I: An FFDC Incident has been created: "com.ibm.ws.LocalTransaction.RolledbackException: Resources rolled back due to unresolved action of rollback. com.ibm.ws.transaction.context.internal.TransactionContextImpl 116" at ffdc_19.03.11_09.50.58.0.log
+    //@Test
+    public void testResourceLocalTransactionWithUnsharedHandleUsedSeriallyAndCommit() throws Exception {
+        Connection con = defaultDataSource_unsharable.getConnection();
+        con.setAutoCommit(false);
+
+        CompletableFuture<Integer> stage = txExecutor
+                        .supplyAsync(() -> {
+                            try {
+                                return con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Big Stone', 5039)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        })
+                        .thenApply(numUpdates -> {
+                            try {
+                                return numUpdates + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Blue Earth', 65767)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        })
+                        .thenApplyAsync(numUpdates -> {
+                            try {
+                                return numUpdates + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Brown', 25243)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        })
+                        .whenComplete((result, failure) -> {
+                            try {
+                                try {
+                                    if (failure == null)
+                                        con.commit();
+                                    else
+                                        con.rollback();
+                                } finally {
+                                    con.close();
+                                }
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        });
+
+        assertEquals(Integer.valueOf(3), stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // verify table contents, which should show that the above transaction committed
+        try (Connection c = defaultDataSource_unsharable.getConnection(); Statement st = c.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Big Stone' OR NAME='Blue Earth' OR NAME='Brown'");
+            assertTrue(result.next());
+            assertEquals(96049, result.getInt(1));
+        }
+    }
+
+    /**
+     * Serially use an unshared connection handle across multiple threads in a resource local transaction.
+     * Roll back the transaction and verify that no updates were made.
+     * The steps performed within this test do not actually require transaction context propagation.
+     * The purpose of this test is to verify that transaction context propagation/clearing at each stage
+     * does not interfere with resource local transactions.
+     */
+    // TODO Unshared connections ARE impacted by the usage of different LTCs for the various stages. See comment on previous test.
+    // @Test
+    public void testResourceLocalTransactionWithUnsharedHandleUsedSeriallyAndRollBack() throws Exception {
+        Connection con = defaultDataSource_unsharable.getConnection();
+        con.setAutoCommit(false);
+
+        CompletableFuture<Integer> stage = txExecutor
+                        .supplyAsync(() -> {
+                            try {
+                                return con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Becker', 33552)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        })
+                        .thenApply(numUpdates -> {
+                            try {
+                                return numUpdates + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Beltrami', 45847)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+
+                        })
+                        .thenApplyAsync(numUpdates -> {
+                            try {
+                                return numUpdates + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Benton', 39360)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        })
+                        .thenApplyAsync(numUpdates -> {
+                            try {
+                                // Intentionally violate the primary key constraint in order to force an exception path,
+                                // causing subsequent logic to roll back the transaction
+                                return numUpdates + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Beltrami', 46513)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        })
+                        .whenComplete((result, failure) -> {
+                            try {
+                                try {
+                                    if (failure == null)
+                                        con.commit();
+                                    else
+                                        con.rollback();
+                                } finally {
+                                    con.close();
+                                }
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        });
+
+        try {
+            fail("Duplicate key should have caused failure, not result of " + stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } catch (ExecutionException x) {
+            // expected
+        }
+
+        // verify table contents, which should show that the above transaction rolled back
+        try (Connection c = defaultDataSource_unsharable.getConnection(); Statement st = c.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Becker' OR NAME='Beltrami' OR NAME='Benton'");
+            assertTrue(result.next());
+            assertEquals(0, result.getInt(1));
+        }
+    }
+
+    /**
      * Have two threads perform transactional operations within the same thread, which can run
      * at the same time. The main thread commits the transaction when the transactional operations finish.
      */
     @Test
-    public void testTwoThreadsConcurrentlyOperateInTransactionAndCommit() throws Exception {
+    public void testTwoThreadsConcurrentlyOperateInJTATransactionAndCommit() throws Exception {
         tx.begin();
         try (Connection con = defaultDataSource.getConnection()) {
             PreparedStatement ps = con.prepareStatement("INSERT INTO MNCOUNTIES VALUES (?,?)");
@@ -564,7 +837,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * at the same time. The main thread rolls back the transaction when the transactional operations finish.
      */
     @Test
-    public void testTwoThreadsConcurrentlyOperateInTransactionAndRollBack() throws Exception {
+    public void testTwoThreadsConcurrentlyOperateInJTATransactionAndRollBack() throws Exception {
         tx.begin();
         try (Connection con = defaultDataSource.getConnection()) {
             PreparedStatement ps = con.prepareStatement("INSERT INTO MNCOUNTIES VALUES (?,?)");
