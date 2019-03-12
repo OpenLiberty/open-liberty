@@ -68,7 +68,7 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
             return new TransactionContextImpl(false);
         else if ("PROPAGATE".equals(value)) {
             if (EmbeddableTransactionManagerFactory.getUOWCurrent().getUOWType() == UOWCurrent.UOW_GLOBAL)
-                return new SerialTransactionContextImpl();
+                return new SerialTransactionContextImpl(); // TODO raise IllegalStateException here to reject all propagation of transactions
             else
                 return new TransactionContextImpl(true);
         } else
