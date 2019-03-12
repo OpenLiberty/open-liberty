@@ -428,9 +428,9 @@ error.variable.name.missing=CWWKG0091E: Es muss ein Namensattribut f\u00fcr die 
 error.variable.name.missing.explanation=Die Serverkonfiguration enth\u00e4lt ein Variablenkonfigurationselement, das kein Namensattribut hat.
 error.variable.name.missing.useraction=F\u00fcgen Sie der Variablen ein Namensattribut hinzu.
 
-error.variable.value.missing=CWWKG0092E: Es muss ein Wertattribut f\u00fcr die Variable in Zeile {0} der Ressource {1} angegeben werden.
-error.variable.value.missing.explanation=Die Serverkonfiguration enth\u00e4lt ein Variablenkonfigurationselement, das ein Wertattribut hat.
-error.variable.value.missing.useraction=F\u00fcgen Sie der Variablen ein Wertattribut hinzu.
+error.variable.value.missing=CWWKG0092E: Es muss ein Wertattribut oder ein Standardwertattribut f\u00fcr die Variable in Zeile {0} der Ressource {1} angegeben werden.
+error.variable.value.missing.explanation=Die Serverkonfiguration enth\u00e4lt ein Variablenkonfigurationselement, das kein Wertattribut bzw. kein Standardwertattribut hat.
+error.variable.value.missing.useraction=F\u00fcgen Sie der Variablen ein Wertattribut bzw. ein Standardwertattribut hinzu.
 
 audit.dropin.being.processed=CWWKG0093A: Konfigurations-Drop-in-Ressource wird verarbeitet: {0}
 audit.dropin.being.processed.explanation=Der Inhalt der angegebenen Ressource wird in die Serverkonfiguration eingeschlossen.

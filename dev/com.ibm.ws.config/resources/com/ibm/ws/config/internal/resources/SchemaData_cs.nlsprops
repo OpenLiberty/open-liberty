@@ -34,6 +34,8 @@ config.internal.metatype.variableDefinitionType.name.documentation=N\u00e1zev pr
 config.internal.metatype.variableDefinitionType.name.label=N\u00e1zev
 config.internal.metatype.variableDefinitionType.value.documentation=Hodnota p\u0159i\u0159azen\u00e1 prom\u011bnn\u00e9.
 config.internal.metatype.variableDefinitionType.value.label=Hodnota
+config.internal.metatype.variableDefinitionType.defaultValue.documentation=V\u00fdchoz\u00ed hodnota, kter\u00e1 m\u00e1 b\u00fdt p\u0159i\u0159azena prom\u011bnn\u00e9, pokud nen\u00ed k dispozici \u017e\u00e1dn\u00e1 hodnota.
+config.internal.metatype.variableDefinitionType.defaultValue.label=V\u00fdchoz\u00ed hodnota
 
 config.internal.metatype.duration.desc=Zadejte kladn\u00e9 cel\u00e9 \u010d\u00edslo n\u00e1sledovan\u00e9 jednotkou \u010dasu, co\u017e m\u016f\u017ee b\u00fdt hodina (h), minuta (m), sekunda (s) nebo milisekunda (ms). Nap\u0159\u00edklad 500 milisekund zadejte jako 500ms. Do jedn\u00e9 polo\u017eky m\u016f\u017eete zahrnout v\u00edce hodnot. Nap\u0159\u00edklad 1s500ms je ekvivalentn\u00ed 1,5 sekundy.
 config.internal.metatype.duration-s.desc=Zadejte kladn\u00e9 cel\u00e9 \u010d\u00edslo n\u00e1sledovan\u00e9 jednotkou \u010dasu, co\u017e m\u016f\u017ee b\u00fdt hodina (h), minuta (m) nebo sekunda (s). Nap\u0159\u00edklad 30 sekund zadejte jako 30s. Do jedn\u00e9 polo\u017eky m\u016f\u017eete zahrnout v\u00edce hodnot. Nap\u0159\u00edklad 1m30s je ekvivalentn\u00ed 90 sekund\u00e1m.

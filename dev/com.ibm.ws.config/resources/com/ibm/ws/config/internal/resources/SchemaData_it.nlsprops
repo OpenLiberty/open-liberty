@@ -34,6 +34,8 @@ config.internal.metatype.variableDefinitionType.name.documentation=Il nome della
 config.internal.metatype.variableDefinitionType.name.label=Nome
 config.internal.metatype.variableDefinitionType.value.documentation=Il valore da assegnare alla variabile.
 config.internal.metatype.variableDefinitionType.value.label=Valore
+config.internal.metatype.variableDefinitionType.defaultValue.documentation=Il defaultValue da assegnare alla variabile se non \u00e8 disponibile alcun valore.
+config.internal.metatype.variableDefinitionType.defaultValue.label=Valore predefinito
 
 config.internal.metatype.duration.desc=Specificare un numero intero positivo seguito da un'unit\u00e0 di tempo, che pu\u00f2 essere ore (h), minuti (m), secondi (s) o millisecondi (ms). Ad esempio, specificare 500 millisecondi come 500ms. \u00c8 possibile includere pi\u00f9 valori in una singola immissione. Ad esempio, 1s500ms \u00e8 equivalente a 1,5 secondi.
 config.internal.metatype.duration-s.desc=Specificare un numero intero positivo seguito da un'unit\u00e0 di tempo, che pu\u00f2 essere ore (h), minuti (m) o secondi (s). Ad esempio, specificare 30 secondi come 30s. \u00c8 possibile includere pi\u00f9 valori in una singola immissione. Ad esempio, 1m30s \u00e8 equivalente a 90 secondi.

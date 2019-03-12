@@ -279,6 +279,10 @@ DSRA4013.ignored.connection.manager.config.used=DSRA4013I: P\u0159i pou\u017eit\
 DSRA4013.ignored.connection.manager.config.used.explanation=Uveden\u00e9 vlastnosti spr\u00e1vce p\u0159ipojen\u00ed nejsou platn\u00e9 p\u0159i pou\u017eit\u00ed Oracle UPC.
 DSRA4013.ignored.connection.manager.config.used.useraction=Odeberte vlastnosti spr\u00e1vce p\u0159ipojen\u00ed a m\u00edsto toho pou\u017eijte ekvivalentn\u00ed funk\u010dnost Oracle UPC.
 
+DSRA4014.URL.for.Driver.missing=DSRA4014E: Typ java.sql.Driver byl ur\u010den pro zdroj dat {0}, ale nebyl ur\u010den \u017e\u00e1dn\u00fd atribut URL.
+DSRA4014.URL.for.Driver.missing.explanation=Adresa URL p\u0159ipojen\u00ed mus\u00ed b\u00fdt ur\u010dena pro zdroj dat, kter\u00fd je typu java.sql.Driver.
+DSRA4014.URL.for.Driver.missing.useraction=P\u0159idejte platnou adresu URL do zdroje dat.
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
