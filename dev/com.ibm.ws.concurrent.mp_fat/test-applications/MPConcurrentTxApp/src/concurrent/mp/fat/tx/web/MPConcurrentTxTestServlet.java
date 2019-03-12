@@ -73,6 +73,12 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                     .cleared(ThreadContext.ALL_REMAINING)
                     .build();
 
+    private ThreadContext txContextUnchanged = ThreadContext.builder()
+                    .propagated()
+                    .unchanged(ThreadContext.TRANSACTION)
+                    .cleared(ThreadContext.ALL_REMAINING)
+                    .build();
+
     private ManagedExecutor txExecutor = ManagedExecutor.builder()
                     .propagated(ThreadContext.TRANSACTION)
                     .cleared(ThreadContext.ALL_REMAINING)
@@ -240,10 +246,13 @@ public class MPConcurrentTxTestServlet extends FATServlet {
 
         assertEquals(Integer.valueOf(3), stage3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
+        tx.begin(); // also start a new transaction to verify the prior transaction is not left around on the main thread
         try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
             ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Winona' OR NAME='Rice' OR NAME='Fillmore'");
             assertTrue(result.next());
             assertEquals(137068, result.getInt(1));
+        } finally {
+            tx.commit();
         }
     }
 
@@ -300,10 +309,13 @@ public class MPConcurrentTxTestServlet extends FATServlet {
         }
 
         // Verify that the transaction rolled back, meaning none of the inserts remain in the database
+        tx.begin(); // also start a new transaction to verify the prior transaction is not left around on the main thread
         try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
             ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Sherburne' OR NAME='St. Louis' OR NAME='Stearns'");
             assertTrue(result.next());
             assertEquals(0, result.getInt(1));
+        } finally {
+            tx.commit();
         }
     }
 
@@ -515,6 +527,134 @@ public class MPConcurrentTxTestServlet extends FATServlet {
         // Verify that the transaction rolled back, meaning none of the inserts remain in the database
         try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
             ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Houston' OR NAME='Steele'");
+            assertTrue(result.next());
+            assertEquals(0, result.getInt(1));
+        }
+    }
+
+    /**
+     * Serially use an unshared connection handle across multiple threads in a resource local transaction,
+     * where transaction context is left unchanged by MicroProfile Concurrency.
+     * Commit the transaction and verify the updates.
+     */
+    @Test
+    public void testResourceLocalTransactionUnchangedWithUnsharedHandleUsedSeriallyAndCommit() throws Exception {
+        Connection con = defaultDataSource_unsharable.getConnection();
+        con.setAutoCommit(false);
+
+        CompletableFuture<Integer> stage = txExecutor
+                        .supplyAsync(txContextUnchanged.contextualSupplier(() -> {
+                            try {
+                                return con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Clearwater', 8824)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        }))
+                        .thenApply(txContextUnchanged.contextualFunction(numUpdates -> {
+                            try {
+                                return numUpdates + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Cook', 5270)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        }))
+                        .thenApplyAsync(txContextUnchanged.contextualFunction(numUpdates -> {
+                            try {
+                                return numUpdates + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Cottonwood', 11437)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        }))
+                        .whenComplete((result, failure) -> {
+                            try {
+                                try {
+                                    if (failure == null)
+                                        con.commit();
+                                    else
+                                        con.rollback();
+                                } finally {
+                                    con.close();
+                                }
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        });
+
+        assertEquals(Integer.valueOf(3), stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // verify table contents, which should show that the above transaction committed
+        try (Connection c = defaultDataSource_unsharable.getConnection(); Statement st = c.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Clearwater' OR NAME='Cook' OR NAME='Cottonwood'");
+            assertTrue(result.next());
+            assertEquals(25531, result.getInt(1));
+        }
+    }
+
+    /**
+     * Serially use an unshared connection handle across multiple threads in a resource local transaction,
+     * where transaction context is left unchanged by MicroProfile Concurrency.
+     * Roll back the transaction and verify that no updates were made.
+     */
+    @Test
+    public void testResourceLocalTransactionUnchangedWithUnsharedHandleUsedSeriallyAndRollBack() throws Exception {
+        Connection con = defaultDataSource_unsharable.getConnection();
+        con.setAutoCommit(false);
+
+        CompletableFuture<Integer> stage = txExecutor
+                        .supplyAsync(txContextUnchanged.contextualSupplier(() -> {
+                            try {
+                                return con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Crow Wing', 63505)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        }))
+                        .thenApply(txContextUnchanged.contextualFunction(numUpdates -> {
+                            try {
+                                return numUpdates + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Douglas', 36891)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+
+                        }))
+                        .thenApplyAsync(txContextUnchanged.contextualFunction(numUpdates -> {
+                            try {
+                                return numUpdates + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Aitkin', 15841)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        }))
+                        .thenApplyAsync(txContextUnchanged.contextualFunction(numUpdates -> {
+                            try {
+                                // Intentionally violate the primary key constraint in order to force an exception path,
+                                // causing subsequent logic to roll back the transaction
+                                return numUpdates + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Aitkin', 15829)");
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        }))
+                        .whenComplete((result, failure) -> {
+                            try {
+                                try {
+                                    if (failure == null)
+                                        con.commit();
+                                    else
+                                        con.rollback();
+                                } finally {
+                                    con.close();
+                                }
+                            } catch (SQLException x) {
+                                throw new CompletionException(x);
+                            }
+                        });
+
+        try {
+            fail("Duplicate key should have caused failure, not result of " + stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } catch (ExecutionException x) {
+            // expected
+        }
+
+        // verify table contents, which should show that the above transaction rolled back
+        try (Connection c = defaultDataSource_unsharable.getConnection(); Statement st = c.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Crow Wing' OR NAME='Douglas' OR NAME='Aitkin'");
             assertTrue(result.next());
             assertEquals(0, result.getInt(1));
         }
