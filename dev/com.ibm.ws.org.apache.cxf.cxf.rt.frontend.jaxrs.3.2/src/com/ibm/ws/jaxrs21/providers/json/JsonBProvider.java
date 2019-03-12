@@ -14,12 +14,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Iterator;
 import java.util.ServiceLoader;
+import java.util.concurrent.CompletionStage;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.spi.JsonbProvider;
@@ -114,7 +116,16 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
     public Object readFrom(Class<Object> clazz, Type genericType, Annotation[] annotations,
                            MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
         Object obj = null;
-        obj = getJsonb().fromJson(entityStream, genericType);
+        // For most generic return types, we want to use the genericType so as to ensure
+        // that the generic value is not lost on conversion - specifically in collections.
+        // But for CompletionStage<SomeType> we want to use clazz to pull the right value
+        // - and then client code will handle the result, storing it in the CompletionStage.
+        if ((genericType instanceof ParameterizedType) &&
+            CompletionStage.class.equals( ((ParameterizedType)genericType).getRawType())) {
+            obj = getJsonb().fromJson(entityStream, clazz);
+        } else {
+            obj = getJsonb().fromJson(entityStream, genericType);
+        }
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "object=" + obj);

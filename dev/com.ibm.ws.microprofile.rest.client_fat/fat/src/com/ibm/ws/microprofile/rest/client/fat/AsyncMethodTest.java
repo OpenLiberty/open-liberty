@@ -10,6 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.rest.client.fat;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -58,6 +62,13 @@ public class AsyncMethodTest extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer("CWWKF0033E"); //ignore this error for mismatch with jsonb-1.0 and Java EE 7
+        try {
+            // check for error that occurs if cannot handle CompletionStage<?> generic type in JsonBProvider
+            List<String> jsonbProviderErrors = server.findStringsInLogs("E Problem with reading the data");
+            assertTrue("Found JsonBProvider errors in log file", 
+                       jsonbProviderErrors == null || jsonbProviderErrors.isEmpty());
+        } finally {
+            server.stopServer("CWWKF0033E"); //ignore this error for mismatch with jsonb-1.0 and Java EE 7
+        }
     }
 }
