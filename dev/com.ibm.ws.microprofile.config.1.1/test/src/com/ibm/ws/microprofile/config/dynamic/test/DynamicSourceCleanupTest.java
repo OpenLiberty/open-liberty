@@ -10,9 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.dynamic.test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 
 import java.lang.ref.WeakReference;
@@ -52,7 +51,7 @@ public class DynamicSourceCleanupTest extends AbstractConfigTest {
 
         // Ensure that the source is being refreshed
         Thread.sleep(refreshInterval + extraInterval);
-        assertThat("Config source was not refreshed", TestDynamicConfigSource.getPropertiesLastCalled, not(equalTo(lastGetPropertiesTime)));
+        assertNotSame("Config source was not refreshed", TestDynamicConfigSource.getPropertiesLastCalled, lastGetPropertiesTime);
 
         // Remove references to the config and wait for it to be garbage collected
         WeakReference<Config> weakConfig = new WeakReference<>(config);
@@ -71,7 +70,7 @@ public class DynamicSourceCleanupTest extends AbstractConfigTest {
         lastGetPropertiesTime = TestDynamicConfigSource.getPropertiesLastCalled;
 
         Thread.sleep(refreshInterval + extraInterval);
-        assertThat("Config source was refreshed after config was GC'd", TestDynamicConfigSource.getPropertiesLastCalled, equalTo(lastGetPropertiesTime));
+        assertEquals("Config source was refreshed after config was GC'd", TestDynamicConfigSource.getPropertiesLastCalled, lastGetPropertiesTime);
 
     }
 
