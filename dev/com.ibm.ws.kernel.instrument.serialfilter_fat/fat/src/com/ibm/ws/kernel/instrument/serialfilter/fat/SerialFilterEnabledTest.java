@@ -87,10 +87,6 @@ public class SerialFilterEnabledTest extends FATServletClient {
 
         // update server.xml
         server.reconfigureServer("serverAllAllowed.xml");
-
-        server.resetLogMarks();
-        assertNotNull("The messages.log file should contain CWWKS8000I message.", server.waitForStringInLogUsingMark("CWWKS8000I"));
-
         server.setMarkToEndOfLog();
         String result = runTestWithResponse(server, SERVLET_NAME, "AllAllowed").toString();
         Log.info(this.getClass(), "AllAllowed", "AllAllowed returned: " + result);
