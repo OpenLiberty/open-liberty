@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -911,7 +911,9 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
 
     @Override
     protected void fireMetaDataCreated(EJBModuleMetaDataImpl mmd) {
-        // Nothing.  This is done by the application handler.
+        // Nothing (except log metadata dump).  This is done by the application handler.
+        if (TraceComponent.isAnyTracingEnabled() & tc.isDebugEnabled())
+            Tr.debug(tc, mmd.toDumpString());
     }
 
     @Override
