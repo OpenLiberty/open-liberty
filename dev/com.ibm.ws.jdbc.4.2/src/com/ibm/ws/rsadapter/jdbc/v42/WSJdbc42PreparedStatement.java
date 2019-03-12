@@ -49,6 +49,8 @@ public class WSJdbc42PreparedStatement extends WSJdbc41PreparedStatement impleme
 
     @Override
     public long getCompatibleUpdateCount() throws SQLException {
+        // KEEP CODE IN SYNC: This method is duplicated in WSJdbc42Statement, WSJdbc42PreparedStatement,
+        // and WSJdbc42CallableStatement because multiple inheritance isn't allowed.
         if (mcf.jdbcDriverSpecVersion >= 42 && mcf.supportsGetLargeUpdateCount) {
             try {
                 return stmtImpl.getLargeUpdateCount();
