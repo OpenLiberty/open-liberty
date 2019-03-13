@@ -11,7 +11,7 @@
 package com.ibm.ws.microprofile.appConfig.dynamicSources.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import javax.servlet.annotation.WebServlet;
@@ -199,7 +199,7 @@ public class DynamicSourcesTestServlet extends FATServlet {
             Thread.sleep(ConfigConstants.MINIMUM_DYNAMIC_REFRESH_INTERVAL + 1000);
 
             // Check that config source is currently being refreshed
-            assertNotSame("Config Source was not refreshed", s1.lastRefresh, lastRefresh);
+            assertFalse("Config Source was not refreshed", s1.lastRefresh == lastRefresh);
 
         } finally {
             ConfigProviderResolver.instance().releaseConfig(config);

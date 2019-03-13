@@ -11,7 +11,7 @@
 package com.ibm.ws.microprofile.config.dynamic.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.lang.ref.WeakReference;
@@ -51,7 +51,7 @@ public class DynamicSourceCleanupTest extends AbstractConfigTest {
 
         // Ensure that the source is being refreshed
         Thread.sleep(refreshInterval + extraInterval);
-        assertNotSame("Config source was not refreshed", TestDynamicConfigSource.getPropertiesLastCalled, lastGetPropertiesTime);
+        assertFalse("Config source was not refreshed", TestDynamicConfigSource.getPropertiesLastCalled == lastGetPropertiesTime);
 
         // Remove references to the config and wait for it to be garbage collected
         WeakReference<Config> weakConfig = new WeakReference<>(config);
