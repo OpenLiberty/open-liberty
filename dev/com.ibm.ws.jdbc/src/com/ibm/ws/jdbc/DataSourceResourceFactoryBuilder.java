@@ -239,10 +239,12 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         }
         
         // initialPoolSize > 0 not supported unless using UCP
-        value = vendorProps.remove(DataSourceDef.initialPoolSize.name());
-        if (value != null && ((Integer) value) > 0 && !isUCP)
-            ConnectorService.logMessage(Level.INFO, "IGNORE_FEATURE_J2CA0240", DataSourceDef.initialPoolSize.name(), jndiName);
-
+        if(!isUCP) {
+            value = vendorProps.remove(DataSourceDef.initialPoolSize.name());
+            if (value != null && ((Integer) value) > 0)
+                ConnectorService.logMessage(Level.INFO, "IGNORE_FEATURE_J2CA0240", DataSourceDef.initialPoolSize.name(), jndiName);
+        }
+        
         // maxStatements per datasource --> statementCacheSize per connection or for UCP maxStatements per connection
         value = vendorProps.remove(DataSourceDef.maxStatements.name());
         if (value != null) {
