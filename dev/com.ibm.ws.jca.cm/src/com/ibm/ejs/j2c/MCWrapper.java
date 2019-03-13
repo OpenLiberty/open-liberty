@@ -268,6 +268,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     private boolean _supportsReAuth = false;
     private int hashMapBucket = 0;
     private Object sharedPoolCoordinator = null;
+    private Object unSharedPoolCoordinator = null;
     private Object mcWrapperList = null;
 
     private Object currentSharedPool = null;
@@ -515,6 +516,20 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     @Override
     public void setSharedPoolCoordinator(Object sharedPoolCoordinator) {
         this.sharedPoolCoordinator = sharedPoolCoordinator;
+    }
+
+    /**
+     * Set the unshared pool coordinator
+     */
+    @Override
+    public void setUnSharedPoolCoordinator(Object unSharedPoolCoordinator) {
+        this.unSharedPoolCoordinator = unSharedPoolCoordinator;
+    }
+
+    @Override
+    public Object getUnSharedPoolCoordinator() {
+        // TODO Auto-generated method stub
+        return unSharedPoolCoordinator;
     }
 
     @Override
@@ -1632,6 +1647,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             uowCoord = null;
             holdTimeStart = 0;
             holdStartTimeSet = false;
+            lastAllocationTime = 0;
             threadId = null;
             threadName = null;
             totalUseTime = 0;
@@ -1639,6 +1655,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             useStartTimeSet = false;
             totalHoldTime = 0;
             purgeState = false;
+            unSharedPoolCoordinator = null;
             if (!isAlreadyFreeActive) {
                 isNotAlreadyFreeActive();
             }
@@ -2491,7 +2508,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     @Override
     public String toString() {
 
-        StringBuffer buf = new StringBuffer(256);
+        StringBuffer buf = new StringBuffer(500);
 
         /*
          * Added the isStale check to mark stale connections in the
@@ -2515,6 +2532,8 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             buf.append(" Connections being held ");
             buf.append(mcConnectionCount);
         }
+        if (unSharedPoolCoordinator != null)
+            buf.append(" Inside transaction scope " + unSharedPoolCoordinator);
         buf.append(nl);
 
         return buf.toString();
