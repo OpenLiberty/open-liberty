@@ -647,8 +647,8 @@ apply plugin: 'org.hidetake.ssh'
 remotes {
     dhe {
         host = props.getProperty("dhe.server")
-        user = props.getProperty("dhe.user")
-        password = props.getProperty("dhe.password")
+        user = props.getProperty("intranet.user")
+        password = props.getProperty("intranet.password")
         knownHosts = allowAnyHosts
     }
 }
@@ -674,7 +674,7 @@ task publishPublicArtifactsOnDhe {
             version = props.getProperty("buildResultUUID")
         }
 
-        String userAtHost = props.getProperty("dhe.user") + "@" + props.getProperty("dhe.server")
+        String userAtHost = props.getProperty("intranet.user") + "@" + props.getProperty("dhe.server")
         String dir = "/www/stage/export/pub/software/openliberty/runtime"
         String publicDHEUrl = "http://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime"
         String dest = userAtHost + ":" + dir
