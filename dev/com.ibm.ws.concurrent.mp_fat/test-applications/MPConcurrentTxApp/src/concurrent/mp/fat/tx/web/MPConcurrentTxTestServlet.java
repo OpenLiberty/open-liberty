@@ -320,6 +320,116 @@ public class MPConcurrentTxTestServlet extends FATServlet {
     }
 
     /**
+     * Propagates transaction context to stages that are immediately run inline on the same thread and committed.
+     * The purpose of this test is to determine whether the transactions implementation will be confused by a
+     * restore step that involves restoring an already-committed transaction back to the main thread. This should
+     * ideally be a no-op, but it necessary to validate that it behaves that way and that it does not prevent the
+     * starting of subsequent transactions.
+     */
+    @Test
+    public void testJTATransactionPropagatedToSameThreadImmediatelyAndCommit() throws Exception {
+        CompletableFuture<Integer> stage0 = txExecutor.completedFuture(0);
+        CompletableFuture<Integer> stage1, stage2;
+        tx.begin();
+        try {
+            stage1 = stage0.thenApply(numUpdates -> {
+                try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+                    return numUpdates + st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Itasca', 45237)");
+                } catch (Exception x) {
+                    throw new CompletionException(x);
+                }
+            });
+            stage2 = stage1.thenApply(numUpdates -> {
+                try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+                    numUpdates += st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Isanti', 38584)");
+                    tx.commit();
+                    return numUpdates;
+                } catch (Exception x) {
+                    throw new CompletionException(x);
+                }
+            }).exceptionally(x -> {
+                try {
+                    tx.rollback();
+                } catch (Exception x2) {
+                    x2.printStackTrace();
+                }
+                throw new CompletionException(x);
+            });
+        } finally {
+            tm.suspend();
+        }
+
+        assertEquals(Integer.valueOf(2), stage2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        tx.begin(); // also start a new transaction to verify the prior transaction is not left around on the main thread
+        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Itasca' OR NAME='Isanti'");
+            assertTrue(result.next());
+            assertEquals(83821, result.getInt(1));
+        } finally {
+            tx.commit();
+        }
+    }
+
+    /**
+     * Propagates transaction context to stages that are immediately run inline on the same thread and rolled back.
+     * The purpose of this test is to determine whether the transactions implementation will be confused by a
+     * restore step that involves restoring an already-rolled-back transaction back to the main thread. This should
+     * ideally be a no-op, but it necessary to validate that it behaves that way and that it does not prevent the
+     * starting of subsequent transactions.
+     */
+    @Test
+    public void testJTATransactionPropagatedToSameThreadImmediatelyAndRollBack() throws Exception {
+        CompletableFuture<Integer> stage0 = txExecutor.completedFuture(0);
+        CompletableFuture<Integer> stage1, stage2;
+        tx.begin();
+        try {
+            stage1 = stage0.thenApply(numUpdates -> {
+                try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+                    return numUpdates + st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Hubbard', 20743)");
+                } catch (Exception x) {
+                    throw new CompletionException(x);
+                }
+            });
+            stage2 = stage1.thenApply(numUpdates -> {
+                try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+                    numUpdates += st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Jackson', 10104)");
+                    if (numUpdates > 0) // always true
+                        throw new SQLException("Fake error is raised to force a rollback.");
+                    return numUpdates;
+                } catch (Exception x) {
+                    throw new CompletionException(x);
+                }
+            }).exceptionally(x -> {
+                try {
+                    tx.rollback();
+                } catch (Exception x2) {
+                    x2.printStackTrace();
+                }
+                throw new CompletionException(x);
+            });
+        } finally {
+            tm.suspend();
+        }
+
+        try {
+            fail("Should report exceptional completion. Instead: " + stage2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } catch (ExecutionException x) {
+            // expected
+        }
+
+        // Verify that the transaction rolled back, meaning none of the inserts remain in the database
+        tx.begin(); // also start a new transaction to verify the prior transaction is not left around on the main thread
+        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Hubbard' OR NAME='Jackson'");
+            assertTrue(result.next());
+            assertEquals(0, result.getInt(1));
+        } finally {
+            tx.commit();
+        }
+    }
+
+    /**
      * Propagates transaction context to be used serially from another thread, which also commits the transaction.
      */
     @Test
