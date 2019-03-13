@@ -52,7 +52,7 @@ Service-Component: \
     properties:="resources=${app-resources}"
 
 -buildpath: \
-  com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.core.3.3;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2;version=latest,\
   com.ibm.websphere.javaee.cdi.1.2;version=latest,\
   com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\

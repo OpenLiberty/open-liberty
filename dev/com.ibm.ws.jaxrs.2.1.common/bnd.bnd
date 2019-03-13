@@ -162,14 +162,14 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
   com.ibm.ws.kernel.feature,\
   com.ibm.ws.kernel.service,\
   com.ibm.ws.logging.core,\
-  com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.rt.rs.service.description.3.2;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.rt.rs.sse.3.2;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.tools.common.3.2;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.tools.wadlto.jaxrs.3.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.core.3.3;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.3;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.3;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.rs.service.description.3.3;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.rs.sse.3.3;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.3;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.tools.common.3.3;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.tools.wadlto.jaxrs.3.3;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.webservices.handler;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations
