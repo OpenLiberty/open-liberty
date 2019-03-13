@@ -27,6 +27,11 @@
         <properties.derby.embedded createDatabase="create" databaseName="memory:txdb"/>
     </dataSource>
 
+    <dataSource id="OnePhaseDataSource" jndiName="jdbc/ds1phase" type="javax.sql.ConnectionPoolDataSource">
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:txdb"/>
+    </dataSource>
+
     <library id="DerbyLib">
         <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
     </library>
