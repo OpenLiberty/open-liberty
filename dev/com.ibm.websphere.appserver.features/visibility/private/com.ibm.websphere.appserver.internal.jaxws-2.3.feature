@@ -25,7 +25,7 @@ com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2, \
 com.ibm.ws.org.apache.cxf-rt-management.3.2, \
 com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.3.2, \
 com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2, \
-com.ibm.ws.org.jvnet.mimepull; require-java:="9"
+com.ibm.ws.org.jvnet.mimepull; require-java:="9", \
 com.ibm.ws.jaxws.2.3.common, \
 com.ibm.websphere.javaee.jaxws.2.3; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.xml.ws:jaxws-api:2.3.0", \
 com.ibm.websphere.javaee.jws.1.0; require-java:="9"; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.jws:jsr181-api:1.0-MR1",\

@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jaxws-2.2
 visibility=public
+singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
 IBM-API-Package: \
