@@ -235,7 +235,7 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
         }
     });
 
-    private int modulesStarting=0;
+    private volatile int modulesStarting=0;
     
     // Servlet 4.0
     private URIMatcherFactory uriMatcherFactory;
