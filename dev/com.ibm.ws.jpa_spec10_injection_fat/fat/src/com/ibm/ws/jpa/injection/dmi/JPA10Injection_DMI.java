@@ -9,26 +9,20 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa;
+package com.ibm.ws.jpa.injection.dmi;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.jpa.injection.dfi.JPA10Injection_DFI;
-import com.ibm.ws.jpa.injection.dmi.JPA10Injection_DMI;
-import com.ibm.ws.jpa.injection.jndi.JPA10Injection_JNDI;
-
-/**
- * Test cases for JPA Injection.
- *
- */
 @RunWith(Suite.class)
 @SuiteClasses({
-                JPA10Injection_JNDI.class,
-                JPA10Injection_DFI.class,
-                JPA10Injection_DMI.class
+                JPA10Injection_DMI_NoInheritance_EJB.class,
+                JPA10Injection_DMI_NoInheritance_Web.class,
+                JPA10Injection_DMI_YesInheritance_EJB.class,
+                JPA10Injection_DMI_YesInheritance_DDOvrd_EJB.class,
+                JPA10Injection_DMI_YesInheritance_Web.class
 })
-public class JPAInjectionFATSuite {
+public class JPA10Injection_DMI {
 
 }
