@@ -1049,6 +1049,130 @@ public class MPConcurrentTxTestServlet extends FATServlet {
     /**
      * Propagates transaction context to be used serially from another thread, which also commits the transaction.
      * The resource that is enlisted in the transaction is a sharable one-phase only resource.
+     * A single connection handle is cached and reused across all stages where transactional work is performed.
+     */
+    @Test
+    public void testSharableOnePhaseResourceInJTATransactionCachedHandleUsedSeriallyAndCommitWhenComplete() throws Exception {
+        CompletableFuture<DataSource> getDataSource = txExecutor.newIncompleteFuture();
+        CompletableFuture<Integer> stage;
+        tx.begin();
+        try {
+            stage = getDataSource.thenApplyAsync(ds -> {
+                try {
+                    Connection con = ds.getConnection();
+                    con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Mille Lacs', 25635)");
+                    return con;
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApplyAsync(con -> {
+                try {
+                    con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Morrison', 32880)");
+                    return con;
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApplyAsync(con -> {
+                try {
+                    return con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Murray', 8394)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).whenCompleteAsync((result, failure) -> {
+                try {
+                    if (failure == null && tx.getStatus() == Status.STATUS_ACTIVE)
+                        tx.commit();
+                    else
+                        tx.rollback();
+                } catch (Exception x) {
+                    if (failure == null)
+                        throw new CompletionException(x);
+                }
+            });
+        } finally {
+            tm.suspend();
+        }
+
+        getDataSource.complete(onePhaseDataSource);
+
+        assertEquals(Integer.valueOf(1), stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        try (Connection con = onePhaseDataSource.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Mille Lacs' OR NAME='Morrison' OR NAME='Murray'");
+            assertTrue(result.next());
+            assertEquals(66909, result.getInt(1));
+        }
+    }
+
+    /**
+     * Propagates transaction context to be used serially from another thread, which also rolls back the transaction.
+     * The resource that is enlisted in the transaction is a sharable one-phase only resource.
+     * A single connection handle is cached and reused across all stages where transactional work is performed.
+     */
+    @Test
+    public void testSharableResourceInOnePhaseJTATransactionCachedHandleUsedSeriallyAndRollBackWhenComplete() throws Exception {
+        CompletableFuture<DataSource> getDataSource = txExecutor.newIncompleteFuture();
+        CompletableFuture<Integer> stage;
+        tx.begin();
+        try {
+            stage = getDataSource.thenApplyAsync(ds -> {
+                try {
+                    Connection con = ds.getConnection();
+                    con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Nicollet', 33477)");
+                    return con;
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApplyAsync(con -> {
+                try {
+                    con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Nobles', 21854)");
+                    return con;
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApplyAsync(con -> {
+                try {
+                    return con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Norman', 6589)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApplyAsync(result -> {
+                try {
+                    tx.setRollbackOnly(); // ensure the transaction always rolls back
+                    return 0;
+                } catch (IllegalStateException | SystemException x) {
+                    throw new CompletionException(x);
+                }
+            }).whenCompleteAsync((result, failure) -> {
+                try {
+                    if (failure == null && tx.getStatus() == Status.STATUS_ACTIVE) {
+                        tx.commit();
+                    } else
+                        tx.rollback();
+                } catch (Exception x) {
+                    if (failure == null)
+                        throw new CompletionException(x);
+                }
+            });
+        } finally {
+            tm.suspend();
+        }
+
+        getDataSource.complete(onePhaseDataSource);
+
+        assertEquals(Integer.valueOf(0), stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Verify that the transaction rolled back, meaning none of the inserts remain in the database
+        try (Connection con = onePhaseDataSource.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Nicollet' OR NAME='Nobles' OR NAME='Norman'");
+            assertTrue(result.next());
+            assertEquals(0, result.getInt(1));
+        }
+    }
+
+    /**
+     * Propagates transaction context to be used serially from another thread, which also commits the transaction.
+     * The resource that is enlisted in the transaction is a sharable one-phase only resource.
      */
     @Test
     public void testSharableOnePhaseResourceInJTATransactionUsedSeriallyAndCommitWhenComplete() throws Exception {
