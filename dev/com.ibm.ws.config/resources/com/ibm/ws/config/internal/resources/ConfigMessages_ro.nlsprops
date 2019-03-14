@@ -447,13 +447,9 @@ atribut de nume.
 error.variable.name.missing.useraction=Ad\u0103uga\u0163i un \
 atribut de nume la variabil\u0103.
 
-error.variable.value.missing=CWWKG0092E: Un \
-atribut de valoare trebuie specificat pentru variabil\u0103 pe linia {0} a \
-resursei {1}
-error.variable.value.missing.explanation=Configura\u0163ia serverului con\u0163ine un element de configurare variabil\u0103 \
-care nu are un atribut de valoare.
-error.variable.value.missing.useraction=Ad\u0103uga\u0163i un \
-atribut de valoare la variabil\u0103.
+error.variable.value.missing=CWWKG0092E: Trebuie specificat un atribut de valoare sau atributul defaultValue pentru variabila din linia {0} a resursei {1}.
+error.variable.value.missing.explanation=Configura\u0163ia serverului con\u0163ine un element de configura\u0163ie variabil care nu are un atribut de valoare sau atributul defaultValue.
+error.variable.value.missing.useraction=Ad\u0103uga\u0163i variabilei un atribut de valoare sau atributul defaultValue.
 
 audit.dropin.being.processed=CWWKG0093A: Procesarea resursei drop-in-urilor de configurare: {0}
 audit.dropin.being.processed.explanation=Con\u0163inuturile resursei specificate vor fi incluse \u00een configura\u0163ia serverului.

@@ -20,8 +20,8 @@
 #do not translate issuerIdentifier, iss
 #
 OIDC_IDTOKEN_VERIFY_ISSUER_ERR=CWWKS1751E: A valida\u00e7\u00e3o falhou para o token de ID solicitado por [{0}] porque o emissor (iss) [{1}] especificado no token n\u00e3o corresponde ao atributo [issuerIdentifier] [{2}] do provedor especificado na configura\u00e7\u00e3o do cliente OpenID Connect. Verifique o atributo issuerIdentifier na configura\u00e7\u00e3o do cliente.
-OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=A valida\u00e7\u00e3o do token de ID falhou porque o emissor especificado na configura\u00e7\u00e3o do cliente OpenID Connect (relying party ou RP) e o emissor no token n\u00e3o correspondem.
-OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Certifique-se de que o atributo [issuerIdentifier] especificado na configura\u00e7\u00e3o do cliente OpenID Connect (RP) corresponda ao emissor do provedor OpenID Connect (OP) que est\u00e1 sendo usado.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=A valida\u00e7\u00e3o do token de ID falhou porque o emissor especificado no cliente do OpenID Connect (parte confi\u00e1vel ou RP) ou a configura\u00e7\u00e3o do cliente de login social e o emissor no token n\u00e3o correspondem.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Certifique-se de que o atributo [issuerIdentifier] especificado na configura\u00e7\u00e3o do cliente de login social (RP) ou do cliente do OpenID Connect corresponda ao emissor para o provedor do OpenID Connect (OP) sendo usado.
 
 #
 OIDC_IDTOKEN_SIGNATURE_ERR=CWWKS1752E: Ocorreu um erro ao tentar assinar um token de ID usando o algoritmo [{0}]: [{1}].
@@ -182,3 +182,8 @@ TOKEN_ISSUER_NOT_TRUSTED.useraction=Verifique se o valor da solicita\u00e7\u00e3
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1782E: O servidor de recurso falhou na solicita\u00e7\u00e3o de autentica\u00e7\u00e3o porque o token cont\u00e9m uma solicita\u00e7\u00e3o [{0}], mas o valor do atributo de configura\u00e7\u00e3o do cliente [{1}] indica que o token n\u00e3o deve conter a solicita\u00e7\u00e3o.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=O token n\u00e3o pode conter a solicita\u00e7\u00e3o especificada devido ao valor do atributo de configura\u00e7\u00e3o especificado.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Obtenha um novo token que n\u00e3o cont\u00e9m a solicita\u00e7\u00e3o especificada ou mude o valor de atributo de configura\u00e7\u00e3o especificado para permitir que a solicita\u00e7\u00e3o seja inclu\u00edda no token.
+
+# 0=Client ID, 1=List of invalid parameter names, 2=forwardLoginParameter
+BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: O cliente do OpenID Connect [{0}] inclui {1} nos valores especificados pelo atributo de configura\u00e7\u00e3o [{2}]. Os valores especificados ser\u00e3o ignorados.
+BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=A especifica\u00e7\u00e3o do OAuth 2.0 define um conjunto de par\u00e2metros de solicita\u00e7\u00e3o reservados que devem ser fornecidos pelo cliente para solicita\u00e7\u00f5es de autoriza\u00e7\u00e3o. Os valores para esses par\u00e2metros reservados n\u00e3o podem ser fornecidos pelo usu\u00e1rio.
+BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Remova os valores especificados da lista de valores definidos na configura\u00e7\u00e3o do cliente do OpenID Connect.

@@ -279,6 +279,10 @@ DSRA4013.ignored.connection.manager.config.used=DSRA4013I: Bei der Verwendung vo
 DSRA4013.ignored.connection.manager.config.used.explanation=Die aufgef\u00fchrten Connection Manager-Eigenschaften sind bei Verwendung von Oracle UCP nicht zul\u00e4ssig.
 DSRA4013.ignored.connection.manager.config.used.useraction=Entfernen Sie die Connection Manager-Eigenschaften und verwenden Sie stattdessen die entsprechende Oracle UCP-Funktionalit\u00e4t.
 
+DSRA4014.URL.for.Driver.missing=DSRA4014E: java.sql.Driver wurde als Typ f\u00fcr eine Datenquelle {0} angegeben, aber es wurden keine URL-Attribute angegeben.
+DSRA4014.URL.for.Driver.missing.explanation=Sie m\u00fcssen f\u00fcr eine Datenquelle vom Typ java.sql.Driver eine Verbindungs-URL angegeben.
+DSRA4014.URL.for.Driver.missing.useraction=F\u00fcgen Sie der Datenquelle eine g\u00fcltige URL hinzu.
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

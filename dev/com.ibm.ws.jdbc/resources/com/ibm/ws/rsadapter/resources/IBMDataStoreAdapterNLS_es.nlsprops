@@ -279,6 +279,10 @@ DSRA4013.ignored.connection.manager.config.used=DSRA4013I: Cuando se utiliza Ora
 DSRA4013.ignored.connection.manager.config.used.explanation=Las propiedades del gestor de conexiones listadas no son v\u00e1lidas cuando se utiliza Oracle UCP.
 DSRA4013.ignored.connection.manager.config.used.useraction=Elimine las propiedades del gestor de conexiones y utilice en su lugar la funcionalidad de Oracle UCP equivalente.
 
+DSRA4014.URL.for.Driver.missing=DSRA4014E: Se ha especificado el tipo java.sql.Driver para el origen de datos {0} pero no se ha especificado ning\u00fan atributo de URL.
+DSRA4014.URL.for.Driver.missing.explanation=Debe especificarse un URL de conexi\u00f3n para el origen de datos que sea un tipo java.sql.Driver.
+DSRA4014.URL.for.Driver.missing.useraction=A\u00f1ada un URL v\u00e1lido al origen de datos.
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

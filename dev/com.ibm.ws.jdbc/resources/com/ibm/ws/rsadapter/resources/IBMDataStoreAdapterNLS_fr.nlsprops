@@ -279,6 +279,10 @@ DSRA4013.ignored.connection.manager.config.used=DSRA4013I: Si vous utilisez un p
 DSRA4013.ignored.connection.manager.config.used.explanation=Les propri\u00e9t\u00e9s de gestionnaire de connexions r\u00e9pertori\u00e9es ne sont pas valides si vous utilisez un pool de connexions universelles (UCP) Oracle.
 DSRA4013.ignored.connection.manager.config.used.useraction=Retirez les propri\u00e9t\u00e9s de gestionnaire de connexions et utilisez la fonctionnalit\u00e9 de pool de connexions universelles (UCP) Oracle \u00e9quivalente \u00e0 la place.
 
+DSRA4014.URL.for.Driver.missing=DSRA4014E: Le type java.sql.Driver a \u00e9t\u00e9 sp\u00e9cifi\u00e9 pour la source de donn\u00e9es {0} alors qu''aucun attribut d''URL n''a \u00e9t\u00e9 sp\u00e9cifi\u00e9.
+DSRA4014.URL.for.Driver.missing.explanation=Une URL de connexion doit \u00eatre sp\u00e9cifi\u00e9e pour toute source de donn\u00e9es de type java.sql.Driver.
+DSRA4014.URL.for.Driver.missing.useraction=Ajoutez une URL valide \u00e0 la source de donn\u00e9es.
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

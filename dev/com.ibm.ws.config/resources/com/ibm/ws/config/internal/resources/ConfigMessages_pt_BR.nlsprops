@@ -35,6 +35,7 @@ Todos os direitos reservados. Este programa e os materiais de acompanhamento\n\
 est\u00e3o disponibilizados sob os termos do Eclipse Public License v1.0\n\
 que acompanha esta distribui\u00e7\u00e3o e est\u00e1 dispon\u00edvel em\n\
 http://www.eclipse.org/legal/epl-v10.html
+
 error.parse.server=CWWKG0001E: O analisador de configura\u00e7\u00e3o detectou um erro ao analisar a raiz da configura\u00e7\u00e3o e os \
 documentos de configura\u00e7\u00e3o referenciados. Erro: {0}
 error.parse.server.explanation=A configura\u00e7\u00e3o do servidor n\u00e3o p\u00f4de ser lida porque h\u00e1 um erro em um dos arquivos de \
@@ -446,9 +447,9 @@ error.variable.name.missing=CWWKG0091E: Um atributo de nome deve ser especificad
 error.variable.name.missing.explanation=A configura\u00e7\u00e3o do servidor cont\u00e9m um elemento de configura\u00e7\u00e3o da vari\u00e1vel que n\u00e3o tem um atributo de nome.
 error.variable.name.missing.useraction=Inclua um atributo de nome na vari\u00e1vel.
 
-error.variable.value.missing=CWWKG0092E: Um atributo de valor deve ser especificado para a vari\u00e1vel na linha {0} do recurso {1}
-error.variable.value.missing.explanation=A configura\u00e7\u00e3o do servidor cont\u00e9m um elemento de configura\u00e7\u00e3o da vari\u00e1vel que n\u00e3o tem um atributo de valor.
-error.variable.value.missing.useraction=Inclua um atributo de valor na vari\u00e1vel.
+error.variable.value.missing=CWWKG0092E: Um atributo de valor ou atributo defaultValue deve ser especificado para a vari\u00e1vel na linha {0} do recurso {1}
+error.variable.value.missing.explanation=A configura\u00e7\u00e3o do servidor cont\u00e9m um elemento de configura\u00e7\u00e3o de vari\u00e1vel que n\u00e3o possui um atributo de valor ou um atributo defaultValue.
+error.variable.value.missing.useraction=Inclua um atributo de valor ou atributo defaultValue na vari\u00e1vel.
 
 audit.dropin.being.processed=CWWKG0093A: Processamento do recurso de drop-ins da configura\u00e7\u00e3o: {0}
 audit.dropin.being.processed.explanation=O conte\u00fado do recurso especificado ser\u00e1 inclu\u00eddo na configura\u00e7\u00e3o do servidor.

@@ -34,6 +34,8 @@ config.internal.metatype.variableDefinitionType.name.documentation=Nom de la var
 config.internal.metatype.variableDefinitionType.name.label=Nom
 config.internal.metatype.variableDefinitionType.value.documentation=Valeur \u00e0 attribuer \u00e0 la variable.
 config.internal.metatype.variableDefinitionType.value.label=Valeur
+config.internal.metatype.variableDefinitionType.defaultValue.documentation=Valeur par d\u00e9faut \u00e0 affecter \u00e0 la variable si aucune valeur n'est disponible.
+config.internal.metatype.variableDefinitionType.defaultValue.label=Valeur par d\u00e9faut
 
 config.internal.metatype.duration.desc=Indiquez une valeur enti\u00e8re positive suivie d'une unit\u00e9 de temps, qui peut \u00eatre heure (h), minute (m), seconde (s) ou milliseconde (ms). Par exemple, pour 500 millisecondes, indiquez 500ms. Vous pouvez inclure plusieurs valeurs dans une m\u00eame entr\u00e9e. Par exemple, 1s500ms correspond \u00e0 1 seconde et demie.
 config.internal.metatype.duration-s.desc=Indiquez une valeur enti\u00e8re suivie d'une unit\u00e9 de temps, qui peut \u00eatre heure (h), minute (m) ou seconde (s). Par exemple, pour 30 secondes, indiquez 30s. Vous pouvez inclure plusieurs valeurs dans une m\u00eame entr\u00e9e. Par exemple, 1m30s correspond \u00e0 90 secondes.

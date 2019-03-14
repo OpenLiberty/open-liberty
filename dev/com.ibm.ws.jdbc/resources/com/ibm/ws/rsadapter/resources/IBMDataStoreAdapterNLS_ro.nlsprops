@@ -279,6 +279,10 @@ DSRA4013.ignored.connection.manager.config.used=DSRA4013I: C\u00e2nd se utilizea
 DSRA4013.ignored.connection.manager.config.used.explanation=Propriet\u0103\u0163ile de manager de conexiuni listate nu sunt valide atunci c\u00e2nd se utilizeaz\u0103 Oracle UCP.
 DSRA4013.ignored.connection.manager.config.used.useraction=\u00cenl\u0103tura\u0163i propriet\u0103\u0163ile de manager de conexiuni \u015fi, \u00een locul lor, utiliza\u0163i func\u0163ionalitatea Oracle UCP echivalent\u0103.
 
+DSRA4014.URL.for.Driver.missing=DSRA4014E: A fost specificat tipul java.sql.Driver pentru sursa de date {0}, dar nu a fost specificat niciun atribut URL.
+DSRA4014.URL.for.Driver.missing.explanation=Trebuie specificat un URL de conexiune pentru o surs\u0103 de date care este de tipul java.sql.Driver.
+DSRA4014.URL.for.Driver.missing.useraction=Ad\u0103uga\u0163i un URL valid URL la sursa de date.
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

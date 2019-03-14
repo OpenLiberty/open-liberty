@@ -279,6 +279,10 @@ DSRA4013.ignored.connection.manager.config.used=DSRA4013I: Oracle UCP haszn\u00e
 DSRA4013.ignored.connection.manager.config.used.explanation=A felsorolt kapcsolatkezel\u0151 tulajdons\u00e1gok nem \u00e9rv\u00e9nyesek Oracle UCP haszn\u00e1lata eset\u00e9n.
 DSRA4013.ignored.connection.manager.config.used.useraction=T\u00e1vol\u00edtsa el a kapcsolatkezel\u0151 tulajdons\u00e1gokat, \u00e9s haszn\u00e1lja helyett\u00fck az egyen\u00e9rt\u00e9k\u0171 Oracle UCP funkcionalit\u00e1st.
 
+DSRA4014.URL.for.Driver.missing=DSRA4014E: A(z) {0} adatforr\u00e1shoz java.sql.Driver t\u00edpus lett megadva, de URL attrib\u00fatum nem ker\u00fclt megad\u00e1sra.
+DSRA4014.URL.for.Driver.missing.explanation=A java.sql.Driver t\u00edpus\u00fa adatforr\u00e1sokhoz meg kell adni egy kapcsolati URL-c\u00edmet.
+DSRA4014.URL.for.Driver.missing.useraction=Adjon hozz\u00e1 az adatforr\u00e1shoz egy \u00e9rv\u00e9nyes URL-c\u00edmet.
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
