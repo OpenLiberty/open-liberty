@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.j2c;
 
-import java.util.BitSet;
-
 import javax.resource.ResourceException;
 import javax.resource.spi.ConnectionRequestInfo;
 import javax.resource.spi.ManagedConnection;
@@ -139,6 +137,10 @@ public interface MCWrapper {
     void setSharedPoolCoordinator(Object sharedPoolCoordinator);
 
     Object getSharedPoolCoordinator();
+
+    void setUnSharedPoolCoordinator(Object unSharedPoolCoordinator);
+
+    Object getUnSharedPoolCoordinator();
 
     int getHashMapBucket();
 
