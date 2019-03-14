@@ -19,6 +19,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * The security file monitor gets notified through the scanComplete method
@@ -37,10 +38,10 @@ public class SecurityFileMonitor implements FileMonitor {
 
     /**
      * Registers this file monitor to start monitoring the specified files at the specified interval.
-     * 
+     *
      * @param paths the paths of the files to monitor.
      * @param monitorInterval the rate to monitor the files.
-     * 
+     *
      * @return the <code>FileMonitor</code> service registration.
      */
     public ServiceRegistration<FileMonitor> monitorFiles(Collection<String> paths, long monitorInterval) {
@@ -72,13 +73,16 @@ public class SecurityFileMonitor implements FileMonitor {
         if (!(trigger.equalsIgnoreCase("disabled"))) {
             if (trigger.equals("mbean")) {
                 fileMonitorProps.put(FileMonitor.MONITOR_TYPE, FileMonitor.MONITOR_TYPE_EXTERNAL);
-            }
-            else
-            {
+            } else {
                 fileMonitorProps.put(FileMonitor.MONITOR_TYPE, FileMonitor.MONITOR_TYPE_TIMED);
                 fileMonitorProps.put(FileMonitor.MONITOR_INTERVAL, pollingRate);
             }
         }
+
+        // Don't attempt to register the file monitor if the server is stopping
+        if (FrameworkState.isStopping())
+            return null;
+
         return bundleContext.registerService(FileMonitor.class, this, fileMonitorProps);
     }
 
@@ -111,7 +115,7 @@ public class SecurityFileMonitor implements FileMonitor {
 
     /**
      * Action is needed if a file is modified or if it is recreated after it was deleted.
-     * 
+     *
      * @param modifiedFiles
      */
     private Boolean isActionNeeded(Collection<File> createdFiles, Collection<File> modifiedFiles) {
