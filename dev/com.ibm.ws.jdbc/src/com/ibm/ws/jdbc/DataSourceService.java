@@ -763,7 +763,10 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                     // Reinitialize with a new MCF and let the old connections go away via agedTimeout or claim victim
                     // Defer the destroy until later, unless we are using Derby Embedded, in which case we need
                     // to issue a shutdown of the Derby database in order to free it up for other class loaders.
-                    destroyConnectionFactories(isDerbyEmbedded);
+                    // Destroy now if switching to/from UCP to ensure that the connection manager is initialized
+                    // with the proper properties to disable/enable Liberty connection pooling
+                    isUCP = isUCP || "com.ibm.ws.jdbc.dataSource.properties.oracle.ucp".equals(newProperties.get("properties.0.config.referenceType"));
+                    destroyConnectionFactories(isDerbyEmbedded || isUCP);
                 } else {
                     parseIsolationLevel(wProps, vendorImplClassName);
                     
