@@ -590,7 +590,7 @@ serverEnvDefaults()
   # Add -Xquickstart -Xnoaot for client JVMs only.  AOT is ineffective if JVMs
   # have conflicting options, and it's more important that the server JVMs be
   # able to use AOT.
-  IBM_JAVA_OPTIONS="-Xquickstart -Xnoaot ${SERVER_IBM_JAVA_OPTIONS}"
+  IBM_JAVA_OPTIONS="-Xquickstart -Xnoaot ${IBM_JAVA_OPTIONS}"
   export IBM_JAVA_OPTIONS
 
   # Set a default file encoding if needed
