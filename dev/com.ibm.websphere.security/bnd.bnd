@@ -76,6 +76,7 @@ Service-Component: \
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.filemonitor;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.kernel.filemonitor;version=latest,\
 	com.ibm.ws.kernel.security.thread;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 

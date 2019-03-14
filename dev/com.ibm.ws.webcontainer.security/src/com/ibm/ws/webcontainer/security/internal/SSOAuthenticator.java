@@ -89,6 +89,9 @@ public class SSOAuthenticator implements WebAuthenticator {
         HttpServletRequest req = webRequest.getHttpServletRequest();
         HttpServletResponse res = webRequest.getHttpServletResponse();
         AuthenticationResult authResult = handleSSO(req, res);
+        if (authResult != null && authResult.getStatus() == AuthResult.SUCCESS) {
+            ssoCookieHelper.addJwtSsoCookiesToResponse(authResult.getSubject(), req, res);
+        }
         return authResult;
     }
 
@@ -261,7 +264,7 @@ public class SSOAuthenticator implements WebAuthenticator {
      */
     private String getJwtBearerToken(HttpServletRequest req) {
         String token = getBearerTokenFromHeader(req);
-      
+
         return token;
     }
 
