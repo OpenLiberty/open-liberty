@@ -657,6 +657,8 @@ ssh.settings {
     jschLog = true
     logging = "stdout"
     fileTransfer = "scp"
+    retryCount = 3
+    retryWaitSec = 5
 }
 
 task publishPublicArtifactsOnDhe {
