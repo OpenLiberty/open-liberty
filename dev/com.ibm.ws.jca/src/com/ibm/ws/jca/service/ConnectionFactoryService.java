@@ -414,6 +414,8 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
      * @param ref reference to the service
      */
     protected void setConnectionManager(ServiceReference<ConnectionManagerService> ref) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "setConnectionManager", ref);
         connectionManagerRef = ref;
     }
 
@@ -439,6 +441,8 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
      * @param ref reference to the service
      */
     protected void unsetConnectionManager(ServiceReference<ConnectionManagerService> ref) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "unsetConnectionManager", ref);
         connectionManagerRef = null;
     }
 
