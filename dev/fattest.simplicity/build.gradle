@@ -40,3 +40,20 @@ jar {
     dependsOn assembleBootstrap
     dependsOn assembleBinaryDependencies
 }
+
+configurations {
+    arquillianFeature
+}
+
+dependencies {
+    arquillianFeature 'com.ibm.ws.io.openliberty.arquillian:arquillian-liberty-support:1.0.4:feature@zip'
+}
+
+task publishArquillianUserFeature(type:Copy) {
+    configurations.arquillianFeature.each {
+        from(zipTree(it))
+    }
+    into(buildImage.file('wlp/usr'))
+}
+
+assemble.dependsOn publishArquillianUserFeature
