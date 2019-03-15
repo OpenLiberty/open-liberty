@@ -1085,6 +1085,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                     else
                         tx.rollback();
                 } catch (Exception x) {
+                    x.printStackTrace();
                     if (failure == null)
                         throw new CompletionException(x);
                 }
@@ -1150,6 +1151,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                     } else
                         tx.rollback();
                 } catch (Exception x) {
+                    x.printStackTrace();
                     if (failure == null)
                         throw new CompletionException(x);
                 }
