@@ -1215,6 +1215,7 @@ public class BaseTraceService implements TrService {
                     trStream.realFlush();
                 } catch (IOException e) {
                     trouble = true;
+                    e.printStackTrace();
                 }
             }
             try {
@@ -1223,6 +1224,7 @@ public class BaseTraceService implements TrService {
                         trStream.realFlush();
                     } catch (IOException e) {
                         trouble = true;
+                        e.printStackTrace();
                     }
                 }
             } catch (Exception e) {
