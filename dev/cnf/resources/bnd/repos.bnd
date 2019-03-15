@@ -24,6 +24,8 @@
   aQute.bnd.repository.maven.provider.MavenBndRepository; \
     name              = Local; \
     noupdateOnRelease = true; \
+    releaseUrl        = ${fileuri;${build}/local}; \
+    snapshotUrl       = ${fileuri;${build}/local}; \
     local             = ${build}/local
 
 -plugin.2.Release: \
@@ -38,6 +40,7 @@ fetch.oss.repository: \
   aQute.bnd.repository.maven.provider.MavenBndRepository; \
     name              = RemotePublic; \
     releaseUrl        = https://repo.maven.apache.org/maven2/; \
+    snapshotUrl        = https://repo.maven.apache.org/maven2/; \
     index             = ${build}/oss_dependencies.maven
 
 fetch.oss.ibm.repository: \
@@ -45,6 +48,7 @@ fetch.oss.ibm.repository: \
     name              = RemoteIBM; \
     local             = ~/.ibmdhe/repository; \
     releaseUrl        = http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/; \
+    snapshotUrl       = http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/; \
     index             = ${build}/oss_ibm.maven
 
 fetch.ibm.java.repository:
