@@ -20,7 +20,7 @@ WS-TraceGroup: JAXRS
 Export-Package: \
   com.ibm.ws.cxf.client, \
   com.ibm.ws.cxf.client.component
-  
+
 Import-Package: \
  org.apache.cxf.message, \
  *
@@ -29,6 +29,6 @@ Import-Package: \
   com.ibm.ws.cxf.client.*
 
 -buildpath: \
-  com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+  org.apache.cxf:cxf-core,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations
