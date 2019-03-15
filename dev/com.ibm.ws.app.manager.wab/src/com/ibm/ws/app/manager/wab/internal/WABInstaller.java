@@ -56,9 +56,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.servlet.context.ExtendedServletContext;
 import com.ibm.websphere.servlet.filter.IFilterConfig;
-import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
+import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.DeployedModuleInfo;
-import com.ibm.ws.app.manager.module.internal.DeployedAppInfoFactoryBase;
 import com.ibm.ws.app.manager.module.internal.ModuleClassLoaderFactory;
 import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.ws.app.manager.module.internal.ModuleInfoUtils;
@@ -69,7 +68,6 @@ import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleClassesInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoFactory;
-import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ModuleContainerInfo;
@@ -206,6 +204,7 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
     private final AtomicServiceReference<ArtifactContainerFactory> containerFactorySRRef = new AtomicServiceReference<ArtifactContainerFactory>("ContainerFactory");
     private final AtomicServiceReference<AdaptableModuleFactory> adaptableModuleFactorySRRef = new AtomicServiceReference<AdaptableModuleFactory>("AdaptableModuleFactory");
     private final AtomicServiceReference<ApplicationInfoFactory> applicationInfoFactorySRRef = new AtomicServiceReference<ApplicationInfoFactory>("ApplicationInfoFactory");
+    private final AtomicServiceReference<DeployedAppServices> deployedAppServicesSRRef = new AtomicServiceReference<DeployedAppServices>("DeployedAppServices");
     private final AtomicServiceReference<ModuleHandler> webModuleHandlerSRRef = new AtomicServiceReference<ModuleHandler>("WebModuleHandler");
     private final AtomicServiceReference<VariableRegistry> variableRegistrySRRef = new AtomicServiceReference<VariableRegistry>("VariableRegistry");
 
@@ -347,7 +346,7 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
     }
 
     public void notificationCreated(RuntimeUpdateManager updateManager, RuntimeUpdateNotification notification) {
-      if (RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED.equals(notification.getName())) {
+        if (RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED.equals(notification.getName())) {
             notification.onCompletion(new CompletionListener<Boolean>() {
                 public void successfulCompletion(Future<Boolean> future, Boolean result) {
                     if (result) {
@@ -373,7 +372,7 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
 
                 public void failedCompletion(Future<Boolean> future, Throwable t) {}
             });
-      }
+        }
     }
 
     protected String resolveVariable(String stringToResolve) {
@@ -461,13 +460,7 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
                                                                                              moduleName,
                                                                                              wabContainer,
                                                                                              null,
-                                                                                             null,
-                                                                                             new ApplicationInfoForContainer() {
-                                                                                                 @Override
-                                                                                                 public boolean getUseJandex() {
-                                                                                                     return false;
-                                                                                                 }
-                                                                                             });
+                                                                                             null);
                     wab.setCreatedApplicationInfo();
                 }
                 wab.setApplicationInfo(appInfo);
@@ -498,8 +491,8 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
                         groupsLocked = false;
                         wabGroupsLock.unlock();
 
-                        ModuleContainerInfo mci = deployedApp.createModuleContainerInfo(contextRoot, wabContainer, modPath);
-                        ModuleMetaData mmd = deployedApp.createModuleMetaData(mci, loader);
+                        ModuleContainerInfo mci = deployedApp.createModuleContainerInfo(contextRoot, wabContainer, modPath, loader);
+                        ModuleMetaData mmd = deployedApp.createModuleMetaData(mci);
                         ExtendedModuleInfo moduleInfo = deployedApp.getModuleInfo(mci);
                         DeployedModuleInfo deployedMod = deployedApp.getDeployedModule(moduleInfo);
                         wab.setDeployedModuleInfo(deployedMod);
@@ -507,10 +500,10 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
                         WebAppConfiguration appConfig = (WebAppConfiguration)((WebModuleMetaData)mmd).getConfiguration();
 
                         if (appConfig != null) {
-                          String virtualHost = wab.getVirtualHost();
-                          if (virtualHost != null) {
-                            appConfig.setVirtualHostName(virtualHost);
-                          }
+                            String virtualHost = wab.getVirtualHost();
+                            if (virtualHost != null) {
+                                appConfig.setVirtualHostName(virtualHost);
+                            }
                         }
 
                         //deploy the module
@@ -651,6 +644,15 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
         applicationInfoFactorySRRef.unsetReference(ref);
     }
 
+    @Reference
+    protected void setDeployedAppServices(ServiceReference<DeployedAppServices> ref) {
+        deployedAppServicesSRRef.setReference(ref);
+    }
+
+    protected void unsetDeployedAppServices(ServiceReference<DeployedAppServices> ref) {
+        deployedAppServicesSRRef.unsetReference(ref);
+    }
+
     @Reference(service = ModuleHandler.class, target = "(type=web)")
     protected void setWebModuleHandler(ServiceReference<ModuleHandler> ref) {
         webModuleHandlerSRRef.setReference(ref);
@@ -688,22 +690,22 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
     }
 
     static void restart(Bundle bundle) {
-      // if the wab bundle has been associated with this configuration then it must be restarted
-      if (bundle.getState() != Bundle.STOPPING) {
-          try {
-              bundle.stop();
-          } catch (BundleException e) {
-              // auto FFCD
-          }
-          // note that we are restarting the WAB, but it is likely there is no
-          // available configuration yet for it so it will not trigger another WAB creation until
-          // there is appropriate configuration for it.
-          try {
-              bundle.start();
-          } catch (BundleException e) {
-              // auto FFCD
-          }
-      }
+        // if the wab bundle has been associated with this configuration then it must be restarted
+        if (bundle.getState() != Bundle.STOPPING) {
+            try {
+                bundle.stop();
+            } catch (BundleException e) {
+                // auto FFCD
+            }
+            // note that we are restarting the WAB, but it is likely there is no
+            // available configuration yet for it so it will not trigger another WAB creation until
+            // there is appropriate configuration for it.
+            try {
+                bundle.start();
+            } catch (BundleException e) {
+                // auto FFCD
+            }
+        }
     }
 
     /*
@@ -1477,20 +1479,9 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
 
     }
 
-    private DeployedAppInfoFactoryBase deployedAppFactory;
-
-    @Reference(target = "(type=war)")
-    protected void setDeployedAppFactory(DeployedAppInfoFactory factory) {
-        deployedAppFactory = (DeployedAppInfoFactoryBase) factory;
-    }
-
-    protected void unsetDeployedAppFactory(DeployedAppInfoFactory factory) {
-        deployedAppFactory = null;
-    }
-
     final class WABDeployedAppInfo extends SimpleDeployedAppInfoBase {
         WABDeployedAppInfo(ExtendedApplicationInfo appInfo) throws UnableToAdaptException {
-            super(deployedAppFactory);
+            super(deployedAppServicesSRRef.getService());
             super.appInfo = appInfo;
         }
 
@@ -1499,23 +1490,23 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
         }
 
         ModuleContainerInfo createModuleContainerInfo(String contextRoot, Container moduleContainer,
-                                                      String moduleLocation) throws UnableToAdaptException {
-            String moduleURI = ModuleInfoUtils.getModuleURIFromLocation(moduleLocation);
-            WebModuleContainerInfo mci = new WebModuleContainerInfo(webModuleHandlerSRRef.getServiceWithException(), deployedAppFactory.getModuleMetaDataExtenders().get("web"), deployedAppFactory.getNestedModuleMetaDataFactories().get("web"), moduleContainer, null, moduleURI, moduleClassesInfo, contextRoot);
-            moduleContainerInfos.add(mci);
-            return mci;
-        }
-
-        ModuleMetaData createModuleMetaData(ModuleContainerInfo mci, ClassLoader loader) throws MetaDataException {
-            //create the WebModule
+                                                      String moduleLocation, ClassLoader loader) throws UnableToAdaptException {
             final ClassLoader moduleClassLoader = loader;
-            ModuleClassLoaderFactory classLoaderFactory = new ModuleClassLoaderFactory() {
+            final ModuleClassLoaderFactory moduleClassLoaderFactory = new ModuleClassLoaderFactory() {
                 @Override
                 public ClassLoader createModuleClassLoader(ModuleInfo moduleInfo, List<ContainerInfo> moduleClassesContainers) {
                     return moduleClassLoader;
                 }
             };
-            return ((WebModuleContainerInfo) mci).createModuleMetaData(appInfo, this, classLoaderFactory);
+            String moduleURI = ModuleInfoUtils.getModuleURIFromLocation(moduleLocation);
+            WebModuleContainerInfo mci = new WebModuleContainerInfo(webModuleHandlerSRRef.getServiceWithException(), deployedAppServices.getModuleMetaDataExtenders("web"), deployedAppServices.getNestedModuleMetaDataFactories("web"), moduleContainer, null, moduleURI, moduleClassLoaderFactory, moduleClassesInfo, contextRoot);
+            moduleContainerInfos.add(mci);
+            return mci;
+        }
+
+        ModuleMetaData createModuleMetaData(ModuleContainerInfo mci) throws MetaDataException {
+            //create the WebModule
+            return ((WebModuleContainerInfo) mci).createModuleMetaData(appInfo, this);
         }
     }
 }

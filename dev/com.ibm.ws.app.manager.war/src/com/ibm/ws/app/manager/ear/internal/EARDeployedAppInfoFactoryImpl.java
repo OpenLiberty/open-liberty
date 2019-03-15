@@ -28,10 +28,11 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.app.manager.ApplicationManager;
+import com.ibm.ws.app.manager.internal.AppManagerConstants;
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
 import com.ibm.ws.app.manager.module.DeployedAppMBeanRuntime;
-import com.ibm.ws.app.manager.module.internal.DeployedAppInfoFactoryBase;
+import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.ws.app.manager.war.internal.ZipUtils;
 import com.ibm.ws.javaee.dd.app.Application;
@@ -45,10 +46,13 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 
 @Component(service = DeployedAppInfoFactory.class,
            property = { "service.vendor=IBM", "type:String=ear" })
-public class EARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
+public class EARDeployedAppInfoFactoryImpl implements DeployedAppInfoFactory {
     private static final TraceComponent _tc = Tr.register(EARDeployedAppInfoFactoryImpl.class);
 
     private final static Map<String, Long> timestamps = new HashMap<String, Long>();
+
+    @Reference
+    protected DeployedAppServices deployedAppServices;
 
     protected ModuleHandler webModuleHandler;
     protected ModuleHandler ejbModuleHandler;
@@ -152,17 +156,17 @@ public class EARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
                 // Make sure this is a file and not an expanded directory
                 String location = applicationInformation.getLocation();
                 File earFile = new File(location);
-                if (earFile.isFile() && !location.toLowerCase().endsWith(XML_SUFFIX)) {
+                if (earFile.isFile() && !location.toLowerCase().endsWith(AppManagerConstants.XML_SUFFIX)) {
 
                     // Make sure the apps/expanded directory is available
-                    WsResource expandedAppsDir = getLocationAdmin().resolveResource(EXPANDED_APPS_DIR);
+                    WsResource expandedAppsDir = deployedAppServices.getLocationAdmin().resolveResource(AppManagerConstants.EXPANDED_APPS_DIR);
                     expandedAppsDir.create();
 
                     // Store the timestamp for the EAR file and get the current value (if it exists)
                     Long earFileTimestamp = timestamps.put(earFile.getAbsolutePath(), earFile.lastModified());
 
                     // If the expanded directory exists, delete it.
-                    WsResource expandedEarDir = getLocationAdmin().resolveResource(EXPANDED_APPS_DIR + applicationInformation.getName() + ".ear/");
+                    WsResource expandedEarDir = deployedAppServices.getLocationAdmin().resolveResource(AppManagerConstants.EXPANDED_APPS_DIR + applicationInformation.getName() + ".ear/");
                     if (expandedEarDir.exists()) {
                         // If the expanded EAR directory already exists we need to try to figure out if this was an update to the EAR file in apps/dropins
                         // or an update to the expanded directory. We do this by checking the EAR file timestamp against a stored value. 
@@ -184,7 +188,7 @@ public class EARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
                     }
 
                     originalContainer = applicationContainer;
-                    applicationContainer = setupContainer(applicationInformation.getPid(), expandedEarDir.asFile());
+                    applicationContainer = deployedAppServices.setupContainer(applicationInformation.getPid(), expandedEarDir.asFile());
 
                 }
 
@@ -225,7 +229,7 @@ public class EARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
         }
         applicationInformation.setContainer(jeeContainer);
 
-        EARDeployedAppInfo deployedApp = new EARDeployedAppInfo(applicationInformation, applicationDD, this, originalContainer);
+        EARDeployedAppInfo deployedApp = new EARDeployedAppInfo(applicationInformation, applicationDD, this, deployedAppServices, originalContainer);
         applicationInformation.setHandlerInfo(deployedApp);
         return deployedApp;
     }

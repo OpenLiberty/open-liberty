@@ -26,12 +26,12 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
-import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
 import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.classloading.java2sec.PermissionManager;
 import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoFactory;
@@ -51,11 +51,11 @@ import com.ibm.wsspi.kernel.service.utils.FileUtils;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.library.Library;
 
-public abstract class DeployedAppInfoFactoryBase implements DeployedAppInfoFactory, DeployedAppServices {
+@Component(service = DeployedAppServices.class, property = { "service.vendor=IBM" })
+public class DeployedAppServicesImpl implements DeployedAppServices {
 
     static final String SERVER_APPS_DIR = WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR + "apps/";
     protected static final String EXPANDED_APPS_DIR = SERVER_APPS_DIR + "expanded/";
-    protected static final String XML_SUFFIX = ".xml";
 
     private BundleContext bundleContext;
     private ApplicationInfoFactory applicationInfoFactory;
@@ -74,13 +74,14 @@ public abstract class DeployedAppInfoFactoryBase implements DeployedAppInfoFacto
     private ArtifactContainerFactory artifactFactory;
     private AdaptableModuleFactory moduleFactory;
 
-    public DeployedAppInfoFactoryBase() {
+    public DeployedAppServicesImpl() {
         for (String moduleType : allModuleTypes) {
             moduleMetaDataExtenders.put(moduleType, new CopyOnWriteArrayList<ModuleMetaDataExtender>());
             nestedModuleMetaDataFactories.put(moduleType, new CopyOnWriteArrayList<NestedModuleMetaDataFactory>());
         }
     }
 
+    @Override
     public List<Library> getLibrariesFromPid(String pid) throws InvalidSyntaxException {
         List<Library> libraries = new ArrayList<Library>();
         String libraryFilter = FilterUtils.createPropertyFilter(Constants.SERVICE_PID, pid);
@@ -92,81 +93,84 @@ public abstract class DeployedAppInfoFactoryBase implements DeployedAppInfoFacto
         return libraries;
     }
 
-    public List<ModuleMetaDataExtender> getModuleMetaDataExtenders(String moduleType) {
-        List<ModuleMetaDataExtender> list = moduleMetaDataExtenders.get(moduleType);
-        return list != null ? Collections.unmodifiableList(list) : Collections.<ModuleMetaDataExtender> emptyList();
-    }
-
-    public List<NestedModuleMetaDataFactory> getNestedModuleMetaDataFactories(String moduleType) {
-        List<NestedModuleMetaDataFactory> list = nestedModuleMetaDataFactories.get(moduleType);
-        return list != null ? Collections.unmodifiableList(list) : Collections.<NestedModuleMetaDataFactory> emptyList();
-    }
-
     @Activate
     protected void activate(ComponentContext ctx) {
         this.bundleContext = ctx.getBundleContext();
     }
 
-    public BundleContext getBundleContext() {
-        return bundleContext;
-    }
-
+    @Override
     public ApplicationInfoFactory getApplicationInfoFactory() {
         return applicationInfoFactory;
     }
 
+    @Override
     public FutureMonitor getFutureMonitor() {
         return futureMonitor;
     }
 
+    @Override
     public ClassLoadingService getClassLoadingService() {
         return classLoadingService;
     }
 
+    @Override
     public Library getGlobalSharedLibrary() {
         return globalSharedLibrary;
     }
 
+    @Override
     public String getGlobalSharedLibraryPid() {
         return globalSharedLibraryPid;
     }
 
+    @Override
     public ConfigurationAdmin getConfigurationAdmin() {
         return configAdmin;
     }
 
+    @Override
     public MetaDataService getMetaDataService() {
         return metaDataService;
     }
 
+    @Override
     public StateChangeService getStateChangeService() {
         return stateChangeService;
     }
 
-    public Map<String, List<ModuleMetaDataExtender>> getModuleMetaDataExtenders() {
-        return moduleMetaDataExtenders;
+    @Override
+    public List<ModuleMetaDataExtender> getModuleMetaDataExtenders(String moduleType) {
+        List<ModuleMetaDataExtender> list = moduleMetaDataExtenders.get(moduleType);
+        return list != null ? Collections.unmodifiableList(list) : Collections.<ModuleMetaDataExtender> emptyList();
     }
 
-    public Map<String, List<NestedModuleMetaDataFactory>> getNestedModuleMetaDataFactories() {
-        return nestedModuleMetaDataFactories;
+    @Override
+    public List<NestedModuleMetaDataFactory> getNestedModuleMetaDataFactories(String moduleType) {
+        List<NestedModuleMetaDataFactory> list = nestedModuleMetaDataFactories.get(moduleType);
+        return list != null ? Collections.unmodifiableList(list) : Collections.<NestedModuleMetaDataFactory> emptyList();
     }
 
+    @Override
     public PermissionManager getPermissionManager() {
         return permissionManager;
     }
 
+    @Override
     public WsLocationAdmin getLocationAdmin() {
         return locAdmin;
     }
 
+    @Override
     public ArtifactContainerFactory getArtifactFactory() {
         return artifactFactory;
     }
 
+    @Override
     public AdaptableModuleFactory getModuleFactory() {
         return moduleFactory;
     }
 
+    @Override
     public Container setupContainer(String pid, File locationFile) {
         if (!FileUtils.fileExists(locationFile)) {
             return null;

@@ -21,9 +21,10 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.app.manager.ApplicationManager;
+import com.ibm.ws.app.manager.internal.AppManagerConstants;
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
-import com.ibm.ws.app.manager.module.internal.DeployedAppInfoFactoryBase;
+import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -32,32 +33,19 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 
 @Component(service = DeployedAppInfoFactory.class,
            property = { "service.vendor=IBM", "type:String=war" })
-public class WARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
+public class WARDeployedAppInfoFactoryImpl implements DeployedAppInfoFactory {
 
     private static final TraceComponent tc = Tr.register(WARDeployedAppInfoFactoryImpl.class);
 
+    @Reference
+    protected DeployedAppServices deployedAppServices;
+    @Reference(target = "(type=web)")
     protected ModuleHandler webModuleHandler;
-    private ApplicationManager applicationManager;
+    @Reference
+    protected ApplicationManager applicationManager;
+
     private final ZipUtils zipUtils = new ZipUtils();
     private final static Map<String, Long> timestamps = new HashMap<String, Long>();
-
-    @Reference(target = "(type=web)")
-    protected void setWebModuleHandler(ModuleHandler handler) {
-        webModuleHandler = handler;
-    }
-
-    protected void unsetWebModuleHandler(ModuleHandler handler) {
-        webModuleHandler = null;
-    }
-
-    @Reference
-    protected void setApplicationManager(ApplicationManager mgr) {
-        this.applicationManager = mgr;
-    }
-
-    protected void unsetApplicationManager(ApplicationManager mgr) {
-        this.applicationManager = null;
-    }
 
     @Override
     public WARDeployedAppInfo createDeployedAppInfo(ApplicationInformation<DeployedAppInfo> applicationInformation) throws UnableToAdaptException {
@@ -69,16 +57,16 @@ public class WARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
                 // Make sure this is a file and not an expanded directory
                 String location = applicationInformation.getLocation();
                 File warFile = new File(location);
-                if (warFile.isFile() && !location.toLowerCase().endsWith(XML_SUFFIX)) {
+                if (warFile.isFile() && !location.toLowerCase().endsWith(AppManagerConstants.XML_SUFFIX)) {
 
                     // Make sure the apps/expanded directory is available
-                    WsResource expandedAppsDir = getLocationAdmin().resolveResource(EXPANDED_APPS_DIR);
+                    WsResource expandedAppsDir = deployedAppServices.getLocationAdmin().resolveResource(AppManagerConstants.EXPANDED_APPS_DIR);
                     expandedAppsDir.create();
 
                     // Store the war file timestamp and get the current value (if it exists)
                     Long warFileTimestamp = timestamps.put(warFile.getAbsolutePath(), warFile.lastModified());
 
-                    WsResource expandedWarDir = getLocationAdmin().resolveResource(EXPANDED_APPS_DIR + applicationInformation.getName() + ".war/");
+                    WsResource expandedWarDir = deployedAppServices.getLocationAdmin().resolveResource(AppManagerConstants.EXPANDED_APPS_DIR + applicationInformation.getName() + ".war/");
                     if (expandedWarDir.exists()) {
                         // If the expanded WAR directory already exists, we need to try to figure out if this was an update to the WAR file in apps/dropins
                         // or an update to the expanded directory. We do this by checking the WAR file timestamp against a stored value. 
@@ -104,7 +92,7 @@ public class WARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
                     }
 
                     // Set up the new container pointing to the expanded directory
-                    Container container = setupContainer(applicationInformation.getPid(), expandedWarDir.asFile());
+                    Container container = deployedAppServices.setupContainer(applicationInformation.getPid(), expandedWarDir.asFile());
                     applicationInformation.setContainer(container);
 
                 }
@@ -115,7 +103,7 @@ public class WARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
             Tr.error(tc, "warning.could.not.expand.application", applicationInformation.getName(), ex.getMessage());
         }
 
-        WARDeployedAppInfo deployedApp = new WARDeployedAppInfo(applicationInformation, this);
+        WARDeployedAppInfo deployedApp = new WARDeployedAppInfo(applicationInformation, deployedAppServices, webModuleHandler);
         applicationInformation.setHandlerInfo(deployedApp);
         return deployedApp;
     }

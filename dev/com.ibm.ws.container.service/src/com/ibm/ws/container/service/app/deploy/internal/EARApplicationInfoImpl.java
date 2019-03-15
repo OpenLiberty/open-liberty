@@ -13,7 +13,6 @@ package com.ibm.ws.container.service.app.deploy.internal;
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
 import com.ibm.ws.container.service.app.deploy.extended.AppClassLoaderFactory;
-import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedEARApplicationInfo;
 import com.ibm.wsspi.adaptable.module.Container;
 
@@ -26,14 +25,9 @@ final class EARApplicationInfoImpl extends ApplicationInfoImpl implements Extend
     private final AppClassLoaderFactory appClassLoaderFactory;
     private volatile ClassLoader appClassLoader;
 
-    //EARApplicationInfoImpl(String appName, J2EEName j2eeName, Container appContainer, NestedConfigHelper configHelper,
-    //                       Container libDirContainer, AppClassLoaderFactory appClassLoaderFactory) {
-    //    this(appName, j2eeName, appContainer, configHelper, libDirContainer, appClassLoaderFactory, null);
-    //}
-
     EARApplicationInfoImpl(String appName, J2EEName j2eeName, Container appContainer, NestedConfigHelper configHelper,
-                           Container libDirContainer, AppClassLoaderFactory appClassLoaderFactory, ApplicationInfoForContainer applicationInformation) {
-        super(appName, j2eeName, appContainer, configHelper, applicationInformation);
+                           Container libDirContainer, AppClassLoaderFactory appClassLoaderFactory) {
+        super(appName, j2eeName, appContainer, configHelper);
         this.libDirContainer = libDirContainer;
         this.appClassLoaderFactory = appClassLoaderFactory;
     }
