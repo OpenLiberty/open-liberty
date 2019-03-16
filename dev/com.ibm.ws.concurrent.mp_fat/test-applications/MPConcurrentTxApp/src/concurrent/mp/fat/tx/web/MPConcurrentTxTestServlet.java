@@ -1246,6 +1246,162 @@ public class MPConcurrentTxTestServlet extends FATServlet {
     /**
      * Propagates transaction context to be used serially from another thread, which also commits the transaction.
      * The resource that is enlisted in the transaction is an unsharable one-phase only resource.
+     * A single connection handle is cached and reused across all stages where transactional work is performed.
+     */
+    @Test
+    public void testUnsharableOnePhaseResourceInJTATransactionCachedHandleUsedSeriallyAndCommitWhenComplete() throws Exception {
+        CompletableFuture<DataSource> getDataSource = txExecutor.newIncompleteFuture();
+        CompletableFuture<Boolean> stage;
+        tx.begin();
+        try {
+            stage = getDataSource.thenApplyAsync(ds -> {
+                Connection con = null;
+                try {
+                    con = ds.getConnection();
+                    con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Mahnomen', 5500)");
+                    return con;
+                } catch (SQLException x) {
+                    if (con != null)
+                        try {
+                            con.close();
+                        } catch (SQLException cx) {
+                            cx.printStackTrace();
+                        }
+                    throw new CompletionException(x);
+                }
+            }).whenCompleteAsync((con, failure) -> {
+                if (failure == null)
+                    try {
+                        con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Marshall', 9397)");
+                    } catch (SQLException x) {
+                        throw new CompletionException(x);
+                    }
+            }).whenCompleteAsync((con, failure) -> {
+                if (failure == null)
+                    try {
+                        con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Martin', 20084)");
+                    } catch (SQLException x) {
+                        throw new CompletionException(x);
+                    }
+            }).handleAsync((con, failure) -> {
+                if (con != null)
+                    try {
+                        con.close();
+                    } catch (SQLException x) {
+                        if (failure == null)
+                            failure = x;
+                    }
+                try {
+                    if (failure == null && tx.getStatus() == Status.STATUS_ACTIVE) {
+                        tx.commit();
+                        return true;
+                    } else
+                        tx.rollback();
+                } catch (Exception x) {
+                    if (failure == null)
+                        failure = x;
+                }
+                if (failure == null)
+                    return false;
+                else
+                    throw new CompletionException(failure);
+            });
+        } finally {
+            tm.suspend();
+        }
+
+        getDataSource.complete(onePhaseDataSource_unsharable);
+
+        assertEquals(Boolean.TRUE, stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        try (Connection con = onePhaseDataSource_unsharable.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Mahnomen' OR NAME='Marshall' OR NAME='Martin'");
+            assertTrue(result.next());
+            assertEquals(34981, result.getInt(1));
+        }
+    }
+
+    /**
+     * Propagates transaction context to be used serially from another thread, which also rolls back the transaction.
+     * The resource that is enlisted in the transaction is an unsharable one-phase only resource.
+     * A single connection handle is cached and reused across all stages where transactional work is performed.
+     */
+    @Test
+    public void testUnsharableResourceInOnePhaseJTATransactionCachedHandleUsedSeriallyAndRollBackWhenComplete() throws Exception {
+        CompletableFuture<DataSource> getDataSource = txExecutor.newIncompleteFuture();
+        CompletableFuture<Boolean> stage;
+        tx.begin();
+        try {
+            stage = getDataSource.thenApplyAsync(ds -> {
+                Connection con = null;
+                try {
+                    con = ds.getConnection();
+                    con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Meeker', 23105)");
+                    return con;
+                } catch (SQLException x) {
+                    if (con != null)
+                        try {
+                            con.close();
+                        } catch (SQLException cx) {
+                            cx.printStackTrace();
+                        }
+                    throw new CompletionException(x);
+                }
+            }).whenCompleteAsync((con, failure) -> {
+                if (failure == null)
+                    try {
+                        con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('McLeod', 35816)");
+                    } catch (SQLException x) {
+                        throw new CompletionException(x);
+                    }
+            }).whenComplete((con, failure) -> {
+                try {
+                    tx.setRollbackOnly(); // ensure the transaction always rolls back
+                } catch (IllegalStateException | SystemException x) {
+                    throw new CompletionException(x);
+                }
+            }).handleAsync((con, failure) -> {
+                if (con != null)
+                    try {
+                        con.close();
+                    } catch (SQLException x) {
+                        if (failure == null)
+                            failure = x;
+                    }
+                try {
+                    if (failure == null && tx.getStatus() == Status.STATUS_ACTIVE) {
+                        tx.commit();
+                        return true;
+                    } else
+                        tx.rollback();
+                } catch (Exception x) {
+                    if (failure == null)
+                        failure = x;
+                }
+                if (failure == null)
+                    return false;
+                else
+                    throw new CompletionException(failure);
+            });
+        } finally {
+            tm.suspend();
+        }
+
+        getDataSource.complete(onePhaseDataSource_unsharable);
+
+        assertEquals(Boolean.FALSE, stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Verify that the transaction rolled back, meaning none of the inserts remain in the database
+        try (Connection con = onePhaseDataSource_unsharable.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Meeker' OR NAME='McLeod'");
+            assertTrue(result.next());
+            assertEquals(0, result.getInt(1));
+        }
+    }
+
+    /**
+     * Propagates transaction context to be used serially from another thread, which also commits the transaction.
+     * The resource that is enlisted in the transaction is an unsharable one-phase only resource.
      */
     // @Test TODO Encounters an expected error for unsharable one-phase resources: Illegal attempt to enlist multiple 1PC XAResources
     public void testUnsharableOnePhaseResourceInJTATransactionUsedSeriallyAndCommitWhenComplete() throws Exception {
