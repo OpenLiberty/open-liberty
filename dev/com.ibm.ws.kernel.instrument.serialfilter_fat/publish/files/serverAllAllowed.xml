@@ -6,5 +6,10 @@
         <feature>componenttest-1.0</feature>
     </featureManager>
     
-    <serialFilter class="*" permission="Allow" mode="Enforce"/>
+    <serialFilter>
+    <!--  default values will be used -->
+        <policy class="*"/>
+        <filterMode class="*"/>
+    </serialFilter>
+    
 </server>

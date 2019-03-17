@@ -6,12 +6,11 @@
         <feature>componenttest-1.0</feature>
     </featureManager>
     
-    <serialFilter class="com.ibm.ws.serialfilter.fat.object.*" permission="Allow"/>
     <serialFilter>
-        <!-- default value "Enforce" will be used -->
-        <filterMode class="*"/>
         <policy class="*" permission="Deny"/>
-        <policy class="com.ibm.ws.serialfilter.fat.object.*" permission="Allow"/>
+        <filterMode class="*" operation="Enforce"/>
+        <!-- duplicate policy -->        
+        <policy class="com.ibm.duplicateClass.*" permission="Deny"/>
+        <policy class="com.ibm.duplicateClass.*" permission="Deny"/>
     </serialFilter>
-    
 </server>
