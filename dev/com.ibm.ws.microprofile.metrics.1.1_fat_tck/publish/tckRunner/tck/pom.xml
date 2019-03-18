@@ -166,6 +166,14 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<version>2.17</version> <!-- Any changes to the surefire version must be tested against ZOS -->
 						<configuration>
+						
+							<systemProperties>
+                                <property>
+                                    <name>java.util.logging.config.file</name>
+                                    <value>${project.basedir}/../../../../../../fat/resources/logging.properties</value>
+                                </property>
+                            </systemProperties>
+       						
 							<systemPropertyVariables>
 								<wlp>${wlp}</wlp>
 								<tck_server>${tck_server}</tck_server>
