@@ -14,9 +14,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
+import javax.enterprise.context.Dependent;
+
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
+@Dependent
 public class IntegerSubscriber implements Subscriber<Integer> {
 
     private Subscription sub;
