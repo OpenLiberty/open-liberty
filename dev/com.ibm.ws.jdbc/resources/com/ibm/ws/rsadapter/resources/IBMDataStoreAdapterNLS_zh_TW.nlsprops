@@ -283,6 +283,10 @@ DSRA4013.ignored.connection.manager.config.used=DSRA4013I: \u7576\u4f7f\u7528 Or
 DSRA4013.ignored.connection.manager.config.used.explanation=\u7576\u4f7f\u7528 Oracle UCP \u6642\uff0c\u6240\u5217\u51fa\u7684\u9023\u7dda\u7ba1\u7406\u7a0b\u5f0f\u5167\u5bb9\u7121\u6548\u3002
 DSRA4013.ignored.connection.manager.config.used.useraction=\u8acb\u79fb\u9664\u9023\u7dda\u7ba1\u7406\u7a0b\u5f0f\u5167\u5bb9\uff0c\u4e26\u6539\u7528\u540c\u7b49\u7684 Oracle UCP \u529f\u80fd\u3002
 
+DSRA4014.URL.for.Driver.missing=DSRA4014E: \u5df2\u5c07 java.sql.Driver \u985e\u578b\u6307\u5b9a\u7d66\u8cc7\u6599\u4f86\u6e90 {0}\uff0c\u4f46\u537b\u672a\u6307\u5b9a URL \u5c6c\u6027\u3002
+DSRA4014.URL.for.Driver.missing.explanation=\u5fc5\u9808\u5c07\u9023\u7dda URL \u6307\u5b9a\u7d66 java.sql.Driver \u985e\u578b\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+DSRA4014.URL.for.Driver.missing.useraction=\u8acb\u65b0\u589e\u6709\u6548\u7684 URL \u81f3\u8a72\u8cc7\u6599\u4f86\u6e90\u3002
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

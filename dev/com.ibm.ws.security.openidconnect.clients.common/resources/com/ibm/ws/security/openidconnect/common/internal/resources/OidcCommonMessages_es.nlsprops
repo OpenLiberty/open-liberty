@@ -20,8 +20,8 @@
 #do not translate issuerIdentifier, iss
 #
 OIDC_IDTOKEN_VERIFY_ISSUER_ERR=CWWKS1751E: La validaci\u00f3n ha fallado para la se\u00f1al de ID solicitada por [{0}] porque el emisor (iss) [{1}] especificado en la se\u00f1al no coincide con el atributo [issuerIdentifier] [{2}] para el proveedor especificado en la configuraci\u00f3n del cliente de OpenID Connect. Compruebe el atributo issuerIdentifier en la configuraci\u00f3n del cliente.
-OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=La validaci\u00f3n de la se\u00f1al de ID ha fallado porque el emisor especificado en la configuraci\u00f3n de cliente de OpenID Connect (parte dependiente o RP) y el emisor de la se\u00f1al no coinciden.
-OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Aseg\u00farese de que el atributo [issuerIdentifier] especificado en la configuraci\u00f3n del cliente de OpenId Connect (RP) coincide con el emisor del proveedor de OpenID Connect (OP) utilizado.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=La validaci\u00f3n de la se\u00f1al de ID ha fallado porque el emisor especificado en la configuraci\u00f3n de cliente de OpenID Connect (parte dependiente o RP) o de cliente de Social Login y el emisor de la se\u00f1al no coinciden.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Aseg\u00farese de que el atributo [issuerIdentifier] especificado en la configuraci\u00f3n del cliente de OpenId Connect (RP) o del cliente de Social Login coincide con el emisor del proveedor de OpenID Connect (OP) utilizado.
 
 #
 OIDC_IDTOKEN_SIGNATURE_ERR=CWWKS1752E: Se ha producido un error al intentar firmar una se\u00f1al de ID utilizando el algoritmo [{0}]: [{1}].
@@ -182,3 +182,8 @@ TOKEN_ISSUER_NOT_TRUSTED.useraction=Compruebe que el valor de reclamaci\u00f3n d
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1782E: El servidor de recursos ha suspendido la solicitud de autenticaci\u00f3n porque la se\u00f1al contiene una reclamaci\u00f3n [{0}], pero el valor del atributo de configuraci\u00f3n del cliente [{1}] indica que la se\u00f1al no debe contener la reclamaci\u00f3n.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=La se\u00f1al no puede contener la reclamaci\u00f3n especificada debido al valor del atributo de configuraci\u00f3n especificado.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Obtenga una nueva se\u00f1al que no contenga la reclamaci\u00f3n especificada, o bien cambie el valor del atributo de configuraci\u00f3n especificado de modo que permita que la reclamaci\u00f3n se incluya en la se\u00f1al.
+
+# 0=Client ID, 1=List of invalid parameter names, 2=forwardLoginParameter
+BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: El cliente de OpenID Connect [{0}] incluye {1} en los valores especificados en el atributo de configuraci\u00f3n [{2}]. Los valores especificados no se tendr\u00e1n en cuenta.
+BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=La especificaci\u00f3n OAuth 2.0 define un conjunto de par\u00e1metros de solicitud reservados que el cliente debe proporcionar para solicitudes de autorizaci\u00f3n. El usuario no puede suministrar loa valores de dichos par\u00e1metros reservados.
+BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Elimine los valores especificados de la lista de valores definidos en la configuraci\u00f3n de cliente de OpenID Connect.

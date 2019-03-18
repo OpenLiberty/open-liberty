@@ -484,7 +484,10 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                 mcWrapper.setThreadName(myThread.getName());
                 if (connLeakOrmaxNumThreads) {
                     // add current time and stack information
-                    mcWrapper.setLastAllocationTime(System.currentTimeMillis());
+                    if (mcWrapper.getLastAllocationTime() == 0)
+                        mcWrapper.setLastAllocationTime(mcWrapper.getHoldTimeStart());
+                    else
+                        mcWrapper.setLastAllocationTime(System.currentTimeMillis());
                     if (mcWrapper.getInitialRequestStackTrace() == null) {
                         Throwable t = new Throwable();
                         mcWrapper.setInitialRequestStackTrace(t);

@@ -16,6 +16,7 @@ import java.io.ObjectOutputStream;
 import java.util.concurrent.RejectedExecutionException;
 
 import javax.transaction.InvalidTransactionException;
+import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 
@@ -25,6 +26,7 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
 import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
+import com.ibm.ws.uow.embeddable.EmbeddableUOWTokenImpl;
 import com.ibm.ws.uow.embeddable.UOWManager;
 import com.ibm.ws.uow.embeddable.UOWManagerFactory;
 import com.ibm.ws.uow.embeddable.UOWToken;
@@ -64,6 +66,8 @@ public class SerialTransactionContextImpl implements ThreadContext {
 
     @Override
     public void taskStarting() throws RejectedExecutionException {
+        // TODO raise IllegalStateException to reject propagating transaction to multiple threads in parallel?
+
         // Suspend whatever is currently on the thread.
         try {
             UOWManager uowManager = UOWManagerFactory.getUOWManager();
@@ -127,11 +131,15 @@ public class SerialTransactionContextImpl implements ThreadContext {
                 break;
         }
 
-        // Resume the original transaction.
+        // Resume the original transaction if it hasn't already committed or rolled back.
         try {
             if (suspendedUOW != null) {
-                UOWManager uowManager = UOWManagerFactory.getUOWManager();
-                uowManager.resume(suspendedUOW);
+                Transaction tran = suspendedUOW instanceof EmbeddableUOWTokenImpl ? ((EmbeddableUOWTokenImpl) suspendedUOW).getTransaction() : null;
+                int status = tran == null ? Status.STATUS_UNKNOWN : tran.getStatus();
+                if (status != Status.STATUS_NO_TRANSACTION && status != Status.STATUS_COMMITTED && status != Status.STATUS_ROLLEDBACK) {
+                    UOWManager uowManager = UOWManagerFactory.getUOWManager();
+                    uowManager.resume(suspendedUOW);
+                }
                 suspendedUOW = null;
             }
         } catch (Throwable e) {

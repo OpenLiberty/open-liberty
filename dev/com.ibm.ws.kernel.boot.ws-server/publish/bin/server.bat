@@ -488,7 +488,7 @@ goto:eof
   @REM Add -Xquickstart -Xnoaot for client JVMs only.  AOT is ineffective if
   @REM JVMs have conflicting options, and it's more important that server JVMs
   @REM be able to use AOT.
-  set IBM_JAVA_OPTIONS=-Xquickstart -Xnoaot !SERVER_IBM_JAVA_OPTIONS!
+  set IBM_JAVA_OPTIONS=-Xquickstart -Xnoaot !IBM_JAVA_OPTIONS!
 goto:eof
 
 @REM

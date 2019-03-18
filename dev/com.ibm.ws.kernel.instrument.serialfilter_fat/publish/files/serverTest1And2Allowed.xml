@@ -6,7 +6,10 @@
         <feature>componenttest-1.0</feature>
     </featureManager>
     
-    <serialFilter class="*" mode="Enforce" permission="Deny"/>
-    <serialFilter class="com.ibm.ws.serialfilter.fat.object.allowed.*" permission="Allow"/>
+    <serialFilter>
+        <filterMode class="*" operation="Enforce"/>
+        <policy class="*" permission="Deny"/>
+        <policy class="com.ibm.ws.serialfilter.fat.object.allowed.*" permission="Allow"/>
+    </serialFilter>
     
 </server>

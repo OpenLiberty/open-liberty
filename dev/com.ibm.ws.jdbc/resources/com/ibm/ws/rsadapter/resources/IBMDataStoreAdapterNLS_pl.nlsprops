@@ -279,6 +279,10 @@ DSRA4013.ignored.connection.manager.config.used=DSRA4013I: W przypadku u\u017cyw
 DSRA4013.ignored.connection.manager.config.used.explanation=Wy\u015bwietlone w\u0142a\u015bciwo\u015bci mened\u017cera po\u0142\u0105cze\u0144 nie s\u0105 poprawne, je\u015bli jest u\u017cywana pula Oracle UCP.
 DSRA4013.ignored.connection.manager.config.used.useraction=Usu\u0144 w\u0142a\u015bciwo\u015bci mened\u017cera po\u0142\u0105cze\u0144 i zamiast nich u\u017cyj r\u00f3wnowa\u017cnej funkcji puli Oracle UCP.
 
+DSRA4014.URL.for.Driver.missing=DSRA4014E: Typ java.sql.Driver zosta\u0142 podany dla \u017ar\u00f3d\u0142a danych {0}, ale nie okre\u015blono atrybutu URL.
+DSRA4014.URL.for.Driver.missing.explanation=Nale\u017cy poda\u0107 adres URL po\u0142\u0105czenia dla \u017ar\u00f3d\u0142a danych typu java.sql.Driver.
+DSRA4014.URL.for.Driver.missing.useraction=Dodaj poprawny adres URL \u017ar\u00f3d\u0142a danych.
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

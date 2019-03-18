@@ -76,7 +76,7 @@ public class SerialFilterEnabledTest extends FATServletClient {
     public static void cleanUp() throws Exception {
         restorePropFile(backupFile);
         if (server != null && server.isStarted()) {
-            server.stopServer("CWWKS8014E.*", "CWWKS8015E.*", "CWWKS8028E.*");
+            server.stopServer("CWWKS8014E.*", "CWWKS8015E.*", "CWWKS8028E.*", "CWWKS8071W.*", "CWWKS8072W.*");
         }
     }
 
@@ -87,10 +87,6 @@ public class SerialFilterEnabledTest extends FATServletClient {
 
         // update server.xml
         server.reconfigureServer("serverAllAllowed.xml");
-
-        server.resetLogMarks();
-        assertNotNull("The messages.log file should contain CWWKS8000I message.", server.waitForStringInLogUsingMark("CWWKS8000I"));
-
         server.setMarkToEndOfLog();
         String result = runTestWithResponse(server, SERVLET_NAME, "AllAllowed").toString();
         Log.info(this.getClass(), "AllAllowed", "AllAllowed returned: " + result);
@@ -169,6 +165,39 @@ public class SerialFilterEnabledTest extends FATServletClient {
         Log.info(this.getClass(), "testCallerMethodDenied", "AllAllowed returned: " + result);
         assertTrue("The result should be SUCCESS", result.contains("SUCCESS"));
         assertNull("The messages.log file should not contain CWWKS8028E message.", server.waitForStringInLogUsingMark("CWWKS8028E:", 1000));
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC(value = { "com.ibm.ws.kernel.productinfo.ProductInfoParseException" })
+    public void testDuplicateMode() throws Exception {
+        // update server.xml
+        server.setMarkToEndOfLog();
+        server.reconfigureServer("serverDuplicateMode.xml");
+        assertNotNull("The messages.log file should contain CWWKS8071W.",
+                      server.waitForStringInLogUsingMark("CWWKS8071W:.*Enforce.*duplicateClass.*", 5000));
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC(value = { "com.ibm.ws.kernel.productinfo.ProductInfoParseException" })
+    public void testDuplicateModeWithMethod() throws Exception {
+        // update server.xml
+        server.setMarkToEndOfLog();
+        server.reconfigureServer("serverDuplicateMode2.xml");
+        assertNotNull("The messages.log file should contain CWWKS8071W.",
+                      server.waitForStringInLogUsingMark("CWWKS8071W:.*Enforce.*duplicateClass.*duplicateMethod.*", 5000));
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC(value = { "com.ibm.ws.kernel.productinfo.ProductInfoParseException" })
+    public void testDuplicatePolicy() throws Exception {
+        // update server.xml
+        server.setMarkToEndOfLog();
+        server.reconfigureServer("serverDuplicatePolicy.xml");
+        assertNotNull("The messages.log file should contain CWWKS8072W.",
+                      server.waitForStringInLogUsingMark("CWWKS8072W:.*Deny.*duplicateClass.*", 5000));
     }
 
     private static String backupPropFile() throws Exception {
