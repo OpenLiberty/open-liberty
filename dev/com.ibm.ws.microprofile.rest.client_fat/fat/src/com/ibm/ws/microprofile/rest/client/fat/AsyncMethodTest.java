@@ -14,7 +14,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -39,6 +41,8 @@ import mpRestClient11.async.AsyncTestServlet;
 public class AsyncMethodTest extends FATServletClient {
 
     final static String SERVER_NAME = "mpRestClient11.async";
+
+    boolean testRunning = false;
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
@@ -68,7 +72,65 @@ public class AsyncMethodTest extends FATServletClient {
             assertTrue("Found JsonBProvider errors in log file", 
                        jsonbProviderErrors == null || jsonbProviderErrors.isEmpty());
         } finally {
+            server.dumpServer("dump.zip");
             server.stopServer("CWWKF0033E"); //ignore this error for mismatch with jsonb-1.0 and Java EE 7
         }
+    }
+
+    @Before
+    public synchronized void obtainServerDumps() throws Exception {
+        if (server.isStarted()) {
+            new Thread(()-> {
+                synchronized(AsyncMethodTest.this) {
+                    if (testRunning && server.isStarted()) {
+                        try {
+                            server.dumpServer("dump1");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        return;
+                    }
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                synchronized(AsyncMethodTest.this) {
+                    if (testRunning && server.isStarted()) {
+                        try {
+                            server.dumpServer("dump2");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        return;
+                    }
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                synchronized(AsyncMethodTest.this) {
+                    if (testRunning && server.isStarted()) {
+                        try {
+                            server.dumpServer("dump3");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        return;
+                    }
+                }
+            }).start();
+        }
+        testRunning = true;
+    }
+
+    @After
+    public synchronized void stopServerDumps() throws Exception {
+        testRunning = false;
     }
 }
