@@ -7,4 +7,5 @@ Import-Package: \
   !javax.wsdl,\
   !org.apache.velocity.*,\
   !org.junit.*,\
+  org.apache.cxf;version="[3.0.0,4)",\
   *
