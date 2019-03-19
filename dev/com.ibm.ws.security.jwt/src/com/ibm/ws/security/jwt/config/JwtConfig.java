@@ -60,4 +60,6 @@ public interface JwtConfig {
 
 	PublicKey getPublicKey();
 
+	boolean isTokenEndpointEnabled();
+
 }
