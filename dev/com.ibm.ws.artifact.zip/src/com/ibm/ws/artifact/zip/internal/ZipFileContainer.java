@@ -606,21 +606,20 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
                     try {
                         archiveFile = extractEntry( entryInEnclosingContainer, getCacheDir() );
                         // 'extractEntry' throws IOException
-                    } catch ( IOException e ) {
-                        Tr.error(tc, "extract.cache.fail", e.getMessage());
-                    }
 
-                    // The archive file will be null if an exception occurred,
-                    // or if the extraction failed.
-
-                    if ( archiveFile != null ) {
-                        archiveFilePath = archiveFile.getAbsolutePath();
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                            Tr.debug(tc, "methodName + Archive file [ " + archiveFilePath + " ]");
+                        if ( archiveFile != null ) {
+                            archiveFilePath = archiveFile.getAbsolutePath();
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                                Tr.debug(tc, methodName + " Archive file [ " + archiveFilePath + " ]");
+                            }
+                        } else {
+                            archiveFileFailed = true;
+                            Tr.error(tc, "extract.cache.null", entryInEnclosingContainer.getPath());
                         }
-                    } else {
+
+                    } catch ( IOException e ) {
                         archiveFileFailed = true;
-                        Tr.warning(tc, methodName + " Failed to extract [ " + entryInEnclosingContainer.getPath() + " ]");
+                        Tr.error(tc, "extract.cache.fail", e.getMessage());
                     }
                 }
             }
@@ -1515,20 +1514,24 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
         if ( !extractionGuard.isPrimary ) {
             if ( !extractionGuard.waitForCompletion() ) {
-                Tr.warning(tc, "Secondary extraction timeout [ " + outputPath + " ]");
+                // Tr.warning(tc, "Secondary extraction timeout [ " + outputPath + " ]");
+                Tr.warning(tc, "extract.secondary.timeout", outputPath);
                 throw new IOException("Secondary extraction timeout [ " + outputPath + " ]");
 
             } else {
                 if ( !FileUtils.fileExists(outputFile) ) {
-                    Tr.warning(tc, "Failed secondary extraction [ " + outputPath + " ]");
+                    // Tr.warning(tc, "Failed secondary extraction [ " + outputPath + " ]");
+                    Tr.warning(tc, "extract.secondary.failed", outputPath);
                     throw new IOException("Failed secondary extraction [ " + outputPath + " ]");
                 } else if ( !FileUtils.fileIsFile(outputFile) ) {
-                    Tr.warning(tc, "Secondary extraction did not create a simple file [ " + outputPath + " ]");
+                    // Tr.warning(tc, "Secondary extraction did not create a simple file [ " + outputPath + " ]");
+                    Tr.warning(tc, "extract.secondary.notfile", outputPath);
                     throw new IOException("Secondary extraction did not create a simple file [ " + outputPath + " ]");
 
                 } else {
                     if ( isModified(inputEntry, outputFile) ) {
-                        Tr.warning(tc, "Secondary extraction inconsistent times [ " + outputPath + " ]");
+                        // Tr.warning(tc, "Secondary extraction inconsistent times [ " + outputPath + " ]");
+                        Tr.warning(tc, "extract.secondary.inconsistent", outputPath);
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                             Tr.debug(tc, "Secondary extraction: [ " + outputPath + " ]");
@@ -1563,12 +1566,12 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
                     doRemove = true;
                     doExtract = true;
                     extractCase = "Abnormal: Prior extraction is a directory";
-                    Tr.warning(tc, "Prior extraction is a directory [ " + outputPath + " ]");
+                    Tr.warning(tc, "extract.primary.directory", outputPath);
                 } else {
                     doRemove = true;
                     doExtract = true;
                     extractCase = "Abnormal: Prior extraction is untyped";
-                    Tr.warning(tc, "Prior extraction cannot be typed [ " + outputPath + " ]");
+                    Tr.warning(tc, "extract.primary.untyped", outputPath);
                 }
             } else {
                 doRemove = false;

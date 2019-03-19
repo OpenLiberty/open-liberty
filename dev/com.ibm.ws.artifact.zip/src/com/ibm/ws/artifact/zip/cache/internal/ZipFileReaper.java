@@ -228,10 +228,11 @@ public class ZipFileReaper {
                         if ( actualDelay > reapDelay ) {
                             long overage = actualDelay - reapDelay;
                             if ( overage > STALL_LIMIT ) {
-                                Tr.warning(tc, methodName +
-                                    " Excessive delay processing pending zip file closes:" +
-                                    " Actual delay [ " + toAbsSec(actualDelay) + " (s) ];" +
-                                    " Requested delay [ " + toAbsSec(reapDelay) + " (s) ]");
+                                // Tr.warning(tc, methodName +
+                                //    " Excessive delay processing pending zip file closes:" +
+                                //    " Actual delay [ " + toAbsSec(actualDelay) + " (s) ];" +
+                                //    " Requested delay [ " + toAbsSec(reapDelay) + " (s) ]");
+                                Tr.warning(tc, "reaper.stall", toAbsSec(actualDelay), toAbsSec(reapDelay));
                             }
                         }
                     }
@@ -1016,7 +1017,8 @@ public class ZipFileReaper {
 
         synchronized ( reaperLock ) {
             if ( !getIsActive() ) {
-                Tr.warning(tc, methodName + " Cannot open [ " + path + " ]: ZipFile cache [ " + reaperName + " ] is inactive");
+                // Tr.warning(tc, methodName + " Cannot open [ " + path + " ]: ZipFile cache [ " + reaperName + " ] is inactive");
+                Tr.warning(tc, "reaper.inactive", path, reaperName);
                 throw new IOException("Cannot open [ " + path + " ]: ZipFile cache is inactive");
             }
 
@@ -1121,13 +1123,16 @@ public class ZipFileReaper {
             ZipFileData data = storage.get(path);
 
             if ( data == null ) {
-                Tr.warning(tc, methodName + " Unregistered [ " + path + " ]: Ignore");
+                // Tr.warning(tc, methodName + " Unregistered [ " + path + " ]: Ignore");
+                Tr.warning(tc, "reaper.unregistered.path", path);
 
             } else if ( data.isFullyClosed() ) {
-                Tr.warning(tc, methodName + " Fully closed [ " + path + " ]: Ignore");
+                // Tr.warning(tc, methodName + " Fully closed [ " + path + " ]: Ignore");
+                Tr.warning(tc, "reaper.closed.path", path);
 
             } else if ( data.isPending() ) {
-                Tr.warning(tc, methodName + " Pending [ " + path + " ]: No active opens: Ignore");
+                // Tr.warning(tc, methodName + " Pending [ " + path + " ]: No active opens: Ignore");
+                Tr.warning(tc, "reaper.pending.path", path);
 
             } else if ( data.isOpen() ) {
                 if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {

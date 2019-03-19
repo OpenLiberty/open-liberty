@@ -479,10 +479,12 @@ public class ZipFileData {
             zipFileChanged = true;
             
             if ( openCount > closeCount ) {
-                Tr.warning(tc, methodName +
-                    " Zip [ " + path + " ]:" +
-                    " Update length from [ " + Long.valueOf(zipLength) + " ]" +
-                    " to [ " + Long.valueOf(newZipLength) + " ]");
+                // Tr.warning(tc, methodName +
+                //    " Zip [ " + path + " ]:" +
+                //    " Update length from [ " + Long.valueOf(zipLength) + " ]" +
+                //    " to [ " + Long.valueOf(newZipLength) + " ]");
+                Tr.warning(tc, "reaper.unexpected.length.change",
+                           path, Long.valueOf(zipLength), Long.valueOf(newZipLength));
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName +
@@ -497,10 +499,12 @@ public class ZipFileData {
             zipFileChanged = true;
 
             if ( openCount > closeCount ) {
-                Tr.warning(tc, methodName +
-                    " Zip [ " + path + " ]:" +
-                    " Update last modified from [ " + Long.valueOf(zipLastModified) + " ]" +
-                    " to [ " + Long.valueOf(newZipLastModified) + " ]");
+                // Tr.warning(tc, methodName +
+                //    " Zip [ " + path + " ]:" +
+                //    " Update last modified from [ " + Long.valueOf(zipLastModified) + " ]" +
+                //    " to [ " + Long.valueOf(newZipLastModified) + " ]");
+                Tr.warning(tc, "reaper.unexpected.lastmodified.change",
+                           path, Long.valueOf(zipLastModified), Long.valueOf(newZipLastModified));
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName +
@@ -513,7 +517,8 @@ public class ZipFileData {
 
         if ( zipFileChanged ) {
             if ( openCount > closeCount ) {
-                Tr.warning(tc, methodName + " Reopen [ " + path + " ]");
+                // Tr.warning(tc, methodName + " Reopen [ " + path + " ]");
+                Tr.warning(tc, "reaper.reopen.active", path);
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName + " Reopen [ " + path + " ]");
