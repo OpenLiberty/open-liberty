@@ -90,7 +90,7 @@ public class CompositeConfig implements Closeable, ConfigListener {
         }
 
         //we wrap each source up as an archaius config
-        PollingDynamicConfig archaiusConfig = new PollingDynamicConfig(source, executor, refreshInterval);
+        PollingDynamicConfig archaiusConfig = new PollingDynamicConfig(this, source, executor, refreshInterval);
 
         //add each archaius config to the composite config
         children.add(archaiusConfig);
