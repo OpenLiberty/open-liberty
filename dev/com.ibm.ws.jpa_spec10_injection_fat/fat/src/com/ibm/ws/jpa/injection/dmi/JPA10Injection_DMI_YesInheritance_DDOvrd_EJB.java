@@ -45,11 +45,13 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
-//@Mode(TestMode.FULL)
+@Mode(TestMode.FULL)
 public class JPA10Injection_DMI_YesInheritance_DDOvrd_EJB extends JPAFATServletClient {
     private final static String RESOURCE_ROOT = "test-applications/injection/";
     private final static String applicationName = "InjectionDMIYesInheritanceDDOvrdEJB"; // Name of EAR
@@ -65,7 +67,7 @@ public class JPA10Injection_DMI_YesInheritance_DDOvrd_EJB extends JPAFATServletC
         createSet.add("JPA10_INJECTION_CREATE_${dbvendor}.ddl");
     }
 
-    @Server("JPAServer")
+    @Server("JPAServerDMI")
     @TestServlets({
                     @TestServlet(servlet = DMIPkgYesInhDDOvrdEJBSLTestServlet.class, path = contextRoot + "/" + "DMIPkgYesInhDDOvrdEJBSLTestServlet"),
                     @TestServlet(servlet = DMIPriYesInhDDOvrdEJBSLTestServlet.class, path = contextRoot + "/" + "DMIPriYesInhDDOvrdEJBSLTestServlet"),
