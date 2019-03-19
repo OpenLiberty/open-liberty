@@ -23,7 +23,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 @Trivial
 @SuppressWarnings("deprecation")
 public class ThreadIdentityContextProvider extends ContainerContextProvider {
-    public static final String THREADIDENTITY = "ThreadIdentity";
+    public static final String SYNC_TO_OS_THREAD = "SyncToOSThread";
 
     public final AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> threadIdentityContextProviderRef = new AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider>("ThreadIdentityContextProvider");
 
@@ -43,6 +43,6 @@ public class ThreadIdentityContextProvider extends ContainerContextProvider {
 
     @Override
     public final String getThreadContextType() {
-        return THREADIDENTITY;
+        return SYNC_TO_OS_THREAD;
     }
 }
