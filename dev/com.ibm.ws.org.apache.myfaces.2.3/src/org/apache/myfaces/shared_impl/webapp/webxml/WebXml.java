@@ -30,6 +30,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.webapp.FacesServlet;
 
 import org.apache.myfaces.shared.config.MyfacesConfig;
+import org.apache.myfaces.shared.util.ClassUtils;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -132,7 +133,17 @@ public class WebXml
                 // </servlet>
                 continue;
             }
-            Class servletClass = org.apache.myfaces.shared.util.ClassUtils.simpleClassForName((String)entry.getValue());
+
+            Class servletClass = ClassUtils.simpleClassForName((String) entry.getValue(), false);
+            if (servletClass == null)
+            {
+                if (log.isLoggable(Level.FINEST))
+                {
+                    log.finest("ignoring servlet " + servletName + " because its class could not be loaded");
+                }
+                continue;
+            }
+
             if (FacesServlet.class.isAssignableFrom(servletClass) ||
                     DelegatedFacesServlet.class.isAssignableFrom(servletClass) ||
                     servletClass.getName().equals(_delegateFacesServlet))
