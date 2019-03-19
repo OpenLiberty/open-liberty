@@ -13,7 +13,9 @@ package com.ibm.ws.transaction.context.internal;
 import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.ObjectOutputStream;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.transaction.InvalidTransactionException;
 import javax.transaction.Status;
@@ -31,6 +33,8 @@ import com.ibm.ws.uow.embeddable.UOWManager;
 import com.ibm.ws.uow.embeddable.UOWManagerFactory;
 import com.ibm.ws.uow.embeddable.UOWToken;
 import com.ibm.wsspi.threadcontext.ThreadContext;
+import com.ibm.wsspi.tx.UOWEventEmitter;
+import com.ibm.wsspi.tx.UOWEventListener;
 
 /**
  * A special transaction context implementation for MicroProfile Concurrency that propagates a
@@ -49,8 +53,43 @@ public class SerialTransactionContextImpl implements ThreadContext {
     SerialTransactionContextImpl() {
         try {
             tx = EmbeddableTransactionManagerFactory.getTransactionManager().getTransaction();
+            // TODO remove the following temporary code once the transaction manager provides a proper mechanism to prevent a transaction on multiple threads at once
+            if (tx != null) {
+                SuspendCount s = suspendCounts.get(tx);
+                if (s == null) {
+                    ((UOWCurrent) EmbeddableTransactionManagerFactory.getTransactionManager()).setUOWEventListener(s = new SuspendCount(tx));
+                    if (suspendCounts.putIfAbsent(tx, s) != null)
+                        ((UOWCurrent) EmbeddableTransactionManagerFactory.getTransactionManager()).unsetUOWEventListener(s);
+                }
+            }
         } catch (SystemException x) {
             throw new RejectedExecutionException(x);
+        }
+    }
+
+    // TODO remove the following temporary code once the transaction manager provides a proper mechanism to prevent a transaction on multiple threads at once
+    private static final ConcurrentHashMap<Transaction, SuspendCount> suspendCounts = new ConcurrentHashMap<Transaction, SuspendCount>();
+
+    // TODO remove the following temporary code once the transaction manager provides a proper mechanism to prevent a transaction on multiple threads at once
+    private static class SuspendCount extends AtomicInteger implements UOWEventListener {
+        private static final long serialVersionUID = 1L;
+        private final Transaction tx;
+
+        private SuspendCount(Transaction tx) {
+            this.tx = tx;
+        }
+
+        /**
+         * @see com.ibm.wsspi.tx.UOWEventListener#UOWEvent(com.ibm.wsspi.tx.UOWEventEmitter, int, java.lang.Object)
+         */
+        @Override
+        public void UOWEvent(UOWEventEmitter uow, int event, Object data) {
+            if (event == UOWEventListener.SUSPEND)
+                incrementAndGet();
+            else if (event == UOWEventListener.RESUME)
+                decrementAndGet();
+            else if (event == UOWEventListener.POST_END)
+                suspendCounts.remove(tx);
         }
     }
 
@@ -66,7 +105,11 @@ public class SerialTransactionContextImpl implements ThreadContext {
 
     @Override
     public void taskStarting() throws RejectedExecutionException {
-        // TODO raise IllegalStateException to reject propagating transaction to multiple threads in parallel?
+        // TODO This current code is unlikely to be a fully reliable way of determining that a transaction
+        // will be active on 2 threads at once. It should be replaced once the transaction manager is updated
+        // to properly enforce the requirement.
+        if (tx != null && suspendCounts.get(tx).get() < 1)
+            throw new IllegalStateException("Transaction cannot be propagated to thread because it is not permitted to be active on two threads at the same time.");
 
         // Suspend whatever is currently on the thread.
         try {

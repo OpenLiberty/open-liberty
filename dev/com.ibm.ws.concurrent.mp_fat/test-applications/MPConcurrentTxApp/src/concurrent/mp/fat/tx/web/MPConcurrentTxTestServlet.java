@@ -43,6 +43,7 @@ import org.junit.Test;
 
 import com.ibm.tx.jta.TransactionManagerFactory;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -332,6 +333,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * ideally be a no-op, but it necessary to validate that it behaves that way and that it does not prevent the
      * starting of subsequent transactions.
      */
+    @AllowedFFDC("java.lang.IllegalStateException") // attempt to use same transaction on 2 threads at once
     @Test
     public void testJTATransactionPropagatedToSameThreadImmediatelyAndCommit() throws Exception {
         CompletableFuture<Integer> stage0 = txExecutor.completedFuture(0);
@@ -365,7 +367,17 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             tm.suspend();
         }
 
-        assertEquals(Integer.valueOf(2), stage2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        try {
+            assertEquals(Integer.valueOf(2), stage2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } catch (ExecutionException x) {
+            Throwable cause = x.getCause();
+            if (cause instanceof CompletionException)
+                cause = cause.getCause();
+            if (cause instanceof IllegalStateException) // transaction used on 2 threads at once
+                return;
+            else
+                throw x;
+        }
 
         tx.begin(); // also start a new transaction to verify the prior transaction is not left around on the main thread
         try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
@@ -384,6 +396,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * ideally be a no-op, but it necessary to validate that it behaves that way and that it does not prevent the
      * starting of subsequent transactions.
      */
+    @AllowedFFDC("java.lang.IllegalStateException") // attempt to use same transaction on 2 threads at once
     @Test
     public void testJTATransactionPropagatedToSameThreadImmediatelyAndRollBack() throws Exception {
         CompletableFuture<Integer> stage0 = txExecutor.completedFuture(0);
@@ -421,7 +434,15 @@ public class MPConcurrentTxTestServlet extends FATServlet {
         try {
             fail("Should report exceptional completion. Instead: " + stage2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         } catch (ExecutionException x) {
-            // expected
+            Throwable cause = x.getCause();
+            if (cause instanceof CompletionException)
+                cause = cause.getCause();
+            if (cause instanceof IllegalStateException) // transaction used on 2 threads at once
+                return;
+            else if (cause instanceof SQLException)
+                ; // expected
+            else
+                throw x;
         }
 
         // Verify that the transaction rolled back, meaning none of the inserts remain in the database
@@ -553,6 +574,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * which remains active on the main thread for a time during which no transactional work is being
      * performed by the main thread.
      */
+    @AllowedFFDC("java.lang.IllegalStateException") // attempt to use same transaction on 2 threads at once
     @Test
     public void testJTATransactionUsedSeriallyWithOverlapAndCommitWithinLastStage() throws Exception {
         CompletableFuture<Integer> stage;
@@ -584,7 +606,17 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             tm.suspend();
         }
 
-        assertEquals(Integer.valueOf(2), stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        try {
+            assertEquals(Integer.valueOf(2), stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } catch (ExecutionException x) {
+            Throwable cause = x.getCause();
+            if (cause instanceof CompletionException)
+                cause = cause.getCause(); // TODO why is cause sometimes showing with CompletionException? Is the exception supplied to exceptionally() varying?
+            if (cause instanceof IllegalStateException) // transaction used on 2 threads at once
+                return;
+            else
+                throw x;
+        }
 
         try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
             ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Freeborn' OR NAME='Mower'");
@@ -599,6 +631,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * which remains active on the main thread for a time during which no transactional work is being
      * performed by the main thread.
      */
+    @AllowedFFDC("java.lang.IllegalStateException") // attempt to use same transaction on 2 threads at once
     @Test
     public void testJTATransactionUsedSeriallyWithOverlapAndRollBackWithinLastStage() throws Exception {
         CompletableFuture<Integer> stage;
@@ -637,7 +670,15 @@ public class MPConcurrentTxTestServlet extends FATServlet {
         try {
             fail("Should raise CompletionException. Instead: " + stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         } catch (ExecutionException x) {
-            // expected
+            Throwable cause = x.getCause();
+            if (cause instanceof CompletionException)
+                cause = cause.getCause();
+            if (cause instanceof IllegalStateException) // transaction used on 2 threads at once
+                return;
+            else if (cause instanceof SQLException)
+                ; // expected
+            else
+                throw x;
         }
 
         // Verify that the transaction rolled back, meaning none of the inserts remain in the database
@@ -1418,6 +1459,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * Use multiple two-phase capable resources in the same transaction at the same time on different threads.
      * Commit the transaction after all transactional operations are finished.
      */
+    @AllowedFFDC("java.lang.IllegalStateException") // attempt to use same transaction on 2 threads at once
     @Test
     public void testTwoPhaseResourcesUsedInParallelAndCommit() throws Exception {
         tx.begin();
@@ -1442,7 +1484,14 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                 con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Otter Tail', 57790)");
             }
 
-            assertEquals(Integer.valueOf(1), stage.join());
+            try {
+                assertEquals(Integer.valueOf(1), stage.join());
+            } catch (CompletionException x) {
+                if (x.getCause() instanceof IllegalStateException) // transaction used on 2 threads at once
+                    return;
+                else
+                    throw x;
+            }
 
             if (tx.getStatus() == Status.STATUS_ACTIVE)
                 tx.commit();
@@ -1467,6 +1516,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * Use multiple two-phase capable resources in the same transaction at the same time on different threads.
      * Roll back the transaction after all transactional operations are finished.
      */
+    @AllowedFFDC("java.lang.IllegalStateException") // attempt to use same transaction on 2 threads at once
     @Test
     public void testTwoPhaseResourcesUsedInParallelAndRollBack() throws Exception {
         tx.begin();
@@ -1491,7 +1541,14 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                 con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Pennington', 14197)");
             }
 
-            assertEquals(Integer.valueOf(1), stage.join());
+            try {
+                assertEquals(Integer.valueOf(1), stage.join());
+            } catch (CompletionException x) {
+                if (x.getCause() instanceof IllegalStateException) // transaction used on 2 threads at once
+                    return;
+                else
+                    throw x;
+            }
         } finally {
             tx.rollback();
         }
@@ -1641,6 +1698,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * Have two threads perform transactional operations within the same thread, which can run
      * at the same time. The main thread commits the transaction when the transactional operations finish.
      */
+    @AllowedFFDC("java.lang.IllegalStateException") // attempt to use same transaction on 2 threads at once
     @Test
     public void testTwoThreadsConcurrentlyOperateInJTATransactionAndCommit() throws Exception {
         tx.begin();
@@ -1663,7 +1721,14 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             ps.setInt(2, 21490);
             ps.executeUpdate();
 
-            assertEquals(Integer.valueOf(1), stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            try {
+                assertEquals(Integer.valueOf(1), stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            } catch (ExecutionException x) {
+                if (x.getCause() instanceof IllegalStateException) // transaction used on 2 threads at once
+                    return;
+                else
+                    throw x;
+            }
         } finally {
             tx.commit();
         }
@@ -1683,6 +1748,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * Have two threads perform transactional operations within the same thread, which can run
      * at the same time. The main thread rolls back the transaction when the transactional operations finish.
      */
+    @AllowedFFDC("java.lang.IllegalStateException") // attempt to use same transaction on 2 threads at once
     @Test
     public void testTwoThreadsConcurrentlyOperateInJTATransactionAndRollBack() throws Exception {
         tx.begin();
@@ -1705,7 +1771,14 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             ps.setInt(2, 13966);
             ps.executeUpdate();
 
-            assertEquals(Integer.valueOf(1), stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            try {
+                assertEquals(Integer.valueOf(1), stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            } catch (ExecutionException x) {
+                if (x.getCause() instanceof IllegalStateException) // transaction used on 2 threads at once
+                    return;
+                else
+                    throw x;
+            }
         } finally {
             tx.rollback();
         }
