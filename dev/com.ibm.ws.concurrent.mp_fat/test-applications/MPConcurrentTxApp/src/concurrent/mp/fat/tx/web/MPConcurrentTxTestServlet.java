@@ -1287,6 +1287,229 @@ public class MPConcurrentTxTestServlet extends FATServlet {
     }
 
     /**
+     * Use multiple two-phase capable resources in the same transaction at the same time on different threads.
+     * Commit the transaction after all transactional operations are finished.
+     */
+    @Test
+    public void testTwoPhaseResourcesUsedInParallelAndCommit() throws Exception {
+        tx.begin();
+        try {
+            CompletableFuture<Integer> stage = txExecutor.supplyAsync(() -> {
+                try {
+                    Connection con = defaultDataSource.getConnection();
+                    con.createStatement().executeUpdate("INSERT INTO IACOUNTIES VALUES ('Osceola', 6149)");
+                    return con;
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(con -> {
+                try {
+                    return con.createStatement().executeUpdate("INSERT INTO IACOUNTIES VALUES ('O''Brien', 13944)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            try (Connection con = defaultDataSource_unsharable.getConnection()) {
+                con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Otter Tail', 57790)");
+            }
+
+            assertEquals(Integer.valueOf(1), stage.join());
+
+            if (tx.getStatus() == Status.STATUS_ACTIVE)
+                tx.commit();
+        } finally {
+            if (tx.getStatus() != Status.STATUS_NO_TRANSACTION)
+                tx.rollback();
+        }
+
+        // Verify that the transaction committed, meaning all of the inserts remain in the database
+        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM IACOUNTIES WHERE NAME='Osceola' OR NAME='O''Brien'");
+            assertTrue(result.next());
+            assertEquals(20093, result.getInt(1));
+
+            result = st.executeQuery("SELECT POPULATION FROM MNCOUNTIES WHERE NAME='Otter Tail'");
+            assertTrue(result.next());
+            assertEquals(57790, result.getInt(1));
+        }
+    }
+
+    /**
+     * Use multiple two-phase capable resources in the same transaction at the same time on different threads.
+     * Roll back the transaction after all transactional operations are finished.
+     */
+    @Test
+    public void testTwoPhaseResourcesUsedInParallelAndRollBack() throws Exception {
+        tx.begin();
+        try {
+            CompletableFuture<Integer> stage = txExecutor.supplyAsync(() -> {
+                try {
+                    Connection con = defaultDataSource.getConnection();
+                    con.createStatement().executeUpdate("INSERT INTO IACOUNTIES VALUES ('Palo Alto', 9110)");
+                    return con;
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(con -> {
+                try {
+                    return con.createStatement().executeUpdate("INSERT INTO IACOUNTIES VALUES ('Page', 15393)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            try (Connection con = defaultDataSource_unsharable.getConnection()) {
+                con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Pennington', 14197)");
+            }
+
+            assertEquals(Integer.valueOf(1), stage.join());
+        } finally {
+            tx.rollback();
+        }
+
+        // Verify that the transaction rolled back, meaning none of the inserts remain in the database
+        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM IACOUNTIES WHERE NAME='Palo Alto' OR NAME='Page'");
+            assertTrue(result.next());
+            assertEquals(0, result.getInt(1));
+
+            result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Pennington'");
+            assertTrue(result.next());
+            assertEquals(0, result.getInt(1));
+        }
+    }
+
+    /**
+     * Use multiple two-phase capable resources in the same transaction on different threads, but serially.
+     * Commit the transaction after all transactional operations are finished.
+     */
+    @Test
+    public void testTwoPhaseResourcesUsedSeriallyAndCommit() throws Exception {
+        CompletableFuture<Integer> stage1 = txExecutor.newIncompleteFuture();
+        CompletableFuture<Integer> stage4;
+        tx.begin();
+        try {
+            Connection con = defaultDataSource.getConnection();
+            stage4 = stage1.thenApplyAsync(u -> {
+                try {
+                    return u + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Pipestone', 9229)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApplyAsync(u -> {
+                try (Connection unsharableCon = defaultDataSource_unsharable.getConnection()) {
+                    return u + unsharableCon.createStatement().executeUpdate("INSERT INTO IACOUNTIES VALUES ('Poweshiek', 18428)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(u -> {
+                try {
+                    return u + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Pope', 10932)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).whenComplete((result, failure) -> {
+                try {
+                    if (failure == null && tx.getStatus() == Status.STATUS_ACTIVE)
+                        tx.commit();
+                    else
+                        tx.rollback();
+                } catch (Exception x) {
+                    x.printStackTrace();
+                    if (failure == null)
+                        throw new CompletionException(x);
+                }
+            });
+        } finally {
+            tm.suspend();
+        }
+
+        stage1.complete(0);
+
+        assertEquals(Integer.valueOf(3), stage4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Verify that the transaction committed, meaning all of the inserts remain in the database
+        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Pipestone' OR NAME='Pope'");
+            assertTrue(result.next());
+            assertEquals(20161, result.getInt(1));
+
+            result = st.executeQuery("SELECT POPULATION FROM IACOUNTIES WHERE NAME='Poweshiek'");
+            assertTrue(result.next());
+            assertEquals(18428, result.getInt(1));
+        }
+    }
+
+    /**
+     * Use multiple two-phase capable resources in the same transaction on different threads, but serially.
+     * Roll back the transaction after all transactional operations are finished.
+     */
+    @Test
+    public void testTwoPhaseResourcesUsedSeriallyAndRollBack() throws Exception {
+        CompletableFuture<Integer> stage1 = txExecutor.newIncompleteFuture();
+        CompletableFuture<Integer> stage4;
+        tx.begin();
+        try {
+            Connection con = defaultDataSource.getConnection();
+            stage4 = stage1.thenApplyAsync(u -> {
+                try {
+                    return u + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Pine', 29057)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApplyAsync(u -> {
+                try (Connection unsharableCon = defaultDataSource_unsharable.getConnection()) {
+                    return u + unsharableCon.createStatement().executeUpdate("INSERT INTO IACOUNTIES VALUES ('Plymouth', 25027)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(u -> {
+                try {
+                    return u + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Polk', 31564)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(u -> {
+                try {
+                    tx.setRollbackOnly(); // ensure the transaction always rolls back
+                    return 0;
+                } catch (SystemException x) {
+                    throw new CompletionException(x);
+                }
+            }).whenComplete((result, failure) -> {
+                try {
+                    if (failure == null && tx.getStatus() == Status.STATUS_ACTIVE)
+                        tx.commit();
+                    else
+                        tx.rollback();
+                } catch (Exception x) {
+                    x.printStackTrace();
+                    if (failure == null)
+                        throw new CompletionException(x);
+                }
+            });
+        } finally {
+            tm.suspend();
+        }
+
+        stage1.complete(0);
+
+        assertEquals(Integer.valueOf(0), stage4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Verify that the transaction rolled back, meaning none of the inserts remain in the database
+        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Pine' OR NAME='Polk'");
+            assertTrue(result.next());
+            assertEquals(0, result.getInt(1));
+
+            result = st.executeQuery("SELECT SUM(POPULATION) FROM IACOUNTIES WHERE NAME='Plymouth'");
+            assertTrue(result.next());
+            assertEquals(0, result.getInt(1));
+        }
+    }
+
+    /**
      * Have two threads perform transactional operations within the same thread, which can run
      * at the same time. The main thread commits the transaction when the transactional operations finish.
      */

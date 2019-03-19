@@ -88,7 +88,7 @@ public class RemoteFile {
     }
 
     public boolean retry(Operation op, long retryNs) throws Exception {
-        String methodName = "rename";
+        String methodName = "retry";
 
         boolean didAct = op.act();
         if ( didAct ) {
@@ -603,12 +603,11 @@ public class RemoteFile {
     }
 
     private boolean basicDeleteLocalFile(File useLocalFile) {
-        String methodName = "deleteLocalFile";
+        String methodName = "basicDeleteLocalFile";
 
         Path localPath = useLocalFile.toPath();
         try {
-            Files.delete(localPath);
-            return true;
+            return Files.deleteIfExists(localPath);
         } catch ( IOException e ) {
             Log.info(c, methodName, "Failed to delete '" + localPath + "': " + e.getMessage());
             return false;
