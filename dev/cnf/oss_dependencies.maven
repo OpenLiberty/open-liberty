@@ -63,7 +63,6 @@ commons-logging:commons-logging:1.1.1
 commons-logging:commons-logging:1.1.3
 httpunit:httpunit:1.5.4
 httpunit:httpunit:1.7
-io.openliberty.arquillian:arquillian-liberty-support:1.0.4
 io.reactivex.rxjava2:rxjava:2.2.4
 io.smallrye.reactive:smallrye-reactive-streams-operators:1.0.0
 javax:javaee-api:7.0
