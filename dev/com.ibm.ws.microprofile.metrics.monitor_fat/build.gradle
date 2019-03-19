@@ -12,14 +12,33 @@
 dependencies {
 }
 
-File serverDir = new File(autoFvtDir, 'publish/servers/MetricsMonitorServer')
+def serverArray = new File[3]
+serverArray[0] = new File(autoFvtDir, 'publish/servers/TestEDF4')
+serverArray[1] = new File(autoFvtDir, 'publish/servers/TestEDF5')
+serverArray[2] = new File(autoFvtDir, 'publish/servers/TestEDF6')
+
+//File serverDir = new File(autoFvtDir, 'publish/servers/TestEDF4')
 
 task addDerbyToServerDir(type: Copy) {
   from configurations.derby
-  into serverDir
+  into serverArray[0]
+  rename 'derby-.*.jar', 'derby.jar'
+}
+
+task addDerbyToServerDir2(type: Copy) {
+  from configurations.derby
+  into serverArray[1]
+  rename 'derby-.*.jar', 'derby.jar'
+}
+
+task addDerbyToServerDir3(type: Copy) {
+  from configurations.derby
+  into serverArray[2]
   rename 'derby-.*.jar', 'derby.jar'
 }
 
 addRequiredLibraries {
   dependsOn addDerbyToServerDir
+  dependsOn addDerbyToServerDir2
+  dependsOn addDerbyToServerDir3
 }

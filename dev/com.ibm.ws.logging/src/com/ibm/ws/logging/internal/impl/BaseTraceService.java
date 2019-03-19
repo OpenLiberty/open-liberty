@@ -233,7 +233,7 @@ public class BaseTraceService implements TrService {
         systemOut = new SystemLogHolder(LoggingConstants.SYSTEM_OUT, System.out);
         systemErr = new SystemLogHolder(LoggingConstants.SYSTEM_ERR, System.err);
 
-        earlyMessageTraceKiller_Timer.schedule(new EarlyMessageTraceCleaner(), 5 * MINUTE); // 5 minutes wait time
+        earlyMessageTraceKiller_Timer.schedule(new EarlyMessageTraceCleaner(), 1 * MINUTE); // 5 minutes wait time
     }
 
     /**
@@ -1215,7 +1215,7 @@ public class BaseTraceService implements TrService {
                     trStream.realFlush();
                 } catch (IOException e) {
                     trouble = true;
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
             try {
@@ -1224,11 +1224,11 @@ public class BaseTraceService implements TrService {
                         trStream.realFlush();
                     } catch (IOException e) {
                         trouble = true;
-                        e.printStackTrace();
+                        //e.printStackTrace();
                     }
                 }
             } catch (Exception e) {
-                //String passed was null do nothing
+                //String passed was null, do nothing
             }
         }
 
@@ -1239,6 +1239,7 @@ public class BaseTraceService implements TrService {
                 trStream.realFlush();
             } catch (IOException e) {
                 trouble = true;
+                //e.printStackTrace();
             }
         }
 
@@ -1566,6 +1567,9 @@ public class BaseTraceService implements TrService {
                     BaseTraceService.this.setWsMessageRouter(internalMessageRouter.get());
                 if (internalTraceRouter.get() != null)
                     BaseTraceService.this.setTraceRouter(internalTraceRouter.get());
+
+//                final PrintWriter writer = new PrintWriter(System.out, true);
+//                writer.println("Help me God");
             }
         }
     }
