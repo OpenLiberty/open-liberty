@@ -46,8 +46,7 @@ public class ReactiveStreamsTestServlet extends FATServlet {
     @Inject
     ReactiveStreamsEngine engine1;
 
-    @Inject
-    IntegerSubscriber integerSubscriber;
+    IntegerSubscriber integerSubscriber = null;
 
     String value = "v";
     String expectedValue = "v";
@@ -75,6 +74,7 @@ public class ReactiveStreamsTestServlet extends FATServlet {
         PublisherBuilder<Integer> data = ReactiveStreams.of(1, 2, 3, 4, 5);
         ProcessorBuilder<Integer, Integer> filter = ReactiveStreams.<Integer> builder().dropWhile(t -> t < 3);
 
+        integerSubscriber = new IntegerSubscriber();
         data.via(filter).to(integerSubscriber).run();
         integerSubscriber.startConsuming();
 
