@@ -10,6 +10,8 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 
+# sample comment
+
 bVersion=1.0.${libertyBundleMicroVersion}
 bSymbolicName=com.ibm.ws.jaxb.tools.2.2.10
 
