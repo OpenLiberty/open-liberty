@@ -63,6 +63,21 @@ public class TestEnableDisableFeaturesTest {
     @Server("TestEDF6")
     public static LibertyServer serverEDF6;
     
+    @Server("TestEDF8")
+    public static LibertyServer serverEDF8;
+    
+    @Server("TestEDF9")
+    public static LibertyServer serverEDF9;
+    
+    @Server("TestEDF10")
+    public static LibertyServer serverEDF10;
+    
+    @Server("TestEDF11")
+    public static LibertyServer serverEDF11;
+    
+    @Server("TestEDF12")
+    public static LibertyServer serverEDF12;
+    
     @BeforeClass
     public static void setUp() throws Exception {
     	trustAll();
@@ -104,7 +119,7 @@ public class TestEnableDisableFeaturesTest {
     @BeforeClass
     public static void setUpEDF6() throws Exception {
     	
-    	String testName = "testEDF6";
+    	String testName = "setUpEDF6";
     	Log.info(c, testName, "------- Add session application ------");
        	ShrinkHelper.defaultDropinApp(serverEDF6, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
        	Log.info(c, testName, "------- added testSessionApp to dropins -----");
@@ -114,8 +129,73 @@ public class TestEnableDisableFeaturesTest {
     	Log.info(c, testName, "------- Add jax-ws endpoint application ------");
        	ShrinkHelper.defaultDropinApp(serverEDF6, "testJaxWsApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jaxws","com.ibm.ws.microprofile.metrics.monitor_fat.jaxws.client");
        	Log.info(c, testName, "------- added testJaxWsApp to dropins -----");
-    	
     }
+    
+    @BeforeClass
+    public static void setUpEDF8() throws Exception {
+    	String testName = "setUpEDF8";
+    	Log.info(c, testName, "------- Add session application ------");
+       	ShrinkHelper.defaultDropinApp(serverEDF8, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
+       	Log.info(c, testName, "------- added testSessionApp to dropins -----");
+       	Log.info(c, testName, "------- Add JDBC application ------");
+       	ShrinkHelper.defaultDropinApp(serverEDF8, "testJDBCApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jdbc.servlet");
+       	Log.info(c, testName, "------- added testJDBCApp to dropins -----");
+    	Log.info(c, testName, "------- Add jax-ws endpoint application ------");
+       	ShrinkHelper.defaultDropinApp(serverEDF8, "testJaxWsApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jaxws","com.ibm.ws.microprofile.metrics.monitor_fat.jaxws.client");
+       	Log.info(c, testName, "------- added testJaxWsApp to dropins -----");
+    }
+    
+    @BeforeClass
+    public static void setUpEDF9() throws Exception {
+    	String testName = "setUpEDF9";
+    	Log.info(c, testName, "------- Add session application ------");
+       	ShrinkHelper.defaultDropinApp(serverEDF9, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
+       	Log.info(c, testName, "------- added testSessionApp to dropins -----");
+       	Log.info(c, testName, "------- Add JDBC application ------");
+       	ShrinkHelper.defaultDropinApp(serverEDF9, "testJDBCApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jdbc.servlet");
+       	Log.info(c, testName, "------- added testJDBCApp to dropins -----");
+    	Log.info(c, testName, "------- Add jax-ws endpoint application ------");
+       	ShrinkHelper.defaultDropinApp(serverEDF9, "testJaxWsApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jaxws","com.ibm.ws.microprofile.metrics.monitor_fat.jaxws.client");
+       	Log.info(c, testName, "------- added testJaxWsApp to dropins -----");
+    }
+    
+    @BeforeClass
+    public static void setUpEDF10() throws Exception {
+    	String testName = "setUpEDF10";
+    	Log.info(c, testName, "------- Add session application ------");
+       	ShrinkHelper.defaultDropinApp(serverEDF10, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
+       	Log.info(c, testName, "------- added testSessionApp to dropins -----");
+       	Log.info(c, testName, "------- Add JDBC application ------");
+       	ShrinkHelper.defaultDropinApp(serverEDF10, "testJDBCApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jdbc.servlet");
+       	Log.info(c, testName, "------- added testJDBCApp to dropins -----");
+    	Log.info(c, testName, "------- Add jax-ws endpoint application ------");
+       	ShrinkHelper.defaultDropinApp(serverEDF10, "testJaxWsApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jaxws","com.ibm.ws.microprofile.metrics.monitor_fat.jaxws.client");
+       	Log.info(c, testName, "------- added testJaxWsApp to dropins -----");
+    }
+    
+    @BeforeClass
+    public static void setUpEDF11() throws Exception {
+    	String testName = "setUpEDF11";
+    	Log.info(c, testName, "------- Add session application ------");
+       	ShrinkHelper.defaultDropinApp(serverEDF11, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
+       	Log.info(c, testName, "------- added testSessionApp to dropins -----");
+       	Log.info(c, testName, "------- Add JDBC application ------");
+       	ShrinkHelper.defaultDropinApp(serverEDF11, "testJDBCApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jdbc.servlet");
+       	Log.info(c, testName, "------- added testJDBCApp to dropins -----");
+//    	Log.info(c, testName, "------- Add jax-ws endpoint application ------");
+//       	ShrinkHelper.defaultDropinApp(serverEDF11, "testJaxWsApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jaxws","com.ibm.ws.microprofile.metrics.monitor_fat.jaxws.client");
+//       	Log.info(c, testName, "------- added testJaxWsApp to dropins -----");
+    }
+    
+    @BeforeClass
+    public static void setUpEDF12() throws Exception {
+    	String testName = "setUpEDF12";
+    	Log.info(c, testName, "------- Add session application ------");
+       	ShrinkHelper.defaultDropinApp(serverEDF12, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
+       	Log.info(c, testName, "------- added testSessionApp to dropins -----");
+    }
+    
+    
     
     @Test
     public void testEDF1() throws Exception {
@@ -289,20 +369,96 @@ public class TestEnableDisableFeaturesTest {
     public void testEDF8() throws Exception {
     	
     	String testName = "testEDF8";
-    	serverEDF6.startServer();
+    	serverEDF8.startServer();
+    	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", serverEDF8), 
+          		new String[] { "sql: create table cities" }, new String[] {});
     	Log.info(c, testName, "------- Monitor filter Session and ConnectionPool ------");
-    	serverEDF6.setServerConfigurationFile("server_monitorFilter3.xml");
-       	Assert.assertNotNull("CWWKG0017I NOT FOUND",serverEDF6.waitForStringInLogUsingMark("CWWKG0017I"));
-      	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=select&city=city1&id=id1", serverEDF6), 
+    	serverEDF8.setServerConfigurationFile("server_monitorFilter3.xml");
+       	Assert.assertNotNull("CWWKG0017I NOT FOUND",serverEDF8.waitForStringInLogUsingMark("CWWKG0017I"));
+      	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=select&city=city1&id=id1", serverEDF8), 
           		new String[] { "sql: select" }, new String[] {});
        	Log.info(c, testName, "------- Only session and connectionpool metrics should be available ------");
-      	checkStrings(getHttpsServlet("/metrics/vendor", serverEDF6), 
+      	checkStrings(getHttpsServlet("/metrics/vendor", serverEDF8), 
        		new String[] { "vendor:session", "vendor:connectionpool" }, 
        		new String[] { "vendor:servlet", "vendor:threadpool" });
+      	tearDown(serverEDF8);
     }
     
-    @Test public void testEDF9() throws Exception {
+    @Test 
+    public void testEDF9() throws Exception {
     	
+    	String testName = "testEDF9";
+    	serverEDF9.startServer();
+    	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", serverEDF9), 
+          		new String[] { "sql: create table cities" }, new String[] {});
+    	Log.info(c, testName, "------- Monitor filter ThreadPool, WebContainer, Session and ConnectionPool ------");
+    	serverEDF9.setMarkToEndOfLog();
+    	serverEDF9.setServerConfigurationFile("server_monitorFilter4.xml");
+ 	    Assert.assertNotNull("CWWKG0017I NOT FOUND",serverEDF9.waitForStringInLogUsingMark("CWWKG0017I"));
+ 	    checkStrings(getHttpServlet("/testSessionApp/testSessionServlet",serverEDF9),
+ 	    		new String[] { "Session id:" }, new String[] {});
+ 	    checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=select&city=city1&id=id1",serverEDF9), 
+ 			    new String[] { "sql: select" }, new String[] {});
+ 	     Log.info(c, testName, "------- all four vendor metrics should be available ------");
+ 	     checkStrings(getHttpsServlet("/metrics/vendor",serverEDF9), 
+ 		        new String[] {"vendor:threadpool", "vendor:servlet", "vendor:session", "vendor:connectionpool" }, 
+ 		        new String[] {});
+ 	     tearDown(serverEDF9);
+    }
+    
+    @Test
+    public void testEDF12() throws Exception {
+    	String testName = "testEDF12";
+    	serverEDF12.startServer();
+    	Log.info(c, testName, "------- Remove monitor-1.0 ------");
+    	serverEDF12.setServerConfigurationFile("server_noJDBCMonitor.xml");
+    	//Assert.assertNotNull("CWWKG0016I NOT FOUND",serverEDF12.waitForStringInLogUsingMark("CWWKG0016I"));
+    	//Assert.assertNotNull("CWWKZ0003I NOT FOUND",serverEDF12.waitForStringInLogUsingMark("CWWKF0008I"));
+    	Assert.assertNotNull("CWPMI2002I NOT FOUND",serverEDF12.waitForStringInLogUsingMark("CWPMI2002I"));
+    	Log.info(c, testName, "------- no vendor metrics should be available ------");
+    	checkStrings(getHttpsServlet("/metrics",serverEDF12), 
+    		new String[] {}, 
+    		new String[] { "vendor:" });
+    	tearDown(serverEDF12);
+    }
+    
+    @Test
+    public void testEDF11() throws Exception {
+    	
+    	String testName = "testEDF11";
+    	serverEDF11.startServer();
+    	Log.info(c, testName, "------- Remove JDBC application ------");
+    	boolean rc2 = serverEDF11.removeAndStopDropinsApplications("testJDBCApp.war");
+    	Log.info(c, testName, "------- " + (rc2 ? "successfully removed" : "failed to remove") + " JDBC application ------");
+    	serverEDF11.setMarkToEndOfLog();
+    	serverEDF11.setServerConfigurationFile("server_noJDBC.xml");
+//    	Assert.assertNotNull("CWWKG0017I NOT FOUND",serverEDF11.waitForStringInLogUsingMark("CWWKG0017I"));
+//    	Assert.assertNotNull("CWWKT0016I NOT FOUND",serverEDF11.waitForStringInLogUsingMark("CWWKT0016I"));
+//    	Assert.assertNotNull("CWWKZ0009I NOT FOUND",serverEDF11.waitForStringInLogUsingMark("CWWKZ0009I"));
+    	Assert.assertNotNull("CWWKF0008I NOT FOUND",serverEDF11.waitForStringInLogUsingMark("CWWKF0008I"));
+    	Log.info(c, testName, "------- connectionpool metrics should not be available ------");
+    	checkStrings(getHttpsServlet("/metrics/vendor",serverEDF11), 
+    		new String[] { "vendor:" },       	
+    		new String[] { "vendor:connectionpool", "vendor:servlet_test_jdbc_app" });
+    	tearDown(serverEDF11);
+    }
+    
+    @Test
+    public void testEDF10() throws Exception {
+    	
+    	String testName = "testEDF10";
+    	serverEDF10.startServer();
+    	Log.info(c, testName, "------- Remove JAX-WS application ------");
+    	boolean rc1 = serverEDF10.removeAndStopDropinsApplications("testJaxWsApp.war");
+    	Log.info(c, testName, "------- " + (rc1 ? "successfully removed" : "failed to remove") + " JAX-WS application ------");
+    	serverEDF10.setMarkToEndOfLog();
+    	serverEDF10.setServerConfigurationFile("server_noJaxWs.xml");
+    	Assert.assertNotNull("CWWKF0008I NOT FOUND",serverEDF10.waitForStringInLogUsingMark("CWWKF0008I"));
+    	Log.info(c, testName, "------- jax-ws metrics should not be available ------");
+    	checkStrings(getHttpsServlet("/metrics/vendor",serverEDF10), 
+    		new String[] { "vendor:" }, 
+    		new String[] { "vendor:jaxws_client", "vendor:jaxws_server"});       	
+    	tearDown(serverEDF10);
     }
     
     private String getHttpServlet(String servletPath, LibertyServer server) throws Exception {
