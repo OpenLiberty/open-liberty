@@ -243,6 +243,10 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                 } catch (Exception x2) {
                     x2.printStackTrace();
                 }
+                if (x instanceof RuntimeException)
+                    throw (RuntimeException) x;
+                if (x instanceof Error)
+                    throw (Error) x;
                 throw new CompletionException(x);
             });
         } finally {
@@ -301,6 +305,10 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                 } catch (Exception x2) {
                     x2.printStackTrace();
                 }
+                if (x instanceof RuntimeException)
+                    throw (RuntimeException) x;
+                if (x instanceof Error)
+                    throw (Error) x;
                 throw new CompletionException(x);
             });
         } finally {
@@ -361,6 +369,10 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                 } catch (Exception x2) {
                     x2.printStackTrace();
                 }
+                if (x instanceof RuntimeException)
+                    throw (RuntimeException) x;
+                if (x instanceof Error)
+                    throw (Error) x;
                 throw new CompletionException(x);
             });
         } finally {
@@ -371,8 +383,6 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             assertEquals(Integer.valueOf(2), stage2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         } catch (ExecutionException x) {
             Throwable cause = x.getCause();
-            if (cause instanceof CompletionException)
-                cause = cause.getCause();
             if (cause instanceof IllegalStateException) // transaction used on 2 threads at once
                 return;
             else
@@ -425,6 +435,10 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                 } catch (Exception x2) {
                     x2.printStackTrace();
                 }
+                if (x instanceof RuntimeException)
+                    throw (RuntimeException) x;
+                if (x instanceof Error)
+                    throw (Error) x;
                 throw new CompletionException(x);
             });
         } finally {
@@ -435,8 +449,6 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             fail("Should report exceptional completion. Instead: " + stage2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         } catch (ExecutionException x) {
             Throwable cause = x.getCause();
-            if (cause instanceof CompletionException)
-                cause = cause.getCause();
             if (cause instanceof IllegalStateException) // transaction used on 2 threads at once
                 return;
             else if (cause instanceof SQLException)
@@ -600,6 +612,10 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                 } catch (Exception x2) {
                     x2.printStackTrace();
                 }
+                if (x instanceof RuntimeException)
+                    throw (RuntimeException) x;
+                if (x instanceof Error)
+                    throw (Error) x;
                 throw new CompletionException(x);
             });
         } finally {
@@ -610,8 +626,6 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             assertEquals(Integer.valueOf(2), stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         } catch (ExecutionException x) {
             Throwable cause = x.getCause();
-            if (cause instanceof CompletionException)
-                cause = cause.getCause(); // TODO why is cause sometimes showing with CompletionException? Is the exception supplied to exceptionally() varying?
             if (cause instanceof IllegalStateException) // transaction used on 2 threads at once
                 return;
             else
@@ -661,6 +675,10 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                 } catch (Exception x2) {
                     x2.printStackTrace();
                 }
+                if (x instanceof RuntimeException)
+                    throw (RuntimeException) x;
+                if (x instanceof Error)
+                    throw (Error) x;
                 throw new CompletionException(x);
             });
         } finally {
@@ -671,8 +689,6 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             fail("Should raise CompletionException. Instead: " + stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         } catch (ExecutionException x) {
             Throwable cause = x.getCause();
-            if (cause instanceof CompletionException)
-                cause = cause.getCause();
             if (cause instanceof IllegalStateException) // transaction used on 2 threads at once
                 return;
             else if (cause instanceof SQLException)
