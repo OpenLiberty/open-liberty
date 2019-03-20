@@ -7,5 +7,5 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.mpRestClient-1.2))"
 -bundles=com.ibm.ws.microprofile.opentracing.rest.client.1.3
 IBM-Install-Policy: when-satisfied
-kind=noship
+kind=ga
 edition=core

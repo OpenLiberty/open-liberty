@@ -23,8 +23,9 @@ import org.reactivestreams.Subscription;
 public class IntegerSubscriber implements Subscriber<Integer> {
 
     private Subscription sub;
-    private final ArrayList<Integer> results = new ArrayList<Integer>();
+    private ArrayList<Integer> results = null;
     private boolean complete = false;
+    private boolean alreadyUsed = false;
 
     @Override
     public void onComplete() {
@@ -47,7 +48,13 @@ public class IntegerSubscriber implements Subscriber<Integer> {
 
     @Override
     public void onSubscribe(Subscription arg0) {
+
+        if (alreadyUsed) {
+            throw new RuntimeException("Please don't reuse this instance");
+        }
+        alreadyUsed = true;
         sub = arg0;
+        results = new ArrayList<Integer>();
         System.out.println("onSubscribe" + sub);
     }
 
