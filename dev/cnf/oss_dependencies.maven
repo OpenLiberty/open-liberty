@@ -65,6 +65,8 @@ commons-net:commons-net:3.6
 httpunit:httpunit:1.5.4
 httpunit:httpunit:1.7
 io.reactivex.rxjava2:rxjava:2.2.4
+io.smallrye.reactive:smallrye-converter-api:1.0.1
+io.smallrye.reactive:smallrye-reactive-messaging-provider:0.0.4
 io.smallrye.reactive:smallrye-reactive-streams-operators:1.0.0
 javax:javaee-api:7.0
 javax.activation:activation:1.1
