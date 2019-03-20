@@ -33,12 +33,11 @@ import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
 
 /**
- * @author Manfred Geiler (latest modification by $Author: struberg $)
- * @version $Revision: 1194849 $ $Date: 2011-10-29 09:28:45 +0000 (Sat, 29 Oct 2011) $
+ * @author Manfred Geiler (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class WebXml
 {
-    //private static final Log log = LogFactory.getLog(WebXml.class);
     private static final Logger log = Logger.getLogger(WebXml.class.getName());
 
 
@@ -135,7 +134,7 @@ public class WebXml
                 continue;
             }
 
-            Class servletClass = ClassUtils.simpleClassForName((String)entry.getValue(), false);
+            Class servletClass = ClassUtils.simpleClassForName((String) entry.getValue(), false);
             if (servletClass == null)
             {
                 if (log.isLoggable(Level.FINEST))
@@ -179,7 +178,7 @@ public class WebXml
     }
 
     /**
-     * returns a list of {@see #org.apache.myfaces.shared_impl.webapp.webxml.FilterMapping}s representing a
+     * returns a list of org.apache.myfaces.shared_impl.webapp.webxml.FilterMapping representing a
      * extensions filter entry
      */
     public List getFacesExtensionsFilterMappings()
