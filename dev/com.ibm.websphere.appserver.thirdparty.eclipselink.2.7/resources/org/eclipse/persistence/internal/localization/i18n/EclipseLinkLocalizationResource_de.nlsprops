@@ -27,5 +27,5 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-NoTranslationForThisLocale=(F\u00fcr diese Nachricht gibt es keine englische \u00dcbersetzung.)
+NoTranslationForThisLocale= (F\u00fcr diese Nachricht gibt es keine englische \u00dcbersetzung.)
 

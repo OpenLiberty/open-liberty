@@ -609,13 +609,13 @@ osgi_initializer_failed=Konstruowanie inicjatora OSGi specyficznego dla \u015bro
 
 overriding_cache_isolation=Obiekt nadrz\u0119dny {0} ma poziom odseparowania: {1}, kt\u00f3ry zapewnia wi\u0119ksz\u0105 ochron\u0119, ni\u017c podklasa {2} z odseparowaniem: {3}; dlatego te\u017c dla podklasy ustawiono poziom odseparowania {1}.
 
-ox_lowering_global_logging_from_default_info_to_warning={0} Obni\u017canie rejestrowania globalnego z poziomu domy\u015blnego INFORMACJA do poziomu OSTRZE\u017bENIE.
+ox_lowering_global_logging_from_default_info_to_warning= {0} Obni\u017canie rejestrowania globalnego z poziomu domy\u015blnego INFORMACJA do poziomu OSTRZE\u017bENIE.
 
-ox_lowering_session_logging_from_default_info_to_warning={0} Obni\u017canie rejestrowania sesji z poziomu domy\u015blnego INFORMACJA do poziomu OSTRZE\u017bENIE.
+ox_lowering_session_logging_from_default_info_to_warning= {0} Obni\u017canie rejestrowania sesji z poziomu domy\u015blnego INFORMACJA do poziomu OSTRZE\u017bENIE.
 
-ox_turn_global_logging_off={0} Wy\u0142\u0105czanie globalnego rejestrowania sesji.
+ox_turn_global_logging_off= {0} Wy\u0142\u0105czanie globalnego rejestrowania sesji.
 
-ox_turn_session_logging_off={0} Wy\u0142\u0105czanie rejestrowania sesji.
+ox_turn_session_logging_off= {0} Wy\u0142\u0105czanie rejestrowania sesji.
 
 parse_ejb_jar_with_validation_fails=Analizowanie pliku ejb-jar.xml pod k\u0105tem sprawdzenia poprawno\u015bci powoduje niepowodzenie i b\u0142\u0105d ({0}). Narz\u0119dzie migracji przeanalizuje plik XML bez sprawdzania poprawno\u015bci.
 

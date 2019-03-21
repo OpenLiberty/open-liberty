@@ -32,8 +32,7 @@
 7501=Bean-Validierungsmodus f\u00fcr {0}Marshaller wurde auf einen unzul\u00e4ssigen Wert ("{1}") gesetzt.
 
 7510=Nicht eingehaltene Bedingungen f\u00fcr {0}Marshalling-Bean:
+{1}{2}
 
 7525=Die Eigenschaft {0} kann nicht geparst werden, weil sie die Annotation @NotNull und das Attribut "xs:nillable=true" enth\u00e4lt.
-
-{1}{2}=
 

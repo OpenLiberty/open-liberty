@@ -39,7 +39,7 @@ null.classloader.CWMCG0002E.useraction=\u8bf7\u5c06 ClassLoader \u8bbe\u7f6e\u4e
 
 # A Config instance already exists for the specified ClassLoader.
 config.already.exists.CWMCG0003E=CWMCG0003E: \u6240\u6307\u5b9a\u7c7b\u88c5\u5165\u5668\u5df2\u5b58\u5728\u914d\u7f6e\u5b9e\u4f8b\u3002
-config.already.exists.CWMCG0003E.explanation=\u5df2\u5bf9\u6240\u6307\u5b9a ClassLoader \u8bbe\u7f6e\u914d\u7f6e\u5b9e\u4f8b\u3002
+config.already.exists.CWMCG0003E.explanation=\u5df2\u5bf9\u6240\u6307\u5b9a\u7c7b\u88c5\u5165\u5668\u8bbe\u7f6e\u914d\u7f6e\u5b9e\u4f8b\u3002
 config.already.exists.CWMCG0003E.useraction=\u8bf7\u4f7f\u7528\u201creleaseConfig\u201d\u65b9\u6cd5\u79fb\u9664\u5148\u524d\u5b9e\u4f8b\uff0c\u7136\u540e\u91cd\u8bd5\u8be5\u65b9\u6cd5\u3002
 
 # Unable to close the Config instance. The exception is: {0}.

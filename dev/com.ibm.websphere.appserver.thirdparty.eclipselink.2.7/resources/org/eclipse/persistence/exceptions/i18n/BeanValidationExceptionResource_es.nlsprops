@@ -32,8 +32,7 @@
 7501=La modalidad de validaci\u00f3n de beans en el convertidor {0} se ha establecido en un valor no permitido, "{1}".
 
 7510=Restricciones violadas en el bean convertido {0}:
+{1}{2}
 
 7525=No se puede analizar la propiedad {0}, porque se ha anotado con @NotNull y tiene el atributo "xs:nillable=true".
-
-{1}{2}=
 
