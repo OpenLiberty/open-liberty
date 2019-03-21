@@ -11,9 +11,13 @@
 
 package com.ibm.ws.jpa;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -24,8 +28,8 @@ public class FATSuite {
     public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",
                                                 "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind\";",
                                                 "permission java.lang.RuntimePermission \"accessDeclaredMembers\";" };
-//    @ClassRule
-//    public static RepeatTests r = RepeatTests.withoutModification()
-//                    .andWith(new RepeatWithJPA20())
-//                    .andWith(FeatureReplacementAction.EE8_FEATURES());
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new RepeatWithJPA20())
+                    .andWith(FeatureReplacementAction.EE8_FEATURES());
 }

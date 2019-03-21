@@ -19,9 +19,11 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 JPA10Injection_DFI_NoInheritance_EJB.class,
                 JPA10Injection_DFI_NoInheritance_Web.class,
+                JPA10Injection_DFI_NoInheritance_WebLib.class,
                 JPA10Injection_DFI_YesInheritance_EJB.class,
+                JPA10Injection_DFI_YesInheritance_DDOvrd_EJB.class,
                 JPA10Injection_DFI_YesInheritance_Web.class,
-                JPA10Injection_DFI_YesInheritance_DDOvrd_EJB.class
+                JPA10Injection_DFI_YesInheritance_WebLib.class
 })
 public class JPA10Injection_DFI {
 
