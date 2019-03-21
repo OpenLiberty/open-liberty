@@ -9,6 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+def props = new Properties()
+rootProject.file('generated.properties').withInputStream { props.load(it) }
+
 rootProject.ext.rasInstrumentationInputFiles = { tasks.getByPath(':wlp-rasInstrumentation:jar') }
 rootProject.ext.rasInstrumentationTaskdef = { ant ->
     ant.taskdef(name: 'instrumentForTrace', classname: 'com.ibm.ws.ras.instrument.internal.buildtasks.InstrumentForTrace',
@@ -45,4 +48,12 @@ rootProject.ext.repositoryGeneratorTaskdef = { ant ->
 rootProject.ext.mavenRepoTaskdef = { ant ->
     ant.taskdef(resource: 'com/ibm/ws/wlp/mavenFeatures/default.properties',
                 classpath: bnd('repo.mavenRepoTasks.path'))
+}
+
+rootProject.ext.requestBuildTaskdef = { ant ->
+    ant.taskdef(resource: './cnf/ant/resources/buildtoolkit.properties') {
+				classpath {
+					fileset(dir: props.getProperty("build.toolkit.dir"), includes: '*.jar')
+				}
+	}
 }

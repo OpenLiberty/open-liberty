@@ -504,3 +504,10 @@ task verifyBundleNLS {
             throw new GradleException("Missing nlsprops files: " + badProjectsNLS )
     }
 }
+
+task spawnBuild {
+    def props = new Properties()
+    rootProject.file('generated.properties').withInputStream { props.load(it) }
+	requestBuildTaskdef(ant)
+    ant.requestTeamBuild(repositoryAddress: props.getProperty("repositoryAddress"), userId: props.getProperty("userId"), passwordFile: props.getProperty("passwordFile"), buildDefinitionId: "Liberty - Findbugs EBC", overridePropertiesFile: props.getProperty("propertyFile"), requestUUIDProperty: "generic.spawn.requestUUIDProperty", personalBuild="true")
+}
