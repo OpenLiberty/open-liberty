@@ -43,7 +43,7 @@ config.already.exists.CWMCG0003E.explanation=Un'istanza di configurazione \u00e8
 config.already.exists.CWMCG0003E.useraction=Utilizzare il metodo 'releaseConfig' per rimuovere l'istanza precedente e riprovare il metodo.
 
 # Unable to close the Config instance. The exception is: {0}.
-could.not.close.CWMCG0004E=CWMCG0004E: Impossibile chiudere l'istanza di configurazione. L'eccezione \u00e8:  {0}.
+could.not.close.CWMCG0004E=CWMCG0004E: Impossibile chiudere l'istanza di configurazione. L'eccezione \u00e8: {0}.
 could.not.close.CWMCG0004E.explanation=Si \u00e8 verificata un'eccezione durante il tentativo di chiudere un'istanza di configurazione. \u00c8 possibile che le relative risorse non siano state rilasciate.
 could.not.close.CWMCG0004E.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.
 
@@ -54,7 +54,7 @@ unable.to.convert.CWMCG0006E.useraction=Aggiungere un converter adatto o assicur
 
 # A Converter of type {0} threw an exception. The input string was: "{1}". The exception is: {2}.
 conversion.exception.CWMCG0007E=CWMCG0007E: Un converter di tipo {0} ha emesso un'eccezione. La stringa di input era: "{1}". L'eccezione \u00e8:  {2}.
-conversion.exception.CWMCG0007E.explanation=Un converterha emesso un'eccezione.
+conversion.exception.CWMCG0007E.explanation=Un converter ha emesso un'eccezione.
 conversion.exception.CWMCG0007E.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.
 
 # Unable to convert the string "{0}" to a value of type Boolean. Expected one of [true, yes, on, false, no, off].
@@ -68,17 +68,17 @@ unable.to.determine.conversion.type.CWMCG0009E.explanation=La classe di implemen
 unable.to.determine.conversion.type.CWMCG0009E.useraction=Accertarsi che la classe di implementazione disponga di una variabile di tipo generica adeguata per l'interfaccia del Converter.
 
 # Unable to discover ConfigSources. The exception is: {0}.
-unable.to.discover.config.sources.CWMCG0010E=CWMCG0010E: Impossibile rilevare ConfigSources. L'eccezione \u00e8:  {0}.
+unable.to.discover.config.sources.CWMCG0010E=CWMCG0010E: Impossibile rilevare ConfigSources. L'eccezione \u00e8: {0}.
 unable.to.discover.config.sources.CWMCG0010E.explanation=Java ServiceLoader ha creato un'eccezione. La causa pi\u00f9 probabile \u00e8 che non sia stato possibile trovare una delle classi ConfigSource indicate.
 unable.to.discover.config.sources.CWMCG0010E.useraction=Controllare le classi indicate nei file di servizio Java nell'applicazione. Esaminare il file message.log del server e i log FFDC per identificare ulteriormente il problema.
 
 # Unable to discover ConfigSourceProviders. The exception is: {0}.
-unable.to.discover.config.source.providers.CWMCG0011E=CWMCG0011E: Impossibile rilevare ConfigSourceProviders. L'eccezione \u00e8:  {0}.
+unable.to.discover.config.source.providers.CWMCG0011E=CWMCG0011E: Impossibile rilevare ConfigSourceProviders. L'eccezione \u00e8: {0}.
 unable.to.discover.config.source.providers.CWMCG0011E.explanation=Java ServiceLoader ha creato un'eccezione. La causa pi\u00f9 probabile \u00e8 che non sia stato possibile trovare una delle classi ConfigSourceProvider indicate.
 unable.to.discover.config.source.providers.CWMCG0011E.useraction=Controllare le classi indicate nei file di servizio Java nell'applicazione. Esaminare il file message.log del server e i log FFDC per identificare ulteriormente il problema.
 
 # Unable to discover Converters. The exception is: {0}.
-unable.to.discover.converters.CWMCG0012E=CWMCG0012E: Impossibile rilevare Converters. L'eccezione \u00e8:  {0}.
+unable.to.discover.converters.CWMCG0012E=CWMCG0012E: Impossibile rilevare Converters. L'eccezione \u00e8: {0}.
 unable.to.discover.converters.CWMCG0012E.explanation=Java ServiceLoader ha creato un'eccezione. La causa pi\u00f9 probabile \u00e8 che non sia stata trovata una delle classi Converter indicate.
 unable.to.discover.converters.CWMCG0012E.useraction=Controllare le classi indicate nei file di servizio Java nell'applicazione. Esaminare il file message.log del server e i log FFDC per identificare ulteriormente il problema.
 
