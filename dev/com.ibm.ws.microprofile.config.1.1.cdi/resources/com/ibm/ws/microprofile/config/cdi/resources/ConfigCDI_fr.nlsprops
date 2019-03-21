@@ -54,8 +54,8 @@ property.not.found.CWMCG5004E.useraction=V\u00e9rifiez que la propri\u00e9t\u00e
 #-----------------------------------------------------------------------------------------------------------------------------
 
 # A Config API error has occurred: {0}
-temporary.CWMCG5999E=CWMCG5999E: Une erreur d'API Config s'est produite : {0}.
-temporary.CWMCG5999E.explanation=Une erreur de l'API Config s'est produite, qui emp\u00eache le fonctionnement normal.
-temporary.CWMCG5999E.useraction=Consultez le fichier message.log du serveur et les journaux FFDC pour identifier le probl\u00e8me.
+temporary.CWMCG5999E=CWMCG5999E: Une erreur li\u00e9e \u00e0 l'API Config s'est produite : {0}.
+temporary.CWMCG5999E.explanation=Une erreur li\u00e9e \u00e0 l'API Config, qui emp\u00eache tout fonctionnement normal, s'est produite.
+temporary.CWMCG5999E.useraction=Consultez le journal message.log du serveur et les journaux FFDC pour identifier le probl\u00e8me.
 
 
