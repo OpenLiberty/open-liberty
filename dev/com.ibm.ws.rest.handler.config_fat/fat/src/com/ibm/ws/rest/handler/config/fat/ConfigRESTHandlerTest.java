@@ -105,13 +105,13 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "authData", j.getString("configElementName"));
         assertEquals(err, "auth1", j.getString("id"));
         assertEquals(err, "dbuser", j.getString("user"));
-        assertEquals(err, "***", j.getString("password"));
+        assertEquals(err, "******", j.getString("password"));
 
         assertNotNull(err, j = allConfig.get("auth2"));
         assertEquals(err, "authData", j.getString("configElementName"));
         assertEquals(err, "auth2", j.getString("id"));
         assertEquals(err, "dbuser", j.getString("user"));
-        assertEquals(err, "***", j.getString("password"));
+        assertEquals(err, "******", j.getString("password"));
 
         assertNotNull(err, j = allConfig.get("pool1"));
         assertEquals(err, "connectionManager", j.getString("configElementName"));
@@ -209,7 +209,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "containerAuthData", jj.getString("configElementName"));
         assertEquals(err, "dataSource[DataSourceWithoutJDBCDriver]/containerAuthData[dbuser-auth]", jj.getString("uid"));
         assertEquals(err, "dbuser-auth", jj.getString("id"));
-        assertEquals(err, "***", jj.getString("password"));
+        assertEquals(err, "******", jj.getString("password"));
         assertEquals(err, "dbuser", jj.getString("user"));
         assertEquals(err, false, j.getBoolean("enableConnectionCasting"));
         assertNull(err, j.get("jdbcDriverRef"));
@@ -280,7 +280,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "create", j.getString("createDatabase"));
         assertEquals(err, "memory:defaultdb", j.getString("databaseName"));
         assertEquals(err, "dbuser", j.getString("user"));
-        assertEquals(err, "***", j.getString("password"));
+        assertEquals(err, "******", j.getString("password"));
 
         j = json.getJsonObject(2);
         assertEquals(err, "dataSource", j.getString("configElementName"));
@@ -310,7 +310,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "authData", jj.getString("configElementName"));
         assertEquals(err, "auth2", jj.getString("uid"));
         assertEquals(err, "auth2", jj.getString("id"));
-        assertEquals(err, "***", jj.getString("password"));
+        assertEquals(err, "******", jj.getString("password"));
         assertEquals(err, "dbuser", jj.getString("user"));
         assertEquals(err, false, j.getBoolean("enableConnectionCasting"));
         assertEquals(err, "The property's value.", j.getString("invalidProperty"));
@@ -340,7 +340,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "authData", jj.getString("configElementName"));
         assertEquals(err, "auth2", jj.getString("uid"));
         assertEquals(err, "auth2", jj.getString("id"));
-        assertEquals(err, "***", jj.getString("password"));
+        assertEquals(err, "******", jj.getString("password"));
         assertEquals(err, "dbuser", jj.getString("user"));
         assertEquals(err, 15, j.getInt("statementCacheSize"));
         assertEquals(err, false, j.getBoolean("syncQueryTimeoutWithTransactionTimeout"));
@@ -388,7 +388,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "authData", jj.getString("configElementName"));
         assertEquals(err, "auth1", jj.getString("uid"));
         assertEquals(err, "auth1", jj.getString("id"));
-        assertEquals(err, "***", jj.getString("password"));
+        assertEquals(err, "******", jj.getString("password"));
         assertEquals(err, "dbuser", jj.getString("user"));
         assertEquals(err, false, j.getBoolean("enableConnectionCasting"));
         assertNotNull(ja = j.getJsonArray("api"));
@@ -521,7 +521,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "authData", jj.getString("configElementName"));
         assertEquals(err, "auth1", jj.getString("uid"));
         assertEquals(err, "auth1", jj.getString("id"));
-        assertEquals(err, "***", jj.getString("password"));
+        assertEquals(err, "******", jj.getString("password"));
         assertEquals(err, "dbuser", jj.getString("user"));
         assertEquals(err, false, j.getBoolean("enableConnectionCasting"));
         assertNotNull(ja = j.getJsonArray("api"));
