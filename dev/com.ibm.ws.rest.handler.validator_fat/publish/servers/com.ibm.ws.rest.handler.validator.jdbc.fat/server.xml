@@ -26,6 +26,9 @@
   <library id="Derby">
     <file name="${shared.resource.dir}/derby/derby.jar"/>
   </library>
+  
+  <variable name="DB_USER" value="dbuser"/>
+  <variable name="DB_PASS" value="dbpass"/>
 
   <dataSource id="DataSourceWithoutJDBCDriver" jndiName="jdbc/withoutJDBCDriver" connectionSharing="MatchCurrentState" transactional="false">
     <containerAuthData id="dbuser-auth" user="dbuser" password="{xor}Oz0vPiws"/>
@@ -36,7 +39,7 @@
     <jdbcDriver libraryRef="Derby"/>
     <!-- user/password settings defined in bootstrap.properties -->
    	<properties.derby.embedded databaseName="memory:defaultdb" createDatabase="create" 
-   	                           user="dbuser" password="dbpass"/>
+   	                           user="${DB_USER}" password="${DB_PASS}"/>
   </dataSource>
 
   <dataSource id="jdbc/nonexistentdb" jndiName="${id}">
