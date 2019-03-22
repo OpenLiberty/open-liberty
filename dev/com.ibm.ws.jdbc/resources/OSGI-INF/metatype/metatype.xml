@@ -1262,7 +1262,7 @@
   <Object ocdref="com.ibm.ws.jdbc.dataSource.properties.oracle.ucp"/>
  </Designate>
  
-  <OCD id="com.ibm.ws.jdbc.dataSource.properties.oracle.ucp" name="%properties.oracle.ucp" description="%properties.oracle.ucp.desc" ibm:beta="true" ibm:extendsAlias="oracle.ucp" ibm:extends="com.ibm.ws.jdbc.dataSource.properties.supertype" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+  <OCD id="com.ibm.ws.jdbc.dataSource.properties.oracle.ucp" name="%properties.oracle.ucp" description="%properties.oracle.ucp.desc" ibm:extendsAlias="oracle.ucp" ibm:extends="com.ibm.ws.jdbc.dataSource.properties.supertype" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
   <AD id="connectionFactoryClassName"         required="false" type="String" name="%connectionFactoryClassName" description="%connectionFactoryClassName.desc">
    <Option value="oracle.jdbc.pool.OracleDataSource"               label="oracle.jdbc.pool.OracleDataSource"/>
    <Option value="oracle.jdbc.pool.OracleConnectionPoolDataSource" label="oracle.jdbc.pool.OracleConnectionPoolDataSource"/>
