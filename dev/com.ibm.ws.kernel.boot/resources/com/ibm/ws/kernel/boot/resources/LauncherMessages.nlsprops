@@ -696,6 +696,10 @@ error.no.serialfilteragent=CWWKE0949E: The specified serial filter agent jar fil
 error.no.serialfilteragent.explanation=The specified serial filter agent jar file does not exist, or fail to read.
 error.no.serialfilteragent.useraction= Ensure that the file exists and can be read by the current user.
 
+error.package.extension=CWWKE0950E: The archive filename must end with .jar when the runnable option is used.
+error.package.extension.explanation=The --archive option must include a file extension that ends with .jar when specifying --include=runnable.
+error.package.extension.useraction=Supply a file name to --archive with a file extension of .jar when specifying --include=runnable.
+
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
 info.serverStartedWithPID=Server {0} started with process ID {1}.
