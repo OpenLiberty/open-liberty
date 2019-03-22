@@ -22,5 +22,7 @@ public interface TAIService {
 
     public boolean isInvokeForFormLogin();
 
+    public boolean isContinueAfterUnprotectedURI();
+
     public Map<String, TrustAssociationInterceptor> getTais(boolean invokeBeforeSSO);
 }

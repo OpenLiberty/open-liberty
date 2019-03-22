@@ -63,7 +63,7 @@ public class WebAuthenticatorProxy implements WebAuthenticator {
         authResult.setTargetRealm(authResult.realm);
         String authType = webRequest.getLoginConfig().getAuthenticationMethod();
 
-        if (authResult.getStatus() == AuthResult.CONTINUE) {
+        if ((authResult.getStatus() == AuthResult.CONTINUE) && (webRequest.isContinueAfterUnprotectedURI())) {
             WebAuthenticator authenticator = getWebAuthenticator(webRequest);
             if (authenticator == null) {
                 return new AuthenticationResult(AuthResult.FAILURE, "Unable to get the appropriate WebAuthenticator. Unable to get the appropriate WebAuthenticator.");

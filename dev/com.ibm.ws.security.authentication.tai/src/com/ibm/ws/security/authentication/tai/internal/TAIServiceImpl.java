@@ -36,11 +36,10 @@ public class TAIServiceImpl implements TAIService {
 
     private static final String KEY_INTERCEPTOR_SERVICE = "interceptorService";
     private static final String KEY_ID = "id";
-    private final ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef = new ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor>(
-                    KEY_INTERCEPTOR_SERVICE);
+    private final ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef = new ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor>(KEY_INTERCEPTOR_SERVICE);
     private TAIConfigImpl taiConfig = null;
 
-    //Map of TrustAssociationInterceptor - by TAI id 
+    //Map of TrustAssociationInterceptor - by TAI id
     //Order matters here: use a LinkedHashMap to preserve order across platforms
     private final Map<String, TrustAssociationInterceptor> invokeBeforeSSOTais = new LinkedHashMap<String, TrustAssociationInterceptor>();
     private final Map<String, TrustAssociationInterceptor> invokeAfterSSOTais = new LinkedHashMap<String, TrustAssociationInterceptor>();
@@ -134,6 +133,11 @@ public class TAIServiceImpl implements TAIService {
     @Override
     public boolean isFailOverToAppAuthType() {
         return taiConfig.isFailOverToAppAuthType();
+    }
+
+    @Override
+    public boolean isContinueAfterUnprotectedURI() {
+        return taiConfig.isContinueAfterUnprotectedURI();
     }
 
     private void clearInvokeBeforeAndAfterSSO() {
