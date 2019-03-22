@@ -142,23 +142,41 @@ public abstract class HttpsProtocolSupport {
      */
     public static Class getHttpsProviderClass() throws ClassNotFoundException {
         if (_httpsProviderClass == null) {
-        	// [ 1520925 ] SSL patch
-    			Provider[] sslProviders = Security.getProviders("SSLContext.SSLv3");
-			// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-                        // IBM-FIX: Prevent NPE when SSLv3 is disabled.
-                        //          Security.getProviders(String) returns 
-                        //          null, not an empty array, when there
-                        //          are no providers. 
-                        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-                        //
-    			// if (sslProviders.length > 0) {
-                        //
-                        if (sslProviders != null && sslProviders.length > 0) {
-    				_httpsProviderClass = sslProviders[0].getClass();
-    			}       	
-    			if (_httpsProviderClass == null) {
-    				_httpsProviderClass = Class.forName( JSSE_PROVIDER_CLASS );
-    			}	
+            // [ 1520925 ] SSL patch
+            Provider[] sslProviders = Security.getProviders("SSLContext.SSLv3");
+            // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+            // IBM-FIX: Prevent NPE when SSLv3 is disabled.
+            //          Security.getProviders(String) returns 
+            //          null, not an empty array, when there
+            //          are no providers. 
+            // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+            //
+            // if (sslProviders.length > 0) {
+            //
+            if (sslProviders != null && sslProviders.length > 0) {
+            // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+            // END IBM-FIX
+            // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                _httpsProviderClass = sslProviders[0].getClass();
+            }       	
+
+            // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+            // IBM-FIX: Try TLS if SSLv3 does not have a 
+            //          provider. 
+            // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+            if (_httpsProviderClass == null) {
+                sslProviders = Security.getProviders("SSLContext.TLS");
+                if (sslProviders != null && sslProviders.length > 0) {
+                    _httpsProviderClass = sslProviders[0].getClass();
+                }
+            }
+            // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+            // END IBM-FIX
+            // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+            if (_httpsProviderClass == null) {
+                _httpsProviderClass = Class.forName( JSSE_PROVIDER_CLASS );
+            }	
         }
         return _httpsProviderClass;
     }
