@@ -189,7 +189,6 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
      */
     private boolean isUCP;
     
-    //TODO move so we only output messages once
     private boolean sentUCPConnMgrPropsIgnoredInfoMessage;
     private boolean sentUCPDataSourcePropsIgnoredInfoMessage;
 
@@ -803,6 +802,8 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
         NavigableMap<String, Object> wProps = new TreeMap<String, Object>();
 
         String vPropsPID = null;
+        
+        boolean recommendAuthAlias = false;
         for (Map.Entry<String, Object> entry : configProps.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
@@ -830,7 +831,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                             value = PasswordUtil.getCryptoAlgorithm(password) == null ? password : PasswordUtil.decode(password);
                         }
                         if (DataSourceDef.password.name().equals(key))
-                            ConnectorService.logMessage(Level.INFO, "RECOMMEND_AUTH_ALIAS_J2CA8050", id);
+                            recommendAuthAlias = true;
                     } else if (trace && tc.isDebugEnabled()) {
                         if(key.toLowerCase().equals("url")) {
                             if(value instanceof String)
@@ -845,6 +846,11 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             } else if (key.indexOf('.') == -1 && !WPROPS_TO_SKIP.contains(key))
                 wProps.put(key, value);
         }
+        
+        //Don't send out auth alias recommendation message with UCP since it may be required to set the 
+        //user and password as ds props
+        if(recommendAuthAlias && !"com.ibm.ws.jdbc.dataSource.properties.oracle.ucp".equals(vPropsPID))
+            ConnectorService.logMessage(Level.INFO, "RECOMMEND_AUTH_ALIAS_J2CA8050", id);
 
         if (vPropsPID == null)
             vProps.setFactoryPID(PropertyService.FACTORY_PID);
