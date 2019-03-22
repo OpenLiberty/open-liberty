@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.AccessController;
@@ -1568,8 +1569,9 @@ public class BaseTraceService implements TrService {
                 if (internalTraceRouter.get() != null)
                     BaseTraceService.this.setTraceRouter(internalTraceRouter.get());
 
-//                final PrintWriter writer = new PrintWriter(System.out, true);
-//                writer.println("Help me God");
+                System.out.println("hello");
+                final PrintWriter writer = new PrintWriter(System.out, true);
+                writer.println("Help me God");
             }
         }
     }
