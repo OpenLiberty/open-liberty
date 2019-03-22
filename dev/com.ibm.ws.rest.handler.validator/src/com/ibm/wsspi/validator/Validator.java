@@ -24,16 +24,24 @@ import java.util.Map;
  * Validator implementations should be registered as OSGi service in the service registry.
  */
 public interface Validator {
-    // TODO add custom login module/properties
+
+    /**
+     * Key used to obtain the JSONObject representing a JSON request body.
+     * If present, it will be present in the <code>Map&ltString,Object></code> passed into
+     * the <code>validate</code> method.
+     */
+    public static final String JSON_BODY_KEY = "com.ibm.wsspi.validator.jsonBody";
+
     /**
      * Validates the specified instance.
      *
      * @param instance the instance to validate.
-     * @param props properties describing the validation request, as determined by the ValidatorAPIProvider.
-     *            Possible property keys include:
-     *            <code>user</code>, <code>password</code>, <code>auth</code>, <code>authAlias</code>.
-     *            Possible values for <code>auth</code> are: <code>application</code>, <code>container</code>.
-     * @param locale locale of the client invoking the API.
+     * @param props    properties describing the validation request, as determined by the ValidatorAPIProvider.
+     *                     Possible property keys include:
+     *                     <code>user</code>, <code>password</code>, <code>auth</code>, <code>authAlias</code>,
+     *                     <code>loginConfig</code>, <code>com.ibm.wsspi.validator.jsonBody</code>
+     *                     Possible values for <code>auth</code> are: <code>application</code>, <code>container</code>.
+     * @param locale   locale of the client invoking the API.
      * @return ordered name/value pairs with information about the result. If the test operation is unsuccessful,
      *         the "failure" key must be included, with the value either being a Throwable or a String indicating the error.
      */

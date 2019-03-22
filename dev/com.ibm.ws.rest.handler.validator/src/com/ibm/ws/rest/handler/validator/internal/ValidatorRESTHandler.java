@@ -191,6 +191,11 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
             String pass = request.getHeader("X-Validator-Password");
             if (pass != null)
                 params.put("password", resolvePotentialVariable(pass));
+            String contentType = request.getContentType();
+            if ("application/json".equalsIgnoreCase(contentType)) {
+                JSONObject jsonBody = JSONObject.parse(request.getInputStream());
+                params.put(Validator.JSON_BODY_KEY, jsonBody);
+            }
 
             Validator validator = getService(context, validatorRefs.iterator().next());
             if (validator == null) {

@@ -144,10 +144,12 @@ public class HttpsRequest {
                     }
 
                     @Override
-                    public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                    }
 
                     @Override
-                    public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                    }
                 } };
                 try {
                     SSLContext sc = SSLContext.getInstance("TLS");
@@ -165,17 +167,17 @@ public class HttpsRequest {
             con.setDoOutput(true);
             con.setRequestMethod(reqMethod);
 
-            if (type.getPackage().equals("javax.json"))
-                con.setRequestProperty("Content-Type", "application/json");
-            else
-                con.setRequestProperty("Content-Type", "text/html");
-
             if (json != null) {
-                con.setRequestProperty("Accept", "application/json");
+                con.setRequestProperty("Content-Type", "application/json");
                 OutputStream out = con.getOutputStream();
                 out.write(json.getBytes("UTF-8"));
                 out.close();
+            } else {
+                con.setRequestProperty("Content-Type", "text/html");
             }
+
+            if (type.getPackage().toString().startsWith("javax.json"))
+                con.setRequestProperty("Accept", "application/json");
 
             if (basicAuth != null)
                 con.setRequestProperty("Authorization", basicAuth);

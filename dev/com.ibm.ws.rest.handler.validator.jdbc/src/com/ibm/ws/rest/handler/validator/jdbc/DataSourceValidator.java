@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.sql.DataSource;
@@ -27,6 +28,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.resource.ResourceConfig;
@@ -53,20 +55,41 @@ public class DataSourceValidator implements Validator {
         String pass = (String) props.get("password");
         String auth = (String) props.get("auth");
         String authAlias = (String) props.get("authAlias");
+        String loginConfig = (String) props.get("loginConfig");
 
         boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, methodName, user, pass == null ? null : "******", auth, authAlias);
+            Tr.entry(this, tc, methodName, user, pass == null ? null : "******", auth, authAlias, loginConfig);
 
         LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>();
         try {
             ResourceConfig config = null;
-            int authType = "container".equals(auth) ? 0 : "application".equals(auth) ? 1 : -1;
+            int authType = "container".equals(auth) ? 0 //
+                            : "application".equals(auth) ? 1 //
+                                            : -1;
             if (authType >= 0) {
                 config = resourceConfigFactory.createResourceConfig(DataSource.class.getName());
                 config.setResAuthType(authType);
                 if (authAlias != null)
                     config.addLoginProperty("DefaultPrincipalMapping", authAlias); // set provided auth alias
+                if (loginConfig != null) {
+                    // Add custom login module name and properties
+                    config.setLoginConfigurationName(loginConfig);
+                    JSONObject requestBodyJson = (JSONObject) props.get(Validator.JSON_BODY_KEY);
+                    if (requestBodyJson != null && requestBodyJson.containsKey("loginConfigProperties")) {
+                        Object loginConfigProperties = requestBodyJson.get("loginConfigProperties");
+                        if (loginConfigProperties instanceof JSONObject) {
+                            JSONObject loginConfigProps = (JSONObject) loginConfigProperties;
+                            for (Object entry : loginConfigProps.entrySet()) {
+                                @SuppressWarnings("unchecked")
+                                Entry<String, String> e = (Entry<String, String>) entry;
+                                if (trace && tc.isDebugEnabled())
+                                    Tr.debug(tc, "Adding custom login module property with key=" + e.getKey());
+                                config.addLoginProperty(e.getKey(), e.getValue());
+                            }
+                        }
+                    }
+                }
             }
 
             DataSource ds = (DataSource) ((ResourceFactory) instance).createResource(config);
