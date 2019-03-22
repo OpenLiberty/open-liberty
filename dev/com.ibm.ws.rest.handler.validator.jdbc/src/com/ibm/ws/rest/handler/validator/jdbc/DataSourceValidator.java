@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.validator.jdbc;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -49,6 +48,7 @@ public class DataSourceValidator implements Validator {
      */
     @Override
     public LinkedHashMap<String, ?> validate(Object instance, Map<String, Object> props, Locale locale) {
+        final String methodName = "validate";
         String user = (String) props.get("user");
         String pass = (String) props.get("password");
         String auth = (String) props.get("auth");
@@ -56,7 +56,7 @@ public class DataSourceValidator implements Validator {
 
         boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "test", user, pass == null ? null : "***", auth, authAlias);
+            Tr.entry(this, tc, methodName, user, pass == null ? null : "******", auth, authAlias);
 
         LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>();
         try {
@@ -83,24 +83,14 @@ public class DataSourceValidator implements Validator {
                     String catalog = con.getCatalog();
                     if (catalog != null && catalog.length() > 0)
                         result.put("catalog", catalog);
-                } catch (SQLFeatureNotSupportedException x) {
+                } catch (SQLFeatureNotSupportedException ignore) {
                 }
 
                 try {
-                    // Don't need to use reflection here when we don't support java 6 anymore
-                    String schema = (String) con.getClass().getMethod("getSchema").invoke(con);
+                    String schema = con.getSchema();
                     if (schema != null && schema.length() > 0)
                         result.put("schema", schema);
-                } catch (NoSuchMethodException ignore) {
-                } catch (InvocationTargetException x) {
-                    Throwable cause = x.getCause();
-                    if (cause instanceof SQLFeatureNotSupportedException) {
-                        // ignore
-                    } else if (cause instanceof IncompatibleClassChangeError) {
-                        // ignore
-                    } else {
-                        throw cause;
-                    }
+                } catch (SQLFeatureNotSupportedException ignore) {
                 }
 
                 String userName = metadata.getUserName();
@@ -134,7 +124,7 @@ public class DataSourceValidator implements Validator {
         }
 
         if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "test", result);
+            Tr.exit(this, tc, methodName, result);
         return result;
     }
 }
