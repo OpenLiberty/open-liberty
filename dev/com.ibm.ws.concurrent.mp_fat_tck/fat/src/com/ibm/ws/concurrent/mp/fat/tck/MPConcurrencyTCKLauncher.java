@@ -37,7 +37,8 @@ public class MPConcurrencyTCKLauncher {
         server.stopServer();
     }
 
-    @AllowedFFDC({ "java.lang.NegativeArraySizeException", // intentionally raised by test case to simulate failure during completion stage action
+    @AllowedFFDC({ "java.lang.IllegalStateException", // transaction cannot be propagated to 2 threads at the same time
+                   "java.lang.NegativeArraySizeException", // intentionally raised by test case to simulate failure during completion stage action
                    "org.jboss.weld.contexts.ContextNotActiveException" // expected when testing TransactionScoped bean cannot be accessed outside of transaction
     })
     @Test

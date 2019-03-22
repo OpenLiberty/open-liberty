@@ -20,6 +20,7 @@ import java.lang.annotation.Target;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -42,6 +43,7 @@ import org.junit.Test;
 import org.test.context.location.CurrentLocation;
 import org.test.context.location.TestContextTypes;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -262,6 +264,7 @@ public class MPConcurrentCDITestServlet extends FATServlet {
     /**
      * Verify that we disallow propagating global transactions, but do allow propagating the absence of any transaction.
      */
+    @AllowedFFDC("java.lang.IllegalStateException") // test attempts to propagate active transaction to 2 threads at once
     @Test
     public void testTransactionContextPropagation() throws Exception {
         ManagedExecutor executor = appTxExecutor; // propagates ThreadContext.TRANSACTION
@@ -284,11 +287,12 @@ public class MPConcurrentCDITestServlet extends FATServlet {
             assertEquals(Status.STATUS_ACTIVE, tx.getStatus());
 
             Future<?> f = executor.submit(() -> System.out.println("Should not be able to submit this task."));
-            // TODO fail("Submitted task from within a transaction when transaction context propagation is enabled: " + f);
-            f.get(TIMEOUT_MIN, TimeUnit.MINUTES);
-        } catch (UnsupportedOperationException x) {
-            if (x.getMessage() == null || !x.getMessage().startsWith("CWWKC1157E"))
-                throw x;
+            try {
+                f.get(TIMEOUT_MIN, TimeUnit.MINUTES);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof IllegalStateException)) // Active transaction cannot be propagated to 2 threads at once
+                    throw x;
+            }
         } finally {
             tx.commit();
         }
