@@ -340,7 +340,7 @@ public class TAIAuthenticator implements WebAuthenticator {
             if (addLtpaCookie) {
                 ssoCookieHelper.addSSOCookiesToResponse(new_subject, req, res);
             } else {
-                removeInternalProps(new_subject, subjectHelper, AuthenticationConstants.INTERNAL_DISABLE_LTPA_SSO_CACHE);
+//                removeInternalProps(new_subject, subjectHelper, AuthenticationConstants.INTERNAL_DISABLE_LTPA_SSO_CACHE);
             }
         } catch (AuthenticationException e) {
             authResult = new AuthenticationResult(AuthResult.FAILURE, e.getMessage());
