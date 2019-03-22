@@ -73,7 +73,7 @@ public class PSProcessStatusImpl implements ProcessStatus {
             else
                 return State.NO;
         } catch (IOException e) {
-            if (e.getMessage().equals("No such file or directory")) // "ps" doesn't exist on this machine.
+            if (e.getMessage().contains("Cannot run program \"ps\"")) // "ps" doesn't exist on this machine.
                 // Return Undetermined since we can't poll the process
                 return State.UNDETERMINED;
             Debug.printStackTrace(e);
