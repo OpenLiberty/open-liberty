@@ -99,7 +99,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
 
         if (taiServiceRef.getService() != null) {
             TAIService taiService = taiServiceRef.getService();
-            if (taiService.isContinueAfterUnprotectedURI() && taiService.isInvokeForUnprotectedURI() && webRequest.isUnprotectedURI()
+            if (!taiService.isContinueAfterUnprotectedURI() && taiService.isInvokeForUnprotectedURI() && webRequest.isUnprotectedURI()
                 && !webRequest.isProviderSpecialUnprotectedURI()) {
                 webRequest.setContinueAfterUnprotectedURI(false);
             } else {
