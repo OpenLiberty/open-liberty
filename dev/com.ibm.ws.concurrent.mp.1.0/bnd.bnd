@@ -38,7 +38,7 @@ Private-Package:\
 instrument.classesExcludes: com/ibm/ws/concurrent/mp/resources/*.class
 
 -dsannotations: \
-  com.ibm.ws.concurrent.mp.ConcurrencyProviderImpl,\
+  com.ibm.ws.concurrent.mp.ContextManagerProviderImpl,\
   com.ibm.ws.concurrent.mp.ContextServiceImpl,\
   com.ibm.ws.concurrent.mp.ManagedExecutorImpl,\
   com.ibm.ws.concurrent.mp.ManagedScheduledExecutorImpl,\

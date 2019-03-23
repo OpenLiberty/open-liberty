@@ -66,8 +66,8 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
-import org.eclipse.microprofile.concurrent.ManagedExecutor;
-import org.eclipse.microprofile.concurrent.ThreadContext;
+import org.eclipse.microprofile.context.ManagedExecutor;
+import org.eclipse.microprofile.context.ThreadContext;
 import org.junit.Test;
 import org.test.context.location.CurrentLocation;
 import org.test.context.location.TestContextTypes;
@@ -1586,7 +1586,7 @@ public class MPConcurrentTestServlet extends FATServlet {
      * When the mpConcurrency-1.0 feature is enabled, The OpenLiberty implementation of
      * javax.enterprise.concurrent.ManagedExecutorService and
      * javax.enterprise.concurrent.ManagedScheduledExecutorService are also implementations of
-     * org.eclipse.microprofile.concurrent.ManagedExecutor
+     * org.eclipse.microprofile.context.ManagedExecutor
      */
     @Test
     public void testEEManagedExecutorServiceIsAlsoMPManagedExecutor() throws Exception {
@@ -1603,7 +1603,7 @@ public class MPConcurrentTestServlet extends FATServlet {
     /**
      * When the mpConcurrency-1.0 feature is enabled, The OpenLiberty implementation of
      * javax.enterprise.concurrent.ContextService is also an implementation of
-     * org.eclipse.microprofile.concurrent.ThreadContext
+     * org.eclipse.microprofile.context.ThreadContext
      */
     @Test
     public void testEEContextServiceIsAlsoMPThreadContext() throws Exception {

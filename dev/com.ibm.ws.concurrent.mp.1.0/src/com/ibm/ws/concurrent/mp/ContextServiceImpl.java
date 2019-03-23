@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 
 import javax.enterprise.concurrent.ContextService;
 
-import org.eclipse.microprofile.concurrent.ThreadContext;
+import org.eclipse.microprofile.context.ThreadContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -57,7 +57,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = { ResourceFactory.class, ContextService.class, ThreadContext.class, WSContextService.class, ApplicationRecycleComponent.class },
            property = { "creates.objectClass=javax.enterprise.concurrent.ContextService",
-                        "creates.objectClass=org.eclipse.microprofile.concurrent.ThreadContext" })
+                        "creates.objectClass=org.eclipse.microprofile.context.ThreadContext" })
 public class ContextServiceImpl extends AbstractContextService implements ThreadContext {
     private static final TraceComponent tc = Tr.register(ContextServiceImpl.class);
 

@@ -22,11 +22,11 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.eclipse.microprofile.concurrent;version=1.0, \
-  org.eclipse.microprofile.concurrent.spi;version=1.0
+  org.eclipse.microprofile.context;version=1.0, \
+  org.eclipse.microprofile.context.spi;version=1.0
 
 Include-Resource: \
-  @${repo;com.ibm.ws.org.eclipse.microprofile.concurrency:microprofile-concurrency-api;0.20190104.144443.35;EXACT}
+  @${repo;com.ibm.ws.org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api;0.20190322.204445.1;EXACT}
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 

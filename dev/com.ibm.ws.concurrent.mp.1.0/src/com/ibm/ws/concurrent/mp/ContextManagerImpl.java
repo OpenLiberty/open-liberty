@@ -16,10 +16,10 @@ import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.microprofile.concurrent.ManagedExecutor;
-import org.eclipse.microprofile.concurrent.ThreadContext;
-import org.eclipse.microprofile.concurrent.spi.ConcurrencyManager;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
+import org.eclipse.microprofile.context.ManagedExecutor;
+import org.eclipse.microprofile.context.ThreadContext;
+import org.eclipse.microprofile.context.spi.ContextManager;
+import org.eclipse.microprofile.context.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -28,21 +28,21 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 /**
- * Concurrency manager, which includes the collection of ThreadContextProviders
+ * Context manager, which includes the collection of ThreadContextProviders
  * for a particular class loader.
  */
-public class ConcurrencyManagerImpl implements ConcurrencyManager {
-    private static final TraceComponent tc = Tr.register(ConcurrencyManagerImpl.class);
+public class ContextManagerImpl implements ContextManager {
+    private static final TraceComponent tc = Tr.register(ContextManagerImpl.class);
 
     // Counter of managed executor & thread context instances created
     static final AtomicInteger instanceCount = new AtomicInteger();
 
     /**
-     * Application for which this concurrency manager was created, if any can be determined.
+     * Application for which this context manager was created, if any can be determined.
      */
     final String appName;
 
-    final ConcurrencyProviderImpl concurrencyProvider;
+    final ContextManagerProviderImpl cmProvider;
 
     /**
      * List of available thread context providers.
@@ -62,13 +62,13 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
      * Merge built-in thread context providers from the container with those found
      * on the class loader, detecting any duplicate provider types.
      *
-     * @param concurrencyProvider the registered concurrency provider
+     * @param cmProvider the registered context manager provider
      * @param classloader the class loader from which to discover thread context providers
      */
-    ConcurrencyManagerImpl(ConcurrencyProviderImpl concurrencyProvider, ClassLoader classloader) {
+    ContextManagerImpl(ContextManagerProviderImpl cmProvider, ClassLoader classloader) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        this.concurrencyProvider = concurrencyProvider;
+        this.cmProvider = cmProvider;
 
         ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         appName = cData == null ? null : cData.getJ2EEName().getApplication();
@@ -77,15 +77,15 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
         HashSet<String> available = new HashSet<String>();
 
         // Built-in thread context providers (always available)
-        contextProviders.add(concurrencyProvider.applicationContextProvider);
+        contextProviders.add(cmProvider.applicationContextProvider);
         available.add(ThreadContext.APPLICATION);
-        contextProviders.add(concurrencyProvider.cdiContextProvider);
+        contextProviders.add(cmProvider.cdiContextProvider);
         available.add(ThreadContext.CDI);
-        contextProviders.add(concurrencyProvider.securityContextProvider);
+        contextProviders.add(cmProvider.securityContextProvider);
         available.add(ThreadContext.SECURITY);
-        contextProviders.add(concurrencyProvider.transactionContextProvider);
+        contextProviders.add(cmProvider.transactionContextProvider);
         available.add(ThreadContext.TRANSACTION);
-        contextProviders.add(concurrencyProvider.wlmContextProvider);
+        contextProviders.add(cmProvider.wlmContextProvider);
         available.add(WLMContextProvider.WORKLOAD);
 
         // Thread context providers for the supplied class loader
@@ -120,19 +120,19 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
 
         // Not found: probably a conflict with a built-in type
         if (ThreadContext.APPLICATION.equals(conflictingType))
-            return concurrencyProvider.applicationContextProvider;
+            return cmProvider.applicationContextProvider;
 
         if (ThreadContext.CDI.equals(conflictingType))
-            return concurrencyProvider.cdiContextProvider;
+            return cmProvider.cdiContextProvider;
 
         if (ThreadContext.SECURITY.equals(conflictingType))
-            return concurrencyProvider.securityContextProvider;
+            return cmProvider.securityContextProvider;
 
         if (ThreadContext.TRANSACTION.equals(conflictingType))
-            return concurrencyProvider.transactionContextProvider;
+            return cmProvider.transactionContextProvider;
 
         if (WLMContextProvider.WORKLOAD.equals(conflictingType))
-            return concurrencyProvider.wlmContextProvider;
+            return cmProvider.wlmContextProvider;
 
         // should be unreachable
         throw new IllegalStateException(conflictingType);
@@ -146,7 +146,7 @@ public class ConcurrencyManagerImpl implements ConcurrencyManager {
      * @return default value.
      */
     <T> T getDefault(String mpConfigPropName, T defaultValue) {
-        MPConfigAccessor accessor = concurrencyProvider.mpConfigAccessor;
+        MPConfigAccessor accessor = cmProvider.mpConfigAccessor;
         if (accessor != null) {
             Object mpConfig = mpConfigRef.get();
             if (mpConfig == Boolean.FALSE) // not initialized yet

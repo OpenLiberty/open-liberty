@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 
-import org.eclipse.microprofile.concurrent.ManagedExecutor;
+import org.eclipse.microprofile.context.ManagedExecutor;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -55,7 +55,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
                         "creates.objectClass=java.util.concurrent.ScheduledExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedScheduledExecutorService",
-                        "creates.objectClass=org.eclipse.microprofile.concurrent.ManagedExecutor" })
+                        "creates.objectClass=org.eclipse.microprofile.context.ManagedExecutor" })
 public class ManagedScheduledExecutorImpl extends AbstractManagedScheduledExecutorService implements ManagedExecutor {
     @Activate
     @Override
