@@ -150,6 +150,7 @@ public class TAIServiceImplTest {
             myTAIProps.put(TAIConfigImpl.KEY_INVOKE_FOR_UNPROTECTED_URI, false);
             myTAIProps.put(TAIConfigImpl.KEY_INVOKE_FOR_FORM_LOGIN, false);
             myTAIProps.put(TAIConfigImpl.KEY_FAIL_OVER_TO_APP_AUTH_TYPE, false);
+            myTAIProps.put(TAIConfigImpl.KEY_CONTINUE_AFTER_UNPROTECTED_URI, true);
 
             final Dictionary<String, Object> taiProps = new Hashtable<String, Object>();
             taiProps.put(KEY_TRUST_ASSOCIATION, "trustAssociation");
