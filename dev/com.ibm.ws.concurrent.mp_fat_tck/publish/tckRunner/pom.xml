@@ -16,7 +16,7 @@
     <artifactId>tck.runner</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>MicroProfile Concurrency TCK Runner</name>
+    <name>MicroProfile Context Propagation TCK Runner</name>
 
     <properties>
         <arquillian.version>1.3.0.Final</arquillian.version>

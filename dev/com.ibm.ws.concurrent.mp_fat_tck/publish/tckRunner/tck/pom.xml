@@ -53,8 +53,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.microprofile.concurrency</groupId>
-            <artifactId>microprofile-concurrency-api</artifactId>
+            <groupId>org.eclipse.microprofile.context-propagation</groupId>
+            <artifactId>microprofile-context-propagation-api</artifactId>
             <version>${microprofile.context.propagation.version}</version>
             <scope>system</scope>
             <systemPath>${com.ibm.websphere.org.eclipse.microprofile.concurrency.1.0_}</systemPath>
