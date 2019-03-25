@@ -45,6 +45,8 @@ import componenttest.topology.utils.FATServletClient;
 public class ReactiveParallelInServer {
 
     /**  */
+    private static final int PARALLELISM = 10;
+    /**  */
     private static final int PROC_INCREMENT = 100;
     /**  */
     private static final int PIPE_LENGTH = 5;
@@ -61,7 +63,7 @@ public class ReactiveParallelInServer {
         System.out.println(message + " received on thread " + Thread.currentThread().getName());
 
         // Set up the parallel tasks we create 3 * those that can be run on a physical core
-        int count = 3 * Runtime.getRuntime().availableProcessors();
+        int count = PARALLELISM;
         System.out.println(" Going to run " + count + " in parallel");
         Collection<Callable<String>> tasks = new ArrayList<>(count);
 

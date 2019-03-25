@@ -12,11 +12,15 @@ package com.ibm.ws.microprofile.reactive.streams.test.suite;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -50,6 +54,8 @@ import componenttest.topology.utils.HttpUtils;
 public class ReactiveConcurrentWorkTest extends FATServletClient {
 
     public static final String APP_NAME = "ReactiveConcurrentWorkTest";
+
+    private static final long FIVE_MINS = 5 * 60 * 1000;
 
     @Server("ReactiveStreamsTestServer")
     public static LibertyServer server;
@@ -102,9 +108,28 @@ public class ReactiveConcurrentWorkTest extends FATServletClient {
 
         try {
             List<Future<String>> futures = executor.invokeAll(tasks);
+            String result = waitForAllFuturesToEndInClient(futures);
+            System.out.println(result);
         } finally {
             executor.shutdown();
         }
+    }
+
+    /**
+     * We don't worry about the order of the results at all.
+     *
+     * @param futures
+     * @throws InterruptedException
+     * @throws TimeoutException
+     * @throws ExecutionException
+     */
+    private String waitForAllFuturesToEndInClient(List<Future<String>> futures) throws InterruptedException, ExecutionException, TimeoutException {
+        String result = "";
+        for (Iterator<Future<String>> iterator = futures.iterator(); iterator.hasNext();) {
+            Future<String> future = iterator.next();
+            result = result + future.get(5, TimeUnit.MINUTES) + " "; //takes ~ 20 seconds for whole testcase usually
+        }
+        return result;
     }
 
     /**
