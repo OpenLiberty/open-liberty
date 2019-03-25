@@ -31,8 +31,7 @@ public class DynamicSourceCleanupTest extends AbstractConfigTest {
     @Test
     public void testDynamicSourceCleanup() throws InterruptedException {
         long refreshInterval = 500; //milliseconds
-        long extraInterval = 2000; //milliseconds
-        long maxGCWait = 10000; //milliseconds
+        long maxWait = 10000; //milliseconds
 
         String key1 = "key1";
         String value1 = "value1";
@@ -53,10 +52,10 @@ public class DynamicSourceCleanupTest extends AbstractConfigTest {
         WeakReference<Config> weakConfig = new WeakReference<>(config);
 
         long lastGetPropertiesTime = TestDynamicConfigSource.getPropertiesLastCalled;
-        long max = lastGetPropertiesTime + millisToNanos(refreshInterval + extraInterval);
+        long timeoutNanoTime = lastGetPropertiesTime + millisToNanos(maxWait);
         // Ensure that the source is being refreshed
-        while (TestDynamicConfigSource.getPropertiesLastCalled == lastGetPropertiesTime && nanoTimeRemaining(max)) {
-            Thread.sleep(50);
+        while (TestDynamicConfigSource.getPropertiesLastCalled == lastGetPropertiesTime && nanoTimeRemaining(timeoutNanoTime)) {
+            Thread.sleep(refreshInterval);
         }
         assertTrue("Config source was not refreshed", TestDynamicConfigSource.getPropertiesLastCalled != lastGetPropertiesTime);
 
@@ -64,11 +63,11 @@ public class DynamicSourceCleanupTest extends AbstractConfigTest {
         builder = null;
         config = null;
 
-        waitForGC(weakConfig, maxGCWait);
+        waitForGC(weakConfig, maxWait);
         assertNull("Config object was not garbage collected, likely memory leak", weakConfig.get());
 
         //once the Config has been GC'd, the Refresher should stop, releasing it and the config source to be GC'd
-        waitForGC(weakSource, maxGCWait);
+        waitForGC(weakSource, maxWait);
         assertNull("Config Source object was not garbage collected, likely memory leak", weakSource.get());
 
         // Check that once the config and the source hava been GC'd, the config source is no longer being periodically updated
