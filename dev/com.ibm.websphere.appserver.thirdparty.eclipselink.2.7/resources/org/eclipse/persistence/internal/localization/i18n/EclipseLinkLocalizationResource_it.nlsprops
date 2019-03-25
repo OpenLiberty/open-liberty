@@ -27,5 +27,5 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-NoTranslationForThisLocale=(Non esiste versione inglese per questo messaggio.)
+NoTranslationForThisLocale= (Non esiste versione inglese per questo messaggio.)
 

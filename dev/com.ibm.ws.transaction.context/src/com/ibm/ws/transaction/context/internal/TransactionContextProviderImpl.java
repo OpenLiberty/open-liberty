@@ -16,14 +16,15 @@ import java.io.ObjectInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.enterprise.concurrent.ManagedTask;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import com.ibm.tx.jta.embeddable.EmbeddableTransactionManagerFactory;
 import com.ibm.ws.Transaction.UOWCurrent;
+import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDeserializationInfo;
@@ -35,10 +36,15 @@ import com.ibm.wsspi.threadcontext.jca.JCAContextProvider;
  * Transaction context service provider.
  */
 public class TransactionContextProviderImpl implements JCAContextProvider, ThreadContextProvider {
+    // TODO remove the following temporary code once the transaction manager provides a proper mechanism to prevent a transaction on multiple threads at once
+    private final AtomicReference<SuspendCount> suspendCountRef = new AtomicReference<SuspendCount>();
+
     /**
      * Reference to the transaction inflow manager.
      */
     final AtomicServiceReference<Object> transactionInflowManagerRef = new AtomicServiceReference<Object>("transactionInflowManager");
+
+    private EmbeddableWebSphereTransactionManager transactionManager;
 
     /**
      * Called during service activation.
@@ -56,6 +62,11 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
      */
     protected void deactivate(ComponentContext context) {
         transactionInflowManagerRef.deactivate(context);
+
+        // TODO remove the following temporary code once the transaction manager provides a proper mechanism to prevent a transaction on multiple threads at once
+        SuspendCount suspendCount = suspendCountRef.get();
+        if (suspendCount != null)
+            ((UOWCurrent) transactionManager).unsetUOWEventListener(suspendCount);
     }
 
     /** {@inheritDoc} */
@@ -67,9 +78,20 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
         else if (ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD.equals(value))
             return new TransactionContextImpl(false);
         else if ("PROPAGATE".equals(value)) {
-            if (EmbeddableTransactionManagerFactory.getUOWCurrent().getUOWType() == UOWCurrent.UOW_GLOBAL)
-                return new SerialTransactionContextImpl();
-            else
+            UOWCurrent uowCurrent = (UOWCurrent) transactionManager;
+            if (uowCurrent.getUOWType() == UOWCurrent.UOW_GLOBAL) {
+                // TODO raise IllegalStateException here to reject all propagation of transactions
+                // TODO remove the following temporary code once the transaction manager provides a proper mechanism to prevent a transaction on multiple threads at once
+                SuspendCount suspendCount = suspendCountRef.get();
+                if (suspendCount == null) {
+                    uowCurrent.setUOWEventListener(suspendCount = new SuspendCount());
+                    if (!suspendCountRef.compareAndSet(null, suspendCount)) {
+                        uowCurrent.unsetUOWEventListener(suspendCount);
+                        suspendCount = suspendCountRef.get();
+                    }
+                }
+                return new SerialTransactionContextImpl(suspendCount);
+            } else
                 return new TransactionContextImpl(true);
         } else
             throw new IllegalArgumentException(ManagedTask.TRANSACTION + '=' + value);
@@ -141,11 +163,25 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
     }
 
     /**
+     * Declarative Services method to set the transaction manager.
+     */
+    protected void setTransactionManager(EmbeddableWebSphereTransactionManager tm) {
+        transactionManager = tm;
+    }
+
+    /**
      * Declarative Services method for unsetting the TransactionInflowManager service
      *
      * @param ref reference to the service
      */
     protected void unsetTransactionInflowManager(ServiceReference<Object> ref) {
         transactionInflowManagerRef.unsetReference(ref);
+    }
+
+    /**
+     * Declarative Services method to unset the transaction manager.
+     */
+    protected void unsetTransactionManager(EmbeddableWebSphereTransactionManager tm) {
+        transactionManager = null;
     }
 }

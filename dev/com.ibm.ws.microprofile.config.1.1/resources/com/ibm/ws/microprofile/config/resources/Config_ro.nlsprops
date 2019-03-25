@@ -44,11 +44,11 @@ config.already.exists.CWMCG0003E.useraction=Utiliza\u0163i metoda 'releaseConfig
 
 # Unable to close the Config instance. The exception is: {0}.
 could.not.close.CWMCG0004E=CWMCG0004E: Nu se poate \u00eenchide instan\u0163a Config. Excep\u0163ia este: {0}
-could.not.close.CWMCG0004E.explanation=A ap\u0103rut o excep\u0163ie la \u00eencercarea de a \u00eenchide o instan\u0163\u0103 Config. E posibil ca resursele sale s\u0103 nu fi fost eliberate.
+could.not.close.CWMCG0004E.explanation=A ap\u0103rut o excep\u0163ie la \u00eencercarea de a \u00eenchide o instan\u0163\u0103 Config. Este posibil ca resursele sale s\u0103 nu fi fost eliberate.
 could.not.close.CWMCG0004E.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
 
 # Unable to convert the string "{0}" to a value of type {1}.
-unable.to.convert.CWMCG0006E=CWMCG0006E: Nu s-a putut converti \u015firul "{0}" la o valoare de tip {1}.
+unable.to.convert.CWMCG0006E=CWMCG0006E: Nu s-a putut converti \u015firul "{0}" la o valoare de tipul {1}.
 unable.to.convert.CWMCG0006E.explanation=Nu a fost g\u0103sit niciun Convertor potrivit pentru tipul dat.
 unable.to.convert.CWMCG0006E.useraction=Ad\u0103uga\u0163i un Convertor potrivit sau asigura\u0163i-v\u0103 c\u0103 clasa are un constructor public \u015eir sau o metod\u0103 static\u0103 valueOf(String).
 

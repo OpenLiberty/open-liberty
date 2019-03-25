@@ -482,9 +482,9 @@ error.variable.name.missing=CWWKG0091E: Un attribut de nom doit \u00eatre sp\u00
 error.variable.name.missing.explanation=Cette configuration de serveur contient un \u00e9l\u00e9ment de configuration qui n'a pas d'attribut de nom.
 error.variable.name.missing.useraction=Ajoutez un attribut de nom \u00e0 la variable.
 
-error.variable.value.missing=CWWKG0092E: Un attribut de valeur doit \u00eatre sp\u00e9cifi\u00e9 pour la variable sur la ligne {0} de la ressource {1}
-error.variable.value.missing.explanation=Cette configuration de serveur contient un \u00e9l\u00e9ment de configuration qui n'a pas d'attribut de valeur.
-error.variable.value.missing.useraction=Ajoutez un attribut de valeur \u00e0 la variable.
+error.variable.value.missing=CWWKG0092E: Un attribut de valeur ou un attribut de valeur par d\u00e9faut doit \u00eatre sp\u00e9cifi\u00e9 pour la variable sur la ligne {0} de la ressource {1}
+error.variable.value.missing.explanation=Cette configuration de serveur contient un \u00e9l\u00e9ment de configuration qui n'a pas d'attribut de valeur ni d'attribut de valeur par d\u00e9faut.
+error.variable.value.missing.useraction=Ajoutez un attribut de valeur ou un attribut de valeur par d\u00e9faut \u00e0 la variable.
 
 audit.dropin.being.processed=CWWKG0093A: Traitement de la ressource de suppression de configuration : {0}
 audit.dropin.being.processed.explanation=Le contenu de la ressource sp\u00e9cifi\u00e9e sera inclus dans la configuration du serveur.

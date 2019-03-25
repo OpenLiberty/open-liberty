@@ -68,7 +68,7 @@ public class SerialFilterDisabledTest extends FATServletClient {
     public static void cleanUp() throws Exception {
         restorePropFile(backupFile);
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CWWKS8070E:");
         }
     }
 

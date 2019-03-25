@@ -17,6 +17,7 @@
 	<classpathentry kind="src" path="test-applications/jackson/src"/>
 	<classpathentry kind="src" path="test-applications/jacksonJsonIgnore/src"/>
 	<classpathentry kind="src" path="test-applications/json/src"/>
+	<classpathentry kind="src" path="test-applications/paramconverter/src"/>
 	<classpathentry kind="src" path="test-applications/params/src"/>
 	<classpathentry kind="src" path="test-applications/providerAndResource/src"/>
 	<classpathentry kind="src" path="test-applications/providerCache/src"/>

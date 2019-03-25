@@ -429,9 +429,9 @@ error.variable.name.missing=CWWKG0091E: Deve essere specificato un attributo nom
 error.variable.name.missing.explanation=La configurazione del server contiene un elemento di configurazione variable che non dispone di un attributo nome.
 error.variable.name.missing.useraction=Aggiungere un attributo nome alla variabile.
 
-error.variable.value.missing=CWWKG0092E: Deve essere specificato un attributo valore per la variabile alla riga {0} della risorsa {1}
-error.variable.value.missing.explanation=La configurazione del server contiene un elemento di configurazione variable che non dispone di un attributo valore.
-error.variable.value.missing.useraction=Aggiungere un attributo valore alla variabile.
+error.variable.value.missing=CWWKG0092E: Deve essere specificato un attributo value o attributo defaultValue per la variabile alla riga {0} della risorsa {1}
+error.variable.value.missing.explanation=La configurazione del server contiene un elemento di configurazione variabile che non dispone di un attributo value o defaultValue.
+error.variable.value.missing.useraction=Aggiungere un attributo value o defaultValue alla variabile.
 
 audit.dropin.being.processed=CWWKG0093A: Elaborazione risorsa di drop-in di configurazione: {0}
 audit.dropin.being.processed.explanation=Il contenuto della risorsa specificata verr\u00e0 incluso nella configurazione del server.

@@ -28,7 +28,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.component.ComponentContext;
+
 import com.ibm.ws.kernel.instrument.serialfilter.config.SimpleConfig;
 import com.ibm.ws.kernel.instrument.serialfilter.config.ValidationMode;
 import com.ibm.ws.kernel.instrument.serialfilter.config.PermissionMode;
@@ -41,15 +42,10 @@ public class FilterConfigFactoryTest {
         }
     };
 
-    private boolean isStopping;
     private boolean isEnabled;
     private SimpleConfig simpleConfig, mockSimpleConfig;
     
     private FilterConfigFactory fcf = new FilterConfigFactory() {
-    	@Override
-        protected boolean isStopping() {
-            return isStopping;
-        }
     	@Override
         protected boolean isEnabled() {
             return isEnabled;
@@ -73,97 +69,14 @@ public class FilterConfigFactoryTest {
     }
 
     @Test
-    public void testUpdatedStopping() throws Exception {
-        Map<String, Dictionary> configMap = fcf.getConfigMap();
-        configMap.clear();
-        isStopping = true;
-        // since isStopping is set to true, updated method does nothing.
-        fcf.updated(null, null);
-        assertTrue("configMap should be empty.", configMap.isEmpty());
-    }
-
-    @Test
-    public void testUpdatedAddingEmptyEntry() throws Exception {
-        mockery.checking(new Expectations() {
-            {
-                one(mockSimpleConfig).reset();
-                never(mockSimpleConfig).load(with(any(Properties.class)));
-            }
-        });
-
-        Map<String, Dictionary> configMap = fcf.getConfigMap();
-        configMap.clear();
-        isStopping = false;
-        isEnabled = true;
-        simpleConfig = mockSimpleConfig;
-        String pid = "pid1";
-        Properties props = new Properties();
-        fcf.updated(pid, props);
-        assertEquals("configMap should be one", configMap.size(), 1);
-        assertEquals("configMap should contain a property", configMap.get(pid), props);
-    }
-
-    @Test
-    public void testUpdatedAddingValidEntry() throws Exception {
-        mockery.checking(new Expectations() {
-            {
-                one(mockSimpleConfig).reset();
-                one(mockSimpleConfig).load(with(any(Properties.class)));
-            }
-        });
-
-        Map<String, Dictionary> configMap = fcf.getConfigMap();
-        configMap.clear();
-        isStopping = false;
-        isEnabled = true;
-        simpleConfig = mockSimpleConfig;
-        String pid = "pid1";
-        Properties props = new Properties();
-        props.setProperty("class", "*");
-        props.setProperty("mode", "enforce");
-        props.setProperty("permission", "deny");
-        fcf.updated(pid, props);
-        assertEquals("configMap should be one", configMap.size(), 1);
-        assertEquals("configMap should contain a property", configMap.get(pid), props);
-    }
-
-    @Test
-    public void testDeleted() {
-        mockery.checking(new Expectations() {
-            {
-                one(mockSimpleConfig).reset();
-                never(mockSimpleConfig).load(with(any(Properties.class)));
-            }
-        });
-
-        Map<String, Dictionary> configMap = fcf.getConfigMap();
-        configMap.clear();
-        isStopping = false;
-        isEnabled = true;
-        simpleConfig = mockSimpleConfig;
-        String pid = "pid1";
-        Properties props = new Properties();
-        props.setProperty("class", "*");
-        props.setProperty("mode", "enforce");
-        props.setProperty("permission", "deny");
-        configMap.put(pid, props);
-        fcf.deleted(pid);
-        assertTrue("configMap should be zero", configMap.isEmpty());
-    }
-
-    @Test
     public void testPropagateConfigMapValidEntry1() throws Exception {
-        Map<String, Dictionary> configMap = new HashMap<String, Dictionary>();
-        isStopping = false;
+        Map<String, String> modeMap = new HashMap<String, String>();
+        Map<String, String> policyMap = new HashMap<String, String>();
         DummySimpleConfig dummySimpleConfig = new DummySimpleConfig();
         simpleConfig = dummySimpleConfig;
-        String pid = "pid1";
-        Properties props = new Properties();
-        props.setProperty("class", "*");
-        props.setProperty("mode", "enforce");
-        props.setProperty("permission", "deny");
-        configMap.put(pid, props);
-        fcf.propagateConfigMap(configMap);
+        modeMap.put("*", "Enforce");
+        policyMap.put("*", "Deny");
+        fcf.propagateConfigMap(modeMap, policyMap);
         Properties output = dummySimpleConfig.getProperties();
         assertEquals("number of properties should be one", output.size(), 1);
         assertEquals("properties should contain a valid data ", output.getProperty("*"), "ENFORCE,DENY");
@@ -171,46 +84,37 @@ public class FilterConfigFactoryTest {
 
     @Test
     public void testPropagateConfigMapValidEntry2() throws Exception {
-        Map<String, Dictionary> configMap = new HashMap<String, Dictionary>();
-        isStopping = false;
+        Map<String, String> modeMap = new HashMap<String, String>();
+        Map<String, String> policyMap = new HashMap<String, String>();
         DummySimpleConfig dummySimpleConfig = new DummySimpleConfig();
         simpleConfig = dummySimpleConfig;
-        String pid = "pid1";
-        Properties props = new Properties();
-        props.setProperty("class", "com.ibm.test.Dummy");
-        props.setProperty("method", "Method");
-        props.setProperty("mode", "discover");
-        props.setProperty("permission", "allow");
-        configMap.put(pid, props);
-        fcf.propagateConfigMap(configMap);
+        modeMap.put("com.ibm.test.Dummy#Method", "Enforce");
+        modeMap.put("com.ibm.test.Dummy", "Discover");
+        policyMap.put("com.ibm.test.Dummy", "Allow");
+        fcf.propagateConfigMap(modeMap, policyMap);
         Properties output = dummySimpleConfig.getProperties();
-        assertEquals("number of properties should be one", output.size(), 1);
-        assertEquals("properties should contain a valid data ", output.getProperty("com.ibm.test.Dummy#Method"), "DISCOVER,ALLOW");
+        assertEquals("number of properties should be two", output.size(), 2);
+        assertEquals("properties should contain a valid data com.ibm.test.Dummy#Method", output.getProperty("com.ibm.test.Dummy#Method"), "ENFORCE");
+        assertEquals("properties should contain a valid data com.ibm.test.Dummy", output.getProperty("com.ibm.test.Dummy"), "DISCOVER,ALLOW");
     }
 
     @Test
     public void testPropagateConfigMapValidEntries() throws Exception {
-        Map<String, Dictionary> configMap = new HashMap<String, Dictionary>();
-        isStopping = false;
+        Map<String, String> modeMap = new HashMap<String, String>();
+        Map<String, String> policyMap = new HashMap<String, String>();
         DummySimpleConfig dummySimpleConfig = new DummySimpleConfig();
         simpleConfig = dummySimpleConfig;
-        String pid1 = "pid1";
-        String pid2 = "pid2";
-        Properties props1 = new Properties();
-        props1.setProperty("class", "com.ibm.test.Dummy");
-        props1.setProperty("method", "Method");
-        props1.setProperty("mode", "discover");
-        props1.setProperty("permission", "allow");
-        configMap.put(pid1, props1);
-        Properties props2 = new Properties();
-        props2.setProperty("class", "com.ibm.test.Second");
-        props2.setProperty("mode", "reject");
-        configMap.put(pid2, props2);
-        fcf.propagateConfigMap(configMap);
+        modeMap.put("*", "Enforce");
+        policyMap.put("*", "Deny");
+        modeMap.put("com.ibm.test.Dummy#Method", "Discover");
+        modeMap.put("com.ibm.test.Second", "Reject");
+        policyMap.put("com.ibm.test.Second", "Allow");
+        fcf.propagateConfigMap(modeMap, policyMap);
         Properties output = dummySimpleConfig.getProperties();
-        assertEquals("number of properties should be two", output.size(), 2);
-        assertEquals("properties should contain a valid data ", output.getProperty("com.ibm.test.Dummy#Method"), "DISCOVER,ALLOW");
-        assertEquals("properties should contain a valid data ", output.getProperty("com.ibm.test.Second"), "REJECT");
+        assertEquals("number of properties should be two", output.size(), 3);
+        assertEquals("properties should contain a valid data for *", output.getProperty("*"), "ENFORCE,DENY");
+        assertEquals("properties should contain a valid data for com.ibm.test.Dummy#Method", output.getProperty("com.ibm.test.Dummy#Method"), "DISCOVER");
+        assertEquals("properties should contain a valid data for com.ibm.test.Second", output.getProperty("com.ibm.test.Second"), "REJECT,ALLOW");
     }
 
     class DummySimpleConfig implements SimpleConfig {

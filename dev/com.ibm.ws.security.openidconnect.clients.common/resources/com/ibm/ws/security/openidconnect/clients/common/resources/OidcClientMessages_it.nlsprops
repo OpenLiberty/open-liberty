@@ -16,6 +16,8 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS1700 - CWWKS1750
+# BEWARE: Due to code refactoring, some of these messages are also used in the openidconnect.client bundle. Check there too before using or
+# altering any of these messages.
 
 
 # used by clients project
@@ -26,27 +28,27 @@ OIDC_CLIENT_AUTHORIZE_ERR.useraction=Ripetere la richiesta con attributi di conf
 
 #do not translate enforceHTTPS
 
-# used_by_client_project and clients project
+# used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Il client OpenID Connect richiede SSL (HTTPS) ma l''URL del provider OpenID Connect \u00e8 HTTP: [{0}].  Aggiornare la configurazione in modo che l''attributo [enforceHTTPS] corrisponda allo schema URL di destinazione. 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Il client OpenID Connect (relying party o server risorse) richiede SSL ma il protocollo URL del provider OpenID Connect (OP) specificato nella configurazione client OpenID Connect non \u00e8 HTTPS.
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Eseguire una delle seguenti operazioni: 1) Assicurarsi che il provider OpenID Connect supporti SSL. 2) Se il provider OpenID Connect non supporta SSL, impostare enforceHTTPS nella configurazione client OpenID Connect su false.
 
-# unused
+# unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Lo stato corrente [{0}] per il client OpenID Connect [{2}] e il parametro di stato [{1}] nella risposta dal provider OpenID Connect non corrispondono.  Questa condizione non \u00e8 consentita.
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=Il client OpenID Connect (relying party o RP) ha inviato una richiesta a un provider OpenID Connect (OP) e l'OP ha inviato una risposta con un parametro di stato che non corrisponde allo stato che aveva l'RP al momento dell'invio. L'OP deve includere nella risposta uno stato uguale a quello dell'invio.  Lo stato viene utilizzato in questo modo per prevenire richieste intersito false. 
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.useraction=Verificare che l'URL OP sia corretto. Controllare i log sull'OP per accertarsi che abbia ricevuto la richiesta.
 
-# This is not in use any more
+# This is not in use any more, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE IN BOTH BUNDLES
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR=CWWKS1705E: L''autenticazione del token ID da parte del client OpenID Connect [{0}] ha avuto esito negativo poich\u00e9 nel token non \u00e8 stato incluso un identificativo soggetto. 
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR.explanation=Per autenticare un token ID, il client OpenID Connect (relying party o RP) deve avere un identificativo soggetto. Il token ID ricevuto nella risposta dal provider OpenID Connect (OP) non conteneva un identificativo soggetto, quindi l'autenticazione non \u00e8 riuscita. 
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR.useraction=Verificare che il provider OpenID Connect (OP) restituisca un token ID che includa un identificativo soggetto.
 
-#used_by_client_project and clients project
+#used_by_client_project and clients project. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR=CWWKS1706E: La convalida del token ID da parte del client OpenID Connect [{1}] ha avuto esito negativo a causa di [{0}].
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR.explanation=Il client OpenID Connect (relying party o RP) non \u00e8 in grado di convalidare il token ID correttamente. Ci\u00f2 pu\u00f2 essere stato causato da un errore nel processo di convalida delle asserzioni necessarie. Alcune delle asserzioni necessarie del token ID includono emittente, audience, ora di emissione. 
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR.useraction=Accertarsi che l'orologio di sistema del client OpenID Connect (RP) sia in sincronia con l'orologio di sistema del provider OpenID Connect (OP), nel caso in cui essi si trovino su due sistemi diversi. Vedere anche l'azione utente per  l'errore visualizzato dopo questo errore.
 
-#used_by_client_project and clients proje
+#used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1707E: Il client OpenID Connect [{1}] non \u00e8 stato in grado di creare un contesto SSL a causa di [{0}]. Accertarsi che la funzione SSL sia configurata correttamente.
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.explanation=La configurazione del client OpenID Connect (relying party o server risorse) \u00e8 impostata per utilizzare lo schema HTTPS, ma non \u00e8 stato possibile stabilire una connessione HTTPS. La funzione SSL non pu\u00f2 essere abilitata. L'elemento keyStore potrebbe essere mancante o specificato in modo non corretto.  
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Verificare che il file server.xml contenga le informazioni SSL corrette. Vedere l'azione utente per l'errore che viene visualizzato prima di questo messaggio.
@@ -56,16 +58,19 @@ OIDC_CLIENT_TOKEN_REQUEST_FAILURE=CWWKS1708E: Il client OpenID Connect [{1}] non
 OIDC_CLIENT_TOKEN_REQUEST_FAILURE.explanation=Il client OpenID Connect (relying party o RP) non \u00e8 riuscito ad ottenere un token ID dal provider OpenID Connect (OP) poich\u00e9 non \u00e8 stato possibile stabilire una connessione con il provider. \u00c8 possibile che l'OP non fosse disponibile quando \u00e8 stata effettuata la richiesta, che la richiesta non sia stata indirizzata a un endpoint valido o che ci sia qualche mancata corrispondenza della configurazione tra OP ed RP. Il motivo dell'errore viene  visualizzato dopo il messaggio.
 OIDC_CLIENT_TOKEN_REQUEST_FAILURE.useraction=Controllare la configurazione del server per assicurarsi che l'URL endpoint token configurato sia un URL valido e punti all'endpoint token di un provider OpenID Connect attivo. Vedere le azioni per l'errore visualizzate dopo questo messaggio.
 
+
 # used by clients
 OIDC_CLIENT_INVALID_HTTP_RESPONSE=CWWKS1709E: Il client OpenID Connect [{1}] ha rilevato un errore durante l''elaborazione della risposta HTTP dal provider OpenID Connect a causa di [{0}].
 OIDC_CLIENT_INVALID_HTTP_RESPONSE.explanation=Il client OpenID Connect (relying party o server risorse) ha ricevuto una risposta dal provider OpenID Connect (OP), ma si \u00e8 verificato un errore mentre l'RP o il server risorse elaborava la risposta. Il motivo dell'errore viene  visualizzato dopo il messaggio.
 OIDC_CLIENT_INVALID_HTTP_RESPONSE.useraction=Vedere le azioni per l'errore visualizzate dopo questo messaggio.
 
-#used_by_client_project
+
+#used_by_client_project, present in clients.common bundle. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OAUTH_REQUEST_ACCESS_DENIED=CWWKS1710E: La richiesta OpenID Connect \u00e8 stata rifiutata dall'utente o si \u00e8 verificato un altro errore che ha portato al rifiuto della richiesta.
 OAUTH_REQUEST_ACCESS_DENIED.explanation=L'utente ha rifiutato la richiesta OpenID Connect annullandola nel modulo di consenso ambito o si \u00e8 verificato un altro errore che ha rifiutato l'accesso alla richiesta OpenID Connect.
 OAUTH_REQUEST_ACCESS_DENIED.useraction=Perch\u00e9 la richiesta OpenID Connect abbia esito positivo l'utente deve consentire al provider OpenID Connect di condividere gli ambiti richiesti dal client. Se l'utente ha approvato la richiesta, cercare nei log sull'OP eventuali altri errori.
 
+#1711 is used by client bundle, don't use here.
 
 #
 #used by clients project
@@ -83,6 +88,7 @@ OIDC_CLIENT_REQUEST_NONCE_FAILED=CWWKS1714E: Il client OpenID Connect [{0}] ha a
 OIDC_CLIENT_REQUEST_NONCE_FAILED.explanation=Le richieste del client OpenID Connect richiedono che nonce sia gestito appropriatamente durante il flusso della richiesta per ridurre gli attacchi di risposta. Il nonce \u00e8 incluso nel token non corrisponde al nonce associato a questa richiesta, quindi la richiesta non \u00e8 valido.
 OIDC_CLIENT_REQUEST_NONCE_FAILED.useraction=Verificare che il provider OpenID Connect generi i token utilizzando il nonce che \u00e8 specificato nella richiesta client OpenID Connect iniziale.
 
+# 1715, 16, 17, 18, 19, 20, 21 are used in client bundle, do not use here.
 
 # used by clients proj
 PROPAGATION_TOKEN_MISSING_USERID=CWWKS1722E: Il server di risorse ha fallito la richiesta di autenticazione perch\u00e9 il token di accesso non contiene la richiesta [{0}] specificata dall''attributo [{1}].
@@ -90,16 +96,17 @@ PROPAGATION_TOKEN_MISSING_USERID.explanation=Il token di accesso fornito non con
 PROPAGATION_TOKEN_MISSING_USERID.useraction=Effettuare una delle seguenti operazioni. 1)Verificare che la configurazione del client OpenID Connect specifichi il nome richiesta corretto 2)Verificare che l'OP (OpenID Connect provider) emetta il token di accesso con la richiesta specificata.
 
 
+# PRESENT IN CLIENT AND CLIENTS.COMMON BUNDLE. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 # PROPAGATION_TOKEN_USERINFO_ISS_ERROR=CWWKS1728E: The resource server failed the authentication request because the issuerIdentifier [{0}] in the configuration does not match the "iss" claim [{1}] in the UserInfo.
 # PROPAGATION_TOKEN_USERINFO_ISS_ERROR.explanation=The provided access token cannot be verified because the "iss" claim in the UserInfo does not match the issuerIdentifier configuration attribute, and the runtime cannot continue with the authentication process.
 # PROPAGATION_TOKEN_USERINFO_ISS_ERROR.useraction=Verify that the OpenID Connect client configuration has the issuerIdentifier that matches the "iss" claim in the UserInfo.
 
-#unused
+#unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: Il server delle risorse non ha superato la richiesta di autenticazione poich\u00e9 il metodo di convalida [{0}] non era appropriato per l''URL endpoint di convalida [{1}].
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=Il validationEndpointUrl specificato nella configurazione client OpenID Connect non \u00e8 l'endpoint appropriato per il validationMethod specificato.
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Aggiornare la configurazione del client OpenID Connect modificando il validationMethod o il validationEndpointUrl.
  
-#used by clients proj 
+#used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Il server delle risorse ha fallito la richiesta di autenticazione poich\u00e9 il tipo di dati della richiesta [{0}] nel token di accesso associato all''attributoo di configurazione [{1}] non \u00e8 valido. 
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.explanation=Il token di accesso fornito ha un tipo di dati della richiesta non valido e il runtime non pu\u00f2 continuare con il processo di autenticazione.
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.useraction=Verificare che la configurazione del client OpenID Connect specifichi il nome richiesta corretto per l'attributo.
@@ -109,20 +116,21 @@ PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: Il server di risorse ha fallito la r
 PROPAGATION_TOKEN_MISSING_REALM.explanation=Il token di accesso fornito non contiene la richiesta specificata per identificare il realm e il runtime non pu\u00f2 continuare con il processo di autenticazione.
 PROPAGATION_TOKEN_MISSING_REALM.useraction=Effettuare una delle seguenti operazioni. 1)Verificare che la configurazione del client OpenID Connect specifichi l'attributo addBaseEntry 2)Verificare che l'OP (OpenID Connect Provider) emetta il token di accesso con la richiesta specificata 3)Verificare se l'OP pu\u00f2 emettere il token di accesso con la richiesta "iss". 
 
+# 1732, 33 used by client bundle, don't use here.
 
 #used by clients project
 OIDC_CLIENT_ID_TOKEN_MISSING_CLAIM=CWWKS1734E: L''autenticazione del token ID da parte del client OpenID Connect [{0}] ha avuto esito negativo poich\u00e9 nel token non \u00e8 stato inclusa la richiesta [{1}] specificata dall''attributo di configurazione [{2}].
 OIDC_CLIENT_ID_TOKEN_MISSING_CLAIM.explanation=L'attributo di configurazione specificato definisce la richiesta token ID da utilizzare quando si crea un soggetto utente. Impossibile trovare nel token ID la richiesta specificata, il token ID quindi  non \u00e8 stato autenticato e un soggetto utente non \u00e8 stato creato.
 OIDC_CLIENT_ID_TOKEN_MISSING_CLAIM.useraction=Configurare l'attributo specificato in modo che faccia riferimento a una richiesta esistente nel token ID e che possa essere utilizzata per creare un soggetto.
 
-#used_by_client_project
+#present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1735E: Il server di risorse ha fallito la richiesta di autenticazione perch\u00e9 la risposta dall''endpoint di convalida [{0}] ha la richiesta [{1}], ma l''attributo [{2}] \u00e8 impostato su true.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Poich\u00e9 la configurazione del client OpenID Connect specifica "disableIssChecking", il server di risorse si aspetta che la risposta json dall'endpoint di convalida non contenga la richiesta "iss".  
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Effettuare una delle seguenti operazioni. 1)Aggiornare la configurazione del client OpenID Connect e impostare "disableIssChecking" su "false" 2) Fare in modo che l'endpoint di convalida non emetta la richiesta "iss".
 
 # Do not translate "JSON Web Token"
 #0=Java runtime level, 1=Minimum Java level required by JWT library
-#unused
+#unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OIDC_CLIENT_JWT_JDK7=CWWKS1736E: La versione Java utilizzata da questo runtime [{0}] non \u00e8 supportata dalla libreria token web JSON. La versione Java supportata \u00e8 [{1}] o successive.
 OIDC_CLIENT_JWT_JDK7.explanation=Le librerie open source per l'elaborazione dei token web JSON non supporta la versione Java correntemente utilizzata da Liberty Server.
 OIDC_CLIENT_JWT_JDK7.useraction=Installare una versione Java equivalente o supe riore al livello Java mostrato nel messaggio.
@@ -136,19 +144,25 @@ OIDC_CLIENT_JWT_VERIFY_ERR.useraction=Vedere l'azione utente per l'errore che vi
 
 # Do not translate "JSON Web Token"
 #0=OIDC client ID, 1=JWT claim (such as aud, iat, exp), 2=Client config attribute (userIdentifier or userIdentityToCreateSubject)
-#used by clients proje
+#used by clients project
 OIDC_CLIENT_JWT_MISSING_CLAIM=CWWKS1738E: L''autenticazione del token web JSON da parte del client OpenID Connect [{0}] ha avuto esito negativo poich\u00e9 nel Web non \u00e8 stato inclusa la richiesta [{1}] specificata dall''attributo di configurazione [{2}].
 OIDC_CLIENT_JWT_MISSING_CLAIM.explanation=L'attributo di configurazione specificato definisce la richiesta token web JSON da utilizzare quando si crea un soggetto utente. Impossibile trovare nel token web JSON la richiesta specificata, il token web JSON quindi non \u00e8 stato autenticato e un soggetto utente non \u00e8 stato creato.
 OIDC_CLIENT_JWT_MISSING_CLAIM.useraction=Effettuare una delle seguenti azioni: 1) modificare la configurazione dell'attributo specificato in modo che faccia riferimento a una richiesta esistente nel token web JSON. 2) Modificare il token web JSON per includere l'attributo specificato.
 
+#present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 #0=signatureAlgorithm, 1=exception or error message if any
 #used_by_client_project and clients project
 OIDC_CLIENT_NO_VERIFYING_KEY=CWWKS1739E: Non era disponibile una chiave di firma richiesta dall''algoritmo di firma [{0}]. {1}
 OIDC_CLIENT_NO_VERIFYING_KEY.explanation=Non \u00e8 stato possibile trovare una chiave di firma o una chiave che utilizza l'algoritmo di firma configurato. Potrebbe essere dovuto a informazioni mancanti, malformate o inaccurate nella configurazione client o token.
 OIDC_CLIENT_NO_VERIFYING_KEY.useraction=Effettuare una delle seguenti azioni: 1) se si utilizza JWK per firmare e convalidare i token, verificare che l'attributo jwkEndpointUrl sia configurato appropriatamente e che le richieste JWT e JWK siano corrette. 2) se si utilizzano i certificati X.509 per firmare e convalidare i token, verificare che gli attributi signatureAlgorithm, trustStoreRef e trustStoreAlias siano configurati appropriatamente. 3) se si utilizzano le chiavi condivise per firmare e convalidare i token, verificare che gli attributi clientId e clientSecret siano configurati appropriatamente.
 
+#1740, 41 used in client bundle, do not use here.
+
+
 # CWWKS1742E
 #JWK_RETRIVE_FAILED=CWWKS1742E: Cannot get the Json Web Key(JWK) from the URL [{0}]. Response status [{1}]. Message:[{2}] 
+
+#1742 used in client bundle, do not use here.
 
 #0: the issuer, 1:jti
 #used by clients
@@ -162,6 +176,7 @@ OIDC_CLIENT_RESPONSE_STATE_ERR=CWWKS1744E: Lo stato corrente [{0}] di una rispos
 OIDC_CLIENT_RESPONSE_STATE_ERR.explanation=Il client OpenID Connect (relying party o RP) ha ricevuto una risposta da un provider OpenID Connect (OP), ma il parametro di stato nella risposta non \u00e8 valido. \u00c8 scaduto o \u00e8 gi\u00e0 stato utilizzato.
 OIDC_CLIENT_RESPONSE_STATE_ERR.useraction=Verificare che gli orologi su tutti i sistemi siano sincronizzati per garantire che i valori di stato non scadano prematuramente. Verificare che i valori di stato vengono utilizzati solo una volta.
 
+# present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 # do not translate WASOidcCode
 # 0: the content of WASOidcCode, 1: client ID
 #used_by_client_project and clients project
@@ -180,10 +195,12 @@ JWK_RETRIEVE_FAILED=CWWKS1747E: Un JWK (JSON Web Key) non \u00e8 stato restituit
 JWK_RETRIEVE_FAILED.explanation=Una chiave web JSON non pu\u00f2 essere restituita dall'URL specificato. L'URL potrebbe non essere valido, l'URL potrebbe non essere configurato per restituire un JWK, la risposta dall'URL potrebbe essere vuota o si \u00e8 verificato un errore sconosciuto.
 JWK_RETRIEVE_FAILED.useraction=Verificare che l'URL sia formato correttamente e specifichi un'ubicazione in grado di restituire chiavi web JSON. Controllare il codice di stato e il contenuto della risposta per ulteriori informazioni.
 
+#present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 USERINFO_RETREIVE_FAILED=CWWKS1748E: Non \u00e8 stato possibile contattare l''URL info utente [{0}].  Lo stato della risposta \u00e8 [{1}] e il contenuto restituito \u00e8 [{2}].
 USERINFO_RETREIVE_FAILED.explanation=Impossibile ottenere i dati infor utente dall'URL specificato. L'URL potrebbe non essere valido, il token di accesso fornito potrebbe non essere valido, la risposta dall'URL potrebbe essere vuota o si \u00e8 verificato un errore sconosciuto.
 USERINFO_RETREIVE_FAILED.useraction=Verificare che l'URL sia formato correttamente e specifichi un'ubicazione in grado di restituire i dati info utente. Controllare il codice di stato e il contenuto della risposta per ulteriori informazioni.
 
+# present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 USERINFO_INVALID=CWWKS1749E: I dati info utente [{0}] non sono validi perch\u00e9 la richiesta secondaria non corrisponde a quella del token ID[{1}].
 USERINFO_INVALID.explanation=La richiesta secondaria dei dati info utente deve corrispondere a quella del token ID, ma non \u00e8 cos\u00ec. 
 USERINFO_INVALID.useraction=Verificare che il provider OpenID Connect generi dati info utente validi.

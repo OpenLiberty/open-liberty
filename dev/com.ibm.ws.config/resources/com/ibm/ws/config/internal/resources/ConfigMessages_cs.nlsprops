@@ -435,9 +435,9 @@ error.variable.name.missing=CWWKG0091E: Mus\u00ed b\u00fdt uveden atribut n\u00e
 error.variable.name.missing.explanation=Konfigurace serveru obsahuje prvek konfigurace prom\u011bnn\u00e9, kter\u00fd nem\u00e1 atribut n\u00e1zvu.
 error.variable.name.missing.useraction=P\u0159idejte do prom\u011bnn\u00e9 atribut n\u00e1zvu.
 
-error.variable.value.missing=CWWKG0092E: Mus\u00ed b\u00fdt uveden atribut hodnoty pro prom\u011bnnou na \u0159\u00e1dku {0} prost\u0159edku {1}
-error.variable.value.missing.explanation=Konfigurace serveru obsahuje prvek konfigurace prom\u011bnn\u00e9, kter\u00fd nem\u00e1 atribut hodnoty.
-error.variable.value.missing.useraction=P\u0159idejte do prom\u011bnn\u00e9 atribut hodnoty.
+error.variable.value.missing=CWWKG0092E: Mus\u00ed b\u00fdt uveden atribut hodnoty nebo atribut defaultValue pro prom\u011bnnou na \u0159\u00e1dku {0} prost\u0159edku {1}
+error.variable.value.missing.explanation=Konfigurace serveru obsahuje prvek konfigurace prom\u011bnn\u00e9, kter\u00fd nem\u00e1 atribut hodnoty nebo atribut defaultValue.
+error.variable.value.missing.useraction=P\u0159idejte atribut hodnoty nebo atribut defaultValue do prom\u011bnn\u00e9.
 
 audit.dropin.being.processed=CWWKG0093A: Zpracov\u00e1n\u00ed prost\u0159edku vkl\u00e1d\u00e1n\u00ed konfigurace: {0}
 audit.dropin.being.processed.explanation=Obsah ur\u010den\u00e9ho prost\u0159edku bude vlo\u017een do konfigurace serveru.

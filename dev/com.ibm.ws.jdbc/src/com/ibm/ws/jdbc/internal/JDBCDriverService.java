@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -241,6 +241,23 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(tc, "create", className, classloader, PropertyService.hidePasswords(props));
+
+        //TODO remove this gate before GA so this also applies to data sources configured using DataSourceDefinition
+        String vendorPropertiesPID = props instanceof PropertyService ? ((PropertyService) props).getFactoryPID() : PropertyService.FACTORY_PID;
+        if ("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp".equals(vendorPropertiesPID)) {
+            //Add a value for connectionFactoryClassName when using UCP if one is not specified
+            if (className.startsWith("oracle.ucp.jdbc") && !props.containsKey("connectionFactoryClassName")) {
+                if (className.equals("oracle.ucp.jdbc.PoolDataSourceImpl") && props instanceof PropertyService) {
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(tc, "Setting connectionFactoryClassName property to oracle.jdbc.pool.OracleDataSource");
+                    ((PropertyService) props).setProperty("connectionFactoryClassName", "oracle.jdbc.pool.OracleDataSource");
+                } else if (className.equals("oracle.ucp.jdbc.PoolXADataSourceImpl") && props instanceof PropertyService) {
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(tc, "Setting connectionFactoryClassName property to oracle.jdbc.xa.client.OracleXADataSource");
+                    ((PropertyService) props).setProperty("connectionFactoryClassName", "oracle.jdbc.xa.client.OracleXADataSource");
+                }
+            }
+        }
         try {
             T ds = AccessController.doPrivileged(new PrivilegedExceptionAction<T>() {
                 public T run() throws Exception {
@@ -521,9 +538,8 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 if (className == null) {
                     //if properties.oracle.ucp is configured do not search based on classname or infer because the customer has indicated
                     //they want to use UCP, but this will likely pick up the Oracle driver instead of the UCP driver (since UCP has no ConnectionPoolDataSource)
-                    if(vendorPropertiesPID != null && vendorPropertiesPID.equals("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp")) {
-                        //TODO consider if we want to throw a more specific exception here
-                        throw classNotFound(ConnectionPoolDataSource.class.getName(), null, dataSourceID, null);
+                    if("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp".equals(vendorPropertiesPID)) {
+                        throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4015.no.ucp.connection.pool.datasource", dataSourceID));
                     }
                     className = JDBCDrivers.getConnectionPoolDataSourceClassName(getClasspath(sharedLib, true));
                     if (className == null) {
@@ -673,6 +689,14 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 }
 
             final String className = (String) properties.get(Driver.class.getName());
+            if (className == null) {
+                String vendorPropertiesPID = props instanceof PropertyService ? ((PropertyService) props).getFactoryPID() : PropertyService.FACTORY_PID;
+                //if properties.oracle.ucp is configured do not search for driver impls because the customer has indicated
+                //they want to use UCP, but this will likely pick up the Oracle driver instead of the UCP driver (since UCP has no Driver interface)
+                if("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp".equals(vendorPropertiesPID)) {
+                    throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4016.no.ucp.driver.datasource", dataSourceID));
+                }
+            }
             Driver driver = loadDriver(className, url, classloader, props, dataSourceID);
             if (driver == null)
                throw classNotFound(Driver.class.getName(), Collections.singleton("META-INF/services/java.sql.Driver"), dataSourceID, null);

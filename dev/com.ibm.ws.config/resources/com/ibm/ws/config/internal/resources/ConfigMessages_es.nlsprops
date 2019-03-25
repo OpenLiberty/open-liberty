@@ -431,9 +431,9 @@ error.variable.name.missing=CWWKG0091E: Se debe especificar un atributo de nombr
 error.variable.name.missing.explanation=La configuraci\u00f3n del servidor contiene un elemento de configuraci\u00f3n variable que no tiene un atributo de nombre.
 error.variable.name.missing.useraction=A\u00f1ada un atributo de nombre a la variable.
 
-error.variable.value.missing=CWWKG0092E: Se debe especificar un atributo de valor para la variable en la l\u00ednea {0} del recurso {1}
-error.variable.value.missing.explanation=La configuraci\u00f3n del servidor contiene un elemento de configuraci\u00f3n variable que no tiene un atributo de valor.
-error.variable.value.missing.useraction=A\u00f1ada un atributo de valor a la variable.
+error.variable.value.missing=CWWKG0092E: Se debe especificar un atributo value o un atributo defaultValue para la variable en la l\u00ednea {0} del recurso {1}
+error.variable.value.missing.explanation=La configuraci\u00f3n del servidor contiene un elemento de configuraci\u00f3n variable que no tiene un atributo value o un atributo defaultValue.
+error.variable.value.missing.useraction=A\u00f1ada un atributo value o un atributo defaultValue a la variable.
 
 audit.dropin.being.processed=CWWKG0093A: Procesando recurso de drop-ins de configuraci\u00f3n: {0}
 audit.dropin.being.processed.explanation=El contenido del recurso especificado se incluir\u00e1 en la configuraci\u00f3n de servidor.

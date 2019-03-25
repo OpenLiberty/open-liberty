@@ -20,9 +20,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
@@ -233,7 +235,7 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
         }
     });
 
-    private int modulesStarting=0;
+    private volatile int modulesStarting=0;
     
     // Servlet 4.0
     private URIMatcherFactory uriMatcherFactory;
@@ -883,6 +885,12 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
             Tr.entry(tc, "startModule: " + webModule.getName() + " " + webModule.getContextRoot() + ", modulesStarting = " + modulesStarting);
         }
         try {
+            
+            // if this service has been deactivated, then leave as cleanly as possible
+            if ((futureMonitor == null) || (self.get() == null)){
+               CompletedFuture f = new CompletedFuture(false);
+               return f;
+            }
             // If server is stopping return don't start the application, just an future set to true. 
             if (isServerStopping()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1397,7 +1405,7 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     }
     
     public static CacheManager getCacheManager() {
-        WebContainer thisService = instance.get();
+        WebContainer thisService = (WebContainer) self.get();
         CacheManager cacheManager = null;
         if (thisService != null) {
             cacheManager = thisService.getCacheManagerService();
@@ -1551,4 +1559,42 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
         
         return WebContainer.loadedContainerSpecLevel;
     }
+    
+    
+    protected static class CompletedFuture implements Future {
+
+        boolean value = false;
+        
+        // simple future that is assigned a Boolean when constructed
+        public CompletedFuture(boolean v) {
+            value = v;
+        }
+        
+        @Override
+        public boolean cancel(boolean mayInterruptIfRunning) {
+            return false;
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return false;
+        }
+        
+        @Override
+        public boolean isDone() {
+            return true;
+        }
+
+        @Override
+        public Boolean get() throws InterruptedException, ExecutionException {
+            return value;
+        }
+    
+        @Override
+        public Boolean get(long timeout, TimeUnit unit) throws InterruptedException,
+            ExecutionException, TimeoutException {
+            return value;
+        }    
+    }
+        
 }

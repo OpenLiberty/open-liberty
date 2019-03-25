@@ -116,8 +116,8 @@ TCP_CHANNEL_STOPPED=CWWKO0220I: El canal TCP {0} ha detenido la escucha de solic
 TCP_CHANNEL_STOPPED.explanation=Este mensaje es meramente informativo.
 TCP_CHANNEL_STOPPED.useraction=No se requiere ninguna acci\u00f3n.
 
-BIND_ERROR=CWWKO0221E: Ha fallado la inicializaci\u00f3n del canal TCP {0}.  Ha fallado el enlace del socket del host {1} y el puerto {2}.  Es posible que el puerto ya est\u00e9 en uso.
-BIND_ERROR.explanation=Ha fallado la operaci\u00f3n de enlace de socket. Una causa com\u00fan es que el n\u00famero de puerto ya est\u00e1 en uso.
+BIND_ERROR=CWWKO0221E: Ha fallado la inicializaci\u00f3n del canal TCP {0}.  Ha fallado el enlace del socket del host {1} y el puerto {2}.  Es posible que el puerto ya est\u00e9 en uso.  Mensaje de excepci\u00f3n: {3}
+BIND_ERROR.explanation=Ha fallado la operaci\u00f3n de enlace de socket. Una causa com\u00fan es que el n\u00famero de puerto ya est\u00e1 en uso.  Compruebe el texto del mensaje de excepci\u00f3n del mensaje de error para obtener m\u00e1s informaci\u00f3n.
 BIND_ERROR.useraction=Compruebe que el canal TCP se ha configurado para utilizar el n\u00famero de puerto correcto.
 
 MAX_CONNS_EXCEEDED=CWWKO0222W: El canal TCP {0} ha superado el n\u00famero m\u00e1ximo de conexiones abiertas {1}.

@@ -55,8 +55,8 @@ import java.security.cert.X509Certificate;
  *
  * Once the JAR has been packaged, update the server.xml configuration to include the "bells-1.0" feature, the library
  * that points to the JAR and the BELL configuration that points to the library. Finally, associate the user registry
- * to a X509CertificateMapper implementation by changing the "certificateMapMode" to "CUSTOM" and setting the
- * "certificateMapperId" to the value of the 'x509.certificate.mapper.id' of the instance of the mapper to use.
+ * to a X509CertificateMapper implementation by changing the 'certificateMapMode' to 'CUSTOM' and setting the
+ * 'certificateMapperId' to the value of the 'x509.certificate.mapper.id' of the instance of the mapper to use.
  *
  * <p/>
  * Below is an example of associating 'mapper1' to and LDAP registry using the BELL feature.
@@ -64,8 +64,8 @@ import java.security.cert.X509Certificate;
  * <pre>
  * &lt;server&gt;
  *    &lt;featureManager&gt;
- *       &lt;feature>ldapRegistry-3.0&lt;/feature&gt;
- *       &lt;feature>bells-1.0&lt;/feature&gt;
+ *       &lt;feature&gt;ldapRegistry-3.0&lt;/feature&gt;
+ *       &lt;feature&gt;bells-1.0&lt;/feature&gt;
  *    &lt;/featureManager&gt;
  *
  *    &lt;!--
@@ -73,7 +73,7 @@ import java.security.cert.X509Certificate;
  *       the CertificateMapper implementation.
  *    --&gt;
  *    &lt;library id="mylibrary"&gt;
- *       &lt;file name="${shared.resource.dir}/libs/MyLibrary.jar"&gt;
+ *       &lt;file name="${shared.resource.dir}/libs/myLibrary.jar"&gt;
  *    &lt;/library&gt;
  *
  *    &lt;!-- Load the library in a BELL. --&gt;
@@ -99,17 +99,17 @@ import java.security.cert.X509Certificate;
  * <p/>
  * When the user feature has been installed in Liberty, add the user feature to the feature list in the server.xml
  * configuration file. Finally, associate the user registry to a X509CertificateMapper implementation by changing the
- * "certificateMapMode" to "CUSTOM" and setting the "certificateMapperId" to the value of the 'x509.certificate.mapper.id'
+ * 'certificateMapMode' to 'CUSTOM' and setting the 'certificateMapperId' to the value of the 'x509.certificate.mapper.id'
  * of the instance of the mapper to use.
  *
  * <p/>
- * Below is an example of associating 'mapper1' to and LDAP registry using a user feature.
+ * Below is an example of associating 'mapper1' to an LDAP registry using a user feature.
  *
  * <pre>
  * &lt;server&gt;
  *    &lt;featureManager&gt;
- *       &lt;feature>ldapRegistry-3.0&lt;/feature&gt;
- *       &lt;feature>user:myFeature-1.0&lt;/feature&gt;
+ *       &lt;feature&gt;ldapRegistry-3.0&lt;/feature&gt;
+ *       &lt;feature&gt;user:myFeature-1.0&lt;/feature&gt;
  *    &lt;/featureManager&gt;
  *
  *    &lt;!-- Configure the registry with the custom X509CertificateMapper. --&gt;

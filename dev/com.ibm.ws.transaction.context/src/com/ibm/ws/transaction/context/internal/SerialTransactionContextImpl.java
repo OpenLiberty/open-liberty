@@ -14,8 +14,10 @@ import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.ObjectOutputStream;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.transaction.InvalidTransactionException;
+import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 
@@ -25,6 +27,7 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
 import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
+import com.ibm.ws.uow.embeddable.EmbeddableUOWTokenImpl;
 import com.ibm.ws.uow.embeddable.UOWManager;
 import com.ibm.ws.uow.embeddable.UOWManagerFactory;
 import com.ibm.ws.uow.embeddable.UOWToken;
@@ -37,6 +40,9 @@ import com.ibm.wsspi.threadcontext.ThreadContext;
 public class SerialTransactionContextImpl implements ThreadContext {
     private static final long serialVersionUID = 1;
 
+    // TODO remove the following temporary code once the transaction manager provides a proper mechanism to prevent a transaction on multiple threads at once
+    private final SuspendCount suspendCounts;
+
     /**
      * Unit of work that was on the thread of execution prior to invoking the contextual task.
      */
@@ -44,9 +50,19 @@ public class SerialTransactionContextImpl implements ThreadContext {
 
     private final Transaction tx;
 
-    SerialTransactionContextImpl() {
+    // TODO remove the temporary suspend count code once the transaction manager provides a proper mechanism to prevent a transaction on multiple threads at once
+    SerialTransactionContextImpl(SuspendCount suspendCounts) {
         try {
+            this.suspendCounts = suspendCounts;
             tx = EmbeddableTransactionManagerFactory.getTransactionManager().getTransaction();
+            if (tx != null) {
+                AtomicInteger count = suspendCounts.get(tx);
+                if (count == null) {
+                    AtomicInteger found = suspendCounts.putIfAbsent(tx, count = new AtomicInteger());
+                    if (found != null)
+                        count = found;
+                }
+            }
         } catch (SystemException x) {
             throw new RejectedExecutionException(x);
         }
@@ -64,6 +80,12 @@ public class SerialTransactionContextImpl implements ThreadContext {
 
     @Override
     public void taskStarting() throws RejectedExecutionException {
+        // TODO This current code is unlikely to be a fully reliable way of determining that a transaction
+        // will be active on 2 threads at once. It should be replaced once the transaction manager is updated
+        // to properly enforce the requirement.
+        if (tx != null && suspendCounts.get(tx).get() < 1)
+            throw new IllegalStateException("Transaction cannot be propagated to thread because it is not permitted to be active on two threads at the same time.");
+
         // Suspend whatever is currently on the thread.
         try {
             UOWManager uowManager = UOWManagerFactory.getUOWManager();
@@ -127,11 +149,15 @@ public class SerialTransactionContextImpl implements ThreadContext {
                 break;
         }
 
-        // Resume the original transaction.
+        // Resume the original transaction if it hasn't already committed or rolled back.
         try {
             if (suspendedUOW != null) {
-                UOWManager uowManager = UOWManagerFactory.getUOWManager();
-                uowManager.resume(suspendedUOW);
+                Transaction tran = suspendedUOW instanceof EmbeddableUOWTokenImpl ? ((EmbeddableUOWTokenImpl) suspendedUOW).getTransaction() : null;
+                int status = tran == null ? Status.STATUS_UNKNOWN : tran.getStatus();
+                if (status != Status.STATUS_NO_TRANSACTION && status != Status.STATUS_COMMITTED && status != Status.STATUS_ROLLEDBACK) {
+                    UOWManager uowManager = UOWManagerFactory.getUOWManager();
+                    uowManager.resume(suspendedUOW);
+                }
                 suspendedUOW = null;
             }
         } catch (Throwable e) {

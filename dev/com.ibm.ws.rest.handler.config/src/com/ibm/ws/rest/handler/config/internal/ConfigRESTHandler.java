@@ -74,8 +74,8 @@ public class ConfigRESTHandler implements RESTHandler {
     /**
      * Validates configuration of a resource and returns the result as a JSON object.
      *
-     * @param uid unique identifier.
-     * @param config configuration of a resource instance.
+     * @param uid       unique identifier.
+     * @param config    configuration of a resource instance.
      * @param processed configurations that have already been processed -- to prevent stack overflow from circular dependencies in errant config.
      * @return JSON representing the configuration. Null if not an external configuration element.
      * @throws IOException
@@ -266,7 +266,7 @@ public class ConfigRESTHandler implements RESTHandler {
     /**
      * Converts the specified value to one that can be included in JSON
      *
-     * @param value the value to convert
+     * @param value     the value to convert
      * @param processed configurations that have already been processed -- to prevent stack overflow from circular dependencies in errant config.
      * @return a String, primitive wrapper, JSONArray, or JSONObject.
      * @throws IOException
@@ -297,7 +297,7 @@ public class ConfigRESTHandler implements RESTHandler {
         } else if (value instanceof Number || value instanceof Boolean || value instanceof Character)
             ; // common paths - no special handling
         else if (value instanceof SerializableProtectedString)
-            value = "***"; // hide passwords
+            value = "******"; // hide passwords
         else if (value.getClass().isArray()) { // list supplied as an array for positive cardinality
             JSONArray a = new JSONArray();
             int length = Array.getLength(value);
@@ -321,7 +321,7 @@ public class ConfigRESTHandler implements RESTHandler {
      * Otherwise, the config.displayId is the unique identifier.
      *
      * @param configDisplayId config.displayId of configuration element.
-     * @param id id of configuration element. Null if none.
+     * @param id              id of configuration element. Null if none.
      * @return the unique identifier (uid)
      */
     @Trivial

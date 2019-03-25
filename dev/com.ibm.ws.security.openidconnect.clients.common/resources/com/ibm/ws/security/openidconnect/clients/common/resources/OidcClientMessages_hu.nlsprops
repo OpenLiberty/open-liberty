@@ -16,6 +16,8 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS1700 - CWWKS1750
+# BEWARE: Due to code refactoring, some of these messages are also used in the openidconnect.client bundle. Check there too before using or
+# altering any of these messages.
 
 
 # used by clients project
@@ -26,27 +28,27 @@ OIDC_CLIENT_AUTHORIZE_ERR.useraction=Pr\u00f3b\u00e1lkozzon \u00fajra a k\u00e9r
 
 #do not translate enforceHTTPS
 
-# used_by_client_project and clients project
+# used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Az OpenID Connect \u00fcgyf\u00e9l SSL (HTTPS) haszn\u00e1lat\u00e1t k\u00f6veteli meg, de az OpenID Connect szolg\u00e1ltat\u00f3 URL c\u00edme HTTP: [{0}].  Friss\u00edtse a konfigur\u00e1ci\u00f3t \u00fagy, hogy az [enforceHTTPS] attrib\u00fatum megfeleljen a c\u00e9l URL s\u00e9m\u00e1nak. 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Az OpenID Connect \u00fcgyf\u00e9l (megb\u00edzhat\u00f3 partner vagy er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3) SSL (HTTPS) haszn\u00e1lat\u00e1t ig\u00e9nyli, de az OpenID Connect szolg\u00e1ltat\u00f3 (OP) RP konfigur\u00e1ci\u00f3ban megadott URL protokollja nem HTTPS.
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t: 1) Gondoskodj\u00e9k r\u00f3la, hogy az OpenID Connect szolg\u00e1ltat\u00f3 t\u00e1mogassa az SSL haszn\u00e1lat\u00e1t. 2) Ha az OpenID Connector szolg\u00e1ltat\u00f3 nem t\u00e1mogatja az SSL haszn\u00e1lat\u00e1t, akkor \u00e1ll\u00edtsa be az enforceHTTPS attrib\u00fatumot az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3ban false \u00e9rt\u00e9kre.
 
-# unused
+# unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: A(z) [{2}] OpenID Connect \u00fcgyf\u00e9l aktu\u00e1lis [{0}] \u00e1llapota \u00e9s az OpenID Connect szolg\u00e1ltat\u00f3 v\u00e1lasz\u00e1ban l\u00e9v\u0151 [{1}] \u00e1llapot param\u00e9ter nem egyezik meg.  Ez a felt\u00e9tel nem megengedett.
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=Az OpenID Connect \u00fcgyf\u00e9l (megb\u00edzhat\u00f3 partner vagy RP) egy k\u00e9r\u00e9st k\u00fcld\u00f6tt az OpenID Connect szolg\u00e1ltat\u00f3 (OP) fel\u00e9, de az OP v\u00e1lasz\u00e1ban l\u00e9v\u0151 \u00e1llapot param\u00e9ter nem egyezik meg az RP \u00e1llapot\u00e1val a k\u00fcld\u00e9s id\u0151pontj\u00e1ban. Az OP \u00e1ltal ugyanannak az \u00e1llapotnak kell a v\u00e1laszba ker\u00fclnie, mint ami a k\u00e9r\u00e9sben el lett k\u00fcldve.  Ebben a m\u00f3dszerben az \u00e1llapot a webhelyek k\u00f6z\u00f6tti k\u00e9r\u00e9shamis\u00edt\u00e1s megakad\u00e1lyoz\u00e1sa \u00e9rdek\u00e9ben ker\u00fcl felhaszn\u00e1l\u00e1sra. 
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OP URL helyes-e. Az OP napl\u00f3k ellen\u0151rz\u00e9s\u00e9vel gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az megkapta a k\u00e9r\u00e9st.
 
-# This is not in use any more
+# This is not in use any more, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE IN BOTH BUNDLES
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR=CWWKS1705E: A(z) [{0}] OpenID Connect \u00fcgyf\u00e9l nem tudta hiteles\u00edteni az azonos\u00edt\u00f3 tokent, mert a token nem tartalmazott t\u00e1rgy (subject) azonos\u00edt\u00f3t. 
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR.explanation=Az azonos\u00edt\u00f3 token hiteles\u00edt\u00e9se \u00e9rdek\u00e9ben az OpenID Connect \u00fcgyf\u00e9lnek (megb\u00edzhat\u00f3 partner vagy RP) rendelkeznie kell t\u00e1rgy (subject) azonos\u00edt\u00f3val. Az OpenID Connect szolg\u00e1ltat\u00f3 (OP) v\u00e1lasz\u00e1ban kapott azonos\u00edt\u00f3 token nem tartalmazott t\u00e1rgy (subject) azonos\u00edt\u00f3t, \u00edgy a hiteles\u00edt\u00e9s meghi\u00fasult. 
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az OpenID Connect szolg\u00e1ltat\u00f3 (OP) olyan azonos\u00edt\u00f3 tokent adjon vissza, amely tartalmaz t\u00e1rgy (subject) azonos\u00edt\u00f3t.
 
-#used_by_client_project and clients project
+#used_by_client_project and clients project. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR=CWWKS1706E: A(z) [{1}] OpenID Connect \u00fcgyf\u00e9l nem tudta \u00e9rv\u00e9nyes\u00edteni az azonos\u00edt\u00f3 tokent [{0}] miatt.
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR.explanation=Az OpenID Connect \u00fcgyf\u00e9l (megb\u00edzhat\u00f3 partner vagy RP) nem tudja sikeresen \u00e9rv\u00e9nyes\u00edteni az azonos\u00edt\u00f3 tokent. Ezt egy hiba okozhatja a sz\u00fcks\u00e9ges ig\u00e9ny\u00e9rv\u00e9nyes\u00edt\u00e9s folyamat\u00e1ban. Az azonos\u00edt\u00f3 token \u00e1ltal k\u00e9rt ig\u00e9nyek k\u00f6z\u00e9 tartozik p\u00e9ld\u00e1ul: kibocs\u00e1t\u00f3, k\u00f6z\u00f6ns\u00e9g, kibocs\u00e1t\u00e1s ideje. 
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect \u00fcgyf\u00e9l (RP) rendszer\u00f3r\u00e1ja szinkronban van az OpenID Connect szolg\u00e1ltat\u00f3 (OP) rendszer\u00f3r\u00e1j\u00e1val (amennyiben ezek k\u00e9t k\u00fcl\u00f6nb\u00f6z\u0151 rendszeren tal\u00e1lhat\u00f3k). Tekintse meg a hiba ut\u00e1n megjelen\u0151 \u00fczenet felhaszn\u00e1l\u00f3i int\u00e9zked\u00e9s\u00e9t is.
 
-#used_by_client_project and clients proje
+#used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1707E: A(z) [{1}] OpenID Connect \u00fcgyf\u00e9l nem tudott l\u00e9trehozni egy SSL kontextust [{0}] miatt. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az SSL szolg\u00e1ltat\u00e1sa megfelel\u0151en be van \u00e1ll\u00edtva.
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.explanation=Az OpenID Connect \u00fcgyf\u00e9l (megb\u00edzhat\u00f3 partner vagy er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3) konfigur\u00e1ci\u00f3ja az HTTPS s\u00e9ma haszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva, de nem l\u00e9tes\u00edthet\u0151 HTTPS kapcsolat. Lehet, hogy az SSL szolg\u00e1ltat\u00e1s nincs enged\u00e9lyezve. Lehet, hogy a keyStore elem hi\u00e1nyzik vagy helytelen\u00fcl van megadva.  
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a server.xml f\u00e1jlban a helyes SSL inform\u00e1ci\u00f3k tal\u00e1lhat\u00f3k. Tekintse meg az \u00fczenet el\u0151tt megjelen\u0151 hiba felhaszn\u00e1l\u00f3i int\u00e9zked\u00e9s\u00e9t.
@@ -56,16 +58,19 @@ OIDC_CLIENT_TOKEN_REQUEST_FAILURE=CWWKS1708E: A(z) [{1}] OpenID Connect \u00fcgy
 OIDC_CLIENT_TOKEN_REQUEST_FAILURE.explanation=Az OpenID Connect \u00fcgyf\u00e9l (megb\u00edzhat\u00f3 partner vagy RP) nem tudott azonos\u00edt\u00f3 tokent beszerezni az OpenID Connect szolg\u00e1ltat\u00f3t\u00f3l (OP), mert nem l\u00e9tes\u00edthet\u0151 kapcsolat a szolg\u00e1ltat\u00f3val. Lehets\u00e9ges, hogy az OP nem volt el\u00e9rhet\u0151 a k\u00e9r\u00e9s id\u0151pontj\u00e1ban, a k\u00e9r\u00e9s nem egy \u00e9rv\u00e9nyes v\u00e9gponthoz lett ir\u00e1ny\u00edtva, vagy az OP \u00e9s az RP k\u00f6z\u00f6tt valamilyen konfigur\u00e1ci\u00f3s elt\u00e9r\u00e9s van. A hiba oka az \u00fczenet ut\u00e1n l\u00e1that\u00f3.
 OIDC_CLIENT_TOKEN_REQUEST_FAILURE.useraction=Ellen\u0151rizze a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a be\u00e1ll\u00edtott token v\u00e9gpont URL egy \u00e9rv\u00e9nyes URL, \u00e9s hogy az egy akt\u00edv OpenID Connect szolg\u00e1ltat\u00f3 token v\u00e9gpontj\u00e1ra mutat. Tekintse meg az \u00fczenet ut\u00e1n megjelen\u0151 hiba int\u00e9zked\u00e9seit.
 
+
 # used by clients
 OIDC_CLIENT_INVALID_HTTP_RESPONSE=CWWKS1709E: A(z) [{1}] OpenID Connect \u00fcgyf\u00e9l hib\u00e1ba \u00fctk\u00f6z\u00f6tt az OpenID Connect szolg\u00e1ltat\u00f3 HTTP v\u00e1lasz\u00e1nak feldolgoz\u00e1sa sor\u00e1n [{0}] miatt.
 OIDC_CLIENT_INVALID_HTTP_RESPONSE.explanation=Az OpenID Connect \u00fcgyf\u00e9l (megb\u00edzhat\u00f3 partner vagy er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3) kapott v\u00e1laszt az OpenID Connect szolg\u00e1ltat\u00f3t\u00f3l (OP), de hiba t\u00f6rt\u00e9nt, mik\u00f6zben a megb\u00edzhat\u00f3 partner vagy az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 feldolgozta a v\u00e1laszt. A hiba oka az \u00fczenet ut\u00e1n l\u00e1that\u00f3.
 OIDC_CLIENT_INVALID_HTTP_RESPONSE.useraction=Tekintse meg az \u00fczenet ut\u00e1n megjelen\u0151 hiba int\u00e9zked\u00e9seit.
 
-#used_by_client_project
+
+#used_by_client_project, present in clients.common bundle. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OAUTH_REQUEST_ACCESS_DENIED=CWWKS1710E: Az OpenID Connect k\u00e9r\u00e9st a felhaszn\u00e1l\u00f3 elutas\u00edtotta, vagy valamilyen m\u00e1sik hiba a k\u00e9r\u00e9s elutas\u00edt\u00e1s\u00e1t eredm\u00e9nyezte.
 OAUTH_REQUEST_ACCESS_DENIED.explanation=A felhaszn\u00e1l\u00f3 elutas\u00edtotta az OpenID Connect k\u00e9r\u00e9st a k\u00e9r\u00e9s megszak\u00edt\u00e1s\u00e1val a k\u00e9r\u00e9s j\u00f3v\u00e1hagy\u00e1si \u0171rlapj\u00e1n, vagy valamilyen egy\u00e9b hiba t\u00f6rt\u00e9nt, ami megtagadta a hozz\u00e1f\u00e9r\u00e9st az OpenID Connect k\u00e9r\u00e9shez.
 OAUTH_REQUEST_ACCESS_DENIED.useraction=A felhaszn\u00e1l\u00f3nak enged\u00e9lyeznie kell az OpenID Connect szolg\u00e1ltat\u00f3 sz\u00e1m\u00e1ra az \u00fcgyf\u00e9l \u00e1ltal k\u00e9rt hat\u00f3k\u00f6r\u00f6k megoszt\u00e1s\u00e1t az OpenID Connect k\u00e9r\u00e9s sikere \u00e9rdek\u00e9ben. Ha a felhaszn\u00e1l\u00f3 j\u00f3v\u00e1hagyta a k\u00e9r\u00e9st, akkor az OP napl\u00f3kban keressen tov\u00e1bbi hib\u00e1kat.
 
+#1711 is used by client bundle, don't use here.
 
 #
 #used by clients project
@@ -83,6 +88,7 @@ OIDC_CLIENT_REQUEST_NONCE_FAILED=CWWKS1714E: Az OpenID Connect \u00fcgyf\u00e9l 
 OIDC_CLIENT_REQUEST_NONCE_FAILED.explanation=Az OpenID Connect \u00fcgyf\u00e9lk\u00e9r\u00e9sek, az \u00fajrak\u00fcld\u00e9si t\u00e1mad\u00e1sok m\u00e9rs\u00e9kl\u00e9se \u00e9rdek\u00e9ben, az alkalmi \u00e9rt\u00e9k megfelel\u0151 kezel\u00e9s\u00e9t ig\u00e9nylik a k\u00e9r\u00e9sfolyam sor\u00e1n. A tokenben szerepl\u0151 alkalmi \u00e9rt\u00e9k nem egyezik a k\u00e9r\u00e9shez tartoz\u00f3 alkalmi \u00e9rt\u00e9kkel, ez\u00e9rt a k\u00e9r\u00e9s \u00e9rv\u00e9nytelen.
 OIDC_CLIENT_REQUEST_NONCE_FAILED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect szolg\u00e1ltat\u00f3 a tokenek el\u0151\u00e1ll\u00edt\u00e1s\u00e1hoz a kiindul\u00f3 OpenID Connect \u00fcgyf\u00e9lk\u00e9r\u00e9sben megadott alkalmi \u00e9rt\u00e9ket haszn\u00e1lja.
 
+# 1715, 16, 17, 18, 19, 20, 21 are used in client bundle, do not use here.
 
 # used by clients proj
 PROPAGATION_TOKEN_MISSING_USERID=CWWKS1722E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem teljes\u00edtette a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mivel a hozz\u00e1f\u00e9r\u00e9si token nem tartalmazta a(z) [{1}] attrib\u00fatum \u00e1ltal megadott [{0}] ig\u00e9nyl\u00e9st.
@@ -90,16 +96,17 @@ PROPAGATION_TOKEN_MISSING_USERID.explanation=A biztos\u00edtott hozz\u00e1f\u00e
 PROPAGATION_TOKEN_MISSING_USERID.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t. 1) Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect \u00fcgyf\u00e9lkonfigur\u00e1ci\u00f3 a helyes ig\u00e9nyl\u00e9snevet adja meg. 2) Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect szolg\u00e1ltat\u00f3 (OP) a megadott ig\u00e9nyl\u00e9ssel bocs\u00e1tja ki a hozz\u00e1f\u00e9r\u00e9si tokent.
 
 
+# PRESENT IN CLIENT AND CLIENTS.COMMON BUNDLE. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 # PROPAGATION_TOKEN_USERINFO_ISS_ERROR=CWWKS1728E: The resource server failed the authentication request because the issuerIdentifier [{0}] in the configuration does not match the "iss" claim [{1}] in the UserInfo.
 # PROPAGATION_TOKEN_USERINFO_ISS_ERROR.explanation=The provided access token cannot be verified because the "iss" claim in the UserInfo does not match the issuerIdentifier configuration attribute, and the runtime cannot continue with the authentication process.
 # PROPAGATION_TOKEN_USERINFO_ISS_ERROR.useraction=Verify that the OpenID Connect client configuration has the issuerIdentifier that matches the "iss" claim in the UserInfo.
 
-#unused
+#unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem tudta teljes\u00edteni a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mert a(z) [{0}] \u00e9rv\u00e9nyes\u00edt\u00e9si m\u00f3dszer nem volt megfelel\u0151 a(z) [{1}] \u00e9rv\u00e9nyes\u00edt\u00e9si URL c\u00edmhez.
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=Az OpenID Connect \u00fcgyf\u00e9lkonfigur\u00e1ci\u00f3ban megadott validationEndpointUrl nem a megfelel\u0151 v\u00e9gpont a megadott validationMethod eset\u00e9n.
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Friss\u00edtse az OpenID Connect \u00fcgyf\u00e9lkonfigur\u00e1ci\u00f3t vagy a validationMethod, vagy a validationEndpointUrl m\u00f3dos\u00edt\u00e1s\u00e1val.
  
-#used by clients proj 
+#used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem teljes\u00edtette a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mivel a(z) [{1}] konfigur\u00e1ci\u00f3s attrib\u00fatumhoz t\u00e1rs\u00edtott attrib\u00fatummal t\u00e1rs\u00edtott hozz\u00e1f\u00e9r\u00e9si tokenben l\u00e9v\u0151 [{0}] ig\u00e9nyl\u00e9s adatt\u00edpusa \u00e9rv\u00e9nytelen. 
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.explanation=A biztos\u00edtott hozz\u00e1f\u00e9r\u00e9si token \u00e9rv\u00e9nytelen ig\u00e9nyl\u00e9si adatt\u00edpust tartalmaz, \u00e9s a fut\u00e1si k\u00f6rnyezet nem tudja folytatni a hiteles\u00edt\u00e9si folyamatot.
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect \u00fcgyf\u00e9lkonfigur\u00e1ci\u00f3 a helyes ig\u00e9nyl\u00e9snevet adja meg az attrib\u00fatumhoz.
@@ -109,20 +116,21 @@ PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: Az er\u0151forr\u00e1s-kiszolg\u00e1
 PROPAGATION_TOKEN_MISSING_REALM.explanation=A biztos\u00edtott hozz\u00e1f\u00e9r\u00e9si token nem tartalmazza a tartom\u00e1ny azonos\u00edt\u00e1s\u00e1ra szolg\u00e1l\u00f3 megadott ig\u00e9nyl\u00e9st, \u00e9s a fut\u00e1si k\u00f6rnyezet nem tudja folytatni a hiteles\u00edt\u00e9si folyamatot.
 PROPAGATION_TOKEN_MISSING_REALM.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t. 1) Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect \u00fcgyf\u00e9lkonfigur\u00e1ci\u00f3 megadja a realmName attrib\u00fatumot. 2) Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect szolg\u00e1ltat\u00f3 (OP) a megadott ig\u00e9nyl\u00e9ssel bocs\u00e1tja ki a hozz\u00e1f\u00e9r\u00e9si tokent. 3) Ellen\u0151rizze, hogy az OP ki tudja-e bocs\u00e1tani a hozz\u00e1f\u00e9r\u00e9si tokent az "iss" ig\u00e9nyl\u00e9ssel. 
 
+# 1732, 33 used by client bundle, don't use here.
 
 #used by clients project
 OIDC_CLIENT_ID_TOKEN_MISSING_CLAIM=CWWKS1734E: A(z) [{0}] OpenID Connect \u00fcgyf\u00e9l nem tudta hiteles\u00edteni az azonos\u00edt\u00f3 tokent, mert a(z) [{2}] konfigur\u00e1ci\u00f3s attrib\u00fatum \u00e1ltal megadott [{1}] ig\u00e9ny nem szerepelt a tokenben.
 OIDC_CLIENT_ID_TOKEN_MISSING_CLAIM.explanation=A megadott konfigur\u00e1ci\u00f3s attrib\u00fatum hat\u00e1rozza meg a felhaszn\u00e1l\u00f3alany l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt azonos\u00edt\u00f3 token ig\u00e9nyt. A megadott ig\u00e9ny nem tal\u00e1lhat\u00f3 meg az azonos\u00edt\u00f3 tokenben, \u00edgy az azonos\u00edt\u00f3 tokent nem lehetett hiteles\u00edteni, \u00e9s felhaszn\u00e1l\u00f3alanyt nem lehetett l\u00e9trehozni.
 OIDC_CLIENT_ID_TOKEN_MISSING_CLAIM.useraction=\u00c1ll\u00edtsa be a megadott attrib\u00fatumot \u00fagy, hogy az az azonos\u00edt\u00f3 tokenben l\u00e9tez\u0151, felhaszn\u00e1l\u00f3alany l\u00e9trehoz\u00e1s\u00e1ra haszn\u00e1lhat\u00f3 ig\u00e9nyre hivatkozzon.
 
-#used_by_client_project
+#present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1735E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 meghi\u00fas\u00edtotta a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mivel a(z) [{0}] \u00e9rv\u00e9nyes\u00edt\u00e9si v\u00e9gpont v\u00e1lasza tartalmazza a(z) [{1}] ig\u00e9nyl\u00e9st, de a(z) [{2}] attrib\u00fatum TRUE \u00e9rt\u00e9kre van \u00e1ll\u00edtva.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Mivel az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1ban "disableIssChecking" (kibocs\u00e1t\u00f3 ellen\u0151rz\u00e9s tilt\u00e1sa) van megadva, az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 olyan json v\u00e1laszt v\u00e1r az \u00e9rv\u00e9nyes\u00edt\u00e9si v\u00e9gpontr\u00f3l, amely nem tartalmaz "iss" ig\u00e9nyl\u00e9st.  
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t. 1)M\u00f3dos\u00edtsa az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1t, \u00e9s \u00e1ll\u00edtsa a "disableIssChecking" param\u00e9tert "FALSE" \u00e9rt\u00e9kre 2) Int\u00e9zze \u00fagy, hogy az \u00e9rv\u00e9nyes\u00edt\u00e9si v\u00e9gpont ne bocs\u00e1sson ki "iss" ig\u00e9nyl\u00e9st.
 
 # Do not translate "JSON Web Token"
 #0=Java runtime level, 1=Minimum Java level required by JWT library
-#unused
+#unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 OIDC_CLIENT_JWT_JDK7=CWWKS1736E: A fut\u00e1si k\u00f6rnyezet \u00e1ltal haszn\u00e1lt Java v\u00e1ltozatot [{0}] nem t\u00e1mogatja a JSON Web Token k\u00f6nyvt\u00e1r. A t\u00e1mogatott Java v\u00e1ltozat [{1}] vagy \u00fajabb.
 OIDC_CLIENT_JWT_JDK7.explanation=A JSON Web tokeneket feldolgoz\u00f3 ny\u00edlt forr\u00e1s\u00fa k\u00f6nyvt\u00e1rak nem t\u00e1mogatj\u00e1k azt a Java v\u00e1ltozatot, amit a Liberty kiszolg\u00e1l\u00f3 jelenleg haszn\u00e1l.
 OIDC_CLIENT_JWT_JDK7.useraction=Telep\u00edtsen olyan Java v\u00e1ltozatot, ami legal\u00e1bb az \u00fczenetben l\u00e1that\u00f3 Java szint\u0171.
@@ -136,19 +144,25 @@ OIDC_CLIENT_JWT_VERIFY_ERR.useraction=L\u00e1sd az \u00fczenetben megjelen\u0151
 
 # Do not translate "JSON Web Token"
 #0=OIDC client ID, 1=JWT claim (such as aud, iat, exp), 2=Client config attribute (userIdentifier or userIdentityToCreateSubject)
-#used by clients proje
+#used by clients project
 OIDC_CLIENT_JWT_MISSING_CLAIM=CWWKS1738E: Az OpenID Connect \u00fcgyf\u00e9l [{0}] nem tudta hiteles\u00edteni a JSON Web Tokent, mert a(z) [{2}] konfigur\u00e1ci\u00f3s attrib\u00fatum \u00e1ltal megadott [{1}] ig\u00e9nyt nem tartalmazta a token.
 OIDC_CLIENT_JWT_MISSING_CLAIM.explanation=A megadott konfigur\u00e1ci\u00f3s attrib\u00fatum hat\u00e1rozza meg a felhaszn\u00e1l\u00f3alany l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt JSON web token ig\u00e9nyt. A megadott ig\u00e9ny nem tal\u00e1lhat\u00f3 meg a JSON web tokenben, \u00edgy a JSON web tokent nem lehetett hiteles\u00edteni, \u00e9s felhaszn\u00e1l\u00f3alanyt nem lehetett l\u00e9trehozni.
 OIDC_CLIENT_JWT_MISSING_CLAIM.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t: 1) M\u00f3dos\u00edtsa a megadott attrib\u00fatum konfigur\u00e1ci\u00f3j\u00e1t, hogy az a JSON Web Tokenben megl\u00e9v\u0151 ig\u00e9nyre hivatkozzon. 2) M\u00f3dos\u00edtsa a JSON Web Tokent, hogy az tartalmazza a megadott attrib\u00fatumot.
 
+#present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 #0=signatureAlgorithm, 1=exception or error message if any
 #used_by_client_project and clients project
 OIDC_CLIENT_NO_VERIFYING_KEY=CWWKS1739E: Az al\u00e1\u00edr\u00e1si algoritmus [{0}] \u00e1ltal megk\u00f6vetelt al\u00e1\u00edr\u00e1si kulcs nem volt el\u00e9rhet\u0151. {1}
 OIDC_CLIENT_NO_VERIFYING_KEY.explanation=Nem tal\u00e1lhat\u00f3 al\u00e1\u00edr\u00e1si kulcs, vagy nem tal\u00e1lhat\u00f3 olyan kulcs, ami a be\u00e1ll\u00edtott al\u00e1\u00edr\u00e1si algoritmust haszn\u00e1lja. Ennek oka hi\u00e1nyz\u00f3, rosszul form\u00e1zott vagy pontatlan inform\u00e1ci\u00f3kat tartalmaz\u00f3 \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3 vagy token lehet.
 OIDC_CLIENT_NO_VERIFYING_KEY.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t: 1) Ha JWK-t haszn\u00e1l a tokenek al\u00e1\u00edr\u00e1s\u00e1ra \u00e9s \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9re, akkor gondoskodjon arr\u00f3l, hogy a jwkEndpointUrl attrib\u00fatum megfelel\u0151en legyen konfigur\u00e1lva, \u00e9s a JWT \u00e9s JWK ig\u00e9nyek helyesek legyenek. 2) Ha X.509 tan\u00fas\u00edtv\u00e1nyokat haszn\u00e1l a tokenek al\u00e1\u00edr\u00e1s\u00e1ra \u00e9s \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9re, akkor gondoskodjon arr\u00f3l, hogy a signatureAlgorithm, trustStoreRef \u00e9s trustStoreAlias attrib\u00fatumok megfelel\u0151en legyenek konfigur\u00e1lva. 3) Ha megosztott kulcsokat haszn\u00e1l a tokenek al\u00e1\u00edr\u00e1s\u00e1ra \u00e9s \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9re, akkor gondoskodjon a clientId \u00e9s clientSecret attrib\u00fatumok megfelel\u0151 konfigur\u00e1l\u00e1s\u00e1r\u00f3l.
 
+#1740, 41 used in client bundle, do not use here.
+
+
 # CWWKS1742E
 #JWK_RETRIVE_FAILED=CWWKS1742E: Cannot get the Json Web Key(JWK) from the URL [{0}]. Response status [{1}]. Message:[{2}] 
+
+#1742 used in client bundle, do not use here.
 
 #0: the issuer, 1:jti
 #used by clients
@@ -162,6 +176,7 @@ OIDC_CLIENT_RESPONSE_STATE_ERR=CWWKS1744E: Az OpenID Connect \u00fcgyf\u00e9lnek
 OIDC_CLIENT_RESPONSE_STATE_ERR.explanation=Az OpenID Connect \u00fcgyf\u00e9l (megb\u00edzhat\u00f3 partner vagy RP) kapott v\u00e1laszt az OpenID Connect szolg\u00e1ltat\u00f3t\u00f3l (OP), de az \u00e1llapot param\u00e9ter a v\u00e1laszban \u00e9rv\u00e9nytelen. Az \u00e9rt\u00e9k lej\u00e1rt vagy m\u00e1r felhaszn\u00e1l\u00e1sra ker\u00fclt.
 OIDC_CLIENT_RESPONSE_STATE_ERR.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az \u00f6sszes rendszer \u00f3r\u00e1ja \u00f6ssze legyen hangolva, hogy az \u00e1llapot \u00e9rt\u00e9kek ne j\u00e1rjenek le id\u0151 el\u0151tt. Gondoskodj\u00e9k r\u00f3la, hogy az \u00e1llapot \u00e9rt\u00e9kek csak egyszer ker\u00fcljenek felhaszn\u00e1l\u00e1sra.
 
+# present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 # do not translate WASOidcCode
 # 0: the content of WASOidcCode, 1: client ID
 #used_by_client_project and clients project
@@ -180,10 +195,12 @@ JWK_RETRIEVE_FAILED=CWWKS1747E: A(z) [{0}] URL nem adott vissza JSON webkulcsot 
 JWK_RETRIEVE_FAILED.explanation=A megadott URL nem tud visszaadni JSON webkulcsot. Elk\u00e9pzelhet\u0151, hogy az URL nem \u00e9rv\u00e9nyes, az URL nincs be\u00e1ll\u00edtva JWK visszaad\u00e1s\u00e1ra, az URL \u00e1ltal visszaadott v\u00e1lasz \u00fcres, vagy ismeretlen hiba t\u00f6rt\u00e9nt.
 JWK_RETRIEVE_FAILED.useraction=Ellen\u0151rizze, hogy az URL megfelel\u0151en form\u00e1zott \u00e9s megad egy helyet, amely vissza tud adni JSON webkulcsokat. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt ellen\u0151rizze az v\u00e1lasz \u00e1llapotk\u00f3dj\u00e1t \u00e9s tartalm\u00e1t.
 
+#present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 USERINFO_RETREIVE_FAILED=CWWKS1748E: A(z) [{0}] UserInfo URL nem \u00e9rhet\u0151 el. A v\u00e1lasz \u00e1llapota [{1}], \u00e9s a visszaadott tartalom a k\u00f6vetkez\u0151: [{2}].
 USERINFO_RETREIVE_FAILED.explanation=A felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3kra vonatkoz\u00f3 adatokat nem lehetett lek\u00e9rni a megadott URL-c\u00edmr\u0151l. Elk\u00e9pzelhet\u0151, hogy az URL vagy a megadott hozz\u00e1f\u00e9r\u00e9si token nem \u00e9rv\u00e9nyes, az URL \u00e1ltal visszaadott v\u00e1lasz \u00fcres, vagy ismeretlen hiba t\u00f6rt\u00e9nt.
 USERINFO_RETREIVE_FAILED.useraction=Ellen\u0151rizze, hogy az URL megfelel\u0151en form\u00e1zott \u00e9s megad egy helyet, amely vissza tud adni UserInfo adatokat. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt ellen\u0151rizze az v\u00e1lasz \u00e1llapotk\u00f3dj\u00e1t \u00e9s tartalm\u00e1t.
 
+# present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 USERINFO_INVALID=CWWKS1749E: A(z) [{0}] User Info adatok \u00e9rv\u00e9nytelenek, mert az alig\u00e9ny nem egyezik a(z) [{1}] azonos\u00edt\u00f3 token alig\u00e9ny\u00e9vel.
 USERINFO_INVALID.explanation=A user info adatok alig\u00e9ny\u00e9nek egyeznie kell az azonos\u00edt\u00f3 token alig\u00e9ny\u00e9vel, de nem egyezik. 
 USERINFO_INVALID.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect szolg\u00e1ltat\u00f3 \u00e9rv\u00e9nyes User Info adatokat \u00e1ll\u00edt-e el\u0151.
