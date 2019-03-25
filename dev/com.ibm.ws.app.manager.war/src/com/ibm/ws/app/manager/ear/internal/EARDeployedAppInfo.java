@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -31,6 +30,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
 import com.ibm.ws.app.manager.module.DeployedAppMBeanRuntime;
+import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.internal.ContextRootUtil;
 import com.ibm.ws.app.manager.module.internal.DeployedAppInfoBase;
 import com.ibm.ws.app.manager.module.internal.DeployedModuleInfoImpl;
@@ -46,10 +46,7 @@ import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleClassesInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
-import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
-import com.ibm.ws.container.service.metadata.extended.ModuleMetaDataExtender;
-import com.ibm.ws.container.service.metadata.extended.NestedModuleMetaDataFactory;
 import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.dd.app.Module;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
@@ -118,8 +115,6 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     private final ModuleHandler ejbModuleHandler;
     private final ModuleHandler clientModuleHandler;
     private final ModuleHandler connectorModuleHandler;
-    private final Map<String, List<ModuleMetaDataExtender>> moduleMetaDataExtenders;
-    private final Map<String, List<NestedModuleMetaDataFactory>> nestedModuleMetaDataFactories;
     private final DeployedAppMBeanRuntime appMBeanRuntime;
     private final Application applicationDD;
     private final String preferredName;
@@ -145,14 +140,13 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     EARDeployedAppInfo(ApplicationInformation<DeployedAppInfo> applicationInformation,
                        Application applicationDD,
                        EARDeployedAppInfoFactoryImpl factory,
+                       DeployedAppServices deployedAppServices,
                        Container preExpansionEarContainer) throws UnableToAdaptException {
-        super(applicationInformation, factory);
+        super(applicationInformation, deployedAppServices);
         this.webModuleHandler = factory.webModuleHandler;
         this.ejbModuleHandler = factory.ejbModuleHandler;
         this.clientModuleHandler = factory.clientModuleHandler;
         this.connectorModuleHandler = factory.connectorModuleHandler;
-        this.moduleMetaDataExtenders = factory.getModuleMetaDataExtenders();
-        this.nestedModuleMetaDataFactories = factory.getNestedModuleMetaDataFactories();
         this.appMBeanRuntime = factory.appMBeanRuntime;
         this.applicationDD = applicationDD;
         this.altDDSupportEnabled = (factory.platformVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0); // JavaEE7 or higher
@@ -280,7 +274,6 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                                                        getContainer(),
                                                        this,
                                                        getConfigHelper(),
-                                                       (ApplicationInfoForContainer) applicationInformation,
                                                        libDirContainer,
                                                        this);
     }
@@ -377,7 +370,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                                           String contextRoot, String mainClass,
                                           boolean checkForDDOrAnnotations) throws UnableToAdaptException {
         if (moduleHandler == connectorModuleHandler) {
-            ConnectorModuleContainerInfo mci = new ConnectorModuleContainerInfo(moduleHandler, moduleMetaDataExtenders.get("connector"), nestedModuleMetaDataFactories.get("connector"), moduleContainer, altDDEntry, moduleURI, moduleClassesInfo);
+            ConnectorModuleContainerInfo mci = new ConnectorModuleContainerInfo(moduleHandler, deployedAppServices.getModuleMetaDataExtenders("connector"), deployedAppServices.getNestedModuleMetaDataFactories("connector"), moduleContainer, altDDEntry, moduleURI, this, moduleClassesInfo);
             if (initializeInOrder) {
                 moduleContainerInfos.add(mci);
             } else {
@@ -391,7 +384,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             }
         }
         if (moduleHandler == ejbModuleHandler) {
-            EJBModuleContainerInfo mci = new EJBModuleContainerInfo(moduleHandler, moduleMetaDataExtenders.get("ejb"), nestedModuleMetaDataFactories.get("ejb"), moduleContainer, altDDEntry, moduleURI, moduleClassesInfo);
+            EJBModuleContainerInfo mci = new EJBModuleContainerInfo(moduleHandler, deployedAppServices.getModuleMetaDataExtenders("ejb"), deployedAppServices.getNestedModuleMetaDataFactories("ejb"), moduleContainer, altDDEntry, moduleURI, this, moduleClassesInfo);
             if (!checkForDDOrAnnotations || mci.moduleDD != null || hasSpecifiedAnnotations(mci.getContainer(), EJB_ANNOTATIONS)) {
                 if (initializeInOrder) {
                     moduleContainerInfos.add(mci);
@@ -417,7 +410,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                 mfMainClass = getMFMainClass(moduleContainer, "/META-INF/MANIFEST.MF", true);
             }
             if (mfMainClass != null) {
-                ClientModuleContainerInfo mci = new ClientModuleContainerInfo(moduleHandler, moduleMetaDataExtenders.get("client"), nestedModuleMetaDataFactories.get("client"), moduleContainer, altDDEntry, moduleURI, moduleClassesInfo, mfMainClass);
+                ClientModuleContainerInfo mci = new ClientModuleContainerInfo(moduleHandler, deployedAppServices.getModuleMetaDataExtenders("client"), deployedAppServices.getNestedModuleMetaDataFactories("client"), moduleContainer, altDDEntry, moduleURI, this, moduleClassesInfo, mfMainClass);
                 moduleContainerInfos.add(mci);
                 if (_tc.isDebugEnabled()) {
                     Tr.debug(_tc, "Added client module [ " + mci.moduleName + " ]" +
@@ -433,7 +426,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             if (contextRoot == null) {
                 contextRoot = ContextRootUtil.getContextRoot(moduleContainer);
             }
-            WebModuleContainerInfo mci = new WebModuleContainerInfo(moduleHandler, moduleMetaDataExtenders.get("web"), nestedModuleMetaDataFactories.get("web"), moduleContainer, altDDEntry, moduleURI, moduleClassesInfo, contextRoot);
+            WebModuleContainerInfo mci = new WebModuleContainerInfo(moduleHandler, deployedAppServices.getModuleMetaDataExtenders("web"), deployedAppServices.getNestedModuleMetaDataFactories("web"), moduleContainer, altDDEntry, moduleURI, this, moduleClassesInfo, contextRoot);
             moduleContainerInfos.add(mci);
             if (_tc.isDebugEnabled()) {
                 Tr.debug(_tc, "Added web module [ " + mci.moduleName + " ]" +

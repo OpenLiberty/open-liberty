@@ -411,6 +411,11 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
         try {
             Application application = this.runtimeFactory.newApplication(appInfo);
+            /* if there is no app classes info then the app manager is not in control of this app */
+            if (!application.hasModules()) {
+                this.runtimeFactory.removeApplication(appInfo);
+                return;
+            }
             newCL = getRealAppClassLoader(application);
 
             if (newCL != null) {
@@ -459,6 +464,10 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
         Application application = this.runtimeFactory.removeApplication(appInfo);
+        /* ignore apps not controlled by the app manager */
+        if (application == null) {
+            return;
+        }
         try {
             getCDIContainer().applicationStopped(application);
         } catch (CDIException e) {
