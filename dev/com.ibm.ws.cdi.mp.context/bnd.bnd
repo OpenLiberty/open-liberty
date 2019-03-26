@@ -10,28 +10,28 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-bSymbolicName=com.ibm.ws.cdi.mp.concurrent
+bSymbolicName=com.ibm.ws.cdi.mp.context
 
 javac.source: 1.8
 javac.target: 1.8
 
-Bundle-Name: CDI Context for MicroProfile Concurrency 1.0
-Bundle-Description: CDI Context for MicroProfile Concurrency 1.0; version=${bVersion}
+Bundle-Name: CDI Context for MicroProfile Context Propagation 1.0
+Bundle-Description: CDI Context for MicroProfile Context Propagation 1.0; version=${bVersion}
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: JCDI
 
 Private-Package:\
-  com.ibm.ws.cdi.mp.concurrent.context
+  com.ibm.ws.cdi.mp.context
 
 -dsannotations: \
-  com.ibm.ws.cdi.mp.concurrent.context.WeldContextProvider
+  com.ibm.ws.cdi.mp.context.WeldContextProvider
 
 -buildpath: \
   com.ibm.websphere.appserver.spi.logging,\
   com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-  com.ibm.websphere.org.eclipse.microprofile.concurrency.1.0,\
+  com.ibm.websphere.org.eclipse.microprofile.contextpropagation.1.0,\
   com.ibm.websphere.org.osgi.core,\
   com.ibm.websphere.org.osgi.service.component,\
   com.ibm.ws.bnd.annotations;version=latest, \

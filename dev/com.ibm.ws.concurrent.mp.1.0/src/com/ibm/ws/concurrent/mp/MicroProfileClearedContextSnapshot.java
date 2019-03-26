@@ -49,9 +49,9 @@ public class MicroProfileClearedContextSnapshot implements com.ibm.wsspi.threadc
     private final ArrayList<ThreadContextController> contextRestorers = new ArrayList<ThreadContextController>();
     private final ArrayList<ThreadContextSnapshot> contextSnapshots;
 
-    MicroProfileClearedContextSnapshot(ContextManagerImpl concurrencyMgr) {
+    MicroProfileClearedContextSnapshot(ContextManagerImpl contextMgr) {
         contextSnapshots = new ArrayList<ThreadContextSnapshot>();
-        for (ThreadContextProvider provider : concurrencyMgr.contextProviders)
+        for (ThreadContextProvider provider : contextMgr.contextProviders)
             if (!DO_NOT_CLEAR.contains(provider.getThreadContextType()))
                 contextSnapshots.add(provider.clearedContext(Collections.emptyMap()));
     }

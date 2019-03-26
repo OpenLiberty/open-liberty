@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
  * Super class of ManagedScheduledExecutorServiceImpl to be used with Java 8 and above.
- * This class provides implementation of the MicroProfile Concurrency methods.
+ * This class provides implementation of the MicroProfile Context Propagation methods.
  * These methods can be collapsed into ManagedExecutorServiceImpl once there is
  * no longer a need for OpenLiberty to support Java 7.
  */

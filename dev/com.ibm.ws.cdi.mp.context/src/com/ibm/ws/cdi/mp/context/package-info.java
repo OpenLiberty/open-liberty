@@ -11,7 +11,7 @@
 
 @Version("1.0.0")
 @TraceOptions(traceGroup = "JCDI")
-package com.ibm.ws.cdi.mp.concurrent.context;
+package com.ibm.ws.cdi.mp.context;
 
 import org.osgi.annotation.versioning.Version;
 
