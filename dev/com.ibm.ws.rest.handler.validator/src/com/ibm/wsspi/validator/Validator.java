@@ -25,12 +25,14 @@ import java.util.Map;
  */
 public interface Validator {
 
+    // TODO add constants for various reserved properties such as: user, password, and auth
+
     /**
-     * Key used to obtain the JSONObject representing a JSON request body.
-     * If present, it will be present in the <code>Map&ltString,Object></code> passed into
+     * Key used to obtain a String representation of the JSON request body.
+     * If present, it will added to the <code>Map&ltString,Object></code> passed into
      * the <code>validate</code> method.
      */
-    public static final String JSON_BODY_KEY = "com.ibm.wsspi.validator.jsonBody";
+    public static final String JSON_BODY_KEY = "json";
 
     /**
      * Validates the specified instance.

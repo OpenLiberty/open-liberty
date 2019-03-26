@@ -75,7 +75,8 @@ public class DataSourceValidator implements Validator {
                 if (loginConfig != null) {
                     // Add custom login module name and properties
                     config.setLoginConfigurationName(loginConfig);
-                    JSONObject requestBodyJson = (JSONObject) props.get(Validator.JSON_BODY_KEY);
+                    String requestBodyString = (String) props.get(Validator.JSON_BODY_KEY);
+                    JSONObject requestBodyJson = requestBodyString == null ? null : JSONObject.parse(requestBodyString);
                     if (requestBodyJson != null && requestBodyJson.containsKey("loginConfigProperties")) {
                         Object loginConfigProperties = requestBodyJson.get("loginConfigProperties");
                         if (loginConfigProperties instanceof JSONObject) {
