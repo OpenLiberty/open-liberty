@@ -137,63 +137,6 @@ public class TestEnableDisableFeaturesTest {
        	Log.info(c, testName, "------- added testJaxWsApp to dropins -----");
     }
     
-//    @BeforeClass
-//    public static void setUpEDF6() throws Exception {
-//    	
-//    	String testName = "setUpEDF6";
-//    	Log.info(c, testName, "------- Add session application ------");
-//       	ShrinkHelper.defaultDropinApp(serverEDF6, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
-//       	Log.info(c, testName, "------- added testSessionApp to dropins -----");
-//       	Log.info(c, testName, "------- Add JDBC application ------");
-//       	ShrinkHelper.defaultDropinApp(serverEDF6, "testJDBCApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jdbc.servlet");
-//       	Log.info(c, testName, "------- added testJDBCApp to dropins -----");
-//    	Log.info(c, testName, "------- Add jax-ws endpoint application ------");
-//       	ShrinkHelper.defaultDropinApp(serverEDF6, "testJaxWsApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jaxws","com.ibm.ws.microprofile.metrics.monitor_fat.jaxws.client");
-//       	Log.info(c, testName, "------- added testJaxWsApp to dropins -----");
-//    }
-//    
-//    @BeforeClass
-//    public static void setUpEDF8() throws Exception {
-//    	String testName = "setUpEDF8";
-//    	Log.info(c, testName, "------- Add session application ------");
-//       	ShrinkHelper.defaultDropinApp(serverEDF8, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
-//       	Log.info(c, testName, "------- added testSessionApp to dropins -----");
-//       	Log.info(c, testName, "------- Add JDBC application ------");
-//       	ShrinkHelper.defaultDropinApp(serverEDF8, "testJDBCApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jdbc.servlet");
-//       	Log.info(c, testName, "------- added testJDBCApp to dropins -----");
-//    	Log.info(c, testName, "------- Add jax-ws endpoint application ------");
-//       	ShrinkHelper.defaultDropinApp(serverEDF8, "testJaxWsApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jaxws","com.ibm.ws.microprofile.metrics.monitor_fat.jaxws.client");
-//       	Log.info(c, testName, "------- added testJaxWsApp to dropins -----");
-//    }
-//    
-//    @BeforeClass
-//    public static void setUpEDF9() throws Exception {
-//    	String testName = "setUpEDF9";
-//    	Log.info(c, testName, "------- Add session application ------");
-//       	ShrinkHelper.defaultDropinApp(serverEDF9, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
-//       	Log.info(c, testName, "------- added testSessionApp to dropins -----");
-//       	Log.info(c, testName, "------- Add JDBC application ------");
-//       	ShrinkHelper.defaultDropinApp(serverEDF9, "testJDBCApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jdbc.servlet");
-//       	Log.info(c, testName, "------- added testJDBCApp to dropins -----");
-//    	Log.info(c, testName, "------- Add jax-ws endpoint application ------");
-//       	ShrinkHelper.defaultDropinApp(serverEDF9, "testJaxWsApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jaxws","com.ibm.ws.microprofile.metrics.monitor_fat.jaxws.client");
-//       	Log.info(c, testName, "------- added testJaxWsApp to dropins -----");
-//    }
-//    
-//    @BeforeClass
-//    public static void setUpEDF10() throws Exception {
-//    	String testName = "setUpEDF10";
-//    	Log.info(c, testName, "------- Add session application ------");
-//       	ShrinkHelper.defaultDropinApp(serverEDF10, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
-//       	Log.info(c, testName, "------- added testSessionApp to dropins -----");
-//       	Log.info(c, testName, "------- Add JDBC application ------");
-//       	ShrinkHelper.defaultDropinApp(serverEDF10, "testJDBCApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jdbc.servlet");
-//       	Log.info(c, testName, "------- added testJDBCApp to dropins -----");
-//    	Log.info(c, testName, "------- Add jax-ws endpoint application ------");
-//       	ShrinkHelper.defaultDropinApp(serverEDF10, "testJaxWsApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jaxws","com.ibm.ws.microprofile.metrics.monitor_fat.jaxws.client");
-//       	Log.info(c, testName, "------- added testJaxWsApp to dropins -----");
-//    }
-    
     @BeforeClass
     public static void setUp2Apps() throws Exception {
     	add2Apps(serverEDF11);
