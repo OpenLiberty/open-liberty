@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,12 +25,12 @@ import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 11)
-public class Java11Test extends FATServletClient {
+@MinimumJavaLevel(javaLevel = 12)
+public class Java12Test extends FATServletClient {
 
-    private static final String APP_NAME = "java11-app";
+    private static final String APP_NAME = "java12-app";
 
-    @Server("java11_fat")
+    @Server("java11_fat-java12-server")
     public static LibertyServer server;
 
     @BeforeClass
