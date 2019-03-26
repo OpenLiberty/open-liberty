@@ -153,17 +153,6 @@ public class TestEnableDisableFeaturesTest {
        	Log.info(c, testName, "------- added testJDBCApp to dropins -----");
     }
     
-//    @BeforeClass
-//    public static void setUpEDF11() throws Exception {
-//    	String testName = "setUpEDF11";
-//    	Log.info(c, testName, "------- Add session application ------");
-//       	ShrinkHelper.defaultDropinApp(serverEDF11, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
-//       	Log.info(c, testName, "------- added testSessionApp to dropins -----");
-//       	Log.info(c, testName, "------- Add JDBC application ------");
-//       	ShrinkHelper.defaultDropinApp(serverEDF11, "testJDBCApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jdbc.servlet");
-//       	Log.info(c, testName, "------- added testJDBCApp to dropins -----");
-//    }
-    
     @BeforeClass
     public static void setUpEDF12() throws Exception {
     	String testName = "setUpEDF12";
@@ -171,8 +160,6 @@ public class TestEnableDisableFeaturesTest {
        	ShrinkHelper.defaultDropinApp(serverEDF12, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
        	Log.info(c, testName, "------- added testSessionApp to dropins -----");
     }
-    
-    
     
     @Test
     public void testEDF1() throws Exception {
@@ -381,8 +368,6 @@ public class TestEnableDisableFeaturesTest {
     	serverEDF12.startServer();
     	Log.info(c, testName, "------- Remove monitor-1.0 ------");
     	serverEDF12.setServerConfigurationFile("server_noJDBCMonitor.xml");
-    	//Assert.assertNotNull("CWWKG0016I NOT FOUND",serverEDF12.waitForStringInLogUsingMark("CWWKG0016I"));
-    	//Assert.assertNotNull("CWWKZ0003I NOT FOUND",serverEDF12.waitForStringInLogUsingMark("CWWKF0008I"));
     	Assert.assertNotNull("CWPMI2002I NOT FOUND",serverEDF12.waitForStringInLogUsingMark("CWPMI2002I"));
     	Log.info(c, testName, "------- no vendor metrics should be available ------");
     	checkStrings(getHttpsServlet("/metrics",serverEDF12), 
@@ -401,9 +386,6 @@ public class TestEnableDisableFeaturesTest {
     	Log.info(c, testName, "------- " + (rc2 ? "successfully removed" : "failed to remove") + " JDBC application ------");
     	serverEDF11.setMarkToEndOfLog();
     	serverEDF11.setServerConfigurationFile("server_noJDBC.xml");
-//    	Assert.assertNotNull("CWWKG0017I NOT FOUND",serverEDF11.waitForStringInLogUsingMark("CWWKG0017I"));
-//    	Assert.assertNotNull("CWWKT0016I NOT FOUND",serverEDF11.waitForStringInLogUsingMark("CWWKT0016I"));
-//    	Assert.assertNotNull("CWWKZ0009I NOT FOUND",serverEDF11.waitForStringInLogUsingMark("CWWKZ0009I"));
     	Assert.assertNotNull("CWWKF0008I NOT FOUND",serverEDF11.waitForStringInLogUsingMark("CWWKF0008I"));
     	Log.info(c, testName, "------- connectionpool metrics should not be available ------");
     	checkStrings(getHttpsServlet("/metrics/vendor",serverEDF11), 
@@ -423,7 +405,11 @@ public class TestEnableDisableFeaturesTest {
     	serverEDF10.setMarkToEndOfLog();
     	serverEDF10.setServerConfigurationFile("server_noJaxWs.xml");
     	Assert.assertNotNull("CWWKF0008I NOT FOUND",serverEDF10.waitForStringInLogUsingMark("CWWKF0008I"));
+    	Assert.assertNotNull("Web application /metrics not loaded", serverEDF10.waitForStringInLog("CWWKT0016I: Web application available .*testJDBCApp.*"));
+        Assert.assertNotNull("Web application /metrics not loaded", serverEDF10.waitForStringInLog("CWWKT0016I: Web application available .*testSessionApp.*"));
     	Log.info(c, testName, "------- jax-ws metrics should not be available ------");
+    	Thread.sleep(10000);
+    	System.out.println("***** RIGHT HERE *****");
     	checkStrings(getHttpsServlet("/metrics/vendor",serverEDF10), 
     		new String[] { "vendor:" }, 
     		new String[] { "vendor:jaxws_client", "vendor:jaxws_server"});       	
