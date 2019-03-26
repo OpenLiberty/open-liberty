@@ -23,14 +23,11 @@ final class SharedClassCacheHook implements ClassLoaderHook {
 
     private static final Method storeSharedClassMethod;
 
-    private static final Method minimizeChecksMethod;
-
     static {
         Object sharedClassHelperFactory = null;
         Method getURLHelper = null;
         Method findSharedClass = null;
         Method storeSharedClass = null;
-        Method minimizeChecks = null;
         try {
             Class<?> sharedClass = Class.forName("com.ibm.oti.shared.Shared");
             Method m = sharedClass.getDeclaredMethod("getSharedClassHelperFactory");
@@ -39,7 +36,6 @@ final class SharedClassCacheHook implements ClassLoaderHook {
             Class<?> sharedClassURLHelperClass = getURLHelper.getReturnType();
             findSharedClass = sharedClassURLHelperClass.getDeclaredMethod("findSharedClass", URL.class, String.class);
             storeSharedClass = sharedClassURLHelperClass.getDeclaredMethod("storeSharedClass", URL.class, Class.class);
-            minimizeChecks = sharedClassURLHelperClass.getDeclaredMethod("setMinimizeUpdateChecks", null);
         } catch (Exception e) {
             // If things fail, assume we aren't using shared classes.
         }
@@ -47,7 +43,6 @@ final class SharedClassCacheHook implements ClassLoaderHook {
         getURLHelperMethod = getURLHelper;
         findSharedClassMethod = findSharedClass;
         storeSharedClassMethod = storeSharedClass;
-        minimizeChecksMethod = minimizeChecks;
     }
 
     private final Object sharedClassURLHelper;
@@ -57,7 +52,6 @@ final class SharedClassCacheHook implements ClassLoaderHook {
         if (getURLHelperMethod != null && sharedClassHelperFactoryClass != null) {
             try {
                 helper = getURLHelperMethod.invoke(sharedClassHelperFactoryClass, loader);
-                minimizeChecksMethod.invoke(helper);
             } catch (Exception e) {
                 // We should never get here.
                 // If we do, we simply won't share for this ClassLoader
