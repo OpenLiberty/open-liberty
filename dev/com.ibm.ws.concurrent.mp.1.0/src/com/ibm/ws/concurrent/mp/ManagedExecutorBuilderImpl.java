@@ -20,9 +20,9 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
-import org.eclipse.microprofile.concurrent.ManagedExecutor;
-import org.eclipse.microprofile.concurrent.ThreadContext;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
+import org.eclipse.microprofile.context.ManagedExecutor;
+import org.eclipse.microprofile.context.ThreadContext;
+import org.eclipse.microprofile.context.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -39,7 +39,7 @@ public class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
     // Represents that no value is defined for an int config attribute (maxAsync or maxQueued)
     private static final int UNDEFINED = -2;
 
-    private final ConcurrencyManagerImpl concurrencyManager;
+    private final ContextManagerImpl contextManager;
     private final ArrayList<ThreadContextProvider> contextProviders;
 
     private Set<String> cleared;
@@ -48,17 +48,17 @@ public class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
     private String name;
     private Set<String> propagated;
 
-    ManagedExecutorBuilderImpl(ConcurrencyManagerImpl concurrencyManager, ArrayList<ThreadContextProvider> contextProviders) {
-        this.concurrencyManager = concurrencyManager;
+    ManagedExecutorBuilderImpl(ContextManagerImpl contextManager, ArrayList<ThreadContextProvider> contextProviders) {
+        this.contextManager = contextManager;
         this.contextProviders = contextProviders;
     }
 
     @Override
     public ManagedExecutor build() {
-        Set<String> cleared = this.cleared == null ? concurrencyManager.getDefault("ManagedExecutor/cleared", DEFAULT_CLEARED) : this.cleared;
-        int maxAsync = this.maxAsync == UNDEFINED ? concurrencyManager.getDefault("ManagedExecutor/maxAsync", -1) : this.maxAsync;
-        int maxQueued = this.maxQueued == UNDEFINED ? concurrencyManager.getDefault("ManagedExecutor/maxQueued", -1) : this.maxQueued;
-        Set<String> propagated = this.propagated == null ? concurrencyManager.getDefault("ManagedExecutor/propagated", DEFAULT_PROPAGATED) : this.propagated;
+        Set<String> cleared = this.cleared == null ? contextManager.getDefault("ManagedExecutor/cleared", DEFAULT_CLEARED) : this.cleared;
+        int maxAsync = this.maxAsync == UNDEFINED ? contextManager.getDefault("ManagedExecutor/maxAsync", -1) : this.maxAsync;
+        int maxQueued = this.maxQueued == UNDEFINED ? contextManager.getDefault("ManagedExecutor/maxQueued", -1) : this.maxQueued;
+        Set<String> propagated = this.propagated == null ? contextManager.getDefault("ManagedExecutor/propagated", DEFAULT_PROPAGATED) : this.propagated;
 
         // For detection of unknown and overlapping types,
         HashSet<String> unknown = new HashSet<String>(cleared);
@@ -99,7 +99,7 @@ public class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
         // or for instance created via the builder,
         //  ManagedExecutor@INSTANCEID_AppName(maxAsync=5,maxQueued=max,propagated=[CDI,Security])
 
-        int hash = ConcurrencyManagerImpl.instanceCount.incrementAndGet();
+        int hash = ContextManagerImpl.instanceCount.incrementAndGet();
         StringBuilder nameBuilder = new StringBuilder("ManagedExecutor@").append(Integer.toHexString(hash));
         ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         String appName = cData == null ? null : cData.getJ2EEName().getApplication();
@@ -123,14 +123,14 @@ public class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
         String executorName = nameBuilder.toString();
         String threadContextName = nameBuilder.replace(2, 15, "ThreadContext").substring(2);
 
-        ConcurrencyProviderImpl concurrencyProvider = concurrencyManager.concurrencyProvider;
-        PolicyExecutor policyExecutor = concurrencyProvider.policyExecutorProvider.create(executorName, appName) //
+        ContextManagerProviderImpl cmProvider = contextManager.cmProvider;
+        PolicyExecutor policyExecutor = cmProvider.policyExecutorProvider.create(executorName, appName) //
                         .maxConcurrency(maxAsync) //
                         .maxQueueSize(maxQueued);
 
-        ThreadContextImpl mpThreadContext = new ThreadContextImpl(threadContextName, hash, concurrencyProvider, configPerProvider);
+        ThreadContextImpl mpThreadContext = new ThreadContextImpl(threadContextName, hash, cmProvider, configPerProvider);
 
-        return new ManagedExecutorImpl(executorName, hash, policyExecutor, mpThreadContext, concurrencyProvider.transactionContextProvider.transactionContextProviderRef);
+        return new ManagedExecutorImpl(executorName, hash, policyExecutor, mpThreadContext, cmProvider.transactionContextProvider.transactionContextProviderRef);
     }
 
     @Override

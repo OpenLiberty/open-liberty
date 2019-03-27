@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,8 +22,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.eclipse.microprofile.concurrent.ThreadContext;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
+import org.eclipse.microprofile.context.ThreadContext;
+import org.eclipse.microprofile.context.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -36,18 +36,18 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * or injected by CDI and possibly annotated by <code>@ThreadContextConfig</code>
  *
  * TODO eventually this should be merged with ContextServiceImpl such that it also
- * implements EE Concurrency ContextService. However, because the MP Concurrency spec
+ * implements EE Concurrency ContextService. However, because the MP Context Propagation spec
  * is not covering serializable thread context in its initial version, we must defer
- * this to the future. In the mean time, there will be duplication of the MP Concurrency
+ * this to the future. In the mean time, there will be duplication of the MP Context Propagation
  * method implementations between the two.
  */
 class ThreadContextImpl implements ThreadContext, WSContextService {
     private static final TraceComponent tc = Tr.register(ThreadContextImpl.class);
 
     /**
-     * The concurrency provider.
+     * The context manager provider.
      */
-    private final ConcurrencyProviderImpl concurrencyProvider;
+    private final ContextManagerProviderImpl cmProvider;
 
     /**
      * Map of thread context provider to type of instruction for applying context to threads.
@@ -71,11 +71,11 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
      *
      * @param name unique name for this instance.
      * @param int hash hash code for this instance.
-     * @param concurrencyProvider
+     * @param cmProvider the context manager provider
      * @param configPerProvider
      */
-    ThreadContextImpl(String name, int hash, ConcurrencyProviderImpl concurrencyProvider, LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
-        this.concurrencyProvider = concurrencyProvider;
+    ThreadContextImpl(String name, int hash, ContextManagerProviderImpl cmProvider, LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
+        this.cmProvider = cmProvider;
         this.configPerProvider = configPerProvider;
         this.name = name;
         this.hash = hash;
@@ -84,7 +84,7 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
     @Override
     public ThreadContextDescriptor captureThreadContext(Map<String, String> executionProperties,
                                                         @SuppressWarnings("unchecked") Map<String, ?>... additionalThreadContextConfig) {
-        return new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
+        return new ThreadContextDescriptorImpl(cmProvider, configPerProvider);
     }
 
     @Override
@@ -92,7 +92,7 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
         if (callable instanceof ContextualCallable)
             throw new IllegalArgumentException(ContextualCallable.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(cmProvider, configPerProvider);
         return new ContextualCallable<R>(contextDescriptor, callable);
     }
 
@@ -101,7 +101,7 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
         if (consumer instanceof ContextualBiConsumer)
             throw new IllegalArgumentException(ContextualBiConsumer.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(cmProvider, configPerProvider);
         return new ContextualBiConsumer<T, U>(contextDescriptor, consumer);
     }
 
@@ -110,7 +110,7 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
         if (consumer instanceof ContextualConsumer)
             throw new IllegalArgumentException(ContextualConsumer.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(cmProvider, configPerProvider);
         return new ContextualConsumer<T>(contextDescriptor, consumer);
     }
 
@@ -119,7 +119,7 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
         if (function instanceof ContextualBiFunction)
             throw new IllegalArgumentException(ContextualBiFunction.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(cmProvider, configPerProvider);
         return new ContextualBiFunction<T, U, R>(contextDescriptor, function);
     }
 
@@ -128,7 +128,7 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
         if (function instanceof ContextualFunction)
             throw new IllegalArgumentException(ContextualFunction.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(cmProvider, configPerProvider);
         return new ContextualFunction<T, R>(contextDescriptor, function);
     }
 
@@ -137,7 +137,7 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
         if (runnable instanceof ContextualRunnable)
             throw new IllegalArgumentException(ContextualRunnable.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(cmProvider, configPerProvider);
         return new ContextualRunnable(contextDescriptor, runnable);
     }
 
@@ -146,7 +146,7 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
         if (supplier instanceof ContextualSupplier)
             throw new IllegalArgumentException(ContextualSupplier.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(cmProvider, configPerProvider);
         return new ContextualSupplier<R>(contextDescriptor, supplier);
     }
 
@@ -157,7 +157,7 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
 
     @Override
     public Executor currentContextExecutor() {
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(concurrencyProvider, configPerProvider);
+        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(cmProvider, configPerProvider);
         return new ContextualExecutor(contextDescriptor);
     }
 

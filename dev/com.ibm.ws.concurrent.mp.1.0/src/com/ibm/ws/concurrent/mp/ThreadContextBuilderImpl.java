@@ -19,8 +19,8 @@ import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.eclipse.microprofile.concurrent.ThreadContext;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
+import org.eclipse.microprofile.context.ThreadContext;
+import org.eclipse.microprofile.context.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -38,7 +38,7 @@ public class ThreadContextBuilderImpl implements ThreadContext.Builder {
     static final Set<String> DEFAULT_PROPAGATED = Collections.singleton(ThreadContext.ALL_REMAINING);
     static final Set<String> DEFAULT_UNCHANGED = Collections.emptySet();
 
-    private final ConcurrencyManagerImpl concurrencyManager;
+    private final ContextManagerImpl contextManager;
     private final ArrayList<ThreadContextProvider> contextProviders;
 
     private Set<String> cleared;
@@ -46,16 +46,16 @@ public class ThreadContextBuilderImpl implements ThreadContext.Builder {
     private Set<String> propagated;
     private Set<String> unchanged;
 
-    ThreadContextBuilderImpl(ConcurrencyManagerImpl concurrencyManager, ArrayList<ThreadContextProvider> contextProviders) {
-        this.concurrencyManager = concurrencyManager;
+    ThreadContextBuilderImpl(ContextManagerImpl contextManager, ArrayList<ThreadContextProvider> contextProviders) {
+        this.contextManager = contextManager;
         this.contextProviders = contextProviders;
     }
 
     @Override
     public ThreadContext build() {
-        Set<String> cleared = this.cleared == null ? concurrencyManager.getDefault("ThreadContext/cleared", DEFAULT_CLEARED) : this.cleared;
-        Set<String> propagated = this.propagated == null ? concurrencyManager.getDefault("ThreadContext/propagated", DEFAULT_PROPAGATED) : this.propagated;
-        Set<String> unchanged = this.unchanged == null ? concurrencyManager.getDefault("ThreadContext/unchanged", DEFAULT_UNCHANGED) : this.unchanged;
+        Set<String> cleared = this.cleared == null ? contextManager.getDefault("ThreadContext/cleared", DEFAULT_CLEARED) : this.cleared;
+        Set<String> propagated = this.propagated == null ? contextManager.getDefault("ThreadContext/propagated", DEFAULT_PROPAGATED) : this.propagated;
+        Set<String> unchanged = this.unchanged == null ? contextManager.getDefault("ThreadContext/unchanged", DEFAULT_UNCHANGED) : this.unchanged;
 
         // For detection of unknown and overlapping types,
         HashSet<String> unknown = new HashSet<String>(cleared);
@@ -98,7 +98,7 @@ public class ThreadContextBuilderImpl implements ThreadContext.Builder {
         // or for instance created via the builder,
         //  ThreadContext@INSTANCEID_AppName(propagated=[Security],cleared=[Application, CDI, Transaction],unchanged=[Remaining])
 
-        int hash = ConcurrencyManagerImpl.instanceCount.incrementAndGet();
+        int hash = ContextManagerImpl.instanceCount.incrementAndGet();
         StringBuilder nameBuilder = new StringBuilder("ThreadContext@").append(Integer.toHexString(hash));
         ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         String appName = cData == null ? null : cData.getJ2EEName().getApplication();
@@ -114,7 +114,7 @@ public class ThreadContextBuilderImpl implements ThreadContext.Builder {
 
         String threadContextName = nameBuilder.toString();
 
-        return new ThreadContextImpl(threadContextName, hash, concurrencyManager.concurrencyProvider, configPerProvider);
+        return new ThreadContextImpl(threadContextName, hash, contextManager.cmProvider, configPerProvider);
     }
 
     @Override

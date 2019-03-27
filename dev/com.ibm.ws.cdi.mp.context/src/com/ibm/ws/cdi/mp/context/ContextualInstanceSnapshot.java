@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.mp.concurrent.context;
+package com.ibm.ws.cdi.mp.context;
 
 import static java.util.Collections.emptySet;
 

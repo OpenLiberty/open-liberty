@@ -14,9 +14,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.eclipse.microprofile.concurrent.spi.ConcurrencyManager;
-import org.eclipse.microprofile.concurrent.spi.ConcurrencyProvider;
-import org.eclipse.microprofile.concurrent.spi.ConcurrencyProviderRegistration;
+import org.eclipse.microprofile.context.spi.ContextManager;
+import org.eclipse.microprofile.context.spi.ContextManagerProvider;
+import org.eclipse.microprofile.context.spi.ContextManagerProviderRegistration;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -43,12 +43,12 @@ import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.threading.PolicyExecutorProvider;
 
 /**
- * Registers this implementation as the provider of MicroProfile Concurrency.
+ * Registers this implementation as the provider of MicroProfile Context Propagation.
  */
 @SuppressWarnings("deprecation")
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
-public class ConcurrencyProviderImpl implements ApplicationStateListener, ConcurrencyProvider {
-    private static final TraceComponent tc = Tr.register(ConcurrencyProviderImpl.class);
+public class ContextManagerProviderImpl implements ApplicationStateListener, ContextManagerProvider {
+    private static final TraceComponent tc = Tr.register(ContextManagerProviderImpl.class);
 
     final ApplicationContextProvider applicationContextProvider = new ApplicationContextProvider();
     final CDIContextProviderHolder cdiContextProvider = new CDIContextProviderHolder();
@@ -73,9 +73,9 @@ public class ConcurrencyProviderImpl implements ApplicationStateListener, Concur
     @Reference
     protected PolicyExecutorProvider policyExecutorProvider;
 
-    private final ConcurrentHashMap<Object, ConcurrencyManagerImpl> providersPerClassLoader = new ConcurrentHashMap<Object, ConcurrencyManagerImpl>();
+    private final ConcurrentHashMap<Object, ContextManagerImpl> providersPerClassLoader = new ConcurrentHashMap<Object, ContextManagerImpl>();
 
-    private ConcurrencyProviderRegistration registration;
+    private ContextManagerProviderRegistration registration;
 
     @Activate
     protected void activate(ComponentContext osgiComponentContext) {
@@ -86,7 +86,7 @@ public class ConcurrencyProviderImpl implements ApplicationStateListener, Concur
         securityContextProvider.threadIdentityContextProviderRef.activate(osgiComponentContext);
         transactionContextProvider.transactionContextProviderRef.activate(osgiComponentContext);
         wlmContextProvider.wlmContextProviderRef.activate(osgiComponentContext);
-        registration = ConcurrencyProvider.register(this);
+        registration = ContextManagerProvider.register(this);
     }
 
     @Override
@@ -100,10 +100,10 @@ public class ConcurrencyProviderImpl implements ApplicationStateListener, Concur
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
         String appName = appInfo.getName();
-        for (Iterator<Map.Entry<Object, ConcurrencyManagerImpl>> it = providersPerClassLoader.entrySet().iterator(); it.hasNext();) {
-            Map.Entry<Object, ConcurrencyManagerImpl> entry = it.next();
+        for (Iterator<Map.Entry<Object, ContextManagerImpl>> it = providersPerClassLoader.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<Object, ContextManagerImpl> entry = it.next();
             Object cl = entry.getKey();
-            ConcurrencyManagerImpl cm = entry.getValue();
+            ContextManagerImpl cm = entry.getValue();
             if (!NO_CONTEXT_CLASSLOADER.equals(cl) && appName.equals(cm.appName)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "remove", cl, cm);
@@ -130,24 +130,24 @@ public class ConcurrencyProviderImpl implements ApplicationStateListener, Concur
     }
 
     @Override
-    public ConcurrencyManager getConcurrencyManager(ClassLoader classLoader) {
+    public ContextManager getContextManager(ClassLoader classLoader) {
         Object key = classLoader == null ? NO_CONTEXT_CLASSLOADER : classLoader;
-        ConcurrencyManagerImpl ccmgr = providersPerClassLoader.get(key);
-        if (ccmgr == null) {
-            ConcurrencyManagerImpl ccmgrNew = new ConcurrencyManagerImpl(this, classLoader);
-            ccmgr = providersPerClassLoader.putIfAbsent(key, ccmgrNew);
-            if (ccmgr == null)
-                ccmgr = ccmgrNew;
+        ContextManagerImpl cmgr = providersPerClassLoader.get(key);
+        if (cmgr == null) {
+            ContextManagerImpl cmgrNew = new ContextManagerImpl(this, classLoader);
+            cmgr = providersPerClassLoader.putIfAbsent(key, cmgrNew);
+            if (cmgr == null)
+                cmgr = cmgrNew;
         }
-        return ccmgr;
+        return cmgr;
     }
 
-    @Reference(service = org.eclipse.microprofile.concurrent.spi.ThreadContextProvider.class,
+    @Reference(service = org.eclipse.microprofile.context.spi.ThreadContextProvider.class,
                target = "(component.name=com.ibm.ws.cdi.context.provider)",
                cardinality = ReferenceCardinality.OPTIONAL,
                policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
-    protected void setCDIContextProvider(ServiceReference<org.eclipse.microprofile.concurrent.spi.ThreadContextProvider> ref) {
+    protected void setCDIContextProvider(ServiceReference<org.eclipse.microprofile.context.spi.ThreadContextProvider> ref) {
         cdiContextProvider.cdiContextProviderRef.setReference(ref);
     }
 
@@ -199,7 +199,7 @@ public class ConcurrencyProviderImpl implements ApplicationStateListener, Concur
         wlmContextProvider.wlmContextProviderRef.setReference(ref);
     }
 
-    protected void unsetCDIContextProvider(ServiceReference<org.eclipse.microprofile.concurrent.spi.ThreadContextProvider> ref) {
+    protected void unsetCDIContextProvider(ServiceReference<org.eclipse.microprofile.context.spi.ThreadContextProvider> ref) {
         cdiContextProvider.cdiContextProviderRef.unsetReference(ref);
     }
 

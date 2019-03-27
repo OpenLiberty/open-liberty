@@ -1,9 +1,9 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.mpConcurrency-1.0
+symbolicName=com.ibm.websphere.appserver.mpContextPropagation-1.0
 visibility=public
 singleton=true
-IBM-ShortName: mpConcurrency-1.0
-Subsystem-Name: MicroProfile Concurrency 1.0
+IBM-ShortName: mpContextPropagation-1.0
+Subsystem-Name: MicroProfile Context Propagation 1.0
 IBM-App-ForceRestart: install, uninstall
 IBM-API-Package: \
   org.eclipse.microprofile.context; type="stable", \
