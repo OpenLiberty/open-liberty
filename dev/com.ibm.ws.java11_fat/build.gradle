@@ -16,3 +16,4 @@ task copyKernelService(type: Copy) {
 }
 
 addRequiredLibraries.dependsOn copyKernelService
+addRequiredLibraries.dependsOn addDerby

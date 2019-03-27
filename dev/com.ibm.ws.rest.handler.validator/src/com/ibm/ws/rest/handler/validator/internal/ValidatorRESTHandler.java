@@ -33,6 +33,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONArtifact;
@@ -42,6 +43,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.rest.config.ConfigBasedRESTHandler;
 import com.ibm.wsspi.rest.handler.RESTHandler;
@@ -60,6 +62,9 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
     private static final TraceComponent tc = Tr.register(ValidatorRESTHandler.class);
 
     private ComponentContext context;
+
+    @Reference
+    VariableRegistry variableRegistry;
 
     @Activate
     protected void activate(ComponentContext context) {
@@ -177,15 +182,15 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         } else {
             // Build a map of params for the testable service
             Map<String, Object> params = new HashMap<String, Object>();
+            for (String key : request.getParameterMap().keySet()) {
+                params.put(key, resolvePotentialVariable(request.getParameter(key))); // TODO only add valid parameters (auth, authData)? And if we want any validation of values, this is the central place for it
+            }
             String user = request.getHeader("X-Validator-User");
             if (user != null)
-                params.put("user", user);
+                params.put("user", resolvePotentialVariable(user));
             String pass = request.getHeader("X-Validator-Password");
             if (pass != null)
-                params.put("password", pass);
-            for (String key : request.getParameterMap().keySet()) {
-                params.put(key, request.getParameter(key)); // TODO only add valid parameters (auth, authData)? And if we want any validation of values, this is the central place for it
-            }
+                params.put("password", resolvePotentialVariable(pass));
 
             Validator validator = getService(context, validatorRefs.iterator().next());
             if (validator == null) {
@@ -260,7 +265,7 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
      * Populate JSON object for a top level exception or error.
      *
      * @param errorInfo additional information to append to exceptions and causes
-     * @param error the top level exception or error.
+     * @param error     the top level exception or error.
      * @return JSON object representing the Throwable.
      */
     @SuppressWarnings("unchecked")
@@ -307,5 +312,17 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         }
 
         return json;
+    }
+
+    @Trivial
+    private String resolvePotentialVariable(String value) {
+        if (value == null)
+            return value;
+
+        String resolvedVariable = variableRegistry.resolveRawString(value);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Was a variable value found for " + value + "?  " + !value.equals(resolvedVariable));
+        }
+        return resolvedVariable;
     }
 }

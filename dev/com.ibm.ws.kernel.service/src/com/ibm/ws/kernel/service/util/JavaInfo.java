@@ -72,41 +72,37 @@ public class JavaInfo {
                 VENDOR = Vendor.UNKNOWN;
         }
 
+        String runtimeVersion = getSystemProperty("java.runtime.version").toLowerCase();
+
+        // Parse service release
         int sr = 0;
-        int fp = 0;
-
-        if (VENDOR == Vendor.IBM) {
-            // Parse service release
-            String runtimeVersion = getSystemProperty("java.runtime.version").toLowerCase();
-            int srloc = runtimeVersion.indexOf("sr");
-            if (srloc > (-1)) {
-                srloc += 2;
-                if (srloc < runtimeVersion.length()) {
-                    int len = 0;
-                    while ((srloc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(srloc + len))) {
-                        len++;
-                    }
-                    sr = Integer.parseInt(runtimeVersion.substring(srloc, srloc + len));
+        int srloc = runtimeVersion.indexOf("sr");
+        if (srloc > (-1)) {
+            srloc += 2;
+            if (srloc < runtimeVersion.length()) {
+                int len = 0;
+                while ((srloc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(srloc + len))) {
+                    len++;
                 }
-            }
-
-            // Parse fixpack
-            int fploc = runtimeVersion.indexOf("fp");
-            if (fploc > (-1)) {
-                fploc += 2;
-                if (fploc < runtimeVersion.length()) {
-                    int len = 0;
-                    while ((fploc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(fploc + len))) {
-                        len++;
-                    }
-                    fp = Integer.parseInt(runtimeVersion.substring(fploc, fploc + len));
-                }
+                sr = Integer.parseInt(runtimeVersion.substring(srloc, srloc + len));
             }
         }
-
         SERVICE_RELEASE = sr;
-        FIXPACK = fp;
 
+        // Parse fixpack
+        int fp = 0;
+        int fploc = runtimeVersion.indexOf("fp");
+        if (fploc > (-1)) {
+            fploc += 2;
+            if (fploc < runtimeVersion.length()) {
+                int len = 0;
+                while ((fploc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(fploc + len))) {
+                    len++;
+                }
+                fp = Integer.parseInt(runtimeVersion.substring(fploc, fploc + len));
+            }
+        }
+        FIXPACK = fp;
     }
 
     private static final String getSystemProperty(final String propName, final String defaultValue) {

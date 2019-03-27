@@ -17,6 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 Java11Test.class,
+                Java12Test.class,
                 Java11CNFETest.class,
                 JavaInfoTest.class,
                 MultiReleaseJarTest.class
