@@ -1,14 +1,14 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2012, 2014
- *
- * The source code for this program is not published or otherwise divested 
- * of its trade secrets, irrespective of what has been deposited with the 
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
 package com.ibm.ws.kernel.feature.fat;
 
 import static org.junit.Assert.assertFalse;
@@ -16,7 +16,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,16 +29,20 @@ import java.util.zip.ZipInputStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+@RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class ProductFeatureTest {
 
@@ -75,7 +81,7 @@ public class ProductFeatureTest {
 
     /**
      * Copy the necessary features and bundles to the liberty server directories
-     * 
+     *
      * @throws Exception
      */
     @Before
@@ -92,7 +98,7 @@ public class ProductFeatureTest {
 
     /**
      * This method removes all the testing artifacts from the server directories.
-     * 
+     *
      * @throws Exception
      */
     @After
@@ -129,7 +135,7 @@ public class ProductFeatureTest {
      * TestDescription:
      * This test ensures that a product feature is installed when added to server.xml.
      * * com.ibm.websphere.productInstall= ends with a /
-     * 
+     *
      * @throws Exception
      */
     @Mode(TestMode.LITE)
@@ -168,7 +174,7 @@ public class ProductFeatureTest {
     /**
      * TestDescription:
      * This test ensures that a product feature cannot include private features from core
-     * 
+     *
      * @throws Exception
      */
     @Mode(TestMode.LITE)
@@ -197,7 +203,7 @@ public class ProductFeatureTest {
         // check for missing feature message for internal feature that we don't have access to
         output = server.waitForStringInLogUsingMark(missingFeatureMsgPrefix);
         assertNotNull("We haven't found the " + missingFeatureMsgPrefix + " in the logs.", output);
-        assertTrue("wrong missing feature found: " + output, output.contains("com.ibm.websphere.appserver.javax.servlet-3.0"));
+        assertTrue("wrong missing feature found: " + output, output.contains("com.ibm.websphere.appserver.javax.servlet-3.1"));
 
         // Finally check that removing the product feature from server.xml will uninstall it.
         TestUtils.makeConfigUpdateSetMark(server, "server_no_features.xml");
@@ -207,13 +213,14 @@ public class ProductFeatureTest {
         assertTrue("product feature prodtestprivate-1.0 was not uninstalled and should have been: " + output, output.contains("prodtestprivate-1.0"));
 
         Log.exiting(c, METHOD_NAME);
+        server.stopServer(missingFeatureMsgPrefix);
     }
 
     /**
      * TestDescription:
      * This test ensures that a product feature is installed when added to server.xml.
      * com.ibm.websphere.productInstall= does not end with a /
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -252,7 +259,7 @@ public class ProductFeatureTest {
      * TestDescription:
      * This test ensures that a product feature is installed when added to server.xml.
      * com.ibm.websphere.productInstall= has odd characters in it
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -292,10 +299,10 @@ public class ProductFeatureTest {
      * This test ensures that a product feature located as a peer of wlp/ can have
      * it's features installed and uninstalled.
      * com.ibm.websphere.productInstall= does not end with a /
-     * 
+     *
      * C:\stuff\wlp
      * C:\stuff\productA\lib\features
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -338,10 +345,10 @@ public class ProductFeatureTest {
      * This test ensures that a product feature located as a peer of wlp/ can have
      * it's features installed and uninstalled.
      * com.ibm.websphere.productInstall= has a / on the end
-     * 
+     *
      * C:\stuff\wlp
      * C:\stuff\productA\lib\features
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -382,7 +389,7 @@ public class ProductFeatureTest {
     /**
      * TestDescription:
      * This test ensures that a product feature is installed when in server.xml at server start.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -412,7 +419,7 @@ public class ProductFeatureTest {
     /**
      * TestDescription:
      * This test ensures that a product feature called usr is not installed when added to server.xml.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -444,12 +451,13 @@ public class ProductFeatureTest {
         assertNotNull("We haven't found the " + serverUpdatedMsgPrefix + " in the logs.", output);
 
         Log.exiting(c, METHOD_NAME);
+        server.stopServer(missingFeatureMsgPrefix);
     }
 
     /**
      * TestDescription:
      * This test issues an error for a product properties file that does not contain com.ibm.websphere.productInstall.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -473,13 +481,14 @@ public class ProductFeatureTest {
         assertTrue(PRODUCT_FEATURE_BAD_PROPERTIES_FILE + " was not flagged with an error and should have been: " + output, output.contains(PRODUCT_FEATURE_BAD_PROPERTIES_FILE));
 
         Log.exiting(c, METHOD_NAME);
+        server.stopServer(productInstallnotInPropertiesFilePrefix);
     }
 
     /**
      * TestDescription:
      * This test issues an error for a product properties file that has a product install
      * path that is the same as ${wlp.install.dir}.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -495,7 +504,7 @@ public class ProductFeatureTest {
         server.startServer(METHOD_NAME + ".log");
 
         server.deleteFileFromLibertyInstallRoot(PRODUCT_EXTENSIONS_PATH + PRODUCT_FEATURE_BAD_WLP_PROPERTIES_FILE);
-        // look for the error message 
+        // look for the error message
         String output = server.waitForStringInLog(productInstallPathSameAsWlp);
         assertNotNull("We haven't found the " + productInstallPathSameAsWlp + " in the logs.", output);
 
@@ -503,13 +512,14 @@ public class ProductFeatureTest {
                    output.contains(PRODUCT_FEATURE_BAD_WLP_PROPERTIES_FILE));
 
         Log.exiting(c, METHOD_NAME);
+        server.stopServer(productInstallPathSameAsWlp);
     }
 
     /**
      * TestDescription:
      * This test issues an error for a product properties file that has a product install
      * path that has a symbol.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -524,7 +534,7 @@ public class ProductFeatureTest {
         server.startServer(METHOD_NAME + ".log");
 
         server.deleteFileFromLibertyInstallRoot(PRODUCT_EXTENSIONS_PATH + PRODUCT_FEATURE_CONTAINS_SYMBOL_PROPERTIES_FILE);
-        // look for the error message 
+        // look for the error message
         String output = server.waitForStringInLog(productInstallPathContainsSymbol);
         assertNotNull("We haven't found the " + productInstallPathContainsSymbol + " in the logs.", output);
 
@@ -532,12 +542,13 @@ public class ProductFeatureTest {
                    output.contains(PRODUCT_FEATURE_CONTAINS_SYMBOL_PROPERTIES_FILE));
 
         Log.exiting(c, METHOD_NAME);
+        server.stopServer(productInstallPathContainsSymbol);
     }
 
     /**
      * TestDescription:
      * This test issues an error for a product properties file that contains a bad path.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -565,12 +576,13 @@ public class ProductFeatureTest {
                    output.contains(PRODUCT_FEATURE_BAD_PATH_PROPERTIES_FILE));
 
         Log.exiting(c, METHOD_NAME);
+        server.stopServer(productInstallPathPrefix);
     }
 
     /**
      * TestDescription:
      * This test tests with a product feature that does not have a .mf file.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -593,6 +605,7 @@ public class ProductFeatureTest {
         assertTrue("testproduct:producttestnotfound product feature was installed and should have been: " + output, output.contains("testproduct:producttestnotfound"));
 
         Log.exiting(c, METHOD_NAME);
+        server.stopServer(missingFeatureMsgPrefix);
     }
 
     @Test
@@ -602,18 +615,36 @@ public class ProductFeatureTest {
 
         Log.entering(c, METHOD_NAME);
 
+        Process proc = Runtime.getRuntime().exec(server.getInstallRoot() + "/bin/server version");
+
+        String productName = null;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
+            while ((reader.readLine()) != null) {
+                productName = reader.readLine();
+            }
+        }
+
+        proc.destroy();
+
         // Start with no features being installed.
         server.setServerConfigurationFile("server_no_features.xml");
         server.startServer(METHOD_NAME + ".log");
 
         // Now move the server xml with a product feature that will not be found.
         TestUtils.makeConfigUpdateSetMark(server, "server_core_features_not_found.xml");
-        // Get the feature definition could not be found message.
-        String output = server.waitForStringInLogUsingMark(missingFeatureCoreMsgPrefix);
-        assertNotNull("We haven't found the " + missingFeatureCoreMsgPrefix + " in the logs.", output);
 
-        assertTrue("coretest-1.0 product feature name was not found in the output: " + output, output.contains("coretest-1.0"));
-
+        // Get the feature definition could not be found message for Open Liberty or Closed Liberty
+        if (productName != null && productName.startsWith("Open Liberty")) {
+            String output = server.waitForStringInLogUsingMark(missingFeatureMsgPrefix);
+            assertNotNull("We haven't found the " + missingFeatureMsgPrefix + " in the logs.", output);
+            assertTrue("coretest-1.0 product feature name was not found in the output: " + output, output.contains("coretest-1.0"));
+            server.stopServer(missingFeatureMsgPrefix);
+        } else {
+            String output = server.waitForStringInLogUsingMark(missingFeatureCoreMsgPrefix);
+            assertNotNull("We haven't found the " + missingFeatureCoreMsgPrefix + " in the logs.", output);
+            assertTrue("coretest-1.0 product feature name was not found in the output: " + output, output.contains("coretest-1.0"));
+            server.stopServer(missingFeatureCoreMsgPrefix);
+        }
         Log.exiting(c, METHOD_NAME);
     }
 
@@ -622,11 +653,11 @@ public class ProductFeatureTest {
      * This test ensures that a .mf file added to producttest/lib/features after the server is
      * up and running will be found and installed when the feature is specified in server.xml.
      * The test ensures that this happens during server update.
-     * 
+     *
      * The feature structure is as follows:
-     * 
+     *
      * pfeatureA is defined in pfeatureA.mf by IBM-ShortName: pfeatureA-1.0
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -677,7 +708,7 @@ public class ProductFeatureTest {
 
     /**
      * This method loads the feature.cache file as properties.
-     * 
+     *
      * @param cacheFile - The cache file to read.
      * @return - A properties object containing the properties from the feature.cache file.
      * @throws Exception
@@ -700,7 +731,7 @@ public class ProductFeatureTest {
      * TestDescription:
      * This test ensures that a product feature can be packaged with minify.
      * Including type=file content.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -722,9 +753,9 @@ public class ProductFeatureTest {
 
         //we want to validate that the content related to our product extension got packaged
         List<String> names = Arrays.asList(new String[] { "wlp/producttest/bin/test.bat",
-                                                         "wlp/producttest/lib/com.ibm.ws.prodtest.internal_1.0.jar",
-                                                         "wlp/producttest/lib/features/prodtest-1.0.mf",
-                                                         "wlp/etc/extensions/testproduct.properties" });
+                                                          "wlp/producttest/lib/com.ibm.ws.prodtest.internal_1.0.jar",
+                                                          "wlp/producttest/lib/features/prodtest-1.0.mf",
+                                                          "wlp/etc/extensions/testproduct.properties" });
         List<String> namesToValidate = new ArrayList<String>(names.size());
         namesToValidate.addAll(names);
 

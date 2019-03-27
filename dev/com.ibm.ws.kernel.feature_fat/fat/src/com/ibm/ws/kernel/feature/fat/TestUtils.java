@@ -1,14 +1,14 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * WLP Copyright IBM Corp. 2013
- *
- * The source code for this program is not published or otherwise divested 
- * of its trade secrets, irrespective of what has been deposited with the 
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
 package com.ibm.ws.kernel.feature.fat;
 
 import java.io.BufferedReader;
@@ -29,10 +29,10 @@ public class TestUtils {
 
     /**
      * This method loads the feature.cache file as properties.
-     * 
-     * @param server TODO
+     *
+     * @param server    TODO
      * @param cacheFile - The cache file to read.
-     * 
+     *
      * @return - A properties object containing the properties from the feature.cache file.
      * @throws Exception
      */
@@ -62,7 +62,7 @@ public class TestUtils {
      * This method finds the installed features from the cache file.
      * Note this is sleazy and evil and not something that is in general good practice,
      * as the cache file contents should be able to change at any time.
-     * 
+     *
      * @param cacheFile - The cache file to read.
      * @return The installed features list as a string
      * @throws Exception

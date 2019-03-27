@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2013, 2014
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 
 package com.ibm.ws.kernel.feature.fat;
 
@@ -22,16 +21,20 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import com.ibm.ws.kernel.feature.fat.TestUtils;
 
+@RunWith(FATRunner.class)
 public class FeatureTest {
 
     private static final Class<?> c = FeatureTest.class;
@@ -227,6 +230,7 @@ public class FeatureTest {
         assertTrue("Missing java version check failure message javaNine : " + output, output.contains(missingJavaDependency2));
 
         Log.exiting(c, METHOD_NAME);
+        server.stopServer(missingJavaDependency1, missingJavaDependency2, "CWWKF0029E");
     }
 
     @Test
@@ -251,6 +255,7 @@ public class FeatureTest {
         assertTrue("Client was installed and should not have been: " + output, output.contains("javaeeClient"));
 
         Log.exiting(c, METHOD_NAME);
+        server.stopServer(wrongProcessTypeMsgPrefix, notFoundFeatureMsgPrefix);
     }
 
     /**
@@ -395,6 +400,7 @@ public class FeatureTest {
         assertFalse("bundlew/[1.0.0,2.0.0) was installed and should not have been: " + bundleCacheProperties, bundleCacheProperties.containsKey("bundlew/[1.0.0,2.0.0)"));
 
         Log.exiting(c, METHOD_NAME);
+        server.stopServer(notFoundFeatureMsgPrefix);
     }
 
     /**

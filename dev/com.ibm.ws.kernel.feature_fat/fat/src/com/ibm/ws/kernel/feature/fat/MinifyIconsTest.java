@@ -1,16 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.kernel.feature.fat;
 
-/*
- * IBM Confidential
- *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2014
- *
- * The source code for this program is not published or other-
- * wise divested of its trade secrets, irrespective of what has
- * been deposited with the U.S. Copyright Office.
- */
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
@@ -29,10 +28,12 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.RemoteFile;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -40,6 +41,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  * Test minifying a server that contains features with Icons. Ensure the icons are handled correctly.
  */
+@RunWith(FATRunner.class)
 public class MinifyIconsTest {
     //    private static LibertyServer server = LibertyServerFactory.getLibertyServer();
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.kernel.icons_test");
@@ -92,7 +94,7 @@ public class MinifyIconsTest {
 
         // Add wab-1.0 to the list of features because we need it to load the test URLs. Don't add it
         // because we don't want to create an IconFeature class for it
-        features.add("wab-1.0");
+        features.add("jwt-1.0");
         server.changeFeatures(features);
 
         server.startServer();
@@ -125,14 +127,11 @@ public class MinifyIconsTest {
             RemoteFile fatTestCommon = server.getFileFromLibertyServerRoot("/../fatTestCommon.xml");
             RemoteFile fatTestPorts = server.getFileFromLibertyServerRoot("/../fatTestPorts.xml");
             RemoteFile testPortsProps = server.getFileFromLibertyServerRoot("/../testports.properties");
-            RemoteFile serverEnv = server.getFileFromLibertyInstallRoot("/etc/server.env");
 
             // Put the required test files into the right place for new server..
             fatTestCommon.copyToDest(new RemoteFile(minifiedServer.getMachine(), minifiedServer.getServerRoot() + "/../fatTestCommon.xml"));
             fatTestPorts.copyToDest(new RemoteFile(minifiedServer.getMachine(), minifiedServer.getServerRoot() + "/../fatTestPorts.xml"));
             testPortsProps.copyToDest(new RemoteFile(minifiedServer.getMachine(), minifiedServer.getServerRoot() + "/../testports.properties"));
-            if (serverEnv.exists())
-                serverEnv.copyToDest(new RemoteFile(minifiedServer.getMachine(), minifiedServer.getInstallRoot() + "/etc/server.env"));
 
             // We should start the server again and make sure all our features are available
             minifiedServer.startServer();

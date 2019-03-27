@@ -8,8 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
-package com.ibm.ws.kernel.test;
+package test.feature.api.client;
 
 import java.io.IOException;
 
@@ -19,30 +18,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Servlet implementation class Servlet1
- */
-@WebServlet("/ServletTest")
-public class ServletTest extends HttpServlet {
-
+@WebServlet("/apiClient")
+public class ApiClientTest extends HttpServlet {
     /**  */
-    private static final long serialVersionUID = -451670363319769693L;
-
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public ServletTest() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+    private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.getOutputStream().println("This is Mini-WOPR. Welcome Dr Falken.");
-        response.getOutputStream().println("PASS: servlet ran");
+        try {
+            Class<?> someAPIClass = Class.forName("test.feature.api.SomeAPI");
+            response.getOutputStream().println(getClass().getSimpleName() + ":" + someAPIClass.newInstance().toString());
+        } catch (ClassNotFoundException e) {
+            response.getOutputStream().println("FAILED");
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
     }
 
 }

@@ -1,14 +1,14 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * WLP Copyright IBM Corp. 2014
- *
- * The source code for this program is not published or otherwise divested 
- * of its trade secrets, irrespective of what has been deposited with the 
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
 package com.ibm.ws.kernel.feature.fat;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * <p>Holder for fields that will be used for interactions with a feature.</p>
- * 
+ *
  * <p>This class only relies on the IBM-Shortname, i.e. the name as used in server.xml, and all other items
  * are related to this value. To set up another feature in this way you need to adhere to the following:</p>
  * <ul>
@@ -40,9 +40,9 @@ public class IconFeature {
 
     /**
      * Initialise an IconFeature
-     * 
+     *
      * @param shortName the value of IBM-Shortname. For a user feature, this should not include the
-     *            <i>usr:</i> prefix, but you should call setUserFeature(true) on the returned object.
+     *                      <i>usr:</i> prefix, but you should call setUserFeature(true) on the returned object.
      */
     public IconFeature(String shortName) {
         this.shortName = shortName;
@@ -93,7 +93,7 @@ public class IconFeature {
     /**
      * Gets the IBM-Shortname value. This won't handle the namespacing if this is a user feature, e.g. for
      * adding into server.xml. For that, use getNamespacedShortname().
-     * 
+     *
      * @return the shortName of the feature, as provided to the class. This should match the feature's
      *         IBM-Shortname
      */
@@ -103,7 +103,7 @@ public class IconFeature {
 
     /**
      * Add a file that will be expected to be included in the image to be tested.
-     * 
+     *
      * @param filePath the path as specified in the feature manifest
      */
     public void addExpectedIcon(String filePath) {
@@ -119,7 +119,7 @@ public class IconFeature {
 
     /**
      * Add a file that will be expected not to be included in the image to be tested.
-     * 
+     *
      * @param filePath the path as specified in the feature manifest
      */
     public void addUnexpectedIcon(String filePath) {

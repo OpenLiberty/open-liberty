@@ -1,14 +1,14 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2012
- *
- * The source code for this program is not published or otherwise divested 
- * of its trade secrets, irrespective of what has been deposited with the 
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
 package com.ibm.ws.kernel.feature.fat;
 
 import static org.junit.Assert.assertFalse;
@@ -17,7 +17,9 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -27,8 +29,9 @@ import componenttest.topology.impl.LibertyServerFactory;
  * are checked in as binaries because the test-bundles infrastructure did not provide any method of
  * dependency ordering the build of the bundles and the contents are trivial (marker interfaces and activators
  * that print a single line message to system out).
- * 
+ *
  */
+@RunWith(FATRunner.class)
 public class SPIIsolationTest {
 
     private final static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.kernel.feature.isolation");
@@ -82,8 +85,7 @@ public class SPIIsolationTest {
 
     @AfterClass
     public static void shutdown() throws Exception {
-        server.stopServer();
-
+        server.stopServer("CWWKF0029E");
         //copy the isolation test runtime feature into the server features location
         server.deleteFileFromLibertyInstallRoot("lib/features/isolation.Runtime.Test.Feature-1.0.mf");
         //copy the isolation test runtime bundles into the server lib location
@@ -115,7 +117,7 @@ public class SPIIsolationTest {
      * Verify that the bundle L2 started.
      * It uses package p1b from bundle L1 so verifies that
      * a non-SPI package is allowed between runtime features.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -127,7 +129,7 @@ public class SPIIsolationTest {
      * Verify that the bundle L3 started.
      * It uses package p4a from bundle U4 so verifies that
      * a "stack product" SPI package is in a runtime feature
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -139,7 +141,7 @@ public class SPIIsolationTest {
      * Verify that the bundle U5 started.
      * It uses package p4b from bundle U4 so verifies that
      * a non-SPI package can be used within a "stack product"
-     * 
+     *
      * @throws Exception
      */
     @Test

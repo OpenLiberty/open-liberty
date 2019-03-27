@@ -4,7 +4,7 @@
 
     <featureManager>
         <feature>test.feature.api.internal-1.0</feature>
-        <feature>servlet-3.0</feature>
+        <feature>servlet-3.1</feature>
     </featureManager>
     
 </server>

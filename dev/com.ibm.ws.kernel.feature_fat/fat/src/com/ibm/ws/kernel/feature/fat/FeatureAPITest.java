@@ -1,16 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.kernel.feature.fat;
 
-/*
- * IBM Confidential
- *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2011
- *
- * The source code for this program is not published or other-
- * wise divested of its trade secrets, irrespective of what has
- * been deposited with the U.S. Copyright Office.
- */
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -24,15 +23,21 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+@RunWith(FATRunner.class)
 public class FeatureAPITest {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.kernel.feature.api");
     private final Class<?> c = FeatureAPITest.class;
@@ -40,6 +45,12 @@ public class FeatureAPITest {
     @Test
     public void testAddApi() throws Exception {
         final String method = "testAddApi";
+
+        //Create application war and put in server
+        WebArchive war = ShrinkHelper.buildDefaultApp("test.feature.api.client.war", "test.feature.api.client");
+        ShrinkHelper.addDirectory(war, "test-applications/test.feature.api.client.war/resources");
+        ShrinkHelper.exportToServer(server, "dropins", war);
+
         server.startServer();
 
         assertNotNull("The application did not appear to have been installed.", server.waitForStringInLog("CWWKZ0001I.* test.feature.api.client"));
@@ -51,7 +62,7 @@ public class FeatureAPITest {
         assertEquals("Wrong response from application", "FAILED", line);
 
         server.setMarkToEndOfLog();
-        server.changeFeatures(Arrays.asList("servlet-3.0", "test.feature.api-1.0"));
+        server.changeFeatures(Arrays.asList("servlet-3.1", "test.feature.api-1.0"));
         server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
 
         Log.info(c, method, "Calling Application with URL=" + url.toString());
@@ -65,7 +76,7 @@ public class FeatureAPITest {
     public static void installSystemFeature() throws Exception {
         server.installSystemFeature("test.feature.api.internal-1.0");
         server.installSystemFeature("test.feature.api-1.0");
-        server.installSystemBundle("test.feature.api_1.0.0");
+        server.installSystemBundle("test.feature.api");
     }
 
     @AfterClass
@@ -85,7 +96,7 @@ public class FeatureAPITest {
     /**
      * This method is used to get a connection stream from an HTTP connection. It
      * gives the output from the webpage that it gets from the connection
-     * 
+     *
      * @param con The connection to the HTTP address
      * @return The Output from the webpage
      */
@@ -98,7 +109,7 @@ public class FeatureAPITest {
 
     /**
      * This method creates a connection to a webpage and then reutrns the connection
-     * 
+     *
      * @param url The Http Address to connect to
      * @return The connection to the http address
      */

@@ -3,21 +3,21 @@
 	<classpathentry kind="src" path="test-bundles/test.feature.provisioner/src"/>
 	<classpathentry kind="src" path="test-bundles/test.feature.api/src"/>
 	<classpathentry kind="src" path="test-applications/test.feature.api.client/src"/>
+	<classpathentry kind="src" path="test-applications/ServletTest/src"/>
+	<classpathentry kind="src" path="test-applications/IgnoreAPI.ear/IgnoreAPIEJB.jar/src"/>
 	<classpathentry kind="src" output="build/classes" path="fat/src"/>
-	<classpathentry kind="lib" path="/build.sharedResources/lib/hamcrest-all.jar"/>
-	<classpathentry kind="lib" path="/ant_build/lib/jmock-junit4.jar"/>
-	<classpathentry kind="lib" path="/ant_build/lib/jmock.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.junit.extensions"/>
-	<classpathentry kind="lib" path="/ant_build/lib/junit.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.logging"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.service.component"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wsspi.org.osgi.service.component.annotations"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.feature"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.osgi"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.servlet.3.0"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.servlet.3.1"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/fattest.simplicity"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.ejb.3.1"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.org.apache.commons.compress"/>
+	<classpathentry exported="true" kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,14 +1,14 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2019
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
 package com.ibm.ws.kernel.feature.fat;
 
 import static org.junit.Assert.assertFalse;
@@ -21,15 +21,20 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+import com.ibm.ws.kernel.feature.fat.TestUtils;
+
+@RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class UserFeatureTest {
 
@@ -182,6 +187,7 @@ public class UserFeatureTest {
         assertNotNull("We haven't found the " + notPublicFeatureMsgPrefix + " in the logs.", output);
 
         Log.exiting(c, METHOD_NAME);
+        server.stopServer(notPublicFeatureMsgPrefix);
     }
 
     /**
@@ -265,6 +271,7 @@ public class UserFeatureTest {
         assertTrue("usr:usertestnotfound user feature was installed and should have been: " + output, output.contains("usr:usertestnotfound"));
 
         Log.exiting(c, METHOD_NAME);
+        server.stopServer(notFoundFeatureMsgPrefix);
     }
 
     /**
@@ -397,6 +404,7 @@ public class UserFeatureTest {
         assertFalse("bundlew/[1.0.0,2.0.0) was installed and should not have been: " + bundleCacheProperties, bundleCacheProperties.containsKey("bundlew/[1.0.0,2.0.0)"));
 
         Log.exiting(c, METHOD_NAME);
+        server.stopServer(notFoundFeatureMsgPrefix);
     }
 
     /**

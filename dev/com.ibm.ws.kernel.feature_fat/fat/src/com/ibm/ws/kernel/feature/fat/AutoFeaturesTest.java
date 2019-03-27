@@ -1,14 +1,14 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2012
- *
- * The source code for this program is not published or otherwise divested 
- * of its trade secrets, irrespective of what has been deposited with the 
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
 package com.ibm.ws.kernel.feature.fat;
 
 import static org.junit.Assert.assertFalse;
@@ -32,18 +32,22 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
+import com.ibm.ws.kernel.feature.fat.TestUtils;
 
 @Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
 public class AutoFeaturesTest {
 
     private static final Class<?> c = AutoFeaturesTest.class;
@@ -68,9 +72,9 @@ public class AutoFeaturesTest {
     private static final String USR_AUTO_FEATURE_N_MF = "ufeatureN-1.0.mf";
 
     private static final String[] userFeatures = { USR_FEATURE_A_MF, USR_FEATURE_B_MF, USR_FEATURE_C_MF, USR_FEATURE_D_MF,
-                                                  USR_FEATURE_H_MF, USR_FEATURE_I_MF, USR_AUTO_FEATURE_E_MF,
-                                                  USR_AUTO_FEATURE_F_MF, USR_AUTO_FEATURE_G_MF, USR_AUTO_FEATURE_J_MF,
-                                                  USR_AUTO_FEATURE_L_MF, USR_AUTO_FEATURE_M_MF, USR_AUTO_FEATURE_N_MF };
+                                                   USR_FEATURE_H_MF, USR_FEATURE_I_MF, USR_AUTO_FEATURE_E_MF,
+                                                   USR_AUTO_FEATURE_F_MF, USR_AUTO_FEATURE_G_MF, USR_AUTO_FEATURE_J_MF,
+                                                   USR_AUTO_FEATURE_L_MF, USR_AUTO_FEATURE_M_MF, USR_AUTO_FEATURE_N_MF };
     private static final String USR_FEATURE_PATH = "usr/extension/lib/features/";
     private static final String USR_BUNDLE_PATH = "usr/extension/lib/";
 
@@ -91,9 +95,10 @@ public class AutoFeaturesTest {
     private static final String PRODUCT_AUTO_FEATURE_N_MF = "pfeatureN-1.0.mf";
 
     private static final String[] productFeatures = { PRODUCT_FEATURE_A_MF, PRODUCT_FEATURE_B_MF, PRODUCT_FEATURE_C_MF, PRODUCT_FEATURE_D_MF,
-                                                     PRODUCT_FEATURE_H_MF, PRODUCT_FEATURE_I_MF, PRODUCT_AUTO_FEATURE_E_MF,
-                                                     PRODUCT_AUTO_FEATURE_F_MF, PRODUCT_AUTO_FEATURE_G_MF, PRODUCT_AUTO_FEATURE_J_MF,
-                                                     PRODUCT_AUTO_FEATURE_L_MF, PRODUCT_AUTO_FEATURE_M_MF, PRODUCT_AUTO_FEATURE_N_MF };
+                                                      PRODUCT_FEATURE_H_MF, PRODUCT_FEATURE_I_MF, PRODUCT_AUTO_FEATURE_E_MF,
+                                                      PRODUCT_AUTO_FEATURE_F_MF, PRODUCT_AUTO_FEATURE_G_MF, PRODUCT_AUTO_FEATURE_J_MF,
+                                                      PRODUCT_AUTO_FEATURE_L_MF, PRODUCT_AUTO_FEATURE_M_MF, PRODUCT_AUTO_FEATURE_N_MF };
+
     private static final String PRODUCT_EXTENSIONS_PATH = "etc/extensions/";
     private static final String PRODUCT_PATH = "productAuto";
     private static final String PRODUCT_FEATURE_PATH = PRODUCT_PATH + "/lib/features/";
@@ -112,7 +117,7 @@ public class AutoFeaturesTest {
     private static final String PRODUCT2_AUTO_FEATURE_E_MF = "p2featureE-1.0.mf";
     private static final String PRODUCT2_AUTO_FEATURE_G_MF = "p2featureG-1.0.mf";
     private static final String[] product2Features = { PRODUCT2_FEATURE_A_MF, PRODUCT2_FEATURE_B_MF, PRODUCT2_FEATURE_D_MF,
-                                                      PRODUCT2_AUTO_FEATURE_E_MF, PRODUCT2_AUTO_FEATURE_G_MF };
+                                                       PRODUCT2_AUTO_FEATURE_E_MF, PRODUCT2_AUTO_FEATURE_G_MF };
 
     private static final String FEATURE_A_MF = "featureA-1.0.mf";
     private static final String FEATURE_B_MF = "featureB-1.0.mf";
@@ -135,8 +140,7 @@ public class AutoFeaturesTest {
     private static final String FEATURE_Z_MF = "featureZz-1.0.mf";
 
     private static final String[] features = { FEATURE_A_MF, FEATURE_B_MF, FEATURE_C_MF, FEATURE_D_MF, FEATURE_H_MF, FEATURE_I_MF,
-                                              AUTO_FEATURE_E_MF, AUTO_FEATURE_F_MF, AUTO_FEATURE_G_MF, AUTO_FEATURE_J_MF, FEATURE_X_MF, FEATURE_Y_MF, FEATURE_Z_MF };
-
+                                               AUTO_FEATURE_E_MF, AUTO_FEATURE_F_MF, AUTO_FEATURE_G_MF, AUTO_FEATURE_J_MF, FEATURE_X_MF, FEATURE_Y_MF, FEATURE_Z_MF };
     private static final String installFeatureMsgPrefix = "CWWKF0012I: The server installed the following features: \\[";
     private static final String uninstallFeatureMsgPrefix = "CWWKF0013I: The server removed the following features: \\[";
     private static final String invalidHeaderMsgPrefix = "CWWKF0016I: The filter .*? in the invalid_header_feature feature manifest header is incorrect:";
@@ -156,7 +160,7 @@ public class AutoFeaturesTest {
 
     /**
      * Copy the necessary features and bundles to the liberty server directories
-     * 
+     *
      * @throws Exception
      */
     @Mode(TestMode.LITE)
@@ -214,7 +218,7 @@ public class AutoFeaturesTest {
 
     /**
      * This method removes all the testing artifacts from the server directories.
-     * 
+     *
      * @throws Exception
      */
     @Mode(TestMode.LITE)
@@ -264,7 +268,7 @@ public class AutoFeaturesTest {
 
     /**
      * This method removes the skeleton features that are created as part of the performance test.
-     * 
+     *
      * @throws Exception
      */
     @Mode(TestMode.LITE)
@@ -290,15 +294,15 @@ public class AutoFeaturesTest {
      * TestDescription:
      * This test ensures that auto features are automatically installed when their capability features are installed. The test ensures
      * that this happens successfully during server start.
-     * 
+     *
      * The feature structure is as follows:
-     * 
+     *
      * featureA, featureB, featureC and featureD are all normal features.
-     * 
+     *
      * featureE is an auto feature that depends on features A and B.
      * featureF is an auto feature that depends on features B and C.
      * featureG is an auto feature that depends on auto feature E and normal feature D.
-     * 
+     *
      * @throws Exception
      */
     @Mode(TestMode.LITE)
@@ -310,7 +314,7 @@ public class AutoFeaturesTest {
         server.setServerConfigurationFile("server_all_features.xml");
         server.startServer(testName.getMethodName() + ".log");
 
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are 
+        // When the features are installed during a server start we don't get messages issued to the logs about which features are
         // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
 
         String installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
@@ -343,15 +347,15 @@ public class AutoFeaturesTest {
      * TestDescription:
      * This test ensures that auto features are automatically installed when their capability features are installed. The test
      * ensures that this happens during server update.
-     * 
+     *
      * The feature structure is as follows:
-     * 
+     *
      * featureA, featureB, featureC and featureD are all normal features.
-     * 
+     *
      * featureE is an auto feature that depends on features A and B.
      * featureF is an auto feature that depends on features B and C.
      * featureG is an auto feature that depends on auto feature E and normal feature D.
-     * 
+     *
      * @throws Exception
      */
     @Mode(TestMode.LITE)
@@ -435,13 +439,13 @@ public class AutoFeaturesTest {
      * TestDescription:
      * This test ensures that you are able to use "OR" filters, so that an auto feature will be auto provisioned if one feature or another
      * feature, or both features are configured. The test uses the feature update method to check things have been provisioned correctly.
-     * 
+     *
      * The feature structure is as follows:
-     * 
+     *
      * featureH and featureI are all normal features.
-     * 
+     *
      * featureJ is an auto feature that depends on feature H or feature I.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -558,14 +562,14 @@ public class AutoFeaturesTest {
      * TestDescription:
      * This test ensures that auto features are added to the feature directory between a server stop and start, will get provisioned
      * if they are satisfied, even if the configured features aren't changed between server starts.
-     * 
+     *
      * The feature structure is as follows:
-     * 
+     *
      * featureA, featureB
-     * 
+     *
      * featureE is an auto feature that depends on features A and B.
      * featureG is an auto feature that depends on auto feature E and normal feature D.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -581,7 +585,7 @@ public class AutoFeaturesTest {
         server.setServerConfigurationFile("server_all_features.xml");
         server.startServer(testName.getMethodName() + ".log");
 
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are 
+        // When the features are installed during a server start we don't get messages issued to the logs about which features are
         // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
         String installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
         assertNotNull("There is no installed features property in the feature.cache file",
@@ -616,7 +620,7 @@ public class AutoFeaturesTest {
         // restart the server
         server.startServer(testName.getMethodName() + "-2.log"); // clean start
 
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are 
+        // When the features are installed during a server start we don't get messages issued to the logs about which features are
         // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
         installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
         assertNotNull("There is no installed features property in the feature.cache file",
@@ -648,15 +652,15 @@ public class AutoFeaturesTest {
      * TestDescription:
      * This test ensures that auto user features are automatically installed when their capability features are installed.
      * The test ensures that this happens successfully during server start.
-     * 
+     *
      * The feature structure is as follows:
-     * 
+     *
      * ufeatureA, ufeatureB, ufeatureC and ufeatureD are all normal user features.
-     * 
+     *
      * ufeatureE is an auto user feature that depends on normal user features A and B.
      * ufeatureF is an auto user feature that depends on normal user features B and C.
      * ufeatureG is an auto user feature that depends on auto user feature E and normal user feature D.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -667,7 +671,7 @@ public class AutoFeaturesTest {
         server.setServerConfigurationFile("server_usr_all_features.xml");
         server.startServer(testName.getMethodName() + ".log");
 
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are 
+        // When the features are installed during a server start we don't get messages issued to the logs about which features are
         // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
 
         String installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
@@ -700,15 +704,15 @@ public class AutoFeaturesTest {
      * TestDescription:
      * This test ensures that auto user features are automatically installed when their capability user features are installed.
      * The test ensures that this happens during server update.
-     * 
+     *
      * The feature structure is as follows:
-     * 
+     *
      * ufeatureA, ufeatureB, ufeatureC and ufeatureD are all normal user features.
-     * 
+     *
      * ufeatureE is an auto user feature that depends on normal user features A and B.
      * ufeatureF is an auto user feature that depends on normal user features B and C.
      * ufeatureG is an auto user feature that depends on auto user feature E and normal user feature D.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -794,15 +798,15 @@ public class AutoFeaturesTest {
      * This test ensures that auto user features are automatically installed when their capability features are installed.
      * The capability features are a combination of user and non user features.
      * The test ensures that this happens during server update.
-     * 
+     *
      * The feature structure is as follows:
-     * 
+     *
      * featureA, featureB, featureC and featureD are all normal non user features.
-     * 
+     *
      * ufeatureL is an auto user feature that depends on normal non user features A and B.
      * ufeatureM is an auto user feature that depends on normal non user features B and C.
      * ufeatureN is an auto user feature that depends on auto user feature L and normal non user feature D.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -886,13 +890,13 @@ public class AutoFeaturesTest {
      * TestDescription:
      * This test ensures that you are able to use "OR" filters, so that an auto user feature will be auto provisioned if one user feature or another
      * user feature, or both user features are configured. The test uses the feature update method to check things have been provisioned correctly.
-     * 
+     *
      * The feature structure is as follows:
-     * 
+     *
      * ufeatureH and ufeatureI are all normal user features.
-     * 
+     *
      * ufeatureJ is an auto user feature that depends on user feature H or user feature I.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -1009,14 +1013,14 @@ public class AutoFeaturesTest {
      * TestDescription:
      * This test ensures that auto user features are added to the feature directory between a server stop and start, will get provisioned
      * if they are satisfied, even if the configured features aren't changed between server starts.
-     * 
+     *
      * The feature structure is as follows:
-     * 
+     *
      * ufeatureA, ufeatureB are normal user features
-     * 
+     *
      * ufeatureE is an auto user feature that depends on normal user features A and B.
      * ufeatureG is an auto user feature that depends on auto user feature E and normal user feature D.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -1031,8 +1035,8 @@ public class AutoFeaturesTest {
         // Now move the server xml with the all features available
         server.setServerConfigurationFile("server_usr_all_features.xml");
         server.startServer(testName.getMethodName() + ".log");
-
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are 
+        
+        // When the features are installed during a server start we don't get messages issued to the logs about which features are
         // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
         String installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
         assertNotNull("There is no installed features property in the feature.cache file",
@@ -1068,7 +1072,7 @@ public class AutoFeaturesTest {
         // restart the server
         server.startServer(testName.getMethodName() + "-2.log"); // clean start
 
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are 
+        // When the features are installed during a server start we don't get messages issued to the logs about which features are
         // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
         installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
         assertNotNull("There is no installed features property in the feature.cache file",
@@ -1099,15 +1103,15 @@ public class AutoFeaturesTest {
      * TestDescription:
      * This test ensures that auto product features are automatically installed when their capability features are installed.
      * The test ensures that this happens successfully during server start.
-     * 
+     *
      * The feature structure is as follows:
-     * 
+     *
      * pfeatureA, pfeatureB, pfeatureC and pfeatureD are all normal product features.
-     * 
+     *
      * pfeatureE is an auto product feature that depends on normal product features A and B.
      * pfeatureF is an auto product feature that depends on normal product features B and C.
      * pfeatureG is an auto product feature that depends on auto product feature E and normal product feature D.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -1118,7 +1122,7 @@ public class AutoFeaturesTest {
         server.setServerConfigurationFile("server_product_all_features.xml");
         server.startServer(testName.getMethodName() + ".log");
 
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are 
+        // When the features are installed during a server start we don't get messages issued to the logs about which features are
         // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
 
         String installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
@@ -1159,15 +1163,15 @@ public class AutoFeaturesTest {
      * TestDescription:
      * This test ensures that auto product features are automatically installed when their capability product features are installed.
      * The test ensures that this happens during server update.
-     * 
+     *
      * The feature structure is as follows:
-     * 
+     *
      * pfeatureA, pfeatureB, pfeatureC and pfeatureD are all normal product features.
-     * 
+     *
      * pfeatureE is an auto product feature that depends on normal product features A and B.
      * pfeatureF is an auto product feature that depends on normal product features B and C.
      * pfeatureG is an auto product feature that depends on auto product feature E and normal product feature D.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -1272,17 +1276,17 @@ public class AutoFeaturesTest {
      * This test ensures that when multiple product features are configured, the
      * auto product features are automatically installed when their capability product features are installed.
      * The test ensures that this happens during server update.
-     * 
+     *
      * The feature structure is as follows:
-     * 
+     *
      * pfeatureA, pfeatureB, and pfeatureD are all normal product features for product productAuto.
      * p2featureA p2featureB and p2featureD are all normal product features for product product2Auto.
-     * 
+     *
      * pfeatureE is an auto product feature that depends on normal product features pfeatureA and pfeatureB.
      * pfeatureG is an auto product feature that depends on auto product feature pfeatureE and normal product feature pfeatureD.
      * p2featureE is an auto product feature that depends on normal product features p2featureA and p2featureB.
      * p2featureG is an auto product feature that depends on auto product feature p2featureE and normal product feature p2featureD.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -1397,15 +1401,15 @@ public class AutoFeaturesTest {
      * This test ensures that auto product features are automatically installed when their capability features are installed.
      * The capability features are a combination of product and non product features.
      * The test ensures that this happens during server update.
-     * 
+     *
      * The feature structure is as follows:
-     * 
+     *
      * featureA, featureB, featureC and featureD are all normal non product features.
-     * 
+     *
      * pfeatureL is an auto product feature that depends on normal non product features A and B.
      * pfeatureM is an auto product feature that depends on normal non product features B and C.
      * pfeatureN is an auto product feature that depends on auto product feature L and normal non product feature D.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -1497,13 +1501,13 @@ public class AutoFeaturesTest {
      * TestDescription:
      * This test ensures that you are able to use "OR" filters, so that an auto product feature will be auto provisioned if one product feature or another
      * product feature, or both product features are configured. The test uses the feature update method to check things have been provisioned correctly.
-     * 
+     *
      * The feature structure is as follows:
-     * 
+     *
      * pfeatureH and pfeatureI are all normal product features.
-     * 
+     *
      * pfeatureJ is an auto product feature that depends on product feature H or product feature I.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -1640,14 +1644,14 @@ public class AutoFeaturesTest {
      * TestDescription:
      * This test ensures that auto product features are added to the feature directory between a server stop and start, will get provisioned
      * if they are satisfied, even if the configured features aren't changed between server starts.
-     * 
+     *
      * The feature structure is as follows:
-     * 
+     *
      * pfeatureA, pfeatureB are normal product features
-     * 
+     *
      * pfeatureE is an auto product feature that depends on normal product features A and B.
      * pfeatureG is an auto product feature that depends on auto product feature E and normal product feature D.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -1663,7 +1667,7 @@ public class AutoFeaturesTest {
         server.setServerConfigurationFile("server_product_all_features.xml");
         server.startServer(testName.getMethodName() + ".log");
 
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are 
+        // When the features are installed during a server start we don't get messages issued to the logs about which features are
         // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
         String installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
         assertNotNull("There is no installed features property in the feature.cache file",
@@ -1706,7 +1710,7 @@ public class AutoFeaturesTest {
         // restart the server
         server.startServer(testName.getMethodName() + "-2.log"); // clean start
 
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are 
+        // When the features are installed during a server start we don't get messages issued to the logs about which features are
         // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
         installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
         assertNotNull("There is no installed features property in the feature.cache file",
@@ -1744,7 +1748,7 @@ public class AutoFeaturesTest {
     /**
      * TestDescription:
      * This test ensures that an invalid filter in the capability header throws the expected exception.
-     * 
+     *
      * @throws Exception
      */
 
@@ -1804,14 +1808,14 @@ public class AutoFeaturesTest {
      * TestDescription:
      * This test ensures that auto product features that are added to the feature directory after a server start, will get provisioned
      * if they are satisfied, even if the configured features aren't changed between server starts.
-     * 
+     *
      * The feature structure is as follows:
-     * 
+     *
      * featureA, featureB, featureC and feature D are normal features
-     * 
+     *
      * featureE is an auto feature that depends on normal features A and B.
      * featureG is an auto feature that depends on auto feature E and normal feature D.
-     * 
+     *
      * @throws Exception
      */
 
@@ -1831,7 +1835,7 @@ public class AutoFeaturesTest {
 
         // Copy the test feature  bundle, and the test featureProvisioner manifest,
         // which allows us to use a servlet to refresh the autofeatures.
-        LibertyFileManager.copyFileIntoLiberty(server.getMachine(), server.getInstallRoot() + "/lib", "publish/bundles/test.feature.provisioner_1.0.0.jar");
+        LibertyFileManager.copyFileIntoLiberty(server.getMachine(), server.getInstallRoot() + "/lib", "publish/bundles/test.feature.provisioner.jar");
         server.copyFileToLibertyInstallRoot(FEATURE_PATH, "test.featureprovisioner-1.0.mf");
 
         // Now move the server xml with the all features available
@@ -1841,7 +1845,7 @@ public class AutoFeaturesTest {
         // Wait for the Feature Refresh servlet to start.
         String message = server.waitForStringInLog("CWWKT0016I.*http://.*/feature");
 
-        // When the features are installed during a server start we don't get messages issued to the logs about which features are 
+        // When the features are installed during a server start we don't get messages issued to the logs about which features are
         // installed, so we need to look in the feature.cache file to ensure the correct features have been installed.
 
         String installedFeatures = TestUtils.getInstalledFeatures(server, FEATURE_CACHE);
@@ -1895,9 +1899,9 @@ public class AutoFeaturesTest {
         bundleCacheProperties = TestUtils.getCacheProperties(server, FEATURE_BUNDLE_CACHE);
         assertTrue("bundle7/[1.0.0,2.0.0) was not installed and should have been: " + bundleCacheProperties, bundleCacheProperties.containsKey("bundle7/[1.0.0,2.0.0)"));
 
-        // Remove Feature E and G manifests from the lib features dir, and refresh the auto features, and ensure that the 
+        // Remove Feature E and G manifests from the lib features dir, and refresh the auto features, and ensure that the
         // both feature E and G have been removed. You have to Feature G as well as E, otherwise we get an exception because G
-        // is currently provisioned and the system recognises that it can't 
+        // is currently provisioned and the system recognises that it can't
         server.deleteFileFromLibertyInstallRoot(FEATURE_PATH + AUTO_FEATURE_E_MF);
 
         HttpUtils.findStringInUrl(server, FEATURE_PROVISIONER_CONTEXT_ROOT, "FeatureProvisioner: features refreshed.");
@@ -1923,7 +1927,7 @@ public class AutoFeaturesTest {
 
     /**
      * Work out if the performance of stats2 was worse than stats1
-     * 
+     *
      * @param stats1
      * @param stats2
      */
@@ -2036,7 +2040,7 @@ public class AutoFeaturesTest {
         /**
          * Return a format string that will produce a reasonable standard way for
          * formatting time (but still using the current locale)
-         * 
+         *
          * @return The format string
          */
         public static DateFormat getDateFormat() {

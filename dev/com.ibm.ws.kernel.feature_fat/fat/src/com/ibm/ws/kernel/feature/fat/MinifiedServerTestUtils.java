@@ -1,14 +1,14 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * WLP Copyright IBM Corp. 2013
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
 package com.ibm.ws.kernel.feature.fat;
 
 import static org.junit.Assert.assertEquals;
@@ -92,9 +92,9 @@ public class MinifiedServerTestUtils {
     /**
      * This sets up the class ready to be used but does not create the minified server.
      *
-     * @param className The name of the test class
+     * @param className  The name of the test class
      * @param serverName The name of the server being used
-     * @param lserver The server to be minified
+     * @param lserver    The server to be minified
      * @throws Exception
      */
     public void setup(String className, String serverName, LibertyServer lserver) throws Exception {
@@ -118,9 +118,9 @@ public class MinifiedServerTestUtils {
     /**
      * This minifies a server and then extracts the minified server and starts it.
      *
-     * @param className The name of the test class
+     * @param className  The name of the test class
      * @param serverName The name of the server being used
-     * @param lserver The server to be minified
+     * @param lserver    The server to be minified
      * @throws Exception
      */
     public void setupAndStartMinifiedServer(String className, String serverName, LibertyServer lserver) throws Exception {
