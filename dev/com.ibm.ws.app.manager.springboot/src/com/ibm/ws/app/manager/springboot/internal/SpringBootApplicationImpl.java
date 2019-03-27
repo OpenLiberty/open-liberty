@@ -77,6 +77,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.adaptable.module.structure.StructureHelper;
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
+import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.internal.DeployedAppInfoBase;
 import com.ibm.ws.app.manager.module.internal.ExtendedModuleInfoImpl;
 import com.ibm.ws.app.manager.module.internal.ModuleClassLoaderFactory;
@@ -130,17 +131,18 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         public SpringModuleContainerInfo(List<Container> springBootSupport, ModuleHandler moduleHandler, List<ModuleMetaDataExtender> moduleMetaDataExtenders,
                                          List<NestedModuleMetaDataFactory> nestedModuleMetaDataFactories,
                                          Container moduleContainer, Entry altDDEntry,
-                                         String moduleURI, ModuleClassesInfoProvider moduleClassesInfo,
+                                         String moduleURI,
+                                         ModuleClassLoaderFactory moduleClassLoaderFactory,
+                                         ModuleClassesInfoProvider moduleClassesInfo,
                                          List<ContainerInfo> containerInfos) throws UnableToAdaptException {
-            super(moduleHandler, moduleMetaDataExtenders, nestedModuleMetaDataFactories, moduleContainer, altDDEntry, moduleURI, ContainerInfo.Type.WEB_MODULE, moduleClassesInfo, WebApp.class);
+            super(moduleHandler, moduleMetaDataExtenders, nestedModuleMetaDataFactories, moduleContainer, altDDEntry, moduleURI, ContainerInfo.Type.WEB_MODULE, moduleClassLoaderFactory, moduleClassesInfo, WebApp.class);
             this.classesContainerInfo.addAll(containerInfos);
         }
 
         @Override
-        public ExtendedModuleInfoImpl createModuleInfoImpl(ApplicationInfo appInfo,
-                                                           ModuleClassLoaderFactory moduleClassLoaderFactory) throws MetaDataException {
+        public ExtendedModuleInfoImpl createModuleInfoImpl(ApplicationInfo appInfo, ModuleClassLoaderFactory classLoaderFactory) throws MetaDataException {
             try {
-                SpringBootModuleInfo springModuleInfo = new SpringBootModuleInfo(appInfo, moduleName, name, container, altDDEntry, classesContainerInfo, moduleClassLoaderFactory, getSpringBootApplication());
+                SpringBootModuleInfo springModuleInfo = new SpringBootModuleInfo(appInfo, moduleName, name, container, altDDEntry, classesContainerInfo, classLoaderFactory, getSpringBootApplication());
                 return springModuleInfo;
             } catch (UnableToAdaptException e) {
                 FFDCFilter.processException(e, getClass().getName(), "createModuleInfo", this);
@@ -403,7 +405,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
                 if (toCheck.isEmpty()) {
                     return result = true;
                 }
-                Configuration[] existing = factory.getConfigurationAdmin().listConfigurations(filter);
+                Configuration[] existing = deployedAppServices.getConfigurationAdmin().listConfigurations(filter);
                 return result = existing != null && existing.length > 0;
             } catch (IOException | InvalidSyntaxException e) {
                 // Auto FFDC here, this will happen because of a defect
@@ -449,7 +451,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         private boolean checkKeyStore(KeyStore keyStore) {
             try {
                 String filter = createFilter("com.ibm.ws.ssl.keystore", keyStore.getId());
-                Configuration[] existing = factory.getConfigurationAdmin().listConfigurations(filter);
+                Configuration[] existing = deployedAppServices.getConfigurationAdmin().listConfigurations(filter);
                 return existing != null && existing.length > 0;
             } catch (IOException | InvalidSyntaxException e) {
                 // Auto FFDC here, this will happen because of a defect
@@ -496,6 +498,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     private final ArtifactContainer rawContainer;
     private final SpringBootManifest springBootManifest;
     private final SpringBootApplicationFactory factory;
+    private final DeployedAppServices deployedAppServices;
     private final Throwable initError;
     private final SpringModuleContainerInfo springContainerModuleInfo;
     private final AtomicReference<ServiceRegistration<SpringBootConfigFactory>> springBootConfigReg = new AtomicReference<>();
@@ -506,10 +509,13 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     private final List<String> appArgs;
     private volatile AtomicReference<String> applicationActivated;
 
-    public SpringBootApplicationImpl(ApplicationInformation<DeployedAppInfo> applicationInformation, SpringBootApplicationFactory factory, int id) throws UnableToAdaptException {
-        super(applicationInformation, factory);
+    public SpringBootApplicationImpl(ApplicationInformation<DeployedAppInfo> applicationInformation,
+                                     SpringBootApplicationFactory factory,
+                                     DeployedAppServices deployedAppServices, int id) throws UnableToAdaptException {
+        super(applicationInformation, deployedAppServices);
         this.id = id;
         this.factory = factory;
+        this.deployedAppServices = deployedAppServices;
         this.applicationInformation = applicationInformation;
         SpringBootManifest manifest = null;
         ArtifactContainer newContainer = null;
@@ -518,11 +524,11 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         Throwable error = null;
 
         try {
-            newContainer = storeLibs(applicationInformation, getRawContainer(applicationInformation), manifest, factory);
+            newContainer = storeLibs(applicationInformation, getRawContainer(applicationInformation), manifest, factory, deployedAppServices);
             manifest = getSpringBootManifest(applicationInformation);
             infos = getContainerInfos(applicationInformation.getContainer(), factory, manifest);
             String moduleURI = ModuleInfoUtils.getModuleURIFromLocation(applicationInformation.getLocation());
-            mci = new SpringModuleContainerInfo(factory.getSpringBootSupport(), factory.getModuleHandler(), factory.getModuleMetaDataExtenders().get("web"), factory.getNestedModuleMetaDataFactories().get("web"), applicationInformation.getContainer(), null, moduleURI, moduleClassesInfo, infos);
+            mci = new SpringModuleContainerInfo(factory.getSpringBootSupport(), factory.getModuleHandler(), deployedAppServices.getModuleMetaDataExtenders("web"), deployedAppServices.getNestedModuleMetaDataFactories("web"), applicationInformation.getContainer(), null, moduleURI, this, moduleClassesInfo, infos);
             moduleContainerInfos.add(mci);
         } catch (UnableToAdaptException e) {
             error = e;
@@ -579,7 +585,8 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
 
     private static ArtifactContainer storeLibs(ApplicationInformation<DeployedAppInfo> applicationInformation, ArtifactContainer rawContainer,
                                                SpringBootManifest springBootManifest,
-                                               SpringBootApplicationFactory factory) {
+                                               SpringBootApplicationFactory factory,
+                                               DeployedAppServices deployedAppServices) {
         String location = applicationInformation.getLocation();
         if (location.toLowerCase().endsWith(".xml")) {
             // don't do this for loose applications
@@ -601,10 +608,10 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         }
 
         // Make sure the spring thin apps directory is available
-        WsResource thinAppsDir = factory.getLocationAdmin().resolveResource(SPRING_THIN_APPS_DIR);
+        WsResource thinAppsDir = deployedAppServices.getLocationAdmin().resolveResource(SPRING_THIN_APPS_DIR);
         thinAppsDir.create();
 
-        WsResource thinSpringAppResource = factory.getLocationAdmin().resolveResource(SPRING_THIN_APPS_DIR + applicationInformation.getName() + "." + SPRING_APP_TYPE);
+        WsResource thinSpringAppResource = deployedAppServices.getLocationAdmin().resolveResource(SPRING_THIN_APPS_DIR + applicationInformation.getName() + "." + SPRING_APP_TYPE);
         File thinSpringAppFile = thinSpringAppResource.asFile();
         try {
             if (thinSpringAppFile.exists()) {
@@ -617,8 +624,8 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             }
 
             // Set up the new container pointing to the thin spring app file
-            ArtifactContainer artifactContainer = setupArtifactContainer(thinSpringAppFile, factory);
-            container = setupContainer(applicationInformation.getPid(), artifactContainer, factory);
+            ArtifactContainer artifactContainer = setupArtifactContainer(thinSpringAppFile, factory, deployedAppServices);
+            container = setupContainer(applicationInformation.getPid(), artifactContainer, factory, deployedAppServices);
             applicationInformation.setContainer(container);
             return artifactContainer;
         } catch (NoSuchAlgorithmException | IOException e) {
@@ -637,15 +644,17 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         thinSpringAppFile.setLastModified(lastModified);
     }
 
-    private static ArtifactContainer setupArtifactContainer(File f, SpringBootApplicationFactory factory) throws IOException {
+    private static ArtifactContainer setupArtifactContainer(File f, SpringBootApplicationFactory factory,
+                                                            DeployedAppServices deployedAppServices) throws IOException {
         File cacheDir = factory.getDataDir("cache");
-        return factory.getArtifactFactory().getContainer(cacheDir, f);
+        return deployedAppServices.getArtifactFactory().getContainer(cacheDir, f);
     }
 
-    private static Container setupContainer(String pid, ArtifactContainer artifactContainer, SpringBootApplicationFactory factory) throws IOException {
+    private static Container setupContainer(String pid, ArtifactContainer artifactContainer, SpringBootApplicationFactory factory,
+                                            DeployedAppServices deployedAppServices) throws IOException {
         File cacheAdapt = factory.getDataDir("cacheAdapt");
         File cacheOverlay = factory.getDataDir("cacheOverlay");
-        return factory.getModuleFactory().getContainer(cacheAdapt, cacheOverlay, artifactContainer);
+        return deployedAppServices.getModuleFactory().getContainer(cacheAdapt, cacheOverlay, artifactContainer);
     }
 
     Throwable getError() {
@@ -662,7 +671,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
 
     @Override
     public Container createContainerFor(String id) throws IOException, UnableToAdaptException {
-        Container container = setupContainer(applicationInformation.getPid(), rawContainer, factory);
+        Container container = setupContainer(applicationInformation.getPid(), rawContainer, factory, deployedAppServices);
         AddEntryToOverlay virtualHostBnd = container.adapt(AddEntryToOverlay.class);
 
         // Add both XML and XMI here incase an old web.xml file is used;
@@ -954,7 +963,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
      */
     @Override
     public File getServerDir() {
-        return factory.getLocationAdmin().resolveResource(WsLocationConstants.SYMBOL_SERVER_CONFIG_DIR).asFile();
+        return deployedAppServices.getLocationAdmin().resolveResource(WsLocationConstants.SYMBOL_SERVER_CONFIG_DIR).asFile();
     }
 
     void setApplicationActivated(AtomicReference<String> applicationActivated) {

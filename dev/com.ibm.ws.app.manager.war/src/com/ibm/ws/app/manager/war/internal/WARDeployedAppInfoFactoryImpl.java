@@ -23,9 +23,10 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.app.manager.ApplicationManager;
+import com.ibm.ws.app.manager.internal.AppManagerConstants;
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
-import com.ibm.ws.app.manager.module.internal.DeployedAppInfoFactoryBase;
+import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -34,41 +35,29 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 
 @Component(service = DeployedAppInfoFactory.class,
            property = { "service.vendor=IBM", "type:String=war" })
-public class WARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
+public class WARDeployedAppInfoFactoryImpl implements DeployedAppInfoFactory {
 
     private static final TraceComponent tc = Tr.register(WARDeployedAppInfoFactoryImpl.class);
 
-    protected ModuleHandler webModuleHandler;
-    private ApplicationManager applicationManager;
-    private final ZipUtils zipUtils = new ZipUtils();
-
-    @Reference(target = "(type=web)")
-    protected void setWebModuleHandler(ModuleHandler handler) {
-        webModuleHandler = handler;
-    }
-
-    protected void unsetWebModuleHandler(ModuleHandler handler) {
-        webModuleHandler = null;
-    }
-
     @Reference
-    protected void setApplicationManager(ApplicationManager mgr) {
-        this.applicationManager = mgr;
-    }
+    protected DeployedAppServices deployedAppServices;
+    @Reference(target = "(type=web)")
+    protected ModuleHandler webModuleHandler;
+    @Reference
+    protected ApplicationManager applicationManager;
 
-    protected void unsetApplicationManager(ApplicationManager mgr) {
-        this.applicationManager = null;
-    }
+    private final ZipUtils zipUtils = new ZipUtils();
+    private final static Map<String, Long> timestamps = new HashMap<String, Long>();
 
     // WAR expansion ...
 
     protected void prepareExpansion() throws IOException {
-        WsResource expansionResource = getLocationAdmin().resolveResource(EXPANDED_APPS_DIR);
+        WsResource expansionResource = deployedAppServices.getLocationAdmin().resolveResource(AppManagerConstants.EXPANDED_APPS_DIR);
         expansionResource.create();
     }
 
     protected WsResource resolveExpansion(String appName) {
-        return getLocationAdmin().resolveResource(EXPANDED_APPS_DIR + appName + ".war/");
+        return deployedAppServices.getLocationAdmin().resolveResource(AppManagerConstants.EXPANDED_APPS_DIR + appName + ".war/");
     }
 
     // Time stamps of WAR files which have been expanded during this JVM launch..
@@ -180,7 +169,7 @@ public class WARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
     }
 
     private boolean isArchive(File file, String path) {
-        if ( path.toLowerCase().endsWith(XML_SUFFIX) ) {
+        if ( path.toLowerCase().endsWith(AppManagerConstants.XML_SUFFIX) ) {
             return false;
         } else if ( !file.isFile() ) {
             return false;
@@ -208,7 +197,7 @@ public class WARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
                 File expandedFile = expandedResource.asFile();
                 expand(warName, warFile, expandedResource, expandedFile);
 
-                Container expandedContainer = setupContainer(warPid, expandedFile);
+                Container expandedContainer = deployedAppServices.setupContainer(warPid, expandedFile);
                 appInfo.setContainer(expandedContainer);
 
             } catch ( IOException e ) {
@@ -216,7 +205,7 @@ public class WARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
             }
         }
 
-        WARDeployedAppInfo deployedApp = new WARDeployedAppInfo(appInfo, this);
+        WARDeployedAppInfo deployedApp = new WARDeployedAppInfo(appInfo, deployedAppServices, webModuleHandler);
         appInfo.setHandlerInfo(deployedApp);
 
         return deployedApp;

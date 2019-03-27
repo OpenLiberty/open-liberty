@@ -28,6 +28,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.app.manager.module.DeployedModuleInfo;
 import com.ibm.ws.app.manager.wab.internal.WABState.State;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
+import com.ibm.ws.container.service.app.deploy.extended.ModuleContainerInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
@@ -327,6 +328,16 @@ class WAB implements BundleTrackerCustomizer<WAB> {
 
     boolean getCreatedApplicationInfo() {
         return this.createdAppInfo;
+    }
+
+    private ModuleContainerInfo moduleContainerInfo = null;
+
+    void setModuleContainerInfo(ModuleContainerInfo mci) {
+        moduleContainerInfo = mci;
+    }
+
+    ModuleContainerInfo getModuleContainerInfo() {
+        return moduleContainerInfo;
     }
 
     private DeployedModuleInfo deployedModuleInfo = null;

@@ -40,6 +40,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.container.service.app.deploy.ApplicationClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.EARApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
@@ -61,6 +62,7 @@ import com.ibm.ws.microprofile.openapi.utils.ProxySupportUtil;
 import com.ibm.ws.microprofile.openapi.utils.ServerInfo;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
+import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.http.VirtualHost;
 
@@ -335,6 +337,23 @@ public class ApplicationProcessor {
             if (appContainer == null) {
                 if (OpenAPIUtils.isEventEnabled(tc)) {
                     Tr.event(tc, "Application Processor: Processing application ended: appInfo=" + appInfo + ", appContainer=null");
+                }
+                return;
+            }
+
+            /* check for app classes, if it is not there then the app manager is not in control of this app */
+            try {
+                NonPersistentCache cache = appContainer.adapt(NonPersistentCache.class);
+                ApplicationClassesContainerInfo applicationClassesContainerInfo = (ApplicationClassesContainerInfo) cache.getFromCache(ApplicationClassesContainerInfo.class);
+                if (applicationClassesContainerInfo == null) {
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Application Processor: Processing application ended: appInfo=" + appInfo + ", applicationClassesContainerInfo=null");
+                    }
+                    return;
+                }
+            } catch (UnableToAdaptException e) {
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Failed to adapt NonPersistentCache: container=" + appContainer + " : \n" + e.getMessage());
                 }
                 return;
             }

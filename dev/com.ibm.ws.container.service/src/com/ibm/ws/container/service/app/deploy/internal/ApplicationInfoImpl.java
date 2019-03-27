@@ -15,8 +15,11 @@ import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
 import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.metadata.extended.MetaDataGetter;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.wsspi.adaptable.module.Container;
+import com.ibm.wsspi.adaptable.module.NonPersistentCache;
+import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 /**
  *
@@ -29,15 +32,19 @@ class ApplicationInfoImpl implements ExtendedApplicationInfo, MetaDataGetter<App
     private final NestedConfigHelper configHelper;
     private final ApplicationInfoForContainer applicationInformation;
 
-    //ApplicationInfoImpl(String appName, J2EEName j2eeName, Container appContainer, NestedConfigHelper configHelper) {
-    //    this(appName, j2eeName, appContainer, configHelper, null);
-    //}
-
-    ApplicationInfoImpl(String appName, J2EEName j2eeName, Container appContainer, NestedConfigHelper configHelper, ApplicationInfoForContainer applicationInformation) {
+    ApplicationInfoImpl(String appName, J2EEName j2eeName, Container appContainer, NestedConfigHelper configHelper) {
         this.appName = appName;
         this.appMetaData = new ApplicationMetaDataImpl(j2eeName);
         this.appContainer = appContainer;
         this.configHelper = configHelper;
+        /* get jandex configuration from overlay cache */
+        ApplicationInfoForContainer applicationInformation = null;
+        try {
+            NonPersistentCache cache = appContainer.adapt(NonPersistentCache.class);
+            applicationInformation = (ApplicationInfoForContainer) cache.getFromCache(ApplicationInfoForContainer.class);
+        } catch (UnableToAdaptException ex) {
+            FFDCFilter.processException(ex, getClass().getName(), "ApplicationInfoImpl_ctor");
+        }
         this.applicationInformation = applicationInformation;
     }
 
@@ -53,7 +60,7 @@ class ApplicationInfoImpl implements ExtendedApplicationInfo, MetaDataGetter<App
 
     @Override
     public boolean getUseJandex() {
-        return applicationInformation.getUseJandex();
+        return applicationInformation != null ? applicationInformation.getUseJandex() : false;
     }
 
     @Override

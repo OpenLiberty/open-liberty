@@ -28,8 +28,8 @@ DynamicImport-Package: \
 
 Export-Package: \
   com.ibm.websphere.ejbcontainer.test.tools; version="1.0", \
-  com.ibm.websphere.ejbcontainer.test.osgi.pmi; version="1.0" \
-  com.ibm.websphere.ejbcontainer.test.mdb; version="1.0" \
+  com.ibm.websphere.ejbcontainer.test.osgi.pmi; version="1.0", \
+  com.ibm.websphere.ejbcontainer.test.mdb; version="1.0", \
   com.ibm.websphere.ejbcontainer.test.mdb.interceptors; version="1.0"
 
 Private-Package: \

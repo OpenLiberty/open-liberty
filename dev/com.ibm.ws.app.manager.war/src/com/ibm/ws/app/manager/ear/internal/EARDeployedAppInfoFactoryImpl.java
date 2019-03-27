@@ -30,10 +30,11 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.app.manager.ApplicationManager;
+import com.ibm.ws.app.manager.internal.AppManagerConstants;
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
 import com.ibm.ws.app.manager.module.DeployedAppMBeanRuntime;
-import com.ibm.ws.app.manager.module.internal.DeployedAppInfoFactoryBase;
+import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.ws.app.manager.war.internal.ZipUtils;
 import com.ibm.ws.javaee.dd.app.Application;
@@ -47,8 +48,11 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 
 @Component(service = DeployedAppInfoFactory.class,
            property = { "service.vendor=IBM", "type:String=ear" })
-public class EARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
+public class EARDeployedAppInfoFactoryImpl implements DeployedAppInfoFactory {
     private static final TraceComponent _tc = Tr.register(EARDeployedAppInfoFactoryImpl.class);
+
+    @Reference
+    protected DeployedAppServices deployedAppServices;
 
     protected ModuleHandler webModuleHandler;
     protected ModuleHandler ejbModuleHandler;
@@ -142,12 +146,12 @@ public class EARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
     // Application expansion ...
 
     protected void prepareExpansion() throws IOException {
-        WsResource expansionResource = getLocationAdmin().resolveResource(EXPANDED_APPS_DIR);
+        WsResource expansionResource = deployedAppServices.getLocationAdmin().resolveResource(AppManagerConstants.EXPANDED_APPS_DIR);
         expansionResource.create();
     }
 
     protected WsResource resolveExpansion(String appName) {
-        return getLocationAdmin().resolveResource(EXPANDED_APPS_DIR + appName + ".ear/");
+        return deployedAppServices.getLocationAdmin().resolveResource(AppManagerConstants.EXPANDED_APPS_DIR + appName + ".ear/");
     }
 
     // Time stamps of EAR files which have been expanded during this JVM launch..
@@ -258,7 +262,7 @@ public class EARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
     }
 
     private boolean isArchive(File file, String path) {
-        if ( path.toLowerCase().endsWith(XML_SUFFIX) ) {
+        if ( path.toLowerCase().endsWith(AppManagerConstants.XML_SUFFIX) ) {
             return false;
         } else if ( !file.isFile() ) {
             return false;
@@ -316,7 +320,7 @@ public class EARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
                 expand(appName, appFile, expandedResource, expandedFile);
 
                 originalAppContainer = appContainer;
-                appContainer = setupContainer(appPid, expandedFile);
+                appContainer = deployedAppServices.setupContainer(appPid, expandedFile);
 
             } catch ( IOException e ) {
                 Tr.error(_tc, "warning.could.not.expand.application", appName, e.getMessage());
@@ -354,7 +358,7 @@ public class EARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
         appInfo.setContainer(jeeContainer);
 
         EARDeployedAppInfo deployedApp =
-            new EARDeployedAppInfo(appInfo, applicationDD, this, originalAppContainer);
+            new EARDeployedAppInfo(appInfo, applicationDD, this, deployedAppServices, originalAppContainer);
         appInfo.setHandlerInfo(deployedApp);
 
         return deployedApp;

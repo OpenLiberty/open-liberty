@@ -22,8 +22,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.util.tracker.ServiceTracker;
 
-import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
-import com.ibm.ws.app.manager.module.internal.DeployedAppInfoFactoryBase;
+import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.ws.app.manager.springboot.container.config.SpringConfiguration;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory;
@@ -39,17 +38,14 @@ import com.ibm.wsspi.http.VirtualHost;
  */
 @Component
 public class WebInstanceFactory implements ContainerInstanceFactory<WebInitializer> {
-    @Reference(service = ModuleHandler.class, target = "(type=web)")
+    @Reference(target = "(type=web)")
     private ModuleHandler moduleHandler;
-    private DeployedAppInfoFactoryBase deployedAppFactory;
-    private BundleContext context;
+    @Reference
+    private DeployedAppServices deployedAppServices;
     @Reference
     private FutureMonitor futureMonitor;
 
-    @Reference(target = "(type=war)")
-    protected void setDeployedAppFactory(DeployedAppInfoFactory deployedAppFactory) {
-        this.deployedAppFactory = (DeployedAppInfoFactoryBase) deployedAppFactory;
-    }
+    private BundleContext context;
 
     @Activate
     protected void activate(BundleContext context) {
@@ -80,8 +76,8 @@ public class WebInstanceFactory implements ContainerInstanceFactory<WebInitializ
         return moduleHandler;
     }
 
-    DeployedAppInfoFactoryBase getDeployedAppFactory() {
-        return deployedAppFactory;
+    DeployedAppServices getDeployedAppServices() {
+        return deployedAppServices;
     }
 
     FutureMonitor getFutureMonitor() {
