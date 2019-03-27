@@ -49,6 +49,7 @@ public class WebRequestImpl implements WebRequest {
     private Map<String, Object> propMap = null;
     private boolean requestAuthenticate = false;
     private boolean disableClientCertFailOver = false;
+    private boolean continueAfterUnprotectedURI = true;
 
     public WebRequestImpl(HttpServletRequest req, HttpServletResponse resp,
                           SecurityMetadata securityMetadata, WebAppSecurityConfig config) {
@@ -255,6 +256,16 @@ public class WebRequestImpl implements WebRequest {
     @Override
     public boolean isCallAfterSSO() {
         return callAfterSSO;
+    }
+
+    @Override
+    public void setContinueAfterUnprotectedURI(boolean continueAfterUnprotectedURI) {
+        this.continueAfterUnprotectedURI = continueAfterUnprotectedURI;
+    }
+
+    @Override
+    public boolean isContinueAfterUnprotectedURI() {
+        return continueAfterUnprotectedURI;
     }
 
     /*
