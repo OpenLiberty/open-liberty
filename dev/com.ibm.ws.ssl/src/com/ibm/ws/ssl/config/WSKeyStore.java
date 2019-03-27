@@ -49,6 +49,7 @@ import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateFactory;
 import com.ibm.ws.crypto.certificateutil.DefaultSubjectDN;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.core.WSPKCSInKeyStore;
 import com.ibm.ws.ssl.core.WSPKCSInKeyStoreList;
@@ -479,10 +480,10 @@ public class WSKeyStore extends Properties {
                     setProperty(Constants.SSLPROP_TOKEN_ENABLED, Constants.TRUE);
 
                     // set appropriate provider for jvm vendor
-                    if (isOracleVendor())
-                        setProperty(Constants.SSLPROP_KEY_STORE_PROVIDER, SUNPKCS11_PROVIDER_NAME);
-                    else
+                    if (JavaInfo.vendor().equals(JavaInfo.Vendor.IBM))
                         setProperty(Constants.SSLPROP_KEY_STORE_PROVIDER, IBMPKCS11Impl_PROVIDER_NAME);
+                    else
+                        setProperty(Constants.SSLPROP_KEY_STORE_PROVIDER, SUNPKCS11_PROVIDER_NAME);
                 }
             }
 
@@ -1369,29 +1370,6 @@ public class WSKeyStore extends Properties {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "clearJavaKeyStore");
         myKeyStore = null;
-    }
-
-    public boolean isOracleVendor() {
-        String vendorName = getSystemProperty("java.vendor");
-        boolean isOracle = false;
-        if (vendorName != null) {
-            if (vendorName.toLowerCase().contains("oracle")) {
-                isOracle = true;
-            }
-        }
-        return isOracle;
-    }
-
-    @SuppressWarnings("unchecked")
-    public String getSystemProperty(final String propName) {
-        String value = (String) java.security.AccessController.doPrivileged(new java.security.PrivilegedAction() {
-            @Override
-            public Object run() {
-                return System.getProperty(propName);
-            }
-        });
-
-        return value;
     }
 
 }
