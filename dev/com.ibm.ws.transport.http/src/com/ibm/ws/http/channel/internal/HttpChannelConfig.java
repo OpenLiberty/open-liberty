@@ -1325,7 +1325,7 @@ public class HttpChannelConfig {
      */
     private void parseThrowIOEForInboundConnections(Map<?, ?> props) {
         //PI57542
-        String value = (String) props.get(HttpConfigConstants.PROPNAME_THROW_IOE_FOR_INBOUND_CONNECTIONS);
+        Object value = props.get(HttpConfigConstants.PROPNAME_THROW_IOE_FOR_INBOUND_CONNECTIONS);
         if (null != value) {
             this.throwIOEForInboundConnections = convertBoolean(value);
             if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
