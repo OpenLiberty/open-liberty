@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -144,20 +144,45 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     @Modified
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected void modified(Map<?, ?> newProperties) {
-        String originalProvider = (String) props.get("defaultPersistenceProvider");
+        final String originalProvider = (String) props.get("defaultPersistenceProvider");
+        final String originalDefaultJtaDataSourceJndiName = (String) props.get("defaultJtaDataSourceJndiName");
+        final String originalDefaultNonJtaDataSourceJndiName = (String) props.get("defaultNonJtaDataSourceJndiName");
+
         if (newProperties instanceof Dictionary) {
             props = (Dictionary<String, Object>) newProperties;
         } else {
             props = new Hashtable(newProperties);
         }
-        String curProvider = (String) newProperties.get("defaultPersistenceProvider");
+        final String curProvider = (String) newProperties.get("defaultPersistenceProvider");
+        final String curDefaultJtaDataSourceJndiName = (String) newProperties.get("defaultJtaDataSourceJndiName");
+        final String curDefaultNonJtaDataSourceJndiName = (String) newProperties.get("defaultNonJtaDataSourceJndiName");
 
-        // If the <jpa defaultPersistenceProvider=""/> element has changed, restart all JPA apps
+        boolean recycleJPAApplications = false;
+
         if ((originalProvider != null && !originalProvider.equals(curProvider)) ||
             (curProvider != null && !curProvider.equals(originalProvider))) {
+            // If the <jpa defaultPersistenceProvider=""/> element has changed, restart all JPA apps
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Detected change in defaultPersistenceProvider of the <jpa> element.  Restarting all JPA applications.",
                          originalProvider + " -> " + curProvider);
+            recycleJPAApplications = true;
+        } else if ((originalDefaultJtaDataSourceJndiName != null && !originalDefaultJtaDataSourceJndiName.equals(curDefaultJtaDataSourceJndiName)) ||
+                   (curDefaultJtaDataSourceJndiName != null && !curDefaultJtaDataSourceJndiName.equals(originalDefaultJtaDataSourceJndiName))) {
+            // If the <jpa defaultJtaDataSourceJndiName=""/> element has changed, restart all JPA apps
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Detected change in defaultJtaDataSourceJndiName of the <jpa> element.  Restarting all JPA applications.",
+                         originalProvider + " -> " + curProvider);
+            recycleJPAApplications = true;
+        } else if ((originalDefaultNonJtaDataSourceJndiName != null && !originalDefaultNonJtaDataSourceJndiName.equals(curDefaultNonJtaDataSourceJndiName)) ||
+                   (curDefaultNonJtaDataSourceJndiName != null && !curDefaultNonJtaDataSourceJndiName.equals(originalDefaultNonJtaDataSourceJndiName))) {
+            // If the <jpa defaultNonJtaDataSourceJndiName=""/> element has changed, restart all JPA apps
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Detected change in defaultNonJtaDataSourceJndiName of the <jpa> element.  Restarting all JPA applications.",
+                         originalProvider + " -> " + curProvider);
+            recycleJPAApplications = true;
+        }
+
+        if (recycleJPAApplications) {
             recycleJPAApplications();
         }
     }
@@ -840,9 +865,16 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         if (FrameworkState.isStopping())
             return;
 
-        Set<String> appsToRestart = new HashSet<String>();
+        final Map<String, JPAApplInfo> appsToRestartMap = new HashMap<String, JPAApplInfo>();
+        final Set<String> appsToRestart = new HashSet<String>();
         synchronized (applList) {
-            appsToRestart.addAll(applList.keySet());
+            appsToRestartMap.putAll(applList);
+        }
+
+        for (Map.Entry<String, JPAApplInfo> entry : appsToRestartMap.entrySet()) {
+            if (entry.getValue().hasPersistenceUnitsDefined()) {
+                appsToRestart.add(entry.getKey());
+            }
         }
         appsToRestart.addAll(stuckApps);
         stuckApps.clear();
