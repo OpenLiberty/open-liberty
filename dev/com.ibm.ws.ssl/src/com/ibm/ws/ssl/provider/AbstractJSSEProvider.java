@@ -967,8 +967,8 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
                 String ksPropValue = cachedConfig.getProperty(Constants.SSLPROP_KEY_STORE, null);
                 String tsPropValue = cachedConfig.getProperty(Constants.SSLPROP_TRUST_STORE, null);
 
-                if ((ksPropValue != null && keyStorePath.equals(ksPropValue)) ||
-                    (tsPropValue != null && keyStorePath.equals(tsPropValue))) {
+                if ((ksPropValue != null && keyStorePath.equals(WSKeyStore.getCannonicalPath(ksPropValue))) ||
+                    (tsPropValue != null && keyStorePath.equals(WSKeyStore.getCannonicalPath(tsPropValue)))) {
                     removeList.add(cachedConfig);
                 }
             }

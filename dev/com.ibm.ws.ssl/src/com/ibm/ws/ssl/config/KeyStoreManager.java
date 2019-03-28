@@ -653,7 +653,7 @@ public class KeyStoreManager {
 
         for (Entry<String, WSKeyStore> entry : keyStoreMap.entrySet()) {
             WSKeyStore ws = entry.getValue();
-            if (ws.getLocation().equals(keyStorePath)) {
+            if (WSKeyStore.getCannonicalPath(ws.getLocation()).equals(keyStorePath)) {
                 ws.clearJavaKeyStore();
             }
         }

@@ -51,6 +51,7 @@ import com.ibm.ws.crypto.certificateutil.DefaultSubjectDN;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.ssl.JSSEProviderFactory;
+import com.ibm.ws.ssl.KeyringMonitor;
 import com.ibm.ws.ssl.core.WSPKCSInKeyStore;
 import com.ibm.ws.ssl.core.WSPKCSInKeyStoreList;
 import com.ibm.ws.ssl.internal.KeystoreConfig;
@@ -1372,4 +1373,20 @@ public class WSKeyStore extends Properties {
         myKeyStore = null;
     }
 
+    public static String getCannonicalPath(String location) {
+        String cannonicalLocation = location;
+        if (!location.startsWith(KeyringMonitor.SAF_PREFIX)) {
+            //Try to create File object based on Location to get the cannonical path
+            try {
+                cannonicalLocation = new File(location).getCanonicalPath();
+            } catch (IOException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception finding full file path. Setting back to default");
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getCannonicalLocation -> " + cannonicalLocation);
+        }
+        return cannonicalLocation;
+    }
 }
