@@ -12,12 +12,12 @@ package com.ibm.ws.kernel.feature.internal.subsystem;
 
 import static org.junit.Assert.assertFalse;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -25,23 +25,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 
-import test.common.SharedOutputManager;
-import test.utils.SharedConstants;
-
-import com.ibm.ws.kernel.feature.AppForceRestart;
 import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils.ImmutableAttributes;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils.ProvisioningDetails;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
-import com.ibm.ws.kernel.provisioning.VersionUtility;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
+
+import junit.framework.Assert;
+import test.common.SharedOutputManager;
+import test.utils.SharedConstants;
 
 /**
  *
@@ -58,7 +55,7 @@ public class FeatureDefinitionUtilsTest {
     public TestName testName = new TestName();
 
     @Test
-    public void testSimpleReadManifestWriteCache() throws IOException {
+    public void testSimpleReadManifestWriteCache() throws Exception {
         File featureFile = new File(SharedConstants.TEST_DATA_DIR, "com.ibm.websphere.supersededA.mf");
 
         ProvisioningDetails details = new ProvisioningDetails(featureFile, null);
@@ -73,55 +70,25 @@ public class FeatureDefinitionUtilsTest {
         // IBM-Feature-Version: 2
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        PrintWriter writer = new PrintWriter(out, true);
+        DataOutputStream writer = new DataOutputStream(out);
 
-        FeatureDefinitionUtils.writeAttributes(iAttr, details, writer);
+        FeatureRepository.writeFeatureAttributes(iAttr, details, writer);
         writer.flush();
-        String result = out.toString();
 
-        // -- Result string should look something like this:
-        // com.ibm.websphere.supersededA=../com.ibm.ws.kernel.feature/test/test data/com.ibm.websphere.supersededA.mf;1364156286000;300;;;2;PUBLIC;NEVER;1.0.0;0000
+        DataInputStream in = new DataInputStream(new ByteArrayInputStream(out.toByteArray()));
+        ImmutableAttributes iAttr2 = FeatureRepository.loadFeatureAttributes(in);
+        ProvisioningDetails details2 = FeatureRepository.loadProvisioningDetails(in, iAttr2);
 
-        String[] lines = result.split(FeatureDefinitionUtils.NL);
-
-        Assert.assertEquals("Output should be only one line: " + result, 1, lines.length);
-        Assert.assertFalse("Output should not contain AutoFeature indicator: " + result, result.contains("-C:"));
-        Assert.assertFalse("Output should not contain API Services indicator: " + result, result.contains("-V:"));
-        Assert.assertFalse("Output should not contain API Packages indicator: " + result, result.contains("-A:"));
-        Assert.assertFalse("Output should not contain SPI Packages indicator: " + result, result.contains("-S:"));
-
-        int pos = result.indexOf('=');
-        Assert.assertTrue("Output should contain an =, result: " + result, pos > 0);
-        Assert.assertEquals("String before the = should be the symbolic name", iAttr.symbolicName, result.substring(0, pos));
-
-        String[] parts = FeatureDefinitionUtils.splitPattern.split(result.substring(pos + 1).trim());
-        Assert.assertEquals("There should be 10 parts in the value", 10, parts.length);
-        Assert.assertEquals("parts[0] should contain the absolute file path", featureFile.getAbsolutePath(), parts[0]);
-
-        // Test parse long: lastModified and length
-        Assert.assertEquals("parts[1]  should contain the file modified time", featureFile.lastModified(), FeatureDefinitionUtils.getLongValue(parts[1], -1));
-        Assert.assertEquals("parts[2]  should contain the file length", featureFile.length(), FeatureDefinitionUtils.getLongValue(parts[2], -1));
-
-        Assert.assertTrue("parts[3] should be empty (no short name)", parts[3].isEmpty());
-
-        Assert.assertEquals("parts[4]  should contain the feature version", 2, FeatureDefinitionUtils.getIntegerValue(parts[4], 0));
-        Assert.assertSame("parts[5] should contain the visibility string", Visibility.PUBLIC, Visibility.fromString(parts[5]));
-        Assert.assertSame("parts[6] should contain the app restart header value", AppForceRestart.NEVER, AppForceRestart.fromString(parts[6]));
-        Assert.assertSame("parts[7] should resolve to the shared version constant", VersionUtility.VERSION_1_0, VersionUtility.stringToVersion(parts[7]));
-        Assert.assertEquals("parts[8] should contain empty flags (no API/SPI, not autofeature)", "00000", parts[8]);
-
-        // Check for superseded
-        Assert.assertTrue("Test for superseded should return true", details.isSuperseded());
-        Assert.assertEquals("Test for superseded-by should return value from header", "appSecurity-2.0,[servlet-3.0]", details.getSupersededBy());
+        assertAttributesEqual(ImmutableAttributes.class, iAttr, iAttr2);
 
         // Check subsystem content
-        Assert.assertEquals("Subsystem-Content (all) should contain one element", 1, details.getConstituents(null).size());
-        Assert.assertEquals("Subsystem-Content (bundle) should contain one element", 1, details.getConstituents(SubsystemContentType.BUNDLE_TYPE).size());
-        Assert.assertTrue("Subsystem-Content (boot.jar) should return no elements", details.getConstituents(SubsystemContentType.BOOT_JAR_TYPE).isEmpty());
-        Assert.assertTrue("Subsystem-Content (jar) should contain one element", details.getConstituents(SubsystemContentType.JAR_TYPE).isEmpty());
-        Assert.assertTrue("Subsystem-Content (file) should contain one element", details.getConstituents(SubsystemContentType.FILE_TYPE).isEmpty());
-        Assert.assertTrue("Subsystem-Content (feature) should contain one element", details.getConstituents(SubsystemContentType.FEATURE_TYPE).isEmpty());
-        Assert.assertTrue("Subsystem-Content (unknown) should contain one element", details.getConstituents(SubsystemContentType.UNKNOWN).isEmpty());
+        Assert.assertEquals("Subsystem-Content (all) should contain one element", 1, details2.getConstituents(null).size());
+        Assert.assertEquals("Subsystem-Content (bundle) should contain one element", 1, details2.getConstituents(SubsystemContentType.BUNDLE_TYPE).size());
+        Assert.assertTrue("Subsystem-Content (boot.jar) should return no elements", details2.getConstituents(SubsystemContentType.BOOT_JAR_TYPE).isEmpty());
+        Assert.assertTrue("Subsystem-Content (jar) should contain one element", details2.getConstituents(SubsystemContentType.JAR_TYPE).isEmpty());
+        Assert.assertTrue("Subsystem-Content (file) should contain one element", details2.getConstituents(SubsystemContentType.FILE_TYPE).isEmpty());
+        Assert.assertTrue("Subsystem-Content (feature) should contain one element", details2.getConstituents(SubsystemContentType.FEATURE_TYPE).isEmpty());
+        Assert.assertTrue("Subsystem-Content (unknown) should contain one element", details2.getConstituents(SubsystemContentType.UNKNOWN).isEmpty());
     }
 
     @Test(expected = FeatureManifestException.class)
@@ -352,41 +319,18 @@ public class FeatureDefinitionUtilsTest {
 
         // Reset the output buffer, let's flatten it for the cache..
         out.reset();
-        writer = new PrintWriter(out, true);
-        FeatureDefinitionUtils.writeAttributes(iAttr, details, writer);
+        DataOutputStream dataWriter = new DataOutputStream(out);
+        FeatureRepository.writeFeatureAttributes(iAttr, details, dataWriter);
         writer.flush();
-        String result = out.toString();
-        System.out.println(result);
-
-        // So, now we have our shiny cache line, which should actually be two lines, kind of like this:
-        // com.ibm.websphere.supersededA=;xxxx;xxxx;custom;;2;PROTECTED;INSTALL;1.0.0;0010
-        // -A:javax.servlet.annotation;  type="spec",javax.servlet.descriptor; type="spec",com.ibm.websphere.servlet.session;  type="ibm-api",com.ibm.wsspi.servlet.session;  type="ibm-api",com.ibm.wsspi.webcontainer;  type="internal"
-
-        String[] lines = result.split(FeatureDefinitionUtils.NL);
-        Assert.assertEquals("Output should be two lines:\n" + result, 2, lines.length);
-        Assert.assertTrue("lines[0] should start with custom:\n" + lines[0], lines[0].startsWith("custom:"));
-        Assert.assertTrue("lines[0] should end with ;;2;PROTECTED;INSTALL;1.0.0;00100;SERVER\n" + lines[0], lines[0].endsWith(";;2;PROTECTED;INSTALL;1.0.0;00100;SERVER"));
-        Assert.assertTrue("lines[1] SHOULD startsWith API Packages indicator:\n" + lines[1], lines[1].startsWith("-A:"));
 
         // Now, let's read those lines back in, and make sure the resulting attributes survived
-        ImmutableAttributes iAttr2 = FeatureDefinitionUtils.loadAttributes(lines[0], null);
+        DataInputStream dataIn = new DataInputStream(new ByteArrayInputStream(out.toByteArray()));
+        ImmutableAttributes iAttr2 = FeatureRepository.loadFeatureAttributes(dataIn);
         Assert.assertNotNull("Should return non-null attribtues", iAttr2);
         assertAttributesEqual(ImmutableAttributes.class, iAttr, iAttr2);
         Assert.assertEquals("Equals should show these as the same", iAttr, iAttr2);
         Assert.assertEquals("hashCode should be the same", iAttr.hashCode(), iAttr2.hashCode());
 
-        // Let's just mess around with the flags now..
-        String newLine = lines[0].replace("0010", "1101");
-        System.out.println("Updated line: \n\t" + newLine);
-        iAttr2 = FeatureDefinitionUtils.loadAttributes(newLine, null);
-        Assert.assertNotNull("Should return non-null attribtues", iAttr2);
-        // Equals/hashCode are only focused on symbolic name & version: these should still be equal..
-        Assert.assertEquals("Equals should show these as the same", iAttr, iAttr2);
-        Assert.assertEquals("hashCode should be the same", iAttr.hashCode(), iAttr2.hashCode());
-        Assert.assertTrue("AutoFeature flag should be true", iAttr2.isAutoFeature);
-        Assert.assertTrue("API-service flag should be true", iAttr2.hasApiServices);
-        Assert.assertFalse("API-package flag should be false", iAttr2.hasApiPackages);
-        Assert.assertTrue("SPI-package flag should be true", iAttr2.hasSpiPackages);
     }
 
     @Test
@@ -419,34 +363,20 @@ public class FeatureDefinitionUtilsTest {
         ProvisioningDetails details = new ProvisioningDetails(null, in);
         ImmutableAttributes iAttr = FeatureDefinitionUtils.loadAttributes("custom", featureFile, details);
         out.reset();
-        writer = new PrintWriter(out, true);
-        FeatureDefinitionUtils.writeAttributes(iAttr, details, writer);
+        DataOutputStream dataWriter = new DataOutputStream(out);
+        FeatureRepository.writeFeatureAttributes(iAttr, details, dataWriter);
         writer.flush();
 
-        // Here it is (should we fail later..)
-        String result = out.toString();
-        System.out.println(result);
-
-        String[] lines = result.split(FeatureDefinitionUtils.NL);
-        Assert.assertEquals("Output should be 5 lines:\n" + result, 5, lines.length);
-        Assert.assertTrue("lines[0] should end with ;shortName;2;PUBLIC;UNINSTALL;1.0.1;11111;SERVER\n" + lines[0],
-                          lines[0].endsWith(";shortName;2;PUBLIC;UNINSTALL;1.0.1;11111;SERVER"));
-        Assert.assertTrue("lines[1] SHOULD startsWith AutoFeature indicator:\n" + lines[1], lines[1].startsWith("-C:"));
-        Assert.assertTrue("lines[2] SHOULD startsWith API Services indicator:\n" + lines[2], lines[2].startsWith("-V:"));
-        Assert.assertTrue("lines[3] SHOULD startsWith API Packages indicator:\n" + lines[3], lines[3].startsWith("-A:"));
-        Assert.assertTrue("lines[4] SHOULD startsWith SPI Packages indicator:\n" + lines[4], lines[4].startsWith("-S:"));
-
-        // So, we know the cache line(s) came out right-ish. Now, what happens when we try to read them in?
+        // Now, what happens when we try to read them in?
         in = new ByteArrayInputStream(out.toByteArray());
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        DataInputStream dataReader = new DataInputStream(in);
 
         // peel off the first line --> immutable attributes
-        String readLine = reader.readLine();
-        ImmutableAttributes newAttr = FeatureDefinitionUtils.loadAttributes(readLine, null);
+        ImmutableAttributes newAttr = FeatureRepository.loadFeatureAttributes(dataReader);
         assertAttributesEqual(ImmutableAttributes.class, iAttr, newAttr);
 
         // Now, based on our attribute flags.. pull off the extra lines..
-        ProvisioningDetails details2 = new ProvisioningDetails(reader, newAttr);
+        ProvisioningDetails details2 = FeatureRepository.loadProvisioningDetails(dataReader, newAttr);
         // Some fields should be equal...
         assertAttributesEqual(ProvisioningDetails.class, details, details2,
                               "apiPackages", "apiServices", "autoFeatureCapability", "spiPackages");
