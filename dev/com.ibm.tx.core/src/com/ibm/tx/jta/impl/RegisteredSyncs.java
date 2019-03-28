@@ -14,6 +14,7 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.transaction.Status;
@@ -86,7 +87,7 @@ public class RegisteredSyncs
 
     final static int SYNC_ARRAY_SIZE = SYNC_TIER_RRS + 1;  // RRS should always be last
 
-    protected final List[] _syncs = new ArrayList[SYNC_ARRAY_SIZE];
+    protected final List[] _syncs = new List[SYNC_ARRAY_SIZE];
 
     final static int DEFAULT_DEPTH_LIMIT = 5; // @287100A
 
@@ -364,7 +365,8 @@ public class RegisteredSyncs
 
         if (_syncs[tier] == null)
         {
-            _syncs[tier] = new ArrayList();
+//            _syncs[tier] = new ArrayList();
+            _syncs[tier] = Collections.synchronizedList(new ArrayList<Synchronization>());
         }
 
         _syncs[tier].add(sync);

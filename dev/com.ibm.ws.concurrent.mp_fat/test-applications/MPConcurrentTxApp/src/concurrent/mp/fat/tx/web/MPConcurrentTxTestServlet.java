@@ -15,11 +15,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
@@ -28,6 +31,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
+import javax.management.MBeanServer;
+import javax.management.ObjectInstance;
+import javax.management.ObjectName;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -53,6 +59,10 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * 2 minutes. Maximum number of nanoseconds to wait for a task to complete.
      */
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
+
+    private static final String MBEAN_TYPE = "com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean";
+
+    public static MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
 
     @Resource
     private DataSource defaultDataSource;
@@ -113,12 +123,57 @@ public class MPConcurrentTxTestServlet extends FATServlet {
         }
     }
 
+    @Override
+    protected void after() throws ServletException {
+//      System.out.println("NPM DEBUG: in cleanup()");
+        try {
+            try (Connection con = onePhaseDataSource.getConnection(); Statement st = con.createStatement()) {
+//              System.out.println("NPM DEBUG: dropping tables...");
+                st.execute("DROP TABLE MNCOUNTIES");
+                st.execute("DROP TABLE IACOUNTIES");
+//              System.out.println("NPM DEBUG: creating tables...");
+                st.execute("CREATE TABLE MNCOUNTIES (NAME VARCHAR(50) NOT NULL PRIMARY KEY, POPULATION INT NOT NULL)");
+                st.execute("CREATE TABLE IACOUNTIES (NAME VARCHAR(50) NOT NULL PRIMARY KEY, POPULATION INT NOT NULL)");
+                st.execute("INSERT INTO MNCOUNTIES VALUES ('Olmsted', 154930)");
+                st.execute("INSERT INTO IACOUNTIES VALUES ('Polk', 481830)");
+//              System.out.println("NPM DEBUG: tables created.");
+            }
+        } catch (SQLException x) {
+            throw new ServletException(x);
+        }
+
+        try {
+            ObjectName objName;
+
+            System.out.println("NPM DEBUG: \n\n****************DefaultDataSource****************");
+            System.out.println("NPM DEBUG: showPoolContents = " + getConnectionManagerData("DefaultDataSource"));
+            objName = getConnPoolStatsMBeanObjName("DefaultDataSource");
+            System.out.println("NPM DEBUG: ManagedConnectionCount = " + getMonitorData(objName, "ManagedConnectionCount"));
+            System.out.println("NPM DEBUG: FreeConnectionCount = " + getMonitorData(objName, "FreeConnectionCount"));
+            System.out.println("NPM DEBUG: ConnectionHandleCount = " + getMonitorData(objName, "ConnectionHandleCount"));
+            System.out.println("NPM DEBUG: CreateCount = " + getMonitorData(objName, "CreateCount"));
+            System.out.println("NPM DEBUG: DestroyCount = " + getMonitorData(objName, "DestroyCount"));
+
+            System.out.println("NPM DEBUG: \n\n****************OnePhaseDataSource****************");
+            System.out.println("NPM DEBUG: showPoolContents = " + getConnectionManagerData("jdbc/ds1phase"));
+            objName = getConnPoolStatsMBeanObjName("jdbc/ds1phase");
+            System.out.println("NPM DEBUG: ManagedConnectionCount = " + getMonitorData(objName, "ManagedConnectionCount"));
+            System.out.println("NPM DEBUG: FreeConnectionCount = " + getMonitorData(objName, "FreeConnectionCount"));
+            System.out.println("NPM DEBUG: ConnectionHandleCount = " + getMonitorData(objName, "ConnectionHandleCount"));
+            System.out.println("NPM DEBUG: CreateCount = " + getMonitorData(objName, "CreateCount"));
+            System.out.println("NPM DEBUG: DestroyCount = " + getMonitorData(objName, "DestroyCount"));
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
+    }
+
     /**
      * This case demonstrates that the com.ibm.tx.jta.TransactionManagerFactory public API, even without MP Concurrency,
      * already enables applications to concurrently run multiple operations within a single transaction
      * by resuming the transaction onto another thread and performing transactional operations in it
      * while it simultaneously remains actively in use on the main thread.
      */
+add new tests
     @Test
     public void testJTATransactionPropagationToMultipleThreadsWithExistingTransactionManagerAPI() throws Exception {
         javax.transaction.TransactionManager tm = com.ibm.tx.jta.TransactionManagerFactory.getTransactionManager();
@@ -132,11 +187,16 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             Statement st = con.createStatement();
             assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Hennepin', 1224763)"));
 
+//            assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Dakota', 414655)"));
+////          st.close();
+//            con.close();
+
             CompletableFuture<Integer> stage = CompletableFuture.supplyAsync(() -> {
                 try {
                     javax.transaction.Transaction tranToRestore = tm.suspend();
                     tm.resume(tranToPropagate);
-                    try (Connection con2 = defaultDataSource.getConnection(); Statement st2 = con2.createStatement()) {
+                    try (Connection con2 = defaultDataSource.getConnection()) {
+                        Statement st2 = con2.createStatement();
                         return st2.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Dubuque', 96571)");
                     } finally {
                         tm.suspend();
@@ -148,13 +208,44 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                 }
             });
 
+            CompletableFuture<Integer>[] stages = new CompletableFuture[100];
+            for (int i = 0; i < 100; i++) {
+                final int y = i;
+                stages[y] = CompletableFuture.supplyAsync(() -> {
+                    try {
+                        javax.transaction.Transaction tranToRestore = tm.suspend();
+                        tm.resume(tranToPropagate);
+
+                        try (Connection con2 = defaultDataSource.getConnection()) {
+                            Statement st2 = con2.createStatement();
+                            return st2.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Dubuque" + y + "', 95888)");
+                        } finally {
+                            tm.suspend();
+                            if (tranToRestore != null)
+                                tm.resume(tranToRestore);
+                        }
+                    } catch (Exception x) {
+                        throw new CompletionException(x);
+                    }
+                });
+            }
+
             assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Dakota', 414655)"));
+//            st.close();
             con.close();
 
             // ensure the above runs in the same transaction while the transaction is still active on the current thread
             assertEquals(Integer.valueOf(1), stage.join());
+            for (int i = 0; i < 100; i++) {
 
+                assertEquals(Integer.valueOf(1), stages[i].join());
+            }
+
+//            con.close();
             tx.commit();
+        } catch (Exception ex) {
+            System.out.print("NPM DEBUG: Test failed with exception: " + ex.getMessage());
+            ex.printStackTrace();
         } finally {
             if (tx.getStatus() != Status.STATUS_NO_TRANSACTION)
                 tx.rollback();
@@ -169,11 +260,16 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             Statement st = con.createStatement();
             assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Ramsey', 537893)"));
 
+//            assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Anoka', 344861)"));
+////          st.close();
+//            con.close();
+
             CompletableFuture<Integer> stage = CompletableFuture.supplyAsync(() -> {
                 try {
                     javax.transaction.Transaction tranToRestore = tm.suspend();
                     tm.resume(tranToPropagate);
-                    try (Connection con2 = defaultDataSource.getConnection(); Statement st2 = con2.createStatement()) {
+                    try (Connection con2 = defaultDataSource.getConnection()) {
+                        Statement st2 = con2.createStatement();
                         return st2.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Story', 95888)");
                     } finally {
                         tm.suspend();
@@ -185,13 +281,46 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                 }
             });
 
+            CompletableFuture<Integer>[] stages = new CompletableFuture[100];
+            for (int i = 0; i < 100; i++) {
+                final int y = i;
+                stages[y] = CompletableFuture.supplyAsync(() -> {
+                    try {
+                        javax.transaction.Transaction tranToRestore = tm.suspend();
+                        tm.resume(tranToPropagate);
+
+                        try (Connection con2 = defaultDataSource.getConnection()) {
+                            Statement st2 = con2.createStatement();
+                            return st2.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Story" + y + "', 95888)");
+                        } finally {
+                            tm.suspend();
+                            if (tranToRestore != null)
+                                tm.resume(tranToRestore);
+                        }
+                    } catch (Exception x) {
+                        throw new CompletionException(x);
+                    }
+                });
+            }
+
             assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Anoka', 344861)"));
+//            st.close();
             con.close();
 
             // ensure the above runs in the same transaction while the transaction is still active on the current thread
             assertEquals(Integer.valueOf(1), stage.join());
+            for (int i = 0; i < 100; i++) {
+                assertEquals(Integer.valueOf(1), stages[i].join());
+            }
+//            con.close();
         } finally {
-            tx.rollback();
+            try {
+                tx.rollback();
+            } catch (Exception ex) {
+                System.out.print("NPM DEBUG: Test failed with exception on rollback: " + ex.getMessage());
+                ex.printStackTrace();
+            }
+
         }
 
         // verify table contents, which should show that first transaction was committed and the second rolled back.
@@ -301,6 +430,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                 }
             }).exceptionally(x -> {
                 try {
+//                    x.printStackTrace();
                     tx.rollback();
                 } catch (Exception x2) {
                     x2.printStackTrace();
@@ -702,134 +832,6 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Houston' OR NAME='Steele'");
             assertTrue(result.next());
             assertEquals(0, result.getInt(1));
-        }
-    }
-
-    /**
-     * Take advantage of last participant support to use a two-phase capable resource and a single
-     * one-phase capable resource in the same transaction on different threads, but serially.
-     * Commit the transaction after all transactional operations are finished.
-     */
-    @Test
-    public void testLastParticipantResourceUsedSeriallyAndCommit() throws Exception {
-        CompletableFuture<Integer> stage1 = txExecutor.newIncompleteFuture();
-        CompletableFuture<Integer> stage4;
-        tx.begin();
-        try {
-            stage4 = stage1.thenApplyAsync(u -> {
-                try (Connection con = onePhaseDataSource.getConnection()) {
-                    return u + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Rock', 9433)");
-                } catch (SQLException x) {
-                    throw new CompletionException(x);
-                }
-            }).thenApplyAsync(u -> {
-                try (Connection con = defaultDataSource.getConnection()) {
-                    return u + con.createStatement().executeUpdate("INSERT INTO IACOUNTIES VALUES ('Ringgold', 4986)");
-                } catch (SQLException x) {
-                    throw new CompletionException(x);
-                }
-            }).thenApply(u -> {
-                try (Connection con = onePhaseDataSource.getConnection()) {
-                    return u + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Roseau', 15537)");
-                } catch (SQLException x) {
-                    throw new CompletionException(x);
-                }
-            }).whenComplete((result, failure) -> {
-                try {
-                    if (failure == null && tx.getStatus() == Status.STATUS_ACTIVE)
-                        tx.commit();
-                    else
-                        tx.rollback();
-                } catch (Exception x) {
-                    x.printStackTrace();
-                    if (failure == null)
-                        throw new CompletionException(x);
-                }
-            });
-        } finally {
-            tm.suspend();
-        }
-
-        stage1.complete(0);
-
-        assertEquals(Integer.valueOf(3), stage4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-
-        // Verify that the transaction committed, meaning all of the inserts remain in the database
-        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
-            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Rock' OR NAME='Roseau'");
-            assertTrue(result.next());
-            assertEquals(24970, result.getInt(1));
-
-            result = st.executeQuery("SELECT POPULATION FROM IACOUNTIES WHERE NAME='Ringgold'");
-            assertTrue(result.next());
-            assertEquals(4986, result.getInt(1));
-        }
-    }
-
-    /**
-     * Take advantage of last participant support to use a two-phase capable resource and a single
-     * one-phase capable resource in the same transaction on different threads, but serially.
-     * Roll back the transaction after all transactional operations are finished.
-     */
-    @Test
-    public void testLastParticipantResourceUsedSeriallyAndRollBack() throws Exception {
-        CompletableFuture<Integer> stage1 = txExecutor.newIncompleteFuture();
-        CompletableFuture<Integer> stage4;
-        tx.begin();
-        try {
-            stage4 = stage1.thenApplyAsync(u -> {
-                try (Connection con = onePhaseDataSource.getConnection()) {
-                    return u + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Scott', 141463)");
-                } catch (SQLException x) {
-                    throw new CompletionException(x);
-                }
-            }).thenApplyAsync(u -> {
-                try (Connection con = defaultDataSource.getConnection()) {
-                    return u + con.createStatement().executeUpdate("INSERT INTO IACOUNTIES VALUES ('Sac', 4986)");
-                } catch (SQLException x) {
-                    throw new CompletionException(x);
-                }
-            }).thenApply(u -> {
-                try (Connection con = onePhaseDataSource.getConnection()) {
-                    return u + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Sibley', 14888)");
-                } catch (SQLException x) {
-                    throw new CompletionException(x);
-                }
-            }).thenApply(u -> {
-                try {
-                    tx.setRollbackOnly();
-                    return -1;
-                } catch (SystemException x) {
-                    throw new CompletionException(x);
-                }
-            }).whenComplete((result, failure) -> {
-                try {
-                    if (failure == null && tx.getStatus() == Status.STATUS_ACTIVE)
-                        tx.commit();
-                    else
-                        tx.rollback();
-                } catch (Exception x) {
-                    x.printStackTrace();
-                    if (failure == null)
-                        throw new CompletionException(x);
-                }
-            });
-        } finally {
-            tm.suspend();
-        }
-
-        stage1.complete(0);
-
-        assertEquals(Integer.valueOf(-1), stage4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-
-        // Verify that the transaction rolled back, meaning none of the inserts remain in the database
-        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
-            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Scott' OR NAME='Sibley'");
-            assertTrue(result.next());
-            assertEquals(0, result.getInt(1));
-
-            result = st.executeQuery("SELECT POPULATION FROM IACOUNTIES WHERE NAME='Sac'");
-            assertFalse(result.next());
         }
     }
 
@@ -1446,6 +1448,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                     else
                         tx.rollback();
                 } catch (Exception x) {
+                    x.getCause();
                     x.printStackTrace();
                     if (failure == null)
                         throw new CompletionException(x);
@@ -1809,160 +1812,53 @@ public class MPConcurrentTxTestServlet extends FATServlet {
         }
     }
 
-    /**
-     * Propagates transaction context to be used serially from another thread, which also commits the transaction.
-     * The resource that is enlisted in the transaction is an unsharable one-phase only resource.
-     * A single connection handle is cached and reused across all stages where transactional work is performed.
-     */
-    @Test
-    public void testUnsharableOnePhaseResourceInJTATransactionCachedHandleUsedSeriallyAndCommitWhenComplete() throws Exception {
-        CompletableFuture<DataSource> getDataSource = txExecutor.newIncompleteFuture();
-        CompletableFuture<Boolean> stage;
-        tx.begin();
-        try {
-            stage = getDataSource.thenApplyAsync(ds -> {
-                Connection con = null;
-                try {
-                    con = ds.getConnection();
-                    con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Mahnomen', 5500)");
-                    return con;
-                } catch (SQLException x) {
-                    if (con != null)
-                        try {
-                            con.close();
-                        } catch (SQLException cx) {
-                            cx.printStackTrace();
-                        }
-                    throw new CompletionException(x);
-                }
-            }).whenCompleteAsync((con, failure) -> {
-                if (failure == null)
-                    try {
-                        con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Marshall', 9397)");
-                    } catch (SQLException x) {
-                        throw new CompletionException(x);
-                    }
-            }).whenCompleteAsync((con, failure) -> {
-                if (failure == null)
-                    try {
-                        con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Martin', 20084)");
-                    } catch (SQLException x) {
-                        throw new CompletionException(x);
-                    }
-            }).handleAsync((con, failure) -> {
-                if (con != null)
-                    try {
-                        con.close();
-                    } catch (SQLException x) {
-                        if (failure == null)
-                            failure = x;
-                    }
-                try {
-                    if (failure == null && tx.getStatus() == Status.STATUS_ACTIVE) {
-                        tx.commit();
-                        return true;
-                    } else
-                        tx.rollback();
-                } catch (Exception x) {
-                    if (failure == null)
-                        failure = x;
-                }
-                if (failure == null)
-                    return false;
-                else
-                    throw new CompletionException(failure);
-            });
-        } finally {
-            tm.suspend();
-        }
-
-        getDataSource.complete(onePhaseDataSource_unsharable);
-
-        assertEquals(Boolean.TRUE, stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-
-        try (Connection con = onePhaseDataSource_unsharable.getConnection(); Statement st = con.createStatement()) {
-            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Mahnomen' OR NAME='Marshall' OR NAME='Martin'");
-            assertTrue(result.next());
-            assertEquals(34981, result.getInt(1));
-        }
+    private int getMonitorData(ObjectName name, String attribute) throws Exception {
+        return Integer.parseInt((mbeanServer.getAttribute(name, attribute)).toString());
     }
 
-    /**
-     * Propagates transaction context to be used serially from another thread, which also rolls back the transaction.
-     * The resource that is enlisted in the transaction is an unsharable one-phase only resource.
-     * A single connection handle is cached and reused across all stages where transactional work is performed.
-     */
-    @Test
-    public void testUnsharableResourceInOnePhaseJTATransactionCachedHandleUsedSeriallyAndRollBackWhenComplete() throws Exception {
-        CompletableFuture<DataSource> getDataSource = txExecutor.newIncompleteFuture();
-        CompletableFuture<Boolean> stage;
-        tx.begin();
-        try {
-            stage = getDataSource.thenApplyAsync(ds -> {
-                Connection con = null;
-                try {
-                    con = ds.getConnection();
-                    con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Meeker', 23105)");
-                    return con;
-                } catch (SQLException x) {
-                    if (con != null)
-                        try {
-                            con.close();
-                        } catch (SQLException cx) {
-                            cx.printStackTrace();
-                        }
-                    throw new CompletionException(x);
-                }
-            }).whenCompleteAsync((con, failure) -> {
-                if (failure == null)
-                    try {
-                        con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('McLeod', 35816)");
-                    } catch (SQLException x) {
-                        throw new CompletionException(x);
-                    }
-            }).whenComplete((con, failure) -> {
-                try {
-                    tx.setRollbackOnly(); // ensure the transaction always rolls back
-                } catch (IllegalStateException | SystemException x) {
-                    throw new CompletionException(x);
-                }
-            }).handleAsync((con, failure) -> {
-                if (con != null)
-                    try {
-                        con.close();
-                    } catch (SQLException x) {
-                        if (failure == null)
-                            failure = x;
-                    }
-                try {
-                    if (failure == null && tx.getStatus() == Status.STATUS_ACTIVE) {
-                        tx.commit();
-                        return true;
-                    } else
-                        tx.rollback();
-                } catch (Exception x) {
-                    if (failure == null)
-                        failure = x;
-                }
-                if (failure == null)
-                    return false;
-                else
-                    throw new CompletionException(failure);
-            });
-        } finally {
-            tm.suspend();
+    private String getConnectionManagerData(String dataSource) throws Exception {
+        return (mbeanServer.invoke(getConnectionManagerMBeanObjName(dataSource), "showPoolContents", null, null)).toString();
+    }
+
+    private ObjectName getConnPoolStatsMBeanObjName(String dsName) throws Exception {
+        Set<ObjectInstance> mxBeanSet;
+        ObjectInstance oi;
+        mxBeanSet = mbeanServer.queryMBeans(new ObjectName("WebSphere:type=ConnectionPoolStats,name=*" + dsName + "*"), null);
+        if (mxBeanSet != null && mxBeanSet.size() > 0) {
+            Iterator<ObjectInstance> it = mxBeanSet.iterator();
+            oi = it.next();
+            return oi.getObjectName();
+        } else
+            throw new Exception("ConnectionPoolStatsMBean:NotFound");
+    }
+
+    private ObjectName getConnectionManagerMBeanObjName(String dsName) throws Exception {
+        Set<ObjectInstance> mxBeanSet;
+        ObjectInstance oi;
+        mxBeanSet = mbeanServer.queryMBeans(new ObjectName("WebSphere:type=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,jndiName=" + dsName + ",*"), null);
+        if (mxBeanSet == null || mxBeanSet.size() == 0) {
+            mxBeanSet = mbeanServer.queryMBeans(new ObjectName("WebSphere:type=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,name=*" + dsName + "*"), null);
         }
 
-        getDataSource.complete(onePhaseDataSource_unsharable);
+        if (mxBeanSet != null && mxBeanSet.size() > 0) {
+            Iterator<ObjectInstance> it = mxBeanSet.iterator();
+            oi = it.next();
+            return oi.getObjectName();
+        } else
+            throw new Exception("ConnectionManagerMBean:NotFound");
+    }
 
-        assertEquals(Boolean.FALSE, stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-
-        // Verify that the transaction rolled back, meaning none of the inserts remain in the database
-        try (Connection con = onePhaseDataSource_unsharable.getConnection(); Statement st = con.createStatement()) {
-            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Meeker' OR NAME='McLeod'");
-            assertTrue(result.next());
-            assertEquals(0, result.getInt(1));
+    private ObjectInstance getMBeanObjectInstance(String jndiName) throws Exception {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        ObjectName obn = new ObjectName("WebSphere:type=" + MBEAN_TYPE + ",jndiName=" + jndiName + ",*");
+        Set<ObjectInstance> s = mbs.queryMBeans(obn, null);
+        if (s.size() != 1) {
+            System.out.println("ERROR: Found incorrect number of MBeans (" + s.size() + ")");
+            for (ObjectInstance i : s)
+                System.out.println("  Found MBean: " + i.getObjectName());
+            throw new Exception("Expected to find exactly 1 MBean, instead found " + s.size());
         }
+        return s.iterator().next();
     }
 
     /**

@@ -724,6 +724,10 @@ public final class FreePool implements JCAPMIHelper {
             Tr.exit(this, tc, "getFreeConnection");
         }
 
+        if (mcWrapper != null) {
+            mcWrapper.incrementHandleCount();
+        }
+
         return mcWrapper;
 
     }
@@ -1269,6 +1273,7 @@ public final class FreePool implements JCAPMIHelper {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(this, tc, "createOrWaitForConnection", mcWrapper);
         }
+        //TODO: move increment handle count to here.
         return mcWrapper;
 
     }

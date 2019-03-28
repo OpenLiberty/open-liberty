@@ -152,7 +152,8 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
 
     static final long serialVersionUID = -861999777608926414L;
 
-    private int mcConnectionCount;
+//    private int mcConnectionCount;
+    private final AtomicInteger mcConnectionCount = new AtomicInteger();
 
     // State Constants
 
@@ -312,6 +313,8 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
      * managed connections in the free pool.
      */
     private final AtomicBoolean alreadyBeingReleased = new AtomicBoolean(false);
+
+    public final AtomicBoolean connectionClosing = new AtomicBoolean(false);
 
     /**
      * @return the poolLocation
@@ -1397,8 +1400,8 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             throw re;
 
         } finally {
-            if (mcConnectionCount != 0) {
-                for (int i = mcConnectionCount; i > 0; i--) { //couldn't this just be while(mcConnectionCount > 0)
+            if (mcConnectionCount.get() != 0) {
+                for (int i = mcConnectionCount.get(); i > 0; i--) { //couldn't this just be while(mcConnectionCount > 0)
                     decrementHandleCount();
                 }
             }
@@ -1440,7 +1443,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
 
             }
 
-            mcConnectionCount = 0;
+            mcConnectionCount.set(0);
             cm = null;
 
             boolean isAlreadyFreeActive = false;
@@ -1591,8 +1594,8 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             }
 
         } finally {
-            if (mcConnectionCount != 0) {
-                for (int i = mcConnectionCount; i > 0; i--) { // couldn't this just be while(mcConnectionCount > 0)
+            if (mcConnectionCount.get() != 0) {
+                for (int i = mcConnectionCount.get(); i > 0; i--) { // couldn't this just be while(mcConnectionCount > 0)
                     decrementHandleCount();
                 }
             }
@@ -1634,7 +1637,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
 
             }
 
-            mcConnectionCount = 0;
+            mcConnectionCount.set(0);
             cm = null;
 
             boolean isAlreadyFreeActive = false;
@@ -1789,7 +1792,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
 
         } finally {
             // The following call is added for the case when destroy is called without cleanup.
-            for (int i = mcConnectionCount; i > 0; i--) {
+            for (int i = mcConnectionCount.get(); i > 0; i--) {
                 decrementHandleCount();
             }
 
@@ -1938,7 +1941,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
                 _cri = cri;
                 hashMapBucket = _hashMapBucketReAuth;
             }
-            incrementHandleCount();
+//            incrementHandleCount();
             // Need PMI Call here.
         } catch (SharingViolationException e) {
             // If there is a sharing violation, it means that there is already at LEAST one connection
@@ -2071,7 +2074,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             if (fromWrapper != null) {
                 fromWrapper.decrementHandleCount();
             }
-            incrementHandleCount();
+//            incrementHandleCount();
         } catch (ResourceException e) {
 
             com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ejs.j2c.MCWrapper.associateConnection", "965", this);
@@ -2463,17 +2466,17 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
 
     @Override
     public int getHandleCount() {
-        return mcConnectionCount;
+        return mcConnectionCount.get();
     }
 
     @Override
     public void decrementHandleCount() {
-        mcConnectionCount--;
+        mcConnectionCount.getAndDecrement();
     }
 
     @Override
     public void incrementHandleCount() {
-        mcConnectionCount++;
+        mcConnectionCount.getAndIncrement();
     }
 
     @Override

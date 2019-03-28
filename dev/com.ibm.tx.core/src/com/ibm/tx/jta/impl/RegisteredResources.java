@@ -16,6 +16,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.transaction.HeuristicCommitException;
 import javax.transaction.HeuristicMixedException;
@@ -83,7 +85,8 @@ public class RegisteredResources implements Comparator<JTAResource> {
     /**
      * A list to store the XA resources for this unit of work.
      */
-    protected final ArrayList<JTAResource> _resourceObjects;
+//    protected final ArrayList<JTAResource> _resourceObjects;
+    protected final List<JTAResource> _resourceObjects;
 
     /**
      * A spot to hold the "last agent"/1PC registered resource
@@ -111,7 +114,9 @@ public class RegisteredResources implements Comparator<JTAResource> {
      * Each time the unit of work hands out a new Xid, it increments
      * this number by one.
      */
-    protected int _branchCount;
+    //protected int _branchCount;
+    //Attempting to prevent "XAResource start association error:XAER_DUPID"
+    protected AtomicInteger _branchCount = new AtomicInteger();
 
     /**
      * Meta Data containing a boolean value for each application installed
@@ -224,7 +229,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "RegisteredResources", new Object[] { tran, disableTwoPhase });
 
-        _resourceObjects = new ArrayList<JTAResource>();
+        _resourceObjects = Collections.synchronizedList(new ArrayList<JTAResource>());
 
         _transaction = tran;
         _txServiceXid = tran.getXid();
@@ -632,7 +637,8 @@ public class RegisteredResources implements Comparator<JTAResource> {
             Tr.entry(tc, "generateNewBranch");
 
         // Create a new Xid branch
-        final XidImpl result = new XidImpl(_txServiceXid, ++_branchCount);
+//        final XidImpl result = new XidImpl(_txServiceXid, ++_branchCount);
+        final XidImpl result = new XidImpl(_txServiceXid, _branchCount.incrementAndGet());
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "generateNewBranch", result);
@@ -2400,7 +2406,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
         return logSection;
     }
 
-    public ArrayList<JTAResource> getResourceObjects() {
+    public List<JTAResource> getResourceObjects() {
         return _resourceObjects;
     }
 
@@ -2438,7 +2444,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
             Tr.entry(tc, "destroyResources");
 
         // Browse through the participants, processing them as appropriate
-        final ArrayList<JTAResource> resources = getResourceObjects();
+        final List<JTAResource> resources = getResourceObjects();
         for (JTAResource resource : resources) {
             destroyResource(resource);
         }
@@ -2485,7 +2491,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
         }
 
         // Get the resources to log what they did
-        final ArrayList<JTAResource> resources = getResourceObjects();
+        final List<JTAResource> resources = getResourceObjects();
         for (JTAResource r : resources) {
             diagnoseResource(r, diagType);
         }

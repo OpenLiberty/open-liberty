@@ -24,6 +24,7 @@ import javax.resource.spi.ConnectionRequestInfo;
 import javax.resource.spi.ManagedConnection;
 import javax.security.auth.Subject;
 
+import com.ibm.ejs.ras.RasHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.j2c.MCWrapper;
@@ -149,115 +150,140 @@ public final class SharedPool {
                      * Look for a matching affinity id and commit priority.
                      */
                     mcWrapperTemp = mcWrapperList[0];
+                    String threadId = ((com.ibm.ejs.j2c.MCWrapper) mcWrapperTemp).getThreadID();
 
-                    if (affinity != null && affinity.equals(mcWrapperTemp.getSharedPoolCoordinator())) {
-                        affinityIsEqual = true;
-
-                        ConnectionManager cm = ((com.ibm.ejs.j2c.MCWrapper) mcWrapperTemp).getCm();
-                        ResourceRefInfo resRefInfo = cm.getResourceRefInfo();
-                        if (resRefInfo.getCommitPriority() == commitPriority) {
-                            int tempBranchCoupling = resRefInfo.getBranchCoupling();
-                            if (branchCoupling == tempBranchCoupling) { // Check if they match first for performance
-                                cmConfigDataIsCompatible = true;
-                            } else {
-                                cmConfigDataIsCompatible = cm.matchBranchCoupling(branchCoupling, tempBranchCoupling,
-                                                                                  ((com.ibm.ejs.j2c.MCWrapper) mcWrapperTemp).get_managedConnectionFactory());
-                            }
+//                    if ((threadId != null || mcWrapperTemp.getHandleCount() > 0) && (threadId != null && !RasHelper.getThreadId().equals(threadId))) {
+//                    if ((threadId != null && !RasHelper.getThreadId().equals(threadId))) {
+                    if ((((com.ibm.ejs.j2c.MCWrapper) mcWrapperTemp).connectionClosing.get() || mcWrapperTemp.getHandleCount() > 0) && !RasHelper.getThreadId().equals(threadId)) {
+                        if (isTracingEnabled && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "mcWrapperTemp is in use on another thread. Skipping mcWrapper set.\n" +
+                                               "mcWrapperThreadId/handleCount/currentThreadId: " +
+                                               threadId + "/" + mcWrapperTemp.getHandleCount() + "/" + RasHelper.getThreadId());
                         }
+                        mcWrapperTemp = null;
+                    } else {
+                        if (affinity != null && affinity.equals(mcWrapperTemp.getSharedPoolCoordinator())) {
+                            affinityIsEqual = true;
 
+                            ConnectionManager cm = ((com.ibm.ejs.j2c.MCWrapper) mcWrapperTemp).getCm();
+                            ResourceRefInfo resRefInfo = cm.getResourceRefInfo();
+                            if (resRefInfo.getCommitPriority() == commitPriority) {
+                                int tempBranchCoupling = resRefInfo.getBranchCoupling();
+                                if (branchCoupling == tempBranchCoupling) { // Check if they match first for performance
+                                    cmConfigDataIsCompatible = true;
+                                } else {
+                                    cmConfigDataIsCompatible = cm.matchBranchCoupling(branchCoupling, tempBranchCoupling,
+                                                                                      ((com.ibm.ejs.j2c.MCWrapper) mcWrapperTemp).get_managedConnectionFactory());
+                                }
+                            }
+
+                        }
+                        mcWrapperTemp.incrementHandleCount();
                     }
-
                 }
 
             } // Lets be really optimistic and release the lock
 
-            if (affinityIsEqual && cmConfigDataIsCompatible) {
+            if (mcWrapperTemp != null) {
+                if (affinityIsEqual && cmConfigDataIsCompatible) {
 
-                // When the new transaction code is drop, we will want to use
-                // the following if test for comparing Coordinators
-                // if (mcWrapperTemp.getSharedPoolCoordinator() == affinity) {
-
-                /*
-                 * We have a matching affinity id, now we need a matching user data
-                 */
-                boolean subjectMatch = false;
-                Subject mcWrapperSubject = mcWrapperTemp.getSubject();
-
-                if ((subject == null) && (mcWrapperSubject == null)) {
-                    subjectMatch = true;
-                } else {
-
-                    if ((subject != null) && (mcWrapperSubject != null)) {
-
-                        Equals e = new Equals();
-                        e.setSubjects(subject, mcWrapperTemp.getSubject());
-
-                        if (AccessController.doPrivileged(e)) {
-                            subjectMatch = true;
-                        }
-
-                    }
-
-                }
-
-                ManagedConnection mc = mcWrapperTemp.getManagedConnection();
-                ConnectionRequestInfo mcWrapperCRI = mc instanceof WSManagedConnection ? ((WSManagedConnection) mc).getConnectionRequestInfo() : mcWrapperTemp.getCRI();
-                // The cri can be null, so we need to check for null.
-                boolean criMatch = cri == mcWrapperCRI || cri != null && cri.equals(mcWrapperCRI);
-
-                if (criMatch && subjectMatch) {
+                    // When the new transaction code is drop, we will want to use
+                    // the following if test for comparing Coordinators
+                    // if (mcWrapperTemp.getSharedPoolCoordinator() == affinity) {
 
                     /*
-                     * We have a matching affinity id and user data, but we have one more
-                     * test. The following if checks the serial reuse rule.
+                     * We have a matching affinity id, now we need a matching user data
                      */
-                    if (enforceSerialReuse && (mcWrapperTemp.getHandleCount() >= 1)) {
+                    boolean subjectMatch = false;
+                    Subject mcWrapperSubject = mcWrapperTemp.getSubject();
+
+                    if ((subject == null) && (mcWrapperSubject == null)) {
+                        subjectMatch = true;
+                    } else {
+
+                        if ((subject != null) && (mcWrapperSubject != null)) {
+
+                            Equals e = new Equals();
+                            e.setSubjects(subject, mcWrapperTemp.getSubject());
+
+                            if (AccessController.doPrivileged(e)) {
+                                subjectMatch = true;
+                            }
+							
+                        }
+						
+                    }
+
+                    ManagedConnection mc = mcWrapperTemp.getManagedConnection();
+                    ConnectionRequestInfo mcWrapperCRI = mc instanceof WSManagedConnection ? ((WSManagedConnection) mc).getConnectionRequestInfo() : mcWrapperTemp.getCRI();
+                    // The cri can be null, so we need to check for null.
+                    boolean criMatch = cri == mcWrapperCRI || cri != null && cri.equals(mcWrapperCRI);
+
+                    if (criMatch && subjectMatch) {
 
                         /*
-                         * We can not use this connections. We need to look for a shared
-                         * connection with the handle count of zero or we need to get a new
-                         * shareable connection.
+                         * We have a matching affinity id and user data, but we have one more
+                         * test. The following if checks the serial reuse rule.
                          */
+                        if (enforceSerialReuse && (mcWrapperTemp.getHandleCount() >= 1)) {
 
-                        if (isTracingEnabled && tc.isDebugEnabled()) {
-                            Tr.debug(this, tc, "allocateConnection_Common:  HandleCount = " + mcWrapperTemp.getHandleCount());
-                        }
+                            /*
+                             * We can not use this connections. We need to look for a shared
+                             * connection with the handle count of zero or we need to get a new
+                             * shareable connection.
+                             */
 
-                        if (_pm.logSerialReuseMessage) {
-                            Tr.info(tc, "ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086", mcWrapperTemp, pmiName);
-                            _pm.logSerialReuseMessage = false;
-                        }
-
-                        if (dumpLTCMessage) {
                             if (isTracingEnabled && tc.isDebugEnabled()) {
-                                dumpLTCMessage = false; // only dump this info once for every getSharedConnection
-                                                        // request.
-                                Tr.debug(this, tc, "Attempt to share connection within LTC (J2CA0086)");
-                                Tr.debug(this, tc, "mcWrapper = " + mcWrapperTemp);
-                                Tr.debug(this, tc, "pmiName   = " + pmiName);
-                                Tr.debug(this, tc, "LTC stack information = " + dumpLTCInformation(mcWrapperTemp, pmiName, affinity));
+                                Tr.debug(this, tc, "allocateConnection_Common:  HandleCount = " + mcWrapperTemp.getHandleCount());
                             }
+
+                            if (_pm.logSerialReuseMessage) {
+                                Tr.info(tc, "ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086", mcWrapperTemp, pmiName);
+                                _pm.logSerialReuseMessage = false;
+                            }
+
+                            if (dumpLTCMessage) {
+                                if (isTracingEnabled && tc.isDebugEnabled()) {
+                                    dumpLTCMessage = false; // only dump this info once for every getSharedConnection
+                                    // request.
+                                    Tr.debug(this, tc, "Attempt to share connection within LTC (J2CA0086)");
+                                    Tr.debug(this, tc, "mcWrapper = " + mcWrapperTemp);
+                                    Tr.debug(this, tc, "pmiName   = " + pmiName);
+                                    Tr.debug(this, tc, "LTC stack information = " + dumpLTCInformation(mcWrapperTemp, pmiName, affinity));
+                                }
+                            }
+
+                        } // end enforceSerialReuse && (mcWrapperTemp.getHandleCount() >= 1)
+
+                        else {
+						
+                            /*
+                             * We have a shareable connection to use
+                             */
+                            if ((isTracingEnabled && tc.isDebugEnabled())) {
+                                /*
+                                 * This is used for tracking shared pool usage data
+                                 */
+                                ++sop_gets;
+                            }
+							
+                            mcWrapper = mcWrapperTemp;
                         }
 
-                    } // end enforceSerialReuse && (mcWrapperTemp.getHandleCount() >= 1)
+                    } // end criMatch && subjectMatch
 
                     else {
 
-                        /*
-                         * We have a shareable connection to use
-                         */
                         if ((isTracingEnabled && tc.isDebugEnabled())) {
                             /*
                              * This is used for tracking shared pool usage data
                              */
-                            ++sop_gets;
+                            ++snop_gets_notfound;
                         }
 
-                        mcWrapper = mcWrapperTemp;
+                    } // end else (cri, subj don't both match)
 
-                    }
-
-                } // end criMatch && subjectMatch
+                } // end affinityIsEqual && commitPriorityIsEqual
 
                 else {
 
@@ -268,23 +294,15 @@ public final class SharedPool {
                         ++snop_gets_notfound;
                     }
 
-                } // end else (cri, subj don't both match)
-
-            } // end affinityIsEqual && commitPriorityIsEqual
-
-            else {
-
-                if ((isTracingEnabled && tc.isDebugEnabled())) {
-                    /*
-                     * This is used for tracking shared pool usage data
-                     */
-                    ++snop_gets_notfound;
                 }
-
             }
-
             if (mcWrapper == null) {
+
                 synchronized (sharedLockObject) {
+                    if (mcWrapperTemp != null) {
+                        mcWrapperTemp.decrementHandleCount();
+                    }
+
                     /*
                      * If the mcWrapperListSize > 0, we may have a connection that will
                      * match. We most likely already checked one of the connections, but
@@ -294,6 +312,18 @@ public final class SharedPool {
                     for (int i = 0; i < mcWrapperListSize; ++i) {
 
                         mcWrapperTemp = mcWrapperList[i];
+                        String threadId = ((com.ibm.ejs.j2c.MCWrapper) mcWrapperTemp).getThreadID();
+
+//                        if (threadId != null && !RasHelper.getThreadId().equals(threadId)) {
+                        if ((((com.ibm.ejs.j2c.MCWrapper) mcWrapperTemp).connectionClosing.get() || mcWrapperTemp.getHandleCount() > 0)
+                            && !RasHelper.getThreadId().equals(threadId)) {
+                            if (isTracingEnabled && tc.isDebugEnabled()) {
+                                Tr.debug(this, tc, "mcWrapperTemp is in use on another thread. Skipping mcWrapper set.\n" +
+                                                   "mcWrapperThreadId/handleCount/currentThreadId: " +
+                                                   threadId + "/" + mcWrapperTemp.getHandleCount() + "/" + RasHelper.getThreadId());
+                            }
+                            continue;
+                        }
 
                         /*
                          * Look for a matching affinity id and user data.
@@ -409,6 +439,9 @@ public final class SharedPool {
 
                     } // end for loop
 
+                    if (mcWrapper != null) {
+                        mcWrapperTemp.incrementHandleCount();
+                    }
                 } // end synchronized
 
                 if (mcWrapper == null) {
