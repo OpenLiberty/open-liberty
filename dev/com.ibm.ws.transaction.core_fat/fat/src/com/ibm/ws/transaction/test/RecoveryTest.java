@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
+
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -66,7 +69,13 @@ public class RecoveryTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
+        AccessController.doPrivileged(new PrivilegedExceptionAction<ProgramOutput>() {
+
+            @Override
+            public ProgramOutput run() throws Exception {
+                return server.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
+            }
+        });
     }
 
     @Test

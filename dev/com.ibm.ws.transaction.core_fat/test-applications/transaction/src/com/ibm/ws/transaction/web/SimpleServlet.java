@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.web;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.PrintWriter;
@@ -19,6 +21,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import javax.annotation.Resource;
 import javax.annotation.Resource.AuthenticationType;
@@ -30,6 +34,7 @@ import javax.sql.DataSource;
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
+import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import javax.transaction.TransactionSynchronizationRegistry;
 import javax.transaction.UserTransaction;
@@ -44,6 +49,7 @@ import com.ibm.ws.tx.jta.embeddable.UserTransactionController;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 
+@SuppressWarnings("serial")
 @WebServlet("/SimpleServlet")
 public class SimpleServlet extends FATServlet {
 
@@ -80,12 +86,11 @@ public class SimpleServlet extends FATServlet {
     @Test
     public void testTranSyncRegistryLookup(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
-        TxTestUtils tsb = new TxTestUtils();
         TransactionSynchronizationRegistry tsr = (TransactionSynchronizationRegistry) context.lookup("java:comp/TransactionSynchronizationRegistry");
 
         int status = tsr.getTransactionStatus();
         if (status != Status.STATUS_NO_TRANSACTION) {
-            throw new IllegalStateException("Expected first STATUS_NO_TRANSACTION, got " + tsb.printStatus(status));
+            throw new IllegalStateException("Expected first STATUS_NO_TRANSACTION, got " + TxTestUtils.printStatus(status));
         }
 
         UserTransaction ut = (UserTransaction) context.lookup("java:comp/UserTransaction");
@@ -94,14 +99,14 @@ public class SimpleServlet extends FATServlet {
 
         status = tsr.getTransactionStatus();
         if (status != Status.STATUS_ACTIVE) {
-            throw new IllegalStateException("Expected STATUS_ACTIVE, got " + tsb.printStatus(status));
+            throw new IllegalStateException("Expected STATUS_ACTIVE, got " + TxTestUtils.printStatus(status));
         }
 
         ut.commit();
 
         status = tsr.getTransactionStatus();
         if (status != Status.STATUS_NO_TRANSACTION) {
-            throw new IllegalStateException("Expected second STATUS_NO_TRANSACTION, got " + tsb.printStatus(status));
+            throw new IllegalStateException("Expected second STATUS_NO_TRANSACTION, got " + TxTestUtils.printStatus(status));
         }
     }
 
@@ -206,7 +211,7 @@ public class SimpleServlet extends FATServlet {
     /**
      * Test enlistment in transactions.
      *
-     * @param request HTTP request
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -656,6 +661,35 @@ public class SimpleServlet extends FATServlet {
             throw new Exception("Test failed because 1 second timeout hadn't popped after " + tries + " seconds!");
         } catch (RollbackException e) {
             // As expected
+        }
+    }
+
+    @Test
+    public void testSingleThreading() throws Exception {
+        final TransactionManager tm = TransactionManagerFactory.getTransactionManager();
+
+        tm.begin();
+
+        final Transaction tran = tm.getTransaction();
+
+        try {
+            final CompletableFuture<Integer> stage = CompletableFuture.supplyAsync(() -> {
+                try {
+                    assertNull(tm.suspend());
+
+                    tm.resume(tran);
+                } catch (IllegalStateException e) {
+                    return 1;
+                } catch (Exception e) {
+                    throw new CompletionException(e);
+                }
+
+                return 0;
+            });
+
+            assertEquals(Integer.valueOf(1), stage.join());
+        } finally {
+            tm.rollback();
         }
     }
 }
