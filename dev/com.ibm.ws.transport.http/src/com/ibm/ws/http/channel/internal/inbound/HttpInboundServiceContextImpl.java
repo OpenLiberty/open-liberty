@@ -1073,6 +1073,20 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "finishResponseMessage(body,cb)");
         }
+
+        // H2 doesn't support asych writes, if we got here and this is H2, switch over to sync
+        if (isH2Connection()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "finishResponseMessage: This is H2, calling sync finishResponseMessage(body)");
+            }
+            // Send the error response synchronously for H2
+            try {
+                finishResponseMessage(body);
+                return getVC();
+            } catch (IOException e) {
+                return null;
+            }
+        }
         if (!headersParsed()) {
             // request message must have the headers parsed prior to sending
             // any data out (this is a completely invalid state in the channel
@@ -1106,6 +1120,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         setForceAsync(bForce);
         setAppWriteCallback(callback);
         VirtualConnection vc = sendFullOutgoing(body, getResponseImpl(), HttpISCWriteCallback.getRef());
+
         if (null != vc) {
             // Note: if forcequeue is true, then we will not get a VC object as
             // the lower layer will use the callback and return null
@@ -1232,7 +1247,9 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         }
         // now figure out what buffers, if any, to send as the response body
         WsByteBuffer[] body = loadErrorBody(error, getMyRequest(), getResponse());
+
         VirtualConnection rc = finishResponseMessage(body, HttpISCWriteErrorCallback.getRef(), false);
+
         if (null != rc) {
             finishSendError(error.getClosingException());
         }
@@ -1269,7 +1286,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      */
     protected void finishSendError(Exception e) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "finishSendError(exception): " + getVC());
+            Tr.debug(tc, "finishSendError(exception): " + getVC() + " Exception " + e);
         }
         WsByteBuffer[] body = (WsByteBuffer[]) getVC().getStateMap().remove(EPS_KEY);
         if (null != body) {
@@ -1277,6 +1294,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                 body[i].release();
             }
         }
+
         this.myLink.close(getVC(), e);
     }
 
