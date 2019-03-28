@@ -534,6 +534,15 @@ public class Provisioner {
             return;
         }
 
+        // do a quick check if there is any work to do
+        boolean allResolved = true;
+        int resolveMask = Bundle.RESOLVED | Bundle.STARTING | Bundle.ACTIVE | Bundle.STOPPING;
+        for (Bundle bundle : bundlesToResolve) {
+            allResolved &= (bundle.getState() & resolveMask) != 0;
+        }
+        if (allResolved) {
+            return;
+        }
         FrameworkWiring wiring = adaptSystemBundle(bContext, FrameworkWiring.class);
         if (wiring != null) {
             ResolutionReportHelper rrh = null;
@@ -672,10 +681,10 @@ public class Provisioner {
             // unit tests seem to have this empty
             return Collections.emptySet();
         }
-        
+
         // always prime the products with the kernel name (empty string)
         products.add("");
-        
+
         final Set<String> productRegionsToRemove = new HashSet<String>();
         ApiRegion.update(featureManager.getDigraph(), new Callable<RegionDigraph>() {
 

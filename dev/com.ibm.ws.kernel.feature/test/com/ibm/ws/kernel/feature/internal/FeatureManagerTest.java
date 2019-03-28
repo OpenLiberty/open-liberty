@@ -261,6 +261,9 @@ public class FeatureManagerTest {
 
                     allowing(mockBundleContext).getProperty("wlp.liberty.boot");
                     will(returnValue(null));
+
+                    allowing(mockBundleContext).getDataFile("feature.fix.cache");
+                    will(returnValue(File.createTempFile("feature.fix.cache", null)));
                 }
             });
             fm.activate(mockComponentContext, new HashMap<String, Object>());
