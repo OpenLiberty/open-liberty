@@ -1,0 +1,24 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    remove|upgrade)
+        echo "Removing all leftover jar files"
+        if [ -d "/usr/share/openliberty/lib" ]; then
+            rm -rf /usr/share/openliberty/lib
+        fi
+        echo "Removing all symlinks for jar and class files"
+        if [ -d "/usr/share/java/openliberty" ]; then
+            rm -rf /usr/share/java/openliberty
+        fi
+        ;;
+    abort-install|abort-upgrade|purge)
+        ;;
+    *)
+        echo "postrm called with unknown argument \`$1'" >&2
+        ;;
+esac
+
+#DEBHELPER#
+exit 0
+

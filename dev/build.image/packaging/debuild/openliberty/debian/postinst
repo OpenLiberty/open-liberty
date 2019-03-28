@@ -1,0 +1,88 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    configure)
+        echo "Adding group - openliberty"
+        if (! getent group openliberty > /dev/null 2>&1); then
+            addgroup --system --quiet openliberty
+        fi
+
+        echo "Adding user - openliberty"
+        if (! id openliberty > /dev/null 2>&1); then
+            adduser --system --home /usr/share/openliberty --no-create-home --ingroup openliberty --disabled-password --shell /bin/bash --quiet openliberty  
+        fi
+
+        if [ -x "/usr/libexec/openliberty" ] && [ -r "/lib/systemd/system/openliberty@.service" ]; then
+            systemctl daemon-reload
+            systemctl enable openliberty@defaultServer.service
+        fi
+
+        echo "Setting up defaultServer for user"
+        mkdir -p /var/local/openliberty/usr/servers
+        if [ ! -d "/var/local/openliberty/usr/servers/defaultServer" ]; then
+            unzip /usr/share/openliberty/defaultServer.zip -d /var/local/openliberty/usr/servers
+            printf "\nLOG_DIR=/var/log/openliberty/defaultServer" >> /var/local/openliberty/usr/servers/defaultServer/server.env
+        fi
+        mkdir -p /var/run/openliberty
+        mkdir -p /var/log/openliberty
+
+        echo "Setting permissions to files/folders"
+        chown -R openliberty:openliberty /var/local/openliberty
+        chmod -R u+w /var/local/openliberty
+        chown -R openliberty:openliberty /var/run/openliberty
+        chmod -R u+w /var/run/openliberty
+        chown -R openliberty:openliberty /var/log/openliberty
+        chmod -R u+w /var/log/openliberty
+
+        echo "Setting up symlinks for jar and class files"
+        if [ ! -d "/usr/share/java/openliberty" ]; then
+            mkdir -p /usr/share/java/openliberty/lib/
+            mv /usr/share/openliberty/lib/*.jar /usr/share/java/openliberty/lib/
+            ln -sf /usr/share/java/openliberty/lib/*.jar /usr/share/openliberty/lib/
+
+            mkdir -p /usr/share/java/openliberty/lib/extract/platform
+            mv /usr/share/openliberty/lib/extract/*.class /usr/share/java/openliberty/lib/extract/
+            mv /usr/share/openliberty/lib/extract/platform/*.class /usr/share/java/openliberty/lib/extract/platform/
+            ln -sf /usr/share/java/openliberty/lib/extract/*.class /usr/share/openliberty/lib/extract/
+            ln -sf /usr/share/java/openliberty/lib/extract/platform/*.class /usr/share/openliberty/lib/extract/platform/
+
+            mkdir -p /usr/share/java/openliberty/clients
+            mv /usr/share/openliberty/clients/*.jar /usr/share/java/openliberty/clients/
+            ln -sf /usr/share/java/openliberty/clients/*.jar /usr/share/openliberty/clients/
+
+            mkdir -p /usr/share/java/openliberty/dev/{api,spi}/{ibm,spec,stable,third-party}
+            mkdir -p /usr/share/java/openliberty/dev/api/{ibm,spec,stable,third-party}
+            mkdir -p /usr/share/java/openliberty/dev/spi/{ibm,spec,third-party}
+            mv /usr/share/openliberty/dev/spi/ibm/*.jar /usr/share/java/openliberty/dev/spi/ibm/
+            ln -sf /usr/share/java/openliberty/dev/spi/ibm/*.jar /usr/share/openliberty/dev/spi/ibm/
+
+            mv /usr/share/openliberty/dev/spi/spec/*.jar /usr/share/java/openliberty/dev/spi/spec/
+            ln -sf /usr/share/java/openliberty/dev/spi/spec/*.jar /usr/share/openliberty/dev/spi/spec/
+
+            mv /usr/share/openliberty/dev/spi/third-party/*.jar /usr/share/java/openliberty/dev/spi/third-party/
+            ln -sf /usr/share/java/openliberty/dev/spi/third-party/*.jar /usr/share/openliberty/dev/spi/third-party/
+
+            mv /usr/share/openliberty/dev/api/ibm/*.jar /usr/share/java/openliberty/dev/api/ibm/
+            ln -sf /usr/share/java/openliberty/dev/api/ibm/*.jar /usr/share/openliberty/dev/api/ibm/
+
+            mv /usr/share/openliberty/dev/api/spec/*.jar /usr/share/java/openliberty/dev/api/spec/
+            ln -sf /usr/share/java/openliberty/dev/api/spec/*.jar /usr/share/openliberty/dev/api/spec/
+
+            mv /usr/share/openliberty/dev/api/stable/*.jar /usr/share/java/openliberty/dev/api/stable/
+            ln -sf /usr/share/java/openliberty/dev/api/stable/*.jar /usr/share/openliberty/dev/api/stable/
+
+            mv /usr/share/openliberty/dev/api/third-party/*.jar /usr/share/java/openliberty/dev/api/third-party/
+            ln -sf /usr/share/java/openliberty/dev/api/third-party/*.jar /usr/share/openliberty/dev/api/third-party/
+        fi
+        ;;
+    abort-remove|abort-upgrade)
+        ;;
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        ;;
+esac
+
+#DEBHELPER#
+exit 0
+

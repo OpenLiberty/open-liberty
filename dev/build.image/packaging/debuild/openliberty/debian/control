@@ -1,0 +1,15 @@
+Source: openliberty
+Section: java
+Priority: optional
+Maintainer: Michael Zhang <Michael.Zhang@ibm.com>
+Standards-Version: 4.3.0
+Build-Depends: debhelper (>= 9)
+Homepage: https://openliberty.io
+
+Package: openliberty
+Architecture: all
+Depends: adduser, ${misc:Depends}
+Suggests: java8-runtime-headless | java8-runtime
+Description: Server runtime for Java developers
+ Open Liberty provides developers with Java EE 8 technology 
+ and Eclipse MicroProfile capabilities for building micro-services

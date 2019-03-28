@@ -1,0 +1,158 @@
+# This is the spec file for rpm openliberty creation
+ 
+%define name        openliberty
+%define version     @SPEC_VERSION@
+%define _topdir     %(echo $PWD)
+%define buildroot   %{_topdir}/BUILDROOT/%{name}-root
+
+
+Summary:        Open Liberty
+License:        EPL-1.0
+Name:           %{name}
+Version:        %{version}
+Release:        1%{?dist}
+Source:         %{name}-%{version}.tar.gz
+BuildArch:      noarch
+URL:            https://openliberty.io
+Packager:       IBM
+#Suggests:       java >= 1:1.8.0
+
+%description
+Open Liberty provides developers with Java EE 8 technology 
+and Eclipse MicroProfile capabilities for building micro-services
+ 
+%install
+
+#Unpacking the tar into the openliberty folder
+mkdir -p %{buildroot}/usr/share/%{name}
+tar -zxf %{_topdir}/SOURCES/%{name}-%{version}.tar.gz -C %{buildroot}/usr/share/%{name}
+
+#Creating the server folder and moving defaultServer zip to /usr/share/openliberty
+mkdir -p %{buildroot}/usr/share/%{name}
+cp %{_topdir}/SOURCES/defaultServer.zip %{buildroot}/usr/share/%{name}
+
+#Creating the scripts
+mkdir -p %{buildroot}/usr/libexec
+cp %{_topdir}/SOURCES/scripts/openliberty %{buildroot}/usr/libexec
+
+#Creating the service
+mkdir -p %{buildroot}/usr/lib/systemd/system
+cp %{_topdir}/SOURCES/scripts/openliberty@.service %{buildroot}/usr/lib/systemd/system
+
+#Moving LICENSE file to doc and license
+mkdir -p %{buildroot}/usr/share/doc/%{name}
+mv %{buildroot}/usr/share/%{name}/LICENSE %{buildroot}/usr/share/doc/%{name}
+
+exit 0
+ 
+%files
+%defattr(-,root,root)
+/usr/libexec
+/usr/share/doc/%{name}
+/usr/share/%{name}
+/usr/lib/systemd/system
+
+%changelog
+* Fri Feb 22 2019 Michael Zhang <michael.zhang@ibm.com> - 19.0.0.1-1
+- First Open Liberty package
+
+%preun
+pidDir=/var/run/openliberty
+if ( ls $pidDir/*.pid > /dev/null 2>&1 ); then 
+    printf "Your server(s) are still running. Stop them before uninstalling/upgrading!\n"
+    for pidFiles in $pidDir/*.pid
+    do
+        server=$(basename $pidFiles)
+        serverName="${server%.*}"
+        echo "Server - $serverName with process id $(cat $pidFiles)"
+    done
+    exit 1
+fi
+exit 0
+
+%post
+echo "Adding group - openliberty"
+if (! getent group openliberty > /dev/null 2>&1); then
+    groupadd --system openliberty
+fi
+
+echo "Adding user - openliberty"
+if (! id openliberty > /dev/null 2>&1); then
+    adduser --system --home-dir /usr/share/openliberty --no-create-home -g openliberty --shell /bin/bash openliberty  
+fi
+
+if [ -x "/usr/libexec/openliberty" ] && [ -r "/usr/lib/systemd/system/openliberty@.service" ]; then
+    systemctl daemon-reload
+    systemctl enable openliberty@defaultServer.service
+fi
+
+echo "Setting up defaultServer for user"
+mkdir -p /var/local/openliberty/usr/servers
+if [ ! -d "/var/local/openliberty/usr/servers/defaultServer" ]; then
+    unzip /usr/share/openliberty/defaultServer.zip -d /var/local/openliberty/usr/servers
+    printf "\nLOG_DIR=/var/log/openliberty/defaultServer" >> /var/local/openliberty/usr/servers/defaultServer/server.env
+fi
+mkdir -p /var/run/openliberty
+mkdir -p /var/log/openliberty
+
+echo "Setting permissions to files/folders"
+chown -R openliberty:openliberty /usr/share/openliberty/lib
+chown -R openliberty:openliberty /var/local/openliberty
+chmod -R u+w /var/local/openliberty
+chown -R openliberty:openliberty /var/run/openliberty
+chmod -R u+w /var/run/openliberty
+chown -R openliberty:openliberty /var/log/openliberty
+chmod -R u+w /var/log/openliberty
+
+echo "Setting up symlinks for jar and class files"
+if [ ! -d "/usr/share/java/openliberty" ]; then
+    mkdir -p /usr/share/java/openliberty/lib/
+    mv /usr/share/openliberty/lib/*.jar /usr/share/java/openliberty/lib/
+    ln -sf /usr/share/java/openliberty/lib/*.jar /usr/share/openliberty/lib/
+
+    mkdir -p /usr/share/java/openliberty/lib/extract/platform
+    mv /usr/share/openliberty/lib/extract/*.class /usr/share/java/openliberty/lib/extract/
+    mv /usr/share/openliberty/lib/extract/platform/*.class /usr/share/java/openliberty/lib/extract/platform/
+    ln -sf /usr/share/java/openliberty/lib/extract/*.class /usr/share/openliberty/lib/extract/
+    ln -sf /usr/share/java/openliberty/lib/extract/platform/*.class /usr/share/openliberty/lib/extract/platform/
+
+    mkdir -p /usr/share/java/openliberty/clients
+    mv /usr/share/openliberty/clients/*.jar /usr/share/java/openliberty/clients/
+    ln -sf /usr/share/java/openliberty/clients/*.jar /usr/share/openliberty/clients/
+
+    mkdir -p /usr/share/java/openliberty/dev/{api,spi}/{ibm,spec,stable,third-party}
+    mkdir -p /usr/share/java/openliberty/dev/api/{ibm,spec,stable,third-party}
+    mkdir -p /usr/share/java/openliberty/dev/spi/{ibm,spec,third-party}
+    mv /usr/share/openliberty/dev/spi/ibm/*.jar /usr/share/java/openliberty/dev/spi/ibm/
+    ln -sf /usr/share/java/openliberty/dev/spi/ibm/*.jar /usr/share/openliberty/dev/spi/ibm/
+
+    mv /usr/share/openliberty/dev/spi/spec/*.jar /usr/share/java/openliberty/dev/spi/spec/
+    ln -sf /usr/share/java/openliberty/dev/spi/spec/*.jar /usr/share/openliberty/dev/spi/spec/
+
+    mv /usr/share/openliberty/dev/spi/third-party/*.jar /usr/share/java/openliberty/dev/spi/third-party/
+    ln -sf /usr/share/java/openliberty/dev/spi/third-party/*.jar /usr/share/openliberty/dev/spi/third-party/
+
+    mv /usr/share/openliberty/dev/api/ibm/*.jar /usr/share/java/openliberty/dev/api/ibm/
+    ln -sf /usr/share/java/openliberty/dev/api/ibm/*.jar /usr/share/openliberty/dev/api/ibm/
+
+    mv /usr/share/openliberty/dev/api/spec/*.jar /usr/share/java/openliberty/dev/api/spec/
+    ln -sf /usr/share/java/openliberty/dev/api/spec/*.jar /usr/share/openliberty/dev/api/spec/
+
+    mv /usr/share/openliberty/dev/api/stable/*.jar /usr/share/java/openliberty/dev/api/stable/
+    ln -sf /usr/share/java/openliberty/dev/api/stable/*.jar /usr/share/openliberty/dev/api/stable/
+
+    mv /usr/share/openliberty/dev/api/third-party/*.jar /usr/share/java/openliberty/dev/api/third-party/
+    ln -sf /usr/share/java/openliberty/dev/api/third-party/*.jar /usr/share/openliberty/dev/api/third-party/
+fi
+exit 0
+
+%postun
+echo "Removing all leftover jar files"
+if [ -d "/usr/share/openliberty/lib" ]; then
+    rm -rf /usr/share/openliberty/lib
+fi
+echo "Removing all symlinks for jar and class files"
+if [ -d "/usr/share/java/openliberty" ]; then
+    rm -rf /usr/share/java/openliberty
+fi
+exit 0

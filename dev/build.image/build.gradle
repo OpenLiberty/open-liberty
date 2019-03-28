@@ -643,3 +643,69 @@ task createJSONForPublicArtifacts {
 task gatherTestResults {
     dependsOn zipTestReport,createJSONForPublicArtifacts
 }
+
+task copyOpenLibertyAll(type: Sync) {
+   dependsOn zipOpenLibertyAll
+
+   mkdir("packaging/tempPackagingDir")
+
+   from zipOpenLibertyAll
+   into 'packaging/tempPackagingDir'
+}
+
+task updateSpecTemplate(type: Copy) {
+    from 'packaging'
+    include 'openliberty.spec.template'
+    into 'packaging/rpmbuild/SPECS'
+    filter { line -> line.replaceAll('@SPEC_VERSION@', bnd('libertyServiceVersion', '19.0.0.5')) }
+    rename { it.replace(".template", "") }
+}
+
+task updateChangelogTemplate(type: Copy) {
+    from 'packaging'
+    include 'changelog.template'
+    into 'packaging/debuild/openliberty/debian'
+    filter { line -> line.replaceAll('@CHANGELOG_VERSION@', bnd('libertyServiceVersion', '19.0.0.5')) }
+    rename { it.replace(".template", "") }
+}
+
+task updateBuildPackageScriptTemplate(type: Copy) {
+    from 'packaging'
+    include 'buildOsSpecificPackages.sh.template'
+    into 'packaging'
+    filter { line -> line.replaceAll('@DRIVER_VERSION@', bnd('libertyServiceVersion', '19.0.0.5')) }
+    rename { it.replace(".template", "") }
+}
+
+task buildOsSpecificPackages(type:Exec) {
+    dependsOn copyOpenLibertyAll
+    dependsOn updateChangelogTemplate
+    dependsOn updateSpecTemplate
+    dependsOn updateBuildPackageScriptTemplate
+
+    // enabled isAutomatedBuild
+    // enabled isRelease
+
+    workingDir 'packaging'
+    mkdir("packaging/tempPackagingDir/tempTar")
+    
+    def rpms = file("./packaging/rpmbuild/RPMS/noarch/openliberty-" + bnd('libertyServiceVersion') + "-1.noarch.rpm")
+    def debs = file("./packaging/debuild/openliberty_" + bnd('libertyServiceVersion') + "-1ubuntu1_all.deb")
+    
+    inputs.dir('packaging/tempPackagingDir')
+    outputs.file(rpms)
+    outputs.file(debs)
+
+    commandLine 'sh', './buildOsSpecificPackages.sh'
+
+    ignoreExitValue true
+
+    doLast {
+        if (execResult.getExitValue() != 0) {
+            throw new GradleException("Script buildOsSpecificPackages.sh failed to run rpmbuild and debuild.")
+        }
+        file('packaging/tempPackagingDir').deleteDir()
+    }
+    
+}
+publish.dependsOn buildOsSpecificPackages
