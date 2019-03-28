@@ -136,7 +136,7 @@ public class BaseTraceService implements TrService {
     protected static RecursionCounter counterForTraceWriter = new RecursionCounter();
     protected static RecursionCounter counterForLogSource = new RecursionCounter();
 
-    private static final int MINUTE = 60000;
+    private static final int MINUTE = 20000;
 
     /**
      * Trivial interface for writing "trace" records (this includes logging to messages.log)
@@ -1234,6 +1234,12 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
+        public void write(byte buf[], int off, int len) {
+            super.write(buf, off, len);
+            preFlush(null);
+        }
+
+        @Override
         public void println() {
             super.println();
             try {
@@ -1368,6 +1374,18 @@ public class BaseTraceService implements TrService {
             return (super.checkError() || this.trouble);
         }
 
+        @Override
+        protected void setError() {
+            super.setError();
+            trouble = true;
+        }
+
+        @Override
+        protected void clearError() {
+            super.clearError();
+            trouble = false;
+        }
+
     }
 
     /**
@@ -1386,7 +1404,9 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public synchronized void flush() {}
+        public synchronized void flush() {
+            //System.out.println("we are in flush");
+        }
 
         public synchronized void realFlush() throws IOException {
             super.flush();
@@ -1569,9 +1589,9 @@ public class BaseTraceService implements TrService {
                 if (internalTraceRouter.get() != null)
                     BaseTraceService.this.setTraceRouter(internalTraceRouter.get());
 
-                System.out.println("hello");
+                System.out.print("hello");
                 final PrintWriter writer = new PrintWriter(System.out, true);
-                writer.println("Help me God");
+                writer.println("This Should Print");
             }
         }
     }
