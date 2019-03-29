@@ -18,7 +18,7 @@ Export-Package: \
   org.apache.cxf.transport.servlet;version=${exportVer},\
   org.apache.cxf.transports.http;version=${exportVer},\
   org.apache.cxf.transports.http.configuration;version=${exportVer}
-  
+
 Import-Package: \
   !org.apache.aries.*,\
   !org.springframework.*,\
@@ -28,9 +28,11 @@ Import-Package: \
   !org.apache.cxf.ws.policy.*,\
   !org.apache.cxf.wsdl,\
   !org.osgi.service.blueprint.*,\
-  com.ibm.ws.cxf.client, \
-  com.ibm.ws.cxf.client.component, \
   *
+  
+ Private-Package: \
+  com.ibm.ws.cxf.client.client, \
+  com.ibm.ws.cxf.client.component
 
 Service-Component: \
   com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.ResourceProvider; \

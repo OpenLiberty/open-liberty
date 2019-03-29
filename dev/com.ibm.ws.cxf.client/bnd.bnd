@@ -18,17 +18,19 @@ Bundle-Description: Async capability for CXF HttpConduit; version=${bVersion}
 WS-TraceGroup: JAXRS
 
 Export-Package: \
-  com.ibm.ws.cxf.client, \
-  com.ibm.ws.cxf.client.component
+ com.ibm.ws.cxf.client, \
+ com.ibm.ws.cxf.client.component
 
 Import-Package: \
- org.apache.cxf.message, \
+ !org.apache.aries.*, \
+ !org.osgi.service.blueprint.*, \
+ !com.ibm.ws.org.apache.felix, \
  *
- 
+
 -dsannotations: \
-  com.ibm.ws.cxf.client.*
+  com.ibm.ws.cxf.client.component.*
 
 -buildpath: \
-  org.apache.cxf:cxf-core,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  org.apache.cxf:cxf-core, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
   com.ibm.wsspi.org.osgi.service.component.annotations

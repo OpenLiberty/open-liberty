@@ -7,3 +7,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Import-Package: \
   *
+  
+ Private-Package: \
+  com.ibm.ws.cxf.client.client, \
+  com.ibm.ws.cxf.client.component

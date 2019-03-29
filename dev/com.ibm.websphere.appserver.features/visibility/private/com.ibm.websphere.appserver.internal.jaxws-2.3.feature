@@ -6,7 +6,7 @@ IBM-App-ForceRestart: uninstall, \
 install
 Subsystem-Name: Internal Java Web Services 2.3
 -features=\
-com.ibm.websphere.appserver.injection-1.0, \z
+com.ibm.websphere.appserver.injection-1.0, \
 com.ibm.websphere.appserver.servlet-4.0, \
 com.ibm.websphere.appserver.classloading-1.0, \
 com.ibm.websphere.appserver.javax.mail-1.6, \

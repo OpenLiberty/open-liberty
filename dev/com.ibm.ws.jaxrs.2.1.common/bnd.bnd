@@ -33,8 +33,6 @@ Export-Package: \
   com.ibm.ws.jaxrs20.providers.api,\
   com.ibm.ws.jaxrs21.sse
 
-
-
 Import-Package: \
   com.ibm.json.java;resolution:=optional,\
   *
@@ -131,7 +129,6 @@ Private-Package:\
    com.ibm.ws.jaxrs20.providers.json4j.utils,\
    com.ibm.ws.jaxrs20.providers.security,\
    com.ibm.ws.jaxrs20.security
-
 
 -dsannotations: com.ibm.ws.jaxrs20.component.*, \
   com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfigImpl, \

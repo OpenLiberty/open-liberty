@@ -31,11 +31,12 @@ Import-Package: \
   com.ibm.wsspi.threadcontext, \
   org.osgi.framework, \
   org.osgi.service.component, \
-  com.ibm.ws.cxf.client.*
-  
+  com.ibm.ws.cxf.client, \
+  com.ibm.ws.cxf.client.component
+ 
 # If you need use MESSAGE, you must enable this Private-Package, or message will translate wrong
 Private-Package:\
-   com.ibm.ws.jaxrs2x.concurrent.*
+  com.ibm.ws.jaxrs2x.concurrent.*
 
 -dsannotations: com.ibm.ws.jaxrs2x.concurrent.component.*
  

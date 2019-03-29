@@ -18,7 +18,7 @@ Bundle-Description: JavaEE Client API for JAX-RS 2.0, version ${bVersion}
 WS-TraceGroup: JAXRS
 
 # jaxrs-2.0 is part of EE7 and therefore requires java 1.7
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))" 
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 
 Export-Package: \
@@ -32,7 +32,7 @@ Import-Package: \
    com.ibm.websphere.security.saml2;resolution:=optional, \
    com.ibm.ws.jaxrs20.appsecurity.security;resolution:=optional, \
    *
-   
+
 Private-Package:\
   com.ibm.ws.jaxrs20.client.*
 
@@ -44,7 +44,7 @@ Service-Component: \
      activate:=activate; \
      deactivate:=deactivate; \
      properties:="service.vendor=IBM"
- 
+
  -dsannotations: com.ibm.ws.jaxrs20.client.component.*, \
  	com.ibm.ws.jaxrs20.client.security.oauth.OAuthPropagationHelper
 
