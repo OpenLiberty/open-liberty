@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.AccessController;
@@ -135,7 +136,7 @@ public class BaseTraceService implements TrService {
     protected static RecursionCounter counterForTraceWriter = new RecursionCounter();
     protected static RecursionCounter counterForLogSource = new RecursionCounter();
 
-    private static final int MINUTE = 60000;
+    private static final int MINUTE = 20000;
 
     /**
      * Trivial interface for writing "trace" records (this includes logging to messages.log)
@@ -1201,6 +1202,7 @@ public class BaseTraceService implements TrService {
     public final static class TeePrintStream extends PrintStream {
         protected final TrOutputStream trStream;
         protected final boolean autoFlush;
+        protected boolean trouble = false;
 
         public TeePrintStream(TrOutputStream trStream, boolean autoFlush) {
             super(trStream, autoFlush);
@@ -1208,21 +1210,33 @@ public class BaseTraceService implements TrService {
             this.trStream = trStream;
         }
 
-        public void realFlush(String s) {
+        public void preFlush(String s) {
             if (autoFlush) {
                 try {
                     trStream.realFlush();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    trouble = true;
+                    //e.printStackTrace();
                 }
             }
-            if (autoFlush && (s.indexOf('\n') >= 0)) {
-                try {
-                    trStream.realFlush();
-                } catch (IOException e) {
-                    e.printStackTrace();
+            try {
+                if (autoFlush && (s.indexOf('\n') >= 0)) {
+                    try {
+                        trStream.realFlush();
+                    } catch (IOException e) {
+                        trouble = true;
+                        //e.printStackTrace();
+                    }
                 }
+            } catch (Exception e) {
+                //String passed was null, do nothing
             }
+        }
+
+        @Override
+        public void write(byte buf[], int off, int len) {
+            super.write(buf, off, len);
+            preFlush(null);
         }
 
         @Override
@@ -1231,69 +1245,145 @@ public class BaseTraceService implements TrService {
             try {
                 trStream.realFlush();
             } catch (IOException e) {
-                e.printStackTrace();
+                trouble = true;
+                //e.printStackTrace();
             }
         }
 
         @Override
         public void println(String s) {
+            super.print(s + "\n");
+            preFlush(s);
+        }
+
+        @Override
+        public void println(boolean b) {
+            super.print(b);
+            super.print("\n");
+            String str = b ? "true" : "false";
+            str += "\n";
+            preFlush(str);
+        }
+
+        @Override
+        public void println(char c) {
+            super.print(c);
+            super.print("\n");
+            preFlush(String.valueOf(c) + "\n");
+        }
+
+        @Override
+        public void println(int i) {
+            super.print(i);
+            super.print("\n");
+            preFlush(String.valueOf(i) + "\n");
+        }
+
+        @Override
+        public void println(long l) {
+            super.print(l);
+            super.print("\n");
+            preFlush(String.valueOf(l) + "\n");
+        }
+
+        @Override
+        public void println(float f) {
+            super.print(f);
+            super.print("\n");
+            preFlush(String.valueOf(f) + "\n");
+        }
+
+        @Override
+        public void println(double d) {
+            super.print(d);
+            super.print("\n");
+            preFlush(String.valueOf(d) + "\n");
+        }
+
+        @Override
+        public void println(char s[]) {
             super.print(s);
-            realFlush(s);
+            super.print("\n");
+            preFlush(String.valueOf(s) + "\n");
+        }
+
+        @Override
+        public void println(Object obj) {
+            super.print(obj);
+            super.print("\n");
+            preFlush(String.valueOf(obj) + "\n");
         }
 
         @Override
         public void print(String s) {
             super.print(s);
-            realFlush(s);
+            preFlush(s);
         }
 
         @Override
         public void print(boolean b) {
             super.print(b);
             String str = b ? "true" : "false";
-            realFlush(str);
+            preFlush(str);
         }
 
         @Override
         public void print(char c) {
             super.print(c);
-            realFlush(String.valueOf(c));
+            preFlush(String.valueOf(c));
         }
 
         @Override
         public void print(int i) {
             super.print(i);
-            realFlush(String.valueOf(i));
+            preFlush(String.valueOf(i));
         }
 
         @Override
         public void print(long l) {
             super.print(l);
-            realFlush(String.valueOf(l));
+            preFlush(String.valueOf(l));
         }
 
         @Override
         public void print(float f) {
             super.print(f);
-            realFlush(String.valueOf(f));
+            preFlush(String.valueOf(f));
         }
 
         @Override
         public void print(double d) {
             super.print(d);
-            realFlush(String.valueOf(d));
+            preFlush(String.valueOf(d));
         }
 
         @Override
         public void print(char s[]) {
             super.print(s);
-            realFlush(String.valueOf(s));
+            preFlush(String.valueOf(s));
         }
 
         @Override
         public void print(Object obj) {
             super.print(obj);
-            realFlush(String.valueOf(obj));
+            preFlush(String.valueOf(obj));
+        }
+
+        @Override
+        public boolean checkError() {
+            return (super.checkError() || this.trouble);
+        }
+
+        @Override
+        protected void setError() {
+            super.setError();
+            trouble = true;
+        }
+
+        @Override
+        protected void clearError() {
+            super.clearError();
+            trouble = false;
         }
 
     }
@@ -1314,7 +1404,9 @@ public class BaseTraceService implements TrService {
         }
 
         @Override
-        public synchronized void flush() {}
+        public synchronized void flush() {
+            //System.out.println("we are in flush");
+        }
 
         public synchronized void realFlush() throws IOException {
             super.flush();
@@ -1497,18 +1589,9 @@ public class BaseTraceService implements TrService {
                 if (internalTraceRouter.get() != null)
                     BaseTraceService.this.setTraceRouter(internalTraceRouter.get());
 
-                String starter = "";
-                String string = "R";
-                for (int i = 0; i < 8192; i++) {
-                    starter = starter + string;
-                }
-                System.out.print(starter);
-                System.out.print("jjjj\njjjj");
-                System.out.print("Hello");
-
-                System.out.print(starter);
-                System.out.print("jjjj\njjjj");
-                System.out.print("Hello");
+                System.out.print("hello");
+                final PrintWriter writer = new PrintWriter(System.out, true);
+                writer.println("This Should Print");
             }
         }
     }
