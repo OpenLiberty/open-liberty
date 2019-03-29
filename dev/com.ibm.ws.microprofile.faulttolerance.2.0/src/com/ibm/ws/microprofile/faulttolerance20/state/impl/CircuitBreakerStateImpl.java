@@ -50,7 +50,11 @@ public class CircuitBreakerStateImpl implements CircuitBreakerState {
         } else {
             circuitBreaker.recordFailure(result.getFailure());
             if (!(result.getFailure() instanceof CircuitBreakerOpenException)) {
-                metricRecorder.incrementCircuitBreakerCallsFailureCount();
+                if (circuitBreaker.isFailure(null, result.getFailure())) {
+                    metricRecorder.incrementCircuitBreakerCallsFailureCount();
+                } else {
+                    metricRecorder.incrementCircuitBreakerCallsSuccessCount();
+                }
             }
         }
     }
