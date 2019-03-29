@@ -62,16 +62,18 @@ public class ManagedConnectionFactoryImpl implements ManagedConnectionFactory, R
         // Various sorts of exception paths for the validator to test
 
         if (portNumber < 0) {
-            InvalidPropertyException x = new InvalidPropertyException("portNumber");
+            InvalidPropertyException x = new InvalidPropertyException("portNumber", "ERR_PORT_NEG");
             x.initCause(new IllegalArgumentException("Negative port numbers are not allowed."));
             throw x;
         }
 
-        if (portNumber < 1024)
-            throw new IllegalArgumentException(Integer.toString(portNumber));
-
-        if (portNumber % 10 == 0)
-            throw new ResourceAllocationException("Port " + portNumber + " is currently in use.");
+        if (portNumber < 1024) {
+            IllegalArgumentException x = new IllegalArgumentException(Integer.toString(portNumber));
+            x.initCause(new InvalidPortException("Port cannot be used.", "ERR_PORT_INV"));
+            x.getCause().initCause(new ResourceAllocationException("Port not in allowed range.", "ERR_PORT_OOR"));
+            x.getCause().getCause().initCause(new ResourceException("Port number is too low."));
+            throw x;
+        }
 
         if (!hostName.equals("localhost") && !hostName.endsWith(".openliberty.io"))
             throw new CommException("Unable to connect to " + hostName);

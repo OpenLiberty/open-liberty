@@ -26,4 +26,16 @@
   <connectionFactory id="cf1" jndiName="eis/cf1">
     <properties.TestValidationAdapter hostName="myhost.openliberty.io" portNumber="9876"/>
   </connectionFactory>
+
+  <connectionFactory id="cf2" jndiName="eis/cf-invalid-host">
+    <properties.TestValidationAdapter hostName="notfound.rchland.ibm.com" portNumber="5432"/>
+  </connectionFactory>
+
+  <connectionFactory jndiName="eis/cf-negative-port-number">
+    <properties.TestValidationAdapter hostName="myhost.openliberty.io" portNumber="-2020"/>
+  </connectionFactory>
+
+  <connectionFactory jndiName="eis/cf-port-not-in-range">
+    <properties.TestValidationAdapter hostName="myhost.openliberty.io" portNumber="22"/>
+  </connectionFactory>
 </server>

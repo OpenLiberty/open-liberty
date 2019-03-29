@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -31,6 +32,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -67,7 +69,8 @@ public class ValidateJCATest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("J2CA0046E: .*eis/cf-port-not-in-range" // intentionally raised error to test exception path
+        );
     }
 
     /**
@@ -107,5 +110,82 @@ public class ValidateJCATest extends FATServletClient {
         assertEquals(err, "TestValidationEIS", json.getString("eisProductName"));
         assertEquals(err, "33.56.65", json.getString("eisProductVersion"));
         assertEquals(err, "DefaultUserName", json.getString("user"));
+    }
+
+    /**
+     * Validate a connectionFactory that is configured at top level without an id attribute,
+     * where the validation attempt fails with an exception that has a chain of cause exceptions,
+     * some of which have error codes.
+     */
+    @AllowedFFDC({ "java.lang.IllegalArgumentException", // intentionally raised by mock resource adapter to cover exception paths
+                   "javax.resource.spi.ResourceAllocationException" // same error as above, wrapped as ResourceAllocationException
+    })
+    @Test
+    public void testTopLevelConnectionFactoryWithoutIDWithChainedExceptions() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/connectionFactory/connectionFactory[default-1]").run(JsonObject.class);
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "connectionFactory[default-1]", json.getString("uid"));
+        assertNull(err, json.get("id"));
+        assertEquals(err, "eis/cf-port-not-in-range", json.getString("jndiName"));
+        assertFalse(err, json.getBoolean("successful"));
+        assertNull(err, json.get("info"));
+
+        // Liberty wraps the IllegalArgumentException with ResourceException
+        assertNotNull(err, json = json.getJsonObject("failure"));
+        assertNull(err, json.get("errorCode"));
+        assertEquals(err, "javax.resource.spi.ResourceAllocationException", json.getString("class"));
+        JsonArray stack = json.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("com."));
+        assertTrue(err, stack.getString(1).startsWith("com."));
+        assertTrue(err, stack.getString(2).startsWith("com."));
+
+        assertNotNull(err, json = json.getJsonObject("cause"));
+        assertNull(err, json.get("errorCode"));
+        assertEquals(err, "java.lang.IllegalArgumentException", json.getString("class"));
+        assertEquals(err, "22", json.getString("message"));
+        stack = json.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.ManagedConnectionFactoryImpl.createManagedConnection(ManagedConnectionFactoryImpl.java:"));
+        assertTrue(err, stack.getString(1).startsWith("com."));
+        assertTrue(err, stack.getString(2).startsWith("com."));
+
+        assertNotNull(err, json = json.getJsonObject("cause"));
+        assertEquals(err, "ERR_PORT_INV", json.getString("errorCode"));
+        assertEquals(err, "org.test.validator.adapter.InvalidPortException", json.getString("class"));
+        assertTrue(err, json.getString("message").startsWith("Port cannot be used."));
+        stack = json.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.ManagedConnectionFactoryImpl.createManagedConnection(ManagedConnectionFactoryImpl.java:"));
+        assertTrue(err, stack.getString(1).startsWith("com."));
+        assertTrue(err, stack.getString(2).startsWith("com."));
+        assertTrue(err, stack.getString(2).startsWith("com."));
+
+        assertNotNull(err, json = json.getJsonObject("cause"));
+        assertEquals(err, "ERR_PORT_OOR", json.getString("errorCode"));
+        assertEquals(err, "javax.resource.spi.ResourceAllocationException", json.getString("class"));
+        assertTrue(err, json.getString("message").startsWith("Port not in allowed range."));
+        stack = json.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.ManagedConnectionFactoryImpl.createManagedConnection(ManagedConnectionFactoryImpl.java:"));
+        assertTrue(err, stack.getString(1).startsWith("com."));
+        assertTrue(err, stack.getString(2).startsWith("com."));
+
+        assertNotNull(err, json = json.getJsonObject("cause"));
+        assertNull(err, json.get("errorCode"));
+        assertEquals(err, "javax.resource.ResourceException", json.getString("class"));
+        assertEquals(err, "Port number is too low.", json.getString("message"));
+        stack = json.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.ManagedConnectionFactoryImpl.createManagedConnection(ManagedConnectionFactoryImpl.java:"));
+        assertTrue(err, stack.getString(1).startsWith("com."));
+        assertTrue(err, stack.getString(2).startsWith("com."));
+
+        assertNull(err, json.get("cause"));
     }
 }

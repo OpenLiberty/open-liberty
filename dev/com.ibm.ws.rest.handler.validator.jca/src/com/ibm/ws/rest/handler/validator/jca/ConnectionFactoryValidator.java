@@ -10,11 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.validator.jca;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.resource.NotSupportedException;
+import javax.resource.ResourceException;
 import javax.resource.cci.Connection;
 import javax.resource.cci.ConnectionFactory;
 import javax.resource.cci.ConnectionMetaData;
@@ -124,7 +128,13 @@ public class ConnectionFactoryValidator implements Validator {
                 }
             }
         } catch (Throwable x) {
-            // TODO include error codes?
+            ArrayList<String> errorCodes = new ArrayList<String>();
+            Set<Throwable> causes = new HashSet<Throwable>(); // avoid cycles in exception chain
+            for (Throwable cause = x; cause != null && causes.add(cause); cause = cause.getCause()) {
+                String errorCode = cause instanceof ResourceException ? ((ResourceException) cause).getErrorCode() : null;
+                errorCodes.add(errorCode);
+            }
+            result.put("errorCode", errorCodes);
             result.put("failure", x);
         }
 
