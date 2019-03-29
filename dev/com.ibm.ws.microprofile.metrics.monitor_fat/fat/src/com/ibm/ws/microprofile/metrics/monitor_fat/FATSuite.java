@@ -17,6 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 MetricsMonitorTest.class,
+                TestEnableDisableFeaturesTest.class
 })
 
 public class FATSuite {
