@@ -85,4 +85,27 @@ public class ValidateJCATest extends FATServletClient {
         assertNotNull(err, json = json.getJsonObject("failure"));
         assertTrue(err, json.getString("message").contains("Did not find any configured instances of connectionFactory matching the request"));
     }
+
+    /**
+     * Validate a connectionFactory that is configured at top level with an id attribute.
+     */
+    @Test
+    public void testTopLevelConnectionFactoryWithID() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/connectionFactory/cf1").run(JsonObject.class);
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "cf1", json.getString("uid"));
+        assertEquals(err, "cf1", json.getString("id"));
+        assertEquals(err, "eis/cf1", json.getString("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        assertNotNull(err, json = json.getJsonObject("info"));
+        assertEquals(err, "TestValidationAdapter", json.getString("resourceAdapterName"));
+        assertEquals(err, "28.45.53", json.getString("resourceAdapterVersion"));
+        assertEquals(err, "1.7", json.getString("resourceAdapterJCASupport"));
+        assertEquals(err, "OpenLiberty", json.getString("resourceAdapterVendor"));
+        assertEquals(err, "This tiny resource adapter doesn't do much at all.", json.getString("resourceAdapterDescription"));
+        assertEquals(err, "TestValidationEIS", json.getString("eisProductName"));
+        assertEquals(err, "33.56.65", json.getString("eisProductVersion"));
+        assertEquals(err, "DefaultUserName", json.getString("user"));
+    }
 }

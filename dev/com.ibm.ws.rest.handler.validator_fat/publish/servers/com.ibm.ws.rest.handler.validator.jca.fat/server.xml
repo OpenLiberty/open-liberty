@@ -24,6 +24,6 @@
   <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
 
   <connectionFactory id="cf1" jndiName="eis/cf1">
-    <properties.TestValidationAdapter hostName="myhost.openliberty.io" portNumber="9876" userName="user1" password="1user"/>
+    <properties.TestValidationAdapter hostName="myhost.openliberty.io" portNumber="9876"/>
   </connectionFactory>
 </server>
