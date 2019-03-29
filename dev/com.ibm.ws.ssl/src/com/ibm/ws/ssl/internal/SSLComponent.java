@@ -102,9 +102,14 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
         }
 
         // We are claiming TLSv1.3 support starting with Java 11.0.2 on OpenJ9
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "Java vendor: " + JavaInfo.vendor() + " Java major:  " + JavaInfo.majorVersion());
-        if (JavaInfo.vendor().equals(JavaInfo.Vendor.ORACLE) && JavaInfo.majorVersion() == 11)
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Java vendor: " + JavaInfo.vendor());
+            Tr.debug(tc, "Java major version:  " + JavaInfo.majorVersion());
+            Tr.debug(tc, "Java minor version: " + JavaInfo.minorVersion());
+        }
+
+        if ((JavaInfo.vendor().equals(JavaInfo.Vendor.OPENJ9) && JavaInfo.majorVersion() == 11 && JavaInfo.microVersion() < 2)
+            || (JavaInfo.vendor().equals(JavaInfo.Vendor.ORACLE) && JavaInfo.majorVersion() == 11) && JavaInfo.minorVersion() < 3)
             disableTLSv13();
 
         Set<String> installedFeatures = provisionerService.getInstalledFeatures();
@@ -290,8 +295,7 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
      * Remove the reference to the location manager:
      * required service, do nothing.
      */
-    protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {
-    }
+    protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {}
 
     @Reference(service = FeatureProvisioner.class)
     protected synchronized void setKernelProvisioner(FeatureProvisioner provisionerService) {
