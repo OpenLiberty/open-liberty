@@ -1,0 +1,29 @@
+<server>
+    <featureManager>
+        <feature>appSecurity-2.0</feature>
+        <feature>componenttest-1.0</feature>
+    	<feature>jaxb-2.2</feature>
+        <feature>jaxrs-2.1</feature>
+    </featureManager>
+ 
+ 	<basicRegistry id="basic" realm="WebRealm">
+		<user name="user1" password="user1pwd" />
+		<user name="user2" password="user2pwd" />
+		<user name="user1a" password="user1pwd" />
+		<user name="user2a" password="user2pwd" />
+		<group name="Role1">
+			<member name="user1"/>
+		</group>
+		<group name="Role2">
+			<member name="user2"/>
+		</group>
+	</basicRegistry>
+	
+    <application type="war" id="jaxrs21security" name="jaxrs21security" location="${server.config.dir}/apps/jaxrs21security.war" />
+    
+    <application type="war" id="jaxrs21securityNoWebXml" name="jaxrs21securityNoWebXml" location="${server.config.dir}/apps/jaxrs21securityNoWebXml.war" />
+
+  	<httpEndpoint id="defaultHttpEndpoint"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}" />
+</server>

@@ -12,7 +12,7 @@
         <servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
-            <param-value>com.ibm.ws.jaxrs.fat.securitycontext.Application</param-value>
+            <param-value>com.ibm.ws.jaxrs21.fat.securitycontext.Application</param-value>
         </init-param>
         <init-param>
             <param-name>requestProcessorAttribute</param-name>
@@ -21,11 +21,11 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
-        <servlet-name>com.ibm.ws.jaxrs.fat.security.annotations.SecurityAnnotationsApplication</servlet-name>
+        <servlet-name>com.ibm.ws.jaxrs21.fat.security.annotations.SecurityAnnotationsApplication</servlet-name>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
-        <servlet-name>com.ibm.ws.jaxrs.fat.security.ssl.SSLApplication</servlet-name>
+        <servlet-name>com.ibm.ws.jaxrs21.fat.security.ssl.SSLApplication</servlet-name>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
@@ -34,17 +34,17 @@
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
 	<servlet-mapping>
-        <servlet-name>com.ibm.ws.jaxrs.fat.security.annotations.SecurityAnnotationsApplication</servlet-name>
+        <servlet-name>com.ibm.ws.jaxrs21.fat.security.annotations.SecurityAnnotationsApplication</servlet-name>
         <url-pattern>/nomapper/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>com.ibm.ws.jaxrs.fat.security.ssl.SSLApplication</servlet-name>
+        <servlet-name>com.ibm.ws.jaxrs21.fat.security.ssl.SSLApplication</servlet-name>
         <url-pattern>/ssltest/*</url-pattern>
     </servlet-mapping>
 
     <security-constraint id="SecurityConstraint_1">
         <web-resource-collection id="WebResourceCollection_1">
-            <web-resource-name>com.ibm.ws.jaxrs.fat.security.annotations.SecurityAnnotationsApplication
+            <web-resource-name>com.ibm.ws.jaxrs21.fat.security.annotations.SecurityAnnotationsApplication
             </web-resource-name>
             <description>Protection area for Rest Servlet</description>
             <url-pattern>/nomapper/ClassRolesAllowed</url-pattern>
@@ -62,7 +62,7 @@
     </security-constraint>
     <security-constraint id="SecurityConstraint_2">
         <web-resource-collection id="WebResourceCollection_2">
-            <web-resource-name>com.ibm.ws.jaxrs.security.annotations.SecurityAnnotationsApplication
+            <web-resource-name>com.ibm.ws.jaxrs21.security.annotations.SecurityAnnotationsApplication
             </web-resource-name>
             <description>Protection area for Rest Servlet</description>
             <url-pattern>/nomapper/MethodRolesAllowed</url-pattern>
@@ -79,7 +79,7 @@
     </security-constraint>    
     <security-constraint id="SecurityConstraint_5">
         <web-resource-collection id="WebResourceCollection_5">
-            <web-resource-name>com.ibm.ws.jaxrs.fat.security.ssl.SSLApplication
+            <web-resource-name>com.ibm.ws.jaxrs21.fat.security.ssl.SSLApplication
             </web-resource-name>
             <description>Protection area for Rest Servlet</description>
             <url-pattern>/ssltest/ssl/get</url-pattern>
