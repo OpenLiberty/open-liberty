@@ -353,6 +353,8 @@ public class LibertyServer implements LogMonitorClient {
 
     protected Map<String, String> additionalSystemProperties = null;
 
+    private final Map<String, String> envVars = new HashMap<>();
+
     protected String relativeLogsRoot = "/logs/"; // this will be appended to logsRoot in setUp
     protected String consoleFileName = DEFAULT_CONSOLE_FILE; // Console log file name
     protected String messageFileName = DEFAULT_MSG_FILE; // Messages log file name (optionally changed by the FAT)
@@ -1124,6 +1126,11 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         final Properties envVars = new Properties();
+
+        envVars.putAll(this.envVars);
+        Log.info(c, "@AGG", "vars1: " + envVars);
+        this.envVars.clear();
+        Log.info(c, "@AGG", "vars2: " + envVars);
 
         if (this.additionalSystemProperties != null && this.additionalSystemProperties.size() > 0) {
             envVars.putAll(this.additionalSystemProperties);
@@ -3891,6 +3898,12 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         return props;
+    }
+
+    public void addEnvVar(String key, String value) {
+        if (this.isStarted())
+            throw new RuntimeException("Cannot add env vars to a running server");
+        envVars.put(key, value);
     }
 
     public Properties getServerEnv() {

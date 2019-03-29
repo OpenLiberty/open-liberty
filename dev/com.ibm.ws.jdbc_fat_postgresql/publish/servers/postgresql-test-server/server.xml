@@ -1,0 +1,26 @@
+<server>
+
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>jdbc-4.2</feature>
+        <feature>jndi-1.0</feature>
+    </featureManager>
+    
+    <library id="PostgresLib">
+        <fileset dir="${shared.resource.dir}/postgres"/>
+    </library>
+    
+    <dataSource jndiName="jdbc/postgres">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties serverName="localhost" portNumber="${env.POSTGRES_PORT}" databaseName="testdb" user="postgresUser" password="superSecret"/>
+    </dataSource>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <!-- TODO use a doPriv in com.ibm.ws.jdbc.osgi.v42.JDBC42Runtime.doGetSchema(JDBC42Runtime.java:132) -->
+    <javaPermission codeBase="${server.config.dir}/dropins/postgresqlApp.war" className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
+    
+    <javaPermission codeBase="${shared.resource.dir}/postgres/postgresql.jar" className="java.security.AllPermission"/>
+
+</server>
