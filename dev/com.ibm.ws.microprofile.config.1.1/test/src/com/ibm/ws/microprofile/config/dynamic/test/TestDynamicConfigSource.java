@@ -24,6 +24,7 @@ public class TestDynamicConfigSource extends ConcurrentHashMap<String, String> i
     @Override
     public ConcurrentMap<String, String> getProperties() {
         getPropertiesLastCalled = System.nanoTime();
+        System.out.println("TestDynamicConfigSource.getProperties called at (nanoTime): " + getPropertiesLastCalled);
         return this;
     }
 

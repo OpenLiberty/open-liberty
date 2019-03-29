@@ -52,12 +52,20 @@ public class DynamicSourceCleanupTest extends AbstractConfigTest {
         WeakReference<Config> weakConfig = new WeakReference<>(config);
 
         long lastGetPropertiesTime = TestDynamicConfigSource.getPropertiesLastCalled;
-        long timeoutNanoTime = lastGetPropertiesTime + millisToNanos(maxWait);
+        long start = System.nanoTime();
+        System.out.println("start time (nanoTime)                                     : " + start);
+        long timeoutNanoTime = start + millisToNanos(maxWait);
         // Ensure that the source is being refreshed
+        System.out.println("lastGetPropertiesTime is (nanoTime)                       : " + lastGetPropertiesTime);
+        System.out.println("timeout will be (nanoTime)                                : " + timeoutNanoTime + " (" + (timeoutNanoTime - start) + ")");
         while (TestDynamicConfigSource.getPropertiesLastCalled == lastGetPropertiesTime && nanoTimeRemaining(timeoutNanoTime)) {
             Thread.sleep(refreshInterval);
         }
-        assertTrue("Config source was not refreshed", TestDynamicConfigSource.getPropertiesLastCalled != lastGetPropertiesTime);
+        long end = System.nanoTime();
+        System.out.println("end time (nanoTime)                                       : " + end + " (" + (timeoutNanoTime - end) + ")");
+        long currentGetPropertiesTime = TestDynamicConfigSource.getPropertiesLastCalled;
+        System.out.println("lastGetPropertiesTime is now (nanoTime)                   : " + currentGetPropertiesTime);
+        assertTrue("Config source was not refreshed", currentGetPropertiesTime != lastGetPropertiesTime);
 
         // Remove references to the config and wait for it to be garbage collected
         builder = null;
