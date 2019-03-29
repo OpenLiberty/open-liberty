@@ -27,10 +27,14 @@ import org.junit.runners.Suite.SuiteClasses;
                 StackTraceFilteringForIBMFeatureExceptionTest.class, StackTraceFilteringForUserFeatureExceptionTest.class,
                 StackTraceFilteringForSpecificationClassesExceptionTest.class,
                 InvalidTraceSpecificationTest.class,
-                HealthCenterTest.class, TestHideMessages.class, TestHideMsgDefinedBootstrap.class, IsoDateFormatTest.class,
+                HealthCenterTest.class,
+                TestHideMessages.class,
+                TestHideMsgDefinedBootstrap.class,
+                IsoDateFormatTest.class,
                 HandlerTest.class,
                 HeaderFormatTest.class,
-                LogServiceTest.class
+                LogServiceTest.class,
+                RealFlushTest.class
 })
 
 public class FATSuite {
