@@ -965,10 +965,12 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
 
             if (cachedConfig != null) {
                 String ksPropValue = cachedConfig.getProperty(Constants.SSLPROP_KEY_STORE, null);
+                boolean ksFileBased = Boolean.parseBoolean(cachedConfig.getProperty(Constants.SSLPROP_KEY_STORE_FILE_BASED));
                 String tsPropValue = cachedConfig.getProperty(Constants.SSLPROP_TRUST_STORE, null);
+                boolean tsFileBased = Boolean.parseBoolean(cachedConfig.getProperty(Constants.SSLPROP_TRUST_STORE_FILE_BASED));
 
-                if ((ksPropValue != null && keyStorePath.equals(WSKeyStore.getCannonicalPath(ksPropValue))) ||
-                    (tsPropValue != null && keyStorePath.equals(WSKeyStore.getCannonicalPath(tsPropValue)))) {
+                if ((ksPropValue != null && keyStorePath.equals(WSKeyStore.getCannonicalPath(ksPropValue, ksFileBased))) ||
+                    (tsPropValue != null && keyStorePath.equals(WSKeyStore.getCannonicalPath(tsPropValue, tsFileBased)))) {
                     removeList.add(cachedConfig);
                 }
             }
