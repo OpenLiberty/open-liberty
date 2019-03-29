@@ -126,12 +126,6 @@ public class PreMain {
             } catch (NullPointerException ignored) {
             } catch (IOException ignored) {
             }
-
-//        } catch (NoSuchFieldException expectedForNonIbmJava) {
-//            if (debugEnabled) {
-//                System.out.println("Caught NoSuchFieldException while accessing ObjectInputStream fields from agent");
-//                expectedForNonIbmJava.printStackTrace();
-//            }
         } catch (IllegalAccessException unexpected) {
             if (debugEnabled) {
                 System.out.println("Caught unexpected IllegalAccessException while accessing ObjectInputStream fields from agent" + unexpected);
