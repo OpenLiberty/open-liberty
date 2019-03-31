@@ -598,6 +598,9 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
 
     @Override
     public void addBeanDeploymentArchive(WebSphereBeanDeploymentArchive accessibleBDA) {
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {        
+            Tr.debug(tc, "addBeanDeploymentArchive: [ " + accessibleBDA + " ] will be visible to [ " + getHumanReadableName() + " ]");            
+        }
         this.accessibleBDAs.add(accessibleBDA);
     }
 
@@ -731,6 +734,11 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
 
     @Override
     public String toString() {
+        return getHumanReadableName();
+    }
+
+    @Trivial
+    private String getHumanReadableName() {
         return "BDA for " + id + "(" + archive.getType() + ")";
     }
 

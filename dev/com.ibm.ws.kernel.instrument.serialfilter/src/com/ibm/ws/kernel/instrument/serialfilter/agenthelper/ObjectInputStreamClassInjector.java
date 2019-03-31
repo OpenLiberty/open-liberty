@@ -42,7 +42,8 @@ public class ObjectInputStreamClassInjector extends ClassVisitor {
     private static final String FACTORY_FIELD = "serializationValidatorFactory";
     private static final String FACTORY_DESC = "Ljava/util/Map;";
     private static final String FACTORY_SIG = "Ljava/util/Map<Ljava/io/ObjectInputStream;Ljava/util/Map<Ljava/lang/Object;Ljava/lang/Object;>;>;";
-    private static final int FACTORY_ACCESS = ACC_PUBLIC + ACC_FINAL + ACC_STATIC;
+    // remove ACC_FINAL since jdk12 and above no longer supports to change the modifiers.
+    private static final int FACTORY_ACCESS = ACC_PUBLIC + ACC_STATIC;
 
     /**
      * This field name corresponds to a field already provided in recent IBM Java class libraries.

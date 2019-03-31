@@ -10,7 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.validator.internal;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -24,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -191,6 +195,10 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
             String pass = request.getHeader("X-Validator-Password");
             if (pass != null)
                 params.put("password", resolvePotentialVariable(pass));
+            String contentType = request.getContentType();
+            if ("application/json".equalsIgnoreCase(contentType)) {
+                params.put(Validator.JSON_BODY_KEY, read(request.getInputStream()));
+            }
 
             Validator validator = getService(context, validatorRefs.iterator().next());
             if (validator == null) {
@@ -312,6 +320,13 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         }
 
         return json;
+    }
+
+    @Trivial
+    private static String read(InputStream input) throws IOException {
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
+            return buffer.lines().collect(Collectors.joining("\n"));
+        }
     }
 
     @Trivial
