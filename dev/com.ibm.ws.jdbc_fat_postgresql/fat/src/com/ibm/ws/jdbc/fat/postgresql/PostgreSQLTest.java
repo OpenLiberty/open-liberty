@@ -10,12 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.postgresql;
 
-import java.time.Duration;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.OutputFrame;
@@ -40,22 +37,21 @@ public class PostgreSQLTest extends FATServletClient {
     @TestServlet(servlet = PostgreSQLTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
-    public static PostgreSQLContainer<?> postgre = new PostgreSQLContainer<>("postgres:11.2-alpine")
+    @ClassRule
+    public static RequireDockerRule<PostgreSQLContainer<?>> postgre = new RequireDockerRule<>(() -> new PostgreSQLContainer<>("postgres:11.2-alpine")
                     .withDatabaseName("testdb")
                     .withUsername("postgresUser")
                     .withPassword("superSecret")
                     .withExposedPorts(5432)
-                    .withLogConsumer(PostgreSQLTest::log)
-                    .withStartupTimeout(Duration.ofMillis(1));
-
-    @ClassRule
-    public static RuleChain chain = RuleChain.outerRule(new RequireDockerRule())
-                    .around(postgre);
+                    .withLogConsumer(PostgreSQLTest::log));
 
     @BeforeClass
     public static void setUp() throws Exception {
+        Log.info(c, "@AGG", "instance 1: " + postgre.get());
+        Log.info(c, "@AGG", "instance 2: " + postgre.get());
+        Log.info(c, "@AGG", "instance 3: " + postgre.get());
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jdbc.fat.postgresql.web");
-        server.addEnvVar("POSTGRES_PORT", String.valueOf(postgre.getMappedPort(5432)));
+        server.addEnvVar("POSTGRES_PORT", String.valueOf(postgre.get().getMappedPort(5432)));
         server.startServer();
     }
 

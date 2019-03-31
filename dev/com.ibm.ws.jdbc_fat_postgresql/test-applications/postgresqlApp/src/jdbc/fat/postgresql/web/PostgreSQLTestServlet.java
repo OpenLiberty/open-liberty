@@ -10,7 +10,7 @@
  *******************************************************************************/
 package jdbc.fat.postgresql.web;
 
-import javax.annotation.Resource;
+import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.DataSource;
 
@@ -22,17 +22,28 @@ import componenttest.app.FATServlet;
 @WebServlet("/PostgreSQLTestServlet")
 public class PostgreSQLTestServlet extends FATServlet {
 
-    @Resource(lookup = "jdbc/postgres")
-    DataSource postgresDS;
-
     @Test
-    public void basicTest() throws Exception {
-        System.out.println("Test is running in an HttpServlet");
+    public void testPostgresGenericProps() throws Exception {
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/genericprops");
+        ds.getConnection().close();
     }
 
     @Test
-    public void testGetConnection() throws Exception {
-        postgresDS.getConnection().close();
+    public void testAnonymousPostgresDriver() throws Exception {
+        DataSource ds = InitialContext.doLookup("jdbc/anonymous/Driver");
+        ds.getConnection().close();
+    }
+
+    @Test
+    public void testAnonymousPostgresDS() throws Exception {
+        DataSource ds = InitialContext.doLookup("jdbc/anonymous/XADataSource");
+        ds.getConnection().close();
+    }
+
+    @Test
+    public void testPostgresMinimal() throws Exception {
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/minimal");
+        ds.getConnection().close();
     }
 
 }

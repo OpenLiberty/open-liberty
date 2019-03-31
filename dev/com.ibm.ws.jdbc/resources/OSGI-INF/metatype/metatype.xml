@@ -1325,5 +1325,19 @@
   <AD id="user"                               ibmui:group="Advanced" required="false" type="String"  name="%user" description="%user.desc"/>
   <AD id="version"                            ibmui:group="Advanced" required="false" type="Integer" name="%version" description="%version.desc"/>
  </OCD>
+ 
+  <!-- Sybase properties -->
+ <Designate factoryPid="com.ibm.ws.jdbc.dataSource.properties.postgresql">
+  <Object ocdref="com.ibm.ws.jdbc.dataSource.properties.postgresql"/>
+ </Designate>
+
+ <OCD ibm:beta="true" id="com.ibm.ws.jdbc.dataSource.properties.postgresql" name="%properties.postgresql" description="%properties.postgresql.desc" ibm:extendsAlias="postgresql" ibm:extends="com.ibm.ws.jdbc.dataSource.properties.supertype" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+  <AD id="databaseName"                       required="true"  type="String"  name="%databaseName" description="%databaseName.desc"/>
+  <AD id="serverName"                         required="false" type="String"  default="localhost" name="%serverName" description="%serverName.desc"/>
+  <AD id="portNumber"                         required="false" type="Integer" name="%portNumber" description="%portNumber.desc"/>
+  <!-- Advanced properties for properties.postgresql -->
+  <AD id="user"                               ibmui:group="Advanced" required="false" type="String"  name="%user" description="%user.desc"/>
+  <AD id="password"                           ibmui:group="Advanced" required="false" type="String"  ibm:type="password" name="%password" description="%password.desc"/>
+ </OCD>
 
 </metatype:MetaData>

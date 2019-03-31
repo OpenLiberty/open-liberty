@@ -26,11 +26,19 @@ dependencies {
   postgres 'org.postgresql:postgresql:42.2.5'
 }
 
-task copyPostgres(type: Copy) {
+task copySharedPostgres(type: Copy) {
   shouldRunAfter jar
   from configurations.postgres
   into new File(autoFvtDir, 'publish/shared/resources/postgres')
   rename 'postgresql-.*.jar', 'postgresql.jar'
 }
 
-addRequiredLibraries.dependsOn copyPostgres
+task copyAnonymousPostgres(type: Copy) {
+  shouldRunAfter jar
+  from configurations.postgres
+  into new File(autoFvtDir, 'publish/servers/postgresql-test-server/jdbc')
+  rename 'postgresql-.*.jar', 'driver.jar'
+}
+
+addRequiredLibraries.dependsOn copySharedPostgres
+addRequiredLibraries.dependsOn copyAnonymousPostgres
