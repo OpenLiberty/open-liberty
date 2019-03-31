@@ -44,6 +44,8 @@ Private-Package:\
 instrument.disabled: true
 
 -buildpath: \
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
 	com.sun.xml.ws:jaxws-rt;version=2.2.10, \
 	com.sun.xml.ws:jaxws-tools;version=2.2.10, \
 	com.sun.xml.ws:policy;version=2.4, \

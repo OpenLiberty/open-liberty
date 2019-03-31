@@ -19,6 +19,7 @@ src: \
 fat.project: true
 
 -buildpath: \
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
     com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
