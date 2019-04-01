@@ -380,7 +380,7 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
         lock.lock();
         try {
             exceptionIfDeleted();
-            caFactory.getConfigurationStore().saveConfiguration(pid, this);
+            caFactory.getConfigurationStore().save();
             caFactory.notifyConfigurationUpdated(this, factoryPid != null);
         } finally {
             lock.unlock();
@@ -417,7 +417,7 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
         exceptionIfDeleted();
         setProperties(properties);
 
-        caFactory.getConfigurationStore().saveConfiguration(pid, this);
+        caFactory.getConfigurationStore().save();
         changeCount.incrementAndGet();
         sendEvents = true;
     }
@@ -477,7 +477,7 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
             this.references = references;
             this.uniqueVariables = newUniques;
 
-            caFactory.getConfigurationStore().saveConfiguration(pid, this);
+            caFactory.getConfigurationStore().save();
             changeCount.incrementAndGet();
 
             addReferences();
@@ -792,14 +792,14 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
 
         /*
          * However, if this throws an illegal state exception then we get this exception:
-         * 
+         *
          * [11/19/18 14:55:51:340 EST] 00000024 LogService-13-com.ibm.ws.org.apache.felix.scr E CWWKE0701E: bundle
          * com.ibm.ws.org.apache.felix.scr:1.0.23.201811071104 (13)Error while loading components of bundle com.ibm.ws.event:1.0.23.201811021519 (15)
          * Bundle:com.ibm.ws.org.apache.felix.scr(id=13) java.lang.IllegalStateException: getProcessedProperties(ServiceReference<?> reference) in
          * ExtendedConfiguraitonImpl.java has not been implemented.
          * at com.ibm.ws.config.admin.internal.ExtendedConfigurationImpl.getProcessedProperties(ExtendedConfigurationImpl.java:789)
          * at org.apache.felix.scr.impl.manager.RegionConfigurationSupport.configureComponentHolder(RegionConfigurationSupport.java:211)
-         * 
+         *
          * So for now, we'll just return a copy of the current config which lets the server start up.
          */
 
