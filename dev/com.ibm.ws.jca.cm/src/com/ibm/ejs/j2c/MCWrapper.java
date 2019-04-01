@@ -152,7 +152,6 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
 
     static final long serialVersionUID = -861999777608926414L;
 
-//    private int mcConnectionCount;
     private final AtomicInteger mcConnectionCount = new AtomicInteger();
 
     // State Constants
@@ -1941,7 +1940,6 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
                 _cri = cri;
                 hashMapBucket = _hashMapBucketReAuth;
             }
-//            incrementHandleCount();
             // Need PMI Call here.
         } catch (SharingViolationException e) {
             // If there is a sharing violation, it means that there is already at LEAST one connection
@@ -2074,7 +2072,6 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             if (fromWrapper != null) {
                 fromWrapper.decrementHandleCount();
             }
-//            incrementHandleCount();
         } catch (ResourceException e) {
 
             com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ejs.j2c.MCWrapper.associateConnection", "965", this);

@@ -125,18 +125,14 @@ public class MPConcurrentTxTestServlet extends FATServlet {
 
     @Override
     protected void after() throws ServletException {
-//      System.out.println("NPM DEBUG: in cleanup()");
         try {
             try (Connection con = onePhaseDataSource.getConnection(); Statement st = con.createStatement()) {
-//              System.out.println("NPM DEBUG: dropping tables...");
                 st.execute("DROP TABLE MNCOUNTIES");
                 st.execute("DROP TABLE IACOUNTIES");
-//              System.out.println("NPM DEBUG: creating tables...");
                 st.execute("CREATE TABLE MNCOUNTIES (NAME VARCHAR(50) NOT NULL PRIMARY KEY, POPULATION INT NOT NULL)");
                 st.execute("CREATE TABLE IACOUNTIES (NAME VARCHAR(50) NOT NULL PRIMARY KEY, POPULATION INT NOT NULL)");
                 st.execute("INSERT INTO MNCOUNTIES VALUES ('Olmsted', 154930)");
                 st.execute("INSERT INTO IACOUNTIES VALUES ('Polk', 481830)");
-//              System.out.println("NPM DEBUG: tables created.");
             }
         } catch (SQLException x) {
             throw new ServletException(x);
@@ -173,7 +169,6 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * by resuming the transaction onto another thread and performing transactional operations in it
      * while it simultaneously remains actively in use on the main thread.
      */
-add new tests
     @Test
     public void testJTATransactionPropagationToMultipleThreadsWithExistingTransactionManagerAPI() throws Exception {
         javax.transaction.TransactionManager tm = com.ibm.tx.jta.TransactionManagerFactory.getTransactionManager();
@@ -187,16 +182,11 @@ add new tests
             Statement st = con.createStatement();
             assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Hennepin', 1224763)"));
 
-//            assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Dakota', 414655)"));
-////          st.close();
-//            con.close();
-
             CompletableFuture<Integer> stage = CompletableFuture.supplyAsync(() -> {
                 try {
                     javax.transaction.Transaction tranToRestore = tm.suspend();
                     tm.resume(tranToPropagate);
-                    try (Connection con2 = defaultDataSource.getConnection()) {
-                        Statement st2 = con2.createStatement();
+                    try (Connection con2 = defaultDataSource.getConnection(); Statement st2 = con2.createStatement()) {
                         return st2.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Dubuque', 96571)");
                     } finally {
                         tm.suspend();
@@ -216,8 +206,7 @@ add new tests
                         javax.transaction.Transaction tranToRestore = tm.suspend();
                         tm.resume(tranToPropagate);
 
-                        try (Connection con2 = defaultDataSource.getConnection()) {
-                            Statement st2 = con2.createStatement();
+                        try (Connection con2 = defaultDataSource.getConnection(); Statement st2 = con2.createStatement()) {
                             return st2.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Dubuque" + y + "', 95888)");
                         } finally {
                             tm.suspend();
@@ -231,21 +220,16 @@ add new tests
             }
 
             assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Dakota', 414655)"));
-//            st.close();
             con.close();
 
             // ensure the above runs in the same transaction while the transaction is still active on the current thread
             assertEquals(Integer.valueOf(1), stage.join());
-            for (int i = 0; i < 100; i++) {
 
+            for (int i = 0; i < 100; i++) {
                 assertEquals(Integer.valueOf(1), stages[i].join());
             }
 
-//            con.close();
             tx.commit();
-        } catch (Exception ex) {
-            System.out.print("NPM DEBUG: Test failed with exception: " + ex.getMessage());
-            ex.printStackTrace();
         } finally {
             if (tx.getStatus() != Status.STATUS_NO_TRANSACTION)
                 tx.rollback();
@@ -260,16 +244,11 @@ add new tests
             Statement st = con.createStatement();
             assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Ramsey', 537893)"));
 
-//            assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Anoka', 344861)"));
-////          st.close();
-//            con.close();
-
             CompletableFuture<Integer> stage = CompletableFuture.supplyAsync(() -> {
                 try {
                     javax.transaction.Transaction tranToRestore = tm.suspend();
                     tm.resume(tranToPropagate);
-                    try (Connection con2 = defaultDataSource.getConnection()) {
-                        Statement st2 = con2.createStatement();
+                    try (Connection con2 = defaultDataSource.getConnection(); Statement st2 = con2.createStatement()) {
                         return st2.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Story', 95888)");
                     } finally {
                         tm.suspend();
@@ -289,8 +268,7 @@ add new tests
                         javax.transaction.Transaction tranToRestore = tm.suspend();
                         tm.resume(tranToPropagate);
 
-                        try (Connection con2 = defaultDataSource.getConnection()) {
-                            Statement st2 = con2.createStatement();
+                        try (Connection con2 = defaultDataSource.getConnection(); Statement st2 = con2.createStatement()) {
                             return st2.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Story" + y + "', 95888)");
                         } finally {
                             tm.suspend();
@@ -304,7 +282,6 @@ add new tests
             }
 
             assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Anoka', 344861)"));
-//            st.close();
             con.close();
 
             // ensure the above runs in the same transaction while the transaction is still active on the current thread
@@ -312,15 +289,8 @@ add new tests
             for (int i = 0; i < 100; i++) {
                 assertEquals(Integer.valueOf(1), stages[i].join());
             }
-//            con.close();
         } finally {
-            try {
-                tx.rollback();
-            } catch (Exception ex) {
-                System.out.print("NPM DEBUG: Test failed with exception on rollback: " + ex.getMessage());
-                ex.printStackTrace();
-            }
-
+            tx.rollback();
         }
 
         // verify table contents, which should show that first transaction was committed and the second rolled back.
@@ -430,7 +400,6 @@ add new tests
                 }
             }).exceptionally(x -> {
                 try {
-//                    x.printStackTrace();
                     tx.rollback();
                 } catch (Exception x2) {
                     x2.printStackTrace();
@@ -832,6 +801,134 @@ add new tests
             ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Houston' OR NAME='Steele'");
             assertTrue(result.next());
             assertEquals(0, result.getInt(1));
+        }
+    }
+
+    /**
+     * Take advantage of last participant support to use a two-phase capable resource and a single
+     * one-phase capable resource in the same transaction on different threads, but serially.
+     * Commit the transaction after all transactional operations are finished.
+     */
+    @Test
+    public void testLastParticipantResourceUsedSeriallyAndCommit() throws Exception {
+        CompletableFuture<Integer> stage1 = txExecutor.newIncompleteFuture();
+        CompletableFuture<Integer> stage4;
+        tx.begin();
+        try {
+            stage4 = stage1.thenApplyAsync(u -> {
+                try (Connection con = onePhaseDataSource.getConnection()) {
+                    return u + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Rock', 9433)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApplyAsync(u -> {
+                try (Connection con = defaultDataSource.getConnection()) {
+                    return u + con.createStatement().executeUpdate("INSERT INTO IACOUNTIES VALUES ('Ringgold', 4986)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(u -> {
+                try (Connection con = onePhaseDataSource.getConnection()) {
+                    return u + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Roseau', 15537)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).whenComplete((result, failure) -> {
+                try {
+                    if (failure == null && tx.getStatus() == Status.STATUS_ACTIVE)
+                        tx.commit();
+                    else
+                        tx.rollback();
+                } catch (Exception x) {
+                    x.printStackTrace();
+                    if (failure == null)
+                        throw new CompletionException(x);
+                }
+            });
+        } finally {
+            tm.suspend();
+        }
+
+        stage1.complete(0);
+
+        assertEquals(Integer.valueOf(3), stage4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Verify that the transaction committed, meaning all of the inserts remain in the database
+        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Rock' OR NAME='Roseau'");
+            assertTrue(result.next());
+            assertEquals(24970, result.getInt(1));
+
+            result = st.executeQuery("SELECT POPULATION FROM IACOUNTIES WHERE NAME='Ringgold'");
+            assertTrue(result.next());
+            assertEquals(4986, result.getInt(1));
+        }
+    }
+
+    /**
+     * Take advantage of last participant support to use a two-phase capable resource and a single
+     * one-phase capable resource in the same transaction on different threads, but serially.
+     * Roll back the transaction after all transactional operations are finished.
+     */
+    @Test
+    public void testLastParticipantResourceUsedSeriallyAndRollBack() throws Exception {
+        CompletableFuture<Integer> stage1 = txExecutor.newIncompleteFuture();
+        CompletableFuture<Integer> stage4;
+        tx.begin();
+        try {
+            stage4 = stage1.thenApplyAsync(u -> {
+                try (Connection con = onePhaseDataSource.getConnection()) {
+                    return u + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Scott', 141463)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApplyAsync(u -> {
+                try (Connection con = defaultDataSource.getConnection()) {
+                    return u + con.createStatement().executeUpdate("INSERT INTO IACOUNTIES VALUES ('Sac', 4986)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(u -> {
+                try (Connection con = onePhaseDataSource.getConnection()) {
+                    return u + con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Sibley', 14888)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(u -> {
+                try {
+                    tx.setRollbackOnly();
+                    return -1;
+                } catch (SystemException x) {
+                    throw new CompletionException(x);
+                }
+            }).whenComplete((result, failure) -> {
+                try {
+                    if (failure == null && tx.getStatus() == Status.STATUS_ACTIVE)
+                        tx.commit();
+                    else
+                        tx.rollback();
+                } catch (Exception x) {
+                    x.printStackTrace();
+                    if (failure == null)
+                        throw new CompletionException(x);
+                }
+            });
+        } finally {
+            tm.suspend();
+        }
+
+        stage1.complete(0);
+
+        assertEquals(Integer.valueOf(-1), stage4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Verify that the transaction rolled back, meaning none of the inserts remain in the database
+        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Scott' OR NAME='Sibley'");
+            assertTrue(result.next());
+            assertEquals(0, result.getInt(1));
+
+            result = st.executeQuery("SELECT POPULATION FROM IACOUNTIES WHERE NAME='Sac'");
+            assertFalse(result.next());
         }
     }
 
@@ -1448,7 +1545,6 @@ add new tests
                     else
                         tx.rollback();
                 } catch (Exception x) {
-                    x.getCause();
                     x.printStackTrace();
                     if (failure == null)
                         throw new CompletionException(x);
@@ -1809,6 +1905,162 @@ add new tests
             result.close();
             result = st.executeQuery("SELECT POPULATION FROM IACOUNTIES WHERE NAME='Allamakee'");
             assertFalse(result.next());
+        }
+    }
+
+    /**
+     * Propagates transaction context to be used serially from another thread, which also commits the transaction.
+     * The resource that is enlisted in the transaction is an unsharable one-phase only resource.
+     * A single connection handle is cached and reused across all stages where transactional work is performed.
+     */
+    @Test
+    public void testUnsharableOnePhaseResourceInJTATransactionCachedHandleUsedSeriallyAndCommitWhenComplete() throws Exception {
+        CompletableFuture<DataSource> getDataSource = txExecutor.newIncompleteFuture();
+        CompletableFuture<Boolean> stage;
+        tx.begin();
+        try {
+            stage = getDataSource.thenApplyAsync(ds -> {
+                Connection con = null;
+                try {
+                    con = ds.getConnection();
+                    con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Mahnomen', 5500)");
+                    return con;
+                } catch (SQLException x) {
+                    if (con != null)
+                        try {
+                            con.close();
+                        } catch (SQLException cx) {
+                            cx.printStackTrace();
+                        }
+                    throw new CompletionException(x);
+                }
+            }).whenCompleteAsync((con, failure) -> {
+                if (failure == null)
+                    try {
+                        con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Marshall', 9397)");
+                    } catch (SQLException x) {
+                        throw new CompletionException(x);
+                    }
+            }).whenCompleteAsync((con, failure) -> {
+                if (failure == null)
+                    try {
+                        con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Martin', 20084)");
+                    } catch (SQLException x) {
+                        throw new CompletionException(x);
+                    }
+            }).handleAsync((con, failure) -> {
+                if (con != null)
+                    try {
+                        con.close();
+                    } catch (SQLException x) {
+                        if (failure == null)
+                            failure = x;
+                    }
+                try {
+                    if (failure == null && tx.getStatus() == Status.STATUS_ACTIVE) {
+                        tx.commit();
+                        return true;
+                    } else
+                        tx.rollback();
+                } catch (Exception x) {
+                    if (failure == null)
+                        failure = x;
+                }
+                if (failure == null)
+                    return false;
+                else
+                    throw new CompletionException(failure);
+            });
+        } finally {
+            tm.suspend();
+        }
+
+        getDataSource.complete(onePhaseDataSource_unsharable);
+
+        assertEquals(Boolean.TRUE, stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        try (Connection con = onePhaseDataSource_unsharable.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Mahnomen' OR NAME='Marshall' OR NAME='Martin'");
+            assertTrue(result.next());
+            assertEquals(34981, result.getInt(1));
+        }
+    }
+
+    /**
+     * Propagates transaction context to be used serially from another thread, which also rolls back the transaction.
+     * The resource that is enlisted in the transaction is an unsharable one-phase only resource.
+     * A single connection handle is cached and reused across all stages where transactional work is performed.
+     */
+    @Test
+    public void testUnsharableResourceInOnePhaseJTATransactionCachedHandleUsedSeriallyAndRollBackWhenComplete() throws Exception {
+        CompletableFuture<DataSource> getDataSource = txExecutor.newIncompleteFuture();
+        CompletableFuture<Boolean> stage;
+        tx.begin();
+        try {
+            stage = getDataSource.thenApplyAsync(ds -> {
+                Connection con = null;
+                try {
+                    con = ds.getConnection();
+                    con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Meeker', 23105)");
+                    return con;
+                } catch (SQLException x) {
+                    if (con != null)
+                        try {
+                            con.close();
+                        } catch (SQLException cx) {
+                            cx.printStackTrace();
+                        }
+                    throw new CompletionException(x);
+                }
+            }).whenCompleteAsync((con, failure) -> {
+                if (failure == null)
+                    try {
+                        con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('McLeod', 35816)");
+                    } catch (SQLException x) {
+                        throw new CompletionException(x);
+                    }
+            }).whenComplete((con, failure) -> {
+                try {
+                    tx.setRollbackOnly(); // ensure the transaction always rolls back
+                } catch (IllegalStateException | SystemException x) {
+                    throw new CompletionException(x);
+                }
+            }).handleAsync((con, failure) -> {
+                if (con != null)
+                    try {
+                        con.close();
+                    } catch (SQLException x) {
+                        if (failure == null)
+                            failure = x;
+                    }
+                try {
+                    if (failure == null && tx.getStatus() == Status.STATUS_ACTIVE) {
+                        tx.commit();
+                        return true;
+                    } else
+                        tx.rollback();
+                } catch (Exception x) {
+                    if (failure == null)
+                        failure = x;
+                }
+                if (failure == null)
+                    return false;
+                else
+                    throw new CompletionException(failure);
+            });
+        } finally {
+            tm.suspend();
+        }
+
+        getDataSource.complete(onePhaseDataSource_unsharable);
+
+        assertEquals(Boolean.FALSE, stage.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Verify that the transaction rolled back, meaning none of the inserts remain in the database
+        try (Connection con = onePhaseDataSource_unsharable.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Meeker' OR NAME='McLeod'");
+            assertTrue(result.next());
+            assertEquals(0, result.getInt(1));
         }
     }
 

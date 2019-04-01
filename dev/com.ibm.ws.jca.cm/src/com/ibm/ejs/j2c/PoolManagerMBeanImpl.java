@@ -376,6 +376,6 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
 
     @Override
     public String showPoolContents() {
-        return toStringExternal();
+        return _pm.toString();
     }
 }

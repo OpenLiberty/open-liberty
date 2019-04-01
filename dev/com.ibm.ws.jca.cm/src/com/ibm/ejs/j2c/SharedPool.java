@@ -152,8 +152,6 @@ public final class SharedPool {
                     mcWrapperTemp = mcWrapperList[0];
                     String threadId = ((com.ibm.ejs.j2c.MCWrapper) mcWrapperTemp).getThreadID();
 
-//                    if ((threadId != null || mcWrapperTemp.getHandleCount() > 0) && (threadId != null && !RasHelper.getThreadId().equals(threadId))) {
-//                    if ((threadId != null && !RasHelper.getThreadId().equals(threadId))) {
                     if ((((com.ibm.ejs.j2c.MCWrapper) mcWrapperTemp).connectionClosing.get() || mcWrapperTemp.getHandleCount() > 0) && !RasHelper.getThreadId().equals(threadId)) {
                         if (isTracingEnabled && tc.isDebugEnabled()) {
                             Tr.debug(this, tc, "mcWrapperTemp is in use on another thread. Skipping mcWrapper set.\n" +
@@ -209,9 +207,9 @@ public final class SharedPool {
                             if (AccessController.doPrivileged(e)) {
                                 subjectMatch = true;
                             }
-							
+
                         }
-						
+
                     }
 
                     ManagedConnection mc = mcWrapperTemp.getManagedConnection();
@@ -256,7 +254,7 @@ public final class SharedPool {
                         } // end enforceSerialReuse && (mcWrapperTemp.getHandleCount() >= 1)
 
                         else {
-						
+
                             /*
                              * We have a shareable connection to use
                              */
@@ -266,7 +264,7 @@ public final class SharedPool {
                                  */
                                 ++sop_gets;
                             }
-							
+
                             mcWrapper = mcWrapperTemp;
                         }
 
@@ -314,7 +312,6 @@ public final class SharedPool {
                         mcWrapperTemp = mcWrapperList[i];
                         String threadId = ((com.ibm.ejs.j2c.MCWrapper) mcWrapperTemp).getThreadID();
 
-//                        if (threadId != null && !RasHelper.getThreadId().equals(threadId)) {
                         if ((((com.ibm.ejs.j2c.MCWrapper) mcWrapperTemp).connectionClosing.get() || mcWrapperTemp.getHandleCount() > 0)
                             && !RasHelper.getThreadId().equals(threadId)) {
                             if (isTracingEnabled && tc.isDebugEnabled()) {

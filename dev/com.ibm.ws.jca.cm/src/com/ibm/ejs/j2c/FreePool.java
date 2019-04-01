@@ -379,9 +379,9 @@ public final class FreePool implements JCAPMIHelper {
      * - If removeFromFreePool is false, the mcWrapper do not exist in the free pool
      *
      * @param Managed connection wrapper
-     * @param Remove  from free pool
-     * @param Are     we already synchronized on the freeLockObject
-     * @param Skip    waiter notify
+     * @param Remove from free pool
+     * @param Are we already synchronized on the freeLockObject
+     * @param Skip waiter notify
      * @param Cleanup and Destroy MCWrapper
      * @pre mcWrapper != null
      * @throws ClassCastException
@@ -1270,10 +1270,13 @@ public final class FreePool implements JCAPMIHelper {
             }
         }
 
+        if (mcWrapper != null) {
+            mcWrapper.incrementHandleCount();
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(this, tc, "createOrWaitForConnection", mcWrapper);
         }
-        //TODO: move increment handle count to here.
         return mcWrapper;
 
     }

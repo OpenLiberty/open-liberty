@@ -16,6 +16,8 @@ import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
@@ -88,6 +90,9 @@ public class RegisteredSyncs
     final static int SYNC_ARRAY_SIZE = SYNC_TIER_RRS + 1;  // RRS should always be last
 
     protected final List[] _syncs = new List[SYNC_ARRAY_SIZE];
+
+    private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
+    private final Lock addSyncWriteLock = rwl.writeLock();
 
     final static int DEFAULT_DEPTH_LIMIT = 5; // @287100A
 
@@ -363,10 +368,15 @@ public class RegisteredSyncs
             throw npe;
         }
 
-        if (_syncs[tier] == null)
-        {
-//            _syncs[tier] = new ArrayList();
-            _syncs[tier] = Collections.synchronizedList(new ArrayList<Synchronization>());
+        if (_syncs[tier] == null) {
+            addSyncWriteLock.lock();
+            try {
+                if (_syncs[tier] == null) {
+                    _syncs[tier] = Collections.synchronizedList(new ArrayList<Synchronization>());
+                }
+            } finally {
+                addSyncWriteLock.unlock();
+            }
         }
 
         _syncs[tier].add(sync);

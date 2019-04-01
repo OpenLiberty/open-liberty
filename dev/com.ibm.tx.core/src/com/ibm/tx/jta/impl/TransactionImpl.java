@@ -16,6 +16,8 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.transaction.HeuristicCommitException;
 import javax.transaction.HeuristicMixedException;
@@ -143,7 +145,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     // The XAResources enlisted as part of this transaction
     // and the association table of XA->JTAResources
     //
-    protected RegisteredResources _resources;
+    protected volatile RegisteredResources _resources;
 
     //
     // Resolver thread when one or more resources failed to respond to
@@ -194,6 +196,12 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
 
     // Xid supplied by the inbound JCA provider
     protected Xid _JCAXid; // @249308A
+
+    private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
+    protected final Lock resourcesInUseWrite = rwl.writeLock();
+
+    private final ReentrantReadWriteLock rwl2 = new ReentrantReadWriteLock();
+    private final Lock syncsWriteLock = rwl2.writeLock();
 
     // if -Dcom.ibm.tx.jta.disable2PC=true disable 2PC
     private static boolean _disable2PCDefault = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
@@ -2351,15 +2359,31 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
 
     public RegisteredResources getResources() {
         if (_resources == null) {
-            _resources = new RegisteredResources(this, _disableTwoPhase);
+            resourcesInUseWrite.lock();
+            try {
+                if (_resources == null) {
+                    _resources = new RegisteredResources(this, _disableTwoPhase);
+                }
+            } finally {
+                resourcesInUseWrite.unlock();
+            }
         }
+
         return _resources;
     }
 
     public RegisteredSyncs getSyncs() {
         if (_syncs == null) {
-            _syncs = new RegisteredSyncs(this);
+            syncsWriteLock.lock();
+            try {
+                if (_syncs == null) {
+                    _syncs = new RegisteredSyncs(this);
+                }
+            } finally {
+                syncsWriteLock.unlock();
+            }
         }
+
         return _syncs;
     }
 

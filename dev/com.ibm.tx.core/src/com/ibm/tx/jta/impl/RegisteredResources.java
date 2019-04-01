@@ -85,7 +85,6 @@ public class RegisteredResources implements Comparator<JTAResource> {
     /**
      * A list to store the XA resources for this unit of work.
      */
-//    protected final ArrayList<JTAResource> _resourceObjects;
     protected final List<JTAResource> _resourceObjects;
 
     /**
@@ -114,8 +113,7 @@ public class RegisteredResources implements Comparator<JTAResource> {
      * Each time the unit of work hands out a new Xid, it increments
      * this number by one.
      */
-    //protected int _branchCount;
-    //Attempting to prevent "XAResource start association error:XAER_DUPID"
+    //Prevent "XAResource start association error:XAER_DUPID"
     protected AtomicInteger _branchCount = new AtomicInteger();
 
     /**
