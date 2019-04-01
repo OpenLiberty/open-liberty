@@ -177,7 +177,18 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
             targetRefs = null; // same error handling as not found
         }
 
-        Object target = validatorRefs.isEmpty() || targetRefs == null ? null : getService(context, targetRefs[0]);
+        // There can be multiple services with the same service.pid!
+        // For resource types that are accessible via ResourceFactory, the JNDI/OSGi implementation registers a
+        // resource instance reusing the same server.pid that the ResourceFactory has in order to add osgi.jndi.service.name.
+        // In this case, we want the resource factory, not the resource instance that is registered with the same service.pid.
+        // The resource factory will have a creates.objectClass property to indicate which resource type(s) it creates.
+        ServiceReference<?> targetRef = null;
+        for (ServiceReference<?> ref : targetRefs) {
+            if (targetRef == null || ref.getProperty("creates.objectClass") != null)
+                targetRef = ref;
+        }
+
+        Object target = validatorRefs.isEmpty() || targetRef == null ? null : getService(context, targetRef);
         if (target == null) {
             json.put("successful", false);
             json.put("failure",
@@ -273,7 +284,7 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
      * Populate JSON object for a top level exception or error.
      *
      * @param errorInfo additional information to append to exceptions and causes
-     * @param error     the top level exception or error.
+     * @param error the top level exception or error.
      * @return JSON object representing the Throwable.
      */
     @SuppressWarnings("unchecked")
