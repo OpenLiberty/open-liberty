@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 import com.ibm.websphere.ras.Tr;
@@ -39,13 +38,12 @@ public class CpuInfo {
      */
     private final static TraceComponent tc = Tr.register(CpuInfo.class);
 
-    private static CpuInfo instance;
+    private final static CpuInfo INSTANCE = new CpuInfo();
     private final int AVAILABLE_PROCESSORS;
 
     // For CPU usage calculation
-    private final OperatingSystemMXBean osmx;
-    private final MBeanServer mBeanServer;
-    private ObjectName operatingSystemMbean;
+    volatile MBeanServer mBeanServer = null;
+    private final ObjectName operatingSystemMbean;
     final private int cpuNSFactor;
     private long lastProcessCPUTime = 0;
     private double lastProcessCpuUsage = -1;
@@ -62,15 +60,8 @@ public class CpuInfo {
             AVAILABLE_PROCESSORS = fileSystemAvailableProcessors;
         }
 
-        // initialize mbean required to get CPU usage info
-        osmx = ManagementFactory.getOperatingSystemMXBean();
-        mBeanServer = ManagementFactory.getPlatformMBeanServer();
-
-        try {
-            operatingSystemMbean = new ObjectName("java.lang", "type", "OperatingSystem");
-        } catch (MalformedObjectNameException e) {
-            FFDCFilter.processException(e, getClass().getName(), "CpuInfo<init>");
-        }
+        OperatingSystemMXBean osmx = ManagementFactory.getOperatingSystemMXBean();
+        operatingSystemMbean = osmx == null ? null : osmx.getObjectName();
 
         int nsFactor = 1;
         // adjust for J9 cpuUsage units change from hundred-nanoseconds to nanoseconds in Java8sr5
@@ -98,7 +89,10 @@ public class CpuInfo {
 
         // Get the system cpu usage
         try {
-            if (osmx != null) {
+            if (operatingSystemMbean != null) {
+                if (mBeanServer == null) {
+                    mBeanServer = ManagementFactory.getPlatformMBeanServer();
+                }
                 cpuUsage = (Double) mBeanServer.getAttribute(operatingSystemMbean, OS_ATTRIBUTE_SYSTEM_CPU_LOAD);
             }
         } catch (Exception e) {
@@ -122,17 +116,19 @@ public class CpuInfo {
     private synchronized double getProcessCPU() {
         final String OS_ATTRIBUTE_PROCESS_CPU_TIME = "ProcessCpuTime";
 
-        // update process cpu usage at most once every 500 ms
+        // update process CPU usage at most once every 500 ms
         long currentTimeMs = System.currentTimeMillis();
         if (currentTimeMs - lastSystemTimeMillis < 500)
             return lastProcessCpuUsage;
 
         double cpuUsage = -1;
         long processCpuTime = -1;
-        // Get the CPU time from the mbean
+        // Get the CPU time from the mBean
         try {
-            // There should already be an FFDC logged if there was an issue getting a reference to the operatingSystemMbean.
-            if (osmx != null) {
+            if (operatingSystemMbean != null) {
+                if (mBeanServer == null) {
+                    mBeanServer = ManagementFactory.getPlatformMBeanServer();
+                }
                 processCpuTime = (Long) mBeanServer.getAttribute(operatingSystemMbean, OS_ATTRIBUTE_PROCESS_CPU_TIME);
             }
         } catch (Exception e) {
@@ -234,19 +230,13 @@ public class CpuInfo {
         return bd.doubleValue();
     }
 
-    private static CpuInfo instance() {
-        if (instance == null)
-            instance = new CpuInfo();
-        return instance;
-    }
-
     /**
      * Returns the number of hardware threads (aka cpus) available to this Java process
      *
      * @return int available processors
      */
     public static int getAvailableProcessors() {
-        return instance().AVAILABLE_PROCESSORS;
+        return INSTANCE.AVAILABLE_PROCESSORS;
     }
 
     /**
@@ -255,7 +245,7 @@ public class CpuInfo {
      * @return double process cpu usage (returns -1 if info not available)
      */
     public static double getJavaCpuUsage() {
-        return instance().getProcessCPU();
+        return INSTANCE.getProcessCPU();
     }
 
     /**
@@ -264,6 +254,6 @@ public class CpuInfo {
      * @return double system cpu usage (returns -1 if info not available)
      */
     public static double getSystemCpuUsage() {
-        return instance().getSystemCPU();
+        return INSTANCE.getSystemCPU();
     }
 }
