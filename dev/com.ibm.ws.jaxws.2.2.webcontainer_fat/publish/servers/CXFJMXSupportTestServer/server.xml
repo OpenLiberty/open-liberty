@@ -1,0 +1,16 @@
+<server>
+    <featureManager>    	
+    	<feature>restConnector-2.0</feature>   	
+        <feature>jsp-2.2</feature>
+        <feature>jaxws-2.2</feature>
+    </featureManager>
+  
+    <quickStartSecurity userName="admin" userPassword="password" />
+  
+      <!-- use the default SSL configuration -->
+    <keyStore id="defaultKeyStore" password="passw0rd" location="serverKey.jks"/>
+	
+    <include location="../fatTestPorts.xml"/>
+  	<javaPermission className="java.security.AllPermission"/>
+    
+</server>
