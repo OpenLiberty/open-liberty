@@ -611,7 +611,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             if (isAsync) {
                 //got a response, need to start the response processing now
                 try {
-                    handleResponseOnWorkqueue(false, true);
+                    handleResponseOnWorkqueue(false, false); // Liberty change - avoid forcing WQ
                     isAsync = false; // don't trigger another start on next block. :-)
                 } catch (Exception ex) {
                     //ignore, we'll try again on the next consume;
@@ -625,7 +625,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             if (isAsync) {
                 //got a response, need to start the response processing now
                 try {
-                    handleResponseOnWorkqueue(false, true);
+                    handleResponseOnWorkqueue(false, false);  // Liberty change - avoid forcing WQ
                     isAsync = false; // don't trigger another start on next block. :-)
                 } catch (Exception ex2) {
                     ex2.printStackTrace();
