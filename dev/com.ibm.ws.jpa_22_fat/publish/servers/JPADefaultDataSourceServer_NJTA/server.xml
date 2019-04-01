@@ -20,22 +20,22 @@
     
     <jpa defaultNonJtaDataSourceJndiName="jdbc/NJTA_DS1" />
     
-    <dataSource id="jdbc/JTA_DS1" jndiName="jdbc/JTA_DS1" fat.modify="false">
+    <dataSource id="jdbc/JTA_DS1" jndiName="jdbc/JTA_DS1" >
     	    <jdbcDriver libraryRef="DerbyLib"/>
     	    <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>
     
-    <dataSource id="jdbc/NJTA_DS1" jndiName="jdbc/NJTA_DS1" fat.modify="false" transactional="false">
+    <dataSource id="jdbc/NJTA_DS1" jndiName="jdbc/NJTA_DS1" transactional="false">
     	    <jdbcDriver libraryRef="DerbyLib"/>
     	    <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>
     
-    <dataSource id="jdbc/JTA_DS2" jndiName="jdbc/JTA_DS2" fat.modify="false">
+    <dataSource id="jdbc/JTA_DS2" jndiName="jdbc/JTA_DS2" >
     	    <jdbcDriver libraryRef="DerbyLib"/>
     	    <properties.derby.embedded databaseName="memory:ds2" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>
     
-    <dataSource id="jdbc/NJTA_DS2" jndiName="jdbc/NJTA_DS2" fat.modify="false" transactional="false">
+    <dataSource id="jdbc/NJTA_DS2" jndiName="jdbc/NJTA_DS2" transactional="false">
     	    <jdbcDriver libraryRef="DerbyLib"/>
     	    <properties.derby.embedded databaseName="memory:ds2" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>

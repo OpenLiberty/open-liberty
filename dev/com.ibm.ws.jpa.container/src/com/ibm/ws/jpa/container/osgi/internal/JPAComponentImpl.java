@@ -27,6 +27,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -159,22 +160,19 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
 
         boolean recycleJPAApplications = false;
 
-        if ((originalProvider != null && !originalProvider.equals(curProvider)) ||
-            (curProvider != null && !curProvider.equals(originalProvider))) {
+        if (!Objects.equals(originalProvider, curProvider)) {
             // If the <jpa defaultPersistenceProvider=""/> element has changed, restart all JPA apps
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Detected change in defaultPersistenceProvider of the <jpa> element.  Restarting all JPA applications.",
                          originalProvider + " -> " + curProvider);
             recycleJPAApplications = true;
-        } else if ((originalDefaultJtaDataSourceJndiName != null && !originalDefaultJtaDataSourceJndiName.equals(curDefaultJtaDataSourceJndiName)) ||
-                   (curDefaultJtaDataSourceJndiName != null && !curDefaultJtaDataSourceJndiName.equals(originalDefaultJtaDataSourceJndiName))) {
+        } else if (!Objects.equals(originalDefaultJtaDataSourceJndiName, curDefaultJtaDataSourceJndiName)) {
             // If the <jpa defaultJtaDataSourceJndiName=""/> element has changed, restart all JPA apps
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Detected change in defaultJtaDataSourceJndiName of the <jpa> element.  Restarting all JPA applications.",
                          originalProvider + " -> " + curProvider);
             recycleJPAApplications = true;
-        } else if ((originalDefaultNonJtaDataSourceJndiName != null && !originalDefaultNonJtaDataSourceJndiName.equals(curDefaultNonJtaDataSourceJndiName)) ||
-                   (curDefaultNonJtaDataSourceJndiName != null && !curDefaultNonJtaDataSourceJndiName.equals(originalDefaultNonJtaDataSourceJndiName))) {
+        } else if (!Objects.equals(originalDefaultNonJtaDataSourceJndiName, curDefaultNonJtaDataSourceJndiName)) {
             // If the <jpa defaultNonJtaDataSourceJndiName=""/> element has changed, restart all JPA apps
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Detected change in defaultNonJtaDataSourceJndiName of the <jpa> element.  Restarting all JPA applications.",

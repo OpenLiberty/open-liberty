@@ -501,7 +501,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      * environment.
      *
      * @param jarFileValues List of jar file paths from <jar-file> in persistence.xml
-     * @param looseConfig   class holding loose config mappings
+     * @param looseConfig class holding loose config mappings
      */
     //PK62950
     final void setJarFileUrls(List<String> jarFilePaths, JPAPXml pxml) {
@@ -787,8 +787,8 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      * created. <p>
      *
      * @param j2eeName
-     *                     JavaEE unique identifier for the component, identifying the
-     *                     java:comp/env context used.
+     *            JavaEE unique identifier for the component, identifying the
+     *            java:comp/env context used.
      *
      * @return EntityManager factory associated with this persistence unit.
      **/
@@ -869,10 +869,10 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      * component context (java:comp/env); in which case it will be a
      * component specific instance of JPACompPUnitInfo. <p>
      *
-     * @param puInfo             persistence unit information to pass on the call to
-     *                               createEntityManagerFactory.
+     * @param puInfo persistence unit information to pass on the call to
+     *            createEntityManagerFactory.
      * @param ignoreProviderCNFE whether or not a CNFE should be logged as an FFDC
-     *                               (provider CNFE's are tolerated for WABs per defect 152577)
+     *            (provider CNFE's are tolerated for WABs per defect 152577)
      * @throws RuntimeException if an error occurs while creating the EMF
      **/
     // d510184
@@ -975,12 +975,12 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      * accross PersistenceContext references. <p>
      *
      * @param j2eeName
-     *                       JavaEE unique identifier for the component, identifying the
-     *                       java:comp/env context used.
+     *            JavaEE unique identifier for the component, identifying the
+     *            java:comp/env context used.
      * @param refName
-     *                       Name of the PersistenceContext reference.
+     *            Name of the PersistenceContext reference.
      * @param properties
-     *                       additional properties to create the EntityManager
+     *            additional properties to create the EntityManager
      *
      * @return EntityManager pool for the specified component and reference.
      **/
