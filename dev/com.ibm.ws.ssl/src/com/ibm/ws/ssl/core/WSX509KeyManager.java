@@ -153,7 +153,7 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
             String location = keyFileName != null ? keyFileName : tokenLibraryFile;
 
             String message = TraceNLSHelper.getInstance().getFormattedMessage("ssl.server.alias.not.found.CWPKI0024E", new Object[] { alias, location },
-                                                                              "Server alias " + alias + " not found in keystore.");
+                                                                              "Server alias " + alias + " is invalid or not found in keystore.");
             Tr.error(tc, "ssl.server.alias.not.found.CWPKI0024E", new Object[] { alias, location });
             throw new IllegalArgumentException(message);
         }
