@@ -54,7 +54,6 @@ import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.ReaderInterceptorContext;
 import javax.ws.rs.ext.WriterInterceptor;
 import javax.ws.rs.ext.WriterInterceptorContext;
-import javax.xml.ws.Holder;
 
 import org.apache.cxf.jaxrs.client.WebClient;
 
@@ -676,5 +675,9 @@ public class ClientTestServlet extends HttpServlet {
             context.proceed();
         }
 
+    }
+
+    private class Holder<T> {
+        public T value;
     }
 }
