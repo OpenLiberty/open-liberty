@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.resource.NotSupportedException;
@@ -22,14 +23,19 @@ import javax.resource.ResourceException;
 import javax.resource.cci.Connection;
 import javax.resource.cci.ConnectionFactory;
 import javax.resource.cci.ConnectionMetaData;
+import javax.resource.cci.ConnectionSpec;
 import javax.resource.cci.ResourceAdapterMetaData;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.jca.service.ConnectionFactoryService;
 import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.resource.ResourceConfigFactory;
 import com.ibm.wsspi.resource.ResourceFactory;
@@ -44,18 +50,44 @@ public class ConnectionFactoryValidator implements Validator {
     @Reference
     private ResourceConfigFactory resourceConfigFactory;
 
+    /**
+     * Utility method that attempts to construct a ConnectionSpec impl of the specified name,
+     * which might or might not exist in the resource adapter.
+     *
+     * @param cciConFactory the connection factory class
+     * @param conSpecClassName possible connection spec impl class name to try
+     * @param userName user name to set on the connection spec
+     * @param password password to set on the connection spec
+     * @return ConnectionSpec instance if successful. Otherwise null.
+     */
+    @FFDCIgnore(Throwable.class)
+    private ConnectionSpec createConnectionSpec(ConnectionFactory cciConFactory, String conSpecClassName, String userName, @Sensitive String password) {
+        try {
+            @SuppressWarnings("unchecked")
+            Class<ConnectionSpec> conSpecClass = (Class<ConnectionSpec>) cciConFactory.getClass().getClassLoader().loadClass(conSpecClassName);
+            ConnectionSpec conSpec = conSpecClass.newInstance();
+            conSpecClass.getMethod("setPassword", String.class).invoke(conSpec, password);
+            conSpecClass.getMethod("setUserName", String.class).invoke(conSpec, userName);
+            return conSpec;
+        } catch (Throwable x) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "Unable to create or populate ConnectionSpec", x.getMessage());
+            return null;
+        }
+    }
+
     @Override
     public LinkedHashMap<String, ?> validate(Object instance, Map<String, Object> props, Locale locale) {
         final String methodName = "validate";
         String user = (String) props.get("user");
-        String pass = (String) props.get("password");
+        String password = (String) props.get("password");
         String auth = (String) props.get("auth");
         String authAlias = (String) props.get("authAlias");
         String loginConfig = (String) props.get("loginConfig");
 
         boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, methodName, user, pass == null ? null : "******", auth, authAlias, loginConfig);
+            Tr.entry(this, tc, methodName, user, password == null ? null : "******", auth, authAlias, loginConfig);
 
         LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>();
         try {
@@ -63,8 +95,32 @@ public class ConnectionFactoryValidator implements Validator {
             int authType = "container".equals(auth) ? 0 //
                             : "application".equals(auth) ? 1 //
                                             : -1;
+
             if (authType >= 0) {
-                throw new UnsupportedOperationException("validation of connectionFactory with resource reference not supported yet");
+                String cfInterfaceName = ((ConnectionFactoryService) instance).getConnectionFactoryInterfaceName();
+                config = resourceConfigFactory.createResourceConfig(cfInterfaceName);
+                config.setResAuthType(authType);
+                if (authAlias != null)
+                    config.addLoginProperty("DefaultPrincipalMapping", authAlias); // set provided auth alias
+                if (loginConfig != null) {
+                    // Add custom login module name and properties
+                    config.setLoginConfigurationName(loginConfig);
+                    String requestBodyString = (String) props.get("json");
+                    JSONObject requestBodyJson = requestBodyString == null ? null : JSONObject.parse(requestBodyString);
+                    if (requestBodyJson != null && requestBodyJson.containsKey("loginConfigProperties")) {
+                        Object loginConfigProperties = requestBodyJson.get("loginConfigProperties");
+                        if (loginConfigProperties instanceof JSONObject) {
+                            JSONObject loginConfigProps = (JSONObject) loginConfigProperties;
+                            for (Object entry : loginConfigProps.entrySet()) {
+                                @SuppressWarnings("unchecked")
+                                Entry<String, String> e = (Entry<String, String>) entry;
+                                if (trace && tc.isDebugEnabled())
+                                    Tr.debug(tc, "Adding custom login module property with key=" + e.getKey());
+                                config.addLoginProperty(e.getKey(), e.getValue());
+                            }
+                        }
+                    }
+                }
             }
 
             Object cf = ((ResourceFactory) instance).createResource(config);
@@ -90,7 +146,20 @@ public class ConnectionFactoryValidator implements Validator {
                 } catch (UnsupportedOperationException ignore) {
                 }
 
-                Connection con = cciConFactory.getConnection(); // TODO use ConnectionSpec if user is non-null
+                ConnectionSpec conSpec = null;
+                if (user != null || password != null) {
+                    String conFactoryClassName = cciConFactory.getClass().getName();
+                    String conSpecClassName = conFactoryClassName.replace("ConnectionFactory", "ConnectionSpec");
+                    if (!conFactoryClassName.equals(conSpecClassName))
+                        conSpec = createConnectionSpec(cciConFactory, conSpecClassName, user, password);
+
+                    if (conSpec == null) {
+                        // TODO find ConnectionSpec impl another way?
+                        throw new RuntimeException("Unable to locate javax.resource.cci.ConnectionSpec impl from resource adapter.");
+                    }
+                }
+
+                Connection con = conSpec == null ? cciConFactory.getConnection() : cciConFactory.getConnection(conSpec);
                 try {
                     try {
                         ConnectionMetaData conData = con.getMetaData();

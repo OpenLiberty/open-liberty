@@ -74,6 +74,57 @@ public class ValidateJCATest extends FATServletClient {
     }
 
     /**
+     * Validate a connectionFactory using application authentication, but not specifying a user or password,
+     * and instead relying on the built-in user/password of the mock resource adapter.
+     */
+    @Test
+    public void testApplicationAuthForConnectionFactoryWithDefaultUser() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/connectionFactory/cf1?auth=application").run(JsonObject.class);
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "cf1", json.getString("uid"));
+        assertEquals(err, "cf1", json.getString("id"));
+        assertEquals(err, "eis/cf1", json.getString("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        assertNotNull(err, json = json.getJsonObject("info"));
+        assertEquals(err, "TestValidationAdapter", json.getString("resourceAdapterName"));
+        assertEquals(err, "28.45.53", json.getString("resourceAdapterVersion"));
+        assertEquals(err, "1.7", json.getString("resourceAdapterJCASupport"));
+        assertEquals(err, "OpenLiberty", json.getString("resourceAdapterVendor"));
+        assertEquals(err, "This tiny resource adapter doesn't do much at all.", json.getString("resourceAdapterDescription"));
+        assertEquals(err, "TestValidationEIS", json.getString("eisProductName"));
+        assertEquals(err, "33.56.65", json.getString("eisProductVersion"));
+        assertEquals(err, "DefaultUserName", json.getString("user"));
+    }
+
+    /**
+     * Validate a connectionFactory using application authentication and specify a user/password.
+     */
+    @Test
+    public void testApplicationAuthForConnectionFactoryWithSpecifiedUser() throws Exception {
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validator/connectionFactory/cf1?auth=application")
+                        .requestProp("X-Validator-User", "user1")
+                        .requestProp("X-Validator-Password", "1user");
+        JsonObject json = request.method("POST").run(JsonObject.class);
+
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "cf1", json.getString("uid"));
+        assertEquals(err, "cf1", json.getString("id"));
+        assertEquals(err, "eis/cf1", json.getString("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        assertNotNull(err, json = json.getJsonObject("info"));
+        assertEquals(err, "TestValidationAdapter", json.getString("resourceAdapterName"));
+        assertEquals(err, "28.45.53", json.getString("resourceAdapterVersion"));
+        assertEquals(err, "1.7", json.getString("resourceAdapterJCASupport"));
+        assertEquals(err, "OpenLiberty", json.getString("resourceAdapterVendor"));
+        assertEquals(err, "This tiny resource adapter doesn't do much at all.", json.getString("resourceAdapterDescription"));
+        assertEquals(err, "TestValidationEIS", json.getString("eisProductName"));
+        assertEquals(err, "33.56.65", json.getString("eisProductVersion"));
+        assertEquals(err, "user1", json.getString("user"));
+    }
+
+    /**
      * Attempt to validate a connectionFactory that does not exist in server configuration.
      */
     @Test
@@ -100,10 +151,8 @@ public class ValidateJCATest extends FATServletClient {
     })
     @Test
     public void testMultipleConnectionFactories() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validator/connectionFactory")
-                        .requestProp("X-Validator-User", "dbuser")
-                        .requestProp("X-Validator-Password", "dbpass");
-        JsonArray json = request.method("POST").run(JsonArray.class);
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validator/connectionFactory");
+        JsonArray json = request.method("GET").run(JsonArray.class);
         String err = "unexpected response: " + json;
 
         assertEquals(err, 4, json.size()); // Increase this if you add more connection factories to server.xml

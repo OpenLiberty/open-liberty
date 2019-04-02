@@ -44,8 +44,14 @@ public class ManagedConnectionFactoryImpl implements ManagedConnectionFactory, R
     @ConfigProperty
     private String hostName = "localhost";
 
+    @ConfigProperty(defaultValue = "DefaultPassword")
+    private String password;
+
     @ConfigProperty
     private Integer portNumber = 4321;
+
+    @ConfigProperty(defaultValue = "DefaultUserName")
+    private String userName;
 
     @Override
     public Object createConnectionFactory() throws ResourceException {
@@ -78,7 +84,7 @@ public class ManagedConnectionFactoryImpl implements ManagedConnectionFactory, R
         if (!hostName.equals("localhost") && !hostName.endsWith(".openliberty.io"))
             throw new CommException("Unable to connect to " + hostName);
 
-        return new ManagedConnectionImpl();
+        return new ManagedConnectionImpl(this);
     }
 
     public String getHostName() {
@@ -90,6 +96,10 @@ public class ManagedConnectionFactoryImpl implements ManagedConnectionFactory, R
         return null;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public Integer getPortNumber() {
         return portNumber;
     }
@@ -97,6 +107,10 @@ public class ManagedConnectionFactoryImpl implements ManagedConnectionFactory, R
     @Override
     public ResourceAdapter getResourceAdapter() {
         return adapter;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 
     @Override
@@ -114,6 +128,10 @@ public class ManagedConnectionFactoryImpl implements ManagedConnectionFactory, R
     @Override
     public void setLogWriter(PrintWriter logWriter) throws ResourceException {}
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public void setPortNumber(Integer portNumber) {
         this.portNumber = portNumber;
     }
@@ -121,5 +139,9 @@ public class ManagedConnectionFactoryImpl implements ManagedConnectionFactory, R
     @Override
     public void setResourceAdapter(ResourceAdapter adapter) throws ResourceException {
         this.adapter = (ResourceAdapterImpl) adapter;
+    }
+
+    public void setUserName(String user) {
+        this.userName = user;
     }
 }

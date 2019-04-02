@@ -18,13 +18,11 @@ import javax.resource.cci.Interaction;
 import javax.resource.cci.LocalTransaction;
 import javax.resource.cci.ResultSetInfo;
 
-import org.test.validator.adapter.ConnectionSpecImpl.ConnectionRequestInfoImpl;
-
 public class ConnectionImpl implements Connection, ConnectionMetaData {
-    private final ConnectionRequestInfoImpl cri;
+    private final String userName;
 
-    ConnectionImpl(ManagedConnectionImpl mc, ConnectionRequestInfoImpl cri) {
-        this.cri = cri;
+    ConnectionImpl(String userName) {
+        this.userName = userName;
     }
 
     @Override
@@ -62,6 +60,6 @@ public class ConnectionImpl implements Connection, ConnectionMetaData {
 
     @Override
     public String getUserName() throws ResourceException {
-        return (String) cri.get("UserName");
+        return userName;
     }
 }
