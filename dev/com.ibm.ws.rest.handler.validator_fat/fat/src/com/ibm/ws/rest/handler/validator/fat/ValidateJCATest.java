@@ -90,6 +90,123 @@ public class ValidateJCATest extends FATServletClient {
     }
 
     /**
+     * Use /ibm/api/validator/connectionFactory to validate all connection factories
+     */
+    @AllowedFFDC({
+                   "java.lang.IllegalArgumentException", // intentionally raised by mock resource adapter to cover exception paths
+                   "javax.resource.spi.CommException", // intentionally raised by mock resource adapter to cover exception paths
+                   "javax.resource.spi.InvalidPropertyException", // intentionally raised by mock resource adapter to cover exception paths
+                   "javax.resource.spi.ResourceAllocationException" // Liberty wraps or replaces above errors with ResourceAllocationException
+    })
+    @Test
+    public void testMultipleConnectionFactories() throws Exception {
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validator/connectionFactory")
+                        .requestProp("X-Validator-User", "dbuser")
+                        .requestProp("X-Validator-Password", "dbpass");
+        JsonArray json = request.method("POST").run(JsonArray.class);
+        String err = "unexpected response: " + json;
+
+        assertEquals(err, 4, json.size()); // Increase this if you add more connection factories to server.xml
+
+        // Order is currently alphabetical based on config.displayId
+
+        // [0]: config.displayId=connectionFactory[cf1]
+        JsonObject j = json.getJsonObject(0);
+        assertEquals(err, "cf1", j.getString("uid"));
+        assertEquals(err, "cf1", j.getString("id"));
+        assertEquals(err, "eis/cf1", j.getString("jndiName"));
+        assertTrue(err, j.getBoolean("successful"));
+        assertNull(err, j.get("failure"));
+        assertNotNull(err, j = j.getJsonObject("info"));
+        assertEquals(err, "TestValidationAdapter", j.getString("resourceAdapterName"));
+        assertEquals(err, "28.45.53", j.getString("resourceAdapterVersion"));
+        assertEquals(err, "1.7", j.getString("resourceAdapterJCASupport"));
+        assertEquals(err, "OpenLiberty", j.getString("resourceAdapterVendor"));
+        assertEquals(err, "This tiny resource adapter doesn't do much at all.", j.getString("resourceAdapterDescription"));
+        assertEquals(err, "TestValidationEIS", j.getString("eisProductName"));
+        assertEquals(err, "33.56.65", j.getString("eisProductVersion"));
+        assertEquals(err, "DefaultUserName", j.getString("user"));
+
+        // [1]: config.displayId=connectionFactory[cf2]
+        j = json.getJsonObject(1);
+        assertEquals(err, "cf2", j.getString("uid"));
+        assertEquals(err, "cf2", j.getString("id"));
+        assertEquals(err, "eis/cf-invalid-host", j.getString("jndiName"));
+        assertFalse(err, j.getBoolean("successful"));
+        assertNull(err, j.get("info"));
+        // Liberty converts javax.resource.spi.CommException to ResourceAllocationException. Why? // TODO
+        assertNotNull(err, j = j.getJsonObject("failure"));
+        assertNull(err, j.get("errorCode"));
+        assertEquals(err, "javax.resource.spi.ResourceAllocationException", j.getString("class"));
+        assertTrue(err, j.getString("message").startsWith("Unable to connect to notfound.rchland.ibm.com"));
+        JsonArray stack = j.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("com."));
+        assertTrue(err, stack.getString(1).startsWith("com."));
+        assertTrue(err, stack.getString(2).startsWith("com."));
+        // cause // TODO should at least chain the original exception as the cause
+        //assertNotNull(err, j = j.getJsonObject("cause"));
+        //assertNull(err, j.get("errorCode"));
+        //assertEquals(err, "javax.resource.spi.CommException", j.getString("class"));
+        //assertTrue(err, j.getString("message").startsWith("Unable to connect to notfound.rchland.ibm.com"));
+        //stack = j.getJsonArray("stack");
+        //assertNotNull(err, stack);
+        //assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        //assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.ManagedConnectionFactoryImpl.createManagedConnection(ManagedConnectionFactoryImpl.java:"));
+        //assertTrue(err, stack.getString(1).startsWith("com."));
+        //assertTrue(err, stack.getString(2).startsWith("com."));
+        assertNull(err, j.getJsonObject("cause"));
+
+        // [2]: config.displayId=connectionFactory[default-0]
+        j = json.getJsonObject(2);
+        // Liberty converts javax.resource.spi.InvalidPropertyException to ResourceAllocationException. Why? // TODO
+        assertNotNull(err, j = j.getJsonObject("failure"));
+        assertEquals(err, "ERR_PORT_NEG", j.getString("errorCode"));
+        assertEquals(err, "javax.resource.spi.ResourceAllocationException", j.getString("class"));
+        assertTrue(err, j.getString("message").startsWith("portNumber"));
+        stack = j.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("com."));
+        assertTrue(err, stack.getString(1).startsWith("com."));
+        assertTrue(err, stack.getString(2).startsWith("com."));
+        // cause // TODO should at least chain the original exception as the cause
+        //assertNotNull(err, j = j.getJsonObject("cause"));
+        //assertEquals(err, "ERR_PORT_NEG", j.getString("errorCode"));
+        //assertEquals(err, "javax.resource.spi.InvalidPropertyException", j.getString("class"));
+        //assertTrue(err, j.getString("message").startsWith("portNumber"));
+        //stack = j.getJsonArray("stack");
+        //assertNotNull(err, stack);
+        //assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        //assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.ManagedConnectionFactoryImpl.createManagedConnection(ManagedConnectionFactoryImpl.java:"));
+        //assertTrue(err, stack.getString(1).startsWith("com."));
+        //assertTrue(err, stack.getString(2).startsWith("com."));
+        // cause
+        assertNotNull(err, j = j.getJsonObject("cause"));
+        assertNull(err, j.get("errorCode"));
+        assertEquals(err, "java.lang.IllegalArgumentException", j.getString("class"));
+        assertEquals(err, "Negative port numbers are not allowed.", j.getString("message"));
+        stack = j.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.ManagedConnectionFactoryImpl.createManagedConnection(ManagedConnectionFactoryImpl.java:"));
+        assertTrue(err, stack.getString(1).startsWith("com."));
+        assertTrue(err, stack.getString(2).startsWith("com."));
+        assertNull(err, j.getJsonObject("cause"));
+
+        // [3]: config.displayId=connectionFactory[default-1]
+        j = json.getJsonObject(3);
+        assertEquals(err, "connectionFactory[default-1]", j.getString("uid"));
+        assertNull(err, j.get("id"));
+        assertEquals(err, "eis/cf-port-not-in-range", j.getString("jndiName"));
+        assertFalse(err, j.getBoolean("successful"));
+        assertNull(err, j.get("info"));
+        assertNotNull(err, j.getJsonObject("failure"));
+        // connectionFactory[default-1] is already tested under testTopLevelConnectionFactoryWithoutIDWithChainedExceptions
+    }
+
+    /**
      * Validate a connectionFactory that is configured at top level with an id attribute.
      */
     @Test
@@ -130,7 +247,7 @@ public class ValidateJCATest extends FATServletClient {
         assertFalse(err, json.getBoolean("successful"));
         assertNull(err, json.get("info"));
 
-        // Liberty wraps the IllegalArgumentException with ResourceException
+        // Liberty wraps the IllegalArgumentException with ResourceAllocationException
         assertNotNull(err, json = json.getJsonObject("failure"));
         assertNull(err, json.get("errorCode"));
         assertEquals(err, "javax.resource.spi.ResourceAllocationException", json.getString("class"));

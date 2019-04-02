@@ -183,10 +183,11 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         // In this case, we want the resource factory, not the resource instance that is registered with the same service.pid.
         // The resource factory will have a creates.objectClass property to indicate which resource type(s) it creates.
         ServiceReference<?> targetRef = null;
-        for (ServiceReference<?> ref : targetRefs) {
-            if (targetRef == null || ref.getProperty("creates.objectClass") != null)
-                targetRef = ref;
-        }
+        if (targetRefs != null)
+            for (ServiceReference<?> ref : targetRefs) {
+                if (targetRef == null || ref.getProperty("creates.objectClass") != null)
+                    targetRef = ref;
+            }
 
         Object target = validatorRefs.isEmpty() || targetRef == null ? null : getService(context, targetRef);
         if (target == null) {
