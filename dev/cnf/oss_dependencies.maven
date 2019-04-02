@@ -374,6 +374,9 @@ org.springframework:spring-webflux:5.1.4.RELEASE
 org.springframework:spring-webmvc:5.1.4.RELEASE
 org.springframework.boot:spring-boot:2.1.2.RELEASE
 org.springframework.boot:spring-boot-autoconfigure:2.1.2.RELEASE
+org.testcontainers:jdbc:1.11.1
+org.testcontainers:postgresql:1.11.1
+org.testcontainers:testcontainers:1.11.1
 io.projectreactor:reactor-core:3.1.8.RELEASE
 xalan:xalan:2.7.1
 xalan:xalan:2.7.2
