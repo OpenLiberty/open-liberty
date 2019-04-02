@@ -179,8 +179,8 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
         ServiceReference<?>[] targetRefs;
         try {
             String filter = "(|" + FilterUtils.createPropertyFilter("service.pid", (String) config.get("service.pid")) // config without super type
-                           + FilterUtils.createPropertyFilter("ibm.extends.subtype.pid", (String) config.get("service.pid")) // config with super type
-                           + ")";
+                            + FilterUtils.createPropertyFilter("ibm.extends.subtype.pid", (String) config.get("service.pid")) // config with super type
+                            + ")";
             targetRefs = getServiceReferences(context.getBundleContext(), (String) null, filter);
         } catch (InvalidSyntaxException x) {
             targetRefs = null; // same error handling as not found
@@ -365,6 +365,26 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
             Tr.debug(tc, "Was a variable value found for " + value + "?  " + !value.equals(resolvedVariable));
         }
         return resolvedVariable;
+    }
+
+    /**
+     * Restricts use of the validation end-point to GET requests only.
+     * All other requests will respond with a 405 - method not allowed error.
+     *
+     * {@inheritDoc}
+     */
+    @Override
+    public final void handleRequest(RESTRequest request, RESTResponse response) throws IOException {
+        if (!"GET".equals(request.getMethod())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Request method was " + request.getMethod() + " but the validation endpoint is restricted to GET requests only.");
+            }
+            response.setResponseHeader("Accept", "GET");
+            response.sendError(405); // Method Not Allowed
+            return;
+        }
+
+        super.handleRequest(request, response);
     }
 
     @Override
