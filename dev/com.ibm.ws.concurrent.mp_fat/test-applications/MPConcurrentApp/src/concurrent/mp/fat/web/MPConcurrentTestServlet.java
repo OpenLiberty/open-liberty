@@ -108,6 +108,7 @@ public class MPConcurrentTestServlet extends FATServlet {
 
     // some of the new Java 12+ methods on CompletableFuture
     private BiFunction<CompletableFuture<?>, Function<?, ?>, CompletableFuture<?>> exceptionallyAsync;
+    private BiFunction<CompletableFuture<?>, Function<?, ?>, CompletableFuture<?>> exceptionallyCompose;
     private TriFunction<CompletableFuture<?>, Function<?, ?>, Executor, CompletableFuture<?>> exceptionallyComposeAsync;
 
     // Internal methods for creating a ManagedCompletableFuture for any executor
@@ -240,6 +241,13 @@ public class MPConcurrentTestServlet extends FATServlet {
             exceptionallyAsync = (cf, func) -> {
                 try {
                     return (CompletableFuture<?>) cl.getMethod("exceptionallyAsync", Function.class).invoke(cf, func);
+                } catch (Exception x) {
+                    throw convertToRuntimeException(x);
+                }
+            };
+            exceptionallyCompose = (cf, func) -> {
+                try {
+                    return (CompletableFuture<?>) cf.getClass().getMethod("exceptionallyCompose", Function.class).invoke(cf, func);
                 } catch (Exception x) {
                     throw convertToRuntimeException(x);
                 }
@@ -4360,7 +4368,7 @@ public class MPConcurrentTestServlet extends FATServlet {
 
         assertTrue(s = cf2.toString(), s.startsWith("ManagedCompletableFuture@"));
 
-        // exceptionally on unmanaged thread or servlet thread
+        // exceptionallyAsync should run on a managed thread
         assertNotNull(previousFailure = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (previousFailure instanceof CompletionException && ((CompletionException) previousFailure).getCause() instanceof ArithmeticException)
             ; // pass
@@ -4370,6 +4378,8 @@ public class MPConcurrentTestServlet extends FATServlet {
             fail("Unexpected value supplied to function as previous failure: " + previousFailure);
 
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
 
         assertEquals(defaultManagedExecutor, cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertEquals(2, count.get()); // one additional execution of the lookup function
@@ -4440,7 +4450,7 @@ public class MPConcurrentTestServlet extends FATServlet {
 
         assertTrue(s = cf2.toString(), s.startsWith("ManagedCompletableFuture@"));
 
-        // exceptionally on unmanaged thread or servlet thread
+        // exceptionallyComposeAsync should run on a managed thread
         assertNotNull(previousFailure = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (previousFailure instanceof CompletionException && ((CompletionException) previousFailure).getCause() instanceof ArithmeticException)
             ; // pass
@@ -4451,6 +4461,84 @@ public class MPConcurrentTestServlet extends FATServlet {
 
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
         assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on a managed thread
+        assertEquals(threadName, cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+    }
+
+    /**
+     * Verify testExceptionallyCompose(Function) which was added in Java 12
+     */
+    @Test
+    @MinimumJavaLevel(javaLevel = 12)
+    public void testExceptionallyCompose() throws Exception {
+        AtomicInteger count = new AtomicInteger();
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+        String currentThreadName = Thread.currentThread().getName();
+
+        final Function<Throwable, Executor> lookup = (previousFailure) -> {
+            System.out.println("> lookup #" + count.incrementAndGet() + " from testExceptionallyCompose");
+            if (previousFailure != null)
+                results.add(previousFailure);
+            results.add(Thread.currentThread().getName());
+            try {
+                ManagedExecutorService result = InitialContext.doLookup("java:comp/env/executorRef");
+                System.out.println("< lookup: " + result);
+                return result;
+            } catch (NamingException x) {
+                System.out.println("< lookup failed");
+                x.printStackTrace(System.out);
+                throw new CompletionException(x);
+            }
+        };
+
+        String threadName;
+        Object previousFailure;
+
+        // Verify that exceptionally is skipped when no exception is raised by prior stage
+
+        CompletableFuture<?> cf1 = defaultManagedExecutor
+                        .completedFuture((Throwable) null)
+                        .thenApplyAsync(lookup); // expect lookup to succeed because managed executor transfers thread context from the servlet
+        cf1 = exceptionallyCompose.apply(cf1, lookup); // should not be invoked due to lack of any failure in prior stage
+
+        String s;
+        assertTrue(s = cf1.toString(), s.startsWith("ManagedCompletableFuture@"));
+
+        // thenApplyAsync on default execution facility
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+
+        assertEquals(defaultManagedExecutor, cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals(1, count.get()); // lookup function only ran once
+
+        // Verify that exceptionally is invoked when exception is raised by prior stage
+
+        CompletableFuture<?> cf2 = defaultManagedExecutor
+                        .completedFuture((Throwable) null)
+                        .thenApplyAsync(x -> 1 / 0 < 2 ? sameThreadExecutor : null, testThreads); // force ArithmeticException to occur
+        cf2 = exceptionallyCompose.apply(cf2, t -> {
+            if (t != null)
+                results.add(t);
+            final String curThread = Thread.currentThread().getName();
+            results.add(curThread);
+            return defaultManagedExecutor.completedFuture(curThread);
+        });
+
+        assertTrue(s = cf2.toString(), s.startsWith("ManagedCompletableFuture@"));
+
+        assertNotNull(previousFailure = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (previousFailure instanceof CompletionException && ((CompletionException) previousFailure).getCause() instanceof ArithmeticException)
+            ; // pass
+        else if (previousFailure instanceof Throwable)
+            throw new Exception((Throwable) previousFailure);
+        else
+            fail("Unexpected value supplied to function as previous failure: " + previousFailure);
+
+        // exceptionallyCompose should run on an unmanaged thread or the current servlet thread
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.equals(currentThreadName) || !threadName.startsWith("Default Executor-thread-")); // could run on current thread if previous stage is complete, otherwise must run on unmanaged thread
+        assertEquals(threadName, cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
     }
 
     /**
