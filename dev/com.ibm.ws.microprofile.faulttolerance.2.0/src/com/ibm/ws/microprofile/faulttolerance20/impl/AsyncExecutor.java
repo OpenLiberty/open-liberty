@@ -197,6 +197,8 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
             return;
         }
 
+        attemptContext.setCircuitBreakerPermittedExecution(true);
+
         timeout.start();
 
         ExecutionReference ref = bulkhead.submit((reservation) -> runExecutionAttempt(attemptContext, reservation), getExceptionHandler(attemptContext));
@@ -332,7 +334,10 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 Tr.event(tc, "Execution {0} processing end of attempt execution. Result: {1}", executionContext.getId(), result);
             }
 
-            circuitBreaker.recordResult(result);
+            if (attemptContext.getCircuitBreakerPermittedExecution()) {
+                // Only record a circuit breaker result if it allowed us to run in the first place
+                circuitBreaker.recordResult(result);
+            }
 
             // Note: don't process retries or fallback for internal failures or if the user has cancelled the execution
             if (!result.isInternalFailure() && !executionContext.isCancelled()) {

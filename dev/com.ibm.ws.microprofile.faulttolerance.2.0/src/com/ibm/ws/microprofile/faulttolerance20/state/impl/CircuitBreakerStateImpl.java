@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance20.state.impl;
 
-import org.eclipse.microprofile.faulttolerance.exceptions.CircuitBreakerOpenException;
-
 import com.ibm.ws.microprofile.faulttolerance.impl.CircuitBreakerImpl;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
@@ -49,8 +47,10 @@ public class CircuitBreakerStateImpl implements CircuitBreakerState {
             metricRecorder.incrementCircuitBreakerCallsSuccessCount();
         } else {
             circuitBreaker.recordFailure(result.getFailure());
-            if (!(result.getFailure() instanceof CircuitBreakerOpenException)) {
+            if (circuitBreaker.isFailure(null, result.getFailure())) {
                 metricRecorder.incrementCircuitBreakerCallsFailureCount();
+            } else {
+                metricRecorder.incrementCircuitBreakerCallsSuccessCount();
             }
         }
     }
