@@ -63,7 +63,9 @@ public class ValidateDataSourceTest extends FATServletClient {
         // Lacking this fix, transaction manager will experience an auth failure and log FFDC for it.
         // The following line causes an XA-capable data source to be used for the first time outside of a test method execution,
         // so that the FFDC is not considered a test failure.
-        JsonObject response = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource").run(JsonObject.class);
+        JsonObject response = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource")
+                        .method("POST")
+                        .run(JsonObject.class);
         Log.info(c, "setUp", "DefaultDataSource response: " + response);
     }
 
@@ -77,25 +79,12 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testAppAuth() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource")
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource")
+                        .method("POST")
                         .requestProp("X-Validator-User", "dbuser")
-                        .requestProp("X-Validator-Password", "dbpass");
-        JsonObject json = request.run(JsonObject.class);
+                        .requestProp("X-Validator-Password", "dbpass")
+                        .run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
-        assertEquals(err, "DefaultDataSource", json.getString("uid"));
-        assertEquals(err, "DefaultDataSource", json.getString("id"));
-        assertNull(err, json.get("jndiName"));
-        assertTrue(err, json.getBoolean("successful"));
-        assertNull(err, json.get("failure"));
-        assertNotNull(err, json = json.getJsonObject("info"));
-        assertEquals(err, "Apache Derby", json.getString("databaseProductName"));
-        assertTrue(err, json.getString("databaseProductVersion").matches(VERSION_REGEX));
-        assertEquals(err, "Apache Derby Embedded JDBC Driver", json.getString("jdbcDriverName"));
-        assertTrue(err, json.getString("jdbcDriverVersion").matches(VERSION_REGEX));
-
-        request.method("POST");
-        json = request.run(JsonObject.class);
-        err = "Unexpected json response: " + json.toString();
         assertEquals(err, "DefaultDataSource", json.getString("uid"));
         assertEquals(err, "DefaultDataSource", json.getString("id"));
         assertNull(err, json.get("jndiName"));
@@ -110,26 +99,21 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testVariableSubstitution() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource?user=bogus")
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource?user=bogus")
+                        .method("POST")
                         .requestProp("X-Validator-User", "${DB_USER}")
-                        .requestProp("X-Validator-Password", "${DB_PASS}");
-        JsonObject json = request.run(JsonObject.class);
-        assertSuccessResponse(json, "DefaultDataSource", "DefaultDataSource");
-        request.method("POST");
-        json = request.run(JsonObject.class);
+                        .requestProp("X-Validator-Password", "${DB_PASS}")
+                        .run(JsonObject.class);
         assertSuccessResponse(json, "DefaultDataSource", "DefaultDataSource");
     }
 
     @Test
     public void testEnvVariableSubstitution() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource?user=bogus")
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource?user=bogus")
+                        .method("POST")
                         .requestProp("X-Validator-User", "${env.DB_USER_ENV}")
-                        .requestProp("X-Validator-Password", "${env.DB_PASS_ENV}");
-        JsonObject json = request.run(JsonObject.class);
-        assertSuccessResponse(json, "DefaultDataSource", "DefaultDataSource");
-
-        request.method("POST");
-        json = request.run(JsonObject.class);
+                        .requestProp("X-Validator-Password", "${env.DB_PASS_ENV}")
+                        .run(JsonObject.class);
         assertSuccessResponse(json, "DefaultDataSource", "DefaultDataSource");
     }
 
@@ -140,6 +124,7 @@ public class ValidateDataSourceTest extends FATServletClient {
                     "javax.resource.spi.ResourceAllocationException" })
     public void testAppAuthFails() throws Exception {
         JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource")
+                        .method("POST")
                         .requestProp("X-Validator-User", "bogus")
                         .requestProp("X-Validator-Password", "bogus")
                         .run(JsonObject.class);
@@ -166,7 +151,9 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testDataSourceWithoutJDBCDriver() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/DataSourceWithoutJDBCDriver").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/DataSourceWithoutJDBCDriver")
+                        .method("POST")
+                        .run(JsonObject.class);
         String err = "unexpected response: " + json;
         assertEquals(err, "DataSourceWithoutJDBCDriver", json.getString("uid"));
         assertEquals(err, "DataSourceWithoutJDBCDriver", json.getString("id"));
@@ -179,7 +166,9 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testDefaultAuth() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/dataSource[default-0]?auth=container").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/dataSource[default-0]?auth=container")
+                        .method("POST")
+                        .run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "dataSource[default-0]", json.getString("uid"));
         assertNull(err, json.get("id"));
@@ -195,7 +184,9 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testFeatureOfParentConfigNotEnabled() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/databaseStore[unavailableDBStore]%2FdataSource[unavailableDS]").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/databaseStore[unavailableDBStore]%2FdataSource[unavailableDS]")
+                        .method("POST")
+                        .run(JsonObject.class);
         String err = "unexpected response: " + json;
         assertEquals(err, "databaseStore[unavailableDBStore]/dataSource[unavailableDS]", json.getString("uid"));
         assertFalse(err, json.getBoolean("successful"));
@@ -207,7 +198,9 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testFeatureNotEnabled() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/cloudantDatabase/CloudantDBNotEnabled").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/cloudantDatabase/CloudantDBNotEnabled")
+                        .method("POST")
+                        .run(JsonObject.class);
         String err = "unexpected response: " + json;
         assertEquals(err, "CloudantDBNotEnabled", json.getString("uid"));
         assertEquals(err, "CloudantDBNotEnabled", json.getString("id"));
@@ -223,10 +216,11 @@ public class ValidateDataSourceTest extends FATServletClient {
                             "javax.resource.spi.ResourceAllocationException",
                             "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
     public void testMultiple() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validator/dataSource?auth=application")
+        JsonArray json = new HttpsRequest(server, "/ibm/api/validator/dataSource?auth=application")
+                        .method("POST")
                         .requestProp("X-Validator-User", "dbuser")
-                        .requestProp("X-Validator-Password", "dbpass");
-        JsonArray json = request.method("POST").run(JsonArray.class);
+                        .requestProp("X-Validator-Password", "dbpass")
+                        .run(JsonArray.class);
         String err = "unexpected response: " + json;
 
         assertEquals(err, 6, json.size()); // Increase this if you add more data sources to server.xml
@@ -324,14 +318,17 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testMultipleWithNoResults() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/validator/mongoDB").run(JsonArray.class);
-
+        JsonArray json = new HttpsRequest(server, "/ibm/api/validator/mongoDB")
+                        .method("POST")
+                        .run(JsonArray.class);
         assertEquals("unexpected response: " + json, 0, json.size());
     }
 
     @Test
     public void testNestedUnderTransaction() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/transaction%2FdataSource[default-0]?auth=container").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/transaction%2FdataSource[default-0]?auth=container")
+                        .method("POST")
+                        .run(JsonObject.class);
         String err = "unexpected response: " + json;
         assertEquals(err, "transaction/dataSource[default-0]", json.getString("uid"));
         assertNull(err, json.get("id"));
@@ -347,7 +344,9 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testNotFound() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/NotAConfiguredDataSource").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/NotAConfiguredDataSource")
+                        .method("POST")
+                        .run(JsonObject.class);
         String err = "unexpected response: " + json;
         assertEquals(err, "NotAConfiguredDataSource", json.getString("uid"));
         assertNull(err, json.get("id"));
@@ -360,7 +359,9 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testNotValidatable() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/library/Derby").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/library/Derby")
+                        .method("POST")
+                        .run(JsonObject.class);
         String err = "unexpected response: " + json;
         assertEquals(err, "Derby", json.getString("uid"));
         assertEquals(err, "Derby", json.getString("id"));
@@ -372,7 +373,9 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testProvidedAuth() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource?auth=container&authAlias=auth1").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource?auth=container&authAlias=auth1")
+                        .method("POST")
+                        .run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "DefaultDataSource", json.getString("uid"));
         assertEquals(err, "DefaultDataSource", json.getString("id"));
@@ -388,7 +391,9 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testProvidedAuthAndDefaultAuth() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/WrongDefaultAuth?auth=container&authAlias=auth1").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/WrongDefaultAuth?auth=container&authAlias=auth1")
+                        .method("POST")
+                        .run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "WrongDefaultAuth", json.getString("uid"));
         assertEquals(err, "WrongDefaultAuth", json.getString("id"));
@@ -405,7 +410,9 @@ public class ValidateDataSourceTest extends FATServletClient {
     @ExpectedFFDC(value = { "javax.security.auth.login.LoginException", "javax.resource.ResourceException", "java.sql.SQLException" })
     @Test
     public void testProvidedAuthDoesNotExist() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource?auth=container&authAlias=authDoesntExist").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource?auth=container&authAlias=authDoesntExist")
+                        .method("POST")
+                        .run(JsonObject.class);
         String err = "unexpected response: " + json;
         assertEquals(err, "DefaultDataSource", json.getString("uid"));
         assertEquals(err, "DefaultDataSource", json.getString("id"));
@@ -429,10 +436,11 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testTopLevelConfigDisplayID() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validator/dataSource/dataSource[default-0]?auth=application")
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/dataSource[default-0]?auth=application")
+                        .method("POST")
                         .requestProp("X-Validator-User", "dbuser")
-                        .requestProp("X-Validator-Password", "dbpass");
-        JsonObject json = request.method("POST").run(JsonObject.class);
+                        .requestProp("X-Validator-Password", "dbpass")
+                        .run(JsonObject.class);
         String err = "unexpected response: " + json;
         assertEquals(err, "dataSource[default-0]", json.getString("uid"));
         assertNull(err, json.get("id"));
@@ -448,7 +456,9 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Test
     public void testTopLevelID() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource")
+                        .method("POST")
+                        .run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "DefaultDataSource", json.getString("uid"));
         assertEquals(err, "DefaultDataSource", json.getString("id"));
@@ -470,7 +480,9 @@ public class ValidateDataSourceTest extends FATServletClient {
                             "javax.resource.spi.ResourceAllocationException",
                             "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
     public void testTopLevelIDSQLException() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/jdbc%2Fnonexistentdb").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/jdbc%2Fnonexistentdb")
+                        .method("POST")
+                        .run(JsonObject.class);
         String err = "unexpected response: " + json;
         assertEquals(err, "jdbc/nonexistentdb", json.getString("uid"));
         assertEquals(err, "jdbc/nonexistentdb", json.getString("id"));
@@ -514,7 +526,9 @@ public class ValidateDataSourceTest extends FATServletClient {
                             "javax.resource.spi.ResourceAllocationException", "java.sql.SQLNonTransientConnectionException" })
     @Test
     public void testWrongDefaultAuth() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/WrongDefaultAuth?auth=container").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/WrongDefaultAuth?auth=container")
+                        .method("POST")
+                        .run(JsonObject.class);
         String err = "unexpected response: " + json;
         assertEquals(err, "WrongDefaultAuth", json.getString("uid"));
         assertEquals(err, "WrongDefaultAuth", json.getString("id"));
@@ -541,7 +555,9 @@ public class ValidateDataSourceTest extends FATServletClient {
                             "javax.resource.spi.ResourceAllocationException", "java.sql.SQLNonTransientConnectionException" })
     @Test
     public void testWrongProvidedAuth() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource?auth=container&authAlias=auth2").run(JsonObject.class);
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource?auth=container&authAlias=auth2")
+                        .method("POST")
+                        .run(JsonObject.class);
         String err = "unexpected response: " + json;
         assertEquals(err, "DefaultDataSource", json.getString("uid"));
         assertEquals(err, "DefaultDataSource", json.getString("id"));
@@ -562,6 +578,14 @@ public class ValidateDataSourceTest extends FATServletClient {
         assertEquals(err, 40000, json.getInt("errorCode"));
         assertEquals(err, "java.sql.SQLNonTransientException", json.getString("class"));
         assertTrue(err, json.getString("message").contains("Invalid authentication"));
+    }
+
+    @Test
+    public void testGETMethodRejected() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/dataSource[default-0]?auth=container")
+                        .expectCode(405) // Method Not Allowed
+                        .run(JsonObject.class);
+        assertNull("Expected null response from not allowed HTTP method, but got: " + json, json);
     }
 
     private static void assertSuccessResponse(JsonObject json, String expectedUID, String expectedID) {

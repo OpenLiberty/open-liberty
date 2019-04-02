@@ -116,6 +116,12 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
      */
     @Override
     public final void handleRequest(RESTRequest request, RESTResponse response) throws IOException {
+        if (!"POST".equals(request.getMethod())) {
+            response.setResponseHeader("Accept", "POST");
+            response.sendError(405); // Method Not Allowed
+            return;
+        }
+
         String path = request.getPath();
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
