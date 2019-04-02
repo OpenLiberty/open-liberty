@@ -47,6 +47,7 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.rest.handler.RESTHandler;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
+import com.ibm.wsspi.rest.handler.helper.RESTHandlerMethodNotAllowedError;
 
 /**
  * Validates configured resources
@@ -74,8 +75,8 @@ public class ConfigRESTHandler implements RESTHandler {
     /**
      * Validates configuration of a resource and returns the result as a JSON object.
      *
-     * @param uid       unique identifier.
-     * @param config    configuration of a resource instance.
+     * @param uid unique identifier.
+     * @param config configuration of a resource instance.
      * @param processed configurations that have already been processed -- to prevent stack overflow from circular dependencies in errant config.
      * @return JSON representing the configuration. Null if not an external configuration element.
      * @throws IOException
@@ -266,7 +267,7 @@ public class ConfigRESTHandler implements RESTHandler {
     /**
      * Converts the specified value to one that can be included in JSON
      *
-     * @param value     the value to convert
+     * @param value the value to convert
      * @param processed configurations that have already been processed -- to prevent stack overflow from circular dependencies in errant config.
      * @return a String, primitive wrapper, JSONArray, or JSONObject.
      * @throws IOException
@@ -321,7 +322,7 @@ public class ConfigRESTHandler implements RESTHandler {
      * Otherwise, the config.displayId is the unique identifier.
      *
      * @param configDisplayId config.displayId of configuration element.
-     * @param id              id of configuration element. Null if none.
+     * @param id id of configuration element. Null if none.
      * @return the unique identifier (uid)
      */
     @Trivial
@@ -334,6 +335,9 @@ public class ConfigRESTHandler implements RESTHandler {
      */
     @Override
     public void handleRequest(RESTRequest request, RESTResponse response) throws IOException {
+        if (!"GET".equals(request.getMethod()))
+            throw new RESTHandlerMethodNotAllowedError("GET");
+
         String path = request.getPath(); // /config/dataSource/{uid}
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())

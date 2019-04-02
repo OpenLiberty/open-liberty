@@ -844,4 +844,14 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, 60000, tcpOptionsRef.getInt("inactivityTimeout"));
         assertTrue(err, tcpOptionsRef.getBoolean("soReuseAddr"));
     }
+
+    // Invoke /ibm/api/config/dataSource/{uid} with HTTP POST (should not be allowed)
+    @Test
+    public void testPOSTRejected() throws Exception {
+        JsonObject json = new HttpsRequest(server, "/ibm/api/config/dataSource/DefaultDataSource")//
+                        .method("POST")
+                        .expectCode(405) // Method Not Allowed
+                        .run(JsonObject.class);
+        assertNull("Json response should be empty.", json);
+    }
 }
