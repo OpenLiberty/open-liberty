@@ -372,10 +372,6 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      */
     @Override
     public final DataSource getJtaDataSource() {
-        if (this.ivTxType == PersistenceUnitTransactionType.RESOURCE_LOCAL) {
-            return null;
-        }
-
         if (ivJtaDataSource == null || ivJtaDataSource instanceof GenericDataSource) { // d455055
             ivJtaDataSource = getJPADataSource(ivJtaDataSourceJNDIName);
         }

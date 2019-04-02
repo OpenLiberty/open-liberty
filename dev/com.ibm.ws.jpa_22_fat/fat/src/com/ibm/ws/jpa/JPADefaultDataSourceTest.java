@@ -249,7 +249,7 @@ public class JPADefaultDataSourceTest {
             Assert.assertTrue(jparl_response2.contains("TEST GOOD."));
         } finally {
             if (server_JTA_NJTA.isStarted()) {
-                server_JTA_NJTA.stopServer(null);
+                server_JTA_NJTA.stopServer("CWWJP9991W:");
                 server_JTA_NJTA.waitForStringInLogUsingMark("CWWKE0036I: .*JPADefaultDataSourceServer");
             }
         }
