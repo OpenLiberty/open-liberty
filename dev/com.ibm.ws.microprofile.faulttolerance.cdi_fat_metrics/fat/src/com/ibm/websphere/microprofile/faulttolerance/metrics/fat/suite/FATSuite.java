@@ -22,12 +22,14 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.CDIFallbackTest;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.MetricRemovalTest;
+import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.circuitbreaker.CircuitBreakerMetricTest;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 CDIFallbackTest.class,
-                MetricRemovalTest.class
+                MetricRemovalTest.class,
+                CircuitBreakerMetricTest.class,
 })
 public class FATSuite {
 
