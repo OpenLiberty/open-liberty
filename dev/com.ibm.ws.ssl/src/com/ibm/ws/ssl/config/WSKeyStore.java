@@ -1372,4 +1372,20 @@ public class WSKeyStore extends Properties {
         myKeyStore = null;
     }
 
+    public static String getCannonicalPath(String location, Boolean fileBased) {
+        String cannonicalLocation = location;
+        if (fileBased) {
+            //Try to create File object based on Location to get the cannonical path
+            try {
+                cannonicalLocation = new File(location).getCanonicalPath();
+            } catch (IOException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception finding full file path. Setting back to default");
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getCannonicalLocation -> " + cannonicalLocation);
+        }
+        return cannonicalLocation;
+    }
 }
