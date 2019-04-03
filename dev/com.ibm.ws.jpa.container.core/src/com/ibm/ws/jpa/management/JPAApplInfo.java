@@ -287,6 +287,22 @@ public abstract class JPAApplInfo {
         }
     }
 
+    public boolean hasPersistenceUnitsDefined() {
+        final Map<String, JPAScopeInfo> puScopesClone = new HashMap<String, JPAScopeInfo>();
+        synchronized (puScopes) {
+            puScopesClone.putAll(puScopes);
+        }
+
+        for (Map.Entry<String, JPAScopeInfo> entry : puScopesClone.entrySet()) {
+            final JPAScopeInfo scopeInfo = entry.getValue();
+            if (scopeInfo.getAllPuCount() > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     @Override
     public String toString() {
         synchronized (puScopes) {

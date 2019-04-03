@@ -43,8 +43,6 @@ public class MPConcurrencyTCKLauncher {
     })
     @Test
     public void launchMPConcurrency10Tck() throws Exception {
-        // TODO: Run this all the time once the MP Concurrency 1.0 TCK is finalized
-        if (FATRunner.FAT_TEST_LOCALRUN)
-            MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp_fat_tck", this.getClass() + ":launchMPConcurrency10Tck");
+        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp_fat_tck", this.getClass() + ":launchMPConcurrency10Tck");
     }
 }

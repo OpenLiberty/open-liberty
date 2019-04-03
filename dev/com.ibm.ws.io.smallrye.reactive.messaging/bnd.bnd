@@ -1,0 +1,64 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+
+bVersion=1.0
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-SymbolicName: com.ibm.ws.io.smallrye.reactive.messaging; singleton:=true
+                     
+-includeresource: \
+   @${repo;io.smallrye.reactive:smallrye-reactive-messaging-provider;0.0.4;EXACT}!/!(org|META-INF)/*,\
+   io/smallrye/reactive/messaging/extension/ReactiveMessagingExtension.class=${bin}/io/smallrye/reactive/messaging/extension/ReactiveMessagingExtension.class,\
+   io/smallrye/reactive/messaging/extension/ReactiveMessagingExtension$MediatorBean.class=${bin}/io/smallrye/reactive/messaging/extension/ReactiveMessagingExtension$MediatorBean.class,\
+   META-INF=resources/META-INF
+
+WS-TraceGroup: REACTIVEMESSAGING
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+src: src
+
+-dsannotations-inherit: true
+-dsannotations: com.ibm.ws.microprofile.reactive.messaging.OLReactiveMessagingExtension
+
+Include-Resource: \
+  META-INF=resources/META-INF
+
+Import-Package: \
+  !io.vertx.*,\
+  javax.enterprise.*; version="[1.1,3)",\
+  *
+
+Private-Package: com.ibm.ws.microprofile.reactive.messaging
+
+Export-Package: \
+  io.smallrye.reactive.messaging; version="1.0", \
+  io.smallrye.reactive.messaging.annotations; version="1.0", \
+  io.smallrye.reactive.messaging.extension; version="1.0", \
+  io.smallrye.reactive.messaging.impl; version="1.0", \
+  io.smallrye.reactive.messaging.spi; version="1.0"
+
+-buildpath: \
+  io.smallrye.reactive:smallrye-reactive-messaging-provider;version=0.0.4, \
+  com.ibm.websphere.javaee.cdi.2.0;version=latest, \
+  com.ibm.websphere.javaee.annotation.1.3;version=latest, \
+  com.ibm.websphere.org.eclipse.microprofile.reactive.messaging.1.0;version=latest, \
+  com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0;version=latest, \
+  com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest, \
+  com.ibm.ws.org.slf4j.api.1.7.7;version=latest, \
+  com.ibm.ws.io.reactivex.rxjava.2.2;version=latest, \
+  com.ibm.ws.org.apache.commons.lang3;version=latest, \
+  com.ibm.ws.cdi.interfaces;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest
