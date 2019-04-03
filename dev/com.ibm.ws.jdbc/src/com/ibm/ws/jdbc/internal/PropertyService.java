@@ -100,8 +100,12 @@ public class PropertyService extends Properties {
      * Vendor properties of type String that use the ibm:type="password" type.
      */
     private static final List<String> PASSWORD_PROPS = Arrays.asList(DataSourceDef.password.name(),
+                                                                     "accessToken",
+                                                                     "apiKey",
                                                                      "keyStoreSecret",
                                                                      "trustStorePassword",
+                                                                     "sslTrustStorePassword",
+                                                                     "sslKeyStorePassword",
                                                                      "connectionProperties",
                                                                      "connectionFactoryProperties"
                                                                      );
