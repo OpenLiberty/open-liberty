@@ -38,20 +38,22 @@ public class PostgreSQLTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RequireDockerRule<PostgreSQLContainer<?>> postgre = new RequireDockerRule<>(() -> new PostgreSQLContainer<>("postgres:11.2-alpine")
+    public static PostgreSQLContainer<?> postgre = new PostgreSQLContainer<>("postgres:11.2-alpine")
                     .withDatabaseName("testdb")
                     .withUsername("postgresUser")
                     .withPassword("superSecret")
                     .withExposedPorts(5432)
-                    .withLogConsumer(PostgreSQLTest::log));
+                    .withLogConsumer(PostgreSQLTest::log);
 
     @BeforeClass
     public static void setUp() throws Exception {
-        Log.info(c, "@AGG", "instance 1: " + postgre.get());
-        Log.info(c, "@AGG", "instance 2: " + postgre.get());
-        Log.info(c, "@AGG", "instance 3: " + postgre.get());
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jdbc.fat.postgresql.web");
-        server.addEnvVar("POSTGRES_PORT", String.valueOf(postgre.get().getMappedPort(5432)));
+        String host = postgre.getContainerIpAddress();
+        String port = String.valueOf(postgre.getMappedPort(5432));
+        Log.info(c, "setUp", "Using PostgreSQL host=" + host);
+        Log.info(c, "setUp", "Using PostgreSQL port=" + port);
+        server.addEnvVar("POSTGRES_HOST", host);
+        server.addEnvVar("POSTGRES_PORT", port);
         server.startServer();
     }
 
