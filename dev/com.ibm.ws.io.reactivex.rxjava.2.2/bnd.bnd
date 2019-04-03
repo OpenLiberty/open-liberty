@@ -18,6 +18,9 @@ Bundle-SymbolicName: com.ibm.ws.io.reactivex.rxjava.2.2; singleton:=true
 
 Import-Package: \
   org.reactivestreams; version="[1.0,1.1)", \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc, \
   *
 
 Export-Package: \

@@ -20,6 +20,9 @@ Bundle-SymbolicName: com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Import-Package: \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc, \
   *
 
 Export-Package: \
