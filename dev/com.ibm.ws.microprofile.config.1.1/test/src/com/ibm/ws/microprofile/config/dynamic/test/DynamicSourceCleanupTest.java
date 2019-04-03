@@ -31,7 +31,7 @@ public class DynamicSourceCleanupTest extends AbstractConfigTest {
     @Test
     public void testDynamicSourceCleanup() throws InterruptedException {
         long refreshInterval = 500; //milliseconds
-        long maxWait = 10000; //milliseconds
+        long maxWait = 20000; //milliseconds
 
         String key1 = "key1";
         String value1 = "value1";
@@ -57,12 +57,12 @@ public class DynamicSourceCleanupTest extends AbstractConfigTest {
         long timeoutNanoTime = start + millisToNanos(maxWait);
         // Ensure that the source is being refreshed
         System.out.println("lastGetPropertiesTime is (nanoTime)                       : " + lastGetPropertiesTime);
-        System.out.println("timeout will be (nanoTime)                                : " + timeoutNanoTime + " (" + (timeoutNanoTime - start) + ")");
+        System.out.println("timeout will be (nanoTime)                                : " + timeoutNanoTime + " (" + nanosToMillis(timeoutNanoTime - start) + "ms)");
         while (TestDynamicConfigSource.getPropertiesLastCalled == lastGetPropertiesTime && nanoTimeRemaining(timeoutNanoTime)) {
             Thread.sleep(refreshInterval);
         }
         long end = System.nanoTime();
-        System.out.println("end time (nanoTime)                                       : " + end + " (" + (timeoutNanoTime - end) + ")");
+        System.out.println("first refresh time (nanoTime)                             : " + end + " (" + nanosToMillis(end - start) + "ms)");
         long currentGetPropertiesTime = TestDynamicConfigSource.getPropertiesLastCalled;
         System.out.println("lastGetPropertiesTime is now (nanoTime)                   : " + currentGetPropertiesTime);
         assertTrue("Config source was not refreshed", currentGetPropertiesTime != lastGetPropertiesTime);
@@ -86,20 +86,25 @@ public class DynamicSourceCleanupTest extends AbstractConfigTest {
 
     }
 
-    private static final long millisToNanos(long millis) {
+    public static final long millisToNanos(long millis) {
         return millis * 1000 * 1000;
+    }
+
+    public static final double nanosToMillis(long nanos) {
+        return nanos / 1000.0 / 1000.0;
     }
 
     private static final boolean nanoTimeRemaining(long maxNanos) {
         return (maxNanos - System.nanoTime()) > 0;
     }
 
-    private static final void waitForGC(WeakReference<?> weakObjectRef, long maxWaitMillis) {
+    private static final void waitForGC(WeakReference<?> weakObjectRef, long maxWaitMillis) throws InterruptedException {
         long startGcTime = System.nanoTime();
         long maxNanos = startGcTime + millisToNanos(maxWaitMillis);
         while (weakObjectRef.get() != null && nanoTimeRemaining(maxNanos)) {
             System.runFinalization();
             System.gc();
+            Thread.sleep(10);
         }
     }
 }

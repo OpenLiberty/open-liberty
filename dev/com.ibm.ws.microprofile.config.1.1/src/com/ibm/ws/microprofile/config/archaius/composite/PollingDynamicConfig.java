@@ -23,10 +23,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
@@ -35,6 +37,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 import com.ibm.ws.microprofile.config.interfaces.ConfigStartException;
 
 public class PollingDynamicConfig implements Closeable {
@@ -83,6 +86,14 @@ public class PollingDynamicConfig implements Closeable {
         }
 
         this.future = start();
+        if (this.future != null && this.future.isDone()) {
+            try {
+                this.future.get(0, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                throw new ConfigException("Failed to start PollingDynamicConfig refresher: " + e.getMessage(), e);
+            }
+            throw new ConfigException("Failed to start PollingDynamicConfig but no error reported!");
+        }
     }
 
     /**
@@ -304,8 +315,7 @@ public class PollingDynamicConfig implements Closeable {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "start", "Scheduled Update failed: {0}. Exception: {1}", this, e);
                 }
-            }
-            finally {
+            } finally {
                 PollingDynamicConfig config2 = configRef.get();
                 if (config2 == null || com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping()) {
                     // Our pollingDynamicConfig has been GC'd, we can't update it any more, cancel ourselves
