@@ -29,4 +29,6 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	javax.mail:javax.mail-api;version=1.6.0
+     javax.mail:javax.mail-api;version=1.6.2
+#    com.sun.mail:javax.mail;version=1.6.2 -- for implementation
+#	javax.mail:javax.mail-api;version=1.6.0 previous version
