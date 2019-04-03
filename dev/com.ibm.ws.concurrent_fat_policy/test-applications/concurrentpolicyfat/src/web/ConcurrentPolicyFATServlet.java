@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -929,9 +929,9 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
         cancelAfterTest.remove(blockerTaskFuture2);
 
         long runTime1 = getElapsedRunTime(blockerTaskFuture1, TimeUnit.MILLISECONDS);
-        assertTrue(runTime1 + "ms", runTime1 >= 250);
+        assertTrue(runTime1 + "ms", runTime1 >= 200); // because TimeUnit.MILLISECONDS.sleep(250) is not guaranteed to be precise
         long runTime2 = getElapsedRunTime(blockerTaskFuture2, TimeUnit.MILLISECONDS);
-        assertTrue(runTime2 + "ms", runTime2 >= 250);
+        assertTrue(runTime2 + "ms", runTime2 >= 200); // because TimeUnit.MILLISECONDS.sleep(250) is not guaranteed to be precise
 
         // ManagedTaskListener events should be consistent with an aborted task
         assertRejected(scheduledExecutor2, task1, listener1, IllegalStateException.class, "CWWKE1205E");
