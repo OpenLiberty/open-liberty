@@ -8,24 +8,32 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.streams.test.basic;
+package com.ibm.ws.microprofile.reactive.streams.test.context;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.security.Principal;
 import java.util.ArrayList;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-@Dependent
+@RequestScoped
 public class IntegerSubscriber implements Subscriber<Integer> {
 
     private Subscription sub;
     private ArrayList<Integer> results = null;
     private boolean complete = false;
     private boolean alreadyUsed = false;
+
+    @Inject
+    Principal principle;
+
+    private Throwable error;
 
     @Override
     public void onComplete() {
@@ -36,6 +44,7 @@ public class IntegerSubscriber implements Subscriber<Integer> {
     @Override
     public void onError(Throwable arg0) {
         System.out.println("onError: " + arg0);
+        this.error = arg0;
         this.complete = true;
     }
 
@@ -45,6 +54,7 @@ public class IntegerSubscriber implements Subscriber<Integer> {
         assertTrue(arg0 >= 3);
         results.add(arg0);
         sub.request(1);
+        assertNotNull("Subscriber Principle is null", principle);
     }
 
     @Override
@@ -65,6 +75,10 @@ public class IntegerSubscriber implements Subscriber<Integer> {
 
     public boolean isComplete() {
         return this.complete;
+    }
+
+    public Throwable getError() {
+        return this.error;
     }
 
     public ArrayList<Integer> getResults() {
