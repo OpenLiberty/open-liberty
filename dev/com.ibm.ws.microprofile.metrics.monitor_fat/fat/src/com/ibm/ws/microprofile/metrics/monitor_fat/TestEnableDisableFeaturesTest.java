@@ -78,9 +78,20 @@ public class TestEnableDisableFeaturesTest {
     @Server("TestEDF12")
     public static LibertyServer serverEDF12;
     
+    private static LibertyServer currentServ;
+    
+    
+    
     @BeforeClass
     public static void setUp() throws Exception {
     	trustAll();
+    	add3Apps(serverEDF6);
+    	add3Apps(serverEDF8);
+    	add3Apps(serverEDF9);
+    	add3Apps(serverEDF10);
+    	add2Apps(serverEDF11);
+    	add2Apps(serverEDF5);
+    	setUpEDF12();
     }
     
     private static void trustAll() throws Exception {
@@ -109,22 +120,7 @@ public class TestEnableDisableFeaturesTest {
 		}
     }
     
-    public void tearDown(LibertyServer server) throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer("CWWKS4000E", "CWWKZ0014W");
-            server.removeAllInstalledAppsForValidation();
-        }
-    }
-    
-    @BeforeClass
-    public static void setUp3Apps() throws Exception {
-    	add3Apps(serverEDF6);
-    	add3Apps(serverEDF8);
-    	add3Apps(serverEDF9);
-    	add3Apps(serverEDF10);
-    }
-    
-    public static void add3Apps(LibertyServer server) throws Exception {
+    private static void add3Apps(LibertyServer server) throws Exception {
     	String testName = "add3Apps to " + server.toString();
     	Log.info(c, testName, "------- Add session application ------");
        	ShrinkHelper.defaultDropinApp(server, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
@@ -136,14 +132,8 @@ public class TestEnableDisableFeaturesTest {
        	ShrinkHelper.defaultDropinApp(server, "testJaxWsApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jaxws","com.ibm.ws.microprofile.metrics.monitor_fat.jaxws.client");
        	Log.info(c, testName, "------- added testJaxWsApp to dropins -----");
     }
-    
-    @BeforeClass
-    public static void setUp2Apps() throws Exception {
-    	add2Apps(serverEDF11);
-    	add2Apps(serverEDF5);
-    }
      
-    public static void add2Apps(LibertyServer server) throws Exception {
+    private static void add2Apps(LibertyServer server) throws Exception {
     	String testName = "add2Apps to " + server.toString();
     	Log.info(c, testName, "------- Add session application ------");
        	ShrinkHelper.defaultDropinApp(server, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
@@ -153,8 +143,7 @@ public class TestEnableDisableFeaturesTest {
        	Log.info(c, testName, "------- added testJDBCApp to dropins -----");
     }
     
-    @BeforeClass
-    public static void setUpEDF12() throws Exception {
+    private static void setUpEDF12() throws Exception {
     	String testName = "setUpEDF12";
     	Log.info(c, testName, "------- Add session application ------");
        	ShrinkHelper.defaultDropinApp(serverEDF12, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
@@ -163,7 +152,7 @@ public class TestEnableDisableFeaturesTest {
     
     @Test
     public void testEDF1() throws Exception {
-
+    	currentServ = serverEDF1;
     	String testName = "testEDF1";
         Log.info(c, testName, "------- No monitor-1.0: no vendor metrics should be available ------");
         serverEDF1.setServerConfigurationFile("server_mpMetric11.xml");
@@ -175,12 +164,11 @@ public class TestEnableDisableFeaturesTest {
         checkStrings(getHttpsServlet("/metrics", serverEDF1), 
            	new String[] { "base:" }, 
            	new String[] { "vendor:" });
-        tearDown(serverEDF1);
     }
     
     @Test 
     public void testEDF2() throws Exception {
-    	
+    	currentServ = serverEDF2;
     	String testName = "testEDF2";
     	Log.info(c, testName, "------- Enable mpMetrics-1.1 and monitor-1.0: threadpool metrics should be available ------");
     	serverEDF2.startServer();
@@ -198,12 +186,11 @@ public class TestEnableDisableFeaturesTest {
        		"vendor:threadpool_default_executor_size",
        		"vendor:servlet_com_ibm_ws_microprofile_metrics"
        	}, new String[] {});
-       	tearDown(serverEDF2);
     }
     
     @Test
     public void testEDF3() throws Exception {
-    	
+    	currentServ = serverEDF3;
     	String testName = "testEDF3";
     	serverEDF3.startServer();
     	Log.info(c, testName, "------- Add session application and run session servlet ------");
@@ -219,12 +206,11 @@ public class TestEnableDisableFeaturesTest {
        		"vendor:session_default_host_test_session_app_invalidated_total",
        		"vendor:session_default_host_test_session_app_invalidatedby_timeout_total"
        	}, new String[] {});
-       	tearDown(serverEDF3);
     }
     
     @Test 
     public void testEDF4() throws Exception {
-    	
+    	currentServ = serverEDF4;
     	String testName = "testEDF4";
     	serverEDF4.startServer();
     	Log.info(c, testName, "------- Add session application ------");
@@ -257,11 +243,11 @@ public class TestEnableDisableFeaturesTest {
        		"vendor:connectionpool_jdbc_example_ds2_queued_requests_total",
        		"vendor:connectionpool_jdbc_example_ds2_used_connections_total",
        	}, new String[] {});
-       	tearDown(serverEDF4);
     }
     
     @Test 
     public void testEDF5() throws Exception {
+    	currentServ = serverEDF5;
     	String testName = "testEDF5";
     	serverEDF5.startServer();
     	Log.info(c, testName, "------- Add jax-ws endpoint application and run jax-ws client servlet ------");
@@ -285,11 +271,11 @@ public class TestEnableDisableFeaturesTest {
        		"vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_unchecked_application_faults_total",
        		"vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_logical_runtime_faults_total"	
        	}, new String[] {});
-       	tearDown(serverEDF5);
     }
     
     @Test
     public void testEDF6() throws Exception {
+    	currentServ = serverEDF6;
     	String testName = "testEDF6";
     	serverEDF6.startServer();
     	Log.info(c, testName, "------- Monitor filter ThreadPool and WebContainer  ------");
@@ -300,12 +286,12 @@ public class TestEnableDisableFeaturesTest {
         checkStrings(getHttpsServlet("/metrics/vendor", serverEDF6), 
         	new String[] { "vendor:threadpool", "vendor:servlet" }, 
         	new String[] { "vendor:session", "vendor:connectionpool" });
-        tearDown(serverEDF6);
     }
     
+    //This is not a copy/paste error, serverEDF6 can be reused here
     @Test 
     public void testEDF7() throws Exception {
-    	
+    	currentServ = serverEDF6;
     	String testName = "testEDF7";
     	serverEDF6.startServer();
     	Log.info(c, testName, "------- Monitor filter WebContainer and Session ------");
@@ -318,12 +304,11 @@ public class TestEnableDisableFeaturesTest {
        	checkStrings(getHttpsServlet("/metrics/vendor", serverEDF6), 
        		new String[] { "vendor:servlet", "vendor:session" }, 
        		new String[] { "vendor:threadpool", "vendor:connectionpool" });
-       	tearDown(serverEDF6);
     }
    
     @Test 
     public void testEDF8() throws Exception {
-    	
+    	currentServ = serverEDF8;
     	String testName = "testEDF8";
     	serverEDF8.startServer();
     	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", serverEDF8), 
@@ -337,12 +322,11 @@ public class TestEnableDisableFeaturesTest {
       	checkStrings(getHttpsServlet("/metrics/vendor", serverEDF8), 
        		new String[] { "vendor:session", "vendor:connectionpool" }, 
        		new String[] { "vendor:servlet", "vendor:threadpool" });
-      	tearDown(serverEDF8);
     }
     
     @Test 
     public void testEDF9() throws Exception {
-    	
+    	currentServ = serverEDF9;
     	String testName = "testEDF9";
     	serverEDF9.startServer();
     	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", serverEDF9), 
@@ -359,44 +343,11 @@ public class TestEnableDisableFeaturesTest {
  	     checkStrings(getHttpsServlet("/metrics/vendor",serverEDF9), 
  		        new String[] {"vendor:threadpool", "vendor:servlet", "vendor:session", "vendor:connectionpool" }, 
  		        new String[] {});
- 	     tearDown(serverEDF9);
-    }
-    
-    @Test
-    public void testEDF12() throws Exception {
-    	String testName = "testEDF12";
-    	serverEDF12.startServer();
-    	Log.info(c, testName, "------- Remove monitor-1.0 ------");
-    	serverEDF12.setServerConfigurationFile("server_noJDBCMonitor.xml");
-    	Assert.assertNotNull("CWPMI2002I NOT FOUND",serverEDF12.waitForStringInLogUsingMark("CWPMI2002I"));
-    	Log.info(c, testName, "------- no vendor metrics should be available ------");
-    	checkStrings(getHttpsServlet("/metrics",serverEDF12), 
-    		new String[] {}, 
-    		new String[] { "vendor:" });
-    	tearDown(serverEDF12);
-    }
-    
-    @Test
-    public void testEDF11() throws Exception {
-    	
-    	String testName = "testEDF11";
-    	serverEDF11.startServer();
-    	Log.info(c, testName, "------- Remove JDBC application ------");
-    	boolean rc2 = serverEDF11.removeAndStopDropinsApplications("testJDBCApp.war");
-    	Log.info(c, testName, "------- " + (rc2 ? "successfully removed" : "failed to remove") + " JDBC application ------");
-    	serverEDF11.setMarkToEndOfLog();
-    	serverEDF11.setServerConfigurationFile("server_noJDBC.xml");
-    	Assert.assertNotNull("CWWKF0008I NOT FOUND",serverEDF11.waitForStringInLogUsingMark("CWWKF0008I"));
-    	Log.info(c, testName, "------- connectionpool metrics should not be available ------");
-    	checkStrings(getHttpsServlet("/metrics/vendor",serverEDF11), 
-    		new String[] { "vendor:" },       	
-    		new String[] { "vendor:connectionpool", "vendor:servlet_test_jdbc_app" });
-    	tearDown(serverEDF11);
     }
     
     @Test
     public void testEDF10() throws Exception {
-    	
+    	currentServ = serverEDF10;
     	String testName = "testEDF10";
     	serverEDF10.startServer();
     	Log.info(c, testName, "------- Remove JAX-WS application ------");
@@ -413,7 +364,37 @@ public class TestEnableDisableFeaturesTest {
     	checkStrings(getHttpsServlet("/metrics/vendor",serverEDF10), 
     		new String[] { "vendor:" }, 
     		new String[] { "vendor:jaxws_client", "vendor:jaxws_server"});       	
-    	tearDown(serverEDF10);
+    }
+    
+    @Test
+    public void testEDF11() throws Exception {
+    	currentServ = serverEDF11;
+    	String testName = "testEDF11";
+    	serverEDF11.startServer();
+    	Log.info(c, testName, "------- Remove JDBC application ------");
+    	boolean rc2 = serverEDF11.removeAndStopDropinsApplications("testJDBCApp.war");
+    	Log.info(c, testName, "------- " + (rc2 ? "successfully removed" : "failed to remove") + " JDBC application ------");
+    	serverEDF11.setMarkToEndOfLog();
+    	serverEDF11.setServerConfigurationFile("server_noJDBC.xml");
+    	Assert.assertNotNull("CWWKF0008I NOT FOUND",serverEDF11.waitForStringInLogUsingMark("CWWKF0008I"));
+    	Log.info(c, testName, "------- connectionpool metrics should not be available ------");
+    	checkStrings(getHttpsServlet("/metrics/vendor",serverEDF11), 
+    		new String[] { "vendor:" },       	
+    		new String[] { "vendor:connectionpool", "vendor:servlet_test_jdbc_app" });
+    }
+    
+    @Test
+    public void testEDF12() throws Exception {
+    	currentServ = serverEDF12;
+    	String testName = "testEDF12";
+    	serverEDF12.startServer();
+    	Log.info(c, testName, "------- Remove monitor-1.0 ------");
+    	serverEDF12.setServerConfigurationFile("server_noJDBCMonitor.xml");
+    	Assert.assertNotNull("CWPMI2002I NOT FOUND",serverEDF12.waitForStringInLogUsingMark("CWPMI2002I"));
+    	Log.info(c, testName, "------- no vendor metrics should be available ------");
+    	checkStrings(getHttpsServlet("/metrics",serverEDF12), 
+    		new String[] {}, 
+    		new String[] { "vendor:" });
     }
     
     private String getHttpServlet(String servletPath, LibertyServer server) throws Exception {
@@ -492,6 +473,14 @@ public class TestEnableDisableFeaturesTest {
             	Assert.fail("Contained string: " + m);
     		}
     	}
+    }
+    
+    @After
+    public void tearDown() throws Exception {
+        if (currentServ != null && currentServ.isStarted()) {
+        	currentServ.stopServer("CWWKS4000E", "CWWKZ0014W");
+        	currentServ.removeAllInstalledAppsForValidation();
+        }
     }
 }
 
