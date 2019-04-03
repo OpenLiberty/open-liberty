@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,9 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.circuitbreaker;
 
-dependencies {
-  requiredLibs 'commons-logging:commons-logging:1.1.3', 'commons-codec:commons-codec:1.6'
-  requiredLibs project(':com.ibm.websphere.org.eclipse.microprofile.faulttolerance.1.1')
-  requiredLibs project(':com.ibm.ws.microprofile.faulttolerance.cdi_fat')
+public class TestException extends RuntimeException {
+
+    private static final long serialVersionUID = 1L;
+
+    public TestException() {
+        super("test exception");
+    }
 }
