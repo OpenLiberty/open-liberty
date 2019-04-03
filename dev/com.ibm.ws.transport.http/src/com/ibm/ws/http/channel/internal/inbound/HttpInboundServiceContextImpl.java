@@ -1073,6 +1073,19 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "finishResponseMessage(body,cb)");
         }
+        // H2 doesn't support asych writes, if we got here and this is H2, switch over to sync
+        if (isH2Connection()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "finishResponseMessage: This is H2, calling sync finishResponseMessage(body)");
+            }
+            // Send the error response synchronously for H2
+            try {
+                finishResponseMessage(body);
+                return getVC();
+            } catch (IOException e) {
+                return null;
+            }
+        }
         if (!headersParsed()) {
             // request message must have the headers parsed prior to sending
             // any data out (this is a completely invalid state in the channel
