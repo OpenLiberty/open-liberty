@@ -19,6 +19,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.instrument.Instrumentation;
+import java.lang.reflect.Proxy;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
@@ -487,7 +488,9 @@ public class FrameworkManager {
         Instrumentation inst = config.getInstrumentation();
         if (inst != null) {
             // Register a wrapper so we can trace callers.
-            inst = new TraceInstrumentation(inst);
+            inst = (Instrumentation) Proxy.newProxyInstance(TraceInstrumentation.class.getClassLoader(),
+                                                            new Class[] { Instrumentation.class },
+                                                            new TraceInstrumentation(inst));
             Hashtable<String, String> svcProps = new Hashtable<String, String>();
             systemContext.registerService(Instrumentation.class.getName(), inst, svcProps);
         }
