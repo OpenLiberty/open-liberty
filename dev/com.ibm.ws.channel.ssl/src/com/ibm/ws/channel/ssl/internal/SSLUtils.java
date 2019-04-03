@@ -1239,12 +1239,13 @@ public class SSLUtils {
                     Tr.debug(tc, "Client auth supported is " + engine.getWantClientAuth());
                 }
             }
+            // enable ALPN support if this is for an inbound connection
+            AlpnSupportUtils.registerAlpnSupport(connLink, engine);
+
         } else {
             // Update engine with client side specific config parameters.
             engine.setUseClientMode(true);
         }
-
-        AlpnSupportUtils.registerAlpnSupport(connLink, engine);
 
         try {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
