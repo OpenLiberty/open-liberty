@@ -185,7 +185,13 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
 
         final MBeanOperationInfo op0 = new MBeanOperationInfo("purgePoolContents", "Purges the contents of the Connection Manager.", purgeParams, Void.class.getCanonicalName(), MBeanOperationInfo.ACTION);
         final MBeanOperationInfo op1 = new MBeanOperationInfo("showPoolContents", "Displays the current contents of the Connection Manager in a human readable format.", null, String.class.getCanonicalName(), MBeanOperationInfo.INFO);
-        final MBeanOperationInfo[] ops = { op0, op1 };
+
+        String showExtendedPoolContentsParamDesc = "Available option null provides default trace level information.";
+        final MBeanParameterInfo p1 = new MBeanParameterInfo("arg0", String.class.getCanonicalName(), showExtendedPoolContentsParamDesc);
+        MBeanParameterInfo[] showExtendedPoolContentsParam = new MBeanParameterInfo[] { p1 };
+        final MBeanOperationInfo op2 = new MBeanOperationInfo("showExtendedPoolContents", "A string displaying the extended current state of the connection pool including detailed information.", showExtendedPoolContentsParam, String.class.getCanonicalName(), MBeanOperationInfo.INFO);
+
+        final MBeanOperationInfo[] ops = { op0, op1, op2 };
 
         final MBeanInfo nmbi = new MBeanInfo(cname, text, null, null, ops, null, null);
 
