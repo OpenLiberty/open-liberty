@@ -109,4 +109,22 @@ public interface ConnectionManagerMBean {
      *
      */
     public String showPoolContents();
+
+    /**
+     * Displays the contents of the connection pool associated with
+     * this Connection Manager with extended pool information from enabled trace.
+     *
+     * Trace strings that offer additional information
+     * ConnLeakLogic=all
+     *
+     * @param extendedOption Available option <code>null</code> provides default trace level
+     *                           information.
+     *
+     * @return A string displaying the extended current state of the connection pool including detailed information
+     *         about each shared, unshared and free pool connection, the number of waiters, the total number of connections,
+     *         and many other details which are useful for monitoring the state of the ConnectionManager and its pool, and debugging
+     *         problems.
+     *
+     */
+    public String showExtendedPoolContents(String extendedOption);
 }

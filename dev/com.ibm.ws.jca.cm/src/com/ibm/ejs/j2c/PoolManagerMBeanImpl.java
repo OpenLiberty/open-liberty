@@ -116,6 +116,21 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Connection pool contents", o);
             }
+        } else if ("showExtendedPoolContents".equalsIgnoreCase(actionName)) {
+            if (params == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Default showExtendedPoolContents");
+                }
+                o = showExtendedPoolContents(null);
+            } else if (params.length == 1 && params[0] instanceof java.lang.String) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "showExtendedPoolContents using option", (String) params[0]);
+                }
+                o = showExtendedPoolContents((String) params[0]);
+            } else {
+                throw new MBeanException(new IllegalArgumentException(Arrays.toString(params)), Tr.formatMessage(tc, "INVALID_MBEAN_INVOKE_PARAM_J2CA8060", Arrays.toString(params),
+                                                                                                                 actionName));
+            }
         } else if ("purgePoolContents".equalsIgnoreCase(actionName)) {
             if (params == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -220,12 +235,7 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
         StringBuffer sharedBuf = new StringBuffer();
         StringBuffer freeBuf = new StringBuffer();
 
-        buf.append("PoolManager@");
-        buf.append(Integer.toHexString(hashCode()));
-        buf.append(nl);
-        buf.append("name=");
-        buf.append(obn.toString());
-        buf.append(nl);
+        commonPoolStringHeader(buf);
         buf.append("jndiName=");
         if (_pm.gConfigProps == null || _pm.gConfigProps.getJNDIName() == null) {
             buf.append("none");
@@ -331,6 +341,18 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
         return buf.toString();
     }
 
+    /**
+     * @param buf
+     */
+    private void commonPoolStringHeader(StringBuffer buf) {
+        buf.append("PoolManager@");
+        buf.append(Integer.toHexString(hashCode()));
+        buf.append(nl);
+        buf.append("name=");
+        buf.append(obn.toString());
+        buf.append(nl);
+    }
+
     private String translateStateString(String stateStr) {
         if (stateStr.equalsIgnoreCase("state_new")) {
             return "new";
@@ -377,5 +399,13 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
     @Override
     public String showPoolContents() {
         return toStringExternal();
+    }
+
+    @Override
+    public String showExtendedPoolContents(String extendedOption) {
+        StringBuffer buf = new StringBuffer();
+        commonPoolStringHeader(buf);
+        buf.append(_pm.toString());
+        return buf.toString();
     }
 }
