@@ -15,6 +15,7 @@ Subsystem-Name: Config and Validator REST API 1.0
  com.ibm.ws.rest.handler.validator,\
  com.ibm.ws.rest.handler.validator.jca,\
  com.ibm.ws.rest.handler.validator.jdbc,\
- com.ibm.ws.rest.handler.validator.openapi
+ com.ibm.ws.rest.handler.validator.openapi,\
+ com.ibm.ws.rest.handler.validator.cloudant
 kind=noship
 edition=full
