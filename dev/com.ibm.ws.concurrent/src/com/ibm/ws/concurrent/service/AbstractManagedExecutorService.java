@@ -34,7 +34,7 @@ public class AbstractManagedExecutorService extends ManagedExecutorServiceImpl {
     }
 
     /**
-     * Constructor for MicroProfile Concurrency (ManagedExecutorBuilder and CDI injected ManagedExecutor).
+     * Constructor for ManagedExecutorBuilder (for MicroProfile Context Propagation)
      */
     public AbstractManagedExecutorService(String name, PolicyExecutor policyExecutor, WSContextService mpThreadContext,
                                           AtomicServiceReference<ThreadContextProvider> tranContextProviderRef) {

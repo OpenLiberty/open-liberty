@@ -101,9 +101,21 @@ public class PreMain {
             Field factory = ObjectInputStream.class.getDeclaredField("serializationValidatorFactory");
             factory.setAccessible(true);
             int modifiers = factory.getModifiers();
-            Field modifierField = factory.getClass().getDeclaredField("modifiers");
-            modifierField.setAccessible(true);
-            modifierField.setInt(factory, modifiers	&~ Modifier.FINAL);
+            if (Modifier.isFinal(modifiers)) {
+                try {
+                    Field modifierField = factory.getClass().getDeclaredField("modifiers");
+                    modifierField.setAccessible(true);
+                    modifierField.setInt(factory, modifiers	&~ Modifier.FINAL);
+                } catch (NoSuchFieldException expectedForNonIbmJava) {
+                    if (debugEnabled) {
+                        System.out.println("Caught NoSuchFieldException while accessing ObjectInputStream modifiers fields from agent which is expected for non IBM JVM");
+                    }
+                }
+            } else {
+                if (debugEnabled) {
+                    System.out.println("Modifiers does not set as final.");
+                }                
+            }
             factory.set(null, validatorFactory);
             if (debugEnabled) {
                 System.out.println("Forcing ObjectInputStream initialisation.");
@@ -114,9 +126,11 @@ public class PreMain {
             } catch (NullPointerException ignored) {
             } catch (IOException ignored) {
             }
-
-        } catch (NoSuchFieldException expectedForNonIbmJava) {
         } catch (IllegalAccessException unexpected) {
+            if (debugEnabled) {
+                System.out.println("Caught unexpected IllegalAccessException while accessing ObjectInputStream fields from agent" + unexpected);
+            }
+        } catch (Exception unexpected) {
             if (debugEnabled) {
                 System.out.println("Caught unexpected exception while accessing ObjectInputStream fields from agent" + unexpected);
             }

@@ -42,10 +42,20 @@ public interface KeyringMonitor {
     String SAF_PREFIX = "safkeyring://";
 
     /**
+     * Constant that is used for saf hw prefix
+     */
+    String SAF_HWPREFIX = "safkeyringhw://";
+
+    /**
+     * Constant that is used for saf hybrid prefix
+     */
+    String SAF_HYBRIDPREFIX = "safkeyringhybrid://";
+
+    /**
      * Method to call the update of keyrings
      *
      * @param keyStoreLocation - The keyring location to be refreshed
-     * 
+     *
      */
     public void refreshRequested(String keyStoreLocation);
 

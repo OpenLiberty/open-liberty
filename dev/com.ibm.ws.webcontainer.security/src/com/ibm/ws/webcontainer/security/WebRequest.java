@@ -89,4 +89,8 @@ public interface WebRequest {
 
     public void setDisableClientCertFailOver(boolean isDisable);
 
+    public void setContinueAfterUnprotectedURI(boolean continueAfterUnprotectedURI);
+
+    public boolean isContinueAfterUnprotectedURI();
+
 }

@@ -31,8 +31,7 @@ public class DynamicSourceCleanupTest extends AbstractConfigTest {
     @Test
     public void testDynamicSourceCleanup() throws InterruptedException {
         long refreshInterval = 500; //milliseconds
-        long extraInterval = 2000; //milliseconds
-        long maxGCWait = 10000; //milliseconds
+        long maxWait = 20000; //milliseconds
 
         String key1 = "key1";
         String value1 = "value1";
@@ -53,22 +52,30 @@ public class DynamicSourceCleanupTest extends AbstractConfigTest {
         WeakReference<Config> weakConfig = new WeakReference<>(config);
 
         long lastGetPropertiesTime = TestDynamicConfigSource.getPropertiesLastCalled;
-        long max = lastGetPropertiesTime + millisToNanos(refreshInterval + extraInterval);
+        long start = System.nanoTime();
+        System.out.println("start time (nanoTime)                                     : " + start);
+        long timeoutNanoTime = start + millisToNanos(maxWait);
         // Ensure that the source is being refreshed
-        while (TestDynamicConfigSource.getPropertiesLastCalled == lastGetPropertiesTime && nanoTimeRemaining(max)) {
-            Thread.sleep(50);
+        System.out.println("lastGetPropertiesTime is (nanoTime)                       : " + lastGetPropertiesTime);
+        System.out.println("timeout will be (nanoTime)                                : " + timeoutNanoTime + " (" + nanosToMillis(timeoutNanoTime - start) + "ms)");
+        while (TestDynamicConfigSource.getPropertiesLastCalled == lastGetPropertiesTime && nanoTimeRemaining(timeoutNanoTime)) {
+            Thread.sleep(refreshInterval);
         }
-        assertTrue("Config source was not refreshed", TestDynamicConfigSource.getPropertiesLastCalled != lastGetPropertiesTime);
+        long end = System.nanoTime();
+        System.out.println("first refresh time (nanoTime)                             : " + end + " (" + nanosToMillis(end - start) + "ms)");
+        long currentGetPropertiesTime = TestDynamicConfigSource.getPropertiesLastCalled;
+        System.out.println("lastGetPropertiesTime is now (nanoTime)                   : " + currentGetPropertiesTime);
+        assertTrue("Config source was not refreshed", currentGetPropertiesTime != lastGetPropertiesTime);
 
         // Remove references to the config and wait for it to be garbage collected
         builder = null;
         config = null;
 
-        waitForGC(weakConfig, maxGCWait);
+        waitForGC(weakConfig, maxWait);
         assertNull("Config object was not garbage collected, likely memory leak", weakConfig.get());
 
         //once the Config has been GC'd, the Refresher should stop, releasing it and the config source to be GC'd
-        waitForGC(weakSource, maxGCWait);
+        waitForGC(weakSource, maxWait);
         assertNull("Config Source object was not garbage collected, likely memory leak", weakSource.get());
 
         // Check that once the config and the source hava been GC'd, the config source is no longer being periodically updated
@@ -79,20 +86,25 @@ public class DynamicSourceCleanupTest extends AbstractConfigTest {
 
     }
 
-    private static final long millisToNanos(long millis) {
+    public static final long millisToNanos(long millis) {
         return millis * 1000 * 1000;
+    }
+
+    public static final double nanosToMillis(long nanos) {
+        return nanos / 1000.0 / 1000.0;
     }
 
     private static final boolean nanoTimeRemaining(long maxNanos) {
         return (maxNanos - System.nanoTime()) > 0;
     }
 
-    private static final void waitForGC(WeakReference<?> weakObjectRef, long maxWaitMillis) {
+    private static final void waitForGC(WeakReference<?> weakObjectRef, long maxWaitMillis) throws InterruptedException {
         long startGcTime = System.nanoTime();
         long maxNanos = startGcTime + millisToNanos(maxWaitMillis);
         while (weakObjectRef.get() != null && nanoTimeRemaining(maxNanos)) {
             System.runFinalization();
             System.gc();
+            Thread.sleep(10);
         }
     }
 }

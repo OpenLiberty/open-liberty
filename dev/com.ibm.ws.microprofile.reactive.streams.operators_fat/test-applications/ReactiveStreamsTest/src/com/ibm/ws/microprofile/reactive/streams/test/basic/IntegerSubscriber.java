@@ -35,7 +35,8 @@ public class IntegerSubscriber implements Subscriber<Integer> {
 
     @Override
     public void onError(Throwable arg0) {
-        System.out.println("onError");
+        System.out.println("onError: " + arg0);
+        this.complete = true;
     }
 
     @Override

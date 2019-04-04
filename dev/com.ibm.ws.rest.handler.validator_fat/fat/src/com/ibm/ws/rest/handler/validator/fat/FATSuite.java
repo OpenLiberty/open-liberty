@@ -20,6 +20,8 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(Suite.class)
 @SuiteClasses({
                 ValidateDataSourceTest.class,
+                ValidateJCATest.class,
+                ValidateDSCustomLoginModuleTest.class
 })
 
 public class FATSuite {

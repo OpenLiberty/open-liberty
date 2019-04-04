@@ -11,12 +11,18 @@
 package com.ibm.ws.app.manager.module.internal;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -26,6 +32,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
+import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.classloading.java2sec.PermissionManager;
 import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoFactory;
 import com.ibm.ws.container.service.metadata.MetaDataService;
@@ -41,9 +48,10 @@ import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.utils.FileUtils;
+import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.library.Library;
 
-public abstract class DeployedAppInfoFactoryBase implements DeployedAppInfoFactory {
+public abstract class DeployedAppInfoFactoryBase implements DeployedAppInfoFactory, DeployedAppServices {
 
     static final String SERVER_APPS_DIR = WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR + "apps/";
     protected static final String EXPANDED_APPS_DIR = SERVER_APPS_DIR + "expanded/";
@@ -71,6 +79,27 @@ public abstract class DeployedAppInfoFactoryBase implements DeployedAppInfoFacto
             moduleMetaDataExtenders.put(moduleType, new CopyOnWriteArrayList<ModuleMetaDataExtender>());
             nestedModuleMetaDataFactories.put(moduleType, new CopyOnWriteArrayList<NestedModuleMetaDataFactory>());
         }
+    }
+
+    public List<Library> getLibrariesFromPid(String pid) throws InvalidSyntaxException {
+        List<Library> libraries = new ArrayList<Library>();
+        String libraryFilter = FilterUtils.createPropertyFilter(Constants.SERVICE_PID, pid);
+        Collection<ServiceReference<Library>> libraryRefs = bundleContext.getServiceReferences(Library.class, libraryFilter);
+        for (ServiceReference<Library> libraryRef : libraryRefs) {
+            Library library = bundleContext.getService(libraryRef);
+            libraries.add(library);
+        }
+        return libraries;
+    }
+
+    public List<ModuleMetaDataExtender> getModuleMetaDataExtenders(String moduleType) {
+        List<ModuleMetaDataExtender> list = moduleMetaDataExtenders.get(moduleType);
+        return list != null ? Collections.unmodifiableList(list) : Collections.<ModuleMetaDataExtender> emptyList();
+    }
+
+    public List<NestedModuleMetaDataFactory> getNestedModuleMetaDataFactories(String moduleType) {
+        List<NestedModuleMetaDataFactory> list = nestedModuleMetaDataFactories.get(moduleType);
+        return list != null ? Collections.unmodifiableList(list) : Collections.<NestedModuleMetaDataFactory> emptyList();
     }
 
     @Activate
@@ -138,7 +167,7 @@ public abstract class DeployedAppInfoFactoryBase implements DeployedAppInfoFacto
         return moduleFactory;
     }
 
-    protected Container setupContainer(String pid, File locationFile) {
+    public Container setupContainer(String pid, File locationFile) {
         if (!FileUtils.fileExists(locationFile)) {
             return null;
         }

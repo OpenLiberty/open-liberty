@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.microprofile.concurrent.spi.ConcurrencyProvider;
+import org.eclipse.microprofile.context.spi.ContextManagerProvider;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -32,10 +32,10 @@ import com.ibm.wsspi.threadcontext.ThreadContextDeserializationInfo;
 @Trivial
 public class MicroProfileClearedContextProvider implements com.ibm.wsspi.threadcontext.ThreadContextProvider {
     /**
-     * Reference to the concurrency provider.
+     * Reference to the context manager provider.
      */
     @Reference
-    private ConcurrencyProvider concurrencyProvider;
+    private ContextManagerProvider cmProvider;
 
     @Override
     public com.ibm.wsspi.threadcontext.ThreadContext captureThreadContext(Map<String, String> execProps, Map<String, ?> threadContextConfig) {
@@ -44,7 +44,7 @@ public class MicroProfileClearedContextProvider implements com.ibm.wsspi.threadc
 
     @Override
     public com.ibm.wsspi.threadcontext.ThreadContext createDefaultThreadContext(Map<String, String> execProps) {
-        return new MicroProfileClearedContextSnapshot((ConcurrencyManagerImpl) concurrencyProvider.getConcurrencyManager());
+        return new MicroProfileClearedContextSnapshot((ContextManagerImpl) cmProvider.getContextManager());
     }
 
     @Override

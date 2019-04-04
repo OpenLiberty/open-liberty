@@ -96,7 +96,7 @@ public class JAXRSClientSSLTest extends AbstractTest {
         this.runTestOnServer(target, "testClientBasicSSL_InvalidSSLRef", p, "the SSL configuration reference \"invalidSSLConfig\" is invalid.");
     }
 
-    @Test
+//    @Test
     public void testClientBasicSSL_CustomizedSSLContext() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "alex");

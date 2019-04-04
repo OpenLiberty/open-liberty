@@ -25,6 +25,9 @@ Import-Package: \
     com.ibm.ws.container.service.app.deploy, \
     *
 
+-dsannotations: \
+  com.ibm.ws.app.manager.module.internal.DeployedAppServicesImpl
+
 instrument.classesExcludes: com/ibm/ws/app/manager/module/internal/resources/*.class
 
 -buildpath: \

@@ -20,8 +20,6 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -37,28 +35,13 @@ import componenttest.topology.impl.LibertyServerFactory;
 public class ServerStartAsServiceTest {
     private static final Class<?> c = ServerStartAsServiceTest.class;
 
-    private static final String SERVER_NAME = "ServerStartAsServiceTest";
+    private static final String SERVER_NAME_1 = "ServerStartAsServiceTest1";
+    private static final String SERVER_NAME_2 = "ServerStartAsServiceTest2";
 
     private static LibertyServer server;
 
     @ClassRule
     public static final TestRule onWinRule = new OnlyRunOnWinRule();
-
-    @BeforeClass
-    public static void before() throws Exception {
-        final String METHOD_NAME = "before";
-        Log.info(c, METHOD_NAME, "calling LibertyServerFactory.getLibertyServer(SERVER_NAME, ON): " + SERVER_NAME);
-        server = LibertyServerFactory.getLibertyServer(SERVER_NAME, LibertyServerFactory.WinServiceOption.ON);
-    }
-
-    @AfterClass
-    public static void after() throws Exception {
-        final String METHOD_NAME = "after";
-        if (server.isStarted()) {
-            Log.info(c, METHOD_NAME, "Server still started after test method.  Issuing a stop command before next action.");
-            server.stopServer();
-        }
-    }
 
     @Test
     /**
@@ -70,6 +53,9 @@ public class ServerStartAsServiceTest {
         final String METHOD_NAME = "testWinServiceLifeCycle";
         Log.entering(c, METHOD_NAME);
 
+        Log.info(c, METHOD_NAME, "calling LibertyServerFactory.getLibertyServer(SERVER_NAME, ON): " + SERVER_NAME_1);
+        server = LibertyServerFactory.getLibertyServer(SERVER_NAME_1, LibertyServerFactory.WinServiceOption.ON);
+
         Log.info(c, METHOD_NAME, "calling server.startServer()");
         server.startServer();
 
@@ -78,7 +64,7 @@ public class ServerStartAsServiceTest {
 
         assertTrue("the server should have been started", server.isStarted());
 
-        Log.info(c, METHOD_NAME, "calling server.stopServer(): " + SERVER_NAME);
+        Log.info(c, METHOD_NAME, "calling server.stopServer(): " + SERVER_NAME_1);
         server.stopServer();
 
         Log.exiting(c, METHOD_NAME);
@@ -93,8 +79,10 @@ public class ServerStartAsServiceTest {
      */
     public void testWinServiceAppAccess() throws Exception {
         final String METHOD_NAME = "testWinServiceAppAccess";
-
         Log.entering(c, METHOD_NAME);
+
+        Log.info(c, METHOD_NAME, "calling LibertyServerFactory.getLibertyServer(SERVER_NAME, ON): " + SERVER_NAME_2);
+        server = LibertyServerFactory.getLibertyServer(SERVER_NAME_2, LibertyServerFactory.WinServiceOption.ON);
 
         Log.info(c, METHOD_NAME, "calling server.startServer()");
         server.startServer();
@@ -114,7 +102,7 @@ public class ServerStartAsServiceTest {
 
         Log.info(c, METHOD_NAME, "return line: " + line);
 
-        Log.info(c, METHOD_NAME, "calling server.stopServer(): " + SERVER_NAME);
+        Log.info(c, METHOD_NAME, "calling server.stopServer(): " + SERVER_NAME_2);
         server.stopServer();
 
         Log.exiting(c, METHOD_NAME);

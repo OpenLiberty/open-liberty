@@ -49,6 +49,7 @@ import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateFactory;
 import com.ibm.ws.crypto.certificateutil.DefaultSubjectDN;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.core.WSPKCSInKeyStore;
 import com.ibm.ws.ssl.core.WSPKCSInKeyStoreList;
@@ -479,10 +480,10 @@ public class WSKeyStore extends Properties {
                     setProperty(Constants.SSLPROP_TOKEN_ENABLED, Constants.TRUE);
 
                     // set appropriate provider for jvm vendor
-                    if (isOracleVendor())
-                        setProperty(Constants.SSLPROP_KEY_STORE_PROVIDER, SUNPKCS11_PROVIDER_NAME);
-                    else
+                    if (JavaInfo.vendor().equals(JavaInfo.Vendor.IBM))
                         setProperty(Constants.SSLPROP_KEY_STORE_PROVIDER, IBMPKCS11Impl_PROVIDER_NAME);
+                    else
+                        setProperty(Constants.SSLPROP_KEY_STORE_PROVIDER, SUNPKCS11_PROVIDER_NAME);
                 }
             }
 
@@ -1371,27 +1372,20 @@ public class WSKeyStore extends Properties {
         myKeyStore = null;
     }
 
-    public boolean isOracleVendor() {
-        String vendorName = getSystemProperty("java.vendor");
-        boolean isOracle = false;
-        if (vendorName != null) {
-            if (vendorName.toLowerCase().contains("oracle")) {
-                isOracle = true;
+    public static String getCannonicalPath(String location, Boolean fileBased) {
+        String cannonicalLocation = location;
+        if (fileBased) {
+            //Try to create File object based on Location to get the cannonical path
+            try {
+                cannonicalLocation = new File(location).getCanonicalPath();
+            } catch (IOException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception finding full file path. Setting back to default");
             }
         }
-        return isOracle;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getCannonicalLocation -> " + cannonicalLocation);
+        }
+        return cannonicalLocation;
     }
-
-    @SuppressWarnings("unchecked")
-    public String getSystemProperty(final String propName) {
-        String value = (String) java.security.AccessController.doPrivileged(new java.security.PrivilegedAction() {
-            @Override
-            public Object run() {
-                return System.getProperty(propName);
-            }
-        });
-
-        return value;
-    }
-
 }

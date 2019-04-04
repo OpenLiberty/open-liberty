@@ -18,10 +18,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.concurrent.RejectedExecutionException;
 
-import org.eclipse.microprofile.concurrent.ThreadContext;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextController;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextSnapshot;
+import org.eclipse.microprofile.context.ThreadContext;
+import org.eclipse.microprofile.context.spi.ThreadContextController;
+import org.eclipse.microprofile.context.spi.ThreadContextProvider;
+import org.eclipse.microprofile.context.spi.ThreadContextSnapshot;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -49,9 +49,9 @@ public class MicroProfileClearedContextSnapshot implements com.ibm.wsspi.threadc
     private final ArrayList<ThreadContextController> contextRestorers = new ArrayList<ThreadContextController>();
     private final ArrayList<ThreadContextSnapshot> contextSnapshots;
 
-    MicroProfileClearedContextSnapshot(ConcurrencyManagerImpl concurrencyMgr) {
+    MicroProfileClearedContextSnapshot(ContextManagerImpl contextMgr) {
         contextSnapshots = new ArrayList<ThreadContextSnapshot>();
-        for (ThreadContextProvider provider : concurrencyMgr.contextProviders)
+        for (ThreadContextProvider provider : contextMgr.contextProviders)
             if (!DO_NOT_CLEAR.contains(provider.getThreadContextType()))
                 contextSnapshots.add(provider.clearedContext(Collections.emptyMap()));
     }

@@ -109,6 +109,31 @@ public class ValidateDataSourceTest extends FATServletClient {
     }
 
     @Test
+    public void testVariableSubstitution() throws Exception {
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource?user=bogus")
+                        .requestProp("X-Validator-User", "${DB_USER}")
+                        .requestProp("X-Validator-Password", "${DB_PASS}");
+        JsonObject json = request.run(JsonObject.class);
+        assertSuccessResponse(json, "DefaultDataSource", "DefaultDataSource");
+        request.method("POST");
+        json = request.run(JsonObject.class);
+        assertSuccessResponse(json, "DefaultDataSource", "DefaultDataSource");
+    }
+
+    @Test
+    public void testEnvVariableSubstitution() throws Exception {
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource?user=bogus")
+                        .requestProp("X-Validator-User", "${env.DB_USER_ENV}")
+                        .requestProp("X-Validator-Password", "${env.DB_PASS_ENV}");
+        JsonObject json = request.run(JsonObject.class);
+        assertSuccessResponse(json, "DefaultDataSource", "DefaultDataSource");
+
+        request.method("POST");
+        json = request.run(JsonObject.class);
+        assertSuccessResponse(json, "DefaultDataSource", "DefaultDataSource");
+    }
+
+    @Test
     @ExpectedFFDC({ "java.sql.SQLNonTransientConnectionException",
                     "java.sql.SQLNonTransientException",
                     "javax.resource.spi.SecurityException",
@@ -537,5 +562,20 @@ public class ValidateDataSourceTest extends FATServletClient {
         assertEquals(err, 40000, json.getInt("errorCode"));
         assertEquals(err, "java.sql.SQLNonTransientException", json.getString("class"));
         assertTrue(err, json.getString("message").contains("Invalid authentication"));
+    }
+
+    private static void assertSuccessResponse(JsonObject json, String expectedUID, String expectedID) {
+        String err = "Unexpected json response: " + json.toString();
+        assertEquals(err, expectedUID, json.getString("uid"));
+        assertEquals(err, expectedID, expectedID == null ? json.get("id") : json.getString("id"));
+        assertNull(err, json.get("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        JsonObject info = json.getJsonObject("info");
+        assertNotNull(err, info);
+        assertEquals(err, "Apache Derby", info.getString("databaseProductName"));
+        assertTrue(err, info.getString("databaseProductVersion").matches(VERSION_REGEX));
+        assertEquals(err, "Apache Derby Embedded JDBC Driver", info.getString("jdbcDriverName"));
+        assertTrue(err, info.getString("jdbcDriverVersion").matches(VERSION_REGEX));
     }
 }

@@ -1,0 +1,41 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <include location="../fatTestPorts.xml" />
+
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>configValidator-1.0</feature> <!-- TODO replace when functionality is enabled via auto-feature -->
+    <feature>jca-1.7</feature>
+    <feature>mpOpenApi-1.0</feature>
+  </featureManager>
+
+  <variable name="onError" value="FAIL"/>
+
+  <keyStore id="defaultKeyStore" password="Liberty"/>
+  <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
+
+  <connectionFactory id="cf1" jndiName="eis/cf1">
+    <properties.TestValidationAdapter hostName="myhost.openliberty.io" portNumber="9876"/>
+  </connectionFactory>
+
+  <connectionFactory id="cf2" jndiName="eis/cf-invalid-host">
+    <properties.TestValidationAdapter hostName="notfound.rchland.ibm.com" portNumber="5432"/>
+  </connectionFactory>
+
+  <connectionFactory jndiName="eis/cf-negative-port-number">
+    <properties.TestValidationAdapter hostName="myhost.openliberty.io" portNumber="-2020"/>
+  </connectionFactory>
+
+  <connectionFactory jndiName="eis/cf-port-not-in-range">
+    <properties.TestValidationAdapter hostName="myhost.openliberty.io" portNumber="22"/>
+  </connectionFactory>
+</server>
