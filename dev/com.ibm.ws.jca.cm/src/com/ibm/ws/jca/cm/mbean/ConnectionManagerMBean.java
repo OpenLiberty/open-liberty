@@ -89,11 +89,11 @@ public interface ConnectionManagerMBean {
      * this Connection Manager.
      *
      * @param doImmediately The priority to be used to purge the connection pool.
-     *            Priority may be <code>"immediate"</code>, <code>"abort"</code> or <code>null</code>.
-     *            Immediate sets the total connection count to 0 and purges the pool
-     *            as quickly as possible but waits for transactions to complete.
-     *            Abort purges the pool by aborting connections without waiting for transactions to complete.
-     *            The default behavior if no value is specified is to purge the pool with normal priority.
+     *                          Priority may be <code>"immediate"</code>, <code>"abort"</code> or <code>null</code>.
+     *                          Immediate sets the total connection count to 0 and purges the pool
+     *                          as quickly as possible but waits for transactions to complete.
+     *                          Abort purges the pool by aborting connections without waiting for transactions to complete.
+     *                          The default behavior if no value is specified is to purge the pool with normal priority.
      * @throws MBeanException
      */
     public void purgePoolContents(String doImmediately) throws MBeanException;
@@ -123,7 +123,7 @@ public interface ConnectionManagerMBean {
      * @return A string displaying the extended current state of the connection pool including detailed information
      *         about each shared, unshared and free pool connection, the number of waiters, the total number of connections,
      *         and many other details which are useful for monitoring the state of the ConnectionManager and its pool, and debugging
-     *         problems.
+     *         problems. Note, the info is not NLS and the format is subject to change.
      *
      */
     public String showExtendedPoolContents(String extendedOption);
