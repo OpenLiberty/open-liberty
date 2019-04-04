@@ -12,6 +12,7 @@ package com.ibm.ws.kernel.feature.internal;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -910,7 +911,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 if (supportedProcessTypes.contains(ProcessType.CLIENT)) {
                     Tr.audit(tc, "CLIENT_STARTED", locationService.getServerName());
                 } else {
-                    Tr.audit(tc, "SERVER_STARTED", locationService.getServerName());
+                    long upTime = ManagementFactory.getRuntimeMXBean().getUptime();
+                    Tr.audit(tc, "SERVER_STARTED", locationService.getServerName(), String.format("%.3f", upTime / 1000.0));
                 }
             }
         }
