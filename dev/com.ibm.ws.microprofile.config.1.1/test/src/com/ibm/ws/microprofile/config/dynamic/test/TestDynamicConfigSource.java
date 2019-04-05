@@ -18,15 +18,9 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 @SuppressWarnings("serial")
 public class TestDynamicConfigSource extends ConcurrentHashMap<String, String> implements ConfigSource {
 
-    public volatile static long getPropertiesLastCalled = 0L;
-
     /** {@inheritDoc} */
     @Override
     public ConcurrentMap<String, String> getProperties() {
-        long now = System.nanoTime();
-        System.out.println("TestDynamicConfigSource.getProperties called at (nanoTime): " + now + " (" + DynamicSourceCleanupTest.nanosToMillis(now - getPropertiesLastCalled)
-                           + "ms)");
-        getPropertiesLastCalled = now;
         return this;
     }
 
