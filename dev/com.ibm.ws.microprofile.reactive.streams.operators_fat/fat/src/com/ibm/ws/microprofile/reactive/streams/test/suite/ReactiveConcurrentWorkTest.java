@@ -57,7 +57,7 @@ public class ReactiveConcurrentWorkTest extends FATServletClient {
 
     private static final long FIVE_MINS = 5 * 60 * 1000;
 
-    @Server("ReactiveStreamsTestServer")
+    @Server("ReactiveStreamsConcurrentWorkServer")
     public static LibertyServer server;
 
     @BeforeClass
