@@ -45,6 +45,9 @@ test.project: true
 generate.replacement: true
 
 -buildpath: \
+	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.jms.1.1;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\

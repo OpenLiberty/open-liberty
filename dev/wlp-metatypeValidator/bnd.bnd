@@ -18,4 +18,5 @@ tool.project: true
 generate.replacement: false
 
 -buildpath: \
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest

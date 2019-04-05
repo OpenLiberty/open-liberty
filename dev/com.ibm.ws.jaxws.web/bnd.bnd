@@ -56,12 +56,9 @@ Private-Package:\
 
 instrument.classesExcludes: com/ibm/ws/jaxws/web/internal/resources/*.class
 
--buildpath.bootclasspath: \
-	com.ibm.websphere.javaee.jaxb.2.2;version=latest;boot=true,\
-	com.ibm.websphere.javaee.jaxws.2.2;version=latest;boot=true,\
-	${javac.bootclasspath.${javac.source}}
-
 -buildpath: \
+	javax.jws:jsr181-api;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
     org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20190122-2227,\
 	org.apache.cxf.cxf-rt-bindings-soap;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
 	org.apache.cxf.cxf-rt-core;strategy=exact;version=2.6.2.ibm-s20180529-1900,\

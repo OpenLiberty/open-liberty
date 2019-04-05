@@ -50,6 +50,7 @@ Private-Package: \
 test.project: true
 
 -buildpath: \
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
 	com.ibm.ws.junit.extensions;version=latest,\
 	commons-httpclient:commons-httpclient;version=3.1,\

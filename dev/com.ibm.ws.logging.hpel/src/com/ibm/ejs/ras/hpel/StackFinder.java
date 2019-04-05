@@ -54,15 +54,15 @@ public class StackFinder extends SecurityManager {
     }
 
     @SuppressWarnings("unchecked")
-    public Class<Object> getCaller()
+    public Class<?> getCaller()
     {
-        Class<Object> aClass = null;
+        Class<?> aClass = null;
         
         // Walk the stack backwards to find the calling class: don't 
         // want to use Class.forName, because we want the class as loaded
         // by it's original classloader
-        Class<Object> stack[] = this.getClassContext();
-//        for ( Class<Object> bClass : stack )
+        Class<?> stack[] = this.getClassContext();
+//        for ( Class<?> bClass : stack )
 //        {
 //            String bName = bClass.getName();
 ////            System.out.println(bName + " : " + hpelClasses.contains(bName));
@@ -114,7 +114,7 @@ public class StackFinder extends SecurityManager {
         // Walk the stack backwards to find the calling class: don't
         // want to use Class.forName, because we want the class as loaded
         // by it's original classloader
-        Class<Object> stack[] = this.getClassContext();
+        Class<?> stack[] = this.getClassContext();
         for (Class<?> bClass : stack) {
             // See if any class in the stack contains the following string
             if (bClass.getName().contains(fragment))
