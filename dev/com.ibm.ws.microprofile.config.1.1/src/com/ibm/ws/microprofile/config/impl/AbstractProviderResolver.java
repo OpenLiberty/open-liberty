@@ -358,6 +358,38 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
         return builder;
     }
 
+    @Trivial
+    public String getConfigCacheDetails() {
+        StringBuilder builder = new StringBuilder("[");
+        boolean first1 = true;
+        synchronized (configCache) {
+            for (Map.Entry<ClassLoader, ConfigWrapper> entry : configCache.entrySet()) {
+                if (!first1) {
+                    builder.append(", ");
+                } else {
+                    first1 = false;
+                }
+                ClassLoader cl = entry.getKey();
+                ConfigWrapper wrapper = entry.getValue();
+                builder.append(cl.toString());
+                builder.append(":{");
+                boolean first2 = true;
+                for (String app : wrapper.getApplications()) {
+                    if (!first2) {
+                        builder.append(",");
+                    } else {
+                        first2 = false;
+                    }
+                    builder.append(app);
+                }
+                builder.append("}");
+            }
+        }
+        builder.append("]");
+        return builder.toString();
+    }
+
+    @Trivial
     public int getConfigCacheSize() {
         int size = 0;
         synchronized (configCache) {
@@ -371,7 +403,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
     public String toString() {
         StringBuilder builder = new StringBuilder(this.getClass().getName());
         builder.append(": cache=");
-        builder.append(getConfigCacheSize());
+        builder.append(getConfigCacheDetails());
         return builder.toString();
     }
 
