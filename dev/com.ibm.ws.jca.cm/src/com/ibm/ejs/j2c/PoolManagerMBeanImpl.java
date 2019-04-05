@@ -381,7 +381,7 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
         buf.append(toStringExternal());
         if (TraceComponent.isAnyTracingEnabled() && ConnLeakLogic.isEntryEnabled()) {
             buf.append(nl);
-            buf.append("Extended ConnLeakLogic infromation");
+            buf.append("Extended ConnLeakLogic information");
             buf.append(nl);
             buf.append(_pm.toString());
         }
