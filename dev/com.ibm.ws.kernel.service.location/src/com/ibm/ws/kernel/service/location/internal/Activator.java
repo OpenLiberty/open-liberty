@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 IBM Corporation and others.
+ * Copyright (c) 2010, 2013, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,10 +19,13 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
-
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.util.tracker.ServiceTracker;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernal.service.location.SymbolResolver;
 import com.ibm.ws.kernel.pseudo.internal.PseudoContextFactory;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -43,8 +46,16 @@ public class Activator implements BundleActivator {
      * shutdown.
      */
     private PseudoContextFactory contextFactory;
-
-    @Override
+    
+    
+     /** Stores VariableRegistryHelper reference so it can be used in SymbolResolverServiceTracker below*/ 
+    private VariableRegistryHelper variableRegistryRef = null;
+    /** Reference to service tracker for SymbolResolver objects*/
+    private SymbolResolverServiceTracker symResolverTracker = null; 
+    /** Reference to registration of  SymbolResolver in BundleContext; used in SymbolResolverServiceTracker*/
+    private ServiceRegistration<SymbolResolver> sr = null;
+    
+	@Override
     @FFDCIgnore(IllegalStateException.class)
     public void start(BundleContext context) throws Exception {
         this.context = context;
@@ -53,8 +64,20 @@ public class Activator implements BundleActivator {
             WsLocationAdminImpl locServiceImpl = WsLocationAdminImpl.createLocations(context.getBundle(0).getBundleContext());
             context.registerService(WsLocationAdmin.class.getName(), locServiceImpl, locServiceImpl.getServiceProps());
             VariableRegistryHelper variableRegistry = new VariableRegistryHelper();
+            variableRegistryRef = variableRegistry;
             context.registerService(VariableRegistry.class.getName(), variableRegistry, null);
-
+            
+            // Creates and registers EnvSymbolResolver to bundle context
+            SymbolResolver envResolver = new EnvVariableSymbolResolver();
+            sr = (ServiceRegistration<SymbolResolver>)context.registerService(EnvVariableSymbolResolver.class.getName(), envResolver, null);
+           
+            // Create and open service tracker for Symbol Resolver instances
+            symResolverTracker = new SymbolResolverServiceTracker(context);
+            symResolverTracker.open();
+            
+            // Add service reference to service tracker
+            symResolverTracker.addingService(sr.getReference());
+            
             // Assume this is the first place that tries to set this
             try {
                 PseudoContextFactory factory = new PseudoContextFactory();
@@ -77,7 +100,8 @@ public class Activator implements BundleActivator {
     @Override
     public void stop(BundleContext context) throws Exception {
         this.context = null;
-
+        // Stop SymbolResolver service tracker
+        symResolverTracker.close();
         // If we set the InitialContextFactoryBuilder (and it is still set to ours),
         // then we must clear it out.
         if (contextFactory != null) {
@@ -115,5 +139,57 @@ public class Activator implements BundleActivator {
             // is already stopping: not an exceptional condition, as we
             // want to shutdown anyway.
         }
+        
     }
+    /**
+     * Service tracker class for tracking symbol resolver instances
+     */
+    private class SymbolResolverServiceTracker extends ServiceTracker<SymbolResolver, SymbolResolver> {
+    	
+		private BundleContext bundleContext = null;
+
+    	public SymbolResolverServiceTracker(BundleContext context) {
+			super(context, SymbolResolver.class.getName(), null);
+			bundleContext = context;
+		}
+    	/**
+    	 * Opens service tracker
+    	 */
+    	@Override
+    	public void open() {
+    		super.open();
+    	}
+    	
+    	/**
+    	 * Closes service tracker and removes all SymbolResolver references from SymbolRegistry
+    	 */
+    	@Override
+    	public void close() {
+    		super.close();
+    		variableRegistryRef.removeAllSymbolResolvers();
+    	}
+    	
+    	/**
+    	 * Adds SymbolResolver reference to SymbolRegistry via VariableRegistryHelper
+    	 * @param reference
+    	 * @return SymbolResolver object
+    	 */
+    	@Override
+    	public SymbolResolver addingService(ServiceReference<SymbolResolver> reference) {
+    		SymbolResolver symbolResolver = bundleContext.getService(reference);
+    		variableRegistryRef.addSymbolResolver(symbolResolver);
+    		return symbolResolver;
+    	}
+    	
+    	/**
+    	 * Removes specified SymbolResolver from SymbolRegistry via VariableRegistryHelper
+    	 * @param reference - ServiceReference to SymbolResolver
+    	 * @param symbolResolver - Resolver being removed from SymbolRegistry
+    	 */
+    	@Override
+    	public void removedService(ServiceReference<SymbolResolver> reference, SymbolResolver symbolResolver) {
+    		variableRegistryRef.removeSymbolResolver(symbolResolver);
+    		bundleContext.ungetService(reference);
+    	}
+    }  
 }

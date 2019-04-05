@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="src" path="/fattest.simplicity"/>
+	<classpathentry kind="lib" path="/Users/mmerali/.m2/repository/commons-logging/commons-logging/1.1.3/commons-logging-1.1.3.jar">
+		<attributes>
+			<attribute name="bsn" value="commons-logging:commons-logging"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="build.example_fat"/>
+			<attribute name="version" value="1.1.3"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/apache/commons/logging/*"/>
+			<accessrule kind="accessible" pattern="org/apache/commons/logging/impl/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="src" path="/com.ibm.ws.componenttest"/>
+	<classpathentry kind="lib" path="/Users/mmerali/.m2/repository/org/jboss/shrinkwrap/shrinkwrap-api/1.2.3/shrinkwrap-api-1.2.3.jar">
+		<attributes>
+			<attribute name="bsn" value="org.jboss.shrinkwrap:shrinkwrap-api"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="build.example_fat"/>
+			<attribute name="version" value="1.2.3"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="/com.ibm.ws.kernel.service.location"/>
+	<classpathentry kind="lib" path="/com.ibm.websphere.javaee.servlet.3.1/generated/com.ibm.websphere.javaee.servlet.3.1.jar">
+		<attributes>
+			<attribute name="bsn" value="com.ibm.websphere.javaee.servlet.3.1.jar"/>
+			<attribute name="type" value="PROJECT"/>
+			<attribute name="project" value="com.ibm.websphere.javaee.servlet.3.1"/>
+			<attribute name="version" value="latest"/>
+			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="javax/servlet/*"/>
+			<accessrule kind="accessible" pattern="javax/servlet/annotation/*"/>
+			<accessrule kind="accessible" pattern="javax/servlet/descriptor/*"/>
+			<accessrule kind="accessible" pattern="javax/servlet/http/*"/>
+			<accessrule kind="accessible" pattern="javax/servlet/resources/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/mmerali/.ibmdhe/repository/com/ibm/ws/javax/j2ee/servlet/3.1/servlet-3.1.jar">
+		<attributes>
+			<attribute name="bsn" value="com.ibm.ws.javaee.servlet.3.1"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.websphere.javaee.servlet.3.1"/>
+			<attribute name="version" value="1.0.10.201509101149"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="javax/servlet/*"/>
+			<accessrule kind="accessible" pattern="javax/servlet/annotation/*"/>
+			<accessrule kind="accessible" pattern="javax/servlet/descriptor/*"/>
+			<accessrule kind="accessible" pattern="javax/servlet/http/*"/>
+			<accessrule kind="accessible" pattern="javax/servlet/resources/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/mmerali/.m2/repository/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5.jar">
+		<attributes>
+			<attribute name="bsn" value="org.apache.httpcomponents:httpclient"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.websphere.filetransfer"/>
+			<attribute name="version" value="4.5.5"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.logging.core"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
