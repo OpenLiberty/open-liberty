@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs.fat.security.annotations;
+package com.ibm.ws.jaxrs21.fat.security.annotations;
 
 import java.util.HashSet;
 import java.util.Set;

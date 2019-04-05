@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs20.fat.security.ssl;
+package com.ibm.ws.jaxrs21.fat.security.ssl;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -35,19 +35,19 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-public class SecuritySSLTest {
+public class JAXRS21SecuritySSLTest {
 
-    @Server("com.ibm.ws.jaxrs.fat.security.ssl")
+    @Server("com.ibm.ws.jaxrs21.fat.security.ssl")
     public static LibertyServer server;
 
-    private static final String secwar = "security";
+    private static final String secwar = "jaxrs21security";
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, secwar, "com.ibm.ws.jaxrs.fat.security.annotations",
-                                      "com.ibm.ws.jaxrs.fat.security.ssl",
-                                      "com.ibm.ws.jaxrs.fat.securitycontext",
-                                      "com.ibm.ws.jaxrs.fat.securitycontext.xml");
+        ShrinkHelper.defaultApp(server, secwar, "com.ibm.ws.jaxrs21.fat.security.annotations",
+                                "com.ibm.ws.jaxrs21.fat.security.ssl",
+                                "com.ibm.ws.jaxrs21.fat.securitycontext",
+                                "com.ibm.ws.jaxrs21.fat.securitycontext.xml");
 
         // Make sure we don't fail because we try to start an
         // already started server
@@ -69,7 +69,7 @@ public class SecuritySSLTest {
     @Test
     public void testSecuritySSL() throws Exception {
 
-        String url = "https://localhost:" + server.getHttpDefaultSecurePort() + "/security/ssltest/ssl/get";
+        String url = "https://localhost:" + server.getHttpDefaultSecurePort() + "/jaxrs21security/ssltest/ssl/get";
         assertNotNull(SendHttpsGet(url));
 
     }
