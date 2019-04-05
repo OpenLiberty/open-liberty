@@ -110,6 +110,7 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
                  * The MC will be released back to the pool at the end of the transaction when
                  * afterCompletion is called on one of the transactional wrapper objects.
                  */
+                mcWrapper.connectionClosing.set(true);
                 mcWrapper.decrementHandleCount();
 
                 if (mcWrapper.getHandleCount() == 0) {
@@ -158,6 +159,7 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
                         }
                     }
                 }
+                mcWrapper.connectionClosing.set(false);
             }
         } else {
             // Connection Event passed in doesn't match the method called.

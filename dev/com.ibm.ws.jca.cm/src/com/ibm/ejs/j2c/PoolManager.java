@@ -1528,7 +1528,6 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                                                                                   hashMapBucket, maxFreePoolHashSize, false,
                                                                                   connectionSharing,
                                                                                   hashCode);
-
                 } catch (ConnectionWaitTimeoutException e) {
                     /*
                      * All we need to do is throw the ConnectionWaitTimeoutException
@@ -1612,6 +1611,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                                                                                      requestInfo,
                                                                                      connectionSharing,
                                                                                      hashCode);
+                        mcWrapper.incrementHandleCount();
                         mcWrapper.setHashMapBucket(hashMapBucket);
                     } catch (ResourceException re) {
                         preTestFailed(managedConnectionFactory, subject, requestInfo, hashMapBucket, re);

@@ -251,7 +251,14 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
     @Override
     public EmbeddableRegisteredResources getResources() {
         if (_resources == null) {
-            _resources = new EmbeddableRegisteredResources(this, _disableTwoPhase);
+            resourcesInUseWrite.lock();
+            try {
+                if (_resources == null) {
+                    _resources = new EmbeddableRegisteredResources(this, _disableTwoPhase);
+                }
+            } finally {
+                resourcesInUseWrite.unlock();
+            }
         }
 
         return (EmbeddableRegisteredResources) _resources;

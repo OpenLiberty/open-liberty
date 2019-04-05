@@ -15,11 +15,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
@@ -28,6 +31,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
+import javax.management.MBeanServer;
+import javax.management.ObjectInstance;
+import javax.management.ObjectName;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -53,6 +59,10 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      * 2 minutes. Maximum number of nanoseconds to wait for a task to complete.
      */
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
+
+    private static final String MBEAN_TYPE = "com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean";
+
+    public static MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
 
     @Resource
     private DataSource defaultDataSource;
@@ -113,6 +123,46 @@ public class MPConcurrentTxTestServlet extends FATServlet {
         }
     }
 
+    @Override
+    protected void after() throws ServletException {
+        try {
+            try (Connection con = onePhaseDataSource.getConnection(); Statement st = con.createStatement()) {
+                st.execute("DROP TABLE MNCOUNTIES");
+                st.execute("DROP TABLE IACOUNTIES");
+                st.execute("CREATE TABLE MNCOUNTIES (NAME VARCHAR(50) NOT NULL PRIMARY KEY, POPULATION INT NOT NULL)");
+                st.execute("CREATE TABLE IACOUNTIES (NAME VARCHAR(50) NOT NULL PRIMARY KEY, POPULATION INT NOT NULL)");
+                st.execute("INSERT INTO MNCOUNTIES VALUES ('Olmsted', 154930)");
+                st.execute("INSERT INTO IACOUNTIES VALUES ('Polk', 481830)");
+            }
+        } catch (SQLException x) {
+            throw new ServletException(x);
+        }
+
+        try {
+            ObjectName objName;
+
+            System.out.println("NPM DEBUG: \n\n****************DefaultDataSource****************");
+            System.out.println("NPM DEBUG: showPoolContents = " + getConnectionManagerData("DefaultDataSource"));
+            objName = getConnPoolStatsMBeanObjName("DefaultDataSource");
+            System.out.println("NPM DEBUG: ManagedConnectionCount = " + getMonitorData(objName, "ManagedConnectionCount"));
+            System.out.println("NPM DEBUG: FreeConnectionCount = " + getMonitorData(objName, "FreeConnectionCount"));
+            System.out.println("NPM DEBUG: ConnectionHandleCount = " + getMonitorData(objName, "ConnectionHandleCount"));
+            System.out.println("NPM DEBUG: CreateCount = " + getMonitorData(objName, "CreateCount"));
+            System.out.println("NPM DEBUG: DestroyCount = " + getMonitorData(objName, "DestroyCount"));
+
+            System.out.println("NPM DEBUG: \n\n****************OnePhaseDataSource****************");
+            System.out.println("NPM DEBUG: showPoolContents = " + getConnectionManagerData("jdbc/ds1phase"));
+            objName = getConnPoolStatsMBeanObjName("jdbc/ds1phase");
+            System.out.println("NPM DEBUG: ManagedConnectionCount = " + getMonitorData(objName, "ManagedConnectionCount"));
+            System.out.println("NPM DEBUG: FreeConnectionCount = " + getMonitorData(objName, "FreeConnectionCount"));
+            System.out.println("NPM DEBUG: ConnectionHandleCount = " + getMonitorData(objName, "ConnectionHandleCount"));
+            System.out.println("NPM DEBUG: CreateCount = " + getMonitorData(objName, "CreateCount"));
+            System.out.println("NPM DEBUG: DestroyCount = " + getMonitorData(objName, "DestroyCount"));
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
+    }
+
     /**
      * This case demonstrates that the com.ibm.tx.jta.TransactionManagerFactory public API, even without MP Concurrency,
      * already enables applications to concurrently run multiple operations within a single transaction
@@ -148,11 +198,36 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                 }
             });
 
+            CompletableFuture<Integer>[] stages = new CompletableFuture[100];
+            for (int i = 0; i < 100; i++) {
+                final int y = i;
+                stages[y] = CompletableFuture.supplyAsync(() -> {
+                    try {
+                        javax.transaction.Transaction tranToRestore = tm.suspend();
+                        tm.resume(tranToPropagate);
+
+                        try (Connection con2 = defaultDataSource.getConnection(); Statement st2 = con2.createStatement()) {
+                            return st2.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Dubuque" + y + "', 95888)");
+                        } finally {
+                            tm.suspend();
+                            if (tranToRestore != null)
+                                tm.resume(tranToRestore);
+                        }
+                    } catch (Exception x) {
+                        throw new CompletionException(x);
+                    }
+                });
+            }
+
             assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Dakota', 414655)"));
             con.close();
 
             // ensure the above runs in the same transaction while the transaction is still active on the current thread
             assertEquals(Integer.valueOf(1), stage.join());
+
+            for (int i = 0; i < 100; i++) {
+                assertEquals(Integer.valueOf(1), stages[i].join());
+            }
 
             tx.commit();
         } finally {
@@ -185,11 +260,35 @@ public class MPConcurrentTxTestServlet extends FATServlet {
                 }
             });
 
+            CompletableFuture<Integer>[] stages = new CompletableFuture[100];
+            for (int i = 0; i < 100; i++) {
+                final int y = i;
+                stages[y] = CompletableFuture.supplyAsync(() -> {
+                    try {
+                        javax.transaction.Transaction tranToRestore = tm.suspend();
+                        tm.resume(tranToPropagate);
+
+                        try (Connection con2 = defaultDataSource.getConnection(); Statement st2 = con2.createStatement()) {
+                            return st2.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Story" + y + "', 95888)");
+                        } finally {
+                            tm.suspend();
+                            if (tranToRestore != null)
+                                tm.resume(tranToRestore);
+                        }
+                    } catch (Exception x) {
+                        throw new CompletionException(x);
+                    }
+                });
+            }
+
             assertEquals(1, st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Anoka', 344861)"));
             con.close();
 
             // ensure the above runs in the same transaction while the transaction is still active on the current thread
             assertEquals(Integer.valueOf(1), stage.join());
+            for (int i = 0; i < 100; i++) {
+                assertEquals(Integer.valueOf(1), stages[i].join());
+            }
         } finally {
             tx.rollback();
         }
@@ -1963,6 +2062,55 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             assertTrue(result.next());
             assertEquals(0, result.getInt(1));
         }
+    }
+
+    private int getMonitorData(ObjectName name, String attribute) throws Exception {
+        return Integer.parseInt((mbeanServer.getAttribute(name, attribute)).toString());
+    }
+
+    private String getConnectionManagerData(String dataSource) throws Exception {
+        return (mbeanServer.invoke(getConnectionManagerMBeanObjName(dataSource), "showPoolContents", null, null)).toString();
+    }
+
+    private ObjectName getConnPoolStatsMBeanObjName(String dsName) throws Exception {
+        Set<ObjectInstance> mxBeanSet;
+        ObjectInstance oi;
+        mxBeanSet = mbeanServer.queryMBeans(new ObjectName("WebSphere:type=ConnectionPoolStats,name=*" + dsName + "*"), null);
+        if (mxBeanSet != null && mxBeanSet.size() > 0) {
+            Iterator<ObjectInstance> it = mxBeanSet.iterator();
+            oi = it.next();
+            return oi.getObjectName();
+        } else
+            throw new Exception("ConnectionPoolStatsMBean:NotFound");
+    }
+
+    private ObjectName getConnectionManagerMBeanObjName(String dsName) throws Exception {
+        Set<ObjectInstance> mxBeanSet;
+        ObjectInstance oi;
+        mxBeanSet = mbeanServer.queryMBeans(new ObjectName("WebSphere:type=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,jndiName=" + dsName + ",*"), null);
+        if (mxBeanSet == null || mxBeanSet.size() == 0) {
+            mxBeanSet = mbeanServer.queryMBeans(new ObjectName("WebSphere:type=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,name=*" + dsName + "*"), null);
+        }
+
+        if (mxBeanSet != null && mxBeanSet.size() > 0) {
+            Iterator<ObjectInstance> it = mxBeanSet.iterator();
+            oi = it.next();
+            return oi.getObjectName();
+        } else
+            throw new Exception("ConnectionManagerMBean:NotFound");
+    }
+
+    private ObjectInstance getMBeanObjectInstance(String jndiName) throws Exception {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        ObjectName obn = new ObjectName("WebSphere:type=" + MBEAN_TYPE + ",jndiName=" + jndiName + ",*");
+        Set<ObjectInstance> s = mbs.queryMBeans(obn, null);
+        if (s.size() != 1) {
+            System.out.println("ERROR: Found incorrect number of MBeans (" + s.size() + ")");
+            for (ObjectInstance i : s)
+                System.out.println("  Found MBean: " + i.getObjectName());
+            throw new Exception("Expected to find exactly 1 MBean, instead found " + s.size());
+        }
+        return s.iterator().next();
     }
 
     /**

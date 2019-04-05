@@ -12,22 +12,28 @@
 package com.ibm.tx.ltc.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.transaction.Synchronization;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.Xid;
 
-import com.ibm.ws.LocalTransaction.*;
-import com.ibm.tx.jta.OnePhaseXAResource;
-import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.tx.TranConstants;
-import com.ibm.ws.uow.UOWScope;
-import com.ibm.wsspi.tx.UOWEventListener;
+import com.ibm.tx.jta.OnePhaseXAResource;
 import com.ibm.tx.util.logging.FFDCFilter;
 import com.ibm.tx.util.logging.Tr;
 import com.ibm.tx.util.logging.TraceComponent;
-
+import com.ibm.ws.LocalTransaction.ContainerSynchronization;
+import com.ibm.ws.LocalTransaction.InconsistentLocalTranException;
+import com.ibm.ws.LocalTransaction.LTCSystemException;
+import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
+import com.ibm.ws.LocalTransaction.RolledbackException;
+import com.ibm.ws.Transaction.UOWCoordinator;
+import com.ibm.ws.uow.UOWScope;
+import com.ibm.wsspi.tx.UOWEventListener;
 
 /**
  * This class provides a way for Resource Manager Local Transactions (RMLTs)
@@ -151,7 +157,9 @@ public class LocalTranCoordImpl implements LocalTransactionCoordinator, UOWCoord
 
     // flag to indicate that this LTC is shareable LI2446
     protected boolean _shareable;
-    
+
+    private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
+    private final Lock syncsWriteLock = rwl.writeLock();
 
     /**
      * Create a local transaction coordinator.
@@ -575,9 +583,15 @@ public class LocalTranCoordImpl implements LocalTransactionCoordinator, UOWCoord
         }
         else
         {
-            if (_syncs == null)
-            {
-                _syncs = new ArrayList<Synchronization>();
+            if (_syncs == null) {
+                syncsWriteLock.lock();
+                try {
+                    if (_syncs == null) {
+                        _syncs = Collections.synchronizedList(new ArrayList<Synchronization>());
+                    }
+                } finally {
+                    syncsWriteLock.unlock();
+                }
             }
 
             _syncs.add(sync);

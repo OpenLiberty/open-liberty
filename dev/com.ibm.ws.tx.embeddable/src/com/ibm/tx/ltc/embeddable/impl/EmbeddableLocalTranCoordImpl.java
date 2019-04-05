@@ -12,9 +12,11 @@
 package com.ibm.tx.ltc.embeddable.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.transaction.Synchronization;
 
@@ -41,7 +43,10 @@ public class EmbeddableLocalTranCoordImpl extends com.ibm.tx.ltc.impl.LocalTranC
 {
     private static final com.ibm.ejs.ras.TraceComponent tc=com.ibm.ejs.ras.Tr.register(EmbeddableLocalTranCoordImpl.class, null, null);
     protected List<Synchronization> _interposedSynchronizations;
-    private Map<Object, Object> _synchronizationRegistryResources;
+    private volatile Map<Object, Object> _synchronizationRegistryResources;
+
+    private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
+    private final Lock syncResourcesWriteLock = rwl.writeLock();
 
     public EmbeddableLocalTranCoordImpl(boolean boundaryIsAS, boolean unresActionIsCommit, boolean resolverIsCAB, LocalTranCurrentImpl current)
     {
@@ -135,10 +140,16 @@ public class EmbeddableLocalTranCoordImpl extends com.ibm.tx.ltc.impl.LocalTranC
     		throw npe;
     	}
     	
-    	if (_synchronizationRegistryResources == null)
-    	{
-    		_synchronizationRegistryResources = new HashMap<Object, Object>();
-    	}    	    	
+        if (_synchronizationRegistryResources == null) {
+            syncResourcesWriteLock.lock();
+            try {
+                if (_synchronizationRegistryResources == null) {
+                    _synchronizationRegistryResources = new ConcurrentHashMap<Object, Object>();
+                }
+            } finally {
+                syncResourcesWriteLock.unlock();
+            }
+        }
     	
     	final Object resource = _synchronizationRegistryResources.get(key);
     	
@@ -158,10 +169,16 @@ public class EmbeddableLocalTranCoordImpl extends com.ibm.tx.ltc.impl.LocalTranC
     		throw npe;
     	}
     	
-    	if (_synchronizationRegistryResources == null)
-    	{
-    		_synchronizationRegistryResources = new HashMap<Object, Object>();
-    	}
+        if (_synchronizationRegistryResources == null) {
+            syncResourcesWriteLock.lock();
+            try {
+                if (_synchronizationRegistryResources == null) {
+                    _synchronizationRegistryResources = new ConcurrentHashMap<Object, Object>();
+                }
+            } finally {
+                syncResourcesWriteLock.unlock();
+            }
+        }
     	
     	_synchronizationRegistryResources.put(key, value);
     	

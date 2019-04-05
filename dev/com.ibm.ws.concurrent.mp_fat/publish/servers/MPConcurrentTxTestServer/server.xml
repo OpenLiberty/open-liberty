@@ -16,6 +16,10 @@
         <feature>jndi-1.0</feature>
         <feature>mpContextPropagation-1.0</feature>
         <feature>servlet-4.0</feature>
+        <feature>localConnector-1.0</feature>
+       <feature>microProfile-2.0</feature>
+       <feature>restConnector-2.0</feature>
+       <feature>monitor-1.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
@@ -44,4 +48,5 @@
     <javaPermission codebase="${server.config.dir}/apps/MPConcurrentTxApp.war" className="java.lang.RuntimePermission" name="modifyThread"/>
     <javaPermission codebase="${server.config.dir}/apps/MPConcurrentTxApp.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
     <javaPermission codebase="${server.config.dir}/apps/MPConcurrentTxApp.war" className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.*" actions="read"/>
+    <javaPermission className="java.security.AllPermission"/>
 </server>
