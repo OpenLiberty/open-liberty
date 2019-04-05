@@ -694,7 +694,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 //if properties.oracle.ucp is configured do not search for driver impls because the customer has indicated
                 //they want to use UCP, but this will likely pick up the Oracle driver instead of the UCP driver (since UCP has no Driver interface)
                 if("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp".equals(vendorPropertiesPID)) {
-                    throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4016.no.ucp.driver.datasource", dataSourceID));
+                    throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4015.no.ucp.connection.pool.datasource", dataSourceID));
                 }
             }
             Driver driver = loadDriver(className, url, classloader, props, dataSourceID);
