@@ -85,16 +85,23 @@ public class CircuitBreakerStateImpl implements CircuitBreakerState {
 
     @Override
     public boolean requestPermissionToExecute() {
+        boolean result;
         if (state.get() == State.CLOSED) {
             // If breaker is closed then the result is simple
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Allowing execution in closed state");
             }
-            return true;
+            result = true;
         } else {
             // Other cases are more complex and require synchronization
-            return synchronizedRequestPermissionToExecute();
+            result = synchronizedRequestPermissionToExecute();
         }
+
+        if (result == false) {
+            metricRecorder.incrementCircuitBreakerCallsCircuitOpenCount();
+        }
+
+        return result;
     }
 
     @Override
