@@ -57,7 +57,6 @@ public class StorageService extends AbstractAsyncPublisher<String> implements Su
             SubscriberBuilder<String, Void> sBuilder = ReactiveStreams.fromSubscriber(this);
             CompletionRunner<Void> runner = pBuilder.to(sBuilder);
             runner.run();
-            this.subscription.request(1);
             init = true;
         }
     }
@@ -88,5 +87,6 @@ public class StorageService extends AbstractAsyncPublisher<String> implements Su
     @Override
     public void onSubscribe(Subscription arg0) {
         this.subscription = arg0;
+        this.subscription.request(1);
     }
 }
