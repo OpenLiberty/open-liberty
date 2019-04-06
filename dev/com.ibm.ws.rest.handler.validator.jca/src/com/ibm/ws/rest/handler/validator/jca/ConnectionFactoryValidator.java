@@ -13,6 +13,7 @@ package com.ibm.ws.rest.handler.validator.jca;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -97,8 +98,10 @@ public class ConnectionFactoryValidator implements Validator {
                                             : -1;
 
             if (authType >= 0) {
-                String cfInterfaceName = ((ConnectionFactoryService) instance).getConnectionFactoryInterfaceName();
-                config = resourceConfigFactory.createResourceConfig(cfInterfaceName);
+                List<String> cfInterfaceNames = ((ConnectionFactoryService) instance).getConnectionFactoryInterfaceNames();
+                if (cfInterfaceNames.isEmpty()) // it is unlikely this error can ever occur because there should have been an earlier failure deploying the RAR
+                    throw new RuntimeException("Connection factory cannot be accessed via resource reference because no connection factory interface is defined.");
+                config = resourceConfigFactory.createResourceConfig(cfInterfaceNames.get(0));
                 config.setResAuthType(authType);
                 if (authAlias != null)
                     config.addLoginProperty("DefaultPrincipalMapping", authAlias); // set provided auth alias
@@ -195,7 +198,7 @@ public class ConnectionFactoryValidator implements Validator {
                 } finally {
                     con.close();
                 }
-            }
+            } // TODO other types of connection factory, such as DataSource or custom or JMS (which should have used jmsConnectionFactory)
         } catch (Throwable x) {
             ArrayList<String> errorCodes = new ArrayList<String>();
             Set<Throwable> causes = new HashSet<Throwable>(); // avoid cycles in exception chain
