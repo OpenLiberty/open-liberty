@@ -138,7 +138,7 @@ public class ZipFileReaper {
 
     @Trivial
     public void validate() {
-        synchronized ( reaperLock ) {
+        synchronized ( this ) {
             pendingQuickStorage.validate();
             pendingSlowStorage.validate();
             if ( !debugState ) {
@@ -150,9 +150,12 @@ public class ZipFileReaper {
     //
 
     private static class ReaperRunnable implements Runnable {
+        private final ReaperLock reaperLock;
+
         @Trivial
         public ReaperRunnable(ZipFileReaper reaper) {
             this.reaper = reaper;
+            this.reaperLock = new ReaperLock();
         }
 
         //
@@ -182,34 +185,34 @@ public class ZipFileReaper {
                 Tr.debug(tc, methodName + " Start [ " + toRelSec(startAt, startAt) + " (s) ]");
             }
 
-            synchronized ( reaper.reaperLock ) {
-                // CAUTION CAUTION CAUTION CAUTION
-                //
-                // The notification which occurs when a pending close is added does not
-                // necessarily resume the reaper thread before any other thread blocked
-                // by the reaper lock.  In particular, any number of 'enactOpen()' and
-                // 'enactClose()' may occur before 'reap()' resumes.  'reap()' cannot
-                // assume that there will necessarily be a pending close when it
-                // resumes.
-                //
-                // CAUTION CAUTION CAUTION CAUTION
+            // CAUTION CAUTION CAUTION CAUTION
+            //
+            // The notification which occurs when a pending close is added does not
+            // necessarily resume the reaper thread before any other thread blocked
+            // by the reaper lock.  In particular, any number of 'enactOpen()' and
+            // 'enactClose()' may occur before 'reap()' resumes.  'reap()' cannot
+            // assume that there will necessarily be a pending close when it
+            // resumes.
+            //
+            // CAUTION CAUTION CAUTION CAUTION
 
-                long reapDelay = REAP_DELAY_INDEFINITE;
-                long reapAt = startAt;
+            long reapDelay = REAP_DELAY_INDEFINITE;
+            long reapAt = startAt;
 
-                while ( true ) {
-                    long lastReapAt = reapAt;
+            while ( true ) {
+                long lastReapAt = reapAt;
 
-                    // Condition:
-                    // Start an indefinite wait if and only if there are no pending closes.
-                    // Upon waking, at least one pending close is expected, but
-                    // is not guaranteed.
+                // Condition:
+                // Start an indefinite wait if and only if there are no pending closes.
+                // Upon waking, at least one pending close is expected, but
+                // is not guaranteed.
 
+                synchronized ( reaperLock ) {
                     try {
                         if ( reapDelay < 0L ) {
-                            reaper.reaperLock.wait(methodName, "new pending close"); // throws InterruptedException
+                            reaperLock.wait(methodName, "new pending close"); // throws InterruptedException
                         } else {
-                            reaper.reaperLock.waitNS(reapDelay, methodName, "active pending close"); // throws InterruptedException
+                            reaperLock.waitNS(reapDelay, methodName, "active pending close"); // throws InterruptedException
                         }
                     } catch ( InterruptedException e ) {
                         if ( doDebug ) {
@@ -217,26 +220,28 @@ public class ZipFileReaper {
                         }
                         break;
                     }
+                }
 
-                    reapAt = SystemUtils.getNanoTime();
-                    if ( doDebug ) {
-                        Tr.debug(tc, methodName + " Reap [ " + toRelSec(startAt, reapAt) + " (s) ]");
-                    }
+                reapAt = SystemUtils.getNanoTime();
+                if ( doDebug ) {
+                    Tr.debug(tc, methodName + " Reap [ " + toRelSec(startAt, reapAt) + " (s) ]");
+                }
 
-                    if ( reapDelay > 0L ) {
-                        long actualDelay = reapAt - lastReapAt;
-                        if ( actualDelay > reapDelay ) {
-                            long overage = actualDelay - reapDelay;
-                            if ( overage > STALL_LIMIT ) {
-                                // Tr.warning(tc, methodName +
-                                //    " Excessive delay processing pending zip file closes:" +
-                                //    " Actual delay [ " + toAbsSec(actualDelay) + " (s) ];" +
-                                //    " Requested delay [ " + toAbsSec(reapDelay) + " (s) ]");
-                                Tr.warning(tc, "reaper.stall", toAbsSec(actualDelay), toAbsSec(reapDelay));
-                            }
+                if ( reapDelay > 0L ) {
+                    long actualDelay = reapAt - lastReapAt;
+                    if ( actualDelay > reapDelay ) {
+                        long overage = actualDelay - reapDelay;
+                        if ( overage > STALL_LIMIT ) {
+                            // Tr.warning(tc, methodName +
+                            //    " Excessive delay processing pending zip file closes:" +
+                            //    " Actual delay [ " + toAbsSec(actualDelay) + " (s) ];" +
+                            //    " Requested delay [ " + toAbsSec(reapDelay) + " (s) ]");
+                            Tr.warning(tc, "reaper.stall", toAbsSec(actualDelay), toAbsSec(reapDelay));
                         }
                     }
+                }
 
+                synchronized (reaper) {
                     ZipFileData ripestPending = reaper.getRipest();
                     if ( ripestPending == null ) {
                         if ( doDebug ) {
@@ -411,8 +416,6 @@ public class ZipFileReaper {
         // opportunity to complete the thread statistics, but at the cost
         // of iterating across and closing all active zip files, which is
         // very probably unnecessary since the JVM is shutting down.
-
-        this.reaperLock = new ReaperLock();
 
         this.reaperRunnable = new ReaperRunnable(this);
         this.reaperThread = new Thread(this.reaperRunnable, "zip file reaper");
@@ -607,7 +610,7 @@ public class ZipFileReaper {
     //
 
     public ZipFileData.ZipFileState getState(String path) {
-        synchronized ( reaperLock ) {
+        synchronized ( this ) {
             ZipFileData data = storage.get(path);
             if ( data == null ) {
                 if ( !debugState ) {
@@ -737,10 +740,6 @@ public class ZipFileReaper {
             }
         }
     }
-
-    private final ReaperLock reaperLock;
-
-    //
 
     /** Control parameter: Have {@link #reap} to do a normal reap. */
     private static final boolean IS_NOT_SHUTDOWN_REAP = false;
@@ -1015,7 +1014,7 @@ public class ZipFileReaper {
         // is removed.  Instead, the reaper allowed to run, and is coded to handle
         // that case.
 
-        synchronized ( reaperLock ) {
+        synchronized ( this ) {
             if ( !getIsActive() ) {
                 // Tr.warning(tc, methodName + " Cannot open [ " + path + " ]: ZipFile cache [ " + reaperName + " ] is inactive");
                 Tr.warning(tc, "reaper.inactive", path, reaperName);
@@ -1112,7 +1111,10 @@ public class ZipFileReaper {
     public ZipFileData.ZipFileState close(String path, long closeAt) {
         String methodName = "close";
 
-        synchronized ( reaperLock ) {
+        ZipFileData data = null;
+        String wakeUpReason = null;
+
+        synchronized ( this ) {
             if ( !getIsActive() ) {
                 if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName + " Path [ " + path + " ]: Ignore: Inactive");
@@ -1120,7 +1122,7 @@ public class ZipFileReaper {
                 return null;
             }
 
-            ZipFileData data = storage.get(path);
+            data = storage.get(path);
 
             if ( data == null ) {
                 // Tr.warning(tc, methodName + " Unregistered [ " + path + " ]: Ignore");
@@ -1220,27 +1222,30 @@ public class ZipFileReaper {
                             wakeReason = null; // Added slow while quick or slow are present.
                         }
 
-                        // CAUTION CAUTION CAUTION CAUTION
-                        //
-                        // This notification does not ensure that reap() is continued
-                        // before any other reaper operation is performed.  This notification
-                        // simply unblocks the reap() thread and puts it in the pool of threads
-                        // available to be run.  This has a strong implication on how 'reap()'
-                        // must work.
-                        //
-                        // CAUTION CAUTION CAUTION CAUTION
-
-                        if ( wakeReason != null ) {
-                            reaperLock.notify(methodName, wakeReason);
-                        }
+                        wakeUpReason = wakeReason;
                     }
                 }
 
             } else {
                 throw data.unknownState();
             }
-            
-            return ( (data == null) ? null : data.zipFileState );
         }
+
+        // CAUTION CAUTION CAUTION CAUTION
+        //
+        // This notification does not ensure that reap() is continued
+        // before any other reaper operation is performed.  This notification
+        // simply unblocks the reap() thread and puts it in the pool of threads
+        // available to be run.  This has a strong implication on how 'reap()'
+        // must work.
+        //
+        // CAUTION CAUTION CAUTION CAUTION
+
+        if ( wakeUpReason != null ) {
+            synchronized (reaperRunnable.reaperLock) {
+                reaperRunnable.reaperLock.notify(methodName, wakeUpReason);
+            }
+        }
+        return ( (data == null) ? null : data.zipFileState );
     }
 }
