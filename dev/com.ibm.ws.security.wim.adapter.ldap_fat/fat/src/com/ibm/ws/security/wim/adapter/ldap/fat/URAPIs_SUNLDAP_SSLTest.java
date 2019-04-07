@@ -41,7 +41,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.LDAPUtils;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 public class URAPIs_SUNLDAP_SSLTest {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.adapter.ldap.fat.sun.ssl");
     private static final Class<?> c = URAPIs_SUNLDAP_SSLTest.class;
@@ -73,9 +73,10 @@ public class URAPIs_SUNLDAP_SSLTest {
         Log.info(c, "setUp", "Creating servlet connection the server");
         servlet = new UserRegistryServletConnection(server.getHostname(), server.getHttpDefaultPort());
 
-        servlet.getRealm();
-        Thread.sleep(5000);
-        servlet.getRealm();
+        if (servlet.getRealm() == null) {
+            Thread.sleep(5000);
+            servlet.getRealm();
+        }
     }
 
     @AfterClass

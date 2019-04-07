@@ -285,7 +285,7 @@ public class FeatureResourceImpl implements FeatureResource {
                && Objects.equals(getLocation(), other.getLocation())
                && Objects.equals(getOsList(), other.getOsList())
                && Objects.equals(getTolerates(), other.getTolerates())
-               && Objects.equals(getRequiredOSGiEE(), other.getRequiredOSGiEE());
+               && Objects.equals(getRequireJava(), other.getRequireJava());
     }
 
     /** {@inheritDoc} */
@@ -329,8 +329,9 @@ public class FeatureResourceImpl implements FeatureResource {
     }
 
     @Override
-    public String getRequiredOSGiEE() {
+    public Integer getRequireJava() {
         // Directive names are in the attributes map, but end with a colon
-        return _rawAttributes.get("required-osgi-ee:");
+        String requireJava = _rawAttributes.get("require-java:");
+        return requireJava == null ? null : Integer.valueOf(requireJava);
     }
 }

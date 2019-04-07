@@ -83,7 +83,7 @@ public class JobWaiter {
         this.timeout = timeout;
     }
 
-    private static long DFLT_TIMEOUT = 10000;
+    private static long DFLT_TIMEOUT = 30000;
 
     /**
      * Wait for {@code JobWaiter#timeout} seconds for BOTH of:

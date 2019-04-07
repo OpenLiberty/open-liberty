@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.classloading.ClassGenerator;
+import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration;
 import com.ibm.ws.classloading.internal.util.ClassRedefiner;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -33,8 +34,11 @@ import com.ibm.wsspi.classloading.ClassLoaderConfiguration;
  * and the parent classloader second.
  */
 class ParentLastClassLoader extends AppClassLoader {
-    ParentLastClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> urls, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator) {
-        super(parent, config, urls, access, redefiner, generator);
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
+    ParentLastClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> urls, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig) {
+        super(parent, config, urls, access, redefiner, generator, globalConfig);
     }
 
     static final List<SearchLocation> PARENT_LAST_SEARCH_ORDER = freeze(list(SELF, DELEGATES, PARENT));
@@ -71,7 +75,7 @@ class ParentLastClassLoader extends AppClassLoader {
     protected Class<?> findOrDelegateLoadClass(String className) throws ClassNotFoundException {
         // search order: 1) my class path 2) parent loader
         Class<?> rc;
-        synchronized (this) {
+        synchronized (getClassLoadingLock(className)) {
             // first check whether we already loaded this class
             rc = findLoadedClass(className);
             if (rc == null) {

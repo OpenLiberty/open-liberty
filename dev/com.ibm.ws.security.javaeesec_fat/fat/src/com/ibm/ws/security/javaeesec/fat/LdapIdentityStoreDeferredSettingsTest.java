@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -113,15 +113,17 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer("CWWKS1916W", "CWWKS3400W", "CWWKS3401E", "CWWKS3402E", "CWWKS3405W", "CWWKS3406W");
-        if (ldapServer != null) {
-            try {
-                ldapServer.stopService();
-            } catch (Exception e) {
-                Log.error(logClass, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
+        try {
+            myServer.stopServer("CWWKS1916W", "CWWKS3400W", "CWWKS3401E", "CWWKS3402E", "CWWKS3405W", "CWWKS3406W");
+        } finally {
+            if (ldapServer != null) {
+                try {
+                    ldapServer.stopService();
+                } catch (Exception e) {
+                    Log.error(logClass, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
+                }
             }
         }
-
     }
 
     /**
@@ -1315,7 +1317,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         props.put("groupSearchScope", "SUBTREE");
         props.put("priority", "0");
         props.put("readTimeout", "0");
-        props.put("url", "ldap://localhost:10389");
+        props.put("url", "ldap://localhost:" + System.getProperty("ldap.1.port"));
         props.put("useFor", "VALIDATE PROVIDE_GROUPS");
 
         props.putAll(overrides);

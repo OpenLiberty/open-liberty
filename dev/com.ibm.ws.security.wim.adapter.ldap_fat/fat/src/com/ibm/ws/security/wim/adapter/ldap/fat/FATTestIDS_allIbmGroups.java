@@ -28,7 +28,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.wim.AttributesCache;
 import com.ibm.websphere.simplicity.config.wim.BaseEntry;
 import com.ibm.websphere.simplicity.config.wim.FederatedRepository;
-import com.ibm.websphere.simplicity.config.wim.GroupConfiguration;
+import com.ibm.websphere.simplicity.config.wim.GroupProperties;
 import com.ibm.websphere.simplicity.config.wim.LdapCache;
 import com.ibm.websphere.simplicity.config.wim.LdapEntityType;
 import com.ibm.websphere.simplicity.config.wim.LdapFilters;
@@ -165,7 +165,7 @@ public class FATTestIDS_allIbmGroups {
         /*
          * Disable the cache.
          */
-        ldap.setLdapCache(new LdapCache(new AttributesCache(false, 0, 0, "0s", null), new SearchResultsCache(false, 0, 0, "0s")));
+        ldap.setLdapCache(new LdapCache(new AttributesCache(false, 0, 0, "0s"), new SearchResultsCache(false, 0, 0, "0s")));
 
         if (useFilters) {
             /*
@@ -193,10 +193,10 @@ public class FATTestIDS_allIbmGroups {
             /*
              * Configure group membership.
              */
-            GroupConfiguration groupConfiguration = new GroupConfiguration();
-            groupConfiguration.setMemberAttribute(new MemberAttribute(null, "ibm-allmembers", "groupofnames", "all"));
-            groupConfiguration.setMembershipAttribute(new MembershipAttribute("ibm-allgroups", "all"));
-            ldap.setGroupProperties(groupConfiguration);
+            GroupProperties groupProperties = new GroupProperties();
+            groupProperties.setMemberAttribute(new MemberAttribute(null, "ibm-allmembers", "groupofnames", "all"));
+            groupProperties.setMembershipAttribute(new MembershipAttribute("ibm-allgroups", "all"));
+            ldap.setGroupProperties(groupProperties);
         }
 
         /*

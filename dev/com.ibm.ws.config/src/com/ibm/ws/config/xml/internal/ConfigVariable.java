@@ -19,12 +19,14 @@ class ConfigVariable {
 
     private final String name;
     private final String value;
+    private final String defaultValue;
     private final MergeBehavior mergeBehavior;
     private final String location;
 
-    public ConfigVariable(String name, String value, MergeBehavior mb, String l) {
+    public ConfigVariable(String name, String value, String variableDefault, MergeBehavior mb, String l) {
         this.name = name;
         this.value = value;
+        this.defaultValue = variableDefault;
         this.mergeBehavior = mb;
         this.location = l;
     }
@@ -35,6 +37,10 @@ class ConfigVariable {
 
     public String getValue() {
         return value;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
     }
 
     public MergeBehavior getMergeBehavior() {

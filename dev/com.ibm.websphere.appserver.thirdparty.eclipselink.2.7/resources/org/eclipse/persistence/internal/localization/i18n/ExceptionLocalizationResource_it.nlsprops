@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -355,9 +359,7 @@ position_param_not_found=Nessun parametro nella posizione: {0}.
 
 pu_configured_for_resource_local=Impossibile creare un EntityManager con SynchronizationType perch\u00e9 PersistenceUnit \u00e8 configurato con transazioni locali risorsa.
 
-# START NON-TRANSLATABLE
 remove_deletion_failed=Rimozione eliminazione non riuscita:
-# END NON-TRANSLATABLE
 
 rollback_because_of_rollback_only=Transazione sottoposta a "roll back" perch\u00e9 era impostata su RollbackOnly.
 
@@ -428,6 +430,8 @@ unexpect_argument=Argomento di input non previsto {0}
 unknown_bean_class=Classe bean di entit\u00e0 sconosciuta: {0}, verificare che la classe sia stata contrassegnata con l''annotazione @Entity.
 
 unknown_entitybean_name=Nome bean entit\u00e0 sconosciuto: {0}
+
+unsupported_classfile_version=La classe {0} \u00e8 stata compilata con un JDK non supportato. Notificare l''errore al progetto open source EclipseLink.
 
 wrap_convert_exception=Si \u00e8 verificata un''eccezione durante la chiamata di {0} sulla classe converter {1} con valore {2}
 

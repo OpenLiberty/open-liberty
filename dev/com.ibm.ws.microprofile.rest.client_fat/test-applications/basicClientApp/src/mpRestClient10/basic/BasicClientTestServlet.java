@@ -18,12 +18,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.junit.Test;
@@ -43,7 +48,7 @@ public class BasicClientTestServlet extends FATServlet {
 
     @Override
     public void init() throws ServletException {
-        String baseUrlStr = "https://localhost:" + getSysProp("bvt.prop.HTTP_secondary.secure") + "/basicRemoteApp/basic";
+        String baseUrlStr = "https://localhost:" + getSysProp("bvt.prop.HTTP_secondary.secure") + "/basicRemoteApp";
         LOG.info("baseUrl = " + baseUrlStr);
         URL baseUrl;
         try {
@@ -55,6 +60,8 @@ public class BasicClientTestServlet extends FATServlet {
                         .register(DuplicateWidgetExceptionMapper.class)
                         .register(UnknownWidgetExceptionMapper.class)
                         .property("com.ibm.ws.jaxrs.client.ssl.config", "mySSLConfig")
+                        .property("com.ibm.ws.jaxrs.client.receive.timeout", "120000")
+                        .property("com.ibm.ws.jaxrs.client.connection.timeout", "120000")
                         .baseUrl(baseUrl);
     }
 
@@ -109,4 +116,29 @@ public class BasicClientTestServlet extends FATServlet {
         }
     }
 
+    @Test
+    public void testReadTimeout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        try {
+            builder.property("com.ibm.ws.jaxrs.client.receive.timeout", "5");
+            long startTime = System.nanoTime();
+            WaitServiceClient client = builder.build(WaitServiceClient.class);
+            Response r = null;
+            try {
+                r = client.waitFor(20);
+                fail("Did not throw expected ProcessingException");
+            } catch (ProcessingException expected) {
+                LOG.info("Caught expected ProcessingException");
+            } catch (Throwable t) {
+                LOG.log(Level.SEVERE, "Caught unexpected exception", t);
+                fail("Caught unexpected exception: " + t);
+            }
+            long elapsedTime = System.nanoTime() - startTime;
+            long elapsedTimeSecs = TimeUnit.SECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);
+            LOG.info("waited >=" + elapsedTimeSecs + " seconds");
+            assertTrue("Did not time out when expected (5 secs) - instead waited at least 20 seconds.",
+                       elapsedTimeSecs < 20);
+        } finally {
+            builder.property("com.ibm.ws.jaxrs.client.receive.timeout", "120000");
+        }
+    }
 }

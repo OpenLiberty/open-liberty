@@ -1,0 +1,40 @@
+#/*******************************************************************************
+# * Copyright (c) 2016, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+
+# Use message block TRAS4301 - TRAS4350 for new messages that start December 1, 2016.
+TAGS_FILTERING_WARNING=TRAS4301W: logstashCollector \u015fi bluemixLogCollector pot folosi taguri care con\u0163in un singur cuv\u00e2nt compus din litere \u015fi cifre. Urm\u0103toarele taguri sunt ignorate: {0}
+TAGS_FILTERING_WARNING.explanation= Tag-urile ignorate con\u0163in caracterele spa\u0163iu, liniu\u0163\u0103 sau backslash.
+TAGS_FILTERING_WARNING.userAction= \u00cenl\u0103tura\u0163i caracterele spa\u0163iu, liniu\u0163\u0103 sau backslash din aceste taguri.
+
+SSLREF_NOTFOUND=TRAS4302E: Atributul sslRef al logstashCollector sau bluemixLogCollector nu este specificat sau nu poate fi g\u0103sit ID-ul sslRef.
+SSLREF_NOTFOUND.explanation=Nu este g\u0103sit\u0103 nicio configura\u0163ie SSL pentru caracteristica logstashCollector sau bluemixLogCollector.
+SSLREF_NOTFOUND.userAction=Crea\u0163i o configura\u0163ie SSL \u015fi specifica\u0163i ID-ul folosind atributul sslRef \u00een elementul logstashCollector sau \u00een elementul bluemixLogCollector.
+
+MAXEVENTS_OUTOFRANGE_WARNING=TRAS4303W: logstashCollector \u015fi bluemixLogCollector pot folosi maxEvents care are o valoare \u00eentreag\u0103 \u00een intervalul 0-2147483647. maxEvents dat este ignorat: {0}
+MAXEVENTS_OUTOFRANGE_WARNING.explanation= Valoarea maxEvents este \u00een afara intervalului \u015fi nu este un num\u0103r \u00eentreg valid \u00eentre 0 \u015fi 2147483647.
+MAXEVENTS_OUTOFRANGE_WARNING.userAction= Corecta\u0163i valoarea maxEvents. Altfel nu se aplic\u0103 nicio strangulare (throttling).
+
+MAXEVENTS_EXCEEDS_MAXRATE=TRAS4304I: Crearea evenimentului dep\u0103\u015fe\u015fte rata maxim\u0103 de tratare pe firul de execu\u0163ie {0}. Vor fi tratate {1} evenimente pe secund\u0103 p\u00e2n\u0103 va fi cur\u0103\u0163at backlog-ul de evenimente.
+MAXEVENTS_EXCEEDS_MAXRATE.explanation= Num\u0103rul de evenimente de procesat dep\u0103\u015fe\u015fte rata maxEvents de evenimente pe secund\u0103.
+MAXEVENTS_EXCEEDS_MAXRATE.userAction= Modifica\u0163i configura\u0163iile \u00een fi\u015fierul server.xml pentru maxEvents, dac\u0103 dori\u0163i s\u0103 modifica\u0163i rata de tratare a evenimentelor.
+
+MAXEVENTS_NOTEXCEED_RATE=TRAS4305I: Backlog-ul de evenimente a fost cur\u0103\u0163at. Noile evenimente vor fi tratate f\u0103r\u0103 \u00eent\u00e2rziere.
+MAXEVENTS_NOTEXCEED_RATE.explanation= Evenimentele au terminat procesarea la rata maxim\u0103 de tratare.
+MAXEVENTS_NOTEXCEED_RATE.userAction=  Nu este necesar\u0103 nicio ac\u0163iune.

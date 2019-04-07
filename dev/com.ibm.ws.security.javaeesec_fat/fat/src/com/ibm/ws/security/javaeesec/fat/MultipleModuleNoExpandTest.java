@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 @Mode(TestMode.FULL)
 public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
 
+    protected static String portNumber = System.getProperty("ldap.1.port");
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");
     protected static Class<?> logClass = MultipleModuleNoExpandTest.class;
     protected static String urlBase;
@@ -92,17 +93,19 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
     protected static String REALM2_PASSWORD = "s3cur1ty";
     protected static String COMMON_USER1 = "commonuser1";
     protected static String COMMON_USER2 = "commonuser2";
-    protected static String IS1_REALM_NAME = "127.0.0.1:10389";
-    protected static String IS2_REALM_NAME = "localhost:10389";
+    protected static String IS1_REALM_NAME = "127.0.0.1:" + portNumber;
+    protected static String IS2_REALM_NAME = "localhost:" + portNumber;
     protected static String REALM1_REALM_NAME = "Realm1";
     protected static String REALM2_REALM_NAME = "Realm2";
     protected static String COMMON_REALM_NAME = "CommonIdentityStore";
 
-    protected static String IS1_GROUP_REALM_NAME = "group:127.0.0.1:10389/";
-    protected static String IS2_GROUP_REALM_NAME = "group:localhost:10389/";
+    protected static String IS1_GROUP_REALM_NAME = "group:127.0.0.1:" + portNumber + "/";
+    protected static String IS2_GROUP_REALM_NAME = "group:localhost:" + portNumber + "/";
 
-    protected static String IS1_GROUPS = "group:127.0.0.1:10389/grantedgroup2, group:127.0.0.1:10389/grantedgroup, group:127.0.0.1:10389/group1";
-    protected static String IS2_GROUPS = "group:localhost:10389/grantedgroup2, group:localhost:10389/anothergroup1, group:localhost:10389/grantedgroup";
+    protected static String IS1_GROUPS = "group:127.0.0.1:" + portNumber + "/grantedgroup2, group:127.0.0.1:" + portNumber + "/grantedgroup, group:127.0.0.1:" + portNumber
+                                         + "/group1";
+    protected static String IS2_GROUPS = "group:localhost:" + portNumber + "/grantedgroup2, group:localhost:" + portNumber + "/anothergroup1, group:localhost:" + portNumber
+                                         + "/grantedgroup";
     protected static String REALM1_GROUPS = "group:Realm1/grantedgroup2, group:Realm1/grantedgroup, group:Realm1/realm1group1, group:Realm1/realm1group2";
     protected static String REALM2_GROUPS = "group:Realm2/grantedgroup2, group:Realm2/realm2group2, group:Realm2/realm2group1, group:Realm2/grantedgroup";
     protected static String COMMONUSER_GROUPS = "group:CommonIdentityStore/grantedgroup2, group:CommonIdentityStore/commonGroup2, group:CommonIdentityStore/commonGroup1, group:CommonIdentityStore/grantedgroup";
@@ -132,9 +135,12 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer();
-        if (ldapServer != null) {
-            ldapServer.stop();
+        try {
+            myServer.stopServer();
+        } finally {
+            if (ldapServer != null) {
+                ldapServer.stop();
+            }
         }
     }
 
@@ -175,11 +181,12 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
 
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect",
-                                      "web.war.identitystores.ldap.ldap1", "web.war.identitystores.custom.grouponly", "web.war.identitystores.custom.realm1");
+                                      "web.war.identitystores.ldap.ldap1", "web.war.identitystores.custom.grouponly", "web.war.identitystores.custom.realm1",
+                                      "web.war.identitystores.ldap");
         // create module2, custom form login, forward, ldap2. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform",
                                       "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly",
-                                      "web.war.identitystores.custom.realm2");
+                                      "web.war.identitystores.custom.realm2", "web.war.identitystores.ldap");
 
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EAR_NAME, true, WAR1_NAME, WAR2CUSTOM_NAME);
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_NAME);
@@ -291,10 +298,11 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
 
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect",
-                                      "web.war.identitystores.ldap.ldap1", "web.war.identitystores.custom.grouponly", "web.jar.realm1");
+                                      "web.war.identitystores.ldap.ldap1", "web.war.identitystores.custom.grouponly", "web.jar.realm1", "web.war.identitystores.ldap");
         // create module2, custom form login, forward, ldap2. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform",
-                                      "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly", "web.jar.realm2");
+                                      "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly", "web.jar.realm2",
+                                      "web.war.identitystores.ldap");
 
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EAR_NAME, true, WAR1_NAME, WAR2CUSTOM_NAME);
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_NAME);
@@ -385,7 +393,6 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
-
     /**
      * Verify the following:
      * <OL>
@@ -404,10 +411,10 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
 
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, null, false, "web.war.servlets.form.get.redirect", "web.war.identitystores.ldap.ldap1",
-                                      "web.war.identitystores.custom.grouponly");
+                                      "web.war.identitystores.custom.grouponly", "web.war.identitystores.ldap");
         // create module2, custom form login, forward, ldap2. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, null, false, "web.war.servlets.customform", "web.war.servlets.customform.get.forward",
-                                      "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
+                                      "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly", "web.war.identitystores.ldap");
         WCApplicationHelper.createJar(myServer, TEMP_DIR, IS_JAR_NAME, true, "web.jar.base", "web.jar.common.identitystores");
 
         EnterpriseArchive ear = WCApplicationHelper.createEar(myServer, TEMP_DIR, EAR_NAME, true);
@@ -462,10 +469,10 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
 
         // create module1, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, HAM_JAR_NAME, true, "web.jar.base", "web.war.servlets.secured", "web.war.identitystores.ldap.ldap1",
-                                      "web.war.identitystores.custom.grouponly", "web.jar.mechanisms.form.get.forward");
+                                      "web.war.identitystores.custom.grouponly", "web.jar.mechanisms.form.get.forward", "web.war.identitystores.ldap");
         // create module2, custom form login, forward, ldap2. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2_NAME, true, HAM_JAR_NAME, true, "web.jar.base", "web.war.servlets.secured", "web.war.identitystores.ldap.ldap2",
-                                      "web.war.identitystores.custom.grouponly", "web.jar.mechanisms.form.get.forward");
+                                      "web.war.identitystores.custom.grouponly", "web.jar.mechanisms.form.get.forward", "web.war.identitystores.ldap");
 
         EnterpriseArchive ear = WCApplicationHelper.createEar(myServer, TEMP_DIR, EAR2_NAME, true);
         WCApplicationHelper.packageWars(myServer, TEMP_DIR, ear, WAR1_NAME, WAR2_NAME);
@@ -518,10 +525,10 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
 
         // create module1, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, null, false, "web.war.servlets.secured", "web.war.identitystores.ldap.ldap1",
-                                      "web.war.identitystores.custom.grouponly");
+                                      "web.war.identitystores.custom.grouponly", "web.war.identitystores.ldap");
         // create module2, custom form login, forward, ldap2. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2_NAME, true, null, false, "web.war.servlets.secured", "web.war.identitystores.ldap.ldap2",
-                                      "web.war.identitystores.custom.grouponly");
+                                      "web.war.identitystores.custom.grouponly", "web.war.identitystores.ldap");
         WCApplicationHelper.createJar(myServer, TEMP_DIR, HAM_JAR_NAME, true, "web.jar.base", "web.jar.mechanisms.form.get.forward");
 
         EnterpriseArchive ear = WCApplicationHelper.createEar(myServer, TEMP_DIR, EAR2_NAME, true);

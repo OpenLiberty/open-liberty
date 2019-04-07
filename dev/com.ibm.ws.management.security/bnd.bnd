@@ -48,7 +48,15 @@ Service-Component: \
     modified:=modify; \
     deactivate:=deactivate; \
     configuration-policy:=require; \
-    properties:="service.vendor=IBM,com.ibm.ws.management.security.role.name=Administrator"
+    properties:="service.vendor=IBM,com.ibm.ws.management.security.role.name=Administrator", \
+  com.ibm.ws.management.security.role.viewer; \
+    implementation:=com.ibm.ws.management.security.internal.ViewerRole; \
+    provide:=com.ibm.ws.management.security.ManagementRole; \
+    activate:=activate; \
+    modified:=modify; \
+    deactivate:=deactivate; \
+    configuration-policy:=require; \
+    properties:="service.vendor=IBM,com.ibm.ws.management.security.role.name=Viewer"
 #  The JMXSecurityMBeanServer is currently disabled
 #  com.ibm.ws.management.security.MBeanServer; \
 #    implementation:=com.ibm.ws.management.security.internal.JMXSecurityMBeanServer; \
@@ -82,6 +90,6 @@ instrument.classesExcludes: com/ibm/ws/management/security/internal/resources/*.
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	org.jmock:jmock-legacy;version=2.5.0, \
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
-	cglib:cglib-nodep;version=3.2.7, \
+	cglib:cglib-nodep;version=3.2.10, \
 	com.ibm.ws.kernel.boot;version=latest, \
 	com.ibm.websphere.security;version=latest

@@ -19,6 +19,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.http.channel.h2internal.exceptions.FlowControlException;
+import com.ibm.ws.http.channel.h2internal.exceptions.StreamClosedException;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamConnectWeb;
@@ -468,6 +470,12 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Flushing buffers: " + this);
         }
+
+        if (this.isc.getResponse() == null) {
+            IOException x = new IOException("response Object(s) (e.g. getObjectFactory()) are null");
+            throw x;
+        }
+
         if (!this.isc.getResponse().isCommitted()) {
             if (obs != null && !this.WCheadersWritten) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -518,6 +526,12 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             this.error = ioe;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Received exception during write: " + ioe);
+            }
+            Throwable th = ioe.getCause();
+            if (th instanceof FlowControlException || th instanceof StreamClosedException) {
+                // http/2 stream write failed - we don't want to pass this back up to FFDC
+                Tr.debug(tc, "HTTP/2 stream could not write; setting error on this output stream");
+                return;
             }
             throw ioe;
         } finally {
@@ -601,7 +615,13 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             Tr.debug(tc, "Flushing stream: " + this);
         }
         validate();
-        flushBuffers();
+        if (!this.hasFinished) {
+            flushBuffers();
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "flush hasFinished=true; skipping flushBuffers() on " + this.hashCode() + " details: " + this);
+            }    
+        }
     }
 
     /*

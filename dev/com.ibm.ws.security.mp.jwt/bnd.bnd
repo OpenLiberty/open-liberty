@@ -41,6 +41,7 @@ Import-Package: \
    javax.servlet;version="!", \
    javax.servlet.*;version="!", \
    com.ibm.ws.security.jwt.utils, \
+   org.jose4j.*;version="[0.5,1)", \
    *
 
 Private-Package: \
@@ -82,7 +83,7 @@ Include-Resource: \
         com.ibm.ws.security.authentication.tai;version=latest, \
         com.ibm.ws.security.authentication;version=latest, \
         com.ibm.ws.security.authentication.filter;version=latest,\
-        com.ibm.ws.org.jose4j.0.5.1;version=latest, \
+        com.ibm.ws.org.jose4j;version=latest, \
         com.ibm.ws.security.jwt;version=latest, \
         com.ibm.ws.security.token;version=latest, \
         com.ibm.ws.security.common;version=latest, \
@@ -96,13 +97,13 @@ Include-Resource: \
     com.ibm.ws.junit.extensions;version=latest, \
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     org.jmock:jmock-legacy;version=2.5.0, \
-    cglib:cglib-nodep;version=3.2.7, \
+    cglib:cglib-nodep;version=3.2.10, \
     org.hamcrest:hamcrest-all;version=1.3, \
     org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
     org.jmock:jmock;strategy=exact;version=2.5.1, \
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
     com.ibm.ws.kernel.boot;version=latest, \
-    com.ibm.ws.org.jose4j.0.5.1;version=latest, \
+    com.ibm.ws.org.jose4j;version=latest, \
     com.ibm.ws.org.apache.commons.io;version=latest, \
     com.ibm.ws.org.apache.commons.fileupload;version=latest, \
     com.ibm.ws.adaptable.module;version=latest,\

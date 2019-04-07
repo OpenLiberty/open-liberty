@@ -23,6 +23,10 @@ public class ResponseStatusExpectation extends Expectation {
         super(testAction, Constants.RESPONSE_STATUS, checkType, searchFor, failureMsg);
     }
 
+    public ResponseStatusExpectation(int expectedStatus) {
+        this(null, expectedStatus);
+    }
+
     public ResponseStatusExpectation(String testAction, int expectedStatus) {
         this(testAction, expectedStatus, String.format(DEFAULT_FAILURE_MSG, Integer.toString(expectedStatus), testAction));
     }
@@ -36,7 +40,7 @@ public class ResponseStatusExpectation extends Expectation {
         try {
             int responseStatus = getResponseStatus(contentToValidate);
             validationUtils.validateStringContent(this, Integer.toString(responseStatus));
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new Exception("Failed to validate response status: " + e.getMessage());
         }
     }

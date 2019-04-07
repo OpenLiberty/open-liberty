@@ -67,6 +67,8 @@ public interface SocialLoginConfig {
 
     String getResponseType();
 
+    String getGrantType();
+
     boolean createNonce();
 
     String getResource();
@@ -104,5 +106,9 @@ public interface SocialLoginConfig {
     public String getAlgorithm();
 
     boolean getUserApiNeedsSpecialHeader();
+
+    String getResponseMode();
+    
+    public boolean getUseSystemPropertiesForHttpClientConnections();
 
 }

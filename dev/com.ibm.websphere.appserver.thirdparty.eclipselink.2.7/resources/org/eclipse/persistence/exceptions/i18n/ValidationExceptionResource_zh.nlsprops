@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -539,10 +543,7 @@
 
 7311=\u6b63\u5728\u4e0e\u7c7b [{1}] \u4e0a\u5143\u7d20\u96c6\u5408\u5c5e\u6027 [{0}] \u914d\u5408\u4f7f\u7528\u7684\u76ee\u6807\u7c7b\u65e0\u6548\u3002\u53ea\u5141\u8bb8\u57fa\u672c\u7c7b\u578b\u4ee5\u53ca\u53ef\u5d4c\u5165\u7c7b\u3002
 
-# START NON-TRANSLATABLE
 7312=\u6b63\u5728\u4e0e\u7c7b [{2}] \u4e0a\u5143\u7d20\u96c6\u5408\u5c5e\u6027 [{1}] \u914d\u5408\u4f7f\u7528\u7684\u53ef\u5d4c\u5165\u7c7b [{0}] \u65e0\u6548\u3002\u8bf7\u53c2\u9605\u89c4\u8303\u7684\u7b2c 2.6 \u8282\uff1a\u5305\u542b\u5728\u5143\u7d20\u96c6\u5408\u5185\u7684\u53ef\u5d4c\u5165\u7c7b\uff08\u5176\u4e2d\u5305\u62ec\u53e6\u4e00\u53ef\u5d4c\u5165\u7c7b\u5185\u7684\u53ef\u5d4c\u5165\u7c7b\uff09\u4e0d\u5f97\u5305\u542b\u5143\u7d20\u96c6\u5408\uff0c\u5b83\u4e5f\u4e0d\u80fd\u5305\u542b\u4e0e\u5b9e\u4f53\u7684\u9664\u4e86\u201c\u591a\u5bf9\u4e00\u201d\u6216\u201c\u4e00\u5bf9\u4e00\u201d\u5173\u7cfb\u4e4b\u5916\u7684\u5173\u7cfb\u3002\u8be5\u53ef\u5d4c\u5165\u7c7b\u5fc5\u987b\u4f4d\u4e8e\u6b64\u7c7b\u5173\u7cfb\u7684\u62e5\u6709\u4fa7\uff0c\u5e76\u4e14\u8be5\u5173\u7cfb\u5fc5\u987b\u7531\u5916\u952e\u6620\u5c04\u8fdb\u884c\u6620\u5c04\u3002\u8be5\u53ef\u5d4c\u5165\u7c7b\u4e0a\u5c5e\u6027 [{3}] \u7684\u6620\u5c04\u8fdd\u53cd\u4e86\u6b64\u9650\u5236\u3002
-# END NON-TRANSLATABLE
-
 7313=\u5728\u53ef\u5d4c\u5165\u7c7b [{0}] \u4e0a\uff0c\u627e\u4e0d\u5230\u5c5e\u6027 [{1}]\u3002\u5728\u7c7b [{2}] \u4e0a\u7684\u5d4c\u5165\u5f0f\u5c5e\u6027 [{3}] \u7684\u5173\u8054\u8986\u76d6\u4e2d\u5f15\u7528\u4e86\u8be5\u5c5e\u6027\u3002
 
 7314=\u6620\u5c04 [{0}] \u6b63\u5728\u7528\u4e8e\u6620\u5c04 MappedKeyMapContainerPolicy \u4e2d\u7684\u952e\u5e76\u4e14\u4f7f\u7528\u95f4\u63a5\u5f15\u7528\u3002\u7528\u4e8e\u6620\u5c04\u952e\u7684\u6620\u5c04\u4e0d\u80fd\u4f7f\u7528\u95f4\u63a5\u5f15\u7528\u3002

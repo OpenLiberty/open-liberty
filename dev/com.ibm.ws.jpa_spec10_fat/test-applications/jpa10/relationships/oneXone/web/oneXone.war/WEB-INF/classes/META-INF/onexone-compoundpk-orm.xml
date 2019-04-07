@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+    version="1.0">
+
+    <!-- Compound Primary Key Entities -->
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.complexpk.xml.XMLEmbedIDOOEntA"
+        access="FIELD">
+        <attributes>
+            <id name="id"></id>
+            <basic name="userName"></basic>
+            <basic name="password"></basic>
+            <one-to-one name="identity">
+                <join-column name="identity_id" referenced-column-name="id" />
+                <join-column name="identity_country" referenced-column-name="country" />
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.complexpk.xml.XMLEmbedIDOOEntB">
+        <attributes>
+            <embedded-id name="id"></embedded-id>
+            <basic name="name"></basic>
+            <basic name="salary"></basic>
+        </attributes>
+    </entity>
+    
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.complexpk.xml.XMLIDClassOOEntityA"
+        access="FIELD">
+        <attributes>
+            <id name="id"></id>
+            <basic name="userName"></basic>
+            <basic name="password"></basic>
+            <one-to-one name="identity">
+                <join-column name="identity_id" referenced-column-name="id" />
+                <join-column name="identity_country" referenced-column-name="country" />
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.complexpk.xml.XMLIDClassOOEntityB">
+        <id-class
+            class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.complexpk.CompoundPK" />
+        <attributes>
+            <id name="id"></id>
+            <id name="country"></id>
+            <basic name="name"></basic>
+            <basic name="salary"></basic>
+        </attributes>
+    </entity>
+
+    <!-- Embeddable Declarations -->
+    <embeddable
+        class="com.ibm.ws.jpa.fvt.relationships.oneXone.entities.complexpk.xml.XMLEmbeddableID"></embeddable>
+</entity-mappings>

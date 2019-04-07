@@ -1,0 +1,35 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#  IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-SymbolicName: com.ibm.ws.io.reactivex.rxjava.2.2; singleton:=true
+
+Import-Package: \
+  org.reactivestreams; version="[1.0,1.1)", \
+  *
+
+Export-Package: \
+  io.reactivex; version=2.2.4, \
+  io.reactivex.*; version=2.2.4, \
+  !io.reactivex.internal.*
+  
+Include-Resource: \
+  @${repo;io.reactivex.rxjava2:rxjava;2.2.4;EXACT}
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+WS-TraceGroup: REACTIVESTREAMS
+
+instrument.disabled: true

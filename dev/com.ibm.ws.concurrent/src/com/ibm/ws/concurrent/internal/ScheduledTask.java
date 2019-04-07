@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 IBM Corporation and others.
+ * Copyright (c) 2013, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.internal;
 
-import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
@@ -30,16 +29,18 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.enterprise.concurrent.AbortedException;
 import javax.enterprise.concurrent.LastExecution;
 import javax.enterprise.concurrent.ManagedTask;
+import javax.enterprise.concurrent.ManagedTaskListener;
 import javax.enterprise.concurrent.SkippedException;
 import javax.enterprise.concurrent.Trigger;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.concurrent.ContextualAction;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.threadcontext.ThreadContext;
-import com.ibm.wsspi.threadcontext.ThreadContextProvider;
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
@@ -49,7 +50,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * If a repeating task, each execution of the task schedules the next execution,
  * thus guaranteeing that we never have overlapping executions of the same task.
  */
-public class ScheduledTask<T> extends AbstractTask<T> {
+public class ScheduledTask<T> implements Callable<T>, ManagedTask {
     private static final TraceComponent tc = Tr.register(ScheduledTask.class);
 
     /**
@@ -119,11 +120,6 @@ public class ScheduledTask<T> extends AbstractTask<T> {
     }
 
     /**
-     * Class of task if submitted as a Callable. Null if the task is submitted as a Runnable.
-     */
-    private final Class<? extends Callable<T>> callableType;
-
-    /**
      * Fixed delay between executions of the task. Only available if using fixed delay.
      */
     private final Long fixedDelay;
@@ -144,9 +140,19 @@ public class ScheduledTask<T> extends AbstractTask<T> {
     private final Long initialDelay;
 
     /**
+     * True if task is submitted as a Callable. False if the task is submitted as a Runnable.
+     */
+    private final boolean isCallable;
+
+    /**
      * Information about the most recent execution of the task. Only available if using a trigger.
      */
     private volatile LastExecution lastExecution;
+
+    /**
+     * Managed task listener. Null if there isn't one.
+     */
+    private final ManagedTaskListener listener;
 
     /**
      * Managed Scheduled executor service to which the task was submitted.
@@ -166,6 +172,11 @@ public class ScheduledTask<T> extends AbstractTask<T> {
     private final AtomicReference<Result> resultRef = new AtomicReference<Result>(new Result());
 
     /**
+     * The task.
+     */
+    private final Object task;
+
+    /**
      * Date at which the task was originally scheduled.
      */
     private final Date taskScheduledTime = new Date();
@@ -174,6 +185,11 @@ public class ScheduledTask<T> extends AbstractTask<T> {
      * Nanoseconds at which the task was originally scheduled.
      */
     private final long taskScheduledNanos = System.nanoTime();
+
+    /**
+     * Previously captured thread context with which the task should run.
+     */
+    private final ThreadContextDescriptor threadContextDescriptor;
 
     /**
      * Trigger that controls when and how often to execute the task. Null if not using a trigger.
@@ -191,32 +207,40 @@ public class ScheduledTask<T> extends AbstractTask<T> {
      *
      * @param managedExecSvc managed scheduled executor service to which the task was submitted
      * @param task task
-     * @param callableClass class of the task if submitted as a Callable. Null if the task is submitted as a Runnable.
+     * @param isCallable indicates whether task is submitted as a Callable or Runnable.
      * @param initialDelay indicates when the task should first run
      * @param fixedDelay fixed delay between executions of the task. Null if not using fixed delay.
      * @param fixedRate fixed period between the start of executions of the task. Null if not using fixed rate.
      * @param unit unit of time.
      */
-    ScheduledTask(ManagedScheduledExecutorServiceImpl managedExecSvc, Object task, Class<? extends Callable<T>> callableType,
+    ScheduledTask(ManagedScheduledExecutorServiceImpl managedExecSvc, Object task, boolean isCallable,
                   long initialDelay, Long fixedDelay, Long fixedRate, TimeUnit unit) {
-        super(task);
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        this.callableType = callableType;
         this.fixedDelay = fixedDelay;
         this.fixedRate = fixedRate;
         this.initialDelay = initialDelay;
+        this.isCallable = isCallable;
+        this.listener = task instanceof ManagedTask ? ((ManagedTask) task).getManagedTaskListener() : null;
         this.managedExecSvc = managedExecSvc;
         this.trigger = null;
         this.unit = unit;
 
-        Map<String, String> execProps = managedExecSvc.getExecutionProperties(task);
-        ScheduledExecutorService scheduledExecSvc = managedExecSvc.scheduledExecSvc;
-        WSContextService contextSvc = AccessController.doPrivileged(managedExecSvc.contextSvcAccessor);
-        try {
-            threadContextDescriptor = contextSvc.captureThreadContext(execProps);
-        } catch (Throwable x) {
-            throw new RejectedExecutionException(x);
+        if (task instanceof ContextualAction) {
+            ContextualAction<?> a = (ContextualAction<?>) task;
+            this.task = a.getAction();
+            this.threadContextDescriptor = a.getContextDescriptor();
+        } else {
+            this.task = task;
+            WSContextService contextSvc = managedExecSvc.getContextService();
+            Map<String, String> execProps = managedExecSvc.getExecutionProperties(task);
+            try {
+                this.threadContextDescriptor = contextSvc.captureThreadContext(execProps);
+            } catch (NullPointerException x) {
+                throw x;
+            } catch (Throwable x) {
+                throw new RejectedExecutionException(x);
+            }
         }
 
         nextExecutionTime = taskScheduledNanos + unit.toNanos(initialDelay);
@@ -225,19 +249,16 @@ public class ScheduledTask<T> extends AbstractTask<T> {
 
         // notify listener: taskSubmitted
         if (listener != null) {
-            ThreadContextProvider tranContextProvider = AccessController.doPrivileged(managedExecSvc.tranContextProviderAccessor);
-            ThreadContext suspendTranContext = tranContextProvider == null ? null : tranContextProvider.captureThreadContext(XPROPS_SUSPEND_TRAN, null);
-            if (suspendTranContext != null)
-                suspendTranContext.taskStarting();
+            ThreadContext tranContextRestorer = managedExecSvc.suspendTransaction();
             try {
                 result.executionThread = Thread.currentThread();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                    Tr.event(this, tc, "taskSubmitted", managedExecSvc, task);
-                listener.taskSubmitted(future, managedExecSvc, task);
+                    Tr.event(this, tc, "taskSubmitted", managedExecSvc, this.task);
+                listener.taskSubmitted(future, managedExecSvc, this.task);
             } finally {
                 result.executionThread = null;
-                if (suspendTranContext != null)
-                    suspendTranContext.taskStopping();
+                if (tranContextRestorer != null)
+                    tranContextRestorer.taskStopping();
             }
         }
 
@@ -246,6 +267,7 @@ public class ScheduledTask<T> extends AbstractTask<T> {
         if (status.type == Status.Type.NONE && result.compareAndSet(status, new Status<T>(Status.Type.SUBMITTED, null, null, false))) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "schedule " + initialDelay + ' ' + unit + " from now");
+            ScheduledExecutorService scheduledExecSvc = managedExecSvc.scheduledExecSvc;
             ScheduledFuture<?> scheduledFuture = scheduledExecSvc.schedule(this, initialDelay, unit);
             future.scheduledFutureRef.set(scheduledFuture);
         }
@@ -256,27 +278,38 @@ public class ScheduledTask<T> extends AbstractTask<T> {
      *
      * @param managedExecSvc managed scheduled executor service to which the task was submitted
      * @param task task
-     * @param callableClass class of the task if submitted as a Callable. Null if the task is submitted as a Runnable.
+     * @param isCallable indicates whether task is submitted as a Callable or Runnable.
      * @param trigger indicates when the task should run
      */
-    ScheduledTask(ManagedScheduledExecutorServiceImpl managedExecSvc, Object task, Class<? extends Callable<T>> callableType, Trigger trigger) {
-        super(task);
+    ScheduledTask(ManagedScheduledExecutorServiceImpl managedExecSvc, Object task, boolean isCallable, Trigger trigger) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        this.callableType = callableType;
         this.fixedDelay = null;
         this.fixedRate = null;
         this.initialDelay = null;
+        this.isCallable = isCallable;
+        this.listener = task instanceof ManagedTask ? ((ManagedTask) task).getManagedTaskListener() : null;
         this.managedExecSvc = managedExecSvc;
         this.trigger = trigger;
         this.unit = TimeUnit.MILLISECONDS;
 
-        Map<String, String> execProps = managedExecSvc.getExecutionProperties(task);
-        ScheduledExecutorService scheduledExecSvc = managedExecSvc.scheduledExecSvc;
+        if (task instanceof ContextualAction) {
+            ContextualAction<?> a = (ContextualAction<?>) task;
+            this.task = a.getAction();
+            this.threadContextDescriptor = a.getContextDescriptor();
+        } else {
+            this.task = task;
+            WSContextService contextSvc = managedExecSvc.getContextService();
+            Map<String, String> execProps = managedExecSvc.getExecutionProperties(task);
+            try {
+                this.threadContextDescriptor = contextSvc.captureThreadContext(execProps);
+            } catch (Throwable x) {
+                throw new RejectedExecutionException(x);
+            }
+        }
+
         Date nextExecutionDate;
-        WSContextService contextSvc = AccessController.doPrivileged(managedExecSvc.contextSvcAccessor);
         try {
-            threadContextDescriptor = contextSvc.captureThreadContext(execProps);
             nextExecutionDate = trigger.getNextRunTime(lastExecution = null, taskScheduledTime);
         } catch (Throwable x) {
             throw new RejectedExecutionException(x);
@@ -291,19 +324,16 @@ public class ScheduledTask<T> extends AbstractTask<T> {
 
         // notify listener: taskSubmitted
         if (listener != null) {
-            ThreadContextProvider tranContextProvider = AccessController.doPrivileged(managedExecSvc.tranContextProviderAccessor);
-            ThreadContext suspendTranContext = tranContextProvider == null ? null : tranContextProvider.captureThreadContext(XPROPS_SUSPEND_TRAN, null);
-            if (suspendTranContext != null)
-                suspendTranContext.taskStarting();
+            ThreadContext tranContextRestorer = managedExecSvc.suspendTransaction();
             try {
                 result.executionThread = Thread.currentThread();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                    Tr.event(this, tc, "taskSubmitted", managedExecSvc, task);
-                listener.taskSubmitted(future, managedExecSvc, task);
+                    Tr.event(this, tc, "taskSubmitted", managedExecSvc, this.task);
+                listener.taskSubmitted(future, managedExecSvc, this.task);
             } finally {
                 result.executionThread = null;
-                if (suspendTranContext != null)
-                    suspendTranContext.taskStopping();
+                if (tranContextRestorer != null)
+                    tranContextRestorer.taskStopping();
             }
         }
 
@@ -317,6 +347,7 @@ public class ScheduledTask<T> extends AbstractTask<T> {
         if (status.type == Status.Type.NONE && result.compareAndSet(status, new Status<T>(Status.Type.SUBMITTED, null, null, false))) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "schedule " + delay + "ms from now");
+            ScheduledExecutorService scheduledExecSvc = managedExecSvc.scheduledExecSvc;
             ScheduledFuture<?> scheduledFuture = scheduledExecSvc.schedule(this, delay, TimeUnit.MILLISECONDS);
             future.scheduledFutureRef.set(scheduledFuture);
         }
@@ -379,17 +410,17 @@ public class ScheduledTask<T> extends AbstractTask<T> {
                 if (status.type == Status.Type.SUBMITTED && result.compareAndSet(status, new Status<T>(Status.Type.STARTED, null, null, false))) {
                     try {
                         if (trigger == null)
-                            if (callableType == null)
-                                ((Runnable) task).run();
+                            if (isCallable)
+                                taskResult = ((Callable<T>) task).call();
                             else
-                                taskResult = callableType.cast(task).call();
+                                ((Runnable) task).run();
                         else {
                             long startTime = System.currentTimeMillis();
 
-                            if (callableType == null)
-                                ((Runnable) task).run();
+                            if (isCallable)
+                                taskResult = ((Callable<T>) task).call();
                             else
-                                taskResult = callableType.cast(task).call();
+                                ((Runnable) task).run();
 
                             long endTime = System.currentTimeMillis();
                             String identityName = threadContextDescriptor.getExecutionProperties().get(ManagedTask.IDENTITY_NAME);
@@ -583,6 +614,35 @@ public class ScheduledTask<T> extends AbstractTask<T> {
     }
 
     /**
+     * @see javax.enterprise.concurrent.ManagedTask#getExecutionProperties()
+     */
+    @Override
+    public final Map<String, String> getExecutionProperties() {
+        return threadContextDescriptor.getExecutionProperties();
+    }
+
+    /**
+     * @see javax.enterprise.concurrent.ManagedTask#getManagedTaskListener()
+     */
+    @Override
+    @Trivial
+    public final ManagedTaskListener getManagedTaskListener() {
+        return listener;
+    }
+
+    /**
+     * Returns the task name.
+     *
+     * @return the task name.
+     */
+    @Trivial
+    final String getName() {
+        Map<String, String> execProps = getExecutionProperties();
+        String taskName = execProps == null ? null : execProps.get(ManagedTask.IDENTITY_NAME);
+        return taskName == null ? task.toString() : taskName;
+    }
+
+    /**
      * Future for this scheduled task.
      *
      * Note: this class has a natural ordering that is inconsistent with equals.
@@ -629,10 +689,7 @@ public class ScheduledTask<T> extends AbstractTask<T> {
                     // otherwise the task is in progress and should notify the task listener itself.
                     if ((status.type == Status.Type.NONE || status.type == Status.Type.SUBMITTED) && listener != null) {
                         Throwable failure = null;
-                        ThreadContextProvider tranContextProvider = AccessController.doPrivileged(managedExecSvc.tranContextProviderAccessor);
-                        ThreadContext suspendTranContext = tranContextProvider == null ? null : tranContextProvider.captureThreadContext(XPROPS_SUSPEND_TRAN, null);
-                        if (suspendTranContext != null)
-                            suspendTranContext.taskStarting();
+                        ThreadContext tranContextRestorer = managedExecSvc.suspendTransaction();
                         try {
                             try {
                                 Throwable cancelX = new CancellationException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(), managedExecSvc.name));
@@ -651,8 +708,8 @@ public class ScheduledTask<T> extends AbstractTask<T> {
                                 listener.taskDone(this, managedExecSvc, task.task, failure);
                             }
                         } finally {
-                            if (suspendTranContext != null)
-                                suspendTranContext.taskStopping();
+                            if (tranContextRestorer != null)
+                                tranContextRestorer.taskStopping();
                         }
                     }
 

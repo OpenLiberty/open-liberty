@@ -30,15 +30,19 @@
 # -------------------------------------------------------------------------------------------------
 
 # OSGI Log Message
-OSGI_MSG001={0} {1} {2} {3} {4}
+OSGI_MSG001=CWWKE0703I: {0} {1} {2} {3}
 OSGI_MSG001.explanation=Do\u0161lo k zaprotokolov\u00e1n\u00ed informa\u010dn\u00ed zpr\u00e1vy pomoc\u00ed slu\u017eby protokolov\u00e1n\u00ed OSGi.
 OSGI_MSG001.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
-OSGI_WARNING_MSG=CWWKE0700W: {0} {1} {2} {3} {4}
+OSGI_AUDIT_MSG=CWWKE0704A: {0} {1} {2} {3}
+OSGI_AUDIT_MSG.explanation=Zpr\u00e1va auditu byla zaprotokolov\u00e1na pomoc\u00ed slu\u017eby protokolu OSGi.
+OSGI_AUDIT_MSG.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+OSGI_WARNING_MSG=CWWKE0700W: {0} {1} {2} {3}
 OSGI_WARNING_MSG.explanation=Do\u0161lo k zaprotokolov\u00e1n\u00ed varovn\u00e9 zpr\u00e1vy pomoc\u00ed slu\u017eby protokolov\u00e1n\u00ed OSGi.
 OSGI_WARNING_MSG.useraction=Dal\u0161\u00ed informace viz p\u0159\u00edslu\u0161n\u00e1 varovn\u00e1 zpr\u00e1va.
 
-OSGI_ERROR_MSG=CWWKE0701E: {0} {1} {2} {3} {4}
+OSGI_ERROR_MSG=CWWKE0701E: {0} {1} {2} {3}
 OSGI_ERROR_MSG.explanation=Do\u0161lo k zaprotokolov\u00e1n\u00ed chybov\u00e9 zpr\u00e1vy pomoc\u00ed slu\u017eby protokolov\u00e1n\u00ed OSGi.
 OSGI_ERROR_MSG.useraction=Dal\u0161\u00ed informace viz p\u0159\u00edslu\u0161n\u00e1 chybov\u00e1 zpr\u00e1va.
 

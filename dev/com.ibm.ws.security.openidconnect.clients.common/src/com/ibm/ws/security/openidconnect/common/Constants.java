@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.common;
 
@@ -19,6 +19,7 @@ public class Constants {
     public static final String SCOPE = "scope";
     public static final String CLIENT_ID = "client_id";
     public static final String CLIENT_SECRET = "client_secret";
+    public static final String USERINFO_STR = "userinfo_string";
     public static final String ID_TOKEN = "id_token";
     public static final String ID_TOKEN_OBJECT = "id_token_object";
     public static final String ACCESS_TOKEN = "access_token";
@@ -28,6 +29,8 @@ public class Constants {
     public static final String REDIRECT_URI = "redirect_uri";
     public static final String CODE = "code";
     public static final String STATE = "state";
+    public static final String NONCE = "nonce";
+    public static final String RESPONSE_TYPE = "response_type";
     public static final String SESSION_STATE = "session_state";
     public static final String BROWSER_STATE_COOKIE = "oidc_bsc";
     public static final String ERROR = "error";

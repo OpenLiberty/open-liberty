@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/mp/jwt/v11/resources/MpConfigProxyMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server MicroProfile JWT 1.1 Config Proxy
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5775 - CWWKS5799
+
+MPJWT_11_CONFIG_PROXY_PROCESSED=CWWKS5775I: O mpConfigProxy do MicroProfile JWT vers\u00e3o 1.1 foi processado com sucesso.
+MPJWT_11_CONFIG_PROXY_PROCESSED.explanation=A configura\u00e7\u00e3o indicada foi processada com \u00eaxito.
+MPJWT_11_CONFIG_PROXY_PROCESSED.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+MPJWT_11_CONFIG_PROXY_MODIFIED=CWWKS5776I: O mpConfigProxy do MicroProfile JWT vers\u00e3o 1.1 foi processado com sucesso.
+MPJWT_11_CONFIG_PROXY_MODIFIED.explanation=A configura\u00e7\u00e3o indicada foi processada com \u00eaxito.
+MPJWT_11_CONFIG_PROXY_MODIFIED.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+MPJWT_11_CONFIG_PROXY_DEACTIVATED=CWWKS5777I: O mpConfigProxy do MicroProfile JWT vers\u00e3o 1.1 foi desativado com sucesso.
+MPJWT_11_CONFIG_PROXY_DEACTIVATED.explanation=A configura\u00e7\u00e3o indicada foi desativada com \u00eaxito.
+MPJWT_11_CONFIG_PROXY_DEACTIVATED.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+

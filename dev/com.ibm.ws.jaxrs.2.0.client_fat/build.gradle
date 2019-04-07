@@ -1,0 +1,101 @@
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+Properties props = new Properties()
+rootProject.file('generated.properties').withInputStream { props.load(it) }
+
+repositories {
+  /*if ((props.getProperty("artifactory.download.server") != null) && !props.getProperty('artifactory.force.external.repo')) {
+    maven {
+      credentials {
+        username props.getProperty("artifactory.download.user")
+        password props.getProperty("artifactory.download.token")
+      }
+      url ("https://na.artifactory.swg-devops.com/artifactory/wasliberty-maven-remote")
+    }
+  } else {*/
+    mavenCentral()
+  //}
+}
+
+configurations {
+  thirdpartyjerseyclient
+  mockserver
+}
+
+configurations.thirdpartyjerseyclient {
+  transitive = false
+}
+
+dependencies {
+  thirdpartyjerseyclient 'org.glassfish.hk2.external:aopalliance-repackaged:2.3.0-b10',
+    'org.ow2.asm:asm-debug-all:5.0.2',
+    'org.glassfish.hk2:hk2-api:2.3.0-b10',
+	'org.glassfish.hk2:hk2-locator:2.3.0-b10',
+	'org.glassfish.hk2:hk2-utils:2.3.0-b10',
+	'org.javassist:javassist:3.18.1-GA',
+	'javax.annotation:javax.annotation-api:1.2',
+	'org.glassfish.hk2.external:javax.inject:2.3.0-b10',
+	'javax.xml.bind:jaxb-api:2.2.7',
+	'org.glassfish.jersey.core:jersey-client:2.12',
+	'org.glassfish.jersey.core:jersey-common:2.12',
+	'org.glassfish.jersey.containers:jersey-container-servlet:2.12',
+	'org.glassfish.jersey.containers:jersey-container-servlet-core:2.12',
+	'org.glassfish.jersey.bundles.repackaged:jersey-guava:2.12',
+	'org.glassfish.jersey.core:jersey-server:2.12',
+	'org.osgi:org.osgi.core:4.2.0',
+	'org.glassfish.hk2:osgi-resource-locator:1.0.1',
+	'javax.persistence:persistence-api:1.0.2',
+	'javax.validation:validation-api:1.1.0.Final'
+  mockserver 'org.mock-server:mockserver-netty:3.10.7',
+	'org.mock-server:mockserver-client-java:3.10.7',
+    'org.mock-server:mockserver-core:3.10.7',
+	'com.google.guava:guava:18.0',
+	'io.netty:netty-buffer:4.1.8.Final',
+	'io.netty:netty-codec:4.1.8.Final',
+	'io.netty:netty-codec-http:4.1.8.Final',
+	'io.netty:netty-codec-socks:4.1.8.Final',
+	'io.netty:netty-common:4.1.8.Final',
+	'io.netty:netty-handler:4.1.8.Final',
+	'io.netty:netty-transport:4.1.8.Final',
+	'junit:junit:4.12',
+	'org.bouncycastle:bcprov-jdk15on:1.56',
+	'org.slf4j:slf4j-api:1.7.25',
+	'ch.qos.logback:logback-classic:1.1.3',
+	'janino:janino:2.5.10',
+	'org.mock-server:mockserver-logging:3.10.7',
+	'com.fasterxml.jackson.core:jackson-core:2.7.8',
+	'com.fasterxml.jackson.core:jackson-annotations:2.7.8',
+	'com.fasterxml.jackson.core:jackson-databind:2.7.8',
+	'com.github.fge:json-schema-validator:2.2.6',
+	'com.jcraft:jzlib:1.1.3',
+	'javax.servlet:javax.servlet-api:3.0.1',
+	'org.apache.commons:commons-lang3:3.4',
+	'org.apache.commons:commons-io:1.3.2',
+	'org.bouncycastle:bcprov-jdk15on:1.56',
+	'org.bouncycastle:bcmail-jdk15on:1.56',
+	'org.bouncycastle:bcpkix-jdk15on:1.56',
+	'org.skyscreamer:jsonassert:1.2.3'
+}
+
+task addThirdPartyJerseyClient(type: Copy) {
+  from configurations.thirdpartyjerseyclient
+  into "${buildDir}/autoFVT/publish/shared/resources/thirdpartyjerseyclient/"
+}
+
+task addMockserver(type: Copy) {
+  from configurations.mockserver
+  into "${buildDir}/autoFVT/publish/shared/resources/mockserver/"
+}
+
+addRequiredLibraries {
+  dependsOn addThirdPartyJerseyClient
+  dependsOn addMockserver
+}

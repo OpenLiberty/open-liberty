@@ -10,15 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container.config;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 /**
  * KeyStore element is defined here:<br>
  * /com.ibm.ws.ssl/resources/OSGI-INF/metatype/metatype.xml
  */
 public class KeyEntry extends ConfigElement {
 
+    public final static String XML_ATTRIBUTE_NAME_NAME = "name";
     private String name;
+
+    public final static String XML_ATTRIBUTE_NAME_KEY_PASSWORD = "keyPassword";
     private String keyPassword;
 
     /**
@@ -31,7 +32,6 @@ public class KeyEntry extends ConfigElement {
     /**
      * @param name the name to set
      */
-    @XmlAttribute(name = "name")
     public void setName(String name) {
         this.name = name;
     }
@@ -46,7 +46,6 @@ public class KeyEntry extends ConfigElement {
     /**
      * @param keyPassword the keyPassword to set
      */
-    @XmlAttribute(name = "keyPassword")
     public void setKeyPassword(String keyPassword) {
         this.keyPassword = keyPassword;
     }

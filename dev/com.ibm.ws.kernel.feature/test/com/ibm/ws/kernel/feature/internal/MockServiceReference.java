@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
 
@@ -55,5 +58,15 @@ public class MockServiceReference<T> implements ServiceReference<T> {
     @Override
     public int compareTo(Object reference) {
         return 0;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.osgi.framework.ServiceReference#getProperties()
+     */
+    @Override
+    public Dictionary<String, Object> getProperties() {
+        return new Hashtable<>();
     }
 }

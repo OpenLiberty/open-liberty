@@ -1,0 +1,32 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src,\
+	test-applications/EJB31AppExAnnBean.jar/src, \
+	test-applications/EJB31AppExAnnWeb.war/src, \
+	test-applications/EJB31AppExMixBean.jar/src, \
+	test-applications/EJB31AppExMixWeb.war/src, \
+	test-applications/EJB31AppExXmlBean.jar/src, \
+	test-applications/EJB31AppExXmlWeb.war/src
+
+fat.project: true
+
+tested.features: \
+	servlet-3.1, servlet-4.0, ejbLite-3.2, ejbRemote-3.2
+
+-buildpath: \
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
+	com.ibm.ws.ejbcontainer.fat_tools; version=latest

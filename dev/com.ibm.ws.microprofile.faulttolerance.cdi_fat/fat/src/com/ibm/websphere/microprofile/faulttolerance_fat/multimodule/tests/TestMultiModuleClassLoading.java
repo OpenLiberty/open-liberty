@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,8 @@
  *******************************************************************************/
 package com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests;
 
-import java.io.File;
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.OVERWRITE;
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -19,27 +20,33 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.classloading.DummyServlet;
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.classloading.TestServlet;
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
 
-import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
+import componenttest.topology.utils.HttpUtils;
 
-public class TestMultiModuleClassLoading extends LoggingTest {
+@RunWith(FATRunner.class)
+public class TestMultiModuleClassLoading extends FATServletClient {
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("FaultToleranceMultiModule");
+    private static final String SERVER_NAME = "FaultToleranceMultiModule";
+
+    @Server(SERVER_NAME)
+    public static LibertyServer server;
 
     //run against both EE8 and EE7 features
     @ClassRule
     public static RepeatTests r = RepeatTests
-                    .with(FeatureReplacementAction.EE7_FEATURES().forServers(SHARED_SERVER.getServerName()))
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().forServers(SHARED_SERVER.getServerName()));
+                    .with(RepeatFaultTolerance.mp13Features(SERVER_NAME))
+                    .andWith(RepeatFaultTolerance.ft20Features(SERVER_NAME));
 
     @BeforeClass
     public static void setupApp() throws Exception {
@@ -56,28 +63,19 @@ public class TestMultiModuleClassLoading extends LoggingTest {
                         .addAsModule(war2)
                         .setApplicationXML(TestServlet.class.getResource("application.xml"));
 
-        ShrinkHelper.exportToServer(SHARED_SERVER.getLibertyServer(), "dropins", ear);
-        SHARED_SERVER.getLibertyServer().addInstalledAppForValidation("MultiModuleClassLoading");
-        SHARED_SERVER.startIfNotStarted();
+        ShrinkHelper.exportDropinAppToServer(server, ear, SERVER_ONLY, OVERWRITE);
+        server.startServer();
     }
 
     @AfterClass
     public static void removeApp() throws Exception {
-        SHARED_SERVER.getLibertyServer().deleteFileFromLibertyServerRoot("dropins/MultiModuleClassLoading.ear");
-        new File("publish/servers/" + SHARED_SERVER.getServerName() + "/dropins/MultiModuleClassLoading.ear").delete();
-        SHARED_SERVER.getLibertyServer().removeInstalledAppForValidation("MultiModuleClassLoading");
-        SHARED_SERVER.getLibertyServer().stopServer();
-    }
-
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
+        server.stopServer();
+        server.deleteFileFromLibertyServerRoot("dropins/MultiModuleClassLoading.ear");
     }
 
     @Test
     public void testClassLoading() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        SHARED_SERVER.verifyResponse(browser, "/war1/test", "OK - FallbackB");
+        HttpUtils.findStringInReadyUrl(server, "/war1/test", "OK - FallbackB");
     }
 
 }

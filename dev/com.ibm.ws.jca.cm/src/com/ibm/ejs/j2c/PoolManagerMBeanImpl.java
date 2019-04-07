@@ -35,6 +35,7 @@ import com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean;
 
 public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionManagerMBean {
     private static final TraceComponent tc = Tr.register(PoolManagerMBeanImpl.class, J2CConstants.traceSpec, J2CConstants.messageFile);
+    private static final TraceComponent ConnLeakLogic = Tr.register(ConnectionManager.class, "ConnLeakLogic", J2CConstants.messageFile);
 
     private transient PoolManager _pm = null;
     private transient Version jdbcRuntimeVersion;
@@ -104,16 +105,28 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
     @Override
     public Object invoke(String actionName, Object[] params, String[] signature) throws MBeanException, ReflectionException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(this, tc, "invoke");
+            Tr.entry(this, tc, "invoke", params, signature);
 
         Object o = null;
 
         if ("showPoolContents".equalsIgnoreCase(actionName)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Displaying the connection pool");
+            }
             o = showPoolContents();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Connection pool contents", o);
+            }
         } else if ("purgePoolContents".equalsIgnoreCase(actionName)) {
             if (params == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Normal purge of the connection pool");
+                }
                 purgePoolContents("normal");
             } else if (params.length == 1 && params[0] instanceof java.lang.String) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Purging the connection pool using option", (String) params[0]);
+                }
                 purgePoolContents((String) params[0]);
             } else {
                 throw new MBeanException(new IllegalArgumentException(Arrays.toString(params)), Tr.formatMessage(tc, "INVALID_MBEAN_INVOKE_PARAM_J2CA8060", Arrays.toString(params),
@@ -227,7 +240,7 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
         buf.append("size=");
         buf.append(_pm.totalConnectionCount.get());
         buf.append(nl);
-        int numUnsharedConnections = 0, numSharedConnections = 0, numFreeConnections = 0, numWaitingConnections = 0;
+        int numUnsharedConnections = 0, numSharedConnections = 0, numFreeConnections = 0;
         _pm.mcToMCWMapWrite.lock();
         try {
             int mcToMCWSize = _pm.mcToMCWMap.size();
@@ -283,9 +296,6 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
                             unsharedBuf.append(mcw.getThreadID());
                             unsharedBuf.append(nl);
                             break;
-                        case 4: // In waiter pool
-                            ++numWaitingConnections;
-                            break;
                         default:
                             break;
                     }
@@ -295,8 +305,7 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
             _pm.mcToMCWMapWrite.unlock();
         }
         // Waiting info
-        buf.append("waiting=");
-        buf.append(numWaitingConnections);
+        buf.append("waiting=" + _pm.waiterCount);
         buf.append(nl);
         // Unshared info
         buf.append("unshared=");
@@ -368,6 +377,14 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
 
     @Override
     public String showPoolContents() {
-        return toStringExternal();
+        StringBuffer buf = new StringBuffer();
+        buf.append(toStringExternal());
+        if (TraceComponent.isAnyTracingEnabled() && ConnLeakLogic.isEntryEnabled()) {
+            buf.append(nl);
+            buf.append("Extended ConnLeakLogic information");
+            buf.append(nl);
+            buf.append(_pm.toString());
+        }
+        return buf.toString();
     }
 }

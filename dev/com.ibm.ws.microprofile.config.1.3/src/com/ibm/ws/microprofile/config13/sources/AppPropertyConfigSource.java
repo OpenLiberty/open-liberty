@@ -67,22 +67,24 @@ public class AppPropertyConfigSource extends InternalConfigSource implements Dyn
         Map<String, String> props = new HashMap<String, String>();
 
         SortedSet<Configuration> osgiConfigs = getOSGiConfigurations();
-        for (Configuration osgiConfig : osgiConfigs) {
-            // Locate name/value pairs in the config objects and place them in the map.
-            Dictionary<String, Object> dict = osgiConfig.getProperties();
-            Enumeration<String> keys = dict.keys();
+        if (osgiConfigs != null) {//osgiConfigs could be null if not inside an OSGi framework, e.g. unit test
+            for (Configuration osgiConfig : osgiConfigs) {
+                // Locate name/value pairs in the config objects and place them in the map.
+                Dictionary<String, Object> dict = osgiConfig.getProperties();
+                Enumeration<String> keys = dict.keys();
 
-            Object myKey = null;
-            Object myValue = null;
-            while (keys.hasMoreElements()) {
-                String key = keys.nextElement();
+                Object myKey = null;
+                Object myValue = null;
+                while (keys.hasMoreElements()) {
+                    String key = keys.nextElement();
 
-                if (key.equals("name"))
-                    myKey = dict.get(key);
-                if (key.equals("value"))
-                    myValue = dict.get(key);
-                if (myKey != null && myValue != null) {
-                    props.put(myKey.toString(), myValue.toString());
+                    if (key.equals("name"))
+                        myKey = dict.get(key);
+                    if (key.equals("value"))
+                        myValue = dict.get(key);
+                    if (myKey != null && myValue != null) {
+                        props.put(myKey.toString(), myValue.toString());
+                    }
                 }
             }
         }
@@ -92,14 +94,17 @@ public class AppPropertyConfigSource extends InternalConfigSource implements Dyn
 
     private SortedSet<Configuration> getOSGiConfigurations() {
         PrivilegedAction<SortedSet<Configuration>> configAction = () -> {
+            SortedSet<Configuration> osgiConfigs = null;
             if (bundleContext == null) {
                 bundleContext = OSGiConfigUtils.getBundleContext(getClass());
             }
-            if (applicationName == null) {
-                applicationName = OSGiConfigUtils.getApplicationName(bundleContext);
-            }
-            SortedSet<Configuration> osgiConfigs = OSGiConfigUtils.getConfigurations(bundleContext, applicationName);
+            if (bundleContext != null) { //bundleContext could be null if not inside an OSGi framework, e.g. unit test
+                if (applicationName == null) {
+                    applicationName = OSGiConfigUtils.getApplicationName(bundleContext);
+                }
 
+                osgiConfigs = OSGiConfigUtils.getConfigurations(bundleContext, applicationName);
+            }
             return osgiConfigs;
         };
 

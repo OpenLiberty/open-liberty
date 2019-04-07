@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -477,6 +481,10 @@ jar_entry_not_migratable.MSGID=TOP-50095
 
 jar_file_url_exception=Kiv\u00e9tel t\u00f6rt\u00e9nt a persistence.xml \u00e9rtelmez\u00e9se sor\u00e1n.  A jar f\u00e1jl helye nem tal\u00e1lhat\u00f3: {0}
 
+javase_version_ex_method_call=Kiv\u00e9tel t\u00f6rt\u00e9nt a met\u00f3dus h\u00edv\u00e1sakor: {0}: {1}
+
+javase_version_ex_method_not_found=A(z) {0} met\u00f3dus nem tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151ben: {1}
+
 jaxb_metadata_warning_ignoring_java_attribute=A(z) [{0}] attrib\u00fatum figyelmen k\u00edv\u00fcl hagy\u00e1sa a(z) [{1}] oszt\u00e1lyon, mert nem ker\u00fclt el\u0151\u00e1ll\u00edt\u00e1sra tulajdons\u00e1g hozz\u00e1.
 
 jaxb_metadata_warning_ignoring_java_attribute.MSGID=TOP-50235
@@ -508,6 +516,8 @@ jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter.MSGID=TOP-50241
 jaxb_metadata_warning_no_classes_to_process=Nincsenek feldolgozand\u00f3 oszt\u00e1lyok a(z) [{0}] csomaghoz.
 
 jaxb_metadata_warning_no_classes_to_process.MSGID=TOP-50237
+
+jaxp_sec_prop_not_supported=A(z) {0} tulajdons\u00e1got nem t\u00e1mogatja a haszn\u00e1lt JAXP megval\u00f3s\u00edt\u00e1s.
 
 jmx_mbean_runtime_services_failed_toget_initial_context=Nem k\u00e9rhet\u0151 le InitialContext az MBean regisztr\u00e1ci\u00f3hoz: {0}
 

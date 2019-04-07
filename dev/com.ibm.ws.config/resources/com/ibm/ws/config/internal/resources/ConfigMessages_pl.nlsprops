@@ -30,10 +30,11 @@
 # -------------------------------------------------------------------------------------------------
 
 copyright=\n\
-Licensed Material - Property of IBM\n\
-(C) COPYRIGHT International Business Machines Corp. 2010 - Wszelkie prawa zastrze\u017cone.\n\
-U\u017cytkownik\u00f3w z instytucji rz\u0105dowych USA obowi\u0105zuj\u0105 warunki\n\
-umowy GSA ADP Schedule Contract z IBM Corp.
+Copyright (c) 2010 IBM Corporation and others.\n\
+Wszelkie prawa zastrze\u017cone. Program ten oraz do\u0142\u0105czone do niego materia\u0142y\n\
+s\u0105 udost\u0119pniane na warunkach licencji Eclipse Public License v1.0\n\
+do\u0142\u0105czonej do tego programu; licencja EPL jest dost\u0119pna pod adresem\n\
+http://www.eclipse.org/legal/epl-v10.html
 
 error.parse.server=CWWKG0001E: Analizator sk\u0142adni konfiguracji \
 wykry\u0142 b\u0142\u0105d podczas analizowania elementu g\u0142\u00f3wnego konfiguracji i przywo\u0142ywanych \
@@ -625,11 +626,9 @@ error.variable.name.missing.explanation=Konfiguracja \
 serwera zawiera element konfiguracji zmiennej, kt\u00f3ry nie ma atrybutu nazwy.
 error.variable.name.missing.useraction=Dodaj atrybut nazwy do zmiennej.
 
-error.variable.value.missing=CWWKG0092E: Dla zmiennej w \
-wierszu {0} zasobu {1} musi by\u0107 okre\u015blony atrybut warto\u015bci.
-error.variable.value.missing.explanation=Konfiguracja \
-serwera zawiera element konfiguracji zmiennej, kt\u00f3ry nie ma atrybutu warto\u015bci.
-error.variable.value.missing.useraction=Dodaj atrybut warto\u015bci do zmiennej.
+error.variable.value.missing=CWWKG0092E: Dla zmiennej w wierszu {0} zasobu {1} musi by\u0107 okre\u015blony atrybut value lub defaultValue.
+error.variable.value.missing.explanation=Konfiguracja serwera zawiera element konfiguracji zmiennej, kt\u00f3ry nie ma atrybutu value ani defaultValue.
+error.variable.value.missing.useraction=Dodaj atrybut value lub defaultValue do zmiennej.
 
 audit.dropin.being.processed=CWWKG0093A: Przetwarzanie zasobu element\u00f3w upuszczanych konfiguracji: {0}
 audit.dropin.being.processed.explanation=Tre\u015b\u0107 okre\u015blonego zasobu zostanie do\u0142\u0105czona do konfiguracji serwera.

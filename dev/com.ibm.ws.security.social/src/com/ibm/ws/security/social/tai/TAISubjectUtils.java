@@ -30,6 +30,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.jwk.subject.mapping.AttributeToSubject;
 import com.ibm.ws.security.common.structures.Cache;
 import com.ibm.ws.security.jwt.builder.utils.BuilderUtils;
+import com.ibm.ws.security.openidconnect.clients.common.UserInfoHelper;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
@@ -56,6 +57,7 @@ public class TAISubjectUtils {
     @Sensitive
     private Map<String, Object> userApiResponseTokens = null;
     private String userApiResponse = null;
+    private String userInfo = null;
 
     public TAISubjectUtils(AuthorizationCodeAuthenticator authzCodeAuthenticator) {
         this(authzCodeAuthenticator.getAccessToken(), authzCodeAuthenticator.getJwt(), authzCodeAuthenticator.getIssuedJwt(), authzCodeAuthenticator.getTokens(), authzCodeAuthenticator.getUserApiResponse());
@@ -67,6 +69,14 @@ public class TAISubjectUtils {
         this.issuedJwt = issuedJwt;
         this.userApiResponseTokens = userApiResponseTokens;
         this.userApiResponse = userApiResponse;
+    }
+    
+    /**
+     * called by oidc client authentication if userInfo available
+     * @param userInfo
+     */
+    void setUserInfo(String userInfo){
+        this.userInfo = userInfo;
     }
 
     /**
@@ -237,7 +247,8 @@ public class TAISubjectUtils {
         } catch (Exception e) {
 
         }
-        return new UserProfile(jwt, customProperties, claims);
+        
+        return new UserProfile(jwt, customProperties, claims, userInfo);
     }
 
     Hashtable<String, Object> createCustomProperties(SocialLoginConfig config, boolean getRefreshAndIdTokens) throws SocialLoginException {

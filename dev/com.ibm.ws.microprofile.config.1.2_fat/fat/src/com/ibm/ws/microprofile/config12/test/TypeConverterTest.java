@@ -16,6 +16,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
 import com.ibm.ws.microprofile.config12.converter.type.web.TypeConverterServlet;
 
 import componenttest.annotation.Server;
@@ -44,9 +45,7 @@ public class TypeConverterTest extends FATServletClient {
     public static final String APP_NAME = "converterApp";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests
-                    .with(new RepeatConfig12EE8("ConverterServer"))
-                    .andWith(new RepeatConfig13EE8("ConverterServer"));
+    public static RepeatTests r = RepeatConfigActions.repeatConfig12("ConverterServer");
 
     @Server("ConverterServer")
     @TestServlet(servlet = TypeConverterServlet.class, contextRoot = APP_NAME)

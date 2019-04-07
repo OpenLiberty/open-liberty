@@ -30,14 +30,16 @@ import org.junit.Test;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.InvalidSyntaxException;
 
-import test.common.SharedOutputManager;
-
+import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration;
 import com.ibm.ws.classloading.internal.TestUtil.ClassSource;
+import com.ibm.ws.kernel.boot.classloader.ClassLoaderHook;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.classloading.ClassLoaderConfiguration;
 import com.ibm.wsspi.classloading.ClassLoaderIdentity;
 import com.ibm.wsspi.classloading.ClassLoadingServiceException;
 import com.ibm.wsspi.classloading.GatewayConfiguration;
+
+import test.common.SharedOutputManager;
 
 public class LibertyClassLoaderTest {
     @Rule
@@ -64,9 +66,10 @@ public class LibertyClassLoaderTest {
     public void testClassFormatError() throws Exception {
         Container c = buildMockContainer("testClasses", getOtherClassesURL(ClassSource.A));
 
-        loader = new AppClassLoader(loader.getParent(), loader.config, Arrays.asList(c), (DeclaredApiAccess) (loader.getParent()), null, null) {
+        loader = new AppClassLoader(loader.getParent(), loader.config, Arrays.asList(c), (DeclaredApiAccess) (loader.getParent()), null, null, new GlobalClassloadingConfiguration()) {
             @Override
-            protected com.ibm.ws.classloading.internal.AppClassLoader.ByteResourceInformation findBytes(String resourceName) throws IOException {
+            protected com.ibm.ws.classloading.internal.AppClassLoader.ByteResourceInformation findClassBytes(String className, String resourceName,
+                                                                                                             ClassLoaderHook hook) throws IOException {
                 throw new IOException();
             }
         };

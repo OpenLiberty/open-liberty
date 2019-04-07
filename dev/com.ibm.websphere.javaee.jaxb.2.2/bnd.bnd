@@ -31,7 +31,7 @@ DynamicImport-Package: \
 Bundle-Activator: org.apache.geronimo.osgi.locator.Activator
 
 Include-Resource:\
- @${repo;javax.xml.bind:jaxb-api;2.2.12}!/!META-INF/maven/*, \
+ @${repo;jaxb-api;2.2.12.b140109_1041;EXACT}!/!META-INF/maven/*, \
  @${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/org/apache/geronimo/osgi/locator/*, \
  @${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/ContextFinder.class, \
  @${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/JAXBContext.class, \
@@ -42,4 +42,4 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	javax.xml.bind:jaxb-api;version=2.2.12
+	jaxb-api;strategy=exact;version=2.2.12.b140109_1041

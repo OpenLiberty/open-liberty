@@ -31,7 +31,7 @@ import org.osgi.framework.Version;
 import org.osgi.framework.VersionRange;
 
 import com.ibm.ws.app.manager.springboot.container.ApplicationError;
-import com.ibm.ws.app.manager.springboot.container.ApplicationError.Type;
+import com.ibm.ws.app.manager.springboot.container.ApplicationTr.Type;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory;
 import com.ibm.ws.app.manager.springboot.container.config.ConfigElementList;
 import com.ibm.ws.app.manager.springboot.container.config.HttpEndpoint;
@@ -75,15 +75,19 @@ public class ServerConfigurationFactory {
     public static ServerConfiguration createServerConfiguration(Map<String, Object> serverProperties, SpringBootConfigFactory configFactory, Function<String, URL> urlGetter) {
         ServerConfiguration sc = new ServerConfiguration();
         Boolean useDefaultHost = (Boolean) serverProperties.get(LIBERTY_USE_DEFAULT_HOST);
-        if (useDefaultHost != null && useDefaultHost) {
-            // going to use the default host; return empty config
-            return sc;
+        if (useDefaultHost == null) {
+            // the server properties will only set this key to true for the server instance
+            // that must use the default virtual host.  Otherwise the key is not set and
+            // we assume false.
+            useDefaultHost = Boolean.FALSE;
         }
         Integer port = (Integer) serverProperties.get(PORT);
         if (port == null) {
             throw new IllegalArgumentException("No port specified.");
         }
-        configureVirtualHost(sc, port);
+        if (!useDefaultHost.booleanValue()) {
+            configureVirtualHost(sc, port);
+        }
         configureSSL(sc, port, serverProperties, configFactory, urlGetter);
         configureHttpEndpoint(sc, port, serverProperties);
         return sc;
@@ -103,7 +107,7 @@ public class ServerConfigurationFactory {
             // version parsing issues; auto-FFDC here
         }
         if (!range.includes(vActual)) {
-            throw new ApplicationError(Type.UNSUPPORTED_SPRING_BOOT_VERSION, actual, range.toString());
+            throw new ApplicationError(Type.ERROR_UNSUPPORTED_SPRING_BOOT_VERSION, actual, range.toString());
         }
 
     }
@@ -113,7 +117,6 @@ public class ServerConfigurationFactory {
         virtualHosts.clear();
         VirtualHost virtualHost = new VirtualHost();
         virtualHost.setId(ID_VIRTUAL_HOST + port);
-        virtualHost.setAllowFromEndpointRef(ID_HTTP_ENDPOINT + port);
         Set<String> aliases = virtualHost.getHostAliases();
         aliases.clear();
         aliases.add("*:" + port);

@@ -29,6 +29,7 @@ public class JavaInfo {
 
     private final int MAJOR;
     private final int MINOR;
+    private final int MICRO;
     private final int SERVICE_RELEASE;
     private final int FIXPACK;
     private final Vendor VENDOR;
@@ -43,55 +44,74 @@ public class JavaInfo {
         MAJOR = Integer.valueOf(versionElements[i++]);
 
         if (i < versionElements.length)
-            MINOR = Integer.valueOf(versionElements[i]);
+            MINOR = Integer.valueOf(versionElements[i++]);
         else
             MINOR = 0;
 
+        if (i < versionElements.length)
+            MICRO = Integer.valueOf(versionElements[i]);
+        else
+            MICRO = 0;
+
         String vendor = getSystemProperty("java.vendor").toLowerCase();
-        if (vendor.contains("ibm"))
-            VENDOR = Vendor.IBM;
-        else if (vendor.contains("openj9"))
+        if (vendor.contains("openj9"))
             VENDOR = Vendor.OPENJ9;
+        else if (vendor.contains("ibm") || vendor.contains("j9"))
+            VENDOR = Vendor.IBM;
         else if (vendor.contains("oracle"))
             VENDOR = Vendor.ORACLE;
-        else
-            VENDOR = Vendor.UNKNOWN;
-
-        int sr = 0;
-        int fp = 0;
-
-        if (VENDOR == Vendor.IBM) {
-            // Parse service release
-            String runtimeVersion = getSystemProperty("java.runtime.version").toLowerCase();
-            int srloc = runtimeVersion.indexOf("sr");
-            if (srloc > (-1)) {
-                srloc += 2;
-                if (srloc < runtimeVersion.length()) {
-                    int len = 0;
-                    while ((srloc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(srloc + len))) {
-                        len++;
-                    }
-                    sr = Integer.parseInt(runtimeVersion.substring(srloc, srloc + len));
-                }
-            }
-
-            // Parse fixpack
-            int fploc = runtimeVersion.indexOf("fp");
-            if (fploc > (-1)) {
-                fploc += 2;
-                if (fploc < runtimeVersion.length()) {
-                    int len = 0;
-                    while ((fploc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(fploc + len))) {
-                        len++;
-                    }
-                    fp = Integer.parseInt(runtimeVersion.substring(fploc, fploc + len));
-                }
-            }
+        else {
+            vendor = getSystemProperty("java.vm.name", "unknown").toLowerCase();
+            if (vendor.contains("openj9"))
+                VENDOR = Vendor.OPENJ9;
+            else if (vendor.contains("ibm") || vendor.contains("j9"))
+                VENDOR = Vendor.IBM;
+            else if (vendor.contains("oracle") || vendor.contains("openjdk"))
+                VENDOR = Vendor.ORACLE;
+            else
+                VENDOR = Vendor.UNKNOWN;
         }
 
-        SERVICE_RELEASE = sr;
-        FIXPACK = fp;
+        String runtimeVersion = getSystemProperty("java.runtime.version").toLowerCase();
 
+        // Parse service release
+        int sr = 0;
+        int srloc = runtimeVersion.indexOf("sr");
+        if (srloc > (-1)) {
+            srloc += 2;
+            if (srloc < runtimeVersion.length()) {
+                int len = 0;
+                while ((srloc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(srloc + len))) {
+                    len++;
+                }
+                sr = Integer.parseInt(runtimeVersion.substring(srloc, srloc + len));
+            }
+        }
+        SERVICE_RELEASE = sr;
+
+        // Parse fixpack
+        int fp = 0;
+        int fploc = runtimeVersion.indexOf("fp");
+        if (fploc > (-1)) {
+            fploc += 2;
+            if (fploc < runtimeVersion.length()) {
+                int len = 0;
+                while ((fploc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(fploc + len))) {
+                    len++;
+                }
+                fp = Integer.parseInt(runtimeVersion.substring(fploc, fploc + len));
+            }
+        }
+        FIXPACK = fp;
+    }
+
+    private static final String getSystemProperty(final String propName, final String defaultValue) {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return System.getProperty(propName, defaultValue);
+            }
+        });
     }
 
     private static final String getSystemProperty(final String propName) {
@@ -115,6 +135,10 @@ public class JavaInfo {
 
     public static int minorVersion() {
         return instance().MINOR;
+    }
+
+    public static int microVersion() {
+        return instance().MICRO;
     }
 
     public static Vendor vendor() {

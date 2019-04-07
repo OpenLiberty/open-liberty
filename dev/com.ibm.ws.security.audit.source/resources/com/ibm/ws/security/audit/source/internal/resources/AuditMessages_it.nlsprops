@@ -1,0 +1,45 @@
+#*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.source/resources/com/ibm/ws/security/audit/source/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+AUDIT_SERVICE_STARTING=CWWKS5850I: Il servizio di verifica \u00e8 in fase di avvio.
+AUDIT_SERVICE_STARTING.explanation=Il servizio di verifica \u00e8 in fase di avvio. Questa operazione potrebbe richiedere diversi minuti, se l'inizializzazione deve essere eseguita una sola  volta.
+AUDIT_SERVICE_STARTING.useraction=Non \u00e8 richiesta alcuna azione.
+
+AUDIT_SERVICE_READY=CWWKS5851I: Il servizio di verifica \u00e8 pronto.
+AUDIT_SERVICE_READY.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+AUDIT_SERVICE_READY.useraction=Non \u00e8 richiesta alcuna azione.
+
+AUDIT_SERVICE_STOPPED=CWWKS5852I: Il servizio di verifica \u00e8 stato arrestato.
+AUDIT_SERVICE_STOPPED.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+AUDIT_SERVICE_STOPPED.useraction=Non \u00e8 richiesta alcuna azione.
+
+INCORRECT_AUDIT_EVENT_CONFIGURATION=CWWKS5853E: Il nome evento di verifica {0} specificato nella configurazione degli eventi del gestore di verifica non \u00e8 supportato, quindi il servizio di verifica \u00e8 stato arrestato. Correggere  il nome evento nella configurazione del gestore di verifica {2} per specificare uno dei seguenti nomi evento: {3}
+INCORRECT_AUDIT_EVENT_CONFIGURATION.explanation=Il nome dell'evento di verifica indicato nella configurazione evento non \u00e8 corretto e il servizio di verifica verr\u00e0 arrestato. Analizzare l'eccezione menzionata nel messaggio e specificare un nome evento di verifica valido.
+INCORRECT_AUDIT_EVENT_CONFIGURATION.useraction=Assicurarsi che il nome evento di verifica fornito come parte della configurazione evento sia corretto.
+
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION=CWWKS5854E: Il nome risultato di verifica {0} specificato nella configurazione degli eventi del gestore di verifica non \u00e8 supportato, quindi il servizio di verifica \u00e8 stato arrestato. Correggere il nome risultato nella configurazione del gestore di verifica {2} per specificare uno dei seguenti nomi risultato: {3}
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.explanation=Il nome del risultato di verifica indicato nella configurazione evento non \u00e8 corretto e il servizio di verifica verr\u00e0 arrestato. Analizzare l'eccezione menzionata nel messaggio e specificare un nome risultato di verifica valido.
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.useraction=Assicurarsi che il nome risultato di verifica fornito come parte della configurazione evento sia corretto.
+
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME=CWWKS5855E: La configurazione degli eventi del gestore di verifica non \u00e8 completa, quindi il servizio di verifica \u00e8 stato arrestato. La configurazione deve specificare un nome evento per il risultato {0}. Correggere la configurazione del gestore di verifica {1} per specificare uno dei seguenti nomi evento: {2}
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.explanation=Il nome dell'evento di verifica indicato nella configurazione evento non \u00e8 corretto o \u00e8 mancante e il servizio di verifica verr\u00e0 arrestato. Analizzare l'eccezione menzionata nel messaggio e specificare un nome evento di verifica valido.
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.useraction=Assicurarsi che sia specificato un nome evento valido e un tipo di risultato valido.

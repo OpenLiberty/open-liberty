@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -54,6 +55,12 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
      * Optional callback for life cycle events.
      */
     final PolicyTaskCallback callback;
+
+    /**
+     * This optional reference to a CompletableFuture that is associated with this task, allows the
+     * PolicyExecutor, upon shutdownNow, to cancel CompletableFuture instances corresponding to queued tasks.
+     */
+    AtomicReference<Future<?>> completableFutureRef;
 
     /**
      * The policy executor instance.
@@ -116,7 +123,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
 
     /**
      * Result of the task. Can be a value, an exception, or other indicator (the state distinguishes).
-     * PRESUBMITized to the state field as a way of indicating a result is not set. This allows the possibility of null results.
+     * Initialized to the state field as a way of indicating a result is not set. This allows the possibility of null results.
      */
     private final AtomicReference<Object> result = new AtomicReference<Object>(state);
 
@@ -344,6 +351,12 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             }
     }
 
+    @Trivial
+    PolicyTaskFutureImpl(PolicyExecutorImpl executor, Runnable task, AtomicReference<Future<?>> completableFutureRef, long startTimeoutNS) {
+        this(executor, task, null, null, startTimeoutNS);
+        this.completableFutureRef = completableFutureRef;
+    }
+
     @FFDCIgnore(RejectedExecutionException.class)
     PolicyTaskFutureImpl(PolicyExecutorImpl executor, Runnable task, T predefinedResult, PolicyTaskCallback callback, long startTimeoutNS) {
         if (task == null)
@@ -379,14 +392,16 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
      * @param cause the cause of the abort.
      * @return true if the future transitioned to ABORTED state.
      */
+    @FFDCIgnore(Exception.class)
     final boolean abort(boolean removeFromQueue, Throwable cause) {
         if (removeFromQueue && executor.queue.remove(this))
             executor.maxQueueSizeConstraint.release();
         if (nsAcceptEnd == nsAcceptBegin - 1) // currently unset
             nsRunEnd = nsQueueEnd = nsAcceptEnd = System.nanoTime();
-        boolean aborted = result.compareAndSet(state, cause) && state.releaseShared(ABORTED);
+        boolean aborted = result.compareAndSet(state, cause);
         if (aborted)
             try {
+                state.releaseShared(ABORTED);
                 if (nsQueueEnd == nsAcceptBegin - 2) // currently unset
                     nsRunEnd = nsQueueEnd = System.nanoTime();
                 if (callback != null)
@@ -394,7 +409,25 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             } finally {
                 if (latch != null)
                     latch.countDown();
+                Future<?> cf = completableFutureRef == null ? null : completableFutureRef.get();
+                if (cf != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "completable future to complete exceptionally: " + cf);
+                    try {
+                        // TODO Invoke directly once compatibility with Java 7 is no longer needed
+                        cf.getClass().getMethod("completeExceptionally", Throwable.class).invoke(cf, cause);
+                    } catch (Exception x) {
+                        // Not a true CompletableFuture
+                        cf.cancel(false);
+                    }
+                }
             }
+        else {
+            // Prevent premature return from abort that would allow subsequent getState() to indicate
+            // that the task is still in SUBMITTED state.
+            while (state.get() < RUNNING)
+                Thread.yield();
+        }
         return aborted;
     }
 
@@ -536,6 +569,12 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             } finally {
                 if (latch != null)
                     latch.countDown();
+                Future<?> cf = completableFutureRef == null ? null : completableFutureRef.get();
+                if (cf != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "completable future to cancel: " + cf);
+                    cf.cancel(false);
+                }
             }
         else {
             // Prevent premature return from cancel that would allow subsequent isCanceled/isDone to return false

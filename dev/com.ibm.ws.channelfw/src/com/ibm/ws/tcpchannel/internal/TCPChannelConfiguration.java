@@ -185,16 +185,6 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                         continue;
                     }
 
-                    if (key.equalsIgnoreCase(MAX_CONNS)) {
-                        // convert and check
-                        keyType = ValidateUtils.KEY_TYPE_INT;
-                        minValue = MAX_CONNECTIONS_MIN;
-                        maxValue = MAX_CONNECTIONS_MAX;
-                        this.maxOpenConnections = convertIntegerValue(value);
-                        result = ValidateUtils.testMaxConnections(this.maxOpenConnections);
-                        continue;
-                    }
-
                     if (key.equalsIgnoreCase(NEW_BUFF_SIZE)) {
                         // convert and check
                         keyType = ValidateUtils.KEY_TYPE_INT;
@@ -285,9 +275,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
 
                     if (key.equalsIgnoreCase(ACCEPT_THREAD)) {
                         // convert and check
-                        keyType = ValidateUtils.KEY_TYPE_INT;
-                        minValue = ValidateUtils.ACCEPT_THREAD_MIN;
-                        maxValue = ValidateUtils.ACCEPT_THREAD_MAX;
+                        keyType = ValidateUtils.KEY_TYPE_BOOLEAN;
                         this.acceptThread = convertBooleanValue(value);
                         result = ValidateUtils.VALIDATE_OK;
 
@@ -301,9 +289,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
 
                     if (key.equalsIgnoreCase(WAIT_TO_ACCEPT)) {
                         // convert and check
-                        keyType = ValidateUtils.KEY_TYPE_INT;
-                        minValue = ValidateUtils.ACCEPT_THREAD_MIN;
-                        maxValue = ValidateUtils.ACCEPT_THREAD_MAX;
+                        keyType = ValidateUtils.KEY_TYPE_BOOLEAN;
                         this.waitToAccept = convertBooleanValue(value);
                         result = ValidateUtils.VALIDATE_OK;
 
@@ -363,6 +349,18 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                         //Adding this prevents a message from being output saying it's invalid
                         continue;
                     }
+
+                    if (key.equalsIgnoreCase(WAIT_TO_ACCEPT)) {
+                        //This is a valid configuration option but outbound channels do not use it
+                        //Adding this prevents a message from being output saying it's invalid
+                        continue;
+                    }
+
+                    if (key.equalsIgnoreCase(ACCEPT_THREAD)) {
+                        //This is a valid configuration option but outbound channels do not use it
+                        //Adding this prevents a message from being output saying it's invalid
+                        continue;
+                    }
                 }
 
                 // PK37541 - move reuse_addr to common config
@@ -399,6 +397,16 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                     keyType = ValidateUtils.KEY_TYPE_BOOLEAN;
                     this.keepAlive = convertBooleanValue(value);
                     result = ValidateUtils.VALIDATE_OK;
+                    continue;
+                }
+
+                if (key.equalsIgnoreCase(MAX_CONNS)) {
+                    // convert and check
+                    keyType = ValidateUtils.KEY_TYPE_INT;
+                    minValue = MAX_CONNECTIONS_MIN;
+                    maxValue = MAX_CONNECTIONS_MAX;
+                    this.maxOpenConnections = convertIntegerValue(value);
+                    result = ValidateUtils.testMaxConnections(this.maxOpenConnections);
                     continue;
                 }
 
@@ -592,16 +600,6 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                         continue;
                     }
 
-                    if (key.equalsIgnoreCase(MAX_CONNS)) {
-                        // convert and check
-                        keyType = ValidateUtils.KEY_TYPE_INT;
-                        minValue = MAX_CONNECTIONS_MIN;
-                        maxValue = MAX_CONNECTIONS_MAX;
-                        maxOpenConnectionsNew = convertIntegerValue(value);
-                        result = ValidateUtils.testMaxConnections(maxOpenConnectionsNew);
-                        continue;
-                    }
-
                     if (key.equalsIgnoreCase(NEW_BUFF_SIZE)) {
                         // convert and check
                         keyType = ValidateUtils.KEY_TYPE_INT;
@@ -723,7 +721,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
 
                 if (key.equalsIgnoreCase(ACCEPT_THREAD)) {
                     // convert and check
-                    keyType = ValidateUtils.KEY_TYPE_INT;
+                    keyType = ValidateUtils.KEY_TYPE_BOOLEAN;
                     oldBool = this.acceptThread;
                     if (convertBooleanValue(value) != oldBool) {
                         result = ValidateUtils.VALIDATE_NOT_EQUAL;
@@ -733,11 +731,21 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
 
                 if (key.equalsIgnoreCase(WAIT_TO_ACCEPT)) {
                     // convert and check
-                    keyType = ValidateUtils.KEY_TYPE_INT;
+                    keyType = ValidateUtils.KEY_TYPE_BOOLEAN;
                     oldBool = this.waitToAccept;
                     if (convertBooleanValue(value) != oldBool) {
                         result = ValidateUtils.VALIDATE_NOT_EQUAL;
                     }
+                    continue;
+                }
+
+                if (key.equalsIgnoreCase(MAX_CONNS)) {
+                    // convert and check
+                    keyType = ValidateUtils.KEY_TYPE_INT;
+                    minValue = MAX_CONNECTIONS_MIN;
+                    maxValue = MAX_CONNECTIONS_MAX;
+                    maxOpenConnectionsNew = convertIntegerValue(value);
+                    result = ValidateUtils.testMaxConnections(maxOpenConnectionsNew);
                     continue;
                 }
 

@@ -511,7 +511,7 @@ public class ExceptionUtils {
 
                 @SuppressWarnings("unchecked")
                 List<String> editions = (List<String>) params[matchEdition];
-                String edition = InstallUtils.getEditionName((String) params[productEdition]);
+                String edition = InstallUtils.getEditionName(installDir, (String) params[productEdition]);
                 StringBuilder applicableProducts = new StringBuilder();
                 applicableProducts.append(InstallUtils.NEWLINE);
 

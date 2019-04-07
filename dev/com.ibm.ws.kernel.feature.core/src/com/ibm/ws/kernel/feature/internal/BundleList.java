@@ -38,17 +38,17 @@ import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry.BundleRepositoryHolder;
 import com.ibm.ws.kernel.provisioning.VersionUtility;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 
 public class BundleList {
     private static final String CACHE_WRITE_TIME = "Cache-WriteTime";
-    static final String PROP_JVM_SPEC_VERSION = "java.specification.version";
     private static final TraceComponent tc = Tr.register(BundleList.class);
     private final WsResource cacheFile;
     private final AtomicBoolean stale = new AtomicBoolean(false);
     private final List<RuntimeFeatureResource> resources = new ArrayList<RuntimeFeatureResource>();
     private long writeTime;
-    private String javaSpecVersion = "";
+    private Integer javaSpecVersion;
     private final FeatureManager featureManager;
 
     public static interface FeatureResourceHandler {
@@ -278,8 +278,8 @@ public class BundleList {
         }
 
         @Override
-        public String getRequiredOSGiEE() {
-            return fr.getRequiredOSGiEE();
+        public Integer getRequireJava() {
+            return fr.getRequireJava();
         }
     }
 
@@ -425,7 +425,7 @@ public class BundleList {
         }
 
         @Override
-        public String getRequiredOSGiEE() {
+        public Integer getRequireJava() {
             return null;
         }
 
@@ -520,7 +520,7 @@ public class BundleList {
                 String sTime = javaSpecVersionIndex > timeIndex ? line.substring(timeIndex + 1, javaSpecVersionIndex) : line.substring(timeIndex + 1);
                 writeTime = Long.parseLong(sTime);
                 if (javaSpecVersionIndex != -1) {
-                    javaSpecVersion = line.substring(javaSpecVersionIndex + 1);
+                    javaSpecVersion = Integer.valueOf(line.substring(javaSpecVersionIndex + 1));
                 }
             } catch (NumberFormatException nfe) {
             }
@@ -542,7 +542,7 @@ public class BundleList {
                 writeTime = System.currentTimeMillis();
                 writer.write(String.valueOf(writeTime));
                 writer.write(';');
-                writer.write(System.getProperty(PROP_JVM_SPEC_VERSION));
+                writer.write(Integer.toString(JavaInfo.majorVersion()));
                 writer.write(FeatureDefinitionUtils.NL);
                 for (RuntimeFeatureResource entry : resources) {
                     if (entry.getURLString() != null) {
@@ -578,7 +578,7 @@ public class BundleList {
         for (FeatureResource fr : fdefinition.getConstituents(SubsystemContentType.BUNDLE_TYPE)) {
             RuntimeFeatureResource rfr = (RuntimeFeatureResource) ((fr instanceof RuntimeFeatureResource) ? fr : new RuntimeFeatureResource(fr));
             // only add bundles that match the current osgi.ee capability
-            if (!featureManager.missingRequiredOSGiEE(rfr)) {
+            if (!featureManager.missingRequiredJava(rfr)) {
                 resources.add(rfr);
             }
         }
@@ -631,7 +631,7 @@ public class BundleList {
         return b;
     }
 
-    public String getJavaSpecVersion() {
+    public Integer getJavaSpecVersion() {
         return javaSpecVersion;
     }
 }

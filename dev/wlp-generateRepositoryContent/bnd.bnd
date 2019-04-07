@@ -11,22 +11,12 @@ Private-Package: \
  com.ibm.ws.wlp.repository.esa, \
  com.ibm.ws.wlp.repository.treehandler, \
  com.ibm.ws.wlp.repository.xml, \
- com.ibm.ejs.ras, \
- com.ibm.websphere.logging, \
- com.ibm.websphere.ras, \
- com.ibm.websphere.ras.annotation, \
- com.ibm.ws.ffdc, \
  com.ibm.ws.kernel.boot.cmdline, \
  com.ibm.ws.kernel.feature, \
- com.ibm.ws.kernel.feature.internal.cmdline, \
- com.ibm.ws.kernel.feature.internal.generator, \
  com.ibm.ws.kernel.feature.internal.subsystem, \
  com.ibm.ws.kernel.feature.provisioning, \
  com.ibm.ws.kernel.provisioning, \
  com.ibm.wsspi.kernel.feature, \
- com.ibm.ws.logging.internal, \
- com.ibm.wsspi.logprovider, \
- org.apache.aries.util.manifest, \
  org.osgi.framework
 
 Include-Resource: \
@@ -44,6 +34,7 @@ tool.project: true
 generate.replacement: false
 
 -buildpath: \
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.json4j;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.feature.core;version=latest,\

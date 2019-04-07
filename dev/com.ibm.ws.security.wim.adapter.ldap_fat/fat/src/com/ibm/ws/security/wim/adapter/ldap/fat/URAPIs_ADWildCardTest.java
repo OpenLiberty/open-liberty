@@ -136,12 +136,12 @@ public class URAPIs_ADWildCardTest {
         // Should not find a filter with objectclass=*
         msg = "\\(\\|\\(objectClass=group\\)\\(objectClass=\\*";
         errMsgs = server.findStringsInLogsAndTrace(msg);
-        assertTrue("Should have found, " + msg, errMsgs.isEmpty());
+        assertTrue("Should not have found, " + msg, errMsgs.isEmpty());
 
         // Filter should look like this
-        msg = "\\(\\&\\(objectClass=group\\)\\(\\|\\(member=CN=persona1,cn=users";
+        msg = "\\(\\&\\(objectClass=group\\)\\(\\|\\(member=cn=persona1,cn=users";
         errMsgs = server.findStringsInLogsAndTrace(msg);
-        assertFalse("Should not have found, " + msg, errMsgs.isEmpty());
+        assertFalse("Should have found, " + msg, errMsgs.isEmpty());
 
         // Should have the correct iGroupMemberIdMap with *:distinguishedName so we could theoretically match groups and persons.
         msg = "iGroupMemberIdMap\\: group:member\\;\\*\\:distinguishedName";

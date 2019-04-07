@@ -105,6 +105,38 @@ garbageCollectionCount.description=Zeigt die Gesamtzahl der Erfassungen an, die 
 garbageCollectionTime.description=Zeigt die n\u00e4herungsweise berechnete, kumulierte, abgelaufene Zeit f\u00fcr die Erfassung in Millisekunden an. Dieses Attribut zeigt -1 an, wenn f\u00fcr diesen Collector die abgelaufene Zeit f\u00fcr Erfassungen nicht definiert ist. Die Java Virtual Machine-Implementierung verwendet m\u00f6glicherweise einen hochaufl\u00f6senden Zeitgeber zur Messung der abgelaufenen Zeit. Dieses Attribut zeigt m\u00f6glicherweise auch dann denselben Wert an, wenn der Erfassungsz\u00e4hler erh\u00f6ht wurde, wenn die abgelaufene Zeit f\u00fcr die Erfassung sehr kurz ist. 
 
 #-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+threadpool.activeThreads.description=Die Anzahl der Threads, die Tasks ausf\u00fchren.
+threadpool.size.description=Die Gr\u00f6\u00dfe des Thread-Pools.
+
+servlet.request.total.description=Die Anzahl der Aufrufe dieses Servlets seit dem Start des Servers.
+servlet.responseTime.total.description=Die Gesamtantwortzeit dieses Servlets seit dem Start des Servers.
+
+connectionpool.create.total.description=Die Gesamtzahl verwalteter Verbindungen, die seit der Poolerstellung erstellt wurden.
+connectionpool.destroy.total.description=Die Gesamtzahl verwalteter Verbindungen, die seit der Poolerstellung gel\u00f6scht wurden.
+connectionpool.managedConnections.description=Die Anzahl verwalteter Verbindungen in den freien, gemeinsam genutzten und nicht gemeinsam genutzten Pools.
+connectionpool.connectionHandles.description=Die Anzahl der Verbindungen, die im Gebrauch sind. Dieser Wert kann mehrere Verbindungen enthalten, die von einer einzigen verwalteten Verbindung gemeinsam genutzt werden.
+connectionpool.freeConnections.description=Die Anzahl verwalteter Verbindungen im freien Pool.
+connectionpool.waitTime.total.description=Die Gesamtwartezeit bei allen Verbindungsanforderungen seit dem Start des Servers.
+connectionpool.inUseTime.total.description=Die Gesamtzeit, in der alle Verbindungen seit dem Start des Servers im Gebrauch sind.
+connectionpool.usedConnections.total.description=Die Gesamtzahl der Verbindungsanforderungen, die aufgrund eines vollen Verbindungspools seit dem Start des Servers gewartet haben, oder die seit dem Start des Servers nicht gewartet haben. Alle Verbindungen, die momentan im Gebrauch sind, werden in dieser Gesamtzahl nicht erfasst.
+connectionpool.queuedRequests.total.description=Die Gesamtzahl der Verbindungsanforderungen, die aufgrund eines vollen Verbindungspools seit dem Start des Servers auf eine Verbindung warten mussten.
+
+session.create.total.description=Die Anzahl der Sitzungen, die seit der Aktivierung dieser Metrik angemeldet wurden.
+session.liveSessions.description=Die Anzahl der Benutzer, die derzeit angemeldet sind.
+session.activeSessions.description=Die Anzahl gleichzeitig aktiver Sitzungen. (Eine Sitzung ist aktiv, wenn das Produkt momentan eine Anforderung verarbeitet, die diese Benutzersitzung verwendet.)
+session.invalidated.total.description=Die Anzahl der Sitzungen, die seit der Aktivierung dieser Metrik abgemeldet wurden.
+session.invalidatedbyTimeout.total.description=Die Anzahl der Sitzungen, die seit der Aktivierung dieser Metrik aufgrund einer Zeitlimit\u00fcberschreitung abgemeldet wurden.
+
+jaxws.invocations.total.description=Die Anzahl der Aufrufe an diesen Endpunkt bzw. diese Operation.
+jaxws.checkedApplicationFaults.total.description=Die Anzahl gepr\u00fcfter Anwendungsfehler.
+jaxws.logicalRuntimeFaults.total.description=Die Anzahl logischer Laufzeitfehler.
+jaxws.runtimeFaults.total.description=Die Anzahl der Laufzeitfehler.
+jaxws.uncheckedApplicationFaults.total.description=Die Anzahl nicht gepr\u00fcfter Anwendungsfehler.
+jaxws.responseTime.total.description=Die Gesamtantwortverarbeitungszeit seit dem Start des Servers.
+
+#-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------
 

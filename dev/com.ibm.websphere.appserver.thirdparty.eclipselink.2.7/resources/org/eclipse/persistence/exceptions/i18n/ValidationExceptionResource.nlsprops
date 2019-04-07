@@ -153,13 +153,13 @@
 
 7093=In the query named [{0}], the class [{2}] for query argument named [{1}] cannot be found. Include the missing class on your classpath.
 
-7095=The sessions.xml resource [{0}] was not found on the resource path.  Check that the resource name/path and classloader passed to the SessionManager.getSession are correct.  The sessions.xml should be included in the root of the application''s deployed jar, if the sessions.xml is deployed in a sub-directory in the application''s jar ensure that the correct resource path using "/" not "" is used.
+7095=The sessions.xml resource [{0}] was not found on the resource path.  Check that the resource name/path and classloader passed to the SessionManager.getSession are correct.  The sessions.xml should be included in the root of the application''s deployed jar, if the sessions.xml is deployed in a sub-directory in the application''s jar ensure that the correct resource path using "/" not "\" is used.
 
 7096=Cannot use commit() method to commit UnitOfWork again.
 
 7097=Operation not supported: [{0}].
 
-7099=The deployment project XML resource [{0}] was not found on the resource path.  Check that the resource name/path and classloader passed to the XMLProjectReader are correct.  The project XML should be included in the root of the application''s deployed jar, if the project XML is deployed in a sub-directory in the application''s jar ensure that the correct resource path using "/" not "" is used.
+7099=The deployment project XML resource [{0}] was not found on the resource path.  Check that the resource name/path and classloader passed to the XMLProjectReader are correct.  The project XML should be included in the root of the application''s deployed jar, if the project XML is deployed in a sub-directory in the application''s jar ensure that the correct resource path using "/" not "\" is used.
 
 7100=Could not find the session with the name [{0}] in the session.xml file [{1}]
 
@@ -545,9 +545,7 @@
 
 7311=An invalid target class is being used with the element collection attribute [{0}] on the class [{1}].  Only basic types and embeddable classes are allowed.
 
-# START NON-TRANSLATABLE
 7312=An invalid embeddable class [{0}] is being used with the element collection attribute [{1}] on the class [{2}]. See section 2.6 of the spec: " An embeddable class (including an embeddable class within another embeddable class) contained within an element collection must not contain an element collection, nor may it contain a relationship to an entity other than a many-to-one or one-to-one relationship. The embeddable class must be on the owning side of such a relationship and the relationship must be mapped by a foreign key mapping." The mapping for the attribute [{3}] on the embeddable class is in violation of this.
-# END NON-TRANSLATABLE
 
 7313=The attribute [{1}] was not found on the embeddable class [{0}]. It is referenced in an association-override for the embedded attribute [{3}] on class [{2}].
 

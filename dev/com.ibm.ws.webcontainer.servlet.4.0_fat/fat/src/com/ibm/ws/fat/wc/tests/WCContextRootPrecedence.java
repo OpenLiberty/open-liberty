@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.wc.WCApplicationHelper;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -61,6 +62,14 @@ public class WCContextRootPrecedence extends LoggingTest {
     @BeforeClass
     public static void setUp() throws Exception {
 
+        // Apps defined in server.xml are not present during the first server start and this results in unwanted
+        // CWKZ0014W warning messages.
+        ArrayList<String> expectedErrors = new ArrayList<String>();
+        expectedErrors.add("CWWWC0400E:.*");
+        expectedErrors.add("CWWKC2257E:.*");
+        expectedErrors.add("CWWKZ0014W:.*");
+        SHARED_SERVER.getLibertyServer().addIgnoredErrors(expectedErrors);
+
         LOG.info("Setup : add applications as needed.");
 
         WCApplicationHelper.addWarToServerApps(SHARED_SERVER.getLibertyServer(), "TestContextRootAppNamePrecedence.war",
@@ -85,37 +94,13 @@ public class WCContextRootPrecedence extends LoggingTest {
         WCApplicationHelper.addWarToServerDropins(SHARED_SERVER.getLibertyServer(),
                                                   "TestDefaultContextPathWithoutStartSlashInvalidCase.war", true, null);
 
-        // Apps defined in server.xml are not present during the first server start and this results in unwanted
-        // CWKZ0014W warning messages. Stop the server with CWKZ0014W as an expected error and on restart remove it because
-        // all apps are now present.
-        ArrayList<String> expectedErrors = new ArrayList<String>();
-        expectedErrors.add("CWWWC0400E:.*");
-        expectedErrors.add("CWWKC2257E:.*");
-        expectedErrors.add("CWWKZ0014W:.*");
-
-        SHARED_SERVER.getLibertyServer().addIgnoredErrors(expectedErrors);
-
-        SHARED_SERVER.getLibertyServer().stopServer();
-
-        expectedErrors.remove("CWWKZ0014W:.*");
-        SHARED_SERVER.getLibertyServer().addIgnoredErrors(expectedErrors);
-
-        SHARED_SERVER.getLibertyServer().startServer();
-
-        LOG.info("Setup : wait for messagess to indicate apps have started");
-
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestContextRootAppNamePrecedence", 10000);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestContextRootDirOrFileNamePrecedence",
-                                                            10000);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestContextRootEARAppPrecedence", 10000);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestContextRootServerXmlPrecedence", 10000);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestContextRootWebExtPrecedence", 10000);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestDefaultContextPathPrecedence", 10000);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestDefaultContextPathWithEndSlashInvalidCase", 10000);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestDefaultContextPathWithoutStartSlashInvalidCase", 10000);
-
-        LOG.info("Setup : ready to run tests.");
-
+        WCApplicationHelper.waitForAppStart("TestContextRootDirOrFileNamePrecedence", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
+        WCApplicationHelper.waitForAppStart("AppNameContextRoot", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
+        WCApplicationHelper.waitForAppStart("TestServerXmlContextRoot", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
+        WCApplicationHelper.waitForAppStart("TestWebExtContextRoot", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
+        WCApplicationHelper.waitForAppStart("TestDefaultContextPathPrecedence", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
+        WCApplicationHelper.waitForAppStart("TestContextRootEARAppPrecedence", WCContextRootPrecedence.class.getName(), SHARED_SERVER.getLibertyServer());
+        LOG.info("Setup : complete, ready for Tests");
     }
 
     @AfterClass
@@ -134,6 +119,7 @@ public class WCContextRootPrecedence extends LoggingTest {
      * @throws Exception
      */
     @Test
+    @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     public void testContextRootServerXmlPrecedence() throws Exception {
         this.verifyResponse("/ServerContextRoot/", "Simple HTML page - TestContextRootServerXmlPrecedence");
     }
@@ -146,6 +132,7 @@ public class WCContextRootPrecedence extends LoggingTest {
      * @throws Exception
      */
     @Test
+    @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     public void testContextRootEARAppPrecedence() throws Exception {
         this.verifyResponse("/ApplicationContextRoot/", "Simple HTML page - TestContextRootEARAppPrecedence");
     }
@@ -158,6 +145,7 @@ public class WCContextRootPrecedence extends LoggingTest {
      * @throws Exception
      */
     @Test
+    @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     public void testContextRootWebExtPrecedence() throws Exception {
         this.verifyResponse("/WebExtContextRoot/", "Simple HTML page - TestContextRootWebExtPrecedence");
     }
@@ -170,6 +158,7 @@ public class WCContextRootPrecedence extends LoggingTest {
      * @throws Exception
      */
     @Test
+    @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     public void testContextRootAppNamePrecedence() throws Exception {
         this.verifyResponse("/AppNameContextRoot/", "Simple HTML page - TestContextRootAppNamePrecedence");
     }
@@ -181,6 +170,7 @@ public class WCContextRootPrecedence extends LoggingTest {
      * @throws Exception
      */
     @Test
+    @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     public void testDefaultContextPathElementPrecedence() throws Exception {
         this.verifyResponse("/WebDefaultContextPath/", "Simple HTML page - TestDefaultContextPathPrecedence");
     }
@@ -193,6 +183,7 @@ public class WCContextRootPrecedence extends LoggingTest {
      * @throws Exception
      */
     @Test
+    @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     public void testContextRootDirOrFileNamePrecedence() throws Exception {
         this.verifyResponse("/TestContextRootDirOrFileNamePrecedence/",
                             "Simple HTML page - TestContextRootDirOrFileNamePrecedence");
@@ -206,6 +197,7 @@ public class WCContextRootPrecedence extends LoggingTest {
      * @throws Exception
      */
     @Test
+    @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     @Mode(TestMode.FULL)
     public void testDefaultContextPathWithoutStartSlashInvalidCase() throws Exception {
         SHARED_SERVER.getLibertyServer().findStringsInLogs(
@@ -220,6 +212,7 @@ public class WCContextRootPrecedence extends LoggingTest {
      * @throws Exception
      */
     @Test
+    @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.wsspi.adaptable.module.UnableToAdaptException" })
     @Mode(TestMode.FULL)
     public void testDefaultContextPathWithEndSlashInvalidCase() throws Exception {
         SHARED_SERVER.getLibertyServer().findStringsInLogs(

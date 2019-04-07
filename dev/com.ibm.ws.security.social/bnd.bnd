@@ -44,6 +44,7 @@ Import-Package: \
    javax.servlet;version="!", \
    javax.servlet.*;version="!", \
    com.ibm.websphere.ras, \
+   org.jose4j.*;version="[0.5,1)", \
    *
 
 -dsannotations: com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl,\
@@ -89,7 +90,7 @@ Service-Component:\
     locationAdmin=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
     socialLoginWebappConfig=com.ibm.ws.security.social.SocialLoginWebappConfig; \
     optional:='sslSupport,authFilter,socialLoginConfig,securityService,socialLoginWebappConfig'; \
-    dynamic:='sslSupport,securityService'; \
+    dynamic:='sslSupport,securityService,authFilter,socialLoginConfig,socialLoginWebappConfig'; \
     greedy:='authFilter,socialLoginConfig,socialLoginWebappConfig'; \
     multiple:='authFilter,socialLoginConfig'; \
     properties:="service.vendor=IBM,id=SocialLoginTAI,TAIName=SocialLoginTAI,invokeAfterSSO:Boolean=true", \
@@ -121,7 +122,7 @@ Include-Resource: \
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
 	com.ibm.ws.org.apache.httpcomponents;version=latest,\
-	com.ibm.ws.org.jose4j.0.5.1;version=latest,\
+	com.ibm.ws.org.jose4j;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.resource;version=latest,\
 	com.ibm.ws.security.authentication.filter;version=latest,\
@@ -143,7 +144,7 @@ Include-Resource: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
     com.ibm.ws.junit.extensions;version=latest, \
     org.jmock:jmock-legacy;version=2.5.0, \
-    cglib:cglib-nodep;version=3.2.7, \
+    cglib:cglib-nodep;version=3.2.10, \
     org.hamcrest:hamcrest-all;version=1.3, \
     org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
     org.jmock:jmock;strategy=exact;version=2.5.1, \

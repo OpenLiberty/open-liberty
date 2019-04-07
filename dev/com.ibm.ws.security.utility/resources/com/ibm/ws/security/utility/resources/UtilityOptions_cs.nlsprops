@@ -89,8 +89,8 @@ encode.option-desc.listCustom=\tZobrazit informace o vlastn\u00edm \u0161ifrov\u
 sslCert.desc=\tVytvo\u0159it v\u00fdchoz\u00ed certifik\u00e1t SSL, kter\u00fd bude pou\u017e\u00edv\u00e1n serverem nebo             \n\
 \tkonfigurac\u00ed klienta. 
 #Note to translator the word "createSSLCertificate" should not be translated
-sslCert.usage.options=\t{0} createSSLCertificate '{--server n\u00e1zev_serveru|--client jm\u00e9no_klienta'}  \n\
-\t--password heslo [volby]
+sslCert.usage.options=\t{0} createSSLCertificate '{--server=servername |--client=clientname'}\n\
+\t--password[=password] [volby]
 sslCert.required-key.server=\ \ \ \ --server=n\u00e1zev
 sslCert.required-desc.server=\tServer, pro kter\u00fd m\u00e1 b\u00fdt certifik\u00e1t vytvo\u0159en. Tento argument nem\u016f\u017ee    \n\
 \tb\u00fdt pou\u017eit, pokud se pou\u017e\u00edv\u00e1 argument --client.

@@ -10,45 +10,17 @@
  *******************************************************************************/
 package com.ibm.ws.jndi;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+import java.util.Iterator;
 
-public class WSNamingEnumeration<T> implements NamingEnumeration<T> {
-    private final Iterator<T> iterator;
+public final class WSNamingEnumeration<T> implements NamingEnumeration<T> {
+    private final Iterator<?> iterator;
+    private final Adapter<Object, T> adapter;
 
-    private NamingException exception;
-
-    public static <K, V, T> WSNamingEnumeration<T> getEnumeration(Map<K, V> entries, Adapter<Entry<K, V>, T> adapter) {
-        return new WSNamingEnumeration<T>(entries.entrySet().iterator(), adapter);
-    }
-
-    private <F> WSNamingEnumeration(final Iterator<F> fromIterator, final Adapter<? super F, ? extends T> adapter) {
-        this.iterator = new Iterator<T>() {
-            @Override
-            public boolean hasNext() {
-                return fromIterator.hasNext();
-            }
-
-            @Override
-            public T next() {
-                try {
-                    return adapter.adapt(fromIterator.next());
-                } catch (NamingException e) { // cannot re-throw, so just suppress this exception
-                    if (exception == null)
-                        exception = e;
-                    return null;
-                }
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        };
+    public<F> WSNamingEnumeration(Iterable<F> from, Adapter<F, T> adapter){
+        this.iterator = from.iterator();
+        this.adapter = (Adapter<Object, T>)adapter; // ugly cast lets us avoid making F a type param on the class
     }
 
     @Override
@@ -61,27 +33,20 @@ public class WSNamingEnumeration<T> implements NamingEnumeration<T> {
         try {
             return next();
         } catch (NamingException e) {
-            // cannot re-throw, so just suppress this exception
-            if (exception == null)
-                exception = e;
             return null;
         }
     }
 
     @Override
     public T next() throws NamingException {
-        return iterator.next();
+        return adapter.adapt(iterator.next());
     }
 
     @Override
-    public boolean hasMore() throws NamingException {
-        if (iterator.hasNext())
-            return true;
-        if (exception != null)
-            throw exception;
-        return false;
+    public boolean hasMore() {
+        return iterator.hasNext();
     }
 
     @Override
-    public void close() throws NamingException {} // ignore calls to close because we have no resources to clean up
+    public void close() { /* no resources to clean up */ }
 }

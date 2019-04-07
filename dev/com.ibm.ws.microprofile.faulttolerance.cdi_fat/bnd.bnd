@@ -32,13 +32,8 @@ fat.project: true
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	com.ibm.ws.junit.extensions;version=latest, \
-	org.jboss.shrinkwrap:shrinkwrap-api;version=1.2.3,\
     org.jboss.shrinkwrap:shrinkwrap-impl-base;version=1.2.3,\
     org.jboss.shrinkwrap:shrinkwrap-spi;version=1.2.3,\
-	fattest.simplicity;version=latest, \
-	com.ibm.ws.componenttest:public.api;version=1.0.0,\
-	com.ibm.ws.componenttest;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.faulttolerance.1.0;version=latest,\
@@ -49,6 +44,7 @@ fat.project: true
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
 	com.ibm.ws.tx.embeddable;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.2;version=latest
 	

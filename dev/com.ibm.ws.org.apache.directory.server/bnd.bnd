@@ -11,7 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-publish.wlp.jar.disabled: false
+publish.wlp.jar.disabled: true
 test.project: true
 generate.replacement: true
 
@@ -25,4 +25,5 @@ generate.replacement: true
 # The latest version is governed by cnf/oss_dependencies.maven.
 #
 -buildpath: \
-	org.apache.directory.server:apacheds-service;version=latest
+	org.apache.directory.server:apacheds-service;version=latest, \
+    com.ibm.ws.componenttest:public.api;version=1.0.0

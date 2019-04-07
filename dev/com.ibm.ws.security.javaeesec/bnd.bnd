@@ -79,11 +79,10 @@ Include-Resource: \
     org.jmock:jmock;strategy=exact;version=2.5.1,\
     org.jmock:jmock-legacy;version=2.5.0,\
     org.objenesis:objenesis;version=1.0,\
-    cglib:cglib-nodep;version=3.2.7,\
+    cglib:cglib-nodep;version=3.2.10,\
     com.ibm.ws.kernel.boot;version=latest,\
     com.ibm.ws.container.service;version=latest,\
     com.ibm.ws.security.registry;version=latest,\
     com.ibm.ws.org.apache.jasper.el.3.0;version=latest,\
-    com.ibm.ws.container.service;version=latest,\
     com.ibm.ws.adaptable.module;version=latest
     

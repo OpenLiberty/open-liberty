@@ -50,6 +50,9 @@ public class OpenAPIUIBundlesUpdater {
      * List of OpenAPI-UI bundles
      */
     private static final Set<String> openAPIUIBundleNames = new HashSet<String>();
+
+    private static boolean stopping = false;
+
     static {
         openAPIUIBundleNames.add("com.ibm.ws.microprofile.openapi.ui");
     }
@@ -319,6 +322,12 @@ public class OpenAPIUIBundlesUpdater {
             ServiceReference<Bundle>[] refs = (ServiceReference<Bundle>[]) bundleContext.getServiceReferences(Bundle.class.getName(), "(installed.wab.contextRoot=*)");
             waitComplete = verifyRefs(refs, expectedBundleNames);
             while (!waitComplete) {
+                if (stopping) {
+                    if (OpenAPIUtils.isDebugEnabled(tc)) {
+                        Tr.debug(tc, "Stopped waiting for OpenAPI bundles because the server is shutting down");
+                    }
+                    return false;
+                }
                 refs = (ServiceReference<Bundle>[]) bundleContext.getServiceReferences(Bundle.class.getName(), "(installed.wab.contextRoot=*)");
                 waitComplete = verifyRefs(refs, expectedBundleNames);
                 if (!waitComplete) {
@@ -333,5 +342,9 @@ public class OpenAPIUIBundlesUpdater {
             }
         }
         return waitComplete;
+    }
+
+    public static void serverStopping() {
+        stopping = true;
     }
 }

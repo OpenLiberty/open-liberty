@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.cdi.config;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.security.AccessController;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -27,16 +30,21 @@ import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceExceptio
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.microprofile.faulttolerance.cdi.FTUtils;
+import com.ibm.ws.microprofile.faulttolerance.cdi.config.impl.AbstractAnnotationConfig;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackHandlerFactory;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceFunction;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProvider;
 import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
 
-public class FallbackConfig extends AbstractAnnotationConfig<Fallback> implements Fallback {
+public class FallbackConfig extends AbstractAnnotationConfig<Fallback> {
 
     private static final TraceComponent tc = Tr.register(FallbackConfig.class);
+
+    private static final SecureAction secure = AccessController.doPrivileged(SecureAction.get());
 
     @SuppressWarnings("rawtypes")
     private final AnnotationParameterConfig<Class<? extends FallbackHandler>> valueConfig = getParameterConfigClass("value", FallbackHandler.class);
@@ -46,16 +54,12 @@ public class FallbackConfig extends AbstractAnnotationConfig<Fallback> implement
         super(annotatedMethod, annotatedClass, annotation, Fallback.class);
     }
 
-    /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
-    @Override
-    public Class<? extends FallbackHandler<?>> value() {
+    private Class<? extends FallbackHandler<?>> value() {
         return (Class<? extends FallbackHandler<?>>) valueConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public String fallbackMethod() {
+    private String fallbackMethod() {
         return fallbackMethodConfig.getValue();
     }
 
@@ -65,7 +69,6 @@ public class FallbackConfig extends AbstractAnnotationConfig<Fallback> implement
 
         Method originalMethod = getAnnotatedMethod();
         Class<?> originalMethodReturnType = originalMethod.getReturnType();
-        Class<?>[] originalMethodParamTypes = originalMethod.getParameterTypes();
 
         Class<? extends FallbackHandler<?>> fallbackClass = value();
         String fallbackMethodName = fallbackMethod();
@@ -106,22 +109,11 @@ public class FallbackConfig extends AbstractAnnotationConfig<Fallback> implement
 
         } else if (fallbackMethodName != null && !"".equals(fallbackMethodName)) {
 
-            try {
-
-                Method fallbackMethod = originalMethod.getDeclaringClass().getMethod(fallbackMethodName, originalMethodParamTypes);
-
-                Class<?> fallbackReturn = fallbackMethod.getReturnType();
-                if (!originalMethodReturnType.isAssignableFrom(fallbackReturn)) {
-                    throw new FaultToleranceDefinitionException(Tr.formatMessage(tc, "fallback.policy.return.type.not.match.CWMFT5002E", fallbackMethod, originalMethod));
-                }
-
-            } catch (NoSuchMethodException e) {
-                throw new FaultToleranceDefinitionException(Tr.formatMessage(tc, "fallback.method.not.found.CWMFT5003E", fallbackMethodName,
-                                                                             originalMethod.getName(), originalMethod.getDeclaringClass()), e);
-            } catch (SecurityException e) {
-                throw new FaultToleranceDefinitionException((Tr.formatMessage(tc, "security.exception.acquiring.fallback.method.CWMFT5004E")), e);
+            Method fallbackMethod = MethodFinder.findMatchingMethod(originalMethod, fallbackMethodName);
+            if (fallbackMethod == null) {
+                throw new FaultToleranceDefinitionException(Tr.formatMessage(tc, "fallback.method.not.found.CWMFT5021E", fallbackMethodName,
+                                                                             originalMethod.getName(), originalMethod.getDeclaringClass()));
             }
-
         }
     }
 
@@ -135,20 +127,20 @@ public class FallbackConfig extends AbstractAnnotationConfig<Fallback> implement
         } else if (fallbackMethodName != null && !"".equals(fallbackMethodName)) {
             Object beanInstance = context.getTarget();
             Method originalMethod = context.getMethod();
-            Class<?>[] paramTypes = originalMethod.getParameterTypes();
-            try {
-                Method fallbackMethod = beanInstance.getClass().getMethod(fallbackMethodName, paramTypes);
-                Class<?> originalReturn = originalMethod.getReturnType();
-                Class<?> fallbackReturn = fallbackMethod.getReturnType();
-                if (originalReturn.isAssignableFrom(fallbackReturn)) {
-                    fallbackPolicy = newFallbackPolicy(beanInstance, fallbackMethod, fallbackReturn);
-                }
-            } catch (NoSuchMethodException e) {
-                throw new FaultToleranceException(Tr.formatMessage(tc, "fallback.method.not.found.CWMFT5003E", fallbackMethodName, originalMethod.getName(),
-                                                                   beanInstance.getClass()), e);
-            } catch (SecurityException e) {
-                throw new FaultToleranceException((Tr.formatMessage(tc, "security.exception.acquiring.fallback.method.CWMFT5004E")), e);
+
+            Method fallbackMethod = MethodFinder.findMatchingMethod(originalMethod, fallbackMethodName);
+
+            if (fallbackMethod == null) {
+                throw new FaultToleranceDefinitionException(Tr.formatMessage(tc, "fallback.method.not.found.CWMFT5021E", fallbackMethodName,
+                                                                             originalMethod.getName(), originalMethod.getDeclaringClass()));
             }
+
+            if (!Modifier.isPublic(fallbackMethod.getModifiers()) && !fallbackMethod.isAccessible()) {
+                secure.setAccessible(fallbackMethod, true);
+            }
+
+            Class<?> fallbackReturn = fallbackMethod.getReturnType();
+            fallbackPolicy = newFallbackPolicy(beanInstance, fallbackMethod, fallbackReturn);
         } else {
             //shouldn't ever reach here since validation should have caught it earlier
             throw new FaultToleranceException(Tr.formatMessage(tc, "internal.error.CWMFT5998E"));
@@ -175,10 +167,22 @@ public class FallbackConfig extends AbstractAnnotationConfig<Fallback> implement
 
     private static <R> FallbackPolicy newFallbackPolicy(Object beanInstance, Method fallbackMethod, Class<R> fallbackReturn) {
         FaultToleranceFunction<ExecutionContext, R> fallbackFunction = new FaultToleranceFunction<ExecutionContext, R>() {
+            @SuppressWarnings("unchecked")
+            @FFDCIgnore(InvocationTargetException.class)
             @Override
             public R execute(ExecutionContext context) throws Exception {
-                @SuppressWarnings("unchecked")
-                R result = (R) fallbackMethod.invoke(beanInstance, context.getParameters());
+                R result = null;
+                try {
+                    result = (R) fallbackMethod.invoke(beanInstance, context.getParameters());
+                } catch (InvocationTargetException ex) {
+                    Throwable cause = ex.getCause();
+                    if (cause instanceof Exception) {
+                        // Unwrap the real exception to return it to the user
+                        throw (Exception) cause;
+                    } else {
+                        throw ex;
+                    }
+                }
                 return result;
             }
         };

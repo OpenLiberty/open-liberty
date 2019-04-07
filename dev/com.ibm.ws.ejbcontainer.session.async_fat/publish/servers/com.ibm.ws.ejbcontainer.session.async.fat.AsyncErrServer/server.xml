@@ -1,0 +1,12 @@
+<server>
+    <featureManager>
+		<feature>componentTest-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>mdb-3.2</feature>
+        <feature>wasJmsServer-1.0</feature>
+        <feature>wasJmsClient-2.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+</server>

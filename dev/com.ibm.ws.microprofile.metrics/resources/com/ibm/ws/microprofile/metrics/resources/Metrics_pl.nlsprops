@@ -105,6 +105,38 @@ garbageCollectionCount.description=Wy\u015bwietla \u0142\u0105czn\u0105 liczb\u0
 garbageCollectionTime.description=Wy\u015bwietla szacowany \u0142\u0105czny czas trwania gromadzenia (w milisekundach). Ten atrybut ma warto\u015b\u0107 -1, je\u015bli czas trwania gromadzenia dla tego kolektora jest niezdefiniowany. Implementacja wirtualnej maszyny j\u0119zyka Java mo\u017ce u\u017cywa\u0107 zegara o wysokiej rozdzielczo\u015bci do mierzenia czasu, kt\u00f3ry up\u0142yn\u0105\u0142. Ten atrybut mo\u017ce mie\u0107 t\u0119 sam\u0105 warto\u015b\u0107, nawet je\u015bli liczba operacji gromadzenia zwi\u0119kszy\u0142a si\u0119, gdy czas trwania gromadzenia jest bardzo kr\u00f3tki.
 
 #-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+threadpool.activeThreads.description=Liczba w\u0105tk\u00f3w wykonuj\u0105cych zadania.
+threadpool.size.description=Wielko\u015b\u0107 puli w\u0105tk\u00f3w.
+
+servlet.request.total.description=Liczba odwiedzin w tym serwlecie od momentu uruchomienia serwera.
+servlet.responseTime.total.description=\u0141\u0105czny czas odpowiedzi tego serwletu od momentu uruchomienia serwera. 
+
+connectionpool.create.total.description=\u0141\u0105czna liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych, kt\u00f3re zosta\u0142y utworzone od momentu utworzenia puli.
+connectionpool.destroy.total.description=\u0141\u0105czna liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych, kt\u00f3re zosta\u0142y zniszczone od momentu utworzenia puli.
+connectionpool.managedConnections.description=Liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych w pulach wolnych, wsp\u00f3\u0142u\u017cytkowanych i niewsp\u00f3\u0142u\u017cytkowanych.
+connectionpool.connectionHandles.description=Liczba po\u0142\u0105cze\u0144, kt\u00f3re s\u0105 w u\u017cyciu. Liczba ta mo\u017ce obejmowa\u0107 wiele po\u0142\u0105cze\u0144 wsp\u00f3\u0142u\u017cytkowanych z jednego po\u0142\u0105czenia zarz\u0105dzanego.
+connectionpool.freeConnections.description=Liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych w wolnym obszarze puli. 
+connectionpool.waitTime.total.description=\u0141\u0105czny czas oczekiwania na wszystkie \u017c\u0105dania po\u0142\u0105cze\u0144 od momentu uruchomienia serwera.
+connectionpool.inUseTime.total.description=\u0141\u0105czny czas aktywno\u015bci wszystkich po\u0142\u0105cze\u0144 od momentu uruchomienia serwera.
+connectionpool.usedConnections.total.description=\u0141\u0105czna liczba \u017c\u0105da\u0144 po\u0142\u0105cze\u0144, kt\u00f3re oczekiwa\u0142y z powodu pe\u0142nej puli po\u0142\u0105cze\u0144 lub kt\u00f3re nie musia\u0142y czeka\u0107 od momentu uruchomienia serwera. \u017badne po\u0142\u0105czenia, kt\u00f3re s\u0105 aktualnie u\u017cywane, nie s\u0105 uwzgl\u0119dniane w tej sumie.
+connectionpool.queuedRequests.total.description=\u0141\u0105czna liczba \u017c\u0105da\u0144 po\u0142\u0105cze\u0144, kt\u00f3re musia\u0142y oczekiwa\u0107 na po\u0142\u0105czenie z powodu pe\u0142nej puli po\u0142\u0105cze\u0144 od momentu uruchomienia serwera.
+
+session.create.total.description=Liczba sesji zalogowanych od momentu w\u0142\u0105czenia tego pomiaru.
+session.liveSessions.description=Liczba u\u017cytkownik\u00f3w, kt\u00f3rzy s\u0105 obecnie zalogowani.
+session.activeSessions.description=Liczba jednocze\u015bnie aktywnych sesji. (Sesja jest aktywna, je\u015bli produkt aktualnie przetwarza \u017c\u0105danie, kt\u00f3re korzysta z tej sesji u\u017cytkownika).
+session.invalidated.total.description=Liczba sesji wylogowanych od momentu w\u0142\u0105czenia tego pomiaru.
+session.invalidatedbyTimeout.total.description=Liczba sesji, kt\u00f3re zosta\u0142y wylogowane z powodu przekroczenia limitu czasu od momentu w\u0142\u0105czenia tego pomiaru. 
+
+jaxws.invocations.total.description=Liczba wywo\u0142a\u0144 tego punktu ko\u0144cowego lub operacji.
+jaxws.checkedApplicationFaults.total.description=Liczba sprawdzonych b\u0142\u0119d\u00f3w aplikacji.
+jaxws.logicalRuntimeFaults.total.description=Liczba logicznych b\u0142\u0119d\u00f3w wykonawczych.
+jaxws.runtimeFaults.total.description=Liczba b\u0142\u0119d\u00f3w wykonawczych.
+jaxws.uncheckedApplicationFaults.total.description=Liczba niesprawdzonych b\u0142\u0119d\u00f3w aplikacji.
+jaxws.responseTime.total.description=\u0141\u0105czny czas obss\u0142ugi odpowiedzi od momentu uruchomienia serwera.
+
+#-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------
 

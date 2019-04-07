@@ -145,7 +145,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
     static final long POLL_INTERVAL = 100;
 
     // Interval (in milliseconds) up to which tests should wait for a single task to run
-    static final long TIMEOUT = TimeUnit.SECONDS.toMillis(20);
+    static final long TIMEOUT = TimeUnit.MINUTES.toMillis(2);
 
     /**
      * Schedule/submit a task that is both a Callable and a Runnable.

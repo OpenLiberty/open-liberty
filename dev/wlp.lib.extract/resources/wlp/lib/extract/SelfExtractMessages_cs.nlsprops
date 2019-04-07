@@ -274,6 +274,7 @@ RUN_IN_CHILD_JVM_DEBUG=WLP_JAR_DEBUG byl nastaven. Server se spust\u00ed v samos
 RUN_IN_CHILD_JVM_JVM_OPTIONS=Soubor jar obsahuje soubory jvm.options. Server se spust\u00ed v samostatn\u00e9m prost\u0159ed\u00ed JVM.
 RUN_IN_CHILD_JVM_IBM_AGENT_ISSUE=Sada IBM SDK se pou\u017e\u00edv\u00e1 bez volby -XX:+EnableHCR. Server se spust\u00ed v samostatn\u00e9m prost\u0159ed\u00ed JVM.
 RUN_IN_CHILD_JVM_JRE=Pou\u017e\u00edv\u00e1 se instalace prost\u0159ed\u00ed Java Runtime Environment. Server se spust\u00ed v samostatn\u00e9m prost\u0159ed\u00ed JVM.
+RUN_IN_CHILD_JVM_SET_JAVA_HOME=Nastaven\u00ed prom\u011bnn\u00e9 prost\u0159ed\u00ed JAVA_HOME: {0}
 
 # messages for LicenseSelfEctractor
 LICENSE_invalidInstall=Adres\u00e1\u0159 {0} nen\u00ed platnou instalac\u00ed Liberty. Ur\u010dete ko\u0159enov\u00fd adres\u00e1\u0159 instalace Liberty, kterou chcete upgradovat.

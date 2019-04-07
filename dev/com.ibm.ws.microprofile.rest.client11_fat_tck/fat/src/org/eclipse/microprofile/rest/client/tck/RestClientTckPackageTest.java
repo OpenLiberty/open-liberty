@@ -38,11 +38,6 @@ public class RestClientTckPackageTest {
     @Server("FATServer")
     public static LibertyServer server;
 
-//    @BeforeClass
-//    public static void setUp() throws Exception {
-//        server.startServer();
-//    }
-//
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {

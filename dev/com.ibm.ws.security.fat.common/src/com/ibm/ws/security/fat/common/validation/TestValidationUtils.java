@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.Constants;
+import com.ibm.ws.security.fat.common.Constants.CheckType;
+import com.ibm.ws.security.fat.common.Constants.StringCheckType;
 import com.ibm.ws.security.fat.common.expectations.Expectation;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
@@ -17,7 +19,7 @@ public class TestValidationUtils {
 
     private final Class<?> thisClass = TestValidationUtils.class;
 
-    private CommonFatLoggingUtils loggingUtils = new CommonFatLoggingUtils();
+    private final CommonFatLoggingUtils loggingUtils = new CommonFatLoggingUtils();
 
     /**
      * Logs the state of the test assertion and then invokes the JUnit assertTrue method to record the test "status"
@@ -63,6 +65,15 @@ public class TestValidationUtils {
         return false;
     }
 
+    // short cut for validating when we don't have a response (ie: when we're just checking for server log messages)
+    public void validateResult(Expectations expectations) throws Exception {
+        validateResult(null, null, expectations);
+    }
+
+    public void validateResult(Object response, Expectations expectations) throws Exception {
+        validateResult(response, null, expectations);
+    }
+
     public void validateResult(Object response, String currentAction, Expectations expectations) throws Exception {
         String thisMethod = "validateResult";
         loggingUtils.printMethodName(thisMethod, "Start of");
@@ -83,25 +94,46 @@ public class TestValidationUtils {
         loggingUtils.printMethodName(thisMethod, "End of");
     }
 
+    public void validateException(Exception exception, String currentAction, Expectations expectations) throws Exception {
+        String thisMethod = "validateException";
+        loggingUtils.printMethodName(thisMethod, "Start of");
+
+        Log.info(thisClass, thisMethod, "currentAction is: " + currentAction);
+        if (expectations == null) {
+            Log.info(thisClass, thisMethod, "Expectations are null");
+            return;
+        }
+        try {
+            for (Expectation expectation : expectations.getExpectations()) {
+                expectation.validate(currentAction, exception);
+            }
+        } catch (Exception e) {
+            Log.error(thisClass, thisMethod, e, "Error validating exception");
+            throw e;
+        }
+        loggingUtils.printMethodName(thisMethod, "End of");
+    }
+
     public void validateStringContent(Expectation expected, String contentToValidate) throws Exception {
         if (expected == null) {
             throw new Exception("The provided expectation is null; the specified content cannot be validated.");
         }
         String checkType = expected.getCheckType();
+        CheckType checkTypeEnum = expected.getExpectedCheckType();
 
-        if (Constants.STRING_NULL.equals(checkType)) {
+        if (Constants.STRING_NULL.equals(checkType) || checkTypeEnum == StringCheckType.NULL) {
             validateStringNull(expected, contentToValidate);
-        } else if (Constants.STRING_NOT_NULL.equals(checkType)) {
+        } else if (Constants.STRING_NOT_NULL.equals(checkType) || checkTypeEnum == StringCheckType.NOT_NULL) {
             validateStringNotNull(expected, contentToValidate);
-        } else if (Constants.STRING_EQUALS.equals(checkType)) {
+        } else if (Constants.STRING_EQUALS.equals(checkType) || checkTypeEnum == StringCheckType.EQUALS) {
             validateStringEquals(expected, contentToValidate);
-        } else if (Constants.STRING_CONTAINS.equals(checkType)) {
+        } else if (Constants.STRING_CONTAINS.equals(checkType) || checkTypeEnum == StringCheckType.CONTAINS) {
             validateStringContains(expected, contentToValidate);
-        } else if (Constants.STRING_DOES_NOT_CONTAIN.equals(checkType)) {
+        } else if (Constants.STRING_DOES_NOT_CONTAIN.equals(checkType) || checkTypeEnum == StringCheckType.DOES_NOT_CONTAIN) {
             validateStringDoesNotContain(expected, contentToValidate);
-        } else if (Constants.STRING_MATCHES.equals(checkType)) {
+        } else if (Constants.STRING_MATCHES.equals(checkType) || checkTypeEnum == StringCheckType.CONTAINS_REGEX) {
             validateRegexFound(expected, contentToValidate);
-        } else if (Constants.STRING_DOES_NOT_MATCH.equals(checkType)) {
+        } else if (Constants.STRING_DOES_NOT_MATCH.equals(checkType) || checkTypeEnum == StringCheckType.DOES_NOT_CONTAIN_REGEX) {
             validateRegexNotFound(expected, contentToValidate);
         } else {
             throw new Exception("String comparison type (" + checkType + ") unknown. Check that the offending test case has coded its expectations correctly.");

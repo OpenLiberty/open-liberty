@@ -1,0 +1,20 @@
+plugins {
+	id 'org.springframework.boot' version '2.0.4.RELEASE'
+}
+
+
+apply plugin: 'war'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.ibm.ws.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+dependencies {
+	compile project(':com.ibm.ws.springboot.support.version20.test.war.app:module')
+	compile 'org.springframework.boot:spring-boot-starter-web'
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+    providedRuntime 'javax.servlet:jstl'
+    providedRuntime 'org.apache.tomcat.embed:tomcat-embed-jasper'
+}
+

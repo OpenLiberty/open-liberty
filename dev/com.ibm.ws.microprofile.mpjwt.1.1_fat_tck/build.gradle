@@ -9,10 +9,14 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 //the tck jar should be removed once we can run the tck unaltered. Also need to hit pom.xml
+
+//remove this dependency on artifactory as the contributor build cannot use it. 
+/*
 dependencies {
   
   requiredLibs 'org.eclipse.microprofile.jwt:microprofile-jwt-auth-tck:1.2-20180821.143915-1'
 }
+*/
 
 
 /*

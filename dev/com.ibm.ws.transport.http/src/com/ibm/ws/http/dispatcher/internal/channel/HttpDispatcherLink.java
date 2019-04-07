@@ -226,6 +226,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                                 Tr.debug(tc, "Upgraded Web Connection closing Dispatcher Link");
                             }
                         } else {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Upgraded Web Connection already called close; returning");
+                            }
                             return;
                         }
                     }
@@ -829,12 +832,21 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      */
     @Override
     public String getRemoteHostAddress() {
-        String remoteAddr = getTrustedHeader(HttpHeaderKeys.HDR_$WSRA.getName());
-        if (remoteAddr != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "getRemoteHostAddress isTrusted --> true, addr --> " + remoteAddr);
-        } else {
-            remoteAddr = contextRemoteHostAddress();
+
+        String remoteAddr = null;
+
+        if (isc != null && isc.useForwardedHeaders()) {
+            remoteAddr = isc.getForwardedRemoteAddress();
+
+        }
+        if (remoteAddr == null) {
+            remoteAddr = getTrustedHeader(HttpHeaderKeys.HDR_$WSRA.getName());
+            if (remoteAddr != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "getRemoteHostAddress isTrusted --> true, addr --> " + remoteAddr);
+            } else {
+                remoteAddr = contextRemoteHostAddress();
+            }
         }
 
         return remoteAddr;
@@ -864,23 +876,32 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      */
     @Override
     public String getRemoteHostName(final boolean canonical) {
-        String remoteHost = getTrustedHeader(HttpHeaderKeys.HDR_$WSRH.getName());
-        if (remoteHost != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "getRemoteHost isTrusted --> true, host --> " + remoteHost);
-        } else {
-            final HttpInboundServiceContextImpl finalSc = this.isc;
-            remoteHost = AccessController.doPrivileged(new PrivilegedAction<String>() {
-                @Override
-                public String run() {
-                    if (canonical)
-                        return finalSc.getRemoteAddr().getCanonicalHostName();
-                    else
-                        return finalSc.getRemoteAddr().getHostName();
-                }
-            });
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "getRemoteHost host --> " + remoteHost);
+        String remoteHost = null;
+        final HttpInboundServiceContextImpl finalSc = this.isc;
+
+        if (finalSc != null && finalSc.useForwardedHeaders()) {
+            remoteHost = finalSc.getForwardedRemoteHost();
+        }
+        if (remoteHost == null) {
+
+            remoteHost = getTrustedHeader(HttpHeaderKeys.HDR_$WSRH.getName());
+            if (remoteHost != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "getRemoteHost isTrusted --> true, host --> " + remoteHost);
+            } else {
+
+                remoteHost = AccessController.doPrivileged(new PrivilegedAction<String>() {
+                    @Override
+                    public String run() {
+                        if (canonical)
+                            return finalSc.getRemoteAddr().getCanonicalHostName();
+                        else
+                            return finalSc.getRemoteAddr().getHostName();
+                    }
+                });
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "getRemoteHost host --> " + remoteHost);
+            }
         }
         return remoteHost;
     }
@@ -890,6 +911,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      */
     @Override
     public int getRemotePort() {
+
+        if (isc != null && isc.useForwardedHeaders()) {
+            if (isc.getForwardedRemotePort() != -1)
+                return isc.getForwardedRemotePort();
+        }
+
         return this.isc.getRemotePort();
     }
 
@@ -934,15 +961,24 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Finishing conn; " + finalSc + " error=" + e);
         }
+
         if (vc != null) { // This is added for Upgrade Servlet3.1 WebConnection
             String webconn = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
             if (webconn != null && webconn.equalsIgnoreCase("CLOSED_NON_UPGRADED_STREAMS")) {
                 vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "null");
             } else {
-                error = closeStreams();
+                synchronized (WebConnCanCloseSync) {
+                    if (WebConnCanClose) {
+                        error = closeStreams();
+                    }
+                }
             }
         } else {
-            error = closeStreams();
+            synchronized (WebConnCanCloseSync) { 
+                if (WebConnCanClose) {
+                    error = closeStreams();
+                }
+            }
         }
 
         close(getVirtualConnection(), error);
@@ -1142,6 +1178,28 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             return isc.getLink();
         }
         return null;
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public String getRemoteProto() {
+
+        if (isc != null && isc.useForwardedHeaders()) {
+            return isc.getForwardedRemoteProto();
+        }
+        return null;
+
+    }
+
+    @Override
+    public boolean useForwardedHeaders() {
+
+        if (isc != null) {
+            return isc.useForwardedHeaders();
+        }
+        return false;
     }
 
 }

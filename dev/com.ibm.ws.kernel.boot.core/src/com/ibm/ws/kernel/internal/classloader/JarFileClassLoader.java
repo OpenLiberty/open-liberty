@@ -18,11 +18,10 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.security.CodeSource;
+import java.security.SecureClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +29,9 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+
+import com.ibm.ws.kernel.boot.classloader.ClassLoaderHook;
+import com.ibm.ws.kernel.boot.classloader.ClassLoaderHookFactory;
 
 /**
  * ClassLoader implementation that can load jar files without signature verification. This
@@ -39,31 +41,38 @@ import java.util.jar.Manifest;
  * <li> Class-Path headers are not processed.</li>
  * <li> Remote URLs that point to directories are not supported.</li>
  */
-public class JarFileClassLoader extends URLClassLoader {
+public class JarFileClassLoader extends SecureClassLoader implements Closeable {
     static {
         ClassLoader.registerAsParallelCapable();
     }
     private final CopyOnWriteArrayList<URL> urls;
     private final CopyOnWriteArrayList<ResourceHandler> resourceHandlers;
     private final boolean verify;
+    private final ClassLoaderHook hook;
 
     public JarFileClassLoader(URL[] urls, boolean verify, ClassLoader parent) {
-        super(new URL[0], parent);
+        super(parent);
 
         if (System.getSecurityManager() != null) {
             throw new IllegalStateException("This ClassLoader does not work with SecurityManager");
         }
 
         this.verify = verify;
-        this.urls = new CopyOnWriteArrayList<URL>(urls == null ? Collections.<URL> emptyList() : Arrays.asList(urls));
+        hook = ClassLoaderHookFactory.getClassLoaderHook(this);
+        if (urls == null) {
+            this.urls = new CopyOnWriteArrayList<URL>();
+            this.resourceHandlers = new CopyOnWriteArrayList<ResourceHandler>();
+        } else {
+            this.urls = new CopyOnWriteArrayList<URL>(Arrays.asList(urls));
 
-        // avoid adding resource handlers one at a time to a copy on write list
-        List<ResourceHandler> tempResourceHandlers = new ArrayList<ResourceHandler>();
-        for (URL url : this.urls) {
-            tempResourceHandlers.add(createResoureHandler(url, verify));
+            // avoid adding resource handlers one at a time to a copy on write list
+            List<ResourceHandler> tempResourceHandlers = new ArrayList<ResourceHandler>(urls.length);
+            for (URL url : urls) {
+                tempResourceHandlers.add(createResoureHandler(url, verify));
+            }
+            // Create resourceHandler list in one go
+            this.resourceHandlers = new CopyOnWriteArrayList<ResourceHandler>(tempResourceHandlers);
         }
-        // Create resourceHandler list in one go
-        this.resourceHandlers = new CopyOnWriteArrayList<ResourceHandler>(tempResourceHandlers);
     }
 
     private ResourceHandler createResoureHandler(URL url, boolean verify) {
@@ -84,6 +93,7 @@ public class JarFileClassLoader extends URLClassLoader {
         }
     }
 
+    @Override
     public void close() {
         for (ResourceHandler handler : resourceHandlers) {
             close(handler);
@@ -91,40 +101,63 @@ public class JarFileClassLoader extends URLClassLoader {
         resourceHandlers.clear();
     }
 
-    @Override
     protected void addURL(URL url) {
         urls.add(url);
         resourceHandlers.add(createResoureHandler(url, verify));
     }
 
-    @Override
     public URL[] getURLs() {
         return urls.toArray(new URL[0]);
     }
 
     @Override
     protected Class<?> findClass(String className) throws ClassNotFoundException {
-        String resourceName = className.replace('.', '/') + ".class";
+        return findClass(className, false);
+    }
+
+    protected Class<?> findClass(String className, boolean returnNull) throws ClassNotFoundException {
+        String resourceName = new StringBuilder(className.replace('.', '/')).append(".class").toString();
 
         ResourceEntry entry = findResourceEntry(resourceName);
         if (entry == null) {
+            if (returnNull) {
+                return null;
+            }
             throw new ClassNotFoundException(className);
         }
 
+        ResourceHandler resourceHandler = entry.getResourceHandler();
+        URL jarURL = resourceHandler.toURL();
+
         byte[] classBytes = null;
+        boolean foundInClassCache = false;
+        if (hook != null) {
+            classBytes = hook.loadClass(jarURL, className);
+            foundInClassCache = (classBytes != null);
+        }
+
         Manifest manifest = null;
         try {
-            classBytes = entry.getBytes();
+            if (!foundInClassCache) {
+                classBytes = entry.getBytes();
+            }
 
-            manifest = entry.getManifest();
+            manifest = resourceHandler.getManifest();
         } catch (IOException e) {
+            if (returnNull) {
+                throw null;
+            }
             throw new ClassNotFoundException(className, e);
         }
 
-        URL jarURL = entry.getResourceHandler().toURL();
+        int packageEnd = className.lastIndexOf('.');
+        if (packageEnd >= 0) {
+            String packageName = className.substring(0, packageEnd);
+            String packagePath = resourceName.substring(0, packageEnd + 1);
 
-        // define package
-        definePackage(className, jarURL, manifest);
+            // define package
+            definePackage(packageName, packagePath, jarURL, manifest);
+        }
 
         // create code source
         CodeSource source = new CodeSource(jarURL, entry.getCertificates());
@@ -132,18 +165,14 @@ public class JarFileClassLoader extends URLClassLoader {
         // define class
         Class<?> clazz = defineClass(className, classBytes, 0, classBytes.length, source);
 
+        if (hook != null && !foundInClassCache) {
+            hook.storeClass(jarURL, clazz);
+        }
+
         return clazz;
     }
 
-    private void definePackage(String className, URL jarURL, Manifest manifest) {
-        int packageEnd = className.lastIndexOf('.');
-        if (packageEnd < 0) {
-            return;
-        }
-
-        String packageName = className.substring(0, packageEnd);
-        String packagePath = packageName.replace('.', '/') + "/";
-
+    private void definePackage(String packageName, String packagePath, URL jarURL, Manifest manifest) {
         Package pkg = getPackage(packageName);
         if (pkg != null) {
             if (pkg.isSealed()) {
@@ -205,7 +234,7 @@ public class JarFileClassLoader extends URLClassLoader {
 
     @Override
     public Enumeration<URL> findResources(String resourceName) throws IOException {
-        return new ResourceEntryEnumeration(resourceName);
+        return new ResourceEntryEnumeration(resourceHandlers, resourceName);
     }
 
     private ResourceEntry findResourceEntry(String resourceName) {
@@ -218,13 +247,13 @@ public class JarFileClassLoader extends URLClassLoader {
         return null;
     }
 
-    private class ResourceEntryEnumeration implements Enumeration<URL> {
+    private static class ResourceEntryEnumeration implements Enumeration<URL> {
 
         private final String resourceName;
         private final Iterator<ResourceHandler> handlerIterator;
         private ResourceEntry entry;
 
-        public ResourceEntryEnumeration(String resourceName) {
+        public ResourceEntryEnumeration(List<ResourceHandler> resourceHandlers, String resourceName) {
             this.resourceName = resourceName;
             this.handlerIterator = resourceHandlers.iterator();
             this.entry = null;

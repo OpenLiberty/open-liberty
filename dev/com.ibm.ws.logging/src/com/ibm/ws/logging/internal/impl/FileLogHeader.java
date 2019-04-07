@@ -18,26 +18,84 @@ public class FileLogHeader {
     private final String header;
     private final boolean javaLangInstrument;
     private final boolean trace;
+    private final boolean isJSON;
 
-    public FileLogHeader(String header, boolean trace, boolean javaLangInstrument) {
+    public FileLogHeader(String header, boolean trace, boolean javaLangInstrument, boolean isJSON) {
         this.header = header;
         this.trace = trace;
         this.javaLangInstrument = javaLangInstrument;
+        this.isJSON = isJSON;
     }
 
-    public void print(PrintStream ps) {
-        ps.println(BaseTraceFormatter.banner);
-
-        ps.print(header);
+    private void process(Processor processor) {
+        if (!isJSON) {
+            processor.println(BaseTraceFormatter.banner);
+        }
+        processor.print(header);
 
         if (trace) {
-            ps.println("trace.specification = " + TrConfigurator.getEffectiveTraceSpec());
+            processor.println("trace.specification = " + TrConfigurator.getEffectiveTraceSpec());
 
             if (!javaLangInstrument) {
-                ps.println("java.lang.instrument = " + javaLangInstrument);
+                processor.println("java.lang.instrument = " + javaLangInstrument);
             }
         }
 
-        ps.println(BaseTraceFormatter.banner);
+        if (!isJSON) {
+            processor.println(BaseTraceFormatter.banner);
+        }
+    }
+
+    public void print(PrintStream ps) {
+        process(new PrintProcessor(ps));
+    }
+
+    public long length() {
+        LengthProcessor lengthProcessor = new LengthProcessor();
+        process(lengthProcessor);
+        return lengthProcessor.getLength();
+    }
+
+    interface Processor {
+        void print(String str);
+
+        void println(String str);
+    }
+
+    class PrintProcessor implements Processor {
+
+        final PrintStream ps;
+
+        public PrintProcessor(final PrintStream ps) {
+            this.ps = ps;
+        }
+
+        @Override
+        public void println(String str) {
+            ps.println(str);
+        }
+
+        @Override
+        public void print(String str) {
+            ps.print(str);
+        }
+    }
+
+    class LengthProcessor implements Processor {
+        long length;
+
+        @Override
+        public void print(String str) {
+            length += str.getBytes().length;
+        }
+
+        @Override
+        public void println(String str) {
+            length += str.getBytes().length + LoggingConstants.nlen;
+        }
+
+        long getLength() {
+            return length;
+        }
     }
 }

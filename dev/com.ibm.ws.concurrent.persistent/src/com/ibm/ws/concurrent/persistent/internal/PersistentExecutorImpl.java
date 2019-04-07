@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -268,7 +268,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     /**
      * Liberty scheduled executor.
      */
-    ScheduledExecutorService scheduledExecutor;
+    @Reference(target = "(deferrable=false)")
+    protected volatile ScheduledExecutorService scheduledExecutor;
 
     /**
      * Liberty serialization service.
@@ -1184,7 +1185,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             else if (alternatePartition != null) {
                 Controller controller = controllerRef.getService();
                 if (controller != null)
-                    autoSchedule = new ControllerAutoSchedule(controller, alternatePartition, record.getId(), nextExecTime, record.getMiscBinaryFlags(), record.getTransactionTimeout());
+                    autoSchedule = new ControllerAutoSchedule(controller, alternatePartition, record.getId(), nextExecTime, record.getMiscBinaryFlags(), record
+                                    .getTransactionTimeout());
             }
             if (autoSchedule != null) {
                 UOWCurrent uowCurrent = (UOWCurrent) tranController.tranMgr;
@@ -1623,16 +1625,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     }
 
     /**
-     * Declarative Services method for setting the Liberty scheduled executor.
-     *
-     * @param svc the service
-     */
-    @Reference(target = "(deferrable=false)")
-    protected void setScheduledExecutor(ScheduledExecutorService svc) {
-        scheduledExecutor = svc;
-    }
-
-    /**
      * Declarative Services method for setting the serialization service
      *
      * @param ref reference to the service
@@ -1855,15 +1847,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      */
     protected void unsetLocationAdmin(WsLocationAdmin svc) {
         locationAdmin = null;
-    }
-
-    /**
-     * Declarative Services method for unsetting the Liberty scheduled executor.
-     *
-     * @param svc the service
-     */
-    protected void unsetScheduledExecutor(ScheduledExecutorService svc) {
-        scheduledExecutor = null;
     }
 
     /**

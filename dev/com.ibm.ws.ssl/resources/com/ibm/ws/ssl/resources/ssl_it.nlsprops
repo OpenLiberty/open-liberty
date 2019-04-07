@@ -624,3 +624,11 @@ ssl.defaultKeyStore.env.password.CWPKI0820A=CWPKI0820A: Il keystore predefinito 
 ssl.defaultKeyStore.env.password.CWPKI0820A.explanation=Il keystore predefinito \u00e8 stato creato utilizzando la variabile di ambiente 'keystore_password'. \
 Questa \u00e8 generata nel file server.env durante la creazione del server o sovrascritta nell'ambiente da cui \u00e8 stato avviato il server.
 ssl.defaultKeyStore.env.password.CWPKI0820A.useraction=Non sono richieste azioni.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.loaded.CWPKI0821I=CWPKI0821I: Il keystore predefinito {1} con il tipo di keystore {2} \u00e8 stato caricato.
+ssl.defaultKeyStore.loaded.CWPKI0821I.explanation=Il keystore predefinito con l'ubicazione e tipo di keystore specificati \u00e8 stato caricato.
+ssl.defaultKeyStore.loaded.CWPKI0821I.useraction=Non sono richieste azioni.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W=CWPKI0822W: \u00c8 stata specificata una configurazione minima del keystore predefinito e i keystore key.jks e key.p12 esistono entrambi nell'ubicazione del keystore predefinito. key.jks verr\u00e0 utilizzato come keystore predefinito.
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.explanation=Con una configurazione minima del keystore predefinito e con i file key.jks e key.p12 entrambi definiti nell'ubicazione del keystore predefinito, il file key.jks verr\u00e0 utilizzato come keystore predefinito.
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.useraction=Per rendere il file key.p12 il keystore predefinito, modificare la configurazione del keystore in modo che specifichi l'ubicazione di key.p12 o rimuovere il file key.jks dalla configurazione. Per impostare il file key.jks come keystore predefinito, non sono necessarie modifiche. 

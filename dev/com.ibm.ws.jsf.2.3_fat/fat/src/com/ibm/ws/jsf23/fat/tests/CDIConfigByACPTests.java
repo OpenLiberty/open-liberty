@@ -52,6 +52,7 @@ public class CDIConfigByACPTests extends CDITestBase {
         cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans.injected");
         cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.managed");
         cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.managed.factories");
+        cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
         cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.jar.appconfigpop");
         ShrinkHelper.addDirectory(cdiConfigByACPJar, "test-applications/" + "CDIConfigByACP.jar" + "/resources");
 

@@ -21,7 +21,7 @@
 	<classpathentry kind="src" path="test-applications/JSF23Spec1430.war/src"/>
 	<classpathentry kind="src" path="test-applications/ELImplicitObjectsViaCDIErrorApp.war/src"/>
 	<classpathentry kind="src" path="test-applications/CommandScript.war/src"/>
-	<classpathentry kind="src" path="test-applications/JSF23CDITests.war/src"/>
+	<classpathentry kind="src" path="test-applications/JSF23Spec1433.jar/src"/>
 	<classpathentry kind="src" path="test-applications/JSF23Spec1346.war/src"/>
 	<classpathentry kind="src" path="test-applications/JSF23SelectOneRadioGroup.war/src"/>
 	<classpathentry kind="src" path="test-applications/EvalScripts.war/src"/>

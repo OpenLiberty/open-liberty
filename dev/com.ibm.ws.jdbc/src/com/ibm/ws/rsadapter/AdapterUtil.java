@@ -122,6 +122,9 @@ public class AdapterUtil {
     /** A blank string for indenting. */
     private static final String INDENT = "                                 ";
 
+    /** Limits the number of times the user is warned about using begin/endRequest. */
+    private static volatile boolean warnedAboutBeginAndEndRequest;
+
     /**
      * Create an XAException with a translated error message and an XA error code.
      * The XAException constructors provided by the XAException API allow only for either an
@@ -728,6 +731,22 @@ public class AdapterUtil {
     public static final SQLException staleX() {
         String message = getNLSMessage("INVALID_CONNECTION");
         return new SQLRecoverableException(message);
+    }
+
+    /**
+     * Logs a warning message indicating that Connection.beginRequest and Connection.endRequest
+     * methods are suppressed.
+     */
+    public static final void suppressBeginAndEndRequest() {
+        if (!warnedAboutBeginAndEndRequest) {
+            warnedAboutBeginAndEndRequest = true;
+
+            StringBuilder stack = new StringBuilder();
+            for (StackTraceElement frame : new Exception().getStackTrace())
+                stack.append(EOLN).append(frame.toString());
+
+            Tr.warning(tc, "DSRA8790_SUPPRESS_BEGIN_END_REQUEST", stack);
+        }
     }
 
     /**

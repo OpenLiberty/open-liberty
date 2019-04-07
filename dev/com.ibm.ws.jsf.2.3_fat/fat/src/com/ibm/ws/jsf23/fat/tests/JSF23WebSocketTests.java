@@ -111,7 +111,6 @@ public class JSF23WebSocketTests {
 
         // Now click the button and get the resulted page.
         HtmlPage resultPage = sendButton.click();
-        webClient.waitForBackgroundJavaScript(2000);
 
         // Log the page for debugging if necessary in the future.
         Log.info(c, name.getMethodName(), resultPage.asText());
@@ -119,8 +118,8 @@ public class JSF23WebSocketTests {
 
         // Verify that the page contains the expected messages.
         assertTrue(resultPage.asText().contains("JSF 2.3 WebSocket - Test message pushed from server to client"));
-        assertTrue(resultPage.asText().contains("Message from the server via push!"));
-        assertTrue(resultPage.asText().contains("Called onclose listener"));
+        assertTrue(JSFUtils.waitForPageResponse(resultPage, "Message from the server via push!"));
+        assertTrue(JSFUtils.waitForPageResponse(resultPage, "Called onclose listener"));
 
         String result2 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
 
@@ -163,7 +162,7 @@ public class JSF23WebSocketTests {
 
         // Now click the open button and get the resulted page.
         HtmlPage openPage = openButton.click();
-        webClient.waitForBackgroundJavaScript(1000);
+        webClient.waitForBackgroundJavaScript(5000);
 
         assertTrue(openPage.asText().contains("Called onopen listener"));
 
@@ -174,7 +173,7 @@ public class JSF23WebSocketTests {
 
         // Now click the close button and get the resulted page.
         HtmlPage closePage = closeButton.click();
-        webClient.waitForBackgroundJavaScript(1000);
+        webClient.waitForBackgroundJavaScript(5000);
 
         assertTrue(closePage.asText().contains("Called onclose listener"));
 

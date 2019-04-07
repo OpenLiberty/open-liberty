@@ -42,7 +42,7 @@ Service-Component: \
  
 Private-Package: \
  com.ibm.ws.webcontainer31.async.factory, \
- com.ibm.ws.webcontainer31.container.config.factory, \
+ com.ibm.ws.webcontainer31.osgi.container.config.factory, \
  com.ibm.ws.webcontainer31.osgi.response.factory, \
  com.ibm.ws.webcontainer31.osgi.srt.factory, \
  com.ibm.ws.webcontainer31.osgi.webapp.factory, \

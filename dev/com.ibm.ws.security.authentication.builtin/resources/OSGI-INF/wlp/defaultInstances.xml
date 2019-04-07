@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017 IBM Corporation and others.
+    Copyright (c) 2017, 2018 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -31,11 +31,7 @@
     <library id="jaasSharedLib" apiTypeVisibility="spec, ibm-api, api">
         <fileset dir="${server.config.dir}/lib/global/" includes="*" />
     </library>
-    <jaasLoginContextEntry id="JAASClient" name="JAASClient" loginModuleRef="krb5LoginModule" />
-	<jaasLoginModule id="krb5LoginModule" className="com.ibm.security.auth.module.Krb5LoginModule" controlFlag="REQUIRED" libraryRef="jaasSharedLib">
-    	<options useDefaultCcache="false" credsType="both" forwardable="true"/>
-    </jaasLoginModule>
-        
+
     <!-- default location for all custom JAAS login modules specifies in the JAAS configuration file (jaas.conf) -->
     <library id="jaasDefaultSharedLib" apiTypeVisibility="spec, ibm-api, api">
         <fileset dir="${server.config.dir}/resources/security/jaas/" includes="*" />

@@ -47,7 +47,6 @@ Export-Package: \
     com.ibm.ws.jaxws.webcontainer
 
 Import-Package: \
-   javax.xml.bind.*;version="[2.2,3)", \
    javax.xml.ws.*;version="[2.2,3)", \
    org.apache.cxf.*;version="[2.6.2,2.6.3)", \
    *
@@ -60,11 +59,6 @@ Include-Resource: OSGI-INF=resources/OSGI-INF
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 instrument.classesExcludes: com/ibm/ws/jaxws/webcontainer/internal/resources/*.class
-
--buildpath.bootclasspath: \
-	com.ibm.websphere.javaee.jaxb.2.2;version=latest;boot=true,\
-	com.ibm.websphere.javaee.jaxws.2.2;version=latest;boot=true,\
-	${javac.bootclasspath.${javac.source}}
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.kernel.service,\

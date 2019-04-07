@@ -1,0 +1,65 @@
+/*******************************************************************************
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.file/resources/com/ibm/ws/security/audit/file/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+UNABLE_TO_CREATE_RESOURCE_NOEX=CWWKS5800E: The system could not create new file {0}
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=An application server component could not perform an operation on a required resource.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the resource, and that the disk is not full. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_CREATE_RESOURCE=CWWKS5801E: The system could not create file {0} because of the following exception: {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=An attempt to open the specified resource failed. The exception indicates the root cause of the failure.
+UNABLE_TO_CREATE_RESOURCE.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the resource, and that the disk is not full. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_DELETE_RESOURCE_NOEX=CWWKS5802E: The system could not delete file {0}
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=An application server component could not perform an operation on a required resource.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the resource, and that the disk is not full. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_DELETE_RESOURCE=CWWKS5803E: The system could not delete file {0} because of the following exception: {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=An attempt to delete the specified resource failed. The exception indicates the root cause of the failure.
+UNABLE_TO_DELETE_RESOURCE.useraction=Examine the exception to determine the root cause. Ensure that the Application Server runtime is allowed write access to the directory for the resource. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+AUDIT_FILEHANDLER_STARTING=CWWKS5804I: The audit file handler service is starting.
+AUDIT_FILEHANDLER_STARTING.explanation=The audit file handler service is in the process of starting. This might take several minutes if one-time initialization needs to occur.
+AUDIT_FILEHANDLER_STARTING.useraction=No action is required.
+
+AUDIT_FILEHANDLER_READY=CWWKS5805I: The audit file handler service is ready.
+AUDIT_FILEHANDLER_READY.explanation=This message is for informational purposes only.
+AUDIT_FILEHANDLER_READY.useraction=No action is required.
+
+AUDIT_FILEHANDLER_STOPPED=CWWKS5806I: The audit file handler service has stopped.
+AUDIT_FILEHANDLER_STOPPED.explanation=This message is for informational purposes only.
+AUDIT_FILEHANDLER_STOPPED.useraction=No action is required.
+
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION=CWWKS5807E: The audit service cannot start because the audit handler configuration for encrypting audit records is incorrect. Configure a correct keystore reference and certificate alias. Ensure the keystore that is referenced by {1} exists and ensure that the {0} alias name of the certificate that you use to encrypt the audit records is present in the keystore. 
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.explanation=The audit service cannot start because of an error in the audit handler configuration for encrypting audit records. For more information, refer to the exception in the previous service activation failure message. Specify a valid keystore reference and make sure that the certificate alias refers to a certificate that is present in the keystore.
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.useraction=Ensure that the audit handler configuration specifies both a keystore reference and a certificate alias for encrypting audit records. Ensure that the keystore exists, the password is specified correctly, and that the keystore contains the certificate that is referenced by the encryption certificate alias.
+
+INCORRECT_AUDIT_SIGNING_CONFIGURATION=CWWKS5808E: The audit service cannot start because the audit handler configuration for signing audit records is incorrect. Configure a correct keystore reference and personal certificate alias. Ensure the keystore that is referenced by {1} exists and ensure that the {0} alias name of the personal certificate that you use to sign the audit records is present in the keystore. 
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.explanation=The audit service cannot start because of an error in the audit handler configuration for signing audit records. For more information, refer to the exception in the previous service activation failure message. Specify a valid keystore reference and make sure that the personal certificate alias refers to a personal certificate that is present in the keystore.
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.useraction=Ensure that the audit handler configuration specifies both a keystore reference and a personal certificate alias for signing audit records. Ensure that the keystore exists, the password is specified correctly, and that the keystore contains the personal certificate that is referenced by the signing certificate alias.
+
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION=CWWKS5809E: The audit service cannot start because a failure occurred while the service initialized the audit handler to encrypt audit records. The exception is {0}.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.explanation=The audit service cannot start because an error occurred during the initialization of the audit handler configuration for encrypting audit records. For more information, see the exception in the message.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.useraction=Refer to the exception to determine the cause of the error.
+
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION=CWWKS5810E: The audit service cannot start because a failure occurred while the service initialized the audit handler to sign audit records. The exception is {0}.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.explanation=The audit service cannot start because an error occurred during the initialization of the audit handler configuration for signing audit records. For more information, see the exception that is mentioned in the message.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.useraction=Refer to the exception to determine the cause of the error.

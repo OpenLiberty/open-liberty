@@ -112,7 +112,7 @@ NO_VALID_TRANSACTION_CONTEXT_J2CA0040.explanation=Bels\u0151 hiba t\u00f6rt\u00e
 NO_VALID_TRANSACTION_CONTEXT_J2CA0040.useraction=CMSG0002
 
 # --------------------------------
-POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: A kapcsolat a(z) {0} met\u00f3dus {1} er\u0151forr\u00e1shoz megh\u00edv\u00e1sa sor\u00e1n nem \u00e1ll rendelkez\u00e9sre.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: A kapcsolat a(z) {0} met\u00f3dus {1} er\u0151forr\u00e1shoz megh\u00edv\u00e1sa sor\u00e1n nem \u00e1ll rendelkez\u00e9sre. {2} ezredm\u00e1sodperc v\u00e1rakoz\u00e1s ut\u00e1n t\u00fall\u00e9pte az id\u0151korl\u00e1tot {3} fennmarad\u00f3 v\u00e1rakoz\u00f3 k\u00e9r\u00e9ssel \u00e9s \u00f6sszesen {4} aktu\u00e1lisan haszn\u00e1lt kapcsolattal.
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.explanation=Kapcsolat v\u00e1rakoz\u00e1si id\u0151t\u00fall\u00e9p\u00e9s t\u00f6rt\u00e9nt. ConnectionWaitTimeoutException ker\u00fclt l\u00e9trehoz\u00e1sra.
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.useraction=\u00c1ll\u00edtsa \u00fajra be a kapcsolatt\u00e1rol\u00f3t. A hiba elker\u00fcl\u00e9se \u00e9rdek\u00e9ben n\u00f6velje a kapcsolatok maxim\u00e1lis sz\u00e1m\u00e1t vagy a kapcsolat v\u00e1rakoz\u00e1si idej\u00e9t.
 

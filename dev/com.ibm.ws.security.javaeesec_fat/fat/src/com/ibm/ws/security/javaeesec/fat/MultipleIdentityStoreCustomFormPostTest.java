@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,20 +10,19 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat;
 
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.directory.api.ldap.model.entry.Entry;
-import org.apache.directory.api.ldap.model.exception.LdapException;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.http.NameValuePair;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.client.params.ClientPNames;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.HttpParams;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -31,24 +30,20 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.apacheds.EmbeddedApacheDS;
+import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
+import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
+import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-
-import com.ibm.ws.security.javaeesec.fat_helper.Constants;
-import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
-import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
-import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
 @MinimumJavaLevel(javaLevel = 8, runSyntheticTest = false)
 @RunWith(FATRunner.class)
@@ -101,8 +96,12 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
         ldapServer = new LocalLdapServer();
         ldapServer.start();
 
-        WCApplicationHelper.addWarToServerApps(myServer, WAR_REDIRECT_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform.post.redirect", "web.war.servlets.customform", "web.war.identitystores.ldap.ldap1","web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
-        WCApplicationHelper.addWarToServerApps(myServer, WAR_FORWARD_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform.post.forward", "web.war.servlets.customform", "web.war.identitystores.ldap.ldap1","web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_REDIRECT_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base",
+                                               "web.war.servlets.customform.post.redirect", "web.war.servlets.customform", "web.war.identitystores.ldap.ldap1",
+                                               "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly", "web.war.identitystores.ldap");
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_FORWARD_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform.post.forward",
+                                               "web.war.servlets.customform", "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap.ldap2",
+                                               "web.war.identitystores.custom.grouponly", "web.war.identitystores.ldap");
         myServer.setServerConfigurationFile(XML_NAME);
         myServer.startServer(true);
         myServer.addInstalledAppForValidation(APP_REDIRECT_NAME);
@@ -113,11 +112,13 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer();
-        if (ldapServer != null) {
-            ldapServer.stop();
+        try {
+            myServer.stopServer();
+        } finally {
+            if (ldapServer != null) {
+                ldapServer.stop();
+            }
         }
-
     }
 
     @Before
@@ -162,7 +163,7 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
         List<NameValuePair> params = createPostParams(getViewState(response));
 
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
-        response = postFormLoginPage(httpclient, urlBase + redirectQueryString, params, true,  urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
+        response = postFormLoginPage(httpclient, urlBase + redirectQueryString, params, true, urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
         String location = executeCustomFormLogin(httpclient, urlBase + redirectLoginUri, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, getViewState(response));
@@ -189,7 +190,7 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
      * </OL>
      */
     @Test
-    @AllowedFFDC({"javax.naming.AuthenticationException" })
+    @AllowedFFDC({ "javax.naming.AuthenticationException" })
     public void testMultipleISCustomFormPostRedirectWith2ndISonly_RetryAllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -197,7 +198,7 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
         List<NameValuePair> params = createPostParams(getViewState(response));
 
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
-        response = postFormLoginPage(httpclient, urlBase + redirectQueryString, params, true,  urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
+        response = postFormLoginPage(httpclient, urlBase + redirectQueryString, params, true, urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
         String viewState = getViewState(response);
         // Execute form login for failure.
         String location = executeCustomFormLogin(httpclient, urlBase + redirectLoginUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.INVALIDPASSWORD, viewState);
@@ -213,7 +214,6 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
         verifyPostResponse(response, LocalLdapServer.ANOTHERUSER1, VALUE_FIRST, VALUE_LAST, VALUE_EMAIL, VALUE_PHONE);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
-
 
     /**
      * Verify the following:
@@ -237,7 +237,7 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
         List<NameValuePair> params = createPostParams(getViewState(response));
 
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
-        response = postFormLoginPage(httpclient, urlBase + forwardQueryString, params, false,  urlBase + forwardLoginUri, TITLE_LOGIN_PAGE);
+        response = postFormLoginPage(httpclient, urlBase + forwardQueryString, params, false, urlBase + forwardLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
         String location = executeCustomFormLogin(httpclient, urlBase + forwardLoginUri, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, getViewState(response));
@@ -264,7 +264,7 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
      * </OL>
      */
     @Test
-    @AllowedFFDC({"javax.naming.AuthenticationException" })
+    @AllowedFFDC({ "javax.naming.AuthenticationException" })
     public void testMultipleISCustomFormPostForwardWith2ndISonly_RetryAllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -272,7 +272,7 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
         List<NameValuePair> params = createPostParams(getViewState(response));
 
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
-        response = postFormLoginPage(httpclient, urlBase + forwardQueryString, params, false,  urlBase + forwardLoginUri, TITLE_LOGIN_PAGE);
+        response = postFormLoginPage(httpclient, urlBase + forwardQueryString, params, false, urlBase + forwardLoginUri, TITLE_LOGIN_PAGE);
 
         String viewState = getViewState(response);
 
@@ -291,7 +291,7 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
-/* ------------------------ support methods ----------------------*/
+/* ------------------------ support methods ---------------------- */
     protected String getViewState(String form) {
         Pattern p = Pattern.compile("[\\s\\S]*value=\"(.+)\".*autocomplete[\\s\\S]*");
         Matcher m = p.matcher(form);

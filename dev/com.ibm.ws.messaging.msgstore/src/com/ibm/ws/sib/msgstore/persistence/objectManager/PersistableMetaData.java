@@ -1,7 +1,7 @@
 package com.ibm.ws.sib.msgstore.persistence.objectManager;
 
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,13 @@ import com.ibm.ws.sib.utils.ras.SibTr;
 
 public class PersistableMetaData extends ManagedObject implements SimplifiedSerialization
 {
-    private static final long serialVersionUID = 7600601884916130911L;
+	// The initial version in Liberty was V1 so the V0 version should only be present in Traditional WAS.
+	private static final long serialVersionUIDV0 = 7600601884916750783L;
+	// V1 adds _redeliveredCount 
+	// and _deliveryDelayTime in releases 8.5.6 and higher.
+	private static final long serialVersionUIDV1 = 7600601884916130911L;
+	// V2 adds _deliveryDelayTime.
+	private static final long serialVersionUID = 2L;
 
     private static TraceComponent tc = SibTr.register(PersistableMetaData.class,
                                                       MessageStoreConstants.MSG_GROUP,
@@ -51,6 +57,7 @@ public class PersistableMetaData extends ManagedObject implements SimplifiedSeri
     private String _className;
     private byte[] _transactionId;
     private long _deliveryDelayTime;
+    private transient boolean _deliveryDelayTimeIsSuspect = false;
 
     // As this flag is no longer used by the
     // persistence mechanism it doesn't need to
@@ -779,16 +786,14 @@ public class PersistableMetaData extends ManagedObject implements SimplifiedSeri
     @Override
     public void readObject(DataInputStream dataInputStream, ObjectManagerState objectManagerState) throws ObjectManagerException, IOException
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.debug(this, tc, "bytes available==" + dataInputStream.available());
+    	final String methodName = "readObject";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(this, tc, methodName, "bytes available==" + dataInputStream.available());
 
         super.readObject(dataInputStream, objectManagerState);
 
-        // Read in the serialVersionUID. If serialVersionUID is an old value,
-        // then the stream does not have redelivered count.
-        boolean isMigrated = false;
-        isMigrated = (serialVersionUID == dataInputStream.readLong()) ? true : false;
-
+        long serialVersionUIDRead = dataInputStream.readLong();
+       
         _uniqueID = dataInputStream.readLong();
         _streamID = dataInputStream.readLong();
         _lockID = dataInputStream.readLong();
@@ -796,12 +801,12 @@ public class PersistableMetaData extends ManagedObject implements SimplifiedSeri
         _sequence = dataInputStream.readLong();
         _expiryTime = dataInputStream.readLong();
 
-        // If new structure, read in the redelivered count value.
-        // Else, set it to 0.
-        if (isMigrated)
-            _redeliveredCount = dataInputStream.readInt();
+        // redeliveredCount was added for serialVersionUIDV1 and later.
+        // otherwise set it to 0.
+        if (serialVersionUIDRead == serialVersionUIDV0)
+          _redeliveredCount = 0;
         else
-            _redeliveredCount = 0;
+          _redeliveredCount = dataInputStream.readInt();
 
         _storageStrategy = dataInputStream.readInt();
         _priority = dataInputStream.readInt();
@@ -864,20 +869,33 @@ public class PersistableMetaData extends ManagedObject implements SimplifiedSeri
             _itemListEntryToken = Token.restore(dataInputStream, objectManagerState);
         }
 
-        /*
-         * read the deliveryDelayTime from the input stream
-         * 
-         * After migration there may not be deliveryDelayTime field
-         * and when stream is read we will get java.io.EOFException.
-         * To avoid these migration issue the dataInputStream is checked
-         * to see if there is anything to be read
-         */
-        if (dataInputStream.available() > 0)
-            _deliveryDelayTime = dataInputStream.readLong();
+        // _deliveryDelayTime was added for serialVersionUID=2 and serialVersionUIDV1 
+        // in releases 8.5.6 and higher.
+        if (serialVersionUIDRead == serialVersionUIDV0) {
+        	_deliveryDelayTime = 0;
+        } else if (serialVersionUIDRead == serialVersionUIDV1) {
+        	
+        	// _deliveryDelayTime was initially added without changing serialVersionUID, so 
+        	// PersistableMetaData was stored using serialVersionUIDV1 and may or may not contain 
+        	// _deliveryDelayTime. If there are fewer than 8 bytes remaining in the dataInputStream 
+        	// then we can safely assume the _deliveryDelayTime was not stored.
+            if (dataInputStream.available() >= 8 && _className.equals("com.ibm.ws.sib.processor.impl.store.items.MessageItem")) {
+                _deliveryDelayTime = dataInputStream.readLong();
+                // We could have just read garbage from spare space in the ObjectStore.
+                _deliveryDelayTimeIsSuspect = true;
+            }
+            else 
+        	    _deliveryDelayTime = 0;  
+        } else {
+        	_deliveryDelayTime = dataInputStream.readLong();
+        }
 
         // Reset _estimatedLength so that it is re-calculated
         // when it is needed.
         _estimatedLength = -1;
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(this, tc, methodName, "serialVersionUIDRead="+serialVersionUIDRead+" bytes available==" + dataInputStream.available());
     }
 
     public void setDeliveryDelayTime(long deliveryDelayTime) {
@@ -888,6 +906,10 @@ public class PersistableMetaData extends ManagedObject implements SimplifiedSeri
     public long getDeliveryDelayTime() {
         return this._deliveryDelayTime;
     }
+
+	public boolean getDeliveryDelayTimeIsSuspect() {
+		return _deliveryDelayTimeIsSuspect;
+	}
 
     /*************************************************************************/
     /* SimplifiedSerialization */

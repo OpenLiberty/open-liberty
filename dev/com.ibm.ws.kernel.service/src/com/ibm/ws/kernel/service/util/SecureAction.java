@@ -45,6 +45,8 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * Utility class to execute common privileged code.
+ *
+ * @see {@link SecureAction#get()} for how to obtain an instance.
  */
 @Trivial
 public class SecureAction {

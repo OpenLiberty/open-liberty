@@ -25,7 +25,7 @@ import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
  * <p>
  * Because this interface resides in a package with non-public items (such as FileMonitor), {@link com.ibm.websphere.filemonitor.FileNotificationMBean} has been added as the
  * public management interface for the MBean which can be used to create proxy objects.
- * 
+ *
  * @see FileMonitor
  */
 public interface FileNotificationMBean extends FileNotification {
@@ -35,4 +35,22 @@ public interface FileNotificationMBean extends FileNotification {
      * bnd.bnd file for the component that provides this interface.
      */
     String INSTANCE_NAME = "WebSphere:service=com.ibm.ws.kernel.filemonitor.FileNotificationMBean";
+
+    /**
+     * Processed pending server configuration changes {see#link: FileNotificationImpl}
+     */
+    @Override
+    void processConfigurationChanges();
+
+    /**
+     * Processed pending application updates {see#link: FileNotificationImpl}
+     */
+    @Override
+    void processApplicationChanges();
+
+    /**
+     * Processes pending security keystore updates {see#link: FileNotificationImpl}
+     */
+    @Override
+    boolean processSecurityChanges(String id);
 }

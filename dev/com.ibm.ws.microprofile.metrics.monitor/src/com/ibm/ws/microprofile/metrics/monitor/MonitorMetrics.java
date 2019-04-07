@@ -47,9 +47,12 @@ public class MonitorMetrics {
             String metricName = getMetricName(metricData[MappingTable.METRIC_NAME]);
             MetricType type = MetricType.valueOf(metricData[MappingTable.METRIC_TYPE]);
             if (MetricType.COUNTER.equals(type)) {
+                MonitorCounter mc = metricData[MappingTable.MBEAN_SUBATTRIBUTE] == null ? 
+                        new MonitorCounter(mbs, objectName, metricData[MappingTable.MBEAN_ATTRIBUTE]) :
+                        new MonitorCounter(mbs, objectName, metricData[MappingTable.MBEAN_ATTRIBUTE], metricData[MappingTable.MBEAN_SUBATTRIBUTE]);
         		registry.register(
-        				new Metadata(metricName, metricData[MappingTable.METRIC_DISPLAYNAME], metricData[MappingTable.METRIC_DESCRIPTION], type, metricData[MappingTable.METRIC_UNIT]), 
-        				new MonitorCounter(mbs, objectName, metricData[MappingTable.MBEAN_ATTRIBUTE]));            	
+        			new Metadata(metricName, metricData[MappingTable.METRIC_DISPLAYNAME], metricData[MappingTable.METRIC_DESCRIPTION], type, metricData[MappingTable.METRIC_UNIT]), 
+        			mc);            	
         		metricNames.add(metricName);
         		Tr.debug(tc, "Registered " + metricName);
         	} else if (MetricType.GAUGE.equals(type)) {
@@ -67,24 +70,79 @@ public class MonitorMetrics {
         }		
 	}
 
-	private String getMBeanStatsName() {
+	private String getMBeanStatsString() {
     	if (mbeanStatsName == null) {
-    		mbeanStatsName = "unknown";
+    		String serviceName = null;
+    		String serviceURL = null;
+    		String portName = null;
+    		String mbeanObjName = null;
+    		StringBuffer sb = new StringBuffer();
             for (String subString : objectName.split(",")) {
                 subString = subString.trim();
+                if (subString.contains("service=")) {	
+                	serviceName = getMBeanStatsServiceName(subString);
+                	serviceURL = getMBeanStatsServiceURL(subString);
+                	continue;
+                }
+                if (subString.contains("port=")) {
+                	portName = getMBeanStatsPortName(subString);
+                	continue;
+                }
                 if (subString.contains("name=")) {
-                	mbeanStatsName  = subString.split("=")[1];
-                	mbeanStatsName = mbeanStatsName.replaceAll(" ", "_"); 
-                	mbeanStatsName = mbeanStatsName.replaceAll("/", "_");
+                	mbeanObjName = getMBeanStatsName(subString);
                 	break;
                 }
             }
+            if (serviceURL != null && serviceName != null && portName != null) {
+            	sb.append(serviceURL);
+            	sb.append(".");
+            	sb.append(serviceName);
+            	sb.append(".");
+            	sb.append(portName);
+            }
+            else if (mbeanObjName != null) {
+            	sb.append(mbeanObjName);
+            }
+            else {
+            	sb.append("unknown");
+            }
+            
+            mbeanStatsName = sb.toString();
     	}
         return mbeanStatsName;
 	}
 	
+	private String getMBeanStatsName(String nameStr) {
+		String mbeanName = nameStr.split("=")[1];
+		mbeanName = mbeanName.replaceAll(" ", "_"); 
+		mbeanName = mbeanName.replaceAll("/", "_");
+		mbeanName = mbeanName.replaceAll("[^a-zA-Z0-9_]", "_");
+    	return mbeanName;
+	}
+	
+	private String getMBeanStatsServiceName(String serviceStr) {
+    	serviceStr = serviceStr.split("=")[1];
+    	serviceStr = serviceStr.replaceAll("\"", "");
+    	String serviceName = serviceStr.substring(serviceStr.indexOf("}") + 1);
+    	return serviceName;
+	}
+	
+	private String getMBeanStatsServiceURL(String serviceStr) {
+    	serviceStr = serviceStr.split("=")[1];
+    	serviceStr = serviceStr.replaceAll("\"", "");
+    	String serviceURL = serviceStr.substring(serviceStr.indexOf("{") + 1, serviceStr.indexOf("}"));
+    	serviceURL = serviceURL.replace("http://", "").replace("https://", "").replace("/", ".");
+    	return serviceURL;
+	}
+	
+	private String getMBeanStatsPortName(String portStr) {
+		portStr = portStr.split("=")[1];
+    	String portName = portStr.replaceAll("\"", "");	
+    	return portName;
+	}
+	
 	private String getMetricName(String name)  {
-		return name.replace("%s", getMBeanStatsName());
+		return name.replace("%s", getMBeanStatsString());
 	}
 
 	public void unregisterMetrics(SharedMetricRegistries sharedMetricRegistry) {

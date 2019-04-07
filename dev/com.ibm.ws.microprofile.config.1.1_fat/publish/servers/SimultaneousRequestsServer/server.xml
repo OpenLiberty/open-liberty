@@ -1,0 +1,14 @@
+<server description="Server for testing appConfig">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>osgiconsole-1.0</feature>
+        <feature>cdi-2.0</feature>
+        <feature>servlet-4.0</feature>
+        <feature>componentTest-1.0</feature>
+        <feature>mpConfig-1.4</feature>
+    </featureManager>
+
+<logging traceSpecification="*=info:JCDI=all:com.ibm.ws.webbeans*=all:org.apache.webbeans*=all:org.jboss.weld*=all:com.ibm.ws.cdi*=all"/>
+</server>

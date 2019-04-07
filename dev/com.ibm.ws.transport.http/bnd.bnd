@@ -33,8 +33,6 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 Export-Package: \
     com.ibm.wsspi.genericbnf*;provide:=true, \
     com.ibm.wsspi.http*;provide:=true, \
-    com.ibm.wsspi.http.ee7*;provide:=true, \
-    com.ibm.wsspi.http.ee8*;provide:=true, \
     com.ibm.ws.transport.access*;provide:=true, \
     com.ibm.ws.genericbnf, \
     com.ibm.ws.http.dispatcher.classify, \
@@ -45,11 +43,7 @@ Export-Package: \
 
 Private-Package: \
 	com.ibm.ws.http.*, \
-	com.ibm.ws.http.dispatcher*, \
-	com.ibm.ws.http.channel*, \
-	com.ibm.ws.http.logging.internal, \
-	com.ibm.ws.genericbnf.internal, \
-	com.ibm.ws.http.dispatcher.classify
+	com.ibm.ws.genericbnf.internal
 
 -dsannotations: com.ibm.ws.http.channel.internal.inbound.HttpPipelineEventHandler,\
   com.ibm.ws.http.dispatcher.internal.HttpDispatcher,\
@@ -74,7 +68,14 @@ Service-Component: \
         implementation:=com.ibm.ws.http.logging.source.AccessLogSource;\
         provide:=com.ibm.wsspi.collector.manager.Source; \
         bufferManager='com.ibm.wsspi.collector.manager.BufferManager(source=com.ibm.ws.http.logging.source.accesslog)'; \
-        properties:="service.vendor=IBM"
+        properties:="service.vendor=IBM", \
+    com.ibm.ws.http.remoteip; \
+    	implementation:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
+    	provide:=com.ibm.wsspi.channelfw.ChannelConfiguration;\
+    	modified:='modified';\
+    	immediate:=true;\
+    	properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=RemoteIp"
+  
 
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF, \
@@ -115,7 +116,7 @@ instrument.classesExcludes: \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.ws.junit.extensions;version=latest, \
-	cglib:cglib-nodep;version=3.2.7, \
+	cglib:cglib-nodep;version=3.2.10, \
 	org.jmock:jmock-legacy;version=2.5.0, \
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
 	com.ibm.ws.logging;version=latest, \

@@ -561,7 +561,7 @@ public class LdapConfigManager {
      *
      * @param configProps
      */
-    private void setFilters(Map<String, Object> configProps) {
+    private void setFilters(Map<String, Object> configProps) throws WIMSystemException {
         // If no ldap type configured, return
         if (iLdapType == null)
             return;
@@ -664,8 +664,16 @@ public class LdapConfigManager {
                     } else
                         hasLoginProperties = false;
                 }
-                if (ldapEntity != null)
-                    ldapEntity.addPropertyAttributeMap(SchemaConstants.PROP_PRINCIPAL_NAME, iLoginAttrs.get(0));
+                if (ldapEntity != null) {
+                    try {
+                        ldapEntity.addPropertyAttributeMap(SchemaConstants.PROP_PRINCIPAL_NAME, iLoginAttrs.get(0));
+                    } catch (IndexOutOfBoundsException e) {
+                        throw new WIMSystemException(WIMMessageKey.MALFORMED_SEARCH_EXPRESSION, Tr.formatMessage(
+                                                                                                                 tc,
+                                                                                                                 WIMMessageKey.MALFORMED_SEARCH_EXPRESSION,
+                                                                                                                 WIMMessageHelper.generateMsgParms(e.toString())));
+                    }
+                }
             }
 
             // Parse the Group filter and extract the applicable objectclass names
@@ -1946,7 +1954,7 @@ public class LdapConfigManager {
      * Return the sub-list of properties, for the given entity, supported by this repository, from a given list of properties.
      *
      * @param inEntityTypes : List of entity types
-     * @param propNames : List of property names read from data object
+     * @param propNames     : List of property names read from data object
      * @return list of properties supported by repository for given entity type
      *         If the list propNames contain VALUE_ALL_PROPERTIES i.e '*', then return the list of properties without any modification
      *         Code will handle '*' later on
@@ -1988,7 +1996,7 @@ public class LdapConfigManager {
      * This is an overloaded method to support getSupportedProperties(String, List)
      *
      * @param ldapEntity : A given LDAP entity
-     * @param propNames : List of property names read from data object
+     * @param propNames  : List of property names read from data object
      * @return list of properties supported by repository for given LDAP entity
      *         If the list propNames contain VALUE_ALL_PROPERTIES i.e '*', then return the list of properties without any modification
      *         Code will handle '*' later on
@@ -2900,49 +2908,6 @@ public class LdapConfigManager {
         }
         return uNameBuf.toString();
 
-    }
-
-    public String getLdapRDNFilter(LdapEntity ldapEntity, String rdnFilter) {
-        StringBuffer ldapRDNFilter = new StringBuffer();
-        List<String> RDNs = new ArrayList<String>();
-        char[] RDNChars = rdnFilter.toCharArray();
-        int startPos = 0;
-        for (int i = 0; i < RDNChars.length; i++) {
-            if (RDNChars[i] == '+' && RDNChars[i - 1] != '\\') {
-                RDNs.add(rdnFilter.substring(startPos, i));
-                startPos = i + 1;
-            }
-        }
-        RDNs.add(rdnFilter.substring(startPos));
-        for (int i = 0; i < RDNs.size(); i++) {
-            String RDN = RDNs.get(i);
-            int pos = RDN.indexOf('=');
-            if (pos > 0) {
-
-                String RDNName = RDN.substring(0, pos);
-                String RDNValue = RDN.substring(pos + 1);
-                if (ldapEntity != null) {
-                    String ldapRDNName = getAttributeName(ldapEntity, RDNName);
-                    ldapRDNFilter.append("(").append(ldapRDNName).append("=").append(RDNValue).append(")");
-                } else {
-                    Set<String> ldapRDNNames = getAttributeNames(RDNName);
-                    if (ldapRDNNames.size() > 1) {
-                        ldapRDNFilter.append("(|");
-                    }
-                    for (String ldapRDNName : ldapRDNNames)
-                        ldapRDNFilter.append("(").append(ldapRDNName).append("=").append(RDNValue).append(")");
-
-                    if (ldapRDNNames.size() > 1) {
-                        ldapRDNFilter.append(")");
-                    }
-                }
-            }
-        }
-        if (RDNs.size() > 1) {
-            ldapRDNFilter.insert(0, "(&").append(")");
-        }
-
-        return ldapRDNFilter.toString();
     }
 
     @Trivial

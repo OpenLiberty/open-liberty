@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.logging.hpel.impl;
 
+import java.io.File;
 import java.util.Map;
 
 import com.ibm.ws.logging.hpel.LogRepositoryBrowser;
@@ -21,49 +22,58 @@ import com.ibm.ws.logging.object.hpel.RepositoryPointerImpl;
  */
 public class OneInstanceBrowserImpl implements MainLogRepositoryBrowser {
 
-	private final LogRepositoryBrowser browser;
-	/**
-	 * Initialize this main browser with a browser over files in the instance
-	 * @param browser providing details about the instance
-	 */
-	public OneInstanceBrowserImpl(LogRepositoryBrowser browser) {
-		this.browser = browser;
-	}
-	
-	@Override
-	public LogRepositoryBrowser find(RepositoryPointerImpl location,
-			boolean ignoreTimestamp) {
-		String[] instanceIds = location.getInstanceIds();
-		if (instanceIds.length == 0) {
-			return null;
-		}
-		LogRepositoryBrowser result = browser;
-		for (int i=1; i<instanceIds.length && result!=null; i++) {
-			Map<String, LogRepositoryBrowser> map = result.getSubProcesses();
-			result = map.get(instanceIds[i]);
-		}
-		return result;
-	}
+    private final LogRepositoryBrowser browser;
+    /** Location of the repository this instance is configured with */
+    protected final File repositoryLocation;
 
-	@Override
-	public LogRepositoryBrowser findByMillis(long timestamp) {
-		return timestamp<0 || browser.getTimestamp()<=timestamp ? browser : null;
-	}
+    /**
+     * Initialize this main browser with a browser over files in the instance
+     *
+     * @param browser providing details about the instance
+     */
+    public OneInstanceBrowserImpl(LogRepositoryBrowser browser, File location) {
+        this.repositoryLocation = location;
+        this.browser = browser;
+    }
 
-	@Override
-	public LogRepositoryBrowser findNext(LogRepositoryBrowser current,
-			long timelimit) {
-		if (current == null) {
-			return browser;
-		} else {
-			return null;
-		}
-	}
+    public File getLocation() {
+        return repositoryLocation;
+    }
 
-	@Override
-	public LogRepositoryBrowser findNext(RepositoryPointerImpl location,
-			long timelimit) {
-		return null;
-	}
+    @Override
+    public LogRepositoryBrowser find(RepositoryPointerImpl location,
+                                     boolean ignoreTimestamp) {
+        String[] instanceIds = location.getInstanceIds();
+        if (instanceIds.length == 0) {
+            return null;
+        }
+        LogRepositoryBrowser result = browser;
+        for (int i = 1; i < instanceIds.length && result != null; i++) {
+            Map<String, LogRepositoryBrowser> map = result.getSubProcesses();
+            result = map.get(instanceIds[i]);
+        }
+        return result;
+    }
+
+    @Override
+    public LogRepositoryBrowser findByMillis(long timestamp) {
+        return timestamp < 0 || browser.getTimestamp() <= timestamp ? browser : null;
+    }
+
+    @Override
+    public LogRepositoryBrowser findNext(LogRepositoryBrowser current,
+                                         long timelimit) {
+        if (current == null) {
+            return browser;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public LogRepositoryBrowser findNext(RepositoryPointerImpl location,
+                                         long timelimit) {
+        return null;
+    }
 
 }

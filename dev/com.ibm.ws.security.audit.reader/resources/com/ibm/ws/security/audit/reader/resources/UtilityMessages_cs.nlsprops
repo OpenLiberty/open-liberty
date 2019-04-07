@@ -1,0 +1,63 @@
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+#CMVCPATHNAME com.ibm.ws.security.audit.reader/resources/com/ibm/ws/security/audit/reader/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKS
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Chyba: {0}
+error.inputConsoleNotAvailable=Vstupn\u00ed konzola nen\u00ed dostupn\u00e1.
+error.missingIO=Chyba, chyb\u00ed za\u0159\u00edzen\u00ed I/O: {0}.
+
+usage=Pou\u017eit\u00ed: {0}
+task.unknown=Nezn\u00e1m\u00e1 \u00faloha: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=Existuje p\u0159\u00edli\u0161 mnoho argument\u016f.
+insufficientArgs=Nedostate\u010dn\u00e9 mno\u017estv\u00ed argument\u016f.
+invalidArg=Argument {0} je neplatn\u00fd.
+invalidValue=Hodnota {0} je neplatn\u00e1 pro argument {1}.
+missingArg=Chyb\u00ed argument {0}.
+missingValue=Pro argument {0} chyb\u00ed hodnota.
+missingArg2=Mus\u00ed b\u00fdt zad\u00e1n bu\u010f argument {0}, nebo argument {1}.
+exclusiveArg=Mus\u00ed b\u00fdt zad\u00e1n bu\u010f argument {0}, nebo argument {1}, nikoli oboj\u00ed.
+serverNotFound=Ur\u010den\u00fd server {0} nebyl nalezen v um\u00edst\u011bn\u00ed {1}.
+missingArgs= Chyb\u00ed n\u00e1sleduj\u00edc\u00ed argumenty: {0} a {1}.
+missingArgs3=Chyb\u00ed n\u00e1sleduj\u00edc\u00ed argumenty: {0}, {1} a {2}.
+invalidFileLocations=\u00dapln\u00e1 cesta {0} zadan\u00e1 pro argument --auditFileLocation je stejn\u00e1 jako \u00fapln\u00e1 cesta {1} uveden\u00e1 pro argument --outputFileLocation. Ob\u011b cesty mus\u00ed b\u00fdt jedine\u010dn\u00e9.
+invalidURLFormat=Hodnota {0} zadan\u00e1 pro argument {1} nen\u00ed v \u00fapln\u00e9m form\u00e1tu adresy URL souboru.
+
+password.enterText=Zadejte heslo:
+password.reenterText=Potvr\u010fte heslo:
+password.readError=Chyba p\u0159i \u010dten\u00ed hesla.
+password.entriesDidNotMatch=Hesla si neodpov\u00eddala.
+
+audit.NonWriteableOuputFile=Hodnota {0} uveden\u00e1 pro --outputFileLocation je soubor, kter\u00fd nen\u00ed schopn\u00fd z\u00e1pisu. Ujist\u011bte se, \u017ee um\u00edst\u011bn\u00ed zadan\u00e9 pro v\u00fdstupn\u00ed soubor je schopn\u00e9 z\u00e1pisu.
+audit.NoKeyStorePasswordValue=Pro \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f auditu {0} nebylo zad\u00e1no \u017e\u00e1dn\u00e9 heslo \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f.
+audit.MismatchingEncrypt=Protokol auditu, {0}, je \u0161ifrov\u00e1n, ale argument --encrypted bu\u010f nebyl zad\u00e1n, nebo byl zad\u00e1n a nastaven na false.
+audit.MismatchingSign=Protokol auditu, {0}, je podeps\u00e1n, ale argument --signed bu\u010f nebyl uveden, nebo byl uveden a nastaven na false.
+audit.MismatchingEncryptSign=Protokol auditu, {0}, je \u0161ifrov\u00e1n a podeps\u00e1n, ale bu\u010f argument --signed, nebo --encrypted nebyl uveden, nebo byl uveden a nastaven na false.
+security.audit.UnsupportedKeyStoreType=Hodnota typu \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f {0} pro argument {1} nen\u00ed podporov\u00e1na.
+security.audit.UnknownHost=Nezda\u0159ilo se z\u00edskat n\u00e1zev hostitele po\u010d\u00edta\u010de, na kter\u00e9m je spu\u0161t\u011bn obslu\u017en\u00fd program pro \u010dtec\u00ed za\u0159\u00edzen\u00ed auditu. 
+security.audit.KeyStoreException=P\u0159i pokusu o z\u00edsk\u00e1n\u00ed instance \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f s ur\u010den\u00fdm typem \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f a typem poskytovatele byla vyvol\u00e1na v\u00fdjimka.
+security.audit.NoSuchProviderException=P\u0159i pokusu o z\u00edsk\u00e1n\u00ed instance \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f s ur\u010den\u00fdm poskytovatelem byla vyvol\u00e1na v\u00fdjimka. Tento poskytovatel neexistuje.
+security.audit.MalformedURLException=P\u0159i pokusu o otev\u0159en\u00ed \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f byla vygenerov\u00e1na v\u00fdjimka. Um\u00edst\u011bn\u00ed \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f je nespr\u00e1vn\u011b utvo\u0159eno. 
+security.audit.CertificateException=P\u0159i pokusu o na\u010dten\u00ed \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f byla vyvol\u00e1na v\u00fdjimka certifik\u00e1tu.
+security.audit.NoSuchAlgorithmException=P\u0159i na\u010d\u00edt\u00e1n\u00ed \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f byla vyvol\u00e1na v\u00fdjimka. Byl vy\u017e\u00e1d\u00e1n konkr\u00e9tn\u00ed algoritmus \u0161ifrov\u00e1n\u00ed, nen\u00ed v\u0161ak k dispozici.
+security.audit.FileNotFound=Uveden\u00fd soubor {0} neexistuje. 
+security.audit.ErrorLoadingKeystore=Chyba p\u0159i na\u010d\u00edt\u00e1n\u00ed \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f {0}. Pravd\u011bpodobn\u011b bylo zad\u00e1no nespr\u00e1vn\u00e9 heslo. 
+security.audit.MismatchingEncKeystores=Vstupn\u00ed hodnota, {0}, pro uveden\u00e9 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, kter\u00e9 m\u00e1 obsahovat certifik\u00e1t pou\u017eit\u00fd k de\u0161ifrov\u00e1n\u00ed z\u00e1znam\u016f auditu, neodpov\u00edd\u00e1 \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f, {1}, uveden\u00e9mu v protokolu auditu.
+security.audit.MismatchingSigningKeystores=Vstupn\u00ed hodnota, {0}, pro uveden\u00e9 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, kter\u00e9 m\u00e1 obsahovat certifik\u00e1t pou\u017eit\u00fd ke zru\u0161en\u00ed podpisu z\u00e1znam\u016f auditu, neodpov\u00edd\u00e1 \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f, {1}, uveden\u00e9mu v protokolu auditu.
+security.audit.CannotFindCertificate=Alias certifik\u00e1tu {0} v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f {1} neexistuje.

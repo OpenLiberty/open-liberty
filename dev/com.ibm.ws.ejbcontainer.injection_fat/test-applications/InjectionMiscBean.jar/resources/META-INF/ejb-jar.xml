@@ -1,0 +1,122 @@
+<ejb-jar
+  xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+  version="3.1"
+>
+  <enterprise-beans>
+    <session>
+      <ejb-name>JavaAppResourceBean</ejb-name>
+
+      <env-entry>
+        <env-entry-name>java:app/env/envEntryInjection</env-entry-name>
+        <env-entry-type>java.lang.Integer</env-entry-type>
+        <env-entry-value>1</env-entry-value>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>ImplicitTypeBean</ejb-name>
+
+      <env-entry>
+        <env-entry-name>envEntryIntFieldName</env-entry-name>
+        <env-entry-value>1</env-entry-value>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.injection.misc.ejb.ImplicitTypeBean</injection-target-class>
+          <injection-target-name>envEntryIntField</injection-target-name>
+        </injection-target>
+      </env-entry>
+
+      <env-entry>
+        <env-entry-name>envEntryIntMethodName</env-entry-name>
+        <env-entry-value>1</env-entry-value>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.injection.misc.ejb.ImplicitTypeBean</injection-target-class>
+          <injection-target-name>envEntryIntMethod</injection-target-name>
+        </injection-target>
+      </env-entry>
+
+      <env-entry>
+        <env-entry-name>envEntryIntegerFieldName</env-entry-name>
+        <env-entry-value>1</env-entry-value>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.injection.misc.ejb.ImplicitTypeBean</injection-target-class>
+          <injection-target-name>envEntryIntegerField</injection-target-name>
+        </injection-target>
+      </env-entry>
+
+      <env-entry>
+        <env-entry-name>envEntryIntegerMethodName</env-entry-name>
+        <env-entry-value>1</env-entry-value>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.injection.misc.ejb.ImplicitTypeBean</injection-target-class>
+          <injection-target-name>envEntryIntegerMethod</injection-target-name>
+        </injection-target>
+      </env-entry>
+
+      <ejb-ref>
+        <ejb-ref-name>ejbRefFieldName</ejb-ref-name>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.injection.misc.ejb.ImplicitTypeBean</injection-target-class>
+          <injection-target-name>ejbRefField</injection-target-name>
+        </injection-target>
+      </ejb-ref>
+
+      <ejb-ref>
+        <ejb-ref-name>ejbRefMethodName</ejb-ref-name>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.injection.misc.ejb.ImplicitTypeBean</injection-target-class>
+          <injection-target-name>ejbRefMethod</injection-target-name>
+        </injection-target>
+      </ejb-ref>
+
+      <ejb-local-ref>
+        <ejb-ref-name>ejbLocalRefFieldName</ejb-ref-name>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.injection.misc.ejb.ImplicitTypeBean</injection-target-class>
+          <injection-target-name>ejbLocalRefField</injection-target-name>
+        </injection-target>
+      </ejb-local-ref>
+
+      <ejb-local-ref>
+        <ejb-ref-name>ejbLocalRefMethodName</ejb-ref-name>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.injection.misc.ejb.ImplicitTypeBean</injection-target-class>
+          <injection-target-name>ejbLocalRefMethod</injection-target-name>
+        </injection-target>
+      </ejb-local-ref>
+
+      <resource-ref>
+        <res-ref-name>resourceRefFieldName</res-ref-name>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.injection.misc.ejb.ImplicitTypeBean</injection-target-class>
+          <injection-target-name>resourceRefField</injection-target-name>
+        </injection-target>
+      </resource-ref>
+
+      <resource-ref>
+        <res-ref-name>resourceRefMethodName</res-ref-name>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.injection.misc.ejb.ImplicitTypeBean</injection-target-class>
+          <injection-target-name>resourceRefMethod</injection-target-name>
+        </injection-target>
+      </resource-ref>
+
+      <resource-env-ref>
+        <resource-env-ref-name>resourceEnvRefFieldName</resource-env-ref-name>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.injection.misc.ejb.ImplicitTypeBean</injection-target-class>
+          <injection-target-name>resourceEnvRefField</injection-target-name>
+        </injection-target>
+      </resource-env-ref>
+
+      <resource-env-ref>
+        <resource-env-ref-name>resourceEnvRefMethodName</resource-env-ref-name>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.injection.misc.ejb.ImplicitTypeBean</injection-target-class>
+          <injection-target-name>resourceEnvRefMethod</injection-target-name>
+        </injection-target>
+      </resource-env-ref>
+    </session>
+  </enterprise-beans>
+</ejb-jar>

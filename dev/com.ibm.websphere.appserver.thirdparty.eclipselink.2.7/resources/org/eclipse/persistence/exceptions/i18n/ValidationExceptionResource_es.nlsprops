@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -541,9 +545,7 @@
 
 7311=Se est\u00e1 utilizando una clase de destino no v\u00e1lida con el atributo de colecci\u00f3n de elementos [{0}] en la clase [{1}].  S\u00f3lo se permiten tipos b\u00e1sicos y clases incorporables.
 
-# START NON-TRANSLATABLE
 7312=Se est\u00e1 utilizando una clase incorporable no v\u00e1lida [{0}] con el atributo de colecci\u00f3n de elementos [{1}] en la clase [{2}]. Consulte la secci\u00f3n 2.6 de la especificaci\u00f3n: "Una clase incorporable (incluida una clase incorporable dentro de otra clase incorporable) contenida en una colecci\u00f3n de elementos no puede contener una colecci\u00f3n de elementos, ni puede contener una relaci\u00f3n con una entidad que no sea una relaci\u00f3n de muchos a uno o de uno a uno". La clase incorporable debe estar en el lado de propietario de esta relaci\u00f3n y la relaci\u00f3n debe estar correlacionada mediante una correlaci\u00f3n de claves for\u00e1neas. La correlaci\u00f3n del atributo [{3}] en la clase incorporable no cumple esta especificaci\u00f3n.
-# END NON-TRANSLATABLE
 
 7313=No se ha encontrado el atributo [{1}] en la clase incorporable [{0}]. Se hace referencia a \u00e9l en una alteraci\u00f3n temporal de asociaci\u00f3n para el atributo incorporado [{3}] en la clase [{2}].
 

@@ -83,7 +83,6 @@ public class KernelResolver {
     private static final String SPLIT_CHAR = ";";
     private static final Pattern splitPattern = Pattern.compile(SPLIT_CHAR);
 
-    private final NameBasedLocalBundleRepository repo;
     private final ResolverCache cache;
     private final String logProviderClass;
     private final File kernelMf;
@@ -92,7 +91,7 @@ public class KernelResolver {
     private final boolean forceCleanStart;
 
     private final boolean libertyBoot;
-    private final String BUNDLE_SYMBOLICNAME = "Bundle-SymbolicName";
+    private static final String BUNDLE_SYMBOLICNAME = "Bundle-SymbolicName";
 
     /**
      * @param kernelDefName
@@ -136,7 +135,7 @@ public class KernelResolver {
 
         try {
             // Use a simple repo for bootstrap purposes.
-            repo = new NameBasedLocalBundleRepository(installRoot);
+            NameBasedLocalBundleRepository repo = new NameBasedLocalBundleRepository(installRoot);
 
             File platformDir = new File(installRoot, "lib/platform");
 
@@ -957,6 +956,7 @@ public class KernelResolver {
 
         /**
          * Parse a subsystem content element. Assumes leading/trailing spaces have been trimmed
+         *
          * <pre>
          * org.apache.aries.util; version="[1,1.0.100)"; type="boot.jar"
          * com.ibm.wsspi.org.osgi.cmpn; location="dev/spi/spec/"; version="[5.0, 5.1)"; start-phase:=BOOTSTRAP

@@ -11,7 +11,6 @@
 package com.ibm.wsspi.kernel.service.utils;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -46,7 +45,6 @@ public class TimestampUtils {
         // Update last modified timestamp
         String stamp = Long.toString(timestamp);
 
-        BufferedWriter out = null;
         FileWriter fstream = null;
 
         try {
@@ -55,12 +53,10 @@ public class TimestampUtils {
                 return;
 
             fstream = new FileWriter(file);
-            out = new BufferedWriter(fstream);
-            out.write(stamp, 0, stamp.length());
+            fstream.write(stamp, 0, stamp.length());
         } catch (IOException e) {
         } finally {
-            if (!tryToClose(out))
-                tryToClose(fstream);
+            tryToClose(fstream);
         }
     }
 
@@ -74,8 +70,8 @@ public class TimestampUtils {
 
         try {
             fstream = new FileReader(file);
-            in = new BufferedReader(fstream);
-            timestamp = new Long(in.readLine()).longValue();
+            in = new BufferedReader(fstream, 32);
+            timestamp = Long.parseLong(in.readLine());
         } catch (FileNotFoundException e) {
             // Not an error: stamp might not have been created (return 0)
         } catch (NumberFormatException e) {

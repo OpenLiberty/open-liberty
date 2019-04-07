@@ -771,6 +771,14 @@ ERROR_UNKNOWN_OSLIST_VALUE=CWWKF1387E: Valoarea {0} nu este o intrare valid\u010
 ERROR_UNKNOWN_OSLIST_VALUE.explanation=Aceast\u0103 valoare va fi ignorat\u0103, deoarece nu este un nume de sistem de operare recunoscut.
 ERROR_UNKNOWN_OSLIST_VALUE.useraction=Modifica\u0163i sau \u00eenl\u0103tura\u0163i aceast\u0103 valoare din fi\u015fierul manifest al caracteristicii.
 
+ERROR_ESA_NOT_FOUND=CWWKF1388E: Fi\u015fierul ESA specificat {0} nu con\u0163ine caracteristici.
+ERROR_ESA_NOT_FOUND.explanation=O caracteristic\u0103 nu va instalat\u0103 de la fi\u015fierul ESA.
+ERROR_ESA_NOT_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul ESA individual furnizat este valid \u015fi con\u0163ine o caracteristic\u0103.
+
+ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: Nu s-a putut crea un fi\u015fier JSON la {0} pentru fi\u015fierul ESA {1}.
+ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=Caracteristica din fi\u015fierul ESA nu va fi instalat\u0103.
+ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Asigura\u0163i-v\u0103 c\u0103 este disponibil accesul de scriere pentru directorul unde fi\u015fierul JSON va fi creat.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Caracteristica a fost desc\u0103rcat\u0103 cu succes.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=Caracteristica a fost desc\u0103rcat\u0103.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Nu este necesar\u0103 nicio ac\u0163iune.

@@ -23,6 +23,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.security.common.jwk.utils.JsonUtils;
+import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.jwt.utils.TokenBuilder;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
@@ -95,8 +96,7 @@ public class JwtSsoTokenUtils {
 	 *
 	 * Build a JsonWebToken Principal from the current Thread's RunAsSubject
 	 *
-	 * @return - a DefaultJsonWebTokenImpl, or null if user wasn't
-	 *         authenticated.
+	 * @return - a DefaultJsonWebTokenImpl, or null if user wasn't authenticated.
 	 */
 	public JsonWebToken buildTokenFromSecuritySubject() throws Exception {
 
@@ -150,6 +150,7 @@ public class JwtSsoTokenUtils {
 	}
 
 	public Subject handleJwtSsoTokenValidation(String tokenstr) throws Exception {
+		JwtUtils.setJwtSsoValidationPath(); // set a flag to suppress certain error messages.
 		Subject tempSubject = null;
 		tempSubject = handleValidationUsingMPjwtConsumer(tokenstr);
 		// JwtToken jwttoken = recreateJwt(tokenstr);
@@ -177,7 +178,7 @@ public class JwtSsoTokenUtils {
 	}
 
 	public Subject handleJwtSsoTokenValidationWithSubject(Subject subject, String tokenstr) throws Exception {
-
+		JwtUtils.setJwtSsoValidationPath(); // set a flag to suppress certain error messages.
 		JwtToken jwttoken = recreateJwt(tokenstr);
 		if (jwttoken != null) {
 			TokenBuilder tb = new TokenBuilder();
@@ -218,16 +219,16 @@ public class JwtSsoTokenUtils {
 		String mpJwtConfigId = null;
 		boolean jwtsso = false;
 		int jwtssoConfigs = 0;
-		
+
 		while (it.hasNext()) {
 			MicroProfileJwtConfig mpJwtConfig = it.next();
 			if (!(mpJwtConfig.toString().contains("com.ibm.ws.security.jwtsso.internal.JwtSsoComponent"))) {
-				 if (!taiRequestHelper.isMpJwtDefaultConfig(mpJwtConfig)) {
-					    mpjwt = true;
-						mpJwtConfigId = mpJwtConfig.getUniqueId();
-						mpjwtids = mpjwtids.concat(mpJwtConfigId).concat(" ");
-						mpJwtConfigs++;
-				 }	
+				if (!taiRequestHelper.isMpJwtDefaultConfig(mpJwtConfig)) {
+					mpjwt = true;
+					mpJwtConfigId = mpJwtConfig.getUniqueId();
+					mpjwtids = mpjwtids.concat(mpJwtConfigId).concat(" ");
+					mpJwtConfigs++;
+				}
 			}
 		}
 		if (mpJwtConfigs > 1) {

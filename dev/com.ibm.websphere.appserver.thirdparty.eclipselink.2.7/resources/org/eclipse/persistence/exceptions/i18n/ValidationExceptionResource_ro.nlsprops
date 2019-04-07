@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -541,9 +545,7 @@
 
 7311=O clas\u0103 \u0163int\u0103 invalid\u0103 este utilizat\u0103 cu atributul de colec\u0163ie element [{0}] \u00een clasa [{1}].  Sunt permise numai tipurile de baz\u0103 \u015fi clasele ce pot fi \u00eenglobate.
 
-# START NON-TRANSLATABLE
 7312=O clas\u0103 invalid\u0103 ce poate fi \u00eenglobat\u0103 [{0}] este utilizat\u0103 cu atributul de colec\u0163ie element [{1}] \u00een clasa [{2}]. Vede\u0163i sec\u0163iunea 2.6 a specifica\u0163iei: " O clas\u0103 ce poate fi \u00eenglobat\u0103 (ce include o clas\u0103 ce poate fi \u00eenglobat\u0103 \u00eentr-o alt\u0103 clas\u0103 ce poate fi \u00eenglobat\u0103) con\u0163inut\u0103 \u00eentr-o colec\u0163ie de element trebuie s\u0103 nu con\u0163in\u0103 o colec\u0163ie de element \u015fi nici o rela\u0163ie cu o intrare alta dec\u00e2t de la mai multe la una sau de la una la mai multe. Clasa ce poate fi \u00eenglobat\u0103 trebuie s\u0103 fie \u00een partea de de\u0163inere a unei astfel de rela\u0163ii \u015fi rela\u0163ia trebuie s\u0103 fie mapat\u0103 cu o mapare cheie str\u0103in\u0103. Maparea pentru atributul [{3}] \u00een clasa ce poate fi \u00eenglobat\u0103 \u00eencalc\u0103 aceasta.
-# END NON-TRANSLATABLE
 
 7313=Atributul [{1}] nu a fost g\u0103sit \u00een clasa ce poate fi \u00eenglobat\u0103 [{0}]. Este referen\u0163iat\u0103 \u00eentr-o \u00eenlocuire de asociere pentru atributul \u00eenglobat [{3}] \u00een clasa [{2}].
 

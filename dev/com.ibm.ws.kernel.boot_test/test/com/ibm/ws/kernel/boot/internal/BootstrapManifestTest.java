@@ -33,6 +33,7 @@ import com.ibm.ws.kernel.boot.BootstrapConfig;
 import com.ibm.ws.kernel.boot.SharedBootstrapConfig;
 
 import test.common.SharedOutputManager;
+import test.common.junit.rules.JavaInfo;
 import test.shared.Constants;
 import test.shared.TestUtils;
 
@@ -129,36 +130,39 @@ public class BootstrapManifestTest {
         m.prepSystemPackages(config);
         String sysPkgs = initProps.get(BootstrapConstants.INITPROP_OSGI_SYSTEM_PACKAGES);
 
-        String javaVersion = System.getProperty("java.version");
-        // strip off the update modifier
-        int index = javaVersion.indexOf('_');
-        index = (index == -1) ? javaVersion.indexOf('-') : index;
-        javaVersion = (index == -1) ? javaVersion : javaVersion.substring(0, index);
-
-//        // Only continue if JDK 1.7 or 1.8
-//        Assume.assumeTrue(javaVersion.startsWith("1."));
+        int javaVersion = JavaInfo.JAVA_VERSION;
 
         //validate the system packages obtained match the running java.version file name
         assertTrue("The system packages being used do not match the running java.version: "
                    + javaVersion
                    + " . This is normal if you are running the test on a version of Java that we support for running the server, but do not fully support. If we are intending to fully support a new Java version then new files are required in /com.ibm.ws.kernel.boot/resources/OSGI-OPT/websphere/system-packages_*.properties for production and /com.ibm.ws.kernel.boot_test/resources/system-packages_*.properties for test."
                    + "  Sys packages are: " + sysPkgs,
-                   sysPkgs.contains(javaVersion));
+                   sysPkgs.contains(javaVersion < 9 ? "1." + javaVersion + ".0" : "" + javaVersion));
 
         String versionsToCheck = null;
-        if (javaVersion.equals("1.6.0")) {
-            versionsToCheck = "1.6.0";
-        } else if (javaVersion.equals("1.7.0")) {
+        if (javaVersion == 7) {
             versionsToCheck = "1.7.0,1.6.0";
-        } else if (javaVersion.equals("1.8.0")) {
+        } else if (javaVersion == 8) {
             versionsToCheck = "1.8.0,1.7.0,1.6.0";
-        } else if (javaVersion.equals("9")) {
+        } else if (javaVersion == 9) {
             // Some packages were removed from the JDK in Java 9, so the JDK 9 packages do not inherit previous java versions
             versionsToCheck = "9";
-        } else if (javaVersion.equals("10")) {
+        } else if (javaVersion == 10) {
             versionsToCheck = "10,9";
-        } else if (javaVersion.equals("11")) {
+        } else if (javaVersion == 11) {
             versionsToCheck = "11,10,9";
+        } else if (javaVersion == 12) {
+            versionsToCheck = "12,11,10,9";
+        } else if (javaVersion == 13) {
+            versionsToCheck = "13,12,11,10,9";
+        } else if (javaVersion == 14) {
+            versionsToCheck = "14,13,12,11,10,9";
+        } else if (javaVersion == 15) {
+            versionsToCheck = "15,14,13,12,11,10,9";
+        } else if (javaVersion == 16) {
+            versionsToCheck = "16,15,14,13,12,11,10,9";
+        } else if (javaVersion == 17) {
+            versionsToCheck = "17,16,15,14,13,12,11,10,9";
         } else {
             fail("The running java version: " + javaVersion + " is newer than we have properties files for, system-packages udpates are required");
         }

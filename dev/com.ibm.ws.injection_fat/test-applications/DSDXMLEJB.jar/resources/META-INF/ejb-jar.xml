@@ -11,7 +11,7 @@
         <description>Basic Data Source Definition in an SLSB - module level</description>
         <name>java:module/BasicModLevelDS</name>
         <class-name>org.apache.derby.jdbc.EmbeddedXADataSource40</class-name>
-        <database-name>dsdTest</database-name>
+        <database-name>memory:dsdTest</database-name>
         <user>dsdTester</user>
         <password>dsdPassword</password>
         <property>
@@ -25,7 +25,7 @@
         <description>Basic Data Source Definition in an SLSB - application level</description>
         <name>java:app/BasicAppLevelDS</name>
         <class-name>org.apache.derby.jdbc.EmbeddedXADataSource40</class-name>
-        <database-name>dsdTest</database-name>
+        <database-name>memory:dsdTest</database-name>
         <user>dsdTester</user>
         <password>dsdPassword</password>
         <property>
@@ -39,7 +39,7 @@
         <description>Basic Data Source Definition in an SLSB - global level</description>
         <name>java:global/BasicGlobalLevelDS</name>
         <class-name>org.apache.derby.jdbc.EmbeddedXADataSource40</class-name>
-        <database-name>dsdTest</database-name>
+        <database-name>memory:dsdTest</database-name>
         <user>dsdTester</user>
         <password>dsdPassword</password>
         <property>
@@ -53,7 +53,7 @@
         <description>Basic Data Source Definition in an SLSB - comp level</description>
         <name>BasicCompLevelDS</name>
         <class-name>org.apache.derby.jdbc.EmbeddedXADataSource40</class-name>
-        <database-name>dsdTest</database-name>
+        <database-name>memory:dsdTest</database-name>
         <user>dsdTester</user>
         <password>dsdPassword</password>
         <property>
@@ -67,7 +67,7 @@
         <description>Verify that since metadata-complete=true the values defined via annotation are ignored and defaults will be taken for loginTimeout and Isolation Level.</description>
         <name>java:module/MetaDataCompleteValidDS</name>
         <class-name>org.apache.derby.jdbc.EmbeddedXADataSource40</class-name>
-        <database-name>dsdTestMetadataComplete</database-name>
+        <database-name>memory:dsdTestMetadataComplete</database-name>
         <property>
           <name>createDatabase</name>
           <value>create</value>

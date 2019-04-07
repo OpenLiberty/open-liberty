@@ -105,6 +105,38 @@ garbageCollectionCount.description=Zobrazuje celkov\u00fd po\u010det kolekc\u00e
 garbageCollectionTime.description=Zobrazuje v milisekund\u00e1ch p\u0159ibli\u017enou akumulovanou dobu uvol\u0148ov\u00e1n\u00ed. Tento atribut zobrazuje -1, pokud nen\u00ed pro tento kolektor uplynul\u00e1 doba uvol\u0148ov\u00e1n\u00ed definov\u00e1na. Implementace prost\u0159ed\u00ed JVM (Java virtual machine) m\u016f\u017ee m\u011b\u0159it uplynulou dobu \u010dasova\u010dem s vysok\u00fdm rozli\u0161en\u00edm. Tento atribut m\u016f\u017ee zobrazovat stejnou hodnotu, p\u0159esto\u017ee byl po\u010det uvoln\u011bn\u00ed zv\u00fd\u0161en, pokud je uplynula doba uvol\u0148ov\u00e1n\u00ed velmi kr\u00e1tk\u00e1.
 
 #-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+threadpool.activeThreads.description=Po\u010det podproces\u016f spu\u0161t\u011bn\u00fdch \u00falohami.
+threadpool.size.description=Velikost fondu podproces\u016f.
+
+servlet.request.total.description=Po\u010det nav\u0161t\u00edven\u00ed na tomto servletu od spu\u0161t\u011bn\u00ed serveru.
+servlet.responseTime.total.description=Celkov\u00e1 doba odezvy tohoto servletu od spu\u0161t\u011bn\u00ed serveru.
+
+connectionpool.create.total.description=Celkov\u00fd po\u010det spravovan\u00fdch p\u0159ipojen\u00ed vytvo\u0159en\u00fdch od vytvo\u0159en\u00ed fondu.
+connectionpool.destroy.total.description=Celkov\u00fd po\u010det spravovan\u00fdch p\u0159ipojen\u00ed zlikvidovan\u00fdch od vytvo\u0159en\u00ed fondu.
+connectionpool.managedConnections.description=Po\u010det spravovan\u00fdch p\u0159ipojen\u00ed ve fondech voln\u00fdch prost\u0159edk\u016f, sd\u00edlen\u00fdch a nesd\u00edlen\u00fdch fondech.
+connectionpool.connectionHandles.description=Po\u010det aktu\u00e1ln\u011b pou\u017e\u00edvan\u00fdch p\u0159ipojen\u00ed. Tento po\u010det m\u016f\u017ee zahrnovat v\u00edce p\u0159ipojen\u00ed, kter\u00e9 jsou sd\u00edleny z jednoho spravovan\u00e9ho p\u0159ipojen\u00ed.
+connectionpool.freeConnections.description=Po\u010det spravovan\u00fdch p\u0159ipojen\u00ed ve fondu voln\u00fdch prost\u0159edk\u016f.
+connectionpool.waitTime.total.description=Celkov\u00e1 doba \u010dek\u00e1n\u00ed na v\u0161echny po\u017eadavky na p\u0159ipojen\u00ed od spu\u0161t\u011bn\u00ed serveru.
+connectionpool.inUseTime.total.description=Celkov\u00e1 doba pou\u017e\u00edv\u00e1n\u00ed v\u0161ech p\u0159ipojen\u00ed od spu\u0161t\u011bn\u00ed serveru.
+connectionpool.usedConnections.total.description=Celkov\u00fd po\u010det po\u017eadavk\u016f na p\u0159ipojen\u00ed, kter\u00e9 od spu\u0161t\u011bn\u00ed serveru \u010dekaly kv\u016fli pln\u00e9mu fondu p\u0159ipojen\u00ed nebo kter\u00e9 nemusely \u010dekat. Ve\u0161ker\u00e1 p\u0159ipojen\u00ed, kter\u00e1 jsou v sou\u010dasn\u00e9 dob\u011b pou\u017e\u00edv\u00e1na, nejsou do tohoto sou\u010dtu zahrnuta.
+connectionpool.queuedRequests.total.description=Celkov\u00fd po\u010det po\u017eadavk\u016f na p\u0159ipojen\u00ed, kter\u00e9 od spu\u0161t\u011bn\u00ed serveru musely \u010dekat na p\u0159ipojen\u00ed kv\u016fli pln\u00e9mu fondu p\u0159ipojen\u00ed.
+
+session.create.total.description=Po\u010det relac\u00ed, u nich\u017e do\u0161lo od povolen\u00ed t\u00e9to metriky k p\u0159ihl\u00e1\u0161en\u00ed.
+session.liveSessions.description=Po\u010det u\u017eivatel\u016f, kte\u0159\u00ed jsou aktu\u00e1ln\u011b p\u0159ihl\u00e1\u0161eni.
+session.activeSessions.description=Po\u010det soub\u011b\u017en\u011b aktivn\u00edch relac\u00ed. (Relace je aktivn\u00ed, pokud produkt aktu\u00e1ln\u011b zpracov\u00e1v\u00e1 po\u017eadavek, kter\u00fd pou\u017e\u00edv\u00e1 relace u\u017eivatele).
+session.invalidated.total.description=Po\u010det relac\u00ed, u nich\u017e do\u0161lo od povolen\u00ed t\u00e9to metriky k odhl\u00e1\u0161en\u00ed.
+session.invalidatedbyTimeout.total.description=Po\u010det relac\u00ed, u nich\u017e do\u0161lo od povolen\u00ed t\u00e9to metriky k odhl\u00e1\u0161en\u00ed z d\u016fvodu p\u0159ekro\u010den\u00ed \u010dasov\u00e9ho limitu.
+
+jaxws.invocations.total.description=Po\u010det vyvol\u00e1n\u00ed na tento koncov\u00fd bod nebo operaci.
+jaxws.checkedApplicationFaults.total.description=Po\u010det kontrolovan\u00fdch poruch aplikace.
+jaxws.logicalRuntimeFaults.total.description=Po\u010det logick\u00fdch b\u011bhov\u00fdch poruch.
+jaxws.runtimeFaults.total.description=Po\u010det b\u011bhov\u00fdch poruch.
+jaxws.uncheckedApplicationFaults.total.description=Po\u010det nekontrolovan\u00fdch poruch aplikace.
+jaxws.responseTime.total.description=Celkov\u00e1 doba zpracov\u00e1v\u00e1n\u00ed odezev od spu\u0161t\u011bn\u00ed serveru.
+
+#-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------
 

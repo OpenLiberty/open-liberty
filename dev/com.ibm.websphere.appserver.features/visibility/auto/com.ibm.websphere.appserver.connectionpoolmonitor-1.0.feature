@@ -7,6 +7,6 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
 IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.connectionpool.monitor
 -jars=com.ibm.websphere.appserver.api.connectionpool; location:=dev/api/ibm/
--files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.connectionpool_1.0-javadoc.zip
+-files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.connectionpool_1.1-javadoc.zip
 kind=ga
 edition=core

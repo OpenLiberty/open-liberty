@@ -15,8 +15,12 @@ src: \
 	fat/src,\
 	test-applications/mongo/src
 
+test.project: true
 fat.project: true
+publish.wlp.jar.disabled: false
+generate.replacement: true
 
 -buildpath: \
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	org.mongodb:mongo-java-driver;version=2.13.3

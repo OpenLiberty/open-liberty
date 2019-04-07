@@ -44,8 +44,14 @@ public class ConfigVariableComponent implements ServerXMLVariables {
         this.vars = cv;
     }
 
+    @Override
     public Map<String, String> getServerXMLVariables() {
         return vars.getUserDefinedVariables();
+    }
+
+    @Override
+    public Map<String, String> getServerXMLVariableDefaultValues() {
+        return vars.getUserDefinedVariableDefaults();
     }
 
 }

@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -476,6 +480,10 @@ jar_entry_not_migratable.MSGID=TOP-50095
 
 jar_file_url_exception=\u89e3\u6790 persistence.xml \u65f6\u53d1\u751f\u5f02\u5e38\u3002\u627e\u4e0d\u5230 JAR \u6587\u4ef6\u4f4d\u7f6e\uff1a{0}
 
+javase_version_ex_method_call=\u8c03\u7528\u65b9\u6cd5 {0} \u65f6\u53d1\u751f\u5f02\u5e38\uff1a{1}
+
+javase_version_ex_method_not_found=\u5728 {1} \u4e2d\u627e\u4e0d\u5230\u65b9\u6cd5 {0}
+
 jaxb_metadata_warning_ignoring_java_attribute=\u6b63\u5728\u5ffd\u7565\u7c7b [{1}] \u4e0a\u7684\u5c5e\u6027 [{0}]\uff0c\u56e0\u4e3a\u672a\u5bf9\u5176\u751f\u6210\u5c5e\u6027\u3002
 
 jaxb_metadata_warning_ignoring_java_attribute.MSGID=TOP-50235
@@ -507,6 +515,8 @@ jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter.MSGID=TOP-50241
 jaxb_metadata_warning_no_classes_to_process=\u6ca1\u6709\u8981\u5bf9\u5305 [{0}] \u5904\u7406\u7684\u7c7b\u3002
 
 jaxb_metadata_warning_no_classes_to_process.MSGID=TOP-50237
+
+jaxp_sec_prop_not_supported=\u4f7f\u7528\u7684 JAXP \u5b9e\u73b0\u4e0d\u652f\u6301\u5c5e\u6027 {0}\u3002
 
 jmx_mbean_runtime_services_failed_toget_initial_context=\u65e0\u6cd5\u83b7\u53d6 MBean \u6ce8\u518c\u7684 InitialContext\uff1a{0}
 

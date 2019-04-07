@@ -1,0 +1,40 @@
+#/*******************************************************************************
+# * Copyright (c) 2016, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+
+# Use message block TRAS4301 - TRAS4350 for new messages that start December 1, 2016.
+TAGS_FILTERING_WARNING=TRAS4301W: logstashCollector \ubc0f bluemixLogCollector\ub294 \ubb38\uc790 \ubc0f \uc22b\uc790\ub85c \uad6c\uc131\ub41c \ud558\ub098\uc758 \ub2e8\uc5b4\uac00 \ud3ec\ud568\ub420 \uc218 \uc788\ub294 \ud0dc\uadf8\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ub2e4\uc74c \ud0dc\uadf8\ub294 \ubb34\uc2dc\ub429\ub2c8\ub2e4. {0}
+TAGS_FILTERING_WARNING.explanation= \ubb34\uc2dc\ub418\ub294 \ud0dc\uadf8\uc5d0\ub294 \uacf5\ubc31, \ub300\uc2dc \ub610\ub294 \ubc31\uc2ac\ub798\uc2dc \ubb38\uc790\uac00 \ud3ec\ud568\ub418\uc5b4 \uc788\uc2b5\ub2c8\ub2e4.
+TAGS_FILTERING_WARNING.userAction= \ud574\ub2f9 \ud0dc\uadf8\uc5d0\uc11c \uacf5\ubc31, \ub300\uc2dc \ub610\ub294 \ubc31\uc2ac\ub798\uc2dc \ubb38\uc790\ub97c \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+SSLREF_NOTFOUND=TRAS4302E: logstashCollector \ub610\ub294 bluemixLogCollector\uc758 sslRef \uc18d\uc131\uc774 \uc9c0\uc815\ub418\uc9c0 \uc54a\uac70\ub098 sslRef ID\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+SSLREF_NOTFOUND.explanation=logstashCollector \ub610\ub294 bluemixLogCollector \uae30\ub2a5\uc5d0 \ub300\ud55c SSL \uad6c\uc131\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+SSLREF_NOTFOUND.userAction=SSL \uad6c\uc131\uc744 \uc791\uc131\ud558\uace0 logstashCollector \uc694\uc18c \ub610\ub294 bluemixLogCollector \uc694\uc18c\uc758 sslRef \uc18d\uc131\uc744 \uc0ac\uc6a9\ud558\uc5ec ID\ub97c \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+
+MAXEVENTS_OUTOFRANGE_WARNING=TRAS4303W: logstashCollector \ubc0f bluemixLogCollector\ub294 0-2147483647 \ubc94\uc704 \ub0b4\uc758 \uc815\uc218 \uac12\uc744 \uac00\uc9c0\ub294 maxEvents\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc81c\uacf5\ub41c maxEvents\ub294 \ubb34\uc2dc\ub429\ub2c8\ub2e4. {0}
+MAXEVENTS_OUTOFRANGE_WARNING.explanation= maxEvents \uac12\uc774 \ubc94\uc704\ub97c \ubc97\uc5b4\ub098\uba70 0-2147483647 \uc0ac\uc774\uc758 \uc62c\ubc14\ub978 \uc815\uc218\uac00 \uc544\ub2d9\ub2c8\ub2e4.
+MAXEVENTS_OUTOFRANGE_WARNING.userAction= maxEvents \uac12\uc744 \uc815\uc815\ud558\uc2ed\uc2dc\uc624. \uadf8\ub807\uc9c0 \uc54a\uc73c\uba74 \uc81c\ud55c\uc774 \uc801\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+MAXEVENTS_EXCEEDS_MAXRATE=TRAS4304I: {0} \uc2a4\ub808\ub4dc\uc5d0\uc11c \uc774\ubca4\ud2b8 \uc791\uc131 \uc18d\ub3c4\uac00 \ucd5c\ub300 \ucc98\ub9ac \uc18d\ub3c4\ub97c \ucd08\uacfc\ud569\ub2c8\ub2e4. \uc774\ubca4\ud2b8 \ubc31\ub85c\uadf8\ub97c \uc9c0\uc6b8 \ub54c\uae4c\uc9c0 \ucd08\ub2f9 {1}\uac1c\uc758 \uc774\ubca4\ud2b8\uac00 \ucc98\ub9ac\ub429\ub2c8\ub2e4.
+MAXEVENTS_EXCEEDS_MAXRATE.explanation= \ucc98\ub9ac\ud560 \uc774\ubca4\ud2b8 \uc218\uac00 \ucd08\ub2f9 \uc9c0\uc815\ub41c maxEvents \uc18d\ub3c4\ub97c \ucd08\uacfc\ud569\ub2c8\ub2e4.
+MAXEVENTS_EXCEEDS_MAXRATE.userAction= \uc774\ubca4\ud2b8 \ucc98\ub9ac \uc18d\ub3c4\ub97c \ubcc0\uacbd\ud558\ub824\uba74 maxEvents\uc758 server.xml \ud30c\uc77c\uc5d0\uc11c \uad6c\uc131\uc744 \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624.
+
+MAXEVENTS_NOTEXCEED_RATE=TRAS4305I: \uc774\ubca4\ud2b8 \ubc31\ub85c\uadf8\uac00 \uc9c0\uc6cc\uc84c\uc2b5\ub2c8\ub2e4. \uc9c0\uc5f0 \uc5c6\uc774 \uc0c8 \uc774\ubca4\ud2b8\uac00 \ucc98\ub9ac\ub429\ub2c8\ub2e4.
+MAXEVENTS_NOTEXCEED_RATE.explanation= \uc774\ubca4\ud2b8 \ucc98\ub9ac\uac00 \ucd5c\ub300 \ucc98\ub9ac \uc18d\ub3c4\ub85c \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+MAXEVENTS_NOTEXCEED_RATE.userAction=  \uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                        

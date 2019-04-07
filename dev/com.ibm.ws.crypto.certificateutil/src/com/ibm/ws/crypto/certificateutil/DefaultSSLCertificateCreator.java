@@ -34,12 +34,12 @@ public interface DefaultSSLCertificateCreator {
      * implementations.
      */
     static final int MINIMUM_PASSWORD_LENGTH = 6;
-    static final int MINIMUM_VALIDITY = 365;
+    static final int MINIMUM_VALIDITY = 15;
     static final int DEFAULT_VALIDITY = 365;
     static final int DEFAULT_SIZE = 2048;
     static final String KEYALG = KEYALG_RSA_TYPE;
     static final String SIGALG = "SHA256withRSA";
-    static final String DEFAULT_KEYSTORE_TYPE = "JKS";
+    static final String DEFAULT_KEYSTORE_TYPE = "PKCS12";
 
     /**
      * These constants are not intended to be specified by the caller,
@@ -86,7 +86,7 @@ public interface DefaultSSLCertificateCreator {
     /**
      * Creates a default SSL certificate.
      *
-     * @param filePath The valid, complete path on the file system of the keystore to create. e.g. /tmp/key.jks
+     * @param filePath The valid, complete path on the file system of the keystore to create. e.g. /tmp/key.p12
      * @param password Minimum 6 characters
      * @param validity Minimum 365 days (?)
      * @param subjectDN The subjectDN. Use {@link DefaultSubjectDN} to construct the default value.

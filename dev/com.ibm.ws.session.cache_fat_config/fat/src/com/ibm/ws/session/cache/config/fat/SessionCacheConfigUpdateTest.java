@@ -196,6 +196,8 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
+        TimeUnit.SECONDS.sleep(10); // Due to invalidation thread delay
+
         ArrayList<String> session = new ArrayList<>();
         String response = run("testSetAttributeWithTimeout&attribute=testScheduleInvalidation&value=si1&maxInactiveInterval=1",
                               session);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -241,6 +241,23 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(tc, "create", className, classloader, PropertyService.hidePasswords(props));
+
+        //TODO remove this gate before GA so this also applies to data sources configured using DataSourceDefinition
+        String vendorPropertiesPID = props instanceof PropertyService ? ((PropertyService) props).getFactoryPID() : PropertyService.FACTORY_PID;
+        if ("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp".equals(vendorPropertiesPID)) {
+            //Add a value for connectionFactoryClassName when using UCP if one is not specified
+            if (className.startsWith("oracle.ucp.jdbc") && !props.containsKey("connectionFactoryClassName")) {
+                if (className.equals("oracle.ucp.jdbc.PoolDataSourceImpl") && props instanceof PropertyService) {
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(tc, "Setting connectionFactoryClassName property to oracle.jdbc.pool.OracleDataSource");
+                    ((PropertyService) props).setProperty("connectionFactoryClassName", "oracle.jdbc.pool.OracleDataSource");
+                } else if (className.equals("oracle.ucp.jdbc.PoolXADataSourceImpl") && props instanceof PropertyService) {
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(tc, "Setting connectionFactoryClassName property to oracle.jdbc.xa.client.OracleXADataSource");
+                    ((PropertyService) props).setProperty("connectionFactoryClassName", "oracle.jdbc.xa.client.OracleXADataSource");
+                }
+            }
+        }
         try {
             T ds = AccessController.doPrivileged(new PrivilegedExceptionAction<T>() {
                 public T run() throws Exception {
@@ -331,7 +348,8 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
     }
 
     /**
-     * Create any type of data source or java.sql.Driver - whichever is available, looking for known data source impl classes in the following order,
+     * Create any type of data source or java.sql.Driver - whichever is available, looking for
+     * known data source impl classes in the following order,
      * <ul>
      * <li>javax.sql.ConnectionPoolDataSource
      * <li>javax.sql.DataSource
@@ -341,8 +359,9 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * @param props typed data source properties
      * @return the data source or driver instance
      * @throws Exception if an error occurs
+     * @deprecated only use this method if the jdbc-4.2 or earlier feature is enabled.
      */
-    public Object createAnyDataSourceOrDriver(Properties props, String dataSourceID) throws Exception {
+    public Object createAnyPreferLegacyOrder(Properties props, String dataSourceID) throws Exception {
         lock.readLock().lock();
         try {
             if (!isInitialized)
@@ -406,20 +425,22 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
     }
     
     /**
-     * Create any type of data source or java.sql.Driver - whichever is available, looking for known data source impl classes in the following order,
+     * Create any type of data source or java.sql.Driver - whichever is available, looking for
+     * known data source impl classes in the following order,
      * <ul>
      * <li>javax.sql.XADataSource
      * <li>javax.sql.ConnectionPoolDataSource
      * <li>javax.sql.DataSource
      * </ul>
-     * This order is different than the standard priority, which prioritizes javax.sql.XADataSource after ConnectionPoolDataSource and DataSource.
+     * This order is different than the legacy (prior to jdbc-4.3 feature) priority,
+     * which prioritizes javax.sql.XADataSource after ConnectionPoolDataSource and DataSource.
      * 
      * @param props typed data source properties
      * @param dataSourceID identifier for the data source config
      * @return the data source or driver instance
      * @throws Exception if an error occurs
      */
-    public Object createDefaultDataSourceOrDriver(Properties props, String dataSourceID) throws Exception {
+    public Object createAnyPreferXADataSource(Properties props, String dataSourceID) throws Exception {
         lock.readLock().lock();
         try {
             if (!isInitialized)
@@ -515,6 +536,11 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 String vendorPropertiesPID = props instanceof PropertyService ? ((PropertyService) props).getFactoryPID() : PropertyService.FACTORY_PID;
                 className = JDBCDrivers.getConnectionPoolDataSourceClassName(vendorPropertiesPID);
                 if (className == null) {
+                    //if properties.oracle.ucp is configured do not search based on classname or infer because the customer has indicated
+                    //they want to use UCP, but this will likely pick up the Oracle driver instead of the UCP driver (since UCP has no ConnectionPoolDataSource)
+                    if("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp".equals(vendorPropertiesPID)) {
+                        throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4015.no.ucp.connection.pool.datasource", dataSourceID));
+                    }
                     className = JDBCDrivers.getConnectionPoolDataSourceClassName(getClasspath(sharedLib, true));
                     if (className == null) {
                         Set<String> packagesSearched = new LinkedHashSet<String>();
@@ -663,6 +689,14 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 }
 
             final String className = (String) properties.get(Driver.class.getName());
+            if (className == null) {
+                String vendorPropertiesPID = props instanceof PropertyService ? ((PropertyService) props).getFactoryPID() : PropertyService.FACTORY_PID;
+                //if properties.oracle.ucp is configured do not search for driver impls because the customer has indicated
+                //they want to use UCP, but this will likely pick up the Oracle driver instead of the UCP driver (since UCP has no Driver interface)
+                if("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp".equals(vendorPropertiesPID)) {
+                    throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4015.no.ucp.connection.pool.datasource", dataSourceID));
+                }
+            }
             Driver driver = loadDriver(className, url, classloader, props, dataSourceID);
             if (driver == null)
                throw classNotFound(Driver.class.getName(), Collections.singleton("META-INF/services/java.sql.Driver"), dataSourceID, null);

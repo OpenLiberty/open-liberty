@@ -75,9 +75,7 @@ public class FrameworkConfigurator {
         // that storage area, we use space specific to the server.
         config.put(org.osgi.framework.Constants.FRAMEWORK_STORAGE, workarea.getAbsolutePath());
 
-        // Use an equinox property to identify the location of the equinox
-        // configuration area.
-        config.put("osgi.configuration.area", workarea.getAbsolutePath());
+        config.put("osgi.logfile", new File(workarea, "equinox.log").getAbsolutePath());
 
         // Use an equinox property to identify the location of the equinox
         // user area (we'll treat the server directory as the user area)
@@ -174,9 +172,9 @@ public class FrameworkConfigurator {
         // adding org.apache.xml for defect 53421; hope to remove when strategic fix is available
         // adding org.apache.xerces for defect 94476
         final String defaultDelegation = "com.ibm.ws.kernel.boot.jmx.internal," +
-                                         "sun.*,com.sun.*,com.ibm.ws.boot.delegated.*,org.apache.xml.*,org.apache.xerces.*," +
-                                         "com.ibm.xylem.*,com.ibm.xml.*,com.ibm.xtq.*,com.ibm.net.ssl.*," +
-                                         "com.ibm.crypto.*,com.ibm.security.*,jdk.*";
+                                         "sun.*,com.sun.*,com.ibm.lang.management,com.ibm.ws.boot.delegated.*," + 
+                                         "org.apache.xml.*,org.apache.xerces.*,com.ibm.xylem.*,com.ibm.xml.*," + 
+                                         "com.ibm.xtq.*,com.ibm.net.ssl.*,com.ibm.crypto.*,com.ibm.security.*,jdk.*";
 
         String osgiDelegationPackages = config.get(org.osgi.framework.Constants.FRAMEWORK_BOOTDELEGATION);
         if (osgiDelegationPackages == null)

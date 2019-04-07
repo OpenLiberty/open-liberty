@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,8 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.filemonitor.FileBasedActionable;
 import com.ibm.ws.security.filemonitor.SecurityFileMonitor;
+import com.ibm.ws.ssl.KeyringMonitor;
+import com.ibm.ws.ssl.config.KeyStoreManager;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -44,7 +46,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  * for that configuration (or retrieves one it already created), verifies that the
  * attributes make sense and are valid, and then registers the KeystoreConfig
  * into the service registry so that it will play well with the rest of the services.
- * 
+ *
  * This is a managed service factory (rather than another DS service) to ensure that
  * we can yank/deregister/table/remove the service if the configuration is bad.
  * It is hard to do this kind of on-the-fly verification within a modified method
@@ -54,14 +56,16 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 @Component(service = ManagedServiceFactory.class,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = { "service.vendor=IBM", "service.pid=com.ibm.ws.ssl.keystore" })
-public class KeystoreConfigurationFactory implements ManagedServiceFactory, FileBasedActionable {
+public class KeystoreConfigurationFactory implements ManagedServiceFactory, FileBasedActionable, KeyringBasedActionable {
     /** Trace service */
     private static final TraceComponent tc = Tr.register(KeystoreConfigurationFactory.class);
 
     private final AtomicServiceReference<WsLocationAdmin> locSvc = new AtomicServiceReference<WsLocationAdmin>("LocMgr");
     private final ConcurrentHashMap<String, KeystoreConfig> keyConfigs = new ConcurrentHashMap<String, KeystoreConfig>();
     private ServiceRegistration<FileMonitor> keyStoreFileMonitorRegistration;
+    private ServiceRegistration<KeyringMonitor> keyringMonitorRegistration;
     private SecurityFileMonitor keyStoreFileMonitor;
+    private KeyringMonitorImpl KeyringMonitor;
 
     private BundleContext bContext = null;
     private volatile ComponentContext cc = null;
@@ -75,17 +79,11 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
             return;
         }
 
-        String id = (String) properties.get(LibertyConstants.KEY_ID);
-        if (id == null) {
-            // if id is missing lets assume it's the default keystore
-            id = LibertyConstants.DEFAULT_KEY_STORE_NAME;
-            properties.put(LibertyConstants.KEY_ID, LibertyConstants.DEFAULT_KEY_STORE_NAME);
-        }
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "updated " + pid, properties);
+            Tr.event(this, tc, "updated keystore " + pid, properties);
         }
 
+        String id = (String) properties.get(LibertyConstants.KEY_ID);
         KeystoreConfig svc = null;
         KeystoreConfig old = keyConfigs.get(pid);
 
@@ -101,24 +99,26 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
         // Try to update the keystore (which involves generating a new WSKeyStore.. )
         // If it succeeds, register the service in the bundle context
         // If it fails, unregister it.
-        try
-        {
+        try {
             if (svc.updateKeystoreConfig(properties)) {
                 svc.updateRegistration(bContext);
 
                 //if needed set the file monitor
                 String trigger = svc.getKeyStore().getTrigger();
                 Boolean fileBased = svc.getKeyStore().getFileBased();
-                if (!(trigger.equalsIgnoreCase("disabled")) && fileBased.booleanValue()) {
-                    createFileMonitor(svc.getKeyStore().getLocation(), trigger, svc.getKeyStore().getPollingRate());
+                if (!(trigger.equalsIgnoreCase("disabled"))) {
+                    if (fileBased.booleanValue()) {
+                        createFileMonitor(svc.getKeyStore().getName(), svc.getKeyStore().getLocation(), trigger, svc.getKeyStore().getPollingRate());
+                    } else if (svc.getKeyStore().getLocation().contains(KeyringMonitor.SAF_PREFIX)) {
+                        createKeyringMonitor(svc.getKeyStore().getName(), trigger, svc.getKeyStore().getLocation());
+                    }
                 }
             } else {
                 svc.unregister();
             }
 
-        } catch (IllegalStateException e)
-        {
-            // This must mean the bundle was stopped, which happens only if 
+        } catch (IllegalStateException e) {
+            // This must mean the bundle was stopped, which happens only if
             // we're trying to update and shut down simultaneously.
             // Harmless, so discard the exception rather than report FFDC.
         }
@@ -126,13 +126,15 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
 
     @Override
     public void deleted(String pid) {
-        KeystoreConfig old = keyConfigs.remove(pid);
+        KeystoreConfig old = keyConfigs.get(pid);
         if (old != null) {
+            KeyStoreManager.getInstance().clearKeyStoreFromMap(pid);
+            KeyStoreManager.getInstance().clearKeyStoreFromMap(keyConfigs.get(pid).getId());
             old.unregister();
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "deleted " + pid,
-                     (old == null ? "not found" : old.getId()));
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "deleted keystore " + pid);
+            }
         }
     }
 
@@ -156,12 +158,13 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
         }
         locSvc.deactivate(ctx);
         unsetFileMonitorRegistration();
+        unsetKeyringMonitorRegistration();
     }
 
     /**
      * Set the reference to the location manager.
      * Dynamic service: always use the most recent.
-     * 
+     *
      * @param locSvc Location service
      */
     @Reference(service = WsLocationAdmin.class, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
@@ -187,12 +190,11 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
             Tr.entry(tc, "performFileBasedAction", new Object[] { modifiedFiles });
 
         try {
-            com.ibm.ws.ssl.provider.AbstractJSSEProvider.clearSSLContextCache();
-            com.ibm.ws.ssl.config.KeyStoreManager.getInstance().clearJavaKeyStoresFromKeyStoreMap();
+            com.ibm.ws.ssl.config.KeyStoreManager.getInstance().clearJavaKeyStoresFromKeyStoreMap(modifiedFiles);
+            com.ibm.ws.ssl.provider.AbstractJSSEProvider.clearSSLContextCache(modifiedFiles);
             com.ibm.ws.ssl.config.SSLConfigManager.getInstance().resetDefaultSSLContextIfNeeded(modifiedFiles);
             Tr.audit(tc, "ssl.keystore.modified.CWPKI0811I", modifiedFiles.toArray());
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception while trying to reload keystore file, exception is: " + e.getMessage());
             }
@@ -202,10 +204,36 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
     }
 
     /**
+     * This method is intended for Z/OS keystore mbean monitoring. The specified keystore (keyring) have been modified
+     * and we need to clear the SSLContext caches and keystore caches that reference them. Clearing the cache
+     * will cause them to get loaded the next time something requests the keystore.
+     */
+    @Override
+    public void performKeyStoreAction(Collection<String> modifiedKeyStores) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "performSAFKeyRingAction", new Object[] { modifiedKeyStores });
+
+        for (String modifiedKeyStore : modifiedKeyStores) {
+            try {
+                com.ibm.ws.ssl.config.KeyStoreManager.getInstance().findKeyStoreInMapAndClear(modifiedKeyStore);
+                com.ibm.ws.ssl.provider.AbstractJSSEProvider.removeEntryFromSSLContextMap(modifiedKeyStore);
+                com.ibm.ws.ssl.config.SSLConfigManager.getInstance().resetDefaultSSLContextIfNeeded(modifiedKeyStore);
+                Tr.audit(tc, "ssl.keystore.modified.CWPKI0811I", modifiedKeyStores.toArray());
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Exception while trying to reload keystore file, exception is: " + e.getMessage());
+                }
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "performSAFKeyRingAction");
+    }
+
+    /**
      * Retrieves the BundleContext, assuming we're still valid. If we've been
      * deactivated, then the registration no longer needs / can happen and in
      * that case return null.
-     * 
+     *
      * @return The BundleContext if available, {@code null} otherwise.
      */
     @Override
@@ -232,7 +260,7 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
 
     /**
      * Sets the keystore file monitor registration.
-     * 
+     *
      * @param keyStoreFileMonitorRegistration
      */
     protected void setFileMonitorRegistration(ServiceRegistration<FileMonitor> keyStoreFileMonitorRegistration) {
@@ -245,20 +273,64 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
     /**
      * Handles the creation of the keystore file monitor.
      */
-    private void createFileMonitor(String keyStoreLocation, String trigger, long interval) {
+    private void createFileMonitor(String ID, String keyStoreLocation, String trigger, long interval) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "createFileMonitor", new Object[] { keyStoreLocation, trigger, interval });
+            Tr.entry(tc, "createFileMonitor", new Object[] { ID, keyStoreLocation, trigger, interval });
         try {
             keyStoreFileMonitor = new SecurityFileMonitor(this);
-            setFileMonitorRegistration(keyStoreFileMonitor.monitorFiles(Arrays.asList(keyStoreLocation), interval, trigger));
+            setFileMonitorRegistration(keyStoreFileMonitor.monitorFiles(ID, Arrays.asList(keyStoreLocation), interval, trigger));
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception creating the keystore file monitor.", e);
             }
-            FFDCFilter.processException(e, getClass().getName(), "createFileMonitor", this, new Object[] { keyStoreLocation, interval });
+            FFDCFilter.processException(e, getClass().getName(), "createFileMonitor", this, new Object[] { ID, keyStoreLocation, interval });
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "createFileMonitor");
+    }
+
+    /**
+     * Remove the reference to the keyRing monitor.
+     */
+    protected void unsetKeyringMonitorRegistration() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "unsetKeyringMonitorRegistration");
+        }
+        if (keyringMonitorRegistration != null) {
+            keyringMonitorRegistration.unregister();
+            keyringMonitorRegistration = null;
+        }
+    }
+
+    /**
+     * Sets the keyring monitor registration.
+     *
+     * @param keyringMonitorRegistration
+     */
+    protected void setKeyringMonitorRegistration(ServiceRegistration<KeyringMonitor> keyringMonitorRegistration) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "setKeyringMonitorRegistration");
+        }
+        this.keyringMonitorRegistration = keyringMonitorRegistration;
+    }
+
+    /**
+     * Handles the creation of the keyring monitor.
+     */
+    private void createKeyringMonitor(String ID, String trigger, String keyStoreLocation) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "createKeyringMonitor", new Object[] { ID, trigger });
+        try {
+            KeyringMonitor = new KeyringMonitorImpl(this);
+            setKeyringMonitorRegistration(KeyringMonitor.monitorKeyRings(ID, trigger, keyStoreLocation));
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Exception creating the keyring monitor.", e);
+            }
+            FFDCFilter.processException(e, getClass().getName(), "createKeyringMonitor", this, new Object[] { ID, keyStoreLocation });
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "createKeyringMonitor");
     }
 
 }

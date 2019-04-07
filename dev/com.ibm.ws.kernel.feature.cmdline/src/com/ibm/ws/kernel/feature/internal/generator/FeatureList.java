@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,15 @@
 package com.ibm.ws.kernel.feature.internal.generator;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,7 +28,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
@@ -69,12 +80,14 @@ public class FeatureList {
     private static final List<Map<String, Object>> possibleJavaVersions = new ArrayList<Map<String, Object>>();
     private static final Map<String, Collection<GenericMetadata>> eeToCapability = new HashMap<String, Collection<GenericMetadata>>();
 
-    static {
+    private static File installDir;
+    private static boolean gaBuild = true;
 
+    static {
         if (writingJavaVersion) {
-            // When we add Java 9 we need to add it here and update the 1.6 and 1.7 and 1.8 filters. Need to ensure this is captured in docs.
             addJVM(possibleJavaVersions, "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
             addJVM(possibleJavaVersions, "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
+            addJVM(possibleJavaVersions, "11", "10", "9", "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
 
             List<GenericMetadata> mostGeneralRange = ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=1.7))\"");
 
@@ -85,7 +98,10 @@ public class FeatureList {
             eeToCapability.put("JavaSE-1.6", mostGeneralRange);
             eeToCapability.put("JavaSE-1.7", mostGeneralRange);
             eeToCapability.put("JavaSE-1.8", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=1.8))\""));
+            eeToCapability.put("JavaSE-11", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=11))\""));
         }
+
+        gaBuild = isGABuild();
     }
 
     /**
@@ -243,8 +259,8 @@ public class FeatureList {
         if (!!!privateFeature) {
             ContentBasedLocalBundleRepository cbr = getBundleRepo(fd.getFeatureName(), mfp);
             Set<File> bundles = new TreeSet<File>();
-            Set<File> apiJars = showExternals ? new TreeSet<File>() : null;
-            Set<File> spiJars = new TreeSet<File>();
+            Map<File,Map<String,String>> apiJars = showExternals ? new TreeMap<File,Map<String,String>>() : null;
+            Map<File,Map<String,String>> spiJars = new TreeMap<File,Map<String,String>>();
 
             if (publicFeature) {
                 Set<String> enabledFeatureNames = new TreeSet<String>();
@@ -281,9 +297,12 @@ public class FeatureList {
                             if (ocds.getExtensionUris().contains(XMLConfigConstants.METATYPE_EXTENSION_URI)) {
                                 Map<String, String> attribs = ocds.getExtensionAttributes(XMLConfigConstants.METATYPE_EXTENSION_URI);
                                 if (attribs != null) {
-                                    String alias = attribs.get("alias");
-                                    if (alias != null && !attribs.containsKey("childAlias")) {
-                                        elements.add(alias);
+                                    String isBeta = attribs.get("beta");
+                                    if ( ! (gaBuild && "true".equals(isBeta))) {
+                                        String alias = attribs.get("alias");
+                                        if (alias != null && !attribs.containsKey("childAlias")) {
+                                            elements.add(alias);
+                                        }
                                     }
                                 }
                             }
@@ -432,9 +451,10 @@ public class FeatureList {
         return metadata;
     }
 
-    private void writeApiSpiJars(FeatureListWriter writer, File installDir, Set<File> jars, String elementName) throws IOException, XMLStreamException {
+    private void writeApiSpiJars(FeatureListWriter writer, File installDir, Map<File,Map<String,String>> jars, String elementName) throws IOException, XMLStreamException {
         if (jars != null) {
-            for (File f : jars) {
+            for (Entry<File, Map<String, String>> e : jars.entrySet()) {
+                File f = e.getKey();
                 String nameToWrite;
 
                 if (f.getAbsolutePath().startsWith(installDir.getAbsolutePath())) {
@@ -444,7 +464,7 @@ public class FeatureList {
                     nameToWrite = PathUtils.slashify(f.getAbsolutePath());
                 }
 
-                writer.writeTextElement(elementName, nameToWrite);
+                writer.writeTextElementWithAttributes(elementName, nameToWrite, e.getValue());
             }
         }
     }
@@ -481,8 +501,8 @@ public class FeatureList {
                                ContentBasedLocalBundleRepository cbr,
                                Set<String> enabledFeatureNames,
                                Set<File> bundles,
-                               Set<File> apiJars,
-                               Set<File> spiJars) {
+                               Map<File,Map<String,String>> apiJars,
+                               Map<File,Map<String,String>> spiJars) {
         for (FeatureResource fr : feature.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
             String symbolicName = fr.getSymbolicName();
             ProvisioningFeatureDefinition other = features.get(symbolicName);
@@ -513,8 +533,8 @@ public class FeatureList {
     private void searchJars(ProvisioningFeatureDefinition feature,
                             ContentBasedLocalBundleRepository cbr,
                             Set<File> bundles,
-                            Set<File> apiJars,
-                            Set<File> spiJars) {
+                            Map<File,Map<String,String>> apiJars,
+                            Map<File,Map<String,String>> spiJars) {
         if (bundles != null || apiJars != null || spiJars != null) {
             searchJars(feature, cbr, SubsystemContentType.JAR_TYPE, null, apiJars, spiJars);
             searchJars(feature, cbr, SubsystemContentType.BUNDLE_TYPE, bundles, apiJars, spiJars);
@@ -525,8 +545,8 @@ public class FeatureList {
                             ContentBasedLocalBundleRepository cbr,
                             SubsystemContentType contentType,
                             Set<File> bundles,
-                            Set<File> apiJars,
-                            Set<File> spiJars) {
+                            Map<File,Map<String,String>> apiJars,
+                            Map<File,Map<String,String>> spiJars) {
         for (FeatureResource fr : feature.getConstituents(contentType)) {
             String location = fr.getLocation();
             File f = cbr.selectBundle(location, fr.getSymbolicName(), fr.getVersionRange());
@@ -536,16 +556,92 @@ public class FeatureList {
                 }
 
                 APIType apiType = APIType.getAPIType(fr);
+                Map<String,String> attrs = new HashMap<String,String>(1);
+                if (fr.getRequireJava() != null)
+                    attrs.put("require-java", fr.getRequireJava().toString());
                 if (apiType == APIType.API) {
                     if (apiJars != null) {
-                        apiJars.add(f);
+                        apiJars.put(f, attrs);
                     }
                 } else if (apiType == APIType.SPI) {
                     if (spiJars != null) {
-                        spiJars.add(f);
+                        spiJars.put(f, attrs);
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Work out whether we should generate the schema for a GA build or not.
+     *
+     * @return true if ga schema, false otherwise.
+     */
+    private static boolean isGABuild() {
+        boolean result = true;
+
+        final Properties props = new Properties();
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+            @Override
+            public Object run() {
+                try {
+                    final File version = new File(getInstallDir(), "lib/versions/WebSphereApplicationServer.properties");
+                    Reader r = new InputStreamReader(new FileInputStream(version), "UTF-8");
+                    props.load(r);
+                    r.close();
+                } catch (IOException e) {
+                    // ignore because we fail safe. Returning true will result in a GA suitable schema
+                }
+                return null;
+            }
+        });
+        String v = props.getProperty("com.ibm.websphere.productVersion");
+
+        if (v != null) {
+            int index = v.indexOf('.');
+            if (index != -1) {
+                try {
+                    int major = Integer.parseInt(v.substring(0, index));
+                    if (major > 2012) {
+                        result = false;
+                    }
+                } catch (NumberFormatException nfe) {
+                    // ignore because we fail safe. True for this hides stuff
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private static File getInstallDir() {
+        if (installDir == null) {
+            String installDirProp = System.getProperty("wlp.install.dir");
+            if (installDirProp == null) {
+                URL url = FeatureList.class.getProtectionDomain().getCodeSource().getLocation();
+
+                if (url.getProtocol().equals("file")) {
+                    // Got the file for the command line launcher, this lives in lib
+                    try {
+                        if (url.getAuthority() != null) {
+                            url = new URL("file://" + url.toString().substring("file:".length()));
+                        }
+
+                        File f = new File(url.toURI());
+                        // The parent of the jar is lib, so the parent of the parent is the install.
+                        installDir = f.getParentFile();
+                    } catch (MalformedURLException e) {
+                        // Not sure we can get here so ignore.
+                    } catch (URISyntaxException e) {
+                        // Not sure we can get here so ignore.
+                    }
+                }
+            } else {
+                installDir = new File(installDirProp);
+            }
+        }
+
+        return installDir;
     }
 }

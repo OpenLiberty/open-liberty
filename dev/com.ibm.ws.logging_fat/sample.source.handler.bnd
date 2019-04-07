@@ -38,5 +38,4 @@ Service-Component: \
     executor=java.util.concurrent.ExecutorService; \
     modified:='modified'; \
     immediate:='true'; \
-    properties:="service.vendor=IBM", \
-  
+    properties:="service.vendor=IBM"

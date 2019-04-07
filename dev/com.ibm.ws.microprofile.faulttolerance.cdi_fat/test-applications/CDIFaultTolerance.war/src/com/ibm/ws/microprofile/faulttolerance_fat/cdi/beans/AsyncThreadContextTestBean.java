@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.not;
+
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -36,11 +41,21 @@ public class AsyncThreadContextTestBean {
 
     public Future<BeanManager> getBeanManagerViaJndi() throws NamingException {
         BeanManager bm = (BeanManager) new InitialContext().lookup("java:comp/BeanManager");
+        if (bm != null) {
+            // If we have a bean manager, check it actually has our beans in it
+            Set<?> beans = bm.getBeans(AsyncThreadContextTestBean.class);
+            assertThat("Bean Manager does not know about expected beans", beans, not(empty()));
+        }
         return CompletableFuture.completedFuture(bm);
     }
 
     public Future<CDI<Object>> getCdi() {
         return CompletableFuture.completedFuture(CDI.current());
+    }
+
+    public Future<Class<?>> loadClassWithTccl() throws ClassNotFoundException {
+        Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(AsyncThreadContextTestBean.class.getName());
+        return CompletableFuture.completedFuture(clazz);
     }
 
     @ApplicationScoped

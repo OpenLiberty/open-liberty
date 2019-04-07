@@ -83,6 +83,8 @@ public class TraceComponent implements FFDCSelfIntrospectable {
      * level is enabled.
      */
     private int fineLevelsEnabled;
+    
+    private boolean isTraceOff = false;
 
     private static TraceEnabledToken fineTraceEnabled = null;
 
@@ -197,7 +199,7 @@ public class TraceComponent implements FFDCSelfIntrospectable {
                 logger = Logger.getLogger(name, bundle);
                 logger.setLevel(getLoggerLevel());
             } finally {
-                WsLogger.loggerRegistrationComponent.set(null); // clear when done.
+                WsLogger.loggerRegistrationComponent.remove(); // clear when done.
             }
         }
 
@@ -285,27 +287,27 @@ public class TraceComponent implements FFDCSelfIntrospectable {
     }
 
     public final boolean isDumpEnabled() {
-        return (this.fineLevelsEnabled & (1 << TrLevelConstants.TRACE_LEVEL_DUMP)) != 0;
+        return !isTraceOff && ((this.fineLevelsEnabled & (1 << TrLevelConstants.TRACE_LEVEL_DUMP)) != 0);
     }
 
     public final boolean isDebugEnabled() {
-        return (this.fineLevelsEnabled & (1 << TrLevelConstants.TRACE_LEVEL_DEBUG)) != 0;
+        return !isTraceOff && ((this.fineLevelsEnabled & (1 << TrLevelConstants.TRACE_LEVEL_DEBUG)) != 0);
     }
 
     public final boolean isEntryEnabled() {
-        return (this.fineLevelsEnabled & (1 << TrLevelConstants.TRACE_LEVEL_ENTRY_EXIT)) != 0;
+        return !isTraceOff && ((this.fineLevelsEnabled & (1 << TrLevelConstants.TRACE_LEVEL_ENTRY_EXIT)) != 0);
     }
 
     public final boolean isEventEnabled() {
-        return (this.fineLevelsEnabled & (1 << TrLevelConstants.TRACE_LEVEL_EVENT)) != 0;
+        return !isTraceOff && ((this.fineLevelsEnabled & (1 << TrLevelConstants.TRACE_LEVEL_EVENT)) != 0);
     }
 
     public final boolean isDetailEnabled() {
-        return (this.fineLevelsEnabled & (1 << TrLevelConstants.TRACE_LEVEL_DETAIL)) != 0;
+        return !isTraceOff && ((this.fineLevelsEnabled & (1 << TrLevelConstants.TRACE_LEVEL_DETAIL)) != 0);
     }
 
     public final boolean isConfigEnabled() {
-        return (this.fineLevelsEnabled & (1 << TrLevelConstants.TRACE_LEVEL_CONFIG)) != 0;
+        return !isTraceOff && ((this.fineLevelsEnabled & (1 << TrLevelConstants.TRACE_LEVEL_CONFIG)) != 0);
     }
 
     public final boolean isInfoEnabled() {
@@ -414,7 +416,12 @@ public class TraceComponent implements FFDCSelfIntrospectable {
                         newFineLevelsEnabled &= ~(1 << level);
                     }
                 }
-
+                
+                if (newFineLevel == TrLevelConstants.TRACE_LEVEL_OFF) {
+                	isTraceOff = true;
+                } else {
+                	isTraceOff = false;
+                }
                 // Indicate that the trace spec matched something
                 spec.setMatched(true);
             }

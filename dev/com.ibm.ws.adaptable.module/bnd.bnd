@@ -19,6 +19,7 @@ WS-TraceGroup: archive.adaptable
 
 Export-Package: com.ibm.wsspi.adaptable.module;provide:=true,\
                 com.ibm.wsspi.adaptable.module.adapters,\
+                com.ibm.ws.adaptable.module,\
                 com.ibm.ws.adaptable.module.structure
 
 Private-Package: com.ibm.ws.adaptable.module.internal
@@ -83,7 +84,7 @@ Service-Component: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.ws.junit.extensions;version=latest, \
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
-	cglib:cglib-nodep;version=3.2.7, \
+	cglib:cglib-nodep;version=3.2.10, \
 	com.ibm.ws.logging;version=latest, \
 	com.ibm.websphere.org.osgi.core;version=latest, \
 	com.ibm.websphere.org.osgi.service.component;version=latest, \

@@ -23,6 +23,12 @@ import com.ibm.ws.jpa.management.JPAConstants;
 @Trivial
 class LogChannel {
     private final TraceComponent _tc;
+    private final String channel;
+
+    LogChannel(String channel) {
+        this.channel = channel;
+        _tc = Tr.register(channel, LogChannel.class, JPAConstants.JPA_TRACE_GROUP, JPAConstants.JPA_RESOURCE_BUNDLE_NAME);
+    }
 
     /**
      * Log levels (per EclipseLink)
@@ -37,13 +43,9 @@ class LogChannel {
      * <li>1=FINEST
      * <li>0=TRACE
      * </ul>
-     * 
-     * @param channel
+     *
+     * @param level
      */
-    LogChannel(String channel) {
-        _tc = Tr.register(channel, LogChannel.class, JPAConstants.JPA_TRACE_GROUP, JPAConstants.JPA_RESOURCE_BUNDLE_NAME);
-    }
-
     boolean shouldLog(int level) {
         switch (level) {
             case 8:
@@ -78,7 +80,7 @@ class LogChannel {
         if ((formattedMessage == null || formattedMessage.equals("")) && loggedException != null) {
             msgParm = loggedException.toString();
         } else {
-            msgParm = formattedMessage;
+            msgParm = "[" + this.channel + "] " + formattedMessage;
         }
 
         switch (level) {

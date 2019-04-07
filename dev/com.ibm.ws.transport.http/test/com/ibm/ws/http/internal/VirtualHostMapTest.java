@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2013, 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * WLP Copyright IBM Corp. 2013, 2017
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.http.internal;
 
 import java.lang.reflect.Field;
@@ -796,11 +795,13 @@ public class VirtualHostMapTest {
                 atLeast(1).of(mockListener).contextRootAdded("/x", vhost1);
                 atLeast(1).of(mockListener).contextRootRemoved("/x", vhost1);
 
-                one(mockListener).contextRootAdded("/y", vhost2);
-                one(mockListener).contextRootRemoved("/y", vhost2);
+                // We now notify context root listeners even if there are zero associated 
+                // ports; that can cause additional (new) notifications for /y and /z 
+                atLeast(1).of(mockListener).contextRootAdded("/y", vhost2);
+                atLeast(1).of(mockListener).contextRootRemoved("/y", vhost2);
 
-                one(mockListener).contextRootAdded("/z", vhost3);
-                one(mockListener).contextRootRemoved("/z", vhost3);
+                atLeast(1).of(mockListener).contextRootAdded("/z", vhost3);
+                atLeast(1).of(mockListener).contextRootRemoved("/z", vhost3);
             }
         });
 

@@ -20,9 +20,6 @@ WS-TraceGroup: applications
 Export-Package: \
   com.ibm.websphere.management.j2ee
   
-Private-Package: \
-  com.ibm.ws.management.j2ee.mbeans.internal
-    
 Import-Package: \
   !*.internal.*, \
   *

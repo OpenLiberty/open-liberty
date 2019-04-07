@@ -5,6 +5,8 @@
 	<classpathentry kind="src" path="test-applications/SseJaxbApp/src"/>
 	<classpathentry kind="src" path="test-applications/BasicSseApp/src"/>
 	<classpathentry kind="src" path="test-applications/DelaySseApp/src"/>
+	<classpathentry kind="src" path="test-applications/BroadcasterApp/src"/>
+	<classpathentry kind="src" path="test-applications/SseClientBehaviorApp/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>

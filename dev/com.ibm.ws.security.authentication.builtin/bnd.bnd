@@ -120,6 +120,8 @@ instrument.classesExcludes: com/ibm/ws/security/authentication/internal/resource
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.websphere.appserver.spi.kernel.service, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.kernel.boot,\
 	com.ibm.ws.security.mp.jwt.proxy;version=latest
 
 -testpath: \
@@ -129,7 +131,7 @@ instrument.classesExcludes: com/ibm/ws/security/authentication/internal/resource
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
-	cglib:cglib-nodep;version=3.2.7, \
+	cglib:cglib-nodep;version=3.2.10, \
 	org.jmock:jmock-legacy;version=2.5.0, \
 	com.ibm.ws.kernel.boot;version=latest, \
 	com.ibm.ws.kernel.service;version=latest, \

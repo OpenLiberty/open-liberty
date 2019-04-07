@@ -171,7 +171,7 @@ public class ExeInstallAction implements ActionHandler {
 
         if (!noDirectory && localDir == null) {
             localDir = new File(directory);
-            if (!localDir.exists()) {
+            if (!localDir.exists() || !localDir.isDirectory()) {
                 logger.log(Level.SEVERE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_DIRECTORY_NOT_EXISTS", localDir.getAbsolutePath()));
                 return ReturnCode.IO_FAILURE;
             }

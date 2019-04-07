@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2018 IBM Corporation and others.
+ * Copyright (c) 2004, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.io.ObjectOutput;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import com.ibm.websphere.ras.Tr;
@@ -34,6 +35,7 @@ import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.HeaderStorage;
 import com.ibm.wsspi.genericbnf.exception.MalformedMessageException;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 /**
  * Generic class implementing an Augmented BNF Header/Value storage. This
@@ -41,7 +43,7 @@ import com.ibm.wsspi.genericbnf.exception.MalformedMessageException;
  * on the fly as required. Values can be represented as either byte[]s, Strings,
  * or if they were parsed from WsByteBuffers then simply references back to the
  * parsed buffer.
- * 
+ *
  */
 public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
@@ -96,12 +98,30 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /** Empty object used when a header is not present */
     private static final HeaderField NULL_HEADER = new EmptyHeaderField();
 
+    private static final String FOR = "for";
+
+    private static final String BY = "by";
+
+    private static final String PROTO = "proto";
+
+    private static final String HOST = "host";
+
+    private static final String X_FORWARDED_FOR = "x-forwarded-for";
+
+    private static final String X_FORWARDED_BY = "x-forwarded-by";
+
+    private static final String X_FORWARDED_PROTO = "x-forwarded-proto";
+
+    private static final String X_FORWARDED_HOST = "x-forwarded-host";
+
+    private static final String X_FORWARDED_PORT = "x-forwarded-port";
+
     // ********************************************************************
     // Header storage related items
     // ********************************************************************
 
     /** Storage for the header/value pairs */
-    private transient HeaderElement[] storage = new HeaderElement[100];
+    private transient HashMap<Integer, HeaderElement> storage = new HashMap<Integer, HeaderElement>();
     /**
      * This array stores the names of the headers in the list they were
      * either parsed or set by the user (depending on scenario)
@@ -126,7 +146,9 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /** Flag on whether to perform header validation or not */
     private transient boolean bHeaderValidation = true;
     /** Flag on whether to perform character validation in the header or not */
-    private transient static boolean bCharacterValidation = true;  //PI45266
+    private transient static boolean bCharacterValidation = true; //PI45266
+    /** Flag on whether to use the channel is configured to use the remote Ip, Forwarded/X-Forwarded headers */
+    private transient static boolean bRemoteIp = false;
 
     // ********************************************************************
     // Header parsing related items
@@ -194,6 +216,41 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     private H2HeaderTable table = null;
     /** Defined if this is an HTTP/2.0 connection servicing a Push Promise response */
     private boolean isPushPromise = false;
+    /** Flag used to identify if an X-Forwarded-* header has been added */
+    private boolean processedXForwardedHeader = false;
+    /** Flag used to identify if a Forwarded header has been added */
+    private boolean processedForwardedHeader = false;
+    /**
+     * Flag used to identify if there was an error parsing the Forwarded header and it should
+     * not be further parsed.
+     */
+    private boolean forwardHeaderErrorState = false;
+    /**
+     * String Builder representing a comma delimited list of processed X-Forwarded-For / Forwarded "for"
+     * node identifiers.
+     */
+    private ArrayList<String> forwardedForList = null;
+    /**
+     * String Builder representing a comma delimited list of processed X-Forwarded-By / Forwarded "by"
+     * node identifiers.
+     */
+    private ArrayList<String> forwardedByList = null;
+    /** Identifies the original client request's used protocol, as defined by X-Forwarded-Proto / Forwarded "proto" */
+    private String forwardedProto = null;
+    /** Identifies the original client request's host used as defined by the Forwarded "host" parameter. */
+    private String forwardedHost = null;
+    /**
+     * Identifies the original client requet's port as defined by X-Fowarded-Port / or the inclusion of the port in
+     * the first address of the Forwarded "for" list.
+     */
+    private String forwardedPort = null;
+
+    /**
+     * Identifies between the forwarded for and by lists
+     */
+    private enum ListType {
+        FOR, BY
+    };
 
     /**
      * Constructor for the headers storage object.
@@ -205,7 +262,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Initialize this class instance with the chosen parse configuration
      * options.
-     * 
+     *
      * @param useDirect -- use direct ByteBuffers or indirect
      * @param outSize -- size of buffers to use while marshalling headers
      * @param inSize -- size of buffers to use while parsing headers
@@ -232,7 +289,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * Save a reference to a new buffer with header parse information. This is
      * not part of the "created list" and will not be released by this message
      * class.
-     * 
+     *
      * @param buffer
      */
     public void addParseBuffer(WsByteBuffer buffer) {
@@ -268,7 +325,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Add a buffer on the list that will be manually released later.
-     * 
+     *
      * @param buffer
      */
     public void addToCreatedBuffer(WsByteBuffer buffer) {
@@ -502,6 +559,14 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         this.compactHeaderFlag = false;
         this.table = null;
         this.isPushPromise = false;
+        this.processedXForwardedHeader = false;
+        this.processedForwardedHeader = false;
+        this.forwardHeaderErrorState = false;
+        this.forwardedByList = null;
+        this.forwardedForList = null;
+        this.forwardedHost = null;
+        this.forwardedPort = null;
+        this.forwardedProto = null;
 
         if (bTrace && tc.isEntryEnabled()) {
             Tr.exit(tc, "clear");
@@ -610,7 +675,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * If this message was deserialized, what version was used?
-     * 
+     *
      * @return int
      */
     protected int getDeserializationVersion() {
@@ -619,7 +684,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Read the next byte[] from the input stream instance.
-     * 
+     *
      * @param input
      * @return byte[] -- value read, or null if length marker indicates no byte[]
      * @throws IOException
@@ -640,7 +705,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Write information for the input data to the output stream. If the input
      * data is null or empty, this will write a -1 length marker.
-     * 
+     *
      * @param output
      * @param data
      * @throws IOException
@@ -656,7 +721,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Read an instance of this object from the input stream.
-     * 
+     *
      * @param input
      * @throws IOException
      * @throws ClassNotFoundException
@@ -673,7 +738,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             this.deserializationVersion = SERIALIZATION_V2;
             len = input.readInt();
         }
-        this.storage = new HeaderElement[len];
+        this.storage = new HashMap<Integer, HeaderElement>();
 
         // now read all of the headers
         int number = input.readInt();
@@ -692,14 +757,14 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Write this object instance to the output stream.
-     * 
+     *
      * @param output
      * @throws IOException
      */
     @Override
     public void writeExternal(ObjectOutput output) throws IOException {
         output.writeInt(SERIALIZATION_V2);
-        output.writeInt(this.storage.length);
+        output.writeInt(this.storage.size());
         output.writeInt(this.numberOfHeaders);
         int count = 0;
         HeaderElement elem = this.hdrSequence;
@@ -720,7 +785,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Query whether or not the end of the headers have been parsed.
-     * 
+     *
      * @return boolean
      */
     public boolean isEOHFound() {
@@ -1001,7 +1066,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         }
         return buffers;
     }
-    
+
     protected void setTable(H2HeaderTable table) {
         this.table = table;
     }
@@ -1097,7 +1162,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * Filter method called when a given key uses filters. Subclasses will over-
      * ride this method and handle any key specific logic necessary for the act
      * of adding this key/value.
-     * 
+     *
      * @param key
      * @param value
      * @return boolean (false means the key is not allowed -- incorrect value for example)
@@ -1111,7 +1176,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * Filter method called when a given key uses filters. Subclasses will over-
      * ride this method and handle any key specific logic necessary for the remove
      * action.
-     * 
+     *
      * @param key
      * @param value (keys may exist multiple times so value may be specific ones)
      */
@@ -1123,7 +1188,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Overlay whitespace into the input buffer using the provided starting and
      * stopping positions.
-     * 
+     *
      * @param buffer
      * @param start
      * @param stop
@@ -1163,7 +1228,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Method to completely erase the input header from the parse buffers.
-     * 
+     *
      * @param elem
      */
     private void eraseValue(HeaderElement elem) {
@@ -1192,7 +1257,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Utility method to overlay the input bytes into the parse buffers,
      * starting at the input index and moving forward as needed.
-     * 
+     *
      * @param data
      * @param inOffset
      * @param inLength
@@ -1227,7 +1292,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Method to overlay the new header value onto the older value in the parse
      * buffers.
-     * 
+     *
      * @param elem
      */
     private void overlayValue(HeaderElement elem) {
@@ -1263,7 +1328,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Marshall the newly added headers from the sequence list to the output
      * buffers starting at the input index on the list.
-     * 
+     *
      * @param inBuffers
      * @param index
      * @return WsByteBuffer[]
@@ -1289,7 +1354,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * buffers they were originally found in. This might require deleting some
      * headers from those buffers, as well as allocating new buffers to handle
      * additional headers.
-     * 
+     *
      * @param inBuffers
      * @return WsByteBuffer[]
      */
@@ -1587,7 +1652,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Clear all traces of the headers from storage.
-     * 
+     *
      */
     private void clearAllHeaders() {
         final boolean bTrace = TraceComponent.isAnyTracingEnabled();
@@ -1600,12 +1665,12 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             final HeaderElement next = elem.nextSequence;
             final HeaderKeys key = elem.getKey();
             final int ord = key.getOrdinal();
-            if (null != this.storage[ord]) {
+            if (storage.containsKey(ord)) {
                 // first instance being removed
                 if (key.useFilters()) {
                     filterRemove(key, null);
                 }
-                this.storage[ord] = null;
+                storage.remove(ord);
             }
             elem.destroy();
             elem = next;
@@ -1707,7 +1772,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Remove all instances of a special header that does
      * not require the headerkey filterRemove method to be called.
-     * 
+     *
      * @param key
      */
     public void removeSpecialHeader(HeaderKeys key) {
@@ -1720,7 +1785,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Method to remove the current parsing buffer from this object's
      * ownership so it can be used by others.
-     * 
+     *
      * @return WsByteBuffer (null if there is no current buffer)
      */
     public WsByteBuffer returnCurrentBuffer() {
@@ -1970,7 +2035,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * Utility method to create a single header instance with the given
      * information. If elements already exist, this will delete secondary
      * ones and overlay the value on the first element.
-     * 
+     *
      * @param key
      * @param value
      * @param offset
@@ -2013,7 +2078,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Add this new instance of a header to storage.
-     * 
+     *
      * @param elem
      * @param bFilter - call filter on add?
      */
@@ -2023,6 +2088,15 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             Tr.event(tc, "Adding header [" + key.getName()
                          + "] with value [" + elem.getDebugValue() + "]");
         }
+
+        if (getRemoteIp() && key.getName().toLowerCase().startsWith("x-forwarded") && !forwardHeaderErrorState) {
+            processForwardedHeader(elem, true);
+        }
+
+        else if (getRemoteIp() && key.getName().toLowerCase().startsWith("forwarded") && !forwardHeaderErrorState) {
+            processForwardedHeader(elem, false);
+        }
+
         if (bFilter) {
             if (key.useFilters() && !filterAdd(key, elem.asBytes())) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -2031,30 +2105,32 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                 return;
             }
         }
+       if (HttpHeaderKeys.isWasPrivateHeader(key.getName())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "checking to see if private header is allowed: " + key.getName());
+            }
+           if (!filterAdd(key, elem.asBytes())) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, key.getName() +" is not trusted for this host; not adding header");
+                }
+               return;
+           }
+       }
+       
         incrementHeaderCounter();
         HeaderElement root = findHeader(key);
         boolean rc = addInstanceOfElement(root, elem);
         // did we change the root node?
         if (rc) {
             final int ord = key.getOrdinal();
-            if (ord >= this.storage.length) {
-                // increase it to be able to contain the new ordinal plus some padding
-                HeaderElement[] temp = new HeaderElement[ord + 10];
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Increasing header storage to " + temp.length);
-                }
-                for (int i = 0; i < this.storage.length; i++) {
-                    temp[i] = this.storage[i];
-                }
-                this.storage = temp;
-            }
-            this.storage[ord] = elem;
+            storage.put(ord, elem);
+
         }
     }
 
     /**
      * Get an empty object for the new header name/value instance.
-     * 
+     *
      * @param key
      * @return HeaderElement
      */
@@ -2073,7 +2149,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Return an element object back to the free list.
-     * 
+     *
      * @param elem
      */
     protected void freeElement(HeaderElement elem) {
@@ -2084,7 +2160,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Subclasses will provide the match of the input name against a defined key.
      * This must return a non-null HeaderKeys object.
-     * 
+     *
      * @param name
      * @return HeaderKeys
      */
@@ -2093,7 +2169,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Subclasses will provide the match of the input name against a defined key.
      * This must return a non-null HeaderKeys object.
-     * 
+     *
      * @param name
      * @return HeaderKeys
      */
@@ -2102,7 +2178,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Subclasses will provide the match of the input name against a defined key.
      * This must return a non-null HeaderKeys object.
-     * 
+     *
      * @param data
      * @param offset - starting point in the data
      * @param length - length from that offset
@@ -2112,17 +2188,35 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Find the specific instance of this header in storage.
-     * 
+     *
      * @param key
      * @param instance
      * @return HeaderElement
      */
     private HeaderElement findHeader(HeaderKeys key, int instance) {
         final int ord = key.getOrdinal();
-        if (ord >= this.storage.length) {
+
+        if (!storage.containsKey(ord) && ord <= HttpHeaderKeys.ORD_MAX) {
             return null;
         }
-        HeaderElement elem = this.storage[ord];
+
+        HeaderElement elem = null;
+
+        //If the ordinal created for this key is larger than 1024, the header key
+        //storage has been capped. As such, search the internal header storage
+        //to see if we have a header with this name already added.
+        if (ord > HttpHeaderKeys.ORD_MAX) {
+            for (HeaderElement header : storage.values()) {
+                if (header.getKey().getName().equals(key.getName())) {
+                    elem = header;
+                    break;
+                }
+            }
+
+        } else {
+            elem = storage.get(ord);
+        }
+
         int i = -1;
         while (null != elem) {
             if (!elem.wasRemoved()) {
@@ -2137,16 +2231,34 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Find the first instance of this header in storage.
-     * 
+     *
      * @param key
      * @return HeaderElement
      */
     private HeaderElement findHeader(HeaderKeys key) {
         final int ord = key.getOrdinal();
-        if (ord >= this.storage.length) {
+
+        if (!storage.containsKey(ord) && ord <= HttpHeaderKeys.ORD_MAX) {
             return null;
         }
-        HeaderElement elem = this.storage[ord];
+
+        HeaderElement elem = null;
+
+        //If the ordinal created for this key is larger than 1024, the header key
+        //storage has been capped. As such, search the internal header storage
+        //to see if we have a header with this name already added.
+        if (ord > HttpHeaderKeys.ORD_MAX) {
+            for (HeaderElement header : storage.values()) {
+                if (header.getKey().getName().equals(key.getName())) {
+                    elem = header;
+                    break;
+                }
+            }
+
+        } else {
+            elem = storage.get(ord);
+        }
+
         while (null != elem && elem.wasRemoved()) {
             elem = elem.nextInstance;
         }
@@ -2155,7 +2267,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Remove this single instance of a header.
-     * 
+     *
      * @param elem
      */
     private void removeHdr(HeaderElement elem) {
@@ -2171,7 +2283,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Remove all instances of this header.
-     * 
+     *
      * @param root
      * @param bFilter
      */
@@ -2193,7 +2305,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Set one of the special headers that does not require the headerkey
      * filterX methods to be called.
-     * 
+     *
      * @param key
      * @param value
      */
@@ -2210,7 +2322,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Special header set method used by subclasses to avoid the use of the
      * filterX methods.
-     * 
+     *
      * @param key
      * @param value
      */
@@ -2226,7 +2338,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Query whether the current headers are over the allowed number of changes.
-     * 
+     *
      * @return boolean
      */
     protected boolean overHeaderChangeLimit() {
@@ -2242,7 +2354,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Set the limit on the number of allowed header changes before this message
      * must be remarshalled.
-     * 
+     *
      * @param limit
      */
     public void setHeaderChangeLimit(int limit) {
@@ -2255,7 +2367,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Query the currently configured header change limit.
-     * 
+     *
      * @return int
      */
     public int getHeaderChangeLimit() {
@@ -2265,7 +2377,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Method to marshall all instances of a particular header into the
      * input buffers (expanding them if need be).
-     * 
+     *
      * @param inBuffers
      * @param elem
      * @return WsByteBuffer[]
@@ -2320,7 +2432,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Method to marshall a header out in binary mode into the input
      * buffers (expanding them if necessary).
-     * 
+     *
      * @param inBuffers
      * @param elem
      * @return WsByteBuffer[]
@@ -2358,7 +2470,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Query what the current binary parsing state is set to.
-     * 
+     *
      * @return int
      */
     final protected int getBinaryParseState() {
@@ -2367,7 +2479,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Set the binary parsing state to the input value.
-     * 
+     *
      * @param state
      */
     final protected void setBinaryParseState(int state) {
@@ -2376,7 +2488,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Allocate a buffer according to the requested input size.
-     * 
+     *
      * @param size
      * @return WsByteBuffer
      */
@@ -2393,7 +2505,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * contain body data.
      * <p>
      * Possibly null, depending on the situation.
-     * 
+     *
      * @return WsByteBuffer
      */
     final public WsByteBuffer getCurrentBuffer() {
@@ -2402,7 +2514,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Set the current parsing buffer to the input buffer.
-     * 
+     *
      * @param b
      */
     final public void setCurrentBuffer(WsByteBuffer b) {
@@ -2412,7 +2524,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Allow the debug context object to be set to the input Object for more
      * specialized debugging. A null input object will be ignored.
-     * 
+     *
      * @param o
      */
     @Override
@@ -2427,7 +2539,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Query the current debug context object for this message.
-     * 
+     *
      * @return Object
      */
     final protected Object getDebugContext() {
@@ -2436,7 +2548,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Query what the current incoming buffer size is for this message.
-     * 
+     *
      * @return int
      */
     final protected int getIncomingBufferSize() {
@@ -2446,7 +2558,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Query the intended size of buffers to use when marshalling outgoing
      * headers.
-     * 
+     *
      * @return int
      */
     final protected int getOutgoingBufferSize() {
@@ -2455,7 +2567,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Query whether allocation should be for direct buffers or not.
-     * 
+     *
      * @return boolean
      */
     final protected boolean shouldAllocateDirectBuffer() {
@@ -2464,7 +2576,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Set the temporary parsed token variable to the input value.
-     * 
+     *
      * @param token
      */
     final protected void setParsedToken(byte[] token) {
@@ -2473,7 +2585,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Query what the current parsed token variable is.
-     * 
+     *
      * @return byte[]
      */
     final protected byte[] getParsedToken() {
@@ -2482,7 +2594,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Query the size of the byte cache.
-     * 
+     *
      * @return int
      */
     final protected int getByteCacheSize() {
@@ -2492,7 +2604,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Query the entry from the "parsed header" buffer list at the
      * given index.
-     * 
+     *
      * @param index
      * @return WsByteBuffer (null if index is invalid)
      */
@@ -2506,7 +2618,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Query the current index of list that keeps track of the buffers allocated
      * by this message.
-     * 
+     *
      * @return int (-1 if no buffers yet)
      */
     final public int getBuffersIndex() {
@@ -2537,7 +2649,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Query the number of headers in storage at this moment in time.
-     * 
+     *
      * @return int
      */
     public int getNumberOfHeaders() {
@@ -2547,7 +2659,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Increment the number of headers in storage counter by one. If this puts
      * it over the limit for the message, then an exception is thrown.
-     * 
+     *
      * @throws IllegalArgumentException if there are now too many headers
      */
     private void incrementHeaderCounter() {
@@ -2595,7 +2707,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Set the header validation option to the input flag.
-     * 
+     *
      * @param flag
      */
     final protected void setHeaderValidation(boolean flag) {
@@ -2605,7 +2717,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Check the input header value for validity, starting at the offset and
      * continuing for the input length of characters.
-     * 
+     *
      * @param data
      * @param offset
      * @param length
@@ -2658,11 +2770,11 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     public static void setCharacterValidation(Boolean value) { //PI45266
         bCharacterValidation = value;
-     }
-    
+    }
+
     public Boolean getCharacterValidation() { //PI45266
         return bCharacterValidation;
-     }
+    }
 
     private String getValidatedCharacters(String data) { //PI57228
         if (isGoodCharacters(data))
@@ -2671,10 +2783,18 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             return checkHeaderCharacters(data);
     }
 
+    public static void setRemoteIp(Boolean value) {
+        bRemoteIp = value;
+    }
+
+    public Boolean getRemoteIp() {
+        return bRemoteIp;
+    }
+
     /**
      * Check the input header value for CRLF and non ascii char that can retult in crlfs.
      * checkHeaderCharacters
-     * 
+     *
      * @param data
      * @exception IllegalArgumentException if invalid
      * @return Boolean
@@ -2819,7 +2939,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Check the input header value for validity.
-     * 
+     *
      * @param data
      * @exception IllegalArgumentException if invalid
      */
@@ -2865,7 +2985,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Count the number of instances of this header starting at the given
      * element.
-     * 
+     *
      * @param root
      * @return int
      */
@@ -2883,7 +3003,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Skip any whitespace that might be at the start of this buffer.
-     * 
+     *
      * @param buff
      * @return boolean (true if found non whitespace, false if end
      *         of buffer found)
@@ -2915,7 +3035,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * root's internal list. This might be the first instance, or an
      * additional instance in which case it will be added at the end
      * of the list.
-     * 
+     *
      * @param root
      * @param elem
      * @return boolean
@@ -2945,7 +3065,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Place the input int value into the outgoing cache. This will return
      * the buffer array as it may have changed if the cache need to be flushed.
-     * 
+     *
      * @param data
      * @param buffers
      * @return WsByteBuffer[]
@@ -2959,7 +3079,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * full, then it will be flushed out into the input buffers. The list of
      * buffers is returned back to the caller as they may have been changed
      * (extended) when the cache is flushed.
-     * 
+     *
      * @param data
      * @param inBuffers
      * @return WsByteBuffer[]
@@ -2981,7 +3101,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * full, then it will be flushed out into the input buffers. The list of
      * buffers is returned back to the caller as they may have been changed
      * (extended) when the cache was flushed.
-     * 
+     *
      * @param data
      * @param inBuffers
      * @return WsByteBuffer[]
@@ -3011,7 +3131,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * full, then it will be flushed out into the input buffers. The list of
      * buffers is returned back to the caller as they may have been changed
      * (extended) when the cache was flushed.
-     * 
+     *
      * @param data
      * @param offset (into data to start at)
      * @param length (to copy from the offset into data)
@@ -3042,7 +3162,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * When we know the cache is full, this method will flush it to the input
      * buffers. Those buffers are then returned to the caller as the flushing of
      * data may have expanded the buffer list.
-     * 
+     *
      * @param buffers
      * @return WsByteBuffer[]
      */
@@ -3056,7 +3176,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * Method to flush whatever is in the cache into the input buffers. These
      * buffers are then returned to the caller as the flush may have needed to
      * expand the list.
-     * 
+     *
      * @param buffers
      * @return WsByteBuffer[]
      */
@@ -3077,7 +3197,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * of potentially pointing to an indirect buffers backing array. This
      * should be called after parsing of headers is completed, and when the
      * marshalling of outgoing headers has started.
-     * 
+     *
      */
     final protected void resetByteCache() {
         this.bytePosition = 0;
@@ -3087,7 +3207,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Decrement the byte position unless it points to an LF character, in which
      * case just leave the byte position alone.
-     * 
+     *
      */
     final protected void decrementBytePositionIgnoringLFs() {
         // PK15898 - added for just LF after first line
@@ -3112,7 +3232,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * Method to create a brand new parse token based on the input length. This
      * is intended to be used when any previous array cannot be re-used, meaning
      * that the contents cannot be changed.
-     * 
+     *
      * @param len
      */
     final protected void createCacheToken(int len) {
@@ -3125,7 +3245,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * array is the same size, then this is a simple reset. This is intended
      * to only be used when the contents have already been extracted and can
      * be overwritten with new data.
-     * 
+     *
      * @param len
      */
     final protected void resetCacheToken(int len) {
@@ -3138,7 +3258,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Method to fill the parse token from the given input buffer. The token
      * array must have been created prior to this attempt to fill it.
-     * 
+     *
      * @param buff
      * @return boolean (true means success)
      */
@@ -3178,7 +3298,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Fills the byte cache.
-     * 
+     *
      * @param buff
      * @return true on success and false on failure.
      */
@@ -3213,7 +3333,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Calculate where the current position in the buffer really is, allowing
      * for offset based on the current byte cache information.
-     * 
+     *
      * @param buffer
      * @return int
      */
@@ -3223,7 +3343,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Parse a CRLF delimited token and return the length of the token.
-     * 
+     *
      * @param buff
      * @return TokenCodes (global length variable is set to parsed length)
      * @throws MalformedMessageException
@@ -3291,7 +3411,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Parse a byte delimited token and return the length of the token.
-     * 
+     *
      * @param buff
      * @param delimiter
      * @param bApproveCRLF
@@ -3377,7 +3497,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * This method is used to skip leading CRLF characters. It will stop when
      * it finds a non-CRLF character, runs out of data, or finds too many CRLFs
-     * 
+     *
      * @param buffer
      * @return TokenCodes -- MOREDATA means it ran out of buffer information,
      *         DELIM means it found a non-CRLF character, and CRLF means it found
@@ -3424,7 +3544,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * be true if we did find 4 CRLFs. Throws a MalformedMessageException
      * if a multiline header value is parsed without the corresponding
      * header name.
-     * 
+     *
      * @param buff
      * @return boolean (false if need more data, true otherwise)
      * @throws MalformedMessageException
@@ -3487,7 +3607,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * Parse and extract a CRLF delimited token.
      * <p>
      * Returns either the TOKEN_RC_DELIM or the TOKEN_RC_MOREDATA return codes.
-     * 
+     *
      * @param buff
      * @param log - whether to debug log contents or not
      * @return TokenCodes
@@ -3518,7 +3638,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Parse a CRLF delimited token and return the length of the token. This
      * does not trigger the "extraction" or saving of the token.
-     * 
+     *
      * @param buff
      * @return int (parsed token length)
      * @throws MalformedMessageException
@@ -3531,7 +3651,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Parse a byte delimited token and return the length of the token.
-     * 
+     *
      * @param buff
      * @return TokenCodes (global length variable is set to parsed length)
      * @throws MalformedMessageException
@@ -3613,7 +3733,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Utility method to parse the header name from the input buffer.
-     * 
+     *
      * @param buff
      * @return boolean (false means it needs more data, true otherwise)
      * @throws MalformedMessageException
@@ -3683,7 +3803,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Utility method for parsing a header value out of the input buffer.
-     * 
+     *
      * @param buff
      * @return boolean (false if need more data, true otherwise)
      * @throws MalformedMessageException
@@ -3715,7 +3835,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * Utility method for parsing the header value and storing the buffer
      * parse information, and NOT extracting the value as a byte[] until
      * someone requests it from storage.
-     * 
+     *
      * @param buff
      * @return boolean (false if we need more data, true otherwise)
      * @throws MalformedMessageException
@@ -3751,7 +3871,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * <p>
      * Returns a TOKEN_RC code as to whether a CRLF or delimiter was reached,
      * or MOREDATA if no delimiter was found and more data needs to be read.
-     * 
+     *
      * @param buff
      * @param bDelimiter
      * @param bApproveCRLF
@@ -3787,7 +3907,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * the global parsedToken variable, this merely returns the length of the
      * token. Used for occasions where we just need to find the length of
      * the token.
-     * 
+     *
      * @param buff
      * @param bDelimiter
      * @param bApproveCRLF
@@ -3803,7 +3923,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Utility method used for adding the header(name and value) to
      * the master header data storage data structures.
-     * 
+     *
      * @throws MalformedMessageException
      */
     protected void setHeaderValue() throws MalformedMessageException {
@@ -3844,7 +3964,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Sets the temporary parse token from the input buffer.
-     * 
+     *
      * @param buff The current WsByteBuffer being parsed
      * @param start The start position of the token
      * @param delim Did we stop on the delimiter or not?
@@ -3926,7 +4046,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Sets the flag indicating that a SIP compact header has been parsed.
-     * 
+     *
      * @param flag Whether or not a header is in compact for or not
      */
     public void parsedCompactHeader(boolean flag) {
@@ -3939,7 +4059,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
     /**
      * Gets the flag indicating that a SIP compact header has been parsed.
-     * 
+     *
      * @return compactHeaderFlag Whether or not a compact header has been parsed or not.
      */
     public boolean foundCompactHeader() {
@@ -4061,4 +4181,349 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         return buffers;
 
     }
+
+    private void processForwardedHeader(HeaderElement header, boolean isDeFacto) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "processForwardedHeader");
+        }
+
+        //Since we favor Forwarded headers, only process an X-Forwarded header if
+        //we have not parsed a Forwarded header up to this point
+
+        if (isDeFacto && !processedForwardedHeader) {
+            //If this is the first time parsing an X-Forwarded header, turn
+            //on the internal flag and initialize the instances
+            if (!processedXForwardedHeader) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "First X-Forwarded-* header found, enabling de facto tracking");
+                }
+                processedXForwardedHeader = true;
+                initForwarding();
+            }
+
+            //process the X-Forwarded-* header
+            processXForwardedHeader(header);
+
+        } else if (!isDeFacto) {
+            //Have we processed X-Forwarded-* headers up to this point?
+            //If so, turn off the X-Forwarding flag
+
+            if (processedXForwardedHeader) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Processing Forwarded header and found previously processed de facto tracking, disabling de facto tracking");
+                }
+                processedXForwardedHeader = false;
+
+            }
+            //Turn our Forwarded processed flag on, so we know not to process
+            //any X-Forwarded-* headers. If there were values on the
+            //forwarded instances by previously processed X-Forwarding headers,
+            //the reinitialize will clear them up.
+            if (!processedForwardedHeader) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Processing Forwarded header, enabling Forwarded header tracking");
+                }
+                processedForwardedHeader = true;
+                initForwarding();
+            }
+            //process the Forwarded Header
+            processSpecForwardedHeader(header);
+
+        }
+
+        else {
+            //We received an X-Forwarded-* header, while having already processed
+            //a Forwarded header. In this case, just exit this processing and
+            //do not change the state of the internal instances. The X-Forwarding
+            //information is cleared out on the first Forwarded processed header,
+            //so it should be clear at this point.
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "X-Forwarded header received after Forwarded header tracking has been enabled, "
+                             + "X-Forwarded header will not be processed");
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "processForwardedHeader");
+        }
+
+    }
+
+    private void initForwarding() {
+
+        if (forwardedByList == null) {
+            forwardedByList = new ArrayList<String>();
+        } else {
+            //Already created, clear out its contents
+            forwardedByList.clear();
+        }
+
+        if (forwardedForList == null) {
+            forwardedForList = new ArrayList<String>();
+        } else {
+            //Already created, clear out its contents
+            forwardedForList.clear();
+        }
+
+        forwardedProto = null;
+        forwardedHost = null;
+        forwardedPort = null;
+
+    }
+
+    private void processXForwardedHeader(HeaderElement header) {
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "processXForwardedHeader");
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.debug(tc, "processing [" + header.getName() + ":" + header.getDebugValue() + "]");
+        }
+
+        //If this is an X-Forwarded-For or X-Forwarded-By, append the value to
+        //a comma delimited StringBuilder
+        if (X_FORWARDED_FOR.equalsIgnoreCase(header.getName())) {
+            processXForwardedAddressExtract(header.getDebugValue(), forwardedForList);
+        } else if (X_FORWARDED_BY.equalsIgnoreCase(header.getName())) {
+            processXForwardedAddressExtract(header.getDebugValue(), forwardedByList);
+        } else if (X_FORWARDED_PROTO.equalsIgnoreCase(header.getName())) {
+            forwardedProto = header.getDebugValue();
+        } else if (X_FORWARDED_PORT.equalsIgnoreCase(header.getName())) {
+            forwardedPort = header.getDebugValue();
+        } else if (X_FORWARDED_HOST.equalsIgnoreCase(header.getName())) {
+            forwardedHost = header.getDebugValue();
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "processXForwardedHeader");
+        }
+
+    }
+
+    private void processXForwardedAddressExtract(String nodeExtract, ArrayList<String> list) {
+        //The X-Forwarded By and For headers can contain multiple
+        //comma delimited addresses. Split the extract by this delimiter
+        //and add each to their respective list
+        String[] addresses = nodeExtract.split(",");
+        for (String address : addresses) {
+            list.add(address.trim());
+        }
+    }
+
+    private void processSpecForwardedHeader(HeaderElement header) {
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "processSpecForwardedHeader");
+        }
+
+        //Each Forwarded header may consist of a combination of the four
+        //spec defined parameters: by, for, host, proto. When more than
+        //one parameter is present, the header value will use the semi-
+        //colon character to delimit between them.
+        String[] parameters = header.getDebugValue().split(";");
+        String[] nodes = null;
+        String node = null;
+        String nodeExtract = null;
+
+        for (String param : parameters) {
+
+            //The "for" and "by" parameters could be comma delimited
+            //lists. As such, lets split this again to save the
+            //data in the same format as X-Forwarding
+            nodes = param.split(",");
+
+            for (String value : nodes) {
+
+                //Note that HTTP list allows white spaces between the identifiers, as such,
+                //trim the string before evaluating.
+                node = value.trim();
+                try {
+                    nodeExtract = node.substring(node.indexOf("=") + 1);
+                } catch (IndexOutOfBoundsException e) {
+                    processForwardedErrorState();
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        Tr.debug(tc, "Forwarded header node value was malformed.");
+                        Tr.exit(tc, "processSpecForwardedHeader");
+                    }
+                    return;
+                }
+
+                if (node.toLowerCase().startsWith(FOR)) {
+
+                    processForwardedAddressExtract(nodeExtract, ListType.FOR);
+
+                } else if (node.toLowerCase().startsWith(BY)) {
+
+                    processForwardedAddressExtract(nodeExtract, ListType.BY);
+
+                } else if (node.toLowerCase().startsWith(PROTO)) {
+                    forwardedProto = nodeExtract;
+                } else if (node.toLowerCase().startsWith(HOST)) {
+                    forwardedHost = nodeExtract;
+                }
+                //Unrecognized parameter
+                else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        Tr.debug(tc, "Unrecognized parameter if Forwarded header: " + node);
+                    }
+                    processForwardedErrorState();
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        Tr.exit(tc, "processSpecForwardedHeader");
+                    }
+                    return;
+                }
+
+                //Check that processing of this node has not entered error state
+                if (forwardHeaderErrorState) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        Tr.exit(tc, "processSpecForwardedHeader");
+                    }
+                    return;
+                }
+            }
+
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "processSpecForwardedHeader");
+        }
+
+    }
+
+    /**
+     * Returns a String representation of the provided address node delimiter
+     * which is used to update the Forwarded for/by builders. This
+     * method will remove any provided port in the process, with the exception
+     * of the very first element added to the list. The first element would
+     * correspond to the client address, and as such, the port is saved off
+     * to be referenced as the remote port.
+     *
+     * @param nodeExtract
+     * @return
+     */
+    private void processForwardedAddressExtract(String nodeExtract, ListType type) {
+
+        ArrayList<String> list = null;
+        if (type == ListType.BY) {
+            list = this.forwardedByList;
+        }
+        if (type == ListType.FOR) {
+            list = this.forwardedForList;
+        }
+
+        //The node identifier is defined by the ABNF syntax as
+        //        node     = nodename [ ":" node-port ]
+        //                   nodename = IPv4address / "[" IPv6address "]" /
+        //                             "unknown" / obfnode
+        //As such, to make it equivalent to the de-facto headers, remove the quotations
+        //and possible port
+        String extract = nodeExtract.replaceAll("\"", "").trim();
+        String nodeName = null;
+
+        //obfnodes are only allowed to contain ALPHA / DIGIT / "." / "_" / "-"
+        //so if the token contains "[", it is an IPv6 address
+        int openBracket = extract.indexOf("[");
+        int closedBracket = extract.indexOf("]");
+
+        if (openBracket > -1) {
+            //This is an IPv6address
+            //The nodename is enclosed in "[ ]", get it now
+
+            //If the first character isn't the open bracket or if a close bracket
+            //is not provided, this is a badly formed header
+            if (openBracket != 0 || !(closedBracket > -1)) {
+                processForwardedErrorState();
+                //badly formated header
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.debug(tc, "Forwarded header IPv6 was malformed.");
+                    Tr.exit(tc, "processForwardedHeader");
+                }
+                return;
+            }
+
+            nodeName = extract.substring(openBracket + 1, closedBracket);
+
+            //If this extract contains a port, there will be a ":" after
+            //the closing bracket. Only get it if this is the first address
+            //being added to the "for" list
+            if ((type == ListType.FOR) && list.isEmpty() && extract.contains("]:")) {
+                try {
+                    this.forwardedPort = extract.substring(closedBracket + 2);
+                } catch (IndexOutOfBoundsException e) {
+                    processForwardedErrorState();
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        Tr.debug(tc, "Forwarded header IPv6 port was malformed.");
+                        Tr.exit(tc, "processForwardedHeader");
+                    }
+                    return;
+                }
+            }
+
+        }
+
+        //Simply delimit by ":" on other node types to separate nodename and node-port
+        else {
+
+            if (extract.contains(":")) {
+                int index = extract.indexOf(":");
+                nodeName = extract.substring(0, index);
+                //Record the port if this is the first address being added to the
+                //"for" list, corresponding to the client
+                if ((type == ListType.FOR) && list.isEmpty()) {
+                    try {
+                        this.forwardedPort = extract.substring(index + 1);
+                    } catch (IndexOutOfBoundsException e) {
+                        processForwardedErrorState();
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                            Tr.debug(tc, "Forwarded header node-port was malformed.");
+                            Tr.exit(tc, "processForwardedHeader");
+                        }
+                        return;
+                    }
+
+                }
+            }
+            //No port or "[ ]" characters, the nodename is the entire provided extract
+            else {
+                nodeName = extract;
+            }
+
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.debug(tc, "Forwarded address [" + nodeName + "] being tracked in " + type.toString() + " list.");
+            Tr.exit(tc, "processForwardedHeader");
+        }
+        list.add(nodeName);
+    }
+
+    private void processForwardedErrorState() {
+        this.forwardedByList = null;
+        this.forwardedForList = null;
+        this.forwardedHost = null;
+        this.forwardedPort = null;
+        this.forwardedProto = null;
+        this.forwardHeaderErrorState = true;
+    }
+
+    public String[] getForwardedByList() {
+        return (forwardedByList == null) ? null : forwardedByList.toArray(new String[forwardedByList.size()]);
+    }
+
+    public String[] getForwardedForList() {
+        return (forwardedForList == null) ? null : forwardedForList.toArray(new String[forwardedForList.size()]);
+    }
+
+    public String getForwardedProto() {
+        return forwardedProto;
+    }
+
+    public String getForwardedHost() {
+        return forwardedHost;
+    }
+
+    public String getForwardedPort() {
+        return forwardedPort;
+    }
+
 }

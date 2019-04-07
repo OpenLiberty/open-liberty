@@ -86,7 +86,7 @@ INVALID_IDENTIFIER.useraction=Zajist\u011bte, aby entita ve vstupn\u00edm objekt
 
 ENTITY_NOT_IN_REALM_SCOPE=CWIML0515E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Entita {0} nen\u00ed v rozsahu sf\u00e9ry {1}. Zadejte entitu v rozsahu sf\u00e9ry konfigurovan\u00e9 v souboru server.xml.
 ENTITY_NOT_IN_REALM_SCOPE.explanation=Operace nem\u016f\u017ee b\u00fdt provedena, proto\u017ee uveden\u00e1 entita nen\u00ed v rozsahu sf\u00e9ry.
-ENTITY_NOT_IN_REALM_SCOPE.useraction=Ujist\u011bte se, \u017ee jedine\u010dn\u00fd n\u00e1zev entity je spr\u00e1vn\u011b uveden. Je-li n\u00e1zev oblasti zad\u00e1n v kontextov\u00e9m objektu vstupn\u00edho objektu, zajist\u011bte spr\u00e1vn\u00e9 zad\u00e1n\u00ed tohoto n\u00e1zvu.
+ENTITY_NOT_IN_REALM_SCOPE.useraction=Ujist\u011bte se, \u017ee jedine\u010dn\u00fd n\u00e1zev entity je spr\u00e1vn\u011b uveden. Je-li n\u00e1zev sf\u00e9ry zad\u00e1n v kontextov\u00e9m objektu vstupn\u00edho objektu, zajist\u011bte spr\u00e1vn\u00e9 zad\u00e1n\u00ed tohoto n\u00e1zvu.
 
 MISSING_SORT_KEY=CWIML1001E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Ve vstupn\u00edm \u0159\u00eddic\u00edm objektu \u0159azen\u00ed chyb\u00ed kl\u00ed\u010d \u0159azen\u00ed. Definujte kl\u00ed\u010d \u0159azen\u00ed pro zadan\u00fd \u0159\u00eddic\u00ed objekt \u0159azen\u00ed.
 MISSING_SORT_KEY.explanation=Objekt SortControl byl p\u0159ed\u00e1n pro operaci \u0159azen\u00ed bez kl\u00ed\u010de \u0159azen\u00ed, kter\u00fd je zapot\u0159eb\u00ed k proveden\u00ed \u0159azen\u00ed.
@@ -248,7 +248,7 @@ MALFORMED_SEARCH_EXPRESSION=CWIML3006W: Operaci s registrem u\u017eivatel\u016f 
 MALFORMED_SEARCH_EXPRESSION.explanation=Operace vyhled\u00e1v\u00e1n\u00ed nem\u016f\u017ee b\u00fdt provedena, proto\u017ee v\u00fdraz pro hled\u00e1n\u00ed je neplatn\u00fd.
 MALFORMED_SEARCH_EXPRESSION.useraction=Zadejte platn\u00fd v\u00fdraz pro vyhled\u00e1v\u00e1n\u00ed.
 
-ENTITY_SEARCH_FAILED=CWIML4506E: Operaci s registrem u\u017eivatel\u016f nelze prov\u00e9st, proto\u017ee registr u\u017eivatel\u016f rozpoznal z\u00e1sadn\u00ed chybu: {1}
+ENTITY_SEARCH_FAILED=CWIML4506E: Operaci s registrem u\u017eivatel\u016f nelze prov\u00e9st, proto\u017ee registr u\u017eivatel\u016f rozpoznal z\u00e1sadn\u00ed chybu: {0}
 ENTITY_SEARCH_FAILED.explanation=Entitu nelze prohledat kv\u016fli p\u0159\u00ed\u010din\u011b uveden\u00e9 v z\u00e1kladn\u00edm registru.
 ENTITY_SEARCH_FAILED.useraction=Prostudujte chybovou zpr\u00e1vu a trasovac\u00ed soubor, abyste zjistili p\u0159\u00ed\u010dinu selh\u00e1n\u00ed. Opravte chybu a zkuste akci zopakovat.
 

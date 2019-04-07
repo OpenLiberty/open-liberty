@@ -105,6 +105,37 @@ garbageCollectionCount.description=A v\u00e9grehajtott adatgy\u0171jt\u00e9sek t
 garbageCollectionTime.description=A halmozott eltelt adatgy\u0171jt\u00e9si id\u0151t jelen\u00edti meg (megk\u00f6zel\u00edt\u0151 pontoss\u00e1ggal) ezredm\u00e1sodpercben. Az attrib\u00fatum -1 \u00e9rt\u00e9ket jelen\u00edt meg, ha az eltelt adatgy\u0171jt\u00e9si id\u0151 ehhez az adatgy\u0171jt\u0151h\u00f6z nincs meghat\u00e1rozva. A Java virtu\u00e1lis g\u00e9p nagy felbont\u00e1s\u00fa id\u0151m\u00e9r\u0151 seg\u00edts\u00e9g\u00e9vel m\u00e9rheti az eltelt id\u0151t. Az attrib\u00fatum ugyanazt az \u00e9rt\u00e9ket jelen\u00edtheti meg annak ellen\u00e9re, hogy az adatgy\u0171jt\u00e9sek sz\u00e1ma n\u00f6vekedett, ha az eltelt adatgy\u0171jt\u00e9si id\u0151 nagyon r\u00f6vid.
 
 #-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+threadpool.activeThreads.description=A feladatokat futtat\u00f3 sz\u00e1lak sz\u00e1ma.
+threadpool.size.description=A sz\u00e1lt\u00e1rol\u00f3 m\u00e9rete.
+
+servlet.request.total.description=A szervlet l\u00e1togat\u00e1sainak sz\u00e1ma a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
+servlet.responseTime.total.description=A szervlet teljes v\u00e1laszideje a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
+
+connectionpool.create.total.description=A k\u00e9szlet l\u00e9trehoz\u00e1sa \u00f3ta l\u00e9trehozott fel\u00fcgyelt kapcsolatok sz\u00e1ma \u00f6sszesen.
+connectionpool.destroy.total.description=A k\u00e9szlet l\u00e9trehoz\u00e1sa \u00f3ta megsemmis\u00edtett fel\u00fcgyelt kapcsolatok sz\u00e1ma \u00f6sszesen.
+connectionpool.managedConnections.description=A szabad, megosztott \u00e9s nem megosztott k\u00e9szletekben l\u00e9v\u0151 fel\u00fcgyelt kapcsolatok sz\u00e1ma.
+connectionpool.connectionHandles.description=A haszn\u00e1latban l\u00e9v\u0151 kapcsolatok sz\u00e1ma. A sz\u00e1m tartalmazhat t\u00f6bb kapcsolatot, amelyek egyetlen fel\u00fcgyelt kapcsolatb\u00f3l vannak megosztva.
+connectionpool.freeConnections.description=A szabad k\u00e9szletben l\u00e9v\u0151 fel\u00fcgyelt kapcsolatok sz\u00e1ma.
+connectionpool.waitTime.total.description=Az \u00f6sszes csatlakoz\u00e1si k\u00e9r\u00e9s teljes v\u00e1rakoz\u00e1si ideje a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
+connectionpool.inUseTime.total.description=Az \u00f6sszes kapcsolat teljes haszn\u00e1lati ideje a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
+connectionpool.usedConnections.total.description=Az \u00f6sszes csatlakoz\u00e1si k\u00e9r\u00e9s, amely megtelt kapcsolatk\u00e9szlet miatt v\u00e1rakozott, vagy nem kellett v\u00e1rakoznia a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta. Az aktu\u00e1lisan haszn\u00e1latban l\u00e9v\u0151 kapcsolatok nem ker\u00fclnek besz\u00e1m\u00edt\u00e1sra ebbe az \u00f6sszes\u00edt\u00e9sbe.
+connectionpool.queuedRequests.total.description=Az \u00f6sszes csatlakoz\u00e1si k\u00e9r\u00e9s, amelynek megtelt kapcsolatk\u00e9szlet miatt kellett v\u00e1rakoznia csatlakoz\u00e1sra a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta. 
+session.create.total.description=A m\u00e9r\u0151sz\u00e1m enged\u00e9lyez\u00e9se \u00f3ta bejelentkezett munkamenetek sz\u00e1ma.
+session.liveSessions.description=A jelenleg bejelentkezett felhaszn\u00e1l\u00f3k sz\u00e1ma.
+session.activeSessions.description=A jelenleg akt\u00edv munkamenetek sz\u00e1ma. (Egy munkamenet akkor akt\u00edv, ha a term\u00e9k jelenleg feldolgoz egy k\u00e9r\u00e9st, amely az adott felhaszn\u00e1l\u00f3i munkamenetet haszn\u00e1lja).
+session.invalidated.total.description=A m\u00e9r\u0151sz\u00e1m enged\u00e9lyez\u00e9se \u00f3ta kijelentkezett munkamenetek sz\u00e1ma.
+session.invalidatedbyTimeout.total.description=A m\u00e9r\u0151sz\u00e1m enged\u00e9lyez\u00e9se \u00f3ta id\u0151t\u00fall\u00e9p\u00e9s miatt kijelentkeztetett munkamenetek sz\u00e1ma.
+
+jaxws.invocations.total.description=A h\u00edv\u00e1sok sz\u00e1ma az adott v\u00e9gponton vagy m\u0171velethez.
+jaxws.checkedApplicationFaults.total.description=Az ellen\u0151rz\u00f6tt alkalmaz\u00e1shib\u00e1k sz\u00e1ma.
+jaxws.logicalRuntimeFaults.total.description=A logikai fut\u00e1si k\u00f6rnyezet hib\u00e1inak sz\u00e1ma.
+jaxws.runtimeFaults.total.description=A fut\u00e1si k\u00f6rnyezet hib\u00e1inak sz\u00e1ma.
+jaxws.uncheckedApplicationFaults.total.description=A nem ellen\u0151rz\u00f6tt alkalmaz\u00e1shib\u00e1k sz\u00e1ma.
+jaxws.responseTime.total.description=A teljes v\u00e1laszkezel\u00e9si id\u0151 a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
+
+#-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------
 

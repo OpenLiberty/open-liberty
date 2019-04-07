@@ -971,6 +971,7 @@ public final class InjectionUtils {
     }
 
     //CHECKSTYLE:OFF
+    @FFDCIgnore(value = { IndexOutOfBoundsException.class }) // Liberty Change
     private static Object injectIntoCollectionOrArray(Class<?> rawType,
                                                       Type genericType,
                                                       Annotation[] paramAnns,
@@ -978,6 +979,27 @@ public final class InjectionUtils {
                                                       boolean isbean, boolean decoded,
                                                       ParameterType pathParam, Message message) {
         //CHECKSTYLE:ON
+        // Liberty change start
+        ParamConverter<?> pm = null;
+        if (message != null) {
+            ServerProviderFactory pf = ServerProviderFactory.getInstance(message);
+            pm = pf.createParameterHandler(rawType, genericType, paramAnns, message);
+            if (pm != null) {
+                if (tc.isDebugEnabled() && values.size() > 1) {
+                    Tr.debug(tc, "injectIntoCollectionOrArray unexpected: size of values > 1, values.size()=" + values.size());
+                }
+                for (Map.Entry<String, List<String>> entry : values.entrySet()) {
+                    // always only ever 1?
+                    // if a user specifies the wrong id we should return null instead of blowing up
+                    try {
+                        return pm.fromString(entry.getValue().get(0));
+                    } catch (IndexOutOfBoundsException e) {
+                        return null;
+                    }
+                }
+            }
+        }
+        // Liberty change end
         Class<?> type = getCollectionType(rawType);
 
         Class<?> realType = null;

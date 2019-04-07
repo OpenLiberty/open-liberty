@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -477,6 +481,10 @@ jar_entry_not_migratable.MSGID=TOP-50095
 
 jar_file_url_exception=Excepci\u00f3n al analizar persistence.xml.  La ubicaci\u00f3n del archivo jar no se ha podido encontrar: {0}
 
+javase_version_ex_method_call=Excepci\u00f3n al llamar al m\u00e9todo {0}: {1}
+
+javase_version_ex_method_not_found=El m\u00e9todo {0} no se ha encontrado en {1}
+
 jaxb_metadata_warning_ignoring_java_attribute=Ignorando atributo [{0}] en la clase [{1}] ya que no se ha generado ninguna propiedad para este.
 
 jaxb_metadata_warning_ignoring_java_attribute.MSGID=TOP-50235
@@ -508,6 +516,8 @@ jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter.MSGID=TOP-50241
 jaxb_metadata_warning_no_classes_to_process=No hay clases para procesar para el paquete [{0}].
 
 jaxb_metadata_warning_no_classes_to_process.MSGID=TOP-50237
+
+jaxp_sec_prop_not_supported=La implementaci\u00f3n de JAXP utilizada no admite la acci\u00f3n {0}.
 
 jmx_mbean_runtime_services_failed_toget_initial_context=No se ha podido obtener el InitialContext para el registro de MBean: {0}
 

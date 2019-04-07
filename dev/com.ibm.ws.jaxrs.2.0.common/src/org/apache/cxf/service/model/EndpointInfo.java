@@ -33,19 +33,20 @@ public class EndpointInfo extends AbstractDescriptionElement implements NamedIte
     BindingInfo binding;
     QName name;
     private volatile EndpointReferenceType lastAddressSet; //Liberty: Maintain last address set for when threadlocal value may be null.
-    
-    // Liberty #3669:  Store address in a theadLocal to avoid issue where redirected URL is mismatched when accessed 
+
+    // Liberty #3669:  Store address in a theadLocal to avoid issue where redirected URL is mismatched when accessed
     // from both IP address and machine name.
-    private static ThreadLocal<EndpointReferenceType> threadLocal = new ThreadLocal<EndpointReferenceType>();
+    private final ThreadLocal<EndpointReferenceType> threadLocal = new ThreadLocal<EndpointReferenceType>();
 
     public EndpointInfo() {
     }
-    
+
     public EndpointInfo(ServiceInfo serv, String ns) {
         transportId = ns;
         service = serv;
     }
-    
+
+    @Override
     public DescriptionInfo getDescription() {
         if (service == null) {
             return null;
@@ -53,33 +54,34 @@ public class EndpointInfo extends AbstractDescriptionElement implements NamedIte
         return service.getDescription();
     }
 
-    
+
     public String getTransportId() {
         return transportId;
-    }    
-    
+    }
+
     public void setTransportId(String tid) {
         transportId = tid;
     }
-    
+
     public InterfaceInfo getInterface() {
         if (service == null) {
             return null;
         }
         return service.getInterface();
     }
-    
+
     public void setService(ServiceInfo s) {
         service = s;
     }
     public ServiceInfo getService() {
         return service;
     }
-    
+
+    @Override
     public QName getName() {
         return name;
     }
-    
+
     public void setName(QName n) {
         name = n;
     }
@@ -87,11 +89,11 @@ public class EndpointInfo extends AbstractDescriptionElement implements NamedIte
     public BindingInfo getBinding() {
         return binding;
     }
-    
+
     public void setBinding(BindingInfo b) {
         binding = b;
-    }    
-    
+    }
+
     public String getAddress() {
         EndpointReferenceType address = threadLocal.get(); //Liberty #3669
         if (address == null) {
@@ -99,7 +101,7 @@ public class EndpointInfo extends AbstractDescriptionElement implements NamedIte
         }
         return (null != address && null != address.getAddress()) ? address.getAddress().getValue() : null;
     }
-    
+
     public void setAddress(String addr) {
         EndpointReferenceType address = threadLocal.get();  //Liberty #3669
         if (null == address) {
@@ -108,37 +110,37 @@ public class EndpointInfo extends AbstractDescriptionElement implements NamedIte
         } else {
             EndpointReferenceUtils.setAddress(address, addr);
         }
-        lastAddressSet = address; //Liberty 
+        lastAddressSet = address; //Liberty
     }
-    
+
     public void setAddress(EndpointReferenceType endpointReference) {
         threadLocal.set(endpointReference);  //Liberty #3669
         lastAddressSet = endpointReference; //Liberty
     }
-    
+
     //When finished the threadlocal must be cleared. //Liberty #3669
     public void resetAddress() {
-        threadLocal.set(null); //Liberty #3669
+        threadLocal.remove(); //Liberty #3669
     }
-    
+
     @Override
     public <T> T getTraversedExtensor(T defaultValue, Class<T> type) {
         T value = getExtensor(type);
-        
+
         if (value == null) {
             if (binding != null) {
                 value = binding.getExtensor(type);
             }
-            
+
             if (service != null && value == null) {
                 value = service.getExtensor(type);
             }
-            
+
             if (value == null) {
                 value = defaultValue;
             }
         }
-        
+
         return value;
     }
 
@@ -157,11 +159,12 @@ public class EndpointInfo extends AbstractDescriptionElement implements NamedIte
         if (epInfo == null) {
             return false;
         }
-        return binding.getName().equals(epInfo.binding.getName()) 
-            && service.getName().equals(epInfo.service.getName()) 
+        return binding.getName().equals(epInfo.binding.getName())
+            && service.getName().equals(epInfo.service.getName())
             && name.equals(epInfo.name);
     }
 
+    @Override
     public String toString() {
         return "BindingQName=" + (binding == null ? "" : (binding.getName()
                 + ", ServiceQName=" + (binding.getService() == null ? "" : binding.getService().getName())))

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.wim;
 
+import static com.ibm.ws.security.wim.util.UniqueNameHelper.isDNUnderBaseEntry;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1159,7 +1161,8 @@ public class ProfileManager implements ProfileServiceLite {
             if (pagingSearchCache == null) {
                 maxTotalPagingSearchResults = getConfigManager().getPageCacheSize();
                 pagingSearchResultsCacheTimeOut = getConfigManager().getPageCacheTimeOut();
-                pagingSearchCache = FactoryManager.getCacheUtil().initialize(maxTotalPagingSearchResults, maxTotalPagingSearchResults, pagingSearchResultsCacheTimeOut);
+                pagingSearchCache = FactoryManager.getCacheUtil().initialize("PagingSearchCache", maxTotalPagingSearchResults, maxTotalPagingSearchResults,
+                                                                             pagingSearchResultsCacheTimeOut);
             }
             if (pagingSearchCache != null) {
                 Root cachedRootDO = new Root();
@@ -1225,7 +1228,7 @@ public class ProfileManager implements ProfileServiceLite {
         if (uniqueName == null) {
             List<Context> ctxs = inRoot.getContexts();
             for (Context c : ctxs) {
-                if (c.getKey() == "useUserFilterForSearch" || c.getKey() == "useGroupFilterForSearch") {
+                if ("useUserFilterForSearch".equals(c.getKey()) || "useGroupFilterForSearch".equals(c.getKey())) {
                     uniqueName = (String) c.getValue();
                 }
             }
@@ -2454,7 +2457,7 @@ public class ProfileManager implements ProfileServiceLite {
      * If not found, then use the realm name from one of the
      * registries.
      * Added for populating audit records.
-     * 
+     *
      * @param root
      * @return
      */
@@ -2925,6 +2928,30 @@ public class ProfileManager implements ProfileServiceLite {
         }
         if (parentDN == null) {
             parentDN = configMgr.getDefaultParentForEntityInRealm(qualifiedEntityType, realmName);
+        }
+
+        /*
+         * SCIM does not set the parent when it does a create, so we need to determine which
+         * repository should be the parent. To do that, do a best match of the entity's DN to
+         * known repository base entries.
+         */
+        if (parentDN == null && entity.getIdentifier() != null) {
+            String uniquename = entity.getIdentifier().getUniqueName();
+            String bestMatch = null;
+
+            if (uniquename != null) {
+                uniquename = uniquename.toLowerCase();
+                List<String> repos = repositoryManager.getRepoIds();
+                for (String repo : repos) {
+                    List<String> baseEntries = repositoryManager.getRepositoriesBaseEntries().get(repo);
+                    for (String baseEntry : baseEntries) {
+                        if (isDNUnderBaseEntry(uniquename, baseEntry) && (bestMatch == null || baseEntry.length() > bestMatch.length())) {
+                            bestMatch = baseEntry;
+                        }
+                    }
+                }
+                parentDN = bestMatch;
+            }
         }
 
         if (parentDN == null) {
@@ -3764,5 +3791,4 @@ public class ProfileManager implements ProfileServiceLite {
         }
         return false;
     }
-
 }

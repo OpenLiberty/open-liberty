@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWPMI
+#COMPONENTNAMEFOR CWPMI WebSphere Performance Monitoring MicroProfile Metrics API
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by MonitorMetrics Impl -  range is 2000-2199
+#-----------------------------------------------------------------------------------------------------------------------------
+FEATURE_REGISTERED=CWPMI2001I: \u53ef\u4ee5\u900f\u904e mpMetrics \u64f7\u53d6\u76e3\u8996\u7684\u5ea6\u503c\u91cf\u3002
+FEATURE_REGISTERED.explanation=\u5df2\u555f\u7528 monitor-1.0 \u548c mpMetrics-1.1 \u7279\u6027\uff0c\u4e26\u4e14\u53ef\u4ee5\u900f\u904e mpMetrics \u64f7\u53d6\u76e3\u8996\u7684\u5ea6\u91cf\u503c\u3002
+FEATURE_REGISTERED.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+FEATURE_UNREGISTERED=CWPMI2002I: \u5df2\u5f9e mpMetrics \u53d6\u6d88\u767b\u9304\u6240\u6709\u76e3\u8996\u7684\u5ea6\u91cf\u503c\u3002
+FEATURE_UNREGISTERED.explanation=monitor-1.0 \u7279\u6027\u3001mpMetrics-1.1 \u7279\u6027\u6216\u9019\u5169\u500b\u7279\u6027\u7686\u5df2\u5f9e\u4f3a\u670d\u5668\u79fb\u9664\uff0c\u4e26\u4e14\u5f9e mpMetrics \u53d6\u6d88\u767b\u9304\u76e3\u8996\u7684\u5ea6\u91cf\u503c\u3002
+FEATURE_UNREGISTERED.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002

@@ -1,0 +1,44 @@
+<server>
+
+	<sslDefault sslRef="DefaultSSLSettings" />
+	<ssl
+		id="DefaultSSLSettings"
+		keyStoreRef="rsa_key"
+		trustStoreRef="rsa_trust"
+		clientAuthenticationSupported="true" />
+	<keyStore
+		id="myKeyStore"
+		password="Liberty"
+		type="jks"
+		location="${server.config.dir}/commonBasicKeyStore.jks" />
+	<keyStore
+		id="myTrustStore"
+		password="Liberty"
+		type="jks"
+		location="${server.config.dir}/commonTrustStore.jks" />
+
+	<keyStore
+		id="configServerDefault"
+		password="LibertyServer"
+		type="jks"
+		location="${server.config.dir}/commonConfigServerDefault.jks" />
+
+	<keyStore
+		id="rsa_key"
+		password="Liberty"
+		type="jks"
+		location="${server.config.dir}/rsa_key.jks" />
+
+	<keyStore
+		id="rsa_trust"
+		password="LibertyServer"
+		type="jks"
+		location="${server.config.dir}/rsa_trust.jks" />
+
+	<ssl
+		id="otherSSLSettings"
+		keyStoreRef="configServerDefault"
+		trustStoreRef="configServerDefault"
+		clientAuthenticationSupported="true" />
+
+</server>        

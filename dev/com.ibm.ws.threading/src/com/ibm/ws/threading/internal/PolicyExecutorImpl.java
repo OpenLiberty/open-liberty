@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,6 +95,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     final ReduceableSemaphore maxQueueSizeConstraint = new ReduceableSemaphore(0, false);
 
     private final AtomicLong maxWaitForEnqueueNS = new AtomicLong();
+
+    public final String owner;
 
     /**
      * This list is supplied to each instance that is programmatically created by PolicyExecutorProvider
@@ -243,14 +245,17 @@ public class PolicyExecutorImpl implements PolicyExecutor {
      *
      * @param globalExecutor the Liberty global executor, which was obtained by the PolicyExecutorProvider via declarative services.
      * @param identifier unique identifier for this instance, to be used for monitoring and problem determination.
+     * @param owner application that owns the policy executor instance. Null if not owned by a single application.
      * @param policyExecutors list of policy executor instances created by the PolicyExecutorProvider.
      *            Each instance is responsible for adding and removing itself from the list per its life cycle.
      * @throws IllegalStateException if an instance with the specified unique identifier already exists and has not been shut down.
      * @throws NullPointerException if the specified identifier is null
      */
-    public PolicyExecutorImpl(ExecutorServiceImpl globalExecutor, String identifier, ConcurrentHashMap<String, PolicyExecutorImpl> policyExecutors) {
+    public PolicyExecutorImpl(ExecutorServiceImpl globalExecutor, String identifier, String owner,
+                              ConcurrentHashMap<String, PolicyExecutorImpl> policyExecutors) {
         this.globalExecutor = globalExecutor;
         this.identifier = identifier;
+        this.owner = owner;
         this.policyExecutors = policyExecutors;
 
         maxConcurrencyConstraint.release(maxConcurrency = Integer.MAX_VALUE);
@@ -454,7 +459,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                                 Tr.debug(this, tc, "incremental wait for enqueue of " + w + "ns");
                             haveQueuePermit = maxQueueSizeConstraint.tryAcquire(w, TimeUnit.NANOSECONDS);
                             nextTimeout = now = System.nanoTime();
-                        }
+                        } else
+                            break;
                     }
                 } while (!haveQueuePermit && waitEnd - now > 0);
             }
@@ -1235,6 +1241,13 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         startTimeout = ms == -1 ? -1 /* disabled */ : TimeUnit.MILLISECONDS.toNanos(ms);
 
         return this;
+    }
+
+    @Override
+    public PolicyTaskFuture<Void> submit(AtomicReference<Future<?>> completableFutureRef, Runnable task) {
+        PolicyTaskFutureImpl<Void> policyTaskFuture = new PolicyTaskFutureImpl<Void>(this, task, completableFutureRef, startTimeout);
+        enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
+        return policyTaskFuture;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -185,7 +185,14 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
         if (configurations != null)
             for (Configuration c : configurations) {
                 Dictionary<String, Object> props = c.getProperties();
-                configMap.put((String) props.get("config.displayId"), props);
+                String configDisplayId = (String) props.get("config.displayId");
+                Dictionary<String, Object> previousProps = configMap.put(configDisplayId, props);
+                // Config involving the use of ibm:extends (such as JCA config) is a special case where the
+                // config service internally uses two configurations with the same config.displayId,
+                // in which case we want to choose the one that corresponds to the OSGi service component.
+                // It can be identified by the ibm.extends.source.factoryPid attribute.
+                if (previousProps != null && previousProps.get("ibm.extends.source.factoryPid") != null)
+                    configMap.put(configDisplayId, previousProps); // put the previous entry back because it had ibm.extends.source.factoryPid
             }
 
         Object result;

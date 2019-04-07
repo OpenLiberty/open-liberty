@@ -1,8 +1,11 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014.
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security.authentication.filter/resources/com/ibm/ws/security/authentication/filter/internal/resources/FilterMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -48,9 +51,11 @@ AUTH_FILTER_NOT_CONFIG.useraction=server.xml \ud30c\uc77c\uc5d0 authFilter \uc69
 AUTH_FILTER_CONFIG_PROCESSED=CWWKS4358I: \uc778\uc99d \ud544\ud130 {0} \uad6c\uc131\uc774 \ucc98\ub9ac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 AUTH_FILTER_CONFIG_PROCESSED.explanation=\uc778\uc99d \ud544\ud130 \uad6c\uc131\uc774 \ucc98\ub9ac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 AUTH_FILTER_CONFIG_PROCESSED.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
 AUTH_FILTER_CONFIG_MODIFIED=CWWKS4359I: \uc778\uc99d \ud544\ud130 {0} \uad6c\uc131\uc774 \uc218\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 AUTH_FILTER_CONFIG_MODIFIED.explanation=\uc778\uc99d \ud544\ud130 \uad6c\uc131\uc774 \uc218\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 AUTH_FILTER_CONFIG_MODIFIED.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
 AUTH_FILTER_MISSING_ID=CWWKS4360E: server.xml \ud30c\uc77c\uc5d0 \uc9c0\uc815\ub41c authFilter \uc694\uc18c\uc5d0\uc11c \ud544\uc218 ID \uc18d\uc131 {0}\uc774(\uac00) \ub204\ub77d\ub428
 AUTH_FILTER_MISSING_ID.explanation=server.xml \ud30c\uc77c\uc5d0 \uc9c0\uc815\ub41c authFilter \uc694\uc18c\uc5d0\uc11c \ud544\uc218 ID \uc18d\uc131\uc774 \ub204\ub77d\ub418\uc5b4 \uc788\uc73c\ubbc0\ub85c \uc774 authFilter \uc694\uc18c\ub294 \uc0ac\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 AUTH_FILTER_MISSING_ID.useraction=server.xml \ud30c\uc77c\uc5d0 \uc9c0\uc815\ub41c authFilter \uc694\uc18c\uc5d0 ID \uc18d\uc131\uc774 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

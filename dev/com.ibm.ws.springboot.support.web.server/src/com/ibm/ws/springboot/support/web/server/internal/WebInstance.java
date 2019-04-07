@@ -10,7 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.web.server.internal;
 
+import static org.osgi.framework.Constants.OBJECTCLASS;
+
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -23,11 +26,13 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
+import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.DeployedModuleInfo;
-import com.ibm.ws.app.manager.module.internal.DeployedAppInfoFactoryBase;
 import com.ibm.ws.app.manager.module.internal.ModuleInfoUtils;
 import com.ibm.ws.app.manager.module.internal.SimpleDeployedAppInfoBase;
 import com.ibm.ws.app.manager.springboot.container.config.SpringConfiguration;
@@ -60,9 +65,9 @@ public class WebInstance implements Instance {
         private final AtomicReference<ServiceRegistration<ServletContainerInitializer>> sciRegistration = new AtomicReference<>();
         private final AtomicReference<String> appName = new AtomicReference<>();
 
-        InstanceDeployedAppInfo(WebInitializer initializer, DeployedAppInfoFactoryBase factory,
+        InstanceDeployedAppInfo(WebInitializer initializer, DeployedAppServices deployedAppServices,
                                 ExtendedApplicationInfo appInfo) throws UnableToAdaptException {
-            super(factory);
+            super(deployedAppServices);
             super.appInfo = appInfo;
             this.initializer = initializer;
         }
@@ -72,11 +77,11 @@ public class WebInstance implements Instance {
             String moduleURI = ModuleInfoUtils.getModuleURIFromLocation(id);
             WebModuleContainerInfo mci = new WebModuleContainerInfo(//
                             instanceFactory.getModuleHandler(), //
-                            instanceFactory.getDeployedAppFactory().getModuleMetaDataExtenders().get("web"), //
-                            instanceFactory.getDeployedAppFactory().getNestedModuleMetaDataFactories().get("web"), //
-                            appContainer, null, moduleURI, moduleClassesInfo, initializer.getContextPath());
+                            instanceFactory.getDeployedAppServices().getModuleMetaDataExtenders("web"), //
+                            instanceFactory.getDeployedAppServices().getNestedModuleMetaDataFactories("web"), //
+                            appContainer, null, moduleURI, (m, c) -> app.getClassLoader(), moduleClassesInfo, initializer.getContextPath());
             moduleContainerInfos.add(mci);
-            WebModuleMetaData mmd = (WebModuleMetaData) mci.createModuleMetaData(appInfo, this, (m, c) -> app.getClassLoader());
+            WebModuleMetaData mmd = (WebModuleMetaData) mci.createModuleMetaData(appInfo, this);
             addSpringConfigToModuleMetadata(mmd, additionalConfig);
             appName.set(mmd.getJ2EEName().getApplication());
             return getDeployedModule(mci.moduleInfo);
@@ -139,8 +144,8 @@ public class WebInstance implements Instance {
     private final ServiceTracker<VirtualHost, VirtualHost> tracker;
 
     public WebInstance(WebInstanceFactory instanceFactory, SpringBootApplication app, String id,
-                       String virtualHostId, WebInitializer initializer,
-                       ServiceTracker<VirtualHost, VirtualHost> tracker, SpringConfiguration additionalConfig) throws IOException, UnableToAdaptException, MetaDataException {
+                       String virtualHostId, WebInitializer initializer, ServiceTracker<VirtualHost, VirtualHost> tracker,
+                       SpringConfiguration additionalConfig) throws IOException, UnableToAdaptException, MetaDataException {
         this.instanceFactory = instanceFactory;
         this.app = app;
         this.tracker = tracker;
@@ -183,7 +188,7 @@ public class WebInstance implements Instance {
         npc.addToCache(TagLibContainerInfo.class, tagLibInfo);
 
         ExtendedApplicationInfo appInfo = app.createApplicationInfo(id, appContainer);
-        InstanceDeployedAppInfo deployedApp = new InstanceDeployedAppInfo(initializer, instanceFactory.getDeployedAppFactory(), appInfo);
+        InstanceDeployedAppInfo deployedApp = new InstanceDeployedAppInfo(initializer, instanceFactory.getDeployedAppServices(), appInfo);
         DeployedModuleInfo deployedModule = deployedApp.createDeployedModule(appContainer, id, app, cfg);
         deployed.set(deployedModule);
 
@@ -229,4 +234,29 @@ public class WebInstance implements Instance {
         }
     }
 
+    @Override
+    public boolean isEndpointConfigured() {
+        BundleContext context = instanceFactory.getContext();
+        ServiceReference<VirtualHost> serviceReference = null;
+        String filterString = "(&(" + OBJECTCLASS +
+                              "=" + VirtualHost.class.getName() + ")(id=" + "default_host" + "))";
+        try {
+            Collection<ServiceReference<VirtualHost>> serviceReferences = context.getServiceReferences(VirtualHost.class, filterString);
+
+            if (!serviceReferences.isEmpty()) {
+                serviceReference = serviceReferences.iterator().next();
+                VirtualHost v = context.getService(serviceReference);
+                if (v != null && !v.getAliases().isEmpty()) {
+                    return true;
+                }
+            }
+        } catch (InvalidSyntaxException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (serviceReference != null) {
+                context.ungetService(serviceReference);
+            }
+        }
+        return false;
+    }
 }

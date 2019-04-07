@@ -24,14 +24,30 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import mpRestClient10.basic.BasicClientTestServlet;
+import mpRestClient10.basicCdi.BasicClientTestServlet;
 
 @RunWith(FATRunner.class)
 public class BasicCdiInEE8Test extends FATServletClient {
 
+    final static String SERVER_NAME = "mpRestClient10.tolerateEE8";
+
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-        .andWith(new FeatureReplacementAction("mpRestClient-1.0", "mpRestClient-1.1").forServers("mpRestClient10.tolerateEE8"));
+        .andWith(new FeatureReplacementAction()
+                 .withID("mpRestClient-1.1")
+                 .addFeature("mpRestClient-1.1")
+                 .removeFeature("mpRestClient-1.0")
+                 .removeFeature("mpRestClient-1.2")
+                 .forServers(SERVER_NAME))
+        .andWith(new FeatureReplacementAction()
+                 .withID("mpRestClient-1.2")
+                 .addFeature("mpRestClient-1.2")
+                 .addFeature("mpConfig-1.3")
+                 .removeFeature("mpRestClient-1.0")
+                 .removeFeature("mpRestClient-1.1")
+                 .removeFeature("mpConfig-1.1")
+                 .forServers(SERVER_NAME));
+
 
     private static final String appName = "basicCdiClientApp";
 
@@ -43,7 +59,7 @@ public class BasicCdiInEE8Test extends FATServletClient {
      * code. The client should be able to work on its own - by splitting out
      * the "server" server into it's own server, we can verify this.
      */
-    @Server("mpRestClient10.tolerateEE8")
+    @Server(SERVER_NAME)
     @TestServlet(servlet = BasicClientTestServlet.class, contextRoot = appName)
     public static LibertyServer server;
 

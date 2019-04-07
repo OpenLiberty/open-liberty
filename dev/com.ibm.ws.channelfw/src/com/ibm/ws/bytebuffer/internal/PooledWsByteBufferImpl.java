@@ -44,7 +44,7 @@ public class PooledWsByteBufferImpl extends WsByteBufferImpl {
     protected int actionState = COPY_ALL_INIT;
     protected final Object actionAccess = new Object();
 
-    private final Object identifier;
+    private final int identifier;
     /** number of references to this pool entry */
     transient public int intReferenceCount = 1;
 
@@ -64,15 +64,13 @@ public class PooledWsByteBufferImpl extends WsByteBufferImpl {
      * Constructor.
      */
     public PooledWsByteBufferImpl() {
-        super();
-        this.wsBBRoot = this;
-        this.identifier = null;
+        this(-1);
         // if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
         // Tr.event(tc, "Created " + this);
         // }
     }
 
-    public PooledWsByteBufferImpl(Object id) {
+    public PooledWsByteBufferImpl(int id) {
         super();
         this.wsBBRoot = this;
         this.identifier = id;
@@ -86,7 +84,7 @@ public class PooledWsByteBufferImpl extends WsByteBufferImpl {
      *
      * @return Object
      */
-    public Object getID() {
+    public int getID() {
         return this.identifier;
     }
 

@@ -1,0 +1,3 @@
+test {
+    jvmArgs '-javaagent:' + buildImage.file('wlp/lib/ws-serialfilteragent.jar')
+}

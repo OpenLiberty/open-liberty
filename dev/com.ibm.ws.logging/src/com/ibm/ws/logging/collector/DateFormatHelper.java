@@ -19,59 +19,15 @@ import java.text.SimpleDateFormat;
 public class DateFormatHelper {
 
     /** Thread specific date format objects */
-    private static ThreadLocal<BurstDateFormat> dateformats = new ThreadLocal<BurstDateFormat>();
-
-    /** Locale date and time format pattern */
-    private static final ThreadLocal<String> localeDatePattern = new ThreadLocal<String>();
+    private static ThreadLocal<BurstDateFormat[]> dateformats = new ThreadLocal<BurstDateFormat[]>();
 
     /**
-     * Return the given time formatted, based on the provided format structure
-     *
-     * @param timestamp
-     *            A timestamp as a long, e.g. what would be returned from
-     *            <code>System.currentTimeMillis()</code>
-     *
-     * @param useIsoDateFormat
-     *            A boolean, if true, the given date and time will be formatted in ISO-8601,
-     *            e.g. yyyy-MM-dd'T'HH:mm:ss.SSSZ
-     *            if false, the date and time will be formatted as the current locale,
-     *
-     * @return formated date string
-     */
-    public static final String formatTime(long timestamp, boolean useIsoDateFormat) {
-        BurstDateFormat df = dateformats.get();
-        if (df == null) {
-            SimpleDateFormat formatter = (SimpleDateFormat) getDateFormat();
-
-            df = new BurstDateFormat((SimpleDateFormat) getDateFormat());
-            dateformats.set(df);
-            String ddp = formatter.toPattern();
-            localeDatePattern.set(ddp);
-        }
-
-        try {
-            // Get and store the locale Date pattern that was retrieved from getDateTimeInstance, to be used later.
-            // This is to prevent creating multiple new instances of SimpleDateFormat, which is expensive.
-
-            if (useIsoDateFormat) {
-                df.applyPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            } else {
-                df.applyPattern(localeDatePattern.get());
-            }
-        } catch (Exception e) {
-            // Use the default pattern, instead.
-        }
-
-        return df.format(timestamp);
-    }
-
-    /**
-     * Return a format string that will produce a reasonable standard way for
+     * A format string that will produce a reasonable standard way for
      * formatting time (but still using the current locale)
-     *
-     * @return The format string
      */
-    private static DateFormat getDateFormat() {
+    private static final String localeDatePattern;
+
+    static {
         String pattern;
         int patternLength;
         int endOfSecsIndex;
@@ -94,11 +50,44 @@ public class DateFormatHelper {
             newPattern = newPattern.replace('k', 'H');
             newPattern = newPattern.replace('a', ' ');
             newPattern = newPattern.trim();
-            sdFormatter.applyPattern(newPattern);
-            formatter = sdFormatter;
+            localeDatePattern = newPattern;
         } else {
-            formatter = new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss:SSS z");
+            localeDatePattern = "dd/MMM/yyyy HH:mm:ss:SSS z";
         }
-        return formatter;
+    }
+
+    /**
+     * Return the given time formatted, based on the provided format structure
+     *
+     * @param timestamp
+     *            A timestamp as a long, e.g. what would be returned from
+     *            <code>System.currentTimeMillis()</code>
+     *
+     * @param useIsoDateFormat
+     *            A boolean, if true, the given date and time will be formatted in ISO-8601,
+     *            e.g. yyyy-MM-dd'T'HH:mm:ss.SSSZ
+     *            if false, the date and time will be formatted as the current locale,
+     *
+     * @return formated date string
+     */
+    public static final String formatTime(long timestamp, boolean useIsoDateFormat) {
+        BurstDateFormat[] dfs = dateformats.get();
+        if (dfs == null) {
+            dfs = new BurstDateFormat[useIsoDateFormat ? 2 : 1];
+            dateformats.set(dfs);
+        } else if (useIsoDateFormat && dfs.length == 1) {
+            BurstDateFormat[] newDfs = new BurstDateFormat[2];
+            newDfs[0] = dfs[0];
+            dfs = newDfs;
+            dateformats.set(dfs);
+        }
+
+        int index = useIsoDateFormat ? 1 : 0;
+        BurstDateFormat df = dfs[index];
+        if (df == null) {
+            df = dfs[index] = new BurstDateFormat(new SimpleDateFormat(useIsoDateFormat ? "yyyy-MM-dd'T'HH:mm:ss.SSSZ" : localeDatePattern));
+        }
+
+        return df.format(timestamp);
     }
 }

@@ -21,7 +21,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 
-class ConfigFileMonitor implements FileMonitor {
+class ConfigFileMonitor implements com.ibm.ws.kernel.filemonitor.FileMonitor {
 
     static final TraceComponent tc = Tr.register(ConfigFileMonitor.class, XMLConfigConstants.TR_GROUP, XMLConfigConstants.NLS_PROPS);
 
@@ -75,6 +75,8 @@ class ConfigFileMonitor implements FileMonitor {
         properties.put(FileMonitor.MONITOR_TYPE, monitorType);
         properties.put(FileMonitor.MONITOR_RECURSE, false);
         properties.put(FileMonitor.MONITOR_FILTER, ".*");
+        //Adding INTERNAL parameter MONITOR_IDENTIFICATION_NAME to identify this monitor.
+        properties.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, "com.ibm.ws.kernel.monitor.config");
         return properties;
     }
 
@@ -142,4 +144,8 @@ class ConfigFileMonitor implements FileMonitor {
         configRefresher.refreshConfiguration();
     }
 
+    @Override
+    public void onChange(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles, String filter) {
+        configRefresher.refreshConfiguration();
+    }
 }

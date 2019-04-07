@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,6 +58,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
     protected static String EJB_WAR2_PATH = "/AnnotatedEjbinWarServletLdap/";
     protected static String EJB_EAR_NAME = "securityejbinwar.ear";
     protected static String EJB_APP_NAME = EJB_EAR_NAME;
+    protected static String DB_APP_NAME = "DefaultQueryDatabaseServlet2";
     protected static String XML_NAME = "ejbunprotectedserver.xml";
     protected static String JASPIC_RUN_AS_XML_NAME = "ejbunprotectedCustomISRunAsserver.xml";
     protected static String JAR_NAME = "JavaEESecBase.jar";
@@ -85,11 +86,12 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
         Log.info(logClass, "setUp()", "-----Creating EAR app.");
 
         // create ejbinwarservlet.war,
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean", "web.war.ejb.annotated.servlet");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean", "web.war.ejb.annotated.servlet",
+                                      "web.war.identitystores.ldap");
 
         // create ejbinwarservlet.war,
         WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME2, true, EJB_BEAN_JAR_NAME, true, "web.jar.base",
-                                      "web.ejb.jar.bean", "web.war.ejb.annotated.servlet2");
+                                      "web.ejb.jar.bean", "web.war.ejb.annotated.servlet2", "web.war.identitystores.ldap");
 
         // add the servlet war inside the ear
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EJB_EAR_NAME, true, EJB_WAR_NAME, EJB_WAR_NAME2);
@@ -99,18 +101,19 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
         WCApplicationHelper.addWarToServerApps(myServer, "dbfat2.war", true, JAR_NAME, false, "web.jar.base", "web.war.db2");
         Log.info(logClass, "setUp()", "-----EAR app created");
 
-        startServer(XML_NAME, EJB_APP_NAME);
+        startServer(XML_NAME, EJB_APP_NAME, DB_APP_NAME);
 
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer();
-
-        if (ldapServer != null) {
-            ldapServer.stop();
+        try {
+            myServer.stopServer();
+        } finally {
+            if (ldapServer != null) {
+                ldapServer.stop();
+            }
         }
-        myServer.setServerConfigurationFile("server.xml");
     }
 
     @Before
@@ -127,10 +130,14 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
         return name.getMethodName();
     }
 
-    protected static void startServer(String config, String appName) throws Exception {
+    protected static void startServer(String config, String... appNames) throws Exception {
         myServer.setServerConfigurationFile(config);
         myServer.startServer(true);
-        myServer.addInstalledAppForValidation(appName);
+        if (appNames != null) {
+            for (String appName : appNames) {
+                myServer.addInstalledAppForValidation(appName);
+            }
+        }
         urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
     }
 

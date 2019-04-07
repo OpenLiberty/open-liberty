@@ -34,12 +34,13 @@ public class LdapRegistry extends ConfigElement {
     private String certificateFilter;
     private String certificateMapMode;
     private String connectTimeout;
+    private String readTimeout;
     private ContextPool contextPool;
     private LdapFilters customFilters;
     private LdapFilters domino50Filters;
     private LdapFilters edirectoryFilters;
     private ConfigElementList<FailoverServers> failoverServers;
-    private GroupConfiguration groupProperties;
+    private GroupProperties groupProperties;
     private String host;
     private LdapFilters idsFilters;
     private Boolean ignoreCase;
@@ -63,6 +64,7 @@ public class LdapRegistry extends ConfigElement {
     private String sslRef;
     private Integer searchPageSize; // PRIVATE
     private String certificateMapperId;
+    private String timestampFormat;
 
     /**
      * @return the activedFilters
@@ -128,6 +130,13 @@ public class LdapRegistry extends ConfigElement {
     }
 
     /**
+     * @return the readTimeout
+     */
+    public String getReadTimeout() {
+        return readTimeout;
+    }
+
+    /**
      * @return the contextPool
      */
     public ContextPool getContextPool() {
@@ -165,7 +174,7 @@ public class LdapRegistry extends ConfigElement {
     /**
      * @return the groupProperties
      */
-    public GroupConfiguration getGroupProperties() {
+    public GroupProperties getGroupProperties() {
         return groupProperties;
     }
 
@@ -324,6 +333,13 @@ public class LdapRegistry extends ConfigElement {
     }
 
     /**
+     * @return the timestampFormat
+     */
+    public String getTimestampFormat() {
+        return timestampFormat;
+    }
+
+    /**
      * @param activedFilters the activedFilters to set
      */
     @XmlElement(name = "activedFilters")
@@ -396,6 +412,14 @@ public class LdapRegistry extends ConfigElement {
     }
 
     /**
+     * @param connectTimeout the connectTimeout to set
+     */
+    @XmlAttribute(name = "readTimeout")
+    public void setReadTimeout(String readTimeout) {
+        this.readTimeout = readTimeout;
+    }
+
+    /**
      * @param contextPool the contextPool to set
      */
     @XmlElement(name = "contextPool")
@@ -449,7 +473,7 @@ public class LdapRegistry extends ConfigElement {
      * @param groupProperties the groupProperties to set
      */
     @XmlElement(name = "groupProperties")
-    public void setGroupProperties(GroupConfiguration groupProperties) {
+    public void setGroupProperties(GroupProperties groupProperties) {
         this.groupProperties = groupProperties;
     }
 
@@ -629,6 +653,14 @@ public class LdapRegistry extends ConfigElement {
         this.sslRef = sslRef;
     }
 
+    /**
+     * @param timestampFormat the timestampFormat to set
+     */
+    @XmlAttribute(name = "timestampFormat")
+    public void setTimestampFormat(String timestampFormat) {
+        this.timestampFormat = timestampFormat;
+    }
+
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
@@ -661,6 +693,9 @@ public class LdapRegistry extends ConfigElement {
         }
         if (connectTimeout != null) {
             sb.append("connectTimeout=\"").append(connectTimeout).append("\" ");;
+        }
+        if (readTimeout != null) {
+            sb.append("readTimeout=\"").append(readTimeout).append("\" ");;
         }
         if (contextPool != null) {
             sb.append("contextPool=\"").append(contextPool).append("\" ");;
@@ -742,6 +777,9 @@ public class LdapRegistry extends ConfigElement {
         }
         if (sslRef != null) {
             sb.append("sslRef=\"").append(sslRef).append("\" ");;
+        }
+        if (timestampFormat != null) {
+            sb.append("timestampFormat=\"").append(timestampFormat).append("\" ");;
         }
 
         sb.append("}");

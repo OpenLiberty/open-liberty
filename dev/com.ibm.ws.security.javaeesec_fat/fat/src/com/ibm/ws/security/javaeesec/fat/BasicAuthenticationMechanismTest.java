@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,15 +12,14 @@
 package com.ibm.ws.security.javaeesec.fat;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.client.params.ClientPNames;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
@@ -74,9 +73,11 @@ public class BasicAuthenticationMechanismTest extends JavaEESecTestBase {
     public static void setUpBeforeClass() throws Exception {
         ServerHelper.setupldapServer();
         WCApplicationHelper.addWarToServerApps(myServer, "JavaEESecBasicAuthServlet.war", true, JAR_NAME, false, "web.jar.base", "web.war.basic");
-        WCApplicationHelper.addWarToServerApps(myServer, "JavaEESecAnnotatedBasicAuthServlet.war", true, JAR_NAME, false, "web.jar.base", "web.war.annotatedbasic");
+        WCApplicationHelper.addWarToServerApps(myServer, "JavaEESecAnnotatedBasicAuthServlet.war", true, JAR_NAME, false, "web.jar.base", "web.war.annotatedbasic",
+                                               "web.war.identitystores.ldap");
         WCApplicationHelper.addWarToServerApps(myServer, "JavaEEsecFormAuth.war", true, JAR_NAME, false, "web.jar.base", "web.war.formlogin");
-        WCApplicationHelper.addWarToServerApps(myServer, "JavaEEsecFormAuthRedirect.war", true, JAR_NAME, false, "web.jar.base", "web.war.redirectformlogin");
+        WCApplicationHelper.addWarToServerApps(myServer, "JavaEEsecFormAuthRedirect.war", true, JAR_NAME, false, "web.jar.base", "web.war.redirectformlogin",
+                                               "web.war.identitystores.ldap");
         myServer.startServer(true);
         urlHttp = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
         urlHttps = "https://" + myServer.getHostname() + ":" + myServer.getHttpDefaultSecurePort();
@@ -207,6 +208,15 @@ public class BasicAuthenticationMechanismTest extends JavaEESecTestBase {
         } finally {
             httpclient2.getConnectionManager().shutdown();
         }
+    }
+
+    // check everyone role.
+    @Test
+    public void testEveryoneRole() throws Exception {
+        String path = "/JavaEESecAnnotatedBasicAuthServlet/Everyone";
+        httpclient.getCredentialsProvider().clear();
+        String response = accessPageNoChallenge(httpclient, urlHttp + path, 200, path);
+        verifyUserResponse(response, Constants.getUserPrincipalNull, Constants.getRemoteUserNull);
     }
 
     private String driveResourceFlow(String resource) throws Exception, IOException {

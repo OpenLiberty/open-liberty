@@ -42,9 +42,17 @@ public class SSLMutualAuthTests15 extends SSLCommonTests {
         String methodName = testName.getMethodName();
 
         if ("testClientAuthNeedWithoutClientSideKeyStoreFor15".equals(methodName)) {
-            super.stopServer(true, "CWWKO0801E");
+            if (!javaVersion.startsWith("1.")) {
+                super.stopServer(true, "CWWKO0801E", "CWWKC0265W");
+            } else {
+                super.stopServer(true, "CWWKO0801E");
+            }
         } else {
-            super.stopServer(true);
+            if (!javaVersion.startsWith("1.")) {
+                super.stopServer(true, "CWWKC0265W");
+            } else {
+                super.stopServer(true);
+            }
         }
     }
 
@@ -60,13 +68,15 @@ public class SSLMutualAuthTests15 extends SSLCommonTests {
      */
     @Test
     public void testClientAuthNeedWithoutClientSideKeyStoreFor15() throws Exception {
-        try {
-            testSSLApplication();
-            Assert.fail("The connection should not succeed");
-        } catch (SocketException e) {
-            // we get different exceptions; this is from Oracle VM
-        } catch (SSLException e) {
-            // we get different exceptions; this is from IBM VM
+        if (javaVersion.startsWith("1.")) {
+            try {
+                testSSLApplication();
+                Assert.fail("The connection should not succeed");
+            } catch (SocketException e) {
+                // we get different exceptions; this is from Oracle VM
+            } catch (SSLException e) {
+                // we get different exceptions; this is from IBM VM
+            }
         }
     }
 

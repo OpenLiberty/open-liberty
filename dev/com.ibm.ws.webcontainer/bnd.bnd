@@ -91,7 +91,6 @@ Export-Package: !*.internal.*, \
     com.ibm.ws.webcontainer;provide:=true, \
     com.ibm.ws.webcontainer.session*;provide:=true, \
     com.ibm.ws.webcontainer.webapp;provide:=true, \
-    com.ibm.ws.webcontainer.upgrade*, \
     com.ibm.ws.webcontainer.servlet, \
     com.ibm.ws.webcontainer.spiadapter.collaborator, \
     com.ibm.ws.container
@@ -100,13 +99,10 @@ Private-Package: \
 	com.ibm.websphere.csi, \
 	com.ibm.websphere.security, \
 	com.ibm.ejs.j2c, \
-	com.ibm.servlet.util, \
-	com.ibm.ws.app.framework.webcontainer.internal*, \
 	com.ibm.ws.http, \
 	com.ibm.ws.webcontainer.osgi.container*, \
 	com.ibm.ws.webcontainer.osgi*, \
 	com.ibm.ws.security.core, \
-	com.ibm.ws.security.util, \
 	!com.ibm.ws.webcontainer.httpsession, \
 	!com.ibm.websphere.servlet.session, \
 	com.ibm.ws.webcontainer*, \
@@ -207,6 +203,6 @@ instrument.disabled: true
 	com.ibm.ws.junit.extensions;version=latest, \
 	org.jmock:jmock-legacy;version=2.5.0, \
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
-	cglib:cglib-nodep;version=3.2.7, \
+	cglib:cglib-nodep;version=3.2.10, \
 	com.ibm.ws.kernel.boot;version=latest, \
 	com.ibm.ws.javaee.ddmodel;version=latest

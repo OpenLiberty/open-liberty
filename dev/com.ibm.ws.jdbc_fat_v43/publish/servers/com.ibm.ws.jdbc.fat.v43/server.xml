@@ -1,0 +1,80 @@
+<!--
+    Copyright (c) 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>jdbc-4.3</feature>
+    <feature>servlet-4.0</feature>
+    <!-- Do not add features. We are testing coverage for a minimal set. -->
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="app43.war"/>
+
+  <authData id="user43Auth" user="user43" password="{xor}Lyg7a2w="/>
+
+  <dataSource id="DefaultDataSource"
+              enableBeginEndRequest="true"> <!-- Not a supported property. Only for internal testing/experimentation. -->
+    <jdbcDriver libraryRef="D43Lib"/>
+    <properties url="jdbc:d43:memory:testdb;create=true" user="user43" password="{xor}Lyg7a2w="/>
+  </dataSource>
+
+  <dataSource jndiName="jdbc/defaultShardingMatchCurrentState" type="javax.sql.DataSource" connectionSharing="MatchCurrentState"
+              containerAuthDataRef="user43Auth">
+    <jdbcDriver libraryRef="D43Lib"/>
+    <properties databaseName="memory:testdb;create=true" shardingKey="CHAR:DefaultShardingKey;" superShardingKey="VARCHAR:DefaultSuperKey;"/>
+  </dataSource>
+
+  <dataSource jndiName="jdbc/ds" type="javax.sql.DataSource">
+    <jdbcDriver libraryRef="D43Lib"/>
+    <properties databaseName="memory:testdb;create=true"/>
+  </dataSource>
+
+  <dataSource jndiName="jdbc/matchCurrentState" type="javax.sql.ConnectionPoolDataSource" connectionSharing="MatchCurrentState">
+    <jdbcDriver libraryRef="D43Lib"/>
+    <properties databaseName="memory:testdb;create=true"/>
+  </dataSource>
+
+  <dataSource jndiName="jdbc/poolOf1" type="javax.sql.ConnectionPoolDataSource"
+              enableBeginEndRequest="true"> <!-- Not a supported property. Only for internal testing/experimentation. -->
+    <connectionManager maxPoolSize="1"/>
+    <jdbcDriver libraryRef="D43Lib"/>
+    <properties databaseName="memory:testdb;create=true"/>
+    <containerAuthData user="user43" password="{xor}Lyg7a2w="/>
+  </dataSource>
+
+  <dataSource jndiName="jdbc/xa"
+              enableBeginEndRequest="true"> <!-- Not a supported property. Only for internal testing/experimentation. -->
+    <jdbcDriver libraryRef="D43Lib"/>
+    <properties databaseName="memory:testdb;create=true"/>
+    <containerAuthData user="user43" password="{xor}Lyg7a2w="/>
+  </dataSource>
+
+  <!-- JDBC driver that only supports the 4.2 spec level -->
+  <dataSource jndiName="jdbc/xaDerby42" containerAuthDataRef="user43Auth"
+              enableBeginEndRequest="true"> <!-- Not a supported property. Only for internal testing/experimentation. -->
+    <jdbcDriver libraryRef="D43Lib"/>
+    <properties.derby.embedded databaseName="memory:testdb;create=true"/>
+  </dataSource>
+
+  <!-- This is a Derby driver with custom implementations added for certain JDBC 4.3 methods -->
+  <library id="D43Lib" fat.modify="true">
+    <file name="${server.config.dir}/drivers/d43driver.jar"/>
+  </library>
+
+  <javaPermission codebase="${server.config.dir}/drivers/d43driver.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${server.config.dir}/apps/app43.war" className="java.sql.SQLPermission" name="callAbort"/>
+  <javaPermission codebase="${server.config.dir}/apps/app43.war" className="java.lang.RuntimePermission" name="modifyThread"/>
+ 
+
+  <variable name="onError" value="FAIL"/>
+</server>

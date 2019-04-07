@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -540,9 +544,7 @@
 
 7311=\u8207\u985e\u5225 [{1}] \u4e0a\u5143\u7d20\u96c6\u5408\u5c6c\u6027 [{0}] \u642d\u914d\u4f7f\u7528\u7684\u76ee\u6a19\u985e\u5225\u7121\u6548\u3002\u53ea\u5141\u8a31\u57fa\u672c\u985e\u578b\u548c\u53ef\u5167\u5d4c\u7684\u985e\u5225\u3002
 
-# START NON-TRANSLATABLE
 7312=\u8207\u985e\u5225 [{2}] \u4e0a\u5143\u7d20\u96c6\u5408\u5c6c\u6027 [{1}] \u642d\u914d\u4f7f\u7528\u7684\u53ef\u5167\u5d4c\u985e\u5225 [{0}] \u7121\u6548\u3002\u8acb\u53c3\u95b1\u898f\u683c\u7684\u7b2c 2.6 \u7bc0\uff1a\u5305\u542b\u5728\u5143\u7d20\u96c6\u5408\u4e2d\u7684\u53ef\u5167\u5d4c\u985e\u5225\uff08\u5305\u62ec\u53e6\u4e00\u500b\u53ef\u5167\u5d4c\u985e\u5225\u4e2d\u7684\u53ef\u5167\u5d4c\u985e\u5225\uff09\u4e0d\u5f97\u5305\u542b\u5143\u7d20\u96c6\u5408\uff0c\u800c\u4e14\u8207\u5be6\u9ad4\u7684\u95dc\u4fc2\u53ea\u80fd\u662f\u591a\u5c0d\u4e00\u6216\u4e00\u5c0d\u95dc\u4fc2\u3002\u53ef\u5167\u5d4c\u985e\u5225\u5fc5\u9808\u5728\u9019\u985e\u95dc\u4fc2\u7684\u64c1\u6709\u7aef\uff0c\u800c\u4e14\u5fc5\u9808\u4ee5\u5916\u90e8\u7d22\u5f15\u9375\u5c0d\u6620\u4f86\u5c0d\u6620\u8a72\u95dc\u4fc2\u3002\u53ef\u5167\u5d4c\u985e\u5225\u4e0a\u4e4b\u5c6c\u6027 [{3}] \u7684\u5c0d\u6620\u9055\u53cd\u6b64\u898f\u5b9a\u3002
-# END NON-TRANSLATABLE
 
 7313=\u5728\u53ef\u5167\u5d4c\u7684\u985e\u5225 [{0}] \u4e2d\uff0c\u627e\u4e0d\u5230\u5c6c\u6027 [{1}]\u3002\u5728\u985e\u5225 [{2}] \u4e0a\uff0c\u5167\u5d4c\u5c6c\u6027 [{3}] \u7684\u95dc\u806f\u7f6e\u63db\u4e2d\u53c3\u7167\u4e86\u8a72\u5c6c\u6027\u3002
 

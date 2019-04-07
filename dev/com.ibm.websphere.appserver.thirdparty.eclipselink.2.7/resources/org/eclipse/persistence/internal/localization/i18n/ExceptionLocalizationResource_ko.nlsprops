@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -355,9 +359,7 @@ position_param_not_found=\ub2e4\uc74c \uc704\uce58\uc5d0\uc11c \ub9e4\uac1c\ubcc
 
 pu_configured_for_resource_local=PersistenceUnit\uc774 \uc790\uc6d0-\ub85c\uceec \ud2b8\ub79c\uc7ad\uc158\uc73c\ub85c \uad6c\uc131\ub418\ubbc0\ub85c SynchronizationType\uc73c\ub85c EntityManager\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 
-# START NON-TRANSLATABLE
 remove_deletion_failed=\uc81c\uac70 \uc0ad\uc81c \uc2e4\ud328:
-# END NON-TRANSLATABLE
 
 rollback_because_of_rollback_only=\ud2b8\ub79c\uc7ad\uc158\uc774 RollbackOnly\ub85c \uc124\uc815\ub418\uc5c8\uc73c\ubbc0\ub85c \ud2b8\ub79c\uc7ad\uc158 "rolled back"\uc785\ub2c8\ub2e4.
 
@@ -428,6 +430,8 @@ unexpect_argument=\uc608\uc0c1\uce58 \ubabb\ud55c \uc785\ub825 \uc778\uc218 {0}
 unknown_bean_class=\uc54c\ub824\uc9c0\uc9c0 \uc54a\uc740 \uc5d4\ud2f0\ud2f0 Bean \ud074\ub798\uc2a4 {0}\uc785\ub2c8\ub2e4. \uc774 \ud074\ub798\uc2a4\uac00 @Entity \uc5b4\ub178\ud14c\uc774\uc158\uc73c\ub85c \ud45c\uc2dc\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 
 unknown_entitybean_name=\uc54c\ub824\uc9c0\uc9c0 \uc54a\uc740 \uc5d4\ud2f0\ud2f0 Bean \uc774\ub984: {0}
+
+unsupported_classfile_version={0} \ud074\ub798\uc2a4\uac00 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\ub294 JDK\ub85c \ucef4\ud30c\uc77c\ub418\uc5c8\uc2b5\ub2c8\ub2e4. EclipseLink \uac1c\ubc29\ud615 \uc18c\uc2a4 \ud504\ub85c\uc81d\ud2b8\uc5d0 \uc774 \uc624\ub958\ub97c \ubcf4\uace0\ud558\uc2ed\uc2dc\uc624.
 
 wrap_convert_exception=\uac12\uc774 {2}\uc778 \ubcc0\ud658\uae30 \ud074\ub798\uc2a4 {1}\uc5d0\uc11c {0}\uc744(\ub97c) \ud638\ucd9c\ud558\ub294 \uc911 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 

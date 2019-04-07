@@ -69,6 +69,6 @@ WS-TraceGroup: JCDI
         com.ibm.websphere.org.osgi.core,\
         com.ibm.websphere.org.osgi.service.component,\
         com.ibm.wsspi.org.osgi.service.component.annotations,\
-        com.ibm.ws.org.jboss.weld.2.4.7;version=latest,\
+        com.ibm.ws.org.jboss.weld.2.4.8;version=latest,\
         com.ibm.ws.cdi.interfaces;version=latest, \
         com.ibm.ws.org.osgi.annotation.versioning;version=latest

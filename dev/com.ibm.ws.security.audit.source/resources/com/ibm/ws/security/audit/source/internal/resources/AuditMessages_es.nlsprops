@@ -1,0 +1,45 @@
+#*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.source/resources/com/ibm/ws/security/audit/source/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+AUDIT_SERVICE_STARTING=CWWKS5850I: El servicio de auditor\u00eda se est\u00e1 iniciando.
+AUDIT_SERVICE_STARTING.explanation=El servicio de auditor\u00eda est\u00e1 en el proceso de inicio. Este proceso podr\u00eda tardar varios minutos si se produce una inicializaci\u00f3n de una sola vez.
+AUDIT_SERVICE_STARTING.useraction=No se requiere ninguna acci\u00f3n.
+
+AUDIT_SERVICE_READY=CWWKS5851I: El servicio de auditor\u00eda est\u00e1 listo.
+AUDIT_SERVICE_READY.explanation=Este mensaje es meramente informativo.
+AUDIT_SERVICE_READY.useraction=No se requiere ninguna acci\u00f3n.
+
+AUDIT_SERVICE_STOPPED=CWWKS5852I: El servicio de auditor\u00eda se ha detenido.
+AUDIT_SERVICE_STOPPED.explanation=Este mensaje es meramente informativo.
+AUDIT_SERVICE_STOPPED.useraction=No se requiere ninguna acci\u00f3n.
+
+INCORRECT_AUDIT_EVENT_CONFIGURATION=CWWKS5853E: El nombre de suceso de auditor\u00eda {0} especificado en la configuraci\u00f3n de sucesos del manejador de auditor\u00eda no est\u00e1 soportado y por tanto el servicio de auditor\u00eda se ha parado. Rectifique el nombre de suceso en la configuraci\u00f3n de manejador de auditor\u00eda {2} para especificar uno de los nombres de suceso siguientes: {3}
+INCORRECT_AUDIT_EVENT_CONFIGURATION.explanation=El nombre del suceso de auditor\u00eda proporcionado en la configuraci\u00f3n de sucesos es incorrecto y se detendr\u00e1 el servicio de auditor\u00eda. Analice la excepci\u00f3n mencionada en el mensaje y especifique un nombre de suceso de auditor\u00eda v\u00e1lido.
+INCORRECT_AUDIT_EVENT_CONFIGURATION.useraction=Aseg\u00farese de que el nombre del suceso de auditor\u00eda proporcionado como parte de la configuraci\u00f3n de sucesos sea correcto.
+
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION=CWWKS5854E: El nombre de resultado de auditor\u00eda {0} especificado en la configuraci\u00f3n de sucesos del manejador de auditor\u00eda no est\u00e1 soportado y por tanto el servicio de auditor\u00eda se ha parado.  Rectifique el nombre de resultado en la configuraci\u00f3n de manejador de auditor\u00eda {2} para especificar uno de los nombres de resultado siguientes: {3}
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.explanation=El nombre del resultado de auditor\u00eda proporcionado en la configuraci\u00f3n de sucesos es incorrecto y se detendr\u00e1 el servicio de auditor\u00eda. Analice la excepci\u00f3n mencionada en el mensaje y especifique un nombre de resultado de auditor\u00eda v\u00e1lido.
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.useraction=Aseg\u00farese de que el nombre del resultado de auditor\u00eda proporcionado como parte de la configuraci\u00f3n de sucesos sea correcto.
+
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME=CWWKS5855E: La configuraci\u00f3n de sucesos del manejador de auditor\u00eda no est\u00e1 completa y por tanto el servicio de auditor\u00eda se ha parado. La configuraci\u00f3n tiene que especificar un nombre de suceso para el resultado {0}.   Rectifique el manejador de auditor\u00eda {1} para especificar uno de los nombres de suceso siguientes: {2}
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.explanation=El nombre del suceso de auditor\u00eda especificado en la configuraci\u00f3n de sucesos no es correcto o falta y se detendr\u00e1 el servicio de auditor\u00eda.  Analice la excepci\u00f3n mencionada en el mensaje y especifique un nombre de suceso de auditor\u00eda v\u00e1lido.
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.useraction=Aseg\u00farese de que se especifica un nombre de suceso v\u00e1lido junto con el tipo de resultado v\u00e1lido.

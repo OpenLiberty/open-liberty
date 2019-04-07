@@ -1,7 +1,0 @@
-Subsystem-ManifestVersion: 1
-Subsystem-SymbolicName: managedCompletableFuture-1.0; visibility:=public
-Subsystem-Version: 1.0
-Subsystem-Content: com.ibm.ws.concurrent.rx
-Subsystem-Type: osgi.subsystem.feature
-IBM-Feature-Version: 2
-IBM-API-Package: com.ibm.websphere.concurrent.rx; type="ibm-api"

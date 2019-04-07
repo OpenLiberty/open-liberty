@@ -25,6 +25,7 @@ import javax.enterprise.inject.spi.Extension;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
+import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 
 @Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "api.classes=" +
@@ -37,7 +38,7 @@ public class BatchCDIInjectionExtension implements WebSphereCDIExtension, Extens
 
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
         AnnotatedType<BatchProducerBean> at = bm.createAnnotatedType(BatchProducerBean.class);
-        bbd.addAnnotatedType(at, "com.ibm.ws.jbatch.cdi.BatchCDIInjectionExtension");
+        bbd.addAnnotatedType(at, CDIServiceUtils.getAnnotatedTypeIdentifier(at, this.getClass()));
     }
 
 }

@@ -1,0 +1,47 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>jdbc-4.2</feature>
+        <feature>jndi-1.0</feature>
+        <feature>mpContextPropagation-1.0</feature>
+        <feature>servlet-4.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <application location="MPConcurrentTxApp.war"/>
+
+    <dataSource id="DefaultDataSource">
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:txdb"/>
+    </dataSource>
+
+    <dataSource id="OnePhaseDataSource" jndiName="jdbc/ds1phase" type="javax.sql.ConnectionPoolDataSource">
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:txdb"/>
+    </dataSource>
+
+    <library id="DerbyLib">
+        <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    </library>
+
+    <!-- permissions for Derby -->
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+
+    <!-- Needed for application to use a ForkJoinPool, access the thread context class loader, and shut down an unmanaged ExecutorService that the test application creates -->
+    <javaPermission codebase="${server.config.dir}/apps/MPConcurrentTxApp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/apps/MPConcurrentTxApp.war" className="java.lang.RuntimePermission" name="modifyThread"/>
+    <javaPermission codebase="${server.config.dir}/apps/MPConcurrentTxApp.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/apps/MPConcurrentTxApp.war" className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.*" actions="read"/>
+</server>

@@ -105,6 +105,38 @@ garbageCollectionCount.description=Muestra el n\u00famero total de colecciones q
 garbageCollectionTime.description=Muestra el tiempo transcurrido en milisegundos de la colecci\u00f3n acumulada aproximada. Este atributo muestra -1 si el transcurso de tiempo de la colecci\u00f3n no est\u00e1 definido para este recopilador. La implementaci\u00f3n de la m\u00e1quina virtual Java puede utilizar un temporizador de alta resoluci\u00f3n para medir el tiempo transcurrido. Este atributo puede mostrar el mismo valor aunque la el recuento de la colecci\u00f3n se haya incrementado, si el tiempo transcurrido de la colecci\u00f3n es muy breve.
 
 #-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+threadpool.activeThreads.description=N\u00famero de hebras que ejecutan tareas.
+threadpool.size.description=Tama\u00f1o de la agrupaci\u00f3n de hebras.
+
+servlet.request.total.description=N\u00famero de visitas a este servlet desde el inicio del servidor.
+servlet.responseTime.total.description=Tiempo total de respuesta de este servlet desde el inicio del servidor.
+
+connectionpool.create.total.description=N\u00famero total de conexiones gestionadas que se han creado desde la creaci\u00f3n de la agrupaci\u00f3n.
+connectionpool.destroy.total.description=N\u00famero total de conexiones gestionadas que se han destruido desde la creaci\u00f3n de la agrupaci\u00f3n.
+connectionpool.managedConnections.description=N\u00famero de conexiones gestionadas en las agrupaciones libres, compartidas y no compartidas.
+connectionpool.connectionHandles.description=N\u00famero de conexiones que est\u00e1n en uso. Este n\u00famero podr\u00eda incluir varias conexiones que se comparten desde una sola conexi\u00f3n gestionada.
+connectionpool.freeConnections.description=N\u00famero de conexiones gestionadas en la agrupaci\u00f3n libre.
+connectionpool.waitTime.total.description=Tiempo de espera total de todas las solicitudes de conexi\u00f3n desde el inicio del servidor.
+connectionpool.inUseTime.total.description=Tiempo total de uso de todas las conexiones desde el inicio del servidor.
+connectionpool.usedConnections.total.description=N\u00famero total de solicitudes de conexi\u00f3n que ha esperado debido a que la agrupaci\u00f3n de conexiones estaba llena o que no ha tenido que esperar desde el inicio del servidor. Las conexiones que se est\u00e1n utilizando actualmente no se incluyen en este total.
+connectionpool.queuedRequests.total.description=N\u00famero total de solicitudes de conexi\u00f3n que ha tenido que esperar una conexi\u00f3n debido a que la agrupaci\u00f3n de conexiones estaba llena desde el inicio del servidor.
+
+session.create.total.description=N\u00famero de sesiones iniciadas desde la habilitaci\u00f3n de esta m\u00e9trica.
+session.liveSessions.description=N\u00famero de usuarios con la sesi\u00f3n iniciada actualmente.
+session.activeSessions.description=N\u00famero de sesiones activas simult\u00e1neamente. (Una sesi\u00f3n est\u00e1 activa si el producto est\u00e1 procesando actualmente una solicitud que utiliza esa sesi\u00f3n de usuario).
+session.invalidated.total.description=N\u00famero de sesiones cerradas desde la habilitaci\u00f3n de esta m\u00e9trica.
+session.invalidatedbyTimeout.total.description=N\u00famero de sesiones cerradas por tiempo de espera excedido desde la habilitaci\u00f3n de esta m\u00e9trica.
+
+jaxws.invocations.total.description=N\u00famero de invocaciones en este punto final u operaci\u00f3n.
+jaxws.checkedApplicationFaults.total.description=N\u00famero de errores de aplicaci\u00f3n comprobados.
+jaxws.logicalRuntimeFaults.total.description=N\u00famero de errores de tiempo de ejecuci\u00f3n l\u00f3gico.
+jaxws.runtimeFaults.total.description=N\u00famero de errores de tiempo de ejecuci\u00f3n.
+jaxws.uncheckedApplicationFaults.total.description=N\u00famero de errores de aplicaci\u00f3n no comprobados.
+jaxws.responseTime.total.description=Tiempo total de manejo de respuestas desde el inicio del servidor.
+
+#-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------
 

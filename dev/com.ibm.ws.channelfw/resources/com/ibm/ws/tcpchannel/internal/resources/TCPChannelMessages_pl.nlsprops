@@ -116,8 +116,8 @@ TCP_CHANNEL_STOPPED=CWWKO0220I: Dla kana\u0142u TCP {0} zatrzymano nas\u0142uchi
 TCP_CHANNEL_STOPPED.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
 TCP_CHANNEL_STOPPED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
-BIND_ERROR=CWWKO0221E: Zainicjowanie kana\u0142u TCP {0} nie powiod\u0142o si\u0119.  Powi\u0105zanie gniazda nie powiod\u0142o si\u0119 dla hosta {1} i portu {2}.  Port mo\u017ce by\u0107 ju\u017c u\u017cywany.
-BIND_ERROR.explanation=Operacja powi\u0105zania gniazda nie powiod\u0142a si\u0119. Zwykle przyczyn\u0105 jest to, \u017ce dany port jest ju\u017c u\u017cywany.
+BIND_ERROR=CWWKO0221E: Zainicjowanie kana\u0142u TCP {0} nie powiod\u0142o si\u0119.  Powi\u0105zanie gniazda nie powiod\u0142o si\u0119 dla hosta {1} i portu {2}.  Port mo\u017ce by\u0107 ju\u017c u\u017cywany.  Komunikat wyj\u0105tku: {3}
+BIND_ERROR.explanation=Operacja powi\u0105zania gniazda nie powiod\u0142a si\u0119. Zwykle przyczyn\u0105 jest to, \u017ce dany port jest ju\u017c u\u017cywany.  Aby uzyska\u0107 wi\u0119cej informacji, sprawd\u017a teksty komunikatu o wyj\u0105tku w komunikacie o b\u0142\u0119dzie.
 BIND_ERROR.useraction=Sprawd\u017a, czy skonfigurowano kana\u0142 TCP do u\u017cywania poprawnego numeru portu.
 
 MAX_CONNS_EXCEEDED=CWWKO0222W: Kana\u0142 TCP {0} przekroczy\u0142 maksymaln\u0105 liczb\u0119 otwartych po\u0142\u0105cze\u0144 ({1}).

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -153,7 +153,13 @@ public class Tree {
 
         // Change status unless told not to
         if (status != NODE_STATUS.ACTION_NO_CHANGE) {
-            nodeToUpdate.setStatus(status);
+            if (status == NODE_STATUS.ACTION_RESET_IF_LATCHED) {
+                if (nodeToUpdate.getStatus() == NODE_STATUS.WRITE_LATCHED) {
+                    nodeToUpdate.setStatus(NODE_STATUS.NOT_REQUESTING);
+                }
+            } else {
+                nodeToUpdate.setStatus(status);
+            }
         }
 
         // Do the count action, unless it is NO_ACTION
@@ -506,9 +512,12 @@ public class Tree {
         while (iter.hasNext()) {
             Node depNode = iter.next();
             depNode.setParent(newParent, false);
-            int priority = (nodeToRemovePriority * depNode.getPriority()) / prioritySum;
-            if (priority == 0) {
-                priority = 1;
+            if (prioritySum != 0) {
+                int priority = (nodeToRemovePriority * depNode.getPriority()) / prioritySum;
+                if (priority == 0) {
+                    priority = 1;
+                }
+                depNode.setPriority(priority);
             }
         }
         nodeToRemove.clearDependents();

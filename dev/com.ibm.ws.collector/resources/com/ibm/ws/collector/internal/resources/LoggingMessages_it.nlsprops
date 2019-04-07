@@ -1,0 +1,40 @@
+#/*******************************************************************************
+# * Copyright (c) 2016, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+
+# Use message block TRAS4301 - TRAS4350 for new messages that start December 1, 2016.
+TAGS_FILTERING_WARNING=TRAS4301W: logstashCollector e bluemixLogCollector possono utilizzare le tag che possono contenere una singola parola composta da lettere e numeri. Le seguenti tag sono ignorate: {0}
+TAGS_FILTERING_WARNING.explanation= Le tag ignorate contengono spazi, trattini o barre retroverse.
+TAGS_FILTERING_WARNING.userAction= Rimuovere spazi, trattini o barre retroverse dalle tag.
+
+SSLREF_NOTFOUND=TRAS4302E: L'attributo sslRef di logstashCollector o bluemixLogCollector non \u00e8 specificato o l'ID sslRef non \u00e8 stato trovato.
+SSLREF_NOTFOUND.explanation=Nessuna configurazione SSL trovata per la funzione logstashCollector o bluemixLogCollector.
+SSLREF_NOTFOUND.userAction=Creare una configurazione SSL e specificare l'ID utilizzando l'attributo sslRef nell'elemento logstashCollector o bluemixLogCollector.
+
+MAXEVENTS_OUTOFRANGE_WARNING=TRAS4303W: logstashCollector e bluemixLogCollector possono utilizzare maxEvents con un valore numero intero compreso tra 0-2147483647. maxEvents fornito viene ignorato: {0}
+MAXEVENTS_OUTOFRANGE_WARNING.explanation= Il valore di maxEvents \u00e8 fuori dall'intervallo e non \u00e8 un numero intero valido tra 0-2147483647.
+MAXEVENTS_OUTOFRANGE_WARNING.userAction= Correggere il valore di maxEvents. Altrimenti, non viene applicata la riduzione.
+
+MAXEVENTS_EXCEEDS_MAXRATE=TRAS4304I: La creazione di eventi supera la frequenza massima gestibile sul thread {0}. {1} eventi al secondo saranno gestiti finch\u00e9 non si ripulisce il backlog eventi.
+MAXEVENTS_EXCEEDS_MAXRATE.explanation= Il numero di eventi da elaborare supera la frequenza maxEvents specificata al secondo.
+MAXEVENTS_EXCEEDS_MAXRATE.userAction= Modificare le configurazioni nel file server.xml per maxEvents, se si desidera modificare la frequenza di gestione eventi.
+
+MAXEVENTS_NOTEXCEED_RATE=TRAS4305I: Il backlog eventi \u00e8 stato svuotato. I nuovi eventi saranno gestiti senza ritardo.
+MAXEVENTS_NOTEXCEED_RATE.explanation= Gli eventi hanno terminato l'elaborazione alla frequenza di gestione massima.
+MAXEVENTS_NOTEXCEED_RATE.userAction=  Non \u00e8 richiesta alcuna azione.

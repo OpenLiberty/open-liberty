@@ -1,0 +1,11 @@
+<server>
+    <featureManager>
+		<feature>componentTest-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>ejbLite-3.2</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+	
+	<javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+</server>

@@ -1,0 +1,45 @@
+#*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.source/resources/com/ibm/ws/security/audit/source/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+AUDIT_SERVICE_STARTING=CWWKS5850I: O servi\u00e7o de auditoria est\u00e1 iniciando.
+AUDIT_SERVICE_STARTING.explanation=O servi\u00e7o de auditoria est\u00e1 no processo de in\u00edcio. Isso poder\u00e1 levar v\u00e1rios minutos se a inicializa\u00e7\u00e3o \u00fanica precisar ocorrer.
+AUDIT_SERVICE_STARTING.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+AUDIT_SERVICE_READY=CWWKS5851I: O servi\u00e7o de auditoria est\u00e1 pronto.
+AUDIT_SERVICE_READY.explanation=Essa mensagem destina-se apenas para fins informativos.
+AUDIT_SERVICE_READY.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+AUDIT_SERVICE_STOPPED=CWWKS5852I: O servi\u00e7o de auditoria est\u00e1 interrompido.
+AUDIT_SERVICE_STOPPED.explanation=Essa mensagem destina-se apenas para fins informativos.
+AUDIT_SERVICE_STOPPED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+INCORRECT_AUDIT_EVENT_CONFIGURATION=CWWKS5853E: O nome do evento de auditoria {0} especificado na configura\u00e7\u00e3o de eventos de manipulador de auditoria n\u00e3o \u00e9 suportado, portanto, o servi\u00e7o de auditoria foi interrompido. Corrija o nome do evento na configura\u00e7\u00e3o {2} do manipulador de auditoria para especificar um dos nomes de evento a seguir: {3}
+INCORRECT_AUDIT_EVENT_CONFIGURATION.explanation=O nome do evento de auditoria fornecido na configura\u00e7\u00e3o de evento est\u00e1 incorreto e o servi\u00e7o de auditoria ser\u00e1 interrompido. Analise a exce\u00e7\u00e3o mencionada na mensagem e especifique um nome de evento de auditoria v\u00e1lido.
+INCORRECT_AUDIT_EVENT_CONFIGURATION.useraction=Assegure-se de que o nome do evento de auditoria fornecido como parte da configura\u00e7\u00e3o de evento esteja correto.
+
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION=CWWKS5854E: O nome do resultado de auditoria {0} especificado na configura\u00e7\u00e3o de eventos do manipulador de auditoria n\u00e3o \u00e9 suportado, portanto, o servi\u00e7o de auditoria foi interrompido. Corrija o nome do resultado na configura\u00e7\u00e3o {2} do manipulador de auditoria para especificar um dos nomes de resultado a seguir: {3}
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.explanation=O nome do resultado de auditoria fornecido na configura\u00e7\u00e3o de evento est\u00e1 incorreto e o servi\u00e7o de auditoria ser\u00e1 interrompido. Analise a exce\u00e7\u00e3o mencionada na mensagem e especifique um nome de resultado de auditoria v\u00e1lido.
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.useraction=Assegure-se de que o nome do resultado de auditoria fornecido como parte da configura\u00e7\u00e3o de evento esteja correto.
+
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME=CWWKS5855E: A configura\u00e7\u00e3o de eventos do manipulador de auditoria n\u00e3o est\u00e1 completa, portanto, o servi\u00e7o de auditoria foi interrompido. A configura\u00e7\u00e3o deve especificar um nome do evento para o resultado {0}. Corrija a configura\u00e7\u00e3o {1} do manipulador de auditoria para especificar um dos nomes do evento a seguir: {2}
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.explanation=O nome do evento de auditoria especificado na configura\u00e7\u00e3o de evento est\u00e1 incorreto ou ausente, e o servi\u00e7o de auditoria ser\u00e1 interrompido. Analise a exce\u00e7\u00e3o mencionada na mensagem e especifique um nome de evento de auditoria v\u00e1lido.
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.useraction=Assegure-se de que um nome de evento v\u00e1lido seja especificado junto com o tipo de resultado v\u00e1lido.

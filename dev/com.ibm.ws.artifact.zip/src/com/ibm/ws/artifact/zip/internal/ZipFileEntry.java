@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2011,2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2011, 2018
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.artifact.zip.internal;
 
 import java.io.File;
@@ -63,7 +62,6 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
      *
      * @param rootContainer The root zip file type container of this entry.
      * @param enclosingContainer The container enclosing this entry.
-     * @param offset The offset in the root zip container to the zip entry.
      * @param zipEntryData The zip entry of this entry.
      * @param name The name of this entry.
      * @param a_path The absolute path of this entry.
@@ -72,13 +70,12 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
     protected ZipFileEntry(
         ZipFileContainer rootContainer,
         ArtifactContainer enclosingContainer,
-        int offset, ZipEntryData zipEntryData,
+        ZipEntryData zipEntryData,
         String name, String a_path) {
 
         this.rootContainer = rootContainer;
         this.enclosingContainer = enclosingContainer;
 
-        this.offset = offset;
         this.zipEntryData = zipEntryData;
 
         this.name = name;
@@ -107,13 +104,7 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
 
     //
 
-    private final int offset;
     private final ZipEntryData zipEntryData;
-
-    @Trivial
-    public int getOffset() {
-        return offset;
-    }
 
     @Trivial
     public ZipEntryData getZipEntryData() {
@@ -225,7 +216,7 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
                     synchronized( this ) {
                         if ( !isClosed ) {
                             try {
-                                super.close(); // throws IOException
+                                wrappedInputStream.close(); // throws IOException
                             } catch ( IOException e ) {
                                 // FFDC
                             }
@@ -371,7 +362,7 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
             if ( localContainer == null ) {
                 synchronized ( this) { // Having a new object to guard 'localContainer' is too many objects.
                 	if ( localContainer == null ) {
-                		localContainer = new ZipFileNestedDirContainer(rootContainer, offset, this, name, a_path);
+                		localContainer = new ZipFileNestedDirContainer(rootContainer, this, name, a_path);
                 	}
                 }
             }

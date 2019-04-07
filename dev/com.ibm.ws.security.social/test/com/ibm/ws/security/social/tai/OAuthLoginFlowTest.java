@@ -427,7 +427,7 @@ public class OAuthLoginFlowTest extends CommonTestClass {
                     will(returnValue(authorizationEndpointURL));
                 }
             });
-            authorizationEndpointQueryExpectations("code", "", "", false);
+            authorizationEndpointQueryExpectations("code", "", "", "", false);
 
             String result = loginFlow.buildAuthorizationUrlWithQuery("", config, "", "");
 
@@ -438,7 +438,8 @@ public class OAuthLoginFlowTest extends CommonTestClass {
             verifyPattern(result, "client_id=&");
             verifyPattern(result, "state=&");
             verifyPattern(result, "redirect_uri=&");
-            verifyPattern(result, "scope=$");
+            verifyPattern(result, "scope=&");
+            verifyPattern(result, "response_mode=$");
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
 
@@ -456,7 +457,7 @@ public class OAuthLoginFlowTest extends CommonTestClass {
                     will(returnValue(authorizationEndpointURL));
                 }
             });
-            authorizationEndpointQueryExpectations("code", null, null, false);
+            authorizationEndpointQueryExpectations("code", null, null, null, false);
 
             String result = loginFlow.buildAuthorizationUrlWithQuery("", config, redirectUri, null);
 
@@ -485,7 +486,7 @@ public class OAuthLoginFlowTest extends CommonTestClass {
                     will(returnValue(authorizationEndpointURL));
                 }
             });
-            authorizationEndpointQueryExpectations("code", clientId, clientConfigScope, true);
+            authorizationEndpointQueryExpectations("code", null, clientId, clientConfigScope, true);
 
             String result = loginFlow.buildAuthorizationUrlWithQuery(state, config, redirectUri, null);
 
@@ -515,7 +516,7 @@ public class OAuthLoginFlowTest extends CommonTestClass {
                     will(returnValue(authorizationEndpointURL));
                 }
             });
-            authorizationEndpointQueryExpectations("code", clientId, clientConfigScope, false);
+            authorizationEndpointQueryExpectations("code", null, clientId, clientConfigScope, false);
 
             String result = loginFlow.buildAuthorizationUrlWithQuery(state, config, redirectUri, acrValues);
 
@@ -539,14 +540,14 @@ public class OAuthLoginFlowTest extends CommonTestClass {
     @Test
     public void buildAuthorizationUrlWithQuery_responseTypeNotCode() throws Exception {
         try {
-            final String responseCode = "id_token";
+            final String responseType = "id_token";
             mockery.checking(new Expectations() {
                 {
                     one(taiWebUtils).getAuthorizationEndpoint(config);
                     will(returnValue(authorizationEndpointURL));
                 }
             });
-            authorizationEndpointQueryExpectations(responseCode, clientId, clientConfigScope, false);
+            authorizationEndpointQueryExpectations(responseType, null, clientId, clientConfigScope, false);
             mockery.checking(new Expectations() {
                 {
                     one(config).getResource();
@@ -559,7 +560,7 @@ public class OAuthLoginFlowTest extends CommonTestClass {
             // Verify that only subset of ASCII characters are in result
             verifyAuthzEndpointFormat(result, authorizationEndpointURL);
             // Verify each param value matches its mocked value
-            verifyPattern(result, "response_type=" + responseCode + "&");
+            verifyPattern(result, "response_type=" + responseType + "&");
             verifyPattern(result, "client_id=" + clientId + "&");
             verifyPattern(result, "state=" + state + "&");
             verifyPattern(result, "redirect_uri=" + REGEX_URL_ENCODED_CHARS + "+&");
@@ -576,7 +577,7 @@ public class OAuthLoginFlowTest extends CommonTestClass {
     @Test
     public void buildAuthorizationUrlWithQuery_responseTypeNotCode_withResource() throws Exception {
         try {
-            final String responseCode = "id_token";
+            final String responseType = "id_token";
             final String resource = "The quick brown fox jumps over<script>alert(100)</script> the lazy dog.";
             mockery.checking(new Expectations() {
                 {
@@ -584,7 +585,7 @@ public class OAuthLoginFlowTest extends CommonTestClass {
                     will(returnValue(authorizationEndpointURL));
                 }
             });
-            authorizationEndpointQueryExpectations(responseCode, clientId, clientConfigScope, false);
+            authorizationEndpointQueryExpectations(responseType, null, clientId, clientConfigScope, false);
             mockery.checking(new Expectations() {
                 {
                     one(config).getResource();
@@ -597,7 +598,7 @@ public class OAuthLoginFlowTest extends CommonTestClass {
             // Verify that only subset of ASCII characters are in result
             verifyAuthzEndpointFormat(result, authorizationEndpointURL);
             // Verify each param value matches its mocked value
-            verifyPattern(result, "response_type=" + responseCode + "&");
+            verifyPattern(result, "response_type=" + responseType + "&");
             verifyPattern(result, "client_id=" + clientId + "&");
             verifyPattern(result, "state=" + state + "&");
             verifyPattern(result, "redirect_uri=" + REGEX_URL_ENCODED_CHARS + "+&");
@@ -703,12 +704,14 @@ public class OAuthLoginFlowTest extends CommonTestClass {
         });
     }
 
-    private void authorizationEndpointQueryExpectations(final String responseType, final String clientId, final String scope, final boolean nonce) {
+    private void authorizationEndpointQueryExpectations(final String responseType, final String responseMode, final String clientId, final String scope, final boolean nonce) {
         mockery.checking(new Expectations() {
             {
                 // Metatype enforces that responseType will always have one of a set of values
-                one(config).getResponseType();
+                allowing(config).getResponseType();
                 will(returnValue(responseType));
+                one(config).getResponseMode();
+                will(returnValue(responseMode));
                 one(config).getClientId();
                 will(returnValue(clientId));
                 one(config).getScope();

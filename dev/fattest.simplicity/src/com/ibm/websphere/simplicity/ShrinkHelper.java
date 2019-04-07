@@ -11,6 +11,7 @@
 package com.ibm.websphere.simplicity;
 
 import java.io.File;
+import java.util.Arrays;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
@@ -34,26 +35,72 @@ import componenttest.topology.impl.LibertyServer;
  */
 public class ShrinkHelper {
 
+    public static enum DeployOptions {
+        /**
+         * Overwrite the file if it already exists
+         */
+        OVERWRITE,
+        /**
+         * Deploy only to the liberty server/client
+         * <p>
+         * Default is to deploy to both the liberty server/client and the publish directory
+         */
+        SERVER_ONLY
+    }
+
     protected static final Class<?> c = ShrinkHelper.class;
 
     /**
      * Export an artifact to servers/$server.getName()/$path/$a.getName() under two directories:
      * autoFVT/publish/... and wlp/usr/...
      */
-    public static void exportToServer(LibertyServer server, String path, Archive<?> a) throws Exception {
-        String serverDir = "publish/servers/" + server.getServerName();
-        exportArtifact(a, serverDir + '/' + path);
-        server.copyFileToLibertyServerRoot(serverDir + "/" + path, path, a.getName());
+    public static void exportToServer(LibertyServer server, String path, Archive<?> a, DeployOptions... options) throws Exception {
+        String localLocation;
+        if (serverOnly(options)) {
+            localLocation = getTmpLocation(a);
+        } else {
+            localLocation = "publish/servers/" + server.getServerName() + "/" + path;
+        }
+        exportArtifact(a, localLocation, true, shouldOverwrite(options));
+        server.copyFileToLibertyServerRoot(localLocation, path, a.getName());
     }
 
     /**
      * Export an artifact to clients/$client.getName()/$path/$a.getName() under two directories:
      * autoFVT/publish/... and wlp/usr/...
      */
-    public static void exportToClient(LibertyClient client, String path, Archive<?> a) throws Exception {
-        String clientDir = "publish/clients/" + client.getClientName();
-        exportArtifact(a, clientDir + '/' + path);
-        client.copyFileToLibertyClientRoot(clientDir + "/" + path, path, a.getName());
+    public static void exportToClient(LibertyClient client, String path, Archive<?> a, DeployOptions... options) throws Exception {
+        String localLocation;
+        if (serverOnly(options)) {
+            localLocation = getTmpLocation(a);
+        } else {
+            localLocation = "publish/clients/" + client.getClientName() + "/" + path;
+        }
+        exportArtifact(a, localLocation, true, shouldOverwrite(options));
+        client.copyFileToLibertyClientRoot(localLocation, path, a.getName());
+    }
+
+    private static String getTmpLocation(Archive<?> a) {
+        String location = "publish/shrinkApps/" + a.getName() + "-" + System.nanoTime();
+
+        File file = new File(location);
+        if (!file.exists()) {
+            if (!file.mkdirs()) {
+                throw new RuntimeException("Failed to create tmp directory: " + location);
+            }
+        } else if (!file.isDirectory()) {
+            throw new RuntimeException("Tmp directory already exists but is not a directory: " + location);
+        }
+
+        return location;
+    }
+
+    private static boolean shouldOverwrite(DeployOptions[] options) {
+        return Arrays.asList(options).contains(DeployOptions.OVERWRITE);
+    }
+
+    private static boolean serverOnly(DeployOptions[] options) {
+        return Arrays.asList(options).contains(DeployOptions.SERVER_ONLY);
     }
 
     /**
@@ -63,9 +110,10 @@ public class ShrinkHelper {
      *
      * @param server The server to publish the application to
      * @param a The archive to export as a file
+     * @param options The deployment options
      */
-    public static void exportAppToServer(LibertyServer server, Archive<?> a) throws Exception {
-        exportToServer(server, "apps", a);
+    public static void exportAppToServer(LibertyServer server, Archive<?> a, DeployOptions... options) throws Exception {
+        exportToServer(server, "apps", a, options);
     }
 
     /**
@@ -75,9 +123,10 @@ public class ShrinkHelper {
      *
      * @param client The client to publish the application to
      * @param a The archive to export as a file
+     * @param options The deployment options
      */
-    public static void exportAppToClient(LibertyClient client, Archive<?> a) throws Exception {
-        exportToClient(client, "apps", a);
+    public static void exportAppToClient(LibertyClient client, Archive<?> a, DeployOptions... options) throws Exception {
+        exportToClient(client, "apps", a, options);
     }
 
     /**
@@ -87,10 +136,11 @@ public class ShrinkHelper {
      *
      * @param server The server to publish the application to
      * @param a The archive to export as a file
+     * @param options The deployment options
      * @throws Exception
      */
-    public static void exportDropinAppToServer(LibertyServer server, Archive<?> a) throws Exception {
-        exportToServer(server, "dropins", a);
+    public static void exportDropinAppToServer(LibertyServer server, Archive<?> a, DeployOptions... options) throws Exception {
+        exportToServer(server, "dropins", a, options);
 
         String appName = a.getName();
         String installedAppName = (appName.endsWith(".war") || appName.endsWith(".ear"))//

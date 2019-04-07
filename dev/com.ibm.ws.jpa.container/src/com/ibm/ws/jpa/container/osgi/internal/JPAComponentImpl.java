@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -69,6 +70,7 @@ import com.ibm.ws.jpa.container.osgi.jndi.JPAJndiLookupObjectFactory;
 import com.ibm.ws.jpa.management.AbstractJPAComponent;
 import com.ibm.ws.jpa.management.JPAApplInfo;
 import com.ibm.ws.jpa.management.JPAEMFPropertyProvider;
+import com.ibm.ws.jpa.management.JPAIntrospection;
 import com.ibm.ws.jpa.management.JPAPuScope;
 import com.ibm.ws.jpa.management.JPARuntime;
 import com.ibm.ws.kernel.LibertyProcess;
@@ -143,20 +145,42 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     @Modified
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected void modified(Map<?, ?> newProperties) {
-        String originalProvider = (String) props.get("defaultPersistenceProvider");
+        final String originalProvider = (String) props.get("defaultPersistenceProvider");
+        final String originalDefaultJtaDataSourceJndiName = (String) props.get("defaultJtaDataSourceJndiName");
+        final String originalDefaultNonJtaDataSourceJndiName = (String) props.get("defaultNonJtaDataSourceJndiName");
+
         if (newProperties instanceof Dictionary) {
             props = (Dictionary<String, Object>) newProperties;
         } else {
             props = new Hashtable(newProperties);
         }
-        String curProvider = (String) newProperties.get("defaultPersistenceProvider");
+        final String curProvider = (String) newProperties.get("defaultPersistenceProvider");
+        final String curDefaultJtaDataSourceJndiName = (String) newProperties.get("defaultJtaDataSourceJndiName");
+        final String curDefaultNonJtaDataSourceJndiName = (String) newProperties.get("defaultNonJtaDataSourceJndiName");
 
-        // If the <jpa defaultPersistenceProvider=""/> element has changed, restart all JPA apps
-        if ((originalProvider != null && !originalProvider.equals(curProvider)) ||
-            (curProvider != null && !curProvider.equals(originalProvider))) {
+        boolean recycleJPAApplications = false;
+
+        if (!Objects.equals(originalProvider, curProvider)) {
+            // If the <jpa defaultPersistenceProvider=""/> element has changed, restart all JPA apps
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Detected change in defaultPersistenceProvider of the <jpa> element.  Restarting all JPA applications.",
                          originalProvider + " -> " + curProvider);
+            recycleJPAApplications = true;
+        } else if (!Objects.equals(originalDefaultJtaDataSourceJndiName, curDefaultJtaDataSourceJndiName)) {
+            // If the <jpa defaultJtaDataSourceJndiName=""/> element has changed, restart all JPA apps
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Detected change in defaultJtaDataSourceJndiName of the <jpa> element.  Restarting all JPA applications.",
+                         originalProvider + " -> " + curProvider);
+            recycleJPAApplications = true;
+        } else if (!Objects.equals(originalDefaultNonJtaDataSourceJndiName, curDefaultNonJtaDataSourceJndiName)) {
+            // If the <jpa defaultNonJtaDataSourceJndiName=""/> element has changed, restart all JPA apps
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Detected change in defaultNonJtaDataSourceJndiName of the <jpa> element.  Restarting all JPA applications.",
+                         originalProvider + " -> " + curProvider);
+            recycleJPAApplications = true;
+        }
+
+        if (recycleJPAApplications) {
             recycleJPAApplications();
         }
     }
@@ -220,73 +244,82 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         // -> a jar file in the EAR library directory
         // ------------------------------------------------------------------------
 
-        // Process any persistence.xml in EAR/lib/*.jar
-        // Note: if there is no application classloader (standalone module),
-        //       then there is no need to look for application scoped persistence.xml.
-        if (appLibContainer != null && appClassLoader != null) {
-            processLibraryJarPersistenceXml(applInfo, appLibContainer, applName, "lib/", JPAPuScope.EAR_Scope, appClassLoader);
-        }
-
-        // Process all modules in the application.  This must be done as early as possible
-        // to prevent other features from load application classes before a JPA transformer
-        // is registered for the application classloader.
-        // TODO: this code would be much simpler of EARApplicationInfo provided a getModules method
-        Container container = appInfo.getContainer();
-        NonPersistentCache cache;
         try {
-            cache = container.adapt(NonPersistentCache.class);
-        } catch (UnableToAdaptException e) {
-            if (isTraceOn && tc.isDebugEnabled()) {
-                Tr.debug(tc, "applicationStarting : " + e);
+            JPAIntrospection.beginJPAIntrospection();
+            JPAIntrospection.beginApplicationVisit(applName, applInfo);
+
+            // Process any persistence.xml in EAR/lib/*.jar
+            // Note: if there is no application classloader (standalone module),
+            //       then there is no need to look for application scoped persistence.xml.
+            if (appLibContainer != null && appClassLoader != null) {
+                processLibraryJarPersistenceXml(applInfo, appLibContainer, applName, "lib/", JPAPuScope.EAR_Scope, appClassLoader);
             }
-            throw new RuntimeException("Failed to get NonPersistentCache for application ", e);
-        }
-        ApplicationClassesContainerInfo applicationClassesContainerInfo = (ApplicationClassesContainerInfo) cache.getFromCache(ApplicationClassesContainerInfo.class);
-        // In an eba this is null
-        if (applicationClassesContainerInfo != null) {
-            List<ModuleClassesContainerInfo> mcci = applicationClassesContainerInfo.getModuleClassesContainerInfo();
-            for (ModuleClassesContainerInfo m : mcci) {
-                List<ContainerInfo> moduleContainerInfos = m.getClassesContainerInfo();
-                if (moduleContainerInfos != null && !moduleContainerInfos.isEmpty()) {
-                    ContainerInfo moduleContainerInfo = moduleContainerInfos.get(0);
-                    Type t = moduleContainerInfo.getType();
 
-                    ClassLoader moduleLoader = null;
-                    try {
-                        Container cc = moduleContainerInfo.getContainer();
-                        NonPersistentCache npc = cc.adapt(NonPersistentCache.class);
-                        ModuleInfo wmi = (ModuleInfo) npc.getFromCache(ModuleInfo.class);
-                        moduleLoader = wmi.getClassLoader();
-                    } catch (Exception e) {
-                        if (isTraceOn && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "applicationStarting : " + e);
-                        }
-                        throw new RuntimeException("Failed to get ModuleInfo for application ", e);
-                    }
+            // Process all modules in the application.  This must be done as early as possible
+            // to prevent other features from load application classes before a JPA transformer
+            // is registered for the application classloader.
+            // TODO: this code would be much simpler of EARApplicationInfo provided a getModules method
+            Container container = appInfo.getContainer();
+            NonPersistentCache cache;
+            try {
+                cache = container.adapt(NonPersistentCache.class);
+            } catch (UnableToAdaptException e) {
+                if (isTraceOn && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "applicationStarting : " + e);
+                }
+                throw new RuntimeException("Failed to get NonPersistentCache for application ", e);
+            }
+            ApplicationClassesContainerInfo applicationClassesContainerInfo = (ApplicationClassesContainerInfo) cache.getFromCache(ApplicationClassesContainerInfo.class);
+            // In an eba this is null
+            if (applicationClassesContainerInfo != null) {
+                List<ModuleClassesContainerInfo> mcci = applicationClassesContainerInfo.getModuleClassesContainerInfo();
+                for (ModuleClassesContainerInfo m : mcci) {
+                    List<ContainerInfo> moduleContainerInfos = m.getClassesContainerInfo();
+                    if (moduleContainerInfos != null && !moduleContainerInfos.isEmpty()) {
+                        ContainerInfo moduleContainerInfo = moduleContainerInfos.get(0);
+                        Type t = moduleContainerInfo.getType();
 
-                    try {
-                        boolean serverRT = isServerRuntime();
-                        if (t == Type.EJB_MODULE && serverRT) {
-                            processEJBModulePersistenceXml(applInfo, moduleContainerInfo, moduleLoader);
-                        } else if (t == Type.WEB_MODULE && serverRT) {
-                            processWebModulePersistenceXml(applInfo, moduleContainerInfo, moduleLoader);
-                        } else if (t == Type.CLIENT_MODULE && !serverRT) {
-                            processClientModulePersistenceXml(applInfo, moduleContainerInfo, moduleLoader);
+                        ClassLoader moduleLoader = null;
+                        try {
+                            Container cc = moduleContainerInfo.getContainer();
+                            NonPersistentCache npc = cc.adapt(NonPersistentCache.class);
+                            ModuleInfo wmi = (ModuleInfo) npc.getFromCache(ModuleInfo.class);
+                            moduleLoader = wmi.getClassLoader();
+                        } catch (Exception e) {
+                            if (isTraceOn && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "applicationStarting : " + e);
+                            }
+                            throw new RuntimeException("Failed to get ModuleInfo for application ", e);
                         }
-                    } catch (RuntimeException e) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            Tr.debug(tc, "App failed to start due to JPA", applInfo.getApplName());
-                        stuckApps.add(applInfo.getApplName());
-                        throw e;
+
+                        try {
+                            boolean serverRT = isServerRuntime();
+                            if (t == Type.EJB_MODULE && serverRT) {
+                                processEJBModulePersistenceXml(applInfo, moduleContainerInfo, moduleLoader);
+                            } else if (t == Type.WEB_MODULE && serverRT) {
+                                processWebModulePersistenceXml(applInfo, moduleContainerInfo, moduleLoader);
+                            } else if (t == Type.CLIENT_MODULE && !serverRT) {
+                                processClientModulePersistenceXml(applInfo, moduleContainerInfo, moduleLoader);
+                            }
+                        } catch (RuntimeException e) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                Tr.debug(tc, "App failed to start due to JPA", applInfo.getApplName());
+                            stuckApps.add(applInfo.getApplName());
+                            throw e;
+                        }
                     }
                 }
             }
-        }
 
-        try {
-            startingApplication(applInfo);
-        } catch (RuntimeWarning e) {
-            FFDCFilter.processException(e, this.getClass().getName(), "457");
+            try {
+                startingApplication(applInfo);
+            } catch (RuntimeWarning e) {
+                FFDCFilter.processException(e, this.getClass().getName(), "457");
+            }
+        } finally {
+            JPAIntrospection.endApplicationVisit();
+            JPAIntrospection.executeTraceAnalysis();
+            JPAIntrospection.endJPAIntrospection();
         }
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -373,9 +406,9 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
      * The jar file or directory whose META-INF directory contains the persistence.xml
      * file is termed the root of the persistence unit. <p>
      *
-     * @param appName name of the application that contains the persistence.xml file
+     * @param appName     name of the application that contains the persistence.xml file
      * @param archiveName name of the archive that contains the persistence.xml file
-     * @param pxml reference to the persistence.xml file
+     * @param pxml        reference to the persistence.xml file
      */
     private URL getPXmlRootURL(String appName, String archiveName, Entry pxml) {
         URL pxmlUrl = pxml.getResource();
@@ -395,12 +428,12 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
      * Common routine that will locate and process persistence.xml files in the
      * library directory of either an EAR or WAR archive. <p>
      *
-     * @param applInfo the application archive information
+     * @param applInfo    the application archive information
      * @param archiveName name of the archive containing the persistence.xml
-     * @param rootPrefix the persistence unit root prefix; prepended to the library
-     *            jar name if not null; otherwise archiveName is used
-     * @param libEntry the library directory entry from the enclosing container
-     * @param scope the scope to be applied to all persistence units found
+     * @param rootPrefix  the persistence unit root prefix; prepended to the library
+     *                        jar name if not null; otherwise archiveName is used
+     * @param libEntry    the library directory entry from the enclosing container
+     * @param scope       the scope to be applied to all persistence units found
      * @param classLaoder ClassLoader of the corresponding scope
      */
     private void processLibraryJarPersistenceXml(JPAApplInfo applInfo, Container libContainer,
@@ -447,7 +480,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
      * Locates and processes all persistence.xml file in a WAR module. <p>
      *
      * @param applInfo the application archive information
-     * @param module the WAR module archive information
+     * @param module   the WAR module archive information
      */
     private void processWebModulePersistenceXml(JPAApplInfo applInfo, ContainerInfo warContainerInfo, ClassLoader warClassLoader) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -502,7 +535,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
      * Locates and processes persistence.xml file in an EJB module. <p>
      *
      * @param applInfo the application archive information
-     * @param module the EJB module archive information
+     * @param module   the EJB module archive information
      */
     private void processEJBModulePersistenceXml(JPAApplInfo applInfo, ContainerInfo module, ClassLoader appClassloader) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -542,7 +575,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
      * Locates and processes persistence.xml file in an Application Client module. <p>
      *
      * @param applInfo the application archive information
-     * @param module the client module archive information
+     * @param module   the client module archive information
      */
     private void processClientModulePersistenceXml(JPAApplInfo applInfo, ContainerInfo module, ClassLoader loader) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -585,7 +618,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
      *
      * The ValidatorFactory is supported in WAS.
      *
-     * @param xmlSchemaVersion the schema version of the persistence.xml
+     * @param xmlSchemaVersion      the schema version of the persistence.xml
      * @param integrationProperties the current set of integration-level properties
      */
     // F743-12524
@@ -830,9 +863,16 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         if (FrameworkState.isStopping())
             return;
 
-        Set<String> appsToRestart = new HashSet<String>();
+        final Map<String, JPAApplInfo> appsToRestartMap = new HashMap<String, JPAApplInfo>();
+        final Set<String> appsToRestart = new HashSet<String>();
         synchronized (applList) {
-            appsToRestart.addAll(applList.keySet());
+            appsToRestartMap.putAll(applList);
+        }
+
+        for (Map.Entry<String, JPAApplInfo> entry : appsToRestartMap.entrySet()) {
+            if (entry.getValue().hasPersistenceUnitsDefined()) {
+                appsToRestart.add(entry.getKey());
+            }
         }
         appsToRestart.addAll(stuckApps);
         stuckApps.clear();
@@ -898,21 +938,30 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         }
         out.println();
 
-        out.println("Applications with JPA: ");
+        // Collect all JPAApplInfo instances known by the JPA Runtime
         final Map<String, JPAApplInfo> appMap = new HashMap<String, JPAApplInfo>();
         synchronized (applList) {
             appMap.putAll(applList);
         }
 
-        for (Map.Entry<String, JPAApplInfo> entry : appMap.entrySet()) {
-            final String appName = entry.getKey();
-            final OSGiJPAApplInfo appl = (OSGiJPAApplInfo) entry.getValue();
+        // Find all JPA enabled applications, scopeinfo, pxmlinfo, and persistence unit info
+        JPAIntrospection.beginJPAIntrospection();
+        try {
+            for (Map.Entry<String, JPAApplInfo> entry : appMap.entrySet()) {
+                final String appName = entry.getKey();
+                final OSGiJPAApplInfo appl = (OSGiJPAApplInfo) entry.getValue();
 
-            out.println();
-            out.println("################################################################################");
-            out.println();
-            out.println("Application \"" + appName + "\":");
-            appl.introspect(out);
+                JPAIntrospection.beginApplicationVisit(appName, appl);
+                try {
+                    appl.introspect(out);
+                } finally {
+                    JPAIntrospection.endApplicationVisit();
+                }
+            }
+
+            JPAIntrospection.executeIntrospectionAnalysis(out);
+        } finally {
+            JPAIntrospection.endJPAIntrospection();
         }
     }
 }

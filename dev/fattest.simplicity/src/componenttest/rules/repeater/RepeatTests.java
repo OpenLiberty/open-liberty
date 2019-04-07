@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.junit.rules.ExternalResource;
 import org.junit.runner.Description;
+import org.junit.runners.model.MultipleFailureException;
 import org.junit.runners.model.Statement;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -95,20 +96,47 @@ public class RepeatTests extends ExternalResource {
         @Override
         public void evaluate() throws Throwable {
             final String m = "evaluate";
-            Log.info(c, m, "All tests will run " + actions.size() + " times:");
+            ArrayList<Throwable> errors = new ArrayList<>();
+
+            Log.info(c, m, "All tests attempt to run " + actions.size() + " times:");
             for (int i = 0; i < actions.size(); i++)
                 Log.info(c, m, "  [" + i + "] " + actions.get(i));
+
             for (RepeatTestAction action : actions) {
-                RepeatTestFilter.CURRENT_REPEAT_ACTION = action.getID();
-                if (action.isEnabled()) {
-                    Log.info(c, m, "===================================");
-                    Log.info(c, m, "");
-                    Log.info(c, m, "Running tests with action: " + action);
-                    Log.info(c, m, "");
-                    Log.info(c, m, "===================================");
-                    action.setup();
-                    statement.evaluate();
+                try {
+                    RepeatTestFilter.CURRENT_REPEAT_ACTION = action.getID();
+                    if (shouldRun(action)) {
+                        Log.info(c, m, "===================================");
+                        Log.info(c, m, "");
+                        Log.info(c, m, "Running tests with action: " + action);
+                        Log.info(c, m, "");
+                        Log.info(c, m, "===================================");
+                        action.setup();
+                        statement.evaluate();
+                    } else {
+                        Log.info(c, m, "===================================");
+                        Log.info(c, m, "");
+                        Log.info(c, m, "Skipping tests with action: " + action);
+                        Log.info(c, m, "");
+                        Log.info(c, m, "===================================");
+                    }
+                } catch (Throwable t) {
+                    // Contrary to the javadoc for @ClassRule, a class statement may throw an exception
+                    // Catch it to ensure we still run all repeats
+                    errors.add(t);
                 }
+            }
+
+            MultipleFailureException.assertEmpty(errors);
+        }
+
+        private static boolean shouldRun(RepeatTestAction action) {
+            String repeatOnly = System.getProperty("fat.repeat.only");
+            if (repeatOnly == null) {
+                return action.isEnabled();
+            } else {
+                // Note: If the user has requested this specific action, we ignore the isEnabled() flag
+                return action.getID().equals(repeatOnly);
             }
         }
     }

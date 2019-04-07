@@ -18,6 +18,7 @@
 		<url-pattern>/Protected</url-pattern>
 		<url-pattern>/Unprotected</url-pattern>
 		<url-pattern>/ForceSSL</url-pattern>
+		<url-pattern>/Everyone</url-pattern>
 	</servlet-mapping>
 	
 	<!-- SECURITY CONSTRAINTS -->
@@ -56,6 +57,18 @@
         <user-data-constraint>
            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<display-name>basic_auth_everyone</display-name>
+		<web-resource-collection>
+			<web-resource-name>basic_auth_servlet_everyone</web-resource-name>
+			<url-pattern>/Everyone</url-pattern>
+			<http-method>GET</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>javaeesec_basic_everyone</role-name>
+		</auth-constraint>
 	</security-constraint>
 
   <!-- CHALLENGE TYPE

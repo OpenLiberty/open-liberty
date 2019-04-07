@@ -1,0 +1,51 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+# TODO switch to Java 9 once available
+javac.source: 1.8
+javac.target: 1.8
+
+javac.args.release: current
+
+Bundle-Name: Database Connectivity
+Bundle-SymbolicName: com.ibm.ws.jdbc.4.3.feature
+Bundle-Description: Database connectivity infrastructure, version ${bVersion}
+
+WS-TraceGroup: RRA
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+Private-Package: \
+  com.ibm.ws.jdbc.osgi.v43
+
+-dsannotations: com.ibm.ws.jdbc.osgi.v43.JDBC43Runtime
+
+# TODO: remove bootcp override once javac.source is set to '9'
+-buildpath.bootclasspath: \
+    ../com.ibm.ws.jdbc.4.3/lib/java.sql.4.3.jar;version=file;boot=true,\
+    ${javac.bootclasspath.${javac.source}}
+  
+-buildpath: \
+	com.ibm.websphere.javaee.connector.1.6;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.kernel.feature;verion=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.jca.cm;version=latest,\
+	com.ibm.ws.jdbc;version=latest,\
+	com.ibm.ws.jdbc.4.1;version=latest,\
+	com.ibm.ws.jdbc.4.2;version=latest,\
+	com.ibm.ws.jdbc.4.3;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

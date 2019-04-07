@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -541,9 +545,7 @@
 
 7311=\u00c9rv\u00e9nytelen c\u00e9loszt\u00e1ly haszn\u00e1lata a(z) [{1}] oszt\u00e1ly [{0}] elemgy\u0171jtem\u00e9ny attrib\u00fatum\u00e1val.  Csak alapt\u00edpusok \u00e9s be\u00e1gyazhat\u00f3 oszt\u00e1lyok enged\u00e9lyezettek.
 
-# START NON-TRANSLATABLE
 7312=\u00c9rv\u00e9nytelen [{0}] be\u00e1gyazhat\u00f3 oszt\u00e1ly haszn\u00e1lata a(z) [{2}] oszt\u00e1ly [{1}] elemgy\u0171jtem\u00e9ny attrib\u00fatum\u00e1val. Tekintse meg a specifik\u00e1ci\u00f3 2.6. szakasz\u00e1t: "Egy elemgy\u0171jtem\u00e9nyen bel\u00fcl tartalmazott be\u00e1gyazhat\u00f3 oszt\u00e1ly (bele\u00e9rtve a m\u00e1sik be\u00e1gyazhat\u00f3 oszt\u00e1lyon bel\u00fcli be\u00e1gyazott oszt\u00e1lyokat) nem tartalmazhat egy elemgy\u0171jtem\u00e9nyt, sem egy olyan viszonyt egy entit\u00e1shoz, amely nem t\u00f6bb-az-egyhez vagy egy-az-egyhez viszony. A be\u00e1gyazhat\u00f3 oszt\u00e1lynak egy ilyen viszony tulajdonosi oldal\u00e1n kell lennie, \u00e9s a viszonyt egy idegen kulcs lek\u00e9pez\u00e9ssel kell lek\u00e9pezni. A(z) [{3}] attrib\u00fatum lek\u00e9pez\u00e9se a be\u00e1gyazhat\u00f3 oszt\u00e1lyon megs\u00e9rti ezt.
-# END NON-TRANSLATABLE
 
 7313=A(z) [{1}] attrib\u00fatum nem tal\u00e1lhat\u00f3 a(z) [{0}] be\u00e1gyazott oszt\u00e1lyhoz. Az attrib\u00fatumra a(z) [{2}] oszt\u00e1ly [{3}] be\u00e1gyazott attrib\u00fatum\u00e1nak t\u00e1rs\u00edt\u00e1s-fel\u00fclb\u00edr\u00e1l\u00e1sa hivatkozik.
 

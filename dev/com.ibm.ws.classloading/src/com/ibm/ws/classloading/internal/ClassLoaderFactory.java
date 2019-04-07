@@ -25,6 +25,7 @@ import org.osgi.framework.BundleContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.classloading.ClassGenerator;
+import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration;
 import com.ibm.ws.classloading.internal.util.CanonicalStore;
 import com.ibm.ws.classloading.internal.util.ClassRedefiner;
 import com.ibm.ws.classloading.internal.util.Factory;
@@ -57,15 +58,18 @@ class ClassLoaderFactory extends GatewayBundleFactory {
     private ClassLoader externalBundleLoader;
     private final ClassRedefiner redefiner;
     private final ClassGenerator generator;
+    private final GlobalClassloadingConfiguration globalConfig;
 
     ClassLoaderFactory(BundleContext bundleContext, RegionDigraph digraph, Map<Bundle, Set<GatewayClassLoader>> classloaders,
                        CanonicalStore<ClassLoaderIdentity, AppClassLoader> store,
-                       CompositeResourceProvider resourceProviders, ClassRedefiner redefiner, ClassGenerator generator) {
+                       CompositeResourceProvider resourceProviders, ClassRedefiner redefiner, ClassGenerator generator,
+                       GlobalClassloadingConfiguration globalConfig) {
         super(bundleContext, digraph, classloaders);
         this.store = store;
         this.resourceProviders = resourceProviders;
         this.redefiner = redefiner;
         this.generator = generator;
+        this.globalConfig = globalConfig;
     }
 
     private <P extends ClassLoader & DeclaredApiAccess> void setParent(P p) {
@@ -125,8 +129,8 @@ class ClassLoaderFactory extends GatewayBundleFactory {
         validate();
         inferParentLoader();
         AppClassLoader result = config.getDelegateToParentAfterCheckingLocalClasspath()
-                        ? new ParentLastClassLoader(parentClassLoader, config, classPath, access, redefiner, generator)
-                        : new AppClassLoader(parentClassLoader, config, classPath, access, redefiner, generator);
+                        ? new ParentLastClassLoader(parentClassLoader, config, classPath, access, redefiner, generator, globalConfig)
+                        : new AppClassLoader(parentClassLoader, config, classPath, access, redefiner, generator, globalConfig);
         addSharedLibPaths(result);
         runPostCreateAction(result);
         return result;

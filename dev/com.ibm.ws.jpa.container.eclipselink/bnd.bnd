@@ -25,7 +25,6 @@ Export-Package: com.ibm.ws.jpa.container.eclipselink, \
 -buildpath: \
 	com.ibm.ws.jpa.container.core;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
-	com.ibm.ws.ras.instrument;version=latest,\
 	com.ibm.websphere.javaee.persistence.2.1;version=latest,\
 	com.ibm.websphere.appserver.thirdparty.eclipselink;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\

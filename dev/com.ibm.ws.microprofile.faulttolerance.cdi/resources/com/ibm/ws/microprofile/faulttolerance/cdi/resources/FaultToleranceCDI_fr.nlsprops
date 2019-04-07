@@ -124,6 +124,16 @@ retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W: Le d\u00e9lai de gigue de l
 retry.parameter.invalid.value.CWMFT5019W.explanation=Le d\u00e9lai de gigue doit \u00eatre inf\u00e9rieur au d\u00e9lai d'attente. Le d\u00e9lai de gigue comprend le param\u00e8tre jitter et le param\u00e8tre jitterDelayUnit. Le d\u00e9lai d'attente comprend le param\u00e8tre delay et le param\u00e8tre delayUnit.
 retry.parameter.invalid.value.CWMFT5019W.useraction=Corrigez la valeur d'un ou de plusieurs param\u00e8tres pour que la dur\u00e9e du d\u00e9lai de gigue soit inf\u00e9rieure \u00e0 la dur\u00e9e du d\u00e9lai d'attente.
 
+# A method does not return Future or CompletionStage
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E=CWMFT5020E: Le type de retour de la m\u00e9thode asynchrone {0} n'est pas java.util.concurrent.Future ou java.util.concurrent.CompletionStage.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.explanation=Toutes les m\u00e9thodes annot\u00e9es avec org.eclipse.microprofile.faulttolerance.Asynchronous doivent avoir un type de retour java.util.concurrent.Future ou java.util.concurrent.CompletionStage.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=Mettez \u00e0 jour le type de retour.
+
+# A fallback method could not be found
+fallback.method.not.found.CWMFT5021E=CWMFT5021E: La m\u00e9thode de r\u00e9tromigration {0} avec les types de param\u00e8tre et de retour correspondant \u00e0 la m\u00e9thode {1} est introuvable dans la hi\u00e9rarchie de classes {2}.
+fallback.method.not.found.CWMFT5021E.explanation=Une m\u00e9thode de r\u00e9tromigration a \u00e9t\u00e9 d\u00e9clar\u00e9e mais elle n'existe pas dans la classe d\u00e9clarante ni dans ses superclasses ou dans les interfaces qu'elle impl\u00e9mente.
+fallback.method.not.found.CWMFT5021E.useraction=Supprimez l'annotation de r\u00e9tromigration ou ajoutez la m\u00e9thode manquante. Si la m\u00e9thode de r\u00e9tromigration existe mais est introuvable, v\u00e9rifiez que les types de param\u00e8tre et le type de retour des deux m\u00e9thodes correspondent et que la m\u00e9thode de r\u00e9tromigration est visible dans la classe qui d\u00e9clare la m\u00e9thode annot\u00e9e.
+
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: Une erreur interne s'est produite. L'exception est {0}.
 internal.error.CWMFT5997E.explanation=Le serveur d'application a rencontr\u00e9 une erreur interne.

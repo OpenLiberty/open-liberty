@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -541,9 +545,7 @@
 
 7311=\u00c8 stata utilizzata una classe di destinazione non valida con l''attributo di raccolta elemento [{0}] sulla classe [{1}].  Sono consentiti solo i tipi di base e le classi incorporabili.
 
-# START NON-TRANSLATABLE
 7312=\u00c8 stata utilizzata una classe incorporabile non valida [{0}] con l''attributo di raccolta elemento [{1}] sulla classe [{2}].  Consultare la sezione 2.6 della specifica: "Una classe incorporabile (incluso una classe incorporabile all''interno di un''altra classe incorporabile) contenuta all''interno di una raccolta elemento non deve contenere una raccolta elemento, n\u00e9 una relazione ad un''entit\u00e0 diversa da una relazione molti a uno o uno a uno. La classe incorporabile deve essere sul lato proprietario di tale relazione e la relazione deve essere associata tramite un''associazione chiave esterna. L''associazione per l''attributo [{3}] sulla classe incorporabile \u00e8 in violazione di questa limitazione. 
-# END NON-TRANSLATABLE
 
 7313=L''attributo [{1}] non \u00e8 stato trovato sulla classe incorporabile [{0}]. A esso si fa riferimento in una sovrascrittura associazione per l''attributo incorporato [{3}] sulla classe [{2}]. 
 

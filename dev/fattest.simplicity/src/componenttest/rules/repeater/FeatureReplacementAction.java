@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -25,6 +26,8 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyClientFactory;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -61,6 +64,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private final Set<String> clients = new HashSet<>(Arrays.asList(ALL_CLIENTS));
     private final Set<String> removeFeatures = new HashSet<>();
     private final Set<String> addFeatures = new HashSet<>();
+    private TestMode testRunMode = TestMode.LITE;
+
+    public FeatureReplacementAction() {}
 
     /**
      * Remove one feature and add one feature.
@@ -133,7 +139,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      *
      * ...to be clear, this is not the opposite of addFeatures()
      *
-     * @param removeFeatures the features to be removed
+     * @param removeFeatures the features to be removed. Wildcards are supported.
      * @return this
      */
     public FeatureReplacementAction removeFeatures(Set<String> removeFeatures) {
@@ -157,7 +163,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      *
      * ...to be clear, this is not the opposite of addFeature()
      *
-     * @param removeFeature the feature to be removed
+     * @param removeFeature the feature to be removed. Wildcards are supported.
      * @return this
      */
     public FeatureReplacementAction removeFeature(String removeFeature) {
@@ -170,6 +176,16 @@ public class FeatureReplacementAction implements RepeatTestAction {
      */
     public FeatureReplacementAction withMinJavaLevel(int javaLevel) {
         this.minJavaLevel = javaLevel;
+        return this;
+    }
+
+    public FeatureReplacementAction fullFATOnly() {
+        this.testRunMode = TestMode.FULL;
+        return this;
+    }
+
+    public FeatureReplacementAction withTestMode(TestMode mode) {
+        this.testRunMode = mode;
         return this;
     }
 
@@ -213,10 +229,16 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     @Override
     public boolean isEnabled() {
-        boolean enabled = JavaInfo.forCurrentVM().majorVersion() >= minJavaLevel;
-        if (!enabled)
+        if (JavaInfo.forCurrentVM().majorVersion() < minJavaLevel) {
             Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the java level is too low.");
-        return enabled;
+            return false;
+        }
+        if (TestModeFilter.FRAMEWORK_TEST_MODE.compareTo(testRunMode) < 0) {
+            Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the test mode " + testRunMode +
+                                     " is not valid for current mode " + TestModeFilter.FRAMEWORK_TEST_MODE);
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -306,16 +328,30 @@ public class FeatureReplacementAction implements RepeatTestAction {
             Log.info(c, m, "Original features:  " + features);
             if (forceAddFeatures) {
                 features.removeAll(removeFeatures);
+                //remove any wildcard features, before adding the new feature.
+                for (String removeFeature : removeFeatures) {
+                    if (removeFeature.endsWith("*")) {
+                        removeWildcardFeature(features, removeFeature);
+                    }
+                }
                 features.addAll(addFeatures);
             } else {
-                for (String removeFeature : removeFeatures)
-                    if (features.remove(removeFeature)) {
-                        // If we found a feature to remove that is actually present in config file, then
-                        // remove it and replace it with the corresponding feature
+                for (String removeFeature : removeFeatures) {
+                    boolean removed = false;
+                    if (removeFeature.endsWith("*")) {
+                        removed = removeWildcardFeature(features, removeFeature);
+                    } else if (features.remove(removeFeature)) {
+                        removed = true;
+                    }
+
+                    // If we found a feature to remove that is actually present in config file, then
+                    // replace it with the corresponding feature
+                    if (removed) {
                         String toAdd = getReplacementFeature(removeFeature, addFeatures);
                         if (toAdd != null)
                             features.add(toAdd);
                     }
+                }
             }
             Log.info(c, m, "Resulting features: " + features);
 
@@ -343,6 +379,20 @@ public class FeatureReplacementAction implements RepeatTestAction {
         // We may need to remove a feature without adding any replacement
         // (e.g. jsonb-1.0 is EE8 only) so in this case return null
         return null;
+    }
+
+    private static boolean removeWildcardFeature(Set<String> features, String removeFeature) {
+        String matcher = removeFeature.substring(0, removeFeature.length() - 1);
+        boolean removed = false;
+        Iterator<String> iterator = features.iterator();
+        while (iterator.hasNext()) {
+            String feature = iterator.next();
+            if (feature.startsWith(matcher)) {
+                iterator.remove();
+                removed = true;
+            }
+        }
+        return removed;
     }
 
     private static Set<File> findFile(File dir, String suffix) {

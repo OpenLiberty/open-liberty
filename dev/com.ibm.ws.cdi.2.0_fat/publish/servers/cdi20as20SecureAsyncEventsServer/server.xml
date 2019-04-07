@@ -46,6 +46,8 @@
         </application-bnd>
     </application>
     
+    <orb id="defaultOrb" orbSSLInitTimeout="60"/>
+    
     <!--Java2 security-->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" /> 
       

@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -49,9 +50,7 @@ import org.osgi.framework.wiring.BundleCapability;
 import org.osgi.framework.wiring.BundleRequirement;
 import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.framework.wiring.FrameworkWiring;
-import org.osgi.resource.Namespace;
 import org.osgi.resource.Requirement;
-import org.osgi.resource.Resource;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.osgi.service.component.ComponentContext;
@@ -97,6 +96,7 @@ import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry.BundleRepositoryH
 import com.ibm.ws.kernel.provisioning.LibertyBootRuntime;
 import com.ibm.ws.kernel.provisioning.ProductExtension;
 import com.ibm.ws.kernel.provisioning.ProductExtensionInfo;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
@@ -457,7 +457,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * @param locationService
      *                            a location service
      */
-    protected void unsetLocationService(WsLocationAdmin locationService) {}
+    protected void unsetLocationService(WsLocationAdmin locationService) {
+    }
 
     public WsLocationAdmin getLocationService() {
         return locationService;
@@ -489,7 +490,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     /**
      *
      */
-    protected void unsetRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {}
+    protected void unsetRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {
+    }
 
     /**
      * Inject a <code>EventAdmin</code> service instance.
@@ -504,7 +506,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetEventAdminService(EventAdmin eventAdminService) {}
+    protected void unsetEventAdminService(EventAdmin eventAdminService) {
+    }
 
     /**
      * Inject a <code>RegionDigraph</code> service instance.
@@ -526,7 +529,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetDigraph(RegionDigraph digraph) {}
+    protected void unsetDigraph(RegionDigraph digraph) {
+    }
 
     /**
      * Inject an <code>ExecutorService</code> service instance.
@@ -545,7 +549,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * @param executorService
      *                            an executor service
      */
-    protected void unsetExecutorService(ExecutorService executorService) {}
+    protected void unsetExecutorService(ExecutorService executorService) {
+    }
 
     /**
      * Declarative Services method for setting the variable registry service implementation reference.
@@ -562,7 +567,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetVariableRegistry(VariableRegistry variableRegistry) {}
+    protected void unsetVariableRegistry(VariableRegistry variableRegistry) {
+    }
 
     @Override
     public void updated(Dictionary<String, ?> configuration) throws ConfigurationException {
@@ -710,7 +716,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                     checkBundleStatus(startStatus); // FFDC, etc.
 
                     //register a service that can be looked up for server start.
-                    bundleContext.registerService(ServerStarted.class, new ServerStarted() {}, new Hashtable<String, Object>());
+                    bundleContext.registerService(ServerStarted.class, new ServerStarted() {
+                    }, new Hashtable<String, Object>());
                     break;
                 default:
                     break;
@@ -1006,7 +1013,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * @param postInstalledFeatures
      */
     private Set<String> getPublicFeatures(Set<String> postInstalledFeatures, boolean includeAutoFeatures) {
-        Set<String> publicFeatures = new HashSet<String>();
+        Set<String> publicFeatures = new TreeSet<String>();
         Iterator<String> it = postInstalledFeatures.iterator();
         while (it.hasNext()) {
             String feature = it.next();
@@ -1277,11 +1284,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         return status;
     }
 
-    /**
-     * @return
-     */
     private boolean sameJavaSpecVersion() {
-        return Objects.equals(System.getProperty(BundleList.PROP_JVM_SPEC_VERSION), bundleCache.getJavaSpecVersion());
+        return Objects.equals(JavaInfo.majorVersion(), bundleCache.getJavaSpecVersion());
     }
 
     /**
@@ -1940,33 +1944,9 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         refreshFeatures();
     }
 
-    boolean missingRequiredOSGiEE(FeatureResource fr) {
-        final String requiredOSGiEE = fr.getRequiredOSGiEE();
-        if (requiredOSGiEE != null) {
-            Collection<BundleCapability> foundEEs = frameworkWiring.findProviders(new Requirement() {
-                @Override
-                public Resource getResource() {
-                    return null;
-                }
-
-                @Override
-                public String getNamespace() {
-                    return ExecutionEnvironmentNamespace.EXECUTION_ENVIRONMENT_NAMESPACE;
-                }
-
-                @Override
-                public Map<String, String> getDirectives() {
-                    return Collections.singletonMap(Namespace.REQUIREMENT_FILTER_DIRECTIVE, requiredOSGiEE);
-                }
-
-                @Override
-                public Map<String, Object> getAttributes() {
-                    return Collections.emptyMap();
-                }
-            });
-            return foundEEs.isEmpty();
-        }
-        return false;
+    boolean missingRequiredJava(FeatureResource fr) {
+        Integer requiredJava = fr.getRequireJava();
+        return requiredJava == null ? false : JavaInfo.majorVersion() < requiredJava;
     }
 
 }

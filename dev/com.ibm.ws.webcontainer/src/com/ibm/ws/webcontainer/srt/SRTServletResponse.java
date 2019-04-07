@@ -103,13 +103,13 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
     // LIBERTY protected WSServletOutputStream _bufferedOut;
     protected ServletOutputStream _bufferedOut;
 
-    protected BufferedWriter _bufferedWriter = new BufferedWriter(DEFAULT_BUFFER_SIZE);
+    protected BufferedWriter _bufferedWriter = new BufferedWriter(0);
     protected PrintWriter _pwriter;
 
     protected boolean _firstWrite = false;
     protected boolean _firstWriteToCurrentBuffer = false;
 
-    protected int _bufferSize = DEFAULT_BUFFER_SIZE;
+    protected int _bufferSize = 0;
 
     protected boolean _gotWriter = false;
     protected boolean _firstWriterRetrieval = true;
@@ -284,7 +284,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
     //shared cleanup from finish & finishKeepConnection
     protected void cleanupFromFinish() {
         _response = null;
-        _bufferSize = DEFAULT_BUFFER_SIZE;
+        _bufferSize = 0;
         _encoding = null;
         // LIBERTY _responseBuffer = null;
         // _outWriterEncoding = null;
@@ -1013,7 +1013,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
         if(value.equalsIgnoreCase("NoValue")){
             return;
         }
-        //what if application has already set it programatically
+        //what if application has already set it programmatically
         if(this.getHeader("Strict-Transport-Security") == null ){
             this.setHeader("Strict-Transport-Security", value); 
         }
@@ -1994,7 +1994,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
         }
         else {
             if (!_ignoreStateErrors && isCommitted()) {
-                logger.logp(Level.WARNING, CLASS_NAME,"setStatus", "WARNING: Cannot set status. Response already committed.");
+                logger.logp(Level.WARNING, CLASS_NAME,"setStatus", "Cannot.set.status.Response.already.committed");
             }
             else {
                 if (WCCustomProperties.RESET_BUFFER_ON_SET_STATUS)
@@ -2026,7 +2026,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
         }
         else {
             if (!_ignoreStateErrors && isCommitted()) {
-                logger.logp(Level.WARNING, CLASS_NAME,"setStatus", "WARNING: Cannot set status. Response already committed.");
+                logger.logp(Level.WARNING, CLASS_NAME,"setStatus", "Cannot.set.status.Response.already.committed");
             }
             else {
                 if (WCCustomProperties.RESET_BUFFER_ON_SET_STATUS)
@@ -2297,7 +2297,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
                 throw new IllegalStateException();
             }
             else {
-                logger.logp(Level.WARNING, CLASS_NAME,"addSessionCookie", "WARNING: Cannot set session cookie. Response already committed.");
+                logger.logp(Level.WARNING, CLASS_NAME,"addSessionCookie", "Cannot.set.session.cookie.Response.already.committed");
             }
         }
         else {
@@ -2316,6 +2316,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
 
         if (resp == null) {
             _rawOut.init(null);
+            _bufferedWriter.clean();
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  //306998.15
                 logger.exiting(CLASS_NAME,"initForNextResponse");
             return;

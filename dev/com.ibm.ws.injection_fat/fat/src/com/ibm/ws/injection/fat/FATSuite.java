@@ -23,6 +23,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 RepeatableEnvEntryTest.class,
                 RepeatableTranTest.class,
                 ResRefTest.class,
+                ServiceLookupTest.class,
                 TranTest.class
 })
 public class FATSuite {}

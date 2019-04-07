@@ -98,7 +98,7 @@ public class CollectorJsonUtils {
     private static String jsonifyGCEvent(int maxFieldLength, String wlpUserDir,
                                          String serverName, String hostName, String eventType, Object event, String[] tags) {
         GenericData genData = (GenericData) event;
-        ArrayList<KeyValuePair> pairs = genData.getPairs();
+        KeyValuePair[] pairs = genData.getPairs();
         KeyValuePair kvp = null;
         String key = null;
 
@@ -328,7 +328,7 @@ public class CollectorJsonUtils {
 
     public static String jsonifyAudit(String wlpUserDir, String serverName, String hostName, Object event, String[] tags) {
         GenericData genData = (GenericData) event;
-        ArrayList<KeyValuePair> pairs = genData.getPairs();
+        KeyValuePair[] pairs = genData.getPairs();
         String key = null;
         StringBuilder sb = CollectorJsonHelpers.startAuditJson(hostName, wlpUserDir, serverName);
 

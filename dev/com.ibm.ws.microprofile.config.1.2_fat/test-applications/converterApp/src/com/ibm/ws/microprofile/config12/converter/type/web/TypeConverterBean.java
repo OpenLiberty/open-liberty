@@ -11,9 +11,9 @@
 package com.ibm.ws.microprofile.config12.converter.type.web;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.Optional;
@@ -128,7 +128,9 @@ public class TypeConverterBean {
      */
     public void optionalConverterTest() throws Exception {
         assertNotNull(unknownOptional);
-        assertFalse(unknownOptional.isPresent());
+        if (unknownOptional.isPresent()) {
+            fail("optional value should have been null but was (MyStringObject): " + unknownOptional.get().getValue());
+        }
     }
 
     /**

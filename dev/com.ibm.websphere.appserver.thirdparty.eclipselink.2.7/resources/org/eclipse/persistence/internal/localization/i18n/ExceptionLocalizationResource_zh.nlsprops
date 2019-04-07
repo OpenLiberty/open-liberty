@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -354,9 +358,7 @@ position_param_not_found=\u4f4d\u7f6e {0} \u6ca1\u6709\u53c2\u6570\u3002
 
 pu_configured_for_resource_local=\u65e0\u6cd5\u521b\u5efa\u5e26\u6709 SynchronizationType \u7684 EntityManager\uff0c\u56e0\u4e3a PersistenceUnit \u662f\u4f7f\u7528\u8d44\u6e90\u672c\u5730\u4e8b\u52a1\u914d\u7f6e\u7684\u3002
 
-# START NON-TRANSLATABLE
 remove_deletion_failed=Remove deletion failed:
-# END NON-TRANSLATABLE
 
 rollback_because_of_rollback_only=\u4e8b\u52a1\u201c\u5df2\u56de\u6eda\u201d\uff0c\u56e0\u4e3a\u4e8b\u52a1\u8bbe\u7f6e\u4e3a RollbackOnly\u3002
 
@@ -428,6 +430,7 @@ unknown_bean_class=\u5b9e\u4f53 bean \u7c7b {0} \u672a\u77e5\uff0c\u8bf7\u9a8c\u
 
 unknown_entitybean_name=\u672a\u77e5\u5b9e\u4f53 bean \u540d\u79f0\uff1a{0}
 
+unsupported_classfile_version=\u4f7f\u7528\u4e86\u4e0d\u53d7\u652f\u6301\u7684 JDK \u6765\u7f16\u8bd1 {0} \u7c7b\u3002\u8bf7\u5411 EclipseLink \u5f00\u653e\u5f0f\u6e90\u4ee3\u7801\u9879\u76ee\u62a5\u544a\u6b64\u9519\u8bef\u3002
 wrap_convert_exception=\u5bf9\u503c\u4e3a {2} \u7684\u8f6c\u6362\u5668\u7c7b {1} \u8c03\u7528 {0} \u65f6\u53d1\u751f\u4e86\u5f02\u5e38
 
 wrap_ejbql_exception=\u5728 EntityManager \u4e2d\u521b\u5efa\u67e5\u8be2\u65f6\u53d1\u751f\u4e86\u5f02\u5e38

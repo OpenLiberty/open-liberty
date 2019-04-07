@@ -89,17 +89,6 @@ public class Http2LiteModeTests extends FATServletClient {
                                  testName);
     }
 
-    public void runStressTest() throws Exception {
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "runTest()", "Running test with iterations of: " + Utils.STRESS_ITERATIONS);
-        }
-
-        FATServletClient.runTest(runtimeServer,
-                                 "H2FATDriver/H2FATDriverServlet?hostName=" + server.getHostname() + "&port=" + server.getHttpSecondaryPort() + "&iterations="
-                                                + Utils.STRESS_ITERATIONS + "&testdir=" + Utils.TEST_DIR,
-                                 testName);
-    }
-
     @Test
     public void testUpgradeHeaderFollowedBySettingsFrame() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
@@ -160,10 +149,11 @@ public class Http2LiteModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
-    public void testHeaderAndDataPost() throws Exception {
-        runTest(defaultServletPath, testName.getMethodName());
-    }
+    // Currently in Http2FullTracingTests
+    //@Test
+    //public void testHeaderAndDataPost() throws Exception {
+    //    runTest(defaultServletPath, testName.getMethodName());
+    //}
 
     /**
      * Test Coverage: Client sends two HTTP/2 Requests on two HTTP/2 Streams.
@@ -293,10 +283,11 @@ public class Http2LiteModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
-    public void testDataOnStreamZero() throws Exception {
-        runTest(genericServletPath, testName.getMethodName());
-    }
+    // Moved to trace, build break 259034
+    //@Test
+    //public void testDataOnStreamZero() throws Exception {
+    //    runTest(genericServletPath, testName.getMethodName());
+    //}
 
     /**
      * Test Coverage: Client starts a stream 7, then starts a stream 5, which is illegal;
@@ -381,10 +372,11 @@ public class Http2LiteModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
-    public void testZeroLengthPadding() throws Exception {
-        runTest(dataServletPath, testName.getMethodName());
-    }
+    // Moved to trace
+    //@Test
+    //public void testZeroLengthPadding() throws Exception {
+    //    runTest(dataServletPath, testName.getMethodName());
+    //}
 
     /**
      * Test Coverage: Send a DATA frame with a frame length of 5 and a padding length of 6.
@@ -393,6 +385,7 @@ public class Http2LiteModeTests extends FATServletClient {
      *
      * @throws Exception
      */
+
     @Test
     public void testInvalidPaddingValue() throws Exception {
         runTest(dataServletPath, testName.getMethodName());

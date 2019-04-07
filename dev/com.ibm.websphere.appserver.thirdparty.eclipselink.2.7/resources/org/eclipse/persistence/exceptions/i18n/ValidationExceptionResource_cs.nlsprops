@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -541,9 +545,7 @@
 
 7311=S atributem kolekce prvku [{0}] na t\u0159\u00edd\u011b [{1}] se pou\u017e\u00edv\u00e1 neplatn\u00e1 c\u00edlov\u00e1 t\u0159\u00edda. Jsou povoleny pouze z\u00e1kladn\u00ed typy a vlo\u017eiteln\u00e9 t\u0159\u00eddy.
 
-# START NON-TRANSLATABLE
 7312=S atributem kolekce prvku [{1}] na t\u0159\u00edd\u011b [{2}] se pou\u017e\u00edv\u00e1 neplatn\u00e1 vlo\u017eiteln\u00e1 t\u0159\u00edda [{0}]. Viz sekce 2.6 specifikace: "Vlo\u017eiteln\u00e1 t\u0159\u00edda (v\u010detn\u011b vlo\u017eiteln\u00e9 t\u0159\u00eddy v r\u00e1mci jin\u00e9 vlo\u017eiteln\u00e9 t\u0159\u00eddy) obsa\u017een\u00e1 v kolekci prvku nesm\u00ed obsahovat kolekci prvku ani jin\u00fd vztah s entitou ne\u017e vztah typu  many-to-one nebo one-to-one. Vlo\u017eiteln\u00e1 t\u0159\u00edda mus\u00ed b\u00fdt na vlastnick\u00e9 stran\u011b tohoto vztahu a vztah mus\u00ed b\u00fdt mapov\u00e1n pomoc\u00ed mapov\u00e1n\u00ed ciz\u00edho kl\u00ed\u010de. Mapov\u00e1n\u00ed pro atribut [{3}] na vlo\u017eiteln\u00e9 t\u0159\u00edd\u011b to poru\u0161uje.
-# END NON-TRANSLATABLE
 
 7313=Na vlo\u017eiteln\u00e9 t\u0159\u00edd\u011b [{0}] nebyl nalezen atribut [{1}]. Odkazuje se na n\u011bj v potla\u010den\u00ed p\u0159idru\u017een\u00ed pro vlo\u017een\u00fd atribut [{3}] na t\u0159\u00edd\u011b [{2}].
 

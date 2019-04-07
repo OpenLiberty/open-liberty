@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 IBM Corporation and others.
+ * Copyright (c) 2010, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,16 +44,16 @@ import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.TMService;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.UOWCallback;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
-import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.test.XAFlowCallbackControl;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.ws.uow.UOWScopeCallback;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
-import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.tx.UOWEventListener;
 
 public class TransactionManagerService implements ExtendedTransactionManager, TransactionManager, EmbeddableWebSphereTransactionManager, UOWCurrent {
@@ -106,9 +106,9 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
      *
      * @param cp
      */
-    public void doStartup(ConfigurationProvider cp, ResourceFactory dataSourceFactory, boolean isSQLRecoveryLog) {
+    public void doStartup(ConfigurationProvider cp, boolean isSQLRecoveryLog) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "doStartup with cp: " + cp + "and factory: " + dataSourceFactory + " and flag: " + isSQLRecoveryLog);
+            Tr.debug(tc, "doStartup with cp: " + cp + " and flag: " + isSQLRecoveryLog);
 
         // Create an AppId that will be unique for this server to be used in the generation of Xids.
 
@@ -452,6 +452,7 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
         ((EmbeddableTranManagerSet) etm()).registerLTCCallback(arg0);
     }
 
+    @FFDCIgnore({ org.osgi.framework.BundleException.class })
     public void shutDownFramework() {
 //        Tr.audit(tc, "TransactionManagerService.shutDownFramework");
         try {
@@ -461,6 +462,9 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
                 if (bundle != null)
                     bundle.stop();
             }
+        } catch (org.osgi.framework.BundleException e) {
+            // do not FFDC this.
+            // exceptions during bundle stop occur if framework is already stopping or stopped
         } catch (Exception e) {
             // do not FFDC this.
             // exceptions during bundle stop occur if framework is already stopping or stopped

@@ -412,7 +412,7 @@ public class LTPAToken2 implements Token, Serializable {
      * @param expirationInMinutes the expiration limit of the LTPA2 token in minutes
      */
     private final void setExpiration(long expirationInMinutes) {
-        expirationInMilliseconds = ((System.currentTimeMillis() + expirationInMinutes * 60 * 1000 + 60000) / 60000) * 60000;
+	expirationInMilliseconds = System.currentTimeMillis()+ expirationInMinutes * 60 * 1000;
         signature = null;
         if (userData != null) {
             encryptedBytes = null;

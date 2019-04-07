@@ -451,6 +451,12 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
         return xa;
     }
 
+    /**
+     * Returns whether Liberty Connection Pooling should be disabled
+     *
+     */
+    public abstract boolean isLibertyConnectionPoolingDisabled();
+
     @FFDCIgnore(PrivilegedActionException.class)
     private void initPrivileged() throws Exception {
         try {

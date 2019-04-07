@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.concurrent.ContextualAction;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -139,7 +140,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     /**
      * DS method to activate this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param componentContext DeclarativeService defined/populated component context
      */
     @Trivial
@@ -170,7 +171,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     /**
      * DS method to deactivate this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param componentContext DeclarativeService defined/populated component context
      */
     protected void deactivate(ComponentContext componentContext) {
@@ -207,7 +208,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
 
     /**
      * Declarative Services method for setting the context service reference
-     * 
+     *
      * @param ref reference to the service
      */
     protected void setContextService(ServiceReference<WSContextService> ref) {
@@ -216,7 +217,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
 
     /**
      * Declarative Services method for setting the ThreadGroupTracker service
-     * 
+     *
      * @param the service
      */
     protected void setThreadGroupTracker(ThreadGroupTracker svc) {
@@ -225,7 +226,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
 
     /**
      * Declarative Services method for setting the metadata identifier service
-     * 
+     *
      * @param the service
      */
     protected void setMetadataIdentifierService(MetaDataIdentifierService svc) {
@@ -234,7 +235,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
 
     /**
      * Declarative Services method for unsetting the context service reference
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetContextService(ServiceReference<WSContextService> ref) {
@@ -243,7 +244,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
 
     /**
      * Declarative Services method for unsetting the ThreadGroupTracker service
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetThreadGroupTracker(ThreadGroupTracker svc) {
@@ -252,7 +253,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
 
     /**
      * Declarative Services method for unsetting the metadata identifier service
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetMetadataIdentifierService(MetaDataIdentifierService svc) {
@@ -269,7 +270,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
 
         /**
          * Construct a privileged action that creates a thread group.
-         * 
+         *
          * @param name thread group name
          * @param maxPriority maximum priority for the threads
          */
@@ -322,7 +323,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
 
         /**
          * Capture the current thread context and construct a ManagedThreadFactory.
-         * 
+         *
          * @param serverAccessControlContext server access control context, which we can use to run certain privileged operations
          *            that aren't available to application threads.
          */
@@ -353,6 +354,10 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
             // java.lang.IllegalStateException
             if (isShutdown.get())
                 throw new IllegalStateException(Tr.formatMessage(tc, "CWWKC1100.resource.unavailable", name));
+
+            // There is no spec requirement to allow contextual actions here, so reject until there is shown to be a need
+            if (runnable instanceof ContextualAction)
+                throw new IllegalArgumentException(runnable.getClass().getName());
 
             String threadName = name + "-thread-" + createdThreadCount.incrementAndGet();
             ManagedThreadImpl thread = new ManagedThreadImpl(this, runnable, threadName);

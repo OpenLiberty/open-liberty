@@ -105,6 +105,37 @@ garbageCollectionCount.description=Afi\u015feaz\u0103 num\u0103rul total de cole
 garbageCollectionTime.description=Afi\u015feaz\u0103 timpul aproximativ scurs pentru colectarea acumulat\u0103 \u00een milisecunde. Acest atribut afi\u015feaz\u0103 -1 dac\u0103 timpul scurs de colectare este nedefinit pentru acest colector. Implementarea ma\u015finii virtuale Java ar putea utiliza un cronometru de rezolu\u0163ie \u00eenalt\u0103 pentru a m\u0103sura timpul scurs. Acest atribut ar putea afi\u015fa aceea\u015fi valoare chiar dac\u0103 num\u0103rul de colec\u0163ie a fost incrementat dac\u0103 intervalul de colectare este foarte scurt.
 
 #-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+threadpool.activeThreads.description=Num\u0103rul de fire de execu\u0163ie care ruleaz\u0103 taskuri.
+threadpool.size.description=Dimensiunea pool-ului de fire.
+
+servlet.request.total.description=Num\u0103rul de vizite la acest servlet de la pornirea serverului.
+servlet.responseTime.total.description=Timpul total de r\u0103spuns al acestui servlet de la pornirea serverului.
+
+connectionpool.create.total.description=Num\u0103rul total de conexiuni gestionate care au fost create de la crearea pool-ului.
+connectionpool.destroy.total.description=Num\u0103rul total de conexiuni gestionate care au fost distruse de la crearea pool-ului.
+connectionpool.managedConnections.description=Num\u0103rul total de conexiuni gestionate \u00een pool-urile libere, partajate \u015fi nepartajate.
+connectionpool.connectionHandles.description=Num\u0103rul de conexiuni care sunt \u00een uz. Acest num\u0103r poate include mai multe conexiuni care sunt partajate de la o singur\u0103 conexiune gestionat\u0103.
+connectionpool.freeConnections.description=Num\u0103rul total de conexiuni gestionate \u00een pool-ul liber.
+connectionpool.waitTime.total.description=Timpul total de a\u015fteptare pe toate cererile de conexiune de la pornirea serverului.
+connectionpool.inUseTime.total.description=Timpul total \u00een care toate conexiunile sunt folosite de la pornirea serverului.
+connectionpool.usedConnections.total.description=Num\u0103rul total de cereri de conexiune care au a\u015fteptat din cauza pool-ului de conexiuni plin sau care nu au trebuit s\u0103 a\u015ftepte de la pornirea serverului. Orice conexiuni care sunt momentan folosite nu sunt incluse \u00een acest total.
+connectionpool.queuedRequests.total.description=Num\u0103rul total de cereri de conexiune care au trebuit s\u0103 a\u015ftepte din cauza pool-ului de conexiuni plin de la pornirea serverului. 
+session.create.total.description=Num\u0103rul de sesiuni care s-au logat de la activarea acestui indice de m\u0103surare.
+session.liveSessions.description=Num\u0103rul de utilizatori care sunt loga\u0163i curent.
+session.activeSessions.description=Num\u0103rul de sesiuni active concurente. (O sesiune este activ\u0103 dac\u0103 produsul este proceseaz\u0103 curent o cerere care utilizeaz\u0103 acea sesiune de utilizator).
+session.invalidated.total.description=Num\u0103rul de sesiuni care s-au delogat de la activarea acestui indice de m\u0103surare.
+session.invalidatedbyTimeout.total.description=Num\u0103rul de sesiuni care s-au delogat prin timeout de la activarea acestui indice de m\u0103surare.
+
+jaxws.invocations.total.description=Num\u0103rul total de invoc\u0103ri la acest punct final sau de opera\u0163ii.
+jaxws.checkedApplicationFaults.total.description=Num\u0103rul de erori de aplica\u0163ii verificate.
+jaxws.logicalRuntimeFaults.total.description=Num\u0103rul de erori de runtime logic.
+jaxws.runtimeFaults.total.description=Num\u0103rul de erori de runtime.
+jaxws.uncheckedApplicationFaults.total.description=Num\u0103rul de erori de aplica\u0163ii neverificate.
+jaxws.responseTime.total.description=Timpul total de tratare r\u0103spuns de la pornirea serverului.
+
+#-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2017 IBM Corporation and others.
+ * Copyright (c) 2009, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,6 +135,7 @@ public class ReferenceContextImpl implements ReferenceContext {
      * Set of all classes that have been processed.
      */
     private final Set<Class<?>> ivProcessedInjectionClasses = new HashSet<Class<?>>();
+    private static final int svInjClassMapCacheSize = 512;
 
     /**
      * Set of all injection bindings that have been processed.
@@ -162,8 +163,7 @@ public class ReferenceContextImpl implements ReferenceContext {
     }
 
     @Override
-    public String toString() // d675172
-    {
+    public String toString() {
         return super.toString() + ivProviders;
     }
 
@@ -171,8 +171,7 @@ public class ReferenceContextImpl implements ReferenceContext {
      * Gets the java:comp Context built by the InjectionEngine.
      */
     @Override
-    public Context getJavaCompContext() // F743-171630CodRv
-    {
+    public Context getJavaCompContext() {
         return ivComponentJavaContext;
     }
 
@@ -193,8 +192,7 @@ public class ReferenceContextImpl implements ReferenceContext {
      * Gets the EJBContext 1.0 style data structure built by the InjectionEngine.
      */
     @Override
-    public Properties getEJBContext10Properties() // F743-17630CodRv
-    {
+    public Properties getEJBContext10Properties() {
         return ivEjbContext10;
     }
 
@@ -360,8 +358,7 @@ public class ReferenceContextImpl implements ReferenceContext {
         String logicalModuleName = null;
         String logicalAppName = null;
 
-        if (primaryCompNSConfig.getOwningFlow() != ComponentNameSpaceConfiguration.ReferenceFlowKind.MANAGED_BEAN) // d705480
-        {
+        if (primaryCompNSConfig.getOwningFlow() != ComponentNameSpaceConfiguration.ReferenceFlowKind.MANAGED_BEAN) {
             // F743-26137 - Create the javaNameSpace to be capable of accessing
             // java:global, java:app, and java:module.
             logicalModuleName = primaryCompNSConfig.getLogicalModuleName();
@@ -376,8 +373,7 @@ public class ReferenceContextImpl implements ReferenceContext {
                                                                              logicalModuleName,
                                                                              componentName);
                 ivComponentJavaContext = ivInjectionEngine.createComponentNameSpaceContext(ivComponentNameSpace);
-            } catch (NamingException nex) // F53641
-            {
+            } catch (NamingException nex) {
                 FFDCFilter.processException(nex, CLASS_NAME + ".process", "517", this);
                 InjectionException iex = new InjectionException("Failed to create the JNDI component name space for the " + primaryCompNSConfig.getDisplayName() +
                                                                 " component in the " + primaryCompNSConfig.getModuleName() +
@@ -503,8 +499,7 @@ public class ReferenceContextImpl implements ReferenceContext {
                 // to update this logic to account for a null list of injection classes, or
                 // we'll need to get those groups to agree to not send in a null class list.
                 List<Class<?>> classesInPlay = compNSConfig.getInjectionClasses();
-                if (classesInPlay != null) // d634905
-                {
+                if (classesInPlay != null) {
                     totalInjectionClasses.addAll(classesInPlay);
 
                     if (!compNSConfig.isMetaDataComplete()) {
@@ -583,8 +578,7 @@ public class ReferenceContextImpl implements ReferenceContext {
         masterCompNSConfig.setInjectionProcessorContext(context);
 
         List<Class<?>> injectionClasses = masterCompNSConfig.getInjectionClasses();
-        if (injectionClasses != null) // d741472
-        {
+        if (injectionClasses != null) {
             ivProcessedInjectionClasses.addAll(injectionClasses);
         }
 
@@ -626,8 +620,7 @@ public class ReferenceContextImpl implements ReferenceContext {
 
         if (isTraceOn && tc.isDebugEnabled()) {
             Tr.debug(tc, "Output component context:", ivComponentJavaContext);
-            if (ivJavaColonCompEnvMap != null) // d705480
-            {
+            if (ivJavaColonCompEnvMap != null) {
                 Tr.debug(tc, "Output java:comp/env map: ", dumpJavaColonCompEnvMap()); // F743-17630CodRv
             }
             Tr.debug(tc, "Output EJB context 1.0: ", ivEjbContext10);
@@ -651,8 +644,7 @@ public class ReferenceContextImpl implements ReferenceContext {
             if (cmd != null) {
                 String name = cmd.getJ2EEName().getComponent();
 
-                if (!compNSConfig.isMetaDataComplete()) // F743-33811.1
-                {
+                if (!compNSConfig.isMetaDataComplete()) {
                     List<Class<?>> classesToScan = compNSConfig.getInjectionClasses();
                     if (classesToScan != null) {
                         for (Class<?> klass : classesToScan) {
@@ -682,8 +674,7 @@ public class ReferenceContextImpl implements ReferenceContext {
         masterCompNSConfig.setPersistenceMaps(classesToComponents, persistenceRefsToComponents);
     }
 
-    private <T> void addComponentToPersistenceMap(Map<T, Collection<String>> map, T key, String name) // F743-30682
-    {
+    private <T> void addComponentToPersistenceMap(Map<T, Collection<String>> map, T key, String name) {
         Collection<String> components = map.get(key);
         if (components == null) {
             components = new LinkedHashSet<String>();
@@ -726,8 +717,7 @@ public class ReferenceContextImpl implements ReferenceContext {
      */
     static void mergeResRefsAndBindings(ComponentNameSpaceConfiguration masterCompNSConfig,
                                         List<ComponentNameSpaceConfiguration> compNSConfigs,
-                                        InjectionScope scope) // F743-33811.2
-                    throws InjectionException {
+                                        InjectionScope scope) throws InjectionException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "mergeResRefsAndBindings");
@@ -760,8 +750,7 @@ public class ReferenceContextImpl implements ReferenceContext {
                     String resRefName = resRef.getName();
 
                     if (scope == null ||
-                        scope == InjectionScope.match(resRefName)) // F743-33811.2
-                    {
+                        scope == InjectionScope.match(resRefName)) {
                         ResourceRefConfig[] resRefArray = resRefMap.get(resRefName);
                         if (resRefArray == null) {
                             resRefArray = new ResourceRefConfig[compNSConfigs.size()];
@@ -798,8 +787,7 @@ public class ReferenceContextImpl implements ReferenceContext {
 
         refMergeSuccess &= mergeResRefs(masterCompNSConfig, compNSConfigs, resRefMap); // d643480
 
-        if (!refMergeSuccess) // d643480
-        {
+        if (!refMergeSuccess) {
             throw new InjectionConfigurationException("There were conflicting references.  " +
                                                       "See CWNEN0061E messages in log for details.");
         }
@@ -828,8 +816,7 @@ public class ReferenceContextImpl implements ReferenceContext {
                                          String whatAttribute,
                                          Map<String, String> bindings,
                                          Map<String, String> allBindings,
-                                         Map<String, ComponentNameSpaceConfiguration> allComps) // d643480
-    {
+                                         Map<String, ComponentNameSpaceConfiguration> allComps) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "mergeBindings: " + whatType);
@@ -838,9 +825,7 @@ public class ReferenceContextImpl implements ReferenceContext {
         if (bindings != null) {
             for (Map.Entry<String, String> entry : bindings.entrySet()) {
                 String refName = entry.getKey();
-                if (scope == null ||
-                    scope == InjectionScope.match(refName)) // F743-33811.2
-                {
+                if (scope == null || scope == InjectionScope.match(refName)) {
                     String binding = entry.getValue();
                     String oldBinding = allBindings.get(refName);
 
@@ -889,8 +874,7 @@ public class ReferenceContextImpl implements ReferenceContext {
      */
     private static boolean mergeResRefs(ComponentNameSpaceConfiguration masterCompNSConfig,
                                         List<ComponentNameSpaceConfiguration> compNSConfigs,
-                                        Map<String, ResourceRefConfig[]> totalResRefs) // d643480
-    {
+                                        Map<String, ResourceRefConfig[]> totalResRefs) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isDebugEnabled())
             Tr.entry(tc, "mergeResRefs");
@@ -990,7 +974,9 @@ public class ReferenceContextImpl implements ReferenceContext {
 
             // Now that metadata has processed successfully, add all the classes
             // to the list of processed classes.
-            ivProcessedInjectionClasses.addAll(injectionClasses);
+            if (ivProcessedInjectionClasses.size() <= svInjClassMapCacheSize) {
+                ivProcessedInjectionClasses.addAll(injectionClasses);
+            }
         }
 
         if (isTraceOn && tc.isDebugEnabled())
@@ -1019,8 +1005,7 @@ public class ReferenceContextImpl implements ReferenceContext {
      * then an empty (non-null) list is returned.
      */
     @Override
-    public InjectionTarget[] getInjectionTargets(final Class<?> classToInjectInto) throws InjectionException //RTC216563 (PI63972) moved synchronized
-    {
+    public InjectionTarget[] getInjectionTargets(final Class<?> classToInjectInto) throws InjectionException {
         // This method attempts to cache the InjectTargets that are associated
         // with the specified class, so that if this method is invoked again and
         // the same class is specified, we can just grab the list from the Map
@@ -1076,7 +1061,9 @@ public class ReferenceContextImpl implements ReferenceContext {
     }
 
     @Override
-    public Set<Class<?>> getProcessedInjectionClasses() {
+    public synchronized Set<Class<?>> getProcessedInjectionClasses() {
+        // Synchronized to ensure processDynamic() is not concurrently updating the
+        // set of processed injection classes.
         return new HashSet<Class<?>>(ivProcessedInjectionClasses);
     }
 }

@@ -22,6 +22,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 BasicSseTest.class,
                 SseJaxbTest.class,
                 SseJsonbTest.class,
-                DelaySseTest.class
+                DelaySseTest.class,
+                BroadcasterTest.class,
+                SseClientBehaviorTest.class
 })
 public class FATSuite {}

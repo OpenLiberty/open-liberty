@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -268,6 +268,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     private boolean _supportsReAuth = false;
     private int hashMapBucket = 0;
     private Object sharedPoolCoordinator = null;
+    private Object unSharedPoolCoordinator = null;
     private Object mcWrapperList = null;
 
     private Object currentSharedPool = null;
@@ -515,6 +516,20 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     @Override
     public void setSharedPoolCoordinator(Object sharedPoolCoordinator) {
         this.sharedPoolCoordinator = sharedPoolCoordinator;
+    }
+
+    /**
+     * Set the unshared pool coordinator
+     */
+    @Override
+    public void setUnSharedPoolCoordinator(Object unSharedPoolCoordinator) {
+        this.unSharedPoolCoordinator = unSharedPoolCoordinator;
+    }
+
+    @Override
+    public Object getUnSharedPoolCoordinator() {
+        // TODO Auto-generated method stub
+        return unSharedPoolCoordinator;
     }
 
     @Override
@@ -1555,9 +1570,10 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             }
 
         } catch (Exception e) {
+            if (!isMCAborted()) {
+                com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ejs.j2c.MCWrapper.cleanup", "712", this);
+            }
 
-            com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ejs.j2c.MCWrapper.cleanup", "712", this);
-            ResourceException re = null;
             if (!stale && !do_not_reuse_mcw) {
                 Object[] parms = new Object[] { "cleanup", "cleanup", mc, e, gConfigProps.cfName };
                 Tr.error(tc, "MCERROR_J2CA0081", parms);
@@ -1566,9 +1582,13 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
                     Tr.debug(this, tc, "got a SCE when doing cleanup on the mc, { mc, e, pmiName}; is:", new Object[] { mc, e, gConfigProps.cfName });
                 }
             }
-            re = new ResourceException("cleanup: Exception caught");
-            re.initCause(e);
-            throw re;
+
+            if (!isMCAborted()) {
+                ResourceException re = null;
+                re = new ResourceException("cleanup: Exception caught");
+                re.initCause(e);
+                throw re;
+            }
 
         } finally {
             if (mcConnectionCount != 0) {
@@ -1627,6 +1647,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             uowCoord = null;
             holdTimeStart = 0;
             holdStartTimeSet = false;
+            lastAllocationTime = 0;
             threadId = null;
             threadName = null;
             totalUseTime = 0;
@@ -1634,6 +1655,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             useStartTimeSet = false;
             totalHoldTime = 0;
             purgeState = false;
+            unSharedPoolCoordinator = null;
             if (!isAlreadyFreeActive) {
                 isNotAlreadyFreeActive();
             }
@@ -1777,7 +1799,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
                 if (xaTranWrapper != null && !isMCAborted()) {
                     xaTranWrapper.releaseResources();
                 }
-                if (localTranWrapper != null) {
+                if (localTranWrapper != null && !isMCAborted()) {
                     localTranWrapper.releaseResources();
                 }
                 if (noTranWrapper != null) {
@@ -2221,33 +2243,61 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
                 //  mychm.removeHandles(this,connectionEvent.getConnectionHandle());
 
                 this.clearHandleList();
-                try {
-                    if (state != STATE_INACTIVE) { // If this MCWrapper is inactive then it has already been destroyed, likely because
-                        //a connection error occurred event was called on this connection while it was in the free pool.  Skipping a second
-                        //cleanup and destroy so the connection count is not double decremented and we don't get an IllegalStateException.
-                        this.releaseToPoolManager();
-                    } else {
-                        if (isTracingEnabled && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Skipping release since the MCWrapper state was already STATE_INACTIVE");
+                releaseToPoolManagerHelper();
+            } else {
+                //if (isMCAborted() && LOCALTXWRAPPER == getTranWrapperId()) {   // fails two tests
+                if (isMCAborted()) {
+                    if (isTracingEnabled && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Connection is aborted, removing MCWrapper from the pool.");
+                    }
+
+                    if (involvedInTransaction()) {
+                        try {
+                            TranWrapper tranWrapper = getCurrentTranWrapper();
+                            if (tranWrapper instanceof LocalTransactionWrapper &&
+                                ((LocalTransactionWrapper) tranWrapper).isEnlisted()) {
+                                tranWrapper.delist();
+                            }
+                        } catch (ResourceException e) {
+                            // Can't delist, assuming the connection was already destroyed since it was aborted.
+                            Tr.error(tc, "DELIST_FAILED_J2CA0073", "connectionErrorOccurred", e, gConfigProps.cfName);
                         }
                     }
-                } catch (Exception ex) {
-                    // Nothing to do here. PoolManager has already logged it.
-                    // Since we are in cleanup mode, we will not surface a Runtime exception to the ResourceAdapter
-                    com.ibm.ws.ffdc.FFDCFilter.processException(ex, "com.ibm.ejs.j2c.MCWrapper.connectionErrorOccurred", "197", this);
-
+                    releaseToPoolManagerHelper();
+                } else {
                     if (isTracingEnabled && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc,
-                                 "connectionClosed: Closing connection in pool "
-                                           + gConfigProps.cfName
-                                           + " caught exception, but will continue processing: ",
-                                 ex);
+                        Tr.debug(this, tc, "Cannot release MCWrapper to the pool, waiting for transaction to complete");
                     }
                 }
+            }
+        }
+    }
+
+    private void releaseToPoolManagerHelper() {
+
+        final boolean isTracingEnabled = TraceComponent.isAnyTracingEnabled();
+
+        try {
+            if (state != STATE_INACTIVE) { // If this MCWrapper is inactive then it has already been destroyed, likely because
+                //a connection error occurred event was called on this connection while it was in the free pool.  Skipping a second
+                //cleanup and destroy so the connection count is not double decremented and we don't get an IllegalStateException.
+                this.releaseToPoolManager();
             } else {
                 if (isTracingEnabled && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Cannot release MCWrapper to the pool, waiting for transaction to complete");
+                    Tr.debug(tc, "Skipping release since the MCWrapper state was already STATE_INACTIVE");
                 }
+            }
+        } catch (Exception ex) {
+            // Nothing to do here. PoolManager has already logged it.
+            // Since we are in cleanup mode, we will not surface a Runtime exception to the ResourceAdapter
+            com.ibm.ws.ffdc.FFDCFilter.processException(ex, "com.ibm.ejs.j2c.MCWrapper.connectionErrorOccurred", "197", this);
+
+            if (isTracingEnabled && tc.isDebugEnabled()) {
+                Tr.debug(this, tc,
+                         "connectionClosed: Closing connection in pool "
+                                   + gConfigProps.cfName
+                                   + " caught exception, but will continue processing: ",
+                         ex);
             }
         }
     }
@@ -2458,7 +2508,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     @Override
     public String toString() {
 
-        StringBuffer buf = new StringBuffer(256);
+        StringBuffer buf = new StringBuffer(500);
 
         /*
          * Added the isStale check to mark stale connections in the
@@ -2482,6 +2532,8 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             buf.append(" Connections being held ");
             buf.append(mcConnectionCount);
         }
+        if (unSharedPoolCoordinator != null)
+            buf.append(" Inside transaction scope " + unSharedPoolCoordinator);
         buf.append(nl);
 
         return buf.toString();
@@ -3213,10 +3265,10 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
         } catch (SQLFeatureNotSupportedException e) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(tc, "JDBC feature or driver does not support aborting connections.");
-        } catch (ResourceException e) {
+        } catch (Exception e) {
             com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ejs.j2c.MCWrapper.abortMC", "3765", this);
             if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, "Caught exception releasing aborted connection to the pool manager.");
+                Tr.debug(this, tc, "Caught exception aborting connection or releasing aborted connection to the pool manager.");
         }
 
         if (trace && tc.isEntryEnabled())

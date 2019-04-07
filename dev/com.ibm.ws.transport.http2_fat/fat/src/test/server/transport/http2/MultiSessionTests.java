@@ -53,6 +53,11 @@ public class MultiSessionTests extends FATServletClient {
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, CLASS_NAME, "before()", "Starting servers...");
         }
+
+        // I think we need this for tracing to turn on (as well as changes in bootstrap.properties)
+        H2FATApplicationHelper.addWarToServerDropins(server, "H2TestModule.war", false, "http2.test.war.servlets");
+        H2FATApplicationHelper.addWarToServerDropins(runtimeServer, "H2FATDriver.war", false, "http2.test.driver.war.servlets");
+
         server.startServer(true, true);
         runtimeServer.startServer(true);
     }
@@ -66,23 +71,15 @@ public class MultiSessionTests extends FATServletClient {
         runtimeServer.stopServer(true);
     }
 
-    private void runTest(String servletPath) throws Exception {
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "runTest()", "Running test " + servletPath + " on server " + server.getServerName());
-        }
-        FATServletClient.runTest(runtimeServer,
-                                 servletPath + server.getHostname() + "&port=" + server.getHttpSecondaryPort() + "&testdir=" + Utils.TEST_DIR,
-                                 testName);
-    }
-
     public void runStressTest() throws Exception {
         if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "runTest()", "Running test with iterations of: " + Utils.STRESS_ITERATIONS);
+            LOGGER.logp(Level.INFO, CLASS_NAME, "runTest()", "Running test with iterations");
         }
 
         FATServletClient.runTest(runtimeServer,
-                                 "H2FATDriver/H2FATDriverServlet?hostName=" + server.getHostname() + "&port=" + server.getHttpSecondaryPort() + "&iterations="
-                                                + Utils.STRESS_ITERATIONS + "&testdir=" + Utils.TEST_DIR,
+                                 "H2FATDriver/H2FATDriverServlet?hostName=" + server.getHostname() +
+                                                "&port=" + server.getHttpSecondaryPort() +
+                                                "&testdir=" + Utils.TEST_DIR,
                                  testName);
     }
 
@@ -97,41 +94,8 @@ public class MultiSessionTests extends FATServletClient {
         assertTrue(true);
     }
 
-    // Test a single connection with multiple streams using a basic webpage/servlet at the server.
-    // Utils.STRESS_ITERATIONS is how many streams will be used on this one connection
-    // Test timeout is defined by this variable:  Utils.STRESS_TEST_TIMEOUT_testSingleConnectionStress
-    @Test
-    public void testSingleConnectionStress() throws Exception {
-        runStressTest();
-    }
-
-    // Test a single connection with multiple streams, using a servlet on the server that will send multiple Data frames, and
-    // will prompt the client side to send WindowUpdate and Ping frames.
-    // The client side will also create a dependent priority tree for the streams to be placed in.
-    // Client side parameters:
-    //    H2FATDriverServlet.testMultiData -> SERVLET_INSTANCES   is the number of parallel http2 streams that will be used.
-    // Server side parameters
-    //    H2MultiDataFrame.SERVLET_INSTANCES  is the number of parallel http2 streams the server side expects.
-    //    H2MultiDataFrame.MINUTES_PER_STREAM is how long each stream will be active
-    //    H2MultiDataFrame.<other parameters>  will control the flow rate of Data, Ping, and WindowUpdate frames.
-    // The above two SERVLET_INSTANCES need to be the same.
-    // Test timeout is defined by this variable:  Utils.STRESS_TEST_TIMEOUT_testMulitData
-    @Test
-    public void testMultiData() throws Exception {
-        runTest(defaultServletPath);
-    }
-
     // test multiple connections with multiple streams.  Same as testMultiData above, except adds parallel http2 connectinon.
-    // Client side parameters:
-    //    H2FATDriverServlet.testMultiData -> SERVLET_INSTANCES   is the number of parallel http2 streams that will be used.
-    //    Utils.STRESS_CONNECTIONS is the number of parallel http2 connections that will be used.
-    //    Utils.STRESS_DELAY_BETWEEN_CONN_STARTS time to delay between starting connections
-    // Server side parameters
-    //    H2MultiDataFrame.SERVLET_INSTANCES  is the numberof parallel http2 streams the server side expects.
-    //    H2MultiDataFrame.MINUTES_PER_STREAM is how long each stream will be active
-    //    H2MultiDataFrame.<other parameters>  will control the flow rate of Data, Ping, and WindowUpdate frames.
-    // The above two SERVLET_INSTANCES need to be the same.
-    // Test timeout is defined by this variable:  Utils.STRESS_TEST_TIMEOUT_testMultipleConnectionStress
+    //     see test.server.transport.http2.Utils.java for how parameters are set up to run this test.
     @Test
     public void testMultipleConnectionStress() throws Exception {
         Thread[] ta = new Thread[Utils.STRESS_CONNECTIONS];

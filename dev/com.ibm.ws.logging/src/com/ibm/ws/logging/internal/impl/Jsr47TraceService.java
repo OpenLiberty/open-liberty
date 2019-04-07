@@ -61,10 +61,11 @@ public class Jsr47TraceService extends BaseTraceService {
                                                             config.getLogDirectory(),
                                                             config.getMessageFileName(),
                                                             config.getMaxFiles(),
-                                                            config.getMaxFileBytes());
+                                                            config.getMaxFileBytes(),
+                                                            config.getNewLogsOnStart());
 
             // Always create a traceLog when using Tr -- this file won't actually be
-            // created until something is logged to it... 
+            // created until something is logged to it...
             traceLog = new TraceWriter() {
 
                 @Override

@@ -27,7 +27,7 @@ import org.springframework.context.ApplicationContextAware;
 public class LibertyServletWebServerFactory extends AbstractEmbeddedServletContainerFactory implements ApplicationContextAware {
     private boolean useDefaultHost = true;
     private ApplicationContext context;
-    private final AtomicReference<LibertyWebServer> usingDefaultHost = new AtomicReference<>();
+    static private final AtomicReference<LibertyWebServer> usingDefaultHost = new AtomicReference<>();
 
     @Override
     public EmbeddedServletContainer getEmbeddedServletContainer(ServletContextInitializer... initializers) {
@@ -49,8 +49,8 @@ public class LibertyServletWebServerFactory extends AbstractEmbeddedServletConta
 
     boolean shouldUseDefaultHost(LibertyWebServer container) {
         // only use default host if configured to and
-        // this is the root application context
-        return useDefaultHost && context.getParent() == null && usingDefaultHost.compareAndSet(null, container);
+        // we are the first container to request the default host
+        return useDefaultHost && usingDefaultHost.compareAndSet(null, container);
     }
 
     void stopUsingDefaultHost(LibertyWebServer container) {

@@ -1,0 +1,22 @@
+<server>
+    <featureManager>
+	    <feature>componenttest-1.0</feature>
+        <feature>jaxrs-2.0</feature>
+    </featureManager>
+
+    <!-- By default web container ignores query params with no '='
+        This can be overridden by setting the WCCustomProperties.ALLOW_QUERY_PARAM_WITH_NO_EQUAL
+        property. See com.ibm.wsspi.webcontainer.util.RequestUtils.parseQueryString()
+        ~line 541
+        Although, JAXRS will still ignore the query param because setting a query param to null
+        removes all values of that param by design.
+    -->
+    <webContainer allowqueryparamwithnoequal="true"/>
+
+  	<include location="../fatTestPorts.xml"/>
+  	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
+  	<javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+  	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+</server>

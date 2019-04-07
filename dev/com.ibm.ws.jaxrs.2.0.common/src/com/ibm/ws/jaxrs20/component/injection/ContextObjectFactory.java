@@ -26,6 +26,8 @@ import javax.naming.Context;
 import javax.naming.Name;
 import javax.naming.Reference;
 import javax.naming.spi.ObjectFactory;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Application;
 
 import org.osgi.service.component.ComponentContext;
@@ -36,6 +38,8 @@ import org.osgi.service.component.annotations.Modified;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxrs20.injection.ApplicationInjectionProxy;
+import com.ibm.ws.jaxrs20.injection.HttpServletRequestInjectionProxy;
+import com.ibm.ws.jaxrs20.injection.HttpServletResponseInjectionProxy;
 import com.ibm.ws.jaxrs20.injection.InjectionRuntimeContextHelper;
 import com.ibm.ws.jaxrs20.injection.metadata.InjectionRuntimeContext;
 import com.ibm.ws.kernel.service.util.SecureAction;
@@ -83,8 +87,17 @@ public class ContextObjectFactory implements ObjectFactory {
                 Tr.debug(tc, "This is an Application sub-class being injected. Injecting an instance of ApplicationInjectionProxy.");
             }
             proxy = new ApplicationInjectionProxy();
+        } else if (HttpServletRequest.class.equals(contextClass)) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "This is an HttpServletRequest sub-class being injected. Injecting an instance of HttpServletRequestInjectionProxy.");
+            }
+            proxy = new HttpServletRequestInjectionProxy();
+        } else if (HttpServletResponse.class.equals(contextClass)) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "This is an HttpServletResponse sub-class being injected. Injecting an instance of HttpServletResponseInjectionProxy.");
+            }
+            proxy = new HttpServletResponseInjectionProxy();
         } else {
-
             proxy = Proxy.newProxyInstance(priv.getClassLoader(contextClass),
                                            new Class[] { contextClass },
                                            new InvocationHandler() {

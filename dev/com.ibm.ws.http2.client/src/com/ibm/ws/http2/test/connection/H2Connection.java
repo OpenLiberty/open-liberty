@@ -149,8 +149,8 @@ public class H2Connection {
     public long sendBytes(WsByteBuffer[] toSend) {
         writeConn.setBuffers(toSend);
 
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "sendBytes(WsByteBuffer[])", "Sending " + toSend.length + " buffers synchronously through connection " + this + ".");
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "sendBytes(WsByteBuffer[])", "Sending " + toSend.length + " buffers synchronously through connection " + this + ".");
         }
 
         long bytesWritten = 0L;
@@ -163,8 +163,8 @@ public class H2Connection {
             reportedExceptions.add(e);
         }
 
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "sendBytes(WsByteBuffer[])", bytesWritten + " bytes sent synchronously.");
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "sendBytes(WsByteBuffer[])", bytesWritten + " bytes sent synchronously.");
         }
         writeConn.clearBuffers();
         return bytesWritten;
@@ -173,8 +173,8 @@ public class H2Connection {
     public long sendBytes(WsByteBuffer toSend) {
         writeConn.setBuffer(toSend);
 
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "sendBytes(WsByteBuffer)", "Sending " + toSend.limit() + " bytes synchronously through connection " + this + ".");
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "sendBytes(WsByteBuffer)", "Sending " + toSend.limit() + " bytes synchronously through connection " + this + ".");
         }
 
         long bytesWritten = 0L;
@@ -187,8 +187,8 @@ public class H2Connection {
             reportedExceptions.add(e);
         }
 
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "sendBytes(WsByteBuffer)", bytesWritten + " bytes sent synchronously.");
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "sendBytes(WsByteBuffer)", bytesWritten + " bytes sent synchronously.");
         }
         writeConn.clearBuffers();
         return bytesWritten;
@@ -201,8 +201,8 @@ public class H2Connection {
         writeBuffer.limit(toSend.length);
         writeConn.setBuffer(writeBuffer);
 
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "sendBytes", "Sending " + toSend.length + " bytes synchronously through connection " + this + ".");
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "sendBytes", "Sending " + toSend.length + " bytes synchronously through connection " + this + ".");
         }
 
         long bytesWritten = 0L;
@@ -215,8 +215,8 @@ public class H2Connection {
             reportedExceptions.add(e);
         }
 
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "sendBytes", bytesWritten + " bytes sent synchronously.");
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "sendBytes", bytesWritten + " bytes sent synchronously.");
         }
         writeConn.clearBuffers();
         return bytesWritten;
@@ -233,9 +233,9 @@ public class H2Connection {
 
         // synchronized to protect access to at least the pending buffers logic, and maybe other stuff.
 
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "sendFrame", "Sending frame: (connection: " + this + ")");
-            LOGGER.logp(Level.INFO, CLASS_NAME, "sendFrame",
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "sendFrame", "Sending frame: (connection: " + this + ")");
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "sendFrame",
                         ":Next Frame: :Writing Out: " + writableFrame.getFrameType() + " H2Conn hc: " + this.hashCode() + " " + writableFrame.toString());
         }
         processFrame(writableFrame);
@@ -250,8 +250,8 @@ public class H2Connection {
 
         if (wasServer101ResponseReceived() && wasServerFirstConnectReceived()) {
 
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.logp(Level.INFO, CLASS_NAME, "sendFrame", "Writing frame synchronously.");
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "sendFrame", "Writing frame synchronously.");
             }
             if (writableFrame instanceof FrameData || writableFrame instanceof FrameDataClient) {
                 WsByteBuffer[] bufferArray = ((FrameData) writableFrame).buildFrameArrayForWrite();
@@ -264,8 +264,8 @@ public class H2Connection {
             // Means that we write all data, kind of loss it's meaning once we made all writes sync.
             return -1;
         }
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "sendFrame", "Writing frame synchronously.");
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "sendFrame", "Writing frame synchronously.");
         }
         return sendBytes(writableFrame.buildFrameForWrite());
     }
@@ -289,8 +289,8 @@ public class H2Connection {
             bytesRead = -1L;
         }
 
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "processRead", "Reading synchronously. Bytes read: " + bytesRead);
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "processRead", "Reading synchronously. Bytes read: " + bytesRead);
         }
 
         return bytesRead;
@@ -315,8 +315,8 @@ public class H2Connection {
         }
 
         if (slicedBuffer == null) {
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.logp(Level.INFO, CLASS_NAME, "startAsyncRead", "Allocating a new buffer for and calling TCPChannel read");
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "startAsyncRead", "Allocating a new buffer for and calling TCPChannel read");
             }
             WsByteBuffer readBuffer = bufferMgr.allocate(utils.IO_DEFAULT_BUFFER_SIZE);
 
@@ -324,8 +324,8 @@ public class H2Connection {
 
             readConn.read(1, h2TcpReadCallback, true, utils.IO_DEFAULT_TIMEOUT);
         } else {
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.logp(Level.INFO, CLASS_NAME, "startAsyncRead", "Using slice buffer and calling complete on the callback in connection " + this + ".");
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "startAsyncRead", "Using slice buffer and calling complete on the callback in connection " + this + ".");
             }
             // need to process end of the last buffer instead of reading for a new buffer
             // call the callback complete to allow the read logic path to execute in full
@@ -343,8 +343,8 @@ public class H2Connection {
     public synchronized void syncWrite() {
         WsByteBuffer[] writeBuffers = getBuffList();
         if (null != writeBuffers) {
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.logp(Level.INFO, CLASS_NAME, "syncWrite", "Writing (sync) " + writeBuffers.length + " buffers in connection " + this + ".");
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "syncWrite", "Writing (sync) " + writeBuffers.length + " buffers in connection " + this + ".");
             }
             // make this a sync write, at least for now
             writeConn.setBuffers(writeBuffers);
@@ -422,8 +422,8 @@ public class H2Connection {
         WsByteBuffer[] tempNew = new WsByteBuffer[size];
         System.arraycopy(this.myPendingBuffers, 0, tempNew, 0, this.pendingBufferStop);
         this.myPendingBuffers = tempNew;
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "growPendingArray", "Increased pending list to " + size);
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "growPendingArray", "Increased pending list to " + size);
         }
     }
 
@@ -445,8 +445,8 @@ public class H2Connection {
 
         currentBuffer.flip();
 
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "processData", "There are " + currentBuffer.limit() + " bytes in this buffer (connection " + this + ").");
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "There are " + currentBuffer.limit() + " bytes in this buffer (connection " + this + ").");
         }
 
         int frameReadStatus = 0;
@@ -454,37 +454,32 @@ public class H2Connection {
         try {
             if (wasServer101ResponseReceived()) {
 
-                if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.logp(Level.INFO, CLASS_NAME, "processData", "currentBuffer hc: " + currentBuffer.hashCode()
-                                                                       + " position: " + currentBuffer.position() + " limit: " + currentBuffer.limit());
+                if (LOGGER.isLoggable(Level.FINEST)) {
+                    LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "currentBuffer hc: " + currentBuffer.hashCode()
+                                                                         + " position: " + currentBuffer.position() + " limit: " + currentBuffer.limit());
                 }
 
                 frameReadStatus = frameReadProcessor.processNextBuffer(currentBuffer);
 
-                if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.logp(Level.INFO, CLASS_NAME, "processData", "after calling processNextBuffer, frameReadStatus: " + frameReadStatus);
+                if (LOGGER.isLoggable(Level.FINEST)) {
+                    LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "after calling processNextBuffer, frameReadStatus: " + frameReadStatus);
                 }
 
-                if (frameReadStatus == Constants.BP_FRAME_IS_NOT_COMPLETE) {
-                    System.out.println("Frame data is not complete yet.");
-
-                    //utils.printArray(currentBuffer.array());
-                    //readForNewFrame = false;
-                } else {
+                if (frameReadStatus != Constants.BP_FRAME_IS_NOT_COMPLETE) {
 
                     // buffer frame has been read in, position is at the start of the payload
                     // we'll go ahead and set up the frame and process the payload
                     com.ibm.ws.http.channel.h2internal.frames.Frame currentFrame = frameReadProcessor.getCurrentFrame();
 
-                    if (LOGGER.isLoggable(Level.INFO)) {
-                        LOGGER.logp(Level.INFO, CLASS_NAME, "processData", "Processing frame object: currentFrame hc: " + currentFrame.hashCode()
-                                                                           + " CurrentFrame toString: \n" + currentFrame.getFrameType());
+                    if (LOGGER.isLoggable(Level.FINEST)) {
+                        LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "Processing frame object: currentFrame hc: " + currentFrame.hashCode()
+                                                                             + " CurrentFrame toString: \n" + currentFrame.getFrameType());
                     }
 
                     if (!wasServerFirstConnectReceived()) {
                         if (currentFrame.getFrameType() == FrameTypes.SETTINGS) {
-                            if (LOGGER.isLoggable(Level.INFO)) {
-                                LOGGER.logp(Level.INFO, CLASS_NAME, "processData", "Settings frame received for the first time.");
+                            if (LOGGER.isLoggable(Level.FINEST)) {
+                                LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "Settings frame received for the first time.");
                             }
                             setServerFirstConnectReceived(true);
                         } else {
@@ -501,8 +496,8 @@ public class H2Connection {
 
                     if (frameReadStatus > 0) {
                         slicedBuffer = currentBuffer.slice();
-                        if (LOGGER.isLoggable(Level.INFO)) {
-                            LOGGER.logp(Level.INFO, CLASS_NAME, "processData", "Buffer has been sliced, it has " + slicedBuffer.limit() + " bytes.");
+                        if (LOGGER.isLoggable(Level.FINEST)) {
+                            LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "Buffer has been sliced, it has " + slicedBuffer.limit() + " bytes.");
                         }
                     }
 
@@ -531,15 +526,15 @@ public class H2Connection {
         } finally {
             //Reset frame read processor here if a complete frame was processed
             if (frameReadStatus != Constants.BP_FRAME_IS_NOT_COMPLETE) {
-                if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.logp(Level.INFO, CLASS_NAME, "processData", "Calling frameReadProcessor.reset(true) on frameReadProcessor: " + frameReadProcessor);
+                if (LOGGER.isLoggable(Level.FINEST)) {
+                    LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "Calling frameReadProcessor.reset(true) on frameReadProcessor: " + frameReadProcessor);
                 }
                 frameReadProcessor.reset(true);
             }
         }
 
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "processData", "Calling startAsyncRead()");
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "Calling startAsyncRead()");
         }
         startAsyncRead();
     }
@@ -562,28 +557,31 @@ public class H2Connection {
                 sendBytes(fp.buildFrameForWrite());
             }
 
-            if (s.compareTo(sendBackWinUpdate1) == 0) {
-                System.out.println("FOUND: " + sendBackWinUpdate1);
+            if (s.contains(sendBackWinUpdate1)) {
+                //too verbose System.out.println("FOUND: " + sendBackWinUpdate1);
 
                 int streamId = fd.getStreamId();
-                int windowSizeIncrement = 1024;
+
+                //need a big size for large stress testing
+                int windowSizeIncrement = Constants.STRESS_WINDOW_UPDATE_STREAM_INC;
+
                 boolean reserveBit = false;
 
                 FrameWindowUpdate fw = new FrameWindowUpdate(streamId, windowSizeIncrement, reserveBit);
 
-                LOGGER.logp(Level.INFO, CLASS_NAME, "testFrameForSendBack",
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "testFrameForSendBack",
                             ":Next Frame: :Writing Out: " + fw.getFrameType() + " H2Conn hc: " + this.hashCode() + " " + fw.toString());
 
                 sendBytes(fw.buildFrameForWrite());
             }
 
-            if (s.compareTo(sendBackPing1) == 0) {
+            if (s.contains(sendBackPing1)) {
                 System.out.println("FOUND: " + sendBackPing1);
 
                 int streamId = 0; // ping has to be on stream 0 - good test to do it on a different stream soon.
 
                 FramePing fp = new FramePing(streamId, null, false);
-                LOGGER.logp(Level.INFO, CLASS_NAME, "testFrameForSendBack",
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "testFrameForSendBack",
                             ":Next Frame: :Writing Out: " + fp.getFrameType() + " H2Conn hc: " + this.hashCode() + " " + fp.toString());
                 sendBytes(fp.buildFrameForWrite());
             }
@@ -597,24 +595,24 @@ public class H2Connection {
      */
     private void processFrame(Frame frameToProcess) {
         if (frameToProcess.isWriteFrame()) {
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "Processing sent frame: " + frameToProcess.getFrameType());
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "Processing sent frame: " + frameToProcess.getFrameType());
             }
             if (frameToProcess.getFrameType() == FrameTypes.GOAWAY) {
-                if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "GoAway frame sent.");
+                if (LOGGER.isLoggable(Level.FINEST)) {
+                    LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "GoAway frame sent.");
                 }
             }
         } else {
             // don't log/trace frame here, caller just did
             if (frameToProcess.getFrameType() == FrameTypes.SETTINGS) {
                 if (frameToProcess.flagAckSet()) {
-                    if (LOGGER.isLoggable(Level.INFO))
-                        LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "Received a Settings frame with ack flag on.");
+                    if (LOGGER.isLoggable(Level.FINEST))
+                        LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "Received a Settings frame with ack flag on.");
                 } else {
                     //We need to send an empty SETTINGS frame acknowledging that we received a Settings frame.
-                    if (LOGGER.isLoggable(Level.INFO))
-                        LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "Received a Settings frame with ack flag off. Sending ack settings frame.");
+                    if (LOGGER.isLoggable(Level.FINEST))
+                        LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "Received a Settings frame with ack flag off. Sending ack settings frame.");
                     // make sure we have first sent the empty/noAck settings frame before sending this one, wait up to 5 seconds
                     int count = 0;
                     while ((getFirstConnectSent() == false) && (count < 50)) {
@@ -645,8 +643,8 @@ public class H2Connection {
      * @throws CompressionException
      */
     public Frame frameConverter(Frame frameToConvert, boolean isExpectedFrame) throws CompressionException, IOException {
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "framerToConvert.getClass(): " + frameToConvert.getClass());
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "framerToConvert.getClass(): " + frameToConvert.getClass());
         if (!isExpectedFrame) {
             if (frameToConvert.getClass().isAssignableFrom(FrameGoAway.class)) {
                 FrameGoAway frameGoawayToConvert = ((FrameGoAway) frameToConvert);
@@ -657,15 +655,15 @@ public class H2Connection {
                 byte[] headerBlockFragment = frameHeadersToConvert.getHeaderBlockFragment();
                 FrameHeadersClient testFrameHeaders = new FrameHeadersClient(frameHeadersToConvert.getStreamId(), headerBlockFragment, frameHeadersToConvert.getStreamDependency(), frameHeadersToConvert.getPaddingLength(), frameHeadersToConvert.getWeight(), frameHeadersToConvert.flagEndStreamSet(), frameHeadersToConvert.flagEndHeadersSet(), frameHeadersToConvert.flagPaddingSet(), frameHeadersToConvert.flagPrioritySet(), frameHeadersToConvert.isExclusive(), frameHeadersToConvert.getFrameReserveBit());
                 testFrameHeaders.setHeaderFields(getHeadersUtils().decodeHeaders(headerBlockFragment));
-                if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "testFrameHeaders: " + testFrameHeaders);
+                if (LOGGER.isLoggable(Level.FINEST))
+                    LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "testFrameHeaders: " + testFrameHeaders);
                 return testFrameHeaders;
             } else if (frameToConvert.getClass().isAssignableFrom(FrameHeadersClient.class)) { //we need to convert this to internal FrameHeaders as this is what we will send through the wire
                 FrameHeadersClient frameHeadersToConvert = (FrameHeadersClient) frameToConvert;
                 byte[] headerBlockFragment = getHeadersUtils().encodeHeaders(frameHeadersToConvert.getHeaderEntries());
                 FrameHeaders internalFrameHeadersToConvert = new FrameHeaders(frameHeadersToConvert.getStreamId(), headerBlockFragment, frameHeadersToConvert.getStreamDependency(), frameHeadersToConvert.getPaddingLength(), frameHeadersToConvert.getWeight(), frameHeadersToConvert.flagEndStreamSet(), frameHeadersToConvert.flagEndHeadersSet(), frameHeadersToConvert.flagPaddingSet(), frameHeadersToConvert.flagPrioritySet(), frameHeadersToConvert.isExclusive(), frameHeadersToConvert.getFrameReserveBit());
-                if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "internalFrameHeadersToConvert: " + internalFrameHeadersToConvert);
+                if (LOGGER.isLoggable(Level.FINEST))
+                    LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "internalFrameHeadersToConvert: " + internalFrameHeadersToConvert);
                 return internalFrameHeadersToConvert; //This one need to be converted to a test FrameHeaders
             }
 
@@ -674,15 +672,15 @@ public class H2Connection {
                 byte[] headerBlockFragment = frameContinuationToConvert.getHeaderBlockFragment();
                 FrameContinuationClient testFrameContinuation = new FrameContinuationClient(frameContinuationToConvert.getStreamId(), headerBlockFragment, frameContinuationToConvert.flagEndHeadersSet(), frameContinuationToConvert.flagEndStreamSet(), frameContinuationToConvert.getFrameReserveBit());
                 testFrameContinuation.setHeaderFields(getHeadersUtils().decodeHeaders(headerBlockFragment));
-                if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "testFrameContinuation: " + testFrameContinuation);
+                if (LOGGER.isLoggable(Level.FINEST))
+                    LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "testFrameContinuation: " + testFrameContinuation);
                 return testFrameContinuation;
             } else if (frameToConvert.getClass().isAssignableFrom(FrameContinuationClient.class)) { //we need to convert this to internal FrameHeaders as this is what we will send through the wire
                 FrameContinuationClient frameContinuationToConvert = (FrameContinuationClient) frameToConvert;
                 byte[] headerBlockFragment = getHeadersUtils().encodeHeaders(frameContinuationToConvert.getHeaderEntries());
                 FrameContinuation internalFrameContinuationToConvert = new FrameContinuation(frameContinuationToConvert.getStreamId(), headerBlockFragment, frameContinuationToConvert.flagEndHeadersSet(), frameContinuationToConvert.flagEndStreamSet(), frameContinuationToConvert.getFrameReserveBit());
-                if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "internalFrameContinuationToConvert: " + internalFrameContinuationToConvert);
+                if (LOGGER.isLoggable(Level.FINEST))
+                    LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "internalFrameContinuationToConvert: " + internalFrameContinuationToConvert);
                 return internalFrameContinuationToConvert; //This one need to be converted to a test FrameHeaders
             }
 
@@ -691,8 +689,8 @@ public class H2Connection {
                 byte[] headerBlockFragment = frameContinuationToConvert.getHeaderBlockFragment();
                 FramePushPromiseClient testFramePushPromise = new FramePushPromiseClient(frameContinuationToConvert.getStreamId(), headerBlockFragment, frameContinuationToConvert.getPromisedStreamId(), frameContinuationToConvert.getPaddingLength(), frameContinuationToConvert.flagEndHeadersSet(), frameContinuationToConvert.flagPaddedSet(), frameContinuationToConvert.getFrameReserveBit());
                 testFramePushPromise.setHeaderFields(getHeadersUtils().decodeHeaders(headerBlockFragment));
-                if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "testFramePushPromise: " + testFramePushPromise);
+                if (LOGGER.isLoggable(Level.FINEST))
+                    LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "testFramePushPromise: " + testFramePushPromise);
                 return testFramePushPromise;
             } //we won't be sending push promise frames; therefore, we don't need to convert from test to actual frame
 
@@ -700,18 +698,18 @@ public class H2Connection {
                 FrameData frameDataToConvert = ((FrameData) frameToConvert);
                 //byte[] headerBlockFragment = frameContinuationToConvert.getHeaderBlockFragment();
                 FrameDataClient testFrameData = new FrameDataClient(frameDataToConvert.getStreamId(), frameDataToConvert.getData(), frameDataToConvert.getPaddingLength(), frameDataToConvert.flagEndStreamSet(), frameDataToConvert.flagPaddedSet(), frameDataToConvert.getFrameReserveBit());
-                if (LOGGER.isLoggable(Level.INFO)) {
+                if (LOGGER.isLoggable(Level.FINEST)) {
                     // don't add DATA frames the have "DoNotAdd" as part of the data payload
                     if (testFrameData.getFrameType() == FrameTypes.DATA) {
                         FrameData fd = testFrameData;
                         String s = new String(fd.getData());
                         if (s.toLowerCase().contains("donotadd")) {
-                            LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "testFrameData: " + "DoNotAdd Data Frame");
+                            LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "testFrameData: " + "DoNotAdd Data Frame");
                             return testFrameData;
                         }
                     }
 
-                    LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "testFrameData: " + testFrameData.getFrameType());
+                    LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "testFrameData: " + testFrameData.getFrameType());
                 }
 
                 return testFrameData;
@@ -720,22 +718,22 @@ public class H2Connection {
 
         }
 
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "We didn't convert frame: " + frameToConvert.getFrameType());
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "We didn't convert frame: " + frameToConvert.getFrameType());
 
         return frameToConvert;
     }
 
     public void close() {
         closeCalled = true;
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "Connection close() called in connection " + this + ".");
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "Connection close() called in connection " + this + ".");
         //Channel wants to be one to close the connection.
         reportedExceptions.addAll(streamResultManager.compareAllStreamResults());
 
         if (processRead() >= 0) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "Server has not closed the connection yet. Checking again in 2 seconds.");
+            if (LOGGER.isLoggable(Level.FINEST))
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "Server has not closed the connection yet. Checking again in 2 seconds.");
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
@@ -803,8 +801,8 @@ public class H2Connection {
         StringBuilder response = new StringBuilder();
 
         public void storeH1Response(WsByteBuffer buffer) throws UnexpectedUpgradeHeader {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "HTTP 1.1 read: " + utils.printByteArrayWithHex(buffer.array(), buffer.limit()));
+            if (LOGGER.isLoggable(Level.FINEST))
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "HTTP 1.1 read: " + utils.printByteArrayWithHex(buffer.array(), buffer.limit()));
             response.append(utils.printByteArrayWithHex(buffer.array(), buffer.limit()));
             checkResponseHeaders(response.toString());
         }

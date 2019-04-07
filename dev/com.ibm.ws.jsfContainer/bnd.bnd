@@ -45,7 +45,7 @@ instrument.disabled: true
     com.ibm.websphere.javaee.cdi.1.2;version=latest,\
     com.ibm.websphere.javaee.validation.1.1;version=latest,\
     com.ibm.ws.beanvalidation;version=latest,\
-    com.ibm.ws.org.jboss.weld.2.4.7;version=latest, \
+    com.ibm.ws.org.jboss.weld.2.4.8;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
 

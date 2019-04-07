@@ -30,7 +30,9 @@ dependencies {
     project(':com.ibm.ws.security.wim_test.servlet'),
     project(':com.ibm.ws.webcontainer.security_test.servlets')
 }
-
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:war'
+autoFVT.dependsOn ':com.ibm.ws.security.wim_test.servlet:war'
+autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:war'
 autoFVT.doLast {
   /*
    * Copy the local ApacheDS LDAP instances. 
@@ -118,7 +120,9 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.sslref.badssl',
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.failover',
     'com.ibm.ws.security.wim.adapter.ldap.fat.tworealms',
-    'com.ibm.ws.security.wim.adapter.ldap.fat.ids.allIbmGroups'
+    'com.ibm.ws.security.wim.adapter.ldap.fat.ids.allIbmGroups',
+    'com.ibm.ws.security.registry.ldap.fat.regression',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.readtimeout'
   ]
   servers.each { server ->
     copy { 
@@ -131,7 +135,8 @@ autoFVT.doLast {
    * Copy the WIM API WAR into test servers.
    */
   servers = [
-    'vmm.apis.tds.ldap'
+    'vmm.apis.tds.ldap',
+    'vmm.apis.empty'
   ]
   servers.each { server ->
     copy { 
@@ -209,4 +214,6 @@ task certificateMapper_JAR(type: Jar, dependsOn: classes) {
 assemble { 
   dependsOn \
   certificateMapper_JAR
+  
+  dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
 }

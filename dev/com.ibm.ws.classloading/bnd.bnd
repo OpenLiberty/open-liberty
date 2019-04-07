@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -23,15 +23,19 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 # for the exported API.
 Export-Package: \
   com.ibm.ws.classloading;provide:=true, \
+  com.ibm.ws.classloading.java2sec;provide:=true, \
   com.ibm.ws.classloading.serializable,\
   com.ibm.wsspi.classloading;provide:=true, \
   com.ibm.wsspi.library;provide:=true
 
- Include-Resource: \
+Include-Resource: \
     OSGI-INF=resources/OSGI-INF
+
+DynamicImport-Package: *
 
 # catch any packages not explicitly exported and make sure they are private
 Private-Package: \
+  !com.ibm.ws.classloading.configuration, \
   com.ibm.ws.classloading.*, \
   com.ibm.ws.library*
 
@@ -44,6 +48,26 @@ Private-Package: \
   com.ibm.ws.classloading.internal.util.ClassRedefiner,\
   com.ibm.ws.library.internal.SharedLibraryFactory
 
+Service-Component: \
+  com.ibm.ws.security.java2sec.policyConfig; \
+    configuration-policy:=require; \
+    implementation:=com.ibm.ws.classloading.java2sec.JavaPermissionsConfiguration; \
+    provide:=com.ibm.ws.classloading.java2sec.JavaPermissionsConfiguration; \
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.classloading.java2sec.PermissionManager; \
+    configuration-policy:=ignore; \
+    immediate:=true;\
+    implementation:=com.ibm.ws.classloading.java2sec.PermissionManager; \
+    provide:=com.ibm.ws.classloading.java2sec.PermissionManager; \
+    permission=com.ibm.ws.classloading.java2sec.JavaPermissionsConfiguration; \
+    classLoadingService=com.ibm.wsspi.classloading.ClassLoadingService; \
+    wsjarURLStreamHandler='org.osgi.service.url.URLStreamHandlerService(url.handler.protocol=wsjar)'; \
+    dynamic:='permission,wsjarURLStreamHandler'; \
+    multiple:='permission'; \
+    greedy:='permission'; \
+    optional:='permission,wsjarURLStreamHandler'; \
+    properties:="service.vendor=IBM"
+
 instrument.classesExcludes: com/ibm/ws/classloading/internal/resources/*.class
 
 -buildpath: \
@@ -51,17 +75,21 @@ instrument.classesExcludes: com/ibm/ws/classloading/internal/resources/*.class
 	com.ibm.ws.artifact.url;version=latest,\
 	com.ibm.ws.kernel.security.thread,\
 	com.ibm.ws.kernel.metatype.helper,\
+	com.ibm.ws.kernel.service,\
 	com.ibm.ws.artifact;version=latest,\
 	com.ibm.ws.artifact.overlay;version=latest,\
 	com.ibm.ws.org.eclipse.equinox.region,\
 	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.kernel.boot.common,\
 	com.ibm.ws.kernel.feature,\
 	com.ibm.ws.logging,\
 	com.ibm.ws.dynamic.bundle;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.equinox.module,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.cm,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.classloading.configuration

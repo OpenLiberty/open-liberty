@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2010 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,32 +38,31 @@ import com.ibm.tx.util.logging.TraceComponent;
  * that need to use use the Recovery Log Service (RLS) to store persistent
  * information.
  * </p>
- * 
+ *
  * <p>
  * In order to support interaction with the High Availability (HA) framework in
  * the future, the RecoveryDirector acts as a bridge between the registered
  * components (client services) and the controlling logic that determines when
  * recovery processing is needed.
  * </p>
- * 
+ *
  * <p>
  * Client services obtain a reference to the RecoveryDirector through its factory
  * class, the RecoveryDirectorFactory, by calling its recoveryDirector method.
  * </p>
- * 
+ *
  * <p>
  * Client services supply a RecoveryAgent callback object when they register
  * that is driven asynchronously by the RLS when recovery processing is required.
  * Upon registration, they are provided with a RecoveryLogManager object through
  * which they interact with the RLS.
  * </p>
- * 
+ *
  * <p>
  * This class provides the implementation of the RecoveryDirector interface
  * </p>
  */
-public class RecoveryDirectorImpl implements RecoveryDirector
-{
+public class RecoveryDirectorImpl implements RecoveryDirector {
     /**
      * WebSphere RAS TraceComponent registration.
      */
@@ -88,9 +87,9 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * The registered RecoveryAgent objects, keyed from sequence value. RecoveryAgent
      * objects are stored in an ArrayList to allow multiple registrations at the same
      * sequence value.
-     * 
+     *
      * The TreeMap will return elements in ascending key order.
-     * 
+     *
      * <p>
      * <ul>
      * <li>java.util.TreeMap (Integer -> ArrayList (RecoveryAgent))
@@ -106,11 +105,11 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * services to be passed the RecoveryAgent.initiateRecovery call and then invoke
      * the RecoveryDirector.serialRecoveryComplete(RecoveryAgent,FailureScope) method. At this
      * point the record will be removed from this map.
-     * 
+     *
      * Entry is added to the map at the same time as an entry is added to
      * _outstandingRecoveryRecords but its removed at serial completion rather than initial
      * completion (ie earlier).
-     * 
+     *
      * <p>
      * <ul>
      * <li>java.util.HashMap (RecoveryAgent -> HashSet (FailureScope))
@@ -125,11 +124,11 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * extent that is can allow a peer recovery process to take place and then invoke the
      * RecoveryDirector.initialRecoveryComplete(RecoveryAgent,FailureScope) method. At this
      * point the record will be removed from this map.
-     * 
+     *
      * Entry is added to the map at the same time as an entry is added to
      * _outstandingInitializationRecords but its removed at initial completion rather than serial
      * completion (ie later).
-     * 
+     *
      * <p>
      * <ul>
      * <li>java.util.HashMap (FailureScope -> HashSet (RecoveryAgent))
@@ -138,16 +137,16 @@ public class RecoveryDirectorImpl implements RecoveryDirector
     private final HashMap<FailureScope, HashSet<RecoveryAgent>> _outstandingRecoveryRecords;
 
     /**
-     * 
+     *
      * A record of ongoing recovery termination at any given point. When the RLS requests a
      * RecoveryAgent to terminate a unit of recovery, a record of this request is stored in
      * the map. The client service should halt the associated recovery process and then invoke
      * the RecoveryDirector.terminationComplete(RecoveryAgent,FailureScope) method. At this
      * point the record will be removed from this map.
-     * 
+     *
      * Unlike the recovery initilaization logic, there is only a single map to coordinate
      * recovery termination.
-     * 
+     *
      * <p>
      * <ul>
      * <li>java.util.HashMap (RecoveryAgent -> HashSet (FailureScope))
@@ -201,8 +200,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * method. Client services may access this instance via the RecoveryDirectorFactory.
      * recoveryDirector() method.
      */
-    protected RecoveryDirectorImpl()
-    {
+    protected RecoveryDirectorImpl() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "RecoveryDirectorImpl");
 
@@ -235,13 +233,13 @@ public class RecoveryDirectorImpl implements RecoveryDirector
  * try
  * {
  * IExtensionRegistry registry = Platform.getExtensionRegistry();
- * 
- * 
+ *
+ *
  * // Look for the extension point in the default plugin in bundle
  * String epid = "com.ibm.rls"
  * + ".recoverylog-implementation";
  * if (tc.isDebugEnabled()) Tr.debug(tc, "RecoveryDirectorImpl: searching for extensions", epid);
- * 
+ *
  * IExtensionPoint extensionPoint = registry.getExtensionPoint(epid);
  * if(extensionPoint != null)
  * {
@@ -250,9 +248,9 @@ public class RecoveryDirectorImpl implements RecoveryDirector
  * {
  * IExtension extension = extensions[i];
  * String extensionId = extension.getUniqueIdentifier();
- * 
+ *
  * if (tc.isDebugEnabled()) Tr.debug(tc, "RecoveryDirectorImpl: processing extension", extension.getUniqueIdentifier());
- * 
+ *
  * IConfigurationElement[] elements = extension.getConfigurationElements();
  * for (int j = 0; j < elements.length; j++)
  * {
@@ -261,7 +259,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
  * {
  * Object factory = elements[j].createExecutableExtension("class");
  * if (tc.isDebugEnabled()) Tr.debug(tc, "RecoveryDirectorImpl: found CustomLogFactory", factory);
- * 
+ *
  * if (factory instanceof RecoveryLogFactory)
  * {
  * if (_customLogFactories.containsKey(extensionId))
@@ -287,7 +285,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
  * if (tc.isDebugEnabled()) Tr.debug(tc, "RecoveryDirectorImpl", t);
  * // swallow exception and try next element
  * }
- * 
+ *
  * }
  * }
  * }
@@ -312,16 +310,14 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * Create or lookup the singleton instance of the RecoveryDirectorImpl class. This
      * method is intended for internal use only. Client services should access this
      * instance via the RecoveryDirectorFactory.recoveryDirector() method.
-     * 
+     *
      * @return The singleton instance of the RecoveryDirectorImpl class.
      */
-    public static synchronized RecoveryDirector instance()
-    {
+    public static synchronized RecoveryDirector instance() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "instance");
 
-        if (_instance == null)
-        {
+        if (_instance == null) {
             _instance = new RecoveryDirectorImpl();
         }
 
@@ -341,7 +337,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * client service. Any re-registration will result in the
      * ConflictingCredentialsException being thrown.
      * </p>
-     * 
+     *
      * <p>
      * The client service provides a 'sequence' value that is used by the RLS to
      * determine the order in which registered RecoveryAgents should be directed
@@ -351,24 +347,24 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * that are registered with the same sequence value will be driven in
      * an undefined order.
      * </p>
-     * 
+     *
      * <p>
      * The result of registration is a new instance of the RecoveryLogManager
      * class to control recovery logging on behalf of the client service.
      * </p>
-     * 
+     *
      * <p>
      * The RecoveryAgent object is also used to identify the client service
      * and the registration process will fail if it provides a client service
      * identifier or name that has already been used.
      * </p>
-     * 
+     *
      * @param recoveryAgent Client service identification and callback object.
      * @param sequence Client service sequence value.
-     * 
+     *
      * @return A RecoveryLogManager object that the client service can use to
      *         control recovery logging.
-     * 
+     *
      * @exception ConflictingCredentialsException Thrown if the RecoveryAgent identity or
      *                name clashes with a client service that
      *                is already registered
@@ -377,8 +373,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      *                started.
      */
     @Override
-    public RecoveryLogManager registerService(RecoveryAgent recoveryAgent, int sequence) throws ConflictingCredentialsException, InvalidStateException
-    {
+    public RecoveryLogManager registerService(RecoveryAgent recoveryAgent, int sequence) throws ConflictingCredentialsException, InvalidStateException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "registerService", new Object[] { recoveryAgent, new Integer(sequence), this });
 
@@ -386,12 +381,10 @@ public class RecoveryDirectorImpl implements RecoveryDirector
 
         // Synchronize on the _registeredRecoveryAgents map since we may have cocurrent registrations
         // taking place.
-        synchronized (_registeredRecoveryAgents)
-        {
+        synchronized (_registeredRecoveryAgents) {
             // Ensure that this registration event is occuring prior to the first recovery cycle. Throw an exception if its not.
             // This check is required to ensure that recovery agents do not register late and miss recovery processing events.
-            if (!_registrationAllowed)
-            {
+            if (!_registrationAllowed) {
                 if (tc.isEventEnabled())
                     Tr.event(tc, "Client service registration attempted after recovery processing has been driven");
                 if (tc.isEntryEnabled())
@@ -409,23 +402,20 @@ public class RecoveryDirectorImpl implements RecoveryDirector
             final Collection registeredRecoveryAgentsValues = _registeredRecoveryAgents.values();
             final Iterator registeredRecoveryAgentsValuesIterator = registeredRecoveryAgentsValues.iterator();
 
-            while (registeredRecoveryAgentsValuesIterator.hasNext())
-            {
+            while (registeredRecoveryAgentsValuesIterator.hasNext()) {
                 // Extract the next ArrayList and create an iterator from it. This iterator will return RecoveryAgent
                 // objects that are registered at the same sequence priority value.
                 final ArrayList registeredRecoveryAgentsArray = (java.util.ArrayList) registeredRecoveryAgentsValuesIterator.next();
                 final Iterator registeredRecoveryAgentsArrayIterator = registeredRecoveryAgentsArray.iterator();
 
-                while (registeredRecoveryAgentsArrayIterator.hasNext())
-                {
+                while (registeredRecoveryAgentsArrayIterator.hasNext()) {
                     // Extract the next RecoveryAgent object
                     final RecoveryAgent registeredRecoveryAgent = (RecoveryAgent) registeredRecoveryAgentsArrayIterator.next();
 
                     if ((registeredRecoveryAgent.clientIdentifier() == clientIdentifier) ||
-                        (registeredRecoveryAgent.clientName().equals(clientName)))
-                    {
+                        (registeredRecoveryAgent.clientName().equals(clientName))) {
                         // The client service has attempted registration with a RecoveryAgent that reports either an
-                        // identity or name that conflicts with an existing identity or name. Throw the registration 
+                        // identity or name that conflicts with an existing identity or name. Throw the registration
                         // request out with an exception.
                         if (tc.isEventEnabled())
                             Tr.event(tc, "Client service registration attempted with non-unique identity or name");
@@ -440,8 +430,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
             final Integer sequenceI = new Integer(sequence);
             ArrayList<RecoveryAgent> sequenceArray = _registeredRecoveryAgents.get(sequenceI);
 
-            if (sequenceArray == null)
-            {
+            if (sequenceArray == null) {
                 sequenceArray = new java.util.ArrayList<RecoveryAgent>();
                 _registeredRecoveryAgents.put(sequenceI, sequenceArray);
             }
@@ -455,10 +444,9 @@ public class RecoveryDirectorImpl implements RecoveryDirector
                 Tr.event(tc, "New service '" + clientName + "' (" + clientIdentifier + ") registered with RecoveryDirectorImpl");
 
             // When the transaction service registers, stash this RA away so that we can make a special
-            // query of its recovery log directory in support of the exclusive locking model. Once 
+            // query of its recovery log directory in support of the exclusive locking model. Once
             // the HA framework provides more support for Network Paritioning, we can remove this logic.
-            if (clientIdentifier == ClientId.RLCI_TRANSACTIONSERVICE)
-            {
+            if (clientIdentifier == ClientId.RLCI_TRANSACTIONSERVICE) {
                 Configuration.txRecoveryAgent(recoveryAgent);
 
                 // Also set the isSnapshotSafe flag - we've used the transaction
@@ -483,7 +471,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * FailureScope has been completed. The client service supplies its RecoveryAgent
      * reference to identify itself.
      * </p>
-     * 
+     *
      * <p>
      * When recovery events occur, each client services RecoveryAgent callback object
      * has its initiateRecovery() method invoked. As a result of this call, the client
@@ -495,7 +483,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * is prefereable in an HA-enabled environment as controll must be passed back as
      * quickly as possible to avoid the HA framework shutting down the JVM.
      * </p>
-     * 
+     *
      * <p>
      * Regardless of the style adopted, once the recovery process has performed as much
      * processing as can be conducted without any failed resources becoming available
@@ -503,29 +491,27 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * to indicate this fact. This call is used by the RLS to optomize its interactions
      * with the HA framework.
      * </p>
-     * 
+     *
      * <p>
      * The RecoveryDirector will then pass the recovery request on to other registered
      * client services.
      * </p>
-     * 
+     *
      * @param recoveryAgent The client services RecoveryAgent instance.
      * @param failureScope The unit of recovery that is completed.
-     * 
+     *
      * @exception InvalidFailureScope The supplied FailureScope was not recognized as
      *                outstanding unit of recovery for the client
      *                service.
      */
     @Override
-    public void serialRecoveryComplete(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException
-    {
+    public void serialRecoveryComplete(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "serialRecoveryComplete", new Object[] { recoveryAgent, failureScope, this });
 
         final boolean removed = removeInitializationRecord(recoveryAgent, failureScope);
 
-        if (!removed)
-        {
+        if (!removed) {
             if (tc.isEventEnabled())
                 Tr.event(tc, "The supplied FailureScope was not recognized as outstaning work for this RecoveryAgent");
             if (tc.isEntryEnabled())
@@ -548,29 +534,27 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * FailureScope ceased. The client service supplies its RecoveryAgent reference to
      * identify itself.
      * </p>
-     * 
+     *
      * <p>
      * The RecoveryDirector will then pass the termination request on to other registered
      * client services.
      * </p>
-     * 
+     *
      * @param recoveryAgent The client services RecoveryAgent instance.
      * @param failureScope The unit of recovery that is completed.
-     * 
+     *
      * @exception InvalidFailureScopeException The supplied FailureScope was not recognized as
      *                outstanding unit of recovery for the client
      *                service.
      */
     @Override
-    public void terminationComplete(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException
-    {
+    public void terminationComplete(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "terminationComplete", new Object[] { recoveryAgent, failureScope, this });
 
         final boolean removed = removeTerminationRecord(recoveryAgent, failureScope);
 
-        if (!removed)
-        {
+        if (!removed) {
             if (tc.isEventEnabled())
                 Tr.event(tc, "The supplied FailureScope was not recognized as an outstaning termination request for this RecoveryAgent");
             if (tc.isEntryEnabled())
@@ -589,17 +573,15 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * Invoked by a client service to determine the "current" FailureScope. This is
      * defined as a FailureScope that identifies the current point of execution. In
      * practice this means the current server on distributed or server region on 390.
-     * 
+     *
      * @return FailureScope The current FailureScope.
      */
     @Override
-    public synchronized FailureScope currentFailureScope()
-    {
+    public synchronized FailureScope currentFailureScope() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "currentFailureScope", this);
 
-        if (_currentFailureScope == null)
-        {
+        if (_currentFailureScope == null) {
             _currentFailureScope = new FileFailureScope();
         }
 
@@ -615,12 +597,12 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * Internal method to initiate recovery processing of the given FailureScope. All
      * registered RecoveryAgent objects will be directed to process the FailureScope
      * in sequence.
-     * 
+     *
      * @param FailureScope The FailureScope to process.
      * @return boolean success
      */
-    public void directInitialization(FailureScope failureScope) throws RecoveryFailedException
-    {
+    @Override
+    public void directInitialization(FailureScope failureScope) throws RecoveryFailedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "directInitialization", new Object[] { failureScope, this });
 
@@ -630,8 +612,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
         // Synchronize to ensure consistency with the registerService
         // method. The remainder of the method is not synchronized on this in order that two independant
         // recovery processes may be driven concurrently on two different threads.
-        synchronized (_registeredRecoveryAgents)
-        {
+        synchronized (_registeredRecoveryAgents) {
             // Ensure that further RecoveryAgent registrations are prohibited.
             _registrationAllowed = false;
         }
@@ -639,9 +620,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
         if (currentFailureScope.equals(failureScope)) /* @LI1578-22C */
         {
             Tr.info(tc, "CWRLS0010_PERFORM_LOCAL_RECOVERY", failureScope.serverName());
-        }
-        else
-        {
+        } else {
             Tr.info(tc, "CWRLS0011_PERFORM_PEER_RECOVERY", failureScope.serverName());
         }
 
@@ -649,16 +628,15 @@ public class RecoveryDirectorImpl implements RecoveryDirector
         // from it. This iterator will return ArrayList objects each containing a set of RecoveryAgent
         // objects. Each ArrayList corrisponds to a different sequence priority value.
         final Collection registeredRecoveryAgentsValues = _registeredRecoveryAgents.values();
+
         Iterator registeredRecoveryAgentsValuesIterator = registeredRecoveryAgentsValues.iterator();
-        while (registeredRecoveryAgentsValuesIterator.hasNext())
-        {
+        while (registeredRecoveryAgentsValuesIterator.hasNext()) {
             // Extract the next ArrayList and create an iterator from it. This iterator will return RecoveryAgent
             // objects that are registered at the same sequence priority value.
             final ArrayList registeredRecoveryAgentsArray = (java.util.ArrayList) registeredRecoveryAgentsValuesIterator.next();
             final Iterator registeredRecoveryAgentsArrayIterator = registeredRecoveryAgentsArray.iterator();
 
-            while (registeredRecoveryAgentsArrayIterator.hasNext())
-            {
+            while (registeredRecoveryAgentsArrayIterator.hasNext()) {
                 // Extract the next RecoveryAgent object
                 final RecoveryAgent recoveryAgent = (RecoveryAgent) registeredRecoveryAgentsArrayIterator.next();
                 recoveryAgent.prepareForRecovery(failureScope);
@@ -673,43 +651,37 @@ public class RecoveryDirectorImpl implements RecoveryDirector
         // now we are relying on the Hardware quorum support within the HA framework itself if NP's are tro be
         // handled.
 
-        if (Configuration.HAEnabled())
-        {
-            // Join the "dynamic cluster" in order that IOR references can be associated with the 
+        if (Configuration.HAEnabled()) {
+            // Join the "dynamic cluster" in order that IOR references can be associated with the
             // resulting identity. Only do this in an HA-enabled environment.
             Configuration.getRecoveryLogComponent().joinCluster(failureScope);
         }
 
         // If callbacks are registered, drive then now.
-        if (_registeredCallbacks != null)
-        {
+        if (_registeredCallbacks != null) {
             driveCallBacks(CALLBACK_RECOVERYSTARTED, failureScope);
         }
 
         // Re-set the iterator.
         registeredRecoveryAgentsValuesIterator = registeredRecoveryAgentsValues.iterator();
 
-        while (registeredRecoveryAgentsValuesIterator.hasNext())
-        {
+        while (registeredRecoveryAgentsValuesIterator.hasNext()) {
             // Extract the next ArrayList and create an iterator from it. This iterator will return RecoveryAgent
             // objects that are registered at the same sequence priority value.
             final ArrayList registeredRecoveryAgentsArray = (java.util.ArrayList) registeredRecoveryAgentsValuesIterator.next();
             final Iterator registeredRecoveryAgentsArrayIterator = registeredRecoveryAgentsArray.iterator();
 
-            while (registeredRecoveryAgentsArrayIterator.hasNext())
-            {
+            while (registeredRecoveryAgentsArrayIterator.hasNext()) {
                 // Extract the next RecoveryAgent object
                 final RecoveryAgent recoveryAgent = (RecoveryAgent) registeredRecoveryAgentsArrayIterator.next();
 
                 // Direct the RecoveryAgent instance to process this failure scope.
-                try
-                {
+                try {
                     // Notify the listeners we're about to make the call
                     _eventListeners.clientRecoveryInitiated(failureScope, recoveryAgent.clientIdentifier()); /* @MD19638A */
 
                     recoveryAgent.initiateRecovery(failureScope);
-                } catch (RecoveryFailedException exc)
-                {
+                } catch (RecoveryFailedException exc) {
                     FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoveryDirectorImpl.directInitialization", "410", this);
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "directInitialization", exc);
@@ -717,19 +689,15 @@ public class RecoveryDirectorImpl implements RecoveryDirector
                 }
 
                 // Wait for 'serialRecoveryComplete' to be called. This callback may be issued from another thread.
-                synchronized (_outstandingInitializationRecords)
-                {
-                    while (initializationOutstanding(recoveryAgent, failureScope))
-                    {
-                        try
-                        {
+                synchronized (_outstandingInitializationRecords) {
+                    while (initializationOutstanding(recoveryAgent, failureScope)) {
+                        try {
                             _outstandingInitializationRecords.wait();
-                        } catch (InterruptedException exc)
-                        {
-                            // This exception is recieved if another thread interrupts this thread by calling this threads 
-                            // Thread.interrupt method. The RecoveryDirectorImpl class does not use this mechanism for 
+                        } catch (InterruptedException exc) {
+                            // This exception is recieved if another thread interrupts this thread by calling this threads
+                            // Thread.interrupt method. The RecoveryDirectorImpl class does not use this mechanism for
                             // breaking out of the wait call - it uses notifyAll to wake up all waiting threads. This
-                            // exception should never be generated. If for some reason it is called then ignore it and 
+                            // exception should never be generated. If for some reason it is called then ignore it and
                             //start to wait again.
                             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoveryDirectorImpl.directInitialization", "432", this);
                         }
@@ -741,9 +709,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
         if (currentFailureScope.equals(failureScope)) /* @LI1578-22C */
         {
             Tr.info(tc, "CWRLS0012_DIRECT_LOCAL_RECOVERY", failureScope.serverName());
-        }
-        else
-        {
+        } else {
             Tr.info(tc, "CWRLS0013_DIRECT_PEER_RECOVERY", failureScope.serverName());
         }
 
@@ -758,24 +724,21 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * Internal method to terminate recovery processing of the given FailureScope. All
      * registered RecoveryAgent objects will be directed to terminate processing of the
      * FailureScopein sequence.
-     * 
+     *
      * @param FailureScope The FailureScope to process.
      */
-    public void directTermination(FailureScope failureScope) throws TerminationFailedException
-    {
+    public void directTermination(FailureScope failureScope) throws TerminationFailedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "directTermination", new Object[] { failureScope, this });
 
         Tr.info(tc, "CWRLS0014_HALT_PEER_RECOVERY", failureScope.serverName());
 
         // If callbacks are registered, drive then now.
-        if (_registeredCallbacks != null)
-        {
+        if (_registeredCallbacks != null) {
             driveCallBacks(CALLBACK_TERMINATIONSTARTED, failureScope);
         }
 
-        if (Configuration.HAEnabled())
-        {
+        if (Configuration.HAEnabled()) {
             Configuration.getRecoveryLogComponent().leaveCluster(failureScope);
         }
 
@@ -785,33 +748,28 @@ public class RecoveryDirectorImpl implements RecoveryDirector
         final Collection registeredRecoveryAgentsValues = _registeredRecoveryAgents.values();
         final Iterator registeredRecoveryAgentsValuesIterator = registeredRecoveryAgentsValues.iterator();
 
-        while (registeredRecoveryAgentsValuesIterator.hasNext())
-        {
+        while (registeredRecoveryAgentsValuesIterator.hasNext()) {
             // Extract the next ArrayList and create an iterator from it. This iterator will return RecoveryAgent
             // objects that are registered at the same sequence priority value.
             final ArrayList registeredRecoveryAgentsArray = (java.util.ArrayList) registeredRecoveryAgentsValuesIterator.next();
             final Iterator registeredRecoveryAgentsArrayIterator = registeredRecoveryAgentsArray.iterator();
 
-            while (registeredRecoveryAgentsArrayIterator.hasNext())
-            {
+            while (registeredRecoveryAgentsArrayIterator.hasNext()) {
                 // Extract the next RecoveryAgent object
                 final RecoveryAgent recoveryAgent = (RecoveryAgent) registeredRecoveryAgentsArrayIterator.next();
 
                 // Record the fact that we have an outstanding termination request for the RecoveryAgent.
                 addTerminationRecord(recoveryAgent, failureScope);
 
-                // Direct the RecoveryAgent instance to terminate processing of this failure scope       
-                try
-                {
+                // Direct the RecoveryAgent instance to terminate processing of this failure scope
+                try {
                     recoveryAgent.terminateRecovery(failureScope);
-                } catch (TerminationFailedException exc)
-                {
+                } catch (TerminationFailedException exc) {
                     FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoveryDirectorImpl.directTermination", "540", this);
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "directTermination", exc);
                     throw exc;
-                } catch (Exception exc)
-                {
+                } catch (Exception exc) {
                     FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoveryDirectorImpl.directTermination", "576", this);
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "directTermination", exc);
@@ -819,19 +777,15 @@ public class RecoveryDirectorImpl implements RecoveryDirector
                 }
 
                 // Wait for 'terminationComplete' to be called. This callback may be issued from another thread.
-                synchronized (_outstandingTerminationRecords)
-                {
-                    while (terminationOutstanding(recoveryAgent, failureScope))
-                    {
-                        try
-                        {
+                synchronized (_outstandingTerminationRecords) {
+                    while (terminationOutstanding(recoveryAgent, failureScope)) {
+                        try {
                             _outstandingTerminationRecords.wait();
-                        } catch (InterruptedException exc)
-                        {
-                            // This exception is recieved if another thread interrupts this thread by calling this threads 
-                            // Thread.interrupt method. The RecoveryDirectorImpl class does not use this mechanism for 
+                        } catch (InterruptedException exc) {
+                            // This exception is recieved if another thread interrupts this thread by calling this threads
+                            // Thread.interrupt method. The RecoveryDirectorImpl class does not use this mechanism for
                             // breaking out of the wait call - it uses notifyAll to wake up all waiting threads. This
-                            // exception should never be generated. If for some reason it is called then ignore it and 
+                            // exception should never be generated. If for some reason it is called then ignore it and
                             //start to wait again.
                             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoveryDirectorImpl.directTermination", "549", this);
                         }
@@ -841,8 +795,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
         }
 
         // If callbacks are registered, drive then now.
-        if (_registeredCallbacks != null)
-        {
+        if (_registeredCallbacks != null) {
             driveCallBacks(CALLBACK_TERMINATIONCOMPLETE, failureScope);
         }
 
@@ -859,7 +812,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * be issued by the client service represented by the supplied RecoveryAgent for
      * the given failure scope.
      * </p>
-     * 
+     *
      * <p>
      * Just prior to requesting a RecoveryAgent to "initiateRecovery" of a
      * FailureScope, this method is driven to record the request. When the client
@@ -867,34 +820,31 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * RecoveryDirector.serialRecoveryComplete, the removeInitializationRecord method is
      * called to remove this record.
      * </p>
-     * 
+     *
      * <p>
      * This allows the RLS to track the "serial" portion of an ongoing recovery process.
      * </p>
-     * 
+     *
      * <p>
      * [ SERIAL PHASE ] [ INITIAL PHASE ] [ RETRY PHASE ]
      * </p>
-     * 
+     *
      * @param recoveryAgent The RecoveryAgent that is about to be directed to process
      *            recovery of a FailureScope.
      * @param failureScope The FailureScope.
      */
-    private void addInitializationRecord(RecoveryAgent recoveryAgent, FailureScope failureScope)
-    {
+    private void addInitializationRecord(RecoveryAgent recoveryAgent, FailureScope failureScope) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "addInitializationRecord", new Object[] { recoveryAgent, failureScope, this });
 
-        synchronized (_outstandingInitializationRecords)
-        {
+        synchronized (_outstandingInitializationRecords) {
             // Extract the set of failure scopes that the corrisponding client service is currently
             // processing
             HashSet<FailureScope> failureScopeSet = _outstandingInitializationRecords.get(recoveryAgent);
 
             // If its not handled yet any then create an empty set to hold both this and future
             // failure scopes.
-            if (failureScopeSet == null)
-            {
+            if (failureScopeSet == null) {
                 failureScopeSet = new HashSet<FailureScope>();
                 _outstandingInitializationRecords.put(recoveryAgent, failureScopeSet);
             }
@@ -916,33 +866,30 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * Internal method to record a termination request for the supplied RecoveryAgent
      * and FailureScope combination.
      * </p>
-     * 
+     *
      * <p>
      * Just prior to requesting a RecoveryAgent to "terminateRecovery" of a
      * FailureScope, this method is driven to record the request. When the client
      * service is ready and invokes RecoveryDirector.terminateComplete,
      * the removeTerminationRecord method is called to remove this record.
      * </p>
-     * 
+     *
      * @param recoveryAgent The RecoveryAgent that is about to be directed to terminate
      *            recovery of a FailureScope.
      * @param failureScope The FailureScope.
      */
-    private void addTerminationRecord(RecoveryAgent recoveryAgent, FailureScope failureScope)
-    {
+    private void addTerminationRecord(RecoveryAgent recoveryAgent, FailureScope failureScope) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "addTerminationRecord", new Object[] { recoveryAgent, failureScope, this });
 
-        synchronized (_outstandingTerminationRecords)
-        {
+        synchronized (_outstandingTerminationRecords) {
             // Extract the set of failure scopes that the corrisponding client service is currently
             // processing
             HashSet<FailureScope> failureScopeSet = _outstandingTerminationRecords.get(recoveryAgent);
 
             // If its not handled yet any then create an empty set to hold both this and future
             // failure scopes.
-            if (failureScopeSet == null)
-            {
+            if (failureScopeSet == null) {
                 failureScopeSet = new HashSet<FailureScope>();
                 _outstandingTerminationRecords.put(recoveryAgent, failureScopeSet);
             }
@@ -964,11 +911,11 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * Internal method to remove the record of an outstanding 'serialRecoveryComplete'
      * call from the supplied RecoveryAgent for the given failure scope.
      * </p>
-     * 
+     *
      * <p>
      * This call will wake up all threads waiting for serial recovery to be completed.
      * </p>
-     * 
+     *
      * <p>
      * Just prior to requesting a RecoveryAgent to "initiateRecovery" of a
      * FailureScope, the addInitializationRecord method is driven to record the request.
@@ -976,27 +923,25 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * invokes RecoveryDirector.serialRecoveryComplete, this method called to remove
      * this record.
      * </p>
-     * 
+     *
      * <p>
      * [ SERIAL PHASE ] [ INITIAL PHASE ] [ RETRY PHASE ]
      * </p>
-     * 
+     *
      * @param recoveryAgent The RecoveryAgent that has completed the serial recovery
      *            processing phase.
      * @param failureScope The FailureScope that defined the scope of this recovery
      *            processing.
-     * 
+     *
      * @return boolean true if there was an oustanding recovery record, otherwise false.
      */
-    private boolean removeInitializationRecord(RecoveryAgent recoveryAgent, FailureScope failureScope)
-    {
+    private boolean removeInitializationRecord(RecoveryAgent recoveryAgent, FailureScope failureScope) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "removeInitializationRecord", new Object[] { recoveryAgent, failureScope, this });
 
         boolean found = false;
 
-        synchronized (_outstandingInitializationRecords)
-        {
+        synchronized (_outstandingInitializationRecords) {
             // Extract the set of failure scopes that the corrisponding client service is currently
             // processing.
             final HashSet failureScopeSet = _outstandingInitializationRecords.get(recoveryAgent);
@@ -1005,8 +950,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
             // of a failure scope, then this set should never be null. To avoid a null pointer exception
             // in the event of a client service bug, ensure this set is valid before attempting to
             // remove the given failure scope.
-            if (failureScopeSet != null)
-            {
+            if (failureScopeSet != null) {
                 // Remove the failure scope. As with the set, if this is not found then this due to a failure in
                 // the client service. In practice, found should never be false.
                 found = failureScopeSet.remove(failureScope);
@@ -1030,26 +974,24 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * the supplied RecoveryAgent and FailureScope combination. See addRecoveryRequest
      * for more information.
      * </p>
-     * 
+     *
      * <p>
      * This call will wake up all threads waiting for units of recovery to be
      * completed.
      * </p>
-     * 
+     *
      * @param recoveryAgent The RecoveryAgent.
      * @param failureScope The FailureScope
-     * 
+     *
      * @return boolean true if there was an oustanding recovery record, otherwise false.
      */
-    private boolean removeTerminationRecord(RecoveryAgent recoveryAgent, FailureScope failureScope)
-    {
+    private boolean removeTerminationRecord(RecoveryAgent recoveryAgent, FailureScope failureScope) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "removeTerminationRecord", new Object[] { recoveryAgent, failureScope, this });
 
         boolean found = false;
 
-        synchronized (_outstandingTerminationRecords)
-        {
+        synchronized (_outstandingTerminationRecords) {
             // Extract the set of failure scopes that the corrisponding client service is currently
             // processing.
             final HashSet failureScopeSet = _outstandingTerminationRecords.get(recoveryAgent);
@@ -1058,8 +1000,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
             // of a failure scope, then this set should never be null. To avoid a null pointer exception
             // in the event of a client service bug, ensure this set is valid before attempting to
             // remove the given failure scope.
-            if (failureScopeSet != null)
-            {
+            if (failureScopeSet != null) {
                 // Remove the failure scope. As with the set, if this is not found then this due to a failure in
                 // the client service. In practice, found should never be false.
                 found = failureScopeSet.remove(failureScope);
@@ -1083,7 +1024,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * call that must be issued by the client service represented by the supplied
      * RecoveryAgent for the given failure scope.
      * </p>
-     * 
+     *
      * <p>
      * Just prior to requesting a RecoveryAgent to "initiateRecovery" of a
      * FailureScope, the addInitializationRecord method is driven to record the
@@ -1091,36 +1032,33 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * process and invokes serialRecoveryComplete, the removeInitializationRecord method
      * is called to remove this record.
      * </p>
-     * 
+     *
      * <p>
      * This allows the RLS to track the "serial" portion of an ongoing recovery process.
      * </p>
-     * 
+     *
      * <p>
      * [ SERIAL PHASE ] [ INITIAL PHASE ] [ RETRY PHASE ]
      * </p>
-     * 
+     *
      * @param recoveryAgent The RecoveryAgent.
      * @param failureScope The FailureScope.
-     * 
+     *
      * @return boolean true if there is an oustanding recovery request, otherwise false.
      */
-    private boolean initializationOutstanding(RecoveryAgent recoveryAgent, FailureScope failureScope)
-    {
+    private boolean initializationOutstanding(RecoveryAgent recoveryAgent, FailureScope failureScope) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "initializationOutstanding", new Object[] { recoveryAgent, failureScope, this });
 
         boolean outstanding = false;
 
-        synchronized (_outstandingInitializationRecords)
-        {
+        synchronized (_outstandingInitializationRecords) {
             // Extract the set of failure scopes that the corrisponding client service is currently
             // processing.
             final HashSet failureScopeSet = _outstandingInitializationRecords.get(recoveryAgent);
 
             // If there are some then determine if the set contains the given FailureScope.
-            if (failureScopeSet != null)
-            {
+            if (failureScopeSet != null) {
                 outstanding = failureScopeSet.contains(failureScope);
             }
         }
@@ -1136,28 +1074,25 @@ public class RecoveryDirectorImpl implements RecoveryDirector
     /**
      * Internal method to determine if there is an outstanding termination request for
      * the supplied RecoveryAgent and FailureScope.
-     * 
+     *
      * @param recoveryAgent The RecoveryAgent.
      * @param failureScope The FailureScope.
-     * 
+     *
      * @return boolean true if there is an oustanding termination request, otherwise false.
      */
-    private boolean terminationOutstanding(RecoveryAgent recoveryAgent, FailureScope failureScope)
-    {
+    private boolean terminationOutstanding(RecoveryAgent recoveryAgent, FailureScope failureScope) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "terminationOutstanding", new Object[] { recoveryAgent, failureScope, this });
 
         boolean outstanding = false;
 
-        synchronized (_outstandingTerminationRecords)
-        {
+        synchronized (_outstandingTerminationRecords) {
             // Extract the set of failure scopes that the corrisponding client service is currently
             // processing.
             final HashSet failureScopeSet = _outstandingTerminationRecords.get(recoveryAgent);
 
             // If there are some then determine if the set contains the given FailureScope.
-            if (failureScopeSet != null)
-            {
+            if (failureScopeSet != null) {
                 outstanding = failureScopeSet.contains(failureScope);
             }
         }
@@ -1177,28 +1112,23 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * recover the local server node.
      * </p>
      */
-    public void driveLocalRecovery() throws RecoveryFailedException
-    {
+    public void driveLocalRecovery() throws RecoveryFailedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "driveLocalRecovery", this);
 
         if (tc.isDebugEnabled())
             Tr.debug(tc, "RLSHA: configuring for local only recovery");
 
-        synchronized (this)
-        {
-            if (_currentFailureScope == null)
-            {
+        synchronized (this) {
+            if (_currentFailureScope == null) {
                 // Create a FailureScope that defines the current server.
                 _currentFailureScope = new FileFailureScope();
             }
         }
 
-        try
-        {
+        try {
             directInitialization(_currentFailureScope);
-        } catch (RecoveryFailedException exc)
-        {
+        } catch (RecoveryFailedException exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoveryDirectorImpl.driveLocalRecovery", "620", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "driveLocalRecovery", exc);
@@ -1218,7 +1148,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * be issued by the client service represented by the supplied RecoveryAgent for
      * the given failure scope.
      * </p>
-     * 
+     *
      * <p>
      * Just prior to requesting a RecoveryAgent to "initiateRecovery" of a
      * FailureScope, this method is driven to record the request. When the client
@@ -1226,30 +1156,27 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * RecoveryDirector.initialRecoveryComplete, the removeRecoveryRecord method is
      * called to remove this record.
      * </p>
-     * 
+     *
      * <p>
      * This allows the RLS to track the "initial" portion of an ongoing recovery process.
      * </p>
-     * 
+     *
      * <p>
      * [ SERIAL PHASE ] [ INITIAL PHASE ] [ RETRY PHASE ]
      * </p>
-     * 
+     *
      * @param recoveryAgent The RecoveryAgent that is about to be directed to process
      *            recovery of a FailureScope.
      * @param failureScope The FailureScope.
      */
-    private void addRecoveryRecord(RecoveryAgent recoveryAgent, FailureScope failureScope)
-    {
+    private void addRecoveryRecord(RecoveryAgent recoveryAgent, FailureScope failureScope) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "addRecoveryRecord", new Object[] { recoveryAgent, failureScope, this });
 
-        synchronized (_outstandingRecoveryRecords)
-        {
+        synchronized (_outstandingRecoveryRecords) {
             HashSet<RecoveryAgent> recoveryAgentSet = _outstandingRecoveryRecords.get(failureScope);
 
-            if (recoveryAgentSet == null)
-            {
+            if (recoveryAgentSet == null) {
                 recoveryAgentSet = new HashSet<RecoveryAgent>();
                 _outstandingRecoveryRecords.put(failureScope, recoveryAgentSet);
             }
@@ -1269,11 +1196,11 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * Internal method to remove the record of an outstanding 'initialRecoveryComplete'
      * call from the supplied RecoveryAgent for the given failure scope.
      * </p>
-     * 
+     *
      * <p>
      * This call will wake up all threads waiting for initial recovery to be completed.
      * </p>
-     * 
+     *
      * <p>
      * Just prior to requesting a RecoveryAgent to "initiateRecovery" of a
      * FailureScope, the addRecoveryRecord method is driven to record the request.
@@ -1281,31 +1208,28 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * invokes RecoveryDirector.initialRecoveryComplete, this method called to remove
      * this record.
      * </p>
-     * 
+     *
      * <p>
      * [ SERIAL PHASE ] [ INITIAL PHASE ] [ RETRY PHASE ]
      * </p>
-     * 
+     *
      * @param recoveryAgent The RecoveryAgent that has completed the initial recovery
      *            processing phase.
      * @param failureScope The FailureScope that defined the scope of this recovery
      *            processing.
-     * 
+     *
      * @return boolean true if there was an oustanding recovery record, otherwise false.
      */
-    private boolean removeRecoveryRecord(RecoveryAgent recoveryAgent, FailureScope failureScope)
-    {
+    private boolean removeRecoveryRecord(RecoveryAgent recoveryAgent, FailureScope failureScope) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "removeRecoveryRecord", new Object[] { recoveryAgent, failureScope, this });
 
         boolean found = false;
 
-        synchronized (_outstandingRecoveryRecords)
-        {
+        synchronized (_outstandingRecoveryRecords) {
             final HashSet recoveryAgentSet = _outstandingRecoveryRecords.get(failureScope);
 
-            if (recoveryAgentSet != null)
-            {
+            if (recoveryAgentSet != null) {
                 found = recoveryAgentSet.remove(recoveryAgent);
             }
         }
@@ -1323,7 +1247,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * Internal method to determine if there are any outstanding 'initialRecoveryComplete'
      * calls that must be issued by client services for the given failure scope.
      * </p>
-     * 
+     *
      * <p>
      * Just prior to requesting a RecoveryAgent to "initiateRecovery" of a FailureScope,
      * the addRecoveryRecord method is driven to record the request. When the client
@@ -1331,35 +1255,32 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * initialRecoveryComplete, the removeRecoveryRecord method is called to remove this
      * record.
      * </p>
-     * 
+     *
      * <p>
      * This allows the RLS to track the "initial" portion of an ongoing recovery process
      * accross all client services.
      * </p>
-     * 
+     *
      * <p>
      * [ SERIAL PHASE ] [ INITIAL PHASE ] [ RETRY PHASE ]
      * </p>
-     * 
+     *
      * @param recoveryAgent The RecoveryAgent.
      * @param failureScope The FailureScope.
-     * 
+     *
      * @return boolean true if there is an oustanding recovery request, otherwise false.
      */
-    private boolean recoveryOutstanding(FailureScope failureScope)
-    {
+    private boolean recoveryOutstanding(FailureScope failureScope) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "recoveryOutstanding", new Object[] { failureScope, this });
 
         boolean outstanding = false;
 
-        synchronized (_outstandingRecoveryRecords)
-        {
+        synchronized (_outstandingRecoveryRecords) {
             final HashSet recoveryAgentSet = _outstandingRecoveryRecords.get(failureScope);
 
             // If there are some then determine if the set contains the given FailureScope.
-            if (recoveryAgentSet != null && recoveryAgentSet.size() > 0)
-            {
+            if (recoveryAgentSet != null && recoveryAgentSet.size() > 0) {
                 outstanding = true;
             }
         }
@@ -1378,7 +1299,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * unit of recovery, identified by FailureScope has been completed. The client
      * service supplies its RecoveryAgent reference to identify itself.
      * </p>
-     * 
+     *
      * <p>
      * When recovery events occur, each client services RecoveryAgent callback object
      * has its initiateRecovery() method invoked. As a result of this call, the client
@@ -1390,7 +1311,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * is prefereable in an HA-enabled environment as controll must be passed back as
      * quickly as possible to avoid the HA framework shutting down the JVM.
      * </p>
-     * 
+     *
      * <p>
      * Regardless of the style adopted, once the recovery process has performed as much
      * processing as can be conducted without any failed resources becoming available
@@ -1398,29 +1319,27 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * to indicate this fact. This call is used by the RLS to optomize its interactions
      * with the HA framework.
      * </p>
-     * 
+     *
      * <p>
      * The RecoveryDirector will then pass the recovery request on to other registered
      * client services.
      * </p>
-     * 
+     *
      * @param recoveryAgent The client services RecoveryAgent instance.
      * @param failureScope The unit of recovery that is completed.
-     * 
+     *
      * @exception InvalidFailureScope The supplied FailureScope was not recognized as
      *                outstanding unit of recovery for the client
      *                service.
      */
     @Override
-    public void initialRecoveryComplete(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException
-    {
+    public void initialRecoveryComplete(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "initialRecoveryComplete", new Object[] { recoveryAgent, failureScope, this });
 
         final boolean removed = removeRecoveryRecord(recoveryAgent, failureScope);
 
-        if (!removed)
-        {
+        if (!removed) {
             if (tc.isEventEnabled())
                 Tr.event(tc, "The supplied FailureScope was not recognized as outstaning work for this RecoveryAgent");
             if (tc.isEntryEnabled())
@@ -1430,23 +1349,19 @@ public class RecoveryDirectorImpl implements RecoveryDirector
 
         // Once recovery processing has been completed, we need to examine the results and take appropriate
         // action.
-        if (!recoveryOutstanding(failureScope))
-        {
+        if (!recoveryOutstanding(failureScope)) {
             // Check to see if there is a record of some other recovery agent failing for this
             // recovery work.
             boolean atLeastOneServiceReportedFailure = false;
 
-            synchronized (_initFailedFailureScopes)
-            {
+            synchronized (_initFailedFailureScopes) {
                 atLeastOneServiceReportedFailure = _initFailedFailureScopes.remove(failureScope);
             }
 
-            if (!atLeastOneServiceReportedFailure)
-            {
+            if (!atLeastOneServiceReportedFailure) {
                 // There was no record of any failure. Proceed as normal to drive callbacks and enable
                 // peer recovery if appropriate
-                if (_registeredCallbacks != null)
-                {
+                if (_registeredCallbacks != null) {
                     driveCallBacks(CALLBACK_RECOVERYCOMPLETE, failureScope);
                 }
 
@@ -1457,29 +1372,21 @@ public class RecoveryDirectorImpl implements RecoveryDirector
                 {
                     Configuration.getRecoveryLogComponent().enablePeerRecovery();
                 }
-            }
-            else
-            {
+            } else {
                 // The was a record of a failure. Handle things differntly as a result. Drive the failure callbacks.
-                if (_registeredCallbacks != null)
-                {
+                if (_registeredCallbacks != null) {
                     driveCallBacks(CALLBACK_RECOVERYFAILED, failureScope);
                 }
 
-                if (Configuration.localFailureScope().equals(failureScope))
-                {
+                if (Configuration.localFailureScope().equals(failureScope)) {
                     // This is the local failure scope. Cause server termination
                     Configuration.getRecoveryLogComponent().localRecoveryFailed();
-                }
-                else
-                {
+                } else {
                     // The is a peer failure scope. Terminate and de-activate to try and allow another member
                     // of the cluster to recover.
-                    try
-                    {
+                    try {
                         directTermination(failureScope);
-                    } catch (Exception exc)
-                    {
+                    } catch (Exception exc) {
                         FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoveryDirectorImpl.initialRecoveryComplete", "1399", this);
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "initialRecoveryComplete", "An unexpected excetion occured whilst terminating recovery processing");
@@ -1503,29 +1410,27 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * unit of recovery, identified by FailureScope has been attempted but failed. The
      * client service supplies its RecoveryAgent reference to identify itself.
      * </p>
-     * 
+     *
      * <p>
      * Invoking this method on the local failure scope will result in the server being
      * termianted (by the HA framework)
      * </p>
-     * 
+     *
      * @param recoveryAgent The client services RecoveryAgent instance.
      * @param failureScope The unit of recovery that is failed.
-     * 
+     *
      * @exception InvalidFailureScope The supplied FailureScope was not recognized as
      *                outstanding unit of recovery for the client
      *                service.
      */
     @Override
-    public void initialRecoveryFailed(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException
-    {
+    public void initialRecoveryFailed(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "initialRecoveryFailed", new Object[] { recoveryAgent, failureScope, this });
 
         final boolean removed = removeRecoveryRecord(recoveryAgent, failureScope);
 
-        if (!removed)
-        {
+        if (!removed) {
             if (tc.isEventEnabled())
                 Tr.event(tc, "The supplied FailureScope was not recognized as outstaning work for this RecoveryAgent");
             if (tc.isEntryEnabled())
@@ -1535,44 +1440,33 @@ public class RecoveryDirectorImpl implements RecoveryDirector
 
         // Once recovery processing has been completed, we need to examine the results and take appropriate
         // action.
-        if (!recoveryOutstanding(failureScope))
-        {
+        if (!recoveryOutstanding(failureScope)) {
             // Drive the failure callback.
-            if (_registeredCallbacks != null)
-            {
+            if (_registeredCallbacks != null) {
                 driveCallBacks(CALLBACK_RECOVERYFAILED, failureScope);
             }
 
             // Ensure the failure map is clean for this failure scope.
-            synchronized (_initFailedFailureScopes)
-            {
+            synchronized (_initFailedFailureScopes) {
                 _initFailedFailureScopes.remove(failureScope);
             }
 
-            if (Configuration.localFailureScope().equals(failureScope))
-            {
+            if (Configuration.localFailureScope().equals(failureScope)) {
                 // This is the local failure scope. Cause server termination
                 Configuration.getRecoveryLogComponent().localRecoveryFailed();
-            }
-            else
-            {
+            } else {
                 // The is a peer failure scope. Terminate and de-activate to try and allow another member
                 // of the cluster to recover.
-                try
-                {
+                try {
                     directTermination(failureScope);
-                } catch (Exception exc)
-                {
+                } catch (Exception exc) {
                 }
 
                 Configuration.getRecoveryLogComponent().deactivateGroup(failureScope, 60);
             }
-        }
-        else
-        {
+        } else {
             // Record this failure so as to ensure correct processing later.
-            synchronized (_initFailedFailureScopes)
-            {
+            synchronized (_initFailedFailureScopes) {
                 _initFailedFailureScopes.add(failureScope);
             }
 
@@ -1585,20 +1479,17 @@ public class RecoveryDirectorImpl implements RecoveryDirector
             final Collection registeredRecoveryAgentsValues = _registeredRecoveryAgents.values();
             final Iterator registeredRecoveryAgentsValuesIterator = registeredRecoveryAgentsValues.iterator();
 
-            while (registeredRecoveryAgentsValuesIterator.hasNext())
-            {
+            while (registeredRecoveryAgentsValuesIterator.hasNext()) {
                 // Extract the next ArrayList and create an iterator from it. This iterator will return RecoveryAgent
                 // objects that are registered at the same sequence priority value.
                 final ArrayList registeredRecoveryAgentsArray = (java.util.ArrayList) registeredRecoveryAgentsValuesIterator.next();
                 final Iterator registeredRecoveryAgentsArrayIterator = registeredRecoveryAgentsArray.iterator();
 
-                while (registeredRecoveryAgentsArrayIterator.hasNext())
-                {
+                while (registeredRecoveryAgentsArrayIterator.hasNext()) {
                     // Extract the next RecoveryAgent object
                     final RecoveryAgent informRecoveryAgent = (RecoveryAgent) registeredRecoveryAgentsArrayIterator.next();
 
-                    if (informRecoveryAgent.clientIdentifier() != failedClientId)
-                    {
+                    if (informRecoveryAgent.clientIdentifier() != failedClientId) {
                         informRecoveryAgent.agentReportedFailure(failedClientId, failureScope);
                     }
                 }
@@ -1616,17 +1507,15 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * <p>
      * Adds a callback object to be driven when recovery events take place.
      * </p>
-     * 
+     *
      * @param callback The new callback object.
      */
     @Override
-    public synchronized void addCallBack(RecoveryLogCallBack callback)
-    {
+    public synchronized void addCallBack(RecoveryLogCallBack callback) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "addCallBack", callback);
 
-        if (_registeredCallbacks == null)
-        {
+        if (_registeredCallbacks == null) {
             _registeredCallbacks = new HashSet<RecoveryLogCallBack>();
         }
 
@@ -1644,7 +1533,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * Internal method to drive a callback operation onto registered callback objects.
      * Available 'stage' values are defined in this class and consist of the following:
      * </p>
-     * 
+     *
      * <p>
      * <ul>
      * <li>CALLBACK_RECOVERYSTARTED</li>
@@ -1654,17 +1543,14 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * <li>CALLBACK_RECOVERYFAILED</li>
      * </ul>
      * </p>
-     * 
-     * 
+     *
+     *
      * @param stage The required callback stage.
      * @param failureScope The failure scope for which the event is taking place.
      */
-    private void driveCallBacks(int stage, FailureScope failureScope)
-    {
-        if (tc.isEntryEnabled())
-        {
-            switch (stage)
-            {
+    private void driveCallBacks(int stage, FailureScope failureScope) {
+        if (tc.isEntryEnabled()) {
+            switch (stage) {
                 case CALLBACK_RECOVERYSTARTED:
                     Tr.entry(tc, "driveCallBacks", new Object[] { "CALLBACK_RECOVERYSTARTED", failureScope });
                     break;
@@ -1686,16 +1572,13 @@ public class RecoveryDirectorImpl implements RecoveryDirector
             }
         }
 
-        if (_registeredCallbacks != null)
-        {
+        if (_registeredCallbacks != null) {
             final Iterator registeredCallbacksIterator = _registeredCallbacks.iterator();
 
-            while (registeredCallbacksIterator.hasNext())
-            {
+            while (registeredCallbacksIterator.hasNext()) {
                 final RecoveryLogCallBack callBack = (RecoveryLogCallBack) registeredCallbacksIterator.next();
 
-                switch (stage)
-                {
+                switch (stage) {
                     case CALLBACK_RECOVERYSTARTED:
                         callBack.recoveryStarted(failureScope);
                         break;
@@ -1728,26 +1611,24 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * This method allows a client service to determine the recovery log configuration
      * for the supplied failure scope.
      * </p>
-     * 
+     *
      * <p>
      * Since the information returned by this method has been cached when the RLS was
      * initialized, this method can any time in the server lifecycle without any need
      * to worry about potential serialization problems with access to the underlying
      * model.
      * </p>
-     * 
+     *
      * @param failureScope The failure scope for which the recovery log configuration is
      *            required.
      * @return Object The associated configuration
      */
     @Override
-    public Object getRecoveryLogConfiguration(FailureScope failureScope)
-    {
+    public Object getRecoveryLogConfiguration(FailureScope failureScope) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getRecoveryLogConfiguration", failureScope);
 
-        final Object recoveryLog = Configuration.getRecoveryLogComponent().
-                        getRecoveryLogConfig(failureScope);
+        final Object recoveryLog = Configuration.getRecoveryLogComponent().getRecoveryLogConfig(failureScope);
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getRecoveryLogConfiguration", recoveryLog);
@@ -1761,17 +1642,15 @@ public class RecoveryDirectorImpl implements RecoveryDirector
      * Invoked by a client service to determine the Stringified Identity of the current FailureScope.
      * This is different to performing clusterIdentity() on the currentFailureScope in that if HA is not
      * enabled then the identityString is non-null
-     * 
+     *
      * @return String The Identity string of the current FailureScope.
      */
     @Override
-    public String getNonNullCurrentFailureScopeIDString()
-    {
+    public String getNonNullCurrentFailureScopeIDString() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getNonNullCurrentFailureScopeIDString");
 
-        final String value = Configuration.getRecoveryLogComponent().
-                        getNonNullCurrentFailureScopeIDString(currentFailureScope().serverName());
+        final String value = Configuration.getRecoveryLogComponent().getNonNullCurrentFailureScopeIDString(currentFailureScope().serverName());
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getNonNullCurrentFailureScopeIDString", value);
@@ -1783,7 +1662,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector
     //------------------------------------------------------------------------------
     /**
      * Register the recovery event callback listener.
-     * 
+     *
      * @param rel The new recovery event listener
      */
     @Override
@@ -1804,12 +1683,11 @@ public class RecoveryDirectorImpl implements RecoveryDirector
     /**
      * This method allows a client service to determine if High Availability support
      * has been enabled for the local cluster.
-     * 
+     *
      * @return boolean true if HA support is enabled, otherwise false.
      */
     @Override
-    public boolean isHAEnabled()
-    {
+    public boolean isHAEnabled() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "isHAEnabled");
 
@@ -1820,8 +1698,18 @@ public class RecoveryDirectorImpl implements RecoveryDirector
         return haEnabled;
     }
 
-    public static void reset()
-    {
+    public static void reset() {
         _instance = null;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.recoverylog.spi.RecoveryDirector#setRecoveryLogFactory(com.ibm.ws.recoverylog.spi.RecoveryLogFactory)
+     */
+    @Override
+    public void setRecoveryLogFactory(RecoveryLogFactory fac) {
+        // TODO Auto-generated method stub
+
     }
 }

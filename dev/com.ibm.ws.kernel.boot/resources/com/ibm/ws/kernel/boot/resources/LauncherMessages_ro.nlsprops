@@ -682,6 +682,18 @@ warning.server.status.invalid.targets=CWWKE0946W: A fost primit\u0103 o cerere d
 warning.server.status.invalid.targets.explanation=Un utilizator a lansat o cerere de stare cu o list\u0103 de \u0163inte goal\u0103 pe op\u0163iunea pentru \u0163inte. Cererea s-a finalizat, dar nu a fost realizat\u0103 nicio ac\u0163iune.
 warning.server.status.invalid.targets.useraction=Specifica\u0163i pe op\u0163iunea pentru \u0163int\u0103 o list\u0103 de componente pentru a le verifica starea. Pentru a verifica starea cumulativ\u0103 a tuturor componentelor capabile de pauz\u0103 din server, lansa\u0163i o cerere de stare f\u0103r\u0103 op\u0163iunea pentru \u0163int\u0103.
 
+warning.package.root.invalid=CWWKE0947W: O op\u0163iune --server-root cu un argument gol nu este permis\u0103 c\u00e2nd este instalat Product Extensions. Va fi folosit argumentul implicit wlp.
+warning.package.root.invalid.explanation=Utilizatorul a realizat o cerere de pachet cu o op\u0163iune --server-root care specific\u0103 un argument gol \u015fi au fost detectate Product Extensions. Va fi folosit wpl, r\u0103d\u0103cina implicit\u0103 pentru server.
+warning.package.root.invalid.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+warning.package.root.invalid.runnable=CWWKE0948W: O op\u0163iune --server-root cu --include=runnable nu este o combina\u0163ie permis\u0103. Argumentul implicit wlp este folosit pentru serverul r\u0103d\u0103cin\u0103.
+warning.package.root.invalid.runnable.explanation=Utilizatorul a realizat o cerere de pachet cu o op\u0163iune --server-root \u015fi --include=runnable, care nu este o combina\u0163ie permis\u0103. Va fi folosit serverul r\u0103d\u0103cin\u0103 implicit wlp.
+warning.package.root.invalid.runnable.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+error.no.serialfilteragent=CWWKE0949E: Fi\u015fierul jar al agentului de filtru serial specificat, {0}, nu exist\u0103.
+error.no.serialfilteragent.explanation=Fi\u015fierul jar al agentului de filtru serial specificat nu exist\u0103 sau nu poate fi citit.
+error.no.serialfilteragent.useraction= Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul exist\u0103 \u015fi c\u0103 poate fi citit de utilizatorul curent.
+
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.
 info.serverStartedWithPID=Serverul {0} a pornit cu ID de proces {1}.
@@ -762,3 +774,4 @@ info.no.servers.defined=Nu este definit niciun server \u00een directorul de util
 info.list.of.defined.servers=Urm\u0103toarele servere sunt definite relativ la directorul de utilizatori {0}.
 info.communicate.server=A ap\u0103rut o \
 eroare de comunica\u0163ii \u00eentre comanda {0} \u015fi serverul {1}.
+

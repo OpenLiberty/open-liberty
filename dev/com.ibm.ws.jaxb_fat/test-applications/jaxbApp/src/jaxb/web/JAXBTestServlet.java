@@ -20,6 +20,7 @@ import javax.xml.bind.JAXBContext;
 
 import org.junit.Test;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -37,9 +38,9 @@ public class JAXBTestServlet extends FATServlet {
         System.out.println("Got JAX-B API from loader=  " + apiLoader);
         System.out.println("Got JAX-B API from location=" + apiLocation);
         assertTrue("Expected JAX-B API to come from Liberty bundle, but it came from: " + apiLoader,
-                   apiLoader != null && apiLoader.toString().contains("com.ibm.websphere.javaee.jaxb.2.2"));
+                   apiLoader != null && apiLoader.toString().contains("com.ibm.websphere.javaee.jaxb.2."));
         assertTrue("Expected JAX-B API to come from Liberty, but it came from: " + apiLocation,
-                   apiLocation != null && apiLocation.contains("com.ibm.websphere.javaee.jaxb.2.2"));
+                   apiLocation != null && apiLocation.contains("com.ibm.websphere.javaee.jaxb.2."));
     }
 
     @Test
@@ -58,7 +59,8 @@ public class JAXBTestServlet extends FATServlet {
     }
 
     @Test
-    public void testActivationLoaded() throws Exception {
+    @SkipForRepeat("JAXB-2.3")
+    public void testActivationLoaded_jaxb22() throws Exception {
         // Verify Activation API came from the JDK
         ClassLoader apiLoader = javax.activation.DataHandler.class.getClassLoader();
         CodeSource apiSrc = javax.activation.DataHandler.class.getProtectionDomain().getCodeSource();
@@ -67,7 +69,7 @@ public class JAXBTestServlet extends FATServlet {
         System.out.println("Got javax.activation from location=" + apiLocation);
 
         // On JDK 7/8 we will continue to load javax.activation from the JDK, but in JDK 9+ we will load it from a Liberty bundle
-        if (System.getProperty("java.version").contains("1.")) {
+        if (System.getProperty("java.specification.version").startsWith("1.")) {
             assertNull("Expected javax.activation to come from JDK classloader, but it came from: " + apiLoader, apiLoader);
             assertNull("Expected javax.activation to come from JDK, but it came from: " + apiLocation, apiLocation);
         } else {
@@ -76,5 +78,21 @@ public class JAXBTestServlet extends FATServlet {
             assertTrue("Expected javax.activation to come from Liberty, but it came from: " + apiLocation,
                        apiLocation != null && apiLocation.contains("com.ibm.websphere.javaee.activation.1.1"));
         }
+    }
+
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testActivationLoaded_jaxb23() throws Exception {
+        // Verify Activation API came from the JDK
+        ClassLoader apiLoader = javax.activation.DataHandler.class.getClassLoader();
+        CodeSource apiSrc = javax.activation.DataHandler.class.getProtectionDomain().getCodeSource();
+        String apiLocation = apiSrc == null ? null : apiSrc.getLocation().toString();
+        System.out.println("Got javax.activation from loader=  " + apiLoader);
+        System.out.println("Got javax.activation from location=" + apiLocation);
+
+        assertTrue("Expected javax.activation to come from Liberty JDK classloader, but it came from: " + apiLoader,
+                   apiLoader != null && apiLoader.toString().contains("com.ibm.websphere.javaee.activation.1.1"));
+        assertTrue("Expected javax.activation to come from Liberty, but it came from: " + apiLocation,
+                   apiLocation != null && apiLocation.contains("com.ibm.websphere.javaee.activation.1.1"));
     }
 }

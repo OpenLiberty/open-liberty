@@ -27,9 +27,9 @@ WS-TraceGroup: \
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Export-Package: \
-        com.ibm.websphere.security.jwt;provide:=true; \
-        com.ibm.ws.security.jwt.config; \
-        com.ibm.ws.security.jwt.builder.utils; \
+        com.ibm.websphere.security.jwt;provide:=true, \
+        com.ibm.ws.security.jwt.config, \
+        com.ibm.ws.security.jwt.builder.utils, \
         com.ibm.ws.security.jwt.utils
 
 Import-Package: \
@@ -58,13 +58,13 @@ Import-Package: \
     com.ibm.wsspi.kernel.service.utils, \
     com.ibm.websphere.kernel.server, \
     org.osgi.framework.wiring, \
-    org.jose4j.*, \
+    org.jose4j.*;version="[0.5,1)", \
     org.apache.commons.codec.binary, \
     javax.management, \
     javax.servlet, \
     javax.servlet.http, \
     javax.net.ssl, \
-    org.apache.http.*;resolution:=optional, \
+    org.apache.http.*, \
     com.google.gson.*;resolution:=optional, \
     javax.ws.rs.client;version="[2.0.0, 3.0.0)";resolution:=optional, \
     javax.ws.rs.core;version="[2.0.0, 3.0.0)";resolution:=optional, \
@@ -115,7 +115,7 @@ instrument.classesExcludes: com/ibm/ws/security/jwt/internal/resources/*.class
     com.ibm.ws.org.joda.time.1.6.2;version=latest, \
     com.ibm.ws.org.apache.commons.codec.1.4;version=latest, \
     com.ibm.ws.config;version=latest, \
-    com.ibm.ws.org.jose4j.0.5.1;version=latest, \
+    com.ibm.ws.org.jose4j;version=latest, \
     com.ibm.ws.security.common;version=latest, \
     com.ibm.ws.security.common.jsonwebkey;version=latest, \
     com.ibm.websphere.security.wim.base;version=latest, \
@@ -133,11 +133,11 @@ instrument.classesExcludes: com/ibm/ws/security/jwt/internal/resources/*.class
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
     com.ibm.ws.junit.extensions;version=latest, \
     org.jmock:jmock-legacy;version=2.5.0, \
-    cglib:cglib-nodep;version=3.2.7, \
+    cglib:cglib-nodep;version=3.2.10, \
     org.hamcrest:hamcrest-all;version=1.3, \
     org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
     org.jmock:jmock;strategy=exact;version=2.5.1, \
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
     com.ibm.ws.kernel.boot;version=latest, \
-    com.ibm.ws.org.jose4j.0.5.1;version=latest, \
+    com.ibm.ws.org.jose4j;version=latest, \
     com.ibm.ws.org.slf4j.api.1.7.7;version=latest

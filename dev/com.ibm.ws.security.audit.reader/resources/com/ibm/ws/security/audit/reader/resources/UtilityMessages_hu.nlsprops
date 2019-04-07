@@ -1,0 +1,63 @@
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+#CMVCPATHNAME com.ibm.ws.security.audit.reader/resources/com/ibm/ws/security/audit/reader/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKS
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Hiba: {0}
+error.inputConsoleNotAvailable=A beviteli konzol nem \u00e9rhet\u0151 el.
+error.missingIO=Hiba, hi\u00e1nyz\u00f3 I/O eszk\u00f6z: {0}.
+
+usage=Haszn\u00e1lat:  {0}
+task.unknown=Ismeretlen feladat: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=T\u00fal sok argumentum tal\u00e1lhat\u00f3.
+insufficientArgs=Nem elegend\u0151 param\u00e9ter.
+invalidArg=A(z) {0} argumentum \u00e9rv\u00e9nytelen.
+invalidValue=A(z) {0} \u00e9rt\u00e9k \u00e9rv\u00e9nytelen a(z) {1} argumentum eset\u00e9n.
+missingArg=A(z) {0} argumentum hi\u00e1nyzik.
+missingValue=Hi\u00e1nyzik egy \u00e9rt\u00e9k a(z) {0} argumentum eset\u00e9n.
+missingArg2=A(z) {0} argumentumot vagy a(z) {1} argumentumot meg kell adni.
+exclusiveArg=A(z) {0} argumentumot vagy a(z) {1} argumentumot meg kell adni, de nem adhat\u00f3 meg mindkett\u0151.
+serverNotFound=A megadott {0} kiszolg\u00e1l\u00f3 nem tal\u00e1lhat\u00f3 a(z) {1} helyen.
+missingArgs= Az al\u00e1bbi argumentumok hi\u00e1nyoznak: {0} \u00e9s {1}.
+missingArgs3=Az al\u00e1bbi argumentumok hi\u00e1nyoznak: {0}, {1}  \u00e9s {2}.
+invalidFileLocations=Az --auditFileLocation argumentumhoz megadott {0} teljes k\u00e9pz\u00e9s\u0171 \u00fatvonal megegyezik az --outputFileLocation argumentumhoz megadott {1} teljes k\u00e9pz\u00e9s\u0171 \u00fatvonallal.  Mindk\u00e9t \u00fatvonalnak egyedinek kell lennie.
+invalidURLFormat=A(z) {1} argumentumhoz megadott {0} \u00e9rt\u00e9k nem teljes k\u00e9pz\u00e9s\u0171 URL form\u00e1tumban van.
+
+password.enterText=Adja meg a jelsz\u00f3t:
+password.reenterText=Adja meg \u00fajra a jelsz\u00f3t :
+password.readError=Hiba a jelsz\u00f3 olvas\u00e1sakor.
+password.entriesDidNotMatch=A jelszavak nem egyeznek.
+
+audit.NonWriteableOuputFile=Az --outputFileLocation argumentumhoz megadott {0} \u00e9rt\u00e9k nem \u00edrhat\u00f3 f\u00e1jl.  Gondoskodj\u00e9k r\u00f3la, hogy a kimeneti f\u00e1jl sz\u00e1m\u00e1ra megadott hely \u00edrhat\u00f3 legyen.
+audit.NoKeyStorePasswordValue=A(z) {0} fel\u00fclvizsg\u00e1lati kulcst\u00e1rol\u00f3hoz nem lett kulcst\u00e1rol\u00f3 jelsz\u00f3 megadva.
+audit.MismatchingEncrypt=A(z) {0} fel\u00fclvizsg\u00e1lati napl\u00f3 titkos\u00edtva van, de az --encrypted argumentum nem lett megadva, illetve meg van adva, \u00e9s false \u00e9rt\u00e9kre van \u00e1ll\u00edtva.
+audit.MismatchingSign=A(z) {0} fel\u00fclvizsg\u00e1lati napl\u00f3 al\u00e1 van \u00edrva, de a --signed argumentum nem lett megadva, illetve meg van adva, \u00e9s false \u00e9rt\u00e9kre van \u00e1ll\u00edtva.
+audit.MismatchingEncryptSign=A(z) {0} fel\u00fclvizsg\u00e1lati napl\u00f3 titkos\u00edtott \u00e9s al\u00e1 van \u00edrva, de a --signed vagy --encrypted argumentum nem lett megadva, illetve meg van adva, \u00e9s false \u00e9rt\u00e9kre van \u00e1ll\u00edtva.
+security.audit.UnsupportedKeyStoreType=A(z) {0} kulcst\u00e1rol\u00f3t\u00edpus \u00e9rt\u00e9ke a(z) {1} argumentum eset\u00e9n nem t\u00e1mogatott.
+security.audit.UnknownHost=Nem lehet lek\u00e9rni a fel\u00fclvizsg\u00e1lati olvas\u00f3 seg\u00e9dprogramot futtat\u00f3 sz\u00e1m\u00edt\u00f3g\u00e9p hosztnev\u00e9t. 
+security.audit.KeyStoreException=Kiv\u00e9tel t\u00f6rt\u00e9nt a megadott kulcst\u00e1rol\u00f3- \u00e9s szolg\u00e1ltat\u00f3t\u00edpussal rendelkez\u0151 kulcst\u00e1rol\u00f3 p\u00e9ld\u00e1ny\u00e1nak lek\u00e9rdez\u00e9sekor.
+security.audit.NoSuchProviderException=Kiv\u00e9tel t\u00f6rt\u00e9nt a megadott szolg\u00e1ltat\u00f3val rendelkez\u0151 kulcst\u00e1rol\u00f3 p\u00e9ld\u00e1ny\u00e1nak lek\u00e9rdez\u00e9sekor.  Nem l\u00e9tezik ilyen szolg\u00e1ltat\u00f3.
+security.audit.MalformedURLException=Kiv\u00e9tel t\u00f6rt\u00e9nt a kulcst\u00e1rol\u00f3 megnyit\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.  A kulcst\u00e1rol\u00f3 helye rossz form\u00e1tum\u00fa. 
+security.audit.CertificateException=Igazol\u00e1s kiv\u00e9tel t\u00f6rt\u00e9nt a kulcst\u00e1rol\u00f3 bet\u00f6lt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+security.audit.NoSuchAlgorithmException=Kiv\u00e9tel t\u00f6rt\u00e9nt a kulcst\u00e1rol\u00f3 bet\u00f6lt\u00e9se sor\u00e1n.  Egy adott crypto algoritmust k\u00e9rt, de az nem \u00e9rhet\u0151 el.
+security.audit.FileNotFound=A megnevezett {0} f\u00e1jl nem l\u00e9tezik. 
+security.audit.ErrorLoadingKeystore=Hiba t\u00f6rt\u00e9nt a(z) {0} kulcst\u00e1rol\u00f3 bet\u00f6lt\u00e9se sor\u00e1n. Lehet, hogy a jelsz\u00f3 helytelen\u00fcl lett megadva. 
+security.audit.MismatchingEncKeystores=A fel\u00fclvizsg\u00e1lati rekordok visszafejt\u00e9s\u00e9re haszn\u00e1lt tan\u00fas\u00edtv\u00e1nyt tartalmaz\u00f3, megadott kulcst\u00e1rol\u00f3 {0} beviteli \u00e9rt\u00e9ke nem felel meg a fel\u00fclvizsg\u00e1lati napl\u00f3ban a kulcst\u00e1rol\u00f3 sz\u00e1m\u00e1ra megadott {1} \u00e9rt\u00e9knek.
+security.audit.MismatchingSigningKeystores=A fel\u00fclvizsg\u00e1lati rekordok al\u00e1\u00edr\u00e1s\u00e1nak visszavon\u00e1s\u00e1ra haszn\u00e1lt tan\u00fas\u00edtv\u00e1nyt tartalmaz\u00f3, megadott kulcst\u00e1rol\u00f3 {0} beviteli \u00e9rt\u00e9ke nem felel meg a fel\u00fclvizsg\u00e1lati napl\u00f3ban a kulcst\u00e1rol\u00f3 sz\u00e1m\u00e1ra megadott {1} \u00e9rt\u00e9knek.
+security.audit.CannotFindCertificate=A(z) {0} tan\u00fas\u00edtv\u00e1ny \u00e1ln\u00e9v nem l\u00e9tezik a(z) {1} kulcst\u00e1rol\u00f3ban.

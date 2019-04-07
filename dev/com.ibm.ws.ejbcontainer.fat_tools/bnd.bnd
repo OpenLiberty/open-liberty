@@ -28,8 +28,8 @@ DynamicImport-Package: \
 
 Export-Package: \
   com.ibm.websphere.ejbcontainer.test.tools; version="1.0", \
-  com.ibm.websphere.ejbcontainer.test.osgi.pmi; version="1.0" \
-  com.ibm.websphere.ejbcontainer.test.mdb; version="1.0" \
+  com.ibm.websphere.ejbcontainer.test.osgi.pmi; version="1.0", \
+  com.ibm.websphere.ejbcontainer.test.mdb; version="1.0", \
   com.ibm.websphere.ejbcontainer.test.mdb.interceptors; version="1.0"
 
 Private-Package: \
@@ -45,13 +45,15 @@ test.project: true
 generate.replacement: true
 
 -buildpath: \
+	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.jms.1.1;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.ws.ejbcontainer.core; version=latest, \
 	com.ibm.ws.logging; version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations; version=latest, \
-	com.ibm.ws.ejbcontainer.core; version=latest, \
 	com.ibm.websphere.javaee.transaction.1.1; version=latest, \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.websphere.security; version=latest, \

@@ -10,16 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.org.hibernate.validator;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
-import org.junit.Test;
+import test.common.OSSMessageTest;
 
 /**
  * The purpose of this test is to ensure that we always pick up changes in Hibernate Validator NLS files so we can translate
@@ -29,50 +20,10 @@ import org.junit.Test;
  *
  * This means that OpenLiberty must provide the following languages: it, ja, pl, ro, zh_TW, zh
  */
-public class HibernateValidatorMessageTest {
+public class HibernateValidatorMessageTest extends OSSMessageTest {
 
-    private static final String CLASSPATH = System.getProperty("java.class.path").replace("\\", "/");
-    private static final String testBuildDir = System.getProperty("test.buildDir").replace("\\", "/");
-
-    @Test
-    public void testMessagesUnchanged() throws Exception {
-
-        File ossHibernateFile = null;
-        for (String classpathElement : CLASSPATH.split(System.getProperty("path.separator"))) {
-            if (classpathElement.endsWith(".jar") && classpathElement.contains("hibernate-validator-6")) {
-                ossHibernateFile = new File(classpathElement);
-                break;
-            }
-        }
-        assertTrue(ossHibernateFile.exists());
-
-        File buildDir = new File(testBuildDir);
-        assertTrue((buildDir.exists()));
-        File wsHibernateFile = null;
-        for (File f : buildDir.listFiles()) {
-            if (f.getName().endsWith(".jar") && f.getName().contains("com.ibm.ws.org.hibernate.validator")) {
-                wsHibernateFile = f;
-                break;
-            }
-        }
-        assertTrue(wsHibernateFile.exists());
-
-        long ossMessageChecksum = getChecksum(ossHibernateFile);
-        long wsMessageChecksum = getChecksum(wsHibernateFile);
-        assertEquals("The checksum for org/hibernate/validator/ValidationMessages.properties in the " + wsHibernateFile.getName() +
-                     " bundle has changed ( " + ossMessageChecksum + " --> " + wsMessageChecksum + " ). " +
-                     "If you are checking in a new version of Hibernate Validator, be sure to copy the message files from the open source jar into the " +
-                     "resources/org/hibernate/validator/ folder of this project so the translation team can be notified of the changes and provide " +
-                     "message updates in languages that Liberty provides but Hibernate Validator does not.",
-                     ossMessageChecksum, wsMessageChecksum);
-    }
-
-    private long getChecksum(File f) throws IOException {
-        try (JarFile jar = new JarFile(f)) {
-            JarEntry nlsFile = jar.getJarEntry("org/hibernate/validator/ValidationMessages.properties");
-            assertNotNull(nlsFile);
-            return nlsFile.getCrc();
-        }
+    public HibernateValidatorMessageTest() {
+        super("hibernate-validator-6", "com.ibm.ws.org.hibernate.validator", "org/hibernate/validator/ValidationMessages.properties");
     }
 
 }

@@ -6,6 +6,7 @@
 	<classpathentry kind="src" path="test-applications/cdiCurrentTest.jar/src"/>
 	<classpathentry kind="src" path="test-applications/cdiCurrentTest.war/src"/>
 	<classpathentry kind="src" path="test-applications/injectInjectionPoint.war/src"/>
+	<classpathentry kind="src" path="test-applications/injectInjectionPointAsParam.war/src"/>
 	<classpathentry kind="src" path="test-applications/alterableContextExtension.jar/src"/>
 	<classpathentry kind="src" path="test-applications/applicationExtension.jar/src"/>
 	<classpathentry kind="src" path="test-applications/applicationExtension.war/src"/>

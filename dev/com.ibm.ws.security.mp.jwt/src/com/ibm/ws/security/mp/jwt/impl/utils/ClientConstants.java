@@ -33,6 +33,5 @@ public class ClientConstants {
     public final static String BEARER = "bearer ";
     public final static String METHOD_client_secret_basic = "client_secret_basic";
     public final static String METHOD_client_secret_post = "client_secret_post";
-    public final static String LOGIN_HINT = "mpjwt_login_hint";
 
 }

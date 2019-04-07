@@ -39,3 +39,40 @@ CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID.useraction=Ensure that the specifi
 JAVASCRIPT_REDIRECT_URL_NOT_VALID=CWWKS6106E: The security service cannot create the appropriate JavaScript to redirect the browser because the redirect URL [{0}] is not valid.
 JAVASCRIPT_REDIRECT_URL_NOT_VALID.explanation=The browser must be redirected to a valid URL, but the specified URL is not valid. The URL might be null or empty, or might contain characters that are not allowed by RFC 3986.
 JAVASCRIPT_REDIRECT_URL_NOT_VALID.useraction=Check the format of the URL to ensure that it is not null or empty and that it contains only characters that are allowed in URI paths by RFC 3986.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS6107W: The social login client [{2}] configuration specifies both the [{0}] discovery endpoint URL and the other endpoints, but must be configured with either the discovery endpoint or the other endpoints. The client used the information from the discovery request and ignored the other endpoints [{1}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=The social login configuration specified both the discovery endpoint and the other endpoints such as authorization,token, but only one of the two can be specified..
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.useraction=Configure either the discovery endpoint or the other endpoints such as authorization and token and userinfo, not both.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER=CWWKS6108W: The social login client [{2}] configuration specifies both the [{0}] discovery endpoint URL and the issuer identifier [{1}]. The client used the information from the discovery request and ignored the configured issuer identifier..
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.explanation=The social login configuration specified both the discovery endpoint and the issuer identifier, but only one of the two can be specified..
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.useraction=Configure either the discovery endpoint or the issuer identifier, not both.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT=CWWKS6109I: The social login client [{3}] configuration specifies [{0}], a default value for the [{1}] and as a result of discovery this is changed to [{2}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.explanation=If the OpenID Connect provider (OP) does not support the social login client defaults, depending on the capacity of the social login client, the defaults can be adjusted to what the OP supports.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.useraction=Informational message. No action is required.
+
+OIDC_CLIENT_DISCOVERY_COMPLETE=CWWKS6110I: The social login client [{0}] configuration has been established with the information from the discovery endpoint URL [{1}]. This information enables the client to interact with the OpenID Connect provider to process the requests such as authorization and token.
+OIDC_CLIENT_DISCOVERY_COMPLETE.explanation=The social login client contacts the discovery endpoint of the OpenID Connect provider to get the information such as authorizationEndpointUrl, tokenEndpointUrl, userInfoEndpointUrl, jwkEndpointUrl. This information enables the client to interact with the OpenID Connect provider to send authorization, token, jwk, userinfo requests.
+OIDC_CLIENT_DISCOVERY_COMPLETE.useraction=Informational message. No action is required.
+
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG=CWWKS6111I: The social login client [{0}] configuration has been updated with the new information received from the discovery endpoint URL [{1}].
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.explanation=The social login client contacts the discovery endpoint of the OpenID Connect provider, 1)if there is a problem contacting the authorization or token endpoints of the OpenID Connect provider 2)if the current time is later than the next discovery time. Next discovery time is calculated by adding the discoveryPollingRate value to the current time after each discovery call.
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.useraction=Informational message. No action is required.
+
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG=CWWKS6112I: The social login client [{0}] configuration is consistent with the information from the discovery endpoint URL [{1}], so no configuration updates are needed.
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.explanation=The social login client contacts the discovery endpoint of the OpenID Connect provider, 1)if there is a problem contacting the authorization or token endpoints of the OpenID Connect provider 2)if the current time is later than the next discovery time. Next discovery time is calculated by adding the discoveryPollingRate value to the current time after each discovery call. If the latest discovery information matches the previous one, then no configuration update takes place.
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Informational message. No action is required.
+
+OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS6113E: The social login client [{0}] failed to obtain OpenID Connect provider endpoint information through the discovery endpoint URL of [{1}]. Update the configuration for the Social Login (oidcLogin configuration) with the correct HTTPS discovery endpoint URL. 
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=The social login client configuration is configured to discover the OpenID Connect provider endpoints through the discovery URL, but the discovery process failed. The client is unable to process the authentication requests until the configuration of the discoveryEndpoint is corrected or the discovery is successful.
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Correct the social login client configuration to ensure that 1) the discovery endpoint URL refers to the correct OpenID Connect provider, 2) the discovery endpoint URL is HTTPS and 3) the SSL feature and keystore elements are configured correctly with trust for OpenID Connect provider 4) ensure that the OpenID Connect provider discovery endpoint is functional.
+
+OIDC_CLIENT_DISC_RESPONSE_ERROR=CWWKS6114E: A successful response was not returned from the URL of [{0}]. The [{1}] response status and the [{2}] error are from the discovery request.
+OIDC_CLIENT_DISC_RESPONSE_ERROR.explanation=The social login client failed to access the OpenID Connect provider discovery endpoint and the message might contain more information about the error.
+OIDC_CLIENT_DISC_RESPONSE_ERROR.useraction=Ensure that the OpenID Connect provider is available and that the specified discovery endpoint is correct.
+
+OIDC_CLIENT_DISCOVERY_ERROR=CWWKS6115E: A successful response was not returned from the URL of [{0}]. The social client encountered [{1}] error and failed to access the OpenID Connect provider discovery endpoint.
+OIDC_CLIENT_DISCOVERY_ERROR.explanation=The social login client failed to access the OpenID Connect provider discovery endpoint and the message might contain more information about the error.
+OIDC_CLIENT_DISCOVERY_ERROR.useraction=Ensure that the OpenID Connect provider is available and that the specified discovery endpoint is correct.
+

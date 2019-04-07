@@ -10,6 +10,7 @@
  *******************************************************************************/
 package web.war.basic;
 
+import java.util.Base64;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -33,7 +34,6 @@ import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.DatatypeConverter;
 
 @Default
 @ApplicationScoped
@@ -134,8 +134,9 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
 
     private String decodeCookieString(String cookieString) {
         try {
-            return new String(DatatypeConverter.parseBase64Binary(cookieString));
+            return new String(Base64.getDecoder().decode(cookieString));
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

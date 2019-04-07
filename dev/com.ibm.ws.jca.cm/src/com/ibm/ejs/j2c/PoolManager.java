@@ -823,80 +823,67 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                 if (mcWrapper.isDestroyState() || mcWrapper.isStale() || mcWrapper.hasFatalErrorNotificationOccurred(freePool[0].getFatalErrorNotificationTime())
                     || ((this.agedTimeout != -1)
                         && (mcWrapper.hasAgedTimedOut(this.agedTimeoutMillis)))) {
-                    // Need to remove it from TLS and decrease total connection count.
-                    ArrayList<MCWrapper> mh = localConnection_.get();
-                    if (mh != null) {
-                        requestingAccessToTLSPool();
-                        // remove the bad connection primary connection being returned.
-                        mh.remove(mcWrapper);
-                        tlsArrayLists.remove(mcWrapper);
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setThreadID(((com.ibm.ejs.j2c.MCWrapper) mcWrapper).getThreadID() + "-release-destroy-removed");
-                            Tr.debug(this, tc, "removed mcWrapper from thread local " + mcWrapper);
-                        }
-                        endingAccessToTLSPool();
-                        removeConnectionFromPool(mcWrapper);
-                    }
-                    activeRequest.decrementAndGet();
-                    ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setAlreadyBeingReleased(false);
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                        Tr.exit(this, tc, "release", new Object[] { mcWrapper.getManagedConnectionWithoutStateCheck(), "Pool contents ==>", this });
-                    }
+                    removeMCWFromTLS(mcWrapper);
                     return;
 
                 } else {
-                    if (waiterCount > 0) {
-                        /*
-                         * If we have waiters, its likely the max connections and tls settings are not correct.
-                         * When we have waiters, we need to try and remove one connection from this thread local
-                         * and send the mcw to the waiter queue. By sending the mcw to the waiter queue, this connection may be assigned
-                         * to a different thread local.
-                         */
-                        synchronized (waiterFreePoolLock) {
-                            if ((waiterCount > 0) && (waiterCount > mcWrapperWaiterList.size())) {
-                                // there are requests waiting
-                                ArrayList<MCWrapper> mh = localConnection_.get();
-                                if (mh != null) {
-                                    requestingAccessToTLSPool();
-                                    // remove a mcw from this thread local.
-                                    mh.remove(mcWrapper);
-                                    tlsArrayLists.remove(mcWrapper);
-                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                        ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setThreadID(((com.ibm.ejs.j2c.MCWrapper) mcWrapper).getThreadID() + "-release-waiter-removed");
-                                        Tr.debug(this, tc, "removed mcWrapper from thread local " + mcWrapper);
+                    try {
+                        if (waiterCount > 0) {
+                            /*
+                             * If we have waiters, its likely the max connections and tls settings are not correct.
+                             * When we have waiters, we need to try and remove one connection from this thread local
+                             * and send the mcw to the waiter queue. By sending the mcw to the waiter queue, this connection may be assigned
+                             * to a different thread local.
+                             */
+                            synchronized (waiterFreePoolLock) {
+                                if ((waiterCount > 0) && (waiterCount > mcWrapperWaiterList.size())) {
+                                    // there are requests waiting
+                                    ArrayList<MCWrapper> mh = localConnection_.get();
+                                    if (mh != null) {
+                                        requestingAccessToTLSPool();
+                                        // remove a mcw from this thread local.
+                                        mh.remove(mcWrapper);
+                                        tlsArrayLists.remove(mcWrapper);
+                                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                            ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setThreadID(((com.ibm.ejs.j2c.MCWrapper) mcWrapper).getThreadID() + "-release-waiter-removed");
+                                            Tr.debug(this, tc, "removed mcWrapper from thread local " + mcWrapper);
+                                        }
+                                        endingAccessToTLSPool();
                                     }
-                                    endingAccessToTLSPool();
+                                    ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).tlsCleanup();
+                                    mcWrapper.setSharedPoolCoordinator(null);
+                                    mcWrapperWaiterList.add(mcWrapper);
+                                    mcWrapper.setPoolState(MCWrapper.ConnectionState_waiterPool);
+                                    // notify a waiter.
+                                    waiterFreePoolLock.notify();
+                                    activeRequest.decrementAndGet();
+                                    ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setAlreadyBeingReleased(false);
+                                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                                        Tr.exit(this, tc, "release");
+                                    return;
                                 }
-                                ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).tlsCleanup();
-                                mcWrapper.setSharedPoolCoordinator(null);
-                                mcWrapperWaiterList.add(mcWrapper);
-                                mcWrapper.setPoolState(MCWrapper.ConnectionState_waiterPool);
-                                // notify a waiter.
-                                waiterFreePoolLock.notify();
-                                activeRequest.decrementAndGet();
-                                ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setAlreadyBeingReleased(false);
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                                    Tr.exit(this, tc, "release");
-                                return;
-                            }
-                        } // end synchronized (waiterFreePoolLock)
+                            } // end synchronized (waiterFreePoolLock)
+                        }
+                        mcWrapper.setSharedPoolCoordinator(null);
+                        ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).tlsCleanup();
+                        /*
+                         * Our goal is for this mcw to stay on this thread, but if needed, after
+                         * switching the state to freeTLSPool, this mcwrapper can be removed from this
+                         * threads thread local storage and added to a different thread local storage or be placed
+                         * in the main pool of connections. This should be the only place in the code that we set the
+                         * pool state to MCWrapper.ConnectionState_freeTLSPool.
+                         */
+                        mcWrapper.setPoolState(MCWrapper.ConnectionState_freeTLSPool);
+                        activeRequest.decrementAndGet();
+                        ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setAlreadyBeingReleased(false);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                            Tr.exit(this, tc, "release", new Object[] { mcWrapper.getManagedConnectionWithoutStateCheck(), "Pool contents ==>", this });
+                        }
+                        return;
+                    } catch (ResourceException re) {
+                        removeMCWFromTLS(mcWrapper);
+                        return;
                     }
-                    mcWrapper.setSharedPoolCoordinator(null);
-                    ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).tlsCleanup();
-                    /*
-                     * Our goal is for this mcw to stay on this thread, but if needed, after
-                     * switching the state to freeTLSPool, this mcwrapper can be removed from this
-                     * threads thread local storage and added to a different thread local storage or be placed
-                     * in the main pool of connections. This should be the only place in the code that we set the
-                     * pool state to MCWrapper.ConnectionState_freeTLSPool.
-                     */
-                    mcWrapper.setPoolState(MCWrapper.ConnectionState_freeTLSPool);
-                    activeRequest.decrementAndGet();
-                    ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setAlreadyBeingReleased(false);
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                        Tr.exit(this, tc, "release", new Object[] { mcWrapper.getManagedConnectionWithoutStateCheck(), "Pool contents ==>", this });
-                    }
-                    return;
                 }
             }
             if (mcWrapper.getPoolState() == MCWrapper.ConnectionState_freeTLSPool) {
@@ -936,7 +923,12 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             } catch (Exception exn1) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "MCWrapper cleanup failed, datasource: " + gConfigProps.cfName);
-                com.ibm.ws.ffdc.FFDCFilter.processException(exn1, "com.ibm.ejs.j2c.poolmanager.PoolManager.release", "1131", this);
+                boolean aborted = mcWrapper.getManagedConnection() instanceof WSManagedConnection
+                                  && ((WSManagedConnection) mcWrapper.getManagedConnection()).isAborted();
+                if (!aborted) {
+                    com.ibm.ws.ffdc.FFDCFilter.processException(exn1, "com.ibm.ejs.j2c.poolmanager.PoolManager.release", "1131", this);
+                }
+
             }
             try {
                 mcWrapper.destroy();
@@ -979,6 +971,31 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(this, tc, "release");
+        }
+    }
+
+    /**
+     * @param mcWrapper
+     */
+    private void removeMCWFromTLS(MCWrapper mcWrapper) {
+        // Need to remove it from TLS and decrease total connection count.
+        ArrayList<MCWrapper> mh = localConnection_.get();
+        if (mh != null) {
+            requestingAccessToTLSPool();
+            // remove the bad connection primary connection being returned.
+            mh.remove(mcWrapper);
+            tlsArrayLists.remove(mcWrapper);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setThreadID(((com.ibm.ejs.j2c.MCWrapper) mcWrapper).getThreadID() + "-release-destroy-removed");
+                Tr.debug(this, tc, "removed mcWrapper from thread local " + mcWrapper);
+            }
+            endingAccessToTLSPool();
+            removeConnectionFromPool(mcWrapper);
+        }
+        activeRequest.decrementAndGet();
+        ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setAlreadyBeingReleased(false);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(this, tc, "release", new Object[] { mcWrapper.getManagedConnectionWithoutStateCheck(), "Pool contents ==>", this });
         }
     }
 
@@ -1415,7 +1432,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                                             synchronized (waiterFreePoolLock) {
                                                 int totalCount = this.totalConnectionCount.decrementAndGet();
                                                 if (isTracingEnabled && tc.isDebugEnabled()) {
-                                                  Tr.debug(tc, "Decrement of total connection count " + totalCount);
+                                                    Tr.debug(tc, "Decrement of total connection count " + totalCount);
                                                 }
                                                 if (waiterCount > 0) {
                                                     waiterFreePoolLock.notify();
@@ -1480,7 +1497,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                                 synchronized (waiterFreePoolLock) {
                                     int totalCount = this.totalConnectionCount.decrementAndGet();
                                     if (isTracingEnabled && tc.isDebugEnabled()) {
-                                       Tr.debug(tc, "Decrement of total connection count " + totalCount);
+                                        Tr.debug(tc, "Decrement of total connection count " + totalCount);
                                     }
                                     if (waiterCount > 0) {
                                         waiterFreePoolLock.notify();
@@ -1541,7 +1558,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                         synchronized (waiterFreePoolLock) {
                             int totalCount = this.totalConnectionCount.decrementAndGet();
                             if (isTracingEnabled && tc.isDebugEnabled()) {
-                               Tr.debug(tc, "Decrement of total connection count " + totalCount);
+                                Tr.debug(tc, "Decrement of total connection count " + totalCount);
                             }
                             if (waiterCount > 0) {
                                 waiterFreePoolLock.notify();
@@ -1715,6 +1732,14 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             }
         }
         activeRequest.decrementAndGet();
+
+        if (isTracingEnabled && tc.isDebugEnabled()) {
+            if (mcWrapper.getPoolState() == 3) {
+                // unshared connections may or may not be in a transaction, but they can be in a scope of a transaction
+                // Save the transaction scope for easier debugging of problems
+                ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setUnSharedPoolCoordinator(affinity);
+            }
+        }
 
         if (isTracingEnabled && tc.isEntryEnabled())
             Tr.exit(this, tc, "reserve", new Object[] { mcWrapper, mcWrapper.getManagedConnection() });
@@ -2729,6 +2754,24 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
     }
 
+    /*
+     * Used for toString trace reduction optimization.
+     */
+    private class ToStringStackElements {
+        /**
+         * @param ste
+         * @param numberOfOccurrents
+         */
+        public ToStringStackElements(StackTraceElement[] ste, int numberOfOccurrents) {
+            super();
+            this.ste = ste;
+            this.numberOfOccurrents = numberOfOccurrents;
+        }
+
+        StackTraceElement[] ste = null;
+        int numberOfOccurrents = 0;
+    }
+
     /**
      * Returns current state of the Pool Manager as String.
      *
@@ -2758,6 +2801,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
         StringBuffer aBuffer = new StringBuffer(500);
         StringBuffer bBuffer = new StringBuffer(500);
+        ArrayList<ToStringStackElements> throwableStackTraceElements = new ArrayList<ToStringStackElements>();
 
         aBuffer.append("JNDI name:");
         aBuffer.append(gConfigProps.cfName);
@@ -2811,7 +2855,6 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
         aBuffer.append(nl);
 
-        //    synchronized(waiterFreePoolLock) {  // removed code due to dead lock
         if (waiterCount > 0) {
             aBuffer.append("The waiter count is ");
             aBuffer.append(waiterCount);
@@ -2824,12 +2867,9 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             }
             aBuffer.append(nl);
         }
-        //    }
 
         if (!gConfigProps.connectionPoolingEnabled) {
             aBuffer.append("Connection pooling is disabled, free connections are not pooled.");
-            //return aBuffer.toString(); //  - dump the normal information in the pool.
-            // The free pool should not contain any connections in the trace debug.
         }
         /*
          * Shared connection information
@@ -2873,7 +2913,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                         aBuffer.append("  ");
                         aBuffer.append(mcw);
                         if (holdTimeLimit_loc > -1) {
-                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime);
+                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime, throwableStackTraceElements);
                         }
                         ++totalNumberOfSharedConnections;
                         atleastOne = true;
@@ -2951,7 +2991,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                         }
                         aBuffer.append(mcw);
                         if (holdTimeLimit_loc > -1) {
-                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime);
+                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime, throwableStackTraceElements);
                         }
                         ++totalNumberOfUnSharedConnections;
                         atleastOne = true;
@@ -2973,11 +3013,11 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         int holdTimeLimit_loc_disabled = -1;
         if (localConnection_ != null) {
             displaySharedTLSConnections(aBuffer, connectionLeakBuffer, currentTime,
-                                        holdTimeLimit_loc_disabled);
+                                        holdTimeLimit_loc_disabled, throwableStackTraceElements);
             displayFreeTLSConnections(aBuffer, connectionLeakBuffer, currentTime,
-                                      holdTimeLimit_loc_disabled);
+                                      holdTimeLimit_loc_disabled, throwableStackTraceElements);
             displayUnsharedTLSConnections(aBuffer, connectionLeakBuffer, currentTime,
-                                          holdTimeLimit_loc_disabled);
+                                          holdTimeLimit_loc_disabled, throwableStackTraceElements);
         }
         // This is only for additional trace if needed.
         //    displayAllConnectionInPool(aBuffer, connectionLeakBuffer, currentTime,
@@ -2988,7 +3028,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             Object o = null;
             for (int i = 0; i < tscdList.size(); ++i) {
                 /*
-                 * Print as many mcWrapper in the list as posible.
+                 * Print as many mcWrapper in the list as possible.
                  */
                 try {
                     o = tscdList.get(i);
@@ -3029,7 +3069,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
     private void displaySharedTLSConnections(StringBuffer aBuffer,
                                              StringBuffer connectionLeakBuffer, long currentTime,
-                                             int holdTimeLimit_loc) {
+                                             int holdTimeLimit_loc, ArrayList<ToStringStackElements> throwableStackTraceElements) {
         boolean atleastOne;
         /*
          * Inuse Shared TLS connection information
@@ -3058,7 +3098,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                         aBuffer.append("  ");
                         aBuffer.append(mcw);
                         if (holdTimeLimit_loc > -1) {
-                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime);
+                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime, throwableStackTraceElements);
                         }
                         ++totalNumberOfSharedTLSConnections;
                         atleastOne = true;
@@ -3080,7 +3120,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
     private void displayFreeTLSConnections(StringBuffer aBuffer,
                                            StringBuffer connectionLeakBuffer, long currentTime,
-                                           int holdTimeLimit_loc) {
+                                           int holdTimeLimit_loc, ArrayList<ToStringStackElements> throwableStackTraceElements) {
         boolean atleastOne;
         /*
          * Inuse UnShared connection information
@@ -3107,7 +3147,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                         }
                         aBuffer.append(mcw);
                         if (holdTimeLimit_loc > -1) {
-                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime);
+                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime, throwableStackTraceElements);
                         }
                         ++totalNumberOfFreeSharedTLSConnections;
                         atleastOne = true;
@@ -3129,7 +3169,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
     private void displayUnsharedTLSConnections(StringBuffer aBuffer,
                                                StringBuffer connectionLeakBuffer, long currentTime,
-                                               int holdTimeLimit_loc) {
+                                               int holdTimeLimit_loc, ArrayList<ToStringStackElements> throwableStackTraceElements) {
         boolean atleastOne;
         /*
          * Inuse UnShared connection information
@@ -3160,7 +3200,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                         }
                         aBuffer.append(mcw);
                         if (holdTimeLimit_loc > -1) {
-                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime);
+                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime, throwableStackTraceElements);
                         }
                         ++totalNumberOfUnSharedTLSConnections;
                         atleastOne = true;
@@ -3185,7 +3225,9 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      * connection leak information added to the trace. The connection leak information will only
      * be added if it is enabled. By default, connection leak logic is enabled by group WAS.j2c.
      */
-    private void dumpHoldTimeAndStackInfo(MCWrapper mcw, StringBuffer aBuffer, StringBuffer connectionLeakBuffer, long currentTime) {
+    private void dumpHoldTimeAndStackInfo(MCWrapper mcw, StringBuffer aBuffer, StringBuffer connectionLeakBuffer, long currentTime,
+                                          ArrayList<ToStringStackElements> mcwInitialStackList) {
+        Throwable t = null;
         long startHoldTime = ((com.ibm.ejs.j2c.MCWrapper) mcw).getHoldTimeStart();
         if (startHoldTime != 0) { //  - if start time is zero we don't have enough information to dump the stack information.
             long holdTime = currentTime - startHoldTime;
@@ -3198,23 +3240,62 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                 }
                 //aBuffer.deleteCharAt(aBuffer.length()-1);
                 Date startDateTime = new Date(startHoldTime);
+                long lastAllTime = ((com.ibm.ejs.j2c.MCWrapper) mcw).getLastAllocationTime();
+                String startDateAllocationTime = startHoldTime == lastAllTime ? " Start time same as last allocation time " : " Last allocation time " + new Date(lastAllTime);
                 long timeInUseInSeconds = holdTime / 1000;
                 /*
                  * Add the new in-use information to the trace.
                  */
-                aBuffer.append(" Start time inuse " + startDateTime + " Time inuse " + timeInUseInSeconds + " (seconds)" + nl);
-                Throwable t = ((com.ibm.ejs.j2c.MCWrapper) mcw).getInitialRequestStackTrace();
+                aBuffer.append(" Start time inuse " + startDateTime + " Time inuse " + timeInUseInSeconds + " (seconds) " + startDateAllocationTime + nl);
+                t = ((com.ibm.ejs.j2c.MCWrapper) mcw).getInitialRequestStackTrace();
                 if (t != null) {
                     /*
                      * Add the connection leak logic to the trace.
                      */
                     connectionLeakBuffer.append("  " + mcw);
                     connectionLeakBuffer.append("     Start time inuse " + startDateTime + " Time inuse " + timeInUseInSeconds + " (seconds)" + nl);
-                    connectionLeakBuffer.append("     Last allocation time " + new Date(((com.ibm.ejs.j2c.MCWrapper) mcw).getLastAllocationTime()) + nl);
-                    connectionLeakBuffer.append("       getConnection stack trace information:" + nl);
-                    StackTraceElement[] ste = t.getStackTrace();
-                    for (int i = 0; i < ste.length; ++i) {
-                        connectionLeakBuffer.append("          " + ste[i].toString() + nl);
+                    connectionLeakBuffer.append("    " + startDateAllocationTime + nl);
+                    connectionLeakBuffer.append("       getConnection stack trace information:");
+
+                    StackTraceElement[] mcwInitialStack = t.getStackTrace();
+                    boolean stringBuffersEqual = false;
+                    int matchingMCStack = -1;
+                    int occurred = -1;
+                    if (mcwInitialStackList.size() != 0) {
+                        // process stack information looking for duplicates.
+                        int j = 0;
+                        for (ToStringStackElements previousMCWSTE : mcwInitialStackList) {
+                            boolean stackLinesEqual = true;
+                            if (mcwInitialStack.length == previousMCWSTE.ste.length) {
+                                int i = 0;
+                                for (Object currentMCWSTE : mcwInitialStack) {
+                                    // search through stack comparing each line in stack
+                                    if (!currentMCWSTE.toString().equals(previousMCWSTE.ste[i++].toString())) {
+                                        stackLinesEqual = false;
+                                        break;
+                                    }
+                                }
+                                if (stackLinesEqual == true) {
+                                    // stacks are equal
+                                    stringBuffersEqual = true;
+                                    matchingMCStack = ++j;
+                                    occurred = ++previousMCWSTE.numberOfOccurrents;
+                                    break;
+                                }
+                            }
+                            ++j;
+                        }
+                    }
+                    if (stringBuffersEqual) {
+                        // stack matches existing stack already dumped.
+                        connectionLeakBuffer.append("          Matches stack number " + matchingMCStack + " occurred " + occurred + " times" + nl);
+                    } else {
+                        // add stack and dump the stack information
+                        mcwInitialStackList.add(new ToStringStackElements(mcwInitialStack, 1));
+                        connectionLeakBuffer.append("          Stack number " + mcwInitialStackList.size() + nl);
+                        for (Object o : mcwInitialStack) {
+                            connectionLeakBuffer.append("          " + o.toString() + nl);
+                        }
                     }
                     connectionLeakBuffer.append(nl);
                 }

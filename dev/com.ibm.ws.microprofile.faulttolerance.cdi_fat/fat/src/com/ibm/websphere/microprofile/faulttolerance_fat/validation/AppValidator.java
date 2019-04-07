@@ -13,6 +13,7 @@ package com.ibm.websphere.microprofile.faulttolerance_fat.validation;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -88,6 +89,7 @@ public class AppValidator {
     public AppValidator failsWith(String expectedFailure) {
         stringsToFind.add(expectedFailure);
         stringsToFind.add(APP_FAIL_CODE);
+        server.addIgnoredErrors(Collections.singletonList(expectedFailure));
         return this;
     }
 
@@ -99,6 +101,7 @@ public class AppValidator {
     public AppValidator succeedsWith(String expectedMessage) {
         stringsToFind.add(expectedMessage);
         stringsToFind.add(APP_START_CODE);
+        server.addIgnoredErrors(Collections.singletonList(expectedMessage));
         return this;
     }
 

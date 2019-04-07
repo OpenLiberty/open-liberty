@@ -11,7 +11,6 @@
 
 package com.ibm.ws.config.xml.internal;
 
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -22,16 +21,12 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Matcher;
 
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -45,6 +40,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.admin.ConfigID;
 import com.ibm.ws.config.admin.ConfigurationDictionary;
 import com.ibm.ws.config.admin.ExtendedConfiguration;
+import com.ibm.ws.config.xml.internal.EvaluationContext.NestedInfo;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.EntryAction;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.RegistryEntry;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
@@ -59,20 +55,20 @@ class ConfigEvaluator {
 
     private static final TraceComponent tc = Tr.register(ConfigEvaluator.class, XMLConfigConstants.TR_GROUP, XMLConfigConstants.NLS_PROPS);
 
-    private static final String EMPTY_STRING = "";
-
     private static final String ALL_PIDS = "*";
 
     private final ConfigRetriever configRetriever;
     private final MetaTypeRegistry metatypeRegistry;
-    private final ConfigVariableRegistry variableRegistry;
+//    private final ConfigVariableRegistry variableRegistry;
     private final ServerXMLConfiguration serverXMLConfig;
+
+    private final VariableEvaluator variableEvaluator;
 
     ConfigEvaluator(ConfigRetriever retriever, MetaTypeRegistry metatypeRegistry, ConfigVariableRegistry variableRegistry, ServerXMLConfiguration serverXmlConfig) {
         this.configRetriever = retriever;
         this.metatypeRegistry = metatypeRegistry;
-        this.variableRegistry = variableRegistry;
         this.serverXMLConfig = serverXmlConfig;
+        this.variableEvaluator = new VariableEvaluator(variableRegistry, this);
     }
 
     private Object evaluateSimple(Object rawValue, EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
@@ -116,7 +112,7 @@ class ConfigEvaluator {
     private EvaluationResult evaluate(ConfigElement config, RegistryEntry registryEntry, Map<String, ExtendedAttributeDefinition> attributeMap,
                                       List<AttributeDefinition> requiredAttributes, String flatPrefix, boolean ignoreWarnings) throws ConfigEvaluatorException {
         Dictionary<String, Object> map = new ConfigurationDictionary();
-        EvaluationContext context = new EvaluationContext(registryEntry);
+        EvaluationContext context = new EvaluationContext(registryEntry, variableEvaluator);
         context.setConfigElement(config);
         context.setProperties(map);
 
@@ -234,8 +230,8 @@ class ConfigEvaluator {
         return false;
     }
 
-    private Object evaluateSimpleAttribute(String attributeName, Object attributeValue, EvaluationContext context, String flatPrefix,
-                                           boolean ignoreWarnings) throws ConfigEvaluatorException {
+    protected Object evaluateSimpleAttribute(String attributeName, Object attributeValue, EvaluationContext context, String flatPrefix,
+                                             boolean ignoreWarnings) throws ConfigEvaluatorException {
         context.setAttributeName(attributeName);
         context.addProcessed(attributeName);
 
@@ -248,7 +244,7 @@ class ConfigEvaluator {
         return value;
     }
 
-    private static class AttributeValueCopy {
+    static class AttributeValueCopy {
 
         private final String copiedAttribute;
         private final String attributeName;
@@ -286,16 +282,18 @@ class ConfigEvaluator {
      * @throws ConfigEvaluatorException
      */
     @FFDCIgnore({ ConfigEvaluatorException.class, ConfigRetrieverException.class })
-    private Object evaluateMetaTypeAttribute(final String attributeName, final EvaluationContext context,
-                                             final ExtendedAttributeDefinition attributeDef, final String flatPrefix,
-                                             final boolean ignoreWarnings) throws ConfigEvaluatorException {
+    Object evaluateMetaTypeAttribute(final String attributeName, final EvaluationContext context,
+                                     final ExtendedAttributeDefinition attributeDef, final String flatPrefix,
+                                     final boolean ignoreWarnings) throws ConfigEvaluatorException {
         final ConfigElement config = context.getConfigElement();
         context.setAttributeName(attributeName);
         context.addProcessed(attributeName);
 
+        final String prefixedAttributeName = flatPrefix.length() == 0 ? attributeName : flatPrefix + attributeName;
+
         Object rawValue = null;
         if (attributeDef.getCopyOf() != null) {
-            AttributeValueCopy copy = new AttributeValueCopy(flatPrefix + attributeName, attributeDef.getCopyOf());
+            AttributeValueCopy copy = new AttributeValueCopy(prefixedAttributeName, attributeDef.getCopyOf());
             context.addAttributeValueCopy(copy);
         }
 
@@ -415,7 +413,7 @@ class ConfigEvaluator {
                     actualValue = pids;
                 }
                 if (actualValue != null) {
-                    context.setProperty(flatPrefix + attributeName, actualValue);
+                    context.setProperty(prefixedAttributeName, actualValue);
                 }
                 evaluateFinish(context);
                 return actualValue;
@@ -444,7 +442,7 @@ class ConfigEvaluator {
                     actualValue = pids;
                 }
                 if (actualValue != null) {
-                    context.setProperty(flatPrefix + attributeName, actualValue);
+                    context.setProperty(prefixedAttributeName, actualValue);
                 }
                 evaluateFinish(context);
                 return actualValue;
@@ -460,7 +458,7 @@ class ConfigEvaluator {
         // Process any list variables of the form ${list(variableName)}. We do this here separately from the other variable expression
         // processing so that the values are available prior to cardinality checks.
         if (rawValue != null) {
-            rawValue = processVariableLists(rawValue, attributeDef, context, ignoreWarnings);
+            rawValue = variableEvaluator.processVariableLists(rawValue, attributeDef, context, ignoreWarnings);
         }
         if (rawValue != null) {
             try {
@@ -501,47 +499,12 @@ class ConfigEvaluator {
             }
 
             if (actualValue != null) {
-                context.setProperty(flatPrefix + attributeName, actualValue);
+                context.setProperty(prefixedAttributeName, actualValue);
             }
             evaluateFinish(context);
         }
 
         return actualValue;
-    }
-
-    /**
-     * Replaces list variable expressions in raw string values
-     */
-    private Object processVariableLists(Object rawValue, ExtendedAttributeDefinition attributeDef,
-                                        EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
-        if (attributeDef != null && !attributeDef.resolveVariables())
-            return rawValue;
-
-        if (rawValue instanceof List) {
-            List<Object> returnList = new ArrayList<Object>();
-            List<Object> values = (List<Object>) rawValue;
-            for (Object o : values) {
-                Object processed = processVariableLists(o, attributeDef, context, ignoreWarnings);
-                if (processed instanceof List)
-                    returnList.addAll((List<Object>) processed);
-                else
-                    returnList.add(processed);
-            }
-            return returnList;
-        } else if (rawValue instanceof String) {
-            // Look for functions of the form ${list(variableName)} first
-            Matcher matcher = XMLConfigConstants.VAR_LIST_PATTERN.matcher((String) rawValue);
-            if (matcher.find()) {
-                String var = matcher.group(1);
-                String rep = getProperty(var, context, ignoreWarnings);
-                return rep == null ? rawValue : MetaTypeHelper.parseValue(rep);
-            } else {
-                return rawValue;
-            }
-        } else {
-            return rawValue;
-        }
-
     }
 
     boolean isWildcardReference(ExtendedAttributeDefinition attributeDef) {
@@ -739,9 +702,8 @@ class ConfigEvaluator {
         Object rawValue = null;
 
         // no value in config then try ibm:variable if set
-        if (variableRegistry != null) {
-            rawValue = lookupVariableExtension(context, attributeDef);
-        }
+
+        rawValue = variableEvaluator.lookupVariableExtension(context, attributeDef);
 
         // no value in config, no ibm:variable, try defaults
         if (rawValue == null) {
@@ -1309,9 +1271,10 @@ class ConfigEvaluator {
     @FFDCIgnore(URISyntaxException.class)
     private String processString(String value, ExtendedAttributeDefinition attrDef, EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
         if (attrDef == null) {
-            return resolveVariables(value, context, ignoreWarnings);
+            return context.resolveString(value, ignoreWarnings);
         }
-        String strValue = attrDef.resolveVariables() ? resolveVariables(value, context, ignoreWarnings) : value;
+
+        String strValue = attrDef.resolveVariables() ? context.resolveString(value, ignoreWarnings) : value;
 
         // Normalize the value if this is a file or directory location type
         if (attrDef.getType() == MetaTypeFactory.LOCATION_DIR_TYPE ||
@@ -1328,36 +1291,51 @@ class ConfigEvaluator {
             }
         }
 
+        boolean optionFound = false;
         // Convert option value to correct case.
         String[] optionValues = attrDef.getOptionValues();
         if (optionValues != null) {
-            String[] optionLabels = attrDef.getOptionLabels();
             for (int i = 0; i < optionValues.length; i++) {
-                if (strValue.equalsIgnoreCase(optionValues[i]) || strValue.equalsIgnoreCase(optionLabels[i])) {
+                if (strValue.equalsIgnoreCase(optionValues[i])) {
                     strValue = optionValues[i];
+                    optionFound = true;
                     break;
+                }
+            }
+            // only get the labels if it isn't found in the values.  Usually it will be a value.
+            if (!optionFound) {
+                String[] optionLabels = attrDef.getOptionLabels();
+                for (int i = 0; i < optionValues.length; i++) {
+                    if (strValue.equalsIgnoreCase(optionLabels[i])) {
+                        strValue = optionValues[i];
+                        optionFound = true;
+                        break;
+                    }
                 }
             }
         }
 
-        // Special case for Boolean, since we want to validate "true" or "false" and anything is fail to validate (rather than being treated as false)
-        if (attrDef.getType() == AttributeDefinition.BOOLEAN) {
-            if (!!!("true".equalsIgnoreCase(strValue))
-                && !!!("false".equalsIgnoreCase(strValue))) {
-                Object[] inserts = new Object[] { strValue, attrDef.getID(), "false" }; // "false" is the default default
-                if (attrDef.getDefaultValue() != null && attrDef.getDefaultValue().length > 0)
-                    inserts[2] = attrDef.getDefaultValue()[0];
-                throw new AttributeValidationException(attrDef, strValue, Tr.formatMessage(tc, "error.invalid.boolean.attribute", inserts));
-            }
-        } else if (attrDef.getType() != MetaTypeFactory.PID_TYPE) {
-            // The validate method treats whitespace, commas, and
-            // backslashes specially, but we've already done all that
-            // processing and just want to validate a single value, so
-            // escape all the special characters.  (It might be less effort
-            // to just reimplement the validate method entirely.)
-            String validateResult = attrDef.validate(MetaTypeHelper.escapeValue(strValue));
-            if (validateResult != null && validateResult.length() > 0) {
-                throw new AttributeValidationException(attrDef, strValue, validateResult);
+        // If it is an option and it was found then skip the validate since it isn't needed.
+        if (!optionFound) {
+            // Special case for Boolean, since we want to validate "true" or "false" and anything is fail to validate (rather than being treated as false)
+            if (attrDef.getType() == AttributeDefinition.BOOLEAN) {
+                if (!!!("true".equalsIgnoreCase(strValue))
+                    && !!!("false".equalsIgnoreCase(strValue))) {
+                    Object[] inserts = new Object[] { strValue, attrDef.getID(), "false" }; // "false" is the default default
+                    if (attrDef.getDefaultValue() != null && attrDef.getDefaultValue().length > 0)
+                        inserts[2] = attrDef.getDefaultValue()[0];
+                    throw new AttributeValidationException(attrDef, strValue, Tr.formatMessage(tc, "error.invalid.boolean.attribute", inserts));
+                }
+            } else if (attrDef.getType() != MetaTypeFactory.PID_TYPE) {
+                // The validate method treats whitespace, commas, and
+                // backslashes specially, but we've already done all that
+                // processing and just want to validate a single value, so
+                // escape all the special characters.  (It might be less effort
+                // to just reimplement the validate method entirely.)
+                String validateResult = attrDef.validate(MetaTypeHelper.escapeValue(strValue));
+                if (validateResult != null && validateResult.length() > 0) {
+                    throw new AttributeValidationException(attrDef, strValue, validateResult);
+                }
             }
         }
 
@@ -1385,7 +1363,7 @@ class ConfigEvaluator {
     private ConfigElement.Reference processReference(ConfigElement.Reference reference, EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
         // Note, ref attributes don't correspond to an attribute definition, so we will always resolve variables (ie, there is no way to specify
         // substitution="deferred" for a ref attribute.
-        String resolvedId = resolveVariables(reference.getId(), context, ignoreWarnings);
+        String resolvedId = context.resolveString(reference.getId(), ignoreWarnings);
         if (reference.getId().equals(resolvedId)) {
             return reference;
         } else {
@@ -1592,400 +1570,6 @@ class ConfigEvaluator {
                 return childEntry;
 
         return null;
-    }
-
-    private String resolveVariables(String str, EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
-
-        // Look for normal variables of the form $(variableName)
-        Matcher matcher = XMLConfigConstants.VAR_PATTERN.matcher(str);
-        while (matcher.find()) {
-            String var = matcher.group(1);
-            String rep = getProperty(var, context, ignoreWarnings);
-            if (rep == null) {
-                rep = tryEvaluateExpression(var, context, ignoreWarnings);
-            }
-            if (rep != null) {
-                str = str.replace(matcher.group(0), rep);
-                matcher.reset(str);
-            }
-        }
-        return str;
-    }
-
-    /**
-     * Attempt to evaluate a variable expression.
-     *
-     * @param expr the expression string (for example, "x+0")
-     * @param context the context for evaluation
-     * @return the result, or null if evaluation fails
-     */
-    @FFDCIgnore({ NumberFormatException.class, ArithmeticException.class, ConfigEvaluatorException.class })
-    private String tryEvaluateExpression(String expr, final EvaluationContext context, final boolean ignoreWarnings) {
-        try {
-            return new ConfigExpressionEvaluator() {
-
-                @Override
-                String getProperty(String argName) throws ConfigEvaluatorException {
-                    return ConfigEvaluator.this.getProperty(argName, context, ignoreWarnings);
-                }
-
-                @Override
-                Object getPropertyObject(String argName) throws ConfigEvaluatorException {
-                    return ConfigEvaluator.this.getPropertyObject(argName, context, ignoreWarnings);
-                }
-            }.evaluateExpression(expr);
-
-        } catch (NumberFormatException e) {
-            // ${0+string}, or a number that exceeds MAX_LONG.
-        } catch (ArithmeticException e) {
-            // ${x/0}
-        } catch (ConfigEvaluatorException e) {
-            // If getPropertyObject fails
-        }
-        return null;
-    }
-
-    /**
-     * Returns the value of the variable as a string, or null if the property
-     * does not exist.
-     *
-     * @param variable the variable name
-     */
-    private String getProperty(String variable, EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
-        return StringUtils.convertToString(getPropertyObject(variable, context, ignoreWarnings));
-    }
-
-    /**
-     * Returns the raw value object of the variable, or null if the property
-     * does not exist.
-     *
-     * @param variable the variable name
-     */
-    private Object getPropertyObject(String variable, EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
-        Object realValue = null;
-
-        // checked if we already looked up the value
-        if (context.containsValue(variable)) {
-            // get it from cache
-            realValue = context.getValue(variable);
-        } else if (XMLConfigConstants.CFG_SERVICE_PID.equals(variable)) {
-            try {
-                realValue = getPid(context.getConfigElement().getConfigID());
-                context.putValue(XMLConfigConstants.CFG_SERVICE_PID, realValue);
-            } catch (ConfigNotFoundException ex) {
-                throw new ConfigEvaluatorException("Could not obtain PID for configID", ex);
-            }
-        } else {
-            // evaluate the variable
-
-            context.push(variable);
-
-            realValue = lookupVariable(variable);
-
-            if (realValue == null) {
-                // Try checking the properties. This will pick up already evaluated attributes, including flattened config
-                realValue = context.getProperties().get(variable);
-
-                if (realValue == null) {
-                    // check if this is an metatype attribute
-                    ExtendedAttributeDefinition attributeDef = context.getAttributeDefinition(variable);
-                    if (attributeDef != null) {
-
-                        String currentAttribute = context.getAttributeName();
-                        // Get the nested info here, then set it later so that evaluating the
-                        // metatype attribute here doesn't affect it
-                        Set<NestedInfo> nestedInfo = context.getNestedInfo();
-                        String flatPrefix = "";
-                        try {
-                            realValue = evaluateMetaTypeAttribute(variable, context, attributeDef, flatPrefix, ignoreWarnings);
-                        } finally {
-                            context.setAttributeName(currentAttribute);
-                            context.setNestedInfo(nestedInfo);
-                        }
-
-                    } else {
-                        // check if this is just an attribute
-                        ConfigElement configElement = context.getConfigElement();
-                        Object rawValue = configElement.getAttribute(variable);
-                        if (rawValue != null) {
-
-                            String currentAttribute = context.getAttributeName();
-                            Set<NestedInfo> nestedInfo = context.getNestedInfo();
-                            try {
-                                realValue = evaluateSimpleAttribute(variable, rawValue, context, "", ignoreWarnings);
-                            } finally {
-                                context.setAttributeName(currentAttribute);
-                                context.setNestedInfo(nestedInfo);
-                            }
-
-                        }
-                    }
-                }
-
-                if (realValue == null) {
-                    // Check if this variable points to an unevaluated flattened config
-                    Map<String, ExtendedAttributeDefinition> attributeMap = context.getAttributeMap();
-                    if (attributeMap != null) {
-                        for (Map.Entry<String, ExtendedAttributeDefinition> entry : attributeMap.entrySet()) {
-                            if (!context.isProcessed(entry.getKey()) && entry.getValue().isFlat()) {
-                                try {
-                                    evaluateMetaTypeAttribute(entry.getKey(), context, entry.getValue(), "", true);
-                                } catch (ConfigEvaluatorException ex) {
-                                    // Ignore -- errors should be generated during main line processing
-                                }
-
-                            }
-
-                        }
-                        // Try again now that everything should be evaluated
-                        realValue = context.getProperties().get(variable);
-                    }
-                }
-
-                if (realValue == null) {
-                    // If the value is null, add it to the context so that we don't try to evaluate it again.
-                    // If the value is not null here, this is a variable that points to a configuration attribute,
-                    // so we don't want to add it to the variable registry.
-                    context.addDefinedVariable(variable, null);
-                }
-            } else {
-                // Only add the variable to the context if this is a user defined variable
-                context.addDefinedVariable(variable, realValue);
-            }
-
-            context.pop();
-
-            context.putValue(variable, realValue);
-        }
-
-        return realValue;
-    }
-
-    private String lookupVariable(String variableName) {
-        return (variableRegistry != null) ? variableRegistry.lookupVariable(variableName) : null;
-    }
-
-    private Object lookupVariableExtension(EvaluationContext context, ExtendedAttributeDefinition attrDef) throws ConfigEvaluatorException {
-        String variableName = attrDef.getVariable();
-        if (variableName != null) {
-            // Check for deferred resolution
-            if (attrDef.resolveVariables() == false)
-                return "${" + variableName + "}";
-
-            boolean isList = false;
-            if (variableName.startsWith("list(") && variableName.endsWith(")")) {
-                variableName = variableName.substring(5, variableName.length() - 1);
-                isList = true;
-            }
-            Object variableValue = variableRegistry.lookupVariable(variableName);
-            if (variableValue == null && !variableName.equals(attrDef.getID()) && !isList) {
-                // Try a metatype attribute
-                ExtendedAttributeDefinition targetAttrDef = context.getAttributeDefinition(variableName);
-                if (targetAttrDef != null) {
-                    variableValue = evaluateMetaTypeAttribute(variableName, context, targetAttrDef, "", true);
-                }
-            }
-
-            context.addDefinedVariable(variableName, variableValue);
-            if (variableValue == null)
-                return null;
-
-            return isList ? MetaTypeHelper.parseValue((String) variableValue) : variableValue;
-        }
-        return null;
-    }
-
-    static class EvaluationContext {
-
-        private final EvaluationResult result;
-        private final LinkedList<String> lookupStack = new LinkedList<String>();
-        private final Map<String, Object> cache = new HashMap<String, Object>();
-        private final Set<String> processed = new HashSet<String>();
-        private Map<String, Object> variables;
-        private Map<String, ExtendedAttributeDefinition> attributeMap;
-
-        // associated with a particular attribute
-        private Set<NestedInfo> nested = new HashSet<NestedInfo>();
-        private final List<AttributeValueCopy> attributeValueCopies = new ArrayList<AttributeValueCopy>();
-        private String attribute;
-
-        public EvaluationContext(RegistryEntry registryEntry) {
-            this.result = new EvaluationResult(registryEntry);
-        }
-
-        /**
-         *
-         */
-        public void evaluateCopiedAttributes() {
-
-            Dictionary<String, Object> properties = getProperties();
-            for (AttributeValueCopy copy : attributeValueCopies) {
-                Object value = properties.get(copy.getCopiedAttribute());
-                if (value != null) {
-                    setProperty(copy.getAttributeName(), value);
-                }
-            }
-
-            attributeValueCopies.clear();
-
-        }
-
-        /**
-         * @param copy
-         */
-        public void addAttributeValueCopy(AttributeValueCopy copy) {
-            attributeValueCopies.add(copy);
-        }
-
-        /**
-         * @return
-         *
-         */
-        public Map<String, ExtendedAttributeDefinition> getAttributeMap() {
-            return attributeMap;
-        }
-
-        /**
-         * @param attributeDef
-         * @return
-         */
-        public boolean hasUnresolvedAttribute(AttributeDefinition attributeDef) {
-            return result.hasUnresolvedReference(attributeDef);
-        }
-
-        /**
-         * @param b
-         */
-        public void setValid(boolean b) {
-            result.setValid(b);
-
-        }
-
-        /**
-         * @param referencePid
-         * @param value
-         * @param string
-         */
-        protected void addUnresolvedReference(UnresolvedPidType ref) {
-            result.addUnresolvedReference(ref);
-        }
-
-        public EvaluationResult getEvaluationResult() {
-            return result;
-        }
-
-        protected void setConfigElement(ConfigElement configElement) {
-            result.setConfigElement(configElement);
-        }
-
-        public ConfigElement getConfigElement() {
-            return result.getConfigElement();
-        }
-
-        protected void setProperties(Dictionary<String, Object> properties) {
-            result.setProperties(properties);
-        }
-
-        protected void setProperty(String key, Object value) {
-            result.getProperties().put(key, value);
-        }
-
-        public Dictionary<String, Object> getProperties() {
-            return result.getProperties();
-        }
-
-        protected void addProcessed(String attributeName) {
-            processed.add(attributeName.toUpperCase(Locale.ROOT));
-        }
-
-        public boolean isProcessed(String attributeName) {
-            return processed.contains(attributeName.toUpperCase(Locale.ROOT));
-        }
-
-        /*
-         * Sets the definition of the currently processed attribute.
-         */
-        protected void setAttributeDefinitionMap(Map<String, ExtendedAttributeDefinition> attributeMap) {
-            this.attributeMap = attributeMap;
-        }
-
-        public ExtendedAttributeDefinition getAttributeDefinition(String name) {
-            return (attributeMap == null) ? null : attributeMap.get(name);
-        }
-
-        public void push(String variableName) throws ConfigEvaluatorException {
-            if (lookupStack.contains(variableName)) {
-                throw new ConfigEvaluatorException("Variable evaluation loop detected: " + lookupStack.subList(lookupStack.indexOf(variableName), lookupStack.size()));
-            }
-            lookupStack.add(variableName);
-        }
-
-        public void pop() {
-            lookupStack.removeLast();
-        }
-
-        public void putValue(String variableName, Object value) {
-            cache.put(variableName, value);
-        }
-
-        public Object getValue(String variableName) {
-            return cache.get(variableName);
-        }
-
-        public boolean containsValue(String variableName) {
-            return cache.containsKey(variableName);
-        }
-
-        protected void addDefinedVariable(String variableName, Object variableValue) {
-            if (variables == null) {
-                variables = new HashMap<String, Object>();
-                result.setVariables(variables);
-            }
-            variables.put(variableName, variableValue);
-        }
-
-        // below methods are used during evaluation of particular attribute
-        // should move to AttributeContext?
-
-        /*
-         * Sets the name of the currently processed attribute name.
-         */
-        protected void setAttributeName(String attribute) {
-            this.attribute = attribute;
-        }
-
-        public String getAttributeName() {
-            return attribute;
-        }
-
-        protected boolean addNestedInfo(NestedInfo nestedInfo) throws ConfigEvaluatorException {
-            for (NestedInfo info : nested) {
-                if (info.configElement.getConfigID().equals(nestedInfo.configElement.getConfigID())) {
-
-                    info.configElement.override(nestedInfo.configElement);
-
-                    return false;
-                }
-            }
-            nested.add(nestedInfo);
-            return true;
-        }
-
-        public Set<NestedInfo> getNestedInfo() {
-            return nested;
-        }
-
-        protected void setNestedInfo(Set<NestedInfo> nested) {
-            this.nested = nested;
-        }
-    }
-
-    private static class NestedInfo {
-
-        ConfigElement configElement;
-        RegistryEntry registryEntry;
-        String pid;
-
     }
 
     public static class EvaluationResult {
@@ -2513,111 +2097,4 @@ class ConfigEvaluator {
 
     }
 
-    private static class StringUtils {
-
-        private static int getNextLocation(int start, String list) {
-            int size = list.length();
-            for (int i = start; i < size; i++) {
-                char ch = list.charAt(i);
-                if (ch == '\\' || ch == ',') {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        /**
-         * Escape slashes and/or commas in the given value.
-         *
-         * @param value
-         * @return
-         */
-        static String escapeValue(String value) {
-            int start = 0;
-            int pos = getNextLocation(start, value);
-            if (pos == -1) {
-                return value;
-            }
-            StringBuilder builder = new StringBuilder();
-            while (pos != -1) {
-                builder.append(value, start, pos);
-                builder.append('\\');
-                builder.append(value.charAt(pos));
-                start = pos + 1;
-                pos = getNextLocation(start, value);
-            }
-            builder.append(value, start, value.length());
-            return builder.toString();
-        }
-
-        /*
-         * Convert evaluated attribute value into a String.
-         */
-        protected static String convertToString(Object value) {
-            if (value == null) {
-                return null;
-            } else if (value instanceof String) {
-                return (String) value;
-            } else if (value instanceof List) {
-                List<?> list = ((List<?>) value);
-                if (list.size() == 0) {
-                    return EMPTY_STRING;
-                } else if (list.size() == 1) {
-                    String strValue = String.valueOf(list.get(0));
-                    return escapeValue(strValue);
-                } else {
-                    StringBuilder builder = new StringBuilder();
-                    Iterator<?> iterator = list.iterator();
-                    while (iterator.hasNext()) {
-                        String strValue = String.valueOf(iterator.next());
-                        strValue = escapeValue(strValue);
-                        builder.append(strValue);
-                        if (iterator.hasNext()) {
-                            builder.append(", ");
-                        }
-                    }
-                    return builder.toString();
-                }
-            } else if (value instanceof String[]) {
-                String[] array = (String[]) value;
-                if (array.length == 0) {
-                    return EMPTY_STRING;
-                } else if (array.length == 1) {
-                    return escapeValue(array[0]);
-                } else {
-                    StringBuilder builder = new StringBuilder();
-                    for (int i = 0; i < array.length; i++) {
-                        String strValue = escapeValue(array[i]);
-                        builder.append(strValue);
-                        if (i + 1 < array.length) {
-                            builder.append(", ");
-                        }
-                    }
-                    return builder.toString();
-                }
-            } else if (value.getClass().isArray()) {
-                int size = Array.getLength(value);
-                if (size == 0) {
-                    return EMPTY_STRING;
-                } else if (size == 1) {
-                    String strValue = String.valueOf(Array.get(value, 0));
-                    return escapeValue(strValue);
-                } else {
-                    StringBuilder builder = new StringBuilder();
-                    for (int i = 0; i < size; i++) {
-                        String strValue = String.valueOf(Array.get(value, i));
-                        strValue = escapeValue(strValue);
-                        builder.append(strValue);
-                        if (i + 1 < size) {
-                            builder.append(", ");
-                        }
-                    }
-                    return builder.toString();
-                }
-            } else {
-                return value.toString();
-            }
-        }
-
-    }
 }

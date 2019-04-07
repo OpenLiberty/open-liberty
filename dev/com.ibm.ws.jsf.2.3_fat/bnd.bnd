@@ -31,7 +31,6 @@ src: \
     test-applications/JSF23SelectOneRadioGroup.war/src,\
     test-applications/JSF23ViewParameters.war/src,\
     test-applications/StartupShutdownExternalContext.war/src,\
-    test-applications/ImportConstantsTag.war/src,\
     test-applications/PostRenderViewEvent.war/src,\
     test-applications/CDIManagedProperty.war/src,\
     test-applications/ELImplicitObjectsViaCDI.war/src,\
@@ -42,14 +41,12 @@ src: \
     test-applications/ConvertDateTime.war/src,\
     test-applications/ConverterValidatorBehaviorInjectionTarget.war/src,\
     test-applications/ELImplicitObjectsViaCDIErrorApp.war/src,\
-    test-applications/JSF23CDITests.war/src,\
     test-applications/JSF23Spec1433.jar/src,\
     test-applications/CDIIntegrationTest.war/src,\
     test-applications/CDIInjectionTests.war/src,\
     test-applications/CDICommon/src,\
-    test-applications/ActionListenerInjection.war/src,\
     test-applications/CDIConfigByACP.war/src,\
-    test-applications/CDIConfigByACP.jar/src,\
+    test-applications/CDIConfigByACP.jar/src
 
 fat.project: true
 
@@ -57,10 +54,11 @@ javac.source: 1.8
 javac.target: 1.8
 
 -buildpath: \
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     net.sourceforge.htmlunit:htmlunit;version=2.20,\
     xml-apis:xml-apis;version=1.4.01,\
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\
     com.ibm.websphere.javaee.jsf.2.3;version=latest,\
     com.ibm.websphere.javaee.validation.2.0;version=latest,\
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-    com.ibm.websphere.javaee.el.3.0;version=latest,\
+    com.ibm.websphere.javaee.el.3.0;version=latest

@@ -11,6 +11,7 @@
 package com.ibm.ws.springboot.support.shutdown;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -30,6 +31,8 @@ public class ApplicationContextCloser implements EnvironmentPostProcessor {
             c.addApplicationListener((e) -> {
                 if (e instanceof ContextClosedEvent) {
                     factory.rootContextClosed();
+                } else if (e instanceof ApplicationReadyEvent) {
+                    factory.getApplicationReadyLatch().countDown();
                 }
             });
         });

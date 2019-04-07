@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,7 +60,7 @@ import componenttest.topology.utils.LDAPUtils;
  * Test realm WIMUserRegistry input / output property mappings.
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 public class URAPIs_RealmPropertyMappingTest {
 
     private static LibertyServer libertyServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.adapter.ldap.fat.realm.mapping");
@@ -125,18 +125,17 @@ public class URAPIs_RealmPropertyMappingTest {
         /*
          * Stop the Liberty and LDAP servers.
          */
-        if (libertyServer != null) {
-            try {
+        try {
+            if (libertyServer != null) {
                 libertyServer.stopServer();
-            } catch (Exception e) {
-                Log.error(c, "teardown", e, "Liberty server threw error while stopping. " + e.getMessage());
             }
-        }
-        if (ldapServer != null) {
-            try {
-                ldapServer.stopServer();
-            } catch (Exception e) {
-                Log.error(c, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
+        } finally {
+            if (ldapServer != null) {
+                try {
+                    ldapServer.stopService();
+                } catch (Exception e) {
+                    Log.error(c, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
+                }
             }
         }
 
@@ -278,9 +277,10 @@ public class URAPIs_RealmPropertyMappingTest {
         Log.info(c, "setUp", "Creating servlet connection the server");
         servlet = new UserRegistryServletConnection(libertyServer.getHostname(), libertyServer.getHttpDefaultPort());
 
-        servlet.getRealm();
-        Thread.sleep(5000);
-        servlet.getRealm();
+        if (servlet.getRealm() == null) {
+            Thread.sleep(5000);
+            servlet.getRealm();
+        }
 
         /*
          * The original server configuration has no registry or Federated Repository configuration.
@@ -308,7 +308,7 @@ public class URAPIs_RealmPropertyMappingTest {
         ldap.setBindDN(EmbeddedApacheDS.getBindDN());
         ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
         ldap.setLdapType("Custom");
-        ldap.setLdapCache(new LdapCache(new AttributesCache(false, 0, 0, "0s", null), new SearchResultsCache(false, 0, 0, "0s")));
+        ldap.setLdapCache(new LdapCache(new AttributesCache(false, 0, 0, "0s"), new SearchResultsCache(false, 0, 0, "0s")));
 
         /*
          * Configure the basic registry.

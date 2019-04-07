@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Future;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.annotation.PreDestroy;
 import javax.annotation.Priority;
@@ -36,11 +36,12 @@ import org.eclipse.microprofile.faulttolerance.Timeout;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.faulttolerance.cdi.config.AnnotationConfigFactory;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.AsynchronousConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.BulkheadConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.CircuitBreakerConfig;
-import com.ibm.ws.microprofile.faulttolerance.cdi.config.FTGlobalConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.FallbackConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.RetryConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.TimeoutConfig;
@@ -68,7 +69,7 @@ public class FaultToleranceInterceptor {
     }
 
     @AroundInvoke
-    public Object executeFT(InvocationContext context) throws Throwable {
+    public Object executeFT(InvocationContext context) throws Exception {
 
         AggregatedFTPolicy policy = getFTPolicies(context);
 
@@ -106,31 +107,33 @@ public class FaultToleranceInterceptor {
         TimeoutConfig timeout = null;
         BulkheadConfig bulkhead = null;
         FallbackConfig fallback = null;
+        FTEnablementConfig enablement = FaultToleranceCDIComponent.getEnablementConfig();
+        AnnotationConfigFactory annotationConfigFactory = FaultToleranceCDIExtension.getAnnotationConfigFactory();
 
         //first check the annotations on the target class
         Class<?> targetClass = context.getTarget().getClass();
         Annotation[] annotations = targetClass.getAnnotations();
         for (Annotation annotation : annotations) {
-            // Don't process any annotations which aren't enabled
-            if (!FTGlobalConfig.getActiveAnnotations(targetClass).contains(annotation.annotationType())) {
-                continue;
-            }
 
-            if (annotation.annotationType().equals(Asynchronous.class)) {
-                asynchronous = new AsynchronousConfig(targetClass, (Asynchronous) annotation);
-                asynchronous.validate();
-            } else if (annotation.annotationType().equals(Retry.class)) {
-                retry = new RetryConfig(targetClass, (Retry) annotation);
-                retry.validate();
-            } else if (annotation.annotationType().equals(CircuitBreaker.class)) {
-                circuitBreaker = new CircuitBreakerConfig(targetClass, (CircuitBreaker) annotation);
-                circuitBreaker.validate();
-            } else if (annotation.annotationType().equals(Timeout.class)) {
-                timeout = new TimeoutConfig(targetClass, (Timeout) annotation);
-                timeout.validate();
-            } else if (annotation.annotationType().equals(Bulkhead.class)) {
-                bulkhead = new BulkheadConfig(targetClass, (Bulkhead) annotation);
-                bulkhead.validate();
+            //Check that the annotation has not been disabled for this specific class.
+            if (enablement.isFaultTolerance(annotation) && enablement.isAnnotationEnabled(annotation, targetClass)) {
+
+                if (annotation.annotationType().equals(Asynchronous.class)) {
+                    asynchronous = annotationConfigFactory.createAsynchronousConfig(targetClass, (Asynchronous) annotation);
+                    asynchronous.validate();
+                } else if (annotation.annotationType().equals(Retry.class)) {
+                    retry = new RetryConfig(targetClass, (Retry) annotation);
+                    retry.validate();
+                } else if (annotation.annotationType().equals(CircuitBreaker.class)) {
+                    circuitBreaker = new CircuitBreakerConfig(targetClass, (CircuitBreaker) annotation);
+                    circuitBreaker.validate();
+                } else if (annotation.annotationType().equals(Timeout.class)) {
+                    timeout = new TimeoutConfig(targetClass, (Timeout) annotation);
+                    timeout.validate();
+                } else if (annotation.annotationType().equals(Bulkhead.class)) {
+                    bulkhead = new BulkheadConfig(targetClass, (Bulkhead) annotation);
+                    bulkhead.validate();
+                }
             }
         }
 
@@ -139,35 +142,38 @@ public class FaultToleranceInterceptor {
         Method method = context.getMethod();
         annotations = method.getAnnotations();
         for (Annotation annotation : annotations) {
-            // Don't process any annotations which aren't enabled
-            if (!FTGlobalConfig.getActiveAnnotations(targetClass).contains(annotation.annotationType())) {
-                continue;
-            }
 
-            if (annotation.annotationType().equals(Asynchronous.class)) {
-                asynchronous = new AsynchronousConfig(method, targetClass, (Asynchronous) annotation);
-                asynchronous.validate();
-            } else if (annotation.annotationType().equals(Retry.class)) {
-                retry = new RetryConfig(method, targetClass, (Retry) annotation);
-                retry.validate();
-            } else if (annotation.annotationType().equals(CircuitBreaker.class)) {
-                circuitBreaker = new CircuitBreakerConfig(method, targetClass, (CircuitBreaker) annotation);
-                circuitBreaker.validate();
-            } else if (annotation.annotationType().equals(Timeout.class)) {
-                timeout = new TimeoutConfig(method, targetClass, (Timeout) annotation);
-                timeout.validate();
-            } else if (annotation.annotationType().equals(Bulkhead.class)) {
-                bulkhead = new BulkheadConfig(method, targetClass, (Bulkhead) annotation);
-                bulkhead.validate();
-            } else if (annotation.annotationType().equals(Fallback.class)) {
-                fallback = new FallbackConfig(method, targetClass, (Fallback) annotation);
-                fallback.validate();
+            //Check that the annotation has not been disabled for this specific method.
+            if (enablement.isFaultTolerance(annotation) && enablement.isAnnotationEnabled(annotation, targetClass, method)) {
+
+                if (annotation.annotationType().equals(Asynchronous.class)) {
+                    asynchronous = annotationConfigFactory.createAsynchronousConfig(method, targetClass, (Asynchronous) annotation);
+                    asynchronous.validate();
+                } else if (annotation.annotationType().equals(Retry.class)) {
+                    retry = new RetryConfig(method, targetClass, (Retry) annotation);
+                    retry.validate();
+                } else if (annotation.annotationType().equals(CircuitBreaker.class)) {
+                    circuitBreaker = new CircuitBreakerConfig(method, targetClass, (CircuitBreaker) annotation);
+                    circuitBreaker.validate();
+                } else if (annotation.annotationType().equals(Timeout.class)) {
+                    timeout = new TimeoutConfig(method, targetClass, (Timeout) annotation);
+                    timeout.validate();
+                } else if (annotation.annotationType().equals(Bulkhead.class)) {
+                    bulkhead = new BulkheadConfig(method, targetClass, (Bulkhead) annotation);
+                    bulkhead.validate();
+                } else if (annotation.annotationType().equals(Fallback.class)) {
+                    fallback = new FallbackConfig(method, targetClass, (Fallback) annotation);
+                    fallback.validate();
+                }
             }
         }
 
         AggregatedFTPolicy aggregatedFTPolicy = new AggregatedFTPolicy();
+
+        aggregatedFTPolicy.setMethod(method);
+
         if (asynchronous != null) {
-            aggregatedFTPolicy.setAsynchronous(true);
+            aggregatedFTPolicy.setAsynchronousResultWrapper(method.getReturnType());
         }
 
         //generate the TimeoutPolicy
@@ -204,41 +210,30 @@ public class FaultToleranceInterceptor {
     }
 
     @FFDCIgnore({ ExecutionException.class })
-    private Object execute(InvocationContext invocationContext, AggregatedFTPolicy aggregatedFTPolicy) throws Throwable {
+    private Object execute(InvocationContext invocationContext, AggregatedFTPolicy aggregatedFTPolicy) throws Exception {
         Object result = null;
         //if there is a set of FaultTolerance policies then run it, otherwise just call proceed
         if (aggregatedFTPolicy != null) {
-            Executor<?> executor = aggregatedFTPolicy.getExecutor();
+            Executor<Object> executor = aggregatedFTPolicy.getExecutor();
 
             Method method = invocationContext.getMethod();
             Object[] params = invocationContext.getParameters();
-            String id = method.getName(); //TODO does this id need to be better? it's only for debug
-            ExecutionContext executionContext = executor.newExecutionContext(id, method, params);
+            ExecutionContext executionContext = executor.newExecutionContext(generateId(method), method, params);
 
-            if (aggregatedFTPolicy.isAsynchronous()) {
+            Callable<Object> callable = () -> {
+                return invocationContext.proceed();
+            };
 
-                Callable<Future<Object>> callable = () -> {
-                    return (Future<Object>) invocationContext.proceed();
-                };
-
-                Executor<Future<Object>> async = (Executor<Future<Object>>) executor;
-                try {
-                    result = async.execute(callable, executionContext);
-                } catch (ExecutionException e) {
-                    throw e.getCause();
-                }
-
-            } else {
-
-                Callable<Object> callable = () -> {
-                    return invocationContext.proceed();
-                };
-
-                Executor<Object> sync = (Executor<Object>) executor;
-                try {
-                    result = sync.execute(callable, executionContext);
-                } catch (ExecutionException e) {
-                    throw e.getCause();
+            try {
+                result = executor.execute(callable, executionContext);
+            } catch (ExecutionException e) {
+                Throwable cause = e.getCause();
+                if (cause instanceof Exception) {
+                    throw (Exception) cause;
+                } else if (cause instanceof Error) {
+                    throw (Error) cause;
+                } else {
+                    throw e;
                 }
             }
 
@@ -246,6 +241,12 @@ public class FaultToleranceInterceptor {
             result = invocationContext.proceed();
         }
         return result;
+    }
+
+    @Trivial
+    private String generateId(Method method) {
+        int rand = ThreadLocalRandom.current().nextInt();
+        return method.getName() + "-" + Integer.toHexString(rand);
     }
 
     @Dependent

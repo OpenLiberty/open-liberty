@@ -105,7 +105,7 @@ public abstract class InfoVisitor_Annotation extends AnnotationVisitor {
     // annotation class name.  (This is not validated.)
 
     protected InfoVisitor_Annotation(InfoStoreImpl iStore) {
-        super(Opcodes.ASM5);
+        super(Opcodes.ASM7);
 
         this.infoStore = iStore;
 

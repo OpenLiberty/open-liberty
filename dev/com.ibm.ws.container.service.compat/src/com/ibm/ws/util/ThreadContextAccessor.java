@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 IBM Corporation and others.
+ * Copyright (c) 2007, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import java.security.PrivilegedAction;
 
 import com.ibm.ejs.ras.Tr;
 import com.ibm.ejs.ras.TraceComponent;
-import com.ibm.ws.kernel.service.util.JavaInfo;
 
 /**
  * Helper to access thread context variables. Callers should ensure that they
@@ -248,7 +247,7 @@ public abstract class ThreadContextAccessor {
 
     static {
         ThreadContextAccessor myThreadContextAccessor;
-        if (PRINT_STACK_ON_SET_CTX_CLASSLOADER || JavaInfo.majorVersion() >= 9) {
+        if (PRINT_STACK_ON_SET_CTX_CLASSLOADER) {
             // If we are printing the stack trace when thread pool threads'
             // setContextClassLoader is invoked, then we want to skip the
             // performance optimization in order to ensure that we print

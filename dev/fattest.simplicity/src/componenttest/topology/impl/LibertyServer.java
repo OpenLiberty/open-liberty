@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,9 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.nio.charset.Charset;
+import java.security.AccessController;
 import java.security.KeyStore;
+import java.security.PrivilegedAction;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,12 +54,16 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.json.Json;
@@ -77,18 +83,16 @@ import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.PortType;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
-import com.ibm.websphere.simplicity.application.ApplicationManager;
 import com.ibm.websphere.simplicity.application.ApplicationType;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
-import com.ibm.websphere.simplicity.exception.ApplicationNotInstalledException;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.websphere.soe_reporting.SOEHttpPostUtil;
 import com.ibm.ws.fat.util.ACEScanner;
+import com.ibm.ws.logging.utils.FileLogHolder;
 
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.LocalMachine;
-import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.LogPolice;
 import componenttest.depchain.FeatureDependencyProcessor;
 import componenttest.exception.TopologyException;
@@ -97,6 +101,7 @@ import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
 import componenttest.topology.utils.FileUtils;
 import componenttest.topology.utils.LibertyServerUtils;
 import componenttest.topology.utils.PrivHelper;
+import componenttest.topology.utils.ServerFileUtils;
 
 public class LibertyServer implements LogMonitorClient {
 
@@ -109,6 +114,86 @@ public class LibertyServer implements LogMonitorClient {
 
     boolean runAsAWindowService = false;
 
+    protected class ServerDebugInfo {
+
+        protected static final String SERVER_DEBUG_PREFIX = "debug.server.";
+        protected static final String DEBUGGING_PORT_PROP = "debugging.port";
+
+        boolean startInDebugMode = false;
+        protected String debugPort = null;
+
+        protected ServerDebugInfo() {
+            calculateDebugInfo();
+        }
+
+        /**
+         * We only start in debug mode if:
+         * debugging is allowed
+         * AND
+         * the environment sets a system property with a valid port.
+         */
+
+        private void calculateDebugInfo() {
+
+            if (debuggingAllowed) {
+                debugPort = getDebugPortForServer();
+                if (debugPort == null) {
+                    debugPort = getGenericDebuggingPort();
+                }
+                if (debugPort != null) {
+                    startInDebugMode = true;
+                    Log.info(c, "calculateDebugInfo", "Debug enabled for server = " + serverToUse + ", at port = " + debugPort);
+                    return;
+                }
+                Log.info(c, "calculateDebugInfo", "debugging allowed for server = " + serverToUse + ", but didn't find valid port, so debug not enabled");
+            } else {
+                Log.info(c, "calculateDebugInfo", "debugging not allowed for server = " + serverToUse);
+            }
+        }
+
+        String getDebugPortForServer() {
+            return getValidPortPropertyVal(SERVER_DEBUG_PREFIX + serverToUse);
+        }
+
+        String getGenericDebuggingPort() {
+            return getValidPortPropertyVal(DEBUGGING_PORT_PROP);
+        }
+
+        /**
+         * For system property with key = "key", return the value of this system property
+         * if and only if the value can be parsed into a non-negative integer.
+         *
+         * If not, returns <null>.
+         *
+         * @param key
+         * @return value of sys property or <null>
+         */
+        String getValidPortPropertyVal(final String key) {
+            int portVal;
+            String sysPropVal = AccessController.doPrivileged(new PrivilegedAction<String>() {
+                @Override
+                public String run() {
+                    return System.getProperty(key);
+                }
+            });
+
+            if (sysPropVal != null && sysPropVal != "false") {
+                try {
+                    portVal = Integer.parseInt(sysPropVal);
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+                if (portVal < 0) {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+            Log.info(c, "getValidPortPropertyVal", "Return valid port val, key = " + key + ", val = " + sysPropVal);
+            return sysPropVal;
+        }
+    }
+
     protected static final String MAC_RUN = PrivHelper.getProperty("fat.on.mac");
     protected static final String DEBUGGING_PORT = PrivHelper.getProperty("debugging.port");
     protected static final boolean DEFAULT_PRE_CLEAN = true;
@@ -120,8 +205,9 @@ public class LibertyServer implements LogMonitorClient {
 
     protected static final JavaInfo javaInfo = JavaInfo.forCurrentVM();
 
+    protected static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
     protected static final boolean GLOBAL_JAVA2SECURITY = Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "false"));
-    protected static final boolean GLOBAL_DEBUG_JAVA2SECURITY = FATRunner.FAT_TEST_LOCALRUN //
+    protected static final boolean GLOBAL_DEBUG_JAVA2SECURITY = FAT_TEST_LOCALRUN //
                     ? Boolean.parseBoolean(PrivHelper.getProperty("global.debug.java2.sec", "true")) //
                     : Boolean.parseBoolean(PrivHelper.getProperty("global.debug.java2.sec", "false"));
 
@@ -131,18 +217,19 @@ public class LibertyServer implements LogMonitorClient {
     protected static final boolean DO_COVERAGE = PrivHelper.getBoolean("test.coverage");
     protected static final String JAVA_AGENT_FOR_JACOCO = PrivHelper.getProperty("javaagent.for.jacoco");
 
-    protected static final int SERVER_START_TIMEOUT = FATRunner.FAT_TEST_LOCALRUN ? 15 * 1000 : 30 * 1000;
+    protected static final int SERVER_START_TIMEOUT = (FAT_TEST_LOCALRUN ? 15 : 30) * 1000;
     protected static final int SERVER_STOP_TIMEOUT = SERVER_START_TIMEOUT;
+
+    // How long to wait for an app to start before failing out
+    protected int APP_START_TIMEOUT = (FAT_TEST_LOCALRUN ? 12 : 120) * 1000;
 
     // Increasing this from 50 seconds to 120 seconds to account for poorly performing code;
     // this timeout should only pop in the event of an unexpected failure of apps to start.
-    protected static final int LOG_SEARCH_TIMEOUT = FATRunner.FAT_TEST_LOCALRUN ? 12 * 1000 : 120 * 1000;
+    protected static final int LOG_SEARCH_TIMEOUT = (FAT_TEST_LOCALRUN ? 12 : 120) * 1000;
 
     // Allow configuration updates to wait for messages in the log longer than other log
     // searches. Configuration updates may take some time on slow test systems.
-    protected static final int LOG_SEARCH_TIMEOUT_CONFIG_UPDATE = FATRunner.FAT_TEST_LOCALRUN ? 18 * 1000 : 180 * 1000;
-
-    protected ApplicationManager appmgr;
+    protected static final int LOG_SEARCH_TIMEOUT_CONFIG_UPDATE = (FAT_TEST_LOCALRUN ? 12 : 180) * 1000;
 
     protected Set<String> installedApplications;
 
@@ -174,6 +261,9 @@ public class LibertyServer implements LogMonitorClient {
     protected int httpSecondaryPort = Integer.parseInt(System.getProperty("HTTP_secondary", "0"));
     protected int httpSecondarySecurePort = Integer.parseInt(System.getProperty("HTTP_secondary.secure", "0"));
 
+    protected String bvtPortPropertyName = null;
+    protected String bvtSecurePortPropertyName = null;
+
     protected int iiopDefaultPort = Integer.parseInt(System.getProperty("IIOP", "0"));
 
     protected String hostName;
@@ -199,6 +289,30 @@ public class LibertyServer implements LogMonitorClient {
     private boolean isTidy = false;
 
     private boolean needsPostTestRecover = true;
+
+    protected boolean debuggingAllowed = true;
+
+    /**
+     * This returns whether or not debugging is "programatically" allowed
+     * for this server. It must still be combined with a port supplied by
+     * the environment for debug to actually be enabled.
+     *
+     * @return {@code true} if debugging is potentially allowed for this server.
+     */
+    public boolean isDebuggingAllowed() {
+        return debuggingAllowed;
+    }
+
+    /**
+     * This sets whether or not debugging is "programatically" allowed
+     * for this server. It must still be combined with a port supplied by
+     * the environment for debug to actually be enabled.
+     *
+     * @param debuggingAllowed whether debugging is potentially allowed for this server.
+     */
+    public void setDebuggingAllowed(boolean debuggingAllowed) {
+        this.debuggingAllowed = debuggingAllowed;
+    }
 
     /**
      * @return the installRoot
@@ -239,11 +353,17 @@ public class LibertyServer implements LogMonitorClient {
 
     protected Map<String, String> additionalSystemProperties = null;
 
+    private final Map<String, String> envVars = new HashMap<>();
+
     protected String relativeLogsRoot = "/logs/"; // this will be appended to logsRoot in setUp
     protected String consoleFileName = DEFAULT_CONSOLE_FILE; // Console log file name
     protected String messageFileName = DEFAULT_MSG_FILE; // Messages log file name (optionally changed by the FAT)
+    protected String traceFileName = DEFAULT_TRACE_FILE_PREFIX + ".log"; // Trace log file name
     protected String messageAbsPath = null;
     protected String consoleAbsPath = null;
+    protected String traceAbsPath = null;
+
+    protected final List<String> extraArgs = new ArrayList<String>();
 
     protected String machineJava; // Path to Java 6 JDK on the Machine
 
@@ -280,7 +400,9 @@ public class LibertyServer implements LogMonitorClient {
     protected List<String> originalFeatureSet = null;
 
     //Used for keeping track of offset positions of log files
-    protected final HashMap<String, Long> logOffsets = new HashMap<String, Long>();
+    protected HashMap<String, Long> logOffsets = new HashMap<String, Long>();
+
+    protected HashMap<String, Long> originOffsets = new HashMap<String, Long>();
 
     protected boolean serverCleanupProblem = false;
 
@@ -289,7 +411,7 @@ public class LibertyServer implements LogMonitorClient {
     /** When we stopped searching for a string in the logs. */
     public long searchStopTime;
 
-    private List<String> ignoredErrors = null;
+    private final List<String> ignoredErrors = new ArrayList<>();
 
     /**
      * Holds a fixed set error and warning messages to be ignored for those
@@ -302,6 +424,8 @@ public class LibertyServer implements LogMonitorClient {
      * Shared LogMonitor class is used to encapsulate some basic log search/wait logic
      */
     private final LogMonitor logMonitor;
+
+    private boolean newLogsOnStart = FileLogHolder.NEW_LOGS_ON_START_DEFAULT;
 
     /**
      * @param serverCleanupProblem the serverCleanupProblem to set
@@ -319,7 +443,7 @@ public class LibertyServer implements LogMonitorClient {
      * LibertyServerFactory's static methods to get LibertyServer instances.
      *
      * @param serverName The name of the server that is going to used
-     * @param b The bootstrap properties for this server
+     * @param b          The bootstrap properties for this server
      * @throws Exception
      */
     LibertyServer(String serverName, Bootstrap b) throws Exception {
@@ -334,10 +458,11 @@ public class LibertyServer implements LogMonitorClient {
      * Protected - This constructor is default as users should use the
      * LibertyServerFactory's static methods to get LibertyServer instances.
      *
-     * @param serverName The name of the server that is going to used
-     * @param b The bootstrap properties for this server
-     * @param deleteServerDirIfExist If true and if the specified server name already exists on the file system, it will be deleted
+     * @param serverName              The name of the server that is going to used
+     * @param b                       The bootstrap properties for this server
+     * @param deleteServerDirIfExist  If true and if the specified server name already exists on the file system, it will be deleted
      * @param usePreviouslyConfigured If true do not tidy existing server
+     * @param winServiceOption
      * @throws Exception
      */
     LibertyServer(String serverName, Bootstrap b, boolean deleteServerDirIfExist, boolean usePreviouslyConfigured,
@@ -360,9 +485,13 @@ public class LibertyServer implements LogMonitorClient {
 
         if (winServiceOption == LibertyServerFactory.WinServiceOption.ON) {
             runAsAWindowService = true;
-            Log.info(c, method, "runAsAWindowService: " + runAsAWindowService);
         } else {
             runAsAWindowService = false;
+        }
+
+        String newLogsOnStartProperty = b.getValue(FileLogHolder.NEW_LOGS_ON_START_PROPERTY);
+        if (newLogsOnStartProperty != null) {
+            newLogsOnStart = Boolean.parseBoolean(newLogsOnStartProperty);
         }
 
         // This is the only case where we will allow the messages.log name to  be changed
@@ -432,7 +561,6 @@ public class LibertyServer implements LogMonitorClient {
         // property "checkIfLocalHost" just in case someone doesn't want this behavior.
         String checkIfLocalHost = b.getValue("checkIfLocalHost");
         if (checkIfLocalHost != null && hostName.equals(InetAddress.getLocalHost().getHostName())) {
-            Log.info(c, method, "returning local machine for " + hostName);
             machine = Machine.getLocalMachine();
             // Do not update hostName because Machine will say localhost!
         } else {
@@ -498,6 +626,7 @@ public class LibertyServer implements LogMonitorClient {
         this.serverOutputRoot = this.serverRoot;
         this.logsRoot = serverOutputRoot + relativeLogsRoot;
         this.messageAbsPath = logsRoot + messageFileName;
+        this.traceAbsPath = logsRoot + traceFileName;
 
         // delete existing server directory if requested:
         if (deleteServerDirIfExist) {
@@ -515,7 +644,7 @@ public class LibertyServer implements LogMonitorClient {
         // Now it sets all OS specific stuff
         this.machineJava = LibertyServerUtils.makeJavaCompatible(machineJava, machine);
 
-        Log.info(c, "setup", "Machine operating System is: " + machineOS.name());
+        Log.info(c, "setup", "Successfully obtained machine. Operating System is: " + machineOS.name());
         // Continues with setup, we now validate the Java used is a JDK by looking for java and jar files
         String jar = "jar";
         String java = "java";
@@ -532,6 +661,8 @@ public class LibertyServer implements LogMonitorClient {
             machineJarPath = testJar.getAbsolutePath();
             if (!!!testJar.exists()) {
                 throw new TopologyException("cannot find a " + jar + " file in " + machineJava + "/bin. Please ensure you have set the machine javaHome to point to a JDK");
+            } else {
+                Log.info(c, "setup", "Jar Home now set to: " + machineJarPath);
             }
         }
         if (!!!testJava.exists())
@@ -543,6 +674,10 @@ public class LibertyServer implements LogMonitorClient {
 
         if (!usePreviouslyConfigured)
             preTestTidyup();
+
+        if (!newLogsOnStart) {
+            initializeAnyExistingMarks();
+        }
     }
 
     protected void preTestTidyup() {
@@ -647,6 +782,79 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * Sets the server configuration to be the specified file and starts the server.
+     */
+    public ProgramOutput startServerUsingConfiguration(String configFile) throws Exception {
+        return startServerUsingConfiguration(configFile, new ArrayList<String>());
+    }
+
+    /**
+     * Sets the server configuration to be the specified file and starts the server.
+     */
+    public ProgramOutput startServerUsingExpandedConfiguration(String configFile) throws Exception {
+        return startServerUsingExpandedConfiguration(configFile, new ArrayList<String>());
+    }
+
+    public ProgramOutput startServerUsingExpandedConfiguration(String configFile, List<String> waitForMessages) throws Exception {
+
+        ServerFileUtils serverFileUtils = new ServerFileUtils();
+        String mergedFile = serverFileUtils.expandAndBackupCfgFile(this, configFile);
+        ProgramOutput startupOutput = startServerUsingConfiguration(mergedFile, waitForMessages);
+        saveServerConfiguration();
+        return startupOutput;
+    }
+
+    /**
+     * Sets the server configuration to be the specified file, starts the server, and waits for each of the specified messages.
+     */
+    public ProgramOutput startServerUsingConfiguration(String configFile, List<String> waitForMessages) throws Exception {
+        setServerConfigurationFromFilePath(configFile);
+        ProgramOutput startupOutput = startServer();
+        waitForStringsInLogUsingMark(waitForMessages);
+        return startupOutput;
+    }
+
+    /**
+     * Reconfigures the running server. Expands any imports in the specified server config and copies that expanded
+     * configuration to server.xml of the server root.
+     *
+     * @param testName        - The name of the test case requesting the reconfig - a copy of the expanded configuration
+     *                            file will be saved for debug purposes
+     * @param newConfig       - The configuration to swich to
+     * @param waitForMessages - Any messages to wait (used to determine if the update is complete)
+     * @throws Exception
+     */
+    public void reconfigureServerUsingExpandedConfiguration(String testName, String newConfig, String... waitForMessages) throws Exception {
+
+        reconfigureServerUsingExpandedConfiguration(testName, "configs", newConfig, true, waitForMessages);
+    }
+
+    /**
+     * Reconfigures the running server. Expands any imports in the specified server config and copies that expanded
+     * configuration to server.xml of the server root.
+     *
+     * @param testName        - The name of the test case requesting the reconfig - a copy of the expanded configuration
+     *                            file will be saved for debug purposes
+     * @param configDir       - The directory under the server root where the configuration will be found ("configs" is the default)
+     * @param newConfig       - The configuration to swich to
+     * @param waitForMessages - Any messages to wait (used to determine if the update is complete)
+     * @throws Exception
+     */
+    public void reconfigureServerUsingExpandedConfiguration(String testName, String configDir, String newConfig, boolean resetMark, String... waitForMessages) throws Exception {
+
+        ServerFileUtils serverFileUtils = new ServerFileUtils();
+        String newServerCfg = serverFileUtils.expandAndBackupCfgFile(this, configDir + "/" + newConfig, testName);
+        Log.info(c, "reconfigureServerUsingExpandedConfiguration", "Reconfiguring server to use new config: " + newConfig);
+        if (resetMark) {
+            setMarkToEndOfLog();
+        }
+        replaceServerConfiguration(newServerCfg);
+
+        Thread.sleep(200); // Sleep for 200ms to ensure we do not process the file "too quickly" by a subsequent call
+        waitForConfigUpdateInLogUsingMark(listAllInstalledAppsForValidation(), waitForMessages);
+    }
+
+    /**
      * Start the server and validate that the server was started:
      * prepares/cleans the server directory, then performs a clean start
      *
@@ -662,8 +870,8 @@ public class LibertyServer implements LogMonitorClient {
      * prepares/cleans the server directory, then performs a clean start
      *
      * @param consoleLogFileName name that should be used for console log. It can be helpful
-     *            to have a console log file name that is related to (or describes) the test
-     *            case the server is used for.
+     *                               to have a console log file name that is related to (or describes) the test
+     *                               case the server is used for.
      * @throws Exception
      * @return the output of the start command
      */
@@ -689,9 +897,9 @@ public class LibertyServer implements LogMonitorClient {
      * prepares/cleans the server directory, then starts the server
      *
      * @param consoleFileName name that should be used for console log. It can be helpful
-     *            to have a console log file name that is related to (or describes) the test
-     *            case the server is used for.
-     * @param cleanStart if true, the server will be started with a clean start
+     *                            to have a console log file name that is related to (or describes) the test
+     *                            case the server is used for.
+     * @param cleanStart      if true, the server will be started with a clean start
      * @throws Exception
      * @return the output of the start command
      */
@@ -704,10 +912,10 @@ public class LibertyServer implements LogMonitorClient {
      * Start the server and validate that the server was started
      *
      * @param consoleFileName name that should be used for console log. It can be helpful
-     *            to have a console log file name that is related to (or describes) the test
-     *            case the server is used for.
-     * @param cleanStart if true, the server will be started with a clean start
-     * @param preCleanServer if true, the server directory will be reset before the server is started (reverted to vanilla backup).
+     *                            to have a console log file name that is related to (or describes) the test
+     *                            case the server is used for.
+     * @param cleanStart      if true, the server will be started with a clean start
+     * @param preCleanServer  if true, the server directory will be reset before the server is started (reverted to vanilla backup).
      * @throws Exception
      * @return the output of the start command
      */
@@ -720,12 +928,12 @@ public class LibertyServer implements LogMonitorClient {
      * Start the server and validate that the server was started
      *
      * @param consoleFileNameLog name that should be used for console log. It can be helpful
-     *            to have a console log file name that is related to (or describes) the test
-     *            case the server is used for.
-     * @param cleanStart if true, the server will be started with a clean start
-     * @param preCleanServer if true, the server directory will be reset before
-     *            the server is started (reverted to vanilla backup).
-     * @param validateTimedExit if true, the server will make sure that timedexit-1.0 is enabled
+     *                               to have a console log file name that is related to (or describes) the test
+     *                               case the server is used for.
+     * @param cleanStart         if true, the server will be started with a clean start
+     * @param preCleanServer     if true, the server directory will be reset before
+     *                               the server is started (reverted to vanilla backup).
+     * @param validateTimedExit  if true, the server will make sure that timedexit-1.0 is enabled
      * @throws Exception
      */
     public void startServer(String consoleFileNameLog,
@@ -740,10 +948,10 @@ public class LibertyServer implements LogMonitorClient {
      * Start the server, but expect server start to fail
      *
      * @param consoleFileName name that should be used for console log. It can be helpful
-     *            to have a console log file name that is related to (or describes) the test
-     *            case the server is used for.
-     * @param cleanStart if true, the server will be started with a clean start
-     * @param preCleanServer if true, the server directory will be reset before the server is started (reverted to vanilla backup).
+     *                            to have a console log file name that is related to (or describes) the test
+     *                            case the server is used for.
+     * @param cleanStart      if true, the server will be started with a clean start
+     * @param preCleanServer  if true, the server directory will be reset before the server is started (reverted to vanilla backup).
      * @throws Exception
      * @return the output of the start command
      */
@@ -799,8 +1007,8 @@ public class LibertyServer implements LogMonitorClient {
     /**
      * Start the server and validate that the server was started
      *
-     * @param cleanStart if true, the server will be started with a clean start
-     * @param validateApps if true, block until all of the registered apps have started
+     * @param cleanStart     if true, the server will be started with a clean start
+     * @param validateApps   if true, block until all of the registered apps have started
      * @param preCleanServer if true, the server directory will be reset before the server is started (reverted to vanilla backup).
      * @throws Exception
      * @return the output of the start command
@@ -812,8 +1020,8 @@ public class LibertyServer implements LogMonitorClient {
     /**
      * Start the server and validate that the server was started
      *
-     * @param cleanStart if true, the server will be started with a clean start
-     * @param validateApps if true, block until all of the registered apps have started
+     * @param cleanStart     if true, the server will be started with a clean start
+     * @param validateApps   if true, block until all of the registered apps have started
      * @param preCleanServer if true, the server directory will be reset before the server is started (reverted to vanilla backup).
      * @throws Exception
      * @return the output of the start command
@@ -825,13 +1033,13 @@ public class LibertyServer implements LogMonitorClient {
     /**
      * Start the server and validate that the server was started
      *
-     * @param preClean if true, the server directory will be reset before
-     *            the server is started (reverted to vanilla backup).
-     * @param cleanStart if true, the server will be started with a clean start
-     * @param validateApps if true, block until all of the registered apps have started
+     * @param preClean           if true, the server directory will be reset before
+     *                               the server is started (reverted to vanilla backup).
+     * @param cleanStart         if true, the server will be started with a clean start
+     * @param validateApps       if true, block until all of the registered apps have started
      * @param expectStartFailure if true, a the server is not expected to start
-     *            due to a failure
-     * @param validateTimedExit if true, the server will make sure that timedexit-1.0 is enabled
+     *                               due to a failure
+     * @param validateTimedExit  if true, the server will make sure that timedexit-1.0 is enabled
      * @throws Exception
      */
     public ProgramOutput startServerAndValidate(boolean preClean, boolean cleanStart,
@@ -884,13 +1092,14 @@ public class LibertyServer implements LogMonitorClient {
         return args;
     }
 
-    protected ProgramOutput startServerWithArgs(boolean preClean, boolean cleanStart,
-                                                boolean validateApps, boolean expectStartFailure,
-                                                String serverCmd, List<String> args,
-                                                boolean validateTimedExit) throws Exception {
-        final String method = "startServerAndValidate";
+    public ProgramOutput startServerWithArgs(boolean preClean, boolean cleanStart,
+                                             boolean validateApps, boolean expectStartFailure,
+                                             String serverCmd, List<String> args,
+                                             boolean validateTimedExit) throws Exception {
+        final String method = "startServerWithArgs";
         Log.info(c, method, ">>> STARTING SERVER: " + this.getServerName());
-        Log.entering(c, method, "clean=" + cleanStart + ", validateApps=" + validateApps + ", expectStartFailure=" + expectStartFailure + ", cmd=" + serverCmd + ", args=" + args);
+        Log.info(c, method, "Starting " + this.getServerName() + "; clean=" + cleanStart + ", validateApps=" + validateApps + ", expectStartFailure=" + expectStartFailure
+                            + ", cmd=" + serverCmd + ", args=" + args);
 
         if (serverCleanupProblem) {
             throw new Exception("The server was not cleaned up on the previous test.");
@@ -899,11 +1108,29 @@ public class LibertyServer implements LogMonitorClient {
         //if we're (re-)starting then we must be untidy!
         this.isTidy = false;
 
-        //Tidy up any pre-existing logs
-        if (preClean)
+        if (preClean) {
+            // Tidy up any pre-existing logs
+            Log.info(c, method, "Tidying logs");
             preStartServerLogsTidy();
+            if (!newLogsOnStart) {
+                clearLogMarks();
+            }
+        } else {
+            if (!newLogsOnStart) {
+                // We were asked not to pre-clean the logs, so given the
+                // new behavior of not rolling messages.log & traces.log
+                // in issue 4364, check if those exist, and if so, set
+                // our marks to the end of those files.
+                initializeAnyExistingMarks();
+            }
+        }
 
         final Properties envVars = new Properties();
+
+        envVars.putAll(this.envVars);
+        Log.info(c, "@AGG", "vars1: " + envVars);
+        this.envVars.clear();
+        Log.info(c, "@AGG", "vars2: " + envVars);
 
         if (this.additionalSystemProperties != null && this.additionalSystemProperties.size() > 0) {
             envVars.putAll(this.additionalSystemProperties);
@@ -913,11 +1140,13 @@ public class LibertyServer implements LogMonitorClient {
         final String cmd = installRoot + "/bin/server";
         ArrayList<String> parametersList = new ArrayList<String>();
         boolean executeAsync = false;
-        if ("start".equals(serverCmd) && DEBUGGING_PORT != null && !!!DEBUGGING_PORT.equalsIgnoreCase(Boolean.toString(false))) {
-            Log.info(c, method, "Setting up commands for debug");
+        ServerDebugInfo debugInfo = new ServerDebugInfo();
+        if ("start".equals(serverCmd) && debugInfo.startInDebugMode) {
+            Log.info(c, method, "Setting up commands for debug for server = " + serverToUse + ".  Using port = " + debugInfo.debugPort);
             parametersList.add("debug");
             parametersList.add(serverToUse);
-            envVars.setProperty("DEBUG_PORT", DEBUGGING_PORT);
+            envVars.setProperty("DEBUG_PORT", debugInfo.debugPort); // Not sure what this does.  It's not read by the FAT framework, for example. Was it meant to be usable for trace/debug?
+            envVars.setProperty("WLP_DEBUG_ADDRESS", debugInfo.debugPort);
             // set server time out to 15 minutes to give time to connect. Timed exit likely kicks in after that, so
             // a larger value is worthless (and, since we multiply it by two later, will wrap if you use MAX_VALUE)
             serverStartTimeout = 15 * 60 * 60 * 1000;
@@ -935,9 +1164,12 @@ public class LibertyServer implements LogMonitorClient {
             parametersList.addAll(args);
         }
 
+        parametersList.addAll(extraArgs);
+
         //Setup the server logs assuming the default setting.
         messageAbsPath = logsRoot + messageFileName;
         consoleAbsPath = logsRoot + consoleFileName;
+        traceAbsPath = logsRoot + traceFileName;
 
         Log.finer(c, method, "Starting server, messages will go to file " + messageAbsPath);
 
@@ -964,7 +1196,7 @@ public class LibertyServer implements LogMonitorClient {
         // Debug for a highly intermittent problem on IBM JVMs.
         // Unfortunately, this problem does not seem to happen when we enable this dump trace. We also can't proceed without getting
         // a system dump, so our only option is to enable this and hope the timing eventually works out.
-        if (info.VENDOR == Vendor.IBM) {
+        if (info.VENDOR == Vendor.IBM && info.majorVersion() == 8) {
             JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#ServiceFactoryUse.<init>*\"";
             JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#org/eclipse/osgi/internal/serviceregistry/ServiceFactoryUse.<init>*\"";
         }
@@ -980,9 +1212,14 @@ public class LibertyServer implements LogMonitorClient {
             JVM_ARGS += " " + MAC_RUN;
         }
 
-        if (info.vendor() == JavaInfo.Vendor.SUN_ORACLE && info.majorVersion() >= 8) {
-            //This works around a change in Oracle JKD 8 update 11 documented in 163555: Test Failure (20150216-1921 (tests for cl50520150215-1500, child-e0)): com.ibm.ws.fat.cdi.tests.JavaEightTests.testLambda
-            JVM_ARGS += " -noverify";
+        if (info.vendor() == JavaInfo.Vendor.SUN_ORACLE) {
+            if (info.majorVersion() == 8) {
+                //This works around a change in Oracle JDK 8 update 11 documented in 163555: Test Failure (20150216-1921 (tests for cl50520150215-1500, child-e0)): com.ibm.ws.fat.cdi.tests.JavaEightTests.testLambda
+                JVM_ARGS += " -noverify";
+            } else if (info.majorVersion() == 11) {
+                // Do this to produce nicer VerifyErrors instead of letting Hotspot crash
+                JVM_ARGS += " -Xverify:all";
+            }
         }
 
         // if we have java 2 security enabled, add java.security.manager and java.security.policy
@@ -991,6 +1228,12 @@ public class LibertyServer implements LogMonitorClient {
             addJava2SecurityPropertiesToBootstrapFile(f, GLOBAL_DEBUG_JAVA2SECURITY);
             String reason = GLOBAL_JAVA2SECURITY ? "GLOBAL_JAVA2SECURITY" : "GLOBAL_DEBUG_JAVA2SECURITY";
             Log.info(c, "startServerWithArgs", "Java 2 Security enabled for server " + getServerName() + " because " + reason + "=true");
+        }
+
+        Properties bootstrapProperties = getBootstrapProperties();
+        String newLogsOnStartProperty = bootstrapProperties.getProperty(FileLogHolder.NEW_LOGS_ON_START_PROPERTY);
+        if (newLogsOnStartProperty != null) {
+            newLogsOnStart = Boolean.parseBoolean(newLogsOnStartProperty);
         }
 
         // Look for forced server trace..
@@ -1107,7 +1350,6 @@ public class LibertyServer implements LogMonitorClient {
                     final ArrayList<String> startServiceParmList = makeParmList(parametersList, 1);
 
                     execServerCmd = new Runnable() {
-
                         @Override
                         public void run() {
                             try {
@@ -1196,6 +1438,34 @@ public class LibertyServer implements LogMonitorClient {
 
         Log.exiting(c, method);
         return output;
+    }
+
+    /**
+     * Clear any log marks and then set log marks to messages.log
+     * or trace.log if those exist. See issue 4364
+     *
+     * @throws Exception
+     */
+    private void initializeAnyExistingMarks() throws Exception {
+        final String method = "initializeAnyExistingMarks";
+
+        // First we clear any marks - it's possible this
+        // server was re-used, but stopped, so logs were taken
+        // away. So if we simply clear our cache of log marks,
+        // and then for any of the files that do exist, set the
+        // log marks, then we should be at a good initial state
+        clearLogMarks();
+
+        if (defaultLogFileExists()) {
+            Log.info(c, method, "Saving messages.log mark");
+            setMarkToEndOfLog();
+        }
+        if (defaultTraceFileExists()) {
+            Log.info(c, method, "Saving trace.log mark");
+            setTraceMarkToEndOfDefaultTrace();
+        }
+        Log.info(c, method, "Saving marks");
+        logMonitor.setOriginLogMarks();
     }
 
     private ArrayList<String> makeParmList(ArrayList<String> oldParms, int type) {
@@ -1293,7 +1563,6 @@ public class LibertyServer implements LogMonitorClient {
 
         String path = pathToAutoFVTOutputFolder + getServerName() + ".mrk";
         LocalFile serverRunningFile = new LocalFile(path);
-        Log.finer(c, "createServerMarkerFile", "Server marker file: " + serverRunningFile.getAbsolutePath());
         File createFile = new File(serverRunningFile.getAbsolutePath());
         createFile.createNewFile();
         OutputStream os = serverRunningFile.openForWriting(true);
@@ -1311,15 +1580,22 @@ public class LibertyServer implements LogMonitorClient {
 
         String path = pathToAutoFVTOutputFolder + getServerName() + ".mrk";
         LocalFile serverRunningFile = new LocalFile(path);
-        Log.finer(c, "deleteServerMarkerFile", "Server marker file: " + serverRunningFile.getAbsolutePath());
         File deleteFile = new File(serverRunningFile.getAbsolutePath());
         if (deleteFile.exists()) {
             deleteFile.delete();
         }
     }
 
+    public void setAppStartTimeout(int timeout) {
+        APP_START_TIMEOUT = timeout;
+    }
+
+    public int getAppStartTimeout() {
+        return APP_START_TIMEOUT;
+    }
+
     public void validateAppLoaded(String appName) throws Exception {
-        String exceptionText = validateAppsLoaded(Collections.singleton(appName), LOG_SEARCH_TIMEOUT, getDefaultLogFile());
+        String exceptionText = validateAppsLoaded(Collections.singleton(appName), APP_START_TIMEOUT, getDefaultLogFile());
         if (exceptionText != null) {
             throw new TopologyException(exceptionText);
         }
@@ -1333,7 +1609,7 @@ public class LibertyServer implements LogMonitorClient {
             return;
         }
 
-        String exceptionText = validateAppsLoaded(installedApplications, LOG_SEARCH_TIMEOUT, outputFile);
+        String exceptionText = validateAppsLoaded(installedApplications, APP_START_TIMEOUT, outputFile);
         if (exceptionText != null) {
             throw new TopologyException(exceptionText);
         }
@@ -1341,7 +1617,7 @@ public class LibertyServer implements LogMonitorClient {
 
     protected String validateAppsLoaded(Set<String> appList, int timeout, RemoteFile outputFile) throws Exception {
         // At time of writing, timeout argument was being ignored. Preserve that for now...
-        timeout = LOG_SEARCH_TIMEOUT;
+        timeout = APP_START_TIMEOUT;
         return validateAppsLoaded(appList, timeout, 2 * timeout, outputFile);
     }
 
@@ -1353,10 +1629,10 @@ public class LibertyServer implements LogMonitorClient {
      * With this change, if intendedTimeout is exceeded, we report this to the SOE server
      * but do not consider it a test failure. Only if extendedTimeout is exceeded will we return a not-found indication.
      *
-     * @param regexp a regular expression to search for
+     * @param regexp          a regular expression to search for
      * @param intendedTimeout a timeout, in milliseconds, within which string was expected to occur
      * @param extendedTimeout a timeout, in milliseconds, within which string may acceptably occur
-     * @param outputFile file to check
+     * @param outputFile      file to check
      * @return line that matched the regexp, or null to indicate not found within acceptable (extended) timeout
      */
     protected String validateAppsLoaded(Set<String> appList, int intendedTimeout, int extendedTimeout, RemoteFile outputFile) throws Exception {
@@ -1441,6 +1717,14 @@ public class LibertyServer implements LogMonitorClient {
             Log.error(c, method, e, "Exception thrown confirming apps are loaded when validating that "
                                     + outputFile.getAbsolutePath() + " contains application install messages.");
             throw e;
+        } finally {
+            long endTime = System.currentTimeMillis();
+            DateFormat formatter = DateFormat.getTimeInstance(DateFormat.LONG);
+            Log.info(c, method,
+                     "Started searching for app manager messages at " +
+                                formatter.format(new Date(startTime)) +
+                                " and finished at " +
+                                formatter.format(new Date(endTime)));
         }
     }
 
@@ -1767,7 +2051,12 @@ public class LibertyServer implements LogMonitorClient {
             assertNotNull("Security service did not report it was ready", waitForStringInLogUsingMark("CWWKS0008I"));
 
             //backup the key file
-            copyFileToTempDir("resources/security/key.jks", "key.jks");
+
+            try {
+                copyFileToTempDir("resources/security/key.jks", "key.jks");
+            } catch (Exception e) {
+                copyFileToTempDir("resources/security/key.p12", "key.p12");
+            }
         }
 
         Log.info(c, method, "Waiting up to " + (serverStartTimeout / 1000)
@@ -1840,13 +2129,13 @@ public class LibertyServer implements LogMonitorClient {
             throw serverStartException;
         }
 
+        // App validation needs the info messages in messages.log
         if (!messagesLog.exists()) {
             // NOTE: The HPEL FAT bucket has a strange mechanism to create messages.log for test purposes, which may get messed up
             Log.info(c, method, "WARNING: messages.log does not exist-- trying app verification step with console.log");
             messagesLog = consoleLog;
         }
 
-        // App validation needs the info messages in messages.log
         if (validateTimedExit) {
             validateTimedExitEnabled(messagesLog);
         }
@@ -1868,7 +2157,7 @@ public class LibertyServer implements LogMonitorClient {
             // It's fairly unusual, but it's technically possible that timed exit is enabled and the message hasn't been issued yet.
             // We use this backup rather than replacing the above findStringsInLogs because it's possible for the mark to be set to a location
             // after the timed exit message
-            String takeTwo = waitForStringInLog("Timed Exit Enabled", TIMEOUT, messagesLog);
+            String takeTwo = waitForStringInLog(TIMED_EXIT_ENABLED, TIMEOUT, messagesLog);
             if (takeTwo != null) {
                 // Everything is OK now, log a message indicating that we got here
                 Log.info(c, method, "Found the timed exit string (late arrival)");
@@ -1932,18 +2221,92 @@ public class LibertyServer implements LogMonitorClient {
         return this.stopServer(postStopServerArchive, false, expectedFailuresRegExps);
     }
 
+    public ScheduledFuture<?> dumpServerOnSchedule(final String destination,
+                                                   final int times,
+                                                   long initialDelay,
+                                                   long delay,
+                                                   TimeUnit unit) throws Exception {
+        final ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
+        ignoredErrors.add("CWWKE0059W"); // write error if server is stopping while dump is processing
+        return ses.scheduleWithFixedDelay(new Runnable() {
+            private final AtomicInteger remainingInvocations = new AtomicInteger(times);
+
+            @Override
+            public void run() {
+                try {
+                    dumpServer(destination);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    ses.shutdown();
+                }
+                if (remainingInvocations.getAndDecrement() == 0) {
+                    ses.shutdown();
+                }
+            }
+        }, initialDelay, delay, unit);
+    }
+
+    public LocalFile dumpServer(final String destination) throws Exception {
+        LocalFile lf = null;
+        final String method = "dumpServer";
+        try {
+            Log.info(c, method, "<<< DUMPING SERVER: " + this.getServerName());
+
+            if (!isStarted) {
+                Log.info(c, method, "Server " + serverToUse + " is not running (stop called previously).");
+                return null;
+            }
+
+            String cmd = installRoot + "/bin/server";
+            String[] parameters = new String[] { "dump", serverToUse };
+
+            //Need to ensure JAVA_HOME is set correctly - can't rely on user's environment to be set to the same Java as the build/runtime environment
+            Properties envVars = new Properties();
+            envVars.setProperty("JAVA_HOME", machineJava);
+            if (customUserDir)
+                envVars.setProperty("WLP_USER_DIR", userDir);
+            Log.finer(c, method, "Using additional env props: " + envVars.toString());
+
+            final ProgramOutput output = machine.execute(cmd, parameters, envVars);
+
+            String stdout = output.getStdout();
+            Log.info(c, method, "Dump Server Response: " + stdout);
+            if (output.getReturnCode() != 0)
+                Log.info(c, method, "Return code from script is: " + output.getReturnCode());
+
+            final String regex = "Server .+ dump complete in (.+)\\.";
+            final Matcher m = Pattern.compile(regex).matcher(stdout);
+            if (m.find()) {
+                final String dumpPath = m.group(1);
+                Log.info(c, method, "Dump file on server: " + dumpPath);
+                if (dumpPath != null) {
+                    final RemoteFile dumpFile = new RemoteFile(machine, dumpPath);
+                    Log.info(c, method, "Copying RemoteFile " + dumpFile + " to " + pathToAutoFVTTestFiles + "/tmp/" + destination);
+                    lf = copyFileToTempDir(dumpFile, destination);
+                }
+            } else {
+                Log.info(c, method, "Matcher failed.");
+            }
+
+        } finally {
+            Log.info(c, method, "<<< SERVER DUMP COMPLETE: " + this.getServerName() + " , localFile = " + lf);
+        }
+
+        return lf;
+    }
+
     /**
      * Stops the server and checks for any warnings or errors that appeared in logs.
      * If warnings/errors are found, an exception will be thrown after the server stops.
      *
      * @param postStopServerArchive true to collect server log files after the server is stopped; false to skip this step (sometimes, FATs back up log files on their own, so this
-     *            would be redundant)
-     * @param forceStop Force the server to stop, skipping the quiesce (default/usual value should be false)
-     * @param regIgnore A list of reg expressions corresponding to warnings or errors that should be ignored.
-     *            If regIgnore is null, logs will not be checked for warnings/errors
+     *                                  would be redundant)
+     * @param forceStop             Force the server to stop, skipping the quiesce (default/usual value should be false)
+     * @param regIgnore             A list of reg expressions corresponding to warnings or errors that should be ignored.
+     *                                  If regIgnore is null, logs will not be checked for warnings/errors
      * @return the output of the stop command
      * @throws Exception if the stop operation fails or there are warnings/errors found in server
-     *             logs that were not in the list of ignored warnings/errors.
+     *                       logs that were not in the list of ignored warnings/errors.
      */
     public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, String... expectedFailuresRegExps) throws Exception {
 
@@ -1986,9 +2349,7 @@ public class LibertyServer implements LogMonitorClient {
                 String[] stopServiceParameters = stopServiceParmList.toArray(new String[] {});
                 String[] removeServiceParameters = removeServiceParmList.toArray(new String[] {});
 
-                Log.info(c, method, "runAsAWindowService StopService   parms: " + stopServiceParmList.toString());
                 output = machine.execute(cmd, stopServiceParameters, envVars);
-                Log.info(c, method, "runAsAWindowService RemoveService parms: " + removeServiceParmList.toString());
                 output = machine.execute(cmd, removeServiceParameters, envVars);
 
             }
@@ -2012,6 +2373,13 @@ public class LibertyServer implements LogMonitorClient {
             // Actually waits for the stop message
             waitForStringInLog("CWWKE0036I:", SERVER_STOP_TIMEOUT, log);
 
+            int serverStopRC = output.getReturnCode();
+            if (serverStopRC != 0) {
+                throw new RuntimeException("Server stop failed with RC " + serverStopRC +
+                                           ".\nStdout:\n" + output.getStdout() +
+                                           "\nStderr:\n" + output.getStderr());
+            }
+
             // Now verify that the server is truly stopped by checking server status from the command line.
             // This checks to see if the server lock file (<server>/workarea/.sLock) is unlocked.
             ProgramOutput serverStatusOutput = executeServerScript("status", null);
@@ -2020,7 +2388,7 @@ public class LibertyServer implements LogMonitorClient {
                     Log.warning(c, method + " Server is still running - or server lock file is still locked.");
                     break;
                 case 1:
-                    Log.info(c, method, "Server stopped successfully");
+                    Log.info(c, method, "Server " + getServerName() + "stopped successfully");
                     break;
                 case 2:
                     Log.warning(c, method + " Unknown server - directory deleted? " + serverToUse);
@@ -2037,7 +2405,11 @@ public class LibertyServer implements LogMonitorClient {
 
             checkLogsForErrorsAndWarnings(expectedFailuresRegExps);
         } finally {
-            if (commandPortEnabled) {
+            // Issue 4363: If !newLogsOnStart, no longer reset the log offsets because if the
+            // server starts again, logs will roll into the existing logs. We also don't clear
+            // the message counters because the use of those counters uses searchForMessages
+            // which doesn't take into account marks.
+            if (newLogsOnStart && commandPortEnabled) {
                 // If the command port is enabled we should reset the log offsets
                 // as we will get new logs on the next start. However, if the
                 // command port isn't disabled, we won't have shut down the
@@ -2045,6 +2417,7 @@ public class LibertyServer implements LogMonitorClient {
                 resetLogOffsets();
                 clearMessageCounters();
             }
+
             if (GLOBAL_JAVA2SECURITY || GLOBAL_DEBUG_JAVA2SECURITY) {
                 try {
                     new ACEScanner(this).run();
@@ -2066,7 +2439,7 @@ public class LibertyServer implements LogMonitorClient {
      * do not match any regular expressions provided in regIgnore.
      *
      * @param regIgnore A list of regex strings for errors/warnings that
-     *            may be safely ignored.
+     *                      may be safely ignored.
      * @return A list of lines containing errors/warnings from server logs
      */
     protected void checkLogsForErrorsAndWarnings(String... regIgnore) throws Exception {
@@ -2075,7 +2448,7 @@ public class LibertyServer implements LogMonitorClient {
         // Get all warnings and errors in logs - default to an empty list
         List<String> errorsInLogs = new ArrayList<String>();
         try {
-            errorsInLogs = this.findStringsInLogs(".*[EW] .*\\d{4}[EW]:.*");
+            errorsInLogs = this.findStringsInLogs("^.*[EW] .*\\d{4}[EW]:.*$");
             if (!errorsInLogs.isEmpty()) {
                 // There were unexpected errors in logs, print them
                 // and set an exception to return
@@ -2100,12 +2473,10 @@ public class LibertyServer implements LogMonitorClient {
             }
         }
         // Add the regexes added via the instance method
-        if (ignoredErrors != null) {
-            for (String regex : ignoredErrors) {
-                ignorePatterns.add(Pattern.compile(regex));
-            }
-            ignoredErrors.clear();
+        for (String regex : ignoredErrors) {
+            ignorePatterns.add(Pattern.compile(regex));
         }
+        ignoredErrors.clear();
 
         // Add the global fixed list of regexes entries.
         if (fixedIgnoreErrorsList != null) {
@@ -2235,7 +2606,6 @@ public class LibertyServer implements LogMonitorClient {
         final String method = "postStopServerArchive";
         Log.entering(c, method);
 
-        Log.info(c, method, "Moving logs to the output folder");
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
         Date d = new Date(System.currentTimeMillis());
 
@@ -2379,7 +2749,7 @@ public class LibertyServer implements LogMonitorClient {
      * If copying a file the destination will be overwritten.
      *
      * @param pathInServerRoot The path to the file or directory in the server root, must not start with a "/"
-     * @param destination The place within the temp folder to store this file, must not start with a "/"
+     * @param destination      The place within the temp folder to store this file, must not start with a "/"
      * @return the LocalFile of the copied RemoteFile
      * @throws Exception
      */
@@ -2395,7 +2765,7 @@ public class LibertyServer implements LogMonitorClient {
      * If copying a file the destination will be overwritten.
      *
      * @param pathInInstallRoot The path to the file or directory in the install root, must not start with a "/"
-     * @param destination The place within the temp folder to store this file, must not start with a "/"
+     * @param destination       The place within the temp folder to store this file, must not start with a "/"
      * @return the LocalFile of the copied RemoteFile
      * @throws Exception
      */
@@ -2429,6 +2799,16 @@ public class LibertyServer implements LogMonitorClient {
         return serverRoot + "/../../shared/";
     }
 
+    /**
+     * Get the collective dir under the server resources dir. For instance,
+     * this is where the collective trust stores are located.
+     *
+     * @return the path
+     */
+    public String getCollectiveResourcesPath() {
+        return serverRoot + "/resources/collective/";
+    }
+
     public void setServerRoot(String serverRoot) {
         this.serverRoot = serverRoot;
     }
@@ -2453,7 +2833,7 @@ public class LibertyServer implements LogMonitorClient {
         LibertyFileManager.copyFileIntoLiberty(machine, installRoot + "/" + extendedPath, (pathToAutoFVTTestFiles + "/" + fileName));
     }
 
-    protected void copyFileToLibertyServerRootUsingTmp(String path, String relPathTolocalFile) throws Exception {
+    public void copyFileToLibertyServerRootUsingTmp(String path, String relPathTolocalFile) throws Exception {
         LocalFile localFileToCopy = new LocalFile(LibertyServerUtils.makeJavaCompatible(relPathTolocalFile, machine));
         LibertyFileManager.copyFileIntoLiberty(machine, path, localFileToCopy.getName(), relPathTolocalFile, false, serverRoot);
     }
@@ -2477,9 +2857,9 @@ public class LibertyServer implements LogMonitorClient {
     /**
      * Copies a file into the ${server.config.dir} of a Liberty server.
      *
-     * @param fromDir The directory of the file to copy.
-     * @param toDir Any extra path beyond ${server.config.dir} for the destination.
-     *            For example, for a destination of ${server.config.dir}/test/ you would use toServerDir=test
+     * @param fromDir  The directory of the file to copy.
+     * @param toDir    Any extra path beyond ${server.config.dir} for the destination.
+     *                     For example, for a destination of ${server.config.dir}/test/ you would use toServerDir=test
      * @param fileName The name of the file to copy. The file name will be unchanged form source to dest
      */
     public void copyFileToLibertyServerRoot(String fromDir, String toDir, String fileName) throws Exception {
@@ -2573,7 +2953,7 @@ public class LibertyServer implements LogMonitorClient {
      * non-null, return only those directory names or filenames that contain the filter string.
      *
      * @param relativeDir path to a directory relative to the install root directory, should not begin with path separator, may be null.
-     * @param filter string to filter the results by, returned file and directory names must contain this, may be null.
+     * @param filter      string to filter the results by, returned file and directory names must contain this, may be null.
      * @return a list of file and directory names indicating the contents of the specified directory.
      * @throws Exception
      */
@@ -2591,7 +2971,7 @@ public class LibertyServer implements LogMonitorClient {
      * non-null, return only those directory names or filenames that contain the filter string.
      *
      * @param relativeDir path to a directory relative to the install root directory, should not begin with path separator, may be null.
-     * @param filter string to filter the results by, returned file and directory names must contain this, may be null.
+     * @param filter      string to filter the results by, returned file and directory names must contain this, may be null.
      * @return a list of file and directory names indicating the contents of the specified directory.
      * @throws Exception
      */
@@ -2612,7 +2992,7 @@ public class LibertyServer implements LogMonitorClient {
      * non-null, return only those directory names or filenames that contain the filter string.
      *
      * @param relativeDir path to a directory relative to the autoFVT test directory, should not begin with path separator, may be null.
-     * @param filter string to filter the results by, returned file and directory names must contain this, may be null.
+     * @param filter      string to filter the results by, returned file and directory names must contain this, may be null.
      * @return a list of file and directory names indicating the contents of the specified directory.
      * @throws Exception
      */
@@ -2712,7 +3092,7 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * @param httpDefaultPort
-     *            the httpDefaultPort to set
+     *                            the httpDefaultPort to set
      */
     public void setHttpDefaultPort(int httpDefaultPort) {
         this.httpDefaultPort = httpDefaultPort;
@@ -2727,7 +3107,7 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * @param httpDefaultSecurePort
-     *            the httpDefaultSecurePort to set
+     *                                  the httpDefaultSecurePort to set
      */
     public void setHttpDefaultSecurePort(int httpDefaultSecurePort) {
         this.httpDefaultSecurePort = httpDefaultSecurePort;
@@ -2742,7 +3122,7 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * @param iiopDefaultPort
-     *            the iiopDefaultPort to set
+     *                            the iiopDefaultPort to set
      */
     /* not called */public void setIiopDefaultPort(int iiopDefaultPort) {
         this.iiopDefaultPort = iiopDefaultPort;
@@ -2788,12 +3168,6 @@ public class LibertyServer implements LogMonitorClient {
         return serverTopologyID;
     }
 
-    protected ApplicationManager getApplicationManager() throws Exception {
-        if (appmgr == null)
-            appmgr = new ApplicationManager(this);
-        return appmgr;
-    }
-
     /**
      * Method used to autoinstall apps in
      * publish/servers/<serverName>/dropins folder found in the FAT project
@@ -2806,30 +3180,6 @@ public class LibertyServer implements LogMonitorClient {
     protected void autoInstallApp(String appName) throws Exception {
         Log.info(c, "InstallApp", "Adding app " + appName + " to startup verification list");
         this.addInstalledAppForValidation(appName);
-    }
-
-    /**
-     * Shortcut for new FATTests to install apps assuming the app is
-     * located in the publish/servers/<serverName>/apps folder of the FAT project
-     *
-     * @param appName The name of the application
-     * @throws Exception
-     */
-    public void installApp(String appName) throws Exception {
-        Log.info(c, "InstallApp", "Installing from: " + pathToAutoFVTNamedServer + "apps/" + appName);
-        finalInstallApp(pathToAutoFVTNamedServer + "apps/" + appName);
-    }
-
-    /**
-     * Shortcut for new FATTests to install apps located anywhere on the file system
-     *
-     * @param path The absolute path to the application
-     * @param appName The name of the application
-     * @throws Exception
-     */
-    public void installApp(String path, String appName) throws Exception {
-        Log.info(c, "InstallApp", "Installing from: " + path + "/" + appName);
-        finalInstallApp(path + "/" + appName);
     }
 
     /**
@@ -2927,7 +3277,7 @@ public class LibertyServer implements LogMonitorClient {
      * assuming the feature translation file is to be found in publish/features/l10n/&lt;name>.mf
      *
      * @param name the name of the feature translation properties, without the <code>.properties</code> suffix.
-     *            The file name should be the subsystem symbolic name of the feature.
+     *                 The file name should be the subsystem symbolic name of the feature.
      */
     public void installSystemFeatureL10N(String name) throws Exception {
         Log.info(c, "installSystemFeatureL10N", "Installing system feature translation '" + name + "'");
@@ -2961,7 +3311,7 @@ public class LibertyServer implements LogMonitorClient {
      * Uninstall a system feature translation file.
      *
      * @param name the name of the feature translation properties, without the <code>.properties</code> suffix.
-     *            The file name should be the subsystem symbolic name of the feature.
+     *                 The file name should be the subsystem symbolic name of the feature.
      */
     public void uninstallSystemFeatureL10N(String name) throws Exception {
         Log.info(c, "uninstallSystemFeatureL10N", "Uninstalling system feature translation '" + name + "'");
@@ -3002,7 +3352,7 @@ public class LibertyServer implements LogMonitorClient {
      * assuming the feature translation file is to be found in publish/features/l10n/&lt;name>.mf
      *
      * @param name the name of the feature translation properties, without the <code>.properties</code> suffix.
-     *            The file name should be the subsystem symbolic name of the feature.
+     *                 The file name should be the subsystem symbolic name of the feature.
      */
     public void installUserFeatureL10N(String name) throws Exception {
         Log.info(c, "installUserFeatureL10N", "Installing user feature translation '" + name + "'");
@@ -3013,8 +3363,8 @@ public class LibertyServer implements LogMonitorClient {
     /**
      * Install a feature packaged as an ESA into the server runtime.
      *
-     * @param loc the name of the product extension. If set to null then "usr" is assumed
-     * @param esa the name of the feature.
+     * @param loc                    the name of the product extension. If set to null then "usr" is assumed
+     * @param esa                    the name of the feature.
      * @param additionalFeatureFiles - More ESA files that need to be copied to the machine prior to running the install
      * @throws Exception
      */
@@ -3025,9 +3375,9 @@ public class LibertyServer implements LogMonitorClient {
     /**
      * Install a feature packaged as an ESA into the server runtime.
      *
-     * @param loc the name of the product extension. If set to null then "usr" is assumed
-     * @param esa the name of the feature.
-     * @param additionalProgramArgs - extra args to pass into the program when running
+     * @param loc                    the name of the product extension. If set to null then "usr" is assumed
+     * @param esa                    the name of the feature.
+     * @param additionalProgramArgs  - extra args to pass into the program when running
      * @param additionalFeatureFiles - More ESA files that need to be copied to the machine prior to running the install
      * @throws Exception
      */
@@ -3075,7 +3425,7 @@ public class LibertyServer implements LogMonitorClient {
      * Installs a feature from a remote file (ESA).
      *
      * @param feature The ESA file
-     * @param args arguments to pass when installing the feature
+     * @param args    arguments to pass when installing the feature
      * @return The output from the {@link Machine#execute(String, String[], String)} call
      * @throws Exception
      */
@@ -3087,8 +3437,8 @@ public class LibertyServer implements LogMonitorClient {
     /**
      * Actually run the install command on the remote machine
      *
-     * @param featurePathName The path to the feature ESA file
-     * @param loc The loc to use
+     * @param featurePathName       The path to the feature ESA file
+     * @param loc                   The loc to use
      * @param additionalProgramArgs Any additonal program args to include
      * @return The output from the {@link Machine#execute(String, String[], String)} call
      * @throws Exception
@@ -3200,7 +3550,7 @@ public class LibertyServer implements LogMonitorClient {
      * Uninstall a user feature translation file.
      *
      * @param name the name of the feature translation properties, without the <code>.properties</code> suffix.
-     *            The file name should be the subsystem symbolic name of the feature.
+     *                 The file name should be the subsystem symbolic name of the feature.
      */
     public void uninstallUserFeatureL10N(String name) throws Exception {
         Log.info(c, "uninstallUserFeatureL10N", "Uninstalling user feature translation '" + name + "'");
@@ -3213,7 +3563,7 @@ public class LibertyServer implements LogMonitorClient {
      * to be found in publish/productbundles/&lt;name>.jar
      *
      * @param productName the name of the product the bundle belongs to
-     * @param name the name of the bundle, without the <code>.jar</code> suffix
+     * @param name        the name of the bundle, without the <code>.jar</code> suffix
      */
     public void installProductBundle(String productName, String name) throws Exception {
         Log.info(c, "installProductBundle", "Installing product '" + productName + "' bundle '" + name + "'");
@@ -3226,7 +3576,7 @@ public class LibertyServer implements LogMonitorClient {
      * to be found in publish/productfeatures/&lt;name>.mf
      *
      * @param productName the name of the product the feature belongs to
-     * @param name the name of the feature, without the <code>.mf</code> suffix
+     * @param name        the name of the feature, without the <code>.mf</code> suffix
      */
     public void installProductFeature(String productName, String name) throws Exception {
         Log.info(c, "installProductFeature", "Installing product '" + productName + "' feature '" + name + "'");
@@ -3239,7 +3589,7 @@ public class LibertyServer implements LogMonitorClient {
      * assuming the feature translation file is to be found in publish/features/l10n/&lt;name>.mf
      *
      * @param name the name of the feature translation properties, without the <code>.properties</code> suffix.
-     *            The file name should be the subsystem symbolic name of the feature.
+     *                 The file name should be the subsystem symbolic name of the feature.
      */
     public void installProductFeatureL10N(String productName, String name) throws Exception {
         Log.info(c, "installProductFeatureL10N", "Installing product '" + productName + "' feature translation '" + name + "'");
@@ -3263,7 +3613,7 @@ public class LibertyServer implements LogMonitorClient {
      * Uninstall a product extension bundle
      *
      * @param productName the name of the product the bundle belongs to
-     * @param name the name of the bundle, without the <code>.jar</code> suffix
+     * @param name        the name of the bundle, without the <code>.jar</code> suffix
      */
     public void uninstallProductBundle(String productName, String name) throws Exception {
         Log.info(c, "uninstallProductBundle", "Uninstalling product '" + productName + "'bundle '" + name + "'");
@@ -3275,7 +3625,7 @@ public class LibertyServer implements LogMonitorClient {
      * Uninstall a product extension feature
      *
      * @param productName the name of the product the feature belongs to
-     * @param name the name of the feature, without the <code>.mf</code> suffix
+     * @param name        the name of the feature, without the <code>.mf</code> suffix
      */
     public void uninstallProductFeature(String productName, String name) throws Exception {
         Log.info(c, "uninstallProductFeature", "Uninstalling product '" + productName + "', feature '" + name + "'");
@@ -3287,7 +3637,7 @@ public class LibertyServer implements LogMonitorClient {
      * Uninstall a product feature translation file.
      *
      * @param name the name of the feature translation properties, without the <code>.properties</code> suffix.
-     *            The file name should be the subsystem symbolic name of the feature.
+     *                 The file name should be the subsystem symbolic name of the feature.
      */
     public void uninstallProductFeatureL10N(String productName, String name) throws Exception {
         Log.info(c, "uninstallProductFeatureL10N", "Uninstalling product '" + productName + "' feature translation '" + name + "'");
@@ -3300,7 +3650,7 @@ public class LibertyServer implements LogMonitorClient {
      * and all contents under the productName directory (where productName is a peer of wlp)
      *
      * @param productName the name of the product the feature belongs to
-     * @param name the name of the product.
+     * @param name        the name of the product.
      */
     public void uninstallProductExtension(String productName) throws Exception {
         Log.info(c, "uninstallProductExtension", "Uninstalling product '" + productName + "'");
@@ -3348,70 +3698,8 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    /**
-     * Method used by exposed installApp methods that calls into the ApplicationManager
-     * to actually install the required application
-     *
-     * @param appPath Absoulte path to application (includes app name)
-     * @throws Exception
-     */
-    protected void finalInstallApp(String appPath) throws Exception {
-        ApplicationType type = null;
-        String onlyAppName = appPath; //for getting only the name if appName given is actually a path i.e. autoinstall/acme.zip
-        if (appPath.contains("/")) {
-            String[] s = appPath.split("/");
-            onlyAppName = s[s.length - 1]; //get the last one as this will be the filename only
-        } else if (appPath.contains("\\\\")) {
-            String[] s = appPath.split("\\\\");
-            onlyAppName = s[s.length - 1]; //get the last one as this will be the filename only
-        }
-
-        if (onlyAppName.endsWith(".xml")) {
-            onlyAppName = onlyAppName.substring(0, onlyAppName.length() - 4);
-        }
-        type = getApplictionType(onlyAppName);
-        if (onlyAppName.endsWith(".ear") || onlyAppName.endsWith(".eba") || onlyAppName.endsWith(".war") ||
-            onlyAppName.endsWith(".jar") || onlyAppName.endsWith(".rar") || onlyAppName.endsWith(".zip")) {
-            onlyAppName = onlyAppName.substring(0, onlyAppName.length() - 4);
-        }
-        if (onlyAppName.endsWith(".js")) {
-            onlyAppName = onlyAppName.substring(0, onlyAppName.length() - 3);
-        }
-        if (onlyAppName.endsWith(".jsar")) {
-            onlyAppName = onlyAppName.substring(0, onlyAppName.length() - 5);
-        }
-        Log.finer(c, "InstallApp", "Application name is: " + onlyAppName);
-
-        this.getApplicationManager().installApplication(onlyAppName, new LocalFile(appPath), type);
-    }
-
     public String getHostname() {
         return hostName;
-    }
-
-    /**
-     * Shortcut for new FATTests to uninstall apps
-     *
-     * @param appName The name of the application
-     * @throws Exception
-     */
-    public void uninstallApp(String appName) throws Exception {
-        ApplicationType type = this.getApplictionType(appName);
-        if (type.equals(ApplicationType.ZIP)) {
-            appName = appName.substring(0, (appName.length() - 4));
-        }
-
-        if (type.equals(ApplicationType.EAR) || type.equals(ApplicationType.WAR)) {
-            //do the same thing as above
-            appName = appName.substring(0, (appName.length() - 4));
-        }
-
-        if (!this.getApplicationManager().isInstalled(appName)) {
-            throw new ApplicationNotInstalledException(appName);
-        }
-
-        boolean restartServerAfterUninstall = false;
-        this.getApplicationManager().uninstallApplication(appName, type, restartServerAfterUninstall);
     }
 
     protected ApplicationType getApplictionType(String appName) throws Exception {
@@ -3612,6 +3900,12 @@ public class LibertyServer implements LogMonitorClient {
         return props;
     }
 
+    public void addEnvVar(String key, String value) {
+        if (this.isStarted())
+            throw new RuntimeException("Cannot add env vars to a running server");
+        envVars.put(key, value);
+    }
+
     public Properties getServerEnv() {
         Properties props = new Properties();
 
@@ -3752,12 +4046,27 @@ public class LibertyServer implements LogMonitorClient {
      * This will put the named file into the root directory of the server and name it server.xml. As the file name is changed if you want to copy files for use in an include
      * statement or if the location of the config file is being changed using the was.configroot.uri property or --config-root command line then you should use the
      * {@link #copyFileToLibertyInstallRoot(String)} method.
+     * <br/>
+     * Note: The provided file name is relative to the autoFVT test files directory.
      *
      * @param fileName The name of the file from the FVT test suite
      * @throws Exception
      */
     public void setServerConfigurationFile(String fileName) throws Exception {
         replaceServerConfiguration(pathToAutoFVTTestFiles + "/" + fileName);
+        Thread.sleep(200); // Sleep for 200ms to ensure we do not process the file "too quickly" by a subsequent call
+    }
+
+    /**
+     * Puts the named file into the root directory of the server and names it server.xml. If the file path is not absolute, it is
+     * assumed to exist under the server root directory.
+     */
+    public void setServerConfigurationFromFilePath(String filePath) throws Exception {
+        if (filePath != null && !filePath.startsWith(getServerRoot())) {
+            filePath = getServerRoot() + File.separator + filePath;
+        }
+        Log.info(c, "setServerConfigurationFile", "Using path: " + filePath);
+        replaceServerConfiguration(filePath);
         Thread.sleep(200); // Sleep for 200ms to ensure we do not process the file "too quickly" by a subsequent call
     }
 
@@ -3833,7 +4142,7 @@ public class LibertyServer implements LogMonitorClient {
      * This updates the supplied file with the supplied config.
      *
      * @param serverConfig The config to store to the file
-     * @param file The file to store the config to
+     * @param file         The file to store the config to
      * @throws Exception
      */
     public void updateServerConfiguration(ServerConfiguration serverConfig, RemoteFile file) throws Exception {
@@ -3878,10 +4187,10 @@ public class LibertyServer implements LogMonitorClient {
      * better with multiple-line log messages.
      *
      * @param file
-     *            the file whose contents you want to log.
+     *                       the file whose contents you want to log.
      * @param singleLine
-     *            true to log the whole file in one message, false to log each
-     *            individual line
+     *                       true to log the whole file in one message, false to log each
+     *                       individual line
      */
     protected void logServerConfiguration(Level level, boolean singleLine) {
         String method = "logServerConfiguration";
@@ -3939,6 +4248,10 @@ public class LibertyServer implements LogMonitorClient {
         return file;
     }
 
+    public boolean defaultTraceFileExists() throws Exception {
+        return LibertyFileManager.libertyFileExists(machine, traceAbsPath);
+    }
+
     protected String getDefaultLogPath() {
         try {
             RemoteFile file = getDefaultLogFile();
@@ -3946,6 +4259,14 @@ public class LibertyServer implements LogMonitorClient {
         } catch (Exception ex) {
             return "DefaultLogFile";
         }
+    }
+
+    public RemoteFile getDefaultTraceFile() throws Exception {
+        return LibertyFileManager.getLibertyFile(machine, traceAbsPath);
+    }
+
+    public boolean defaultLogFileExists() throws Exception {
+        return LibertyFileManager.libertyFileExists(machine, messageAbsPath);
     }
 
     protected RemoteFile getTraceFile(String fileName) throws Exception {
@@ -3990,7 +4311,7 @@ public class LibertyServer implements LogMonitorClient {
      * This method will search the given file on this server for the specified expression.
      * The path given is relative to the install root directory.
      *
-     * @param regexp pattern to search for.
+     * @param regexp   pattern to search for.
      * @param filePath the pathname relative to the install root directory.
      * @return A list of the lines in the file that contains the matching
      *         pattern. No match results in an empty list.
@@ -4006,7 +4327,7 @@ public class LibertyServer implements LogMonitorClient {
      * This method will search the given file on this server for the specified expression.
      * The path given is relative to the server root directory.
      *
-     * @param regexp pattern to search for.
+     * @param regexp   pattern to search for.
      * @param filePath the pathname relative to the server root directory.
      * @return A list of the lines in the file that contains the matching
      *         pattern. No match results in an empty list.
@@ -4078,7 +4399,7 @@ public class LibertyServer implements LogMonitorClient {
      * This method will search the output and trace files for this server
      * for the specified expression.
      *
-     * @param regexp pattern to search for
+     * @param regexp              pattern to search for
      * @param traceFileNamePrefix trace file prefix if the trace file name is not default
      * @return A list of the lines in the trace files which contain the matching
      *         pattern. No match results in an empty list.
@@ -4107,7 +4428,7 @@ public class LibertyServer implements LogMonitorClient {
      * This method will search the trace files for this server
      * for the specified expression.
      *
-     * @param regexp pattern to search for
+     * @param regexp              pattern to search for
      * @param traceFileNamePrefix trace file prefix if the trace file name is not default
      * @return A list of the lines in the trace files which contain the matching
      *         pattern. No match results in an empty list.
@@ -4151,7 +4472,7 @@ public class LibertyServer implements LogMonitorClient {
      * file at the offset where the last mark was set (or the beginning of the file
      * if no mark has been set) and reads until the end of the file.
      *
-     * @param regexp pattern to search for
+     * @param regexp              pattern to search for
      * @param traceFileNamePrefix trace file prefix if the trace file name is not default
      * @return A list of the lines in the trace files which contain the matching
      *         pattern. No matches result in an empty list.
@@ -4179,6 +4500,30 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * This method will search for the provided expression in the log file
+     * on an incremental basis. It starts with reading the
+     * file at the offset where the last mark was set (or the beginning of the file
+     * if no mark has been set) and reads until the end of the file.
+     *
+     * @param regexp  pattern to search for
+     * @param logFile RemoteFile for log file to search
+     * @return A list of the lines in the trace files which contain the matching
+     *         pattern. No matches result in an empty list.
+     * @throws Exception
+     */
+    public List<String> findStringsInLogsUsingMark(String regexp, RemoteFile logFile) throws Exception {
+
+        List<String> matches = new ArrayList<String>();
+        LogSearchResult newOffsetAndMatches;
+
+        Long offset = getMarkOffset(logFile.getAbsolutePath());
+        newOffsetAndMatches = LibertyFileManager.findStringsInFile(regexp, logFile, offset);
+        matches.addAll(newOffsetAndMatches.getMatches()); // get the list of matches found
+
+        return matches;
+    }
+
+    /**
      * This method will search for the provided expressions in the log and trace files
      * on an incremental basis using the default trace prefix. It starts with reading the file
      * at the offset where the last mark was set (or the beginning of the file
@@ -4198,7 +4543,7 @@ public class LibertyServer implements LogMonitorClient {
      * at the offset where the last mark was set (or the beginning of the file
      * if no mark has been set) and reads until the end of the file.
      *
-     * @param regexpList a list of expressions to search for
+     * @param regexpList          a list of expressions to search for
      * @param traceFileNamePrefix trace file prefix if the trace file name is not default
      * @return a <code>List&#60String&#62</code> contains the matches
      * @throws Exception
@@ -4226,19 +4571,24 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
-     * Reset the mark and offset values for logs back to the start of the file.
-     * <p>
-     * Note: This method doesn't set the offset values to the beginning of the file per se,
-     * rather this method sets the list of logs and their offset values to null. When one
-     * of the findStringsInLogsAndTrace...(...) methods are called, it will recreate the
-     * list of logs and set each offset value to 0L - the start of the file.
+     * Reset the mark and offset values for logs back to the start of the JVM's run.
      */
     public void resetLogMarks() {
         logMonitor.resetLogMarks();
     }
 
     /**
-     * Reset the marks and offset values for the logs back to the start of the file.
+     * Note: This method doesn't set the offset values to the beginning of the file per se,
+     * rather this method sets the list of logs and their offset values to null. When one
+     * of the findStringsInLogsAndTrace...(...) methods are called, it will recreate the
+     * list of logs and set each offset value to 0L - the start of the file.
+     */
+    public void clearLogMarks() {
+        logMonitor.clearLogMarks();
+    }
+
+    /**
+     * Reset the marks and offset values for the logs back to the start of the JVM's run.
      *
      * @deprecated Using log offsets is deprecated in favor of using log marks.
      *             For all new test code, use the following methods: {@link #resetLogMarks()}, {@link #setMarkToEndOfLog(RemoteFile...)},
@@ -4255,7 +4605,18 @@ public class LibertyServer implements LogMonitorClient {
      * @param log files to mark. If none are specified, the default log file is marked.
      */
     public void setMarkToEndOfLog(RemoteFile... logFiles) throws Exception {
+        Log.info(c, "setMarkToEndOfLog", "Setting mark to the end of logs (if null, messages.log): " + logFiles);
         logMonitor.setMarkToEndOfLog(logFiles);
+    }
+
+    /**
+     * Set the mark offset to the end of the default trace file (i.e. trace.log).
+     *
+     * @throws Exception
+     */
+    public void setTraceMarkToEndOfDefaultTrace() throws Exception {
+        Log.info(c, "setTraceMarkToEndOfDefaultTrace", "Setting mark to the end of trace.log");
+        setMarkToEndOfLog(getDefaultTraceFile());
     }
 
     /**
@@ -4288,7 +4649,6 @@ public class LibertyServer implements LogMonitorClient {
             logOffsets.put(logFile, 0L);
         }
 
-        Log.finer(LibertyServer.class, "getLogOffset", "log offset=" + logOffsets.get(logFile));
         return logOffsets.get(logFile);
     }
 
@@ -4296,13 +4656,15 @@ public class LibertyServer implements LogMonitorClient {
      * Update the log offset for the specified log file to the offset provided.
      *
      * @deprecated Using log offsets is deprecated in favor of using log marks.
-     *             For all new test code, use the following methods: {@link #resetLogMarks()}, {@link #setMarkToEndOfLog(RemoteFile...)},
-     *             {@link #waitForStringInLogUsingMark(String)} and {@link #getMarkOffset(String)}.
+     *             For all new test code, use the following methods: {@link #resetLogMarks()},
+     *             {@link #setMarkToEndOfLog(RemoteFile...)},
+     *             {@link #waitForStringInLogUsingMark(String)} and
+     *             {@link #getMarkOffset(String)}.
      */
     @Deprecated
     public void updateLogOffset(String logFile, Long newLogOffset) {
+        @SuppressWarnings("unused")
         Long oldLogOffset = logOffsets.put(logFile, newLogOffset);
-        Log.finer(LibertyServer.class, "updateLogOffset", "old log offset=" + oldLogOffset + ", new log offset=" + newLogOffset);
     }
 
     /**
@@ -4351,8 +4713,8 @@ public class LibertyServer implements LogMonitorClient {
      * The offset is incremented every time this method is called.
      *
      * @param appNames optional list of names of applications that should be started before returning from this method.
-     * @param regexps optional list of regular expressions that indicate additional messages to wait for. The list should NOT include
-     *            the CWWKG0017I, CWWKG0018I, CWWKF0007I or CWWKF0007I messages, as those are implicitly handled by this method.
+     * @param regexps  optional list of regular expressions that indicate additional messages to wait for. The list should NOT include
+     *                     the CWWKG0017I, CWWKG0018I, CWWKF0007I or CWWKF0007I messages, as those are implicitly handled by this method.
      *
      * @return list of lines containing relevant messages.
      */
@@ -4369,12 +4731,12 @@ public class LibertyServer implements LogMonitorClient {
      * be waited for. If a list of application names is supplied, this method waits for all of the apps to be started.
      * The offset is incremented every time this method is called.
      *
-     * @param appNames optional list of names of applications that should be started before returning from this method.
+     * @param appNames                      optional list of names of applications that should be started before returning from this method.
      * @param waitForFeatureUpdateCompleted if true, this method will require a feature updated completed message
-     *            before returning (if false, it will only wait for this message if a feature update is started
-     *            before the config update is completed)
-     * @param regexps optional list of regular expressions that indicate additional messages to wait for. The list should NOT include
-     *            the CWWKG0017I, CWWKG0018I, CWWKF0007I or CWWKF0007I messages, as those are implicitly handled by this method.
+     *                                          before returning (if false, it will only wait for this message if a feature update is started
+     *                                          before the config update is completed)
+     * @param regexps                       optional list of regular expressions that indicate additional messages to wait for. The list should NOT include
+     *                                          the CWWKG0017I, CWWKG0018I, CWWKF0007I or CWWKF0007I messages, as those are implicitly handled by this method.
      *
      * @return list of lines containing relevant messages.
      */
@@ -4541,7 +4903,7 @@ public class LibertyServer implements LogMonitorClient {
      * time has elapsed.
      *
      * @param numberOfMatches number of matches required
-     * @param regexp a regular expression to search for
+     * @param regexp          a regular expression to search for
      * @return the number of matches in the log, or 0 if no matches
      *         appear before the timeout expires
      */
@@ -4562,6 +4924,26 @@ public class LibertyServer implements LogMonitorClient {
      */
     public String waitForStringInLogUsingLastOffset(String regexp) {
         return waitForStringInLogUsingLastOffset(regexp, LOG_SEARCH_TIMEOUT);
+    }
+
+    /**
+     * Waits for each of the regexes in the provided list in the default log from the last mark. Each search will time out after
+     * a sensible period of time has elapsed.
+     *
+     * @throws Exception Thrown if any of the messages in the provided list are not found.
+     */
+    public void waitForStringsInLogUsingMark(List<String> messages) throws Exception {
+        if (messages == null) {
+            return;
+        }
+        for (String msg : messages) {
+            String matchingLine = waitForStringInLogUsingMark(msg);
+            if (matchingLine != null) {
+                Log.info(getClass(), "waitForStringsInLogUsingMark", "Found message [" + msg + "]: " + matchingLine);
+            } else {
+                throw new Exception("Failed to find [" + msg + "] in the server log for server " + getServerName());
+            }
+        }
     }
 
     /**
@@ -4608,8 +4990,8 @@ public class LibertyServer implements LogMonitorClient {
      * consider using the method which takes a default timeout.
      *
      * @param numberOfMatches number of matches required
-     * @param regexp a regular expression to search for
-     * @param timeout a timeout, in milliseconds
+     * @param regexp          a regular expression to search for
+     * @param timeout         a timeout, in milliseconds
      * @return
      */
     public int waitForMultipleStringsInLog(int numberOfMatches, String regexp, long timeout) {
@@ -4671,8 +5053,8 @@ public class LibertyServer implements LogMonitorClient {
     /**
      * Check for a number of strings in a potentially remote file
      *
-     * @param regexp a regular expression to search for
-     * @param timeout a timeout, in milliseconds
+     * @param regexp     a regular expression to search for
+     * @param timeout    a timeout, in milliseconds
      * @param outputFile file to check
      * @return line that matched the regexp
      */
@@ -4684,9 +5066,9 @@ public class LibertyServer implements LogMonitorClient {
      * Check for a number of strings in a potentially remote file
      *
      * @param numberOfMatches number of matches required
-     * @param regexp a regular expression to search for
-     * @param timeout a timeout, in milliseconds
-     * @param outputFile file to check
+     * @param regexp          a regular expression to search for
+     * @param timeout         a timeout, in milliseconds
+     * @param outputFile      file to check
      * @return number of matches found
      */
     public int waitForMultipleStringsInLog(int numberOfMatches, String regexp, long timeout, RemoteFile outputFile) {
@@ -4739,8 +5121,8 @@ public class LibertyServer implements LogMonitorClient {
      * Wait for the specified regexp in the default logs from the last offset.
      * The offset is incremented every time this method is called.
      *
-     * @param regexp a regular expression to search for
-     * @param timeout a timeout, in milliseconds
+     * @param regexp     a regular expression to search for
+     * @param timeout    a timeout, in milliseconds
      * @param outputFile file to check
      * @return line that matched the regexp
      */
@@ -4752,10 +5134,10 @@ public class LibertyServer implements LogMonitorClient {
      * Wait for the specified regexp in the default logs from the last offset.
      * The offset is incremented every time this method is called.
      *
-     * @param regexp a regular expression to search for
+     * @param regexp          a regular expression to search for
      * @param intendedTimeout a timeout, in milliseconds, within which we expect the wait to complete. Missing this is a soft fail.
      * @param extendedTimeout a timeout, in milliseconds, within which we insist the wait complete. Missing this is an error.
-     * @param outputFile file to check
+     * @param outputFile      file to check
      * @return line that matched the regexp
      */
     protected String waitForStringInLogUsingLastOffset(String regexp, long intendedTimeout, long extendedTimeout, RemoteFile outputFile) {
@@ -4809,8 +5191,8 @@ public class LibertyServer implements LogMonitorClient {
      * Wait for the specified regexp in the default logs from the last mark.
      * The offset is also incremented every time this method is called.
      *
-     * @param regexp a regular expression to search for
-     * @param timeout a timeout, in milliseconds
+     * @param regexp     a regular expression to search for
+     * @param timeout    a timeout, in milliseconds
      * @param outputFile file to check
      * @return line that matched the regexp
      */
@@ -4822,10 +5204,10 @@ public class LibertyServer implements LogMonitorClient {
      * Wait for the specified regexp in the default logs from the last mark.
      * The offset is also incremented every time this method is called.
      *
-     * @param regexp a regular expression to search for
+     * @param regexp          a regular expression to search for
      * @param intendedTimeout a timeout, in milliseconds, within which the wait should complete. Exceeding this is a soft fail.
      * @param extendedTimeout a timeout, in milliseconds, within which the wait must complete. Exceeding this is a hard fail.
-     * @param outputFile file to check
+     * @param outputFile      file to check
      * @return line that matched the regexp
      */
     protected String waitForStringInLogUsingMark(String regexp, long intendedTimeout, long extendedTimeout, RemoteFile outputFile) {
@@ -4837,14 +5219,27 @@ public class LibertyServer implements LogMonitorClient {
      * and verify that the regex does not show up in the logs during the
      * specfied duration.
      *
-     * @param regexp a regular expression to search for
-     * @param intendedTimeout a timeout, in milliseconds, within which the wait should complete. Exceeding this is a soft fail.
-     * @param extendedTimeout a timeout, in milliseconds, within which the wait must complete. Exceeding this is a hard fail.
-     * @param outputFile file to check
+     * @param timeout Timeout (in milliseconds)
      * @return line that matched the regexp
      */
-    public boolean verifyStringNotInLogUsingMark(String regexp, long timeout) {
-        return logMonitor.verifyStringNotInLogUsingMark(regexp, timeout);
+    public String verifyStringNotInLogUsingMark(String regexToSearchFor, long timeout) {
+        try {
+            return verifyStringNotInLogUsingMark(regexToSearchFor, timeout, getDefaultLogFile());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Wait for the specified regexp in the default logs from the last mark
+     * and verify that the regex does not show up in the logs during the
+     * specfied duration.
+     *
+     * @param timeout Timeout (in milliseconds)
+     * @return line that matched the regexp
+     */
+    public String verifyStringNotInLogUsingMark(String regexToSearchFor, long timeout, RemoteFile logFileToSearch) {
+        return logMonitor.verifyStringNotInLogUsingMark(regexToSearchFor, timeout, logFileToSearch);
     }
 
     /**
@@ -4855,10 +5250,10 @@ public class LibertyServer implements LogMonitorClient {
      * checks. Remove this method and update the verifyStringNotInLogUsingMark method to use
      * the waitForStringInLogUsingMark method eventually.
      *
-     * @param regexp a regular expression to search for
+     * @param regexp          a regular expression to search for
      * @param intendedTimeout a timeout, in milliseconds, within which the wait should complete. Exceeding this is a soft fail.
      * @param extendedTimeout a timeout, in milliseconds, within which the wait must complete. Exceeding this is a hard fail.
-     * @param outputFile file to check
+     * @param outputFile      file to check
      * @return line that matched the regexp
      */
     protected String waitForStringInLogUsingMarkWithException(String regexp, long intendedTimeout, long extendedTimeout, RemoteFile outputFile) {
@@ -4869,7 +5264,7 @@ public class LibertyServer implements LogMonitorClient {
      * Check for multiple instances of the regex in log using mark
      *
      * @param numberOfMatches number of matches required
-     * @param regexp a regular expression to search for
+     * @param regexp          a regular expression to search for
      * @return number of matches found
      */
     public int waitForMultipleStringsInLogUsingMark(int numberOfMatches, String regexp) {
@@ -4885,9 +5280,9 @@ public class LibertyServer implements LogMonitorClient {
      * Check for multiple instances of the regex in log using mark
      *
      * @param numberOfMatches number of matches required
-     * @param regexp a regular expression to search for
-     * @param timeout a timeout, in milliseconds
-     * @param outputFile file to check
+     * @param regexp          a regular expression to search for
+     * @param timeout         a timeout, in milliseconds
+     * @param outputFile      file to check
      * @return number of matches found
      */
     public int waitForMultipleStringsInLogUsingMark(int numberOfMatches, String regexp, long timeout, RemoteFile outputFile) {
@@ -5046,6 +5441,7 @@ public class LibertyServer implements LogMonitorClient {
             //Setup the server logs assuming the default setting.
             messageAbsPath = logsRoot + messageFileName;
             consoleAbsPath = logsRoot + consoleFileName;
+            traceAbsPath = logsRoot + traceFileName;
 
         } else {
             // Server is stopped when rc == 1.  Any other value means server
@@ -5059,7 +5455,7 @@ public class LibertyServer implements LogMonitorClient {
     /**
      * Start the server.
      *
-     * @param cleanStart if true, the server will be started with a clean start
+     * @param cleanStart   if true, the server will be started with a clean start
      * @param validateApps if true, block until all of the registered apps have started
      * @throws Exception
      */
@@ -5068,47 +5464,76 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
-     * "Restart" an applications in dropins by renaming it and putting it back.
-     * Very clever, eh?
-     * <p>
-     * This will use {@link #waitForStringInLogUsingMark(String)} so ensure
-     * the offset is set to the correct point before invoking.
+     * Restart a drop-ins application.
      *
-     * @param fileName the file name of the application, e.g. snoop.war
-     * @return {@code true} if the application was restarted successfully, {@code false} otherwise.
-     * @throws Exception
+     * Rename the application to move it out of the drop-ins folder, then wait for a
+     * log message that shows that the the application was shut down, then rename
+     * the application to move it back into the drop-ins folder, then wait
+     * for a log message that shows that the application was started.
+     *
+     * Because a single log may show multiple application start and multiple application
+     * stop messages, the log message detection for this operation uses
+     * {@link #waitForStringInLogUsingMark(String)}.
+     *
+     * @param appFileName The name of the file of the application, for example, "snoop.war".
+     *
+     * @return True or false telling if the application was successfully restarted.
+     *
+     * @throws Exception Thrown in case of a failure of the restart.
      */
-    public boolean restartDropinsApplication(String fileName) throws Exception {
+    public boolean restartDropinsApplication(String appFileName) throws Exception {
         final String method = "restartDropinsApplication";
 
-        String appName = fileName.substring(0, fileName.lastIndexOf("."));
-        String oldFilePath = serverRoot + "/dropins/" + fileName;
-        String newFilePath = serverRoot + "/" + fileName;
+        String appName = appFileName.substring(0, appFileName.lastIndexOf("."));
+        String appInDropinsPath = serverRoot + "/dropins/" + appFileName;
+        String appExcisedPath = serverRoot + "/" + appFileName;
 
-        String stopMsg, startMsg = null;
+        // Allow two attempts to rename the liberty file: Zip file caching may keep
+        // application archives active after the application has quiesced, up to
+        // the long zip caching pending interval.  See
+        //   open-liberty/dev/com.ibm.ws.artifact.zip/src/
+        //   com/ibm/ws/artifact/zip/cache/
+        //    ZipCachingProperties.java
+        // The default largest pending close time is specified
+        // by property <code>zip.reaper.slow.pend.max</code>.  The default value
+        // is 200 NS.  The retry interval is set at twice that.
 
-        // Move the file out of dropins...
-        if (LibertyFileManager.renameLibertyFile(machine, oldFilePath, newFilePath)) {
-            Log.info(c, method, fileName + " successfully moved out of dropins, waiting for message...");
-            stopMsg = waitForStringInLogUsingMark("CWWKZ0009I:.*" + appName);
+        setMarkToEndOfLog(); // Only want messages which follow the app removal.
+
+        // Logging in 'renameLibertyFileWithRetry'.
+        if (!LibertyFileManager.renameLibertyFile(machine, appInDropinsPath, appExcisedPath)) { // throws Exception
+            Log.info(c, method, "Unable to move " + appFileName + " out of dropins, failing.");
+            return false;
         } else {
-            Log.info(c, method, "Unable to move " + fileName + " out of dropins, failing.");
+            Log.info(c, method, appFileName + " successfully moved out of dropins, waiting for message...");
+        }
+
+        String stopMsg = waitForStringInLogUsingMark("CWWKZ0009I:.*" + appName); // throws Exception
+        if (stopMsg == null) {
             return false;
         }
 
-        // Pause for 4 seconds
-        Thread.sleep(4000);
+        // Detection of the stop message means the mark was updated.  There is no need
+        // to set the mark explicitly.
 
-        // Move it back into dropins...
-        if (LibertyFileManager.renameLibertyFile(machine, newFilePath, oldFilePath)) {
-            Log.info(c, method, fileName + " successfully moved back into dropins, waiting for message...");
-            startMsg = waitForStringInLogUsingMark("CWWKZ0001I:.*" + appName);
+        // Logging in 'renameLibertyFileWithRetry'.
+        if (!LibertyFileManager.renameLibertyFile(machine, appExcisedPath, appInDropinsPath)) { // throws Exception
+            Log.info(c, method, "Unable to move " + appFileName + " back into dropins, failing.");
+            return false;
         } else {
-            Log.info(c, method, "Unable to move " + fileName + " back into dropins, failing.");
+            Log.info(c, method, appFileName + " successfully moved back into dropins, waiting for message...");
+        }
+
+        String startMsg = waitForStringInLogUsingMark("CWWKZ0001I:.*" + appName); // throws Exception
+        if (startMsg == null) {
             return false;
         }
 
-        return stopMsg != null && startMsg != null;
+        // Detection of the start message means the mark was updated.  Subsequent log
+        // log detection which uses the mark will start immediately following the
+        // start message.
+
+        return true;
     }
 
     /**
@@ -5134,6 +5559,57 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         return allSucceeded;
+    }
+
+    /**
+     *
+     * Removes one or more applications from dropins and wait for them to stop
+     *
+     * @param fileNames the file name or names of the application, e.g. snoop.war
+     * @return {@code true} if the applications were moved successfully, {@code false} otherwise.
+     * @throws Exception
+     */
+    public boolean removeAndStopDropinsApplications(String... fileNames) throws Exception {
+        boolean allSucceeded = true;
+
+        for (String fileName : fileNames) {
+            allSucceeded = allSucceeded && removeAndStopDropinsApplication(fileName);
+        }
+
+        return allSucceeded;
+    }
+
+    /**
+     *
+     * Removes an application from dropins and waits for it to stop
+     *
+     * @param fileNames the file name or names of the application, e.g. snoop.war
+     * @return {@code true} if the applications were moved successfully, {@code false} otherwise.
+     * @throws Exception
+     */
+    private boolean removeAndStopDropinsApplication(String appFileName) throws Exception {
+        final String method = "removeAndStopDropinsApplication";
+
+        setMarkToEndOfLog();
+
+        String appName = appFileName.substring(0, appFileName.lastIndexOf("."));
+        String appInDropinsPath = serverRoot + "/dropins/" + appFileName;
+        String nonDropinsFilePath = serverRoot + "/" + appFileName;
+
+        if (!LibertyFileManager.renameLibertyFile(machine, appInDropinsPath, nonDropinsFilePath)) { // throws Exception
+            Log.info(c, method, "Unable to move " + appFileName + " out of dropins, failing.");
+            return false;
+        } else {
+            Log.info(c, method, appFileName + " successfully moved out of dropins, waiting for message...");
+        }
+
+        String stopMsg = waitForStringInLogUsingMark("CWWKZ0009I:.*" + appName); // throws Exception
+
+        if (stopMsg == null) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -5178,10 +5654,15 @@ public class LibertyServer implements LogMonitorClient {
         return logsRoot;
     }
 
+    public void setExtraArgs(List<String> extraArgs) {
+        this.extraArgs.clear();
+        this.extraArgs.addAll(extraArgs);
+    }
+
     /**
      * Issues a server script command against this server
      *
-     * @param command command name
+     * @param command      command name
      * @param optionalArgs any optional args needed by the command
      * @throws Exception if the operation fails
      * @return the output of the command
@@ -5300,6 +5781,11 @@ public class LibertyServer implements LogMonitorClient {
         LocalFile keyFile = new LocalFile(pathToAutoFVTTestFiles + "/tmp/key.jks");
         if (keyFile.exists())
             keyFile.copyToDest(new RemoteFile(getMachine(), getServerRoot() + "/resources/security/key.jks"));
+        else {
+            keyFile = new LocalFile(pathToAutoFVTTestFiles + "/tmp/key.p12");
+            if (keyFile.exists())
+                keyFile.copyToDest(new RemoteFile(getMachine(), getServerRoot() + "/resources/security/key.p12"));
+        }
 
         // Set up the trust store
         //System.setProperty("javax.net.ssl.trustStore", getServerRoot() + "/resources/security/key.jks");
@@ -5318,23 +5804,40 @@ public class LibertyServer implements LogMonitorClient {
      * @throws Exception If anything goes wrong!
      */
     public JMXConnector getJMXRestConnector() throws Exception {
+        return getJMXRestConnector(getHttpDefaultSecurePort());
+    }
+
+    /**
+     * Creates a JMX rest connection to the server using the following user name, password and keystore password:
+     * "theUser", "thePassword", "Liberty".
+     *
+     * If you need to connect with different values, use {@link #getJMXRestConnector(String, String, String)}.
+     *
+     * @return JMXConnector connected to the server
+     * @throws Exception If anything goes wrong!
+     */
+    public JMXConnector getJMXRestConnector(int port) throws Exception {
         final String userName = "theUser";
         final String password = "thePassword";
         final String keystorePassword = "Liberty";
 
-        return getJMXRestConnector(userName, password, keystorePassword);
+        return getJMXRestConnector(userName, password, keystorePassword, port);
     }
 
     /**
      * Creates a JMX rest connection to the server.
      *
-     * @param userName The admin user
-     * @param password The admin user password
+     * @param userName         The admin user
+     * @param password         The admin user password
      * @param keystorePassword The keystore password used to open the server's key.jks
      * @return JMXConnector connected to the server
      * @throws Exception If anything goes wrong!
      */
     public JMXConnector getJMXRestConnector(String userName, String password, String keystorePassword) throws Exception {
+        return getJMXRestConnector(userName, password, keystorePassword, getHttpDefaultSecurePort());
+    }
+
+    private JMXConnector getJMXRestConnector(String userName, String password, String keystorePassword, int port) throws Exception {
         String METHOD_NAME = "getJMXRestConnector";
         Map<String, Object> environment = new HashMap<String, Object>();
         environment.put("jmx.remote.protocol.provider.pkgs", "com.ibm.ws.jmx.connector.client");
@@ -5346,6 +5849,11 @@ public class LibertyServer implements LogMonitorClient {
         KeyStore keyStore = KeyStore.getInstance("JKS");
         String path = getServerRoot() + "/resources/security/key.jks";
         File keyFile = new File(path);
+        if (!keyFile.exists()) {
+            path = getServerRoot() + "/resources/security/key.p12";
+            keyFile = new File(path);
+        }
+
         FileInputStream is = new FileInputStream(keyFile);
         byte[] fileBytes = new byte[(int) keyFile.length()];
         is.read(fileBytes);
@@ -5371,7 +5879,7 @@ public class LibertyServer implements LogMonitorClient {
         sslContext.init(null, trustManagerFactory.getTrustManagers(), null);
         environment.put("com.ibm.ws.jmx.connector.client.CUSTOM_SSLSOCKETFACTORY", sslContext.getSocketFactory());
 
-        JMXServiceURL url = new JMXServiceURL("REST", getHostname(), getHttpDefaultSecurePort(), "/IBMJMXConnectorREST");
+        JMXServiceURL url = new JMXServiceURL("REST", getHostname(), port, "/IBMJMXConnectorREST");
 
         JMXConnector jmxConnector = JMXConnectorFactory.connect(url, environment);
         Log.info(c, METHOD_NAME, "Created JMX connector to server with URL: " + url + " Connector: " + jmxConnector);
@@ -5475,9 +5983,6 @@ public class LibertyServer implements LogMonitorClient {
      * @param regexes
      */
     public void addIgnoredErrors(List<String> regexes) {
-        if (ignoredErrors == null) {
-            ignoredErrors = new ArrayList<String>();
-        }
         ignoredErrors.addAll(regexes);
     }
 
@@ -5611,6 +6116,27 @@ public class LibertyServer implements LogMonitorClient {
     @Override
     public void lmcClearLogOffsets() {
         logOffsets.clear();
+        originOffsets.clear();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see componenttest.topology.impl.LogMonitorClient#lmcResetLogOffsets()
+     */
+    @Override
+    public void lmcResetLogOffsets() {
+        logOffsets = new HashMap<String, Long>(originOffsets);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see componenttest.topology.impl.LogMonitorClient#lmcSetOriginLogOffsets()
+     */
+    @Override
+    public void lmcSetOriginLogOffsets() {
+        originOffsets = new HashMap<String, Long>(logOffsets);
     }
 
     /*
@@ -5622,4 +6148,34 @@ public class LibertyServer implements LogMonitorClient {
     public void lmcUpdateLogOffset(String logFile, Long newLogOffset) {
         updateLogOffset(logFile, newLogOffset);
     }
+
+    public void setBvtPortPropertyName(String propertyName) {
+        bvtPortPropertyName = propertyName;
+    }
+
+    public void setBvtSecurePortPropertyName(String propertyName) {
+        bvtSecurePortPropertyName = propertyName;
+    }
+
+    public int getBvtPort() {
+        if (bvtPortPropertyName != null) {
+            return Integer.getInteger(bvtPortPropertyName);
+        } else {
+            return getHttpDefaultPort();
+        }
+    }
+
+    public int getBvtSecurePort() {
+        if (bvtSecurePortPropertyName != null) {
+            return Integer.getInteger(bvtSecurePortPropertyName);
+        } else {
+            return getHttpDefaultSecurePort();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return serverToUse + " : " + super.toString();
+    }
+
 }

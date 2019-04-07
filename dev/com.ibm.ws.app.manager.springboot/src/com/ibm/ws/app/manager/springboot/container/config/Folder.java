@@ -10,16 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container.config;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 /**
  * A folder on the file system local to the server configuration. Note
  * that these files may be remote to the local JVM.
- * 
- * 
+ *
+ *
  */
 public class Folder extends ConfigElement {
 
+    public final static String XML_ATTRIBUTE_NAME_DIR = "dir";
     private String dir;
 
     /**
@@ -32,7 +31,6 @@ public class Folder extends ConfigElement {
     /**
      * @param dir value to use for the dir attribute
      */
-    @XmlAttribute
     public void setDir(String dir) {
         this.dir = ConfigElement.getValue(dir);
     }

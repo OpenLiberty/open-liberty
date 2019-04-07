@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 IBM Corporation and others.
+ * Copyright (c) 2013, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,13 @@ import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
+/**
+ * All declarative services annotations on this class are ignored.
+ * The annotations on
+ * com.ibm.ws.concurrent.ee.ManagedScheduledExecutorServiceImpl and
+ * com.ibm.ws.concurrent.mp.ManagedScheduledExecutorImpl
+ * apply instead.
+ */
 @Component(configurationPid = "com.ibm.ws.concurrent.managedScheduledExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = { ExecutorService.class, ManagedExecutorService.class, ResourceFactory.class, ApplicationRecycleComponent.class, ScheduledExecutorService.class,
                        ManagedScheduledExecutorService.class },
@@ -76,7 +83,6 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     /**
      * Reference to the (unmanaged) scheduled executor service for this managed scheduled executor service.
      */
-    @Reference(target = "(deferrable=false)")
     ScheduledExecutorService scheduledExecSvc;
 
     @Activate
@@ -123,9 +129,7 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
      */
     @Override
     public <V> ScheduledFuture<V> schedule(Callable<V> task, long delay, TimeUnit unit) {
-        @SuppressWarnings("unchecked")
-        Class<? extends Callable<V>> callableType = task == null ? null : (Class<? extends Callable<V>>) task.getClass();
-        ScheduledTask<V> scheduledTask = new ScheduledTask<V>(this, task, callableType, delay, null, null, unit);
+        ScheduledTask<V> scheduledTask = new ScheduledTask<V>(this, task, true, delay, null, null, unit);
         if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
             purgeFutures();
         return scheduledTask.future;
@@ -139,9 +143,7 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
         if (trigger == null)
             throw new NullPointerException(Trigger.class.getName());
 
-        @SuppressWarnings("unchecked")
-        Class<? extends Callable<V>> callableType = task == null ? null : (Class<? extends Callable<V>>) task.getClass();
-        ScheduledTask<V> scheduledTask = new ScheduledTask<V>(this, task, callableType, trigger);
+        ScheduledTask<V> scheduledTask = new ScheduledTask<V>(this, task, true, trigger);
         if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
             purgeFutures();
         return scheduledTask.future;
@@ -152,7 +154,7 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
      */
     @Override
     public ScheduledFuture<?> schedule(Runnable task, long delay, TimeUnit unit) {
-        ScheduledTask<Void> scheduledTask = new ScheduledTask<Void>(this, task, null, delay, null, null, unit);
+        ScheduledTask<Void> scheduledTask = new ScheduledTask<Void>(this, task, false, delay, null, null, unit);
         if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
             purgeFutures();
         return scheduledTask.future;
@@ -166,7 +168,7 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
         if (trigger == null)
             throw new NullPointerException(Trigger.class.getName());
 
-        ScheduledTask<?> scheduledTask = new ScheduledTask<Void>(this, task, null, trigger);
+        ScheduledTask<?> scheduledTask = new ScheduledTask<Void>(this, task, false, trigger);
         if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
             purgeFutures();
         return scheduledTask.future;
@@ -180,7 +182,7 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
         if (period <= 0)
             throw new IllegalArgumentException(Long.toString(period));
 
-        ScheduledTask<Void> scheduledTask = new ScheduledTask<Void>(this, task, null, initialDelay < 0 ? 0 : initialDelay, null, period, unit);
+        ScheduledTask<Void> scheduledTask = new ScheduledTask<Void>(this, task, false, initialDelay < 0 ? 0 : initialDelay, null, period, unit);
         if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
             purgeFutures();
         return scheduledTask.future;
@@ -194,7 +196,7 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
         if (delay <= 0)
             throw new IllegalArgumentException(Long.toString(delay));
 
-        ScheduledTask<Void> scheduledTask = new ScheduledTask<Void>(this, task, null, initialDelay < 0 ? 0 : initialDelay, delay, null, unit);
+        ScheduledTask<Void> scheduledTask = new ScheduledTask<Void>(this, task, false, initialDelay < 0 ? 0 : initialDelay, delay, null, unit);
         if (futures.add(scheduledTask.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
             purgeFutures();
         return scheduledTask.future;
@@ -221,6 +223,12 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
         super.setLongRunningPolicy(svc);
     }
 
+    @Reference(target = "(deferrable=false)")
+    @Trivial
+    protected void setScheduledExecutor(ScheduledExecutorService svc) {
+        scheduledExecSvc = svc;
+    }
+
     @Override
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(component.name=com.ibm.ws.transaction.context.provider)")
     @Trivial
@@ -244,6 +252,11 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     @Trivial
     protected void unsetLongRunningPolicy(ConcurrencyPolicy svc) {
         super.unsetLongRunningPolicy(svc);
+    }
+
+    @Trivial
+    protected void unsetScheduledExecutor(ScheduledExecutorService svc) {
+        scheduledExecSvc = null;
     }
 
     @Override

@@ -1,15 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * WLP Copyright IBM Corp. 2014
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- */
-
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.repository.parsers;
 
 import java.io.File;
@@ -26,6 +24,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
@@ -240,7 +239,7 @@ public abstract class ParserBase {
         try {
             try {
                 jarFile = new JarFile(sourceArchive);
-            } catch (FileNotFoundException fne) {
+            } catch (FileNotFoundException | NoSuchFileException fne) {
                 throw new RepositoryArchiveException("Unable to locate archive " + fileName, sourceArchive, fne);
             } catch (IOException ioe) {
                 throw new RepositoryArchiveIOException("Error opening archive ", sourceArchive, ioe);
@@ -309,15 +308,12 @@ public abstract class ParserBase {
             }
             // We are either a file or the contents of the dir have been deleted, so nuke it now
             if (!f.delete()) {
-                System.out.println("Failed to delete " + f.getAbsolutePath() + " going to wait half a second and try again");
                 try {
                     // Just in case all file locks aren't quite released, try again after half a second
                     Thread.sleep(500);
                 } catch (InterruptedException ie) {
                     //swallow it
-                    if (!f.delete()) {
-                        System.out.println("Failed to delete " + f.getAbsolutePath() + " not trying again");
-                    }
+                    f.delete();
                 }
             }
         }
@@ -457,7 +453,6 @@ public abstract class ParserBase {
 
         File zip = new File(zipPath);
         if (!zip.exists()) {
-            System.out.println("*** WARNING: artifact " + path + " is being parsed with no associated metadata ***");
             return null;
         }
         return explodeZip(zip);

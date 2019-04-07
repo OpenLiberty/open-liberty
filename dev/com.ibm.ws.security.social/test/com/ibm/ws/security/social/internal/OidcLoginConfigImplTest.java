@@ -108,8 +108,6 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
             String result = configImpl.getIssuer();
             assertNull("Computed issuer should have been null but was [" + result + "].", result);
 
-            verifyNoLogMessage(outputMgr, MSG_BASE);
-
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -119,7 +117,7 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
     public void getIssuer_issuerMissingInProps() {
         try {
             Map<String, Object> props = getStandardConfigProps();
-            configImpl.initProps(cc, props);
+            configImpl.initProps(cc, getRequiredAuthzEPConfig(props));
 
             String result = configImpl.getIssuer();
 
@@ -137,7 +135,7 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
         try {
             Map<String, Object> props = getStandardConfigProps();
             props.put(OidcLoginConfigImpl.KEY_tokenEndpoint, "Nope");
-            configImpl.initProps(cc, props);
+            configImpl.initProps(cc, getRequiredAuthzEPConfig(props));
 
             String result = configImpl.getIssuer();
 
@@ -155,7 +153,7 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
         try {
             Map<String, Object> props = getStandardConfigProps();
             props.put(OidcLoginConfigImpl.KEY_tokenEndpoint, "ftp://not-an-http-url");
-            configImpl.initProps(cc, props);
+            configImpl.initProps(cc, getRequiredAuthzEPConfig(props));
 
             String result = configImpl.getIssuer();
 
@@ -174,7 +172,7 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
             String tokenEndpoint = "http://a";
             Map<String, Object> props = getStandardConfigProps();
             props.put(OidcLoginConfigImpl.KEY_tokenEndpoint, tokenEndpoint);
-            configImpl.initProps(cc, props);
+            configImpl.initProps(cc, getRequiredAuthzEPConfig(props));
 
             String result = configImpl.getIssuer();
 
@@ -193,7 +191,7 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
             String tokenEndpoint = hostAndPortWithPath + "/token";
             Map<String, Object> props = getStandardConfigProps();
             props.put(OidcLoginConfigImpl.KEY_tokenEndpoint, tokenEndpoint);
-            configImpl.initProps(cc, props);
+            configImpl.initProps(cc, getRequiredAuthzEPConfig(props));
 
             String result = configImpl.getIssuer();
 
@@ -212,7 +210,7 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
             String issuer = "Some non-URL value";
             Map<String, Object> props = getStandardConfigProps();
             props.put(OidcLoginConfigImpl.KEY_ISSUER, issuer);
-            configImpl.initProps(cc, props);
+            configImpl.initProps(cc, getRequiredAuthzEPConfig(props));
 
             String result = configImpl.getIssuer();
 
@@ -230,7 +228,7 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
         try {
             Map<String, Object> props = getStandardConfigProps();
             props.put(OidcLoginConfigImpl.KEY_ISSUER, issuer);
-            configImpl.initProps(cc, props);
+            configImpl.initProps(cc, getRequiredAuthzEPConfig(props));
 
             String result = configImpl.getIssuer();
 
@@ -252,7 +250,6 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
 
             assertTrue("Audiences list should have been empty but was " + result, result.isEmpty());
 
-            verifyNoLogMessage(outputMgr, MSG_BASE);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -263,7 +260,7 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
     public void getAudiences() {
         try {
             Map<String, Object> props = getStandardConfigProps();
-            configImpl.initProps(cc, props);
+            configImpl.initProps(cc, getRequiredAuthzEPConfig(props));
 
             List<String> result = configImpl.getAudiences();
 
@@ -284,7 +281,6 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
         try {
             assertFalse("Validation required value was not false as expected.", configImpl.isValidationRequired());
 
-            verifyNoLogMessage(outputMgr, MSG_BASE);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -295,7 +291,7 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
     public void isValidationRequired_propsMissingJwksUri() {
         try {
             Map<String, Object> props = getStandardConfigProps();
-            configImpl.initProps(cc, props);
+            configImpl.initProps(cc, getRequiredAuthzEPConfig(props));
 
             assertFalse("Validation required value was not false as expected.", configImpl.isValidationRequired());
 
@@ -311,7 +307,7 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
         try {
             Map<String, Object> props = getStandardConfigProps();
             props.put(OidcLoginConfigImpl.KEY_jwksUri, "some value");
-            configImpl.initProps(cc, props);
+            configImpl.initProps(cc, getRequiredAuthzEPConfig(props));
 
             assertFalse("Validation required value was not false as expected.", configImpl.isValidationRequired());
 
@@ -412,7 +408,6 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
             String result = configImpl.getTrustStoreRef();
             assertEquals("Trust store ref name did not match expected result.", name, result);
 
-            verifyNoLogMessage(outputMgr, MSG_BASE);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -426,7 +421,6 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
         try {
             assertFalse("JWK enabled value was not false as expected.", configImpl.getJwkEnabled());
 
-            verifyNoLogMessage(outputMgr, MSG_BASE);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -453,7 +447,7 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
         try {
             Map<String, Object> props = getStandardConfigProps();
             props.put(OidcLoginConfigImpl.KEY_jwksUri, "some value");
-            configImpl.initProps(cc, props);
+            configImpl.initProps(cc, getRequiredAuthzEPConfig(props));
 
             assertTrue("JWK enabled value was not true as expected.", configImpl.getJwkEnabled());
 
@@ -519,8 +513,27 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
+    
+    @Test
+    public void getUseSystemPropertiesForHttpClientConnections(){
+        try {
+            Map<String, Object> props = getStandardConfigProps();
+            props.put(OidcLoginConfigImpl.KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS, new Boolean(true));
+            configImpl.initProps(cc, getRequiredAuthzEPConfig(props));
+
+            assertTrue("useSysprops not true as expected", configImpl.getUseSystemPropertiesForHttpClientConnections());
+
+            verifyNoLogMessage(outputMgr, MSG_BASE);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
 
     /************************************** Helper methods **************************************/
+    
+    
+   
 
     protected OidcLoginConfigImpl getActivatedConfig(Map<String, Object> props) throws SocialLoginException {
         OidcLoginConfigImpl config = new OidcLoginConfigImpl();
@@ -549,6 +562,17 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(OidcLoginConfigImpl.KEY_clientId, clientId);
         props.put(OidcLoginConfigImpl.KEY_clientSecret, clientSecretPS);
+        props = getRequiredAuthzEPConfig(props);
+        return props;
+    }
+    
+    protected Map<String, Object> getRequiredAuthzEPConfig() {
+    	Map<String, Object> props = new HashMap<String, Object>();
+    	return getRequiredAuthzEPConfig(props);
+    }
+    
+    protected Map<String, Object> getRequiredAuthzEPConfig(Map<String, Object> props) {
+        props.put(OidcLoginConfigImpl.KEY_authorizationEndpoint, authzEndpoint);
         return props;
     }
 

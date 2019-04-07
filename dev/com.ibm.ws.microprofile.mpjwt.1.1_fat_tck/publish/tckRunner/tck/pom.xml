@@ -72,25 +72,22 @@
 	
         
         
-          <!-- This is the MP-JWT TCK base extension and utility classes -->
+        <!-- This is the MP-JWT TCK base extension and utility classes -->
         <dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
             <artifactId>microprofile-jwt-auth-tck</artifactId>
-            <version>1.1</version>
+            <version>1.1.1-RC2</version>
         </dependency>
+       
         <!-- This is the actual MP-JWT TCK test classes -->
         <dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
             <artifactId>microprofile-jwt-auth-tck</artifactId>
-            <version>1.2-SNAPSHOT</version>
-            <type>test-jar</type>
-            
-            
-            <scope>system</scope>
-              
-            <!--  TODO: WHEN TCK IS COMPLETE, REMOVE SYSTEMPATH AND SCOPE SO TESTS WILL PULL FROM GITHUB -->            
-            <!-- <systemPath>C:\projects\work\mpjwt\tck\microprofile-jwt-auth\tck\target\microprofile-jwt-auth-tck-1.2-SNAPSHOT-tests.jar</systemPath> -->
-            <systemPath>${componentRootDir}/lib/microprofile-jwt-auth-tck-1.2-20180821.143915-1.jar</systemPath>
+            <version>1.1.1-RC2</version>
+            <type>test-jar</type>        
+            <!-- <systemPath>C:\mpjwt\tck\microprofile-jwt-auth\tck\target\microprofile-jwt-auth-tck-1.2-SNAPSHOT-tests.jar</systemPath> -->
+            <!-- <scope>system</scope> -->
+           
            
         </dependency>
         
@@ -125,7 +122,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed</artifactId>
-            <version>1.0.2</version> 
+            <version>1.0.3</version> 
             <scope>test</scope>
         </dependency>
 
@@ -164,12 +161,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.17</version>
+                <version>2.17</version> <!-- Any changes to the surefire version must be tested against ZOS -->
                 <configuration>
+                    <argLine>-Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
                     <systemPropertyVariables>
                         <wlp>${wlp}</wlp>
                         <tck_server>${tck_server}</tck_server>
                         <tck_port>${tck_port}</tck_port>
+                        <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
                     </systemPropertyVariables>
                     <environmentVariables>
                         <my_int_property>45</my_int_property>

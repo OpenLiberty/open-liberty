@@ -53,3 +53,7 @@ SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.useraction=Specificare una sola funz
 SEC_TOO_MANY_PRINCIPALS=CWWKS0010E: Durante il richiamo del principal del chiamante, \u00e8 stato rilevato che il soggetto del chiamante disponeva di pi\u00f9 principal del tipo WSPrincipal. Nel soggetto pu\u00f2 esistere solo un WSPrincipal. I nomi dei WSPrincipal sono: {}
 SEC_TOO_MANY_PRINCIPALS.explanation=Il soggetto chiamante dispone di troppi principal di tipo WSPrincipal. \u00c8 supportato solo un principal di questo tipo.
 SEC_TOO_MANY_PRINCIPALS.useraction=Riesaminare l'applicazione per capire perch\u00e9 il soggetto contiene pi\u00f9 di un WSPrincipal.
+
+SPNEGO_API_IS_NOT_SUPPORT=CWWKS0011E: L''API SPNEGO {0} non \u00e8 supportata per la versione {0} del runtime Java {1}.
+SPNEGO_API_IS_NOT_SUPPORT.explanation=Impossibile utilizzare l'API SPNEGO con il fornitore e la versione del runtime Java.
+SPNEGO_API_IS_NOT_SUPPORT.useraction=Utilizzare il fornitore e la versione di Java supportati dalle API SPNEGO.

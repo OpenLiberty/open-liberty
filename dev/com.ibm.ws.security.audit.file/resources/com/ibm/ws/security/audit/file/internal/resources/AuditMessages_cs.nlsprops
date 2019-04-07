@@ -1,0 +1,65 @@
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.file/resources/com/ibm/ws/security/audit/file/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+UNABLE_TO_CREATE_RESOURCE_NOEX=CWWKS5800E: Syst\u00e9m nemohl vytvo\u0159it nov\u00fd soubor {0}.
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=Komponenta aplika\u010dn\u00edho serveru nemohla prov\u00e9st operaci na po\u017eadovan\u00e9m prost\u0159edku.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=Ov\u011b\u0159te, zda byl zad\u00e1n platn\u00fd n\u00e1zev souboru. Ov\u011b\u0159te, zda m\u00e1 aplika\u010dn\u00ed server v dob\u011b b\u011bhu pr\u00e1vo z\u00e1pisu do adres\u00e1\u0159e prost\u0159edku, a zda nen\u00ed pln\u00fd disk. Pokud probl\u00e9m nebude vy\u0159e\u0161en, vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_CREATE_RESOURCE=CWWKS5801E: Syst\u00e9m nemohl vytvo\u0159it soubor {0}, proto\u017ee do\u0161lo k n\u00e1sleduj\u00edc\u00ed v\u00fdjimce: {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=Pokus o otev\u0159en\u00ed zadan\u00e9ho prost\u0159edku se nezda\u0159il. Ve v\u00fdjimce je ur\u010dena hlavn\u00ed p\u0159\u00ed\u010dina selh\u00e1n\u00ed.
+UNABLE_TO_CREATE_RESOURCE.useraction=Prohl\u00e9dn\u011bte si v\u00fdjimku a pokuste se ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Ov\u011b\u0159te, zda byl zad\u00e1n platn\u00fd n\u00e1zev souboru. Ov\u011b\u0159te, zda m\u00e1 aplika\u010dn\u00ed server v dob\u011b b\u011bhu pr\u00e1vo z\u00e1pisu do adres\u00e1\u0159e prost\u0159edku, a zda nen\u00ed pln\u00fd disk. Pokud probl\u00e9m nebude vy\u0159e\u0161en, vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_DELETE_RESOURCE_NOEX=CWWKS5802E: Syst\u00e9m nemohl odstranit soubor {0}.
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=Komponenta aplika\u010dn\u00edho serveru nemohla prov\u00e9st operaci na po\u017eadovan\u00e9m prost\u0159edku.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=Ov\u011b\u0159te, zda byl zad\u00e1n platn\u00fd n\u00e1zev souboru. Ov\u011b\u0159te, zda m\u00e1 aplika\u010dn\u00ed server v dob\u011b b\u011bhu pr\u00e1vo z\u00e1pisu do adres\u00e1\u0159e prost\u0159edku, a zda nen\u00ed pln\u00fd disk. Pokud probl\u00e9m nebude vy\u0159e\u0161en, vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_DELETE_RESOURCE=CWWKS5803E: Syst\u00e9m nemohl odstranit soubor {0}, proto\u017ee do\u0161lo k n\u00e1sleduj\u00edc\u00ed v\u00fdjimce: {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=Pokus o odstran\u011bn\u00ed zadan\u00e9ho prost\u0159edku se nezda\u0159il. Ve v\u00fdjimce je ur\u010dena hlavn\u00ed p\u0159\u00ed\u010dina selh\u00e1n\u00ed.
+UNABLE_TO_DELETE_RESOURCE.useraction=Prohl\u00e9dn\u011bte si v\u00fdjimku a pokuste se ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Zkontrolujte, zda m\u00e1 aplika\u010dn\u00ed server v dob\u011b b\u011bhu pr\u00e1vo z\u00e1pisu do adres\u00e1\u0159e pro dan\u00fd prost\u0159edek. Pokud probl\u00e9m nebude vy\u0159e\u0161en, vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+AUDIT_FILEHANDLER_STARTING=CWWKS5804I: Prob\u00edh\u00e1 spou\u0161t\u011bn\u00ed slu\u017eby obslu\u017en\u00e9 rutiny souboru auditu.
+AUDIT_FILEHANDLER_STARTING.explanation=Prob\u00edh\u00e1 spou\u0161t\u011bn\u00ed slu\u017eby obslu\u017en\u00e9 rutiny souboru auditu. Toto m\u016f\u017ee trvat n\u011bkolik minut, pokud mus\u00ed b\u00fdt provedena jednor\u00e1zov\u00e1 inicializace.
+AUDIT_FILEHANDLER_STARTING.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+AUDIT_FILEHANDLER_READY=CWWKS5805I: Slu\u017eba obslu\u017en\u00e9 rutiny souboru auditu je p\u0159ipravena.
+AUDIT_FILEHANDLER_READY.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+AUDIT_FILEHANDLER_READY.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+AUDIT_FILEHANDLER_STOPPED=CWWKS5806I: Byla zastavena slu\u017eba obslu\u017en\u00e9 rutiny souboru auditu.
+AUDIT_FILEHANDLER_STOPPED.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+AUDIT_FILEHANDLER_STOPPED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION=CWWKS5807E: Slu\u017ebu auditu nelze spustit, proto\u017ee konfigurace obslu\u017en\u00e9 rutiny auditu pro \u0161ifrov\u00e1n\u00ed z\u00e1znam\u016f auditu je chybn\u00e1. Nakonfigurujte spr\u00e1vn\u00fd odkaz na \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f a alias certifik\u00e1tu. Ujist\u011bte se, \u017ee \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, na kter\u00e9 {1} odkazuje, existuje, a zkontrolujte, zda n\u00e1zev aliasu {0} k certifik\u00e1tu pou\u017e\u00edvan\u00e9mu pro \u0161ifrov\u00e1n\u00ed z\u00e1znam\u016f auditu je v tomto \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f p\u0159\u00edtomen. 
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.explanation=Slu\u017ebu auditu nelze spustit v d\u016fsledku chyby v konfiguraci obslu\u017en\u00e9 rutiny auditu pro \u0161ifrov\u00e1n\u00ed z\u00e1znam\u016f auditu. Dal\u0161\u00ed informace viz v\u00fdjimka v p\u0159edchoz\u00ed zpr\u00e1v\u011b o selh\u00e1n\u00ed aktivace slu\u017eby. Zadejte platn\u00fd odkaz na \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f a zkontrolujte, zda alias certifik\u00e1tu odkazuje na certifik\u00e1t, kter\u00fd je v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f p\u0159\u00edtomen.
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.useraction=Zkontrolujte, zda konfigurace obslu\u017en\u00e9 rutiny auditu ur\u010duje jak odkaz na \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, tak alias certifik\u00e1tu pro \u0161ifrov\u00e1n\u00ed z\u00e1znam\u016f auditu. Zkontrolujte, zda \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f existuje, zda je spr\u00e1vn\u011b zadan\u00e9 heslo a zda \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f obsahuje certifik\u00e1t, na kter\u00fd odkazuje alias \u0161ifrovac\u00edho certifik\u00e1tu.
+
+INCORRECT_AUDIT_SIGNING_CONFIGURATION=CWWKS5808E: Slu\u017ebu auditu nelze spustit, proto\u017ee konfigurace obslu\u017en\u00e9 rutiny auditu pro podepisov\u00e1n\u00ed z\u00e1znam\u016f auditu je chybn\u00e1. Nakonfigurujte spr\u00e1vn\u00fd odkaz na \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f a alias osobn\u00edho certifik\u00e1tu. Ujist\u011bte se, \u017ee \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, na kter\u00e9 {1} odkazuje, existuje, a zkontrolujte, zda n\u00e1zev aliasu {0} k osobn\u00edmu certifik\u00e1tu pou\u017e\u00edvan\u00e9mu pro podepisov\u00e1n\u00ed z\u00e1znam\u016f auditu je v tomto \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f p\u0159\u00edtomen. 
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.explanation=Slu\u017ebu auditu nelze spustit v d\u016fsledku chyby v konfiguraci obslu\u017en\u00e9 rutiny auditu pro podepisov\u00e1n\u00ed z\u00e1znam\u016f auditu. Dal\u0161\u00ed informace viz v\u00fdjimka v p\u0159edchoz\u00ed zpr\u00e1v\u011b o selh\u00e1n\u00ed aktivace slu\u017eby. Zadejte platn\u00fd odkaz na \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f a zkontrolujte, zda alias osobn\u00edho certifik\u00e1tu odkazuje na osobn\u00ed certifik\u00e1t, kter\u00fd je v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f p\u0159\u00edtomen.
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.useraction=Zkontrolujte, zda konfigurace obslu\u017en\u00e9 rutiny auditu ur\u010duje jak odkaz na \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, tak alias osobn\u00edho certifik\u00e1tu pro podepisov\u00e1n\u00ed z\u00e1znam\u016f auditu. Zkontrolujte, zda \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f existuje, zda je spr\u00e1vn\u011b zadan\u00e9 heslo a zda \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f obsahuje osobn\u00ed certifik\u00e1t, na kter\u00fd odkazuje alias podpisov\u00e9ho certifik\u00e1tu.
+
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION=CWWKS5809E: Slu\u017ebu auditu nelze spustit, proto\u017ee do\u0161lo k selh\u00e1n\u00ed, kdy\u017e slu\u017eba inicializovala obslu\u017enou rutinu auditu za \u00fa\u010delem \u0161ifrov\u00e1n\u00ed z\u00e1znam\u016f auditu. V\u00fdjimka: {0}.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.explanation=Slu\u017ebu auditu nelze spustit, proto\u017ee do\u0161lo k chyb\u011b b\u011bhem inicializace konfigurace obslu\u017en\u00e9 rutiny auditu pro \u0161ifrov\u00e1n\u00ed z\u00e1znam\u016f auditu. Dal\u0161\u00ed informace viz v\u00fdjimka v t\u00e9to zpr\u00e1v\u011b.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.useraction=Na z\u00e1klad\u011b v\u00fdjimky ur\u010dete p\u0159\u00ed\u010dinu chyby.
+
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION=CWWKS5810E: Slu\u017ebu auditu nelze spustit, proto\u017ee do\u0161lo k selh\u00e1n\u00ed, kdy\u017e slu\u017eba inicializovala obslu\u017enou rutinu auditu za \u00fa\u010delem podeps\u00e1n\u00ed z\u00e1znam\u016f auditu. V\u00fdjimka: {0}.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.explanation=Slu\u017ebu auditu nelze spustit, proto\u017ee do\u0161lo k chyb\u011b b\u011bhem inicializace konfigurace obslu\u017en\u00e9 rutiny auditu pro podepisov\u00e1n\u00ed z\u00e1znam\u016f auditu. Dal\u0161\u00ed informace viz v\u00fdjimka zm\u00edn\u011bn\u00e1 v t\u00e9to zpr\u00e1v\u011b.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.useraction=Na z\u00e1klad\u011b v\u00fdjimky ur\u010dete p\u0159\u00ed\u010dinu chyby.

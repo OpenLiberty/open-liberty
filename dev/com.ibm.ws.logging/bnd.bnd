@@ -16,7 +16,6 @@ Bundle-Description: ${Bundle-Name}, version ${bVersion}
 Bundle-SymbolicName: com.ibm.ws.logging; singleton:=true
 
 Private-Package: \
- !com.ibm.ws.logging.internal.osgi.*,\
  com.ibm.ws.logging.*,\
  com.ibm.ws.collector.manager.internal.*,\
  com.ibm.wsspi.logprovider.*

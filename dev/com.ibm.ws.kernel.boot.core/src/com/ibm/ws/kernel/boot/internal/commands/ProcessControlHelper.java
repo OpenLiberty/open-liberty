@@ -30,6 +30,7 @@ import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.boot.internal.FileShareLockProcessStatusImpl;
 import com.ibm.ws.kernel.boot.internal.PSProcessStatusImpl;
 import com.ibm.ws.kernel.boot.internal.ProcessStatus;
+import com.ibm.ws.kernel.boot.internal.ProcessStatus.State;
 import com.ibm.ws.kernel.boot.internal.ServerLock;
 
 /**
@@ -139,7 +140,8 @@ public class ProcessControlHelper {
 
         for (int i = 0; i < BootstrapConstants.MAX_POLL_ATTEMPTS; i++) {
             try {
-                if (!ps.isPossiblyRunning()) {
+                State processRunning = ps.isPossiblyRunning();
+                if ((processRunning == State.NO) || (processRunning == State.UNDETERMINED)) {
                     return ReturnCode.OK;
                 }
 
@@ -430,8 +432,8 @@ public class ProcessControlHelper {
      * Run the relevant command for dumping the system
      *
      * @param javaDumpActions the java dump actions to take place
-     * @param systemDump whether this is a full dump (true) or just javadump (false)
-     * @param dumpTimestamp the timestamp on the server dump packager of the full dump
+     * @param systemDump      whether this is a full dump (true) or just javadump (false)
+     * @param dumpTimestamp   the timestamp on the server dump packager of the full dump
      * @return the return code from attempting to run the dump
      */
     private ReturnCode createDumps(Set<JavaDumpAction> javaDumpActions, boolean introspect, String dumpTimestamp) {

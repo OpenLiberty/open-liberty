@@ -145,7 +145,7 @@ staticweave_commandline_help_message_18of19=    \u5e76\u8f93\u51fa\u81f3 C:\\foo
 
 staticweave_commandline_help_message_19of19=    StaticWeave -persistenceinfo C:\\foo-containing-persistence-xml.jar -classpath C:\\classpath1;C:\\classpath2 C:\\foo-source.jar C:\\foo-target.jar
 
-staticweave_commandline_help_message_1of19=  \u7528\u6cd5\uff1aStaticWeave [options] \u6e90\u76ee\u6807
+staticweave_commandline_help_message_1of19=  \u7528\u6cd5\uff1aStaticWeave [\u9009\u9879] \u6e90\u76ee\u6807
 
 staticweave_commandline_help_message_2of19=  \u9009\u9879\uff1a
 

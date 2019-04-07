@@ -15,11 +15,9 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/appClientAdvanced.jar/src,\
-	test-applications/appClientSecurity.jar/src,\
 	test-applications/appNonContextual.war/src,\
-	test-applications/beanManagerLookupApp.war/src,\
-	test-applications/nonContextual.war/src
+	test-applications/nonContextual.war/src,\
+	test-applications/vetoAndExtendNonContextual.war/src
 	
 tested.features:\
 	cdi-2.0,\

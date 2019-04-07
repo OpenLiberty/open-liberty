@@ -1,0 +1,45 @@
+#*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.source/resources/com/ibm/ws/security/audit/source/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+AUDIT_SERVICE_STARTING=CWWKS5850I: A fel\u00fclvizsg\u00e1lati szolg\u00e1ltat\u00e1s elindul.
+AUDIT_SERVICE_STARTING.explanation=A fel\u00fclvizsg\u00e1lati szolg\u00e1ltat\u00e1s ind\u00edt\u00e1sa folyamatban van. Ez percekig is eltarthat, amennyiben egyszeri inicializ\u00e1l\u00e1s v\u00e9grehajt\u00e1s\u00e1ra van sz\u00fcks\u00e9g.
+AUDIT_SERVICE_STARTING.useraction=Nincs teend\u0151. 
+
+AUDIT_SERVICE_READY=CWWKS5851I: A fel\u00fclvizsg\u00e1lati szolg\u00e1ltat\u00e1s \u00fczemk\u00e9sz...
+AUDIT_SERVICE_READY.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+AUDIT_SERVICE_READY.useraction=Nincs teend\u0151. 
+
+AUDIT_SERVICE_STOPPED=CWWKS5852I: A fel\u00fclvizsg\u00e1lati szolg\u00e1ltat\u00e1s le\u00e1llt.
+AUDIT_SERVICE_STOPPED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+AUDIT_SERVICE_STOPPED.useraction=Nincs teend\u0151. 
+
+INCORRECT_AUDIT_EVENT_CONFIGURATION=CWWKS5853E: A fel\u00fclvizsg\u00e1lat-kezel\u0151 esem\u00e9nykonfigur\u00e1ci\u00f3ban megadott {0} fel\u00fclvizsg\u00e1lati esem\u00e9nyn\u00e9v nem t\u00e1mogatott, ez\u00e9rt a fel\u00fclvizsg\u00e1lati szolg\u00e1ltat\u00e1s le\u00e1llt. Jav\u00edtsa az esem\u00e9ny nev\u00e9t a(z) {2} fel\u00fclvizsg\u00e1lat-kezel\u0151 be\u00e1ll\u00edt\u00e1s\u00e1ban a k\u00f6vetkez\u0151 esem\u00e9nynevek egyik\u00e9re: {3}
+INCORRECT_AUDIT_EVENT_CONFIGURATION.explanation=A fel\u00fclvizsg\u00e1lati esem\u00e9nynek az esem\u00e9nykonfigur\u00e1ci\u00f3ban megadott neve helytelen, \u00e9s a fel\u00fclvizsg\u00e1lati szolg\u00e1ltat\u00e1s le\u00e1ll. Elemezze az \u00fczenetben eml\u00edtett kiv\u00e9telt, \u00e9s adjon meg \u00e9rv\u00e9nyes nevet a fel\u00fclvizsg\u00e1lati esem\u00e9nyhez.
+INCORRECT_AUDIT_EVENT_CONFIGURATION.useraction=Gondoskodjon arr\u00f3l, hogy az esem\u00e9ny konfigur\u00e1ci\u00f3j\u00e1nak r\u00e9szek\u00e9nt megadott fel\u00fclvizsg\u00e1lati esem\u00e9nyn\u00e9v helyes legyen.
+
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION=CWWKS5854E: A fel\u00fclvizsg\u00e1lat-kezel\u0151 esem\u00e9nykonfigur\u00e1ci\u00f3ban megadott {0} fel\u00fclvizsg\u00e1lati eredm\u00e9ny neve nem t\u00e1mogatott, ez\u00e9rt a fel\u00fclvizsg\u00e1lati szolg\u00e1ltat\u00e1s le\u00e1llt. Jav\u00edtsa az eredm\u00e9ny nev\u00e9t a(z) {2} fel\u00fclvizsg\u00e1lat-kezel\u0151 be\u00e1ll\u00edt\u00e1s\u00e1ban a k\u00f6vetkez\u0151 eredm\u00e9nynevek egyik\u00e9re: {3}
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.explanation=A fel\u00fclvizsg\u00e1lati eredm\u00e9nynek az esem\u00e9nykonfigur\u00e1ci\u00f3ban megadott neve helytelen, \u00e9s a fel\u00fclvizsg\u00e1lati szolg\u00e1ltat\u00e1s le\u00e1ll. Elemezze az \u00fczenetben eml\u00edtett kiv\u00e9telt, \u00e9s adjon meg \u00e9rv\u00e9nyes nevet a fel\u00fclvizsg\u00e1lati eredm\u00e9nyhez.
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.useraction=Gondoskodjon arr\u00f3l, hogy az esem\u00e9ny konfigur\u00e1ci\u00f3j\u00e1nak r\u00e9szek\u00e9nt megadott fel\u00fclvizsg\u00e1lati eredm\u00e9nyn\u00e9v helyes legyen.
+
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME=CWWKS5855E: A fel\u00fclvizsg\u00e1lat-kezel\u0151 esem\u00e9nykonfigur\u00e1ci\u00f3 nem teljes, ez\u00e9rt a fel\u00fclvizsg\u00e1lati szolg\u00e1ltat\u00e1s le\u00e1llt. A konfigur\u00e1ci\u00f3ban meg kell adni egy {0} eredm\u00e9nynevet. Jav\u00edtsa a(z) {1} fel\u00fclvizsg\u00e1lat-kezel\u0151 be\u00e1ll\u00edt\u00e1s\u00e1t a k\u00f6vetkez\u0151 esem\u00e9nynevek egyik\u00e9re: {2}
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.explanation=A fel\u00fclvizsg\u00e1lati esem\u00e9nynek az esem\u00e9nykonfigur\u00e1ci\u00f3ban megadott neve helytelen vagy hi\u00e1nyzik, \u00e9s a fel\u00fclvizsg\u00e1lati szolg\u00e1ltat\u00e1s le\u00e1ll. Elemezze az \u00fczenetben eml\u00edtett kiv\u00e9telt, \u00e9s adjon meg \u00e9rv\u00e9nyes nevet a fel\u00fclvizsg\u00e1lati esem\u00e9nyhez.
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.useraction=Gondoskodjon, hogy az \u00e9rv\u00e9nyes eredm\u00e9nyt\u00edpussal \u00e9rv\u00e9nyes esem\u00e9nyn\u00e9v legyen megadva.

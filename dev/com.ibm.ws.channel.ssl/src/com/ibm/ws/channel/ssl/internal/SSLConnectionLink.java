@@ -856,7 +856,6 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             }
             exception = new IOException("Unexpected results of handshake after connect, " + hsStatus);
         }
-        AlpnSupportUtils.getAlpnResult(getSSLEngine(), this);
 
         // PK16095 - take certain actions when the handshake completes
         getChannel().onHandshakeFinish(getSSLEngine());

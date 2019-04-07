@@ -92,23 +92,8 @@ public class LogTraceData extends GenericData {
         setPair(index, NAMES1_1[index], l);
     }
 
-    private String getStringValue(int index) {
-        KeyValueStringPair kvp = (KeyValueStringPair) getPairs().get(index);
-        return kvp.getStringValue();
-    }
-
-    private int getIntValue(int index) {
-        KeyValueIntegerPair kvp = (KeyValueIntegerPair) getPairs().get(index);
-        return kvp.getIntValue();
-    }
-
-    private long getLongValue(int index) {
-        KeyValueLongPair kvp = (KeyValueLongPair) getPairs().get(index);
-        return kvp.getLongValue();
-    }
-
     private KeyValuePairList getValues(int index) {
-        return (KeyValuePairList) getPairs().get(index);
+        return (KeyValuePairList) getPairs()[index];
     }
 
     public void setDatetime(long l) {
@@ -373,7 +358,7 @@ public class LogTraceData extends GenericData {
             String message = getMessage();
             if (message != null) {
                 messageId = parseMessageId(message);
-                this.modifyPair(1, NAMES1_1[1], messageId);
+                this.setPair(1, NAMES1_1[1], messageId);
             }
         }
         return messageId;
@@ -431,7 +416,7 @@ public class LogTraceData extends GenericData {
         String sequenceId = getStringValue(14);
         if (sequenceId == null || sequenceId.isEmpty()) {
             sequenceId = SequenceNumber.formatSequenceNumber(getDatetime(), rawSequenceNumber);
-            this.modifyPair(14, NAMES1_1[14], sequenceId);
+            this.setPair(14, NAMES1_1[14], sequenceId);
         }
         return sequenceId;
     }

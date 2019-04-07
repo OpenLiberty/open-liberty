@@ -28,11 +28,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-// import java.util.Base64; // or could use
-import org.apache.commons.codec.binary.Base64;
-
 import javax.net.ssl.SSLSocketFactory;
 
+// import java.util.Base64; // or could use
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.auth.AuthScope;
@@ -43,7 +42,6 @@ import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.StrictHostnameVerifier;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
@@ -58,7 +56,6 @@ import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
 import com.ibm.ws.security.common.jwk.internal.JwkConstants;
-
 import com.ibm.wsspi.ssl.SSLSupport;
 
 /**
@@ -131,28 +128,19 @@ public class JwKRetriever {
         this.keyLocation = keyLocation;
     }
 
-    //  public JwKRetriever(JwtConsumerConfig config) {
-    //      configId = config.getId();
-    //      sslConfigurationName = config.getSslRef();
-    //      jwkEndpointUrl = config.getJwkEndpointUrl();
-    //      jwkSet = config.getJwkSet();
-    //      hostNameVerificationEnabled = config.isHostNameVerificationEnabled();
-    //      
-    //  }
-
     /**
      * Either kid or x5t will work. But not both
-     *
-     * @param kid
-     * @param x5t
-     * @return
-     * @throws PrivilegedActionException
-     * @throws IOException
-     * @throws KeyStoreException
-     * @throws InterruptedException
+     */
+    public PublicKey getPublicKeyFromJwk(String kid, String x5t, boolean useSystemPropertiesForHttpClientConnections)
+            throws PrivilegedActionException, IOException, KeyStoreException, InterruptedException {
+        return getPublicKeyFromJwk(kid, x5t, null, useSystemPropertiesForHttpClientConnections);
+    }
+
+    /**
+     * Either kid, x5t, or use will work, but not all
      */
     @FFDCIgnore({ KeyStoreException.class })
-    public PublicKey getPublicKeyFromJwk(String kid, String x5t)
+    public PublicKey getPublicKeyFromJwk(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections)
             throws PrivilegedActionException, IOException, KeyStoreException, InterruptedException {
         PublicKey key = null;
         KeyStoreException errKeyStoreException = null;
@@ -161,9 +149,9 @@ public class JwKRetriever {
         boolean isHttp = remoteHttpCall(this.jwkEndpointUrl, this.publicKeyText, this.keyLocation);
         try {
             if (isHttp) {
-                key = this.getJwkRemote(kid, x5t);
+                key = this.getJwkRemote(kid, x5t, use , useSystemPropertiesForHttpClientConnections);
             } else {
-                key = this.getJwkLocal(kid, x5t, publicKeyText, keyLocation);
+                key = this.getJwkLocal(kid, x5t, publicKeyText, keyLocation, use);
             }
         } catch (KeyStoreException e) {
             errKeyStoreException = e;
@@ -191,11 +179,13 @@ public class JwKRetriever {
         return jwkSet.getPublicKeyByKid(null);
     }
 
-    private PublicKey getJwkFromJWKSet(String setId, String kid, String x5t) {
+    private PublicKey getJwkFromJWKSet(String setId, String kid, String x5t, String use) {
         if (kid != null) {
             return jwkSet.getPublicKeyBySetIdAndKid(setId, kid);
         } else if (x5t != null) {
             return jwkSet.getPublicKeyBySetIdAndx5t(setId, x5t);
+        } else if (use != null) {
+            return jwkSet.getPublicKeyBySetIdAndUse(setId, use);
         }
         return jwkSet.getPublicKeyBySetId(setId);
     }
@@ -212,8 +202,8 @@ public class JwKRetriever {
         return isHttp;
     }
 
-    @FFDCIgnore({PrivilegedActionException.class, Exception.class})
-    protected PublicKey getPublicKeyFromFile(String location, String kid, String x5t) {
+    @FFDCIgnore({ PrivilegedActionException.class, Exception.class })
+    protected PublicKey getPublicKeyFromFile(String location, String kid, String x5t, String use) {
         PublicKey publicKey = null;
         String keyString = null;
         InputStream inputStream = null;
@@ -254,11 +244,11 @@ public class JwKRetriever {
 
             if (inputStream != null) {
                 synchronized (jwkSet) {
-                    publicKey = getJwkFromJWKSet(locationUsed, kid, x5t);
+                    publicKey = getJwkFromJWKSet(locationUsed, kid, x5t, use);
                     if (publicKey == null) {
                         keyString = getKeyAsString(inputStream);
                         parseJwk(keyString, null, jwkSet, sigAlg);
-                        publicKey = getJwkFromJWKSet(locationUsed, kid, x5t);
+                        publicKey = getJwkFromJWKSet(locationUsed, kid, x5t, use);
                     }
                 }
             }
@@ -270,17 +260,17 @@ public class JwKRetriever {
         return publicKey;
     }
 
-    protected PublicKey getJwkLocal(String kid, String x5t, String publicKeyText, String location) {
+    protected PublicKey getJwkLocal(String kid, String x5t, String publicKeyText, String location, String use) {
         if (publicKeyText == null && location != null) {
-            return getPublicKeyFromFile(location, kid, x5t);
+            return getPublicKeyFromFile(location, kid, x5t, use);
         }
- 
+
         if (publicKeyText != null) {
             synchronized (jwkSet) {
-                PublicKey publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t);
+                PublicKey publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t, use);
                 if (publicKey == null) {
                     parseJwk(publicKeyText, null, jwkSet, sigAlg);
-                    publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t);
+                    publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t, use);
                 }
                 return publicKey;
             }
@@ -313,7 +303,7 @@ public class JwKRetriever {
     }
 
     @FFDCIgnore({ KeyStoreException.class })
-    protected PublicKey getJwkRemote(String kid, String x5t) throws KeyStoreException, InterruptedException {
+    protected PublicKey getJwkRemote(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections) throws KeyStoreException, InterruptedException {
         locationUsed = jwkEndpointUrl;
         if (locationUsed == null) {
             locationUsed = keyLocation;
@@ -324,9 +314,9 @@ public class JwKRetriever {
         PublicKey key = null;
         try {
             synchronized (jwkSet) {
-                key = getJwkFromJWKSet(locationUsed, kid, x5t);
+                key = getJwkFromJWKSet(locationUsed, kid, x5t, use);
                 if (key == null) {
-                    key = doJwkRemote(kid, x5t);
+                    key = doJwkRemote(kid, x5t, use, useSystemPropertiesForHttpClientConnections);
                 }
             }
         } catch (KeyStoreException e) {
@@ -336,7 +326,7 @@ public class JwKRetriever {
     }
 
     @FFDCIgnore({ Exception.class, KeyStoreException.class })
-    protected PublicKey doJwkRemote(String kid, String x5t) throws KeyStoreException {
+    protected PublicKey doJwkRemote(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections) throws KeyStoreException {
 
         String jsonString = null;
         locationUsed = jwkEndpointUrl;
@@ -346,8 +336,8 @@ public class JwKRetriever {
 
         try {
             // TODO - validate url
-            SSLSocketFactory sslSocketFactory = getSSLSocketFactory(locationUsed, sslConfigurationName, sslSupport);
-            HttpClient client = createHTTPClient(sslSocketFactory, locationUsed, hostNameVerificationEnabled);
+            SSLSocketFactory sslSocketFactory = getSSLSocketFactory(locationUsed, sslConfigurationName, sslSupport);            
+            HttpClient client = createHTTPClient(sslSocketFactory, locationUsed, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
             jsonString = getHTTPRequestAsString(client, locationUsed);
             boolean bJwk = parseJwk(jsonString, null, jwkSet, sigAlg);
 
@@ -373,7 +363,7 @@ public class JwKRetriever {
             }
         }
 
-        return getJwkFromJWKSet(locationUsed, kid, x5t);
+        return getJwkFromJWKSet(locationUsed, kid, x5t, use);
     }
 
     // separate to be an independent method for unit tests
@@ -439,16 +429,21 @@ public class JwKRetriever {
     private JWK parseJwkFormat(JSONObject jsonObject, String signatureAlgorithm) {
         JWK jwk = null;
 
-        String kty = (String) jsonObject.get("kty");
-        if (kty == null) {
+        Object ktyEntry = jsonObject.get("kty");
+        if (ktyEntry == null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "JSON object is missing 'kty' entry");
             }
-        } else {
-            jwk = createJwkBasedOnKty(kty, jsonObject, signatureAlgorithm);
+            return null;
+        }
+        if (!(ktyEntry instanceof String)) {
+            return null;
+        }
+        String kty = (String) ktyEntry;
+        jwk = createJwkBasedOnKty(kty, jsonObject, signatureAlgorithm);
+        if (jwk != null) {
             jwk.parse();
         }
-
         return jwk;
     }
 
@@ -572,7 +567,7 @@ public class JwKRetriever {
 
     JWK getEllipticCurveJwk(JSONObject thing, String signatureAlgorithm) {
         // let get the map<String, Object> from keyObject
-        if (signatureAlgorithm.startsWith("ES")) { // ES256, ES384, ES512
+        if (signatureAlgorithm != null && signatureAlgorithm.startsWith("ES")) { // ES256, ES384, ES512
             return Jose4jEllipticCurveJWK.getInstance(thing); // if implemented
                                                               // ES256
         }
@@ -659,7 +654,7 @@ public class JwKRetriever {
         return message;
     }
 
-    public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification) {
+    public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections) {
 
         HttpClient client = null;
         boolean addBasicAuthHeader = false;
@@ -673,13 +668,17 @@ public class JwKRetriever {
             credentialsProvider = createCredentialsProvider();
         }
 
-        client = createHttpClient(url.startsWith("https:"), isHostnameVerification, sslSocketFactory, addBasicAuthHeader, credentialsProvider);
+        client = createHttpClient(url.startsWith("https:"), isHostnameVerification, sslSocketFactory, addBasicAuthHeader, credentialsProvider, useSystemPropertiesForHttpClientConnections);
         return client;
 
     }
+    
+    protected HttpClientBuilder getBuilder(boolean useSystemPropertiesForHttpClientConnections)
+    {        
+        return useSystemPropertiesForHttpClientConnections ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
+    }
 
-    private HttpClient createHttpClient(boolean isSecure, boolean isHostnameVerification, SSLSocketFactory sslSocketFactory, boolean addBasicAuthHeader, BasicCredentialsProvider credentialsProvider) {
-
+    private HttpClient createHttpClient(boolean isSecure, boolean isHostnameVerification, SSLSocketFactory sslSocketFactory, boolean addBasicAuthHeader, BasicCredentialsProvider credentialsProvider, boolean useSystemPropertiesForHttpClientConnections) {       
         HttpClient client = null;
         if (isSecure) {
             SSLConnectionSocketFactory connectionFactory = null;
@@ -689,15 +688,15 @@ public class JwKRetriever {
                 connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new StrictHostnameVerifier());
             }
             if (addBasicAuthHeader) {
-                client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
+                client = getBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
             } else {
-                client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
+                client = getBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory).build();
             }
         } else {
             if (addBasicAuthHeader) {
-                client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).build();
+                client = getBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).build();
             } else {
-                client = HttpClientBuilder.create().build();
+                client = getBuilder(useSystemPropertiesForHttpClientConnections).build();
             }
         }
         return client;

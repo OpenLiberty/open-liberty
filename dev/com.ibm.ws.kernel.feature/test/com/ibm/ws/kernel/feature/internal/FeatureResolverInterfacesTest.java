@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.apache.aries.util.manifest.ManifestHeaderProcessor;
 import org.apache.aries.util.manifest.ManifestHeaderProcessor.GenericMetadata;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
@@ -39,7 +40,6 @@ import org.osgi.framework.VersionRange;
 import com.ibm.ws.kernel.feature.AppForceRestart;
 import com.ibm.ws.kernel.feature.ProcessType;
 import com.ibm.ws.kernel.feature.Visibility;
-import com.ibm.ws.kernel.feature.internal.FeatureResolverInterfacesTest.TestFeature;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.HeaderElementDefinition;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
@@ -182,6 +182,29 @@ public class FeatureResolverInterfacesTest {
         assertThat(result.hasErrors(), is(true));
         assertThat(result.getResolvedFeatures(), contains("com.example.featureA-1.0"));
         assertThat(result.getMissing(), contains("com.example.missingFeature-1.0"));
+
+    }
+
+    @Test
+    public void testRootConflictFalsePositives01() {
+        FeatureResolver resolver = new FeatureResolverImpl();
+
+        TestRepository repo = new TestRepository();
+        repo.add(TestFeature.create("rootConflict-1.0").singleton(true).build());
+        repo.add(TestFeature.create("rootConflict-2.0").singleton(true).build());
+        repo.add(TestFeature.create("tolerateConflict-1.0").singleton(true).build());
+        repo.add(TestFeature.create("tolerateConflict-2.0").singleton(true).build());
+        repo.add(TestFeature.create("middleMan-1.0").singleton(true).dependency("tolerateConflict-1.0").build());
+        repo.add(TestFeature.create("middleMan-2.0").singleton(true).dependency("tolerateConflict-2.0").build());
+        repo.add(TestFeature.create("root1-1.0").dependency("rootConflict-1.0").build());
+        repo.add(TestFeature.create("root2-1.0").dependency("rootConflict-2.0").dependency("middleMan-1.0", "2.0").build());
+        repo.add(TestFeature.create("root3-1.0").dependency("tolerateConflict-2.0").build());
+
+        Result result = resolver.resolveFeatures(repo, Arrays.asList("root1-1.0", "root2-1.0", "root3-1.0"), Collections.<String> emptySet(), false);
+        assertThat(result.hasErrors(), is(true));
+        assertThat(result.getResolvedFeatures(), containsInAnyOrder("root1-1.0", "root2-1.0", "root3-1.0", "tolerateConflict-2.0", "middleMan-2.0"));
+
+        assertThat(result.getConflicts().keySet(), Matchers.equalTo(Collections.singleton("rootConflict")));
 
     }
 
@@ -548,7 +571,7 @@ public class FeatureResolverInterfacesTest {
         }
 
         @Override
-        public String getRequiredOSGiEE() {
+        public Integer getRequireJava() {
             throw new UnsupportedOperationException();
         }
 

@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.InstallProgressEvent;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
+import com.ibm.ws.install.internal.adaptor.ESAAdaptor;
 import com.ibm.ws.install.internal.adaptor.FixAdaptor;
 import com.ibm.ws.install.internal.asset.UninstallAsset;
 import com.ibm.ws.install.internal.asset.UninstallAsset.UninstallAssetType;
@@ -71,6 +72,18 @@ class UninstallDirector extends AbstractDirector {
         uninstall(checkDependency, productIds, toBeDeleted);
     }
 
+    void retrieveUninstallFileList(UninstallAsset uninstallAsset, boolean checkDependency) throws InstallException {
+        if (uninstallAsset.getType().equals(UninstallAssetType.feature) &&
+            uninstallAsset.getFeatureFileList().isEmpty()) {
+            uninstallAsset.setFeaturePath(ESAAdaptor.getFeaturePath(uninstallAsset.getProvisioningFeatureDefinition(),
+                                                                    engine.getBaseDir(uninstallAsset.getProvisioningFeatureDefinition())));
+            uninstallAsset.setFeatureFileList(ESAAdaptor.determineFilesToBeDeleted(uninstallAsset.getProvisioningFeatureDefinition(), product.getFeatureDefinitions(),
+                                                                                   engine.getBaseDir(uninstallAsset.getProvisioningFeatureDefinition()),
+                                                                                   uninstallAsset.getFeaturePath(), checkDependency,
+                                                                                   uninstallAsset.getFixUpdatesFeature()));
+        }
+    }
+
     /**
      * Uninstalls product depending on dependencies
      *
@@ -83,15 +96,19 @@ class UninstallDirector extends AbstractDirector {
         if (uninstallAssets.isEmpty())
             return;
 
-        // check any file is locked
-        fireProgressEvent(InstallProgressEvent.CHECK, 10, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CHECKING"));
-        for (UninstallAsset uninstallAsset : uninstallAssets) {
-            engine.preCheck(uninstallAsset, checkDependency);
-        }
-        if (toBeDeleted != null) {
-            for (File f : toBeDeleted) {
-                for (String productId : productIds) {
-                    InstallUtils.isFileLocked("ERROR_UNINSTALL_PRODUCT_FILE_LOCKED", productId, f);
+        // Run file checking only on Windows
+        if (InstallUtils.isWindows) {
+            // check any file is locked
+            fireProgressEvent(InstallProgressEvent.CHECK, 10, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CHECKING"));
+            for (UninstallAsset uninstallAsset : uninstallAssets) {
+                retrieveUninstallFileList(uninstallAsset, checkDependency);
+                engine.preCheck(uninstallAsset);
+            }
+            if (toBeDeleted != null) {
+                for (File f : toBeDeleted) {
+                    for (String productId : productIds) {
+                        InstallUtils.isFileLocked("ERROR_UNINSTALL_PRODUCT_FILE_LOCKED", productId, f);
+                    }
                 }
             }
         }
@@ -104,6 +121,7 @@ class UninstallDirector extends AbstractDirector {
             fireProgressEvent(InstallProgressEvent.UNINSTALL, progress, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_UNINSTALLING", uninstallAsset.getName()));
             progress += interval;
             try {
+                retrieveUninstallFileList(uninstallAsset, checkDependency);
                 engine.uninstall(uninstallAsset, checkDependency, filesRestored);
                 log(Level.FINE, uninstallAsset.uninstalledLogMsg());
             } catch (IOException e) {
@@ -157,7 +175,6 @@ class UninstallDirector extends AbstractDirector {
      *             there is another feature still requires the uninstalling features.
      */
     void uninstallFeatures(Collection<String> featureNames, Collection<String> uninstallInstallFeatures, boolean force) {
-        fireProgressEvent(InstallProgressEvent.CHECK, 1, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CHECKING"));
         product.refresh();
         Collection<ProvisioningFeatureDefinition> installedFeatureDefinitions = product.getAllFeatureDefinitions().values();
         Collection<ProvisioningFeatureDefinition> uninstallFeatures = getProvisioningFeatureDefinition(installedFeatureDefinitions, featureNames);

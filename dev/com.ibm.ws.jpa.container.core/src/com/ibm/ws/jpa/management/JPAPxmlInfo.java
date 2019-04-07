@@ -14,23 +14,16 @@ import static com.ibm.ws.jpa.management.JPAConstants.JPA_RESOURCE_BUNDLE_NAME;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_TRACE_GROUP;
 import static com.ibm.ws.jpa.management.JPAConstants.PERSISTENCE_XML_RESOURCE_NAME;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jpa.JPAPuId;
-import com.ibm.ws.jpa.diagnostics.JPAORMDiagnostics;
 
 /**
  * This is a data container manages persistence unit information defined in a ejb-jar, war or jar.
@@ -154,12 +147,6 @@ class JPAPxmlInfo {
                              "|" + pxml.getArchiveName() + "|" + rootURLStr + "|" +
                              puInfo.getPersistenceUnitName() + "|" +
                              ivScopeInfo.getScopeType() + "|" + puInfo.dump());
-
-                try {
-                    JPAORMDiagnostics.writeJPAORMDiagnostics(puInfo, pxml.openStream());
-                } catch (Throwable t) {
-                    FFDCFilter.processException(t, JPAPxmlInfo.class.getName() + ".extractPersistenceUnits", "155");
-                }
             }
 
             if (getPuInfo(puName) != null) // d441029
@@ -195,6 +182,8 @@ class JPAPxmlInfo {
                 // will have a factory created with the correct datasource.
                 puInfo.initialize(); // d429219 d510184
             }
+
+            JPAIntrospection.visitJPAPUnitInfo(puName, puInfo);
         }
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -293,60 +282,11 @@ class JPAPxmlInfo {
             ivPuListCopy.putAll(ivPuList);
         }
 
-        out.println("ScopeName = " + ivScopeInfo.getScopeName());
-        out.println("RootURL = " + ivRootURL);
-        out.println("# Persistence Units = " + ivPuList.size());
-        out.println();
-
         for (Map.Entry<String, JPAPUnitInfo> entry : ivPuListCopy.entrySet()) {
             final String puName = entry.getKey();
             final JPAPUnitInfo jpaPUInfo = entry.getValue();
 
-            final URL puRootURL = jpaPUInfo.getPersistenceUnitRootUrl();
-            final String urlPtcol = puRootURL.getProtocol();
-
-//            out.println();
-//            out.println("Application Name: " + jpaPUInfo.getApplName());
-            out.println("************************************************************");
-            out.println(jpaPUInfo.dump());
-
-            out.println();
-            out.println("Object Relational Mapping Dump:");
-            out.println();
-            if (urlPtcol.toLowerCase().contains("wsjpa")) {
-                // WSJPA: zip-format InputStream
-                boolean printed = false;
-                try (ZipInputStream zis = new ZipInputStream(puRootURL.openStream())) {
-                    ZipEntry ze = null;
-                    while ((ze = zis.getNextEntry()) != null) {
-                        if (!(ze.getName().endsWith("/persistence.xml"))) {
-                            continue;
-                        }
-
-                        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        final byte[] buffer = new byte[4096];
-                        int bytesRead = -1;
-                        while ((bytesRead = zis.read(buffer)) >= 0) {
-                            baos.write(buffer, 0, bytesRead);
-                        }
-
-                        JPAORMDiagnostics.writeJPAORMDiagnostics(jpaPUInfo, new ByteArrayInputStream(baos.toByteArray()), out);
-                        printed = true;
-                        break;
-                    }
-                } catch (IOException ioe) {
-                    FFDCFilter.processException(ioe, JPAPxmlInfo.class.getName() + ".doIntrospect", "323");
-                }
-                if (!printed) {
-                    out.println("WARNING: Failed to dump ORM for PURoot: " + puRootURL);
-                }
-            } else if (urlPtcol.toLowerCase().contains("jar")) {
-                // TODO
-                out.println("TODO found jar.");
-            } else if (urlPtcol.toLowerCase().contains("file")) {
-                // TODO
-                out.println("TODO found file.");
-            }
+            JPAIntrospection.visitJPAPUnitInfo(puName, jpaPUInfo);
         }
     }
 }

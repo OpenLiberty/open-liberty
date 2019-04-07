@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 
 import com.ibm.ws.management.security.ManagementSecurityConstants;
+import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
 import com.ibm.ws.webcontainer.security.PostParameterHelper;
 import com.ibm.ws.webcontainer.security.SSOCookieHelper;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
@@ -43,6 +44,7 @@ import com.ibm.wsspi.webcontainer.collaborator.IWebAppSecurityCollaborator;
 public class WebAdminSecurityCollaboratorImpl extends WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborator {
     protected volatile WebAppSecurityConfig webAdminSecConfig = new WebAdminSecurityConfigImpl(null);
     private SecurityMetadata secMetadata = null;
+    private UnauthenticatedSubjectService unauthenticatedSubjectService;
 
     @Override
     @Activate
@@ -54,9 +56,11 @@ public class WebAdminSecurityCollaboratorImpl extends WebAppSecurityCollaborator
     protected void activateComponents() {
         webAppSecConfig = webAdminSecConfig;
         SSOCookieHelper ssoCookieHelper = webAppSecConfig.createSSOCookieHelper();
-        authenticateApi = authenticatorFactory.createAuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef);
+        authenticateApi = authenticatorFactory.createAuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef,
+                                                                     unauthenticatedSubjectService);
         postParameterHelper = new PostParameterHelper(webAppSecConfig);
-        providerAuthenticatorProxy = authenticatorFactory.createWebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig, webAuthenticatorRef);
+        providerAuthenticatorProxy = authenticatorFactory.createWebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig,
+                                                                                              webAuthenticatorRef);
         authenticatorProxy = authenticatorFactory.createWebAuthenticatorProxy(webAppSecConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy);
     }
 
@@ -84,9 +88,10 @@ public class WebAdminSecurityCollaboratorImpl extends WebAppSecurityCollaborator
         if (secMetadata == null) {
             secMetadata = new SecurityServletConfiguratorHelper(null);
 
-            String adminRole = ManagementSecurityConstants.ADMINISTRATOR_ROLE_NAME;
+            // It appears that the web.xml is honored now, but add Viewer role for consistency
             List<String> roles = new ArrayList<String>();
-            roles.add(adminRole);
+            roles.add(ManagementSecurityConstants.ADMINISTRATOR_ROLE_NAME);
+            roles.add(ManagementSecurityConstants.VIEWER_ROLE_NAME);
             secMetadata.setRoles(roles);
 
             String urlPattern = "/*";

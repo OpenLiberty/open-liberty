@@ -36,11 +36,12 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.WebTrustAssociationException;
 import com.ibm.websphere.security.WebTrustAssociationFailedException;
 import com.ibm.websphere.security.jwt.JwtToken;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.jwk.utils.JsonUtils;
+import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.MpConfigProxyService;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
@@ -240,10 +241,10 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
     }
 
     /**
-     * @param request 
+     * @param request
      * @return
      */
-    private boolean isNewMpJwtAndMpConfig(HttpServletRequest request) { 
+    private boolean isNewMpJwtAndMpConfig(HttpServletRequest request) {
         boolean newMpjwtAndMpConfig = false;
         Map mpCfg = mpConfigUtil.getMpConfig(request);
         if (!mpCfg.isEmpty()) {
@@ -387,7 +388,11 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
                     jwtToken = taiJwtUtils.createJwt(token, clientConfig.getUniqueId());
                 }
             } catch (Exception e) {
-                Tr.error(tc, "ERROR_CREATING_JWT_USING_TOKEN_IN_REQ", new Object[] { e.getLocalizedMessage() });
+                if( ! JwtUtils.isJwtSsoValidationExpiredTokenCodePath()) {
+                    Tr.error(tc, "ERROR_CREATING_JWT_USING_TOKEN_IN_REQ", new Object[] { e.getLocalizedMessage() }); //CWWKS5523E
+                } else {
+                    Tr.debug(tc, "ERROR_CREATING_JWT_USING_TOKEN_IN_REQ", new Object[] { e.getLocalizedMessage() }); //CWWKS5523E
+                }
                 return sendToErrorPage(res, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
             }
             String payload = JsonUtils.getPayload(token);

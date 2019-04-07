@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,18 +19,23 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collections;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
+import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 import com.ibm.ws.microprofile.config13.variableServerXML.web.VariableServerXMLServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -56,6 +61,9 @@ public class VariableServerXMLTest extends FATServletClient {
     @TestServlet(servlet = VariableServerXMLServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests r = RepeatConfigActions.repeatConfig13("ServerXMLVariableServer");
+
     @BeforeClass
     public static void setUp() throws Exception {
         // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
@@ -63,8 +71,12 @@ public class VariableServerXMLTest extends FATServletClient {
         // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
         ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.microprofile.config13.variableServerXML.*");
-
         server.startServer();
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        server.stopServer();
     }
 
     @Test
@@ -77,20 +89,31 @@ public class VariableServerXMLTest extends FATServletClient {
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=varPropertiesOrderTest");
     }
 
+    /**
+     * Copy a server config file to the server root and wait for notification that the server config has been updated
+     *
+     * @param filename
+     * @throws Exception
+     */
+    private void copyConfigFileToLibertyServerRoot(String filename) throws Exception {
+        server.setMarkToEndOfLog();
+        server.copyFileToLibertyServerRoot(filename);
+
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false);
+
+        Thread.sleep(ConfigConstants.DEFAULT_DYNAMIC_REFRESH_INTERVAL * 2); // We need this pause so that the MP config change is picked up through the polling mechanism
+    }
+
     @Test
     public void testChangeVariablesConfig() throws Exception {
+
+        copyConfigFileToLibertyServerRoot("original/variableServerXMLApp.xml");
 
         // run the "before" test to check the value of the variable before the server.xml is updated
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=varPropertiesBeforeTest");
 
-        // switch to new configuration
-        server.copyFileToLibertyServerRoot("refreshVariables/server.xml");
-
-        // Wait for message: "the server configuration was successfully updated"
-        assertNotNull("The server.xml was not updated",
-                      server.waitForStringInLog("CWWKG0017I"));
-        Thread.sleep(1000); // We need this pause so that the config change is picked up through the polling mechanism,
-                            // Something more deterministic would be better.
+        //update the config
+        copyConfigFileToLibertyServerRoot("refreshVariables/variableServerXMLApp.xml");
 
         // run the "after" test to check the value of the variable after the server.xml is updated
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=varPropertiesAfterTest");
@@ -99,28 +122,16 @@ public class VariableServerXMLTest extends FATServletClient {
     @Test
     public void testChangeAppPropertiesConfig() throws Exception {
 
-        // Restart the server
-        server.stopServer();
-        server.startServer();
+        copyConfigFileToLibertyServerRoot("original/variableServerXMLApp.xml");
+
         // run the "before" test to check the value of the variable before the server.xml is updated
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=appPropertiesBeforeTest");
 
-        // switch to new configuration
-        server.copyFileToLibertyServerRoot("refreshAppProperties/server.xml");
-
-        // Wait for message: "the server configuration was successfully updated"
-        assertNotNull("The server.xml was not updated",
-                      server.waitForStringInLog("CWWKG0017I"));
-        Thread.sleep(1000); // We need this pause so that the config change is picked up through the polling mechanism,
-                            // Something more deterministic would be better.
+        //update the config
+        copyConfigFileToLibertyServerRoot("refreshAppProperties/variableServerXMLApp.xml");
 
         // run the "after" test to check the value of the variable after the server.xml is updated
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=appPropertiesAfterTest");
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        server.stopServer();
     }
 
     private void test(LibertyServer server, String testUri) throws Exception {

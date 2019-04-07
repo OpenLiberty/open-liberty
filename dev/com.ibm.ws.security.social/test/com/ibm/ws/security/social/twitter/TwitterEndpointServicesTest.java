@@ -1279,9 +1279,10 @@ public class TwitterEndpointServicesTest extends CommonTestClass {
 
             mockery.checking(new Expectations() {
                 {
+                    one(config).getUseSystemPropertiesForHttpClientConnections();
                     one(config).getSSLSocketFactory();
                     will(returnValue(sslSocketFactory));
-                    one(oauthClientHttpUtil).getToEndpoint(BASIC_URL, new ArrayList<NameValuePair>(), null, null, null, sslSocketFactory, headers, false, null);
+                    one(oauthClientHttpUtil).getToEndpoint(BASIC_URL, new ArrayList<NameValuePair>(), null, null, null, sslSocketFactory, headers, false, null, false);
                 }
             });
 
@@ -1303,9 +1304,10 @@ public class TwitterEndpointServicesTest extends CommonTestClass {
 
             mockery.checking(new Expectations() {
                 {
+                    one(config).getUseSystemPropertiesForHttpClientConnections();
                     one(config).getSSLSocketFactory();
                     will(returnValue(sslSocketFactory));
-                    one(oauthClientHttpUtil).getToEndpoint(BASIC_URL, new ArrayList<NameValuePair>(), null, null, null, sslSocketFactory, headers, false, null);
+                    one(oauthClientHttpUtil).getToEndpoint(BASIC_URL, new ArrayList<NameValuePair>(), null, null, null, sslSocketFactory, headers, false, null, false);
                 }
             });
 
@@ -1329,9 +1331,10 @@ public class TwitterEndpointServicesTest extends CommonTestClass {
 
             mockery.checking(new Expectations() {
                 {
+                    one(config).getUseSystemPropertiesForHttpClientConnections();
                     one(config).getSSLSocketFactory();
                     will(returnValue(sslSocketFactory));
-                    one(oauthClientHttpUtil).getToEndpoint(BASIC_URL, new ArrayList<NameValuePair>(), null, null, null, sslSocketFactory, headers, false, null);
+                    one(oauthClientHttpUtil).getToEndpoint(BASIC_URL, new ArrayList<NameValuePair>(), null, null, null, sslSocketFactory, headers, false, null, false);
                 }
             });
 
@@ -1355,9 +1358,10 @@ public class TwitterEndpointServicesTest extends CommonTestClass {
 
             mockery.checking(new Expectations() {
                 {
+                    one(config).getUseSystemPropertiesForHttpClientConnections();
                     one(config).getSSLSocketFactory();
                     will(returnValue(sslSocketFactory));
-                    one(oauthClientHttpUtil).postToEndpoint(BASIC_URL, new ArrayList<NameValuePair>(), null, null, null, sslSocketFactory, headers, false, null);
+                    one(oauthClientHttpUtil).postToEndpoint(BASIC_URL, new ArrayList<NameValuePair>(), null, null, null, sslSocketFactory, headers, false, null, false);
                 }
             });
 
@@ -1380,9 +1384,10 @@ public class TwitterEndpointServicesTest extends CommonTestClass {
 
             mockery.checking(new Expectations() {
                 {
+                    one(config).getUseSystemPropertiesForHttpClientConnections();
                     one(config).getSSLSocketFactory();
                     will(returnValue(sslSocketFactory));
-                    one(oauthClientHttpUtil).getToEndpoint(BASIC_URL, new ArrayList<NameValuePair>(), null, null, null, sslSocketFactory, headers, false, null);
+                    one(oauthClientHttpUtil).getToEndpoint(BASIC_URL, new ArrayList<NameValuePair>(), null, null, null, sslSocketFactory, headers, false, null, false);
                 }
             });
 
@@ -1410,9 +1415,10 @@ public class TwitterEndpointServicesTest extends CommonTestClass {
 
             mockery.checking(new Expectations() {
                 {
+                    one(config).getUseSystemPropertiesForHttpClientConnections();
                     one(config).getSSLSocketFactory();
                     will(returnValue(sslSocketFactory));
-                    one(oauthClientHttpUtil).getToEndpoint(BASIC_URL, params, null, null, null, sslSocketFactory, headers, false, null);
+                    one(oauthClientHttpUtil).getToEndpoint(BASIC_URL, params, null, null, null, sslSocketFactory, headers, false, null, false);
                 }
             });
 
@@ -1440,9 +1446,10 @@ public class TwitterEndpointServicesTest extends CommonTestClass {
 
             mockery.checking(new Expectations() {
                 {
+                    one(config).getUseSystemPropertiesForHttpClientConnections();
                     one(config).getSSLSocketFactory();
                     will(returnValue(sslSocketFactory));
-                    one(oauthClientHttpUtil).getToEndpoint(BASIC_URL, params, null, null, null, sslSocketFactory, headers, false, null);
+                    one(oauthClientHttpUtil).getToEndpoint(BASIC_URL, params, null, null, null, sslSocketFactory, headers, false, null, false);
                 }
             });
 
@@ -1466,9 +1473,10 @@ public class TwitterEndpointServicesTest extends CommonTestClass {
 
             mockery.checking(new Expectations() {
                 {
+                    one(config).getUseSystemPropertiesForHttpClientConnections();
                     one(config).getSSLSocketFactory();
                     will(returnValue(sslSocketFactory));
-                    one(oauthClientHttpUtil).getToEndpoint(BASIC_URL, new ArrayList<NameValuePair>(), null, null, null, sslSocketFactory, headers, false, null);
+                    one(oauthClientHttpUtil).getToEndpoint(BASIC_URL, new ArrayList<NameValuePair>(), null, null, null, sslSocketFactory, headers, false, null, false);
                 }
             });
 

@@ -32,9 +32,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 /**
  * Metadata obtained by scanning the bytecode of an EJB implementation class.
  */
-public class ByteCodeMetaData
-                extends ClassVisitor
-{
+public class ByteCodeMetaData extends ClassVisitor {
     private static final String CLASS_NAME = ByteCodeMetaData.class.getName();
     static final TraceComponent tc = Tr.register(ByteCodeMetaData.class, "EJBContainer", "com.ibm.ejs.container.container");
     static final TraceComponent tcMetaData = Tr.register(ByteCodeMetaData.class, "MetaData", "com.ibm.ejs.container.container");
@@ -46,12 +44,9 @@ public class ByteCodeMetaData
      * resources from the boot class loader.
      */
     // d742751
-    private static synchronized ClassLoader getBootClassLoader()
-    {
-        if (bootClassLoader == null)
-        {
-            bootClassLoader = new ClassLoader(null)
-            {
+    private static synchronized ClassLoader getBootClassLoader() {
+        if (bootClassLoader == null) {
+            bootClassLoader = new ClassLoader(null) {
                 // Nothing.  We just need a class loader with the null (boot)
                 // class loader as the parent for delegation.
             };
@@ -127,9 +122,8 @@ public class ByteCodeMetaData
      * @param implClass the implementation class
      * @param publicMethods all public methods on the implementation class
      */
-    ByteCodeMetaData(Class<?> implClass, Method[] publicMethods)
-    {
-        super(Opcodes.ASM5);
+    ByteCodeMetaData(Class<?> implClass, Method[] publicMethods) {
+        super(Opcodes.ASM7);
         ivClass = implClass;
         ivPublicMethods = publicMethods;
     }
@@ -137,18 +131,15 @@ public class ByteCodeMetaData
     /**
      * Scan the bytecode of all classes in the hierarchy unless already done.
      */
-    private void scan()
-    {
-        if (ivScanned)
-        {
+    private void scan() {
+        if (ivScanned) {
             return;
         }
 
         ivScanned = true;
 
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        for (Class<?> klass = ivClass; klass != null && klass != Object.class; klass = klass.getSuperclass())
-        {
+        for (Class<?> klass = ivClass; klass != null && klass != Object.class; klass = klass.getSuperclass()) {
             if (isTraceOn && (tc.isDebugEnabled() || tcMetaData.isDebugEnabled()))
                 Tr.debug(tc.isDebugEnabled() ? tc : tcMetaData,
                          "scanning " + klass.getName());
@@ -157,8 +148,7 @@ public class ByteCodeMetaData
             ivCurrentPrivateMethodMetaData = null;
 
             ClassLoader classLoader = klass.getClassLoader();
-            if (classLoader == null)
-            {
+            if (classLoader == null) {
                 classLoader = getBootClassLoader(); // d742751
             }
 
@@ -175,14 +165,12 @@ public class ByteCodeMetaData
                 return;
             }
 
-            try
-            {
+            try {
                 ClassReader classReader = new ClassReader(input);
                 classReader.accept(this, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
             }
             // If the class is malformed, ASM might throw any exception.    d728537
-            catch (Throwable t)
-            {
+            catch (Throwable t) {
                 FFDCFilter.processException(t, CLASS_NAME + ".scan", "168", this,
                                             new Object[] { resourceName, klass, classLoader });
 
@@ -192,13 +180,10 @@ public class ByteCodeMetaData
 
                 ivScanException = t;
                 return;
-            } finally
-            {
-                try
-                {
+            } finally {
+                try {
                     input.close();
-                } catch (IOException ex)
-                {
+                } catch (IOException ex) {
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "error closing input stream", ex);
                 }
@@ -209,8 +194,7 @@ public class ByteCodeMetaData
     /**
      * @return the exception that occurred during scanning, or null
      */
-    public Throwable getScanException()
-    {
+    public Throwable getScanException() {
         return ivScanException;
     }
 
@@ -219,12 +203,10 @@ public class ByteCodeMetaData
      *
      * @param method the bridge method (Modifiers.isBridge returns true)
      */
-    public Method getBridgeMethodTarget(Method method)
-    {
+    public Method getBridgeMethodTarget(Method method) {
         scan();
 
-        if (ivBridgeMethodMetaData == null)
-        {
+        if (ivBridgeMethodMetaData == null) {
             return null;
         }
 
@@ -235,12 +217,10 @@ public class ByteCodeMetaData
     /**
      * @return the metadata for a non-bridge method.
      */
-    public MethodMetaData getByteCodeMethodMetaData(Method method)
-    {
+    public MethodMetaData getByteCodeMethodMetaData(Method method) {
         scan();
 
-        if (Modifier.isPrivate(method.getModifiers()))
-        {
+        if (Modifier.isPrivate(method.getModifiers())) {
             Map<String, MethodMetaData> map = ivPrivateMethodMetaData.get(method.getDeclaringClass().getName());
             return map == null ? null : map.get(method.getName());
         }
@@ -251,8 +231,7 @@ public class ByteCodeMetaData
     /**
      * @return the key for {@link #ivNonPrivateMethodMetaData}
      */
-    private String getNonPrivateMethodKey(Method method)
-    {
+    private String getNonPrivateMethodKey(Method method) {
         return getNonPrivateMethodKey(method.getName(), MethodAttribUtils.jdiMethodSignature(method));
     }
 
@@ -261,8 +240,7 @@ public class ByteCodeMetaData
      * @param desc the method descriptor in JVM format; e.g.: (La/b/c;)V
      * @return the key for {@link #ivNonPrivateMethodMetaData}
      */
-    private String getNonPrivateMethodKey(String methodName, String desc)
-    {
+    private String getNonPrivateMethodKey(String methodName, String desc) {
         return methodName + desc;
     }
 
@@ -270,13 +248,10 @@ public class ByteCodeMetaData
      * @param key the key returned by one of the getNonPrivateMethodKey methods
      * @return the public method from the implementation class
      */
-    Method getPublicMethod(String key)
-    {
-        if (ivPublicMethodMap == null)
-        {
+    Method getPublicMethod(String key) {
+        if (ivPublicMethodMap == null) {
             ivPublicMethodMap = new HashMap<String, Method>();
-            for (Method method : ivPublicMethods)
-            {
+            for (Method method : ivPublicMethods) {
                 ivPublicMethodMap.put(getNonPrivateMethodKey(method), method);
             }
         }
@@ -285,29 +260,23 @@ public class ByteCodeMetaData
     }
 
     @Override
-    public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions)
-    {
+    public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         ivCurrentMethodName = name;
         ivCurrentMethodDesc = desc;
 
         // Scan bridge methods to find their targets.
-        if ((access & Opcodes.ACC_BRIDGE) != 0)
-        {
+        if ((access & Opcodes.ACC_BRIDGE) != 0) {
             int flags = Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC;
-            if ((access & flags) != flags)
-            {
+            if ((access & flags) != flags) {
                 if (TraceComponent.isAnyTracingEnabled() && tcMetaData.isDebugEnabled())
                     Tr.debug(tcMetaData, "visitMethod: " + name + desc + ": non-public/synthetic bridge method");
                 return null;
             }
 
             String key = getNonPrivateMethodKey(name, desc);
-            if (ivBridgeMethodMetaData == null)
-            {
+            if (ivBridgeMethodMetaData == null) {
                 ivBridgeMethodMetaData = new HashMap<String, BridgeMethodMetaData>();
-            }
-            else if (ivBridgeMethodMetaData.containsKey(key))
-            {
+            } else if (ivBridgeMethodMetaData.containsKey(key)) {
                 if (TraceComponent.isAnyTracingEnabled() && tcMetaData.isDebugEnabled())
                     Tr.debug(tcMetaData, "visitMethod: " + name + desc + ": overridden bridge method");
                 return null;
@@ -322,17 +291,14 @@ public class ByteCodeMetaData
         }
 
         // Non-public methods cannot be overridden, so process them separately.
-        if ((access & Opcodes.ACC_PUBLIC) == 0)
-        {
-            if (ivCurrentPrivateMethodMetaData == null)
-            {
+        if ((access & Opcodes.ACC_PUBLIC) == 0) {
+            if (ivCurrentPrivateMethodMetaData == null) {
                 ivCurrentPrivateMethodMetaData = new HashMap<String, MethodMetaData>();
                 ivPrivateMethodMetaData.put(ivCurrentClassName, ivCurrentPrivateMethodMetaData);
             }
 
             Map<String, MethodMetaData> map = ivPrivateMethodMetaData.get(ivCurrentClassName);
-            if (map == null)
-            {
+            if (map == null) {
                 map = new HashMap<String, MethodMetaData>();
                 ivPrivateMethodMetaData.put(ivCurrentClassName, map);
             }
@@ -346,8 +312,7 @@ public class ByteCodeMetaData
         }
 
         String key = getNonPrivateMethodKey(name, desc);
-        if (ivNonPrivateMethodMetaData.containsKey(key))
-        {
+        if (ivNonPrivateMethodMetaData.containsKey(key)) {
             if (TraceComponent.isAnyTracingEnabled() && tcMetaData.isDebugEnabled())
                 Tr.debug(tcMetaData, "visitMethod: " + name + desc + ": overridden");
             return null;
@@ -361,39 +326,29 @@ public class ByteCodeMetaData
         return md;
     }
 
-    private abstract class AbstractMethodVisitor
-                    extends MethodVisitor
-    {
-        public AbstractMethodVisitor()
-        {
-            super(Opcodes.ASM5);
+    private abstract class AbstractMethodVisitor extends MethodVisitor {
+        public AbstractMethodVisitor() {
+            super(Opcodes.ASM7);
         }
 
         @Override
         public abstract void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf);
     }
 
-    class MethodMetaData
-                    extends AbstractMethodVisitor
-    {
+    class MethodMetaData extends AbstractMethodVisitor {
         /**
          * True if the method does not contain any method calls.
          */
         boolean ivTrivial = true;
 
         @Override
-        public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf)
-        {
-            if (TraceComponent.isAnyTracingEnabled() && tcMetaData.isDebugEnabled() && ivTrivial)
-            {
+        public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
+            if (TraceComponent.isAnyTracingEnabled() && tcMetaData.isDebugEnabled() && ivTrivial) {
                 String opcodeName;
                 if (opcode == Opcodes.INVOKEINTERFACE) {
                     opcodeName = "interface";
                 } else {
-                    opcodeName = opcode == Opcodes.INVOKESPECIAL ? "special" :
-                                    opcode == Opcodes.INVOKESTATIC ? "static" :
-                                                    opcode == Opcodes.INVOKEVIRTUAL ? "virtual" :
-                                                                    Integer.toString(opcode);
+                    opcodeName = opcode == Opcodes.INVOKESPECIAL ? "special" : opcode == Opcodes.INVOKESTATIC ? "static" : opcode == Opcodes.INVOKEVIRTUAL ? "virtual" : Integer.toString(opcode);
                     if (itf) {
                         opcodeName += " (interface)";
                     }
@@ -407,8 +362,7 @@ public class ByteCodeMetaData
         }
 
         @Override
-        public void visitInvokeDynamicInsn(String name, String desc, Handle bsm, Object... bsmArgs)
-        {
+        public void visitInvokeDynamicInsn(String name, String desc, Handle bsm, Object... bsmArgs) {
             if (TraceComponent.isAnyTracingEnabled() && tcMetaData.isDebugEnabled() && ivTrivial)
                 Tr.debug(tcMetaData, "non-trivial method " + ivCurrentMethodName + ivCurrentMethodDesc + ": " +
                                      "dynamic [" + bsm.getOwner() + '.' + bsm.getName() + bsm.getDesc() + "] " + name + desc);
@@ -417,32 +371,27 @@ public class ByteCodeMetaData
         }
 
         @Override
-        public void visitEnd()
-        {
+        public void visitEnd() {
             if (TraceComponent.isAnyTracingEnabled() && (tc.isDebugEnabled() || tcMetaData.isDebugEnabled()) && ivTrivial)
                 Tr.debug(tc.isDebugEnabled() ? tc : tcMetaData,
                          "trivial method " + ivCurrentMethodName + ivCurrentMethodDesc);
         }
     }
 
-    private class BridgeMethodMetaData
-                    extends AbstractMethodVisitor
-    {
+    private class BridgeMethodMetaData extends AbstractMethodVisitor {
         Method ivTarget;
 
         @Override
-        public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf)
-        {
+        public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
             ivTarget = getPublicMethod(getNonPrivateMethodKey(name, desc));
         }
 
         @Override
-        public void visitEnd()
-        {
+        public void visitEnd() {
             if (TraceComponent.isAnyTracingEnabled() && (tc.isDebugEnabled() || tcMetaData.isDebugEnabled()) && ivTarget != null)
                 Tr.debug(tc.isDebugEnabled() ? tc : tcMetaData,
                          "bridge method " + ivCurrentMethodName + ivCurrentMethodDesc +
-                                         ", target " + ivTarget);
+                                                                ", target " + ivTarget);
         }
     }
 }

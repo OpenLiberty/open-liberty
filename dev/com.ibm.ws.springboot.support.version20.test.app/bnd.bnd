@@ -15,6 +15,7 @@ src: \
     src/main/java, \
     src/main/resources
 
+test.project: true
 instrument.disabled: true
 publish.wlp.jar.disabled: true
 
@@ -26,8 +27,14 @@ javac.source: 1.8
 javac.target: 1.8
 
 -testpath: \
-	org.springframework:spring-beans;strategy=exact;version=5.0.4.RELEASE, \
-	org.springframework:spring-context;strategy=exact;version=5.0.4.RELEASE, \
-	org.springframework:spring-web;strategy=exact;version=5.0.4.RELEASE, \
-	org.springframework.boot:spring-boot-autoconfigure;version=2.0.0.RELEASE, \
-	org.springframework.boot:spring-boot;version=2.0.0.RELEASE
+	org.springframework:spring-core;strategy=exact;version=5.0.8.RELEASE, \
+	org.springframework:spring-beans;strategy=exact;version=5.0.8.RELEASE, \
+	org.springframework:spring-context;strategy=exact;version=5.0.8.RELEASE, \
+	org.springframework:spring-web;strategy=exact;version=5.0.8.RELEASE, \
+	org.springframework:spring-webmvc;strategy=exact;version=5.0.8.RELEASE, \
+	org.springframework.boot:spring-boot-autoconfigure;version=2.0.4.RELEASE, \
+	org.springframework.boot:spring-boot;version=2.0.4.RELEASE, \
+	org.springframework.security:spring-security-web;strategy=exact;version=5.0.7.RELEASE, \
+	org.springframework.security:spring-security-config;strategy=exact;version=5.0.7.RELEASE, \
+	org.springframework.security:spring-security-core;strategy=exact;version=5.0.7.RELEASE, \
+	com.ibm.websphere.javaee.servlet.3.1

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011 IBM Corporation and others.
+    Copyright (c) 2011, 2018 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -87,6 +87,11 @@
         <AD id="httpOptionsRef" name="%endpoint.httpOptions" description="%endpoint.httpOptions.desc"
             ibm:reference="com.ibm.ws.http.options" ibm:type="pid"
             type="String" required="false" default="defaultHttpOptions" />
+         
+        <AD id="remoteIpRef" name="%endpoint.remoteIp" description="%endpoint.remoteIp.desc"
+            ibm:reference="com.ibm.ws.http.remoteip" ibm:type="pid"
+            type="String" required="false" default="defaultRemoteIp" />   
+        
 
          <!--  n.b.  In these filters, the final e.g. (id=defaultHttpOptions) clause is needed to assure that when the explicitly matched service is removed,
          httpEndpoint falls back to the default immediately _before_ the target filter is changed to the updated one pointing to the default.  Without this clause,
@@ -95,6 +100,11 @@
             ibm:final="true" required="false" type="String"
             default="(|(service.pid=${httpOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.http.options)(|(id=com.ibm.ws.http-${id}/*)(id=defaultHttpOptions))))" /> 
 
+		<AD id="remoteIp.target" name="internal" description="internal use only" 
+            ibm:final="true" required="false" type="String"
+            default="(|(service.pid=${remoteIpRef})(&amp;(service.factoryPid=com.ibm.ws.http.remoteip)(|(id=com.ibm.ws.http-${id}/*)(id=defaultRemoteIp))))" /> 
+
+        
         <AD id="sslOptionsRef" name="%endpoint.sslOptions" description="%endpoint.sslOptions.desc"
             ibm:reference="com.ibm.ws.sslchannel.options" ibm:type="pid"
             type="String" required="false" />            
@@ -153,6 +163,24 @@
         <AD name="%http.autoDecompression" description="%http.autoDecompression.desc"
             id="AutoDecompression" required="false" type="Boolean" default="true" />
             
+        <AD name="%http.limitNumHeaders" description="%http.limitNumHeaders.desc"
+            id="limitNumHeaders" required="false" type="Integer" min="50" max="500" default="500" />
+            
+        <AD name="%http.limitFieldSize" description="%http.limitFieldSize.desc"
+            id="limitFieldSize" required="false" type="Integer" min="50" max="32768" default="32768" />
+            
+        <AD name="%http.doNotAllowDuplicateSetCookies" description="%http.doNotAllowDuplicateSetCookies.desc"
+            id="DoNotAllowDuplicateSetCookies" required="false" type="String" default="false" />
+            
+        <AD name="%http.messageSizeLimit" description="%http.messageSizeLimit.desc"
+            id="MessageSizeLimit" required="false" type="Long" default="-1" />
+            
+        <AD name="%http.incomingBodyBufferSize" description="%http.incomingBodyBufferSize.desc"
+            id="incomingBodyBufferSize" required="false" type="Integer" min="1024" max="1048576" default="32768" />
+            
+        <AD name="%http.throwIOEForInboundConnections" description="%http.throwIOEForInboundConnections.desc"
+            id="ThrowIOEForInboundConnections" required="false" type="Boolean"/>   
+            
         <AD name="%http2.connectionIdleTimeout" description="%http2.connectionIdleTimeout.desc"
 			id="http2ConnectionIdleTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="0" />
 
@@ -173,7 +201,27 @@
     <Designate factoryPid="com.ibm.ws.http.options">
         <Object ocdref="com.ibm.ws.http.options"/>
     </Designate>
+    
+    <OCD name="%http.remoteip" description="%http.remoteip.desc" 
+         id="com.ibm.ws.http.remoteip"
+         ibm:alias="remoteIp"> 
+         
+         <AD name="%http.remoteip.proxies" description="%http.remoteip.proxies.desc"
+         id="proxies" required="false" type="String" default="10.\\d{1\,3}.\\d{1\,3}.\\d{1\,3}|192.168.\\d{1\,3}.\\d{1\,3}|169.254.\\d{1\,3}.\\d{1\,3}|127.\\d{1\,3}.\\d{1\,3}.\\d{1\,3}|172.1[6-9]{1}.\\d{1\,3}.\\d{1\,3}|172.2[0-9]{1}.\\d{1\,3}.\\d{1\,3}|172.3[0-1]{1}.\\d{1\,3}.\\d{1\,3}|0:0:0:0:0:0:0:1|::1"/>
+         
+         <AD name="%http.remoteip.useRemoteIpInAccessLog" description="%http.remoteip.useRemoteIpInAccessLog.desc"
+         id="useRemoteIpInAccessLog" required="false" type="Boolean" default="false" />
+         
+          
+		<AD name="internal" description="internal use only"
+            id="service.ranking" required="false" type="Integer" default="0"/>
 
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.http.remoteip">
+        <Object ocdref="com.ibm.ws.http.remoteip"/>
+    </Designate>
+    
     <OCD name="%http.dispatcher" description="%http.dispatcher.desc" 
          id="com.ibm.ws.http.dispatcher" ibm:alias="httpDispatcher">   
 
@@ -185,6 +233,9 @@
             
         <AD name="%dispatcher.trustedHeaderOrigin" description="%dispatcher.trustedHeaderOrigin.desc"
             id="trustedHeaderOrigin" required="false" type="String" default="*" cardinality="2147483647" />
+
+         <AD name="%dispatcher.trustedSensitiveHeaderOrigin" description="%dispatcher.trustedSensitiveHeaderOrigin.desc"
+            id="trustedSensitiveHeaderOrigin" required="false" type="String" default="none" cardinality="2147483647" />
     </OCD>
 
     <Designate pid="com.ibm.ws.http.dispatcher">

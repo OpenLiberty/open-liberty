@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jose4j.lang.JoseException;
-
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -22,6 +22,7 @@ import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.JwtConsumer;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
+import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
 import com.ibm.ws.security.mp.jwt.impl.DefaultJsonWebTokenImpl;
 
@@ -33,6 +34,7 @@ public class TAIJwtUtils {
     public TAIJwtUtils() {
     }
 
+    @FFDCIgnore(Exception.class)
     public JwtToken createJwt(@Sensitive String idToken, String jwtConfigId) throws MpJwtProcessingException {
         String methodName = "createJwt";
         if (tc.isDebugEnabled()) {
@@ -45,8 +47,12 @@ public class TAIJwtUtils {
             }
             return token;
         } catch (Exception e) {
-            String msg = Tr.formatMessage(tc, "ERROR_CREATING_JWT", new Object[] { jwtConfigId, e.getLocalizedMessage() });
-            Tr.error(tc, msg);
+            String msg = Tr.formatMessage(tc, "ERROR_CREATING_JWT", new Object[] { jwtConfigId, e.getLocalizedMessage() }); //CWWKS5524E
+            if (JwtUtils.isJwtSsoValidationExpiredTokenCodePath()) {
+                Tr.debug(tc, msg);
+            } else {
+                Tr.error(tc, msg);
+            }
             throw new MpJwtProcessingException(msg, e);
         }
     }

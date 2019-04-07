@@ -7,12 +7,12 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Export-Package: \
   com.ibm.ws.microprofile.rest.client.component,\
-  org.apache.cxf.microprofile.client.cdi;version="3.2.4",\
-  org.apache.cxf.microprofile.client;version="3.2.4",\
-  org.apache.cxf.microprofile.client.cdi;version="3.2.4",\
-  org.apache.cxf.microprofile.client.config;version="3.2.4",\
-  org.apache.cxf.microprofile.client.proxy;version="3.2.4",\
-  org.apache.cxf.microprofile.client.spi;thread-context=true;version="3.2.4"
+  org.apache.cxf.microprofile.client.cdi;version="3.2.6",\
+  org.apache.cxf.microprofile.client;version="3.2.6",\
+  org.apache.cxf.microprofile.client.cdi;version="3.2.6",\
+  org.apache.cxf.microprofile.client.config;version="3.2.6",\
+  org.apache.cxf.microprofile.client.proxy;version="3.2.6",\
+  org.apache.cxf.microprofile.client.spi;thread-context=true;version="3.2.6"
 
 Import-Package: \
  javax.annotation;version="[1.2,2)",\
@@ -49,7 +49,8 @@ Import-Package: \
  org.eclipse.microprofile.rest.client.spi;version="[1.0,2)",\
  com.ibm.websphere.ras,\
  com.ibm.wsspi.classloading,\
- com.ibm.ws.cdi.extension;resolution:=optional
+ com.ibm.ws.cdi.extension;resolution:=optional,\
+ com.ibm.ws.jaxrs20.client.configuration
 # org.apache.cxf.jaxrs.provider.jsrjsonp;version="[3.1,4)",\
 
 -dsannotations: com.ibm.ws.microprofile.rest.client.component.*

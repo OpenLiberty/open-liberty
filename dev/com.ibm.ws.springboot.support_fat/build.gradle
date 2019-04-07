@@ -13,7 +13,7 @@
   requiredLibs 'net.sourceforge.cssparser:cssparser:0.9.23',
       'net.sourceforge.htmlunit:htmlunit:2.27',
       'net.sourceforge.htmlunit:htmlunit-core-js:2.27',
-      'org.apache.commons:commons-lang3:3.7',
+      'org.apache.commons:commons-lang3:3.8',
       'org.apache.httpcomponents:httpclient:4.5.4',
       'org.apache.httpcomponents:httpcore:4.4.9',
       'org.apache.httpcomponents:httpmime:4.3.1',
@@ -32,6 +32,15 @@ addRequiredLibraries {
 }
       
 autoFVT.doLast {
+
+  /*
+   * Copy wlp.lib.extract.jar for doing bin/server package command
+   */
+  copy {
+  	from new File('../wlp.lib.extract/build/libs', 'wlp.lib.extract.jar')
+  	into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+  }
+  
   
   /*
    * Copy the test application jars into appropriate test servers.
@@ -49,23 +58,23 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
     copy {
-      from new File('../com.ibm.ws.springboot.support.version15.test.war.app/build/libs/','com.ibm.ws.springboot.support.version15.test.war.app-0.0.1-SNAPSHOT.war')
+      from new File('../com.ibm.ws.springboot.support.version20.test.war.app/build/libs/','com.ibm.ws.springboot.support.version20.test.war.app-0.0.1-SNAPSHOT.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
     copy {
-      from new File('../com.ibm.ws.springboot.support.version15.test.java.app/build/libs/','com.ibm.ws.springboot.support.version15.test.java.app.jar')
+      from new File('../com.ibm.ws.springboot.support.version20.test.java.app/build/libs/','com.ibm.ws.springboot.support.version20.test.java.app-0.0.1-SNAPSHOT.jar')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
     copy {
-      from new File('../com.ibm.ws.springboot.support.version15.test.webanno.app/build/libs/','com.ibm.ws.springboot.support.version15.test.webanno.app.jar')
+      from new File('../com.ibm.ws.springboot.support.version20.test.webanno.app/build/libs/','com.ibm.ws.springboot.support.version20.test.webanno.app-0.0.1-SNAPSHOT.jar')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
     copy {
-      from new File('../com.ibm.ws.springboot.support.version15.test.websocket.app/build/libs/','com.ibm.ws.springboot.support.version15.test.websocket.app.jar')
+      from new File('../com.ibm.ws.springboot.support.version20.test.websocket.app/build/libs/','com.ibm.ws.springboot.support.version20.test.websocket.app-0.0.1-SNAPSHOT.jar')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
     copy {
-      from new File('../com.ibm.ws.springboot.support.version15.test.actuator.app/build/libs/','com.ibm.ws.springboot.support.version15.test.actuator.app.jar')
+      from new File('../com.ibm.ws.springboot.support.version20.test.actuator.app/build/libs/','com.ibm.ws.springboot.support.version20.test.actuator.app-0.0.1-SNAPSHOT.jar')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
     copy {
@@ -76,5 +85,14 @@ autoFVT.doLast {
       from new File('../com.ibm.ws.springboot.support.version20.test.webflux.wrong.version.app/build/libs/','com.ibm.ws.springboot.support.version20.test.webflux.wrong.version.app-0.0.1-SNAPSHOT.jar')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
+    copy {
+      from new File('../com.ibm.ws.springboot.support.version20.test.multi.context.app/build/libs/','com.ibm.ws.springboot.support.version20.test.multi.context.app-0.0.1-SNAPSHOT.jar')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+    copy {
+      from new File('../com.ibm.ws.springboot.support.version21.test.app/build/libs/','com.ibm.ws.springboot.support.version21.test.app-0.0.1-SNAPSHOT.jar')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+    
   }
 }

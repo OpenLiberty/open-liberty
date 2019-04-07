@@ -1,0 +1,25 @@
+<server>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>jdbc-4.0</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}" iiopsPort="${bvt.prop.IIOP.secure}"/>
+
+    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib"/>
+    <library id="DerbyLib" filesetRef="DerbyFileset"/>
+    <fileset id="DerbyFileset" dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+
+    <dataSource id="jdbc/TestDataSource" jndiName="jdbc/TestDataSource" jdbcDriverRef="DerbyEmbedded">
+        <properties databaseName="memory:ejbInjectionFat" createDatabase="create"/>
+    </dataSource>
+	
+    <javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="class,resolve"/>
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+</server>

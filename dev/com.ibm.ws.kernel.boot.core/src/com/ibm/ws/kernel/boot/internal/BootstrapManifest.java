@@ -198,33 +198,43 @@ public class BootstrapManifest {
                     }
                 }
 
-                //sort the files by version (high to low)
-                Collections.sort(systemPackageFileNames, new Comparator<String>() {
-                    @Override
-                    public int compare(String name1, String name2) {
-                        //elements can't be null because we don't allow
-                        //null elements to be added to the list
-                        //use OSGi versions so we can cope easily with, for example, java 10
-                        Version oneVersion = getVersion(name1);
-                        Version twoVersion = getVersion(name2);
-                        //!!NOTE reverse the comparison order to get high to low ordering
-                        return twoVersion.compareTo(oneVersion);
-                    }
-
-                    private Version getVersion(String name) {
-                        //remove the prefix
-                        String version = name.substring(SYSTEM_PKG_PREFIX.length(), name.length());
-                        //remove the suffix
-                        version = version.substring(0, version.indexOf(SYSTEM_PKG_SUFFIX, 0));
-                        return new Version(version);
-                    }
-                });
-
+                int numNames = systemPackageFileNames.size();
                 //if we found any package files then work out the appropriate one
                 //otherwise try the default which will produce a nice error message
-                if (!systemPackageFileNames.isEmpty()) {
+                if (numNames != 0) {
+                    //sort the files by version (high to low)
+                    if (numNames > 1) {
+                        Collections.sort(systemPackageFileNames, new Comparator<String>() {
+                            @Override
+                            public int compare(String name1, String name2) {
+                                //elements can't be null because we don't allow
+                                //null elements to be added to the list
+                                //use OSGi versions so we can cope easily with, for example, java 10
+                                Version oneVersion = getVersion(name1);
+                                Version twoVersion = getVersion(name2);
+                                //!!NOTE reverse the comparison order to get high to low ordering
+                                return twoVersion.compareTo(oneVersion);
+                            }
+
+                            private Version getVersion(String name) {
+                                //remove the prefix
+                                String version = name.substring(SYSTEM_PKG_PREFIX.length(), name.length());
+                                //remove the suffix
+                                version = version.substring(0, version.indexOf(SYSTEM_PKG_SUFFIX, 0));
+                                return new Version(version);
+                            }
+                        });
+                    }
+
                     //check if we have a package file for the version of Java we are using
                     int indexOfPackageFileToUse = systemPackageFileNames.indexOf(pkgListFileName);
+                    // If not found, check for a more generic version string
+                    if (indexOfPackageFileToUse < 0 && javaVersion.indexOf('.') > 0) {
+                        // If exact version match is not found, strip the minor/micro versions leaving just the major version
+                        String genericPkgListFileName = SYSTEM_PKG_PREFIX + javaVersion.split("\\.")[0] + SYSTEM_PKG_SUFFIX;
+                        indexOfPackageFileToUse = systemPackageFileNames.indexOf(genericPkgListFileName);
+                    }
+
                     //if we don't, then we should use the highest available package list instead
                     //unless there are no files at all, we don't worry about the case of not having
                     //a matching file for a lower version because the minimum execution environment
@@ -233,7 +243,7 @@ public class BootstrapManifest {
                         indexOfPackageFileToUse = 0;
                     //cut down the list to be from the current java version to the oldest version
                     //we will read all the files and append the properties to save maintenance effort on the package lists
-                    systemPackageFileNames = systemPackageFileNames.subList(indexOfPackageFileToUse, systemPackageFileNames.size());
+                    systemPackageFileNames = systemPackageFileNames.subList(indexOfPackageFileToUse, numNames);
                 } else {
                     //default system package file name
                     systemPackageFileNames = Arrays.asList(new String[] { pkgListFileName });

@@ -16,7 +16,9 @@ src: \
     test-applications/basic/src,\
     test-applications/beanvalidation/src,\
     test-applications/complex/src,\
+    test-applications/contextandclient/src,\
     test-applications/disable/src,\
+    test-applications/interceptor/src,\
     test-applications/lifecyclemethod/src,\
     test-applications/lifecyclemismatch/src,\
     test-applications/loadonstartup/src,\
@@ -24,12 +26,21 @@ src: \
 
 fat.project: true
 
+# These features get added programatically
+tested.features: \
+  jaxrs-2.1,\
+  cdi-2.0,\
+  beanvalidation-2.0
+
 -buildpath: \
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
     com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
     com.ibm.websphere.javaee.cdi.1.2;version=latest,\
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.websphere.javaee.ejb.3.2;version=latest,\
     com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+    com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
     org.apache.httpcomponents:httpclient;version=4.3.4,\
     org.apache.httpcomponents:httpcore;version=4.3.4,\
     javax.validation:validation-api;version=2.0.1.Final

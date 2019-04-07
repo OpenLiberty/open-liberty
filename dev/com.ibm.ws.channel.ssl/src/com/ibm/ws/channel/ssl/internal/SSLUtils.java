@@ -25,12 +25,10 @@ import javax.net.ssl.SSLEngineResult.Status;
 import javax.net.ssl.SSLException;
 
 import com.ibm.websphere.channelfw.FlowType;
-import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEHelper;
-import com.ibm.ws.channel.ssl.internal.SSLAlpnNegotiator.ThirdPartyAlpnNegotiator;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
@@ -1181,6 +1179,12 @@ public class SSLUtils {
         // Update the engine with the latest config parameters.
         engine.setEnabledCipherSuites(config.getEnabledCipherSuites(engine));
 
+        //Set the configured protocol on the SSLEngine
+        String protocol = config.getSSLProtocol();
+        if (protocol != null) {
+            engine.setEnabledProtocols(new String[] { protocol });
+        }
+
         if (type == FlowType.INBOUND) {
             engine.setUseClientMode(false);
             boolean flag = config.getBooleanProperty(Constants.SSLPROP_CLIENT_AUTHENTICATION);
@@ -1235,12 +1239,13 @@ public class SSLUtils {
                     Tr.debug(tc, "Client auth supported is " + engine.getWantClientAuth());
                 }
             }
+            // enable ALPN support if this is for an inbound connection
+            AlpnSupportUtils.registerAlpnSupport(connLink, engine);
+
         } else {
             // Update engine with client side specific config parameters.
             engine.setUseClientMode(true);
         }
-
-        AlpnSupportUtils.registerAlpnSupport(connLink, engine);
 
         try {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

@@ -46,6 +46,6 @@ public class HibernateTxTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("SRVE9967W"); // Ignore manifest classpath errors from all the third-party libs we're pulling in
     }
 }

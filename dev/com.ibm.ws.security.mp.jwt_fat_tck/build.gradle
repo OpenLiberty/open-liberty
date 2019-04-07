@@ -9,6 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+
 // Define Group:ArtifactId:Version coordinates of each dependency
 dependencies {
   requiredLibs 'javax:javaee-api:7.0'
@@ -27,21 +28,4 @@ dependencies {
   requiredLibs 'javax.inject:javax.inject:1'
   requiredLibs 'org.glassfish:javax.json:1.1'
   requiredLibs 'javax.ws.rs:javax.ws.rs-api:2.0'
-}
-
-buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
-  }
-  dependencies {
-    classpath "gradle.plugin.net.ossindex:ossindex-gradle-plugin:0.3.8-beta"
-  }
-}
-
-apply plugin: "net.ossindex.audit"
-
-audit {
-    failOnError = false
 }

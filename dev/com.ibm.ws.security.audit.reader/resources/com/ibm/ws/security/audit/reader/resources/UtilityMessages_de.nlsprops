@@ -1,0 +1,62 @@
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+#CMVCPATHNAME com.ibm.ws.security.audit.reader/resources/com/ibm/ws/security/audit/reader/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKS
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Fehler: {0}
+error.inputConsoleNotAvailable=Die Eingabekonsole ist nicht verf\u00fcgbar.
+error.missingIO=Fehler. E/A-Einheit fehlt: {0}
+
+usage=Syntax: {0}
+task.unknown=Unbekannte Task: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=Zu viele Argumente vorhanden.
+insufficientArgs=Zu wenige Argumente.
+invalidArg=Das Argument {0} ist ung\u00fcltig.
+invalidValue=Der Wert {0} ist f\u00fcr das Argument {1} ung\u00fcltig.
+missingArg=Das Argument {0} fehlt.
+missingValue=Ein Wert f\u00fcr das Argument {0} fehlt.
+missingArg2=Sie m\u00fcssen das Argument {0} oder das Argument {1} angeben.
+exclusiveArg=Sie m\u00fcssen entweder das Argument {0} oder das Argument {1} angeben, aber nicht beide.
+serverNotFound=Der angegebene Server {0} wurde an der Position {1} nicht gefunden.
+missingArgs= Die folgenden Argumente fehlen: {0} und {1}.
+missingArgs3=Die folgenden Argumente fehlen: {0}, {1} und {2}.
+invalidFileLocations=Der vollst\u00e4ndig qualifizierte Pfad {0}, der f\u00fcr das Argument --auditFileLocation angegeben wurde, entspricht dem vollst\u00e4ndig qualifizierten Pfad {1}, der f\u00fcr das Argument --outputFileLocation angegeben wurde. Beide Pfade m\u00fcssen eindeutig sein.
+invalidURLFormat=Der f\u00fcr das Argument {1} angegebene Wert {0} entspricht nicht dem Format f\u00fcr die vollst\u00e4ndig qualifizierte Datei-URL.
+password.enterText=Kennwort eingeben:
+password.reenterText=Kennwort erneut eingeben:
+password.readError=Fehler beim Lesen des Kennworts.
+password.entriesDidNotMatch=Die Kennw\u00f6rter stimmen nicht \u00fcberein.
+
+audit.NonWriteableOuputFile=Der f\u00fcr --outputFileLocation angegebene Wert {0} ist eine nicht beschreibbare Datei. Stellen Sie sicher, dass die f\u00fcr die Ausgabedatei angegebene Position beschreibbar ist.
+audit.NoKeyStorePasswordValue=Es wurde kein Keystore-Kennwort f\u00fcr den Pr\u00fcfkeystore {0} angegeben.
+audit.MismatchingEncrypt=Das Pr\u00fcfprotokoll {0} ist verschl\u00fcsselt, aber das Argument --encrypted wurde entweder nicht angegeben oder wurde angegeben und ist auf false gesetzt.
+audit.MismatchingSign=Das Pr\u00fcfprotokoll {0} ist signiert, aber das Argument --signed wurde entweder nicht angegeben oder wurde angegeben und ist auf false gesetzt.
+audit.MismatchingEncryptSign=Das Pr\u00fcfprotokoll {0} ist verschl\u00fcsselt und signiert, aber es wurde entweder das Argument --signed oder das Argument --encrypted nicht angegeben oder es wurde angegeben und ist auf false gesetzt.
+security.audit.UnsupportedKeyStoreType=Der Wert f\u00fcr den Keystore-Typ {0} f\u00fcr das Argument {1} wird nicht unterst\u00fctzt.
+security.audit.UnknownHost=Fehler beim Abrufen des Hostnamens der Maschine, auf der das Audit Reader-Dienstprogramm ausgef\u00fchrt wird. 
+security.audit.KeyStoreException=Bei dem Versuch, eine Instanz des Keystores mit dem angegebenen Keystore-Typ und Providertyp abzurufen, wurde eine Ausnahme ausgel\u00f6st.
+security.audit.NoSuchProviderException=Bei dem Versuch, eine Instanz des Keystores mit dem angegebenen Provider abzurufen, wurde eine Ausnahme ausgel\u00f6st. Ein solcher Provider ist nicht vorhanden.
+security.audit.MalformedURLException=Bei dem Versuch, den Keystore zu \u00f6ffnen, wurde eine Ausnahme ausgel\u00f6st. Die Keystore-Position ist fehlerhaft. 
+security.audit.CertificateException=Bei dem Versuch, den Keystore zu laden, wurde eine Zertifikatsausnahme ausgel\u00f6st.
+security.audit.NoSuchAlgorithmException=Beim Laden des Keystores wurde eine Ausnahme ausgel\u00f6st. Es wurde ein bestimmter Verschl\u00fcsselungsalgorithmus angefordert, der jedoch nicht verf\u00fcgbar ist.
+security.audit.FileNotFound=Die benannte Datei {0} ist nicht vorhanden. 
+security.audit.ErrorLoadingKeystore=Fehler beim Laden des Keystores {0}. Das Kennwort wurde m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df angegeben. 
+security.audit.MismatchingEncKeystores=Der Eingabewert {0} f\u00fcr den angegebenen Keystore, der das Zertifikat zum Entschl\u00fcsseln von Pr\u00fcfs\u00e4tzen enthalten soll, stimmt nicht mit dem Keystore {1} \u00fcberein, der im Pr\u00fcfprotokoll angegeben ist.
+security.audit.MismatchingSigningKeystores=Der Eingabewert {0} f\u00fcr den angegebenen Keystore, der das Zertifikat zum Aufheben von Pr\u00fcfsatzsignaturen enthalten soll, stimmt nicht mit dem Keystore {1} \u00fcberein, der im Pr\u00fcfprotokoll angegeben ist.
+security.audit.CannotFindCertificate=Der Zertifikatsaliasname {0} ist nicht im {1}-Keystore vorhanden.

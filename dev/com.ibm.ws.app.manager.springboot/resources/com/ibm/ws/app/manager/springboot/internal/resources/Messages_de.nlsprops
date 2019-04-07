@@ -67,9 +67,7 @@ error.missing.websocket=CWWKC0259E: Die Anwendung konnte nicht gestartet werden,
 error.missing.websocket.explanation=Die Anwendung ist eine WebSocket-Anwendung, die die Konfiguration eines WebSocket-Features in der Datei server.xml voraussetzt.
 error.missing.websocket.useraction=Konfigurieren Sie ein WebSocket-Feature in der Datei server.xml.
 
-error.webflux.not.supported=CWWKC0260E: Die Anwendung kann nicht gestartet werden, weil Spring WebFlux nicht unterst\u00fctzt wird.
-error.webflux.not.supported.explanation=Die Anwendung ist eine WebFlux-Anwendung. Die von Spring WebFlux bereitgestellte Unterst\u00fctzung f\u00fcr reaktive Programmierung wird nicht unterst\u00fctzt.
-error.webflux.not.supported.useraction=Konfigurieren Sie eine Anwendung, die Spring WebFlux f\u00fcr den Server nicht verwendet.
+# CWWKC0260E: GOT REMOVED
 
 warning.spring_config.ignored.compression=CWWKC0261W: Die Komprimierung wurde von der Anwendung aktiviert. Die Komprimierung wird nicht unterst\u00fctzt und die Einstellung wird ignoriert.
 warning.spring_config.ignored.compression.explanation=Die Komprimierung wird nicht unterst\u00fctzt und die Einstellung wird ignoriert, aber die Anwendung funktioniert ansonsten weiterhin.
@@ -78,3 +76,23 @@ warning.spring_config.ignored.compression.useraction=Es ist keine Benutzeraktion
 warning.spring_config.ignored.session=CWWKC0262W: Es wurde ein Sitzungszeitlimit oder Sitzungspersistenz von der Anwendung konfiguriert. Diese sitz Sitzungseinstellungen m\u00fcssen in der Datei server.xml konfiguriert werden.
 warning.spring_config.ignored.session.explanation=Sitzungszeitlimits und Sitzungspersistenz m\u00fcssen in der Datei server.xml konfiguriert werden. Diese Anwendungssitzungseinstellungen werden ignoriert.
 warning.spring_config.ignored.session.useraction=Konfigurieren Sie das Sitzungszeitlimit und die Sitzungspersistenz in der Datei server.xml.
+
+error.wrong.spring.boot.version=CWWKC0263E: Die Spring Boot-Version {0} wird nicht unterst\u00fctzt. Es muss eine Spring Boot-Version aus dem Bereich {1} verwendet werden.
+error.wrong.spring.boot.version.explanation=Es wurde eine Spring Boot-Version gefunden, die vom Server nicht unterst\u00fctzt wird.
+error.wrong.spring.boot.version.useraction=Aktualisieren Sie die Spring Boot-Anwendung so, dass eine Spring Boot-Version aus dem vorausgesetzten Versionsbereich verwendet wird.
+
+warning.application.started.event.timeout=CWWKC0264W: Die {0}-Anwendung hat das {1}-Ereignis nicht in {2} Minuten ausgegeben.
+warning.application.started.event.timeout.explanation=Die Anwendung hat das Startereignis nicht in der erwarteten Zeit ausgegeben. Der Server ist m\u00f6glicherweise \u00fcberlastet oder die Anwendung ist sehr gro\u00df. Wenn die Anwendung als Teil eines Serverstarts startet, wird der Serverstart abgeschlossen, ohne auf den Anwendungsstart zu warten.
+warning.application.started.event.timeout.useraction=Wenn die Anwendung schlie\u00dflich startet, ist keine Aktion erforderlich. Startet die Anwendung nicht, suchen Sie in den Serverprotokollen, ob andere Nachrichten die Ursache f\u00fcr das Problem angeben.
+
+warning.java.version.not.supported=CWWKC0265W: Die aktuelle Java-Version {0} wird von der Spring Boot-Version {1} nicht unterst\u00fctzt. Aktualisieren Sie die Spring Boot-Version der Anwendung auf Version 2.0.x oder h\u00f6her.
+warning.java.version.not.supported.explanation=Java-Versionen, die h\u00f6her sind als Version 1.8 werden von den Spring Boot-Versionen 1.5.x und \u00e4lter nicht unterst\u00fctzt.
+warning.java.version.not.supported.useraction=Aktualisieren Sie die Spring Boot-Version der Anwendung auf Version 2.0.x oder h\u00f6her.
+
+error.invalid.packaged.liberty.jar=CWWKC0265E: Die Anwendung konnte nicht gestartet werden, weil die gepackte Liberty-Server-JAR-Datei nicht g\u00fcltig ist.
+error.invalid.packaged.liberty.jar.explanation=Der gepackten Liberty-Server-JAR-Datei fehlt ein Server-Name-Manifest-Header, Eintr\u00e4ge f\u00fcr das Serverstammverzeichnis oder Eintr\u00e4ge f\u00fcr das lib.index.cache-Verzeichnis.
+error.invalid.packaged.liberty.jar.useraction=Konfigurieren Sie eine g\u00fcltige gepackte Liberty-Server-JAR-Datei.
+
+error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: Die Anwendung konnte nicht gestartet werden, weil die Spring Boot-Anwendung nicht in der gepackten Liberty-Server-JAR-Datei gefunden wurde.
+error.application.not.found.inside.packaged.liberty.jar.explanation=Die gepackte Liberty-Server-JAR-Datei muss eine konfigurierte Spring Boot-Anwendung enthalten.
+error.application.not.found.inside.packaged.liberty.jar.useraction=Konfigurieren Sie eine g\u00fcltige gepackte Liberty-Server-JAR-Datei.

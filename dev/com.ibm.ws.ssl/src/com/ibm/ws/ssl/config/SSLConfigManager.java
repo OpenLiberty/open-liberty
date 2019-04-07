@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 IBM Corporation and others.
+ * Copyright (c) 2007, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -43,8 +42,8 @@ import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.internal.LibertyConstants;
-import com.ibm.ws.ssl.internal.SSLConfigValidator;
 import com.ibm.ws.ssl.provider.AbstractJSSEProvider;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * Class that reads and controls access to SSL configuration objects. It
@@ -87,8 +86,6 @@ public class SSLConfigManager {
 
     private Map<String, String> aliasPIDs = null; // map LDAP ssl ref, example com.ibm.ws.ssl.repertoire_102 to LDAPSettings. Issue 876
 
-    private SSLConfigValidator validator = new SSLConfigValidator();
-
     /**
      * Private constructor, use getInstance().
      */
@@ -109,8 +106,6 @@ public class SSLConfigManager {
      * This method parses the configuration.
      *
      * @param map Global SSL configuration properties, most likely injected from SSLComponent
-     * @param repertoires Map of ID-indexed repertoire properties
-     * @param keystores Map of ID-indexed WSKeySTore objects
      * @param reinitialize Boolean flag to indicate if the configuration should be re-loaded
      * @param isServer Boolean flag to indiciate if the code is running within a server process
      * @param transportSecurityEnabled Boolean flag to indicate if the transportSecurity-1.0 feature is enabled
@@ -118,8 +113,6 @@ public class SSLConfigManager {
      * @throws Exception
      ***/
     public synchronized void initializeSSL(Map<String, Object> map,
-                                           Map<String, Map<String, Object>> repertoires,
-                                           Map<String, WSKeyStore> keystores,
                                            boolean reinitialize,
                                            boolean isServer, boolean transportSecurityEnabled, Map<String, String> aliasPIDs) throws SSLException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -146,122 +139,61 @@ public class SSLConfigManager {
             // get all of the top level properties
             loadGlobalProperties(map);
 
-            // get the keystore objects
-            KeyStoreManager.getInstance().loadKeyStores(keystores);
-
-            // before beginning, get a list of existing aliases so we
-            // can determine if any have been deleted from the current
-            // file.
-            String[] existingAliases = null;
-            Set<String> newAliases = null;
-            String[] existingConnectionInfo = null;
-            Set<String> newConnectionInfo = null;
-            if (reinitialize) {
-                newAliases = new HashSet<String>();
-                Set<String> existing = sslConfigMap.keySet();
-                existingAliases = existing.toArray(new String[existing.size()]);
-
-                if (transportSecurityEnabled) {
-                    newConnectionInfo = new HashSet<String>();
-                    Set<String> existingConnection = outboundSSL.getDynamicSelections().keySet();
-                    existingConnectionInfo = existingConnection.toArray(new String[existingConnection.size()]);
-                }
-            }
-
-            // initialize each SSL configuration into the SSLConfigManager
-            for (Entry<String, Map<String, Object>> repertoire : repertoires.entrySet()) {
-                String alias = repertoire.getKey();
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "initializeSSL on " + alias);
-
-                SSLConfig config = parseSSLConfig(repertoire, reinitialize);
-
-                if (config != null && config.requiredPropertiesArePresent()) {
-                    config.setProperty(Constants.SSLPROP_ALIAS, alias);
-                    config.decodePasswords();
-
-                    if (reinitialize) {
-                        newAliases.add(alias);
-                        SSLConfig oldConfig = sslConfigMap.get(alias);
-
-                        // if old SSLConfig does not exist for this alias, then just add it.
-                        if (oldConfig == null) {
-                            // loaded for the first time (new config added to file)
-                            addSSLConfigToMap(alias, config);
-                        } else {
-                            if (!oldConfig.equals(config)) {
-                                // remove old config
-                                removeSSLConfigFromMap(alias, oldConfig);
-
-                                // add new config
-                                addSSLConfigToMap(alias, config);
-
-                                // notify
-                                notifySSLConfigChangeListener(alias, Constants.CONFIG_STATE_CHANGED);
-                            } else {
-                                // do nothing
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                                    Tr.debug(tc, "New SSL config equals old SSL config for alias: " + alias);
-                            }
-                        }
-                    } else {
-                        // loaded for the first time.
-                        addSSLConfigToMap(alias, config);
-                    }
-                }
-                if (transportSecurityEnabled) {
-                    outboundSSL.loadOutboundConnectionInfo(alias, repertoire.getValue(), newConnectionInfo);
-                }
-            }
-
-            // Now that we are done, look for any deleted aliases based
-            // on the delete between existing aliases and newalias for
-            // this configURL.
-            if (reinitialize) {
-                for (int i = 0; i < existingAliases.length; i++) {
-                    String oldAlias = existingAliases[i];
-                    SSLConfig oldConfig = sslConfigMap.get(oldAlias);
-
-                    // if an old alias exists that does not exist
-                    // from the newly read file AND the old alias
-                    // is from the same configURL as this one, then
-                    // delete it and notify.
-                    if (!newAliases.contains(oldAlias)) {
-                        // remove old config
-                        removeSSLConfigFromMap(oldAlias, oldConfig);
-
-                        // notify
-                        notifySSLConfigChangeListener(oldAlias, Constants.CONFIG_STATE_DELETED);
-                    }
-                }
-
-                if (existingConnectionInfo != null) {
-                    for (int i = 0; i < existingConnectionInfo.length; i++) {
-                        String oldConnectionInfo = existingConnectionInfo[i];
-                        if (!newConnectionInfo.contains(oldConnectionInfo)) {
-                            outboundSSL.removeDynamicSelection(oldConnectionInfo);
-                        }
-                    }
-                }
-            }
-
             //Set the default SSL context
             if (!isTransportSecurityEnabled())
                 setDefaultSSLContext();
 
-        } catch (Exception e) {
+        } catch (
+
+        Exception e) {
             FFDCFilter.processException(e, getClass().getName(), "initializeServerSSL", this);
             throw new SSLException(e);
         }
 
         checkURLHostNameVerificationProperty(reinitialize);
 
-        validator.validate(map, repertoires, keystores);
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Total Number of SSLConfigs: " + sslConfigMap.size());
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "initializeSSL");
+    }
+
+    public synchronized void addSSLPropertiesToMap(Map<String, Object> properties, boolean transportSecurityEnabled) throws Exception {
+        // initialize each SSL configuration into the SSLConfigManager
+        String alias = (String) properties.get(LibertyConstants.KEY_ID);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "initializeSSL on " + alias, properties);
+
+        SSLConfig config = parseSSLConfig(properties, true);
+
+        if (config != null && config.requiredPropertiesArePresent()) {
+            config.setProperty(Constants.SSLPROP_ALIAS, alias);
+            config.decodePasswords();
+
+            addSSLConfigToMap(alias, config);
+        }
+
+        if (transportSecurityEnabled) {
+            Set<String> newConnectionInfo = new HashSet<String>(); // will remove later
+            outboundSSL.loadOutboundConnectionInfo(alias, properties, newConnectionInfo);
+        }
+
+    }
+
+    public synchronized void removeSSLPropertiesFromMap(String alias, boolean transportSecurityEnabled) {
+        // initialize each SSL configuration into the SSLConfigManager
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "removing SSL properties from map " + alias);
+
+        sslConfigMap.remove(alias);
+
+        if (transportSecurityEnabled) {
+            outboundSSL.removeDynamicSelectionsWithSSLConfig(alias);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "remove SSL properties from map: " + alias);
+
     }
 
     /**
@@ -273,6 +205,10 @@ public class SSLConfigManager {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "setDefaultSSLContext");
+
+        if (FrameworkState.isStopping()) {
+            return;
+        }
 
         SSLConfig defaultSSLConfig = getDefaultSSLConfig();
 
@@ -288,27 +224,53 @@ public class SSLConfigManager {
 
     }
 
+    public void resetDefaultSSLContextIfNeeded(Collection<File> modifiedFiles) throws Exception {
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "resetDefaultSSLContextIfNeeded", modifiedFiles);
+
+        String filePath = null;
+        String comparePath = null;
+        for (File modifiedKeystoreFile : modifiedFiles) {
+            try {
+                filePath = modifiedKeystoreFile.getCanonicalPath();
+                comparePath = filePath.replace('\\', '/');
+            } catch (IOException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception comparing file path.");
+                continue;
+            }
+
+            resetDefaultSSLContextIfNeeded(comparePath);
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "resetDefaultSSLContextIfNeeded");
+
+    }
+
     /**
      * Called after all the SSL configuration is processed, set the default SSLContext for the runtime.
      *
      * @throws SSLException
      */
-    public synchronized void resetDefaultSSLContextIfNeeded(Collection<File> modifiedFiles) throws Exception {
+    public synchronized void resetDefaultSSLContextIfNeeded(String modifiedFile) throws Exception {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "resetDefaultSSLContext");
+            Tr.entry(tc, "resetDefaultSSLContextIfNeeded", modifiedFile);
 
         SSLConfig defaultSSLConfig = getDefaultSSLConfig();
 
-        if (defaultSSLConfig != null && keyStoreModified(defaultSSLConfig, modifiedFiles))
+        if (defaultSSLConfig != null && keyStoreModified(defaultSSLConfig, modifiedFile)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Setting new default SSLContext with: " + defaultSSLConfig);
             JSSEProviderFactory.getInstance(null).setServerDefaultSSLContext(defaultSSLConfig);
-        else {
+        } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Modified keystore file are not part of the default SSL configuration.");
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "resetDefaultSSLContext");
+            Tr.exit(tc, "resetDefaultSSLContextIfNeeded");
 
     }
 
@@ -317,30 +279,18 @@ public class SSLConfigManager {
      * @param modifiedFiles
      * @return
      */
-    private boolean keyStoreModified(SSLConfig defaultSSLConfig, Collection<File> modifiedFiles) {
+    private boolean keyStoreModified(SSLConfig defaultSSLConfig, String modifiedFile) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "keyStoreModified");
 
-        try {
-            String ksPropValue = defaultSSLConfig.getProperty(Constants.SSLPROP_KEY_STORE, null);
-            String tsPropValue = defaultSSLConfig.getProperty(Constants.SSLPROP_TRUST_STORE, null);
+        String ksPropValue = defaultSSLConfig.getProperty(Constants.SSLPROP_KEY_STORE, null);
+        String tsPropValue = defaultSSLConfig.getProperty(Constants.SSLPROP_TRUST_STORE, null);
 
-            Iterator itr = modifiedFiles.iterator();
-            while (itr.hasNext()) {
-                File file = (File) itr.next();
-                String path = file.getCanonicalPath();
-                String comparePath = path.replace('\\', '/');
-
-                if ((ksPropValue != null && ksPropValue.equals(comparePath)) ||
-                    (tsPropValue != null && tsPropValue.equals(comparePath))) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                        Tr.exit(tc, "keyStoreModified true");
-                    return true;
-                }
-            }
-        } catch (IOException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Exception comparing file path.");
+        if ((ksPropValue != null && ksPropValue.equals(modifiedFile)) ||
+            (tsPropValue != null && tsPropValue.equals(modifiedFile))) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.exit(tc, "keyStoreModified true");
+            return true;
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -348,7 +298,7 @@ public class SSLConfigManager {
         return false;
     }
 
-    private String getSystemProperty(final String key) {
+    public String getSystemProperty(final String key) {
         return AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
             public String run() {
@@ -361,11 +311,11 @@ public class SSLConfigManager {
      * Helper method to build the SSLConfig properties from the SSLConfig model
      * object.
      */
-    private SSLConfig parseSSLConfig(Entry<String, Map<String, Object>> repertoire, boolean reinitialize) throws Exception {
+    private SSLConfig parseSSLConfig(Map<String, Object> properties, boolean reinitialize) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "parseSSLConfig: " + repertoire.getKey());
+            Tr.entry(tc, "parseSSLConfig: " + properties.get(LibertyConstants.KEY_ID), properties);
 
-        SSLConfig rc = parseSecureSocketLayer(repertoire.getValue(), reinitialize);
+        SSLConfig rc = parseSecureSocketLayer(properties, reinitialize);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "parseSSLConfig");
@@ -489,6 +439,9 @@ public class SSLConfigManager {
         WSKeyStore wsks_trust = null;
         if (null != trustStoreName) {
             wsks_trust = KeyStoreManager.getInstance().getKeyStore(trustStoreName);
+        } else {
+            trustStoreName = (String) map.get(LibertyConstants.KEY_KEYSTORE_REF);
+            wsks_trust = wsks_key;
         }
 
         if (wsks_trust != null) {
@@ -531,17 +484,17 @@ public class SSLConfigManager {
             sslprops.setProperty(Constants.SSLPROP_CONTEXT_PROVIDER, contextProvider);
         }
 
-        String prop = (String) map.get("clientAuthentication");
-        if (null != prop && !prop.isEmpty()) {
-            sslprops.setProperty(Constants.SSLPROP_CLIENT_AUTHENTICATION, Boolean.valueOf(prop).toString());
+        Boolean clientAuth = (Boolean) map.get("clientAuthentication");
+        if (null != clientAuth) {
+            sslprops.setProperty(Constants.SSLPROP_CLIENT_AUTHENTICATION, clientAuth.toString());
         }
 
-        prop = (String) map.get("clientAuthenticationSupported");
-        if (null != prop && !prop.isEmpty()) {
-            sslprops.setProperty(Constants.SSLPROP_CLIENT_AUTHENTICATION_SUPPORTED, Boolean.valueOf(prop).toString());
+        Boolean clientAuthSup = (Boolean) map.get("clientAuthenticationSupported");
+        if (null != clientAuthSup) {
+            sslprops.setProperty(Constants.SSLPROP_CLIENT_AUTHENTICATION_SUPPORTED, clientAuthSup.toString());
         }
 
-        prop = (String) map.get("securityLevel");
+        String prop = (String) map.get("securityLevel");
         if (null != prop && !prop.isEmpty()) {
             sslprops.setProperty(Constants.SSLPROP_SECURITY_LEVEL, prop);
         }
@@ -559,6 +512,11 @@ public class SSLConfigManager {
         prop = (String) map.get("enabledCiphers");
         if (null != prop && !prop.isEmpty()) {
             sslprops.setProperty(Constants.SSLPROP_ENABLED_CIPHERS, prop);
+        }
+
+        prop = (String) map.get("id");
+        if (null != prop && !prop.isEmpty()) {
+            sslprops.setProperty(Constants.SSLPROP_ALIAS, prop);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -669,6 +627,11 @@ public class SSLConfigManager {
             }
             globalConfigProperties.setProperty(prop.getKey(), (String) prop.getValue());
         }
+
+        // Check for dynamic outbound and default config conflicts
+        String outboundDefaultAlias = getGlobalProperty(LibertyConstants.SSLPROP_OUTBOUND_DEFAULT_ALIAS);
+        if (outboundDefaultAlias != null && isTransportSecurityEnabled())
+            outboundSSL.checkDefaultConflict();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "loadGlobalProperties");
@@ -1352,6 +1315,23 @@ public class SSLConfigManager {
     }
 
     /***
+     * This method adds an SSL config to the SSLConfigManager map and list.
+     *
+     * @param alias
+     * @param sslConfig
+     * @throws Exception
+     ***/
+    public synchronized void clearSSLConfigMap() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "clearSSLConfigMap");
+
+        sslConfigMap.clear();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "clearSSLConfigMap");
+    }
+
+    /***
      * This method adds an SSL config from the SSLConfigManager map and list.
      *
      * @param alias
@@ -1364,6 +1344,11 @@ public class SSLConfigManager {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, sslConfig.toString());
+        }
+
+        if (sslConfigMap.containsKey(alias)) {
+            sslConfigMap.remove(alias);
+            outboundSSL.removeDynamicSelectionsWithSSLConfig(alias);
         }
 
         if (validationEnabled())
@@ -1724,7 +1709,4 @@ public class SSLConfigManager {
         return aliasPIDs == null ? null : aliasPIDs.get(aliasPID);
     }
 
-    public void setConfigValidator(SSLConfigValidator validator) {
-        this.validator = validator;
-    }
 }

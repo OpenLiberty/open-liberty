@@ -17,9 +17,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -152,9 +155,10 @@ public class EmbeddedContainerTest {
         File thinAppJar = workingArea.newFile("starterThinJar.jar");
         File appLibsDir = workingArea.newFolder("starterAppLibs");
 
-        SpringBootThinUtil util = new TestThinUtil(fatAppJar, thinAppJar, appLibsDir);
-        util.execute(); // Indirectly exercises SpringBootThinUtil.getStarterFilter() and
-                        // StarterFilter.apply()
+        try (SpringBootThinUtil util = new TestThinUtil(fatAppJar, thinAppJar, appLibsDir)) {
+            util.execute(); // Indirectly exercises SpringBootThinUtil.getStarterFilter() and
+                            // StarterFilter.apply()
+        }
 
         verifyJarLacksArtifacts(thinAppJar, springBoot20TomcatStarterJars);
         verifyDirLacksArtifacts(appLibsDir, springBoot20TomcatStarterJars);
@@ -259,18 +263,40 @@ public class EmbeddedContainerTest {
 
     public File createSourceFatJar(List<String> filePaths, Manifest manifest) throws Exception {
         File fatJar = workingArea.newFile("fat.jar");
+
         JarOutputStream fatJarStream = new JarOutputStream(new FileOutputStream(fatJar), manifest);
+        byte i = 0, j = 0;
         for (String filePath : filePaths) {
             ZipEntry ze = new ZipEntry(filePath);
             fatJarStream.putNextEntry(ze);
             if (!filePath.endsWith(fs)) {
-                // If this is an actual file entry write some data. The content is not
-                // relevant to the test. We only care about the structure of the zip file.
-                fatJarStream.write(new byte[] { 'H', 'e', 'l', 'o' }, 0, 4);
+                if (filePath.endsWith(".jar")) {
+                    byte[] libContent = createBootInfLibContent(manifest, j++);
+                    try (InputStream is = new ByteArrayInputStream(libContent)) {
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = is.read(buffer)) != -1) {
+                            fatJarStream.write(buffer, 0, bytesRead);
+                        }
+                    }
+                } else {
+                    // If this is an actual file entry write some data. The content is not
+                    // relevant to the test. We only care about the structure of the zip file.
+                    fatJarStream.write(new byte[] { 'H', 'e', 'l', 'l', 'o', i++ }, 0, 6);
+                }
             }
         }
         fatJarStream.close();
         return fatJar;
+    }
+
+    private byte[] createBootInfLibContent(Manifest manifest, byte j) throws IOException, FileNotFoundException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try (JarOutputStream libJarStream = new JarOutputStream(out, manifest)) {
+            libJarStream.putNextEntry(new ZipEntry("hello.txt"));
+            libJarStream.write(new byte[] { 'h', 'e', 'l', 'l', '0', j }, 0, 6);
+        }
+        return out.toByteArray();
     }
 
     static <T> Set<T> union(Set<T> s1, Set<T>... sn) {

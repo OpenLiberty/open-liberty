@@ -1,0 +1,39 @@
+<!--
+    Copyright (c) 2018,2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>jndi-1.0</feature>
+        <feature>mpContextPropagation-1.0</feature>
+        <feature>servlet-4.0</feature>
+        <feature>cdi-2.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <jndiEntry jndiName="foo" value="bar"/>
+    
+    <application location="MPConcurrentCDIApp.war">
+        <classloader commonLibraryRef="customContextProviderLib"/>
+    </application>
+
+    <library id="customContextProviderLib">
+        <file name="${server.config.dir}/lib/customContextProviders.jar"/>
+    </library>
+
+    <!-- Needed for application to construct annotation literal -->
+    <javaPermission codebase="${server.config.dir}/apps/MPConcurrentCDIApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <!-- Needed for application to use a ForkJoinPool, access the thread context class loader, and shut down an unmanaged ExecutorService that the test application creates -->
+    <javaPermission codebase="${server.config.dir}/apps/MPConcurrentCDIApp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/apps/MPConcurrentCDIApp.war" className="java.lang.RuntimePermission" name="modifyThread"/>
+    <javaPermission codebase="${server.config.dir}/apps/MPConcurrentCDIApp.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/apps/MPConcurrentCDIApp.war" className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.*" actions="read"/>
+</server>

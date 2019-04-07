@@ -13,136 +13,46 @@ package com.ibm.websphere.microprofile.faulttolerance_fat.tests;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.CircuitBreakerServlet;
 
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 @Mode(TestMode.LITE)
-public class CDICircuitBreakerTest extends LoggingTest {
+@RunWith(FATRunner.class)
+public class CDICircuitBreakerTest extends FATServletClient {
+
+    public static final String SERVER_NAME = "CDIFaultTolerance";
+
+    @Server(SERVER_NAME)
+    @TestServlet(contextRoot = "CDIFaultTolerance", servlet = CircuitBreakerServlet.class)
+    public static LibertyServer server;
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("CDIFaultTolerance");
-
-    @Test
-    public void testCBFailureThresholdWithTimeout() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBFailureThresholdWithTimeout",
-                                         "SUCCESS");
-    }
-
-    @Test
-    public void testCBFailureThresholdWithException() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBFailureThresholdWithException",
-                                         "SUCCESS");
-    }
-
-    @Test
-    public void testCBAsync() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBAsync",
-                                         "SUCCESS");
-    }
-
-    @Test
-    public void testCBAsyncFallback() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBAsyncFallback",
-                                         "SUCCESS");
-    }
-
-    @Test
-    public void testCBSyncFallback() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBSyncFallback",
-                                         "SUCCESS");
-    }
-
-    @Test
-    public void testCBSyncRetryCircuitOpens() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBSyncRetryCircuitOpens",
-                                         "SUCCESS");
-    }
-
-    @Test
-    public void testCBSyncRetryCircuitClosed() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBSyncRetryCircuitClosed",
-                                         "SUCCESS");
-    }
-
-    @Test
-    public void testCBAsyncRetryCircuitOpens() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBAsyncRetryCircuitOpens",
-                                         "SUCCESS");
-    }
-
-    @Test
-    public void testCBAsyncRetryCircuitClosed() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBAsyncRetryCircuitClosed",
-                                         "SUCCESS");
-    }
-
-    @Test
-    public void testCBFailureThresholdWithRoll() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBFailureThresholdWithRoll",
-                                         "SUCCESS");
-    }
-
-    @Test
-    public void testCBFailureThresholdConfig() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBFailureThresholdConfig",
-                                         "SUCCESS");
-    }
-
-    @Test
-    public void testCBFailureThresholdClassScopeConfig() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBFailureThresholdClassScopeConfig",
-                                         "SUCCESS");
-    }
-
-    @Test
-    public void testCBDelayConfig() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBDelayConfig",
-                                         "SUCCESS");
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
+    public static RepeatTests r = RepeatFaultTolerance.repeatDefault(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {
-        if (!SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().startServer();
-        }
-
+        server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        if (SHARED_SERVER != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            /*
-             * Ignore following exception as those are expected:
-             * CWWKC1101E: The task com.ibm.ws.microprofile.faulttolerance.cdi.FutureTimeoutMonitor@3f76c259, which was submitted to executor service
-             * managedScheduledExecutorService[DefaultManagedScheduledExecutorService], failed with the following error:
-             * org.eclipse.microprofile.faulttolerance.exceptions.FTTimeoutException: java.util.concurrent.TimeoutException
-             */
-            SHARED_SERVER.getLibertyServer().stopServer("CWWKC1101E");
-        }
+        /*
+         * Ignore following exception as those are expected:
+         * CWWKC1101E: The task com.ibm.ws.microprofile.faulttolerance.cdi.FutureTimeoutMonitor@3f76c259, which was submitted to executor service
+         * managedScheduledExecutorService[DefaultManagedScheduledExecutorService], failed with the following error:
+         * org.eclipse.microprofile.faulttolerance.exceptions.FTTimeoutException: java.util.concurrent.TimeoutException
+         */
+        server.stopServer("CWWKC1101E");
     }
 }

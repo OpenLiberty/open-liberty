@@ -14,51 +14,48 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
 
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 @Mode(TestMode.LITE)
-public class TxRetryTest extends LoggingTest {
+@RunWith(FATRunner.class)
+public class TxRetryTest extends FATServletClient {
+
+    private static final String SERVER_NAME = "TxFaultTolerance";
+
+    @Server(SERVER_NAME)
+    public static LibertyServer server;
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("TxFaultTolerance");
+    public static RepeatTests r = RepeatFaultTolerance.repeatDefault(SERVER_NAME);
 
     @Test
     public void testRetrySingleTran() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/TxFaultTolerance/retry?testMethod=testRetrySingleTran",
-                                         "SUCCESS");
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
+        runTest(server, "TxFaultTolerance/retry", "testRetrySingleTran");
     }
 
     @BeforeClass
     public static void setUp() throws Exception {
-        if (!SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().startServer();
-        }
-
+        server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        if (SHARED_SERVER != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            /*
-             * Ignore following exception as those are expected:
-             * CWWKC1101E: The task com.ibm.ws.microprofile.faulttolerance.cdi.FutureTimeoutMonitor@3f76c259, which was submitted to executor service
-             * managedScheduledExecutorService[DefaultManagedScheduledExecutorService], failed with the following error:
-             * org.eclipse.microprofile.faulttolerance.exceptions.FTTimeoutException: java.util.concurrent.TimeoutException
-             */
-            SHARED_SERVER.getLibertyServer().stopServer("CWWKC1101E");
-        }
+        /*
+         * Ignore following exception as those are expected:
+         * CWWKC1101E: The task com.ibm.ws.microprofile.faulttolerance.cdi.FutureTimeoutMonitor@3f76c259, which was submitted to executor service
+         * managedScheduledExecutorService[DefaultManagedScheduledExecutorService], failed with the following error:
+         * org.eclipse.microprofile.faulttolerance.exceptions.FTTimeoutException: java.util.concurrent.TimeoutException
+         */
+        server.stopServer("CWWKC1101E");
     }
 }

@@ -105,6 +105,38 @@ garbageCollectionCount.description=Affiche le nombre total de collections qui se
 garbageCollectionTime.description=Affiche le temps approximatif \u00e9coul\u00e9 pour la collection accumul\u00e9e en millisecondes. Cet attribut affiche -1 si le temps \u00e9coul\u00e9 pour la collection est ind\u00e9fini pour ce collecteur. L'impl\u00e9mentation de la machine virtuelle Java peut utiliser un temporisateur haute r\u00e9solution pour mesurer le temps \u00e9coul\u00e9. Cet attribut peut afficher la m\u00eame valeur m\u00eame si le nombre de collections a \u00e9t\u00e9 incr\u00e9ment\u00e9 si le temps \u00e9coul\u00e9 pour la collection est tr\u00e8s court.
 
 #-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+threadpool.activeThreads.description=Nombre d'unit\u00e9s d'ex\u00e9cution ex\u00e9cutant des t\u00e2ches.
+threadpool.size.description=Taille du pool d'unit\u00e9s d'ex\u00e9cution.
+
+servlet.request.total.description=Nombre de visites sur ce servlet depuis le d\u00e9marrage du serveur.
+servlet.responseTime.total.description=Temps de r\u00e9ponse total de ce servlet depuis le d\u00e9marrage du serveur.
+
+connectionpool.create.total.description=Nombre total de connexions g\u00e9r\u00e9es qui ont \u00e9t\u00e9 cr\u00e9\u00e9es depuis la cr\u00e9ation du pool.
+connectionpool.destroy.total.description=Nombre total de connexions g\u00e9r\u00e9es qui ont \u00e9t\u00e9 d\u00e9truites depuis la cr\u00e9ation du pool.
+connectionpool.managedConnections.description=Nombre de connexions g\u00e9r\u00e9es dans les pools libres, partag\u00e9s et non partag\u00e9s.
+connectionpool.connectionHandles.description=Nombre de connexions utilis\u00e9es. Il peut inclure plusieurs connexions partag\u00e9es \u00e0 partir d'une seule connexion g\u00e9r\u00e9e.
+connectionpool.freeConnections.description=Nombre de connexions g\u00e9r\u00e9es dans le pool libre.
+connectionpool.waitTime.total.description=Le temps total d'attente sur l'ensemble des demandes de connexion depuis que le serveur a d\u00e9marr\u00e9.
+connectionpool.inUseTime.total.description=Le temps total d'utilisation de l'ensemble des connexions depuis que le serveur a d\u00e9marr\u00e9.
+connectionpool.usedConnections.total.description=Le nombre total de demandes de connexion qui ont attendu en raison d'un pool de connexions complet ou qui n'ont pas eu \u00e0 attendre, depuis que le serveur a d\u00e9marr\u00e9. Ce total ne tient pas compte des connexions actuellement utilis\u00e9es.
+connectionpool.queuedRequests.total.description=Le nombre total de demandes de connexion qui ont d\u00fb attendre en raison d'un pool de connexions complet, depuis que le serveur a d\u00e9marr\u00e9.
+
+session.create.total.description=Nombre de sessions connect\u00e9es depuis l'activation de la m\u00e9trique.
+session.liveSessions.description=Nombre d'utilisateurs actuellement connect\u00e9s.
+session.activeSessions.description=Nombre de sessions actives simultan\u00e9ment. (Une session est active si le produit est en train de traiter une demande qui utilise cette session utilisateur).
+session.invalidated.total.description=Nombre de sessions d\u00e9connect\u00e9es depuis l'activation de cette m\u00e9trique.
+session.invalidatedbyTimeout.total.description=Nombre de sessions d\u00e9connect\u00e9es suite au d\u00e9passement du d\u00e9lai d'attente depuis l'activation de cette m\u00e9trique.
+
+jaxws.invocations.total.description=Le nombre d'appels \u00e0 ce point d'extr\u00e9mit\u00e9 ou \u00e0 cette op\u00e9ration.
+jaxws.checkedApplicationFaults.total.description=Le nombre de d\u00e9fauts d'application v\u00e9rifi\u00e9s.
+jaxws.logicalRuntimeFaults.total.description=Le nombre de d\u00e9fauts d'ex\u00e9cution logiques.
+jaxws.runtimeFaults.total.description=Le nombre de d\u00e9fauts d'ex\u00e9cution.
+jaxws.uncheckedApplicationFaults.total.description=Le nombre de d\u00e9fauts d'application non v\u00e9rifi\u00e9s.
+jaxws.responseTime.total.description=Temps total de traitement des r\u00e9ponses depuis que le serveur a d\u00e9marr\u00e9.
+
+#-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------
 

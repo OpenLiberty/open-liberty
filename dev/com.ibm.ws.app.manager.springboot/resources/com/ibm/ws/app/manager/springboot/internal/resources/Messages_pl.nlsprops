@@ -67,9 +67,7 @@ error.missing.websocket=CWWKC0259E: Uruchomienie aplikacji nie powiod\u0142o si\
 error.missing.websocket.explanation=Aplikacja jest aplikacj\u0105 WWW i wymaga skonfigurowania sk\u0142adnika websocket w pliku server.xml.
 error.missing.websocket.useraction=Skonfiguruj sk\u0142adnik websocket w pliku server.xml.
 
-error.webflux.not.supported=CWWKC0260E: Nie mo\u017cna uruchomi\u0107 aplikacji, poniewa\u017c sk\u0142adnik Spring WebFlux nie jest obs\u0142ugiwany.
-error.webflux.not.supported.explanation=Ta aplikacja jest aplikacj\u0105 WebFlux. Funkcja programowania reaktywnego udost\u0119pniana przez sk\u0142adnik Spring WebFlux nie jest obs\u0142ugiwana.
-error.webflux.not.supported.useraction=Skonfiguruj aplikacj\u0119, kt\u00f3ra nie u\u017cywa sk\u0142adnika Spring WebFlux z tym serwerem.
+# CWWKC0260E: GOT REMOVED
 
 warning.spring_config.ignored.compression=CWWKC0261W: Kompresja zosta\u0142a w\u0142\u0105czona przez aplikacj\u0119. Kompresja nie jest obs\u0142ugiwana, a to ustawienie zostanie zignorowane.
 warning.spring_config.ignored.compression.explanation=Kompresja nie jest obs\u0142ugiwana, a to ustawienie zostanie zignorowane, ale aplikacja b\u0119dzie nadal dzia\u0142a\u0107.
@@ -78,3 +76,23 @@ warning.spring_config.ignored.compression.useraction=Nie jest wymagana \u017cadn
 warning.spring_config.ignored.session=CWWKC0262W: Aplikacja skonfigurowa\u0142a limit czasu sesji lub utrwalanie sesji. Te ustawienia sesji musz\u0105 by\u0107 skonfigurowane w pliku server.xml.
 warning.spring_config.ignored.session.explanation=Ustawienia limitu czasu sesji i utrwalania sesji musz\u0105 by\u0107 skonfigurowane w pliku server.xml. Te ustawienia aplikacji zostan\u0105 zignorowane.
 warning.spring_config.ignored.session.useraction=Skonfiguruj ustawienia limitu czasu sesji i utrwalania sesji w pliku server.xml.
+
+error.wrong.spring.boot.version=CWWKC0263E: Wersja {0} aplikacji Spring Boot nie jest obs\u0142ugiwana. Wymagana jest wersja aplikacji Spring Boot z zakresu {1}.
+error.wrong.spring.boot.version.explanation=Wykryto wersj\u0119 aplikacji Spring Boot, kt\u00f3ra nie jest obs\u0142ugiwana przez serwer.
+error.wrong.spring.boot.version.useraction=Zaktualizuj aplikacj\u0119 Spring Boot tak, aby by\u0142a u\u017cywana jej wersja nale\u017c\u0105ca do wymaganego zakresu wersji.
+
+warning.application.started.event.timeout=CWWKC0264W: Aplikacja {0} nie wys\u0142a\u0142a zdarzenia {1} w ci\u0105gu {2} min.
+warning.application.started.event.timeout.explanation=Aplikacja nie wys\u0142a\u0142a zdarzenia pocz\u0105tkowego w oczekiwanym czasie. Mo\u017cliwe, \u017ce serwer jest przeci\u0105\u017cony lub aplikacja jest du\u017ca. Je\u015bli ta aplikacja jest uruchamiana podczas uruchamiania serwera, serwer mo\u017ce zosta\u0107 uruchomiony bez oczekiwania na uruchomienie aplikacji.
+warning.application.started.event.timeout.useraction=Je\u015bli aplikacja zostanie w ko\u0144cu uruchomiona, nie jest wymagane \u017cadne dzia\u0142anie. Je\u015bli aplikacja nie zostanie uruchomiona, sprawd\u017a w dziennikach serwera, czy inne komunikaty wskazuj\u0105 przyczyn\u0119.
+
+warning.java.version.not.supported=CWWKC0265W: Bie\u017c\u0105ca wersja \u015brodowiska Java {0} nie jest obs\u0142ugiwana przez \u015brodowisko Spring Boot w wersji {1}. Zaktualizuj wersj\u0119 \u015brodowiska Spring Boot aplikacji do wersji 2.0.x lub nowszej.
+warning.java.version.not.supported.explanation=Wersje \u015brodowiska Java nowsze ni\u017c 1.8 nie s\u0105 obs\u0142ugiwane przez \u015brodowisko Spring Boot w wersji 1.5.x i starsze.
+warning.java.version.not.supported.useraction=Zaktualizuj wersj\u0119 \u015brodowiska Spring Boot aplikacji do wersji 2.0.x lub nowszej.
+
+error.invalid.packaged.liberty.jar=CWWKC0265E: Uruchomienie aplikacji nie powiod\u0142o si\u0119, poniewa\u017c spakowany plik JAR serwera Liberty jest niepoprawny.
+error.invalid.packaged.liberty.jar.explanation=W spakowanym pliku JAR serwera Liberty brakuje nag\u0142\u00f3wka manifestu Server-Name, wpis\u00f3w dotycz\u0105cych katalogu g\u0142\u00f3wnego serwera lub wpis\u00f3w dotycz\u0105cych katalogu lib.index.cache.
+error.invalid.packaged.liberty.jar.useraction=Skonfiguruj poprawny spakowany plik JAR serwera Liberty.
+
+error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: Uruchomienie aplikacji nie powiod\u0142o si\u0119, poniewa\u017c aplikacja Spring Boot nie zosta\u0142a znaleziona w spakowanym pliku JAR serwera Liberty.
+error.application.not.found.inside.packaged.liberty.jar.explanation=Spakowany plik JAR serwera Liberty musi zawiera\u0107 skonfigurowan\u0105 aplikacj\u0119 Spring Boot.
+error.application.not.found.inside.packaged.liberty.jar.useraction=Skonfiguruj poprawny spakowany plik JAR serwera Liberty.

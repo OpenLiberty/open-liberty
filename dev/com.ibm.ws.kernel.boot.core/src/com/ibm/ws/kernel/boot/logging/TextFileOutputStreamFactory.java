@@ -13,6 +13,9 @@ package com.ibm.ws.kernel.boot.logging;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 /**
  * This is a factory that creates and returns FileOutputStreams for the provided
@@ -61,28 +64,64 @@ public class TextFileOutputStreamFactory {
     /**
      * @see FileOutputStream#FileOutputStream(File)
      */
-    public static FileOutputStream createOutputStream(File file) throws IOException {
-        return DelegateHolder.delegate.createOutputStream(file);
+    public static FileOutputStream createOutputStream(final File file) throws IOException {
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<FileOutputStream>() {
+                @Override
+                public FileOutputStream run() throws IOException {
+                    return DelegateHolder.delegate.createOutputStream(file);
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (IOException) e.getException();
+        }
     }
 
     /**
      * @see FileOutputStream#FileOutputStream(File, boolean)
      */
-    public static FileOutputStream createOutputStream(File file, boolean append) throws IOException {
-        return DelegateHolder.delegate.createOutputStream(file, append);
+    public static FileOutputStream createOutputStream(final File file, final boolean append) throws IOException {
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<FileOutputStream>() {
+                @Override
+                public FileOutputStream run() throws IOException {
+                    return DelegateHolder.delegate.createOutputStream(file, append);
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (IOException) e.getException();
+        }
     }
 
     /**
      * @see FileOutputStream#FileOutputStream(String)
      */
-    public static FileOutputStream createOutputStream(String name) throws IOException {
-        return DelegateHolder.delegate.createOutputStream(name);
+    public static FileOutputStream createOutputStream(final String name) throws IOException {
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<FileOutputStream>() {
+                @Override
+                public FileOutputStream run() throws IOException {
+                    return DelegateHolder.delegate.createOutputStream(name);
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (IOException) e.getException();
+        }
     }
 
     /**
      * @see FileOutputStream#FileOutputStream(String, boolean)
      */
-    public static FileOutputStream createOutputStream(String name, boolean append) throws IOException {
-        return DelegateHolder.delegate.createOutputStream(name, append);
+    public static FileOutputStream createOutputStream(final String name, final boolean append) throws IOException {
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<FileOutputStream>() {
+                @Override
+                public FileOutputStream run() throws IOException {
+                    return DelegateHolder.delegate.createOutputStream(name, append);
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (IOException) e.getException();
+        }
     }
 }

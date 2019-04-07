@@ -30,15 +30,19 @@
 # -------------------------------------------------------------------------------------------------
 
 # OSGI Log Message
-OSGI_MSG001={0} {1} {2} {3} {4}
-OSGI_MSG001.explanation=Se ha registrado un mensaje informativo utilizando el servicio de registro OSGi
+OSGI_MSG001=CWWKE0703I: {0} {1} {2} {3}
+OSGI_MSG001.explanation=Se ha registrado un mensaje informativo utilizando el servicio de registro OSGi.
 OSGI_MSG001.useraction=No se requiere ninguna acci\u00f3n.
 
-OSGI_WARNING_MSG=CWWKE0700W: {0} {1} {2} {3} {4}
+OSGI_AUDIT_MSG=CWWKE0704A: {0} {1} {2} {3}
+OSGI_AUDIT_MSG.explanation=Se ha registrado un mensaje de auditor\u00eda utilizando el servicio de registro OSGi.
+OSGI_AUDIT_MSG.useraction=No se requiere ninguna acci\u00f3n.
+
+OSGI_WARNING_MSG=CWWKE0700W: {0} {1} {2} {3}
 OSGI_WARNING_MSG.explanation=Se ha registrado un mensaje de aviso utilizando el servicio de registro OSGi.
 OSGI_WARNING_MSG.useraction=Consulte el mensaje de aviso para obtener informaci\u00f3n.
 
-OSGI_ERROR_MSG=CWWKE0701E: {0} {1} {2} {3} {4}
+OSGI_ERROR_MSG=CWWKE0701E: {0} {1} {2} {3}
 OSGI_ERROR_MSG.explanation=Se ha registrado un mensaje de error utilizando el servicio de registro OSGi.
 OSGI_ERROR_MSG.useraction=Consulte el mensaje de error para obtener informaci\u00f3n.
 

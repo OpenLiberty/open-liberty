@@ -771,6 +771,14 @@ ERROR_UNKNOWN_OSLIST_VALUE=CWWKF1387E: The value {0} is not a valid entry for th
 ERROR_UNKNOWN_OSLIST_VALUE.explanation=This value will be ignored as it is not a recognized operating system name.
 ERROR_UNKNOWN_OSLIST_VALUE.useraction=Please modify or remove this value from the feature manifest file.
 
+ERROR_ESA_NOT_FOUND=CWWKF1388E: The specified ESA file {0} did not contain any features.
+ERROR_ESA_NOT_FOUND.explanation=A feature will not be installed from the ESA file.
+ERROR_ESA_NOT_FOUND.useraction=Ensure that the individual ESA file provided is valid and contains a feature.
+
+ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: Unable to create a JSON file at {0} for the ESA file {1}.
+ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=The feature in the ESA file will not be installed.
+ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Ensure that write access is available for the directory where the JSON file will be created.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: The feature has been successfully downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=The feature was downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=No action is required.

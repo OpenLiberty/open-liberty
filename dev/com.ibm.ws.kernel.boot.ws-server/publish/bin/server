@@ -2,7 +2,7 @@
 ###############################################################################
 # WebSphere Application Server liberty launch script
 #
-# Copyright IBM Corp. 2011, 2017
+# Copyright IBM Corp. 2011, 2019
 # The source code for this program is not published or other-
 # wise divested of its trade secrets, irrespective of what has
 # been deposited with the U.S. Copyright Office.
@@ -49,6 +49,11 @@
 #
 # WLP_DEBUG_ADDRESS - The port to use when running the server in debug mode.
 #              The default value is 7777.
+#
+# WLP_DEBUG_SUSPEND - Whether to suspend the jvm on startup or not. This can be
+#              set to y to suspend the jvm on startup until a debugger attaches,
+#              or set to n to startup without waiting for a debugger to attach.
+#              The default value is y. 
 #
 # WLP_SKIP_UMASK -  Skip setting the umask value to allow the default value 
 #                   to be used.
@@ -161,7 +166,13 @@ safeEcho()
   cat <<EOF
 $*
 EOF
+
+  return $?
 }
+
+# Starting the server with a full tmp directory may prevent the server from
+# reading server.env during startup.
+safeEcho "" || exit $?
 
 # Define escapeForEval functions using ${var//find/replace} and ${var#suffix}
 # if possible since those constructs are significantly faster than safeEcho+sed
@@ -570,16 +581,16 @@ serverEnvDefaults()
   *)
     if $shareclassesCacheDirPerm
     then
-      SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\",cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx60m -Xscmaxaot8m ${IBM_JAVA_OPTIONS}"
+      SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\",cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx80m ${IBM_JAVA_OPTIONS}"
     else
-      SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\" -XX:ShareClassesEnableBCI -Xscmx60m -Xscmaxaot8m ${IBM_JAVA_OPTIONS}"
+      SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\" -XX:ShareClassesEnableBCI -Xscmx80m ${IBM_JAVA_OPTIONS}"
     fi
   esac
 
   # Add -Xquickstart -Xnoaot for client JVMs only.  AOT is ineffective if JVMs
   # have conflicting options, and it's more important that the server JVMs be
   # able to use AOT.
-  IBM_JAVA_OPTIONS="-Xquickstart -Xnoaot ${SERVER_IBM_JAVA_OPTIONS}"
+  IBM_JAVA_OPTIONS="-Xquickstart -Xnoaot ${IBM_JAVA_OPTIONS}"
   export IBM_JAVA_OPTIONS
 
   # Set a default file encoding if needed
@@ -777,10 +788,26 @@ javaCmd()
 {
   JAVA_CMD_LOG=$1
   shift
+  
+  # Filter all of the -D and -X arguments off of the argument line and add them to $JVM_OPTIONS_QUOTED
+  REMAINING_ARGS=""
+  for option in "$@"; do
+    if [ -n "${option}" ]; then
+      if [ -z "${option##-D*}" ] || [ -z "${option##-X*}" ]; then
+        JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED '$option'"
+      elif [ -z "$REMAINING_ARGS" ] ; then
+        REMAINING_ARGS="$option"
+      else
+        REMAINING_ARGS="$REMAINING_ARGS $option"
+      fi
+    else
+      REMAINING_ARGS="$REMAINING_ARGS $option"
+    fi
+  done
 
   # Set all the parameters for the java command.  We use eval so that each line
   # in jvm.options is treated as a distinct argument.
-  eval "set -- ${JAVA_AGENT_QUOTED} ${JVM_OPTIONS_QUOTED} ${JAVA_DEBUG} ${JVM_ARGS} -jar ${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-server.jar "'"$@"'
+  eval "set -- ${JAVA_AGENT_QUOTED} ${JVM_OPTIONS_QUOTED} ${JAVA_DEBUG} ${JVM_ARGS} -jar ${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-server.jar ""$REMAINING_ARGS"
   ARGS="$@"
 
   # Do not add extra logic after the commands without preserving $?
@@ -1029,7 +1056,11 @@ case "$ACTION" in
         then
           WLP_DEBUG_ADDRESS=7777
         fi
-        JAVA_DEBUG="-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=${WLP_DEBUG_ADDRESS}"
+        if [ -z "${WLP_DEBUG_SUSPEND}" ]
+        then
+          WLP_DEBUG_SUSPEND=y
+        fi
+        JAVA_DEBUG="-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=${WLP_DEBUG_SUSPEND},address=${WLP_DEBUG_ADDRESS}"
       fi
 
       serverWorkingDirectory

@@ -115,7 +115,7 @@ public abstract class CoreServiceImplTestParent {
      */
     private static final int FUDGE_TIME = 160;
 
-    private static final int DEFAULT_TIME_INTERVAL = 100;
+    private static final int DEFAULT_TIME_INTERVAL = 1000;
 
     private static final int TIME_OUT = 60000; // 1 minute
     private final Synchroniser synchroniser = new Synchroniser();

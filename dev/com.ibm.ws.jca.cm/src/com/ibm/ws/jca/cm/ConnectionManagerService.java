@@ -18,8 +18,8 @@ import java.util.Observable;
 import javax.resource.ResourceException;
 import javax.resource.spi.ConnectionManager;
 
-import com.ibm.ejs.j2c.J2CConstants;
 import com.ibm.ejs.j2c.ConnectionManagerServiceImpl;
+import com.ibm.ejs.j2c.J2CConstants;
 import com.ibm.wsspi.resource.ResourceInfo;
 
 /**
@@ -71,22 +71,29 @@ public abstract class ConnectionManagerService extends Observable {
     /**
      * List of connectionManager properties.
      */
-    public static final List<String> CONNECTION_MANAGER_PROPS =
-                    Collections.unmodifiableList(Arrays.asList(
-                                                               J2CConstants.POOL_AgedTimeout,
-                                                               J2CConstants.POOL_ConnectionTimeout,
-                                                               MAX_IDLE_TIME,
-                                                               MAX_CONNECTIONS_PER_THREAD,
-                                                               MAX_POOL_SIZE,
-                                                               MIN_POOL_SIZE,
-                                                               NUM_CONNECTIONS_PER_THREAD_LOCAL,
-                                                               J2CConstants.POOL_PurgePolicy,
-                                                               J2CConstants.POOL_ReapTime
-                                    ));
+    public static final List<String> CONNECTION_MANAGER_PROPS = Collections.unmodifiableList(Arrays.asList(
+                                                                                                           J2CConstants.POOL_AgedTimeout,
+                                                                                                           J2CConstants.POOL_ConnectionTimeout,
+                                                                                                           MAX_IDLE_TIME,
+                                                                                                           MAX_CONNECTIONS_PER_THREAD,
+                                                                                                           MAX_POOL_SIZE,
+                                                                                                           MIN_POOL_SIZE,
+                                                                                                           NUM_CONNECTIONS_PER_THREAD_LOCAL,
+                                                                                                           J2CConstants.POOL_PurgePolicy,
+                                                                                                           J2CConstants.POOL_ReapTime));
+
+    /**
+     * List of connectionManager properties whose names were taken from DataSourceDefinition. To be
+     * used when Liberty connection management is disabled and the properties need to be applied elsewhere
+     */
+    public static final List<String> CONNECTION_MANAGER_DSD_PROPS = Collections.unmodifiableList(Arrays.asList(
+                                                                                                               MAX_IDLE_TIME,
+                                                                                                               MAX_POOL_SIZE,
+                                                                                                               MIN_POOL_SIZE));
 
     /**
      * Create a connection manager service which is not registered in the OSGI service registry.
-     * 
+     *
      * @param name name of the connection factory that is creating the default connectionManager service.
      * @return connection manager service.
      */
@@ -102,7 +109,7 @@ public abstract class ConnectionManagerService extends Observable {
     /**
      * Returns the connection manager for this configuration.
      * This method lazily initializes the connection manager service if necessary.
-     * 
+     *
      * @param ref reference information, or null for a direct lookup
      * @param svc the connection factory service
      * @return the connection manager for this configuration.

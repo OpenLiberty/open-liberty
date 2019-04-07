@@ -224,7 +224,7 @@ IBM-API-Package: org.eclipse.persistence.descriptors.changetracking; type="inter
 IBM-ShortName: jpa-2.2
 Subsystem-Name: Java Persistence API 2.2
 -features=com.ibm.websphere.appserver.transaction-1.2, \
- com.ibm.websphere.appserver.jdbc-4.2, \
+ com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
  com.ibm.websphere.appserver.jpaContainer-2.2,\
  com.ibm.websphere.appserver.org.eclipse.persistence-2.7
 -bundles=com.ibm.websphere.appserver.thirdparty.eclipselink.2.7; location:=dev/api/third-party/; mavenCoordinates="org.eclipse.persistence:eclipselink:2.7.1", \

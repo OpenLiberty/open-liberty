@@ -33,10 +33,13 @@ Export-Package: \
   com.ibm.ws.jaxrs20.providers.api,\
   com.ibm.ws.jaxrs21.sse
 
-
-
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
   com.ibm.json.java;resolution:=optional,\
+  javax.xml.bind;version=!,\
+  javax.xml.bind.annotation;version=!,\
   *
 # !com.wordnik.swagger.jaxrs.config, \
 # !com.wordnik.swagger.jaxrs.listing, \
@@ -54,7 +57,6 @@ Import-Package: \
 # org.apache.neethi;resolution:=optional, \
 # org.apache.commons.logging.*;resolution:=optional, \
 # javax.activation, \
-# javax.mail;version="[0.0,2)", \
 # javax.annotation;version="[1.2,2)", \
 # javax.xml.stream.*, \
 # !com.sun.xml.fastinfoset.stax.*, \
@@ -142,13 +144,13 @@ Private-Package:\
 instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
 
 -buildpath: \
+  com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
   com.ibm.websphere.appserver.spi.logging,\
   com.ibm.websphere.appserver.spi.threading,\
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\
   com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
   com.ibm.websphere.javaee.jsonb.1.0,\
   com.ibm.websphere.javaee.jsonp.1.1,\
-  com.ibm.websphere.javaee.mail.1.5;version=latest,\
   com.ibm.websphere.javaee.servlet.3.0;version=latest,\
   com.ibm.websphere.org.osgi.core,\
   com.ibm.websphere.org.osgi.service.component,\

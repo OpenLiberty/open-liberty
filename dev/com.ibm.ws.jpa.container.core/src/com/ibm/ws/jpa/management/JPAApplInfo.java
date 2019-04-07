@@ -94,7 +94,7 @@ public abstract class JPAApplInfo {
      * and archive name. <p>
      *
      * @param pxml provides access to a persistence.xml file as well
-     *            as the archive name and scope.
+     *                 as the archive name and scope.
      */
     public void addPersistenceUnits(JPAPXml pxml) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -114,7 +114,12 @@ public abstract class JPAApplInfo {
         }
 
         // delegate to scopeInfo to read in the persistence-unit data
-        scopeInfo.processPersistenceUnit(pxml, this);
+        JPAIntrospection.beginPUScopeVisit(scopeInfo);
+        try {
+            scopeInfo.processPersistenceUnit(pxml, this);
+        } finally {
+            JPAIntrospection.endPUScopeVisit();
+        }
     }
 
     protected abstract JPAPUnitInfo createJPAPUnitInfo(JPAPuId puId, JPAPXml pxml, JPAScopeInfo scopeInfo);
@@ -282,6 +287,22 @@ public abstract class JPAApplInfo {
         }
     }
 
+    public boolean hasPersistenceUnitsDefined() {
+        final Map<String, JPAScopeInfo> puScopesClone = new HashMap<String, JPAScopeInfo>();
+        synchronized (puScopes) {
+            puScopesClone.putAll(puScopes);
+        }
+
+        for (Map.Entry<String, JPAScopeInfo> entry : puScopesClone.entrySet()) {
+            final JPAScopeInfo scopeInfo = entry.getValue();
+            if (scopeInfo.getAllPuCount() > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     @Override
     public String toString() {
         synchronized (puScopes) {
@@ -302,7 +323,13 @@ public abstract class JPAApplInfo {
 
         for (Map.Entry<String, JPAScopeInfo> entry : puScopesClone.entrySet()) {
             final JPAScopeInfo scopeInfo = entry.getValue();
-            scopeInfo.doIntrospect(out);
+
+            JPAIntrospection.beginPUScopeVisit(scopeInfo);
+            try {
+                scopeInfo.doIntrospect(out);
+            } finally {
+                JPAIntrospection.endPUScopeVisit();
+            }
         }
     }
 }

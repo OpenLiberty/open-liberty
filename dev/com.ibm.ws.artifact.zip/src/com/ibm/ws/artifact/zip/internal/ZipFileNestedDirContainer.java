@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2011,2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2011, 2018
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.artifact.zip.internal;
 
 import java.net.MalformedURLException;
@@ -43,7 +42,6 @@ public class ZipFileNestedDirContainer implements ArtifactContainer {
      * Nested zip file containers are created directly from zip file entries.
      *
      * @param rootContainer The root container of this nested container.
-     * @param location The location of the entry in the root zip container.
      * @param entryInEnclosingContainer The entry which was interpreted
      *     to create this container.
      * @param name The name of the entry from which the container was created.
@@ -52,12 +50,11 @@ public class ZipFileNestedDirContainer implements ArtifactContainer {
      */
     public ZipFileNestedDirContainer(
         ZipFileContainer rootContainer,
-        int location, ZipFileEntry entryInEnclosingContainer,
+        ZipFileEntry entryInEnclosingContainer,
         String name, String a_path) {
 
         this.rootContainer = rootContainer;
 
-        this.location = location;
         this.entryInEnclosingContainer = entryInEnclosingContainer;
 
         this.name = name;
@@ -139,13 +136,7 @@ public class ZipFileNestedDirContainer implements ArtifactContainer {
 
     //
 
-    private final int location;
     private final ZipFileEntry entryInEnclosingContainer;
-
-    @Trivial
-    protected int getLocation() {
-        return location;
-    }
 
     /**
      * Answer the immediately enclosing container.

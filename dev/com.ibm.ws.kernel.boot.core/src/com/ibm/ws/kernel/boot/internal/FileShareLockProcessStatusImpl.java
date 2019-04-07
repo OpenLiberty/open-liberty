@@ -29,7 +29,7 @@ public class FileShareLockProcessStatusImpl implements ProcessStatus {
     }
 
     @Override
-    public boolean isPossiblyRunning() {
+    public ProcessStatus.State isPossiblyRunning() {
         if (file.exists()) {
             try {
                 new FileOutputStream(file, true).close();
@@ -37,12 +37,12 @@ public class FileShareLockProcessStatusImpl implements ProcessStatus {
                 // "java.io.FileNotFoundException: C:\...\logs\console.log
                 // (The process cannot access the file because it is being used
                 // by another process.)"
-                return true;
+                return State.YES;
             } catch (IOException e) {
                 Debug.printStackTrace(e);
             }
         }
 
-        return false;
+        return State.NO;
     }
 }

@@ -184,35 +184,23 @@ public class LDAPUtils {
                 try {
                     services = getLdapServices(3, CONSUL_LDAP_IBM_SECURITY_FVT_SERVICE);
 
-                    // TODO Work around LDAP entity sync issues until fixed.
-                    ExternalTestService service1 = null, service2 = null, service3 = null;
-                    for (ExternalTestService s : services) {
-                        if (s.getAddress().contains("7195") || (service2 != null && service3 != null)) {
-                            service1 = s;
-                        } else if (service2 == null) {
-                            service2 = s;
-                        } else {
-                            service3 = s;
-                        }
-                    }
+                    LDAP_SERVER_4_NAME = services.get(0).getAddress();
+                    LDAP_SERVER_4_PORT = services.get(0).getProperties().get(CONSUL_LDAP_PORT_KEY);
+                    LDAP_SERVER_4_SSL_PORT = services.get(0).getProperties().get(CONSUL_LDAPS_PORT_KEY);
+                    LDAP_SERVER_4_BINDDN = services.get(0).getProperties().get(CONSUL_BIND_DN_KEY);
+                    LDAP_SERVER_4_BINDPWD = services.get(0).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
 
-                    LDAP_SERVER_4_NAME = service1.getAddress();
-                    LDAP_SERVER_4_PORT = service1.getProperties().get(CONSUL_LDAP_PORT_KEY);
-                    LDAP_SERVER_4_SSL_PORT = service1.getProperties().get(CONSUL_LDAPS_PORT_KEY);
-                    LDAP_SERVER_4_BINDDN = service1.getProperties().get(CONSUL_BIND_DN_KEY);
-                    LDAP_SERVER_4_BINDPWD = service1.getProperties().get(CONSUL_BIND_PASSWORD_KEY);
+                    LDAP_SERVER_7_NAME = services.get(1).getAddress();
+                    LDAP_SERVER_7_PORT = services.get(1).getProperties().get(CONSUL_LDAP_PORT_KEY);
+                    LDAP_SERVER_7_SSL_PORT = services.get(1).getProperties().get(CONSUL_LDAPS_PORT_KEY);
+                    LDAP_SERVER_7_BINDDN = services.get(1).getProperties().get(CONSUL_BIND_DN_KEY);
+                    LDAP_SERVER_7_BINDPWD = services.get(1).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
 
-                    LDAP_SERVER_7_NAME = service2.getAddress();
-                    LDAP_SERVER_7_PORT = service2.getProperties().get(CONSUL_LDAP_PORT_KEY);
-                    LDAP_SERVER_7_SSL_PORT = service2.getProperties().get(CONSUL_LDAPS_PORT_KEY);
-                    LDAP_SERVER_7_BINDDN = service2.getProperties().get(CONSUL_BIND_DN_KEY);
-                    LDAP_SERVER_7_BINDPWD = service2.getProperties().get(CONSUL_BIND_PASSWORD_KEY);
-
-                    LDAP_SERVER_8_NAME = service3.getAddress();
-                    LDAP_SERVER_8_PORT = service3.getProperties().get(CONSUL_LDAP_PORT_KEY);
-                    LDAP_SERVER_8_SSL_PORT = service3.getProperties().get(CONSUL_LDAPS_PORT_KEY);
-                    LDAP_SERVER_8_BINDDN = service3.getProperties().get(CONSUL_BIND_DN_KEY);
-                    LDAP_SERVER_8_BINDPWD = service3.getProperties().get(CONSUL_BIND_PASSWORD_KEY);
+                    LDAP_SERVER_8_NAME = services.get(2).getAddress();
+                    LDAP_SERVER_8_PORT = services.get(2).getProperties().get(CONSUL_LDAP_PORT_KEY);
+                    LDAP_SERVER_8_SSL_PORT = services.get(2).getProperties().get(CONSUL_LDAPS_PORT_KEY);
+                    LDAP_SERVER_8_BINDDN = services.get(2).getProperties().get(CONSUL_BIND_DN_KEY);
+                    LDAP_SERVER_8_BINDPWD = services.get(2).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
                 } finally {
                     releaseServices(services);
                 }
@@ -271,6 +259,44 @@ public class LDAPUtils {
          * the remote servers.
          */
         Log.info(c, "<clinit>", "USE_LOCAL_LDAP_SERVER=" + USE_LOCAL_LDAP_SERVER);
+        if (USE_LOCAL_LDAP_SERVER == false) {
+            Log.info(c, "<clinit>", "Active Directory WAS SVT LDAP Servers");
+            Log.info(c, "<clinit>", "           LDAP_SERVER_2_NAME=" + LDAP_SERVER_2_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_2_PORT=" + LDAP_SERVER_2_PORT + '\n');
+            Log.info(c, "<clinit>", "           LDAP_SERVER_6_NAME=" + LDAP_SERVER_6_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_6_PORT=" + LDAP_SERVER_6_PORT + '\n');
+
+            Log.info(c, "<clinit>", "IBM Continuous Delivery LDAP Servers");
+            Log.info(c, "<clinit>", "           LDAP_SERVER_1_NAME=" + LDAP_SERVER_1_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_1_PORT=" + LDAP_SERVER_1_PORT + '\n');
+            Log.info(c, "<clinit>", "           LDAP_SERVER_5_NAME=" + LDAP_SERVER_5_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_5_PORT=" + LDAP_SERVER_5_PORT + '\n');
+
+            Log.info(c, "<clinit>", "IBM WAS Security FVT LDAP Servers");
+            Log.info(c, "<clinit>", "           LDAP_SERVER_4_NAME=" + LDAP_SERVER_4_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_4_PORT=" + LDAP_SERVER_4_PORT);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_4_SSL_PORT=" + LDAP_SERVER_4_SSL_PORT + '\n');
+            Log.info(c, "<clinit>", "           LDAP_SERVER_7_NAME=" + LDAP_SERVER_7_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_7_PORT=" + LDAP_SERVER_7_PORT);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_7_SSL_PORT=" + LDAP_SERVER_7_SSL_PORT + '\n');
+            Log.info(c, "<clinit>", "           LDAP_SERVER_8_NAME=" + LDAP_SERVER_8_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_8_PORT=" + LDAP_SERVER_8_PORT);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_8_SSL_PORT=" + LDAP_SERVER_8_SSL_PORT + '\n');
+
+            Log.info(c, "<clinit>", "IBM WAS Security LDAP Servers");
+            Log.info(c, "<clinit>", "           LDAP_SERVER_10_NAME=" + LDAP_SERVER_10_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_10_PORT=" + LDAP_SERVER_10_PORT + '\n');
+            Log.info(c, "<clinit>", "           LDAP_SERVER_12_NAME=" + LDAP_SERVER_12_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_12_PORT=" + LDAP_SERVER_12_PORT + '\n');
+
+            Log.info(c, "<clinit>", "Oracle WAS SVT LDAP Servers");
+            Log.info(c, "<clinit>", "           LDAP_SERVER_3_NAME=" + LDAP_SERVER_3_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_3_PORT=" + LDAP_SERVER_3_PORT);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_3_SSL_PORT=" + LDAP_SERVER_3_SSL_PORT + '\n');
+            Log.info(c, "<clinit>", "           LDAP_SERVER_13_NAME=" + LDAP_SERVER_13_NAME);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_13_PORT=" + LDAP_SERVER_13_PORT);
+            Log.info(c, "<clinit>", "           LDAP_SERVER_13_SSL_PORT=" + LDAP_SERVER_13_SSL_PORT + '\n');
+        }
     }
 
     /**
@@ -472,115 +498,115 @@ public class LDAPUtils {
         if (USE_LOCAL_LDAP_SERVER && isInMemoryAllowed) {
             Log.info(c, "addLDAPVariables", "Setting in-memory LDAP server properties");
             // Add in-memory LDAP server host/ports. Host will be localhost an port changes on instances used
-            props.setProperty("ldap.server.1.name", "localhost");
-            props.setProperty("ldap.server.2.name", "localhost");
-            props.setProperty("ldap.server.3.name", "localhost");
-            props.setProperty("ldap.server.4.name", "localhost");
-            props.setProperty("ldap.server.5.name", "localhost");
-            props.setProperty("ldap.server.6.name", "localhost");
-            props.setProperty("ldap.server.7.name", "localhost");
-            props.setProperty("ldap.server.8.name", "localhost");
-            props.setProperty("ldap.server.9.name", "localhost");
-            props.setProperty("ldap.server.10.name", "localhost");
-            props.setProperty("ldap.server.11.name", "localhost");
-            props.setProperty("ldap.server.12.name", "localhost");
-            props.setProperty("ldap.server.13.name", "localhost");
+            setProp(props, "ldap.server.1.name", "localhost");
+            setProp(props, "ldap.server.2.name", "localhost");
+            setProp(props, "ldap.server.3.name", "localhost");
+            setProp(props, "ldap.server.4.name", "localhost");
+            setProp(props, "ldap.server.5.name", "localhost");
+            setProp(props, "ldap.server.6.name", "localhost");
+            setProp(props, "ldap.server.7.name", "localhost");
+            setProp(props, "ldap.server.8.name", "localhost");
+            setProp(props, "ldap.server.9.name", "localhost");
+            setProp(props, "ldap.server.10.name", "localhost");
+            setProp(props, "ldap.server.11.name", "localhost");
+            setProp(props, "ldap.server.12.name", "localhost");
+            setProp(props, "ldap.server.13.name", "localhost");
 
-            props.setProperty("ldap.server.1.port", LDAP_1_PORT);
-            props.setProperty("ldap.server.2.port", LDAP_2_PORT);
-            props.setProperty("ldap.server.2.ssl.port", LDAP_2_SSL_PORT);
-            props.setProperty("ldap.server.3.port", LDAP_3_PORT);
-            props.setProperty("ldap.server.3.ssl.port", LDAP_3_SSL_PORT);
-            props.setProperty("ldap.server.4.port", LDAP_1_PORT);
-            props.setProperty("ldap.server.4.ssl.port", LDAP_1_SSL_PORT);
-            props.setProperty("ldap.server.5.port", LDAP_1_PORT);
-            props.setProperty("ldap.server.6.port", LDAP_2_PORT);
-            props.setProperty("ldap.server.6.ssl.port", LDAP_2_SSL_PORT);
-            props.setProperty("ldap.server.7.port", LDAP_1_PORT);
-            props.setProperty("ldap.server.7.ssl.port", LDAP_1_SSL_PORT);
-            props.setProperty("ldap.server.8.port", LDAP_1_PORT);
-            props.setProperty("ldap.server.8.ssl.port", LDAP_1_SSL_PORT);
-            props.setProperty("ldap.server.9.port", LDAP_1_PORT);
-            props.setProperty("ldap.server.10.port", LDAP_1_PORT);
-            props.setProperty("ldap.server.11.port", LDAP_1_PORT);
-            props.setProperty("ldap.server.12.port", LDAP_1_PORT);
-            props.setProperty("ldap.server.13.port", LDAP_3_PORT);
-            props.setProperty("ldap.server.13.ssl.port", LDAP_3_SSL_PORT);
+            setProp(props, "ldap.server.1.port", LDAP_1_PORT);
+            setProp(props, "ldap.server.2.port", LDAP_2_PORT);
+            setProp(props, "ldap.server.2.ssl.port", LDAP_2_SSL_PORT);
+            setProp(props, "ldap.server.3.port", LDAP_3_PORT);
+            setProp(props, "ldap.server.3.ssl.port", LDAP_3_SSL_PORT);
+            setProp(props, "ldap.server.4.port", LDAP_1_PORT);
+            setProp(props, "ldap.server.4.ssl.port", LDAP_1_SSL_PORT);
+            setProp(props, "ldap.server.5.port", LDAP_1_PORT);
+            setProp(props, "ldap.server.6.port", LDAP_2_PORT);
+            setProp(props, "ldap.server.6.ssl.port", LDAP_2_SSL_PORT);
+            setProp(props, "ldap.server.7.port", LDAP_1_PORT);
+            setProp(props, "ldap.server.7.ssl.port", LDAP_1_SSL_PORT);
+            setProp(props, "ldap.server.8.port", LDAP_1_PORT);
+            setProp(props, "ldap.server.8.ssl.port", LDAP_1_SSL_PORT);
+            setProp(props, "ldap.server.9.port", LDAP_1_PORT);
+            setProp(props, "ldap.server.10.port", LDAP_1_PORT);
+            setProp(props, "ldap.server.11.port", LDAP_1_PORT);
+            setProp(props, "ldap.server.12.port", LDAP_1_PORT);
+            setProp(props, "ldap.server.13.port", LDAP_3_PORT);
+            setProp(props, "ldap.server.13.ssl.port", LDAP_3_SSL_PORT);
 
-            props.setProperty("ldap.server.4.bindDN", "uid=admin,ou=system");
-            props.setProperty("ldap.server.4.bindPassword", "secret");
+            setProp(props, "ldap.server.4.bindDN", "uid=admin,ou=system");
+            setProp(props, "ldap.server.4.bindPassword", "secret");
 
-            props.setProperty("ldap.server.7.bindDN", "uid=admin,ou=system");
-            props.setProperty("ldap.server.7.bindPassword", "secret");
+            setProp(props, "ldap.server.7.bindDN", "uid=admin,ou=system");
+            setProp(props, "ldap.server.7.bindPassword", "secret");
 
-            props.setProperty("ldap.server.8.bindDN", "uid=admin,ou=system");
-            props.setProperty("ldap.server.8.bindPassword", "secret");
+            setProp(props, "ldap.server.8.bindDN", "uid=admin,ou=system");
+            setProp(props, "ldap.server.8.bindPassword", "secret");
 
-            props.setProperty("ldap.server.10.bindDN", "uid=admin,ou=system");
-            props.setProperty("ldap.server.10.bindPassword", "secret");
+            setProp(props, "ldap.server.10.bindDN", "uid=admin,ou=system");
+            setProp(props, "ldap.server.10.bindPassword", "secret");
 
-            props.setProperty("ldap.server.11.bindDN", "uid=admin,ou=system");
-            props.setProperty("ldap.server.11.bindPassword", "secret");
+            setProp(props, "ldap.server.11.bindDN", "uid=admin,ou=system");
+            setProp(props, "ldap.server.11.bindPassword", "secret");
 
-            props.setProperty("ldap.server.12.bindDN", "uid=admin,ou=system");
-            props.setProperty("ldap.server.12.bindPassword", "secret");
+            setProp(props, "ldap.server.12.bindDN", "uid=admin,ou=system");
+            setProp(props, "ldap.server.12.bindPassword", "secret");
 
         } else {
             Log.info(c, "addLDAPVariables", "Setting physical LDAP server properties");
 
             // Add physical LDAP server host/ports
-            props.setProperty("ldap.server.1.name", LDAP_SERVER_1_NAME);
-            props.setProperty("ldap.server.2.name", LDAP_SERVER_2_NAME);
-            props.setProperty("ldap.server.3.name", LDAP_SERVER_3_NAME);
-            props.setProperty("ldap.server.4.name", LDAP_SERVER_4_NAME);
-            props.setProperty("ldap.server.5.name", LDAP_SERVER_5_NAME);
-            props.setProperty("ldap.server.6.name", LDAP_SERVER_6_NAME);
-            props.setProperty("ldap.server.7.name", LDAP_SERVER_7_NAME);
-            props.setProperty("ldap.server.8.name", LDAP_SERVER_8_NAME);
-//        props.setProperty("ldap.server.9.name", LDAP_SERVER_9_NAME);
-            props.setProperty("ldap.server.10.name", LDAP_SERVER_10_NAME);
-//        props.setProperty("ldap.server.11.name", LDAP_SERVER_11_NAME);
-            props.setProperty("ldap.server.12.name", LDAP_SERVER_12_NAME);
-            props.setProperty("ldap.server.13.name", LDAP_SERVER_13_NAME);
+            setProp(props, "ldap.server.1.name", LDAP_SERVER_1_NAME);
+            setProp(props, "ldap.server.2.name", LDAP_SERVER_2_NAME);
+            setProp(props, "ldap.server.3.name", LDAP_SERVER_3_NAME);
+            setProp(props, "ldap.server.4.name", LDAP_SERVER_4_NAME);
+            setProp(props, "ldap.server.5.name", LDAP_SERVER_5_NAME);
+            setProp(props, "ldap.server.6.name", LDAP_SERVER_6_NAME);
+            setProp(props, "ldap.server.7.name", LDAP_SERVER_7_NAME);
+            setProp(props, "ldap.server.8.name", LDAP_SERVER_8_NAME);
+//        setProp(props, "ldap.server.9.name", LDAP_SERVER_9_NAME);
+            setProp(props, "ldap.server.10.name", LDAP_SERVER_10_NAME);
+//        setProp(props, "ldap.server.11.name", LDAP_SERVER_11_NAME);
+            setProp(props, "ldap.server.12.name", LDAP_SERVER_12_NAME);
+            setProp(props, "ldap.server.13.name", LDAP_SERVER_13_NAME);
 
-            props.setProperty("ldap.server.1.port", LDAP_SERVER_1_PORT);
-            props.setProperty("ldap.server.2.port", LDAP_SERVER_2_PORT);
-            props.setProperty("ldap.server.2.ssl.port", LDAP_SERVER_2_SSL_PORT);
-            props.setProperty("ldap.server.3.port", LDAP_SERVER_3_PORT);
-            props.setProperty("ldap.server.3.ssl.port", LDAP_SERVER_3_SSL_PORT);
-            props.setProperty("ldap.server.4.port", LDAP_SERVER_4_PORT);
-            props.setProperty("ldap.server.4.ssl.port", LDAP_SERVER_4_SSL_PORT);
-            props.setProperty("ldap.server.5.port", LDAP_SERVER_5_PORT);
-            props.setProperty("ldap.server.6.port", LDAP_SERVER_6_PORT);
-            props.setProperty("ldap.server.6.ssl.port", LDAP_SERVER_6_SSL_PORT);
-            props.setProperty("ldap.server.7.port", LDAP_SERVER_7_PORT);
-            props.setProperty("ldap.server.7.ssl.port", LDAP_SERVER_7_SSL_PORT);
-            props.setProperty("ldap.server.8.port", LDAP_SERVER_8_PORT);
-            props.setProperty("ldap.server.8.ssl.port", LDAP_SERVER_8_SSL_PORT);
-//        props.setProperty("ldap.server.9.port", LDAP_SERVER_9_PORT);
-            props.setProperty("ldap.server.10.port", LDAP_SERVER_10_PORT);
-//        props.setProperty("ldap.server.11.port", LDAP_SERVER_11_PORT);
-            props.setProperty("ldap.server.12.port", LDAP_SERVER_12_PORT);
-            props.setProperty("ldap.server.13.port", LDAP_SERVER_13_PORT);
-            props.setProperty("ldap.server.13.ssl.port", LDAP_SERVER_13_SSL_PORT);
+            setProp(props, "ldap.server.1.port", LDAP_SERVER_1_PORT);
+            setProp(props, "ldap.server.2.port", LDAP_SERVER_2_PORT);
+            setProp(props, "ldap.server.2.ssl.port", LDAP_SERVER_2_SSL_PORT);
+            setProp(props, "ldap.server.3.port", LDAP_SERVER_3_PORT);
+            setProp(props, "ldap.server.3.ssl.port", LDAP_SERVER_3_SSL_PORT);
+            setProp(props, "ldap.server.4.port", LDAP_SERVER_4_PORT);
+            setProp(props, "ldap.server.4.ssl.port", LDAP_SERVER_4_SSL_PORT);
+            setProp(props, "ldap.server.5.port", LDAP_SERVER_5_PORT);
+            setProp(props, "ldap.server.6.port", LDAP_SERVER_6_PORT);
+            setProp(props, "ldap.server.6.ssl.port", LDAP_SERVER_6_SSL_PORT);
+            setProp(props, "ldap.server.7.port", LDAP_SERVER_7_PORT);
+            setProp(props, "ldap.server.7.ssl.port", LDAP_SERVER_7_SSL_PORT);
+            setProp(props, "ldap.server.8.port", LDAP_SERVER_8_PORT);
+            setProp(props, "ldap.server.8.ssl.port", LDAP_SERVER_8_SSL_PORT);
+//        setProp(props, "ldap.server.9.port", LDAP_SERVER_9_PORT);
+            setProp(props, "ldap.server.10.port", LDAP_SERVER_10_PORT);
+//        setProp(props, "ldap.server.11.port", LDAP_SERVER_11_PORT);
+            setProp(props, "ldap.server.12.port", LDAP_SERVER_12_PORT);
+            setProp(props, "ldap.server.13.port", LDAP_SERVER_13_PORT);
+            setProp(props, "ldap.server.13.ssl.port", LDAP_SERVER_13_SSL_PORT);
 
-            props.setProperty("ldap.server.4.bindDN", LDAP_SERVER_4_BINDDN);
-            props.setProperty("ldap.server.4.bindPassword", LDAP_SERVER_4_BINDPWD);
+            setProp(props, "ldap.server.4.bindDN", LDAP_SERVER_4_BINDDN);
+            setProp(props, "ldap.server.4.bindPassword", LDAP_SERVER_4_BINDPWD);
 
-            props.setProperty("ldap.server.7.bindDN", LDAP_SERVER_7_BINDDN);
-            props.setProperty("ldap.server.7.bindPassword", LDAP_SERVER_7_BINDPWD);
+            setProp(props, "ldap.server.7.bindDN", LDAP_SERVER_7_BINDDN);
+            setProp(props, "ldap.server.7.bindPassword", LDAP_SERVER_7_BINDPWD);
 
-            props.setProperty("ldap.server.8.bindDN", LDAP_SERVER_8_BINDDN);
-            props.setProperty("ldap.server.8.bindPassword", LDAP_SERVER_8_BINDPWD);
+            setProp(props, "ldap.server.8.bindDN", LDAP_SERVER_8_BINDDN);
+            setProp(props, "ldap.server.8.bindPassword", LDAP_SERVER_8_BINDPWD);
 
-            props.setProperty("ldap.server.10.bindDN", LDAP_SERVER_10_BINDDN);
-            props.setProperty("ldap.server.10.bindPassword", LDAP_SERVER_10_BINDPWD);
+            setProp(props, "ldap.server.10.bindDN", LDAP_SERVER_10_BINDDN);
+            setProp(props, "ldap.server.10.bindPassword", LDAP_SERVER_10_BINDPWD);
 
-//        props.setProperty("ldap.server.11.bindDN", LDAP_SERVER_11_BINDDN);
-//        props.setProperty("ldap.server.11.bindPassword", LDAP_SERVER_11_BINDPWD);
+//        setProp(props, "ldap.server.11.bindDN", LDAP_SERVER_11_BINDDN);
+//        setProp(props, "ldap.server.11.bindPassword", LDAP_SERVER_11_BINDPWD);
 
-            props.setProperty("ldap.server.12.bindDN", LDAP_SERVER_12_BINDDN);
-            props.setProperty("ldap.server.12.bindPassword", LDAP_SERVER_12_BINDPWD);
+            setProp(props, "ldap.server.12.bindDN", LDAP_SERVER_12_BINDDN);
+            setProp(props, "ldap.server.12.bindPassword", LDAP_SERVER_12_BINDPWD);
         }
 
         // Write above LDAP variables to remote bootstrap properties file
@@ -603,6 +629,11 @@ public class LDAPUtils {
         Log.info(c, method, "about to exit routine");
 
         Log.exiting(c, method);
+    }
+
+    private static Object setProp(Properties props, String key, String value) {
+        // java.util.Properties does not allow null values, so only set the prop if value is non-null
+        return value == null ? null : props.setProperty(key, value);
     }
 
     public static boolean isLdapServerAvailable(String hostname, String port) throws Exception {

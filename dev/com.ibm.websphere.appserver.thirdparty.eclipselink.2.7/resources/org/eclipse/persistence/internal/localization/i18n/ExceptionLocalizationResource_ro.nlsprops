@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -355,9 +359,7 @@ position_param_not_found=Nu a fost niciun parametru la pozi\u0163ia: {0}.
 
 pu_configured_for_resource_local=Nu se poate crea un EntityManager cu SynchronizationType deoarece PersistenceUnit este configurat cu tranzac\u0163ii locale resurs\u0103.
 
-# START NON-TRANSLATABLE
 remove_deletion_failed=\u015etergerea prin \u00eenl\u0103turare a e\u015fuat:
-# END NON-TRANSLATABLE
 
 rollback_because_of_rollback_only=Tranzac\u0163ia "s-a derulat \u00eenapoi" pentru c\u0103 tranzac\u0163ia a fost setat\u0103 la RollbackOnly.
 
@@ -428,6 +430,8 @@ unexpect_argument=Argument de intrare nea\u015fteptat {0}
 unknown_bean_class=Clas\u0103 bean Entitate necunoscut\u0103: {0}, v\u0103 rug\u0103m s\u0103 verifica\u0163i dac\u0103 aceast\u0103 clas\u0103 a fost marcat\u0103 cu adnotarea @Entity.
 
 unknown_entitybean_name=Nume bean entitate necunoscut: {0}
+
+unsupported_classfile_version=Clasa {0} a fost compilat\u0103 cu un JDK nesuportat. Raporta\u0163i aceast\u0103 eroare la proiectul de surs\u0103 deschis\u0103 EclipseLink.
 
 wrap_convert_exception=A ap\u0103rut o excep\u0163ie \u00een timp ce se apela {0} pe clasa de convertor {1} cu valoarea {2}
 

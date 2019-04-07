@@ -841,7 +841,9 @@ class SchemaWriter {
              */
         }
         for (OCDType extender : ocdReference.getExtensions()) {
-            buildRefElement(ocdType, xmlElements, attributeDef, requiredForThisAttribute, baseId, extender, false);
+            if (shouldAddOCD(extender)) {
+                buildRefElement(ocdType, xmlElements, attributeDef, requiredForThisAttribute, baseId, extender, false);
+            }
         }
     }
 
@@ -877,7 +879,9 @@ class SchemaWriter {
         }
 
         for (OCDType child : ocdType.getExtensions()) {
-            gatherAliases(child, aliases);
+            if (shouldAddOCD(child)) {
+                gatherAliases(child, aliases);
+            }
         }
     }
 
@@ -1314,9 +1318,17 @@ class SchemaWriter {
         writer.writeStartElement(XSD, "attribute");
         writer.writeAttribute("name", "value");
         writer.writeAttribute("type", "xsd:string");
-        writer.writeAttribute("use", "required");
+
         doc = resourceBundle.getString("config.internal.metatype.variableDefinitionType.value.documentation");
         label = resourceBundle.getString("config.internal.metatype.variableDefinitionType.value.label");
+        writeDocumentation(doc, label);
+        writer.writeEndElement();
+
+        writer.writeStartElement(XSD, "attribute");
+        writer.writeAttribute("name", "defaultValue");
+        writer.writeAttribute("type", "xsd:string");
+        doc = resourceBundle.getString("config.internal.metatype.variableDefinitionType.defaultValue.documentation");
+        label = resourceBundle.getString("config.internal.metatype.variableDefinitionType.defaultValue.label");
         writeDocumentation(doc, label);
         writer.writeEndElement();
 

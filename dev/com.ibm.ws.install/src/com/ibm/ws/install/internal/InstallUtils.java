@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,6 +59,7 @@ import org.w3c.dom.NodeList;
 
 import com.ibm.ws.install.InstallConstants;
 import com.ibm.ws.install.InstallException;
+import com.ibm.ws.install.InstallLicense;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.internal.asset.SubsytemEntry;
 import com.ibm.ws.install.repository.download.RepositoryDownloadUtil;
@@ -65,6 +67,10 @@ import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.feature.internal.HashUtils;
 import com.ibm.ws.kernel.feature.internal.subsystem.SubsystemFeatureDefinitionImpl;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
+import com.ibm.ws.kernel.productinfo.DuplicateProductInfoException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
+import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 import com.ibm.ws.kernel.provisioning.ProductExtension;
 import com.ibm.ws.kernel.provisioning.ProductExtensionInfo;
 import com.ibm.ws.product.utility.CommandConsole;
@@ -1065,6 +1071,14 @@ public class InstallUtils {
         return null;
     }
 
+    public static String getEditionName(File installRoot, String editionCode) {
+        String editionCodeUpperCase = editionCode.toUpperCase();
+        if (editionCodeUpperCase.equals("OPEN") || editionCodeUpperCase.equals("OPEN_WEB")) {
+            editionCodeUpperCase = new Product(installRoot).getProductEdition().toUpperCase();
+        }
+        return getEditionName(editionCodeUpperCase);
+    }
+
     public static String getEditionName(String editionCode) {
 
         String editionCodeUpperCase = editionCode.toUpperCase();
@@ -1159,6 +1173,28 @@ public class InstallUtils {
         if (target.equalsIgnoreCase(DEFAULT_TO_EXTENSION))
             return defaultTarget;
         return target;
+    }
+
+    public static Set<InstallLicense> getLicenseToAccept(Set<InstallLicense> featureLicenses) throws ProductInfoParseException, DuplicateProductInfoException, ProductInfoReplaceException {
+        Set<InstallLicense> licensesToAccept = featureLicenses;
+        boolean isNDRuntime = false;
+        for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
+            if ("com.ibm.websphere.appserver".equals(productInfo.getId()) && "ND".equals(productInfo.getEdition())) {
+                isNDRuntime = true;
+                break;
+            }
+        }
+        Iterator<InstallLicense> iterator = licensesToAccept.iterator();
+        while (iterator.hasNext()) {
+            InstallLicense license = iterator.next();
+            if (license != null) {
+                if (license.getId().startsWith(InstallConstants.LICENSE_EPL_PREFIX) || license.getId().equals(InstallConstants.LICENSE_FEATURE_TERMS)
+                    || isNDRuntime && license.getId().equals(InstallConstants.LICENSE_FEATURE_TERMS_RESTRICTED)) {
+                    iterator.remove();
+                }
+            }
+        }
+        return licensesToAccept;
     }
 
 }

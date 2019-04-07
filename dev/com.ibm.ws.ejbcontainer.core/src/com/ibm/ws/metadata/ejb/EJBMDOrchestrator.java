@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2018 IBM Corporation and others.
+ * Copyright (c) 2006, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -270,6 +270,10 @@ public abstract class EJBMDOrchestrator {
     } // createEJBModuleMetaDataImpl
 
     private Map<String, javax.ejb.ApplicationException> createApplicationExceptionMap(EJBJar ejbJar) {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(tc, "createApplicationExceptionMap : " + ejbJar);
+
         // Get List of ApplicationException objects and convert to a Map where
         // key is String name of exceptions class and value is the rollback
         // setting of the exception class from xml.
@@ -287,10 +291,16 @@ public abstract class EJBMDOrchestrator {
                         appExMap.put(className, new ApplicationExceptionImpl(appEx.isRollback(), appEx.isInherited())); // F743-14982
                     }
 
+                    if (isTraceOn && tc.isEntryEnabled())
+                        Tr.exit(tc, "createApplicationExceptionMap : " + appExMap.size());
+
                     return appExMap;
                 }
             }
         }
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.exit(tc, "createApplicationExceptionMap : null");
 
         return null;
     }
@@ -3952,14 +3962,16 @@ public abstract class EJBMDOrchestrator {
                                                                        bmd.j2eeName.toString(), // d443878
                                                                        runtime.getClassDefiner()); // F70650
 
-                    bmd.remoteTieClass = JITDeploy.generate_Tie // d413752
-                    (classLoader,
-                     classNameToLoad,
-                     bmd.remoteInterfaceClass,
-                     bmd.j2eeName.toString(), // d443878
-                     runtime.getClassDefiner(), // F70650
-                     mmd.getRMICCompatible(),
-                     runtime.isRemoteUsingPortableServer());
+                    // Only generate the Tie if remote is supported (CORBA classes are available)
+                    if (runtime.isRemoteSupported()) {
+                        bmd.remoteTieClass = JITDeploy.generate_Tie(classLoader,
+                                                                    classNameToLoad,
+                                                                    bmd.remoteInterfaceClass,
+                                                                    bmd.j2eeName.toString(),
+                                                                    runtime.getClassDefiner(),
+                                                                    mmd.getRMICCompatible(),
+                                                                    runtime.isRemoteUsingPortableServer());
+                    }
                 }
 
                 // Generate/Load the Component Local Implementation ('Wrapper')
@@ -4052,14 +4064,16 @@ public abstract class EJBMDOrchestrator {
                                                                                           bmd.j2eeName.toString(), // d443878
                                                                                           runtime.getClassDefiner()); // F70650
 
-                        bmd.ivBusinessRemoteTieClasses[i] = JITDeploy.generate_Tie // d413752
-                        (classLoader,
-                         classNameToLoad,
-                         bmd.ivBusinessRemoteInterfaceClasses[i],
-                         bmd.j2eeName.toString(), // d443878
-                         runtime.getClassDefiner(), // F70650
-                         mmd.getRMICCompatible(),
-                         runtime.isRemoteUsingPortableServer());
+                        // Only generate the Tie if remote is supported (CORBA classes are available)
+                        if (runtime.isRemoteSupported()) {
+                            bmd.ivBusinessRemoteTieClasses[i] = JITDeploy.generate_Tie(classLoader,
+                                                                                       classNameToLoad,
+                                                                                       bmd.ivBusinessRemoteInterfaceClasses[i],
+                                                                                       bmd.j2eeName.toString(),
+                                                                                       runtime.getClassDefiner(),
+                                                                                       mmd.getRMICCompatible(),
+                                                                                       runtime.isRemoteUsingPortableServer());
+                        }
                     }
                 }
 
@@ -4101,14 +4115,16 @@ public abstract class EJBMDOrchestrator {
                                                                            bmd.j2eeName.toString(), // d443878
                                                                            runtime.getClassDefiner()); // F70650
 
-                    bmd.homeRemoteTieClass = JITDeploy.generate_Tie // d413752
-                    (classLoader,
-                     classNameToLoad,
-                     bmd.homeInterfaceClass,
-                     bmd.j2eeName.toString(), // d443878
-                     runtime.getClassDefiner(), // F70650
-                     mmd.getRMICCompatible(),
-                     runtime.isRemoteUsingPortableServer());
+                    // Only generate the Tie if remote is supported (CORBA classes are available)
+                    if (runtime.isRemoteSupported()) {
+                        bmd.homeRemoteTieClass = JITDeploy.generate_Tie(classLoader,
+                                                                        classNameToLoad,
+                                                                        bmd.homeInterfaceClass,
+                                                                        bmd.j2eeName.toString(), // d443878
+                                                                        runtime.getClassDefiner(), // F70650
+                                                                        mmd.getRMICCompatible(),
+                                                                        runtime.isRemoteUsingPortableServer());
+                    }
                 }
 
                 // load generated local Home ('Wrapper') Impl class - EJSLocal[Type]HomeItf
@@ -4536,7 +4552,7 @@ public abstract class EJBMDOrchestrator {
      * <ol>
      * <li> javax.ejb.TimedObject interface ('ejbTimeout')
      * <li> <timeout-method> deployment descriptor entry
-     * <li> @Timeout annotatoin on the timeout method
+     * <li> @Timeout annotation on the timeout method
      * </ol>
      *
      * When more than one of the above are specified, they must match
@@ -5005,10 +5021,6 @@ public abstract class EJBMDOrchestrator {
                                                     + " module has an automatic timer.");
             }
 
-            // F743-13022 - Check now if the runtime environment supports timers
-            // rather than waiting until the automatic timers are created.
-            bmd.container.getEJBRuntime().setupTimers(bmd);
-
             // Sort the timer methods, and then assign method IDs.  We must sort
             // methods so that method IDs remain stable for persistent timers even
             // if the JVM changes the order of methods returned by getMethods().
@@ -5021,7 +5033,11 @@ public abstract class EJBMDOrchestrator {
 
             // Add the timer methods to module metadata so they will be created
             // once all the automatic timers for the module have been processed.
-            bmd._moduleMetaData.addAutomaticTimerBean(new AutomaticTimerBean(bmd, timerMethods)); // F743-13022, d604213
+            bmd._moduleMetaData.addAutomaticTimerBean(new AutomaticTimerBean(bmd, timerMethods));
+
+            // Check now if the runtime environment supports timers
+            // rather than waiting until the automatic timers are created.
+            bmd.container.getEJBRuntime().setupTimers(bmd);
         }
 
         // Always insert so finishBMDInit does not do extra work by calling

@@ -63,7 +63,8 @@ import com.ibm.ws.springboot.support.web.server.initializer.WebInitializer;
  *
  */
 public class LibertyWebServer implements WebServer {
-    private static final Object token = new Object() {};
+    private static final Object token = new Object() {
+    };
     private final SpringBootConfig springBootConfig;
     private final AbstractConfigurableWebServerFactory factory;
     private final LibertyFactoryBase factoryBase;

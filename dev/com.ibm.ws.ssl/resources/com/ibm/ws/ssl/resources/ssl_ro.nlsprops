@@ -623,3 +623,11 @@ ssl.defaultKeyStore.not.created.CWPKI0819I.useraction=Nu este necesar\u0103 nici
 ssl.defaultKeyStore.env.password.CWPKI0820A=CWPKI0820A: Depozitul de chei implicit a fost creat folosind variabila de mediu 'keystore_password'.
 ssl.defaultKeyStore.env.password.CWPKI0820A.explanation=Depozitul de chei implicit a fost creat folosind variabila de mediu 'keystore_password'. Acesta este generat \u00een fi\u015fierul server.env \u00een timpul cre\u0103rii serverului sau este \u00eenlocuit \u00een mediul din care a fost lansat serverul.
 ssl.defaultKeyStore.env.password.CWPKI0820A.useraction=Nici o ac\u0163iune nu este necesar\u0103.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.loaded.CWPKI0821I=CWPKI0821I: A fost \u00eenc\u0103rcat depozitul de chei implicit {1} de tipul {2}.
+ssl.defaultKeyStore.loaded.CWPKI0821I.explanation=A fost \u00eenc\u0103rcat depozitul de chei implicit de la loca\u0163ia \u015fi tipul de depozit de chei specificate.
+ssl.defaultKeyStore.loaded.CWPKI0821I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W=CWPKI0822W: O configura\u0163ie minimal\u0103 de depozit de chei implicit a fost specificat\u0103, iar depozitele de chei key.jks \u015fi key.p12 exist\u0103 am\u00e2ndou\u0103 \u00een loca\u0163ia depozitului de chei implicit. key.jks va fi folosit ca depozitul de chei implicit.
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.explanation=Cu o configura\u0163ie minimal\u0103 de depozit de chei implicit, \u015fi cu ambele fi\u015fiere key.jks \u015fi key.p12 definite \u00een loca\u0163ia de depozit de chei implicit , fi\u015fierul key.jks va fi folosit ca depozit de chei implicit.
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.useraction=Pentru a face key.p12 depozitul de chei implicit, fie modifica\u0163i configura\u0163ia de depozit de chei pentru a specifica loca\u0163ia lui key.p12, fir \u00eenl\u0103tura\u0163i fi\u015fierul key.jks din configura\u0163ie. Pentru a avea key.jks ca depozit de chei implicit, nu este nevoie de nicio modificare. 

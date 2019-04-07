@@ -293,6 +293,42 @@ public class VmmServiceServlet extends HttpServlet {
                 root.getControls().add(search);
 
                 root = vmmServ.search(root);
+            } else if ("searchUserNoExpression".equals(method)) {
+
+                IdentifierType id = new IdentifierType();
+                id.setUniqueName(req.getParameter("uniqueName"));
+                
+                PersonAccount entity = new PersonAccount();
+                entity.setIdentifier(id);
+
+                PropertyControl properties = new PropertyControl();
+                SearchControl search = new SearchControl();
+                search.setCountLimit(5);
+                search.setSearchLimit(5);
+                search.setExpression("");
+
+                Root root = new Root();
+                root.getEntities().add(entity);
+                root.getControls().add(properties);
+                root.getControls().add(search);
+
+                root = vmmServ.search(root);
+            } else if ("searchUserBadExpression".equals(method)) {
+
+            	PersonAccount entity = new PersonAccount();
+
+                PropertyControl properties = new PropertyControl();
+                SearchControl search = new SearchControl();
+                search.setSearchLimit(1);
+                search.setExpression("@xsi:type='PersonAccount' and (uid='*')");
+
+                Root root = new Root();
+                root.getEntities().add(entity);
+                root.getControls().add(properties);
+                root.getControls().add(search);
+
+                root = vmmServ.search(root);
+
             } else if ("searchGroupBadLimit".equals(method)) {
 
                 IdentifierType id = new IdentifierType();
@@ -369,6 +405,20 @@ public class VmmServiceServlet extends HttpServlet {
                 root.getControls().add(search);
 
                 root = vmmServ.search(root);
+            } else if ("searchBasicUser".equals(method)) {
+
+                PersonAccount entity = new PersonAccount();
+
+                PropertyControl properties = new PropertyControl();
+                SearchControl search = new SearchControl();
+                search.setExpression("@xsi:type='PersonAccount' and (uid='*')");
+
+                Root root = new Root();
+                root.getEntities().add(entity);
+                root.getControls().add(properties);
+                root.getControls().add(search);
+                root = vmmServ.search(root);
+
             } else if ("searchGroupMaxLimit".equals(method)) {
 
                 Group entity = new Group();
@@ -893,6 +943,75 @@ public class VmmServiceServlet extends HttpServlet {
                 root.getContexts().add(c);
 
                 root = vmmServ.get(root);
+            } else if (method.equals("getBasicUserNotFound")) {
+                IdentifierType id = new IdentifierType();
+                 id.setUniqueId(req.getParameter("uniqueName"));
+                id.setRepositoryId("basic");
+                
+
+                PersonAccount entity = new PersonAccount();
+                entity.setIdentifier(id);
+
+                PropertyControl properties = new PropertyControl();
+
+                Root root = new Root();
+                root.getEntities().add(entity);
+                root.getControls().add(properties);
+
+                ExternalNameControl eCtrl = new ExternalNameControl();
+                root.getControls().add(eCtrl);
+
+                Context c = new Context();
+                root.getContexts().add(c);
+
+                root = vmmServ.get(root);
+            } else if (method.endsWith("BasicUser")) {
+                IdentifierType id = new IdentifierType();
+                id.setUniqueName(req.getParameter("uniqueName"));
+                id.setExternalId("vmmuser1");
+                
+                if (method.equals("getBasicUser") || (method.equals("updateBasicUser"))) {
+                	id.setRepositoryId("SampleBasicRealm");
+                }
+                
+                if (method.equals("updateBasicUser")) {
+                	id.setUniqueName("uid=vmmuser1,o=SampleBasicRealm");
+                	id.setUniqueId(req.getParameter("uniqueName"));
+                    id.setExternalName("vmmuser1");
+                    
+                }
+
+                PersonAccount entity = new PersonAccount();
+                entity.setIdentifier(id);
+
+                PropertyControl properties = new PropertyControl();
+
+                Root root = new Root();
+                root.getEntities().add(entity);
+                root.getControls().add(properties);
+
+                ExternalNameControl eCtrl = new ExternalNameControl();
+                root.getControls().add(eCtrl);
+                
+                Context c = new Context();
+                
+                if (method.equals("getBasicUser")) {
+                	root = vmmServ.get(root);
+                } else if (method.equals("createBasicUser")) {
+                	root = vmmServ.create(root);
+                } else if (method.equals("deleteBasicUser")) {
+                	root = vmmServ.delete(root);
+                } else if (method.equals("updateBasicUser")) {
+                	
+                    c.setKey("trustEntityType");
+                    c.setValue("true");
+
+                    root.getContexts().add(c);
+                	root = vmmServ.update(root);
+                } else {
+                    pw.println("Unknown method name: " + method);
+                }
+
             } else if (method.equals("getGroupNotFound")) {
                 IdentifierType id = new IdentifierType();
                 id.setExternalName(req.getParameter("uniqueName"));

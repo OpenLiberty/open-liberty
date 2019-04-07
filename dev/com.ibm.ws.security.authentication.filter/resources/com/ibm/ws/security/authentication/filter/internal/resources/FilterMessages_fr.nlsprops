@@ -1,8 +1,11 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014.
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security.authentication.filter/resources/com/ibm/ws/security/authentication/filter/internal/resources/FilterMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -55,5 +58,4 @@ AUTH_FILTER_CONFIG_MODIFIED.useraction=Aucune action n'est requise.
 
 AUTH_FILTER_MISSING_ID=CWWKS4360E: L''attribut d''ID obligatoire {0} est manquant dans l''\u00e9l\u00e9ment authFilter sp\u00e9cifi\u00e9 dans le fichier server.xml.
 AUTH_FILTER_MISSING_ID.explanation=L'attribut d'ID obligatoire est manquant dans l'\u00e9l\u00e9ment authFilter sp\u00e9cifi\u00e9 dans le fichier server.xml ; cet \u00e9l\u00e9ment authFilter ne sera pas utilis\u00e9.
-
 AUTH_FILTER_MISSING_ID.useraction=Assurez-vous que l'\u00e9l\u00e9ment authFilter sp\u00e9cifi\u00e9 dans le fichier server.xml comporte l'attribut d'ID.

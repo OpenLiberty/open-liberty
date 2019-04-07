@@ -58,12 +58,12 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
             throw new IllegalArgumentException("event not an instance of GenericData");
         }
 
-        String eventSourceType = getSourceTypeFromDataObject(genData);
+        String eventSourceName = getSourceNameFromDataObject(genData);
 
         String messageOutput = null;
-        if (currFormat.equals(LoggingConstants.JSON_FORMAT) || !eventSourceType.equals(CollectorConstants.MESSAGES_SOURCE)) {
+        if (currFormat.equals(LoggingConstants.JSON_FORMAT) || !eventSourceName.equals(CollectorConstants.MESSAGES_SOURCE)) {
             if (genData.getJsonMessage() == null) {
-                genData.setJsonMessage((String) formatEvent(eventSourceType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH));
+                genData.setJsonMessage((String) formatEvent(eventSourceName, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH));
             }
             messageOutput = genData.getJsonMessage();
 

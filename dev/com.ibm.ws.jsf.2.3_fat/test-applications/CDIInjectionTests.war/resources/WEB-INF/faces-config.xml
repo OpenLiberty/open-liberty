@@ -78,8 +78,17 @@
       
         <visit-context-factory>
             com.ibm.ws.jsf23.fat.cdi.common.managed.factories.CustomVisitContextFactory
-        </visit-context-factory>      
-    
+        </visit-context-factory>
+        
+        <facelet-cache-factory>
+            com.ibm.ws.jsf23.fat.cdi.common.managed.factories.CustomFaceletCacheFactory
+        </facelet-cache-factory>
+        
+        <!-- Fixed in 2.3 - https://github.com/javaee/javaserverfaces-spec/issues/1241 -->
+        <client-window-factory>
+             com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window.CustomClientWindowFactory
+        </client-window-factory>
+
     </factory>
 
     <lifecycle>

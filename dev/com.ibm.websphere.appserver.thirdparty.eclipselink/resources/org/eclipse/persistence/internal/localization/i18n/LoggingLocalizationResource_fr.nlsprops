@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -477,6 +481,10 @@ jar_entry_not_migratable.MSGID=TOP-50095
 
 jar_file_url_exception=Exception lors de l''analyse syntaxique de persistence.xml.  L''emplacement du fichier Jar n''a pas pu \u00eatre d\u00e9termin\u00e9 : {0}
 
+javase_version_ex_method_call=Exception lors de l''appel de la m\u00e9thode {0} : {1}
+
+javase_version_ex_method_not_found=La m\u00e9thode {0} est introuvable dans {1}
+
 jaxb_metadata_warning_ignoring_java_attribute=Attribut [{0}] ignor\u00e9 sur la classe [{1}] car aucune propri\u00e9t\u00e9 n''a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e pour celui-ci.
 
 jaxb_metadata_warning_ignoring_java_attribute.MSGID=TOP-50235
@@ -508,6 +516,8 @@ jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter.MSGID=TOP-50241
 jaxb_metadata_warning_no_classes_to_process=Il n''y a pas de classe \u00e0 traiter pour le package [{0}].
 
 jaxb_metadata_warning_no_classes_to_process.MSGID=TOP-50237
+
+jaxp_sec_prop_not_supported=La propri\u00e9t\u00e9 {0} n''est pas prise en charge par l''impl\u00e9mentation JAXP utilis\u00e9e.
 
 jmx_mbean_runtime_services_failed_toget_initial_context=\u00c9chec d''obtention de InitialContext pour l''enregistrement MBean : {0}
 

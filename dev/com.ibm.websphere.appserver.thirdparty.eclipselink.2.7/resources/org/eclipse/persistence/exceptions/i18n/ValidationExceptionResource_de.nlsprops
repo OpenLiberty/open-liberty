@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -541,9 +545,7 @@
 
 7311=Mit dem Elementsammlungsattribut [{0}] f\u00fcr die Klasse [{1}] wird eine ung\u00fcltige Zielklasse verwendet. Es sind nur Basistypen und integrierbare Klassen zul\u00e4ssig.
 
-# START NON-TRANSLATABLE
 7312=Es wird die ung\u00fcltige integrierbare Klasse [{0}] mit dem Elementsammlungsattribut [{1}] f\u00fcr die Klasse [{2}] verwendet. Lesen Sie hierzu Abschnitt 2.6 der Spezifikation "An embeddable class (including an embeddable class within another embeddable class) contained within an element collection must not contain an element collection, nor may it contain a relationship to an entity other than a many-to-one or one-to-one relationship. The embeddable class must be on the owning side of such a relationship and the relationship must be mapped by a foreign key mapping. Bei der Zuordnung f\u00fcr das Attribut [{3}] f\u00fcr die integrierbare Klasse wird dies nicht eingehalten.
-# END NON-TRANSLATABLE
 
 7313=Das Attribut [{1}] wurde f\u00fcr die integrierbare Klasse [{0}] nicht gefunden. Es wird \u00fcber association-override f\u00fcr das integrierte Attribut [{3}] f\u00fcr die Klasse [{2}] referenziert.
 

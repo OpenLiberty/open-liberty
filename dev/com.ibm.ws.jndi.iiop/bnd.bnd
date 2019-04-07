@@ -30,14 +30,14 @@ Import-Package: \
  javax.rmi.*;version="[2.4,3.0)", \
  *
 
-Private-Package: com.ibm.ws.jndi.iiop.internal.*
-
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.jndi.iiop.*UrlContextFactory
 
 instrument.classesExcludes: com/ibm/ws/jndi/iiop/*.class
 
 -buildpath: \
+	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\

@@ -23,7 +23,7 @@ Service-Component: com.ibm.rls.jdbc; \
             
 Export-Package: com.ibm.rls.jdbc;version=1.0.16,\
  com.ibm.ws.recoverylog.custom.jdbc.impl;version=1.0.0
-
+	
 instrument.disabled: true
 
 -buildpath: \

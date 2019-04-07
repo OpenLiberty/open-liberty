@@ -16,8 +16,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
@@ -66,6 +69,7 @@ public class OIDCClientAuthenticatorUtil {
      */
     public ProviderAuthenticationResult handleRedirectToServer(HttpServletRequest req, HttpServletResponse res, ConvergedClientConfig clientConfig) {
         String authorizationEndpoint = clientConfig.getAuthorizationEndpointUrl();
+
         if (!checkHttpsRequirement(clientConfig, authorizationEndpoint)) {
             Tr.error(tc, "OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS", authorizationEndpoint);
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
@@ -113,7 +117,7 @@ public class OIDCClientAuthenticatorUtil {
                 return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
             }
 
-            authzEndPointUrlWithQuery = buildAuthorizationUrlWithQuery((OidcClientRequest) req.getAttribute(ClientConstants.ATTRIB_OIDC_CLIENT_REQUEST), state, clientConfig, redirect_url, acr_values);
+            authzEndPointUrlWithQuery = buildAuthorizationUrlWithQuery(req, (OidcClientRequest) req.getAttribute(ClientConstants.ATTRIB_OIDC_CLIENT_REQUEST), state, clientConfig, redirect_url, acr_values);
 
             // preserve post param.
             WebAppSecurityConfig webAppSecConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
@@ -160,6 +164,9 @@ public class OIDCClientAuthenticatorUtil {
             ConvergedClientConfig clientConfig) {
         ProviderAuthenticationResult oidcResult = null;
 
+        if (!isEndpointValid(clientConfig)) {
+            return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
+        }
         boolean isImplicit = false;
         if (Constants.IMPLICIT.equals(clientConfig.getGrantType())) {
             isImplicit = true;
@@ -181,7 +188,7 @@ public class OIDCClientAuthenticatorUtil {
             } else {
                 // error handling
                 oidcResult = new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
-                Tr.error(tc, "OIDC_CLIENT_BAD_PARAM_COOKIE", new Object[] { encodedReqParams, clientConfig.getClientId() });
+                Tr.error(tc, "OIDC_CLIENT_BAD_PARAM_COOKIE", new Object[] { encodedReqParams, clientConfig.getClientId() }); // CWWKS1745E
                 return oidcResult;
             }
         }
@@ -263,6 +270,17 @@ public class OIDCClientAuthenticatorUtil {
         return metHttpsRequirement;
     }
 
+    public static boolean isEndpointValid(ConvergedClientConfig clientConfig) {
+        String url = null;
+        if (clientConfig.getGrantType() == Constants.IMPLICIT) {
+            url = clientConfig.getTokenEndpointUrl();
+        } else {
+            url = clientConfig.getAuthorizationEndpointUrl();
+        }
+        return url != null;
+
+    }
+
     //todo: avoid call on each request.
     public String setRedirectUrlIfNotDefined(HttpServletRequest req, ConvergedClientConfig clientConfig) {
         //String redirect_url = clientConfig.getRedirectUrlFromServerToClient();
@@ -326,7 +344,7 @@ public class OIDCClientAuthenticatorUtil {
         return false;
     }
 
-    String buildAuthorizationUrlWithQuery(OidcClientRequest oidcClientRequest, String state, ConvergedClientConfig clientConfig, String redirect_url, String acr_values) throws UnsupportedEncodingException {
+    String buildAuthorizationUrlWithQuery(HttpServletRequest req, OidcClientRequest oidcClientRequest, String state, ConvergedClientConfig clientConfig, String redirect_url, String acr_values) throws UnsupportedEncodingException {
         String strResponse_type = Constants.RESPONSE_TYPE_CODE; // default is asking for "authorization code
         boolean isImplicit = false;
         if (Constants.IMPLICIT.equals(clientConfig.getGrantType())) {
@@ -374,6 +392,11 @@ public class OIDCClientAuthenticatorUtil {
                 query += resources;
             }
         }
+        // look for custom params in the configuration to send to the authorization ep
+        query = handleCustomParams(clientConfig, query);
+
+        // check and see if we have any additional params to forward from the request
+        query = addForwardLoginParamsToQuery(clientConfig, req, query);
 
         // in case the AuthorizationEndpoint already has set up its own parameters
         String s = clientConfig.getAuthorizationEndpointUrl();
@@ -382,6 +405,50 @@ public class OIDCClientAuthenticatorUtil {
             queryMark = "&";
         }
         return s + queryMark + query;
+    }
+
+    String addForwardLoginParamsToQuery(ConvergedClientConfig clientConfig, HttpServletRequest req, String query) {
+        List<String> forwardAuthzParams = clientConfig.getForwardLoginParameter();
+        if (forwardAuthzParams == null || forwardAuthzParams.isEmpty()) {
+            return query;
+        }
+        for (String entry : forwardAuthzParams) {
+            if (entry != null) {
+                String value = req.getParameter(entry);
+                if (value != null) {
+                    try {
+                        query = String.format("%s&%s=%s", query, URLEncoder.encode(entry, ClientConstants.CHARSET), URLEncoder.encode(value, ClientConstants.CHARSET));
+                    } catch (UnsupportedEncodingException e) {
+                        // Do nothing - UTF-8 encoding will be supported
+                    }
+                }
+
+            }
+        }
+        return query;
+    }
+
+    /**
+     * @param clientConfig
+     * @param query
+     * @return
+     */
+    private String handleCustomParams(ConvergedClientConfig clientConfig, String query) {
+        HashMap<String, String> customParams = clientConfig.getAuthzRequestParams();
+        if (customParams != null && !customParams.isEmpty()) {
+            Set<Entry<String, String>> entries = customParams.entrySet();
+            for (Entry<String, String> entry : entries) {
+                if (entry.getKey() != null && entry.getValue() != null) {
+                    try {
+                        query = String.format("%s&%s=%s", query, URLEncoder.encode(entry.getKey(), ClientConstants.CHARSET),
+                                URLEncoder.encode(entry.getValue(), ClientConstants.CHARSET));
+                    } catch (UnsupportedEncodingException e) {
+
+                    }
+                }
+            }
+        }
+        return query;
     }
 
     /**
@@ -547,7 +614,7 @@ public class OIDCClientAuthenticatorUtil {
         String encoded = null;
         String cookieName = "WASOidcCode";
         String requestParameters = null;
-        
+
         try {
             int lastindex = cookieValue.lastIndexOf("_");
             if (lastindex < 1) {

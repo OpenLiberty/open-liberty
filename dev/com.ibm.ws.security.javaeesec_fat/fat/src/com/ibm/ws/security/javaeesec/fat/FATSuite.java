@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,35 +33,9 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 MultipleIdentityStoreCustomFormPostTest.class,
                 MultipleIdentityStoreApplLoginToContinueTest.class,
                 LoginToContinueELTest.class,
-                HttpAuthenticationMechanismDBTest.class,
-                HttpAuthenticationMechanismDBNoUserTest.class,
-                HttpAuthenticationMechanismDBAuthAliasTest.class,
-                HttpAuthenticationMechanismDBAuthDataTest.class,
-                HttpAuthenticationMechanismDBShortNameTest.class,
-                HttpAuthenticationMechanismDBHashTest.class,
-                HttpAuthenticationMechanismDBHashBeanTest.class,
-                HttpAuthenticationMechanismDBHashNoConfigTest.class,
-                HttpAuthenticationMechanismDBAnnotationTest.class,
-                ProgrammaticTest.class,
-                MultipleModuleNoExpandTest.class,
-                MultipleModuleExpandTest.class,
-                SecurityContextTest.class,
-                SecurityContextJaxRSTest.class,
-                SecurityContextEJBTest.class,
-                DatabaseIdentityStoreDeferredSettingsTest.class,
-                DatabaseIdentityStoreImmediateSettingsTest.class,
-                EJBModuleTestProtectedServlet.class,
+                //EJBModuleTestProtectedServlet.class,
                 EJBModuleTestUnprotectedServlet.class,
-                MultipleModuleGlobalLoginTest.class,
-                MultipleModuleDBRunAsTest.class,
-                ScopedTest.class,
-                MultipleModuleRunAsTest.class,
-                FeatureTest.class,
-                EJBModuleRealmTest.class,
-                CustomIdentityStoreHandlerTest.class,
-                MultipleModuleGlobalClientCertTest.class,
-                MultipleModuleGlobalClientCertFailOverTest.class,
-                NoIdentityStoreTest.class
+                FeatureTest.class
 })
 
 /**

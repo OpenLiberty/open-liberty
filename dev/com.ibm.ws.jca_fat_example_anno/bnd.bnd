@@ -20,12 +20,7 @@ fat.project: true
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	com.ibm.ws.junit.extensions;version=latest, \
-	org.jboss.shrinkwrap:shrinkwrap-api;version=1.2.3,\
-	fattest.simplicity;version=latest, \
-	com.ibm.ws.componenttest:public.api;version=1.0.0,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.websphere.javaee.connector.1.7;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.ws.componenttest;version=latest
+	com.ibm.websphere.javaee.servlet.3.1;version=latest

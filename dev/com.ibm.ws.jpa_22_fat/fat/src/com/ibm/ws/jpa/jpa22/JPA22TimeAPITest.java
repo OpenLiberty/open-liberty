@@ -18,6 +18,7 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.jpa.FATSuite;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -44,7 +45,7 @@ public class JPA22TimeAPITest extends FATServletClient {
     public static void setUp() throws Exception {
         final String resPath = "test-applications/jpa22/" + APP_NAME + "/resources/";
 
-        PrivHelper.generateCustomPolicy(server1, PrivHelper.JAXB_PERMISSION);
+        PrivHelper.generateCustomPolicy(server1, FATSuite.JAXB_PERMS);
 
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
         app.addPackage("jpa22timeapi.web");
@@ -58,6 +59,7 @@ public class JPA22TimeAPITest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
+//        server1.dumpServer("timeapi");
         server1.stopServer("CWWJP9991W"); // From Eclipselink drop-and-create tables option
     }
 }

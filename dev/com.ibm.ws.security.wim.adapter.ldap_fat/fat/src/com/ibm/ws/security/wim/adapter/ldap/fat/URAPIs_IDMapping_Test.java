@@ -97,7 +97,7 @@ public class URAPIs_IDMapping_Test {
         }
         if (ldapServer != null) {
             try {
-                ldapServer.stopServer();
+                ldapServer.stopService();
             } catch (Exception e) {
                 // Ignore
             }
@@ -135,9 +135,10 @@ public class URAPIs_IDMapping_Test {
         Log.info(c, "setUp", "Creating servlet connection the server");
         servlet = new UserRegistryServletConnection(libertyServer.getHostname(), libertyServer.getHttpDefaultPort());
 
-        servlet.getRealm();
-        Thread.sleep(5000);
-        servlet.getRealm();
+        if (servlet.getRealm() == null) {
+            Thread.sleep(5000);
+            servlet.getRealm();
+        }
 
         /*
          * The original server configuration has no registry or Federated Repository configuration.

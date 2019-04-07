@@ -124,6 +124,16 @@ retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W: The Retry policy jitter del
 retry.parameter.invalid.value.CWMFT5019W.explanation=The jitter delay must be less than the delay. The jitter delay consists of the jitter parameter and the jitterDelayUnit parameter. The delay consists of the delay parameter and the delayUnit parameter.
 retry.parameter.invalid.value.CWMFT5019W.useraction=Correct the value of one or more of the parameters so that the duration for the jitter delay is less than the duration of the delay.
 
+# A method does not return Future or CompletionStage
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E=CWMFT5020E: The {0} asynchronous method does not have a return type of either java.util.concurrent.Future or java.util.concurrent.CompletionStage.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.explanation=All methods that are annotated with org.eclipse.microprofile.faulttolerance.Asynchronous must have a return type of either java.util.concurrent.Future or java.util.concurrent.CompletionStage.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=Update the return type.
+
+# A fallback method could not be found
+fallback.method.not.found.CWMFT5021E=CWMFT5021E: The fallback method {0} with parameter and return types matching method {1} was not found in the class hierarchy of {2}.
+fallback.method.not.found.CWMFT5021E.explanation=A fallback method was declared but it does not exist in the declaring class, its superclasses, or the interfaces it implements.
+fallback.method.not.found.CWMFT5021E.useraction=Either remove the fallback annotation or add the missing method. If the fallback method exists but is still not being found, check that the parameter types and return type of the two methods match and that the fallback method is visible to the class which declares the annotated method.
+
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: An internal error occurred. The exception is {0}.
 internal.error.CWMFT5997E.explanation=The application server experienced an internal error.

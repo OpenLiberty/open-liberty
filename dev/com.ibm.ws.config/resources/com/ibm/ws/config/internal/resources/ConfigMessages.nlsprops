@@ -30,10 +30,11 @@
 # -------------------------------------------------------------------------------------------------
 
 copyright=\
-\nLicensed Material - Property of IBM\
-\n(C) COPYRIGHT International Business Machines Corp. 2010 - All Rights Reserved.\
-\nUS Government Users Restricted Rights - Use, duplication or disclosure\
-\nrestricted by GSA ADP Schedule Contract with IBM Corp.
+\nCopyright (c) 2010 IBM Corporation and others.\
+\nAll rights reserved. This program and the accompanying materials\
+\nare made available under the terms of the Eclipse Public License v1.0\
+\nwhich accompanies this distribution, and is available at\
+\nhttp://www.eclipse.org/legal/epl-v10.html
 
 error.parse.server=CWWKG0001E: The configuration parser detected an error while parsing the root of the configuration and the referenced configuration documents. Error: {0}
 error.parse.server.explanation=The server configuration could not be read because there is an error in one of the configuration files.
@@ -430,9 +431,9 @@ error.variable.name.missing=CWWKG0091E: A name attribute must be specified for t
 error.variable.name.missing.explanation=The server configuration contains a variable configuration element that does not have a name attribute.
 error.variable.name.missing.useraction=Add a name attribute to the variable.
 
-error.variable.value.missing=CWWKG0092E: A value attribute must be specified for the variable on line {0} of resource {1}
-error.variable.value.missing.explanation=The server configuration contains a variable configuration element that does not have a value attribute.
-error.variable.value.missing.useraction=Add a value attribute to the variable.
+error.variable.value.missing=CWWKG0092E: A value attribute or defaultValue attribute must be specified for the variable on line {0} of resource {1}
+error.variable.value.missing.explanation=The server configuration contains a variable configuration element that does not have a value attribute or defaultValue attribute.
+error.variable.value.missing.useraction=Add a value attribute or defaultValue attribute to the variable.
 
 audit.dropin.being.processed=CWWKG0093A: Processing configuration drop-ins resource: {0}
 audit.dropin.being.processed.explanation=The contents of the specified resource will be included in the server configuration.

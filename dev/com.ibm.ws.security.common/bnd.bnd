@@ -27,12 +27,12 @@ Import-Package: \
     !*.internal.*, \
     !com.ibm.ws.kernel.boot.cmdline, \
     org.apache.http.*;resolution:=optional, \
+    org.jose4j.*;version="[0.5,1)", \
     *
  
 Private-Package: \
     com.ibm.ws.common.internal.encoder.*, \
-    com.ibm.ws.security.common.internal.*, \
-    com.ibm.ws.security.common.jwk.internal.*
+    com.ibm.ws.security.common.internal.*
 
 -dsannotations: com.ibm.ws.security.common.token.propagation.TokenPropagationHelper
 -dsannotations-inherit = true
@@ -47,12 +47,13 @@ instrument.classesExcludes: com/ibm/ws/security/common/internal/resources/*.clas
     com.ibm.websphere.org.osgi.service.component;version=latest, \
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
     com.ibm.ws.com.google.gson.2.2.4;version=latest,\
-    com.ibm.ws.org.jose4j.0.5.1;version=latest,\
+    com.ibm.ws.org.jose4j;version=latest,\
     com.ibm.ws.org.apache.commons.codec.1.4;version=latest, \
     com.ibm.websphere.javaee.servlet.3.0;version=latest, \
     com.ibm.websphere.security;version=latest, \
     com.ibm.ws.security;version=latest, \
     com.ibm.ws.common.encoder;version=latest, \
+    com.ibm.ws.crypto.passwordutil;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.ws.webcontainer;version=latest, \
     com.ibm.ws.security.authentication;version=latest, \
@@ -65,7 +66,7 @@ instrument.classesExcludes: com/ibm/ws/security/common/internal/resources/*.clas
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
     com.ibm.ws.junit.extensions;version=latest, \
     org.jmock:jmock-legacy;version=2.5.0, \
-    cglib:cglib-nodep;version=3.2.7, \
+    cglib:cglib-nodep;version=3.2.10, \
     org.hamcrest:hamcrest-all;version=1.3, \
     org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
     org.jmock:jmock;strategy=exact;version=2.5.1, \

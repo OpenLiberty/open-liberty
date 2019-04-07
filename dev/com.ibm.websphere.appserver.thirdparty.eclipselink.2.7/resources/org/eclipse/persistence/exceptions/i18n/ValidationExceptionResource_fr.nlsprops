@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -541,10 +545,7 @@
 
 7311=Une classe cible incorrecte est utilis\u00e9e avec l''attribut de collection d''\u00e9l\u00e9ment [{0}] sur la classe [{1}].  Seuls les types de base et les classes imbriquables sont autoris\u00e9s.
 
-# START NON-TRANSLATABLE
 7312=Une classe imbriquable non valide [{0}] est utilis\u00e9e avec l''attribut de collection d''\u00e9l\u00e9ment [{1}] sur la classe [{2}]. Voir la section 2.6 de la sp\u00e9c : Une classe imbriquable (y compris une classe imbriquable au sein d''une autre classe imbriquable) contenue au sein d''une collection d''\u00e9l\u00e9ment ne doit pas contenir une collection d''\u00e9l\u00e9ment, elle ne peut pas non plus contenir une relation \u00e0 une entit\u00e9 autre qu''une relation plusieurs-\u00e0-un ou un-\u00e0-un. La classe imbriquable doit \u00eatre sur le c\u00f4t\u00e9 de propri\u00e9t\u00e9 d''une telle relation et cette derni\u00e8re doit \u00eatre mapp\u00e9e par un mappage de cl\u00e9 externe. Le mappage pour l''attribut [{3}] sur la classe imbriquable est en violation de cela.
-# END NON-TRANSLATABLE
-
 7313=L''attribut [{1}] est introuvable dans la classe imbriquable[{0}]. Il est r\u00e9f\u00e9renc\u00e9 dans un remplacement d''association pour l''attribut imbriqu\u00e9 [{3}] sur la classe [{2}].
 
 7314=Le mappage [{0}] est utilis\u00e9 pour mapper la cl\u00e9 dans un \u00e9l\u00e9ment MappedKeyMapContainerPolicy et il utilise l''adressage indirect.  Les mappages utilis\u00e9s pour mes cl\u00e9s de mappe ne peuvent pas utiliser l''adressage indirect.

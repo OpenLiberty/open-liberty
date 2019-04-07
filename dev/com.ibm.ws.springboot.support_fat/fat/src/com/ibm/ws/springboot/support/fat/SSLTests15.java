@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,8 +23,31 @@ import componenttest.custom.junit.runner.FATRunner;
 @RunWith(FATRunner.class)
 public class SSLTests15 extends SSLCommonTests {
 
+    @After
+    public void stopTestServer() throws Exception {
+        String methodName = testName.getMethodName();
+        if (!javaVersion.startsWith("1.")) {
+            if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+                super.stopServer(true, "CWWKC0265W", "CWWKT0015W");
+            } else {
+                super.stopServer(true, "CWWKC0265W");
+            }
+        } else {
+            if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+                super.stopServer(true, "CWWKT0015W");
+            } else {
+                super.stopServer();
+            }
+        }
+    }
+
     @Test
     public void testSSLSpringBootApplication15() throws Exception {
+        testSSLApplication();
+    }
+
+    @Test
+    public void testSSLDefaultHostWithAppPort15() throws Exception {
         testSSLApplication();
     }
 
@@ -36,5 +60,4 @@ public class SSLTests15 extends SSLCommonTests {
     public String getApplication() {
         return SPRING_BOOT_15_APP_BASE;
     }
-
 }

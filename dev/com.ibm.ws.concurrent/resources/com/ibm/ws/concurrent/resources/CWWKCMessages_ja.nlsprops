@@ -22,7 +22,7 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
+# All messages must use the range CWWCK1100 to CWWCK1149 except those specifically identified as moved
 
 # Moved from com.ibm.ws.context
 CWWKC1000.unrecognized.property=CWWKC1000E: \u69cb\u6210\u30a8\u30ec\u30e1\u30f3\u30c8 {0} \u306b\u3001\u8a8d\u8b58\u3055\u308c\u306a\u3044\u5c5e\u6027 {1} \u304c\u542b\u307e\u308c\u3066\u3044\u307e\u3059\u3002

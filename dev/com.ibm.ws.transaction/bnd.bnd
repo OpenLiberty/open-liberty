@@ -35,6 +35,11 @@ Service-Component: com.ibm.ws.transaction; \
       uOWEventListener=com.ibm.wsspi.tx.UOWEventListener ;\
       optional:='uOWEventListener' ;\
       dynamic:='uOWEventListener', \
+   TMRecoveryService; \
+      implementation:=com.ibm.ws.transaction.services.TMRecoveryService; \
+      provide:='com.ibm.ws.transaction.services.TMRecoveryService'; \
+      immediate:=true; \
+      transactionManager=com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager, \
    LocalTransactionCurrent; \
       implementation:=com.ibm.ws.transaction.services.LocalTransactionCurrentService; \
       provide:='com.ibm.ws.LocalTransaction.LocalTransactionCurrent'; \
@@ -55,6 +60,9 @@ Service-Component: com.ibm.ws.transaction; \
 	 uowCallback=com.ibm.ws.uow.UOWScopeCallback; \
   	 properties:="service.vendor=IBM"
 
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
     !com.ibm.wsspi.webcontainer.collaborator, \
  	javax.transaction; version=1.1.0, \
@@ -62,6 +70,7 @@ Import-Package: \
  	javax.servlet; resolution:=optional, \
  	javax.servlet.http; resolution:=optional, \
  	com.ibm.ws.recoverylog.spi, \
+    javax.annotation;version=!,\
  	*
 
 # Allow use of the collaborator package even if the webcontainer bundle turns up 
@@ -96,6 +105,7 @@ Export-Package: \
 instrument.classesExcludes: com/ibm/ws/transaction/services/TransactionMessages*.class
 
 -buildpath: \
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.tx.ltc;version=latest,\
 	com.ibm.tx.util;version=latest,\
@@ -122,7 +132,7 @@ instrument.classesExcludes: com/ibm/ws/transaction/services/TransactionMessages*
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.ws.junit.extensions;version=latest, \
-	cglib:cglib-nodep;version=3.2.7, \
+	cglib:cglib-nodep;version=3.2.10, \
 	org.jmock:jmock-legacy;version=2.5.0, \
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
 	com.ibm.websphere.javaee.transaction.1.2;version=latest,\

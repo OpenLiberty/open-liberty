@@ -28,11 +28,13 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.sse.InboundSseEvent;
 
+import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.jaxrs.client.ClientProviderFactory;
@@ -44,6 +46,7 @@ public class InboundSseEventProcessor {
     public static final String SERVER_SENT_EVENTS = "text/event-stream";
     public static final MediaType SERVER_SENT_EVENTS_TYPE = MediaType.valueOf(SERVER_SENT_EVENTS);
 
+    private static final Logger LOG = LogUtils.getL7dLogger(InboundSseEventProcessor.class);
     private static final String COMMENT = ": ";
     private static final String EVENT = "event: ";
     private static final String ID = "id: ";
@@ -108,14 +111,15 @@ public class InboundSseEventProcessor {
                 if (builder != null) {
                     listener.onNext(builder.build(factory, message));
                 }
-
-                // complete the stream
-                listener.onComplete();
             } catch (final Exception ex) {
                 listener.onError(ex);
+            } finally {
+             // complete the stream
+                listener.onComplete();
             }
 
             if (response != null) {
+                LOG.fine("Closing the response");
                 response.close();
             }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 package com.ibm.wsspi.http.channel.values;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -218,6 +220,10 @@ public class HttpHeaderKeys extends HeaderKeys {
     public static final HttpHeaderKeys HDR_EDGE_CONTROL = new HttpHeaderKeys("Edge-control");
     /** De facto standard header for original protocol (similar to $WSIS) */
     public static final HttpHeaderKeys HDR_X_FORWARDED_PROTO = new HttpHeaderKeys("X-Forwarded-Proto");
+    /** Private WAS header used by the HTTP Session Manager to determine if a request is failed over */
+    public static final HttpHeaderKeys HDR_$WSFO = new HttpHeaderKeys("$WSFO");
+    /** Max value of header keys that will be kept in key storage */
+    public static final int ORD_MAX = 1024;
 
     /**
      * Constructor to create a new HttpHeaderKey and add it to the
@@ -226,9 +232,12 @@ public class HttpHeaderKeys extends HeaderKeys {
      * @param name
      */
     public HttpHeaderKeys(String name) {
-        super(name, NEXT_ORDINAL.getAndIncrement());
-        allKeys.add(this);
-        myMatcher.add(this);
+        super(name, generateNextOrdinal());
+        if (NEXT_ORDINAL.get() <= ORD_MAX) {
+
+            allKeys.add(this);
+            myMatcher.add(this);
+        }
     }
 
     /**
@@ -239,10 +248,14 @@ public class HttpHeaderKeys extends HeaderKeys {
      * @param undefined
      */
     private HttpHeaderKeys(String name, boolean undefined) {
-        super(name, NEXT_ORDINAL.getAndIncrement());
+        super(name, generateNextOrdinal());
         setUndefined(undefined);
-        allKeys.add(this);
-        myMatcher.add(this);
+
+        if (NEXT_ORDINAL.get() <= ORD_MAX) {
+
+            allKeys.add(this);
+            myMatcher.add(this);
+        }
     }
 
     /**
@@ -254,11 +267,14 @@ public class HttpHeaderKeys extends HeaderKeys {
      * @param shouldFilter
      */
     public HttpHeaderKeys(String name, boolean shouldLog, boolean shouldFilter) {
-        super(name, NEXT_ORDINAL.getAndIncrement());
+        super(name, generateNextOrdinal());
         super.setShouldLogValue(shouldLog);
         super.setUseFilters(shouldFilter);
-        allKeys.add(this);
-        myMatcher.add(this);
+        if (NEXT_ORDINAL.get() <= ORD_MAX) {
+
+            allKeys.add(this);
+            myMatcher.add(this);
+        }
     }
 
     /**
@@ -390,4 +406,49 @@ public class HttpHeaderKeys extends HeaderKeys {
         return find(name, 0, name.length);
     }
 
+    /** private headers defined as sensitive */
+    private static final HashSet<String> sensitiveHeaderList = new HashSet<String>(Arrays.asList(HDR_$WSCC.getName(), HDR_$WSRA.getName(), HDR_$WSRH.getName(),
+                                                                                                 HDR_$WSAT.getName(), HDR_$WSRU.getName()));
+
+    /**
+     * @param headerName
+     * @return true if headerName is considered to be a sensitive WAS private header
+     */
+    public static boolean isSensitivePrivateHeader(String headerName) {
+        if (headerName == null) {
+            return false;
+        }
+        return sensitiveHeaderList.contains(headerName);
+    }
+
+    /** private headers defined as sensitive */
+    private static final HashSet<String> privateHeaderList = new HashSet<String>(Arrays.asList(HDR_$WSAT.getName(), HDR_$WSCC.getName(), HDR_$WSCS.getName(),
+                                                                                               HDR_$WSIS.getName(), HDR_$WSSC.getName(), HDR_$WSPR.getName(), HDR_$WSRA.getName(),
+                                                                                               HDR_$WSRH.getName(), HDR_$WSRU.getName(), HDR_$WSSN.getName(), HDR_$WSSP.getName(),
+                                                                                               HDR_$WSSI.getName(), HDR_$WSZIP.getName(), HDR_$WSEP.getName(), HDR_$WSPT.getName(),
+                                                                                               HDR_$WSATO.getName(), HDR_$WSORIGCL.getName(), HDR_$WSPC.getName(),
+                                                                                               HDR_$WSODRINFO.getName(),
+                                                                                               HDR_$WSFO.getName()));
+
+    /**
+     * @param headerName
+     * @return true if headerName is a WAS private header
+     */
+    public static boolean isWasPrivateHeader(String headerName) {
+        if (headerName == null) {
+            return false;
+        }
+        return privateHeaderList.contains(headerName);
+    }
+
+    private static int generateNextOrdinal() {
+        synchronized (HttpHeaderKeys.class) {
+            if (Integer.MAX_VALUE == NEXT_ORDINAL.get()) {
+                NEXT_ORDINAL.set(ORD_MAX);
+
+            }
+            return NEXT_ORDINAL.getAndIncrement();
+
+        }
+    }
 }

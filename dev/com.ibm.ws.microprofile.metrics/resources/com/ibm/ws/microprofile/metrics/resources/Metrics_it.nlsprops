@@ -105,6 +105,38 @@ garbageCollectionCount.description=Visualizza il numero totale delle raccolte ch
 garbageCollectionTime.description=Visualizza il tempo trascorso accumulato approssimativo per la raccolta, in millisecondi. Questo attributo visualizza -1 se il tempo trascorso per la raccolta non \u00e8 definito per questo programma di raccolta. L'implementazione della JVM (Java Virtual Machine) potrebbe utilizzare un timer a risoluzione elevata per misurare il tempo trascorso. Se il tempo trascorso per la raccolta \u00e8 molto breve, questo attributo potrebbe visualizzare lo stesso valore anche se il conteggio della raccolta \u00e8 stato aumentato.
 
 #-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+threadpool.activeThreads.description=Il numero di thread che stanno eseguento attivit\u00e0.
+threadpool.size.description=La dimensione del pool di thread.
+
+servlet.request.total.description=Il numero di visite a questo servlet dall'avvio del server.
+servlet.responseTime.total.description=Il tempo di risposta totale di questo servlet dall'avvio del server.
+
+connectionpool.create.total.description=Il numero totale di connessione gestite create dalla creazione del pool.
+connectionpool.destroy.total.description=Il numero totale di connessione gestite eliminate dalla creazione del pool.
+connectionpool.managedConnections.description=Il numero di connessioni gestite nei pool liberi, condivisi e non condivisi.
+connectionpool.connectionHandles.description=Il numero di connessioni in uso. Questo numero pu\u00f2 includere pi\u00f9 connessioni condivise da una singola connessione gestita.
+connectionpool.freeConnections.description=Il numero di connessioni gestite nel pool libero.
+connectionpool.waitTime.total.description=Il tempo di attesa totale su tutte le richieste di connessione dall'avvio del server.
+connectionpool.inUseTime.total.description=Il tempo totale per cui tutte le connessioni s ono in uso dall'avvio del server.
+connectionpool.usedConnections.total.description=Il numero totale di richieste di connessione che hanno atteso a causa di un pool di connessione pieno o che non hanno dovuto attendere dall'avvio del server. Qualsiasi connessione attualmente in uso non \u00e8 inclusa in questo totale.
+connectionpool.queuedRequests.total.description=Il numero totale di richieste di connessione che hanno dovuto attendere a causa di un pool di connessione pieno dall'avvio del server.
+
+session.create.total.description=Il numero di sessioni in cui \u00e8 stato effettuato l'accesso dal momento dell'abilitazione di questa metrica.
+session.liveSessions.description=Il numero di utenti attualmente collegati.
+session.activeSessions.description=Il numero di sessioni attive contemporaneamente.  (Una \u00e8 attiva se il prodotto sta attualmente elaborando una richiesta che utilizza la sessione utente).
+session.invalidated.total.description=Il numero di sessioni da cui \u00e8 stata effettuata l'uscita dal momento dell'abilitazione di questa metrica.
+session.invalidatedbyTimeout.total.description=Il numero di sessioni da cui \u00e8 stata effettuata l'uscita per timeout dal momento dell'abilitazione di questa metrica.
+
+jaxws.invocations.total.description=Il numero di richiami a questo endpoint o operazione.
+jaxws.checkedApplicationFaults.total.description=Il numero di errori dell'applicazione controllati.
+jaxws.logicalRuntimeFaults.total.description=Il numero di errori di runtime logici.
+jaxws.runtimeFaults.total.description=Il numero di errori di runtime.
+jaxws.uncheckedApplicationFaults.total.description=Il numero di errori dell'applicazione non controllati.
+jaxws.responseTime.total.description=Il tempo totale di gestione della risposta dall'avvio del server.
+
+#-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------
 

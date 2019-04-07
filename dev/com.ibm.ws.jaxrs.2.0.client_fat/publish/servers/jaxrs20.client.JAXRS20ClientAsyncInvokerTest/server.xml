@@ -1,0 +1,16 @@
+<server>
+    <featureManager>
+        <feature>jaxrs-2.0</feature>
+		<feature>jaxb-2.2</feature>
+		<feature>jaxws-2.2</feature>
+    </featureManager>
+   
+  	<include location="../fatTestPorts.xml"/>
+  	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
+  	<javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+  	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+	<javaPermission className="java.lang.RuntimePermission" name="*" actions="accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect"/>
+	<javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
+</server>

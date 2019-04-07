@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -296,7 +296,7 @@ public abstract class FATHelper {
      * @param application
      *            the application name of installed application (e.g EJB3SLABeanApp).
      * @param module
-     *            the module name that contains the bean (e.g EJB3SLABean.jar).
+     *            the module name that contains the bean, without extension (e.g EJB3SLABean).
      * @param bean
      *            the EJB 3 bean name in specified application and module (e.g. AdvBasicCMTStatelessLocal).
      *
@@ -315,6 +315,27 @@ public abstract class FATHelper {
             throw new NamingException(e.getMessage());
         }
 
+        return lookupRemoteBinding(jndiName, interfaceClass);
+    }
+
+    /**
+     * Returns the remote business interface from JNDI lookup.
+     *
+     * @param interfaceClass
+     *            the remote interface class.
+     * @param application
+     *            the application name of installed application (e.g EJB3SLABeanApp).
+     * @param module
+     *            the module name that contains the bean, without extension (e.g EJB3SLABean).
+     * @param bean
+     *            the EJB 3 bean name in specified application and module (e.g. AdvBasicCMTStatelessLocal).
+     *
+     * @return Remote Business Interface object found.
+     *
+     * @throws NamingException
+     */
+    public static Object lookupDefaultBindingsEJBRemoteInterface(Class<?> interfaceClass, String application, String module, String bean) throws NamingException {
+        String jndiName = "java:global/" + application + "/" + module + "/" + bean + "!" + interfaceClass.getName();
         return lookupRemoteBinding(jndiName, interfaceClass);
     }
 }

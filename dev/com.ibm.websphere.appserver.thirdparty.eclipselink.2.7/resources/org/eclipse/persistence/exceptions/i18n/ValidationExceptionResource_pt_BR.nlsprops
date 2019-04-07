@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -541,9 +545,7 @@
 
 7311=Uma classe de destino inv\u00e1lida est\u00e1 sendo usada com o atributo de cole\u00e7\u00e3o de elemento [{0}] na classe [{1}].  Somente tipos b\u00e1sicos e classes integr\u00e1veis s\u00e3o permitidos.
 
-# START NON-TRANSLATABLE
 7312=Uma classe integr\u00e1vel inv\u00e1lida [{0}] est\u00e1 sendo usada com o atributo de cole\u00e7\u00e3o de elementos [{1}] na classe [{2}]. Consulte a se\u00e7\u00e3o 2.6 da especifica\u00e7\u00e3o: "Uma classe integr\u00e1vel (incluindo uma classe integr\u00e1vel em outra classe integr\u00e1vel) contida em uma cole\u00e7\u00e3o de elementos n\u00e3o deve conter uma cole\u00e7\u00e3o de elementos, nem pode conter um relacionamento com uma entidade diferente de um relacionamento de muitos para um ou um para um. A classe integr\u00e1vel deve estar no lado de propriedade desse relacionamento e o relacionamento deve ser mapeado por um mapeamento de chave estrangeira. O mapeamento do atributo [{3}] na classe integr\u00e1vel est\u00e1 em viola\u00e7\u00e3o disso.
-# END NON-TRANSLATABLE
 
 7313=O atributo [{1}] n\u00e3o foi localizado na classe integr\u00e1vel [{0}]. Ele \u00e9 referenciado em uma substitui\u00e7\u00e3o de associa\u00e7\u00e3o para o atributo integrado [{3}] na classe [{2}].
 

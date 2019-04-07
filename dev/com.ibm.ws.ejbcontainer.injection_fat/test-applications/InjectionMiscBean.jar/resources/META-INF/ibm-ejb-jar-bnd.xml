@@ -1,0 +1,23 @@
+<ejb-jar-bnd
+  xmlns="http://websphere.ibm.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+  version="1.0"
+>
+  <session name="JavaAppBean">
+    <env-entry name="java:app/env/envEntryBindingValue" value="2"/>
+    <env-entry name="java:app/env/envEntryBindingName" binding-name="java:app/env/envEntryBindingNameIndirect"/>
+    <env-entry name="java:app/env/envEntryBindingNameIndirect" value="3"/>
+    <data-source name="java:app/env/dataSourceBinding" binding-name="jdbc/TestDataSource"/>
+  </session>
+
+  <session name="ImplicitTypeBean">
+    <resource-ref name="resourceRefFieldName" binding-name="jdbc/TestDataSource"/>
+    <resource-ref name="resourceRefMethodName" binding-name="jdbc/TestDataSource"/>
+  </session>
+
+  <session name="ClientBean">
+    <ejb-ref name="java:global/env/ejb/ClientBeanRef" binding-name="java:global/InjectionMiscTestApp/InjectionMiscBean/ClientBean"/>
+  </session>
+
+</ejb-jar-bnd>

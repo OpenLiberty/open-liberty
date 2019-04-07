@@ -134,6 +134,7 @@ public class H2InboundLink extends HttpInboundLink {
     int hcDebug = 0x0;
 
     private boolean continuationFrameExpected = false;
+    private boolean writeContinuationFrameExpected = false;
 
     private final Object oneTimeEntrySync = new Object() {};
     private boolean oneTimeEntry = false;
@@ -150,6 +151,20 @@ public class H2InboundLink extends HttpInboundLink {
             Tr.debug(tc, "setContinuationExpected: " + expected);
         }
         this.continuationFrameExpected = expected;
+    }
+
+    public boolean isWriteContinuationExpected() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isWriteContinuationExpected: " + writeContinuationFrameExpected);
+        }
+        return writeContinuationFrameExpected;
+    }
+
+    public void setWriteContinuationExpected(boolean expected) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setWriteContinuationExpected: " + expected);
+        }
+        this.writeContinuationFrameExpected = expected;
     }
 
     public H2InboundLink(HttpInboundChannel channel, VirtualConnection vc, TCPConnectionContext tcc) {
@@ -244,7 +259,7 @@ public class H2InboundLink extends HttpInboundLink {
      *
      * @throws StreamClosedException
      */
-    public void processConnectionPrefaceMagic() throws ProtocolException, StreamClosedException {
+    public void processConnectionPrefaceMagic() throws Http2Exception {
         connection_preface_string_rcvd = true;
         H2StreamProcessor controlStream = createNewInboundLink(0);
         controlStream.completeConnectionPreface();
@@ -738,7 +753,7 @@ public class H2InboundLink extends HttpInboundLink {
         }
 
         try {
-            H2WriteQEntry e = new H2WriteQEntry(buf, bufs, numBytes, timeout, H2WriteQEntry.WRITE_TYPE.SYNC, fType, payloadLength, streamID);
+            H2WriteQEntry e = new H2WriteQEntry(buf, bufs, numBytes, timeout, fType, payloadLength, streamID);
             e.armWriteCompleteLatch();
 
             action = writeQ.writeOrAddToQ(e);
@@ -859,6 +874,10 @@ public class H2InboundLink extends HttpInboundLink {
         H2StreamProcessor stream;
         for (Integer i : streamTable.keySet()) {
             stream = streamTable.get(i);
+            // notify streams waiting for a window update
+            synchronized (stream) {
+                stream.notifyAll();
+            }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "destroying " + stream + ", " + stream.getId());
             }
@@ -1259,6 +1278,10 @@ public class H2InboundLink extends HttpInboundLink {
 
     public int getHighestClientStreamId() {
         return highestClientStreamId;
+    }
+
+    public int getHighestServerStreamId() {
+        return highestLocalStreamId;
     }
 
     /**

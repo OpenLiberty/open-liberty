@@ -124,6 +124,16 @@ retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W: Die Dauer der jitter-Verz\u
 retry.parameter.invalid.value.CWMFT5019W.explanation=Der Wert f\u00fcr die jitter-Verz\u00f6gerung muss kleiner sein als der Wert f\u00fcr die Verz\u00f6gerung. Der Wert f\u00fcr die Dauer der jitter-Verz\u00f6gerung setzt sich zusammen aus dem Parameter jitter und dem Parameter jitterDelayUnit. Der Wert f\u00fcr die Dauer der Verz\u00f6gerung setzt sich zusammen aus dem Parameter delay und dem Parameter delayUnit.
 retry.parameter.invalid.value.CWMFT5019W.useraction=Korrigieren Sie den Wert f\u00fcr einen oder mehrere der Parameter, sodass der Wert f\u00fcr die Dauer der jitter-Verz\u00f6gerung kleiner ist als der Wert f\u00fcr die Dauer der Verz\u00f6gerung.
 
+# A method does not return Future or CompletionStage
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E=CWMFT5020E: Die asynchrone Methode {0} hat nicht die R\u00fcckgabetypen java.util.concurrent.Future oder java.util.concurrent.CompletionStage.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.explanation=Alle mit org.eclipse.microprofile.faulttolerance.Asynchronous annotierten Methoden m\u00fcssen entweder den R\u00fcckgabetyp java.util.concurrent.Future oder den R\u00fcckgabetyp java.util.concurrent.CompletionStage haben.
+asynchronous.method.not.returning.future.completionstage.CWMFT5020E.useraction=Aktualisieren Sie den R\u00fcckgabetyp.
+
+# A fallback method could not be found
+fallback.method.not.found.CWMFT5021E=CWMFT5021E: Die Fallback-Methode {0} mit Parameter- und R\u00fcckgabetypen, die mit der Methode {1} \u00fcbereinstimmen, wurde in der Klassenhierarchie {2} nicht gefunden.
+fallback.method.not.found.CWMFT5021E.explanation=Es wurde eine Fallback-Methode deklariert, die jedoch in der deklarierten Klasse, in den zugeh\u00f6rigen Superklassen oder den Schnittstellen, die sie implementiert, nicht vorhanden ist.
+fallback.method.not.found.CWMFT5021E.useraction=Entfernen Sie die Fallback-Annotation oder f\u00fcgen Sie die fehlende Methode hinzu. Wenn die Fallback-Methode vorhanden ist, jedoch nicht gefunden werden kann, \u00fcberpr\u00fcfen Sie, ob Parameter- und R\u00fcckgabetypen der beiden Methoden \u00fcbereinstimmen, und ob die Fallback-Methode f\u00fcr die Klasse, die die annotierte Methode deklariert, sichtbar ist.
+
 #Generic error for internal failures. 
 internal.error.CWMFT5997E=CWMFT5997E: Es ist ein interner Fehler aufgetreten. Ausnahme: {0}
 internal.error.CWMFT5997E.explanation=Im Anwendungsserver ist ein interner Fehler aufgetreten.

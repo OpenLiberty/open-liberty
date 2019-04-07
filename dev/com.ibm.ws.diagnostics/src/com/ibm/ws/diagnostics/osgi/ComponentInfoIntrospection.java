@@ -69,7 +69,7 @@ public class ComponentInfoIntrospection implements Introspector {
         ps.println("Details by bundleId, then componentId");
 
         try {
-            scrInfo.info(".*", ps);
+            scrInfo.info(null, ps);
         } catch (IllegalArgumentException e) {
             ps.println(e.getMessage());
         }

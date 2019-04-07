@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWPMI
+#COMPONENTNAMEFOR CWPMI WebSphere Performance Monitoring MicroProfile Metrics API
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by MonitorMetrics Impl -  range is 2000-2199
+#-----------------------------------------------------------------------------------------------------------------------------
+FEATURE_REGISTERED=CWPMI2001I: M\u00e9tricas de monitoramento podem ser recuperadas por meio do mpMetrics.
+FEATURE_REGISTERED.explanation=Os recursos monitor-1.0 e mpMetrics-1.1 est\u00e3o ativados e m\u00e9tricas de monitoramento podem ser recuperadas por meio do mpMetrics.
+FEATURE_REGISTERED.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 requerida.
+
+FEATURE_UNREGISTERED=CWPMI2002I: Todas as m\u00e9tricas de monitoramento tiveram seu registro cancelado do mpMetrics.
+FEATURE_UNREGISTERED.explanation=O recurso monitor-1.0, o recurso mpMetrics-1.1 ou ambos os recursos foram removidos do servidor e todas as m\u00e9tricas de monitoramento tiveram seu registro cancelado no mpMetrics.
+FEATURE_UNREGISTERED.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 requerida.

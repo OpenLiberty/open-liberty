@@ -108,6 +108,8 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     public static final String KEY_responseType = "responseType";
     protected String responseType = null;
 
+    protected String grantType = null;
+
     public static final String KEY_nonce = "nonce";
     protected boolean nonce = false;
 
@@ -166,6 +168,9 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     public static final String DEFAULT_CONTEXT_ROOT = "/ibm/api/social-login";
     static String contextRoot = DEFAULT_CONTEXT_ROOT;
+    
+    public static final String KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS="useSystemPropertiesForHttpClientConnections";
+    protected boolean useSystemPropertiesForHttpClientConnections = false;
 
     protected CommonConfigUtils configUtils = new CommonConfigUtils();
 
@@ -228,6 +233,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     }
 
     protected void setOptionalConfigAttributes(Map<String, Object> props) throws SocialLoginException {
+        this.useSystemPropertiesForHttpClientConnections = configUtils.getBooleanConfigAttribute(props, KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS, false);
         this.displayName = configUtils.getConfigAttribute(props, KEY_displayName);
         this.website = configUtils.getConfigAttribute(props, KEY_website);
         this.tokenEndpoint = configUtils.getConfigAttribute(props, KEY_tokenEndpoint);
@@ -253,10 +259,21 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         initializeUserApiConfigs();
         initializeJwt(props);
         resetLazyInitializedMembers();
+        setGrantType();
     }
 
     protected void initializeUserApiConfigs() throws SocialLoginException {
         this.userApiConfigs = initUserApiConfigs(this.userApi);
+    }
+    
+    protected Configuration getCustomConfiguration(String customParam) {
+    	if (this.socialLoginServiceRef.getService() != null) {
+    		try {
+				return this.socialLoginServiceRef.getService().getConfigAdmin().getConfiguration(customParam, "");
+			} catch (IOException e) {		
+			}
+    	}
+    	return null;
     }
 
     protected void initializeJwt(Map<String, Object> props) {
@@ -298,6 +315,13 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         this.authFilter = null;
         this.sslContext = null;
         this.sslSocketFactory = null;
+    }
+
+    protected void setGrantType() {
+        grantType = ClientConstants.AUTHORIZATION_CODE;
+        if (responseType != null && responseType.contains(ClientConstants.TOKEN)) {
+            grantType = ClientConstants.IMPLICIT;
+        }
     }
 
     protected String getRequiredConfigAttribute(Map<String, Object> props, String key) {
@@ -477,6 +501,11 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     @Override
     public String getResponseType() {
         return this.responseType;
+    }
+
+    @Override
+    public String getGrantType() {
+        return this.grantType;
     }
 
     @Override
@@ -708,6 +737,15 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     protected SslRefInfoImpl createSslRefInfoImpl(SocialLoginService socialLoginService) {
         return new SslRefInfoImpl(socialLoginService.getSslSupport(), socialLoginService.getKeyStoreServiceRef(), sslRef, keyAliasName);
+    }
+
+    @Override
+    public String getResponseMode() {
+        return null;
+    }
+    
+    public boolean getUseSystemPropertiesForHttpClientConnections(){
+        return useSystemPropertiesForHttpClientConnections;
     }
 
 }

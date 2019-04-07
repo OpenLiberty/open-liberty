@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.session.passivation.tests;
 
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -31,14 +32,12 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 public class StatefulTimeoutTest extends AbstractTest {
-
     @Server("com.ibm.ws.ejbcontainer.session.passivation.fat.sfTimeout")
     @TestServlets({ @TestServlet(servlet = StatefulTimeoutServlet.class, contextRoot = "StatefulTimeoutWeb") })
     public static LibertyServer server;
@@ -53,7 +52,7 @@ public class StatefulTimeoutTest extends AbstractTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        //Use ShrinkHelper to build the Ear
+        // Use ShrinkHelper to build the Ear
 
         JavaArchive StatefulTimeoutEJBJar = ShrinkHelper.buildJavaArchive("StatefulTimeoutEJB.jar", "com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.ejb.");
         WebArchive StatefulTimeoutWeb = ShrinkHelper.buildDefaultApp("StatefulTimeoutWeb.war", "com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.web.");
@@ -77,7 +76,7 @@ public class StatefulTimeoutTest extends AbstractTest {
      * when EJBContainer=all tracing is enabled.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     public void testAnnotationOnInterfaceLogsWarning() throws Exception {
         server.setMarkToEndOfLog(server.getMostRecentTraceFile());
         runTest("StatefulTimeoutWeb/StatefulTimeoutServlet");
@@ -90,7 +89,7 @@ public class StatefulTimeoutTest extends AbstractTest {
      * the JNDI lookup and log a CNTR0311E error.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     @ExpectedFFDC({ "com.ibm.ejs.container.EJBConfigurationException" })
     public void testNegativeTwoValueInAnnotationLogsError() throws Exception {
         server.setMarkToEndOfLog();
@@ -104,7 +103,7 @@ public class StatefulTimeoutTest extends AbstractTest {
      * JNDI lookup and log a CNTR0311E error.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     @ExpectedFFDC({ "com.ibm.ejs.container.EJBConfigurationException" })
     public void testNegativeTwoValueInXMLLogsError() throws Exception {
         server.setMarkToEndOfLog();
@@ -118,7 +117,7 @@ public class StatefulTimeoutTest extends AbstractTest {
      * trace is enabled).
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     public void testLogWarningOnStatefulTimeoutOnStatelessBeanAnnotation() throws Exception {
         server.setMarkToEndOfLog();
         runTest("StatefulTimeoutWeb/StatefulTimeoutServlet");
@@ -131,7 +130,7 @@ public class StatefulTimeoutTest extends AbstractTest {
      * EJBContainer trace is enabled).
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     public void testLogWarningOnStatefulTimeoutOnStatelessBeanXML() throws Exception {
         server.setMarkToEndOfLog();
         runTest("StatefulTimeoutWeb/StatefulTimeoutServlet");
@@ -145,7 +144,7 @@ public class StatefulTimeoutTest extends AbstractTest {
      * LONG.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     @ExpectedFFDC({ "com.ibm.ejs.container.EJBConfigurationException" })
     public void testXMLTimeoutSpecifiedOverflow() throws Exception {
         server.setMarkToEndOfLog();

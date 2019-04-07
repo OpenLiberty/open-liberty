@@ -13,89 +13,47 @@ package com.ibm.websphere.microprofile.faulttolerance_fat.tests;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatMicroProfile13;
-import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatMicroProfile20;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.FallbackServlet;
 
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 @Mode(TestMode.LITE)
-public class CDIFallbackTest extends LoggingTest {
+@RunWith(FATRunner.class)
+public class CDIFallbackTest extends FATServletClient {
 
+    public static final String SERVER_NAME = "FTFallback";
+
+    @Server(SERVER_NAME)
+    @TestServlet(contextRoot = "CDIFaultTolerance", servlet = FallbackServlet.class)
+    public static LibertyServer server;
+
+    //run against all FT versions
     @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("FTFallback");
-
-    //run against both MP13 (EE7) and MP20 (EE8) features
-    @ClassRule
-    public static RepeatTests r = RepeatTests.with(new RepeatMicroProfile13(SHARED_SERVER.getServerName()))
-                    .andWith(new RepeatMicroProfile20(SHARED_SERVER.getServerName()));
-
-    @Test
-    public void testFallback() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/fallback?testMethod=testFallback", "SUCCESS");
-    }
-
-    @Test
-    public void testFallbackWithoutRetry() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/fallback?testMethod=testFallbackWithoutRetry", "SUCCESS");
-    }
-
-    @Test
-    public void testFallbackHandlerConfig() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/fallback?testMethod=testFallbackHandlerConfig", "SUCCESS");
-    }
-
-    @Test
-    public void testFallbackMethodConfig() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/fallback?testMethod=testFallbackMethodConfig", "SUCCESS");
-    }
-
-    @Test
-    public void testFallbackAsync() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/fallback?testMethod=testFallbackAsync", "SUCCESS");
-    }
-
-    @Test
-    public void testFallbackMethodAsync() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/fallback?testMethod=testFallbackMethodAsync", "SUCCESS");
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
+    public static RepeatTests r = RepeatFaultTolerance.repeatAll(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {
-        if (!SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().startServer();
-        }
-
+        server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        if (SHARED_SERVER != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            /*
-             * Ignore following exception as those are expected:
-             * CWWKC1101E: The task com.ibm.ws.microprofile.faulttolerance.cdi.FutureTimeoutMonitor@3f76c259, which was submitted to executor service
-             * managedScheduledExecutorService[DefaultManagedScheduledExecutorService], failed with the following error:
-             * org.eclipse.microprofile.faulttolerance.exceptions.FTTimeoutException: java.util.concurrent.TimeoutException
-             */
-            SHARED_SERVER.getLibertyServer().stopServer("CWWKC1101E");
-        }
+        /*
+         * Ignore following exception as those are expected:
+         * CWWKC1101E: The task com.ibm.ws.microprofile.faulttolerance.cdi.FutureTimeoutMonitor@3f76c259, which was submitted to executor service
+         * managedScheduledExecutorService[DefaultManagedScheduledExecutorService], failed with the following error:
+         * org.eclipse.microprofile.faulttolerance.exceptions.FTTimeoutException: java.util.concurrent.TimeoutException
+         */
+        server.stopServer("CWWKC1101E");
     }
 }

@@ -39,3 +39,40 @@ CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID.useraction=Verificare che l'attrib
 JAVASCRIPT_REDIRECT_URL_NOT_VALID=CWWKS6106E: Il servizio di sicurezza non pu\u00f2 creare il JavaScript appropriato per reindirizzare il browser perch\u00e9 l''URL di reindirizzamento [{0}] non \u00e8 valido.
 JAVASCRIPT_REDIRECT_URL_NOT_VALID.explanation=Il browser deve essere reindirizzato a un URL valido, ma l'URL specificato non \u00e8 valido. L'URL potrebbe essere null o vuoto o potrebbe contenere caratteri che non sono consentiti dall'RFC 3986.
 JAVASCRIPT_REDIRECT_URL_NOT_VALID.useraction=Controllare il formato dell'URL per assicurarsi che non sia null o vuoto e che contenga solo caratteri che sono consentiti in percorsi URI dall'RFC 3986.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS6107W: La configurazione del client login social [{2}] specifica sia l''URL dell''endpoint di rilevamento [{0}] che gli altri endpoint, ma deve essere configurato con l''endpoint di rilevamento o con gli altri endpoint. Il client ha utilizzato le informazioni dalla richiesta di rilevamento e ha ignorato gli altri endpoint [{1}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=La configurazione login social specifica sia l'endpoint di rilevamento che gli altri endpoint, ad esempio autorizzazione, token, ma \u00e8 possibile specificare solo uno dei due.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.useraction=Configurare l'endpoint di rilevamento o gli altri endpoint quali autorizzazione e token e userinfo, non entrambi.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER=CWWKS6108W: La configurazione del client login social [{2}] specifica sia l''URL dell''endpoint di rilevamento [{0}] che l''identificativo dell''emittente [{1}]. Il client ha utilizzato le informazioni dalla richiesta di rilevamento e ha ignorato l''identificativo dell''emittente configurato.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.explanation=La configurazione login social specifica sia l'endpoint di rilevamento che l'identificativo dell'emittente, ma \u00e8 possibile specificare solo uno dei due.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.useraction=Configurare l'endpoint di rilevamento o l'identificativo dell'emittente, non entrambi.
+
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT=CWWKS6109I: La configurazione del client login social [{3}] specifica [{0}], un valore predefinito per [{1}] e, di conseguenza al rilevamento, viene modificato in [{2}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.explanation=Se il provider OpenID Connect (OP) non supporta i valori predefiniti del client login social, a seconda della capacit\u00e0 del client login social, i valori predefiniti possono essere corretti in base a quanto supportato da OP.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.useraction=Messaggio informativo. Non sono richieste azioni.
+
+OIDC_CLIENT_DISCOVERY_COMPLETE=CWWKS6110I: La configurazione del client login social  [{0}] \u00e8 stata stabilita con le informazioni dall''URL dell''endpoint di rilevamento [{1}]. Queste informazioni consentono al client di interagire con il provider OpenID Connect per elaborare le richieste, quali authorization e token.
+OIDC_CLIENT_DISCOVERY_COMPLETE.explanation=Il client login social contatta l'endpoint di rilevamento del provider OpenID Connect per ottenere le informazioni come authorizationEndpointUrl, tokenEndpointUrl, userInfoEndpointUrl, jwkEndpointUrl. Queste informazioni consentono al client di interagire con il provider OpenID Connect per inviare richieste authorization, token, jwk, userinfo.
+OIDC_CLIENT_DISCOVERY_COMPLETE.useraction=Messaggio informativo. Non sono richieste azioni.
+
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG=CWWKS6111I: La configurazione del client login social [{0}] \u00e8 stata aggiornata con le nuove informazioni ricevute dall''URL dell''endpoint di rilevamento [{1}].
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.explanation=Il client login social contatta l'endpoint di rilevamento del provider OpenID Connect 1) se si verifica un problema durante il contatto con gli endpoint authorization o token del provider OpenID Connect 2) se l'ora corrente \u00e8 successiva al prossimo orario di rilevamento. Il prossimo orario di rilevamento viene calcolato aggiungendo il valore di discoveryPollingRate all'ora corrente dopo ogni chiamata di rilevamento.
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.useraction=Messaggio informativo. Non sono richieste azioni.
+
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG=CWWKS6112I: La configurazione del client login social [{0}] \u00e8 congruente con le informazioni dall''URL dell''endpoint di rilevamento [{1}], pertanto non sono necessari aggiornamenti alla configurazione.
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.explanation=Il client login social contatta l'endpoint di rilevamento del provider OpenID Connect 1) se si verifica un problema durante il contatto con gli endpoint authorization o token del provider OpenID Connect 2) se l'ora corrente \u00e8 successiva al prossimo orario di rilevamento. Il prossimo orario di rilevamento viene calcolato aggiungendo il valore di discoveryPollingRate all'ora corrente dopo ogni chiamata di rilevamento. Se le informazioni di rilevamento pi\u00f9 recenti corrispondono a quelle precedenti, non viene eseguito alcun aggiornamento alla configurazione.
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Messaggio informativo. Non \u00e8 richiesta alcuna azione.
+
+OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS6113E: Il client di login social [{0}] non \u00e8 riuscito a ottenere le informazioni dell''endpoint del provider OpenID Connect tramite l''URL dell''endpoint di rilevamento [{1}]. Aggiornare la configurazione per il login social (configurazione oidcLogin) con l''URL dell''endpoint di rilevamento HTTPS corretto. 
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=La configurazione del client login social \u00e8 configurata per rilevare gli endpoint del provider OpenID Connect attraverso l'URL di rilevamento, ma il processo di rilevamento non \u00e8 riuscito. Il client non \u00e8 in grado di elaborare le richieste di autenticazione fino a quando la configurazione di discoveryEndpoint non viene corretta o il rilevamento ha esito positivo.
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Correggere la configurazione del client login social per assicurarsi che 1) l'URL dell'endpoint di rilevamento faccia riferimento al provider OpenID Connect corretto, 2) l'URL dell'endpoint di rilevamento sia HTTPS e 3) la funzione SSL e gli elementi keystore siano configurati correttamente con l'attendibilit\u00e0 per il provider OpenID Connect 4) assicurarsi che l'endpoint di rilevamento del provider OpenID Connect sia correttamente funzionante.
+
+OIDC_CLIENT_DISC_RESPONSE_ERROR=CWWKS6114E: Una risposta corretta non \u00e8 stata restituita dall''URL di [{0}]. Lo stato di risposta [{1}] e l''errore [{2}] provengono dalla richiesta di rilevamento.
+OIDC_CLIENT_DISC_RESPONSE_ERROR.explanation=Il client login social non \u00e8 riuscito ad accedere all'endpoint di rilevamento del provider OpenID Connect e il messaggio potrebbe contenere ulteriori informazioni sull'errore.
+OIDC_CLIENT_DISC_RESPONSE_ERROR.useraction=Verificare che il provider OpenID Connect sia disponibile e che l'endpoint di rilevamento specificato sia corretto.
+
+OIDC_CLIENT_DISCOVERY_ERROR=CWWKS6115E: Una risposta corretta non \u00e8 stata restituita dall''URL di [{0}]. Il client social ha rilevato un errore [{1}] e non \u00e8 riuscito ad accedere all''endpoint di rilevamento del provider OpenID Connect.
+OIDC_CLIENT_DISCOVERY_ERROR.explanation=Il client login social non \u00e8 riuscito ad accedere all'endpoint di rilevamento del provider OpenID Connect e il messaggio potrebbe contenere ulteriori informazioni sull'errore.
+OIDC_CLIENT_DISCOVERY_ERROR.useraction=Verificare che il provider OpenID Connect sia disponibile e che l'endpoint di rilevamento specificato sia corretto.
+

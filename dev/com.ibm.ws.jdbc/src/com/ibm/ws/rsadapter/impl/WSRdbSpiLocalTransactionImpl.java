@@ -400,11 +400,8 @@ public class WSRdbSpiLocalTransactionImpl implements LocalTransaction, FFDCSelfI
                 ivStateManager.transtate = WSStateManager.NO_TRANSACTION_ACTIVE;
             } 
             catch (SQLException se) {
-                FFDCFilter.processException(
-                                            se,
-                                            "com.ibm.ws.rsadapter.spi.WSRdbSpiLocalTransactionImpl.rollback",
-                                            "192",
-                                            this);
+                if (!ivMC.isAborted())
+                    FFDCFilter.processException(se, getClass().getName(), "192", this);
 
                 ResourceException resX = AdapterUtil.translateSQLException(se, ivMC, true, currClass);
                 if (tc.isEntryEnabled())

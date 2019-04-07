@@ -1,0 +1,47 @@
+#*******************************************************************************
+# Copyright (c) 2018. 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Security Audit Reader
+Bundle-SymbolicName: com.ibm.ws.security.audit.reader
+Bundle-Description: Security Audit Reader; version=${bVersion}
+WS-TraceGroup: audit
+
+Main-Class: com.ibm.ws.security.audit.reader.AuditUtility
+
+#Export-Package: com.ibm.ws.security.audit.reader,\
+#				com.ibm.ws.security.audit.reader.tasks,\
+#				com.ibm.ws.security.audit.reader.utils
+				
+Private-Package: \
+  com.ibm.ws.security.audit.reader.*
+
+-includeresource: \
+  OSGI-OPT/websphere/libs/ws-auditreader.jar=${repo;com.ibm.ws.security.audit.reader.auditreader}
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.security.audit.reader.auditreader;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.security;version="[1,1.1.100)", \
+	com.ibm.ws.org.apache.commons.io;version="[1,1.0.100)", \
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.json4j;version="[1,1.0.100)", \
+	com.ibm.ws.common.encoder;version=latest,\
+	com.ibm.ws.logging;version="[1,1.0.100)", \
+	com.ibm.ws.webcontainer.security;version=latest,\
+	com.ibm.ws.security.audit.source;version="[1,1.0.100)", \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	
+	

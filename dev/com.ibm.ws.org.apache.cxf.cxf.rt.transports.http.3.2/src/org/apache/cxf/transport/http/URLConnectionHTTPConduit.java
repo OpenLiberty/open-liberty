@@ -153,11 +153,9 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
         try {
             connection.setRequestMethod(httpRequestMethod);
         } catch (java.net.ProtocolException ex) {
-            Object o = message.getContextualProperty(HTTPURL_CONNECTION_METHOD_REFLECTION);
-            boolean b = DEFAULT_USE_REFLECTION;
-            if (o != null) {
-                b = MessageUtils.isTrue(o);
-            }
+            boolean b = MessageUtils.getContextualBoolean(message,
+                                                          HTTPURL_CONNECTION_METHOD_REFLECTION,
+                                                          DEFAULT_USE_REFLECTION);
             if (b) {
                 try {
                     java.lang.reflect.Field f = ReflectionUtil.getDeclaredField(HttpURLConnection.class, "method");
@@ -308,7 +306,8 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
                     cout = connectAndGetOutputStream(b); 
                 }
             } catch (SocketException e) {
-                if ("Socket Closed".equals(e.getMessage())) {
+                if ("Socket Closed".equals(e.getMessage())
+                    || "HostnameVerifier, socket reset for TTL".equals(e.getMessage())) {
                     connection.connect();
                     cout = connectAndGetOutputStream((Boolean)outMessage.get(HTTPURL_CONNECTION_METHOD_REFLECTION)); 
                 } else {
@@ -417,11 +416,9 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
             }
         }
         protected String getResponseMessage() throws IOException {
-            Object o = this.outMessage.getContextualProperty(SET_REASON_PHRASE_NOT_NULL);
-            boolean b = SET_REASON_PHRASE;
-            if (o != null) {
-                b = MessageUtils.isTrue(o);
-            }
+            boolean b = MessageUtils.getContextualBoolean(this.outMessage,
+                                                          SET_REASON_PHRASE_NOT_NULL,
+                                                          SET_REASON_PHRASE);
             if (connection.getResponseMessage() == null && b) {
                 //some http server like tomcat 8.5+ won't return the
                 //reason phrase in response, return a informative value
@@ -441,9 +438,21 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
             // [CXF-6227] do not call connection.setFixedLengthStreamingMode(i)
             // to prevent https://bugs.openjdk.java.net/browse/JDK-8044726
         }
+        @FFDCIgnore(PrivilegedActionException.class)
         protected void handleNoOutput() throws IOException {
             if ("POST".equals(getMethod())) {
-                connection.getOutputStream().close();
+                try {
+                    AccessController.doPrivileged((PrivilegedExceptionAction<Void>)() -> {
+                        connection.getOutputStream().close(); 
+                        return null;
+                    });
+                } catch (PrivilegedActionException pae) {
+                    Throwable t = pae.getCause();
+                    if (t instanceof IOException) {
+                        throw (IOException) t;
+                    }
+                    throw new RuntimeException(t);
+                }
             }
         }
         @FFDCIgnore(URISyntaxException.class)

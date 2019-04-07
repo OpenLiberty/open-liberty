@@ -25,6 +25,7 @@ import com.ibm.ws.kernel.boot.Debug;
 import com.ibm.ws.kernel.boot.LaunchException;
 import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
+import com.ibm.ws.kernel.boot.internal.ProcessStatus.State;
 
 /**
  *
@@ -33,8 +34,8 @@ public class ServerLock {
 
     /**
      * @param bootProps
-     *            {@link BootstrapConfig} containing all established/calculated
-     *            values for server name and directories.
+     *                      {@link BootstrapConfig} containing all established/calculated
+     *                      values for server name and directories.
      * @return constructed ServerLock
      */
     public static ServerLock createTestLock(BootstrapConfig bootProps) {
@@ -48,14 +49,14 @@ public class ServerLock {
     /**
      * Create a server lock and make sure server, workarea, and slock file exist
      * and are writiable.
-     * 
+     *
      * @param bootProps
-     *            {@link BootstrapConfig} containing all established/calculated
-     *            values for server name and directories.
+     *                      {@link BootstrapConfig} containing all established/calculated
+     *                      values for server name and directories.
      * @return constructed ServerLock
-     * 
+     *
      * @throws LaunchException
-     *             exception thrown if server directories/files are not writable.
+     *                             exception thrown if server directories/files are not writable.
      */
     public static ServerLock createServerLock(BootstrapConfig bootProps) {
         String serverName = bootProps.getProcessName();
@@ -65,17 +66,15 @@ public class ServerLock {
 
         ServerLock serverLock = new ServerLock(serverName, serverWorkArea);
 
-        // Don't create serverDir if it doesn't exist 
+        // Don't create serverDir if it doesn't exist
         // (--create will be required to create new server)
 
         Boolean fileExists = null;
         final File sDir = serverDir;
         try {
-            fileExists = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>()
-            {
+            fileExists = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
                 @Override
-                public Boolean run() throws Exception
-                {
+                public Boolean run() throws Exception {
                     if (!sDir.exists()) {
                         return Boolean.FALSE;
                     }
@@ -92,11 +91,9 @@ public class ServerLock {
 
         final File soDir = serverOutputDir;
         try {
-            fileExists = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>()
-            {
+            fileExists = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
                 @Override
-                public Boolean run() throws Exception
-                {
+                public Boolean run() throws Exception {
                     if (!soDir.exists()) {
                         return Boolean.FALSE;
                     }
@@ -113,11 +110,9 @@ public class ServerLock {
 
         Boolean canWrite = null;
         try {
-            canWrite = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>()
-            {
+            canWrite = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
                 @Override
-                public Boolean run() throws Exception
-                {
+                public Boolean run() throws Exception {
                     if (!soDir.canWrite()) {
                         return Boolean.FALSE;
                     }
@@ -129,18 +124,15 @@ public class ServerLock {
 
         if (!writable || ((canWrite != null) && !(canWrite.booleanValue()))) {
             //if (!writable || !serverOutputDir.canWrite()) {
-            throw new LaunchException("Write permission required for server output directory, check directory permissions",
-                            MessageFormat.format(BootstrapConstants.messages.getString("error.serverDirPermission"),
-                                                 serverOutputDir.getAbsolutePath()));
+            throw new LaunchException("Write permission required for server output directory, check directory permissions", MessageFormat.format(BootstrapConstants.messages.getString("error.serverDirPermission"),
+                                                                                                                                                 serverOutputDir.getAbsolutePath()));
         }
 
         final File swArea = serverWorkArea;
         try {
-            fileExists = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>()
-            {
+            fileExists = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
                 @Override
-                public Boolean run() throws Exception
-                {
+                public Boolean run() throws Exception {
                     if (!swArea.exists()) {
                         return Boolean.FALSE;
                     }
@@ -155,11 +147,9 @@ public class ServerLock {
             writable = serverWorkArea.mkdirs();
 
         try {
-            canWrite = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>()
-            {
+            canWrite = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
                 @Override
-                public Boolean run() throws Exception
-                {
+                public Boolean run() throws Exception {
                     if (!swArea.canWrite()) {
                         return Boolean.FALSE;
                     }
@@ -171,20 +161,17 @@ public class ServerLock {
 
         if (!writable || (canWrite != null && !canWrite.booleanValue())) {
             //if (!writable || !serverWorkArea.canWrite()) {
-            throw new LaunchException("Can not create server workarea, check directory permissions",
-                            MessageFormat.format(BootstrapConstants.messages.getString("error.serverDirPermission"),
-                                                 serverWorkArea.getAbsolutePath()));
+            throw new LaunchException("Can not create server workarea, check directory permissions", MessageFormat.format(BootstrapConstants.messages.getString("error.serverDirPermission"),
+                                                                                                                          serverWorkArea.getAbsolutePath()));
         }
 
         writable = true;
 
         final File slf = serverLock.lockFile;
         try {
-            fileExists = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>()
-            {
+            fileExists = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
                 @Override
-                public Boolean run() throws Exception
-                {
+                public Boolean run() throws Exception {
                     if (!slf.exists()) {
                         return Boolean.FALSE;
                     }
@@ -206,11 +193,9 @@ public class ServerLock {
         }
 
         try {
-            canWrite = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>()
-            {
+            canWrite = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
                 @Override
-                public Boolean run() throws Exception
-                {
+                public Boolean run() throws Exception {
                     if (!slf.canWrite()) {
                         return Boolean.FALSE;
                     }
@@ -221,9 +206,8 @@ public class ServerLock {
         }
 
         if (!writable || !canWrite) {
-            throw new LaunchException("Can not create or write to lock file, check file permissions",
-                            MessageFormat.format(BootstrapConstants.messages.getString("error.serverDirPermission"),
-                                                 serverLock.lockFile.getAbsolutePath()));
+            throw new LaunchException("Can not create or write to lock file, check file permissions", MessageFormat.format(BootstrapConstants.messages.getString("error.serverDirPermission"),
+                                                                                                                           serverLock.lockFile.getAbsolutePath()));
         }
         return serverLock;
     }
@@ -271,10 +255,10 @@ public class ServerLock {
      * <P>
      * This handles a single server running per JVM. Trying to run multiple servers
      * or multiple instances of a same server within same JVM is not supported.
-     * 
+     *
      * @throws LaunchException
-     *             exception thrown if there's a problem getting the lock or
-     *             another instance of this server is running
+     *                             exception thrown if there's a problem getting the lock or
+     *                             another instance of this server is running
      */
     public synchronized void obtainServerLock() {
 
@@ -286,9 +270,9 @@ public class ServerLock {
             lockFileChannel = null;
 
             String lockFilePath = lockFile.getAbsolutePath();
-            LaunchException le = new LaunchException("Server(" + serverName + ") is already running.  lockFile=" + lockFilePath,
-                            MessageFormat.format(BootstrapConstants.messages.getString("error.serverAlreadyRunning"),
-                                                 serverName, lockFilePath));
+            LaunchException le = new LaunchException("Server(" + serverName + ") is already running.  lockFile="
+                                                     + lockFilePath, MessageFormat.format(BootstrapConstants.messages.getString("error.serverAlreadyRunning"),
+                                                                                          serverName, lockFilePath));
             le.setReturnCode(ReturnCode.REDUNDANT_ACTION_STATUS);
             throw le;
         }
@@ -296,7 +280,7 @@ public class ServerLock {
 
     /**
      * Try to obtain server lock
-     * 
+     *
      * @return true if server lock was obtained (!null & valid)
      */
     private synchronized boolean getServerLock() {
@@ -304,11 +288,9 @@ public class ServerLock {
         Boolean fileExists = Boolean.FALSE;
         final File sDir = lockFile;
         try {
-            fileExists = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>()
-            {
+            fileExists = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
                 @Override
-                public Boolean run() throws Exception
-                {
+                public Boolean run() throws Exception {
                     if (!sDir.exists()) {
                         return Boolean.FALSE;
                     }
@@ -361,7 +343,7 @@ public class ServerLock {
     /**
      * Try to obtain the server lock file: this immediately releases
      * if it is able to obtain the file.
-     * 
+     *
      * @return true if lock could be obtained
      * @throws IOException if an exception occurred while trying the lock.
      */
@@ -398,11 +380,9 @@ public class ServerLock {
         Boolean fileExists = Boolean.FALSE;
         final File sDir = lockFile;
         try {
-            fileExists = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>()
-            {
+            fileExists = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
                 @Override
-                public Boolean run() throws Exception
-                {
+                public Boolean run() throws Exception {
                     if (!sDir.exists()) {
                         return Boolean.FALSE;
 
@@ -423,7 +403,7 @@ public class ServerLock {
 
     /**
      * Release server lock.
-     * 
+     *
      * @throws IOException
      */
     public synchronized void releaseServerLock() {
@@ -444,7 +424,7 @@ public class ServerLock {
      * the server to wait until the server has terminated.
      * <p>
      * This is a separate process using the attach API to stop the server.
-     * 
+     *
      * @return {@link ReturnCode#OK} if server lock file can be obtained within
      *         3 seconds (see {@link #getServerLock()}, will otherwise
      *         return {@link ReturnCode#ERROR_SERVER_STOP}
@@ -471,7 +451,7 @@ public class ServerLock {
      * after waiting a small delay.
      * <p>
      * This is used to test whether or not the service has started
-     * 
+     *
      * @return {@link ReturnCode#OK} if server has started (lockFile unavailable),
      *         or {@link ReturnCode#ERROR_SERVER_START} if server (other process) did not
      *         start/reserve the lockfile within a reasonable time
@@ -517,7 +497,7 @@ public class ServerLock {
                 // checking this condition, we can poll for longer without
                 // worrying about "hanging" when the server process fails to
                 // launch altogether (invalid JAVA_HOME, JVM options, etc.).
-                if (fileObtained && !ps.isPossiblyRunning()) {
+                if (fileObtained && (ps.isPossiblyRunning() == State.NO)) {
                     return ReturnCode.ERROR_SERVER_START;
                 }
             }
@@ -562,7 +542,7 @@ public class ServerLock {
     /**
      * Test if server is running by attempting to obtain the server
      * lock file.
-     * 
+     *
      * @return true if server is running, false if not.
      */
     public boolean testServerRunning() {
@@ -595,15 +575,15 @@ public class ServerLock {
      * the JVM process was forcefully terminated. In this case, we mark the bootstrap properties to
      * do a full clean of the workarea, to remove any possible corruption that might have occurred
      * as a result of the JVM abend.
-     * 
+     *
      * The other existing files such as .sLock and .sCommand weren't not reused for this purpose
      * because they each had ties in to other code and scripts that have expections on them that
      * the server running marker file could not work with (such as slock is always expected to
      * exist)
-     * 
+     *
      * This utlilty relies on the server lock already being obtained (for synchronization) and that
      * a server workspace clean is done after it is executed.
-     * 
+     *
      * This method also expects the server directory and workarea directories exists. The server lock
      * file creation will ensure those things will exist.
      */
@@ -617,10 +597,8 @@ public class ServerLock {
             if (!newFile)
                 bootConfig.forceCleanStart();
         } catch (IOException e) {
-            throw new LaunchException("Can not create or write to server running marker file, check file permissions",
-                            MessageFormat.format(BootstrapConstants.messages.getString("error.serverDirPermission"),
-                                                 serverRunningMarkerFile.getAbsolutePath()),
-                            e);
+            throw new LaunchException("Can not create or write to server running marker file, check file permissions", MessageFormat.format(BootstrapConstants.messages.getString("error.serverDirPermission"),
+                                                                                                                                            serverRunningMarkerFile.getAbsolutePath()), e);
         }
     }
 }

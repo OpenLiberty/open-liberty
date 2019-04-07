@@ -672,6 +672,10 @@ public class Provisioner {
             // unit tests seem to have this empty
             return Collections.emptySet();
         }
+        
+        // always prime the products with the kernel name (empty string)
+        products.add("");
+        
         final Set<String> productRegionsToRemove = new HashSet<String>();
         ApiRegion.update(featureManager.getDigraph(), new Callable<RegionDigraph>() {
 

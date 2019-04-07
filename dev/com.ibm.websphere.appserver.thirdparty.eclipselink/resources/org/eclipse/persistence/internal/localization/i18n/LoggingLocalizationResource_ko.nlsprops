@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -477,6 +481,10 @@ jar_entry_not_migratable.MSGID=TOP-50095
 
 jar_file_url_exception=persistence.xml\uc744 \uad6c\ubb38 \ubd84\uc11d\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. Jar \ud30c\uc77c \uc704\uce58\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc74c: {0}
 
+javase_version_ex_method_call={0} \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud560 \ub54c \uc608\uc678 \ubc1c\uc0dd: {1}
+
+javase_version_ex_method_not_found={1}\uc5d0\uc11c {0} \uba54\uc18c\ub4dc\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc74c
+
 jaxb_metadata_warning_ignoring_java_attribute=\uc0dd\uc131\ub41c \ud2b9\uc131\uc774 \uc5c6\uc73c\ubbc0\ub85c [{1}] \ud074\ub798\uc2a4\uc5d0\uc11c [{0}] \uc18d\uc131\uc744 \ubb34\uc2dc\ud569\ub2c8\ub2e4.
 
 jaxb_metadata_warning_ignoring_java_attribute.MSGID=TOP-50235
@@ -508,6 +516,8 @@ jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter.MSGID=TOP-50241
 jaxb_metadata_warning_no_classes_to_process=[{0}] \ud328\ud0a4\uc9c0\uc5d0 \ub300\ud574 \ucc98\ub9ac\ud560 \ud074\ub798\uc2a4\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.
 
 jaxb_metadata_warning_no_classes_to_process.MSGID=TOP-50237
+
+jaxp_sec_prop_not_supported=\uc0ac\uc6a9\ub41c JAXP \uad6c\ud604\uc774 {0} \ud2b9\uc131\uc744 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 
 jmx_mbean_runtime_services_failed_toget_initial_context=MBean \ub4f1\ub85d\uc5d0 \ub300\ud574 InitialContext\ub97c \uac00\uc838\uc624\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. {0}
 

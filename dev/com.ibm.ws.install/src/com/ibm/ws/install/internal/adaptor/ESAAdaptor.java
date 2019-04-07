@@ -54,6 +54,7 @@ import com.ibm.ws.install.internal.InstallUtils.FileWriter;
 import com.ibm.ws.install.internal.InstallUtils.InputStreamFileWriter;
 import com.ibm.ws.install.internal.Product;
 import com.ibm.ws.install.internal.asset.ESAAsset;
+import com.ibm.ws.install.internal.asset.UninstallAsset;
 import com.ibm.ws.install.internal.platform.InstallPlatformUtils;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.feature.Visibility;
@@ -208,8 +209,22 @@ public class ESAAdaptor extends ArchiveAdaptor {
                 if (!skipFeatureDependencyCheck) {
                     // Look to see if the feature already exists and try to find it in the same place as the current ESA if we don't have it
                     String symName = fr.getSymbolicName();
-                    if (!product.containsFeature(symName) && !product.containsFeatureCollection(symName) && !featuresToBeInstalled.contains(symName)) {
-                        throw new InstallException(Messages.PROVISIONER_MESSAGES.getLogMessage("tool.install.missing.feature", featureDefinition.getSymbolicName(), symName));
+                    if (!isFeatureAvailable(product, featuresToBeInstalled, symName)) {
+                        boolean foundToleratesFeature = false;
+                        List<String> toleratesVersions = fr.getTolerates();
+                        if (toleratesVersions != null && !toleratesVersions.isEmpty()) {
+                            String symNameWithoutVersion = extractSymbolicNameWithoutVersion(symName);
+                            for (String toleratesVersion : toleratesVersions) {
+                                String toleratesSymName = symNameWithoutVersion + "-" + toleratesVersion;
+                                if (isFeatureAvailable(product, featuresToBeInstalled, toleratesSymName)) {
+                                    foundToleratesFeature = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!foundToleratesFeature) {
+                            throw new InstallException(Messages.PROVISIONER_MESSAGES.getLogMessage("tool.install.missing.feature", featureDefinition.getSymbolicName(), symName));
+                        }
                     }
                 }
             } else if (ibmFeature) {
@@ -309,7 +324,21 @@ public class ESAAdaptor extends ArchiveAdaptor {
 
     }
 
-    private static String getFeaturePath(ProvisioningFeatureDefinition targetFd, File baseDir) {
+    private static boolean isFeatureAvailable(Product product, Collection<String> featuresToBeInstalled, String symName) {
+        return product.containsFeature(symName) || product.containsFeatureCollection(symName)
+               || featuresToBeInstalled.contains(symName);
+    }
+
+    private static String extractSymbolicNameWithoutVersion(String symName) {
+        int dashVersionIndex = symName.lastIndexOf("-");
+        if (dashVersionIndex != -1) {
+            return symName.substring(0, dashVersionIndex);
+        } else {
+            return symName;
+        }
+    }
+
+    public static String getFeaturePath(ProvisioningFeatureDefinition targetFd, File baseDir) {
         if (targetFd.getVisibility() == Visibility.INSTALL)
             return "lib/assets/";
         File mf = targetFd.getFeatureDefinitionFile();
@@ -323,8 +352,9 @@ public class ESAAdaptor extends ArchiveAdaptor {
         return mf.exists() ? "lib/features/" : "lib/platform/";
     }
 
-    private static List<File> determineFilesToBeDeleted(ProvisioningFeatureDefinition targetFd, Map<String, ProvisioningFeatureDefinition> features, File baseDir,
-                                                        String featurePath, boolean checkDependency, Set<IFixInfo> uninstallFixInfo) {
+    public static List<File> determineFilesToBeDeleted(ProvisioningFeatureDefinition targetFd, Map<String, ProvisioningFeatureDefinition> features, File baseDir,
+                                                       String featurePath,
+                                                       boolean checkDependency, Set<IFixInfo> uninstallFixInfo) {
         // Determine the feature contents
         Map<String, File> featureContents = getUninstallFeatureContents(targetFd, features, baseDir, checkDependency);
         // Determine the bundles to remove according to the symbolic names of the uninstalling feature resources
@@ -376,14 +406,12 @@ public class ESAAdaptor extends ArchiveAdaptor {
         return filesToDelete;
     }
 
-    public static void uninstallFeature(ProvisioningFeatureDefinition targetFd, Map<String, ProvisioningFeatureDefinition> features, File baseDir, boolean checkDependency,
+    public static void uninstallFeature(UninstallAsset uninstallAsset, ProvisioningFeatureDefinition targetFd, File baseDir,
                                         List<File> filesRestored) throws ParserConfigurationException, IOException, SAXException {
-        HashSet<IFixInfo> uninstallFixInfo = new HashSet<IFixInfo>();
-        String featurePath = getFeaturePath(targetFd, baseDir);
-        List<File> filesToDelete = determineFilesToBeDeleted(targetFd, features, baseDir, featurePath, checkDependency, uninstallFixInfo);
+        List<File> filesToDelete = uninstallAsset.getFeatureFileList();
 
         // Uninstall the fix
-        for (IFixInfo fixInfo : uninstallFixInfo) {
+        for (IFixInfo fixInfo : uninstallAsset.getFixUpdatesFeature()) {
             FixAdaptor.uninstallFix(fixInfo, baseDir, filesRestored);
         }
 
@@ -399,7 +427,7 @@ public class ESAAdaptor extends ArchiveAdaptor {
         // remove the icons folder if it exists.
         // We could check for the files in here first but no-one should be adding their own stuff into this folder,
         // so we should be able to remove the whole dir every time.
-        InstallUtils.deleteDirectory(new File(baseDir, featurePath + "icons/" + targetFd.getSymbolicName()));
+        InstallUtils.deleteDirectory(new File(baseDir, uninstallAsset.getFeaturePath() + "icons/" + targetFd.getSymbolicName()));
     }
 
     private static boolean requiredByJar(ContentBasedLocalBundleRepository br, ProvisioningFeatureDefinition fd, File b) {
@@ -846,14 +874,11 @@ public class ESAAdaptor extends ArchiveAdaptor {
      * @param featureDefinitions
      * @param baseDir
      */
-    public static void preCheck(ProvisioningFeatureDefinition targetFd, Map<String, ProvisioningFeatureDefinition> features, File baseDir,
-                                boolean checkDependency) throws InstallException {
-        HashSet<IFixInfo> uninstallFixInfo = new HashSet<IFixInfo>();
-        String featurePath = getFeaturePath(targetFd, baseDir);
-        List<File> filesToDelete = determineFilesToBeDeleted(targetFd, features, baseDir, featurePath, checkDependency, uninstallFixInfo);
+    public static void preCheck(UninstallAsset uninstallAsset, ProvisioningFeatureDefinition targetFd, File baseDir) throws InstallException {
+        List<File> filesToDelete = uninstallAsset.getFeatureFileList();
 
         // check the fixes to be uninstalled
-        for (IFixInfo fixInfo : uninstallFixInfo)
+        for (IFixInfo fixInfo : uninstallAsset.getFixUpdatesFeature())
             FixAdaptor.preCheck(fixInfo, baseDir);
 
         // check the files to be uninstalled
@@ -864,6 +889,6 @@ public class ESAAdaptor extends ArchiveAdaptor {
         isFileLocked(targetFd, new File(baseDir, "/lafiles/" + targetFd.getSymbolicName()));
 
         // check the icons folder
-        isFileLocked(targetFd, new File(baseDir, featurePath + "icons/" + targetFd.getSymbolicName()));
+        isFileLocked(targetFd, new File(baseDir, uninstallAsset.getFeaturePath() + "icons/" + targetFd.getSymbolicName()));
     }
 }

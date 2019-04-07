@@ -1,0 +1,63 @@
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+#CMVCPATHNAME com.ibm.ws.security.audit.reader/resources/com/ibm/ws/security/audit/reader/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKS
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Eroare: {0}
+error.inputConsoleNotAvailable=Consola de intrare nu este disponibil\u0103.
+error.missingIO=Eroare, dispozitiv I/E lips\u0103: {0}.
+
+usage=Utilizare:  {0}
+task.unknown=Task necunoscut: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=Exist\u0103 prea multe argumente.
+insufficientArgs=Argumente insuficiente.
+invalidArg=Argumentul {0} este invalid.
+invalidValue=Valoarea {0} este invalid\u0103 pentru argumentul {1}.
+missingArg=Argumentul {0} lipse\u015fte.
+missingValue=Lipse\u015fte o valoare pentru argumentul {0}.
+missingArg2=Trebuie furnizat fie argumentul {0} fie argumentul {1}.
+exclusiveArg=Trebuie specificat argumentul {0} sau argumentul {1}, dar nu ambele.
+serverNotFound=Serverul specificat {0} nu a putut fi g\u0103sit la loca\u0163ia {1}.
+missingArgs= Lipsesc urm\u0103toarele argumente: {0} \u015fi {1}.
+missingArgs3=Lipsesc urm\u0103toarele argumente: {0}, {1} \u015fi {2}.
+invalidFileLocations=Calea complet calificat\u0103 {0}, specificat\u0103 pentru argumentul --auditFileLocation este aceea\u015fi cu calea complet calificat\u0103 {1} specificat\u0103 pentru argumentul --outputFileLocation.  Ambele c\u0103i trebuie s\u0103 fie unice.
+invalidURLFormat=Valoarea {0} specificat\u0103 pentru argumentul {1} nu este \u00een formatul de URL complet calificat de fi\u015fier.
+
+password.enterText=Introducere parol\u0103:
+password.reenterText=Reintroducere parol\u0103:
+password.readError=Eroare citire parol\u0103.
+password.entriesDidNotMatch=Parolele nu s-au potrivit.
+
+audit.NonWriteableOuputFile=Valoarea {0} specificat\u0103 pentru --outputFileLocation este un fi\u015fier protejat la scriere.  Asigura\u0163i-v\u0103 c\u0103 loca\u0163ia specificat\u0103 pentru fi\u015fierul de ie\u015fire este inscriptibil\u0103.
+audit.NoKeyStorePasswordValue=Nu a fost specificat\u0103 nicio parol\u0103 de depozit de chei pentru auditarea depozitului de chei {0}.
+audit.MismatchingEncrypt=Istoricul de auditare, {0}, este criptat dar argumentul --encrypted fie nu a fost specificat, fie a fost specificat \u015fi setat la false.
+audit.MismatchingSign=Istoricul de auditare, {0}, este semnat dar argumentul --signed fie nu a fost specificat, fie a fost specificat \u015fi setat la false.
+audit.MismatchingEncryptSign=Istoricul de auditare, {0}, este criptat \u015fi semnat dar fie argumentul --signed fie argumentul --encrypted fie nu a fost specificat, fie a fost specificat \u015fi setat la false.
+security.audit.UnsupportedKeyStoreType=Valoarea de tip de depozit de chei {0} pentru argumentul {1} nu este suportat\u0103.
+security.audit.UnknownHost=A e\u015fuat ob\u0163inerea numelui de nume de gazd\u0103 pentru ma\u015fina pe care ruleaz\u0103 utilitarul Auditare cititori. 
+security.audit.KeyStoreException=O excep\u0163ie a ap\u0103rut la \u00eencercarea de a se ob\u0163ine o instan\u0163\u0103 a depozitului de chei cu tipul de depozit de chei \u015fi tipul de furnizor specificate.
+security.audit.NoSuchProviderException=O excep\u0163ie a ap\u0103rut la \u00eencercarea de a se ob\u0163ine o instan\u0163\u0103 a depozitului de chei cu tipul de furnizor specificat.  Niciun astfel de furnizor nu exist\u0103.
+security.audit.MalformedURLException=O excep\u0163ie a ap\u0103rut la \u00eencercarea de a deschide depozitul de chei.  Loca\u0163ia depozitului de chei este malformat\u0103. 
+security.audit.CertificateException=O excep\u0163ie de certificat a ap\u0103rut la \u00eenc\u0103rcarea depozitului de chei.
+security.audit.NoSuchAlgorithmException=O excep\u0163ie a ap\u0103rut la \u00eenc\u0103rcarea depozitului de chei.  Un algortim criptografic particular a fost cerut dar nu este disponibil.
+security.audit.FileNotFound=Fi\u015fierul numit {0} nu exist\u0103. 
+security.audit.ErrorLoadingKeystore=Eroare \u00eenc\u0103rcarea depozitului de chei {0}. Parola se poate s\u0103 fi fost specificat\u0103 incorect. 
+security.audit.MismatchingEncKeystores=Valoarea de intrare, {0}, pentru depozitul de chei specificat s\u0103 con\u0163in\u0103 certificatul utilizat pentru a decripta \u00eenregistr\u0103rile de auditare nu se potrive\u015fte cu depozitul de chei, {1}, specificat \u00een istoricul de auditare.
+security.audit.MismatchingSigningKeystores=Valoarea de intrare, {0}, pentru depozitul de chei specificat s\u0103 con\u0163in\u0103 certificatul utilizat pentru a anula semn\u0103tura pe \u00eenregistr\u0103rile de auditare nu se potrive\u015fte cu depozitul de chei, {1}, specificat \u00een istoricul de auditare.
+security.audit.CannotFindCertificate=Aliasul certificatului {0} nu exist\u0103 \u00een depozitul de chei {1}.

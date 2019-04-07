@@ -1,0 +1,63 @@
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+#CMVCPATHNAME com.ibm.ws.security.audit.reader/resources/com/ibm/ws/security/audit/reader/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKS
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=B\u0142\u0105d: {0}
+error.inputConsoleNotAvailable=Konsola wej\u015bciowa jest niedost\u0119pna.
+error.missingIO=B\u0142\u0105d. Brak urz\u0105dzenia we/wy: {0}.
+
+usage=U\u017cycie: {0}
+task.unknown=Nieznane zadanie: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=Za du\u017co argument\u00f3w.
+insufficientArgs=Za ma\u0142o argument\u00f3w.
+invalidArg=Argument {0} jest niepoprawny.
+invalidValue=Warto\u015b\u0107 {0} jest niepoprawna dla argumentu {1}.
+missingArg=Brak argumentu {0}.
+missingValue=Brak warto\u015bci dla argumentu {0}.
+missingArg2=Nale\u017cy udost\u0119pni\u0107 warto\u015b\u0107 argumentu {0} albo argumentu {1}.
+exclusiveArg=Nale\u017cy okre\u015bli\u0107 argument {0} albo argument {1}, ale nie obydwa.
+serverNotFound=Podany serwer {0} nie zosta\u0142 znaleziony w po\u0142o\u017ceniu {1}.
+missingArgs= Brak nast\u0119puj\u0105cych argument\u00f3w: {0} i {1}.
+missingArgs3=Brak nast\u0119puj\u0105cych argument\u00f3w: {0}, {1} i {2}.
+invalidFileLocations=Pe\u0142na \u015bcie\u017cka ({0}) podana dla argumentu --auditFileLocation jest taka sama jak pe\u0142na \u015bcie\u017cka ({1}) podana dla argumentu --outputFileLocation.  Obie \u015bcie\u017cki musz\u0105 by\u0107 unikalne.
+invalidURLFormat=Warto\u015b\u0107 {0} podana dla argumentu {1} nie jest w pe\u0142nym formacie adresu URL pliku.
+
+password.enterText=Wprowad\u017a has\u0142o:
+password.reenterText=Wprowad\u017a ponownie has\u0142o:
+password.readError=B\u0142\u0105d odczytu has\u0142a.
+password.entriesDidNotMatch=Has\u0142a nie s\u0105 zgodne.
+
+audit.NonWriteableOuputFile=Warto\u015b\u0107 {0} podana dla argumentu --outputFileLocation nie wskazuje pliku dost\u0119pnego do zapisu.  Upewnij si\u0119, \u017ce mo\u017cliwy jest zapis w po\u0142o\u017ceniu podanym dla pliku wyj\u015bciowego.
+audit.NoKeyStorePasswordValue=Nie podano has\u0142a magazynu kluczy kontroli {0}.
+audit.MismatchingEncrypt=Dziennik kontroli {0} jest zaszyfrowany, ale nie okre\u015blono argumentu --encrypted lub zosta\u0142 on okre\u015blony i ustawiony na warto\u015b\u0107 false.
+audit.MismatchingSign=Dziennik kontroli {0} jest podpisany, ale nie okre\u015blono argumentu --signed lub zosta\u0142 on okre\u015blony i ustawiony na warto\u015b\u0107 false.
+audit.MismatchingEncryptSign=Dziennik kontroli {0} jest zaszyfrowany i podpisany, ale nie okre\u015blono argumentu --signed lub --encrypted albo zosta\u0142 on okre\u015blony i ustawiony na warto\u015b\u0107 false.
+security.audit.UnsupportedKeyStoreType=Warto\u015b\u0107 typu magazynu kluczy {0} dla argumentu {1} nie jest obs\u0142ugiwana.
+security.audit.UnknownHost=Nie mo\u017cna uzyska\u0107 nazwy hosta komputera, na kt\u00f3rym dzia\u0142a program narz\u0119dziowy odczytuj\u0105cy wyniki kontroli. 
+security.audit.KeyStoreException=Zg\u0142oszono wyj\u0105tek podczas pr\u00f3by uzyskania instancji magazynu kluczy o okre\u015blonym typie magazynu kluczy i typie dostawcy.
+security.audit.NoSuchProviderException=Zg\u0142oszono wyj\u0105tek podczas pr\u00f3by uzyskania instancji magazynu kluczy o okre\u015blonym dostawcy.  Taki dostawca nie istnieje.
+security.audit.MalformedURLException=Podczas pr\u00f3by otwarcia magazynu kluczy zg\u0142oszono wyj\u0105tek.  Adres okre\u015blaj\u0105cy po\u0142o\u017cenie magazynu kluczy jest zniekszta\u0142cony. 
+security.audit.CertificateException=Podczas pr\u00f3by za\u0142adowania magazynu kluczy zg\u0142oszono wyj\u0105tek dotycz\u0105cy certyfikatu.
+security.audit.NoSuchAlgorithmException=Podczas \u0142adowania magazynu kluczy zg\u0142oszono wyj\u0105tek.  Za\u017c\u0105dano okre\u015blonego algorytmu szyfrowania, ale jest on niedost\u0119pny.
+security.audit.FileNotFound=Nazwany plik {0} nie istnieje. 
+security.audit.ErrorLoadingKeystore=B\u0142\u0105d podczas \u0142adowania magazynu kluczy {0}. Has\u0142o mog\u0142o zosta\u0107 podane niepoprawnie. 
+security.audit.MismatchingEncKeystores=Warto\u015b\u0107 wej\u015bciowa {0} dla magazynu kluczy okre\u015blonego w celu przechowywania certyfikatu u\u017cywanego do deszyfrowania rekord\u00f3w kontroli nie jest zgodna z magazynem kluczy {1} okre\u015blonym w dzienniku kontroli.
+security.audit.MismatchingSigningKeystores=Warto\u015b\u0107 wej\u015bciowa {0} dla magazynu kluczy okre\u015blonego w celu przechowywania certyfikatu u\u017cywanego do usuwania podpis\u00f3w rekord\u00f3w kontroli nie jest zgodna z magazynem kluczy {1} okre\u015blonym w dzienniku kontroli.
+security.audit.CannotFindCertificate=Alias certyfikatu {0} nie istnieje w magazynie kluczy {1}.

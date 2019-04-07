@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2014 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -140,6 +140,9 @@ slf.failed.delete=CWWKL0072W: The [{0}] cache file cannot be deleted. This resul
 slf.failed.delete.explanation=The system failed to delete the cache file. Because the file still exists in the system, this might cause corruption in nested archives.
 slf.failed.delete.useraction=Verify that the cache file is not in a locked state, which can cause the file deletion to fail.
 
+####################### API TYPE MESSAGES 0080-0089 ###############################################
+###################################################################################################
+
 cls.classloader.config.duplicate=CWWKL0080E: [{0}] API type was already used in this [{1}] list.  Remove the duplicate API type.
 cls.classloader.config.duplicate.explanation=Each API type can be specified a maximum of one time.
 cls.classloader.config.duplicate.useraction=Check the server configuration for duplicate API type to ensure that the API type are correct.
@@ -155,3 +158,12 @@ cls.classloader.config.typo.useraction=Check the server configuration for invali
 cls.classloader.config.typo2=CWWKL0083E: When using prefix + or -, [{0}] API type is not valid in this [{1}] list.  All API type must have a prefix of + or -
 cls.classloader.config.typo2.explanation=Change the invalid API type to a valid API type with + or -.
 cls.classloader.config.typo2.useraction=Check the server configuration for invalid API type to ensure that the API type are correct.
+
+# {0} - class name
+# {1} - suggested feature
+cls.classloader.suggested.feature=CWWKL0084W: The {0} class could not be loaded. Try enabling the {1} feature or a newer version of the feature in the server.xml file.
+cls.classloader.suggested.feature.explanation=A class that is typically provided by one or more server features could not be loaded.
+cls.classloader.suggested.feature.useraction=Try enabling the specified feature or a newer version of the feature in the server.xml file.
+
+####################### com.ibm.ws.classloader.context bundle messages 0090-0099 ###################
+####################################################################################################

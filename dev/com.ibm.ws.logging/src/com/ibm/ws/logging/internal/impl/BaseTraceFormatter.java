@@ -14,7 +14,6 @@ import java.lang.reflect.Array;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -156,21 +155,6 @@ public class BaseTraceFormatter extends Formatter {
         }
         return "";
     }
-
-    //copied from BTS
-    /** Flags for suppressing traceback output to the console */
-    private static class StackTraceFlags {
-        boolean needsToOutputInternalPackageMarker = false;
-        boolean isSuppressingTraces = false;
-    }
-
-    /** Track the stack trace printing activity of the current thread */
-    private static ThreadLocal<StackTraceFlags> traceFlags = new ThreadLocal<StackTraceFlags>() {
-        @Override
-        protected StackTraceFlags initialValue() {
-            return new StackTraceFlags();
-        }
-    };
 
     final TraceFormat traceFormat;
 
@@ -431,7 +415,7 @@ public class BaseTraceFormatter extends Formatter {
      */
     public String consoleLogFormat(GenericData genData) {
         StringBuilder sb = new StringBuilder(256);
-        ArrayList<KeyValuePair> pairs = genData.getPairs();
+        KeyValuePair[] pairs = genData.getPairs();
         KeyValuePair kvp = null;
         String message = null;
         String throwable = null;
@@ -504,7 +488,7 @@ public class BaseTraceFormatter extends Formatter {
         // This is a very light trace format, based on enhanced:
         StringBuilder sb = new StringBuilder(256);
         String name = null;
-        ArrayList<KeyValuePair> pairs = genData.getPairs();
+        KeyValuePair[] pairs = genData.getPairs();
         KeyValuePair kvp = null;
         String message = null;
         Long datetime = null;
@@ -677,7 +661,7 @@ public class BaseTraceFormatter extends Formatter {
      */
     public String traceFormatGenData(GenericData genData) {
 
-        ArrayList<KeyValuePair> pairs = genData.getPairs();
+        KeyValuePair[] pairs = genData.getPairs();
         KeyValuePair kvp = null;
         String txt = null;
         Integer id = null;
@@ -1069,7 +1053,7 @@ public class BaseTraceFormatter extends Formatter {
         String loglevel = null;
         KeyValuePair kvp = null;
 
-        ArrayList<KeyValuePair> pairs = genData.getPairs();
+        KeyValuePair[] pairs = genData.getPairs();
         for (KeyValuePair p : pairs) {
 
             if (p != null && !p.isList()) {

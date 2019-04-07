@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -355,9 +359,7 @@ position_param_not_found=Il n''y avait aucun param\u00e8tre \u00e0 la position :
 
 pu_configured_for_resource_local=Impossible de cr\u00e9er un \u00e9l\u00e9ment EntityManager avec SynchronizationType car PersistenceUnit est configur\u00e9 avec des transactions locales de ressource.
 
-# START NON-TRANSLATABLE
 remove_deletion_failed=\u00c9chec de retrait de suppression :
-# END NON-TRANSLATABLE
 
 rollback_because_of_rollback_only=Transaction "annul\u00e9e" car elle \u00e9tait d\u00e9finie sur RollbackOnly.
 
@@ -428,6 +430,8 @@ unexpect_argument=Argument d''entr\u00e9e inattendu {0}
 unknown_bean_class=Classe de bean d''entit\u00e9 inconnue : {0}; v\u00e9rifiez que cette classe est marqu\u00e9e avec l''annotation @Entity.
 
 unknown_entitybean_name=Nom de bean d''entit\u00e9 inconnu : {0}
+
+unsupported_classfile_version=La classe {0} a \u00e9t\u00e9 compil\u00e9e avec un kit JDK non pris en charge. Signalez cette erreur \u00e0 l''\u00e9quipe du projet open source EclipseLink.
 
 wrap_convert_exception=Une exception s''est produite lors de l''appel de {0} sur la classe de convertisseur {1} avec la valeur {2}
 

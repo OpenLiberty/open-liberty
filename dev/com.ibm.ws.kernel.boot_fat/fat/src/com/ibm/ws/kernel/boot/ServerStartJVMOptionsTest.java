@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,54 +28,54 @@ import java.util.zip.ZipFile;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-/**
- *
- */
+@RunWith(FATRunner.class)
 public class ServerStartJVMOptionsTest {
     private static final Class<?> c = ServerStartJVMOptionsTest.class;
 
     private static final String SERVER_NAME = "com.ibm.ws.kernel.boot.serverstart.fat";
     static String executionDir;
+    static String serverCommand;
+
+    @Rule
+    public TestName testName = new TestName();
 
     private static LibertyServer server;
-    static File dirs;
-    static File dirs2;
     static File jvmoptionsconfigdefaults;
     static File jvmoptionsserverroot;
     static File jvmoptionsconfigoverrides;
     static File etcjvmoptions;
     static File sharedjvmoptions;
-    static File bootstrapPropFile;
 
     @BeforeClass
-    public static void before() {
+    public static void before() throws Exception {
         server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
         executionDir = server.getInstallRoot();
-        dirs = new File(executionDir + File.separator + "usr" + File.separator + "servers" + File.separator + SERVER_NAME +
-                        File.separator + "configDropins" + File.separator + "defaults");
-        dirs2 = new File(executionDir + File.separator + "usr" + File.separator + "servers" + File.separator + SERVER_NAME +
-                         File.separator + "configDropins" + File.separator + "overrides");
-        jvmoptionsconfigdefaults = new File(executionDir + File.separator + "usr" + File.separator + "servers" + File.separator + SERVER_NAME +
-                                            File.separator + "configDropins" + File.separator + "defaults" + File.separator + "jvm.options");
-        jvmoptionsserverroot = new File(executionDir + File.separator + "usr" + File.separator + "servers" + File.separator + SERVER_NAME +
-                                        File.separator + "jvm.options");
-        jvmoptionsconfigoverrides = new File(executionDir + File.separator + "usr" + File.separator + "servers" + File.separator + SERVER_NAME +
-                                             File.separator + "configDropins" + File.separator + "overrides" + File.separator + "jvm.options");
-        etcjvmoptions = new File(executionDir + File.separator + "etc" + File.separator + "jvm.options");
-        sharedjvmoptions = new File(executionDir + File.separator + "usr" + File.separator + "shared" + File.separator + "jvm.options");
+        jvmoptionsconfigdefaults = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/configDropins/defaults/jvm.options");
+        jvmoptionsserverroot = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/jvm.options");
+        jvmoptionsconfigoverrides = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/configDropins/overrides/jvm.options");
+        etcjvmoptions = new File(executionDir + "/etc/jvm.options");
+        etcjvmoptions.mkdirs();
+        sharedjvmoptions = new File(executionDir + "/usr/shared/jvm.options");
         sharedjvmoptions.getParentFile().mkdirs();
-        bootstrapPropFile = new File(executionDir + File.separator + "usr" + File.separator + "servers" + File.separator + SERVER_NAME +
-                                     File.separator + "bootstrap.properties");
+        if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS)
+            serverCommand = "bin\\server.bat";
+        else
+            serverCommand = "bin/server";
     }
 
     @AfterClass
@@ -87,15 +87,12 @@ public class ServerStartJVMOptionsTest {
 
     /**
      * This test ensures the server can be started with no jvm.options files or merged.jvm.options file
-     *
-     * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testServerStartNoJVMOptions() throws Exception {
-        final String METHOD_NAME = "testServerStartNoJVMOptions";
-        Log.entering(c, METHOD_NAME);
+        Log.entering(c, testName.getMethodName());
 
-        String command = "bin" + File.separator + "server";
         String[] parms = new String[2];
         parms[0] = "start";
         parms[1] = SERVER_NAME;
@@ -105,9 +102,9 @@ public class ServerStartJVMOptionsTest {
 
         initialize();
 
-        ProgramOutput po = server.getMachine().execute(command, parms, executionDir, envVars);
-        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
-        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
+        ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
+        Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
+        Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
 
         server.waitForStringInLog("CWWKF0011I");
         server.resetStarted();
@@ -119,15 +116,12 @@ public class ServerStartJVMOptionsTest {
 
     /**
      * This test ensures the server fails over to etc/jvm.options if none are found
-     *
-     * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testServerStartNoJVMOptionsETCFailover() throws Exception {
-        final String METHOD_NAME = "testServerStartNoJVMOptionsETCFailover";
-        Log.entering(c, METHOD_NAME);
+        Log.entering(c, testName.getMethodName());
 
-        String command = "bin" + File.separator + "server";
         String[] parms = new String[2];
         parms[0] = "start";
         parms[1] = SERVER_NAME;
@@ -142,20 +136,20 @@ public class ServerStartJVMOptionsTest {
         bw.write("-DTest1=Test1");
         bw.close();
 
-        ProgramOutput po = server.getMachine().execute(command, parms, executionDir, envVars);
-        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
-        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
+        ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
+        Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
+        Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
 
         server.waitForStringInLog("CWWKF0011I");
         server.resetStarted();
 
         server.serverDump();
-        File[] filesAfterDump = new File(executionDir + File.separator + "usr" + File.separator + "servers" + File.separator + SERVER_NAME).listFiles();
+        File[] filesAfterDump = new File(executionDir + "/usr/servers/" + SERVER_NAME).listFiles();
 
         File dumpFile = new File("");
         for (File f : filesAfterDump) {
             String fileName = f.getName();
-            Log.info(c, METHOD_NAME, "Found file: " + fileName);
+            Log.info(c, testName.getMethodName(), "Found file: " + fileName);
             if (fileName.startsWith(SERVER_NAME + ".dump") && fileName.endsWith(".zip")) {
                 dumpFile = f;
                 break;
@@ -178,7 +172,7 @@ public class ServerStartJVMOptionsTest {
                 String line;
                 int i = 0;
                 while ((line = reader.readLine()) != null) {
-                    Log.info(c, METHOD_NAME, "Run" + i + ": " + line);
+                    Log.info(c, testName.getMethodName(), "Run" + i + ": " + line);
                     if (line.contains("-DTest1=Test1")) {
                         foundTest1 = true;
                         break;
@@ -200,15 +194,12 @@ public class ServerStartJVMOptionsTest {
 
     /**
      * This test ensures the server can be started with one jvm.options file
-     *
-     * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testServerStartOneJVMOption() throws Exception {
-        final String METHOD_NAME = "testServerStartOneJVMOption";
-        Log.entering(c, METHOD_NAME);
+        Log.entering(c, testName.getMethodName());
 
-        String command = "bin" + File.separator + "server";
         String[] parms = new String[2];
         parms[0] = "start";
         parms[1] = SERVER_NAME;
@@ -223,19 +214,19 @@ public class ServerStartJVMOptionsTest {
         bw.write("-DTest1=Test1");
         bw.close();
 
-        ProgramOutput po = server.getMachine().execute(command, parms, executionDir, envVars);
-        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
-        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
+        ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
+        Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
+        Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
         server.waitForStringInLog("CWWKF0011I");
         server.resetStarted();
 
         server.serverDump();
-        File[] filesAfterDump = new File(executionDir + File.separator + "usr" + File.separator + "servers" + File.separator + SERVER_NAME).listFiles();
+        File[] filesAfterDump = new File(executionDir + "/usr/servers/" + SERVER_NAME).listFiles();
 
         File dumpFile = new File("");
         for (File f : filesAfterDump) {
             String fileName = f.getName();
-            Log.info(c, METHOD_NAME, "Found file: " + fileName);
+            Log.info(c, testName.getMethodName(), "Found file: " + fileName);
             if (fileName.startsWith(SERVER_NAME + ".dump") && fileName.endsWith(".zip")) {
                 dumpFile = f;
                 break;
@@ -258,7 +249,7 @@ public class ServerStartJVMOptionsTest {
                 String line;
                 int i = 0;
                 while ((line = reader.readLine()) != null) {
-                    Log.info(c, METHOD_NAME, "Run" + i + ": " + line);
+                    Log.info(c, testName.getMethodName(), "Run" + i + ": " + line);
                     if (line.contains("-DTest1=Test1")) {
                         foundTest1 = true;
                         break;
@@ -281,16 +272,11 @@ public class ServerStartJVMOptionsTest {
     /**
      * This test ensures the server can be started with all jvm.options files and
      * the right options are used at the end
-     *
-     * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testServerStartAllJVMOptions() throws Exception {
-        final String METHOD_NAME = "testServerStartAllJVMOptions";
-        Log.entering(c, METHOD_NAME);
+        Log.entering(c, testName.getMethodName());
 
-        String command = "bin" + File.separator + "server";
         String[] parms = new String[2];
         parms[0] = "start";
         parms[1] = SERVER_NAME;
@@ -331,19 +317,19 @@ public class ServerStartJVMOptionsTest {
         bw5.write("-DTest8=Bad Value\n");
         bw5.close();
 
-        ProgramOutput po = server.getMachine().execute(command, parms, executionDir, envVars);
-        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
-        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
+        ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
+        Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
+        Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
         server.waitForStringInLog("CWWKF0011I");
         server.resetStarted();
 
         server.serverDump();
-        File[] filesAfterDump = new File(executionDir + File.separator + "usr" + File.separator + "servers" + File.separator + SERVER_NAME).listFiles();
+        File[] filesAfterDump = new File(executionDir + "/usr/servers/" + SERVER_NAME).listFiles();
 
         File dumpFile = new File("");
         for (File f : filesAfterDump) {
             String fileName = f.getName();
-            Log.info(c, METHOD_NAME, "Found file: " + fileName);
+            Log.info(c, testName.getMethodName(), "Found file: " + fileName);
             if (fileName.startsWith(SERVER_NAME + ".dump") && fileName.endsWith(".zip")) {
                 dumpFile = f;
                 break;
@@ -432,7 +418,155 @@ public class ServerStartJVMOptionsTest {
         server.stopServer();
     }
 
+    @Test
+    public void testStartServerCmdlineJVMOption() throws Exception {
+        Log.entering(c, testName.getMethodName());
+
+        String[] parms = new String[3];
+        parms[0] = "start";
+        parms[1] = SERVER_NAME;
+        parms[2] = "-Dfoo=bar";
+
+        Properties envVars = new Properties();
+        envVars.put("CDPATH", ".");
+
+        initialize();
+
+        ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
+        Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
+        Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
+        server.waitForStringInLog("CWWKF0011I");
+        server.resetStarted();
+
+        server.serverDump();
+        File[] filesAfterDump = new File(executionDir + "/usr/servers/" + SERVER_NAME).listFiles();
+
+        File dumpFile = new File("");
+        for (File f : filesAfterDump) {
+            String fileName = f.getName();
+            Log.info(c, testName.getMethodName(), "Found file: " + fileName);
+            if (fileName.startsWith(SERVER_NAME + ".dump") && fileName.endsWith(".zip")) {
+                dumpFile = f;
+                break;
+            }
+        }
+
+        if (dumpFile.getPath().compareTo("") == 0) {
+            fail("The Dump File was not found");
+        }
+
+        ZipFile zipFile = new ZipFile(dumpFile);
+
+        boolean foundTest1 = false;
+        for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
+            ZipEntry entry = en.nextElement();
+            String entryName = entry.getName();
+            if (entryName.endsWith("JavaRuntimeInformation.txt")) {
+                InputStream inputstream = zipFile.getInputStream(entry);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputstream));
+                String line;
+                int i = 0;
+                boolean afterSystemProperies = false;
+                while ((line = reader.readLine()) != null) {
+                    Log.info(c, testName.getMethodName(), "Run" + i + ": " + line);
+                    if (line.contains("Java System Properties"))
+                        afterSystemProperies = true;
+                    if (afterSystemProperies && line.contains("foo=bar")) {
+                        foundTest1 = true;
+                        break;
+                    }
+                    i++;
+                }
+
+                reader.close();
+                inputstream.close();
+            }
+        }
+
+        zipFile.close();
+        dumpFile.delete();
+        assertTrue("The jvm option foo=bar was not found", foundTest1);
+
+        server.stopServer();
+    }
+
+    @Test
+    public void testStartServerCmdlineJVMOptionsAndSystemProps() throws Exception {
+        Log.entering(c, testName.getMethodName());
+
+        String[] parms = new String[6];
+        parms[0] = "start";
+        parms[1] = SERVER_NAME;
+        parms[2] = "-Dfoo=bar";
+        parms[3] = "--";
+        parms[4] = "--wom=bat";
+        parms[5] = "--help=me";
+
+        Properties envVars = new Properties();
+        envVars.put("CDPATH", ".");
+
+        initialize();
+
+        ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
+        Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
+        Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
+        server.waitForStringInLog("CWWKF0011I");
+        server.resetStarted();
+
+        server.serverDump();
+        File[] filesAfterDump = new File(executionDir + "/usr/servers/" + SERVER_NAME).listFiles();
+        File dumpFile = new File("");
+        for (File f : filesAfterDump) {
+            String fileName = f.getName();
+            Log.info(c, testName.getMethodName(), "Found file: " + fileName);
+            if (fileName.startsWith(SERVER_NAME + ".dump") && fileName.endsWith(".zip")) {
+                dumpFile = f;
+                break;
+            }
+        }
+
+        if (dumpFile.getPath().compareTo("") == 0) {
+            fail("The Dump File was not found");
+        }
+
+        ZipFile zipFile = new ZipFile(dumpFile);
+
+        boolean foundTest1 = false;
+        for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
+            ZipEntry entry = en.nextElement();
+            String entryName = entry.getName();
+            if (entryName.endsWith("ConfigVariables.txt")) {
+                InputStream inputstream = zipFile.getInputStream(entry);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputstream));
+                String line;
+                int i = 0;
+                boolean afterSystemProperies = false;
+                while ((line = reader.readLine()) != null) {
+                    Log.info(c, testName.getMethodName(), "Run" + i + ": " + line);
+                    if (line.contains("User Config Variables"))
+                        afterSystemProperies = true;
+                    if (afterSystemProperies && line.contains("wom=bat")) {
+                        foundTest1 = true;
+                        break;
+                    }
+                    i++;
+                }
+
+                reader.close();
+                inputstream.close();
+            }
+        }
+
+        zipFile.close();
+        dumpFile.delete();
+        assertTrue("The config variable wom=bat was not found", foundTest1);
+
+        server.stopServer();
+    }
+
     public void initialize() {
+        File dirs = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/configDropins/defaults");
+        File dirs2 = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/configDropins/overrides");
         dirs.mkdirs();
         dirs2.mkdirs();
         if (jvmoptionsconfigdefaults.exists()) {
@@ -450,6 +584,7 @@ public class ServerStartJVMOptionsTest {
         if (etcjvmoptions.exists()) {
             etcjvmoptions.delete();
         }
+        File bootstrapPropFile = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/bootstrap.properties");
         if (bootstrapPropFile.exists()) {
             bootstrapPropFile.delete();
         }

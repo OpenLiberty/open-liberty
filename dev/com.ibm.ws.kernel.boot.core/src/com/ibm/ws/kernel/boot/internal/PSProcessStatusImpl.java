@@ -29,19 +29,19 @@ public class PSProcessStatusImpl implements ProcessStatus {
 
     /**
      * @param pid the pid, or the empty string if {@link #isPossiblyRunning} should
-     *            always return true
+     *                always return true
      */
     public PSProcessStatusImpl(String pid) {
         this.pid = pid;
     }
 
     @Override
-    public boolean isPossiblyRunning() {
+    public State isPossiblyRunning() {
         if (pid.isEmpty()) {
             // OS/400 shell does not support $!, so an empty PID is always
             // passed (unless native integration is enabled).  Return true since
             // the process might be running.
-            return true;
+            return State.YES;
         }
 
         ProcessBuilder pb = new ProcessBuilder();
@@ -68,8 +68,14 @@ public class PSProcessStatusImpl implements ProcessStatus {
             }
 
             p.waitFor();
-            return p.exitValue() == 0;
+            if (p.exitValue() == 0)
+                return State.YES;
+            else
+                return State.NO;
         } catch (IOException e) {
+            if (e.getMessage().contains("Cannot run program \"ps\"")) // "ps" doesn't exist on this machine.
+                // Return Undetermined since we can't poll the process
+                return State.UNDETERMINED;
             Debug.printStackTrace(e);
         } catch (InterruptedException e) {
             Debug.printStackTrace(e);
@@ -78,6 +84,6 @@ public class PSProcessStatusImpl implements ProcessStatus {
             Utils.tryToClose(reader);
         }
 
-        return true;
+        return State.YES;
     }
 }

@@ -273,7 +273,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 //
                 partnerLog = rlm.getRecoveryLog(fs, partnerLogProps);
 
-                // In the special case where we support tx recovery (eg for operating in the cloud), we'll also work with a "lease" log
+                // In the special case where we support tx peer recovery (eg for operating in the cloud), we'll also work with a "lease" log
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Test to see if peer recovery is supported -  ", _isPeerRecoverySupported);
                 if (_isPeerRecoverySupported) {
@@ -517,6 +517,9 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     public void stop(boolean immediate) {
+        // Stop lease timeout alarm popping when server is on its way down
+        LeaseTimeoutManager.stopTimeout();
+
         // The entire server is shutting down. All recovery/peer recovery processing must be stopped. Sping
         // through all known failure scope controllers (which includes the local failure scope if we started
         // processing recovery for it) and tell them to shutdown.

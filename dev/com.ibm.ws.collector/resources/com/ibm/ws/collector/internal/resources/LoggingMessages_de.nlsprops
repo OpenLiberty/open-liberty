@@ -1,0 +1,40 @@
+#/*******************************************************************************
+# * Copyright (c) 2016, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+
+# Use message block TRAS4301 - TRAS4350 for new messages that start December 1, 2016.
+TAGS_FILTERING_WARNING=TRAS4301W: logstashCollector und bluemixLogCollector k\u00f6nnen Tags verwenden, die ein einzelnes Wort enthalten, das sich aus Buchstaben und Zahlen zusammensetzt. Die folgenden Tags werden ignoriert: {0}
+TAGS_FILTERING_WARNING.explanation= Die ignorierten Tags enthalten Leerzeichen, Gedankenstriche oder Backslash-Zeichen.
+TAGS_FILTERING_WARNING.userAction= Entfernen Sie die Leerzeichen, Gedankenstriche und Backslash-Zeichen aus diesen Tags.
+
+SSLREF_NOTFOUND=TRAS4302E: Das logstashCollector- oder bluemixLogCollector-Attribut sslRef wurde nicht angegeben oder die sslRef-ID wurde nicht gefunden.
+SSLREF_NOTFOUND.explanation=Es wurde keine SSL-Konfiguration f\u00fcr das Feature logstashCollector oder bluemixLogCollector gefunden.
+SSLREF_NOTFOUND.userAction=Erstellen Sie eine SSL-Konfiguration und geben Sie die ID mit dem Attribut sslRef im Element logstashCollector oder im Element bluemixLogCollector an.
+
+MAXEVENTS_OUTOFRANGE_WARNING=TRAS4303W: logstashCollector und bluemixLogCollector k\u00f6nnen maxEvents verwenden, die einen ganzzahligen Wert zwischen 0 und 2147483647 haben. Die angegebenen maxEvents werden ignoriert: {0}
+MAXEVENTS_OUTOFRANGE_WARNING.explanation= Der Wert von maxEvents liegt au\u00dferhalb des g\u00fcltigen Bereichs und ist keine g\u00fcltige ganze Zahl zwischen 0 und 2147483647.
+MAXEVENTS_OUTOFRANGE_WARNING.userAction= Korrigieren Sie den Wert von maxEvents. Andernfalls wird keine Regulierung angewendet.
+
+MAXEVENTS_EXCEEDS_MAXRATE=TRAS4304I: Die Ereigniserstellung \u00fcberschreitet die maximale Verarbeitungsrate in Thread {0}. Es werden {1} Ereignisse pro Sekunde verarbeitet, bis der R\u00fcckstand abgearbeitet ist.
+MAXEVENTS_EXCEEDS_MAXRATE.explanation= Die Anzahl der zu verarbeitenden Prozesse \u00fcberschreitet die angegebene maxEvents-Rate pro Sekunde.
+MAXEVENTS_EXCEEDS_MAXRATE.userAction= \u00c4ndern Sie die Konfigurationen f\u00fcr maxEvents in der Datei server.xml, wenn Sie die Ereignisverarbeitungsrate \u00e4ndern m\u00f6chten.
+
+MAXEVENTS_NOTEXCEED_RATE=TRAS4305I: Der Ereignisr\u00fcckstand ist abgearbeitet. Neue Ereignisse werden ohne Verz\u00f6gerung behandelt.
+MAXEVENTS_NOTEXCEED_RATE.explanation= Die Verarbeitung der Ereignisse mit der maximalen Verarbeitungsrate ist abgeschlossen.
+MAXEVENTS_NOTEXCEED_RATE.userAction=  Es ist keine Aktion erforderlich.

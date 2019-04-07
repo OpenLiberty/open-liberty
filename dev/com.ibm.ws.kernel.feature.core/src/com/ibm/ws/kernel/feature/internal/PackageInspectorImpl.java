@@ -28,12 +28,14 @@ import org.osgi.framework.ServiceRegistration;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils;
 import com.ibm.ws.kernel.feature.internal.subsystem.KernelFeatureDefinitionImpl;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.provisioning.ExtensionConstants;
 import com.ibm.ws.kernel.provisioning.packages.PackageIndex;
 import com.ibm.ws.kernel.provisioning.packages.PackageIndex.Filter;
 import com.ibm.ws.kernel.provisioning.packages.SharedPackageInspector;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.wsspi.logging.Introspector;
 
 /**
@@ -54,7 +56,7 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("service.vendor", "IBM");
         registration = bundleContext.registerService(new String[] { SharedPackageInspector.class.getName(),
-                                                                   Introspector.class.getName() },
+                                                                    Introspector.class.getName() },
                                                      this, props);
     }
 
@@ -86,9 +88,9 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
             allInstalledFeatures.addAll(KernelFeatureDefinitionImpl.getKernelFeatures(bundleContext, fm.getLocationService()));
 
             // For all installed features, get information about the declared product packages
-            // and the declared osgi bundles.. 
+            // and the declared osgi bundles..
             for (ProvisioningFeatureDefinition def : allInstalledFeatures) {
-                // Add package information to ProductPackages.. 
+                // Add package information to ProductPackages..
                 newPackageIndex.addPackages(def);
             }
 
@@ -103,7 +105,7 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
     /**
      * This iterator will walk the package index, returning only packages that indicate
      * they are API packages.
-     * 
+     *
      * @see com.ibm.ws.kernel.provisioning.packages.SharedPackageInspector#listApiPackages()
      */
     @Override
@@ -139,7 +141,7 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
         API_SpecOsgi(true, "spec:osgi"),
         API_ThirdParty(true, "third-party"),
         API_Stable(true, "stable"),
-        
+
         SPI(false, "spi"),
         SPI_Spec(false, "spec"),
         SPI_ThirdParty(false, "third-party");
@@ -212,7 +214,7 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
         private void evaluateForFeatureType(String repo, boolean isKrnlExport) {
 
             // Determine what type of feature is exporting this package
-            // It is expected to be one of the three. 
+            // It is expected to be one of the three.
             if (isKrnlExport) {
                 isKernelExport = true;
             }
@@ -304,10 +306,9 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
 
         /** type="stable" only */
         @Override
-		public boolean isStableApi() {
-			return types.contains(PkgType.API_Stable);
-		}
-               
+        public boolean isStableApi() {
+            return types.contains(PkgType.API_Stable);
+        }
 
         public boolean isKernelExportBlacklistedPackage() {
 
@@ -323,13 +324,12 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
             return types + "|" + productRepo;
         }
 
-		
     }
 
     /**
      * This *is* the package index. We have a simple subclass to both simplify
      * parameter declaration.
-     * 
+     *
      * The PackageIndex is a trie organized by package name. Each node is a package
      * segment. In this usage of the package index, there are no wildcards.
      */
@@ -340,12 +340,12 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
          * We're working from the assumption that most of the time, we won't have multiple
          * features working with the same package: i.e. try to add the package first, then if there
          * is a collision, modify the attributes of the existing element.
-         * 
+         *
          * @param def ProvisioningFeatureDefinition that is the source of the API/SPI packages
          */
         public void addPackages(ProvisioningFeatureDefinition def) {
-            addPackages(def, "IBM-API-Package", PkgType.API);
-            addPackages(def, "IBM-SPI-Package", PkgType.SPI);
+            addPackages(def, FeatureDefinitionUtils.IBM_API_PACKAGE, PkgType.API);
+            addPackages(def, FeatureDefinitionUtils.IBM_SPI_PACKAGE, PkgType.SPI);
         }
 
         private void addPackages(ProvisioningFeatureDefinition def, String packageHeader, PkgType defaultPkgType) {
@@ -365,6 +365,11 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
                 for (NameValuePair nvp : ManifestHeaderProcessor.parseExportString(packages)) {
                     String packageName = nvp.getName();
                     String type = nvp.getAttributes().get("type");
+                    String requireOsgiEE = nvp.getAttributes().get("require-java:");
+
+                    // If the Java requirements are not met for exposing this package, do not add the package
+                    if (requireOsgiEE != null && JavaInfo.majorVersion() < Integer.parseInt(requireOsgiEE))
+                        continue;
 
                     PkgType expType = PkgType.fromString(type, defaultPkgType);
                     if (expType == null) {
@@ -373,13 +378,13 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
                         }
                     } else {
                         // Assume we aren't going to have package collisions often.
-                        // Try to just add first: 
+                        // Try to just add first:
                         PackageInfo packageInfo = new PackageInfo(expType, def.getBundleRepositoryType(), def.isKernel());
                         if (!add(packageName, packageInfo)) {
                             // ok. so the add didn't work because something else already marked this
-                            // package as API or SPI. Find the existing EnumSet and add 
+                            // package as API or SPI. Find the existing EnumSet and add
                             // this export/package type to it..
-                            // Note: we have packages that we promote from SPI to API for tests. 
+                            // Note: we have packages that we promote from SPI to API for tests.
                             PackageInfo prevValue = find(packageName);
                             prevValue.add(expType, def.getBundleRepositoryType(), def.isKernel());
 
@@ -421,7 +426,7 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
     }
 
     @Override
-    public void introspect(PrintWriter ps) throws IOException {       
+    public void introspect(PrintWriter ps) throws IOException {
 
         ProductPackages index = packageIndex;
         if (index == null)
@@ -464,7 +469,7 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
      * This iterator will walk the package index, returning only packages that indicate
      * they are API packages and are included both by the kernel (core)feature and
      * another enabled liberty feature or features.
-     * 
+     *
      * @see com.ibm.ws.kernel.provisioning.packages.SharedPackageInspector#listKernelApiPackages()
      */
     public Iterator<String> listKernelBlackListApiPackages() {

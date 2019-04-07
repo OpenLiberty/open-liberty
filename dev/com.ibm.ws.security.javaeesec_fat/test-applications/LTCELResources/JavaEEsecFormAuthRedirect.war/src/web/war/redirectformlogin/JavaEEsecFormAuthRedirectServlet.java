@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 //@BasicAuthenticationMechanismDefinition(realmName="My Basic Realm")
 //@BasicAuthenticationMechanismDefinition
 @LdapIdentityStoreDefinition(
-                             url = "ldap://localhost:10389/",
+                             url = "${ldapIDStorePropsBean.hostnameUrl}",
                              callerBaseDn = "",
                              callerSearchBase = "o=ibm,c=us",
                              callerSearchScope = LdapIdentityStoreDefinition.LdapSearchScope.SUBTREE,

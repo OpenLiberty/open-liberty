@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -355,9 +359,7 @@ position_param_not_found=\u5728 {0} \u4f4d\u7f6e\u6c92\u6709\u4efb\u4f55\u53c3\u
 
 pu_configured_for_resource_local=\u7121\u6cd5\u5efa\u7acb\u4f7f\u7528 SynchronizationType \u7684 EntityManager\uff0c\u56e0\u70ba PersistenceUnit \u662f\u914d\u7f6e\u6210\u4f7f\u7528\u8cc7\u6e90\u672c\u7aef\u4ea4\u6613\u3002
 
-# START NON-TRANSLATABLE
 remove_deletion_failed=\u79fb\u9664\u522a\u9664\u5931\u6557\uff1a
-# END NON-TRANSLATABLE
 
 rollback_because_of_rollback_only=\u4ea4\u6613\u300c\u5df2\u56de\u5fa9\u300d\uff0c\u56e0\u70ba\u4ea4\u6613\u662f\u8a2d\u5b9a\u6210 RollbackOnly\u3002
 
@@ -428,6 +430,8 @@ unexpect_argument=\u975e\u9810\u671f\u7684\u8f38\u5165\u5f15\u6578 {0}
 unknown_bean_class=\u4e0d\u660e\u7684 Entity Bean \u985e\u5225 {0}\uff0c\u8acb\u9a57\u8b49\u9019\u500b\u985e\u5225\u5df2\u6a19\u793a @Entity \u8a3b\u91cb\u3002
 
 unknown_entitybean_name=\u4e0d\u660e\u7684 Entity Bean \u540d\u7a31\uff1a{0}
+
+unsupported_classfile_version={0} \u985e\u5225\u662f\u4ee5\u4e0d\u53d7\u652f\u63f4\u7684 JDK \u7de8\u8b6f\u3002\u8acb\u5411 EclipseLink \u958b\u653e\u7a0b\u5f0f\u78bc\u5c08\u6848\u5831\u544a\u9019\u500b\u554f\u984c\u3002
 
 wrap_convert_exception=\u5c0d\u542b\u6709\u503c {2} \u7684\u8f49\u63db\u5668\u985e\u5225 {1} \u547c\u53eb {0} \u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1
 

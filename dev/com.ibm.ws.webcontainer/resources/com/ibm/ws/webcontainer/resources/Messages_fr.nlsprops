@@ -1545,7 +1545,15 @@ programmatic.session.cookie.retrieve.cell.xml.failure.useraction=V\u00e9rifiez q
 
 AsyncContext.lock.already.held=SRVE8113W: Impossible d'obtenir un verrou.  Le traitement des erreurs a d\u00e9j\u00e0 \u00e9t\u00e9 appel\u00e9 par une autre unit\u00e9 d'ex\u00e9cution.
 AsyncContext.lock.already.held.explanation=Le traitement des erreurs a d\u00e9j\u00e0 \u00e9t\u00e9 appel\u00e9 par une autre unit\u00e9 d'ex\u00e9cution.
-AsyncContext.lock.already.held.useraction=V\u00e9rifiez que l'application peut g\u00e9rer une exception.  S'il est n\u00e9cessaire que cette m\u00e9thode soit renvoy\u00e9e y compris si l'appel \u00e9choue, contactez le support IBM.
+AsyncContext.lock.already.held.useraction=V\u00e9rifiez que l'application peut g\u00e9rer une exception \u00e0 cet endroit. S'il est n\u00e9cessaire que cette m\u00e9thode retourne le contr\u00f4le m\u00eame en cas d'\u00e9chec de l'appel, mettez \u00e0 false la propri\u00e9t\u00e9 personnalis\u00e9e throwexceptionwhenunabletocompleteordispatch.
+
+Cannot.set.session.cookie.Response.already.committed=SRVE8114W: Avertissement : Impossible d'\u00e9tablir le cookie de session. La r\u00e9ponse a d\u00e9j\u00e0 \u00e9t\u00e9 valid\u00e9e.
+Cannot.set.session.cookie.Response.already.committed.explanation=D\u00e8s lors qu'une r\u00e9ponse a \u00e9t\u00e9 valid\u00e9e, vous ne pouvez plus \u00e9tablir le cookie de session.
+Cannot.set.session.cookie.Response.already.committed.useraction=V\u00e9rifiez si cet appel est n\u00e9cessaire. Si vous devez \u00e9tablir le cookie de session, faites-le avant de valider la r\u00e9ponse.
+
+Cannot.set.status.Response.already.committed=SRVE8115W: AVERTISSEMENT : Impossible de d\u00e9finir le statut. La r\u00e9ponse a d\u00e9j\u00e0 \u00e9t\u00e9 valid\u00e9e.
+Cannot.set.status.Response.already.committed.explanation=D\u00e8s lors qu'une r\u00e9ponse a \u00e9t\u00e9 valid\u00e9e, vous ne pouvez plus \u00e9tablir son statut.
+Cannot.set.status.Response.already.committed.useraction=V\u00e9rifiez si cet appel est n\u00e9cessaire. Si vous devez \u00e9tablir le code de statut de la r\u00e9ponse, faites-le avant de valider cette derni\u00e8re.
 
 servlet.with.same.name.already.exists=SRVE8500W: Impossible d''ajouter dynamiquement un servlet nomm\u00e9 {0} car une configuration de servlet portant le m\u00eame nom existe d\u00e9j\u00e0.  
 servlet.with.same.name.already.exists.explanation=Un servlet portant le m\u00eame nom existe d\u00e9j\u00e0 pour cette application.

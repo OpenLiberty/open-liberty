@@ -19,6 +19,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * The security file monitor gets notified through the scanComplete method
@@ -37,10 +38,10 @@ public class SecurityFileMonitor implements FileMonitor {
 
     /**
      * Registers this file monitor to start monitoring the specified files at the specified interval.
-     * 
+     *
      * @param paths the paths of the files to monitor.
      * @param monitorInterval the rate to monitor the files.
-     * 
+     *
      * @return the <code>FileMonitor</code> service registration.
      */
     public ServiceRegistration<FileMonitor> monitorFiles(Collection<String> paths, long monitorInterval) {
@@ -55,25 +56,33 @@ public class SecurityFileMonitor implements FileMonitor {
      * Registers this file monitor to start monitoring the specified files either by mbean
      * notification or polling rate.
      * 
+     * @param id of the config element
      * @param paths the paths of the files to monitor.
      * @param pollingRate the rate to pole he file for a change.
      * @param trigger what trigger the file update notification mbean or poll
      * @return The <code>FileMonitor</code> service registration.
      */
-    public ServiceRegistration<FileMonitor> monitorFiles(Collection<String> paths, long pollingRate, String trigger) {
+    public ServiceRegistration<FileMonitor> monitorFiles(String ID, Collection<String> paths, long pollingRate, String trigger) {
         BundleContext bundleContext = actionable.getBundleContext();
         final Hashtable<String, Object> fileMonitorProps = new Hashtable<String, Object>();
         fileMonitorProps.put(FileMonitor.MONITOR_FILES, paths);
+        //Adding INTERNAL parameter MONITOR_IDENTIFICATION_NAME to identify this monitor.
+        fileMonitorProps.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_MONITOR_IDENTIFICATION_VALUE);
+        //Adding parameter MONITOR_IDENTIFICATION_CONFIG_ID to identify this monitor by the ID.
+        fileMonitorProps.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_KEYSTORE_CONFIG_ID, ID);
         if (!(trigger.equalsIgnoreCase("disabled"))) {
             if (trigger.equals("mbean")) {
                 fileMonitorProps.put(FileMonitor.MONITOR_TYPE, FileMonitor.MONITOR_TYPE_EXTERNAL);
-            }
-            else
-            {
+            } else {
                 fileMonitorProps.put(FileMonitor.MONITOR_TYPE, FileMonitor.MONITOR_TYPE_TIMED);
                 fileMonitorProps.put(FileMonitor.MONITOR_INTERVAL, pollingRate);
             }
         }
+
+        // Don't attempt to register the file monitor if the server is stopping
+        if (FrameworkState.isStopping())
+            return null;
+
         return bundleContext.registerService(FileMonitor.class, this, fileMonitorProps);
     }
 
@@ -106,7 +115,7 @@ public class SecurityFileMonitor implements FileMonitor {
 
     /**
      * Action is needed if a file is modified or if it is recreated after it was deleted.
-     * 
+     *
      * @param modifiedFiles
      */
     private Boolean isActionNeeded(Collection<File> createdFiles, Collection<File> modifiedFiles) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance_fat.cdi;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
-import java.io.IOException;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -27,10 +27,10 @@ import java.util.concurrent.TimeoutException;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import org.junit.After;
+import org.junit.Test;
 
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBean2;
@@ -64,8 +64,13 @@ public class AsyncServlet extends FATServlet {
     @Inject
     AsyncThreadContextTestBean threadContextBean;
 
-    public void testAsync(HttpServletRequest request,
-                          HttpServletResponse response) throws ServletException, IOException, InterruptedException, ExecutionException, TimeoutException {
+    @After
+    public void checkNotInterrupted() {
+        assertFalse("Thread left with interrupted flag set", Thread.interrupted());
+    }
+
+    @Test
+    public void testAsync() throws InterruptedException, ExecutionException, TimeoutException {
         //should return straight away even though the method has a 5s sleep in it
         long start = System.currentTimeMillis();
         System.out.println(start + " - calling AsyncBean.connectA");
@@ -113,8 +118,8 @@ public class AsyncServlet extends FATServlet {
         }
     }
 
-    public void testAsyncVoid(HttpServletRequest request,
-                              HttpServletResponse response) throws ServletException, IOException, InterruptedException, ExecutionException, TimeoutException {
+    @Test
+    public void testAsyncVoid() throws InterruptedException, ExecutionException, TimeoutException {
         //should return straight away even though the method has a 5s sleep in it
         long start = System.currentTimeMillis();
         System.out.println(start + " - calling AsyncBean.connectC");
@@ -149,8 +154,8 @@ public class AsyncServlet extends FATServlet {
         }
     }
 
-    public void testAsyncTimeout(HttpServletRequest request,
-                                 HttpServletResponse response) throws ServletException, IOException, InterruptedException, ExecutionException, TimeoutException {
+    @Test
+    public void testAsyncTimeout() throws InterruptedException, ExecutionException, TimeoutException {
         //should return straight away even though the method has a 5s sleep in it
         long start = System.currentTimeMillis();
         System.out.println(start + " - calling AsyncBean.connectB");
@@ -181,8 +186,40 @@ public class AsyncServlet extends FATServlet {
         }
     }
 
-    public void testAsyncMethodTimeout(HttpServletRequest request,
-                                       HttpServletResponse response) throws ServletException, IOException, InterruptedException, ExecutionException, TimeoutException {
+    @Test
+    public void testAsyncTimeoutNoInterrupt() throws InterruptedException, TimeoutException {
+        //should return straight away even though the method has a 5s sleep in it
+        long start = System.currentTimeMillis();
+        System.out.println(start + " - calling AsyncBean.connectB");
+        Future<Void> future = bean.waitNoInterrupt();
+        long end = System.currentTimeMillis();
+        System.out.println(end + " - got future");
+
+        long duration = end - start;
+        if (duration > TestConstants.FUTURE_THRESHOLD) { //should have returned almost instantly, if it takes FUTURE_THRESHOLD then there is something wrong
+            throw new AssertionError("Method did not return quickly enough: " + duration);
+        }
+        if (future.isDone()) {
+            throw new AssertionError("Future completed too fast");
+        }
+
+        Thread.sleep(TestConstants.TIMEOUT + TestConstants.TEST_TIME_UNIT); //long enough for the call to timeout but not to complete normally
+        if (!future.isDone()) {
+            throw new AssertionError("Future did not timeout fast enough");
+        }
+
+        try {
+            //FaultTolerance should have already timedout the future so we're expecting the FT TimeoutException
+            future.get(TestConstants.TEST_TIME_UNIT, TimeUnit.MILLISECONDS);
+            throw new AssertionError("Future did not timeout properly");
+        } catch (ExecutionException t) {
+            //expected
+            assertThat(t.getCause(), instanceOf(org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException.class));
+        }
+    }
+
+    @Test
+    public void testAsyncMethodTimeout() throws InterruptedException, ExecutionException, TimeoutException {
         //should return straight away even though the method has a 5s sleep in it
         long start = System.currentTimeMillis();
         System.out.println(start + " - calling AsyncBean.connectB");
@@ -208,8 +245,8 @@ public class AsyncServlet extends FATServlet {
     }
 
     //AsyncBean2 calls AsyncBean3 so that's a double thread jump
-    public void testAsyncDoubleJump(HttpServletRequest request,
-                                    HttpServletResponse response) throws ServletException, IOException, InterruptedException, ExecutionException, TimeoutException {
+    @Test
+    public void testAsyncDoubleJump() throws InterruptedException, ExecutionException, TimeoutException {
         //should return straight away even though the method has a 5s sleep in it
         long start = System.currentTimeMillis();
         System.out.println(start + " - calling AsyncBean.connectA");
@@ -248,7 +285,8 @@ public class AsyncServlet extends FATServlet {
         }
     }
 
-    public void testAsyncCallable(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, ExecutionException, Exception {
+    @Test
+    public void testAsyncCallable() throws InterruptedException, ExecutionException, Exception {
         // Async methods with a generic return type (e.g. Callable.call()) used to cause problems
         long start = System.currentTimeMillis();
         Future<String> future = callableBean.call();
@@ -261,39 +299,58 @@ public class AsyncServlet extends FATServlet {
         assertThat("Call result", future.get(), is("Done"));
     }
 
-    /**
-     * This test should only pass if MP_Fault_Tolerance_NonFallback_Enabled is set to false
-     */
-    public void testAsyncDisabled(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        long start = System.currentTimeMillis();
-        Future<Connection> future = bean.connectA();
-        long end = System.currentTimeMillis();
-        long duration = end - start;
-
-        // Ensure that this method was executed synchronously
-        assertThat("Call duration", duration, greaterThan(TestConstants.WORK_TIME - TestConstants.TEST_TWEAK_TIME_UNIT));
-        assertThat("Call result", future.get(), is(notNullValue()));
-        assertThat("Call result", future.get().getData(), equalTo(AsyncBean.CONNECT_A_DATA));
-    }
-
+    @Test
     public void testAsyncConfig() throws Exception {
         Future<String> value = configBean.getValue();
         assertThat(value.get(), is("configuredAsyncValue"));
     }
 
+    @Test
     public void testAsyncConfigInjected() throws Exception {
         Future<String> value = threadContextBean.getConfigValueFromInjectedBean();
         assertThat(value.get(), is("configuredAsyncValue"));
     }
 
+    @Test
     public void testAsyncGetCdi() throws Exception {
         Future<CDI<Object>> value = threadContextBean.getCdi();
         assertThat(value.get(), notNullValue());
     }
 
+    @Test
     public void testAsyncGetBeanManagerViaJndi() throws Exception {
         Future<BeanManager> value = threadContextBean.getBeanManagerViaJndi();
         assertThat(value.get(), notNullValue());
+    }
+
+    @Test
+    public void testAsyncTccl() throws Exception {
+        Future<Class<?>> value = threadContextBean.loadClassWithTccl();
+        assertThat(value.get(), notNullValue());
+    }
+
+    @Test
+    public void testAsyncCancel() throws Exception {
+        Future<Void> result = bean.waitCheckCancel();
+
+        Thread.sleep(TestConstants.TEST_TIME_UNIT);
+
+        result.cancel(true);
+
+        assertThat("cancel", result.cancel(true), is(true));
+        assertThat("isCancelled", result.isCancelled(), is(true));
+        assertThat("isDone", result.isDone(), is(true));
+
+        try {
+            result.get(0, TimeUnit.SECONDS);
+            fail("get() Did not throw cancellation exception");
+        } catch (CancellationException e) {
+            assertThat("exception from get()", e, instanceOf(CancellationException.class));
+        }
+
+        Thread.sleep(TestConstants.TEST_TWEAK_TIME_UNIT);
+
+        assertThat(bean.wasInterrupted(), is(true));
     }
 
 }

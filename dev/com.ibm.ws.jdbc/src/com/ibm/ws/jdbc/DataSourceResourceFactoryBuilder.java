@@ -145,7 +145,7 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         for (Map.Entry<String, Object> prop : props.entrySet()) {
             Object value = prop.getValue();
             if (value instanceof String)
-                value = variableRegistry.resolveString((String) value);
+                value = variableRegistry.resolveRawString((String) value);
             vendorProps.put(prop.getKey(), value);
         }
 
@@ -205,9 +205,6 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         }
 
         Object value;
-        for (String name : ConnectionManagerService.CONNECTION_MANAGER_PROPS)
-            if ((value = vendorProps.remove(name)) != null)
-                cmSvcProps.put(name, value);
 
         for (String name : DSConfig.DATA_SOURCE_PROPS)
             if ((value = vendorProps.remove(name)) != null)
@@ -226,17 +223,39 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         // libraryRef - scan shared libraries from the application
         className = updateWithLibraries(bundleContext, application, declaringApplication, className, url, driverProps, dsSvcProps);
 
-        // initialPoolSize > 0 not supported
-        value = vendorProps.remove(DataSourceDef.initialPoolSize.name());
-        if (value != null && ((Integer) value) > 0)
-            ConnectorService.logMessage(Level.INFO, "IGNORE_FEATURE_J2CA0240", DataSourceDef.initialPoolSize.name(), jndiName);
-
-        // maxStatements per datasource --> statementCacheSize per connection
+        //TODO remove no-ship guard before GA
+        boolean isUCP = className.startsWith("oracle.ucp") && vendorProps.containsKey("internalDevNonshipFunctionDoNotUseProduction");
+        if(isUCP) {
+            vendorProps.remove("internalDevNonshipFunctionDoNotUseProduction");
+            dsSvcProps.put("internalDevNonshipFunctionDoNotUseProduction", "true");
+        }
+        
+        for (String name : ConnectionManagerService.CONNECTION_MANAGER_PROPS) {
+            //keep the datasource definition conn manager props in vender props when using UCP so they are passed to UCP
+            if(!isUCP || !ConnectionManagerService.CONNECTION_MANAGER_DSD_PROPS.contains(name))
+                if ((value = vendorProps.remove(name)) != null) {
+                    cmSvcProps.put(name, value);
+                }
+        }
+        
+        // initialPoolSize > 0 not supported unless using UCP
+        if(!isUCP) {
+            value = vendorProps.remove(DataSourceDef.initialPoolSize.name());
+            if (value != null && ((Integer) value) > 0)
+                ConnectorService.logMessage(Level.INFO, "IGNORE_FEATURE_J2CA0240", DataSourceDef.initialPoolSize.name(), jndiName);
+        }
+        
+        // maxStatements per datasource --> statementCacheSize per connection or for UCP maxStatements per connection
         value = vendorProps.remove(DataSourceDef.maxStatements.name());
         if (value != null) {
-            Integer maxPoolSize = (Integer) cmSvcProps.get(DataSourceDef.maxPoolSize.name());
+            Integer maxPoolSize = (Integer) (isUCP ? vendorProps.get(DataSourceDef.maxPoolSize.name()) : cmSvcProps.get(DataSourceDef.maxPoolSize.name()));
             int stmtCacheSize = maxPoolSize == null || maxPoolSize <= 0 ? 0 : ((Integer) value / maxPoolSize);
-            dsSvcProps.put(DSConfig.STATEMENT_CACHE_SIZE, stmtCacheSize);
+            if(isUCP) {
+                //when using UCP put maxStatements back to vendor props after dividing so it's sent to UCP
+                vendorProps.put(DataSourceDef.maxStatements.name(), stmtCacheSize);
+            } else {
+                dsSvcProps.put(DSConfig.STATEMENT_CACHE_SIZE, stmtCacheSize);
+            }
         }
 
         // serverName defaults to "localhost" (unless it's Derby Embedded, which doesn't have serverName)

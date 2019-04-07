@@ -1,0 +1,65 @@
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.file/resources/com/ibm/ws/security/audit/file/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+UNABLE_TO_CREATE_RESOURCE_NOEX=CWWKS5800E: O sistema n\u00e3o p\u00f4de criar o novo arquivo {0}
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=Um componente do servidor de aplicativos n\u00e3o p\u00f4de executar uma opera\u00e7\u00e3o em um recurso necess\u00e1rio.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Assegure que o tempo de execu\u00e7\u00e3o do Application Server tenha acesso de grava\u00e7\u00e3o permitido ao diret\u00f3rio para o recurso e que o disco n\u00e3o esteja cheio. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_CREATE_RESOURCE=CWWKS5801E: O sistema n\u00e3o p\u00f4de criar o arquivo {0} devido \u00e0 exce\u00e7\u00e3o a seguir: {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=Uma tentativa de abrir o recurso especificado falhou. A exce\u00e7\u00e3o indica a causa raiz da falha.
+UNABLE_TO_CREATE_RESOURCE.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Assegure que o tempo de execu\u00e7\u00e3o do Application Server tenha acesso de grava\u00e7\u00e3o permitido ao diret\u00f3rio para o recurso e que o disco n\u00e3o esteja cheio. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_DELETE_RESOURCE_NOEX=CWWKS5802E: O sistema n\u00e3o p\u00f4de excluir o arquivo {0}
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=Um componente do servidor de aplicativos n\u00e3o p\u00f4de executar uma opera\u00e7\u00e3o em um recurso necess\u00e1rio.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=Certifique-se que o nome do arquivo especificado seja um nome de arquivo v\u00e1lido. Assegure que o tempo de execu\u00e7\u00e3o do Application Server tenha acesso de grava\u00e7\u00e3o permitido ao diret\u00f3rio para o recurso e que o disco n\u00e3o esteja cheio. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_DELETE_RESOURCE=CWWKS5803E: O sistema n\u00e3o p\u00f4de excluir o arquivo {0} por causa da seguinte exce\u00e7\u00e3o: {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=Falha na tentativa de excluir o recurso especificado. A exce\u00e7\u00e3o indica a causa raiz da falha.
+UNABLE_TO_DELETE_RESOURCE.useraction=Examine a exce\u00e7\u00e3o para determinar a causa raiz. Assegure-se de que o tempo de execu\u00e7\u00e3o do Servidor de Aplicativos tenha acesso de grava\u00e7\u00e3o permitido ao diret\u00f3rio para o recurso. Se isso n\u00e3o resolver o problema, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+AUDIT_FILEHANDLER_STARTING=CWWKS5804I: O servi\u00e7o manipulador de arquivo de auditoria est\u00e1 iniciando.
+AUDIT_FILEHANDLER_STARTING.explanation=O servi\u00e7o manipulador de arquivo de auditoria est\u00e1 no processo de in\u00edcio. Isso poder\u00e1 levar v\u00e1rios minutos se a inicializa\u00e7\u00e3o \u00fanica precisar ocorrer.
+AUDIT_FILEHANDLER_STARTING.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+AUDIT_FILEHANDLER_READY=CWWKS5805I: O servi\u00e7o manipulador de arquivo de auditoria est\u00e1 pronto.
+AUDIT_FILEHANDLER_READY.explanation=Essa mensagem destina-se apenas para fins informativos.
+AUDIT_FILEHANDLER_READY.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+AUDIT_FILEHANDLER_STOPPED=CWWKS5806I: O servi\u00e7o manipulador de arquivo de auditoria parou.
+AUDIT_FILEHANDLER_STOPPED.explanation=Essa mensagem destina-se apenas para fins informativos.
+AUDIT_FILEHANDLER_STOPPED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION=CWWKS5807E: O servi\u00e7o de auditoria n\u00e3o pode iniciar porque a configura\u00e7\u00e3o do manipulador de auditoria para criptografar registros de auditoria est\u00e1 incorreta. Configure uma refer\u00eancia de keystore e um alias de certificado corretos. Certifique-se de que o keystore que \u00e9 referenciado por {1} exista e certifique-se de que o nome do alias {0} do certificado que voc\u00ea usar para criptografar os registros de auditoria estejam presentes no keystore. 
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.explanation=O servi\u00e7o de auditoria n\u00e3o pode iniciar devido a um erro na configura\u00e7\u00e3o do manipulador de auditoria para criptografar registros de auditoria. Para obter informa\u00e7\u00f5es adicionais, consulte a exce\u00e7\u00e3o na mensagem de erro de ativa\u00e7\u00e3o do servi\u00e7o anterior. Especifique uma refer\u00eancia de keystore v\u00e1lida e certifique-se de que o alias de certificado se refira a um certificado que est\u00e1 presente no keystore.
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.useraction=Certifique-se de que a configura\u00e7\u00e3o do manipulador de auditoria especifique ambos, uma refer\u00eancia de keystore e um alias de certificado para criptografar registros de auditoria. Assegure-se de que o keystore exista, que a senha seja especificada corretamente e que o keystore contenha o certificado que \u00e9 referenciado pelo alias de certificado de criptografia. 
+
+INCORRECT_AUDIT_SIGNING_CONFIGURATION=CWWKS5808E: O servi\u00e7o de auditoria n\u00e3o pode iniciar porque a configura\u00e7\u00e3o do manipulador de auditoria para assinar registros de auditoria est\u00e1 incorreta. Configure uma refer\u00eancia de keystore e um alias de certificado pessoal corretos. Certifique-se de que o keystore que \u00e9 referenciado por {1} exista e que o nome do alias {0} do certificado pessoal que voc\u00ea usa para assinar os registros de auditoria estejam presentes no keystore. 
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.explanation=O servi\u00e7o de auditoria n\u00e3o pode iniciar devido a um erro na configura\u00e7\u00e3o do manipulador de auditoria para assinar registros de auditoria. Para obter informa\u00e7\u00f5es adicionais, consulte a exce\u00e7\u00e3o na mensagem de erro de ativa\u00e7\u00e3o do servi\u00e7o anterior. Especifique uma refer\u00eancia de keystore v\u00e1lida e certifique-se de que o alias de certificado pessoal se refira a um certificado pessoal esteja presente no keystore.
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.useraction=Certifique-se de que a configura\u00e7\u00e3o do manipulador de auditoria especifique ambos, uma refer\u00eancia de keystore e um alias de certificado pessoal para assinar registros de auditoria. Assegure-se de que o keystore existe, que a senha seja especificada corretamente e que o keystore contenha o certificado pessoal que \u00e9 referenciado pelo alias de certificado de assinatura. 
+
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION=CWWKS5809E: O servi\u00e7o de auditoria n\u00e3o pode iniciar porque uma falha ocorreu enquanto o servi\u00e7o inicializava o manipulador de auditoria para criptografar registros de auditoria. A exce\u00e7\u00e3o era {0}.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.explanation=O servi\u00e7o de auditoria n\u00e3o pode iniciar porque um erro ocorreu durante a inicializa\u00e7\u00e3o da configura\u00e7\u00e3o do manipulador de auditoria para criptografar registros de auditoria. Para obter mais informa\u00e7\u00f5es, consulte a exce\u00e7\u00e3o na mensagem.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.useraction=Consulte a exce\u00e7\u00e3o para determinar a causa do erro. 
+
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION=CWWKS5810E: O servi\u00e7o de auditoria n\u00e3o pode iniciar porque uma falha ocorreu enquanto o servi\u00e7o inicializava o manipulador de auditoria para assinar registros de auditoria. A exce\u00e7\u00e3o era {0}.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.explanation=O servi\u00e7o de auditoria n\u00e3o pode iniciar porque um erro ocorreu durante a inicializa\u00e7\u00e3o da configura\u00e7\u00e3o do manipulador de auditoria para assinar registros de auditoria. Para obter mais informa\u00e7\u00f5es, consulte a exce\u00e7\u00e3o que \u00e9 mencionada na mensagem.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.useraction=Consulte a exce\u00e7\u00e3o para determinar a causa do erro.

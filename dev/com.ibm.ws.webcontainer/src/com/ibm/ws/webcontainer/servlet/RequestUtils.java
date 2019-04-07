@@ -28,32 +28,31 @@ import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.wsspi.webcontainer.util.EncodingUtils;
 
-@SuppressWarnings("unchecked")
 public class RequestUtils extends com.ibm.wsspi.webcontainer.util.RequestUtils
 {
-    private static String SYSTEM_CLIENT_ENCODING;
-    private static String SYSTEM_FILE_ENCODING;
+    private static final String SYSTEM_CLIENT_ENCODING;
+    private static final String SYSTEM_FILE_ENCODING;
     public static final String SYS_PROP_FILE_ENCODING = "file.encoding";
     public static final String SYS_PROP_DFLT_CLIENT_ENCODING = "default.client.encoding";
-    private static TraceNLS nls = TraceNLS.getTraceNLS(RequestUtils.class, "com.ibm.ws.webcontainer.resources.Messages");
-protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.ws.webcontainer.servlet");
-	private static final String CLASS_NAME="com.ibm.ws.webcontainer.servlet.RequestUtils";
+    private static final TraceNLS nls = TraceNLS.getTraceNLS(RequestUtils.class, "com.ibm.ws.webcontainer.resources.Messages");
+    private static final Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.ws.webcontainer.servlet");
+    private static final String CLASS_NAME="com.ibm.ws.webcontainer.servlet.RequestUtils";
 
     static
     {
         // get the system file encoding
-        SYSTEM_FILE_ENCODING = (String)AccessController.doPrivileged(new java.security.PrivilegedAction()
+        SYSTEM_FILE_ENCODING = AccessController.doPrivileged(new java.security.PrivilegedAction<String>()
                                                                      {
-                                                                         public Object run()
+                                                                         public String run()
                                                                          {
                                                                              return(System.getProperty(SYS_PROP_FILE_ENCODING));
                                                                          }
                                                                      });
 
         // setup the override for client encoding...if specified, this property will be used as the client encoding.
-        SYSTEM_CLIENT_ENCODING = (String)AccessController.doPrivileged(new java.security.PrivilegedAction()
+        SYSTEM_CLIENT_ENCODING = AccessController.doPrivileged(new java.security.PrivilegedAction<String>()
                                                                      {
-                                                                         public Object run()
+                                                                         public String run()
                                                                          {
                                                                              return(System.getProperty(SYS_PROP_DFLT_CLIENT_ENCODING));
                                                                          }
@@ -222,60 +221,6 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
         return encoding;
     }
        
-    static private String parseName(String s, StringBuffer sb)
-    {
-        sb.setLength(0);
-        int len = s.length();
-        for (int i = 0; i < len; i++)
-        {
-            char c = s.charAt(i);
-            switch (c)
-            {
-            case '+' :
-                sb.append(' ');
-                break;
-            case '%' :
-                try
-                {
-                    sb.append((char) Integer.parseInt(s.substring(i + 1, i + 3), 16));
-                    i += 2;
-                }
-                catch (NumberFormatException e)
-                {
-                    // XXX
-                    // need to be more specific about illegal arg
-                        com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(e, "com.ibm.ws.webcontainer.servlet.RequestUtils.parseName", "337");
-                    throw new IllegalArgumentException("Unable to parse query string name or value  [" + s +"] ");
-                }
-                catch (StringIndexOutOfBoundsException e)
-                {
-                        com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(e, "com.ibm.ws.webcontainer.servlet.RequestUtils.parseName", "342");
-                    String rest = s.substring(i);
-                    sb.append(rest);
-                    if (rest.length() == 2)
-                        i++;
-                }
-                break;
-            default :
-                sb.append(c);
-                break;
-            }
-        }
-        /* PQ44657 causes POST data parsing in non-ENglish environments to fail.
-        //Begin PQ44657 - The HttpUtils' parsePostData() method incorrectly decodes values.
-        byte[] inputBytes = null;
-        try {
-            String result = sb.toString();
-            inputBytes = result.getBytes(SHORT_ENGLISH);
-        } catch (java.io.UnsupportedEncodingException uex) {
-
-        }
-        return new String(inputBytes);
-        //End PQ44657
-        */
-        return sb.toString();
-    }
-    
     private static String getPostBody(int len, ServletInputStream in, String encoding) /* 157338 add throws */ throws IOException
     {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
@@ -331,20 +276,10 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
             postedBody = new String(postedBytes);
         }
         
-        if (WCCustomProperties.PARSE_UTF8_POST_DATA && encoding.equalsIgnoreCase("UTF-8")) {
-            for (byte nextByte : postedBytes) {
-            	if (nextByte < (byte)0 ) {
-            		encoding = "8859_1";            		
-                    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
-            			logger.logp(Level.FINE, CLASS_NAME,"parsePostData","UTF8 post data, set encoing to 8859_1 to prevent futrther encoding");
-        	        break;
-            	}    	
-            }
-        }    
-        
        return postedBody;
     }
     
+    @SuppressWarnings("rawtypes")
     public static Hashtable parsePostData(int len, ServletInputStream in, String encoding, boolean multireadPropertyEnabled) /* 157338 add throws */ throws IOException // MultiRead
     {    
         String postedBody = getPostBody(len, in, encoding);
@@ -358,6 +293,7 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
         return parseQueryString(postedBody, encoding);
     }
     
+    @SuppressWarnings("rawtypes")
     public static Hashtable parsePostDataLong(long len, ServletInputStream in, String encoding, boolean multireadPropertyEnabled) throws IOException // MultiRead
     {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
@@ -398,20 +334,19 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
             paramData[index] = data.toCharArray(); 
             index++;
             remaining-=readLen;
-            
-            // MultiRead Start
-            if (multireadPropertyEnabled) {
-                in.close();
-            }
-            // MultiRead End
-            
-         }
+        }
+
+        // MultiRead Start
+        if (multireadPropertyEnabled) {
+            in.close();
+        }
+        // MultiRead End
         
-         return  parseQueryString(paramData, encoding);
-                
+        return parseQueryString(paramData, encoding);
     }
     
     // begin 231634    Support posts with query parms in chunked body    WAS.webcontainer    
+    @SuppressWarnings("rawtypes")
     public static Hashtable parsePostData(ServletInputStream in, String encoding, boolean multireadPropertyEnabled) /* 157338 add throws */ throws IOException
     {
         int inputLen;

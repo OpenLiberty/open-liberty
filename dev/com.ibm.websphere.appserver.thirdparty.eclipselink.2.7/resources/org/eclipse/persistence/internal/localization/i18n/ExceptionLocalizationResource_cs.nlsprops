@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -355,9 +359,7 @@ position_param_not_found=\u017d\u00e1dn\u00fd parametr na pozici: {0}.
 
 pu_configured_for_resource_local=Nelze vytvo\u0159it spr\u00e1vce EntityManager s typem synchronizace SynchronizationType, proto\u017ee jednotka perzistence PersistenceUnit je nakonfigurov\u00e1na s transakcemi pro lok\u00e1ln\u00ed prost\u0159edky.
 
-# START NON-TRANSLATABLE
 remove_deletion_failed=Nezda\u0159ilo se odstran\u011bn\u00ed odebr\u00e1n\u00ed:
-# END NON-TRANSLATABLE
 
 rollback_because_of_rollback_only=Transakce byla "odvol\u00e1na", proto\u017ee byla nastavena na hodnotu RollbackOnly.
 
@@ -428,6 +430,8 @@ unexpect_argument=Neo\u010dek\u00e1van\u00fd vstupn\u00ed argument {0}
 unknown_bean_class=Nezn\u00e1m\u00e1 t\u0159\u00edda objektu entity bean: {0}. Ov\u011b\u0159te, \u017ee je tato t\u0159\u00edda ozna\u010dena pomoc\u00ed anotace @Entity.
 
 unknown_entitybean_name=Nezn\u00e1m\u00fd n\u00e1zev objektu entity bean: {0}
+
+unsupported_classfile_version=T\u0159\u00edda {0} byla kompilov\u00e1na s nepodporovanou sadou JDK. Oznamte tuto chybu projektu typu open source EclipseLink.
 
 wrap_convert_exception=V\u00fdjimka p\u0159i vol\u00e1n\u00ed {0} u t\u0159\u00eddy p\u0159evodn\u00edku {1} s hodnotou {2}
 

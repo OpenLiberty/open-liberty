@@ -80,3 +80,19 @@ warning.spring_config.ignored.session.useraction=Configure session timeout and s
 error.wrong.spring.boot.version=CWWKC0263E: The Spring Boot version {0} is not supported. A Spring Boot version within the range {1} is required.
 error.wrong.spring.boot.version.explanation=A Spring Boot version has been detected that is not supported by the server.
 error.wrong.spring.boot.version.useraction=Update the Spring Boot application to use a version of Spring Boot that is within the required version range.
+
+warning.application.started.event.timeout=CWWKC0264W: The {0} application did not issue the {1} event in {2} minutes.
+warning.application.started.event.timeout.explanation=The application did not issue the starting event in the expected time. The server might be overloaded or the application might be large. If the application is starting as part of server startup, the sever startup can finish without waiting for the application to start.
+warning.application.started.event.timeout.useraction=If the application eventually starts, then no action is required. If the application does not start, check the server logs to see whether other messages indicate a cause.
+
+warning.java.version.not.supported=CWWKC0265W: The current Java version {0} is not supported by the Spring Boot version {1}. Upgrade the Spring Boot version of the application to 2.0.x or later.
+warning.java.version.not.supported.explanation=Java versions higher than 1.8 are not supported by the Spring Boot versions 1.5.x and below.
+warning.java.version.not.supported.useraction=Upgrade the Spring Boot version of the application to 2.0.x or later.
+
+error.invalid.packaged.liberty.jar=CWWKC0265E: The application failed to start because the packaged Liberty server JAR file is not valid.
+error.invalid.packaged.liberty.jar.explanation=The packaged Liberty server JAR file is missing a Server-Name manifest header, entries for the server root, or entries for the lib.index.cache directory.
+error.invalid.packaged.liberty.jar.useraction=Configure a valid packaged Liberty server JAR file.
+
+error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: The application failed to start because the Spring Boot application was not found inside the packaged Liberty Server JAR file.
+error.application.not.found.inside.packaged.liberty.jar.explanation=The packaged Liberty Server JAR file must contain a configured Spring Boot application.
+error.application.not.found.inside.packaged.liberty.jar.useraction=Configure a valid packaged Liberty server JAR file.

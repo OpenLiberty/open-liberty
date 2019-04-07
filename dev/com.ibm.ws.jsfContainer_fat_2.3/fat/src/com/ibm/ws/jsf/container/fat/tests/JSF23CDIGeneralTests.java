@@ -20,13 +20,11 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.CollectingAlertHandler;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -180,7 +178,7 @@ public class JSF23CDIGeneralTests extends FATServletClient {
     @WebArchiveInfo(name = "CDIManagedProperty", pkgs = { "com.ibm.ws.jsf23.fat.cdi.managedproperty" })
     public void testCDIManagedProperty() throws Exception {
         String contextRoot = "CDIManagedProperty";
-        WebClient webClient = new WebClient(BrowserVersion.FIREFOX_24);
+        WebClient webClient = new WebClient();
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
         String initalValue = "numberManagedProperty = 0 textManagedProperty = zero "
@@ -516,21 +514,11 @@ public class JSF23CDIGeneralTests extends FATServletClient {
         // TestConverter, TestValidator and TestBehavior objects should have been injected
         assertTrue(page.asText().contains("JSF 2.3 support injection of JSF Managed Objects: FacesConverter, FacesValidator, FacesBehavior"));
         assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter_validator.beans.TestConverter"));
-        // NOTE: Uncomment this once we pull the latest MyFaces 2.3.x
-//        assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter_validator.beans.TestValidator"));
-//        assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter_validator.beans.TestBehavior"));
+
+        assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter_validator.beans.TestValidator"));
+        assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter_validator.beans.TestBehavior"));
     }
 
-    /*
-     * Ignore this test -- for some reason the CustomViewHandler is failing to build:
-     * An exception has occurred in the compiler (1.8.0). Please file a bug against the
-     * Java compiler via the Java bug reporting page (http://bugreport.java.com) after
-     * checking the Bug Database (http://bugs.java.com) for duplicates. Include your
-     * program and the following diagnostic in your report. Thank you.
-     *
-     * com.sun.tools.javac.code.Symbol$CompletionFailure: class file for java.util.stream.Stream not found
-     */
-    @Ignore
     @Test
     @Mode(TestMode.FULL)
     @WebArchiveInfo(name = "ViewHandlerTest", pkgs = { "jsf.container.viewhandlertest" })

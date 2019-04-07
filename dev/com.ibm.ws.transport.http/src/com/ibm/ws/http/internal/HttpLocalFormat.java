@@ -26,9 +26,9 @@ import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 public class HttpLocalFormat {
 
     /** Default tolerance range is within one second */
-    protected static final long DEFAULT_TOLERANCE = 1000L;
+    static final long DEFAULT_TOLERANCE = 1000L;
     /** Ref to the GMT timezone */
-    protected static final TimeZone gmt = TimeZone.getTimeZone("GMT");
+    static final TimeZone gmt = TimeZone.getTimeZone("GMT");
 
     /** Cached RFC 1123 format timer */
     private CachedTime c1123Time = null;
@@ -43,14 +43,43 @@ public class HttpLocalFormat {
 
     /**
      * Create an instance of this class.
-     *
+     * Create the CachedTimes lazily only if they are needed in order to reduce memory.
      */
-    public HttpLocalFormat() {
-        this.c1123Time = new CachedTime("EEE, dd MMM yyyy HH:mm:ss z", true);
-        this.c1036Time = new CachedTime("EEEEEEEEE, dd-MMM-yy HH:mm:ss z", true);
-        this.cAsciiTime = new CachedTime("EEE MMM  d HH:mm:ss yyyy", true);
-        this.cNCSATime = new CachedTime("dd/MMM/yyyy:HH:mm:ss Z", false);
-        this.c2109Time = new CachedTime("EEE, dd-MMM-yy HH:mm:ss z", true);
+    public HttpLocalFormat() {}
+
+    private CachedTime getC1123Time() {
+        if (this.c1123Time == null) {
+            this.c1123Time = new CachedTime("EEE, dd MMM yyyy HH:mm:ss z", true);
+        }
+        return this.c1123Time;
+    }
+
+    private CachedTime getC1036Time() {
+        if (this.c1036Time == null) {
+            this.c1036Time = new CachedTime("EEEEEEEEE, dd-MMM-yy HH:mm:ss z", true);
+        }
+        return this.c1036Time;
+    }
+
+    private CachedTime getCAsciiTime() {
+        if (this.cAsciiTime == null) {
+            this.cAsciiTime = new CachedTime("EEE MMM  d HH:mm:ss yyyy", true);
+        }
+        return this.cAsciiTime;
+    }
+
+    private CachedTime getCNCSATime() {
+        if (this.cNCSATime == null) {
+            this.cNCSATime = new CachedTime("dd/MMM/yyyy:HH:mm:ss Z", false);
+        }
+        return this.cNCSATime;
+    }
+
+    private CachedTime getC2109Time() {
+        if (this.c2109Time == null) {
+            this.c2109Time = new CachedTime("EEE, dd-MMM-yy HH:mm:ss z", true);
+        }
+        return this.c2109Time;
     }
 
     /**
@@ -63,7 +92,7 @@ public class HttpLocalFormat {
      * @return byte[]
      */
     public byte[] get1123TimeAsBytes(long range) {
-        return this.c1123Time.getTimeAsBytes(range);
+        return this.getC1123Time().getTimeAsBytes(range);
     }
 
     /**
@@ -76,7 +105,7 @@ public class HttpLocalFormat {
      * @return String
      */
     public String get1123TimeAsString(long range) {
-        return this.c1123Time.getTimeAsString(range);
+        return this.getC1123Time().getTimeAsString(range);
     }
 
     /**
@@ -89,7 +118,7 @@ public class HttpLocalFormat {
      * @return byte[]
      */
     public byte[] get1036TimeAsBytes(long range) {
-        return this.c1036Time.getTimeAsBytes(range);
+        return this.getC1036Time().getTimeAsBytes(range);
     }
 
     /**
@@ -102,7 +131,7 @@ public class HttpLocalFormat {
      * @return String
      */
     public String get1036TimeAsString(long range) {
-        return this.c1036Time.getTimeAsString(range);
+        return this.getC1036Time().getTimeAsString(range);
     }
 
     /**
@@ -115,7 +144,7 @@ public class HttpLocalFormat {
      * @return byte[]
      */
     public byte[] getAsciiTimeAsBytes(long range) {
-        return this.cAsciiTime.getTimeAsBytes(range);
+        return this.getCAsciiTime().getTimeAsBytes(range);
     }
 
     /**
@@ -128,7 +157,7 @@ public class HttpLocalFormat {
      * @return String
      */
     public String getAsciiTimeAsString(long range) {
-        return this.cAsciiTime.getTimeAsString(range);
+        return this.getCAsciiTime().getTimeAsString(range);
     }
 
     /**
@@ -141,7 +170,7 @@ public class HttpLocalFormat {
      * @return byte[]
      */
     public byte[] getNCSATimeAsBytes(long range) {
-        return this.cNCSATime.getTimeAsBytes(range);
+        return this.getCNCSATime().getTimeAsBytes(range);
     }
 
     /**
@@ -154,7 +183,7 @@ public class HttpLocalFormat {
      * @return String
      */
     public String getNCSATimeAsString(long range) {
-        return this.cNCSATime.getTimeAsString(range);
+        return this.getCNCSATime().getTimeAsString(range);
     }
 
     /**
@@ -167,7 +196,7 @@ public class HttpLocalFormat {
      * @return byte[]
      */
     public byte[] get2109TimeAsBytes(long range) {
-        return this.c2109Time.getTimeAsBytes(range);
+        return this.getC2109Time().getTimeAsBytes(range);
     }
 
     /**
@@ -180,7 +209,7 @@ public class HttpLocalFormat {
      * @return String
      */
     public String get2109TimeAsString(long range) {
-        return this.c2109Time.getTimeAsString(range);
+        return this.getC2109Time().getTimeAsString(range);
     }
 
     /**
@@ -190,7 +219,7 @@ public class HttpLocalFormat {
      * @return SimpleDateFormat
      */
     public SimpleDateFormat get1123Format() {
-        return this.c1123Time.getFormat();
+        return this.getC1123Time().getFormat();
     }
 
     /**
@@ -200,7 +229,7 @@ public class HttpLocalFormat {
      * @return SimpleDateFormat
      */
     public SimpleDateFormat get1036Format() {
-        return this.c1036Time.getFormat();
+        return this.getC1036Time().getFormat();
     }
 
     /**
@@ -210,7 +239,7 @@ public class HttpLocalFormat {
      * @return SimpleDateFormat
      */
     public SimpleDateFormat getAsciiFormat() {
-        return this.cAsciiTime.getFormat();
+        return this.getCAsciiTime().getFormat();
     }
 
     /**
@@ -220,7 +249,7 @@ public class HttpLocalFormat {
      * @return SimpleDateFormat
      */
     public SimpleDateFormat getNCSAFormat() {
-        return this.cNCSATime.getFormat();
+        return this.getCNCSATime().getFormat();
     }
 
     /**
@@ -229,7 +258,7 @@ public class HttpLocalFormat {
      * @return SimpleDateFormat
      */
     public SimpleDateFormat get2109Format() {
-        return this.c2109Time.getFormat();
+        return this.getC2109Time().getFormat();
     }
 
     /**
@@ -239,7 +268,7 @@ public class HttpLocalFormat {
      * @return SimpleDateFormat
      */
     public SimpleDateFormat get1123Parse() {
-        return this.c1123Time.getParse();
+        return this.getC1123Time().getParse();
     }
 
     /**
@@ -249,7 +278,7 @@ public class HttpLocalFormat {
      * @return SimpleDateFormat
      */
     public SimpleDateFormat get1036Parse() {
-        return this.c1036Time.getParse();
+        return this.getC1036Time().getParse();
     }
 
     /**
@@ -259,7 +288,7 @@ public class HttpLocalFormat {
      * @return SimpleDateFormat
      */
     public SimpleDateFormat getAsciiParse() {
-        return this.cAsciiTime.getParse();
+        return this.getCAsciiTime().getParse();
     }
 
     /**
@@ -269,7 +298,7 @@ public class HttpLocalFormat {
      * @return SimpleDateFormat
      */
     public SimpleDateFormat getNCSAParse() {
-        return this.cNCSATime.getParse();
+        return this.getCNCSATime().getParse();
     }
 
     /**
@@ -278,7 +307,7 @@ public class HttpLocalFormat {
      * @return SimpleDateFormat
      */
     public SimpleDateFormat get2109Parse() {
-        return this.c2109Time.getParse();
+        return this.getC2109Time().getParse();
     }
 
     /**
@@ -290,9 +319,13 @@ public class HttpLocalFormat {
      * level so no synchronization is required.
      *
      */
-    private class CachedTime {
+    private static class CachedTime {
+        private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+        private static final char[] EMPTY_CHAR_ARRAY = new char[0];
         /** Stored formatter */
-        private SimpleDateFormat myFormat = null;
+        private final SimpleDateFormat myFormat;
+        private final String pattern;
+        private final boolean gmtTimeZone;
         /** Stored Parser */
         private SimpleDateFormat myParse = null;
         /** Last time we formatted a value */
@@ -300,9 +333,9 @@ public class HttpLocalFormat {
         /** The stored formatted time as a string */
         private String sTime = null;
         /** The stored formatted time as byte[] */
-        private byte[] baTime = new byte[0];
+        private byte[] baTime = EMPTY_BYTE_ARRAY;
         /** The stored formatted time as a char[] */
-        private char[] caTime = new char[0];
+        private char[] caTime = EMPTY_CHAR_ARRAY;
         /** Static date object used for all conversions */
         private final Date myDate = new Date();
         /** Buffer that the formatted puts output into */
@@ -314,12 +347,12 @@ public class HttpLocalFormat {
          *
          * @param format
          */
-        protected CachedTime(String format, boolean gmtTimeZone) {
+        CachedTime(String format, boolean gmtTimeZone) {
+            this.pattern = format;
+            this.gmtTimeZone = gmtTimeZone;
             this.myFormat = new SimpleDateFormat(format, Locale.US);
-            this.myParse = new SimpleDateFormat(format, Locale.US);
             if (gmtTimeZone) {
                 this.myFormat.setTimeZone(gmt);
-                this.myParse.setTimeZone(gmt);
             }
         }
 
@@ -328,7 +361,7 @@ public class HttpLocalFormat {
          *
          * @return SimpleDateFormat
          */
-        protected SimpleDateFormat getFormat() {
+        SimpleDateFormat getFormat() {
             return this.myFormat;
         }
 
@@ -337,7 +370,13 @@ public class HttpLocalFormat {
          *
          * @return SimpleDateFormat
          */
-        protected SimpleDateFormat getParse() {
+        SimpleDateFormat getParse() {
+            if (this.myParse == null) {
+                this.myParse = new SimpleDateFormat(pattern, Locale.US);
+                if (gmtTimeZone) {
+                    this.myParse.setTimeZone(gmt);
+                }
+            }
             return this.myParse;
         }
 
@@ -393,7 +432,7 @@ public class HttpLocalFormat {
          *            means that this must be an exact match in time
          * @return byte[]
          */
-        protected byte[] getTimeAsBytes(long tolerance) {
+        byte[] getTimeAsBytes(long tolerance) {
             updateTime(tolerance);
             return this.baTime;
         }
@@ -409,7 +448,7 @@ public class HttpLocalFormat {
          *            means that this must be an exact match in time
          * @return String
          */
-        protected String getTimeAsString(long tolerance) {
+        String getTimeAsString(long tolerance) {
             updateTime(tolerance);
             // see if we need the delayed string creation at this point
             if (null == this.sTime) {

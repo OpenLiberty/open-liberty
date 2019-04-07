@@ -20,8 +20,8 @@
 #do not translate issuerIdentifier, iss
 #
 OIDC_IDTOKEN_VERIFY_ISSUER_ERR=CWWKS1751E: Validation failed for the ID token requested by [{0}] because the (iss) issuer [{1}] specified in the token does not match the [issuerIdentifier] attribute [{2}] for the provider specified in the OpenID Connect client configuration. Check the issuerIdentifier attribute on the client configuration.
-OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=ID token validation failed because the issuer specified in the OpenID Connect client (relying party or RP) configuration and the issuer in the token do not match.
-OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Make sure that the [issuerIdentifier] attribute specified in the OpenID Connect client (RP) configuration matches with the issuer for the OpenID Connect provider (OP) being used.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=ID token validation failed because the issuer specified in the OpenID Connect client (relying party or RP) or social login client configuration and the issuer in the token do not match.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Make sure that the [issuerIdentifier] attribute specified in the OpenID Connect client (RP) or social login client configuration matches with the issuer for the OpenID Connect provider (OP) being used.
 
 #
 OIDC_IDTOKEN_SIGNATURE_ERR=CWWKS1752E: An error occurred while attempting to sign an ID token using the [{0}] algorithm: [{1}].
@@ -182,3 +182,8 @@ TOKEN_ISSUER_NOT_TRUSTED.useraction=Verify that the issuer claim value that is i
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1782E: The resource server failed the authentication request because the token contains a [{0}] claim, but the value of the [{1}] client configuration attribute indicates that the token must not contain the claim.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=The token cannot contain the specified claim because of the value of the specified configuration attribute.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Either obtain a new token that does not contain the specified claim, or change the specified configuration attribute value to allow the claim to be included in the token.
+
+# 0=Client ID, 1=List of invalid parameter names, 2=forwardLoginParameter
+BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: The OpenID Connect client [{0}] includes {1} in the values that are specified by the [{2}] configuration attribute. The specified values will be ignored.
+BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=The OAuth 2.0 specification defines a set of reserved request parameters that must be provided by the client for authorization requests. Values for those reserved parameters cannot be supplied by the user.
+BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Remove the specified values from the list of values defined in the OpenID Connect client configuration.

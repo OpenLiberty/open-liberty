@@ -76,24 +76,30 @@ public class PolicyExecutorTest {
     public void testExpedite() throws Exception {
         ExecutorServiceImpl globalExecutor = new ExecutorServiceImpl();
         Map<String, Object> globalExecutorConfig = new HashMap<String, Object>();
-        globalExecutorConfig.put("coreThreads", 1);
-        globalExecutorConfig.put("maxThreads", 1);
-        globalExecutorConfig.put("keepAlive", TimeUnit.MINUTES.toMillis(5));
+        globalExecutorConfig.put("coreThreads", ExecutorServiceImpl.MINIMUM_POOL_SIZE);
+        globalExecutorConfig.put("maxThreads", ExecutorServiceImpl.MINIMUM_POOL_SIZE);
         globalExecutor.activate(globalExecutorConfig);
-        globalExecutor.threadPoolController.deactivate(); // disable autonomic tuning to guarantee maxThreads stays the same
 
         ConcurrentHashMap<String, PolicyExecutorImpl> policyExecutors = new ConcurrentHashMap<String, PolicyExecutorImpl>();
 
-        PolicyExecutor executor0 = new PolicyExecutorImpl(globalExecutor, "testExpedite-0", policyExecutors).expedite(0).maxConcurrency(4).maxQueueSize(3);
-        PolicyExecutor executor2 = new PolicyExecutorImpl(globalExecutor, "testExpedite-2", policyExecutors).expedite(2).maxConcurrency(4).maxQueueSize(4);
+        PolicyExecutor executor0 = new PolicyExecutorImpl(globalExecutor, "testExpedite-0", null, policyExecutors);
+        executor0.expedite(0).maxConcurrency(ExecutorServiceImpl.MINIMUM_POOL_SIZE + 3).maxQueueSize(ExecutorServiceImpl.MINIMUM_POOL_SIZE + 2);
+        PolicyExecutor executor2 = new PolicyExecutorImpl(globalExecutor, "testExpedite-2", "myApp", policyExecutors);
+        executor2.expedite(2).maxConcurrency(4).maxQueueSize(4);
 
         // Share a counter between all tasks to record the order in which they run
         AtomicInteger sharedCounter = new AtomicInteger(0);
 
-        // Use up the single thread in the global pool
-        CountDownLatch blockerStartedLatch = new CountDownLatch(1);
+        // Use up the thread(s) in the global pool
+        CountDownLatch blockerStartedLatch = new CountDownLatch(ExecutorServiceImpl.MINIMUM_POOL_SIZE);
+        // The first latch blocks one thread and will be released to let the other queued tasks execute
         CountDownLatch blockerLatch = new CountDownLatch(1);
         Future<Integer> future0a = executor0.submit(new CommonTask("blocker", blockerStartedLatch, blockerLatch, sharedCounter));
+        // The second latch blocks the other threads in the pool, so that the queued tasks execute in order
+        CountDownLatch blockerLatch2 = new CountDownLatch(1);
+        for (int x = 1; x < ExecutorServiceImpl.MINIMUM_POOL_SIZE; x++) {
+            executor0.submit(new CommonTask("blocker", blockerStartedLatch, blockerLatch2, sharedCounter));
+        }
         assertTrue(blockerStartedLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
         // Submit 3 non-expedited tasks that will be blocked from running
@@ -109,7 +115,7 @@ public class PolicyExecutorTest {
         Future<Integer> future2c = executor2.submit(new CommonTask("2c", null, null, sharedCounter));
         Future<Integer> future2d = executor2.submit(new CommonTask("2d", null, null, sharedCounter));
 
-        // Release the blocker, allowing all tasks to run
+        // Release the single thread blocker, allowing queued tasks to run in order
         blockerLatch.countDown();
 
         // Verify the ordering (first the blocker task which had started, then the 2 expedited tasks, then the remaining tasks in order of submit)
@@ -124,6 +130,10 @@ public class PolicyExecutorTest {
 
         assertEquals(Collections.emptyList(), executor0.shutdownNow());
         assertEquals(Collections.emptyList(), executor2.shutdownNow());
+
+        // Release the other threads blocker, so that the executor has no tasks remaining
+        blockerLatch2.countDown();
+
         globalExecutor.deactivate(0);
     }
 

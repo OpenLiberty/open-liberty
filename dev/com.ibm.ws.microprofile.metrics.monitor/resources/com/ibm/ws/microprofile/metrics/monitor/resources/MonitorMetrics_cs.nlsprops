@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWPMI
+#COMPONENTNAMEFOR CWPMI WebSphere Performance Monitoring MicroProfile Metrics API
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by MonitorMetrics Impl -  range is 2000-2199
+#-----------------------------------------------------------------------------------------------------------------------------
+FEATURE_REGISTERED=CWPMI2001I: Metriky monitorov\u00e1n\u00ed lze na\u010d\u00edst prost\u0159ednictv\u00edm mpMetrics.
+FEATURE_REGISTERED.explanation=Funkce monitor-1.0 a mpMetrics-1.1 jsou povoleny a metriky monitorov\u00e1n\u00ed lze na\u010d\u00edst prost\u0159ednictv\u00edm mpMetrics.
+FEATURE_REGISTERED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+FEATURE_UNREGISTERED=CWPMI2002I: V\u0161echny metriky monitorov\u00e1n\u00ed byly z mpmetrics odregistrov\u00e1ny.
+FEATURE_UNREGISTERED.explanation=Funkce monitor-1.0, mpMetrics-1.1 nebo ob\u011b funkce byly odebr\u00e1ny ze serveru a v\u0161echny metriky monitorov\u00e1n\u00ed byly z mpMetrics odregistrov\u00e1ny.
+FEATURE_UNREGISTERED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.

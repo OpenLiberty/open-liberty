@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -355,9 +359,7 @@ position_param_not_found=Nem tal\u00e1lhat\u00f3 param\u00e9ter a k\u00f6vetkez\
 
 pu_configured_for_resource_local=Nem hozhat\u00f3 l\u00e9tre egy EntityManager SynchronizationType t\u00edpussal, mert a PersistenceUnit resource-local tranzakci\u00f3kkal van konfigur\u00e1lva.
 
-# START NON-TRANSLATABLE
 remove_deletion_failed=T\u00f6rl\u00e9s elt\u00e1vol\u00edt\u00e1s meghi\u00fasult:
-# END NON-TRANSLATABLE
 
 rollback_because_of_rollback_only=A tranzakci\u00f3 visszag\u00f6rget\u00e9sre ker\u00fclt, mert a tranzakci\u00f3 be\u00e1ll\u00edt\u00e1sa RollbackOnly.
 
@@ -429,6 +431,7 @@ unknown_bean_class=Ismeretlen entit\u00e1skomponens oszt\u00e1ly: {0}, ellen\u01
 
 unknown_entitybean_name=Ismeretlen entit\u00e1skomponens n\u00e9v: {0}
 
+unsupported_classfile_version=A(z) {0} oszt\u00e1ly nem t\u00e1mogatott JDK seg\u00edts\u00e9g\u00e9vel lett leford\u00edtva. Jelentse ezt a hib\u00e1t az EclipseLink ny\u00edlt forr\u00e1s\u00fa projektnek. 
 wrap_convert_exception=Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} h\u00edv\u00e1sa sor\u00e1n a(z) {1} \u00e1talak\u00edt\u00f3 oszt\u00e1lyon {2} \u00e9rt\u00e9kkel
 
 wrap_ejbql_exception=Kiv\u00e9tel t\u00f6rt\u00e9nt EntityManager lek\u00e9rdez\u00e9s l\u00e9trehoz\u00e1sa sor\u00e1n

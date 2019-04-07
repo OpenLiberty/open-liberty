@@ -20,6 +20,7 @@
 package javax.faces.component;
 
 import java.io.Serializable;
+import javax.el.ValueExpression;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
@@ -59,5 +60,31 @@ abstract class _UIWebsocket extends UIComponentBase
 
     @JSFProperty(defaultValue = "true")
     public abstract boolean isConnected();
+
+    @Override
+    public void setValueExpression(String name, ValueExpression binding) 
+    {
+        if (PropertyKeys.channel.toString().equals(name) || PropertyKeys.scope.toString().equals(name)) 
+        {
+            throw new IllegalArgumentException(name);
+        }
+
+        if (PropertyKeys.user.toString().equals(name)) 
+        {
+            Object user = binding.getValue(getFacesContext().getELContext());
+
+            if (user != null && !(user instanceof Serializable)) 
+            {
+                throw new IllegalArgumentException("f:websocket 'user' attribute does not represent a valid user identifier because it is not Serializable.");
+            }
+        }
+
+        super.setValueExpression(name, binding);
+    }
+
+    enum PropertyKeys 
+    {
+        channel, scope, user, onopen, onmessage, onclose, connected;
+    }
 
 }

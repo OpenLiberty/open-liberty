@@ -545,6 +545,14 @@ public abstract class MonitorHolder implements Runnable {
         return monitorState.get() == MonitorState.DESTROYED.ordinal();
     }
 
+    private boolean isStopped = false;
+
+    // Stop scanning for changes during server quiesce period
+    void serverStopping() {
+        this.isStopped = true;
+        stop();
+    }
+
     @Override
     public void run() {
         scheduledScan();
@@ -562,6 +570,10 @@ public abstract class MonitorHolder implements Runnable {
     @Trivial
     @FFDCIgnore(InterruptedException.class)
     void scheduledScan() {
+        // Don't perform a scheduled scan if this monitor holder is paused
+        if (isStopped)
+            return;
+
         // 152229: Changed this code to get the monitor type locally.  That is, now we save the monitor type in the constructor.
         // We used to get the monitor type here by monitorRef.getProperty(FileMonitor.MONITOR_TYPE)). That caused a
         // ConcurrentModificationException because of interference from the JMocked FileMonitor in the unit test code.
@@ -742,11 +754,18 @@ public abstract class MonitorHolder implements Runnable {
      * so we need to make sure each call is handled.</li>
      * </ul>
      *
-     * @param notifiedCreated the canonical paths of any created files
-     * @param notifiedDeleted the canonical paths of any deleted files
-     * @param notifiedModified the canonical paths of any modified files
+     * @param notifiedCreated The canonical paths of any created files
+     * @param notifiedDeleted The canonical paths of any deleted files
+     * @param notifiedModified The canonical paths of any modified files
+     * @param doFilterPaths The filter indicator. If true, input paths are filtered against pending file events.
+     *            If false, all pending file events are processed.
+     * @param listenerFilter The filter string that allows only those listeners with a matching id to be called to process the event.
      */
-    void externalScan(Set<File> notifiedCreated, Set<File> notifiedDeleted, Set<File> notifiedModified) {
+    void externalScan(Set<File> notifiedCreated, Set<File> notifiedDeleted, Set<File> notifiedModified, boolean doFilterPaths, String listenerFilter) {
+        // Don't perform the external scan if this monitor holder is paused
+        if (isStopped)
+            return;
+
         // only do anything if this is an 'external' monitor
         if (!!!FileMonitor.MONITOR_TYPE_EXTERNAL.equals(monitorRef.getProperty(FileMonitor.MONITOR_TYPE)))
             return;
@@ -808,12 +827,15 @@ public abstract class MonitorHolder implements Runnable {
                 unnotifiedFileDeletes.clear();
                 unnotifiedFileModifies.clear();
 
-                // Now take the notified changes and compare it against all the possible
-                // valid choices, unrequested changes are placed into the unnotified set
-                // so they can be used by the caller on subsequent calls
-                filterSets(created, notifiedCreated, unnotifiedFileCreates);
-                filterSets(deleted, notifiedDeleted, unnotifiedFileDeletes);
-                filterSets(modified, notifiedModified, unnotifiedFileModifies);
+                // If a filter was specified, all pending updates are to be processed.
+                if (doFilterPaths) {
+                    // Now take the notified changes and compare it against all the possible
+                    // valid choices, unrequested changes are placed into the unnotified set
+                    // so they can be used by the caller on subsequent calls
+                    filterSets(created, notifiedCreated, unnotifiedFileCreates);
+                    filterSets(deleted, notifiedDeleted, unnotifiedFileDeletes);
+                    filterSets(modified, notifiedModified, unnotifiedFileModifies);
+                }
 
                 if (!created.isEmpty() || !modified.isEmpty() || !deleted.isEmpty()) {
                     // changes were discovered: trace & call the registered file monitor
@@ -826,8 +848,13 @@ public abstract class MonitorHolder implements Runnable {
 
                     if (monitor != null) {
                         try {
+                            // If we are processing all pending events, call the extended version of the FileMonitor.
+                            if (!doFilterPaths && monitor instanceof com.ibm.ws.kernel.filemonitor.FileMonitor) {
+                                ((com.ibm.ws.kernel.filemonitor.FileMonitor) monitor).onChange(created, modified, deleted, listenerFilter);
+                            } else {
+                                monitor.onChange(created, modified, deleted);
+                            }
 
-                            monitor.onChange(created, modified, deleted);
                         } catch (RuntimeException e) {
                             // FFDC instrumentation will go here
                             // Catch the exception so we can FFDC it
@@ -1103,6 +1130,17 @@ public abstract class MonitorHolder implements Runnable {
             Tr.warning(tc, "badInterval", FileMonitor.MONITOR_INTERVAL, fullValue);
             throw new IllegalArgumentException("Invalid interval (" + intervalString + ") from " + fullValue);
         }
+    }
+
+    /**
+     * Processes file refresh operations for specific listeners.
+     *
+     * @param doFilterPaths The filter indicator. If true, input paths are filtered against pending file events.
+     *            If false, all pending file events are processed.
+     * @param listenerFilter The filter string that allows only those listeners with a matching id to be called to process the event.
+     */
+    void processFileRefresh(boolean doFilterPaths, String listenerFilter) {
+        externalScan(null, null, null, doFilterPaths, listenerFilter);
     }
 
 }

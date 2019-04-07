@@ -19,7 +19,6 @@ src: \
         test-applications/aroundConstructApp.war/src,\
         test-applications/beanDiscoveryModeNone.war/src,\
         test-applications/classExclusion.war/src,\
-        test-applications/ejbConstructorInjection.war/src,\
         test-applications/ejbDiscovery.war/src,\
         test-applications/ejbMisc.war/src,\
         test-applications/ejbScope.war/src,\

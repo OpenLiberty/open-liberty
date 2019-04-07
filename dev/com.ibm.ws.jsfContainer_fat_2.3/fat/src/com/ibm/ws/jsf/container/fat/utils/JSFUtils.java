@@ -12,12 +12,17 @@ package com.ibm.ws.jsf.container.fat.utils;
 
 import java.net.URL;
 
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.topology.impl.LibertyServer;
 
 /**
  * A utility class for JSF tests.
  */
 public class JSFUtils {
+
+    protected static final Class<?> c = JSFUtils.class;
 
     /**
      * Construct a URL for a test case so a request can be made.
@@ -55,5 +60,25 @@ public class JSFUtils {
 
         return sb.toString();
     }
-
+    
+    /**
+     * Create a custom wait mechanism that waits for any background JavaScript to finish
+     * and verifies a message in the page response.
+     *
+     * @param page The current HtmlPage
+     * @return A boolean value indicating if the response message was found
+     * @throws InterruptedException
+     */
+    public static boolean waitForPageResponse(HtmlPage page, String responseMessage) throws InterruptedException {
+        int i = 0;
+        boolean isTextFound = false;
+        while (!isTextFound && i < 5) {
+            isTextFound = page.asText().contains(responseMessage);
+            i++;
+            Thread.sleep(1000);
+            Log.info(c, "waitForPageResponse", "Waiting for: " + responseMessage + " isTextFound: " + isTextFound + " i: " + i);
+        }
+        return isTextFound;
+    }
 }
+

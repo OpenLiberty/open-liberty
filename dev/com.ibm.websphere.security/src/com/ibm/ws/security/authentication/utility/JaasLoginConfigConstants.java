@@ -22,4 +22,13 @@ public class JaasLoginConfigConstants {
     public static final String SYSTEM_DESERIALIZE_CONTEXT = "system.DESERIALIZE_CONTEXT";
     public static final String SYSTEM_RMI_INBOUND = "system.RMI_INBOUND";
     public static final String JAASClient = "JAASClient";
+
+    public static final String COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE_WRAPPER = "com.ibm.ws.security.authentication.jaas.modules.Krb5LoginModuleWrapper";
+    public static final String COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE = "com.ibm.security.auth.module.Krb5LoginModule";
+    public static final String COM_IBM_SECURITY_JGSS_KRB5_INITIATE = "com.ibm.security.jgss.krb5.initiate";
+    public static final String COM_IBM_SECURITY_JGSS_KRB5_ACCEPT = "com.ibm.security.jgss.krb5.accept";
+
+    public static final String COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE = "com.sun.security.auth.module.Krb5LoginModule";
+    public static final String COM_SUN_SECURITY_JGSS_KRB5_INITIATE = "com.sun.security.jgss.krb5.initiate";
+    public static final String COM_SUN_SECURITY_JGSS_KRB5_ACCEPT = "com.sun.security.jgss.krb5.accept";
 }

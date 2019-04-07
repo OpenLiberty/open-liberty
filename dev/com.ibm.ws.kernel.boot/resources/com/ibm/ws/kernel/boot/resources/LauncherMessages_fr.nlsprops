@@ -684,6 +684,19 @@ warning.server.status.invalid.targets=CWWKE0946W: Une demande de statut a \u00e9
 warning.server.status.invalid.targets.explanation=Un utilisateur a \u00e9mis une demande de statut avec une liste de cibles vide dans l'option target. La demande a \u00e9t\u00e9 ex\u00e9cut\u00e9e, mais aucune action n'a \u00e9t\u00e9 engag\u00e9e.
 warning.server.status.invalid.targets.useraction=Sp\u00e9cifiez dans l'option target la liste des composants pour lesquels v\u00e9rifier le statut. Pour v\u00e9rifier le statut cumul\u00e9 de tous les composants pouvant \u00eatre mis en pause sur le serveur, \u00e9mettez la demande de statut sans l'option target.
 
+warning.package.root.invalid=CWWKE0947W: L'option --server-root associ\u00e9e \u00e0 un argument vide n'est pas admise lorsque des extensions de produit sont install\u00e9es. L'argument par d\u00e9faut de wlp sera utilis\u00e9.
+warning.package.root.invalid.explanation=L'utilisateur a \u00e9mis une demande de package avec une option --server-root sp\u00e9cifiant un argument vide alors que des extensions de produit ont \u00e9t\u00e9 d\u00e9tect\u00e9es. La racine de serveur par d\u00e9faut de wlp sera utilis\u00e9e.
+warning.package.root.invalid.useraction=Aucune action n'est requise.
+
+warning.package.root.invalid.runnable=CWWKE0948W: La combinaison de l'option --server-root et de --include=runnable n'est pas autoris\u00e9e. L'argument par d\u00e9faut wlp sera utilis\u00e9 pour la racine du serveur.
+warning.package.root.invalid.runnable.explanation=L'utilisateur a \u00e9mis une demande de package avec une option --server-root et --include=runnable alors que cette combinaison n'est pas autoris\u00e9e. La racine de serveur par d\u00e9faut wlp sera utilis\u00e9e.
+warning.package.root.invalid.runnable.useraction=Aucune action n'est \
+requise.
+
+error.no.serialfilteragent=CWWKE0949E: Le fichier JAR d''agent de filtres en s\u00e9rie sp\u00e9cifi\u00e9 {0} n''existe pas.
+error.no.serialfilteragent.explanation=Le fichier JAR d'agent de filtres en s\u00e9rie sp\u00e9cifi\u00e9 n'existe pas ou ne peut pas \u00eatre lu.
+error.no.serialfilteragent.useraction= Assurez-vous que le fichier existe et qu'il peut \u00eatre lu par l'utilisateur en cours.
+
 info.serverStarting=D\u00e9marrage du serveur {0}.
 info.serverStarted=Le serveur {0} a d\u00e9marr\u00e9.
 info.serverStartedWithPID=Le serveur {0} a d\u00e9marr\u00e9 avec l''ID de processus {1}.
@@ -763,3 +776,4 @@ info.initlogs=Redirection des flux stdout et stderr vers le fichier {0}
 info.no.servers.defined=Aucun serveur n''est d\u00e9fini dans l''annuaire d''utilisateurs {0}.
 info.list.of.defined.servers=Les serveurs ci-apr\u00e8s sont d\u00e9finis par rapport \u00e0 l''annuaire d''utilisateurs {0}.
 info.communicate.server=Une erreur de communication s''est produite entre la commande {0} et le serveur {1}.
+

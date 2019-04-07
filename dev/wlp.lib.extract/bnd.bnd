@@ -21,15 +21,20 @@ Bundle-Description: Self extracting jar tools; version=${bVersion}
 Archive-Content-Type: install
 Archive-Root: wlp/
 Extract-Installer: true
-IBM-Java-Options: -Xshareclasses:name=liberty-%u,nonfatal,cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx60m -Xscmaxaot8m -XX:+EnableHCR
+Can-Redefine-Classes: false
+Can-Retransform-Classes: true
+IBM-Java-Options: -Xshareclasses:name=liberty-%u,nonfatal,cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx80m -XX:+EnableHCR -Djdk.attach.allowAttachSelf=true
 Main-Class: wlp.lib.extract.SelfExtract
 Map-Based-Self-Extractor: wlp.lib.extract.MapBasedSelfExtractor
+Launcher-Agent-Class: wlp.lib.extract.agent.EnvCheck
 
-Export-Package: wlp.lib.extract;version="1.0.16"
+Export-Package: \
+  wlp.lib.extract;version="1.0.16"
 
-Private-Package: wlp.lib.extract.platform
+Private-Package: \
+  wlp.lib.extract.platform,\
+  wlp.lib.extract.agent
 
 instrument.disabled: true
 
 publish.wlp.jar.disabled: true
-

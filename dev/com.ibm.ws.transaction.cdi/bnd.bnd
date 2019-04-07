@@ -11,6 +11,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+javac.source: 1.7
+javac.target: 1.7
+
 Bundle-Name: Transactions CDI Integration
 Bundle-SymbolicName: com.ibm.ws.transaction.cdi
 Bundle-Description: Transactions CDI Integration, version ${bVersion}
@@ -34,13 +37,14 @@ Export-Package: \
 
 -dsannotations-inherit: true
 -dsannotations: \
-  com.ibm.tx.jta.cdi.TransactionContextExtension 
+  com.ibm.tx.jta.cdi.TransactionContextExtension
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.cm,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
+        com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
@@ -49,7 +53,8 @@ Export-Package: \
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.tx.util;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.websphere.appserver.spi.kernel.service
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

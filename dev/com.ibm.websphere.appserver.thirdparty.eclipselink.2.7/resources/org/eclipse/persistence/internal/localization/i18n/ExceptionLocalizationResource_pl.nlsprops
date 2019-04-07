@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -355,9 +359,7 @@ position_param_not_found=Brak parametru w pozycji: {0}.
 
 pu_configured_for_resource_local=Nie mo\u017cna utworzy\u0107 interfejsu EntityManager z obiektem SynchronizationType, poniewa\u017c interfejs PersistenceUnit jest skonfigurowany z transakcjami lokalnymi wzgl\u0119dem zasob\u00f3w.
 
-# START NON-TRANSLATABLE
 remove_deletion_failed=Skasowanie usuni\u0119cia nie powiod\u0142o si\u0119:
-# END NON-TRANSLATABLE
 
 rollback_because_of_rollback_only=Transakcja zosta\u0142a wycofana, poniewa\u017c ustawiono dla niej warto\u015b\u0107 RollbackOnly.
 
@@ -428,6 +430,8 @@ unexpect_argument=Nieoczekiwany argument wej\u015bciowy {0}
 unknown_bean_class=Nieznana klasa komponentu bean obiektu: {0}. Sprawd\u017a, czy ta klasa zosta\u0142a oznaczona przy u\u017cyciu adnotacji @Entity.
 
 unknown_entitybean_name=Nieznana nazwa komponentu bean obiektu: {0}
+
+unsupported_classfile_version=Klasa {0} zosta\u0142a skompilowana z nieobs\u0142ugiwanym pakietem JDK. Zg\u0142o\u015b ten problem zespo\u0142owi projektu Open Source EclipseLink.
 
 wrap_convert_exception=Wyst\u0105pi\u0142 wyj\u0105tek podczas wywo\u0142ywania operacji {0} wzgl\u0119dem klasy konwertera {1} o warto\u015bci {2}
 

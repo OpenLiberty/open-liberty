@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,10 +38,10 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.classloading.ClassProvider;
 import com.ibm.ws.classloading.LibertyClassLoader;
+import com.ibm.ws.classloading.java2sec.PermissionManager;
 import com.ibm.ws.javaee.dd.permissions.PermissionsConfig;
 import com.ibm.ws.jca.rar.ResourceAdapterBundleService;
 import com.ibm.ws.jca.utils.xml.metatype.Metatype;
-import com.ibm.ws.security.java2sec.PermissionManager;
 import com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -386,6 +386,19 @@ public class ResourceAdapterService extends DeferredService implements ClassProv
     private ProtectionDomain getProtectionDomain(Container rarContainer) throws UnableToAdaptException, MalformedURLException {
         PermissionCollection perms = new Permissions();
 
+        CodeSource codeSource;
+        try {
+            // codesource must start file:///
+            // assume loc starts with 0 or 1 /
+            String loc = rarFilePath;
+            codeSource = new CodeSource(new URL("file://" + (loc.startsWith("/") ? "" : "/") + loc), (java.security.cert.Certificate[]) null);
+        } catch (MalformedURLException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "CodeSource could not be created for RA file path of: rarFilePath", e);
+            }
+            throw e;
+        }
+
         if (!java2SecurityEnabled()) {
             perms.add(new AllPermission());
         } else {
@@ -401,7 +414,7 @@ public class ResourceAdapterService extends DeferredService implements ClassProv
 
             if (permissionsConfig != null) {
                 List<com.ibm.ws.javaee.dd.permissions.Permission> configuredPermissions = permissionsConfig.getPermissions();
-                addPermissions(configuredPermissions);
+                addPermissions(codeSource, configuredPermissions);
             }
 
             ArrayList<Permission> mergedPermissions = permissionManager.getEffectivePermissions(rarFilePath);
@@ -410,37 +423,24 @@ public class ResourceAdapterService extends DeferredService implements ClassProv
                 perms.add(mergedPermissions.get(i));
         }
 
-        CodeSource codesource;
-        try {
-            // codesource must start file:///
-            // assume loc starts with 0 or 1 /
-            String loc = rarFilePath;
-            codesource = new CodeSource(new URL("file://" + (loc.startsWith("/") ? "" : "/") + loc), (java.security.cert.Certificate[]) null);
-        } catch (MalformedURLException e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "CodeSource could not be created for RA file path of: rarFilePath", e);
-            }
-            throw e;
-        }
-        ProtectionDomain protectionDomain = new ProtectionDomain(codesource, perms);
-        return protectionDomain;
+        return new ProtectionDomain(codeSource, perms);
     }
 
     /**
      * Add a list of permissions to the permissions manager.
      *
+     * @param codeSource
+     *
      * @param configuredPermissions permissions to add to the PermissionManager
      */
-    private void addPermissions(List<com.ibm.ws.javaee.dd.permissions.Permission> configuredPermissions) {
-
-        String codeBase = rarFilePath;
+    private void addPermissions(CodeSource codeSource, List<com.ibm.ws.javaee.dd.permissions.Permission> configuredPermissions) {
         for (com.ibm.ws.javaee.dd.permissions.Permission permission : configuredPermissions) {
             Permission perm = permissionManager.createPermissionObject(permission.getClassName(),
                                                                        permission.getName(),
                                                                        permission.getActions(), null, null, null, PERMISSION_XML);
 
             if (perm != null) {
-                permissionManager.addPermissionsXMLPermission(codeBase, perm);
+                permissionManager.addPermissionsXMLPermission(codeSource, perm);
             }
         }
     }

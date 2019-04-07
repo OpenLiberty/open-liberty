@@ -41,13 +41,14 @@ Import-Package: com.ibm.jbatch.spi,\
 	javax.enterprise.inject.spi;resolution:=optional,\
 	javax.enterprise.inject;resolution:=optional,\
 	javax.inject;resolution:=optional,\
-	javax.batch.*,\
 	org.xml.sax,\
 	*
 
 publish.wlp.jar.disabled: true
 
 -buildpath: \
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.javaee.batch.1.0;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

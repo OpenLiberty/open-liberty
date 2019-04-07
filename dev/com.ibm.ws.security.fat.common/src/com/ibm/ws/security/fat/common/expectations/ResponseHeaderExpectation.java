@@ -23,6 +23,10 @@ public class ResponseHeaderExpectation extends Expectation {
 
     public static final String HEADER_DELIMITER = "|";
 
+    public ResponseHeaderExpectation(String checkType, String searchFor, String failureMsg) {
+        this(null, checkType, searchFor, failureMsg);
+    }
+
     public ResponseHeaderExpectation(String testAction, String checkType, String searchFor, String failureMsg) {
         super(testAction, Constants.RESPONSE_HEADER, checkType, searchFor, failureMsg);
     }
@@ -36,7 +40,7 @@ public class ResponseHeaderExpectation extends Expectation {
         try {
             String responseHeaders = getResponseHeaderString(contentToValidate);
             validationUtils.validateStringContent(this, responseHeaders);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new Exception(failureMsg + " Failed to validate response headers: " + e.getMessage());
         }
     }

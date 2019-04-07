@@ -18,7 +18,7 @@ dependencies {
       'net.sourceforge.htmlunit:htmlunit:2.27',
       'net.sourceforge.htmlunit:htmlunit-core-js:2.27',
       'net.sourceforge.cssparser:cssparser:0.9.23',
-      'org.apache.commons:commons-lang3:3.7',
+      'org.apache.commons:commons-lang3:3.8',
       'org.eclipse.jetty:jetty-websocket:8.2.0.v20160908',
       'org.eclipse.jetty.websocket:websocket-api:9.4.5.v20170502',
       'org.eclipse.jetty.websocket:websocket-common:9.4.5.v20170502',
@@ -28,6 +28,32 @@ dependencies {
       'commons-codec:commons-codec:1.6',
       'xml-apis:xml-apis:1.4.01',
       'xerces:xercesImpl:2.11.0'
+}
+
+def appBuildDir = "${buildDir}/test-application"
+
+task formlogin(type: War, dependsOn: classes) {
+  def appName = "formlogin"
+  def appSuffix = ".jwtsso"
+  destinationDir file("${appBuildDir}")
+  archiveName "${appName}.war"
+
+  from ("../com.ibm.ws.security.fat.common/build/classes/java/main") {
+    include "com/ibm/ws/security/fat/common/apps/${appName}/*.class"
+    into "WEB-INF/classes"
+  }
+  from ("test-applications/${appName}${appSuffix}/resources") {
+    include "**/*"
+  }
+  from ("build/classes/java/main") {
+    include "com/ibm/ws/security/fat/common/jwtsso/apps/${appName}/*.class"
+    into "WEB-INF/classes"
+  }
+}
+
+assemble {
+  dependsOn \
+    formlogin
 }
 
 autoFVT.doLast {
@@ -41,8 +67,9 @@ autoFVT.doLast {
       from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
+    
     copy { 
-      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/formlogin.war')
+      from new File(buildDir, 'test-application/formlogin.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
   }

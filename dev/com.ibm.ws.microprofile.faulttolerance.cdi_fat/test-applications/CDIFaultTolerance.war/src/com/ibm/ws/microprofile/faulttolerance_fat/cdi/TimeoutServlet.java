@@ -15,16 +15,13 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
+import org.junit.Test;
 
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.TimeoutBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.TimeoutBean2;
@@ -46,26 +43,82 @@ public class TimeoutServlet extends FATServlet {
     @Inject
     TimeoutBean2 classScopedConfigBean;
 
-    public void testTimeout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //should timeout after a second as per default
-        long start = System.currentTimeMillis();
+    /**
+     * This method will test the connect() method of the bean passed in, checking that a timeout
+     * is received within the time period passed in - if the call takes too long
+     * it is repeated in order to try to determine if the problem is due to an implementation
+     * error or just a blip in the underlying (virtual) hardware - as is seen occasionally.
+     *
+     * @param bean      the test bean (often a lambda)
+     * @param maxMillis the limit of how long before a result or exception is expected
+     * @return the result of the call
+     * @throws ConnectException
+     */
+    private <T> T ignoreOutliers(TimedTestBean<T> bean, int maxMillis) throws ConnectException {
+        long startMillis = System.currentTimeMillis();
+        T result = null; //Never actually used if tests are going according to plan!
         try {
-            bean.connectA();
+            result = bean.connect();
             throw new AssertionError("TimeoutException not thrown");
         } catch (TimeoutException e) {
             //expected!
-            long timeout = System.currentTimeMillis();
-            long duration = timeout - start;
-            if (duration > 3000) { //the default timeout is 1000ms, if it takes 3000ms to fail then there is something wrong
-                throw new AssertionError("TimeoutException not thrown quickly enough: " + duration);
+            long endMillis = System.currentTimeMillis();
+            long millisTaken = endMillis - startMillis;
+            if (millisTaken > maxMillis) {
+                String msg = "TimeoutException not thrown quickly enough, duration was: " + millisTaken + "milliseconds, limit was " + maxMillis;
+
+                int delayMillis = 5000;
+                int sampleSize = 10;
+
+                long averageTime = getSampleOfConnectTimesAverage(delayMillis, sampleSize, bean);
+
+                if (averageTime > maxMillis) {
+                    // We throw the same error we would have without de-glitching
+                    throw new AssertionError(msg);
+                }
             }
-        } catch (ConnectException e) {
-            throw new ServletException(e);
+        }
+        return result;
+    }
+
+    /**
+     * This method waits for a period of time then calls connect on the targetBean
+     * sampleSize number of times to calculate the average.
+     *
+     * @param delayMillis the initial delay, an attempt to coast past an underlying platform glitch
+     * @param sampleSize  how many times to call the target method
+     * @param targetBean  the bean with the target method
+     */
+    private <T> long getSampleOfConnectTimesAverage(int delayMillis, int sampleSize, TimedTestBean<T> targetBean) {
+
+        long startTime = System.currentTimeMillis();
+        long totalTime = 0;
+        long averageTime = 0;
+
+        try {
+            Thread.sleep(delayMillis);
+            for (int i = 0; i < sampleSize; i++) {
+                targetBean.connect();
+            }
+            totalTime = System.currentTimeMillis() - startTime;
+            averageTime = totalTime / sampleSize;
+            return averageTime;
+        } catch (Exception e) {
+            // This will flag the original error to be reported
+            // as we cannot successfully de-glitch.
+            return Long.MAX_VALUE;
         }
 
     }
 
-    public void testException(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Test
+    public void testTimeout() throws ConnectException {
+        //the default timeout is 1000ms, if it takes 3000ms to fail then there is something wrong
+        ignoreOutliers(() -> bean.connectA(), 3000);
+    }
+
+    @Test
+    public void testException() {
         //should just throw an exception (we're checking we get the right exception even thought it is async internally)
         try {
             bean.connectB();
@@ -79,24 +132,10 @@ public class TimeoutServlet extends FATServlet {
     }
 
     /**
-     * This test should only pass if MP_Fault_Tolerance_NonFallback_Enabled is set to false
-     */
-    public void testTimeoutDisabled(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        try {
-            bean.connectA();
-            fail("No exception thrown");
-        } catch (ConnectException e) {
-            // expected, as Timeout should be disabled
-        } catch (TimeoutException e) {
-            // Not expected! rethrow
-            throw e;
-        }
-    }
-
-    /**
      * This test ensures that a timeout prompts a retry
      */
-    public void testTimeoutWithRetry(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @Test
+    public void testTimeoutWithRetry() throws Exception {
         try {
             bean.connectC();
             fail("No exception thrown");
@@ -106,7 +145,8 @@ public class TimeoutServlet extends FATServlet {
         }
     }
 
-    public void testTimeoutWithRetryAsync(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @Test
+    public void testTimeoutWithRetryAsync() throws Exception {
         try {
             bean.connectD().get();
             fail("No exception thrown");
@@ -118,16 +158,19 @@ public class TimeoutServlet extends FATServlet {
         }
     }
 
+    @Test
     public void testTimeoutWithFallback() throws Exception {
         Connection result = bean.connectF();
         assertThat(result.getData(), is("Fallback for: connectF - data!"));
     }
 
-    public void testTimeoutZero(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @Test
+    public void testTimeoutZero() throws Exception {
         bean.connectE();
         // No TimeoutException expected
     }
 
+    @Test
     public void testNonInterruptableTimeout() throws InterruptedException {
         try {
             bean.busyWait(1000); // Busy wait time is greater than timeout (=500)
@@ -141,6 +184,7 @@ public class TimeoutServlet extends FATServlet {
         }
     }
 
+    @Test
     public void testNonInterruptableDoesntTimeout() throws Exception {
         bean.busyWait(10); // Busy wait time is less than timeout (=500)
 
@@ -155,55 +199,29 @@ public class TimeoutServlet extends FATServlet {
      * Test method level override of Timeout value on a synchronous service.
      *
      * A timeout will not occur unless the configuration overrides the value set on the connectG method.
-     *
-     * @param request
-     * @param response
-     * @throws ServletException
-     * @throws IOException
      */
-    public void testTimeoutConfig(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //should timeout after a second as per default
-        long start = System.currentTimeMillis();
-        try {
-            bean.connectG();
-            throw new AssertionError("TimeoutException not thrown");
-        } catch (TimeoutException e) {
-            //expected!
-            long timeout = System.currentTimeMillis();
-            long duration = timeout - start;
-            if (duration > 1000) { //the configured timeout is 500ms, if it takes 1000ms to fail then there is something wrong
-                throw new AssertionError("TimeoutException not thrown quickly enough: " + duration);
-            }
-        } catch (ConnectException e) {
-            throw new ServletException(e);
-        }
+    @Test
+    public void testTimeoutConfig() throws ConnectException {
+        //the configured timeout is 500ms,
+        //if it takes 1000ms to fail then there is something wrong
+        ignoreOutliers(() -> bean.connectG(), 1000);
     }
 
     /**
      * Test method level override of Timeout value on a synchronous service.
      *
      * A timeout will not occur unless the configuration overrides the value set on the classScopedConfigBean.
-     *
-     * @param request
-     * @param response
-     * @throws ServletException
-     * @throws IOException
      */
-    public void testTimeoutClassScopeConfig(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //should timeout after a second as per default
-        long start = System.currentTimeMillis();
-        try {
-            classScopedConfigBean.connectA();
-            throw new AssertionError("TimeoutException not thrown");
-        } catch (TimeoutException e) {
-            //expected!
-            long timeout = System.currentTimeMillis();
-            long duration = timeout - start;
-            if (duration > 1000) { //the configured timeout is 500ms, if it takes 1000ms to fail then there is something wrong
-                throw new AssertionError("TimeoutException not thrown quickly enough: " + duration);
-            }
-        } catch (ConnectException e) {
-            throw new ServletException(e);
-        }
+    @Test
+    public void testTimeoutClassScopeConfig() throws ConnectException {
+        //the configured timeout is 500ms,
+        //if it takes 1000ms to fail then there is something wrong
+        ignoreOutliers(() -> classScopedConfigBean.connectA(), 1000);
     }
+
+    @FunctionalInterface
+    public interface TimedTestBean<T> {
+        T connect() throws ConnectException;
+    }
+
 }

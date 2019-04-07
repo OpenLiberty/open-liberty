@@ -1923,7 +1923,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 ArrayList<Frame> bodyFrames = link.prepareBody(wsbb, length, addEndOfStream);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "formatBody: On an HTTP/2.0 connection, adding DATA frames to be written : " + bodyFrames);
+                    Tr.debug(tc, "formatBody: On an HTTP/2.0 connection, adding DATA frames to be written");
                 }
 
                 framesToWrite.addAll(bodyFrames);
@@ -2378,14 +2378,31 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
         if (isOutgoingBodyValid()) {
             HttpInboundServiceContextImpl hisc = null;
-            if (wsbb == null && this instanceof HttpInboundServiceContextImpl) {
-                hisc = (HttpInboundServiceContextImpl) this;
+            boolean needH2EOS = true;
+            HttpInboundLink link = ((HttpInboundServiceContextImpl) this).getLink();
+
+            if (this instanceof HttpInboundServiceContextImpl) {
+                if (link instanceof H2HttpInboundLinkWrap) {
+                    if (framesToWrite != null && framesToWrite.size() > 0) {
+                        Frame lastFrame = framesToWrite.get(framesToWrite.size()-1);
+                        if (lastFrame != null && lastFrame.flagEndStreamSet()) {
+                            needH2EOS = false;
+                        }
+                    }
+                } else {
+                    needH2EOS = false;
+                }
+                if (wsbb == null || needH2EOS) {
+                    hisc = (HttpInboundServiceContextImpl) this;
+                }
             }
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && hisc != null && hisc.getLink() != null) {
                 Tr.debug(tc, "sendFullOutgoing : " + hisc + ", " + hisc.getLink().toString());
             }
-            if (hisc != null && hisc.getLink() instanceof H2HttpInboundLinkWrap) {
-                H2HttpInboundLinkWrap h2Link = (H2HttpInboundLinkWrap) hisc.getLink();
+            
+            if (hisc != null && link instanceof H2HttpInboundLinkWrap) {
+                H2HttpInboundLinkWrap h2Link = (H2HttpInboundLinkWrap) link;
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "sendFullOutgoing : preparing the final write");
@@ -2398,7 +2415,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                     if (trailers != null) {
                         framesToWrite.addAll(h2Link.prepareHeaders(WsByteBufferUtils.asByteArray(trailers), true));
                     }
-                } else {
+                } else if (needH2EOS) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "sendFullOutgoing : adding HTTP/2 EOS flag");
+                    }
                     framesToWrite.addAll(h2Link.prepareBody(null, 0, this.isFinalWrite));
                 }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -2699,9 +2719,14 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (context.getLink() instanceof H2HttpInboundLinkWrap) {
                 H2HttpInboundLinkWrap link = (H2HttpInboundLinkWrap) context.getLink();
 
-                link.writeFramesSync(framesToWrite);
-
-                framesToWrite.clear();
+                try {
+                    link.writeFramesSync(framesToWrite);
+                } catch (IOException ioe) {
+                    //throw back IOException so http channel can deal correctly with the app/servlet facing output stream
+                    throw ioe;
+                } finally {
+                    framesToWrite.clear();
+                }
             }
 
         } else {

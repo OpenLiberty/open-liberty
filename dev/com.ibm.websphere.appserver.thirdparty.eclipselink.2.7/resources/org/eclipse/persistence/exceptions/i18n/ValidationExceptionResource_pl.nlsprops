@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -541,10 +545,7 @@
 
 7311=Niepoprawna klasa docelowa jest u\u017cywana z atrybutem kolekcji element\u00f3w [{0}] w klasie [{1}].  Dozwolone s\u0105 tylko typy podstawowe i mo\u017cliwe do osadzenia klasy.
 
-# START NON-TRANSLATABLE
 7312=Niepoprawna mo\u017cliwa do osadzenia klasa [{0}] jest u\u017cywana z atrybutem kolekcji element\u00f3w [{1}] w klasie [{2}]. Zobacz sekcj\u0119 2.6 specyfikacji: Mo\u017cliwa do osadzenia klasa (w tym mo\u017cliwa do osadzenia klasa w innej mo\u017cliwej do osadzenia klasie) zawarta w kolekcji element\u00f3w nie mo\u017ce zawiera\u0107 kolekcji element\u00f3w ani nie mo\u017ce zawiera\u0107 relacji do obiektu innego ni\u017c relacja wiele do jednego lub jeden do jednego. Mo\u017cliwa do osadzenia klasa musi znajdowa\u0107 si\u0119 po stronie b\u0119d\u0105cej w\u0142a\u015bcicielem takiej relacji, a relacja musi by\u0107 odwzorowana przez odwzorowanie klucza obcego. Odwzorowanie atrybutu [{3}] w mo\u017cliwej do osadzenia klasie narusza to ograniczenie.
-# END NON-TRANSLATABLE
-
 7313=Atrybut [{1}] nie zosta\u0142 znaleziony w mo\u017cliwej do osadzenia klasie [{0}]. Jest on przywo\u0142ywany w przes\u0142oni\u0119ciu powi\u0105zania dla osadzonego atrybutu [{3}] w klasie [{2}].
 
 7314=Odwzorowanie [{0}] jest u\u017cywane do odwzorowania klucza w MappedKeyMapContainerPolicy i korzysta z po\u015brednictwa.  Odwzorowania u\u017cywane na potrzeby kluczy odwzorowa\u0144 nie mog\u0105 korzysta\u0107 z po\u015brednictwa.

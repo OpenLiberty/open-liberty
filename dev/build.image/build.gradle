@@ -11,6 +11,8 @@
 
 import org.apache.tools.ant.filters.ReplaceTokens
 
+apply plugin: 'maven'
+
 task copyPropertiesToBuildImage (type:Copy) {
     dependsOn jar
     from project.file('publish')
@@ -39,10 +41,20 @@ task copyLicenseToBuildImage (type:Copy) {
            tokens: [BUILD_ID: bnd.buildID, LIBERTY_VERSION: bnd.libertyRelease])
 }
 
+task copySwidTagToBuildImage (type:Copy) {
+    dependsOn jar
+    from project.file('publish')
+    into project.file('wlp/lib/versions/tags')
+    include 'openliberty.io_OpenLiberty.swidtag'
+    filter(ReplaceTokens,
+           tokens: [ VERSION: bnd.libertyRelease ])
+}
+
 assemble {
     dependsOn copyPropertiesToBuildImage
     dependsOn copyReadmeToBuildImage
     dependsOn copyLicenseToBuildImage
+    dependsOn copySwidTagToBuildImage
 }
 
 import groovy.json.*
@@ -51,6 +63,7 @@ import org.gradle.internal.os.OperatingSystem
 
 
 File packageDir = new File(project.buildDir, 'openliberty')
+File mavenDir = new File(project.buildDir, 'maven')
 def props = new Properties()
 rootProject.file('generated.properties').withInputStream { props.load(it) }
 
@@ -269,6 +282,11 @@ task zipOpenLiberty(type: Zip) {
     from packageDir
     destinationDir distsDir
     version releaseVersion
+    doLast{
+        props.setProperty('zipopenliberty.runtime.archivename', archivePath.toString())
+        File propsFile = rootProject.file('generated.properties')
+        props.store(propsFile.newWriter(), null)
+    }
 }
 publish.dependsOn zipOpenLiberty
 
@@ -279,6 +297,11 @@ task zipOpenLibertyKernel(type: Zip) {
     from packageDir
     destinationDir distsDir
     version releaseVersion
+    doLast{
+        props.setProperty('zipopenliberty.kernel.archivename', archivePath.toString())
+        File propsFile = rootProject.file('generated.properties')
+        props.store(propsFile.newWriter(), null)
+    }
 }
 publish.dependsOn zipOpenLibertyKernel
 
@@ -289,6 +312,11 @@ task zipOpenLibertyWebProfile8(type: Zip) {
     from packageDir
     destinationDir distsDir
     version releaseVersion
+    doLast{
+        props.setProperty('zipopenliberty.webprofile8.archivename', archivePath.toString())
+        File propsFile = rootProject.file('generated.properties')
+        props.store(propsFile.newWriter(), null)
+    }
 }
 publish.dependsOn zipOpenLibertyWebProfile8
 
@@ -299,6 +327,11 @@ task zipOpenLibertyJavaee8(type: Zip) {
     from packageDir
     destinationDir distsDir
     version releaseVersion
+    doLast{
+        props.setProperty('zipopenliberty.javaee8.archivename', archivePath.toString())
+        File propsFile = rootProject.file('generated.properties')
+        props.store(propsFile.newWriter(), null)
+    }
 }
 publish.dependsOn zipOpenLibertyJavaee8
 
@@ -308,6 +341,11 @@ task zipOpenLibertyMicroProfile2(type: Zip) {
     from packageDir
     destinationDir distsDir
     version releaseVersion
+    doLast {
+        props.setProperty('zipopenliberty.microprofile2.archivename', archivePath.toString())
+        File propsFile = rootProject.file('generated.properties')
+        props.store(propsFile.newWriter(), null)
+    }
 }
 publish.dependsOn zipOpenLibertyMicroProfile2
 
@@ -326,6 +364,8 @@ task zipOpenLibertyAll(type: Zip) {
         props.store(propsFile.newWriter(), null)
     }
 }
+publish.dependsOn zipOpenLibertyAll
+
 
 clean.doLast {
     file('wlp').deleteDir()
@@ -339,11 +379,192 @@ publishing {
             version project.version
             artifact zipOpenLibertyAll
         }
+        openLiberty(MavenPublication) {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-runtime'
+            version project.version
+            artifact zipOpenLiberty
+        }
+        openLibertyKernel(MavenPublication) {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-kernel'
+            version project.version
+            artifact zipOpenLibertyKernel
+        }
+        openLibertyWebProfile8(MavenPublication) {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-webProfile8'
+            version project.version
+            artifact zipOpenLibertyWebProfile8
+        }
+        openLibertyJavaee8(MavenPublication) {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-javaee8'
+            version project.version
+            artifact zipOpenLibertyJavaee8
+        }
     }
 }
 
+task createOLRuntimePoms {
+    dependsOn packageOpenLiberty
+    pom {
+        project {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-runtime'
+            version bnd.libertyRelease
+            packaging 'zip'
+            name 'Open Liberty Runtime Package'
+            description 'Open Liberty Runtime Package'
+            url 'https://openliberty.io/'
+            licenses {
+                license {
+                    name 'Eclipse Public License v1.0'
+                    url 'http://www.eclipse.org/legal/epl-v10.html'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                url 'git@github.com:OpenLiberty/open-liberty.git'
+                tag 'HEAD'
+            }
+            developers {
+                developer {
+                    id 'cbridgha'
+                    name 'Chuck Bridgham'
+                    email 'cbridgha@us.ibm.com'
+                }
+            }
+        }
+    }.writeTo("${mavenDir}/openliberty-runtime-${bnd.libertyRelease}.pom")
+    pom {
+        project {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-webProfile8'
+            version bnd.libertyRelease
+            packaging 'zip'
+            name 'Open Liberty JavaEE 8 Web Profile Package'
+            description 'Open Liberty JavaEE 8 Web Profile Package'
+            url 'https://openliberty.io/'
+            licenses {
+                license {
+                    name 'Eclipse Public License v1.0'
+                    url 'http://www.eclipse.org/legal/epl-v10.html'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                url 'git@github.com:OpenLiberty/open-liberty.git'
+                tag 'HEAD'
+            }
+            developers {
+                developer {
+                    id 'cbridgha'
+                    name 'Chuck Bridgham'
+                    email 'cbridgha@us.ibm.com'
+                }
+            }
+        }
+    }.writeTo("${mavenDir}/openliberty-webProfile8-${bnd.libertyRelease}.pom")
+    pom {
+        project {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-kernel'
+            version bnd.libertyRelease
+            packaging 'zip'
+            name 'Open Liberty Kernel Package'
+            description 'Open Liberty Kernel Package'
+            url 'https://openliberty.io/'
+            licenses {
+                license {
+                    name 'Eclipse Public License v1.0'
+                    url 'http://www.eclipse.org/legal/epl-v10.html'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                url 'git@github.com:OpenLiberty/open-liberty.git'
+                tag 'HEAD'
+            }
+            developers {
+                developer {
+                    id 'cbridgha'
+                    name 'Chuck Bridgham'
+                    email 'cbridgha@us.ibm.com'
+                }
+            }
+        }
+    }.writeTo("${mavenDir}/openliberty-kernel-${bnd.libertyRelease}.pom")
+    pom {
+        project {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-javaee8'
+            version bnd.libertyRelease
+            packaging 'zip'
+            name 'Open Liberty JavaEE8 Package'
+            description 'Open Liberty JavaEE8 Package'
+            url 'https://openliberty.io/'
+            licenses {
+                license {
+                    name 'Eclipse Public License v1.0'
+                    url 'http://www.eclipse.org/legal/epl-v10.html'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                url 'git@github.com:OpenLiberty/open-liberty.git'
+                tag 'HEAD'
+            }
+            developers {
+                developer {
+                    id 'cbridgha'
+                    name 'Chuck Bridgham'
+                    email 'cbridgha@us.ibm.com'
+                }
+            }
+        }
+    }.writeTo("${mavenDir}/openliberty-javaee8-${bnd.libertyRelease}.pom")
+}
+
+
+task zipOpenLibertyMaven(type: Zip) {
+    dependsOn createOLRuntimePoms
+    archiveName "openliberty-runtimes-maven-${releaseVersion}.zip"
+    from mavenDir
+    from distsDir
+    include '*.zip'
+    include '*.pom'
+    exclude 'openliberty-all*.zip'
+    destinationDir project.file('build/temp/mavenArtifact')
+}
+if (isRelease) {
+    publish.dependsOn zipOpenLibertyMaven
+}
+
+task zipTestReport(type: Zip) {
+  
+    baseName 'openliberty_test_report'
+    from cnf.file('generated/testReports/allUnitTests')
+    destinationDir cnf.file('generated/testReports')
+    userProps.setProperty('gradle.test.report.zip', archivePath.toString())
+    props.setProperty('gradle.test.report.zip', archivePath.toString()) //set in memory props too
+        File propsFile = rootProject.file('generated.properties')
+        userProps.store(propsFile.newWriter(), null)
+}
+
+
+
 task createJSONForPublicArtifacts {
     enabled isAutomatedBuild
+    dependsOn zipTestReport
 
     doLast {
         delete "${buildDir}/info.json"
@@ -362,11 +583,16 @@ task createJSONForPublicArtifacts {
         }
 
         String junitPath = props.getProperty("junit.report.zip")
+        String testReportPath = props.getProperty("gradle.test.report.zip");
         String logPath = props.getProperty("published.gradle.log")
         String driverLocation = props.getProperty("zipopenliberty.archivename")
 
         if (junitPath == null) {
             raise InvalidUserDataException("Could not find property named 'junit.report.zip'")
+        }
+
+        if (isPersonal && (testReportPath == null)) {
+            raise InvalidUserDataException("Could not find property named 'gradle.test.report.zip'")
         }
 
         if (logPath == null) {
@@ -377,7 +603,12 @@ task createJSONForPublicArtifacts {
             raise InvalidUserDataException("Could not find property named 'zipopenliberty.archivename'")
         }
 
-        String testResultName = new File(junitPath).getName()
+        String testResultName = null
+        if (isPersonal) {
+            testResultName = new File(testReportPath).getName()
+        } else {
+            testResultName = new File(junitPath).getName()
+        }
         String logName = new File(logPath).getName()
         String driverLocationName = new File(driverLocation).getName()
 
@@ -386,7 +617,7 @@ task createJSONForPublicArtifacts {
                       tests_log: "${testResultName}",
                       build_log: "${logName}"]
 
-        if (isRelease || isContinuousBuild) {
+        if (isPersonal || isRelease || isContinuousBuild) {
             object.driver_location = "${driverLocationName}"
             object.version = "${project.version}"
         }
@@ -402,15 +633,13 @@ task createJSONForPublicArtifacts {
 
 buildscript {
     repositories {
-        def properties = new Properties()
-        rootProject.file('generated.properties').withInputStream { properties.load(it) }
-        if (usrHomeProps.exists() && !properties.getProperty('artifactory.force.external.repo')) {
+        if (isUsingArtifactory) {
             maven {
                 credentials {
-                    username properties.getProperty("artifactory.download.user")
-                    password properties.getProperty("artifactory.download.token")
+                    username userProps.getProperty("artifactory.download.user")
+                    password userProps.getProperty("artifactory.download.token")
                 }
-                url ("https://" + properties.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+                url ("https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
             }
         } else {
             jcenter()
@@ -429,20 +658,23 @@ apply plugin: 'org.hidetake.ssh'
 remotes {
     dhe {
         host = props.getProperty("dhe.server")
-        user = props.getProperty("dhe.user")
-        password = props.getProperty("dhe.password")
+        user = props.getProperty("intranet.user")
+        password = props.getProperty("intranet.password")
         knownHosts = allowAnyHosts
     }
 }
 
 ssh.settings {
     jschLog = true
+    logging = "stdout"
     fileTransfer = "scp"
+    retryCount = 3
+    retryWaitSec = 5
 }
 
 task publishPublicArtifactsOnDhe {
-    dependsOn createJSONForPublicArtifacts
-    enabled isAutomatedBuild && isPublicPublishing
+    dependsOn zipTestReport,createJSONForPublicArtifacts
+    enabled isAutomatedBuild && isPublicPublishing && (isPersonal || isContinuousBuild || isRelease)
 
     doLast {
         // Re-arrange buildLabel, ex: 201708101600 to 2017-08-10_1600
@@ -456,17 +688,26 @@ task publishPublicArtifactsOnDhe {
             version = props.getProperty("buildResultUUID")
         }
 
-        String userAtHost = props.getProperty("dhe.user") + "@" + props.getProperty("dhe.server")
+        String userAtHost = props.getProperty("intranet.user") + "@" + props.getProperty("dhe.server")
         String dir = "/www/stage/export/pub/software/openliberty/runtime"
         String publicDHEUrl = "http://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime"
         String dest = userAtHost + ":" + dir
 
         def artifactList = [props.getProperty("published.json"),
-                            props.getProperty("published.gradle.log"),
-                            props.getProperty("junit.report.zip")]
+                            props.getProperty("published.gradle.log")]
 
-        if (isContinuousBuild || isRelease) {
-            artifactList.add(props.getProperty("zipopenliberty.archivename"))
+        artifactList.add(props.getProperty("zipopenliberty.archivename"))
+
+        if (isPersonal) {
+            artifactList.add(props.getProperty("gradle.test.report.zip"))
+        } else {
+            artifactList.add(props.getProperty("junit.report.zip"))
+            // add runtime, javaee8, and webprofile8 images to publish list for release builds only
+            if (isRelease) {
+                artifactList.add(props.getProperty("zipopenliberty.runtime.archivename"))
+                artifactList.add(props.getProperty("zipopenliberty.javaee8.archivename"))
+                artifactList.add(props.getProperty("zipopenliberty.webprofile8.archivename"))
+            }
         }
 
         mkdir("${buildDir}/${version}")
@@ -474,49 +715,62 @@ task publishPublicArtifactsOnDhe {
             copy {
                 from filePath
                 into "${buildDir}/${version}"
+                println "Copied $filePath to ${buildDir}/${version}" 
+                print "isUnittestsDisabled = "
+                print isUnittestsDisabled
+				println()
+                if (!isUnittestsDisabled && props.getProperty("gradle.test.report.zip") != null && props.getProperty("gradle.test.report.zip").equals(filePath)) {
+                    def reportZip = file(props.getProperty("gradle.test.report.zip"))
+                    from zipTree(reportZip)
+                    mkdir("${buildDir}/${version}/junit")
+                    into "${buildDir}/${version}/junit"
+                }
             }
         }
 
         // Upload build artifacts
+        println "Uploading build artifacts"
         ssh.run {
             session(remotes.dhe) {
                 put from: "${buildDir}/${version}", into: "${dir}/${packageName}/"
             }
         }
+        println "Completed upload of artifacts"
 
         delete "${buildDir}/${version}"
         delete "${buildDir}/info.json"
 
-        if (isContinuousBuild || isRelease) {
-            // Update build listing json with the newly uploaded build
-            exec {
-                commandLine "curl", "-o", "${buildDir}/info.json", "${publicDHEUrl}/${packageName}/info.json"
-            }
+        // Update build listing json with the newly uploaded build
+        println "Updating build listing json with newly uploaded build"
+        exec {
+            commandLine "curl", "-o", "${buildDir}/info.json", "${publicDHEUrl}/${packageName}/info.json"
+        }
 
-            File json = new File("${buildDir}/info.json")
-            if (json.getText().contains("404 Not Found")) {
-                json.text = ""
-            }
+        File json = new File("${buildDir}/info.json")
+        if (json.getText().contains("404 Not Found")) {
+            json.text = ""
+        }
 
-            def object = [:]
-            if (json.getText() != "") {
-                object = new JsonSlurper().parseText(json.getText())
-            }
+        def object = [:]
+        if (json.getText() != "") {
+            object = new JsonSlurper().parseText(json.getText())
+        }
 
-            List versionsList = object['versions']
-            if (versionsList != null) {
-                versionsList.add("${version}")
-            } else {
-                versionsList = ["${version}"]
-            }
-            object['versions'] = versionsList
-            json.text = JsonOutput.toJson(object)
+        List versionsList = object['versions']
+        if (versionsList != null) {
+            versionsList.add("${version}")
+        } else {
+            versionsList = ["${version}"]
+        }
+        object['versions'] = versionsList
+        json.text = JsonOutput.toJson(object)
 
-            ssh.run {
-                session(remotes.dhe) {
-                    put from: "${buildDir}/info.json", into: "${dir}/${packageName}/"
-                }
+        println "Uploading info.json"
+        ssh.run {
+            session(remotes.dhe) {
+                put from: "${buildDir}/info.json", into: "${dir}/${packageName}/"
             }
         }
+        println "Completed info.json upload"
     }
 }

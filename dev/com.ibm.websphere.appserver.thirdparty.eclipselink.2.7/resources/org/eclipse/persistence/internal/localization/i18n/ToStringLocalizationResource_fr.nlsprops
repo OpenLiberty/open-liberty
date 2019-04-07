@@ -107,11 +107,11 @@ sdo_classgenerator_usage_help_2of8=Options :
 
 sdo_classgenerator_usage_help_3of8=    -help                        Imprime le texte du message
 
-sdo_classgenerator_usage_help_4of8=    -sourceFile <FileName>       Fichier de sch\u00e9ma d''entr\u00e9e (obligatoire)
+sdo_classgenerator_usage_help_4of8=    -sourceFile <nom_fichier>       Fichier de sch\u00e9ma d''entr\u00e9e (obligatoire)
 
-sdo_classgenerator_usage_help_5of8=    -targetDirectory <DirName>   R\u00e9pertoire pour la g\u00e9n\u00e9ration du source Java (facultatif)
+sdo_classgenerator_usage_help_5of8=    -targetDirectory <nom_r\u00e9p>   R\u00e9pertoire pour la g\u00e9n\u00e9ration du source Java (facultatif)
 
-sdo_classgenerator_usage_help_6of8=    -logLevel <level int>        Indiquez la valeur enti\u00e8re du niveau de journalisation (8=DESACTIVE,7=GRAVE,6=AVERTISSEMENT,5=INFO,4=CONFIG,3=FIN,2=PLUS FIN(par d\u00e9faut),1=LE PLUS FIN,0=TOUT).
+sdo_classgenerator_usage_help_6of8=    -logLevel <entier niveau>  Indiquez la valeur enti\u00e8re du niveau de journalisation (8=DESACTIVE,7=GRAVE,6=AVERTISSEMENT,5=INFO,4=CONFIG,3=FIN,2=PLUS FIN(par d\u00e9faut),1=LE PLUS FIN,0=TOUT).
 
 sdo_classgenerator_usage_help_7of8=    -noInterfaces                Ne pas g\u00e9n\u00e9rer de classes d''interface
 

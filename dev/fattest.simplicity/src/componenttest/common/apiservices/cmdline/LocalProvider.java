@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,11 +32,11 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
 public class LocalProvider {
+    private static final Class<? extends LocalProvider> CLASS = LocalProvider.class;
 
     private static final String WLP_CYGWIN_HOME = System.getenv("WLP_CYGWIN_HOME");
 
-    @SuppressWarnings("unchecked")
-    private static final Class c = LocalProvider.class;
+    protected static final String EBCDIC_CHARSET_NAME = "IBM1047";
 
     public static boolean rename(RemoteFile oldPath, RemoteFile newPath) throws Exception {
         return new File(oldPath.toString()).renameTo(new File(newPath.getAbsolutePath()));
@@ -76,29 +77,58 @@ public class LocalProvider {
         return dest.exists();
     }
 
-    public static boolean delete(RemoteFile file) throws Exception {
-        File f = new File(file.getAbsolutePath());
-        if (f.isFile())
-            return f.delete();
-        else {
-            // recursive delete
-            deleteFolder(f);
-            return !f.exists();
-        }
+    //
+
+    /**
+     * Delete the local file which is indicated by the absolute path
+     * of a remote file.
+     *
+     * A failure to delete any nested child file will cause the entire
+     * deletion to fail.  However, the delete operation will attempt to
+     * delete all nested children despite any failures on particular
+     * children.
+     *
+     * @param remoteFile The remote file providing the path which is to
+     *     be deleted.
+     *
+     * @return True or false telling if the file was successfully deleted.
+     *     True if the file does not exist.
+     * 
+     * @throws Exception Thrown in case of an error deleting the file.
+     *     Not currently thrown.
+     */
+    public static boolean delete(RemoteFile remoteFile) throws Exception {
+        return delete( new File( remoteFile.getAbsolutePath() ) );
     }
 
-    private static void deleteFolder(File folder) throws Exception {
-        if (!folder.exists())
-            return;
-
-        for (File f : folder.listFiles()) {
-            if (f.isFile())
-                f.delete();
-            else
-                deleteFolder(f);
+    /**
+     * Delete a file which may be either a simple file or a directory.
+     *
+     * If a directory, recursively delete the contents of the directory
+     * before deleting the directory itself.
+     *
+     * @param file The file which is to be deleted.
+     *
+     * @return True or false telling if the file was deleted.
+     */
+    private static boolean delete(File file) {
+        if ( !file.exists() ) {
+            return true;
         }
-        folder.delete();
+
+        if ( file.isDirectory() ) {
+            for ( File childFile : file.listFiles() ) {
+                // Ignore any child delete failure: The parent
+                // delete will subsequently fail.
+                @SuppressWarnings("unused")
+                boolean didDeleteChild = delete(childFile);
+            }
+        }
+
+        return file.delete();
     }
+
+    //
 
     public static ProgramOutput executeCommand(Machine machine, String cmd,
                                                String[] parameters, String workDir, Properties envVars) throws Exception {
@@ -119,7 +149,7 @@ public class LocalProvider {
                                      final String workDir, final OutputStream stdOutStream,
                                      final OutputStream stdErrStream, boolean async) throws Exception {
         final String method = "execute";
-        Log.entering(c, method, "async is " + async);
+        Log.entering(CLASS, method, "async is " + async);
 
         if (command == null) {
             throw new IllegalArgumentException("command cannot be null.");
@@ -211,13 +241,22 @@ public class LocalProvider {
         pb.redirectErrorStream(true);
         Process proc = pb.start(); // Runtime.getRuntime().exec(cmd, envVars,
         // dir);
-        StreamGobbler outputGobbler = new StreamGobbler(proc.getInputStream(), stdOutStream, async);
+
+        StreamGobbler outputGobbler = null;
+
+        // Is this a good place to encode the assumption that on z/OS the console.log is going to be
+        // produced in EBCDIC even if the default charset is an ASCII one?
+        if (async && machine.getOperatingSystem() == OperatingSystem.ZOS) {
+            outputGobbler = new StreamGobbler(proc.getInputStream(), stdOutStream, true, Charset.forName(EBCDIC_CHARSET_NAME));
+        } else {
+            outputGobbler = new StreamGobbler(proc.getInputStream(), stdOutStream, async);
+        }
 
         // listen to subprocess output
         outputGobbler.start();
 
         if (async) {
-            Log.exiting(c, method);
+            Log.exiting(CLASS, method);
             return -1;
         }
 
@@ -225,7 +264,7 @@ public class LocalProvider {
         proc.waitFor();
         // let the streams catch up (critical step)
         outputGobbler.doJoin();
-        Log.exiting(c, method);
+        Log.exiting(CLASS, method);
         return proc.exitValue();
     }
 
@@ -242,7 +281,6 @@ public class LocalProvider {
             returned += cmd[i] + " ";
         }
         returned = returned.substring(0, (returned.length() - 1)); //should remove the space at the end;
-        Log.info(c, "shArrayTransform", "Transformed Command now is: " + returned);
         return returned;
     }
 
@@ -345,7 +383,7 @@ public class LocalProvider {
 
     public static ProgramOutput killProcess(Machine machine, int processId) throws Exception {
         final String method = "killProcess";
-        Log.entering(c, method, new Object[] { processId });
+        Log.entering(CLASS, method, new Object[] { processId });
         String cmd = null;
         String[] parameters = null;
         if (machine.getOperatingSystem() != OperatingSystem.WINDOWS) {
@@ -358,7 +396,7 @@ public class LocalProvider {
             cmd = "taskkill";
             parameters = new String[] { "/F", "/PID", "" + processId };
         }
-        Log.finer(c, method, cmd, parameters);
+        Log.finer(CLASS, method, cmd, parameters);
         return executeCommand(machine, cmd, parameters, null, null);
     }
 

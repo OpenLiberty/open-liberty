@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.wim.adapter.ldap;
 
-import static com.ibm.ws.security.wim.util.UniqueNameHelper.unescapeSpaces;
-
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.SoftReference;
 import java.security.cert.X509Certificate;
@@ -43,7 +41,7 @@ import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.wim.AccessControllerHelper;
+import com.ibm.ws.security.wim.util.UniqueNameHelper;
 import com.ibm.wsspi.security.wim.exception.CertificateMapperException;
 import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.exception.WIMSystemException;
@@ -117,7 +115,7 @@ public class LdapHelper {
         // unescape double blackslashes
         DN = unescapeDoubleBackslash(DN);
         DN = unescapeSingleQuote(DN); // fix login failure when single quote (') is in userid
-        DN = unescapeSpaces(DN);
+        DN = UniqueNameHelper.unescapeSpaces(DN);
 
         //process special character enclosing double quotes
         int length = DN.length();
@@ -362,18 +360,8 @@ public class LdapHelper {
         return list.toArray(new String[0]);
     }
 
-    public static boolean isUnderBases(String dn, String[] bases) {
-        dn = getValidDN(dn);
-        if (dn != null) {
-            dn = dn.toLowerCase();
-            //return true if any of bases is empty node/""/root or if dn ends with any of the the base
-            for (int i = 0; i < bases.length; i++) {
-                if (bases[i].trim().length() == 0 || dn.endsWith(bases[i].toLowerCase())) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    public static boolean isUnderBases(String dn, String... bases) {
+        return UniqueNameHelper.isDNUnderBaseEntry(dn, bases);
     }
 
     /**
@@ -557,24 +545,6 @@ public class LdapHelper {
                                                         WIMTraceHelper.printObjectArray(searchControls.getReturningAttributes())).append("]");
         return result.toString();
 
-    }
-
-    /**
-     * Determine if the given DN is under the given Base.
-     *
-     * @param dn
-     * @param base
-     * @return
-     */
-    public static boolean isUnderBases(String dn, String base) {
-        dn = getValidDN(dn);
-        if (dn != null) {
-            dn = dn.toLowerCase();
-            if (dn.endsWith(base.toLowerCase())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -897,14 +867,7 @@ public class LdapHelper {
      * @return the array of separated RDNs.
      */
     public static String[] getRDNs(String rdnStr) {
-        //TODO use String.split
-        StringTokenizer st = new StringTokenizer(rdnStr.toLowerCase(), "+");
-        List<String> list = new ArrayList<String>();
-        while (st.hasMoreTokens()) {
-            String rdn = st.nextToken();
-            list.add(rdn);
-        }
-        return list.toArray(new String[0]);
+        return UniqueNameHelper.getRDNs(rdnStr);
     }
 
     /**

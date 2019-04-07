@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -41,6 +40,7 @@ import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.framework.wiring.FrameworkWiring;
 import org.osgi.service.component.ComponentContext;
 
+import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration;
 import com.ibm.ws.classloading.internal.providers.Providers;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.classloading.ClassLoaderConfiguration;
@@ -84,10 +84,12 @@ final class TestUtil {
                                                           final ComponentContextExpectationProvider expectations) throws BundleException, InvalidSyntaxException {
         final ClassLoadingServiceImpl cls = new ClassLoadingServiceImpl();
 
+        cls.setGlobalClassloadingConfiguration(new GlobalClassloadingConfiguration());
+
         final Mockery mockery = new Mockery();
         final ComponentContext componentContext = mockery.mock(ComponentContext.class);
         final BundleContext myBundleContext = mockery.mock(BundleContext.class, "myBundleContext");
-        setFinalStatic(Providers.class, "bundleContext", myBundleContext);
+        setProviderBundleContext(myBundleContext);
         final Bundle mainBundle = mockery.mock(Bundle.class, "mainBundle");
         final BundleContext mainBundleContext = mockery.mock(BundleContext.class, "systemBundleContext");
         final Bundle gatewayBundle = mockery.mock(Bundle.class, "gatewayBundle");
@@ -186,7 +188,6 @@ final class TestUtil {
                 will(getLibraries);
                 allowing(myBundleContext).getService(with(any(MockServiceReference.class)));
                 will(getLibraries);
-
             }
         });
         if (expectations != null) {
@@ -261,20 +262,13 @@ final class TestUtil {
         return service.createTopLevelClassLoader(Arrays.asList(containerForURL), gwConfig, config);
     }
 
-    static void setFinalStatic(Class<?> clazz, String fieldName, Object newValue) {
+    private static void setProviderBundleContext(BundleContext newCtx) {
         try {
-            Field field = clazz.getDeclaredField(fieldName);
-            field.setAccessible(true);
-
-            Field modifiersField;
-            modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-
-            field.set(null, newValue);
+            Field bundleContextField = Providers.class.getDeclaredField("bundleContext");
+            bundleContextField.setAccessible(true);
+            bundleContextField.set(null, newCtx);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new Error(e);
+            throw new RuntimeException(e);
         }
     }
 

@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -477,6 +481,10 @@ jar_entry_not_migratable.MSGID=TOP-50095
 
 jar_file_url_exception=Exce\u00e7\u00e3o ao analisar persistence.xml.  Local do arquivo jar n\u00e3o p\u00f4de ser localizada: {0}
 
+javase_version_ex_method_call=Exce\u00e7\u00e3o ao chamar o m\u00e9todo {0}: {1}
+
+javase_version_ex_method_not_found=O m\u00e9todo {0} n\u00e3o foi localizado em {1}
+
 jaxb_metadata_warning_ignoring_java_attribute=Ignorando atributo [{0}] na classe [{1}] pois nenhuma Propriedade foi gerada para ele.
 
 jaxb_metadata_warning_ignoring_java_attribute.MSGID=TOP-50235
@@ -508,6 +516,8 @@ jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter.MSGID=TOP-50241
 jaxb_metadata_warning_no_classes_to_process=N\u00e3o h\u00e1 classes a serem processados para o pacote [{0}].
 
 jaxb_metadata_warning_no_classes_to_process.MSGID=TOP-50237
+
+jaxp_sec_prop_not_supported=A propriedade {0} n\u00e3o \u00e9 suportada pela implementa\u00e7\u00e3o JAXP usada.
 
 jmx_mbean_runtime_services_failed_toget_initial_context=Falha ao obter InitialContext para o registro do MBean: {0}
 
