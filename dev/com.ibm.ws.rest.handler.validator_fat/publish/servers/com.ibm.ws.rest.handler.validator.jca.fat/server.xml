@@ -23,7 +23,10 @@
   <keyStore id="defaultKeyStore" password="Liberty"/>
   <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
 
+  <authData id="auth2" user="containerAuthUser2" password="2containerAuthUser"/>
+
   <connectionFactory id="cf1" jndiName="eis/cf1">
+    <containerAuthData user="containerAuthUser1" password="1containerAuthUser"/>
     <properties.TestValidationAdapter hostName="myhost.openliberty.io" portNumber="9876"/>
   </connectionFactory>
 
@@ -38,4 +41,9 @@
   <connectionFactory jndiName="eis/cf-port-not-in-range">
     <properties.TestValidationAdapter hostName="myhost.openliberty.io" portNumber="22"/>
   </connectionFactory>
+
+  <javaPermission codebase="${server.config.dir}/dropins/TestValidationAdapter.rar"
+                  className="javax.security.auth.PrivateCredentialPermission"
+                  signedBy="javax.resource.spi.security.PasswordCredential"
+                  principalType="*" principalName="*" actions="read"/>
 </server>

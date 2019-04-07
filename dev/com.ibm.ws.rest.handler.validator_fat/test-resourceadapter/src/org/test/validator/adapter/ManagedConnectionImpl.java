@@ -11,6 +11,9 @@
 package org.test.validator.adapter;
 
 import java.io.PrintWriter;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 import javax.resource.NotSupportedException;
 import javax.resource.ResourceException;
@@ -19,12 +22,20 @@ import javax.resource.spi.ConnectionRequestInfo;
 import javax.resource.spi.LocalTransaction;
 import javax.resource.spi.ManagedConnection;
 import javax.resource.spi.ManagedConnectionMetaData;
+import javax.resource.spi.SecurityException;
+import javax.resource.spi.security.PasswordCredential;
 import javax.security.auth.Subject;
 import javax.transaction.xa.XAResource;
 
 import org.test.validator.adapter.ConnectionSpecImpl.ConnectionRequestInfoImpl;
 
 public class ManagedConnectionImpl implements ManagedConnection {
+    private final ManagedConnectionFactoryImpl mcf;
+
+    ManagedConnectionImpl(ManagedConnectionFactoryImpl mcf) {
+        this.mcf = mcf;
+    }
+
     @Override
     public void addConnectionEventListener(ConnectionEventListener listener) {}
 
@@ -39,7 +50,35 @@ public class ManagedConnectionImpl implements ManagedConnection {
 
     @Override
     public Object getConnection(Subject subject, ConnectionRequestInfo cri) throws ResourceException {
-        return new ConnectionImpl(this, (ConnectionRequestInfoImpl) cri);
+        String userName = mcf.getUserName();
+        String password = mcf.getPassword();
+        if (subject == null) {
+            userName = (String) ((ConnectionRequestInfoImpl) cri).getOrDefault("UserName", userName);
+            password = (String) ((ConnectionRequestInfoImpl) cri).getOrDefault("Password", password);
+        } else { // oversimplified handling of Subject
+            PasswordCredential cred;
+            try {
+                cred = AccessController.doPrivileged((PrivilegedExceptionAction<PasswordCredential>) () -> {
+                    for (Object c : subject.getPrivateCredentials())
+                        if (c instanceof PasswordCredential && ((PasswordCredential) c).getManagedConnectionFactory() == mcf)
+                            return (PasswordCredential) c;
+                    return null;
+                });
+            } catch (PrivilegedActionException x) {
+                throw new SecurityException(x.getCause());
+            }
+            if (cred != null) {
+                userName = cred.getUserName();
+                password = new String(cred.getPassword());
+            }
+        }
+
+        // Accept some user/password combinations and reject others
+        if ("DefaultUserName".equals(userName) && "DefaultPassword".equals(password) ||
+            userName != null && password != null && userName.charAt(userName.length() - 1) == password.charAt(0))
+            return new ConnectionImpl(userName);
+        else
+            throw new SecurityException("Unable to authenticate with " + userName, "ERR_AUTH");
     }
 
     @Override

@@ -19,12 +19,14 @@ import javax.resource.spi.ConnectionRequestInfo;
  * Example ConnectionSpec implementation with UserName and Password.
  */
 public class ConnectionSpecImpl implements ConnectionSpec {
-    private String user = "DefaultUserName", password = "DefaultPassword";
+    private String user, password;
 
     ConnectionRequestInfoImpl createConnectionRequestInfo() {
         ConnectionRequestInfoImpl cri = new ConnectionRequestInfoImpl();
-        cri.put("UserName", user);
-        cri.put("Password", password);
+        if (user != null)
+            cri.put("UserName", user);
+        if (password != null)
+            cri.put("Password", password);
         return cri;
     }
 
