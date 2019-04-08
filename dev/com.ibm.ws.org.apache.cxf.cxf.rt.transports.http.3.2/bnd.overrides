@@ -30,6 +30,9 @@ Import-Package: \
   !org.osgi.service.blueprint.*,\
   *
 
+Private-Package: \
+  com.ibm.ws.cxf.client.*
+
 Service-Component: \
   com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \

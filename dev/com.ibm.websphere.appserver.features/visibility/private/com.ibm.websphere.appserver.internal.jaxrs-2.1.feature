@@ -30,7 +30,8 @@ Subsystem-Name: Internal Java RESTful Services 2.1
  com.ibm.ws.jaxrs.2.0.tools, \
  com.ibm.ws.jaxrs.2.0.web, \
  com.ibm.ws.jaxrs.2.0.server, \
- com.ibm.ws.jaxrs.2.0.client
+ com.ibm.ws.jaxrs.2.0.client, \
+ com.ibm.ws.cxf.client
 -files=\
  bin/jaxrs/wadl2java, \
  bin/jaxrs/wadl2java.bat, \

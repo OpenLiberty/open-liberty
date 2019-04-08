@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs20.client.component;
+package com.ibm.ws.cxf.client.component;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -20,7 +20,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
-import com.ibm.ws.jaxrs20.client.AsyncClientRunnableWrapper;
+import com.ibm.ws.cxf.client.AsyncClientRunnableWrapper;
 
 @Component(name = "com.ibm.ws.jaxrs20.client.component.AsyncClientRunnableWrapperManager",
            immediate = true,
