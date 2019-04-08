@@ -16,7 +16,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
-import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,8 +26,6 @@ import com.ibm.ws.logging.internal.TraceSpecification;
  *
  */
 public class LoggingFileUtils {
-    /** Simple date format for file names: use only while synchronized */
-    public final static SimpleDateFormat FILE_DATE = new SimpleDateFormat("_yy.MM.dd_HH.mm.ss");
 
     /**
      * Filter used to match filenames for pruning when file rolling is enabled.

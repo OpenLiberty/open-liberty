@@ -12,6 +12,7 @@ package com.ibm.ws.logging.internal.impl;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -262,7 +263,23 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         builder.append("os = ").append(System.getProperty("os.name")).append(" (").append(System.getProperty("os.version")).append("; ").append(System.getProperty("os.arch")).append(") (").append(Locale.getDefault()).append(")").append(LoggingConstants.nl);
 
-        builder.append("process = ").append(ManagementFactory.getRuntimeMXBean().getName()).append(LoggingConstants.nl);
+        // avoid the initialization overhead retrieving the RuntimeMXBean. Not guaranteed to work on all platforms, so fallback as appropriate
+        builder.append("process = ");
+        String pid = System.getProperty("sun.java.launcher.pid");
+
+        if (pid != null) {
+            try {
+                String ip = InetAddress.getLocalHost().getHostAddress();
+                builder.append(pid).append('@').append(ip);
+            } catch (Exception e) {
+                pid = null;
+            }
+        }
+        if (pid == null) {
+            builder.append(ManagementFactory.getRuntimeMXBean().getName());
+        }
+        builder.append(LoggingConstants.nl);
+
         return builder.toString();
     }
 
