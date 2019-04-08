@@ -13,7 +13,7 @@
 #NLS_ENCODING=UNICODE
 #
 #COMPONENTPREFIX CWWKC
-#COMPONENTNAMEFOR CWWKC MicroProfile Concurrency
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
 #
 # NLS_MESSAGEFORMAT_VAR
 #
@@ -25,7 +25,7 @@
 # All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
 
 CWWKC1150.duplicate.context=CWWKC1150E: \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \uc0ac\uc6a9 \uac00\ub2a5\ud55c \uc5ec\ub7ec \uc2a4\ub808\ub4dc \ucee8\ud14d\uc2a4\ud2b8 \uc81c\uacf5\uc5c5\uccb4\uc5d0\uc11c \ub3d9\uc77c\ud55c \uc2a4\ub808\ub4dc \ucee8\ud14d\uc2a4\ud2b8 \uc720\ud615, {0}\uc744(\ub97c) \uc81c\uacf5\ud569\ub2c8\ub2e4. \uc2a4\ub808\ub4dc \ucee8\ud14d\uc2a4\ud2b8 \uc81c\uacf5\uc5c5\uccb4\ub294 \ub2e4\uc74c\uacfc \uac19\uc2b5\ub2c8\ub2e4. {1}, {2}.
-CWWKC1150.duplicate.context.explanation=MicroProfile Concurrency \uc2a4\ud399\uc5d0\uc11c\ub294 \ucee8\ud14d\uc2a4\ud2b8 \uc720\ud615\ub9c8\ub2e4 \ud558\ub098\uc758 ThreadContextProvider\ub9cc \ud5c8\uc6a9\ud569\ub2c8\ub2e4.
+CWWKC1150.duplicate.context.explanation=MicroProfile \ucee8\ud14d\uc2a4\ud2b8 \uc804\ud30c \uc2a4\ud399\uc5d0\uc11c\ub294 \ucee8\ud14d\uc2a4\ud2b8 \uc720\ud615\ub9c8\ub2e4 \ud558\ub098\uc758 ThreadContextProvider\ub9cc \ud5c8\uc6a9\ud569\ub2c8\ub2e4.
 CWWKC1150.duplicate.context.useraction=\uc9c0\uc815\ub41c \uc720\ud615\uc758 ThreadContextProvider\uac00 \ud55c \uac1c\ub9cc \uc788\ub3c4\ub85d \uc0ac\uc6a9 \uac00\ub2a5\ud55c \uc560\ud50c\ub9ac\ucf00\uc774\uc158, \ub77c\uc774\ube0c\ub7ec\ub9ac \ub610\ub294 \ub458 \ub2e4\ub97c \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.
 
 # do not translate: cleared, propagated

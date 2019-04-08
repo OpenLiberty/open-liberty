@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2016 IBM Corporation and others.
+# Copyright (c) 2001, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -282,6 +282,14 @@ DSRA4013.ignored.connection.manager.config.used.useraction=Rimuovere le propriet
 DSRA4014.URL.for.Driver.missing=DSRA4014E: \u00c8 stato specificato il tipo java.sql.Driver per l''origine dati specificata {0}, ma non \u00e8 stato specificato un attributo URL.
 DSRA4014.URL.for.Driver.missing.explanation=\u00c8 necessario specificare un URL di connessione per un'origine dati di tipo java.sql.Driver.
 DSRA4014.URL.for.Driver.missing.useraction=Aggiungere un URL valido all'origine dati.
+
+DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: L''origine dati {0} \u00e8 stata configurata con il tipo ConnectionPoolDataSource, che non \u00e8 supportato da Oracle UCP. Utilizzare, invece, il tipo XADataSource o DataSource.
+DSRA4015.no.ucp.connection.pool.datasource.explanation=L'origine dati \u00e8 stata configurata con il tipo ConnectionPoolDataSource, che non \u00e8 implementato dal driver Oracle UCP.
+DSRA4015.no.ucp.connection.pool.datasource.useraction=Aggiornare l'origine dati per utilizzare il tipo XADataSource o DataSource.
+
+DSRA4016.no.ucp.driver.datasource=DSRA4016E: L''origine dati {0} \u00e8 stata configurata con il tipo Driver, che non \u00e8 supportato da Oracle UCP. Utilizzare, invece, il tipo XADataSource o DataSource.
+DSRA4016.no.ucp.driver.datasource.explanation=L'origine dati \u00e8 stata configurata con il tipo Driver, che non \u00e8 implementato dal driver Oracle UCP.
+DSRA4016.no.ucp.driver.datasource.useraction=Aggiornare l'origine dati per utilizzare il tipo XADataSource o DataSource.
 
 # ----------------------------------------------------------------------------
 # 
