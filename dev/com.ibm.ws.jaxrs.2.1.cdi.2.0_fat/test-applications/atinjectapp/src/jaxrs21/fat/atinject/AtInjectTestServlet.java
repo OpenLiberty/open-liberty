@@ -72,6 +72,11 @@ public class AtInjectTestServlet extends FATServlet {
     public void testResourceMethodInjectionInManagedObject(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         checkInjected(req, "atinjectapp/viaManagedObject/method", "method");
     }
+    
+    @Test
+    public void testResourceConstructorInjection2(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        checkInjected(req, "atinjectapp/direct2/ctor", "constructor");
+    }
 
     private void checkInjected(HttpServletRequest req, String path, String expectedTarget) {
         String response = target(req, path).request().get(String.class);

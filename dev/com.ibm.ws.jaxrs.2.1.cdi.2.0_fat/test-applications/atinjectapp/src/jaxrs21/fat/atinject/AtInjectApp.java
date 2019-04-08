@@ -23,6 +23,7 @@ public class AtInjectApp extends Application {
     public Set<Class<?>> getClasses() {
         Set<Class<?>> set = new HashSet<>();
         set.add(AtInjectDirectService.class);
+        set.add(AtInjectDirectService2.class);
         set.add(AtInjectOnManagedObjectService.class);
         return set;
     }
