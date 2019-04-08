@@ -26,7 +26,7 @@ public class AtInjectDirectService {
     private FieldInjectedObject field;
     private AbstractInjectedObject method;
 
-    //The CDI spec indicates that a no-arg ctor is required
+    //The CDI spec sections 2.2.1 and 3.15 indicates that a no-arg ctor is required
     public AtInjectDirectService() {
         // default constructor - should not be used
         ctor = null;

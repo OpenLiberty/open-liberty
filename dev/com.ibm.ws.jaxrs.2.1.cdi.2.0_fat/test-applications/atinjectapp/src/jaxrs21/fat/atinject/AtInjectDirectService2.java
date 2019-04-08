@@ -18,6 +18,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 @Path("/direct2")
+//public no-arg constructors are not required when the scope is @Dependent, but a public no-arg constructor is required for any other "normal" scope as defined by the CDI spec.
 @Dependent
 public class AtInjectDirectService2 {
 
