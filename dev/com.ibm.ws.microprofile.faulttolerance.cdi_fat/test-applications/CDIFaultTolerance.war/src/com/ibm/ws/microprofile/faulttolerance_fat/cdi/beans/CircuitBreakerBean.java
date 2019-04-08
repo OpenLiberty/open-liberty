@@ -12,9 +12,11 @@ package com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans;
 
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
@@ -22,9 +24,10 @@ import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.TestConstants;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
 
-@RequestScoped
+@ApplicationScoped
 public class CircuitBreakerBean {
 
     private int executionCounterA = 0;
@@ -159,6 +162,25 @@ public class CircuitBreakerBean {
             throw new ConnectException("serviceL exception: " + executionCounterL);
         }
         return "serviceL: " + executionCounterL;
+    }
+
+    @CircuitBreaker(delay = TestConstants.TIMEOUT, delayUnit = ChronoUnit.MILLIS, requestVolumeThreshold = 2, failureRatio = 1.0)
+    public String serviceM(boolean shouldSucceed, CountDownLatch hasStartedLatch, CountDownLatch mayFinishLatch) throws ConnectException, InterruptedException {
+        if (hasStartedLatch != null) {
+            // Indicate we have started
+            hasStartedLatch.countDown();
+        }
+
+        if (mayFinishLatch != null) {
+            // Wait until we're allowed to finish
+            mayFinishLatch.await(TestConstants.TEST_TIMEOUT, TimeUnit.MILLISECONDS);
+        }
+
+        if (!shouldSucceed) {
+            throw new ConnectException("serviceM exception");
+        }
+
+        return "serviceM: OK";
     }
 
     public Future<String> serviceDFallback() {
