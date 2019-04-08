@@ -201,7 +201,7 @@ public class ValidateJCATest extends FATServletClient {
         JsonArray json = request.method("GET").run(JsonArray.class);
         String err = "unexpected response: " + json;
 
-        assertEquals(err, 4, json.size()); // Increase this if you add more connection factories to server.xml
+        assertEquals(err, 5, json.size()); // Increase this if you add more connection factories to server.xml
 
         // Order is currently alphabetical based on config.displayId
 
@@ -299,6 +299,23 @@ public class ValidateJCATest extends FATServletClient {
         assertNull(err, j.get("info"));
         assertNotNull(err, j.getJsonObject("failure"));
         // connectionFactory[default-1] is already tested under testTopLevelConnectionFactoryWithoutIDWithChainedExceptions
+
+        // [4]: config.displayId=connectionFactory[ds5]
+        j = json.getJsonObject(4);
+        assertEquals(err, "ds5", j.getString("uid"));
+        assertEquals(err, "ds5", j.getString("id"));
+        assertEquals(err, "eis/ds5", j.getString("jndiName"));
+        assertTrue(err, j.getBoolean("successful"));
+        assertNull(err, j.get("failure"));
+        assertNotNull(err, j = j.getJsonObject("info"));
+        // TODO need to implement
+        //assertEquals(err, "TestValidationEIS", j.getString("databaseProductName"));
+        //assertEquals(err, "33.56.65", j.getString("databaseProductVersion"));
+        //assertEquals(err, "TestValidationJDBCAdapter", j.getString("driverName"));
+        //assertEquals(err, "36.77.85", j.getString("driverVersion"));
+        //assertEquals(err, "TestValDB", j.get("catalog"));
+        //assertEquals(err, "DEFAULTUSERNAME", j.getString("schema"));
+        //assertEquals(err, "DefaultUserName", j.getString("user"));
     }
 
     /**
