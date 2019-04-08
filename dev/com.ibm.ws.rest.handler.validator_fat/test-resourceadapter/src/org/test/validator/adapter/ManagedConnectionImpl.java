@@ -11,9 +11,12 @@
 package org.test.validator.adapter;
 
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.sql.DatabaseMetaData;
 
 import javax.resource.NotSupportedException;
 import javax.resource.ResourceException;
@@ -82,7 +85,20 @@ public class ManagedConnectionImpl implements ManagedConnection {
         if ("DefaultUserName".equals(userName) && "DefaultPassword".equals(password) ||
             userName != null && password != null && userName.charAt(userName.length() - 1) == password.charAt(0))
             if (isJDBC)
-                return new JDBCConnectionImpl(userName);
+                try {
+                    InvocationHandler handler = new JDBCConnectionImpl(userName);
+                    return AccessController.doPrivileged((PrivilegedExceptionAction<?>) () -> {
+                        return Proxy.newProxyInstance(java.sql.Connection.class.getClassLoader(),
+                                                      new Class<?>[] { java.sql.Connection.class, DatabaseMetaData.class },
+                                                      handler);
+                    });
+                } catch (PrivilegedActionException x) {
+                    Throwable cause = x.getCause();
+                    if (cause instanceof ResourceException)
+                        throw (ResourceException) cause;
+                    else
+                        throw new ResourceException(cause);
+                }
             else
                 return new ConnectionImpl(userName);
         else

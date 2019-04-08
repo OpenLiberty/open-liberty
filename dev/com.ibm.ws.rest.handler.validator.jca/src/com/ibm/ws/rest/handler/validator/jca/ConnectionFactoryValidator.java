@@ -10,7 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.validator.jca;
 
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,6 +30,7 @@ import javax.resource.cci.ConnectionFactory;
 import javax.resource.cci.ConnectionMetaData;
 import javax.resource.cci.ConnectionSpec;
 import javax.resource.cci.ResourceAdapterMetaData;
+import javax.sql.DataSource;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -55,10 +60,10 @@ public class ConnectionFactoryValidator implements Validator {
      * Utility method that attempts to construct a ConnectionSpec impl of the specified name,
      * which might or might not exist in the resource adapter.
      *
-     * @param cciConFactory the connection factory class
+     * @param cciConFactory    the connection factory class
      * @param conSpecClassName possible connection spec impl class name to try
-     * @param userName user name to set on the connection spec
-     * @param password password to set on the connection spec
+     * @param userName         user name to set on the connection spec
+     * @param password         password to set on the connection spec
      * @return ConnectionSpec instance if successful. Otherwise null.
      */
     @FFDCIgnore(Throwable.class)
@@ -127,85 +132,31 @@ public class ConnectionFactoryValidator implements Validator {
             }
 
             Object cf = ((ResourceFactory) instance).createResource(config);
-            if (cf instanceof ConnectionFactory) {
-                ConnectionFactory cciConFactory = (ConnectionFactory) cf;
-                try {
-                    ResourceAdapterMetaData adapterData = cciConFactory.getMetaData();
-                    result.put("resourceAdapterName", adapterData.getAdapterName());
-                    result.put("resourceAdapterVersion", adapterData.getAdapterVersion());
-
-                    String spec = adapterData.getSpecVersion();
-                    if (spec != null && spec.length() > 0)
-                        result.put("resourceAdapterJCASupport", spec);
-
-                    String vendor = adapterData.getAdapterVendorName();
-                    if (vendor != null && vendor.length() > 0)
-                        result.put("resourceAdapterVendor", vendor);
-
-                    String desc = adapterData.getAdapterShortDescription();
-                    if (desc != null && desc.length() > 0)
-                        result.put("resourceAdapterDescription", desc);
-                } catch (NotSupportedException ignore) {
-                } catch (UnsupportedOperationException ignore) {
-                }
-
-                ConnectionSpec conSpec = null;
-                if (user != null || password != null) {
-                    String conFactoryClassName = cciConFactory.getClass().getName();
-                    String conSpecClassName = conFactoryClassName.replace("ConnectionFactory", "ConnectionSpec");
-                    if (!conFactoryClassName.equals(conSpecClassName))
-                        conSpec = createConnectionSpec(cciConFactory, conSpecClassName, user, password);
-
-                    if (conSpec == null) {
-                        // TODO find ConnectionSpec impl another way?
-                        throw new RuntimeException("Unable to locate javax.resource.cci.ConnectionSpec impl from resource adapter.");
-                    }
-                }
-
-                Connection con = conSpec == null ? cciConFactory.getConnection() : cciConFactory.getConnection(conSpec);
-                try {
-                    try {
-                        ConnectionMetaData conData = con.getMetaData();
-
-                        try {
-                            String prodName = conData.getEISProductName();
-                            if (prodName != null && prodName.length() > 0)
-                                result.put("eisProductName", prodName);
-                        } catch (NotSupportedException ignore) {
-                        } catch (UnsupportedOperationException ignore) {
-                        }
-
-                        try {
-                            String prodVersion = conData.getEISProductVersion();
-                            if (prodVersion != null && prodVersion.length() > 0)
-                                result.put("eisProductVersion", prodVersion);
-                        } catch (NotSupportedException ignore) {
-                        } catch (UnsupportedOperationException ignore) {
-                        }
-
-                        String userName = conData.getUserName();
-                        if (userName != null && userName.length() > 0)
-                            result.put("user", userName);
-                    } catch (NotSupportedException ignore) {
-                    } catch (UnsupportedOperationException ignore) {
-                    }
-
-                    try {
-                        con.createInteraction().close();
-                    } catch (NotSupportedException ignore) {
-                    } catch (UnsupportedOperationException ignore) {
-                    }
-                } finally {
-                    con.close();
-                }
-            } // TODO other types of connection factory, such as DataSource or custom or JMS (which should have used jmsConnectionFactory)
+            if (cf instanceof ConnectionFactory)
+                validateCCIConnectionFactory((ConnectionFactory) cf, user, password, result);
+            else if (cf instanceof DataSource)
+                validateDataSource((DataSource) cf, user, password, result);
+            else // TODO other types of connection factory, such as custom or JMS (which should have used jmsConnectionFactory)
+                result.put("failure", "Validation is not implemented for " + cf.getClass().getName() + " which implements " + Arrays.asList(cf.getClass().getInterfaces()) + ".");
         } catch (Throwable x) {
-            ArrayList<String> errorCodes = new ArrayList<String>();
+            ArrayList<String> sqlStates = new ArrayList<String>();
+            ArrayList<Object> errorCodes = new ArrayList<Object>();
             Set<Throwable> causes = new HashSet<Throwable>(); // avoid cycles in exception chain
             for (Throwable cause = x; cause != null && causes.add(cause); cause = cause.getCause()) {
-                String errorCode = cause instanceof ResourceException ? ((ResourceException) cause).getErrorCode() : null;
+                String sqlState = cause instanceof SQLException ? ((SQLException) cause).getSQLState() : null;
+                sqlStates.add(sqlState);
+
+                Object errorCode = null;
+                if (cause instanceof ResourceException)
+                    errorCode = ((ResourceException) cause).getErrorCode();
+                else if (cause instanceof SQLException) {
+                    errorCode = cause instanceof SQLException ? ((SQLException) cause).getErrorCode() : null;
+                    if (sqlState == null && Integer.valueOf(0).equals(errorCode))
+                        errorCode = null; // Omit, because it is unlikely that the database actually returned an error code of 0
+                }
                 errorCodes.add(errorCode);
             }
+            result.put("sqlState", sqlStates);
             result.put("errorCode", errorCodes);
             result.put("failure", x);
         }
@@ -213,5 +164,136 @@ public class ConnectionFactoryValidator implements Validator {
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, methodName, result);
         return result;
+    }
+
+    /**
+     * Validate a connection factory that implements javax.resource.cci.ConnectionFactory.
+     *
+     * @param cf       connection factory instance.
+     * @param user     user name, if any, that is specified in the header of the validation request.
+     * @param password password, if any, that is specified in the header of the validation request.
+     * @param result   validation result to which this method appends info.
+     * @throws ResourceException if an error occurs.
+     */
+    private void validateCCIConnectionFactory(ConnectionFactory cf, String user, @Sensitive String password,
+                                              LinkedHashMap<String, Object> result) throws ResourceException {
+        try {
+            ResourceAdapterMetaData adapterData = cf.getMetaData();
+            result.put("resourceAdapterName", adapterData.getAdapterName());
+            result.put("resourceAdapterVersion", adapterData.getAdapterVersion());
+
+            String spec = adapterData.getSpecVersion();
+            if (spec != null && spec.length() > 0)
+                result.put("resourceAdapterJCASupport", spec);
+
+            String vendor = adapterData.getAdapterVendorName();
+            if (vendor != null && vendor.length() > 0)
+                result.put("resourceAdapterVendor", vendor);
+
+            String desc = adapterData.getAdapterShortDescription();
+            if (desc != null && desc.length() > 0)
+                result.put("resourceAdapterDescription", desc);
+        } catch (NotSupportedException ignore) {
+        } catch (UnsupportedOperationException ignore) {
+        }
+
+        ConnectionSpec conSpec = null;
+        if (user != null || password != null) {
+            String conFactoryClassName = cf.getClass().getName();
+            String conSpecClassName = conFactoryClassName.replace("ConnectionFactory", "ConnectionSpec");
+            if (!conFactoryClassName.equals(conSpecClassName))
+                conSpec = createConnectionSpec(cf, conSpecClassName, user, password);
+
+            if (conSpec == null) {
+                // TODO find ConnectionSpec impl another way?
+                throw new RuntimeException("Unable to locate javax.resource.cci.ConnectionSpec impl from resource adapter.");
+            }
+        }
+
+        Connection con = conSpec == null ? cf.getConnection() : cf.getConnection(conSpec);
+        try {
+            try {
+                ConnectionMetaData conData = con.getMetaData();
+
+                try {
+                    String prodName = conData.getEISProductName();
+                    if (prodName != null && prodName.length() > 0)
+                        result.put("eisProductName", prodName);
+                } catch (NotSupportedException ignore) {
+                } catch (UnsupportedOperationException ignore) {
+                }
+
+                try {
+                    String prodVersion = conData.getEISProductVersion();
+                    if (prodVersion != null && prodVersion.length() > 0)
+                        result.put("eisProductVersion", prodVersion);
+                } catch (NotSupportedException ignore) {
+                } catch (UnsupportedOperationException ignore) {
+                }
+
+                String userName = conData.getUserName();
+                if (userName != null && userName.length() > 0)
+                    result.put("user", userName);
+            } catch (NotSupportedException ignore) {
+            } catch (UnsupportedOperationException ignore) {
+            }
+
+            try {
+                con.createInteraction().close();
+            } catch (NotSupportedException ignore) {
+            } catch (UnsupportedOperationException ignore) {
+            }
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * Validate a connection factory that implements javax.sql.DataSource.
+     *
+     * @param ds       data source instance.
+     * @param user     user name, if any, that is specified in the header of the validation request.
+     * @param password password, if any, that is specified in the header of the validation request.
+     * @param result   validation result to which this method appends info.
+     * @throws SQLException if an error occurs.
+     */
+    private void validateDataSource(DataSource ds, String user, @Sensitive String password,
+                                    LinkedHashMap<String, Object> result) throws SQLException {
+        java.sql.Connection con = user == null ? ds.getConnection() : ds.getConnection(user, password);
+
+        try {
+            DatabaseMetaData metadata = con.getMetaData();
+            result.put("databaseProductName", metadata.getDatabaseProductName());
+            result.put("databaseProductVersion", metadata.getDatabaseProductVersion());
+            result.put("driverName", metadata.getDriverName());
+            result.put("driverVersion", metadata.getDriverVersion());
+
+            try {
+                String catalog = con.getCatalog();
+                if (catalog != null && catalog.length() > 0)
+                    result.put("catalog", catalog);
+            } catch (SQLFeatureNotSupportedException ignore) {
+            }
+
+            try {
+                String schema = con.getSchema();
+                if (schema != null && schema.length() > 0)
+                    result.put("schema", schema);
+            } catch (SQLFeatureNotSupportedException ignore) {
+            }
+
+            String userName = metadata.getUserName();
+            if (userName != null && userName.length() > 0)
+                result.put("user", userName);
+
+            try {
+                boolean isValid = con.isValid(120); // TODO better ideas for timeout value?
+                if (!isValid)
+                    result.put("failure", "FALSE returned by JDBC driver's Connection.isValid operation");
+            } catch (SQLFeatureNotSupportedException x) {
+            }
+        } finally {
+            con.close();
+        }
     }
 }

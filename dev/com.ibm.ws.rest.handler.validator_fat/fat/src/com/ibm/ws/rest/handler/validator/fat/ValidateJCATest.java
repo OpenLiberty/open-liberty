@@ -44,8 +44,6 @@ public class ValidateJCATest extends FATServletClient {
     @Server("com.ibm.ws.rest.handler.validator.jca.fat")
     public static LibertyServer server;
 
-    private static String VERSION_REGEX = "[0-9]+\\.[0-9]+.*";
-
     @BeforeClass
     public static void setUp() throws Exception {
         ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, "TestValidationAdapter.rar")
@@ -122,6 +120,64 @@ public class ValidateJCATest extends FATServletClient {
         assertEquals(err, "TestValidationEIS", json.getString("eisProductName"));
         assertEquals(err, "33.56.65", json.getString("eisProductVersion"));
         assertEquals(err, "user1", json.getString("user"));
+    }
+
+    /**
+     * Validate a connectionFactory for a JCA data source using application authentication and specify a user/password,
+     * where the validation fails and raises an exception with a SQL State and error code.
+     */
+    @AllowedFFDC("java.sql.SQLNonTransientConnectionException")
+    @Test
+    public void testApplicationAuthForJCADataSourceWithSpecifiedUserFails() throws Exception {
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validator/connectionFactory/ds5?auth=application")
+                        .requestProp("X-Validator-User", "user5")
+                        .requestProp("X-Validator-Password", "5user");
+        JsonObject json = request.method("POST").run(JsonObject.class);
+
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "ds5", json.getString("uid"));
+        assertEquals(err, "ds5", json.getString("id"));
+        assertEquals(err, "eis/ds5", json.getString("jndiName"));
+        assertFalse(err, json.getBoolean("successful"));
+        assertNull(err, json.getJsonObject("info"));
+
+        assertNotNull(err, json = json.getJsonObject("failure"));
+        assertEquals(err, "08001", json.getString("sqlState"));
+        assertEquals(err, 127, json.getInt("errorCode"));
+        assertEquals(err, "java.sql.SQLNonTransientConnectionException", json.getString("class"));
+        assertEquals(err, "Connection rejected for user names that end in '5'.", json.getString("message"));
+        JsonArray stack = json.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.JDBCConnectionImpl.invoke("));
+        assertTrue(err, stack.getString(1).startsWith("com.sun.proxy.$Proxy"));
+        assertTrue(err, stack.getString(2).startsWith("com."));
+
+        assertNotNull(err, json = json.getJsonObject("cause"));
+        assertNull(err, json.get("sqlState"));
+        assertEquals(err, "ERR_SEC_USR5", json.getString("errorCode"));
+        assertEquals(err, "javax.resource.spi.SecurityException", json.getString("class"));
+        assertTrue(err, json.getString("message").startsWith("Not accepting user names that end with '5'."));
+        stack = json.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.JDBCConnectionImpl.invoke("));
+        assertTrue(err, stack.getString(1).startsWith("com.sun.proxy.$Proxy"));
+        assertTrue(err, stack.getString(2).startsWith("com."));
+
+        // cause
+        assertNotNull(err, json = json.getJsonObject("cause"));
+        assertEquals(err, "28000", json.getString("sqlState"));
+        assertEquals(err, 0, json.getInt("errorCode"));
+        assertEquals(err, "java.sql.SQLInvalidAuthorizationSpecException", json.getString("class"));
+        assertEquals(err, "The database is unable to accept user names that include a '5'.", json.getString("message"));
+        stack = json.getJsonArray("stack");
+        assertNotNull(err, stack);
+        assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
+        assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.JDBCConnectionImpl.invoke("));
+        assertTrue(err, stack.getString(1).startsWith("com.sun.proxy.$Proxy"));
+        assertTrue(err, stack.getString(2).startsWith("com."));
+        assertNull(err, json.getJsonObject("cause"));
     }
 
     /**
@@ -308,14 +364,13 @@ public class ValidateJCATest extends FATServletClient {
         assertTrue(err, j.getBoolean("successful"));
         assertNull(err, j.get("failure"));
         assertNotNull(err, j = j.getJsonObject("info"));
-        // TODO need to implement
-        //assertEquals(err, "TestValidationEIS", j.getString("databaseProductName"));
-        //assertEquals(err, "33.56.65", j.getString("databaseProductVersion"));
-        //assertEquals(err, "TestValidationJDBCAdapter", j.getString("driverName"));
-        //assertEquals(err, "36.77.85", j.getString("driverVersion"));
-        //assertEquals(err, "TestValDB", j.get("catalog"));
-        //assertEquals(err, "DEFAULTUSERNAME", j.getString("schema"));
-        //assertEquals(err, "DefaultUserName", j.getString("user"));
+        assertEquals(err, "TestValidationEIS", j.getString("databaseProductName"));
+        assertEquals(err, "33.56.65", j.getString("databaseProductVersion"));
+        assertEquals(err, "TestValidationJDBCAdapter", j.getString("driverName"));
+        assertEquals(err, "36.77.85", j.getString("driverVersion"));
+        assertEquals(err, "TestValDB", j.getString("catalog"));
+        assertEquals(err, "DEFAULTUSERNAME", j.getString("schema"));
+        assertEquals(err, "DefaultUserName", j.getString("user"));
     }
 
     /**
