@@ -8,78 +8,74 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.streams.test.context;
+package com.ibm.ws.microprofile.reactive.streams.test.concurrent;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.security.Principal;
 import java.util.ArrayList;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import javax.enterprise.context.Dependent;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-@RequestScoped
-public class IntegerSubscriber implements Subscriber<Integer> {
+/**
+ * A simple test subscriber that logs its results locally and is noisy on the log
+ */
+@Dependent
+public class TestSubscriber implements Subscriber<Integer> {
 
     private Subscription sub;
-    private ArrayList<Integer> results = null;
+    private final ArrayList<Integer> results = new ArrayList<Integer>();
     private boolean complete = false;
-    private boolean alreadyUsed = false;
+    private boolean error = false;
+    private final boolean request1InOnSubscribe = true;
+    private final String name;
 
-    @Inject
-    Principal principle;
-
-    private Throwable error;
+    public TestSubscriber(String name) {
+        this.name = name;
+    }
 
     @Override
     public void onComplete() {
-        System.out.println("onComplete");
+        System.out.println("[" + Thread.currentThread().getName() + "]" + "onComplete");
         this.complete = true;
     }
 
     @Override
     public void onError(Throwable arg0) {
-        System.out.println("onError: " + arg0);
-        this.error = arg0;
-        this.complete = true;
+        System.out.println("[" + Thread.currentThread().getName() + "]" + "onError (" + arg0 + ")");
+        this.error = true;
     }
 
     @Override
     public void onNext(Integer arg0) {
-        System.out.println("Number received: " + arg0);
-        assertTrue(arg0 >= 3);
+        System.out.println("[" + Thread.currentThread().getName() + "]" + "onNext (" + arg0 + ")");
         results.add(arg0);
         sub.request(1);
-        assertNotNull("Subscriber Principle is null", principle);
     }
 
     @Override
     public void onSubscribe(Subscription arg0) {
-
-        if (alreadyUsed) {
-            throw new RuntimeException("Please don't reuse this instance");
+        this.sub = arg0;
+        System.out.println("[" + Thread.currentThread().getName() + "]" + "onSubscribe (" + arg0 + ")");
+        if (request1InOnSubscribe) {
+            request(1);
         }
-        alreadyUsed = true;
-        sub = arg0;
-        results = new ArrayList<Integer>();
-        System.out.println("onSubscribe" + sub);
-        startConsuming();
     }
 
-    public void startConsuming() {
-        sub.request(1);
+    public void request(int i) {
+        sub.request(i);
     }
 
     public boolean isComplete() {
         return this.complete;
     }
 
-    public Throwable getError() {
+    public boolean isError() {
         return this.error;
+    }
+
+    public boolean isTerminated() {
+        return this.error || this.complete;
     }
 
     public ArrayList<Integer> getResults() {

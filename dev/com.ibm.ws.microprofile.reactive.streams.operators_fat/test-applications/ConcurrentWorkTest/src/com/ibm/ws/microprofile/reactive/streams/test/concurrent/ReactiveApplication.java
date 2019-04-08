@@ -8,19 +8,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.streams.test.suite;
+package com.ibm.ws.microprofile.reactive.streams.test.concurrent;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                ReactiveStreamsContextTest.class,
-                ReactiveStreamsTest.class,
-                ReactiveJaxRSTest.class,
-                ReactiveConcurrentWorkTest.class
-})
-public class FATSuite {
-    // this page intentionally left blank
+/**
+ * This is just the basic root JAX-RS application other classes in this package
+ * with a "@Path" annotation operate as endpoints under '/'
+ */
+@ApplicationPath("/")
+public class ReactiveApplication extends Application {
+
 }

@@ -29,7 +29,7 @@ import componenttest.app.FATServlet;
 /**
  *
  */
-@WebServlet("/ReactiveStreamsTest")
+@WebServlet("/ReactiveStreamsContextTest")
 public class ReactiveStreamsContextTestServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
 
@@ -52,7 +52,6 @@ public class ReactiveStreamsContextTestServlet extends FATServlet {
         ProcessorBuilder<Integer, Integer> filter = ReactiveStreams.<Integer> builder().dropWhile(t -> t < 3);
 
         data.via(filter).to(integerSubscriber).run();
-        integerSubscriber.startConsuming();
 
         while (!integerSubscriber.isComplete()) {
             Thread.sleep(100);
