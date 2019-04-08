@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.cloudant.internal;
+package com.ibm.ws.cloudant;
 
 import java.util.Collections;
 import java.util.Dictionary;
@@ -24,6 +24,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.ws.cloudant.internal.CloudantService;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
@@ -31,10 +32,8 @@ import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
 import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.resource.ResourceInfo;
 
-@Component(name = "com.ibm.ws.cloudant.cloudantDatabase",
-           configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { ResourceFactory.class, ApplicationRecycleComponent.class },
-           property = { "creates.objectClass=com.cloudant.client.api.Database" })
+@Component(name = "com.ibm.ws.cloudant.cloudantDatabase", configurationPolicy = ConfigurationPolicy.REQUIRE, service = { ResourceFactory.class,
+                                                                                                                         ApplicationRecycleComponent.class }, property = { "creates.objectClass=com.cloudant.client.api.Database" })
 public class CloudantDatabaseService implements ResourceFactory, ApplicationRecycleComponent {
     /**
      * Names of applications using this ResourceFactory
@@ -58,7 +57,7 @@ public class CloudantDatabaseService implements ResourceFactory, ApplicationRecy
 
     /**
      * Invoked when a cloudant Database is injected or looked up.
-     * 
+     *
      * @param info resource ref info, or null if direct lookup.
      * @return instance of com.cloudant.client.api.Database
      */
@@ -69,15 +68,14 @@ public class CloudantDatabaseService implements ResourceFactory, ApplicationRecy
             applications.add(cData.getJ2EEName().getApplication());
 
         return cloudantSvc.createResource(
-                (String) props.get("databaseName"),
-                (Boolean) props.get("create"),
-                info == null ? ResourceInfo.AUTH_APPLICATION : info.getAuth(),
-                info == null ? null : info.getLoginPropertyList());
+                                          (String) props.get("databaseName"),
+                                          (Boolean) props.get("create"),
+                                          info == null ? ResourceInfo.AUTH_APPLICATION : info.getAuth(),
+                                          info == null ? null : info.getLoginPropertyList());
     }
 
     @Deactivate
-    protected void deactivate(ComponentContext context) {
-    }
+    protected void deactivate(ComponentContext context) {}
 
     @Override
     public ApplicationRecycleContext getContext() {
@@ -98,5 +96,18 @@ public class CloudantDatabaseService implements ResourceFactory, ApplicationRecy
 
     protected void unsetCloudantService(ResourceFactory svc) {
         cloudantSvc = null;
+    }
+
+    /**
+     * Returns the underlying cloudantClient object for this database and the provided resource config
+     *
+     * @param info The ResourceConfig used with the associated cloudantDatabase lookup
+     * @return the cloudantClient object, or null
+     * @throws Exception
+     */
+    public Object getCloudantClient(ResourceInfo info) throws Exception {
+        return cloudantSvc.getCloudantClient(
+                                             info == null ? ResourceInfo.AUTH_APPLICATION : info.getAuth(),
+                                             info == null ? null : info.getLoginPropertyList());
     }
 }
