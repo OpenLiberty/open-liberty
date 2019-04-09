@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -103,14 +104,13 @@ public class AccountsPayableService {
                                                                 .toCompletableFuture()
                                                                 .get(AsyncTestServlet.TIMEOUT, TimeUnit.SECONDS);
             _log.info("balance remaining in bank after withdrawal: " + remainingBalanceInAccount);
-        } catch (ExecutionException ex) {
+        } catch (ExecutionException | InterruptedException | TimeoutException ex) {
             Throwable t = ex.getCause();
-            if (t instanceof InsufficientFundsException) {
+            if (t != null && t instanceof InsufficientFundsException) {
                 throw (InsufficientFundsException) t;
             }
             _log.log(Level.WARNING, "Caught unexpected exception: ", t);
         }
-        
 
         Double remainingBalance = balance - paymentAmt;
         accountBalances.put(acctNumber, remainingBalance);
