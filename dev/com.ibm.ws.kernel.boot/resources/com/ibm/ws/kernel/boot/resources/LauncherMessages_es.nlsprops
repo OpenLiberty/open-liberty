@@ -696,6 +696,10 @@ error.no.serialfilteragent=CWWKE0949E: El archivo jar de agente de filtro serie 
 error.no.serialfilteragent.explanation=El archivo jar de agente de filtro serie especificado no existe o no se puede leer.
 error.no.serialfilteragent.useraction= Aseg\u00farese de que el archivo exista y que el usuario actual lo pueda leer.
 
+error.package.extension=CWWKE0950E: El nombre de archivo del archivo debe finalizar con .jar cuando se utiliza la opci\u00f3n runnable.
+error.package.extension.explanation=La opci\u00f3n --archive debe incluir una extensi\u00f3n de archivo que finalice con .jar cuando se especifica --include=runnable.
+error.package.extension.useraction=Proporcione un nombre de archivo para --archive con una extensi\u00f3n de archivo .jar cuando especifique --include=runnable.
+
 info.serverStarting=Se est\u00e1 iniciando el servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=Servidor {0} iniciado con ID de proceso {1}.
