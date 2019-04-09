@@ -44,16 +44,24 @@ class ConfigComparator {
         this.metatypeRegistry = registry;
     }
 
-    private RegistryEntry getRegistry(RegistryEntry parent, String name) {
+    private RegistryEntry getRegistry(RegistryEntry parent, String childNodeName) {
         if (metatypeRegistry == null)
             return null;
 
         RegistryEntry entry = null;
         // Attempt to look up the registry entry by childAlias value
-        if (parent != null) {
-            entry = metatypeRegistry.getRegistryEntry(parent.getPid(), name);
+        RegistryEntry pe = parent;
+        while (pe != null) {
+            // The parent entry must have ibm:supportsExtensions defined for ibm:childAlias to be valid here
+            if (pe.getObjectClassDefinition().supportsExtensions()) {
+                RegistryEntry childAliasEntry = metatypeRegistry.getRegistryEntry(pe.getPid(), childNodeName);
+                if (childAliasEntry != null)
+                    return childAliasEntry;
+            }
+            pe = pe.getExtendedRegistryEntry();
         }
-        return (entry == null) ? metatypeRegistry.getRegistryEntryByPidOrAlias(name) : entry;
+
+        return (entry == null) ? metatypeRegistry.getRegistryEntryByPidOrAlias(childNodeName) : entry;
     }
 
     public ComparatorResult computeDelta() throws ConfigUpdateException {
