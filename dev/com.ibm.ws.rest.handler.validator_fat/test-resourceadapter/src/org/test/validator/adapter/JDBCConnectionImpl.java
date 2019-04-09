@@ -14,7 +14,10 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.sql.SQLInvalidAuthorizationSpecException;
 import java.sql.SQLNonTransientConnectionException;
+
+import javax.resource.spi.SecurityException;
 
 /**
  * Proxy for java.sql.Connection and java.sql.DatabaseMetaData
@@ -42,7 +45,14 @@ public class JDBCConnectionImpl implements InvocationHandler {
         }
 
         if ("isValid".equals(name))
-            return !closed;
+            if (user.endsWith("5")) {
+                // Force an error path where we can test a combination of chained SQLException and ResourceException
+                SQLException x = new SQLNonTransientConnectionException("Connection rejected for user names that end in '5'.", "08001", 127);
+                x.initCause(new SecurityException("Not accepting user names that end with '5'.", "ERR_SEC_USR5"));
+                x.getCause().initCause(new SQLInvalidAuthorizationSpecException("The database is unable to accept user names that include a '5'.", "28000", 0));
+                throw x;
+            } else
+                return !closed;
 
         if (closed)
             throw new SQLNonTransientConnectionException("Connection is closed.", "08003", 53);

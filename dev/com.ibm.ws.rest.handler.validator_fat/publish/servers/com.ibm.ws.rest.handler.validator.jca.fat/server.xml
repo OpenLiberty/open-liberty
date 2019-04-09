@@ -48,6 +48,9 @@
   </connectionFactory>
 
   <javaPermission codebase="${server.config.dir}/dropins/TestValidationAdapter.rar"
+                  className="java.lang.RuntimePermission" name="getClassLoader"/>
+
+  <javaPermission codebase="${server.config.dir}/dropins/TestValidationAdapter.rar"
                   className="javax.security.auth.PrivateCredentialPermission"
                   signedBy="javax.resource.spi.security.PasswordCredential"
                   principalType="*" principalName="*" actions="read"/>
