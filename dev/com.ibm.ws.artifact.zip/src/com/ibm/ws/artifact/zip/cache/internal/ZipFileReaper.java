@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
@@ -186,14 +188,81 @@ public class ZipFileReaper {
     // ...
     // javax.servlet.http.HttpServlet.service(HttpServlet.java:575)
 
-    protected static void asyncWarning(final String msgKey, final Object ... msgArgs) {
-        Runnable warningAction = new Runnable() {
-            public void run() {
-                Tr.warning(tc, msgKey, msgArgs);
-            }
-        };
-        (new Thread(warningAction)).start();
+    private static class DeferredLogRecord {
+        // Currently only defer warnings.  Other log record types could be
+        // made asynchronous, but so far that hasn't been necessary.
+
+        private final String msgKey;
+        private final Object[] msgArgs;
+
+        public DeferredLogRecord(String msgKey, Object... msgArgs) {
+            this.msgKey = msgKey;
+            this.msgArgs = msgArgs;
+        }
+
+        public void emit() {
+            Tr.warning(tc, msgKey, msgArgs);
+        }
     }
+
+    private static class DeferredLogEmitter implements Runnable {
+        public DeferredLogEmitter() {
+            this.deferredLogQueue = new LinkedBlockingQueue<DeferredLogRecord>();
+        }
+
+        public void run() {
+            try {
+                while ( true ) {
+                    take().emit(); // 'take' throws InterruptedException
+                }
+            } catch ( InterruptedException e ) {
+                // Handle interruption *OUTSIDE* of the loop.  We
+                // want interruption to cause an exit.
+                //
+                // FFDC and ignore
+            }
+        }
+
+        //
+
+        protected final BlockingQueue<DeferredLogRecord> deferredLogQueue;
+
+        public void post(String msgKey, Object... msgArgs) {
+            try {
+                deferredLogQueue.put( new DeferredLogRecord(msgKey, msgArgs) );
+            } catch ( InterruptedException e ) {
+                // Don't really care if a put is interrupted.  That means
+                // that a warning was not emitted.  If that is a problem,
+                // the warning would need to be emitted outside of usual
+                // trace.
+                //
+                // FFDC and ignore
+            }
+        }
+
+        public DeferredLogRecord take() throws InterruptedException {
+            return deferredLogQueue.take();
+        }
+    }
+
+    private static final DeferredLogEmitter logEmitter;
+    private static final Thread logThread;
+
+    // Should this initialization be done only when constructing the first
+    // reaper?
+
+    static {
+        logEmitter = new DeferredLogEmitter();
+        logThread = new Thread(logEmitter);
+        logThread.setDaemon(true);
+        logThread.start();
+    }
+
+    protected static void asyncWarning(final String msgKey, final Object ... msgArgs) {
+        logEmitter.post(msgKey, msgArgs);
+    }
+
+    //
 
     private static class ReaperRunnable implements Runnable {
         @Trivial
