@@ -57,7 +57,7 @@ public class WSConfigurationHelperTest extends ServletRunner {
     }
 
     @BeforeClass
-    public static void setUpForMetatypeProviderTests() throws Exception {
+    public static void setUpForWSConfigurationHelperTest() throws Exception {
 
         // Use the feature/bundle from the merged config tests
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/mergedConfigTest-1.0.mf");
