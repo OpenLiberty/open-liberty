@@ -37,7 +37,7 @@ public class HttpMethodTests extends H2FATDriverServlet {
      */
     public void testConnectMethod(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        String testName = "testInvalidPaddingValue";
+        String testName = "testConnectMethod";
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
@@ -80,7 +80,7 @@ public class HttpMethodTests extends H2FATDriverServlet {
      */
     public void testConnectMethodError(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        String testName = "testInvalidPaddingValue";
+        String testName = "testConnectMethodError";
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
@@ -118,7 +118,7 @@ public class HttpMethodTests extends H2FATDriverServlet {
      */
     public void testHeadMethod(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        String testName = "testInvalidPaddingValue";
+        String testName = "testHeadMethod";
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
@@ -149,7 +149,7 @@ public class HttpMethodTests extends H2FATDriverServlet {
      */
     public void testOptionMethod(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        String testName = "testInvalidPaddingValue";
+        String testName = "testOptionMethod";
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
@@ -182,12 +182,16 @@ public class HttpMethodTests extends H2FATDriverServlet {
      */
     public void testOptionMethod400Uri(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        String testName = "testInvalidPaddingValue";
+        String testName = "testOptionMethod400Uri";
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        FrameRstStream errorFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
-        h2Client.addExpectedFrame(errorFrame);
+        // set up the header we expect to receive
+        List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
+        secondHeadersReceived.add(new H2HeaderField(":status", "400"));
+        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
+        secondFrameHeaders.setHeaderFields(secondHeadersReceived);
+        h2Client.addExpectedFrame(secondFrameHeaders);
 
         setupDefaultPreface(h2Client);
 
@@ -210,7 +214,7 @@ public class HttpMethodTests extends H2FATDriverServlet {
      */
     public void testOptionMethod404Uri(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        String testName = "testInvalidPaddingValue";
+        String testName = "testOptionMethod404Uri";
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
