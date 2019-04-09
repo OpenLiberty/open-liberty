@@ -10,14 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.config.admin.internal;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -25,6 +19,7 @@ import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,6 +32,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.admin.ConfigID;
+import com.ibm.ws.config.admin.ConfigurationDictionary;
 import com.ibm.ws.config.admin.ExtendedConfiguration;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
@@ -190,28 +186,15 @@ class ConfigurationStore {
     }
 
     void serializeConfigurationData(File configFile, ExtendedConfigurationImpl config) throws IOException {
-        FileOutputStream fos = null;
-        ObjectOutputStream oos = null;
-        try {
-            // get data outside of the sync block to prevent a deadlock, however we may have inconsistent information
-            Dictionary<String, ?> properties = config.getReadOnlyProperties();
-            Set<ConfigID> references = config.getReferences();
-            Set<String> uniqueVars = config.getUniqueVariables();
+        // get data outside of the sync block to prevent a deadlock, however we may have inconsistent information
+        Dictionary<String, ?> properties = config.getReadOnlyProperties();
+        Set<ConfigID> references = config.getReferences();
+        Set<String> uniqueVars = config.getUniqueVariables();
 
-            String bundleLocation = config.getBundleLocation();
+        String bundleLocation = config.getBundleLocation();
 
-            // write config data
-            fos = new FileOutputStream(configFile, false);
-            oos = new ObjectOutputStream(new BufferedOutputStream(fos));
-            oos.writeObject(properties);
-            oos.writeObject(bundleLocation);
-            oos.writeBoolean(Boolean.FALSE);
-            oos.writeObject(references);
-            oos.writeObject(uniqueVars);
-        } finally {
-            ConfigUtil.closeIO(oos);
-            ConfigUtil.closeIO(fos);
-        }
+        // write config data
+        ConfigurationStorageHelper.store(configFile, properties, bundleLocation, references, uniqueVars);
     }
 
     /**
@@ -234,35 +217,19 @@ class ConfigurationStore {
 
             if (configFile.length() > 0) {
 
-                FileInputStream fis = null;
-                ObjectInputStream ois = null;
+                ConfigurationDictionary dict = new ConfigurationDictionary();
+                Set<ConfigID> references = new HashSet<>();
+                Set<String> uniqueVariables = new HashSet<>();
 
-                try {
-                    fis = new FileInputStream(configFile);
-                    ois = new ObjectInputStream(new BufferedInputStream(fis));
-                    @SuppressWarnings("unchecked")
-                    Dictionary<String, Object> d = (Dictionary<String, Object>) ois.readObject();
-                    String location;
-                    location = (String) ois.readObject();
-                    ois.readBoolean();
-                    @SuppressWarnings("unchecked")
-                    Set<ConfigID> references = (Set<ConfigID>) ois.readObject();
-                    @SuppressWarnings("unchecked")
-                    Set<String> uniqueVariables = (Set<String>) ois.readObject();
+                String location = ConfigurationStorageHelper.load(configFile, uniqueVariables, references, dict);
 
-                    String factoryPid = (String) d.get(ConfigurationAdmin.SERVICE_FACTORYPID);
-                    VariableRegistry variableRegistry = caFactory.getVariableRegistry();
-                    for (String variable : uniqueVariables) {
-                        variableRegistry.addVariable(variable, ConfigAdminConstants.VAR_IN_USE);
-                    }
-
-                    config = new ExtendedConfigurationImpl(caFactory, location, factoryPid, pid, d, references, uniqueVariables);
-                } catch (ClassNotFoundException e) {
-                    throw new IOException(e);
-                } finally {
-                    ConfigUtil.closeIO(ois);
-                    ConfigUtil.closeIO(fis);
+                String factoryPid = (String) dict.get(ConfigurationAdmin.SERVICE_FACTORYPID);
+                VariableRegistry variableRegistry = caFactory.getVariableRegistry();
+                for (String variable : uniqueVariables) {
+                    variableRegistry.addVariable(variable, ConfigAdminConstants.VAR_IN_USE);
                 }
+
+                config = new ExtendedConfigurationImpl(caFactory, location, factoryPid, pid, dict, references, uniqueVariables);
             }
         }
 
