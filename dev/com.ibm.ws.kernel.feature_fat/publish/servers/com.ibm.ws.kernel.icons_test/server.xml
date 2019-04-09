@@ -1,0 +1,16 @@
+<server>
+    <featureManager>
+        <!-- <feature>servlet-3.0</feature>
+        <feature>wab-1.0</feature>
+        <feature>goldenPathTool-1.0</feature>
+        <feature>badPathTool-1.0</feature>
+        <feature>iconDirectivesTool-1.0</feature>
+        <feature>missingIconsTool-1.0</feature>
+        <feature>emptyIconHeader-1.0</feature>
+        <feature>noHeaderTool-1.0</feature>-->
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <!-- TESTING THE UPLOAD! -->
+</server>

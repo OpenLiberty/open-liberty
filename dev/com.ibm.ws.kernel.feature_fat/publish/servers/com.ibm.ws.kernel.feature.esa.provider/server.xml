@@ -1,0 +1,10 @@
+<server description="This server provides two ESA that have a dependency on each other">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>servlet-3.0</feature>
+    </featureManager>
+
+</server>

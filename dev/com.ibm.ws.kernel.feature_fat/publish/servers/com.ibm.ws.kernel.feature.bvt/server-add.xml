@@ -1,0 +1,11 @@
+<server>
+
+    <include optional="true" location="${shared.config.dir}/bvtTestPorts.xml"/>
+    <config monitorInterval="1s" />
+    
+    <featureManager>
+            <feature>httpservice-2.2</feature>
+            <feature>ssl-1.0</feature>
+    </featureManager>
+    
+</server>

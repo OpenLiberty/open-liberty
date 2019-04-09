@@ -1,0 +1,11 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>productAuto:pfeatureB-1.0</feature>
+        <feature>productAuto:pfeatureC-1.0</feature>
+        <feature>productAuto:pfeatureD-1.0</feature>
+    </featureManager>
+    
+</server>

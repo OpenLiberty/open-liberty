@@ -1,0 +1,31 @@
+-include= ~../ant_build/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src
+
+publish.wlp.jar.disabled: true
+
+test.project: true
+
+-buildpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
+	../build.sharedResources/lib/hamcrest-all.jar;version=file, \
+	../build.sharedResources/lib/jmock/old/jmock-junit4.jar;version=file, \
+	../build.sharedResources/lib/jmock/old/jmock.jar;version=file, \
+	fattest.simplicity;version=latest, \
+	../fattest.simplicity/lib/public.api.jar;version=file, \
+	../com.ibm.ws.kernel.boot.archive/lib/org.apache.commons.compress-1.10.jar;version=file, \
+	com.ibm.websphere.org.osgi.core;version=latest, \
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.thirdparty.equinox;version=latest, \
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.kernel.service.location;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.org.eclipse.equinox.region;version=latest, \
+	com.ibm.ws.runtime.update;version=latest, \
+	com.ibm.ws.kernel.feature.core;version=latest, \
+	com.ibm.ws.kernel.feature;version=latest

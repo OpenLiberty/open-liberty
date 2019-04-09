@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<project name="com.ibm.ws.kernel.feature_fat" default="buildandrun" basedir=".">
+    <import file="../ant_build/public_imports/fat_imports.xml" />
+
+<!-- Set fattest.timeout to some absurd value (currently 5 hours.) SOE buckets can time out. -->
+    <property name="fattest.timeout" value="18000000"/>
+
+    <!-- Run against full image - ensure that javaeeClient feature is available -->
+    <property name="fat.image.type" value="use-full-image"/>    
+	
+	<!-- Define additional tested features that are not present in server configuration -->
+	<property name="tested.features" value="capabilityc-1.0, featuref-1.0, productauto:pfeaturen-1.0, productauto:pfeaturem-1.0, featuree-1.0, productauto:pfeaturel-1.0, featureg-1.0, auto-A10B10-1.0, auto-A10B10-1.0, capabilityA-1.0, capabilityA-1.1, capabilityA-2.0, capabilityB-1.0, capabilityB-1.1, capabilityB-2.0, capabilityC-1.0, capabilityD-1.0, clientB-1.0, comboA10B10-1.0, serverA-1.0, featureA-1.0, featureB-1.0, featureC-1.0, featureD-1.0, featureE-1.0, featureF-1.0, featureG-1.0, featureH-1.0, featureI-1.0, featureJ-1.0, featureJavaEight-1.0, featureJavaNine-1.0, featureV-1.0, featureW-1.0, featureX-1.0, featureY-1.0, featureZ-1.0, badPathTool-1.0, emptyIconHeader-1.0, goldenPathTool-1.0, iconDirectivesTool-1.0, missingIconsTool-1.0, noHeaderTool-1.0, includeClientFeature-1.0, pfeatureA-1.0, pfeatureB-1.0, pfeatureC-1.0, pfeatureD-1.0, pfeatureE-1.0, pfeatureF-1.0, pfeatureG-1.0, pfeatureH-1.0, pfeatureI-1.0, pfeatureJ-1.0, pfeatureL-1.0, pfeatureM-1.0, pfeatureN-1.0, ufeatureA-1.0, ufeatureB-1.0, ufeatureC-1.0, ufeatureD-1.0, ufeatureE-1.0, ufeatureF-1.0, ufeatureG-1.0, ufeatureH-1.0, ufeatureI-1.0, ufeatureJ-1.0, ufeatureL-1.0, ufeatureM-1.0, ufeatureN-1.0, productauto:pfeaturef-1.0, productauto:pfeatureg-1.0, productauto:pfeaturee-1.0"/>
+    
+    <target name="addRequiredFiles">
+        <copy todir="${required.lib.dir}">            
+            <fileset dir="${basedir}/../build.image/wlp/lib/" includes="org.eclipse.osgi_*.jar"/>
+        </copy>
+    	
+    	<iff>
+	      <available file="../com.ibm.ws.org.apache.commons.compress/lib/" />
+	      <then>
+			<copy todir="${required.lib.dir}">
+				<fileset dir="../com.ibm.ws.org.apache.commons.compress/lib/" includes="*" />
+			</copy>
+		  </then>
+		  <else>
+			<copy todir="${required.lib.dir}">
+				<fileset dir="${basedir}/../prereq.published/lib/" includes="com.ibm.ws.org.apache.commons.compress.jar" />
+			</copy>
+		  </else>
+		</iff>
+        
+        <!-- If we are doing a building the image then we will create some ESAs, copy these in now -->
+      <iff>
+            <or>
+              <equals arg1="${create.im.repo}" arg2="true"/>
+              <equals arg1="${build.license.zip}" arg2="true"/>
+            </or>
+            <then>
+                <mkdir dir="${basedir}/publish/features/dhe_repo"/>
+                <unzip dest="${basedir}/publish/features/dhe_repo" src="${liberty.image.dir}/output/upload/externals/installables/repo.${liberty.service.version}.zip">
+                    <patternset>
+                        <include name="**/*.esa"/>
+                        <exclude name="**/com.ibm.websphere.appserver.safAuthorization-1.0.esa **/com.ibm.websphere.appserver.safRegistry-1.0.esa **/com.ibm.websphere.appserver.syncToOSThread-1.0.esa **/com.ibm.websphere.appserver.syncToOSThreadContext-1.0.esa **/com.ibm.websphere.appserver.zosConnect-1.0.esa **/com.ibm.websphere.appserver.zosConnectLocalAdapters-1.0.esa **/com.ibm.websphere.appserver.zosLocalAdapters-1.0.esa **/com.ibm.websphere.appserver.zosSecurity-1.0.esa **/com.ibm.websphere.appserver.zosTransaction-1.0.esa **/com.ibm.websphere.appserver.zosWlm-1.0.esa **/com.ibm.websphere.appserver.zosWlmContext-1.0.esa"/>
+                    </patternset>
+                    <mapper type="flatten"/>
+                </unzip>
+                
+                <!--copy file="${liberty.image.dir}/output/upload/externals/installables/wlp-developers-extended-${liberty.service.version}.jar" todir="${basedir}/publish/images" /-->    
+            </then>
+        </iff>
+    </target>
+    
+    <target name="addAutoInstallApplications" description="Automatically Install applications on LibertyServer instance creation">
+        <copy file="${basedir}/publish/files/test.feature.api.client.zip" tofile="${basedir}/publish/servers/com.ibm.ws.kernel.feature.api/dropins/test.feature.api.client.war" />
+        <property name="ignoreAPIEJB.dir" location="${basedir}/publish/servers/com.ibm.ws.kernel.feature.ignoreAPI/dropins/IgnoreAPI.ear/IgnoreAPIEJB.jar"/>
+        <wlpJavac srcdir="${ignoreAPIEJB.dir}" destdir="${ignoreAPIEJB.dir}" buildWithJavaLevel="${build.with.java.level}" />
+
+        <!-- Build service consumer esa -->
+        <zip destfile="${basedir}/publish/files/test.service.consumer.esa" update="true">
+            <zipfileset dir="${basedir}/build/fat-bundles" includes="test.service.consumer_1.0.0.jar" />
+            <zipfileset dir="${basedir}/publish/files/ESAFiles/test.service.consumer.esa" includes="OSGI-INF/SUBSYSTEM.MF"/>
+        </zip>
+        <copy file="${basedir}/publish/files/test.service.consumer.esa" tofile="${basedir}/publish/servers/com.ibm.ws.kernel.feature.api.service/dropins/test.service.consumer.esa" />
+    </target>
+</project>
