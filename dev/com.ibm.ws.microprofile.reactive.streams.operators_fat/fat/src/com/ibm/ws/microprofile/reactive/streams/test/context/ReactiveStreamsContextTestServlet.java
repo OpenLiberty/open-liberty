@@ -29,7 +29,7 @@ import componenttest.app.FATServlet;
 /**
  *
  */
-@WebServlet("/ReactiveStreamsTest")
+@WebServlet("/ReactiveStreamsContextTest")
 public class ReactiveStreamsContextTestServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
 

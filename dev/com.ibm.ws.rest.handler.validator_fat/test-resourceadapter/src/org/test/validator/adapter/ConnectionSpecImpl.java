@@ -19,17 +19,30 @@ import javax.resource.spi.ConnectionRequestInfo;
  * Example ConnectionSpec implementation with UserName and Password.
  */
 public class ConnectionSpecImpl implements ConnectionSpec {
-    private String user = "DefaultUserName", password = "DefaultPassword";
+    boolean isJDBC;
+    private String user, password;
 
     ConnectionRequestInfoImpl createConnectionRequestInfo() {
         ConnectionRequestInfoImpl cri = new ConnectionRequestInfoImpl();
-        cri.put("UserName", user);
-        cri.put("Password", password);
+        if (isJDBC)
+            cri.put("JDBC", isJDBC);
+        if (user != null)
+            cri.put("UserName", user);
+        if (password != null)
+            cri.put("Password", password);
         return cri;
     }
 
     public String getUserName() {
         return user;
+    }
+
+    public boolean isJDBC() {
+        return isJDBC;
+    }
+
+    public void setJDBC(boolean isJDBC) {
+        this.isJDBC = isJDBC;
     }
 
     public void setPassword(String pwd) {

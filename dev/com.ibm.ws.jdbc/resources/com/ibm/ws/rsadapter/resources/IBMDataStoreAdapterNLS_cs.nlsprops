@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2016 IBM Corporation and others.
+# Copyright (c) 2001, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -282,6 +282,14 @@ DSRA4013.ignored.connection.manager.config.used.useraction=Odeberte vlastnosti s
 DSRA4014.URL.for.Driver.missing=DSRA4014E: Typ java.sql.Driver byl ur\u010den pro zdroj dat {0}, ale nebyl ur\u010den \u017e\u00e1dn\u00fd atribut URL.
 DSRA4014.URL.for.Driver.missing.explanation=Adresa URL p\u0159ipojen\u00ed mus\u00ed b\u00fdt ur\u010dena pro zdroj dat, kter\u00fd je typu java.sql.Driver.
 DSRA4014.URL.for.Driver.missing.useraction=P\u0159idejte platnou adresu URL do zdroje dat.
+
+DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: Zdroj dat {0} byl nakonfigurov\u00e1n s typem ConnectionPoolDataSource, kter\u00fd nen\u00ed podporov\u00e1n serverem Oracle UCP. M\u00edsto toho pou\u017eijte typ XADataSource nebo typ DataSource.
+DSRA4015.no.ucp.connection.pool.datasource.explanation=Zdroj dat byl nakonfigurov\u00e1n s typem ConnectionPoolDataSource, kter\u00fd nen\u00ed implementov\u00e1n ovlada\u010dem Oracle UCP.
+DSRA4015.no.ucp.connection.pool.datasource.useraction=Aktualizujte zdroj dat tak, aby pou\u017e\u00edval bu\u010f typ XADataSource, nebo typ DataSource.
+
+DSRA4016.no.ucp.driver.datasource=DSRA4016E: Zdroj dat {0} byl nakonfigurov\u00e1n s typem ovlada\u010de, kter\u00fd nen\u00ed podporov\u00e1n serverem Oracle UCP. M\u00edsto toho pou\u017eijte typ XADataSource nebo typ DataSource.
+DSRA4016.no.ucp.driver.datasource.explanation=Zdroj dat byl nakonfigurov\u00e1n s typem ovlada\u010de, kter\u00fd nen\u00ed implementov\u00e1n ovlada\u010dem Oracle UCP.
+DSRA4016.no.ucp.driver.datasource.useraction=Aktualizujte zdroj dat tak, aby pou\u017e\u00edval bu\u010f typ XADataSource, nebo typ DataSource.
 
 # ----------------------------------------------------------------------------
 # 

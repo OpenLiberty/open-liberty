@@ -21,7 +21,7 @@ import org.reactivestreams.Subscription;
 
 /**
  * This subscriber is used by the JaxRS endpoint to retrieve
- * a set number of elements from the stream ( the count is passed in on the request)
+ * a set number of elements from the stream ( the count is passed in on the GET request)
  */
 public class EndpointSubscriber<T> implements Subscriber<T> {
 

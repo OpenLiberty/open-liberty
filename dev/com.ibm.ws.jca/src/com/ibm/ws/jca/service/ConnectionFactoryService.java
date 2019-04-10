@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,10 +15,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
@@ -97,6 +100,11 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
     private final AtomicServiceReference<BootstrapContextImpl> bootstrapContextRef = new AtomicServiceReference<BootstrapContextImpl>("bootstrapContext");
 
     /**
+     * Connection factory interface names.
+     */
+    private Object cfInterfaceNames;
+
+    /**
      * Component context.
      */
     private ComponentContext componentContext;
@@ -161,6 +169,7 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
         String sourcePID = (String) props.get("ibm.extends.source.pid"); // com.ibm.ws.jca.jmsQueueConnectionFactory_gen_3f3cb305-4146-41f9-8a57-b231d09013e6
         configElementName = sourcePID == null ? "connectionFactory" : sourcePID.substring(15, sourcePID.indexOf('_', 15));
 
+        cfInterfaceNames = props.get("creates.objectClass");
         mcfImplClassName = (String) props.get(CONFIG_PROPS_PREFIX + "managedconnectionfactory-class");
         jndiName = (String) props.get(JNDI_NAME);
         id = (String) props.get("config.displayId");
@@ -197,6 +206,17 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
     protected void deactivate(ComponentContext context) {
         destroyConnectionFactories(true);
         bootstrapContextRef.deactivate(context);
+    }
+
+    /**
+     * This method is provided for the connection factory validator.
+     *
+     * @return list of fully qualified names of the connection factory interfaces that this resource factory creates.
+     */
+    public final List<String> getConnectionFactoryInterfaceNames() {
+        return cfInterfaceNames instanceof String ? Collections.singletonList((String) cfInterfaceNames) //
+                        : cfInterfaceNames instanceof String[] ? Arrays.asList((String[]) cfInterfaceNames) //
+                                        : Collections.<String> emptyList();
     }
 
     @Override

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2016 IBM Corporation and others.
+# Copyright (c) 2001, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -282,6 +282,14 @@ DSRA4013.ignored.connection.manager.config.used.useraction=Usu\u0144 w\u0142a\u0
 DSRA4014.URL.for.Driver.missing=DSRA4014E: Typ java.sql.Driver zosta\u0142 podany dla \u017ar\u00f3d\u0142a danych {0}, ale nie okre\u015blono atrybutu URL.
 DSRA4014.URL.for.Driver.missing.explanation=Nale\u017cy poda\u0107 adres URL po\u0142\u0105czenia dla \u017ar\u00f3d\u0142a danych typu java.sql.Driver.
 DSRA4014.URL.for.Driver.missing.useraction=Dodaj poprawny adres URL \u017ar\u00f3d\u0142a danych.
+
+DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: \u0179r\u00f3d\u0142o danych {0} zosta\u0142o skonfigurowane z typem ConnectionPoolDataSource, kt\u00f3ry nie jest obs\u0142ugiwany przez pul\u0119 Oracle UCP. Zamiast niego u\u017cyj typu XADataSource lub DataSource.
+DSRA4015.no.ucp.connection.pool.datasource.explanation=\u0179r\u00f3d\u0142o danych zosta\u0142o skonfigurowane z typem ConnectionPoolDataSource, kt\u00f3ry nie zosta\u0142 zaimplementowany przez sterownik puli Oracle UCP.
+DSRA4015.no.ucp.connection.pool.datasource.useraction=Zaktualizuj \u017ar\u00f3d\u0142o danych, aby u\u017cywa\u0142o typu XADataSource lub DataSource.
+
+DSRA4016.no.ucp.driver.datasource=DSRA4016E: \u0179r\u00f3d\u0142o danych {0} zosta\u0142o skonfigurowane z typem Driver, kt\u00f3ry nie jest obs\u0142ugiwany przez pul\u0119 Oracle UCP. Zamiast niego u\u017cyj typu XADataSource lub DataSource.
+DSRA4016.no.ucp.driver.datasource.explanation=\u0179r\u00f3d\u0142o danych zosta\u0142o skonfigurowane z typem Driver, kt\u00f3ry nie zosta\u0142 zaimplementowany przez sterownik puli Oracle UCP.
+DSRA4016.no.ucp.driver.datasource.useraction=Zaktualizuj \u017ar\u00f3d\u0142o danych, aby u\u017cywa\u0142o typu XADataSource lub DataSource.
 
 # ----------------------------------------------------------------------------
 # 

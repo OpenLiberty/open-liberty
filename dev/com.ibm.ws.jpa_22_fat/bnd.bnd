@@ -25,6 +25,7 @@ src: \
 	test-applications/jpa22/jpa22query/src,\
 	test-applications/jpa22/jpa22timeapi/src,\
 	test-applications/jpadefaultdatasource/src,\
+	test-applications/ejbpassivation/src,\
 	test-framework/src
 
 fat.project: true

@@ -80,6 +80,8 @@ public class ReactiveStreamsTestServlet extends FATServlet {
         int loops = 0;
         while (!integerSubscriber.isComplete() && loops++ < 10 * 60 * 5) {
             Thread.sleep(100);
+            System.out.println("sleep for loop " + loops);
+            loops++;
         }
 
         ArrayList<Integer> results = integerSubscriber.getResults();
@@ -107,7 +109,7 @@ public class ReactiveStreamsTestServlet extends FATServlet {
     @Test
     public void serviceLoadReactiveStreamsEngineTest() {
         Iterator<ReactiveStreamsEngine> engines = ServiceLoader.load(ReactiveStreamsEngine.class).iterator();
-        assertTrue("Reactive Streams Engine has been injected as null", engines.hasNext());
+        assertTrue("Reactive Streams Engine is not service loadable", engines.hasNext());
     }
 
     private ProcessorBuilder<Integer, Integer> builder() {

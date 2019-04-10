@@ -910,7 +910,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 if (supportedProcessTypes.contains(ProcessType.CLIENT)) {
                     Tr.audit(tc, "CLIENT_STARTED", locationService.getServerName());
                 } else {
-                    Tr.audit(tc, "SERVER_STARTED", locationService.getServerName());
+                    Tr.audit(tc, "SERVER_STARTED", locationService.getServerName(), TimestampUtils.getElapsedTime());
                 }
             }
         }
