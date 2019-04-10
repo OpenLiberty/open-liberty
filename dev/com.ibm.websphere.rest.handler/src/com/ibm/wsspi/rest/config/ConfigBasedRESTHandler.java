@@ -125,7 +125,7 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
         //String uid = request.getPathVariable("uid");
         //String elementName = request.getPathVariable("elementName");
 
-        String apiRoot = "/validator";
+        String apiRoot = "/validation"; // TODO get this from subclass. Should not be hard-coded here
         String uid = null;
         int endElementName = path.indexOf('/', apiRoot.length() + 1);
         if (endElementName < 0) { // uid not specified

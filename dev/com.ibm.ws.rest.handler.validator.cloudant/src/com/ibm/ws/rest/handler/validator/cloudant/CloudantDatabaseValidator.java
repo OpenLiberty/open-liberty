@@ -28,7 +28,7 @@ import com.ibm.wsspi.validator.Validator;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { Validator.class },
-           property = { "service.vendor=IBM", "com.ibm.wsspi.rest.handler.root=/validator", "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.cloudant.cloudantDatabase" })
+           property = { "service.vendor=IBM", "com.ibm.wsspi.rest.handler.root=/validation", "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.cloudant.cloudantDatabase" })
 public class CloudantDatabaseValidator implements Validator {
     private final static TraceComponent tc = Tr.register(CloudantDatabaseValidator.class);
 
