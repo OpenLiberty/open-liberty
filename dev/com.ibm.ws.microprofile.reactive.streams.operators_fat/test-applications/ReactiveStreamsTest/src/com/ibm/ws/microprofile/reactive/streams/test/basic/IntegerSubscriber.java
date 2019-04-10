@@ -57,6 +57,7 @@ public class IntegerSubscriber implements Subscriber<Integer> {
         sub = arg0;
         results = new ArrayList<Integer>();
         System.out.println("onSubscribe" + sub);
+        startConsuming();
     }
 
     public void startConsuming() {

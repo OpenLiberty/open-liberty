@@ -76,9 +76,9 @@ public class ReactiveStreamsTestServlet extends FATServlet {
 
         integerSubscriber = new IntegerSubscriber();
         data.via(filter).to(integerSubscriber).run();
-        integerSubscriber.startConsuming();
 
-        while (!integerSubscriber.isComplete()) {
+        int loops = 0;
+        while (!integerSubscriber.isComplete() && loops++ < 10 * 60 * 5) {
             Thread.sleep(100);
         }
 
