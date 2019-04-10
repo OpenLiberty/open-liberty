@@ -177,7 +177,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      * Test specifyig a non-existant customLoginConfig
      */
     @Test
-    @ExpectedFFDC({ "javax.security.auth.login.LoginException",
+    @ExpectedFFDC({ "java.security.PrivilegedActionException",
                     "javax.resource.ResourceException",
                     "java.sql.SQLException" })
     public void testCustomLoginIBMWebBndWrongName() throws Exception {

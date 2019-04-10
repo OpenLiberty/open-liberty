@@ -86,7 +86,8 @@ public class DataSourceValidator implements Validator {
                                 Entry<String, String> e = (Entry<String, String>) entry;
                                 if (trace && tc.isDebugEnabled())
                                     Tr.debug(tc, "Adding custom login module property with key=" + e.getKey());
-                                config.addLoginProperty(e.getKey(), e.getValue());
+                                Object value = e.getValue();
+                                config.addLoginProperty(e.getKey(), value == null ? null : value.toString());
                             }
                         }
                     }
