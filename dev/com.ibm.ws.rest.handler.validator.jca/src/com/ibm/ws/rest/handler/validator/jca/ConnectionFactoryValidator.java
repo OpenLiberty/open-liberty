@@ -121,10 +121,11 @@ public class ConnectionFactoryValidator implements Validator {
                             JSONObject loginConfigProps = (JSONObject) loginConfigProperties;
                             for (Object entry : loginConfigProps.entrySet()) {
                                 @SuppressWarnings("unchecked")
-                                Entry<String, String> e = (Entry<String, String>) entry;
+                                Entry<String, Object> e = (Entry<String, Object>) entry;
                                 if (trace && tc.isDebugEnabled())
                                     Tr.debug(tc, "Adding custom login module property with key=" + e.getKey());
-                                config.addLoginProperty(e.getKey(), e.getValue());
+                                Object value = e.getValue();
+                                config.addLoginProperty(e.getKey(), value == null ? null : value.toString());
                             }
                         }
                     }

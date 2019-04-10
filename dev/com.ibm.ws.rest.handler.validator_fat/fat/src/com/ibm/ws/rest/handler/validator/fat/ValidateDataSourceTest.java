@@ -402,7 +402,7 @@ public class ValidateDataSourceTest extends FATServletClient {
         assertTrue(err, json.getString("jdbcDriverVersion").matches(VERSION_REGEX));
     }
 
-    @ExpectedFFDC(value = { "javax.security.auth.login.LoginException", "javax.resource.ResourceException", "java.sql.SQLException" })
+    @ExpectedFFDC(value = { "java.security.PrivilegedActionException", "javax.resource.ResourceException", "java.sql.SQLException" })
     @Test
     public void testProvidedAuthDoesNotExist() throws Exception {
         JsonObject json = new HttpsRequest(server, "/ibm/api/validator/dataSource/DefaultDataSource?auth=container&authAlias=authDoesntExist").run(JsonObject.class);

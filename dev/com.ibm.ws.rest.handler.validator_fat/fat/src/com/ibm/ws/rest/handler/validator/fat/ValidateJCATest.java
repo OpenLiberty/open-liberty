@@ -51,6 +51,10 @@ public class ValidateJCATest extends FATServletClient {
                                         .addPackage("org.test.validator.adapter"));
         ShrinkHelper.exportToServer(server, "dropins", rar);
 
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "customLoginModule.jar");
+        jar.addPackage("com.ibm.ws.rest.handler.validator.loginmodule");
+        ShrinkHelper.exportToServer(server, "/", jar);
+
         server.startServer();
 
         // Wait for the API to become available
@@ -103,7 +107,7 @@ public class ValidateJCATest extends FATServletClient {
         HttpsRequest request = new HttpsRequest(server, "/ibm/api/validator/connectionFactory/cf1?auth=application")
                         .requestProp("X-Validator-User", "user1")
                         .requestProp("X-Validator-Password", "1user");
-        JsonObject json = request.method("POST").run(JsonObject.class);
+        JsonObject json = request.method("GET").run(JsonObject.class);
 
         String err = "Unexpected json response: " + json;
         assertEquals(err, "cf1", json.getString("uid"));
@@ -132,7 +136,7 @@ public class ValidateJCATest extends FATServletClient {
         HttpsRequest request = new HttpsRequest(server, "/ibm/api/validator/connectionFactory/ds5?auth=application")
                         .requestProp("X-Validator-User", "user5")
                         .requestProp("X-Validator-Password", "5user");
-        JsonObject json = request.method("POST").run(JsonObject.class);
+        JsonObject json = request.method("GET").run(JsonObject.class);
 
         String err = "Unexpected json response: " + json;
         assertEquals(err, "ds5", json.getString("uid"));
@@ -240,6 +244,33 @@ public class ValidateJCATest extends FATServletClient {
         assertEquals(err, "TestValidationEIS", json.getString("eisProductName"));
         assertEquals(err, "33.56.65", json.getString("eisProductVersion"));
         assertEquals(err, "containerAuthUser2", json.getString("user"));
+    }
+
+    /**
+     * Validate a connectionFactory for a JCA data source using container authentication with a custom login module
+     * and custom login properties.
+     */
+    @Test
+    public void testCustomLoginModuleForJCADataSource() throws Exception {
+        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validator/connectionFactory/ds5?auth=container&loginConfig=customLoginEntry");
+        JsonObject json = request.method("GET")
+                        .jsonBody("{ \"loginConfigProperties\": { \"loginName\": \"lmUser\", \"loginNum\": 6 } }")
+                        .run(JsonObject.class);
+
+        String err = "Unexpected json response: " + json;
+        assertEquals(err, "ds5", json.getString("uid"));
+        assertEquals(err, "ds5", json.getString("id"));
+        assertEquals(err, "eis/ds5", json.getString("jndiName"));
+        assertTrue(err, json.getBoolean("successful"));
+        assertNull(err, json.get("failure"));
+        assertNotNull(err, json = json.getJsonObject("info"));
+        assertEquals(err, "TestValidationEIS", json.getString("databaseProductName"));
+        assertEquals(err, "33.56.65", json.getString("databaseProductVersion"));
+        assertEquals(err, "TestValidationJDBCAdapter", json.getString("driverName"));
+        assertEquals(err, "36.77.85", json.getString("driverVersion"));
+        assertEquals(err, "TestValDB", json.getString("catalog"));
+        assertEquals(err, "LMUSER6", json.getString("schema"));
+        assertEquals(err, "lmUser6", json.getString("user"));
     }
 
     /**
