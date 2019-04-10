@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.eclipse.microprofile.reactive.streams.operators.CompletionRunner;
@@ -34,19 +35,22 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
     @Test
     public void testPubSub() {
         MyPublisher<String> publisher = new MyPublisher<String>();
-        MySubscriber<String> subscriber = new MySubscriber<String>();
+        MySubscriber<String> subscriber = new MySubscriber<String>(publisher);
 
         PublisherBuilder<String> pBuilder = ReactiveStreams.fromPublisher(publisher);
         SubscriberBuilder<String, Void> sBuilder = ReactiveStreams.fromSubscriber(subscriber);
 
         CompletionRunner<Void> runner = pBuilder.to(sBuilder);
-        runner.run();
+        CompletionStage<Void> result = runner.run();
 
-        publisher.publish("one");
-        publisher.publish("two");
-        publisher.publish("three");
-
-        subscriber.request(3);
+        int loops = 0;
+        while (!subscriber.isComplete() && loops++ < 10 * 60 * 5) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
         List<String> messages = subscriber.getMessages();
         assertTrue(messages.contains("one"));
@@ -70,6 +74,10 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
             System.out.println("publish: " + value);
             subscription.queue(value);
         }
+
+        public void quiesce() {
+            subscription.quiesce();
+        }
     }
 
     private static class MySubscription<T> implements Subscription {
@@ -77,6 +85,8 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
         BlockingQueue<T> queue = new LinkedBlockingQueue<T>();
 
         private final Subscriber<? super T> subscriber;
+
+        private boolean quiesce = false;
 
         /**
          * @param myPublisher
@@ -113,6 +123,14 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
                     this.subscriber.onError(e);
                 }
             }
+            if (quiesce && queue.isEmpty()) {
+                subscriber.onComplete();
+            }
+
+        }
+
+        public void quiesce() {
+            quiesce = true;
         }
 
     }
@@ -121,10 +139,27 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
 
         private final List<T> messages = new ArrayList<T>();
         private Subscription subscription;
+        private final MyPublisher<String> publisher;
+        private boolean complete = false;
+
+        /**
+         * @param publisher
+         */
+        public MySubscriber(MyPublisher<String> publisher) {
+            this.publisher = publisher;
+        }
+
+        /**
+         * @return
+         */
+        public boolean isComplete() {
+            return complete;
+        }
 
         /** {@inheritDoc} */
         @Override
         public void onComplete() {
+            complete = true;
             System.out.println("onComplete");
         }
 
@@ -132,6 +167,7 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
         @Override
         public void onError(Throwable arg0) {
             System.out.println("onError");
+            complete = true;
             arg0.printStackTrace();
         }
 
@@ -140,6 +176,7 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
         public void onNext(T arg0) {
             System.out.println("onNext: " + arg0);
             this.messages.add(arg0);
+            subscription.request(1);
         }
 
         /** {@inheritDoc} */
@@ -147,6 +184,11 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
         public void onSubscribe(Subscription arg0) {
             System.out.println("onSubscribe: " + arg0);
             this.subscription = arg0;
+            subscription.request(1);
+            publisher.publish("one");
+            publisher.publish("two");
+            publisher.publish("three");
+            publisher.quiesce();
         }
 
         public List<T> getMessages() {
