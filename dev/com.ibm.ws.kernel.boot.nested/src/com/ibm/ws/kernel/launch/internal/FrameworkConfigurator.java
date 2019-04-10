@@ -112,9 +112,9 @@ public class FrameworkConfigurator {
         // It is not clear that multi-threading really helps with performance of the resolver.
         config.putIfAbsent("equinox.resolver.thread.count", "1");
 
-        // By default use single thread for activating bundles from start-level
-        // Set to -1 in bootstrap.properties results in using the number of threads == to num processors
-        config.putIfAbsent("equinox.start.level.thread.count", "1");
+        // By default use multiple threads for activating bundles from start-level
+        // Set to 1 in bootstrap.properties results sequentially starting bundles with a single thread
+        config.putIfAbsent("equinox.start.level.thread.count", "-1");
 
         // The IBM shared class adapter issues a message if it's loaded on a
         // non-IBM JVM.  Since it does no harm, we'll suppress the message.
