@@ -1341,8 +1341,36 @@
   <AD id="serverName"                         required="false" type="String"  default="localhost" name="%serverName" description="%serverName.desc"/>
   <AD id="portNumber"                         required="false" type="Integer" name="%portNumber" description="%portNumber.desc"/>
   <!-- Advanced properties for properties.postgresql -->
-  <AD id="user"                               ibmui:group="Advanced" required="false" type="String"  name="%user" description="%user.desc"/>
+  <AD id="applicationName"                    ibmui:group="Advanced" required="false" type="String"  name="%applicationName" description="%applicationName.desc"/>
+  <AD id="currentSchema"                      ibmui:group="Advanced" required="false" type="String"  name="%currentSchema" description="%currentSchema.desc"/>
+  <AD id="defaultAutoCommit"                  ibmui:group="Advanced" required="false" type="Boolean" name="%defaultAutoCommit" description="%defaultAutoCommit.desc"/>
+  <AD id="defaultRowFetchSize"                ibmui:group="Advanced" required="false" type="Integer" name="%defaultRowFetchSize" min="0" description="%defaultRowFetchSize.desc"/>
+  <AD id="loginTimeout"                       ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" min="0" name="%loginTimeout" description="%loginTimeout.desc"/>
   <AD id="password"                           ibmui:group="Advanced" required="false" type="String"  ibm:type="password" name="%password" description="%password.desc"/>
+  <AD id="readOnly"                           ibmui:group="Advanced" required="false" type="Boolean" name="%readOnly" description="%readOnly.desc"/>
+  <AD id="targetServerType"                   ibmui:group="Advanced" required="false" type="String"  name="%targetServerType" description="%targetServerType.desc">
+   <Option value="any"             label="any"/>
+   <Option value="master"          label="master"/>
+   <Option value="slave"           label="slave"/>
+   <Option value="secondary"       label="secondary"/>
+   <Option value="preferSlave"     label="preferSlave"/>
+   <Option value="preferSecondary" label="preferSecondary"/>
+  </AD>
+  <AD id="tcpKeepAlive"                       ibmui:group="Advanced" required="false" type="Boolean" name="%tcpKeepAlive" description="%tcpKeepAlive.desc"/>
+  <AD id="user"                               ibmui:group="Advanced" required="false" type="String"  name="%user" description="%user.desc"/>
+  <AD id="URL"                                ibmui:group="Advanced" required="false" type="String"  name="%URL" description="%URL.desc"/>
+  <!-- TODO: security related settings -->
+  <!-- SSL -->
+  <!-- JAAS properties -->
+  <!-- kerberosServerName -->
+  <!-- useSpnego -->
+  <!-- gsslib -->
+
+  <!-- TODO: Props that may need to be blocked or have special consideration -->  
+  <!-- preparedStatementCacheQueries  preparedStatementCacheSizeMiB -->
+  <!-- connectTimeout -->
+  <!-- socketTimeout -->
+  <!-- cancelSignalTimeout -->
  </OCD>
 
 </metatype:MetaData>
