@@ -67,12 +67,16 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
         public void subscribe(Subscriber<? super T> arg0) {
             System.out.println("subscribe: " + arg0);
             this.subscription = new MySubscription<T>(arg0);
+            publish("one");
+            publish("two");
+            publish("three");
+
             arg0.onSubscribe(this.subscription);
         }
 
-        public void publish(T value) {
-            System.out.println("publish: " + value);
-            subscription.queue(value);
+        public void publish(String string) {
+            System.out.println("publish: " + string);
+            subscription.queue(string);
         }
 
         public void quiesce() {
@@ -96,11 +100,11 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
         }
 
         /**
-         * @param value
+         * @param string
          */
-        public void queue(T value) {
+        public void queue(String string) {
             try {
-                this.queue.put(value);
+                this.queue.put((T) string);
             } catch (InterruptedException e) {
                 this.subscriber.onError(e);
             }
@@ -185,10 +189,6 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
             System.out.println("onSubscribe: " + arg0);
             this.subscription = arg0;
             subscription.request(1);
-            publisher.publish("one");
-            publisher.publish("two");
-            publisher.publish("three");
-            publisher.quiesce();
         }
 
         public List<T> getMessages() {
