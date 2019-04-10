@@ -335,7 +335,7 @@ public class ValidateJCATest extends FATServletClient {
         //stack = j.getJsonArray("stack");
         //assertNotNull(err, stack);
         //assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
-        //assertTrue(err, stack.getString(0).startsWith("org.test.validation.adapter.ManagedConnectionFactoryImpl.createManagedConnection(ManagedConnectionFactoryImpl.java:"));
+        //assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.ManagedConnectionFactoryImpl.createManagedConnection(ManagedConnectionFactoryImpl.java:"));
         //assertTrue(err, stack.getString(1).startsWith("com."));
         //assertTrue(err, stack.getString(2).startsWith("com."));
         assertNull(err, j.getJsonObject("cause"));
@@ -361,7 +361,7 @@ public class ValidateJCATest extends FATServletClient {
         //stack = j.getJsonArray("stack");
         //assertNotNull(err, stack);
         //assertTrue(err, stack.size() > 10); // stack is actually much longer, but size could vary
-        //assertTrue(err, stack.getString(0).startsWith("org.test.validation.adapter.ManagedConnectionFactoryImpl.createManagedConnection(ManagedConnectionFactoryImpl.java:"));
+        //assertTrue(err, stack.getString(0).startsWith("org.test.validator.adapter.ManagedConnectionFactoryImpl.createManagedConnection(ManagedConnectionFactoryImpl.java:"));
         //assertTrue(err, stack.getString(1).startsWith("com."));
         //assertTrue(err, stack.getString(2).startsWith("com."));
         // cause
