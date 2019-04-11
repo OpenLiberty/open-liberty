@@ -780,4 +780,4 @@ info.no.servers.defined=There are no servers defined in the user directory {0}.
 info.list.of.defined.servers=The following servers are defined relative to the user directory {0}.
 info.communicate.server=A communication error has occurred between the command {0} and the server {1}.
 
-info.serialFilterLoaded=Serial Filter Agent is loaded.
+info.serialFilterLoaded=The serial filter agent loaded.
