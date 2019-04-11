@@ -1484,7 +1484,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
         boolean supportsParallelUse = false;
         CompletableFuture<Integer> stage1 = txExecutor.completedFuture(0);
         CompletableFuture<Integer> stage2;
-        tx.setTransactionTimeout(20);
+        tx.setTransactionTimeout(10);
         tx.begin();
         try {
             try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
@@ -1526,7 +1526,12 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             tm.suspend();
         }
 
-        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+        try (Connection con = defaultDataSource.getConnection()) {
+            // In the case where parallel use is rejected, the following attempt to read the entry
+            // that was written in the prior transaction will be blocked until the transaction
+            // rolls back and releases its locks on the data.
+            con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+            Statement st = con.createStatement();
             ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Swift'");
             assertTrue(result.next());
             if (supportsParallelUse)
