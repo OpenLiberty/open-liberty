@@ -278,80 +278,29 @@ public abstract class AbstractJspModC {
                 // Normalize compileWithAssert and jdkSourceLevel; compileWithAssert with value true means compile with
                 // jdk 1.4 source level.  Only jdkSourceLevel will be used elsewhere in the JSP container.
                 Boolean assertProperty = (Boolean) this.optionOverrides.get(JspToolsOptionKey.compileWithAssertKey);
-                String jdkLevel = (String) this.optionOverrides.get(JspToolsOptionKey.jdkSourceLevelKey);
+                String rawJdkLevel = (String) this.optionOverrides.get(JspToolsOptionKey.jdkSourceLevelKey);
+                int jdkLevel = 16;
+                try {
+                    jdkLevel = Integer.parseInt(rawJdkLevel);
+                } catch(NumberFormatException e) {
+                }
                 if (assertProperty!=null && assertProperty.booleanValue()==true) {
                     if (logger!=null) {
                         if(doTraceCheck&&logger.isLoggable(Level.INFO)){
                             logger.logp(Level.INFO, CLASS_NAME,"compileApp", "compileWithAssert is deprecated.  Use jdkSourceLevel with value of '14' instead. ");
                         }
                     }
-                    // if jdkSourceLevel was not set, then set it to 1.5 level
-                    //487396.1 changed default from 1.3 to 1.5
-                    //F000743-28610 changed default from 1.5 to 1.6
-                    if (jdkLevel==null) {
-                        jdkLevel="16";
-                        if (logger!=null) {
-                            if(doTraceCheck&&logger.isLoggable(Level.INFO)){
-                                logger.logp(Level.INFO, CLASS_NAME,"compileApp", "Setting jdkSourceLevel to '16' because compileWithAssert is true.");
-                            }
-                        }
-                    }
-                    else if (jdkLevel.equals("13")){
+                    if (jdkLevel == 13) {
                         // if jdkSourceLevel was set to 1.3, then set it to 1.4 level to honor higher setting of compileWithAssert
-                        jdkLevel="14";
+                        jdkLevel = 14;
                         if (logger!=null) {
                             if(doTraceCheck&&logger.isLoggable(Level.INFO)){
                                 logger.logp(Level.INFO, CLASS_NAME,"compileApp", "jdkSourceLevel was set to '13'.  Setting jdkSourceLevel to '14' because compileWithAssert is true.");
                             }
                         }
                     }
-                    else if (jdkLevel.equals("15")){
-                        // if jdkSourceLevel was set to 1.5, then leave it and log situation
-                        if (logger!=null) {
-                            if(doTraceCheck&&logger.isLoggable(Level.INFO)){
-                                logger.logp(Level.INFO, CLASS_NAME,"compileApp", "jdkSourceLevel is set to '15' and compileWithAssert is 'true'.  Leaving jdkSourceLevel at higher '15' level.");
-                            }
-                        }
-                    }
-                    //PM04610 start
-                    else if (jdkLevel.equals("16")){
-                        // if jdkSourceLevel was set to 1.6, then leave it and log situation
-                        if (logger!=null) {
-                            if(doTraceCheck&&logger.isLoggable(Level.INFO)){
-                                logger.logp(Level.INFO, CLASS_NAME,"compileApp", "jdkSourceLevel is set to '16' and compileWithAssert is 'true'.  Leaving jdkSourceLevel at higher '16' level.");
-                            }
-                        }
-                    }
-                    //PM04610 end
-                    else if (jdkLevel.equals("17")){
-                        // if jdkSourceLevel was set to 1.7, then leave it and log situation
-                        if (logger!=null) {
-                            if(doTraceCheck&&logger.isLoggable(Level.INFO)){
-                                logger.logp(Level.INFO, CLASS_NAME,"compileApp", "jdkSourceLevel is set to '17' and compileWithAssert is 'true'.  Leaving jdkSourceLevel at higher '17' level.");
-                            }
-                        }
-                    }
-                    //126902 start
-                    else if (jdkLevel.equals("18")){
-                        // if jdkSourceLevel was set to 1.8, then leave it and log situation
-                        if (logger!=null) {
-                            if(doTraceCheck&&logger.isLoggable(Level.INFO)){
-                                logger.logp(Level.INFO, CLASS_NAME,"compileApp", "jdkSourceLevel is set to '18' and compileWithAssert is 'true'.  Leaving jdkSourceLevel at higher '18' level.");
-                            }
-                        }
-                    }
-                    //126902 end
                 }
-                if (jdkLevel!=null
-                  && !jdkLevel.equals("13")
-                  && !jdkLevel.equals("14")
-                  && !jdkLevel.equals("15")
-                  && !jdkLevel.equals("16") //PM04610
-                  && !jdkLevel.equals("17")
-                  && !jdkLevel.equals("18")) { //126902
-                    jdkLevel=null;
-                }
-                if (jdkLevel != null) {
+                if (jdkLevel >= 14) {
                     options.setJdkSourceLevel(jdkLevel);
                 }
                 booleanProperty = (Boolean) this.optionOverrides.get(JspToolsOptionKey.usePageTagPoolKey);

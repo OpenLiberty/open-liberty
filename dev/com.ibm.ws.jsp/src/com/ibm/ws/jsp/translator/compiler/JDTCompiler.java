@@ -68,7 +68,7 @@ public class JDTCompiler implements JspCompiler {
         private boolean isDebugEnabled = false;
         private boolean isVerbose = false;
         private boolean isDeprecation = false; 
-        private String jdkSourceLevel=null;
+        private int jdkSourceLevel;
         private boolean useFullPackageNames = false;
         
         public JDTCompiler(ClassLoader loader, JspOptions options) {
@@ -111,30 +111,30 @@ public class JDTCompiler implements JspCompiler {
         compilerOptionsMap.put(CompilerOptions.OPTION_Encoding, javaEncoding);
         
         //487396.1 jdkSourceLevel is 15 by default now ... should get into if statement
-        if (jdkSourceLevel.equals("14")) {
+        if (jdkSourceLevel == 14) {
             compilerOptionsMap.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_4);
             compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_4);  //PM32704
             compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_4);  //PM32704
         }
-        else if (jdkSourceLevel.equals("15")) {
+        else if (jdkSourceLevel == 15) {
             compilerOptionsMap.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_5);
             compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_5);  // 341708        
             compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform,CompilerOptions.VERSION_1_5); // 412312
         }
         //PM04610 start
-        else if (jdkSourceLevel.equals("16")) {
+        else if (jdkSourceLevel == 16) {
             compilerOptionsMap.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_6);
             compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_6);  // 341708        
             compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform,CompilerOptions.VERSION_1_6); // 412312
         }
         //PM04610 end
-        else if (jdkSourceLevel.equals("17")) {
+        else if (jdkSourceLevel == 17) {
             compilerOptionsMap.put(CompilerOptions.OPTION_Source, "1.7"); //can I do this?? no CompilerOptions.VERSION_1_7 yet
             compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, "1.7");       
             compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, "1.7");
         }
         //126902 start
-        else if (jdkSourceLevel.equals("18")) {
+        else if (jdkSourceLevel == 18) {
             compilerOptionsMap.put(CompilerOptions.OPTION_Source, "1.8"); //Verify, no CompilerOptions.VERSION_1_8 yet.
             compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, "1.8");  
             compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, "1.8");
