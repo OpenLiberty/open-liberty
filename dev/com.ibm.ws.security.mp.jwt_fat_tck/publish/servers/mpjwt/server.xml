@@ -17,6 +17,7 @@
         <feature>jaxrs-2.0</feature>
         <feature>appSecurity-2.0</feature>
         <feature>mpJwt-1.0</feature>  
+        <feature>arquillian-support-1.0</feature>
     </featureManager>
    
    

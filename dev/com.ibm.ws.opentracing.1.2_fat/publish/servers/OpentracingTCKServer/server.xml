@@ -16,6 +16,7 @@
 	<feature>opentracing-1.2</feature>
 	<feature>mpOpenTracing-1.2</feature>
 	<feature>usr:opentracingMock-0.31</feature>
+	<feature>arquillian-support-1.0</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml" />

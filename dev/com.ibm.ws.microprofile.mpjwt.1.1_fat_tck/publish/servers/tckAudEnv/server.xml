@@ -26,6 +26,7 @@
         <feature>mpJwt-1.1</feature>
          <feature>appSecurity-2.0</feature>        
         <feature>localConnector-1.0</feature>
+        <feature>arquillian-support-1.0</feature>
     </featureManager>
 
     <mpJwt  groupNameAttribute="groups" id="myMpJwt" audiences="s6BhdRkqt3, s6BhdRkqt3.2" /> 
