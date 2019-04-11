@@ -63,9 +63,9 @@ public class IBMHibernateExtendedBeanManager {
             lifeCycleListenerClass = Class.forName("org.hibernate.resource.beans.container.spi.ExtendedBeanManager$LifecycleListener"
                                                    ,true, applicationClassLoader);
         } catch (ClassNotFoundException e) {
-            //TODO a better error message here? We're unlikely to reach this as this class is only used if 
+            //We're unlikely to reach this as this class is only used if 
             //org.hibernate.resource.beans.container.spi.ExtendedBeanManager is in the classloader 
-            throw new IllegalStateException(e);
+            throw new IllegalStateException("Failed to find org.hibernate.resource.beans.container.spi.ExtendedBeanManager$LifecycleListener", e);
         }
         
         if (lifeCycleListenerClass.isAssignableFrom(lifecycleListener.getClass())) {

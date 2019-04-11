@@ -35,7 +35,7 @@ public class JPAContainerCDIExtension implements Extension, WebSphereCDIExtensio
     //This is not actually used since weld will create a new instance of this class seperate from the one OSGI has populated. 
     //But this stays so that OSGI will manage the extensions lifecycle. 
     @Reference
-    private HibernateNotifier cdiSvc;
+    protected HibernateNotifier notUsed;
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager) {
     	HibernateNotifier hibernateNotifier = getPropertyProvideder();

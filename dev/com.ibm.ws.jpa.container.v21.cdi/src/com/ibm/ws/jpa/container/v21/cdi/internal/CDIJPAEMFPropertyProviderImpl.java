@@ -49,7 +49,7 @@ public class CDIJPAEMFPropertyProviderImpl implements JPAEMFPropertyProvider, Hi
     private Set<IBMHibernateExtendedBeanManager> extendedBeanManagers = new HashSet<IBMHibernateExtendedBeanManager>();
 
     @Reference
-    private ClassLoadingService classLoadingService;
+    protected ClassLoadingService classLoadingService;
 
     @Override
     @FFDCIgnore(ClassNotFoundException.class)
@@ -62,7 +62,7 @@ public class CDIJPAEMFPropertyProviderImpl implements JPAEMFPropertyProvider, Hi
                 ClassLoader unifiedClassLoader = unify(CLASSLOADER, applicationClassLoader);
 
                 Class<?> extendedBeanManagerInterface = Class.forName("org.hibernate.resource.beans.container.spi.ExtendedBeanManager",
-                                                                         true, unifiedClassLoader); //TODO throw exception here if ExtendedBeanManager isn't what we expected?
+                                                                         true, unifiedClassLoader);
                 Class<?> depreciatedExtendedBeanManagerInterface = Class.forName("org.hibernate.jpa.event.spi.jpa.ExtendedBeanManager",
                                                                          true, unifiedClassLoader); //A bug in hibernate means we need to implement this interface too for now. 
                 IBMHibernateExtendedBeanManager extendedBeanManager = new IBMHibernateExtendedBeanManager(unifiedClassLoader);

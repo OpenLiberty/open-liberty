@@ -67,7 +67,9 @@ public class BeanManagerInvocationHandler implements InvocationHandler {
         try {
             //This method takes an argument of ExtendedBeanManager.LifecycleListener but this class is not available at compile time. 
             if (methodName.equals("registerLifecycleListener")) {
-                //TODO throw exceptions if this doesn't match the method signature we expect. 
+                if (args.length != 1) {
+                    throw new IllegalStateException("registerLifecycleListener should have one argument"); //Basic sanity check without doing a classloader lookup.
+                } 
                 Object listener = args[0]; //only one argument. 
                 Method proxyMethod = extendedBeanManager.getClass().getMethod("registerLifecycleListener", Object.class);
                 ret = proxyMethod.invoke(extendedBeanManager, listener);
@@ -93,7 +95,7 @@ public class BeanManagerInvocationHandler implements InvocationHandler {
     }
 
     //To avoid depending on the application classloader having access to javax.el we need to avoid direct implimentations of the BeanManager interface
-    private Object getTarget() {
+    private synchronized Object getTarget() {
         if (target == null) {
             BeanManager bm = cdiService.getCurrentBeanManager();
             if (bm == null) {
