@@ -81,6 +81,11 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
     }
 
     @Override
+    public final String getAPIRoot() {
+        return "/validation";
+    }
+
+    @Override
     public Object handleError(RESTRequest request, String uid, String errorMessage) {
         JSONObject failure = toJSONObject("message", errorMessage);
         if (uid == null)
