@@ -60,8 +60,6 @@ public class PollingDynamicConfig implements Closeable {
 
     private final ConfigSource source;
 
-    private final WeakReference<CompositeConfig> parentConfig;
-
     /**
      * Constructor
      * A refresh interval >1 will be set to have a minimum value of
@@ -70,8 +68,7 @@ public class PollingDynamicConfig implements Closeable {
      * @param source
      * @param executor
      */
-    public PollingDynamicConfig(CompositeConfig parent, ConfigSource source, ScheduledExecutorService executor, long refreshInterval) {
-        this.parentConfig = new WeakReference<>(parent);
+    public PollingDynamicConfig(ConfigSource source, ScheduledExecutorService executor, long refreshInterval) {
         this.source = source;
         this.id = source.getName();
 
@@ -156,8 +153,8 @@ public class PollingDynamicConfig implements Closeable {
         if (busy.compareAndSet(false, true)) {
             try {
                 Map<String, String> updated = new HashMap<>();
-                //a last minute check to see if the config has been closed or the system is shutting down
-                if (parentConfig.get() != null && !com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping()) {
+                //a last minute check to see if the system is shutting down
+                if (!com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping()) {
                     Map<String, String> props = source.getProperties();
                     if (props != null) {
                         updated.putAll(props);
@@ -316,10 +313,8 @@ public class PollingDynamicConfig implements Closeable {
                     Tr.debug(tc, "start", "Scheduled Update failed: {0}. Exception: {1}", this, e);
                 }
             } finally {
-                PollingDynamicConfig config2 = configRef.get();
-                if (config2 == null || com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping()) {
-                    // Our pollingDynamicConfig has been GC'd, we can't update it any more, cancel ourselves
-                    // OR the OSGi Framework is being shutdown (i.e. the server is being shutdown)
+                if (com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping()) {
+                    // the OSGi Framework is being shutdown (i.e. the server is being shutdown)
                     if (future != null) {
                         future.cancel(false);
                     }
