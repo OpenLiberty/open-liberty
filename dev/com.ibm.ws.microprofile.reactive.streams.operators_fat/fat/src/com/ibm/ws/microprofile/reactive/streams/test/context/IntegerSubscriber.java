@@ -16,13 +16,13 @@ import static org.junit.Assert.assertTrue;
 import java.security.Principal;
 import java.util.ArrayList;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-@RequestScoped
+@Dependent
 public class IntegerSubscriber implements Subscriber<Integer> {
 
     private Subscription sub;

@@ -12,7 +12,8 @@ IBM-API-Package: \
   org.eclipse.microprofile.reactive.streams.operators.core; type="stable", \
   org.reactivestreams; type="stable";
 -features=\
-  com.ibm.websphere.appserver.org.eclipse.microprofile.reactive.streams.operators-1.0
+  com.ibm.websphere.appserver.org.eclipse.microprofile.reactive.streams.operators-1.0, \
+  com.ibm.websphere.appserver.concurrent-1.0
 -bundles=\
   com.ibm.ws.microprofile.reactive.streams.operators, \
   com.ibm.ws.io.smallrye.reactive.streams.operators.1.0, \
