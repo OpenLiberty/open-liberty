@@ -549,11 +549,22 @@ if (isRelease) {
     publish.dependsOn zipOpenLibertyMaven
 }
 
+task zipTestReport(type: Zip) {
+  
+    baseName 'openliberty_test_report'
+    from cnf.file('generated/testReports/allUnitTests')
+    destinationDir cnf.file('generated/testReports')
+    userProps.setProperty('gradle.test.report.zip', archivePath.toString())
+    props.setProperty('gradle.test.report.zip', archivePath.toString()) //set in memory props too
+        File propsFile = rootProject.file('generated.properties')
+        userProps.store(propsFile.newWriter(), null)
+}
 
 
 
 task createJSONForPublicArtifacts {
     enabled isAutomatedBuild
+    dependsOn zipTestReport
 
     doLast {
         delete "${buildDir}/info.json"
@@ -662,7 +673,7 @@ ssh.settings {
 }
 
 task publishPublicArtifactsOnDhe {
-    dependsOn createJSONForPublicArtifacts
+    dependsOn zipTestReport,createJSONForPublicArtifacts
     enabled isAutomatedBuild && isPublicPublishing && (isPersonal || isContinuousBuild || isRelease)
 
     doLast {

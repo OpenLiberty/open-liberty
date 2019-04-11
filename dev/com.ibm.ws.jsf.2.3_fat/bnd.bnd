@@ -54,6 +54,7 @@ javac.source: 1.8
 javac.target: 1.8
 
 -buildpath: \
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     net.sourceforge.htmlunit:htmlunit;version=2.20,\
     xml-apis:xml-apis;version=1.4.01,\
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\

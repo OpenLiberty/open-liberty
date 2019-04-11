@@ -35,6 +35,7 @@ import com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean;
 
 public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionManagerMBean {
     private static final TraceComponent tc = Tr.register(PoolManagerMBeanImpl.class, J2CConstants.traceSpec, J2CConstants.messageFile);
+    private static final TraceComponent ConnLeakLogic = Tr.register(ConnectionManager.class, "ConnLeakLogic", J2CConstants.messageFile);
 
     private transient PoolManager _pm = null;
     private transient Version jdbcRuntimeVersion;
@@ -376,6 +377,14 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
 
     @Override
     public String showPoolContents() {
-        return toStringExternal();
+        StringBuffer buf = new StringBuffer();
+        buf.append(toStringExternal());
+        if (TraceComponent.isAnyTracingEnabled() && ConnLeakLogic.isEntryEnabled()) {
+            buf.append(nl);
+            buf.append("Extended ConnLeakLogic information");
+            buf.append(nl);
+            buf.append(_pm.toString());
+        }
+        return buf.toString();
     }
 }

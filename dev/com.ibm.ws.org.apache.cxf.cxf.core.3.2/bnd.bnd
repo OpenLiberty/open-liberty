@@ -20,7 +20,9 @@ javac.target: 1.8
    
 instrument.classesExcludes: org/apache/cxf/common/jaxb/*.class
 
--buildpath: org.apache.cxf:cxf-core;version=3.3.0,\
+-buildpath: \
+  com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+  org.apache.cxf:cxf-core;version=3.3.0,\
   com.ibm.ws.logging.core,\
   org.apache.cxf:cxf-rt-transports-http;version=3.3.0,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\

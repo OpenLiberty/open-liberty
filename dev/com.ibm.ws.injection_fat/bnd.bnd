@@ -49,10 +49,6 @@ fat.project: true
 tested.features: \
 	servlet-4.0, jpa-2.2, jdbc-4.2, ejbLite-3.2
 	
--buildpath.bootclasspath: \
-	com.ibm.websphere.javaee.annotation.1.3;version=latest;boot=true,\
-	${javac.bootclasspath.${javac.source}}
-
 # Intentionally put javax.annotation (as opposed to websphere.javee.annotation) on the -buildpath
 # because otherwise bndtools will merge the artifacts together and it will only be on the classpath.
 # For JDK 7/8 and JDK 9+ compatibility we need this artifact on both the bootcp and the classpath 

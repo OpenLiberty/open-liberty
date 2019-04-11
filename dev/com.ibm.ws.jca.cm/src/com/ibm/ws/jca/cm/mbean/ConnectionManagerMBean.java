@@ -105,7 +105,7 @@ public interface ConnectionManagerMBean {
      * @return A non-localized string displaying the current state of the connection pool including detailed information
      *         about each shared, unshared and free pool connection, the number of waiters, the total number of connections,
      *         and many other details which are useful for monitoring the state of the ConnectionManager and its pool, and debugging
-     *         problems.
+     *         problems. Note, this information is not NLS and the format is subject to change.
      *
      */
     public String showPoolContents();

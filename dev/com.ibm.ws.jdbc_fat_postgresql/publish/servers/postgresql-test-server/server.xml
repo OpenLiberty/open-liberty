@@ -1,0 +1,48 @@
+<server>
+
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>jdbc-4.2</feature>
+        <feature>jndi-1.0</feature>
+    </featureManager>
+    
+    <library id="PostgresLib">
+        <fileset dir="${shared.resource.dir}/postgres"/>
+    </library>
+    
+    <dataSource jndiName="jdbc/postgres/genericprops">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties serverName="localhost" portNumber="${env.POSTGRES_PORT}" databaseName="testdb" user="postgresUser" password="superSecret"/>
+    </dataSource>
+
+    <!-- Uses an anonymously named postgres JDBC driver, so that the file name heuristic doesn't discover the driver type -->    
+    <library id="AnonymousPostgresLib">
+        <fileset dir="${server.config.dir}/jdbc"/>
+    </library>
+    
+    <!-- datasource type auto-detection should locate the java.sql.Driver in the driver.jar -->
+    <dataSource jndiName="jdbc/anonymous/Driver">
+      <jdbcDriver libraryRef="AnonymousPostgresLib" />
+      <properties serverName="localhost" portNumber="${env.POSTGRES_PORT}" databaseName="testdb" user="postgresUser" password="superSecret"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/anonymous/XADataSource" type="javax.sql.XADataSource">
+      <jdbcDriver libraryRef="AnonymousPostgresLib" />
+      <properties serverName="localhost" portNumber="${env.POSTGRES_PORT}" databaseName="testdb" user="postgresUser" password="superSecret"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/postgres/minimal">
+      <jdbcDriver libraryRef="AnonymousPostgresLib" />
+      <properties.postgresql portNumber="${env.POSTGRES_PORT}" databaseName="testdb" user="postgresUser" password="superSecret"/>
+    </dataSource>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <!-- TODO use a doPriv in com.ibm.ws.jdbc.osgi.v42.JDBC42Runtime.doGetSchema(JDBC42Runtime.java:132) -->
+    <javaPermission codeBase="${server.config.dir}/dropins/postgresqlApp.war" className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
+    
+    <javaPermission codeBase="${server.config.dir}/jdbc/driver.jar" className="java.security.AllPermission"/>
+    <javaPermission codeBase="${shared.resource.dir}/postgres/postgresql.jar" className="java.security.AllPermission"/>
+
+</server>

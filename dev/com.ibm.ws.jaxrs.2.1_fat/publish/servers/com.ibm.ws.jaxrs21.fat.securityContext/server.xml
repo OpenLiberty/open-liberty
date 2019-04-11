@@ -1,0 +1,49 @@
+<server>
+    <featureManager>
+    	<feature>appSecurity-2.0</feature>
+    	<feature>componenttest-1.0</feature>
+    	<feature>jaxb-2.2</feature>
+        <feature>jaxrs-2.1</feature>
+    </featureManager>
+ 
+ 	<basicRegistry id="basic" realm="WebRealm">
+		<user name="user1" password="user1pwd" />
+		<user name="user2" password="user2pwd" />
+		<user name="user1a" password="user1pwd" />
+		<user name="user2a" password="user2pwd" />
+	</basicRegistry>
+	
+    <application type="war" id="jaxrs21security" name="jaxrs21security" location="${server.config.dir}/apps/jaxrs21security.war">
+    <application-bnd id="application-bnd1">
+        <security-role name="Role1appbnd">
+            <user name="user1a" />
+        </security-role>
+        <security-role name="Role2appbnd">
+            <user name="user2a" />
+        </security-role>
+        <security-role name="AuthenticationRole">
+            <user name="user1" />
+            <user name="user2" />
+        </security-role>
+      </application-bnd>
+      </application>
+    
+    <application type="war" id="jaxrs21securityNoWebXml" name="jaxrs21securityNoWebXml" location="${server.config.dir}/apps/jaxrs21securityNoWebXml.war">
+    <application-bnd id="application-bnd1">
+        <security-role name="Role1appbnd">
+            <user name="user1a" />
+        </security-role>
+        <security-role name="Role2appbnd">
+            <user name="user2a" />
+        </security-role>
+        <security-role name="AuthenticationRole">
+            <user name="user1" />
+            <user name="user2" />
+        </security-role>
+      </application-bnd>
+      </application>
+
+  	<httpEndpoint id="defaultHttpEndpoint"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}" />
+</server>

@@ -13,6 +13,7 @@ bVersion=1.0
 
 src: \
 	fat/src,\
+	test-applications/ConcurrentWorkTest/src, \
 	test-applications/ReactiveStreamsTest/src, \
 	test-applications/ReactiveWithJaxRS/src
 	
@@ -34,6 +35,7 @@ tested.features: mpReactiveStreams-1.0, \
 	com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.rest.client.1.1;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.config.1.3;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.contextpropagation.1.0;version=latest,\
 	com.ibm.websphere.org.reactivestreams.reactive-streams.1.0, \
 	com.ibm.websphere.javaee.annotation.1.3;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\

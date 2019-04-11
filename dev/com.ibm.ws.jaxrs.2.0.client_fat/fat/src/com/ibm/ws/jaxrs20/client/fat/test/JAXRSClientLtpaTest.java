@@ -71,9 +71,11 @@ public class JAXRSClientLtpaTest extends AbstractTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (serverServer != null) {
+            serverServer.dumpServer("jaxrs20.client.JAXRSLtpaServerTest");
             serverServer.stopServer();
         }
         if (clientServer != null) {
+            clientServer.dumpServer("jaxrs20.client.JAXRSLtpaClientTest");
             clientServer.stopServer();
         }
     }

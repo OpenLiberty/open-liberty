@@ -235,6 +235,7 @@ public class JDBCDrivers {
                                  "org.postgresql.ds.PGConnectionPoolDataSource", 
                                  "org.postgresql.xa.PGXADataSource" };
         classNamesByKey.put("POSTGRESQL", classes);
+        classNamesByPID.put("com.ibm.ws.jdbc.dataSource.properties.postgresql", classes);
         
         // H2 Database JDBC driver
         className = "org.h2.jdbcx.JdbcDataSource";

@@ -34,6 +34,7 @@ tool.project: true
 generate.replacement: false
 
 -buildpath: \
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.json4j;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.feature.core;version=latest,\

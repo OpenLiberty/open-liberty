@@ -23,6 +23,7 @@ public class AsyncAttemptContextImpl<W> {
 
     private final AsyncExecutionContextImpl<W> executionContext;
     private TimeoutState timeoutState;
+    private boolean circuitBreakerPermittedExecution = false;
     private final AtomicBoolean complete = new AtomicBoolean(false);
 
     public AsyncAttemptContextImpl(AsyncExecutionContextImpl<W> executionContext) {
@@ -39,6 +40,14 @@ public class AsyncAttemptContextImpl<W> {
 
     public void setTimeoutState(TimeoutState timeoutState) {
         this.timeoutState = timeoutState;
+    }
+
+    public boolean getCircuitBreakerPermittedExecution() {
+        return circuitBreakerPermittedExecution;
+    }
+
+    public void setCircuitBreakerPermittedExecution(boolean circuitBreakerPermittedExecution) {
+        this.circuitBreakerPermittedExecution = circuitBreakerPermittedExecution;
     }
 
     /**

@@ -22,6 +22,7 @@ javac.target: 1.8
 fat.project: true
 
 -buildpath: \
+  com.ibm.websphere.javaee.annotation.1.2;version=latest,\
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
   com.ibm.websphere.javaee.mail.1.6;version=latest, \
   com.ibm.websphere.appserver.thirdparty.mail-1.6;version=latest, \

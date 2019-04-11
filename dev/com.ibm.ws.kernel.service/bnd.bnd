@@ -29,7 +29,10 @@ Export-Package: \
  
 Private-Package: \
  com.ibm.ws.kernel.server.internal, \
- com.ibm.ws.kernel.service.utils.resources
+ com.ibm.ws.kernel.service.utils.resources, \
+ !com.ibm.lang.management, !com.sun.management
+
+Import-Package: !com.sun.management, !com.ibm.lang.management, *
  
 -includeresource: \
   OSGI-INF/permissions.perm=resources/permissions.perm

@@ -159,6 +159,7 @@ Include-Resource: \
 instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
 
 -buildpath: \
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	org.apache.cxf.cxf-core;strategy=exact;version=3.1.18,\
 	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version=3.1.18,\
 	org.apache.cxf.cxf-rt-rs-client;strategy=exact;version=3.1.18,\

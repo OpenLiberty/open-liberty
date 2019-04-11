@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,8 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicReference;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
@@ -285,18 +283,19 @@ public interface PolicyExecutor extends ExecutorService {
     PolicyExecutor startTimeout(long ms);
 
     /**
-     * Submit a Runnable task that performs a CompletableFuture action.
-     * The CompletableFuture might be unavailable when this method is invoked and can be
-     * supplied at a later time by setting the value of the AtomicReference.
-     * The PolicyExecutor automatically cancels the CompeletableFuture if it is
-     * available at the time when the PolicyTaskFuture is canceled.
+     * Submit a Runnable task that performs a CompletionStage action.
+     * The CancellableStage parameter represents the CompletionStage, which might be unavailable
+     * when this method is invoked. The abstraction allows it to be supplied at a later time,
+     * and also allows for the fact that CompletionStage, unlike CompletableFuture, does not have a cancel method.
+     * The PolicyExecutor automatically cancels the CancellableStage, allowing the stage to be
+     * canceled if it is available at the time when the PolicyTaskFuture is canceled.
      *
-     * @param completableFutureRef reference to a CompletableFuture that the PolicyExecutor should
+     * @param cancellable represents a CompletionStage that the PolicyExecutor should
      *            automatically cancel upon cancellation of the returned future.
      * @param task the task to run
      * @return future for the task.
      */
-    PolicyTaskFuture<Void> submit(AtomicReference<Future<?>> completableFutureRef, Runnable task);
+    PolicyTaskFuture<Void> submit(CancellableStage cancellable, Runnable task);
 
     /**
      * Submit a Callable task with a callback to be invoked at various points in the task's life cycle.
