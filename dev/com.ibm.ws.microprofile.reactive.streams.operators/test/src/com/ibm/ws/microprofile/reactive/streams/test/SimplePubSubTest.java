@@ -44,6 +44,7 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
         CompletionStage<Void> result = runner.run();
 
         int loops = 0;
+
         while (!subscriber.isComplete() && loops++ < 10 * 60 * 5) {
             try {
                 Thread.sleep(100);
@@ -53,6 +54,7 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
         }
 
         List<String> messages = subscriber.getMessages();
+
         assertTrue(messages.contains("one"));
         assertTrue(messages.contains("two"));
         assertTrue(messages.contains("three"));
@@ -70,11 +72,15 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
             publish("one");
             publish("two");
             publish("three");
+            quiesce();
 
             arg0.onSubscribe(this.subscription);
         }
 
-        public void publish(String string) {
+        public synchronized void publish(String string) {
+            if (subscription.isQuiesced()) {
+                throw new UnsupportedOperationException("Attempt to publish after quiesce");
+            }
             System.out.println("publish: " + string);
             subscription.queue(string);
         }
@@ -92,6 +98,8 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
 
         private boolean quiesce = false;
 
+        private int outstandingRequests = 0;
+
         /**
          * @param myPublisher
          */
@@ -104,7 +112,12 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
          */
         public void queue(String string) {
             try {
-                this.queue.put((T) string);
+                if (outstandingRequests > 0) {
+                    subscriber.onNext((T) string);
+                    outstandingRequests--;
+                } else {
+                    this.queue.put((T) string);
+                }
             } catch (InterruptedException e) {
                 this.subscriber.onError(e);
             }
@@ -121,8 +134,13 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
         public void request(long arg0) {
             for (int i = 0; i < arg0; i++) {
                 try {
-                    T value = queue.take();
-                    subscriber.onNext(value);
+                    if (!queue.isEmpty()) {
+                        T value = queue.take();
+                        subscriber.onNext(value);
+                    } else {
+                        System.out.println("request on empty queue!");
+                        outstandingRequests++;
+                    }
                 } catch (InterruptedException e) {
                     this.subscriber.onError(e);
                 }
@@ -133,8 +151,18 @@ public class SimplePubSubTest extends AbstractReactiveUnitTest {
 
         }
 
-        public void quiesce() {
+        public synchronized void quiesce() {
             quiesce = true;
+            if (queue.isEmpty()) {
+                subscriber.onComplete();
+            }
+        }
+
+        /**
+         * @return the quiesce
+         */
+        public synchronized boolean isQuiesced() {
+            return quiesce;
         }
 
     }
