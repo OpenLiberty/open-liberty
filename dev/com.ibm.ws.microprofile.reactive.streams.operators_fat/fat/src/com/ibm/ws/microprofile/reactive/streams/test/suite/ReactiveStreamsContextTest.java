@@ -57,7 +57,8 @@ public class ReactiveStreamsContextTest extends FATServletClient {
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackages(true, "com.ibm.ws.microprofile.reactive.streams.test.context")
-                        .addAsResource(new StringAsset("test/AsyncConfigValue=foobar"), "META-INF/microprofile-config.properties");
+                        .addAsResource(new StringAsset("test/AsyncConfigValue=foobar"), "META-INF/microprofile-config.properties")
+                        .addAsManifestResource(ReactiveStreamsContextTestServlet.class.getResource("permissions.xml"), "permissions.xml");
 
         ShrinkHelper.exportAppToServer(server, war, DeployOptions.SERVER_ONLY);
 

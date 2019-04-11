@@ -152,6 +152,7 @@ public class ReactiveStreamsContextTestServlet extends FATServlet {
                         .findFirst()
                         .run()
                         .thenApply((x) -> threadContextBean.loadClassWithTccl());
+        latch.complete(null);
         CompletionStageResult.from(result).assertResult(equalTo(ThreadContextBean.class));
     }
 
