@@ -84,6 +84,16 @@ public class WASReactiveStreamsEngineImpl extends Engine implements ReactiveStre
         executorServiceRef.setReference(ref);
     }
 
+    /**
+     * Declarative Services method for setting the context service reference
+     *
+     * @param ref reference to the service
+     */
+    @Reference(name = "contextService", service = WSContextService.class)
+    protected void setContextService(ServiceReference<WSContextService> ref) {
+        contextServiceRef.setReference(ref);
+    }
+
     public WASReactiveStreamsEngineImpl() {
         super();
     }
