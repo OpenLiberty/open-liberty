@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.directory.api.ldap.model.entry.Entry;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,8 +30,9 @@ import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.config.wim.RealmPropertyMapping;
 import com.ibm.websphere.simplicity.config.wim.SearchResultsCache;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.apacheds.EmbeddedApacheDS;
+import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
+import com.unboundid.ldap.sdk.Entry;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -63,7 +63,7 @@ public class InputOutputMappingTest {
      */
     private static ServerConfiguration emptyConfiguration = null;
 
-    private static EmbeddedApacheDS ldapServer = null;
+    private static InMemoryLDAPServer ds;
     private static final String DN = "o=ibm,c=us";
     private static final String USER_DN = "uid=user1," + DN;
     private static final String userCode = "user1code";
@@ -86,18 +86,17 @@ public class InputOutputMappingTest {
      */
     @AfterClass
     public static void teardownClass() throws Exception {
-        if (libertyServer != null) {
-            try {
+        try {
+            if (libertyServer != null) {
                 libertyServer.stopServer();
-            } catch (Exception e) {
-                Log.error(c, "teardown", e, "Liberty server threw error while stopping. " + e.getMessage());
             }
-        }
-        if (ldapServer != null) {
+        } finally {
             try {
-                ldapServer.stopService();
+                if (ds != null) {
+                    ds.shutDown(true);
+                }
             } catch (Exception e) {
-                Log.error(c, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
+                Log.error(c, "teardown", e, "LDAP server threw error while shutting down. " + e.getMessage());
             }
         }
 
@@ -150,30 +149,25 @@ public class InputOutputMappingTest {
      * @throws Exception If the server failed to start for some reason.
      */
     private static void setupldapServer() throws Exception {
-        ldapServer = new EmbeddedApacheDS("myLDAP");
-        ldapServer.addPartition("testing", DN);
-        ldapServer.startServer();
+        ds = new InMemoryLDAPServer(DN);
 
-        /*
-         * Add the partition entries.
-         */
-        Entry entry = ldapServer.newEntry(DN);
-        entry.add("objectclass", "organization");
-        entry.add("o", "ibm");
-        ldapServer.add(entry);
+        Entry entry = new Entry(DN);
+        entry.addAttribute("objectclass", "top");
+        entry.addAttribute("objectclass", "domain");
+        ds.add(entry);
 
         /*
          * Create the user and group.
          */
-        entry = ldapServer.newEntry(USER_DN);
-        entry.add("objectclass", "inetorgperson");
-        entry.add("uid", "user1");
-        entry.add("sn", "user1");
-        entry.add("cn", "user1");
-        entry.add("userPassword", "password");
-        entry.add("postalCode", userCode); // login in with this user
-        entry.add("mail", userMail); // return this
-        ldapServer.add(entry);
+        entry = new Entry(USER_DN);
+        entry.addAttribute("objectclass", "inetorgperson");
+        entry.addAttribute("uid", "user1");
+        entry.addAttribute("sn", "user1");
+        entry.addAttribute("cn", "user1");
+        entry.addAttribute("userPassword", "password");
+        entry.addAttribute("postalCode", userCode); // login in with this user
+        entry.addAttribute("mail", userMail); // return this
+        ds.add(entry);
 
     }
 
@@ -190,10 +184,10 @@ public class InputOutputMappingTest {
 
         ldap.setRealm("LDAPRealm");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldap.setPort(String.valueOf(ds.getListenPort()));
         ldap.setBaseDN(DN);
-        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
-        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setBindDN(InMemoryLDAPServer.getBindDN());
+        ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
         ldap.setLdapType("Custom");
         ldap.setLdapCache(new LdapCache(new AttributesCache(false, 0, 0, "0s"), new SearchResultsCache(false, 0, 0, "0s")));
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import org.apache.directory.api.ldap.model.entry.Entry;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,8 +30,9 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.wim.LdapEntityType;
 import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.apacheds.EmbeddedApacheDS;
+import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
+import com.unboundid.ldap.sdk.Entry;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -61,7 +61,9 @@ public class URAPIs_UserGroupSearchBases {
      */
     private static ServerConfiguration emptyConfiguration = null;
 
-    private static EmbeddedApacheDS ldapServer = null;
+    //private static InMemoryDirectoryServerConfig config;
+    //private static InMemoryDirectoryServer ds;
+    static InMemoryLDAPServer ds;
     private static final String SUB_DN = "o=ibm,c=us";
     private static final String USER_BASE_DN = "ou=TestUsers,ou=Test,o=ibm,c=us";
     private static final String GROUP_BASE_DN = "ou=DevGroups,ou=Dev,o=ibm,c=us";
@@ -91,21 +93,15 @@ public class URAPIs_UserGroupSearchBases {
      */
     @AfterClass
     public static void teardownClass() throws Exception {
-        if (libertyServer != null) {
-            try {
-                libertyServer.stopServer();
-            } catch (Exception e) {
-                Log.error(c, "teardown", e, "Liberty server threw error while stopping. " + e.getMessage());
+        try {
+            if (libertyServer != null) {
+                libertyServer.stopServer("CWIML4537E");
+            }
+        } finally {
+            if (ds != null) {
+                ds.shutDown(true);
             }
         }
-        if (ldapServer != null) {
-            try {
-                ldapServer.stopService();
-            } catch (Exception e) {
-                Log.error(c, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
-            }
-        }
-
         libertyServer.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");
     }
 
@@ -155,56 +151,68 @@ public class URAPIs_UserGroupSearchBases {
      * @throws Exception If the server failed to start for some reason.
      */
     private static void setupldapServer() throws Exception {
-        ldapServer = new EmbeddedApacheDS("myLDAP");
-        ldapServer.addPartition("users", USER_BASE_DN);
-        ldapServer.addPartition("groups", GROUP_BASE_DN);
-        ldapServer.addPartition("groups", BAD_USER_BASE_DN);
-        ldapServer.startServer();
 
+        ds = new InMemoryLDAPServer(SUB_DN);
+
+        Entry entry = new Entry(SUB_DN);
+        entry.addAttribute("objectclass", "top");
+        entry.addAttribute("objectclass", "domain");
+        ds.add(entry);
         /*
          * Add the partition entries.
          */
-        Entry entry = ldapServer.newEntry(USER_BASE_DN);
-        entry.add("objectclass", "organizationalunit");
-        entry.add("ou", "Test");
-        entry.add("ou", "TestUsers");
-        ldapServer.add(entry);
+        entry = new Entry("ou=Test,o=ibm,c=us");
+        entry.addAttribute("objectclass", "organizationalunit");
+        entry.addAttribute("ou", "Test");
+        ds.add(entry);
 
-        entry = ldapServer.newEntry(BAD_USER_BASE_DN);
-        entry.add("objectclass", "organizationalunit");
-        ldapServer.add(entry);
+        entry = new Entry(USER_BASE_DN);
+        entry.addAttribute("objectclass", "organizationalunit");
+        entry.addAttribute("ou", "Test");
+        entry.addAttribute("ou", "TestUsers");
+        ds.add(entry);
 
-        entry = ldapServer.newEntry(GROUP_BASE_DN);
-        entry.add("objectclass", "organizationalunit");
-        entry.add("ou", "Dev");
-        entry.add("ou", "DevGroups");
-        ldapServer.add(entry);
+        entry = new Entry(BAD_USER_BASE_DN);
+        entry.addAttribute("objectclass", "organizationalunit");
+        entry.addAttribute("ou", "BadUsers");
+        ds.add(entry);
+
+        entry = new Entry("ou=Dev,o=ibm,c=us");
+        entry.addAttribute("objectclass", "organizationalunit");
+        entry.addAttribute("ou", "Dev");
+        ds.add(entry);
+
+        entry = new Entry(GROUP_BASE_DN);
+        entry.addAttribute("objectclass", "organizationalunit");
+        entry.addAttribute("ou", "Dev");
+        entry.addAttribute("ou", "DevGroups");
+        ds.add(entry);
 
         /*
          * Create the user and group.
          */
-        entry = ldapServer.newEntry(USER_DN);
-        entry.add("objectclass", "inetorgperson");
-        entry.add("uid", USER);
-        entry.add("sn", USER);
-        entry.add("cn", USER);
-        entry.add("userPassword", "password");
-        ldapServer.add(entry);
+        entry = new Entry(USER_DN);
+        entry.addAttribute("objectclass", "inetorgperson");
+        entry.addAttribute("uid", USER);
+        entry.addAttribute("sn", USER);
+        entry.addAttribute("cn", USER);
+        entry.addAttribute("userPassword", "password");
+        ds.add(entry);
 
-        entry = ldapServer.newEntry(BAD_USER_DN);
-        entry.add("objectclass", "inetorgperson");
-        entry.add("uid", BAD_USER);
-        entry.add("sn", BAD_USER);
-        entry.add("cn", BAD_USER);
-        entry.add("userPassword", "password");
-        ldapServer.add(entry);
+        entry = new Entry(BAD_USER_DN);
+        entry.addAttribute("objectclass", "inetorgperson");
+        entry.addAttribute("uid", BAD_USER);
+        entry.addAttribute("sn", BAD_USER);
+        entry.addAttribute("cn", BAD_USER);
+        entry.addAttribute("userPassword", "password");
+        ds.add(entry);
 
-        entry = ldapServer.newEntry(GROUP_DN);
-        entry.add("objectclass", "groupofnames");
-        entry.add("cn", GROUP);
-        entry.add("member", USER_DN);
-        entry.add("member", BAD_USER_DN);
-        ldapServer.add(entry);
+        entry = new Entry(GROUP_DN);
+        entry.addAttribute("objectclass", "groupofnames");
+        entry.addAttribute("cn", GROUP);
+        entry.addAttribute("member", USER_DN);
+        entry.addAttribute("member", BAD_USER_DN);
+        ds.add(entry);
     }
 
     /**
@@ -220,10 +228,10 @@ public class URAPIs_UserGroupSearchBases {
         ldap.setId("ldap1");
         ldap.setRealm("LDAPRealm");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldap.setPort(String.valueOf(ds.getListenPort()));
         ldap.setBaseDN(SUB_DN);
-        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
-        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setBindDN(InMemoryLDAPServer.getBindDN());
+        ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
         ldap.setLdapType("Custom");
         LdapEntityType type1 = new LdapEntityType("Group", null, new String[] { "groupOfNames" }, new String[] { GROUP_BASE_DN });
         LdapEntityType type2 = new LdapEntityType("PersonAccount", null, new String[] { "inetOrgPerson" }, new String[] { USER_BASE_DN });
