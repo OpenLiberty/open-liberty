@@ -11,10 +11,10 @@
 package com.ibm.ws.jdbc.fat.postgresql;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Properties;
 
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -22,53 +22,29 @@ import org.testcontainers.containers.GenericContainer;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.ExternalTestService;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class,
-                // PostgreSQLTest.class // TODO: intentionally leave this disabled until we get remote docker support in our build machines
+                PostgreSQLTest.class
 })
 public class FATSuite {
 
-    // @BeforeClass // TODO: intentionally leave this disabled until we get remote docker support in our build machines
+    @BeforeClass
     public static void verifyDockerAvailable() throws Exception {
+        final String m = "verifyDockerAvailable";
         // TODO: Once this mechanism has matured a bit, move it to fattest.simplicity for more general use
 
-        // Use local Docker install if running locally.
-        // Devs can override this by specifying -Dfat.test.DOCKER_HOST=tcp://example.com:2345 when they launch the FAT
-        if (FATRunner.FAT_TEST_LOCALRUN) {
-            if (!System.getProperty("fat.test.DOCKER_HOST", "").isEmpty())
-                System.setProperty("DOCKER_HOST", System.getProperty("fat.test.DOCKER_HOST"));
-            boolean dockerHostSet = !System.getProperty("DOCKER_HOST", "").isEmpty() ||
-                                    (System.getenv("DOCKER_HOST") != null && !System.getenv("DOCKER_HOST").isEmpty());
-            File testcontainersConfigFile = new File(System.getProperty("user.home"), ".testcontainers.properties");
-            if (!testcontainersConfigFile.exists())
-                return;
-            Properties testcontainerProps = new Properties();
-            try (FileInputStream fis = new FileInputStream(testcontainersConfigFile)) {
-                testcontainerProps.load(fis);
-            }
-            String currentStrategy = testcontainerProps.getProperty("testcontainers.properties");
-            if (!dockerHostSet && "org.testcontainers.dockerclient.EnvironmentAndSystemPropertyClientProviderStrategy".equals(currentStrategy)) {
-                Log.info(c, "verifyDockerAvailable", "No DOCKER_HOST set in env or sysprops, but env/sysprop Docker client strategy found in ~/.testcontainers.properties.");
-                Log.info(c, "verifyDockerAvailable", "Attempting to reset Testcontainers properties file by deleting " + testcontainersConfigFile.getAbsolutePath());
-                Files.delete(testcontainersConfigFile.toPath());
-            } else if (dockerHostSet && !"org.testcontainers.dockerclient.EnvironmentAndSystemPropertyClientProviderStrategy".equals(currentStrategy)) {
-                Log.info(c, "verifyDockerAvailable", "DOCKER_HOST set in env/sysprops, but env/sysprop strategy not set in ~/.testcontainers.properties.");
-                Log.info(c, "verifyDockerAvailable", "Attempting to reset Testcontainers properties file by deleting " + testcontainersConfigFile.getAbsolutePath());
-                Files.delete(testcontainersConfigFile.toPath());
-            }
-            return;
+        File testcontainersConfigFile = new File(System.getProperty("user.home"), ".testcontainers.properties");
+        Log.info(c, m, "Removing testcontainers property file at: " + testcontainersConfigFile.getAbsolutePath());
+        Files.deleteIfExists(testcontainersConfigFile.toPath());
+
+        if (FATRunner.FAT_TEST_LOCALRUN && !Boolean.getBoolean("fat.test.use.remote.docker")) {
+            Log.info(c, m, "Using local Docker Host for this FAT.");
         } else {
-            // Running in a remote build, check Consul for an external Docker service
-            for (ExternalTestService dockerService : ExternalTestService.getServices(10, "aguibert-test-docker-host")) {
-                if (tryDockerHost(dockerService))
-                    return; // got a healthy instance
-            }
-            throw new IllegalStateException("Unable to locate any external Docker host services");
+            Log.info(c, m, "Using remote Docker Host for this FAT.");
+            ExternalTestService.getService("docker-engine", FATSuite::tryDockerHost);
         }
     }
 
@@ -78,10 +54,22 @@ public class FATSuite {
         String m = "tryDockerHost";
         String dockerHostURL = "tcp://" + dockerService.getAddress() + ":" + dockerService.getPort();
         System.setProperty("DOCKER_HOST", dockerHostURL);
+        File certDir = new File("docker-certificates");
+        certDir.mkdirs();
+        writeFile(new File(certDir, "ca.pem"), dockerService.getProperties().get("ca.pem"));
+        writeFile(new File(certDir, "cert.pem"), dockerService.getProperties().get("cert.pem"));
+        writeFile(new File(certDir, "key.pem"), dockerService.getProperties().get("key.pem"));
+        System.setProperty("DOCKER_TLS_VERIFY", "1");
+        System.setProperty("DOCKER_CERT_PATH", certDir.getAbsolutePath());
         Log.info(FATSuite.class, "tryDockerHost", "Checking if Docker host " + dockerHostURL + " is available and healthy...");
         try (GenericContainer<?> helloWorldContianer = new GenericContainer<>("alpine:3.5")
                         .withCommand("sh", "-c", "while true; do nc -lp 8080; done")) {
             helloWorldContianer.start();
+            String containerIp = helloWorldContianer.getContainerIpAddress();
+            Log.info(c, m, "Container hostname is: " + containerIp);
+            if (containerIp.contains("localhost") || containerIp.contains("127.0.0.1")) {
+                throw new RuntimeException("Should not be using a local docker container address: " + containerIp);
+            }
             if (helloWorldContianer.isCreated() && helloWorldContianer.isRunning()) {
                 Log.info(c, m, "Docker host was able to create and start a test container. Will use this instance");
                 return true;
@@ -96,6 +84,17 @@ public class FATSuite {
             dockerService.reportUnhealthy("Container at " + dockerHostURL + " encountered an issue while starting: " + e.getMessage());
             return false;
         }
+    }
+
+    private static void writeFile(File outFile, String content) {
+        try {
+            Files.deleteIfExists(outFile.toPath());
+            Files.write(outFile.toPath(), content.getBytes());
+        } catch (IOException e) {
+            Log.error(c, "writeFile", e);
+            throw new RuntimeException(e);
+        }
+        Log.info(c, "writeFile", "Wrote property to: " + outFile.getAbsolutePath());
     }
 
 }
