@@ -31,6 +31,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.JSSEProvider;
 import com.ibm.ws.ssl.optional.SSLSupportOptional;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.ssl.SSLSupport;
 
 /**
@@ -54,6 +55,12 @@ public class SSLSupportImpl implements SSLSupport {
 
     @Activate
     protected void activate(BundleContext ctx) {
+        if (FrameworkState.isStopping()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Bypassing activation because the server is shutting down");
+            }
+            return;
+        }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Activated: " + ctx);
         }
@@ -69,8 +76,10 @@ public class SSLSupportImpl implements SSLSupport {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Deactivated: ");
         }
-        registration.unregister();
-        registration = null;
+        if (registration != null) {
+            registration.unregister();
+            registration = null;
+        }
     }
 
     @Reference(target = "(SSLSupport=active)")
