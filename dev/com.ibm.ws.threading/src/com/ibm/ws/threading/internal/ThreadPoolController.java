@@ -749,6 +749,7 @@ public final class ThreadPoolController {
      * @return the data representing the throughput distribution for the
      *         specified number of active threads
      */
+    @Trivial
     ThroughputDistribution getThroughputDistribution(int activeThreads, boolean create) {
         if (activeThreads < coreThreads)
             activeThreads = coreThreads;
@@ -892,7 +893,9 @@ public final class ThreadPoolController {
         boolean flippedCoin = false;
         int downwardCompareSpan = 0;
 
-        if (poolSize >= coreThreads + poolDecrement) {
+        // do not consider shrinking to less than coreThreads or
+        // the buffer threshold we set last time a hang was detected
+        if ((poolSize - poolDecrement) >= Math.max(coreThreads, hangBufferPoolSize)) {
             // compareSpan is poolSize range used for throughput comparison
             downwardCompareSpan = Math.min(compareRange * poolDecrement, poolSize - coreThreads);
 
@@ -967,7 +970,7 @@ public final class ThreadPoolController {
             }
 
             // lean toward shrinking if cpuUtil is high
-            if ((shrinkScore < 0.5) && (poolSize > hangBufferPoolSize) && (!smallPool)) {
+            if ((shrinkScore < 0.5) && (!smallPool)) {
                 if (cpuHigh) {
                     shrinkScore = (flipCoin()) ? 0.7 : shrinkScore;
                 } else {
@@ -1299,6 +1302,10 @@ public final class ThreadPoolController {
                     // do nothing
                 }
                 completedWork = threadPool.getCompletedTaskCount();
+                if (tc.isEventEnabled()) {
+                    Tr.event(tc, "\nExecutor hang detected - poolSize: " + poolSize + ", queueDepth: " + queueDepth +
+                                 ", cpuUtil: " + cpuUtil + ", processCpuUtil: " + processCpuUtil + ", systemCpuUtil: " + systemCpuUtil);
+                }
                 return "action take to resolve hang";
             }
 
@@ -1476,8 +1483,9 @@ public final class ThreadPoolController {
      * @return true if action was taken to resolve a hang, or false otherwise
      */
     private boolean resolveHang(long tasksCompleted, boolean queueEmpty, int poolSize) {
-        boolean actionTaken = false;
+        boolean hangDetected = false;
         if (tasksCompleted == 0 && !queueEmpty) {
+            hangDetected = true;
             /**
              * When a hang is detected the controller enters hang resolution mode.
              * The controller will run on a shorter-than-usual cycle for hangResolutionCycles
@@ -1504,16 +1512,23 @@ public final class ThreadPoolController {
                 Tr.event(tc, "Executor hang continued at poolSize=" + poolSize, threadPool);
             }
 
-            setPoolIncrementDecrement(poolSize);
-            if (poolSize + poolIncrement <= maxThreads && poolSize < MAX_THREADS_TO_BREAK_HANG) {
-                targetPoolSize = adjustPoolSize(poolSize, poolIncrement);
+            /**
+             * We might get here with a prior pool size change incomplete ... if so we
+             * should adjust for that
+             */
+            int hangSizeAdjustment = 0;
+            if (poolSize > targetPoolSize) {
+                setPoolIncrementDecrement(targetPoolSize);
+                hangSizeAdjustment = poolIncrement - (poolSize - targetPoolSize);
+            } else if (poolSize < targetPoolSize) {
+                hangSizeAdjustment = targetPoolSize - poolSize;
+            }
+            setPoolIncrementDecrement(poolSize + hangSizeAdjustment);
+            int adjustedPoolIncrement = hangSizeAdjustment == 0 ? poolIncrement : hangSizeAdjustment;
+            if (poolSize + adjustedPoolIncrement <= Math.min(maxThreads, MAX_THREADS_TO_BREAK_HANG)) {
+                targetPoolSize = adjustPoolSize(poolSize, adjustedPoolIncrement);
                 // update the poolSize set to resolve the hang, plus a buffer amount
-                int targetSize = poolSize + (compareRange * poolIncrement);
-                if (hangBufferPoolSize < targetSize) {
-                    hangBufferPoolSize = targetSize;
-                }
-                actionTaken = true;
-
+                hangBufferPoolSize = Math.max(hangBufferPoolSize, targetPoolSize + (compareRange * poolIncrement));
             } else {
                 // there's a hang, but we can't add any more threads...  emit a warning the first time this
                 // happens for a given hang, but otherwise just bail
@@ -1558,7 +1573,7 @@ public final class ThreadPoolController {
                 }
             }
         }
-        return actionTaken;
+        return hangDetected;
     }
 
     private void setPoolSize(int newPoolSize) {
