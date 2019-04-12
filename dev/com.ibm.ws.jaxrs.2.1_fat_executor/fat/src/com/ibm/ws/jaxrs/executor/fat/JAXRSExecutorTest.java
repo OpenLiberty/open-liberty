@@ -47,7 +47,6 @@ public class JAXRSExecutorTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.dumpServer("com.ibm.ws.jaxrs.2.1.fat.executor");
         server.stopServer();
     }
 
