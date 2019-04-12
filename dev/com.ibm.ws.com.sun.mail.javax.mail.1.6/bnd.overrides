@@ -1,6 +1,6 @@
 -include= ~../cnf/resources/bnd/rejar.props
 
-bVersion=1.6
+bVersion=1.7
 Bundle-Name: JavaMail 1.6 Implementation
 Bundle-SymbolicName: com.ibm.ws.com.sun.mail.javax.mail.1.6
 Bundle-Description: Private JavaMail bundle
