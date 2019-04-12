@@ -14,7 +14,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.AccessController;
@@ -136,7 +135,7 @@ public class BaseTraceService implements TrService {
     protected static RecursionCounter counterForTraceWriter = new RecursionCounter();
     protected static RecursionCounter counterForLogSource = new RecursionCounter();
 
-    private static final int MINUTE = 20000;
+    private static final int MINUTE = 60000;
 
     /**
      * Trivial interface for writing "trace" records (this includes logging to messages.log)
@@ -234,7 +233,7 @@ public class BaseTraceService implements TrService {
         systemOut = new SystemLogHolder(LoggingConstants.SYSTEM_OUT, System.out);
         systemErr = new SystemLogHolder(LoggingConstants.SYSTEM_ERR, System.err);
 
-        earlyMessageTraceKiller_Timer.schedule(new EarlyMessageTraceCleaner(), 1 * MINUTE); // 5 minutes wait time
+        earlyMessageTraceKiller_Timer.schedule(new EarlyMessageTraceCleaner(), 5 * MINUTE); // 5 minutes wait time
     }
 
     /**
@@ -1201,189 +1200,162 @@ public class BaseTraceService implements TrService {
 
     public final static class TeePrintStream extends PrintStream {
         protected final TrOutputStream trStream;
-        protected final boolean autoFlush;
-        protected boolean trouble = false;
 
         public TeePrintStream(TrOutputStream trStream, boolean autoFlush) {
             super(trStream, autoFlush);
-            this.autoFlush = autoFlush;
             this.trStream = trStream;
-        }
-
-        public void preFlush(String s) {
-            if (autoFlush) {
-                try {
-                    trStream.realFlush();
-                } catch (IOException e) {
-                    trouble = true;
-                    //e.printStackTrace();
-                }
-            }
-            try {
-                if (autoFlush && (s.indexOf('\n') >= 0)) {
-                    try {
-                        trStream.realFlush();
-                    } catch (IOException e) {
-                        trouble = true;
-                        //e.printStackTrace();
-                    }
-                }
-            } catch (Exception e) {
-                //String passed was null, do nothing
-            }
-        }
-
-        @Override
-        public void write(byte buf[], int off, int len) {
-            super.write(buf, off, len);
-            preFlush(null);
-        }
-
-        @Override
-        public void println() {
-            super.println();
-            try {
-                trStream.realFlush();
-            } catch (IOException e) {
-                trouble = true;
-                //e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void println(String s) {
-            super.print(s + "\n");
-            preFlush(s);
-        }
-
-        @Override
-        public void println(boolean b) {
-            super.print(b);
-            super.print("\n");
-            String str = b ? "true" : "false";
-            str += "\n";
-            preFlush(str);
-        }
-
-        @Override
-        public void println(char c) {
-            super.print(c);
-            super.print("\n");
-            preFlush(String.valueOf(c) + "\n");
-        }
-
-        @Override
-        public void println(int i) {
-            super.print(i);
-            super.print("\n");
-            preFlush(String.valueOf(i) + "\n");
-        }
-
-        @Override
-        public void println(long l) {
-            super.print(l);
-            super.print("\n");
-            preFlush(String.valueOf(l) + "\n");
-        }
-
-        @Override
-        public void println(float f) {
-            super.print(f);
-            super.print("\n");
-            preFlush(String.valueOf(f) + "\n");
-        }
-
-        @Override
-        public void println(double d) {
-            super.print(d);
-            super.print("\n");
-            preFlush(String.valueOf(d) + "\n");
-        }
-
-        @Override
-        public void println(char s[]) {
-            super.print(s);
-            super.print("\n");
-            preFlush(String.valueOf(s) + "\n");
-        }
-
-        @Override
-        public void println(Object obj) {
-            super.print(obj);
-            super.print("\n");
-            preFlush(String.valueOf(obj) + "\n");
-        }
-
-        @Override
-        public void print(String s) {
-            super.print(s);
-            preFlush(s);
         }
 
         @Override
         public void print(boolean b) {
+            TrOutputStream.isPrinting.set(true);
             super.print(b);
-            String str = b ? "true" : "false";
-            preFlush(str);
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
         }
 
         @Override
         public void print(char c) {
+            TrOutputStream.isPrinting.set(true);
             super.print(c);
-            preFlush(String.valueOf(c));
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
         }
 
         @Override
         public void print(int i) {
+            TrOutputStream.isPrinting.set(true);
             super.print(i);
-            preFlush(String.valueOf(i));
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
         }
 
         @Override
         public void print(long l) {
+            TrOutputStream.isPrinting.set(true);
             super.print(l);
-            preFlush(String.valueOf(l));
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
         }
 
         @Override
         public void print(float f) {
+            TrOutputStream.isPrinting.set(true);
             super.print(f);
-            preFlush(String.valueOf(f));
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
         }
 
         @Override
         public void print(double d) {
+            TrOutputStream.isPrinting.set(true);
             super.print(d);
-            preFlush(String.valueOf(d));
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
         }
 
         @Override
-        public void print(char s[]) {
+        public void print(char c[]) {
+            TrOutputStream.isPrinting.set(true);
+            super.print(c);
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
+        }
+
+        @Override
+        public void print(String s) {
+            TrOutputStream.isPrinting.set(true);
             super.print(s);
-            preFlush(String.valueOf(s));
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
         }
 
         @Override
         public void print(Object obj) {
+            TrOutputStream.isPrinting.set(true);
             super.print(obj);
-            preFlush(String.valueOf(obj));
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
         }
 
         @Override
-        public boolean checkError() {
-            return (super.checkError() || this.trouble);
+        public void println() {
+            TrOutputStream.isPrinting.set(true);
+            super.println();
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
         }
 
         @Override
-        protected void setError() {
-            super.setError();
-            trouble = true;
+        public void println(boolean b) {
+            TrOutputStream.isPrinting.set(true);
+            super.print(b);
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
         }
 
         @Override
-        protected void clearError() {
-            super.clearError();
-            trouble = false;
+        public void println(char c) {
+            TrOutputStream.isPrinting.set(true);
+            super.print(c);
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
+        }
+
+        @Override
+        public void println(int i) {
+            TrOutputStream.isPrinting.set(true);
+            super.print(i);
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
+        }
+
+        @Override
+        public void println(long l) {
+            TrOutputStream.isPrinting.set(true);
+            super.print(l);
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
+        }
+
+        @Override
+        public void println(float f) {
+            TrOutputStream.isPrinting.set(true);
+            super.print(f);
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
+        }
+
+        @Override
+        public void println(double d) {
+            TrOutputStream.isPrinting.set(true);
+            super.print(d);
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
+        }
+
+        @Override
+        public void println(char c[]) {
+            TrOutputStream.isPrinting.set(true);
+            super.print(c);
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
+        }
+
+        @Override
+        public void println(String s) {
+            TrOutputStream.isPrinting.set(true);
+            super.print(s);
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
+        }
+
+        @Override
+        public void println(Object obj) {
+            TrOutputStream.isPrinting.set(true);
+            super.print(obj);
+            TrOutputStream.isPrinting.set(false);
+            super.flush();
         }
 
     }
@@ -1397,18 +1369,20 @@ public class BaseTraceService implements TrService {
     public static class TrOutputStream extends ByteArrayOutputStream {
         final SystemLogHolder holder;
         final BaseTraceService service;
+        public static ThreadLocal<Boolean> isPrinting = new ThreadLocal<>();
 
         public TrOutputStream(SystemLogHolder slh, BaseTraceService service) {
             this.holder = slh;
             this.service = service;
+            this.isPrinting.set(false);
         }
 
         @Override
-        public synchronized void flush() {
-            //System.out.println("we are in flush");
-        }
+        public synchronized void flush() throws IOException {
 
-        public synchronized void realFlush() throws IOException {
+            if (isPrinting.get())
+                return;
+
             super.flush();
 
             if (!holder.isEnabled()) {
@@ -1588,10 +1562,6 @@ public class BaseTraceService implements TrService {
                     BaseTraceService.this.setWsMessageRouter(internalMessageRouter.get());
                 if (internalTraceRouter.get() != null)
                     BaseTraceService.this.setTraceRouter(internalTraceRouter.get());
-
-                System.out.print("hello");
-                final PrintWriter writer = new PrintWriter(System.out, true);
-                writer.println("This Should Print");
             }
         }
     }
