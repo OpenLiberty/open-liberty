@@ -1655,7 +1655,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                         }
                     });
                 } catch (PrivilegedActionException e) {
-                    FFDCFilter.processException(e, getClass().getName(), "3070", this, new Object[] { this });
+                    FFDCFilter.processException(e.getCause(), getClass().getName(), "3070", this, new Object[] { this });
                     ResourceException r = new ResourceException(e.getCause());
                     throw r;
                 }
