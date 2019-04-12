@@ -9,5 +9,6 @@ Subsystem-Name: Java RESTful Services 2.0
 -features=com.ibm.websphere.appserver.jaxrsClient-2.0, \
  com.ibm.websphere.appserver.javaeeCompatible-7.0, \
  com.ibm.websphere.appserver.internal.jaxrs-2.0
+-bundles=com.ibm.ws.cxf.client
 kind=ga
 edition=core

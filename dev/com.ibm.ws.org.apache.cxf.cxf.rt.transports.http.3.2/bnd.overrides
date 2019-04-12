@@ -28,10 +28,8 @@ Import-Package: \
   !org.apache.cxf.ws.policy.*,\
   !org.apache.cxf.wsdl,\
   !org.osgi.service.blueprint.*,\
+  com.ibm.ws.cxf.client.*,\
   *
-
-Private-Package: \
-  com.ibm.ws.cxf.client.*
 
 Service-Component: \
   com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.ResourceProvider; \
