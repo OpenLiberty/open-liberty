@@ -112,5 +112,17 @@
   	</child>
   </usr_parent>
   
+  <!-- config for testConfigDefaultInstances -->
+  <usr_parent id="dflt">
+  	<usr_child id="usrConfig">
+  		<usr_grandchild value="a"/>
+  	</usr_child>
+  	<usr_child id="mergedConfig" name="mergedChild">
+  		<usr_grandchild id="one" value="b"/>
+  		<usr_grandchild id="two" value="c"/>
+  		<usr_grandchild id="four" name="grandchildOpt"/>
+  	</usr_child>
+  </usr_parent>
+  
   <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 </server>

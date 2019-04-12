@@ -734,11 +734,9 @@ public class ConfigRESTHandlerTest extends FATServletClient {
     // <usr_parent id="a" name="one"> <child value="two"> <grandchild value="three"/> </child> </usr_parent>
     @Test
     public void testNestedFlat() throws Exception {
-        JsonArray resp = new HttpsRequest(server, "/ibm/api/config/usr_parent").run(JsonArray.class);
-        String err = "unexpected response: " + resp;
-        assertEquals(err, 1, resp.size());
+        JsonObject parent = new HttpsRequest(server, "/ibm/api/config/usr_parent/a").run(JsonObject.class);
+        String err = "unexpected response: " + parent;
 
-        JsonObject parent = resp.getJsonObject(0);
         assertEquals(err, "a", parent.getString("uid"));
         assertEquals(err, "a", parent.getString("id"));
         assertEquals(err, "usr_parent", parent.getString("configElementName"));
@@ -753,6 +751,81 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, 1, grandchildArr.size());
         JsonObject grandchild = grandchildArr.getJsonObject(0);
         assertEquals(err, "three", grandchild.getString("value"));
+    }
+
+    // Verify default config gets correctly merged with the config in the server.xml.
+    // The default config can be found at: test-bundles/test.config.nested.flat/resources/wlp/defaultInstances.xml
+    // The merged view of the user_parent/dflt config should be:
+    /*
+     * <usr_parent id="dflt">
+     * <usr_child id="dfltConfig">
+     * <usr_grandchild value="x"/>
+     * </usr_child>
+     * <usr_child id="usrConfig">
+     * <usr_grandchild value="a"/>
+     * </usr_child>
+     * <usr_child id="mergedConfig" name="mergedChild">
+     * <usr_grandchild id="one" value="b"/>
+     * <usr_grandchild id="two" value="c"/>
+     * <usr_grandchild id="three" value="y"/>
+     * <usr_grandchild id="four" value="z" name="grandchildOpt"/>
+     * </usr_child>
+     * </usr_parent>
+     */
+    @Test
+    public void testConfigDefaultInstances() throws Exception {
+        JsonObject parent = new HttpsRequest(server, "/ibm/api/config/usr_parent/dflt").run(JsonObject.class);
+        String err = "unexpected response: " + parent;
+
+        assertEquals(err, "dflt", parent.getString("uid"));
+        assertEquals(err, "dflt", parent.getString("id"));
+        assertEquals(err, "usr_parent", parent.getString("configElementName"));
+
+        // Parse the usr_child elements.
+        JsonArray childArr = parent.getJsonArray("usr_child");
+        assertEquals(err, 3, childArr.size());
+        boolean found_dflt_config = false, found_usr_config = false, found_merged_config = false;
+        for (int i = 0; i < 3; i++) {
+            JsonObject child = childArr.getJsonObject(i);
+            if (!found_dflt_config && "dfltConfig".equals(child.getString("id"))) {
+                found_dflt_config = true;
+                JsonArray grandchildArr = child.getJsonArray("usr_grandchild");
+                assertEquals(err, 1, grandchildArr.size());
+                JsonObject grandchild = grandchildArr.getJsonObject(0);
+                assertEquals(err, "x", grandchild.getString("value"));
+            } else if (!found_usr_config && "usrConfig".equals(child.getString("id"))) {
+                found_usr_config = true;
+                JsonArray grandchildArr = child.getJsonArray("usr_grandchild");
+                assertEquals(err, 1, grandchildArr.size());
+                JsonObject grandchild = grandchildArr.getJsonObject(0);
+                assertEquals(err, "a", grandchild.getString("value"));
+            } else if (!found_merged_config && "mergedConfig".equals(child.getString("id")) && "mergedChild".equals(child.getString("name"))
+                       && "dfltOption".equals(child.getString("option"))) {
+                found_merged_config = true;
+
+                // Parse the usr_grandchild elements.
+                JsonArray grandchildArr = child.getJsonArray("usr_grandchild");
+                assertEquals(err, 4, grandchildArr.size());
+                boolean found_three = false, found_four = false, found_five = false, found_six = false;
+                for (int j = 0; j < 4; j++) {
+                    JsonObject grandchild = grandchildArr.getJsonObject(j);
+                    if (!found_three && "one".equals(grandchild.getString("id")) && "b".equals(grandchild.getString("value"))) {
+                        found_three = true;
+                    } else if (!found_four && "two".equals(grandchild.getString("id")) && "c".equals(grandchild.getString("value"))) {
+                        found_four = true;
+                    } else if (!found_five && "three".equals(grandchild.getString("id")) && "y".equals(grandchild.getString("value"))) {
+                        found_five = true;
+                    } else if (!found_six && "four".equals(grandchild.getString("id")) && "z".equals(grandchild.getString("value"))
+                               && "grandchildOpt".equals(grandchild.getString("name"))) {
+                        found_six = true;
+                    } else {
+                        fail("Unexpected or duplicate usr_grandchild element found: " + grandchild.toString());
+                    }
+                }
+            } else {
+                fail("Unexpected or duplicate usr_child element found: " + child.toString());
+            }
+        }
     }
 
     // Invoke /ibm/api/config/ REST API with query parameters to filter in a way that does not match any configuration. Ensure an empty response.
