@@ -34,6 +34,10 @@ bulkhead.no.threads.CWMFT0001E=CWMFT0001E: No free capacity is available in the 
 bulkhead.no.threads.CWMFT0001E.explanation=A call to the method did not succeed because the bulkhead for the method is full.
 bulkhead.no.threads.CWMFT0001E.useraction=Increase availability in the bulkhead by increasing the capacity of the bulkhead or reducing the concurrent workload of this service.
 
+application.shutdown.CWMFT0002W=CWMFT0002W: Cannot complete the asynchronous execution of method {0} because the application or component which called it has stopped
+application.shutdown.CWMFT0002W.explanation=Asynchronous methods run in the context of the component that started them. The application or component that called the asynchronous method is no longer running and this has prevented the asynchronous method from running completely.
+application.shutdown.CWMFT0002W.useraction=This warning usually occurs when the application or server is shutting down. If it's important that all started Asynchronous methods are completed, then the running application should wait for the result.
+
 #An internal error occurred. The exception is {0}.
 internal.error.CWMFT4998E=CWMFT4998E: An internal error occurred. The exception is {0}.
 internal.error.CWMFT4998E.explanation=The application server experienced an internal error.
