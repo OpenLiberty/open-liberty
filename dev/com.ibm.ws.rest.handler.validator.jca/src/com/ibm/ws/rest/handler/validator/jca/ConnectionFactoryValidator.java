@@ -49,7 +49,7 @@ import com.ibm.wsspi.validator.Validator;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { Validator.class },
-           property = { "service.vendor=IBM", "com.ibm.wsspi.rest.handler.root=/validator", "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.jca.connectionFactory.supertype" })
+           property = { "service.vendor=IBM", "com.ibm.wsspi.rest.handler.root=/validation", "com.ibm.wsspi.rest.handler.config.pid=com.ibm.ws.jca.connectionFactory.supertype" })
 public class ConnectionFactoryValidator implements Validator {
     private final static TraceComponent tc = Tr.register(ConnectionFactoryValidator.class);
 
@@ -121,10 +121,11 @@ public class ConnectionFactoryValidator implements Validator {
                             JSONObject loginConfigProps = (JSONObject) loginConfigProperties;
                             for (Object entry : loginConfigProps.entrySet()) {
                                 @SuppressWarnings("unchecked")
-                                Entry<String, String> e = (Entry<String, String>) entry;
+                                Entry<String, Object> e = (Entry<String, Object>) entry;
                                 if (trace && tc.isDebugEnabled())
                                     Tr.debug(tc, "Adding custom login module property with key=" + e.getKey());
-                                config.addLoginProperty(e.getKey(), e.getValue());
+                                Object value = e.getValue();
+                                config.addLoginProperty(e.getKey(), value == null ? null : value.toString());
                             }
                         }
                     }

@@ -61,7 +61,7 @@ import com.ibm.wsspi.validator.Validator;
 @Component(name = "com.ibm.ws.rest.handler.validator",
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { RESTHandler.class },
-           property = { "com.ibm.wsspi.rest.handler.context.root=/ibm/api", "com.ibm.wsspi.rest.handler.root=/validator" }) // TODO switch to /openapi/platform
+           property = { "com.ibm.wsspi.rest.handler.context.root=/ibm/api", "com.ibm.wsspi.rest.handler.root=/validation" })
 public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
     private static final TraceComponent tc = Tr.register(ValidatorRESTHandler.class);
 
@@ -78,6 +78,11 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
     @Deactivate
     protected void deactivate(ComponentContext context) {
         this.context = null;
+    }
+
+    @Override
+    public final String getAPIRoot() {
+        return "/validation";
     }
 
     @Override
@@ -201,10 +206,10 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
             for (String key : request.getParameterMap().keySet()) {
                 params.put(key, resolvePotentialVariable(request.getParameter(key))); // TODO only add valid parameters (auth, authData)? And if we want any validation of values, this is the central place for it
             }
-            String user = request.getHeader("X-Validator-User");
+            String user = request.getHeader("X-Validation-User");
             if (user != null)
                 params.put("user", resolvePotentialVariable(user));
-            String pass = request.getHeader("X-Validator-Password");
+            String pass = request.getHeader("X-Validation-Password");
             if (pass != null)
                 params.put("password", resolvePotentialVariable(pass));
             String contentType = request.getContentType();
@@ -285,7 +290,7 @@ public class ValidatorRESTHandler extends ConfigBasedRESTHandler {
      * Populate JSON object for a top level exception or error.
      *
      * @param errorInfo additional information to append to exceptions and causes
-     * @param error the top level exception or error.
+     * @param error     the top level exception or error.
      * @return JSON object representing the Throwable.
      */
     @SuppressWarnings("unchecked")
