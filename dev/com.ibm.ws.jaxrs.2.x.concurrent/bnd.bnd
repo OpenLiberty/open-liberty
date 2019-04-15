@@ -23,30 +23,35 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 # Technically we should never have allowed javax.validation packages at the 1.0 version
 # but to maintain backwards compatibility we will allow it 
 Import-Package: \
-	org.apache.cxf.*;version='[3.0.2,4)',\
-	com.ibm.websphere.ras.*,\
-	com.ibm.ws.ffdc,\
-	com.ibm.ws.concurrent,\
-	com.ibm.wsspi.kernel.service.utils,\
-	com.ibm.wsspi.threadcontext,\
-	org.osgi.framework,\
-	org.osgi.service.component,\
-	com.ibm.ws.cxf.client
+  org.apache.cxf.*;version="[3.0.2,4)", \
+  com.ibm.websphere.ras.*, \
+  com.ibm.ws.jaxrs20.client, \
+  com.ibm.ws.ffdc, \
+  com.ibm.ws.concurrent, \
+  com.ibm.wsspi.kernel.service.utils, \
+  com.ibm.wsspi.threadcontext, \
+  org.osgi.framework, \
+  org.osgi.service.component, \
+  com.ibm.ws.cxf.client
      
 # If you need use MESSAGE, you must enable this Private-Package, or message will translate wrong
 Private-Package:\
-   com.ibm.ws.jaxrs2x.concurrent.*
+  com.ibm.ws.jaxrs2x.concurrent.*
    
 
 -dsannotations: com.ibm.ws.jaxrs2x.concurrent.component.*
  
+
+-dsannotations: com.ibm.ws.jaxrs2x.concurrent.component.*    
+ 
 -buildpath: \
-    org.apache.cxf.cxf-core;strategy=exact;version=3.1.18,\
+	org.apache.cxf.cxf-core;strategy=exact;version=3.1.18,\
 	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version=3.1.18,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.jaxrs.2.0.client;version=latest,\
 	com.ibm.ws.jaxrs.2.0.common;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.concurrent;version=latest,\
